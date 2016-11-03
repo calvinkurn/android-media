@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/overflow_selected"
+    android:clickable="false"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/padding_vs"
+    android:paddingLeft="@dimen/padding_small"
+    android:paddingRight="@dimen/padding_small"
+    android:paddingTop="@dimen/padding_vs" >
+
+    <TextView
+        android:id="@+id/product_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Product Name"
+        android:textSize="@dimen/fonts" />
+
+    <TextView
+        android:id="@+id/prod_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/product_name"
+        android:text="Rp. 1000.000"
+        android:textColor="@color/tkpd_prod_price"
+        android:textSize="@dimen/fonts" />
+
+    <TextView
+        android:id="@+id/prod_condition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/prod_price"
+        android:layout_marginTop="@dimen/margin_vs"
+        android:text="Bekas"
+        android:textColor="@color/label_color"
+        android:textSize="@dimen/fonts" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/product_name"
+        android:layout_toRightOf="@id/prod_price"
+        android:gravity="right|center_vertical" >
+
+        <TextView
+            android:id="@+id/product_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+    </LinearLayout>
+
+</RelativeLayout>

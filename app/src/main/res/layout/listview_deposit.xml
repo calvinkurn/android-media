@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/cards_ui_2"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_small">
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:textColor="@color/time_color"
+            android:textSize="@dimen/fontvs" />
+
+        <TextView
+            android:id="@+id/note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/date"
+            android:background="@android:drawable/list_selector_background"
+            android:textSize="@dimen/fonts" />
+
+        <View
+            android:id="@+id/separator"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_below="@id/note"
+            android:layout_marginBottom="@dimen/margin_vs"
+            android:layout_marginTop="@dimen/margin_vs"
+            android:background="@color/greyish_bg" />
+
+        <TextView
+            android:id="@+id/title_nominal"
+            android:layout_width="@dimen/half_screen"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/separator"
+            android:text="@string/title_nominal"
+            android:textColor="@color/time_color"
+            android:textSize="@dimen/fontvs" />
+
+        <TextView
+            android:id="@+id/nominal"
+            android:layout_width="@dimen/half_screen"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title_nominal" />
+
+        <TextView
+            android:id="@+id/title_balance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/separator"
+            android:layout_toEndOf="@id/title_nominal"
+            android:layout_toRightOf="@id/title_nominal"
+            android:text="@string/title_balance"
+            android:textColor="@color/time_color"
+            android:textSize="@dimen/fontvs" />
+
+        <TextView
+            android:id="@+id/balance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title_balance"
+            android:layout_toEndOf="@id/nominal"
+            android:layout_toRightOf="@id/nominal" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_below="@id/header"
+        android:background="@color/greyish_bg" />
+</RelativeLayout>

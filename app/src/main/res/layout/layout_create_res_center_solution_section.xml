@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/cards_ui_2"
+    android:padding="@dimen/padding_small"
+    android:orientation="vertical"
+    android:animateLayoutChanges="true">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/padding_vs"
+        android:paddingBottom="@dimen/padding_vs"
+        android:paddingRight="@dimen/padding_small"
+        android:text="@string/title_create_resolution_step_3_desc"
+        android:textSize="@dimen/fontvs" />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        android:id="@+id/spinner_solution" />
+
+    <LinearLayout
+        android:id="@+id/view_refund"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:background="@color/greyish_bg" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/padding_vs"
+            android:paddingBottom="@dimen/padding_vs"
+            android:paddingRight="@dimen/padding_small"
+            android:text="@string/title_create_resolution_step_3a_desc"
+            android:textSize="@dimen/fontvs" />
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/refund_box_prompt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/refund_from_invoice"
+            android:paddingTop="@dimen/padding_vs"
+            android:paddingBottom="@dimen/padding_vs">
+
+            <EditText
+                android:id="@+id/refund_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLength="9"
+                android:inputType="number"
+                android:minHeight="48dp"
+                android:textSize="@dimen/font_small" />
+
+        </android.support.design.widget.TextInputLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

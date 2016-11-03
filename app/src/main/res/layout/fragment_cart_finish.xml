@@ -1,0 +1,558 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/padding_small"
+    android:paddingRight="@dimen/padding_small" >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true" >
+
+        <LinearLayout
+            android:id="@+id/main_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_small"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_small"
+                    android:layout_marginRight="@dimen/margin_small"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="@dimen/screen_per_3_pad"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="@string/title_shopping_cart"
+                        android:textSize="@dimen/fontvs"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="@dimen/screen_per_3_pad"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:text="@string/title_summary"
+                        android:textSize="@dimen/fontvs"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="@dimen/screen_per_3_pad"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:text="@string/title_confirmation"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/fontvs"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal" >
+
+                    <ImageView
+                        android:layout_width="@dimen/margin_med"
+                        android:layout_height="@dimen/margin_med"
+                        android:src="@drawable/ic_shopping_cart_done" />
+
+                    <TextView
+                        android:layout_width="@dimen/screen_per_3_pad"
+                        android:layout_height="0.1dp"
+                        android:layout_gravity="center"
+                        android:background="@color/tkpd_dark_green"
+                        android:gravity="center" />
+
+                    <ImageView
+                        android:layout_width="@dimen/margin_med"
+                        android:layout_height="@dimen/margin_med"
+                        android:src="@drawable/ic_shopping_cart_done" />
+
+                    <TextView
+                        android:layout_width="@dimen/screen_per_3_pad"
+                        android:layout_height="0.1dp"
+                        android:layout_gravity="center"
+                        android:background="@color/tkpd_dark_green"
+                        android:gravity="center" />
+
+                    <ImageView
+                        android:layout_width="@dimen/margin_med"
+                        android:layout_height="@dimen/margin_med"
+                        android:src="@drawable/ic_shopping_cart_done" />
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/saldo_method"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_small"
+                android:background="@drawable/cards_ui_2"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_small" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/title_thank_you"
+                        android:textSize="@dimen/font_medium"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/desc_success_checkout"
+                        android:textSize="@dimen/font_small" />
+                    <LinearLayout
+                        android:id="@+id/klikbca_user_id_information"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:visibility="gone">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="@string/title_klikbca_user_id"
+                            android:textSize="@dimen/font_small"/>
+                        <TextView
+                            android:id="@+id/user_id_klik_bca"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="kristoff"
+                            android:textSize="@dimen/font_medium"
+                            android:textStyle="bold"
+                            android:layout_marginLeft="@dimen/margin_small"/>
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:background="#F0F0F0" />
+                    <LinearLayout
+                        android:id="@+id/klikbca_method_finish"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+                        <include android:id="@+id/guide_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/margin_small"
+                            layout="@layout/klikbca_guide"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/indomaret_method_finish"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:orientation="vertical"
+                        android:background="@drawable/card"
+                        android:visibility="gone">
+                        <include android:id="@+id/indomaret_code_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/margin_small"
+                            layout="@layout/indomaret_page"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="#F0F0F0" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#F0F0F0"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_small" >
+
+                    <TextView
+                        android:id="@+id/payment_result_information"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:text="@string/desc_payment_process" 
+                        android:textSize="@dimen/font_small"/>
+
+                    <TextView
+                        android:id="@+id/order_stats_but"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/btn_height"
+                        android:background="@drawable/btn_buy"
+                        android:gravity="center"
+                        android:text="@string/title_order_stats"
+                        android:textColor="@color/white"
+                        android:textStyle="bold" 
+                        android:textSize="@dimen/font_small"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- end of saldo method -->
+
+            <LinearLayout
+                android:id="@+id/transfer_method"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_small"
+                android:background="@drawable/cards_ui_2"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_small">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/title_thank_you"
+                        android:textSize="@dimen/font_medium"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/desc_success_checkout"
+                        android:textSize="@dimen/font_small" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:background="#F0F0F0" />
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_vs"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal" >
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight=".50"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical" >
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/img_thumb_s"
+                                android:layout_marginBottom="@dimen/margin_vs"
+                                android:src="@drawable/icon_bca" />
+
+                            <TextView
+                                android:id="@+id/bca_number"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="TOKOPEDIA"
+                                android:textStyle="bold"
+                                android:textSize="@dimen/font_small"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="10dp"
+                                android:text="@string/bank_name" 
+                                android:textSize="@dimen/font_small"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="10dp"
+                                android:text="@string/branch_name1" 
+                                android:textSize="@dimen/font_small"/>
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="@dimen/margin_small"
+                            android:layout_marginRight="@dimen/margin_small"
+                            android:background="@color/white" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight=".50"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical" >
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/img_thumb_s"
+                                android:layout_marginBottom="@dimen/margin_vs"
+                                android:src="@drawable/icon_bni" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/bni_no"
+                                android:textStyle="bold" 
+                                android:textSize="@dimen/font_small"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="10dp"
+                                android:text="@string/bank_name" 
+                                android:textSize="@dimen/font_small"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="10dp"
+                                android:text="@string/branch_name2" 
+                                android:textSize="@dimen/font_small"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="#F0F0F0" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_vs"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal" >
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight=".50"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical" >
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/img_thumb_s"
+                                android:layout_marginBottom="@dimen/margin_vs"
+                                android:src="@drawable/icon_mandiri" />
+
+                            <TextView
+                                android:id="@+id/mandiri_number"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/mandiri_no"
+                                android:textStyle="bold" 
+                                android:textSize="@dimen/font_small"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="10dp"
+                                android:text="@string/bank_name" 
+                                android:textSize="@dimen/font_small"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="10dp"
+                                android:text="@string/branch_name2" 
+                                android:textSize="@dimen/font_small"/>
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="@dimen/margin_small"
+                            android:layout_marginRight="@dimen/margin_small"
+                            android:background="@color/white" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight=".50"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical" >
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/img_thumb_s"
+                                android:layout_marginBottom="@dimen/margin_vs"
+                                android:src="@drawable/ic_bank_bri" />
+
+                            <TextView
+                                android:id="@+id/bri_number"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/bri_no"
+                                android:textStyle="bold" 
+                                android:textSize="@dimen/font_small"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="10dp"
+                                android:text="@string/bank_name" 
+                                android:textSize="@dimen/font_small"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="10dp"
+                                android:text="@string/branch_name4"
+                                android:textSize="@dimen/font_small"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="#F0F0F0" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_vs"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal" >
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight=".50"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical" >
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/img_thumb_s"
+                                android:layout_marginBottom="@dimen/margin_vs"
+                                android:src="@drawable/icon_cimb" />
+
+                            <TextView
+                                android:id="@+id/cimb_number"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/cimb_no"
+                                android:textStyle="bold"
+                                android:textSize="@dimen/font_small"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="10dp"
+                                android:text="@string/bank_name"
+                                android:textSize="@dimen/font_small"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="10dp"
+                                android:text="@string/branch_name3"
+                                android:textSize="@dimen/font_small"/>
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="@dimen/margin_small"
+                            android:layout_marginRight="@dimen/margin_small"
+                            android:background="@color/white" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight=".50"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical" >
+
+
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="#F0F0F0" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#F0F0F0"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_small" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:text="@string/transfer_payment_process"
+                        android:textSize="@dimen/font_small"/>
+
+                    <TextView
+                        android:id="@+id/payment_conf_but"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/btn_height"
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:background="@drawable/btn_buy"
+                        android:gravity="center"
+                        android:text="@string/item_payment_confirmation"
+                        android:textColor="@color/white"
+                        android:textStyle="bold" 
+                        android:textSize="@dimen/font_small"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- end of transfer method -->
+            <LinearLayout
+                android:id="@+id/credit_card_failed_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone">
+                <include
+                    android:id="@+id/credit_card_failed_form"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    layout="@layout/transaction_failed_form"/>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

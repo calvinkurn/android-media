@@ -1,0 +1,105 @@
+package com.tokopedia.tkpd.session.base;
+
+import android.content.Context;
+import android.os.Bundle;
+import android.os.PersistableBundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+
+/**
+ * Created by m.normansyah on 1/27/16.
+ */
+public interface Base {
+    String TAG = "MNORMANSYAH";
+
+    /**
+     *
+     * @return for logging purpose
+     */
+    String getMessageTAG();
+
+    /**
+     *
+     * @param className
+     * @return for logging purpose
+     */
+    String getMessageTAG(Class<?> className);
+
+    /**
+     * this one is called from {@link Fragment#onResume()}
+     * or {@link AppCompatActivity#onResume()}
+     * @param context
+     */
+    void initData(@NonNull Context context);
+
+    /**
+     * this one is called from {@link android.support.v4.app.Fragment#onCreate(Bundle)}
+     * or {@link android.support.v7.app.AppCompatActivity#onCreate(Bundle)}
+     * @param argument
+     */
+    void fetchArguments(Bundle argument);
+
+    /**
+     * * this one is called from {@link android.support.v4.app.Fragment#onCreate(Bundle)}
+     * or {@link android.support.v7.app.AppCompatActivity#onCreate(Bundle)}
+     * @param context
+     */
+    void fetchFromPreference(Context context);
+
+    /**
+     * * this one is called from {@link android.support.v4.app.Fragment#onCreate(Bundle)}
+     * or {@link android.support.v7.app.AppCompatActivity#onCreate(Bundle)}
+     * @param argument
+     */
+    void fetchRotationData(Bundle argument);
+
+    /**
+     * * this one is called from {@link android.support.v4.app.Fragment#onCreate(Bundle)}
+     * or {@link android.support.v7.app.AppCompatActivity#onCreate(Bundle)}
+     * @param argument
+     */
+    void getRotationData(Bundle argument);
+
+    /**
+     * * this one is called from {@link android.support.v4.app.Fragment#onSaveInstanceState(Bundle)}
+     * or {@link android.support.v7.app.AppCompatActivity#onSaveInstanceState(Bundle, PersistableBundle)}
+     * or {@link android.support.v7.app.AppCompatActivity#onSaveInstanceState(Bundle)}
+     * @param argument
+     */
+    void saveDataBeforeRotation(Bundle argument);
+
+    /**
+     * * this one is called from {@link Fragment#onCreate(Bundle)}
+     * or {@link AppCompatActivity#onCreate(Bundle)}
+     * @param context
+     */
+    void initDataInstance(Context context);
+
+    /**
+     * this is called within {@link Base#initDataInstance(Context)}
+     * @return
+     */
+    boolean isAfterRotate();
+
+    /**
+     * this is called directly from {@link Fragment#onCreate}, rarely used
+     * @param savedInstanceState
+     * @return
+     */
+    boolean isAfterRotate(Bundle savedInstanceState);
+
+    /**
+     * this is subscribe for retrofit
+     * called this {@link Fragment#onResume()}
+     */
+    void subscribe();
+
+    /**
+     * this is ubsubscribe for retrofit
+     * called this {@link Fragment#onPause()}
+     */
+    void unSubscribe();
+
+    void moveToOtherView();
+}

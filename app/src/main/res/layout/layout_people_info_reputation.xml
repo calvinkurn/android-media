@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="@dimen/margin_small"
+    android:layout_marginLeft="@dimen/margin_small"
+    android:layout_marginRight="@dimen/margin_small"
+    tools:showIn="@layout/content_layout_people_info">
+
+    <LinearLayout
+        android:id="@+id/reputation_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/cards_ui_2"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_small"
+            android:text="@string/title_user_reputation"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/greyish_bg" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="@dimen/padding_small">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginBottom="@dimen/margin_small">
+
+                <ImageView
+                    android:layout_width="@dimen/img_thumb"
+                    android:layout_height="@dimen/img_thumb"
+                    android:layout_marginRight="@dimen/margin_vs"
+                    android:src="@drawable/ic_icon_repsis_smile_active"
+                    android:id="@+id/icon_reputation"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="100%"
+                    android:id="@+id/user_reputation"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="111"
+                        android:textSize="@dimen/font_medium"
+                        android:textStyle="bold"
+                        android:id="@+id/counter_positive" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:layout_width="@dimen/img_thumb_s"
+                            android:layout_height="@dimen/img_thumb_s"
+                            android:src="@drawable/ic_icon_repsis_smile_active"
+                            android:layout_marginRight="@dimen/padding_vs"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_positif"
+                            android:textSize="@dimen/font_small"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="111"
+                        android:textSize="@dimen/font_medium"
+                        android:textStyle="bold"
+                        android:id="@+id/counter_neutral" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:layout_width="@dimen/img_thumb_s"
+                            android:layout_height="@dimen/img_thumb_s"
+                            android:src="@drawable/ic_icon_repsis_neutral_active"
+                            android:layout_marginRight="@dimen/padding_vs"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_netral"
+                            android:textSize="@dimen/font_small"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="111"
+                        android:textSize="@dimen/font_medium"
+                        android:textStyle="bold"
+                        android:id="@+id/counter_negative" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:layout_width="@dimen/img_thumb_s"
+                            android:layout_height="@dimen/img_thumb_s"
+                            android:src="@drawable/ic_icon_repsis_sad_active"
+                            android:layout_marginRight="@dimen/padding_vs"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_negatif"
+                            android:textSize="@dimen/font_small"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!--<LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/cards_ui_2_selected"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="visible"
+                android:paddingTop="@dimen/padding_small"
+                android:paddingBottom="@dimen/padding_small"
+                android:paddingLeft="@dimen/padding_med"
+                android:paddingRight="@dimen/padding_med"
+                android:id="@+id/linearLayout">
+
+                <ImageView
+                    android:layout_width="@dimen/img_thumb"
+                    android:layout_height="@dimen/img_thumb"
+                    android:id="@+id/imageView10"
+                    android:src="@drawable/ic_icon_repsis_smile_active"
+                    android:layout_marginBottom="@dimen/margin_vs" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="42%"
+                    android:id="@+id/user_reputation"
+                    android:textSize="@dimen/font_small"
+                    android:layout_gravity="center"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_positif"
+                    android:layout_gravity="center_horizontal"
+                    android:textSize="@dimen/font_small" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/linearLayout"
+                android:layout_toEndOf="@+id/linearLayout"
+                android:layout_marginLeft="@dimen/margin_small">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="@dimen/img_thumb"
+                        android:layout_height="@dimen/img_thumb"
+                        android:src="@drawable/ic_icon_repsis_smile_active"
+                        android:layout_marginBottom="@dimen/margin_vs"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="11"
+                        android:textSize="@dimen/font_small"
+                        android:id="@+id/counter_positive"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/title_positif"
+                        android:textSize="@dimen/fontvs" />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="@dimen/img_thumb"
+                        android:layout_height="@dimen/img_thumb"
+                        android:src="@drawable/ic_icon_repsis_neutral_active"
+                        android:layout_marginBottom="@dimen/margin_vs"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="11"
+                        android:textSize="@dimen/font_small"
+                        android:id="@+id/counter_neutral"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/title_netral"
+                        android:textSize="@dimen/fontvs" />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="@dimen/img_thumb"
+                        android:layout_height="@dimen/img_thumb"
+                        android:src="@drawable/ic_icon_repsis_sad_active"
+                        android:layout_marginBottom="@dimen/margin_vs"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="11"
+                        android:textSize="@dimen/font_small"
+                        android:id="@+id/counter_negative"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/title_negatif"
+                        android:textSize="@dimen/fontvs" />
+
+                </LinearLayout>
+
+            </LinearLayout>-->
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

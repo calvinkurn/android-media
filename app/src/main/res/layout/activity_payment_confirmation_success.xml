@@ -1,0 +1,50 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".PaymentConfirmationSuccess" >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/title_payment_conf_success" 
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:gravity="center"/>
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/msg_success"
+        android:gravity="center"/>
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/title_conf_payment"
+        android:gravity="center"/>
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/total_payment"
+        android:textSize="16sp"
+        android:textStyle="bold" 
+        android:gravity="center"/>
+    
+     <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tokopedia_deposit"
+        android:gravity="center"
+        android:visibility="gone" />
+     
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/remaining_tokopedia_deposit"
+        android:gravity="center"
+        android:visibility="gone" />
+
+</LinearLayout>

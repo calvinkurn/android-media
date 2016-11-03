@@ -1,0 +1,18 @@
+package com.tokopedia.tkpd.shopinfo.models.etalasemodel;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+public class ListOther {
+
+    @SerializedName("etalase_url")
+    @Expose
+    public String etalaseUrl;
+    @SerializedName("etalase_id")
+    @Expose
+    public String etalaseId;
+    @SerializedName("etalase_name")
+    @Expose
+    public String etalaseName;
+
+}

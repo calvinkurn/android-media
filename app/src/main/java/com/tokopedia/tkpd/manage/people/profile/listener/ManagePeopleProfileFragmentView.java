@@ -1,0 +1,87 @@
+package com.tokopedia.tkpd.manage.people.profile.listener;
+
+import android.os.Bundle;
+
+import com.tokopedia.tkpd.manage.people.profile.model.PeopleProfilePass;
+import com.tokopedia.tkpd.manage.people.profile.model.Profile;
+import com.tokopedia.tkpd.network.NetworkErrorHelper;
+
+/**
+ * Created on 6/27/16.
+ */
+public interface ManagePeopleProfileFragmentView {
+
+    void setLoadingView(boolean isVisible);
+
+    void setMainView(boolean isVisible);
+
+    Profile getProfileData();
+
+    void renderData();
+
+    void setTimeOutView(NetworkErrorHelper.RetryClickedListener listener);
+
+    void setErrorView(String messageError);
+
+    void callListenerToSave(PeopleProfilePass paramPass);
+
+    void resetError();
+
+    void showUploadDialog();
+
+    void showEmailVerificationDialog(String userEmail);
+
+    void showManualPhoneVerificationDialog(String userPhone);
+
+    void showPhoneVerificationDialog(String userPhone);
+
+    void setOnNotifiedEmailChanged();
+
+    void setOnNotifiedPhoneVerified();
+
+    void setReceiveResult(int resultCode, Bundle resultData);
+
+    void showSnackBarView(String message);
+
+    String getPassword();
+
+    void setPasswordError(String errorMessage);
+
+    String getPhone();
+
+    void setPhoneError(String errorMessage);
+
+    String getEmail();
+
+    void setEmailError(String errorMessage);
+
+    String getVerifiedPhone();
+
+    void setVerificationError(String string);
+
+    String getMessanger();
+
+    String getHobby();
+
+    String getUserName();
+
+    String getBirthDay();
+
+    int getGender();
+
+    void prepareToUploadAvatar(String data);
+
+    String getImagePath();
+
+    void setImagePath(String imagePathData);
+
+    void dismissKeyboard();
+
+    void setProfileData(Profile result);
+
+    void storeImageToDrawer(String userImage100);
+
+    void setActivityResultSuccess();
+
+    void finishActivity();
+}

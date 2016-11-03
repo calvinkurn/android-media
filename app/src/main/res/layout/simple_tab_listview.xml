@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/overflow_selected"
+    android:orientation="horizontal">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/padding_med"
+        android:paddingRight="@dimen/padding_med"
+        android:paddingTop="@dimen/padding_med">
+
+        <ImageView
+            android:id="@+id/img"
+            style="@style/Setting.ImageView"
+            android:layout_marginRight="@dimen/margin_small" />
+
+        <TextView
+            android:id="@+id/name"
+            style="@style/Setting.TextView"
+            android:layout_toRightOf="@+id/img" />
+
+        <View
+            style="@style/Setting.HorizontalLine"
+            android:layout_below="@+id/img" />
+    </RelativeLayout>
+
+</LinearLayout>

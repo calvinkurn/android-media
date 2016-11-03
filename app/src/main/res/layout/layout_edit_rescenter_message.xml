@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/cards_ui_2"
+    android:padding="@dimen/padding_small"
+    android:orientation="vertical"
+    android:animateLayoutChanges="true">
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/title_message_for_seller"
+        android:paddingTop="@dimen/padding_vs"
+        android:paddingBottom="@dimen/padding_vs">
+
+        <EditText
+            android:id="@+id/message_box"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:textSize="@dimen/font_small" />
+
+    </android.support.design.widget.TextInputLayout>
+
+</LinearLayout>

@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#F7F6F6"
+    android:orientation="vertical"
+    android:padding="@dimen/padding_small">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@id/iv_ava"
+            android:layout_width="@dimen/img_thumb_m"
+            android:layout_height="@dimen/img_thumb_m"
+            android:layout_marginEnd="@dimen/margin_small"
+            android:layout_marginRight="@dimen/margin_small"
+            android:background="@drawable/border_circle"
+            android:contentDescription="@string/image_product_desc"
+            android:scaleType="centerCrop" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_toEndOf="@id/iv_ava"
+            android:layout_toRightOf="@id/iv_ava"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".70"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/margin_vs"
+                    android:layout_marginRight="@dimen/margin_vs"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@id/iv_gold"
+                        android:layout_width="@dimen/large_dp"
+                        android:layout_height="@dimen/large_dp"
+                        android:src="@drawable/ic_shop_gold"
+                        android:visibility="gone"
+                        tools:ignore="ContentDescription" />
+
+                    <ImageView
+                        android:id="@id/iv_lucky"
+                        android:layout_width="@dimen/large_dp"
+                        android:layout_height="@dimen/large_dp"
+                        android:padding="@dimen/margin_vvs"
+                        android:visibility="gone"
+                        tools:ignore="ContentDescription" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@id/tv_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_vs"
+                        android:background="@drawable/tab_selector"
+                        android:lines="1"
+                        android:singleLine="true"
+                        android:text="Shop Name"
+                        android:textColor="@color/href_link"
+                        android:textSize="@dimen/font_medium"
+                        tools:ignore="HardcodedText" />
+
+                    <TextView
+                        android:id="@id/tv_location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Location"
+                        android:textColor="@color/label_color"
+                        android:textSize="@dimen/fontvs"
+                        tools:ignore="HardcodedText" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".30"
+                android:gravity="end|center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@id/iv_fav"
+                    android:layout_width="@dimen/icon_prod_size"
+                    android:layout_height="@dimen/icon_prod_size"
+                    android:layout_marginEnd="@dimen/margin_med"
+                    android:layout_marginRight="@dimen/margin_med"
+                    android:background="@drawable/overflow_selected"
+                    android:src="@drawable/ic_fav"
+                    tools:ignore="ContentDescription" />
+
+                <ImageView
+                    android:id="@id/iv_message"
+                    android:layout_width="@dimen/icon_prod_size"
+                    android:layout_height="@dimen/icon_prod_size"
+                    android:background="@drawable/overflow_selected"
+                    android:src="@drawable/ic_message"
+                    tools:ignore="ContentDescription" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@id/l_rating"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/margin_small">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/padding_vs"
+            android:layout_marginTop="@dimen/padding_vs"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/title_reputation"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@id/l_medal"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal" />
+
+        <TextView
+            android:id="@id/tv_reputation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/padding_vs"
+            android:layout_marginTop="@dimen/padding_vs"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="0 Poin"
+            android:textColor="@color/tkpd_dark_gray"
+            tools:ignore="HardcodedText" />
+
+    </LinearLayout>
+
+    <HorizontalScrollView
+        android:id="@+id/hsv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fadeScrollbars="false"
+        android:fillViewport="true"
+        android:measureAllChildren="false"
+        android:scrollbarSize="3dp">
+
+        <LinearLayout
+            android:id="@id/l_other"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/margin_small"
+            android:paddingTop="@dimen/margin_med"
+            android:visibility="visible">
+
+            <include
+                android:id="@+id/include_loading"
+                layout="@layout/loader"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:visibility="gone" />
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+</LinearLayout>

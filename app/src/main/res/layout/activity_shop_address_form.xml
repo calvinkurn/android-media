@@ -1,0 +1,221 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_horizontal"
+    android:padding="@dimen/padding_small"
+    tools:context=".ShopAddressForm" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/mainView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:background="@drawable/cards_ui_2"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_small" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_location_name"
+                    android:textColor="@color/label_color"
+                    android:textSize="@dimen/fonts" />
+
+                <EditText
+                    android:id="@+id/address_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_med"
+                    android:inputType="text" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_address_add_address"
+                    android:textColor="@color/label_color"
+                    android:textSize="@dimen/fonts" />
+
+                <EditText
+                    android:id="@+id/address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textMultiLine" />
+            </LinearLayout>
+
+            <!-- Alamat -->
+
+
+            <!-- End of alamat -->
+
+
+            <!-- Detail alamat -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:background="@drawable/cards_ui_2"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_small" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_province"
+                    android:textColor="@color/label_color"
+                    android:textSize="@dimen/fonts" />
+
+                <Spinner
+                    android:id="@+id/provinsi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_small"
+                    android:inputType="text" />
+
+                <TextView
+                    android:id="@+id/province_error"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/error_province"
+                    android:textColor="#ff0000"
+                    android:visibility="invisible" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_regency"
+                    android:textColor="@color/label_color"
+                    android:textSize="@dimen/fonts" />
+
+                <Spinner
+                    android:id="@+id/regency"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_small"
+                    android:inputType="text" />
+
+                <TextView
+                    android:id="@+id/regency_error"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/error_regency"
+                    android:textColor="#ff0000"
+                    android:visibility="invisible" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_sub_district"
+                    android:textColor="@color/label_color"
+                    android:textSize="@dimen/fonts" />
+
+                <Spinner
+                    android:id="@+id/sub_district"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text" />
+
+                <TextView
+                    android:id="@+id/sub_district_error"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/error_sub_district"
+                    android:textColor="#ff0000"
+                    android:visibility="invisible" />
+            </LinearLayout>
+            <!-- End of detail alamat -->
+
+
+            <!-- No HP dan kodepos -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/cards_ui_2"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_small" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_post_code"
+                    android:textColor="@color/label_color"
+                    android:textSize="@dimen/fonts" />
+
+                <EditText
+                    android:id="@+id/post_code"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_med"
+                    android:inputType="number"
+                    android:maxLength="10" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_email"
+                    android:textColor="@color/label_color"
+                    android:textSize="@dimen/fonts" />
+
+                <EditText
+                    android:id="@+id/shop_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_med"
+                    android:lines="1" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_phone"
+                    android:textColor="@color/label_color"
+                    android:textSize="@dimen/fonts" />
+
+                <EditText
+                    android:id="@+id/shop_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_med"
+                    android:inputType="number" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_fax"
+                    android:textColor="@color/label_color"
+                    android:textSize="@dimen/fonts" />
+
+                <EditText
+                    android:id="@+id/shop_fax"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number" />
+            </LinearLayout>
+
+            <!-- End of kodepos no hp -->
+
+            <TextView
+                android:id="@+id/btn_save"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/btn_height"
+                android:layout_marginTop="@dimen/margin_small"
+                android:background="@drawable/button_buy_from_cart"
+                android:visibility="gone"
+                android:gravity="center"
+                android:text="@string/title_save"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+    </RelativeLayout>
+</ScrollView>

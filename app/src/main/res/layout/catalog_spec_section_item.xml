@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#F7F6F6"
+    android:orientation="vertical">
+
+
+    <ToggleButton
+        android:id="@+id/toggle_button_section"
+        android:layout_width="12sp"
+        android:layout_height="12sp"
+        android:layout_centerVertical="true"
+        android:layout_margin="@dimen/padding_vs"
+        android:background="@drawable/selector_expand_collapse"
+        android:textOff=""
+        android:textOn="" />
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/toggle_button_section"
+        android:layout_toRightOf="@+id/toggle_button_section"
+        android:gravity="end"
+        android:padding="@dimen/padding_vs"
+        android:textColor="#868686"
+        android:textSize="@dimen/fonts"
+        android:textStyle="bold"
+        tools:text="Header" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#80868686" />
+</RelativeLayout>

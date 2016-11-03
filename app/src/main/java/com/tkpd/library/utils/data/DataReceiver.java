@@ -1,0 +1,30 @@
+package com.tkpd.library.utils.data;
+
+
+import com.tokopedia.tkpd.database.model.Bank;
+import com.tokopedia.tkpd.database.model.CategoryDB;
+import com.tokopedia.tkpd.database.model.City;
+import com.tokopedia.tkpd.database.model.District;
+import com.tokopedia.tkpd.database.model.Province;
+
+import java.util.List;
+
+import rx.subscriptions.CompositeSubscription;
+
+/**
+ * Created by noiz354 on 2/2/16.
+ */
+public interface DataReceiver {
+    CompositeSubscription getSubscription();
+    void setDistricts(List<District> districts);
+    void setCities(List<City> cities);
+    void setProvinces(List<Province> provinces);
+    void setBank(List<Bank> banks);
+    void setDepartments(List<CategoryDB> departments);
+    void setShippingCity(List<District> districts);
+    void onNetworkError(String message);
+    void onMessageError(String message);
+    void onUnknownError(String message);
+    void onTimeout();
+    void onFailAuth();
+}

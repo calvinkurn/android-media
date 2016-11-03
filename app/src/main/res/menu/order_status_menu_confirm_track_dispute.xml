@@ -1,0 +1,20 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/action_track"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/title_track"/>
+    <item
+        android:id="@+id/action_confirm_package"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/title_package_received"/>
+ 	
+ 	<item
+        android:id="@+id/action_open_dispute"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/title_package_not_received"/>
+
+</menu>

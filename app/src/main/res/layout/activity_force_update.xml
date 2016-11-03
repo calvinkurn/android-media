@@ -1,0 +1,55 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="@color/white"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/padding_med"
+    android:paddingRight="@dimen/padding_med" >
+
+    <TextView
+        style="@style/CustomFont"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/margin_vs"
+        android:gravity="center"
+        android:text="Mohon update ke versi terbaru"
+        android:textColor="@color/black"
+        android:textSize="@dimen/fontvl" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_vs"
+        android:gravity="center"
+        android:text="Untuk perbaikan bug dan penggunaan yang lebih nyaman, mohon segera update aplikasi Anda"
+        android:textColor="@color/black"
+        android:textSize="@dimen/fonts"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:layout_marginTop="@dimen/margin_med"
+        android:gravity="center"
+        android:src="@drawable/ic_new_logo" />
+
+    <TextView
+        android:id="@+id/update_but"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/button_buy_from_cart"
+        android:gravity="center"
+        android:text="UPDATE SEKARANG!"
+        android:textAllCaps="true"
+        android:textColor="@color/white"
+        android:textSize="@dimen/fontvs"
+        android:textStyle="bold" />
+
+</LinearLayout>

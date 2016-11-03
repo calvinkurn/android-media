@@ -1,0 +1,72 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="@dimen/margin_med"
+    
+    >
+
+    <ScrollView
+        android:id="@+id/main_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+                android:layout_alignParentTop="true" 
+                android:layout_marginBottom="@dimen/img_browseprod_grid">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+              tools:context="com.tokopedia.tkpd.FragmentPopupInboxMessage" >
+
+            <!-- TODO: Update blank fragment layout -->
+
+            <TextView
+                android:id="@+id/text_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/html_content" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/product_index_img_h"
+                android:layout_gravity="center"
+                android:src="@drawable/popup_image" />
+
+            <TextView
+                android:id="@+id/text_content2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/html_content_2" />
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/main_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical" >
+
+        <CheckBox
+            android:id="@+id/checked_never_show"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_med"
+            android:text="@string/title_never_show" />
+
+        <TextView
+            android:id="@+id/close_but"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_med"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:text="@string/title_close"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+</RelativeLayout>

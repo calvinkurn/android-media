@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content" android:layout_height="wrap_content"
+    android:padding="2dp">
+
+    <FrameLayout
+        android:id="@+id/border_small_imageview_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="2dp" >
+
+        <ImageView
+            android:id="@+id/picture_small_gallery_imageview"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/addproduct"/>
+
+        <ViewStub
+            android:id="@+id/small_inactive"
+            android:inflatedId="@+id/small_inactive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout="@layout/masking_small_gallery">
+        </ViewStub>
+
+        <ViewStub
+            android:id="@+id/small_selected"
+            android:inflatedId="@+id/small_selected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|left"
+            android:layout="@layout/picture_small_gallery_centang"
+            android:layout_marginLeft="80dp"
+            />
+
+
+    </FrameLayout>
+
+</RelativeLayout>

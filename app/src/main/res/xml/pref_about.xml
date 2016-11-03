@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <com.tkpd.library.ui.utilities.CustomPreference
+        android:key="about_version"
+        android:title="@string/pref_about_version_title" />
+
+    <com.tkpd.library.ui.utilities.CustomPreference
+        android:key="about_term"
+        android:title="@string/pref_about_term_title" />
+
+    <com.tkpd.library.ui.utilities.CustomPreference
+        android:key="about_privacy"
+        android:title="@string/pref_about_privacy_title" />
+
+    <com.tkpd.library.ui.utilities.CustomPreference
+        android:key="about_share"
+        android:title="@string/pref_about_share_title" />
+
+    <com.tkpd.library.ui.utilities.CustomPreference
+        android:key="about_review"
+        android:title="@string/pref_about_review_title" />
+
+    <com.tkpd.library.ui.utilities.CustomPreference
+        android:key="about_contact"
+        android:title="@string/pref_about_contact_us_title" />
+
+    <com.tkpd.library.ui.utilities.CustomPreference
+        android:key="about_dev_option"
+        android:title="@string/pref_about_dev_option_title" />
+</PreferenceScreen>

@@ -1,0 +1,107 @@
+package com.tokopedia.tkpd.selling.orderReject.fragment;
+
+import android.app.Dialog;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
+import android.text.Html;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.selling.orderReject.ConfirmRejectOrderActivity;
+import com.tokopedia.tkpd.selling.orderReject.adapter.ProductListAdapter;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
+/**
+ * Created by Erry on 6/6/2016.
+ */
+public class ConstrainRejectedDialog extends DialogFragment {
+
+    @Bind(R.id.confirm_button)
+    TextView confirmBtn;
+    @Bind(R.id.reason)
+    EditText reasonTxt;
+    @Bind(R.id.title)
+    TextView titleTxt;
+
+    OnConfirmReject onConfirmReject;
+    ProductListAdapter.Type type;
+
+    public static ConstrainRejectedDialog newInstance(String reason, ProductListAdapter.Type type) {
+
+        Bundle args = new Bundle();
+        args.putString(ConfirmRejectOrderActivity.REASON, reason);
+        args.putSerializable(ConfirmRejectOrderActivity.TYPE, type);
+        ConstrainRejectedDialog fragment = new ConstrainRejectedDialog();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public void setOnConfirmReject(OnConfirmReject onConfirmReject){
+        this.onConfirmReject = onConfirmReject;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        return dialog;
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.dialog_reject_order_reason, container, false);;
+        ButterKnife.bind(this, view);
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        String title = getArguments().getString(ConfirmRejectOrderActivity.REASON);
+        type = (ProductListAdapter.Type) getArguments().getSerializable(ConfirmRejectOrderActivity.TYPE);
+        titleTxt.setText(Html.fromHtml("Alasan Penolakan: <b>"+title+"<b>"));
+        confirmBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(validateForm()) {
+                    onConfirmReject.OnConfirmRejectOrder(reasonTxt.getText().toString(), type);
+                    getDialog().dismiss();
+                }
+            }
+        });
+    }
+
+    public boolean validateForm(){
+        Log.d("Info Text Reason", "length "+reasonTxt.getText().toString().length());
+        if(reasonTxt.getText().toString().isEmpty()){
+            reasonTxt.setError(getString(R.string.desc_should_not_empty));
+            return false;
+        }else if (reasonTxt.getText().toString().length() > 490){
+            reasonTxt.setError(getString(R.string.desc_should_less_490));
+            return false;
+        }else{
+            reasonTxt.setError(null);
+            return true;
+        }
+    }
+
+    public interface OnConfirmReject{
+        void OnConfirmRejectOrder(String reason, ProductListAdapter.Type type);
+    }
+}

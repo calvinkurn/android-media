@@ -1,0 +1,55 @@
+package com.tokopedia.tkpd.database.manager;
+
+import com.tokopedia.tkpd.database.model.Bank;
+import com.tokopedia.tkpd.database.model.CategoryDB;
+import com.tokopedia.tkpd.database.model.City;
+import com.tokopedia.tkpd.database.model.CurrencyDB;
+import com.tokopedia.tkpd.database.model.EtalaseDB;
+import com.tokopedia.tkpd.database.model.PictureDB;
+import com.tokopedia.tkpd.database.model.ProductDB;
+import com.tokopedia.tkpd.database.model.Province;
+import com.tokopedia.tkpd.database.model.WholesalePriceDB;
+import com.tokopedia.tkpd.myproduct.model.CatalogDataModel;
+import com.tokopedia.tkpd.myproduct.model.DepartmentParentModel;
+import com.tokopedia.tkpd.myproduct.model.GetEtalaseModel;
+import com.tokopedia.tkpd.myproduct.model.WholeSaleAdapterModel;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by noiz354 on 5/18/16.
+ */
+public interface DbManager {
+    String TAG = "STUART";
+    String messageTAG = "DbManager";
+
+    void saveDepartment(DepartmentParentModel departmentParentModel, int depId);
+    void saveDepartmentParent(DepartmentParentModel departmentParentModel);
+    void saveGudangIfNotInDb();
+    long saveEtalase(GetEtalaseModel.EtalaseModel etalaseModel);
+    EtalaseDB getEtalase(String etalaseId);
+    List<EtalaseDB> getEtalases();
+    CategoryDB getKategoriByDepId(int depId);
+    List<CurrencyDB> getCurrencyDB();
+    PictureDB getGambarById(long photoId);
+    long addHargaGrosir(WholeSaleAdapterModel wholeSaleAdapterModel);
+    void removeHargaGrosir(WholeSaleAdapterModel wholeSaleAdapterModel);
+    long addHargaGrosir(double min, double max, double price);
+    boolean isDepartmentParentFetch();
+    List<CategoryDB> getDepartmentParent();
+    List<CategoryDB> getDepartmentChild(int level, int depId);
+    void removeAllEtalase();
+    void checkStockStatusDB();
+    void saveCatalog(CatalogDataModel catalogDataModel, String productDepId, String productName);
+    ArrayList<CatalogDataModel.Catalog> getCatalogList(String productDepId, String productName);
+    void removePictureWithId(long imageDbId);
+    ProductDB getProductDb(long pictureDbId);
+    CategoryDB getCategoryDb(String identifier);
+    List<Bank> getListBankFromDB(String query);
+    List<WholesalePriceDB> removeWholeSaleDb(long dbId);
+    List<EtalaseDB> removeEtalaseDb(int etalaseId);
+    List<Bank> getBankBasedOnText(String query);
+    Province getProvinceFromProvinceId(String provinceId);
+    City getCity(String cityId);
+}

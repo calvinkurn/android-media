@@ -1,12 +1,869 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.tokopedia.tkpd">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.tokopedia.tkpd"
+    android:installLocation="preferExternal">
 
-    <application android:allowBackup="true"
-                 android:label="@string/app_name"
-                 android:icon="@mipmap/ic_launcher"
-                 android:supportsRtl="true"
-                 android:theme="@style/AppTheme">
+    <uses-sdk android:minSdkVersion="15"
+        android:targetSdkVersion="24"/>
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" tools:node="remove" />
+
+    <permission
+        android:name="${applicationId}.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
+    <uses-feature android:name="android.hardware.camera" />
+
+    <application
+        android:name=".app.MainApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/qc_launcher"
+        android:label="@string/app_name"
+        android:logo="@drawable/ic_new_logo"
+        android:theme="@style/Theme.Tokopedia3.Launcher">
+
+        <!-- ======================================================= -->
+        <!-- META DATA REGISTRY -->
+        <!-- ======================================================= -->
+        <meta-data
+            android:name="AA_MODELS"
+            android:value="" />
+        <meta-data
+            android:name="com.tkpd.library.utils.TkpdGlideModule"
+            android:value="GlideModule" />
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/app_id" />
+        <meta-data
+            android:name="android.app.default_searchable"
+            android:value=".BrowseCategory" />
+        <meta-data
+            android:name="LOCALYTICS_APP_KEY"
+            android:value="e5ce78bb486192da7790186-01e0f208-0058-11e5-9b02-00739d24cb30" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/GOOGLE_API_KEY" />
+        <meta-data
+            android:name="com.crashlytics.ApiKey"
+            android:value="d02324f74e70ffcd2dc00ab722d32baecf1884b4" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="net.hockeyapp.android.appIdentifier"
+            android:value="528b17702bf941a581f15e188677306b " />
+        <!-- DEBUG KEY -->
+        <!-- <meta-data -->
+        <!-- android:name="LOCALYTICS_APP_KEY" -->
+        <!-- android:value="a4c853a5c07b6acfeb61343-037f3b9e-6591-11e5-bdf6-0013a62af900" /> -->
+        <!-- <meta-data -->
+        <!-- android:name="com.google.android.gms.version" -->
+        <!-- android:value="@integer/google_play_services_version" /> -->
+        <!-- <meta-data android:name="AF_PRE_INSTALL_NAME" android:value="ADVAN_TOKOPEDIA"/> -->
+
+
+        <!-- ======================================================= -->
+        <!-- ACTIVITIES REGISTRY -->
+        <!-- ======================================================= -->
+        <activity
+            android:name="com.google.android.gms.tagmanager.PreviewActivity"
+            android:label="@string/app_name"
+            android:noHistory="true"
+            android:screenOrientation="portrait"> <!-- optional, removes the previewActivity from the activity stack. -->
+            <intent-filter>
+                <data android:scheme="tagmanager.c.com.tokopedia.tkpd" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".myproduct.ProductActivity"
+            android:label="@string/title_activity_add_product"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="tkpdevel.com"
+                    android:scheme="http" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="image/*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="image/*" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".onboarding.OnboardingActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SplashScreen"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/title_activity_main"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".session.Login"
+            android:label="@string/title_activity_login"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:name=".ViewShopNotes"
+            android:label="@string/title_shop_notes"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".home.ParentIndexHome"
+            android:exported="true"
+            android:label="Tokopedia"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="tkpd" />
+            </intent-filter>
+            <intent-filter>
+
+                <!-- LOCALYTICS TEST MESSAGE KEY -->
+                <data android:scheme="ampe5ce78bb486192da7790186-01e0f208-0058-11e5-9b02-00739d24cb30" />
+
+                <!-- DEBUG KEY -->
+                <!-- <data android:scheme="ampa4c853a5c07b6acfeb61343-037f3b9e-6591-11e5-bdf6-0013a62af900" /> -->
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ShopStatistic"
+            android:label="@string/title_activity_shop_statistic"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ShopLocation"
+            android:label="@string/title_activity_shop_location"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".myproduct.ManageProduct"
+            android:label="@string/title_activity_manage_product"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".manage.people.address.activity.AddAddressActivity"
+            android:label="@string/title_activity_add_address"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".addtocart.activity.AddToCartActivity"
+            android:label="@string/title_activity_add_to_cart_v2"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".manage.people.address.activity.ChooseAddressActivity"
+            android:label="@string/title_activity_choose_address"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Cart"
+            android:label="@string/title_activity_cart"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name=".EditAddressCart"
+            android:label="@string/title_activity_cart"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ManageShop"
+            android:label="@string/title_activity_manage_shop"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ManageShopNotes"
+            android:label="@string/title_activity_manage_shop_notes"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ShopNoteForm"
+            android:label="@string/title_activity_shop_note_form"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".shipping.EditShippingActivity"
+            android:label="@string/shop_shipping_setting"
+            android:screenOrientation="portrait">
+            <intent-filter tools:ignore="GoogleAppIndexingWarning">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="ANDROID.INTENT.CATEGORY.BROWSABLE" />
+
+                <data
+                    android:host="com.tokopedia.tkpd"
+                    android:pathPrefix="/myshop-editor.pl"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".EtalaseShopEditor"
+            android:label="@string/title_activity_etalase_shop_editor"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".inboxmessage.activity.SendMessageActivity"
+            android:label="@string/title_activity_send_message"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateVisible" />
+        <activity
+            android:name=".purchase.activity.ConfirmPaymentActivity"
+            android:label="@string/title_activity_payment_confirmation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".purchase.activity.TxConfirmationDetailActivity"
+            android:label="@string/title_activity_transaction_payment_confirmation_detail"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".ShopEditor"
+            android:label="@string/title_activity_shop_editor"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Catalog"
+            android:label="@string/title_activity_catalog"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".catalog.activity.CatalogDetailActivity"
+            android:label="@string/title_activity_catalog"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".PaymentEditor"
+            android:label="@string/title_activity_payment_editor"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ManageShopAddress"
+            android:label="@string/title_activity_manage_shop_address"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ShopAddressForm"
+            android:label="@string/title_activity_shop_address_form"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ManagePeople"
+            android:label="@string/title_activity_manage_people"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ManagePrivacy"
+            android:label="@string/title_activity_manage_privacy"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".manage.people.notification.activity.ManageNotificationActivity"
+            android:label="@string/title_activity_manage_notification"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ManagePeopleBank"
+            android:label="@string/title_activity_manage_people_bank"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".PeopleBankForm"
+            android:label="@string/title_activity_people_bank_form"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".peoplefave.activity.PeopleFavoritedShop"
+            android:label="@string/title_activity_people_favorited_shop"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ManagePeoplePassword"
+            android:label="@string/title_activity_manage_people_password"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".deposit.activity.DepositActivity"
+            android:label="@string/title_activity_people_deposit"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".deposit.activity.WithdrawActivity"
+            android:label="@string/title_activity_people_withdraw_balance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ShippingConfirmationDetail"
+            android:label="@string/title_activity_shipping_confirmation_detail"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ShippingConfirmationProdConf"
+            android:label="@string/title_activity_shipping_confirmation_prod_conf"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".PaymentConfirmationSuccess"
+            android:label="@string/title_activity_payment_confirmation_success"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".contactus.activity.ContactUsActivity"
+            android:screenOrientation="portrait"
+            android:hardwareAccelerated="true"
+            android:label="@string/title_activity_contact_us" />
+        <activity
+            android:name=".inboxticket.activity.InboxTicketActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_activity_inbox_ticket"/>
+        <activity
+            android:name=".inboxticket.activity.InboxTicketDetailActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_activity_inbox_ticket_detail"/>
+        <activity
+            android:name=".OrderHistoryView"
+            android:label="@string/title_activity_order_history_view"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".PreviewProductImage"
+            android:label="@string/title_activity_preview_product_image"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoTitleBar.Fullscreen" />
+        <activity
+            android:name=".NotificationCenter"
+            android:label="@string/title_notification"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".talk.talkproduct.activity.TalkAddNew"
+            android:label="@string/title_activity_talk_add_new"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SettingsNotification"
+            android:label="@string/title_activity_settings_notification"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="info.vividcode.android.zxing.CaptureActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            android:windowSoftInputMode="stateAlwaysHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.google.zxing.client.android.SCAN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".MaintenancePage"
+            android:label="@string/title_activity_maintenance_page"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ServerErrorPage"
+            android:label="@string/title_activity_server_error_page"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ManageGeneral"
+            android:label="@string/title_activity_manage_general"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".product.activity.ProductInfoActivity"
+            android:label="@string/title_activity_product_info"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".purchase.activity.TxVerDetailActivity"
+            android:label="@string/title_payment_verification"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".rescenter.detail.activity.ResCenterActivity"
+            android:label="@string/title_activity_res_center"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
+        <activity
+            android:name=".rescenter.inbox.activity.InboxResCenterActivity"
+            android:label="@string/title_activity_res_center"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ForceUpdate"
+            android:label="@string/title_activity_force_update"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ImageGallery"
+            android:label="@string/title_activity_imagge_gallery"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ReviewForm"
+            android:label="Ulasan anda"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".invoice.activity.InvoiceRendererActivity"
+            android:label="@string/title_activity_download_invoice" />
+        <activity
+            android:name=".GalleryBrowser"
+            android:label="@string/title_activity_gallery_browser"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".inboxmessage.activity.InboxMessageActivity"
+            android:label="@string/title_inbox_message"
+            android:parentActivityName=".home.ParentIndexHome"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            tools:ignore="UnusedAttribute" />
+        <activity
+            android:name=".inboxmessage.activity.InboxMessageDetailActivity"
+            android:label="@string/title_inbox_message"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".selling.orderReject.ConfirmRejectOrderActivity"
+            android:label="@string/title_reject_confirm" />
+        <activity
+            android:name=".selling.activity.TrackingActivity"
+            android:label="Tracking"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".DeveloperOptions"
+            android:label="@string/title_activity_developer_options"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".BuyCredit"
+            android:label="@string/title_activity_buy_credit"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".BuyCreditCart"
+            android:label="@string/title_activity_buy_credit_cart"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".deeplink.activity.DeepLinkActivity"
+            android:hardwareAccelerated="true"
+            android:label="@string/title_activity_deep_link"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="www.tokopedia.com"
+                    android:pathPattern=".*"
+                    android:scheme="https" />
+                <data
+                    android:host="www.tokopedia.com"
+                    android:pathPattern=".*"
+                    android:scheme="tkpd" />
+                <data
+                    android:host="tokopedia.com"
+                    android:pathPattern=".*"
+                    android:scheme="https" />
+                <data
+                    android:host="m.tokopedia.com"
+                    android:pathPattern=".*"
+                    android:scheme="https" />
+                <data
+                    android:host="www.tokopedia.com"
+                    android:pathPrefix="/reset.pl"
+                    android:scheme="https" />
+                <data
+                    android:host="m.tokopedia.com"
+                    android:pathPrefix="/reset.pl"
+                    android:scheme="https" />
+                <data
+                    android:host="www.tokopedia.com"
+                    android:pathPrefix="/activation.pl"
+                    android:scheme="https" />
+                <data
+                    android:host="m.tokopedia.com"
+                    android:pathPrefix="/activation.pl"
+                    android:scheme="https" />
+                <data
+                    android:host="tokopedia.onelink.me"
+                    android:scheme="https" />
+                <data
+                    android:host="accounts.tokopedia.com"
+                    android:scheme="https" />
+                <data
+                    android:host="apps.tokopedia.com"
+                    android:scheme="http" />
+                <data
+                    android:host="apps.tokopedia.com"
+                    android:scheme="https" />
+                <data
+                    android:host="www.apps.tokopedia.com"
+                    android:scheme="http" />
+                <data
+                    android:host="www.apps.tokopedia.com"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".CreditCardActivity"
+            android:label="@string/title_activity_credit_card"
+            android:screenOrientation="portrait" />
+        <activity android:name="com.localytics.android.PushTrackingActivity" />
+        <activity
+            android:name=".TermPrivacy"
+            android:label="@string/title_activity_term_and_privacy"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <data android:scheme="launch.TermPrivacy" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".inboxreputation.activity.InboxReputationActivity"
+            android:label="@string/title_activity_reputation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".inboxreputation.activity.InboxReputationDetailActivity"
+            android:label="@string/title_activity_reputation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".reputationproduct.ReputationProduct"
+            android:label="@string/title_activity_reputation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ShopStatisticDetail"
+            android:label="@string/title_activity_shop_statistic_detail"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".reputationproduct.ReputationProductView"
+            android:label="@string/title_activity_reputation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".shopinfo.ReputationViewShop"
+            android:label="@string/title_activity_reputation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".shopinfo.activity.ShopFavoritedActivity"
+            android:label="@string/title_activity_shop_detail_favorited"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".loyaltysystem.LoyaltyDetail"
+            android:label="@string/title_activity_loyalty_detail"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".home.BannerWebView"
+            android:label="@string/title_activity_deep_link"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".geolocation.activity.GeolocationActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/choose_location"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".home.SimpleHomeActivity"
+            android:label="@string/title_activity_simple_home"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3" />
+        <activity
+            android:name=".shopinfo.ShopInfoActivity"
+            android:label=""
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|adjustNothing" />
+        <activity
+            android:name=".shopinfo.ShopNotesDetail"
+            android:label="@string/title_activity_shop_notes_detail"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".shopinfo.ShopInfoMore"
+            android:label="Informasi Toko"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".purchase.activity.TxDetailActivity"
+            android:label="@string/title_activity_people_tx_details"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".purchase.activity.TxHistoryActivity"
+            android:label="@string/title_activity_order_history_view"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".talk.talkproduct.activity.TalkProductActivity"
+            android:label="@string/title_talk"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".talkview.activity.TalkViewActivity"
+            android:label="@string/title_talk"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".talk.inboxtalk.activity.InboxTalkActivity"
+            android:label="@string/title_activity_inbox_talk"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".recharge.activity.RechargePaymentWebView"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".share.ShareActivity"
+            android:label="@string/title_activity_share"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".purchase.activity.PurchaseActivity"
+            android:label="@string/title_purchase"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".rescenter.create.activity.CreateResCenterActivity"
+            android:label="@string/title_activity_create_resolution"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".rescenter.edit.activity.EditResCenterActivity"
+            android:label="@string/title_activity_edit_resolution"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".rescenter.onboarding.FreeReturnOnboardingActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".shipping.OpenShopEditShipping"
+            android:label="@string/title_open_shop" />
+        <activity
+            android:name=".shop.ShopEditorActivity"
+            android:label="@string/shop_setting"
+            android:theme="@style/ShopAppTheme" />
+
+        <activity
+            android:name=".discovery.activity.BrowseProductActivity"
+            android:label="Pencarian"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:theme="@style/Theme.BrowseProduct"/>
+
+        <activity
+            android:name=".dynamicfilter.DynamicFilterActivity"
+            android:label="Filter"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3"
+            android:windowSoftInputMode="adjustPan|adjustResize"/>
+
+        <activity
+            android:name=".discovery.activity.SortProductActivity"
+            android:label="Urutkan"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3"/>
+
+        <activity
+            android:name=".topads.WebViewTopAdsActivity"
+            android:theme="@style/Theme.BrowseProduct" />
+
+        <!--=======================================================-->
+        <!--RECEIVERS REGISTRY-->
+        <!--=======================================================-->
+        <activity
+            android:name=".manage.people.profile.activity.ManagePeopleProfileActivity"
+            android:label="@string/title_activity_manage_people_profile"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".manage.people.address.activity.ManagePeopleAddressActivity"
+            android:label="@string/title_activity_manage_people_address"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".people.activity.PeopleInfoDrawerActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_activity_people" />
+
+        <activity
+            android:name=".people.activity.PeopleInfoNoDrawerActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_activity_people" />
+        <activity
+            android:name=".selling.view.activity.SellingDetailActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_activity_people_tx_details"
+            android:theme="@style/Theme.Tokopedia3"/>
+
+        <activity
+            android:screenOrientation="portrait"
+            android:label="@string/title_activity_shop_transaction_new"
+            android:name=".selling.view.activity.ActivitySellingTransaction"/>
+
+        <!--=======================================================-->
+        <!--RECEIVERS REGISTRY-->
+        <!--=======================================================-->
+        <receiver
+            android:name="com.localytics.android.ReferralReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.android.vending.INSTALL_REFERRER" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".InstallReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.android.vending.INSTALL_REFERRER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="forward.Kochava"
+                android:value="com.kochava.android.tracker.ReferralCapture" />
+        </receiver>
+        <receiver
+            android:name="com.google.android.gms.gcm.GcmReceiver"
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
+                <category android:name="com.tokopedia.tkpd" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".service.ErrorNetworkReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="com.tokopedia.tkpd.FORCE_LOGOUT" />
+                <action android:name="com.tokopedia.tkpd.SERVER_ERROR" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".msisdn.IncomingSms">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- ======================================================= -->
+        <!-- SERVICES REGISTRY -->
+        <!-- ======================================================= -->
+        <service
+            android:name=".inboxreputation.intentservice.InboxReviewIntentService"
+            android:exported="false" />
+        <service
+            android:name=".rescenter.detail.service.DetailResCenterService"
+            android:exported="false" />
+        <service
+            android:name=".manage.people.profile.intentservice.ManagePeopleProfileIntentService"
+            android:exported="false" />
+        <service android:name=".service.HUDIntent" />
+        <service
+            android:name=".GCMListenerService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </service>
+        <service android:name="com.google.android.gms.analytics.CampaignTrackingService" />
+        <service android:name=".service.CheckVerification" />
+        <service
+            android:name=".service.DownloadService"
+            android:exported="false" />
+        <service
+            android:name=".addtocart.services.ATCIntentService"
+            android:exported="false" />
+        <service
+            android:name=".talkview.intentservice.TalkViewIntentService"
+            android:exported="false" />
+        <service
+            android:name=".rescenter.create.service.CreateResCenterService"
+            android:exported="false" />
+        <service
+            android:name=".myproduct.service.ProductService"
+            android:exported="false" />
+
+        <activity
+            android:name=".myproduct.ProductSocMedActivity"
+            android:label="Add Product Social Media"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3" />
+
+        <service
+            android:name=".service.HadesService"
+            android:exported="false" />
+
+        <service
+            android:name=".payment.services.PaymentIntentService"
+            android:exported="false" />
+
+        <service
+            android:name=".manage.people.address.service.ManagePeopleAddressService"
+            android:exported="false" />
+        <service
+            android:name=".selling.SellingService"
+            android:exported="false" />
+        <service
+            android:name=".inboxmessage.intentservice.InboxMessageIntentService"
+            android:exported="false" />
+        <service
+            android:name=".purchase.services.TxActionIntentService"
+            android:exported="false" />
+        <service
+            android:name="com.localytics.android.GcmListenerService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.localytics.android.InstanceIDListenerService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.gms.iid.InstanceID" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".selling.SellingService"
+            android:exported="false" />
+        <service
+            android:name=".product.intentservice.ProductInfoIntentService"
+            android:exported="false" />
+        <service
+            android:name=".talk.inboxtalk.intentservice.InboxTalkIntentService"
+            android:exported="false" />
+        <service
+            android:name=".talkview.intentservice.TalkDetailIntentService"
+            android:exported="false" />
+        <service
+            android:name=".talk.talkproduct.intentservice.TalkAddNewIntentService"
+            android:exported="false" />
+        <!-- ======================================================= -->
+        <!-- PROVIDERS REGISTRY -->
+        <!-- ======================================================= -->
+        <service
+            android:name=".shop.ShopEditService"
+            android:exported="false"/>
     </application>
 
 </manifest>

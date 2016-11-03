@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_marginBottom="@dimen/margin_small"
+    android:background="@drawable/cards_ui_2"
+    style="@style/Theme.Tokopedia3"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/margin_small" >
+
+        <LinearLayout
+            android:id="@+id/error_area"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:background="#FFADAD"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_small"
+            android:visibility="gone" >
+
+            <TextView
+                android:id="@+id/error1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/margin_vs"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/error2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/label_color" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/shop_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/error_area"
+            android:layout_centerVertical="true"
+            android:maxWidth="@dimen/store_name"
+            android:singleLine="true"
+            android:text="Shop Name"
+            android:textColor="@color/black"
+            android:textSize="@dimen/font_medium"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/edit_delete_area"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/error_area"
+            android:layout_centerVertical="true"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:id="@+id/but_overflow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/overflow_selected"
+                android:gravity="right" >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/overflow_selected"
+                    android:src="@drawable/ic_new_action_overflow_black" />
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/greyish_bg" />
+
+    <LinearLayout
+        android:id="@+id/listview_prod"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
+
+    <CheckBox
+        android:id="@+id/checked_send_dropship"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:button="@drawable/checkbox_default"
+        android:text="@string/title_send_as_dropship"
+        android:textColor="@color/black"
+        android:textSize="@dimen/font_small" />
+
+    <LinearLayout
+        android:id="@+id/sender_form"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/checked_send_dropship"
+        android:orientation="horizontal"
+        android:padding="@dimen/padding_vs"
+        android:visibility="gone" >
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/sender_name_wrapper"
+            android:layout_width="0dp"
+            android:layout_weight=".50"
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/sender_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/margin_vs"
+                android:hint="Nama Pengirim"
+                android:textColorHint="@color/grey_800"
+                android:padding="@dimen/padding_small"
+                android:textColor="@color/black"
+                android:textSize="@dimen/font_medium" />
+        </android.support.design.widget.TextInputLayout>
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/sender_phone_wrapper"
+            android:layout_width="0dp"
+            android:layout_weight=".50"
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/sender_phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="No. Telp pengirim"
+                android:textColorHint="@color/grey_800"
+                android:inputType="phone"
+                android:padding="@dimen/padding_small"
+                android:textColor="@color/black"
+                android:textSize="@dimen/font_medium" />
+        </android.support.design.widget.TextInputLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/greyish_bg" />
+
+        <RelativeLayout
+            android:id="@+id/detail_info_but"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_cart_1"
+            android:paddingBottom="@dimen/padding_vs"
+            android:paddingTop="@dimen/padding_vs" >
+
+            <TextView
+                android:id="@+id/text_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:text="@string/title_details_info"
+                android:textColor="@color/label_color"
+                android:textSize="@dimen/font_small"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/chevron_sign"
+                android:layout_width="@dimen/large_dp"
+                android:layout_height="@dimen/large_dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/margin_small"
+                android:background="@drawable/overflow_selected"
+                android:padding="@dimen/padding_vs"
+                android:src="@drawable/ic_chevron_down" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/greyish_bg" />
+
+        <RelativeLayout
+            android:id="@+id/detail_info"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/margin_small"
+            android:paddingLeft="@dimen/margin_small"
+            android:paddingRight="@dimen/margin_small" >
+
+            <LinearLayout
+                android:id="@+id/list_detail_transaction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:text="@string/title_shipping_to"
+                    android:textColor="@color/label_color"
+                    android:textSize="@dimen/font_small" />
+
+                <TextView
+                    android:id="@+id/shipping_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginBottom="@dimen/margin_vs"
+                    android:text="Test RPX"
+                    android:textColor="@color/href_link"
+                    android:textSize="@dimen/font_small" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@id/shipping_address"
+                    android:text="@string/title_shipping_agency"
+                    android:textColor="@color/label_color"
+                    android:textSize="@dimen/font_small" />
+
+                <TextView
+                    android:id="@+id/shipping_agency"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@id/shipping_address"
+                    android:layout_marginBottom="@dimen/margin_vs"
+                    android:text="JNE - YES"
+                    android:textColor="@color/href_link"
+                    android:textSize="@dimen/font_small" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@id/shipping_agency"
+                    android:text="@string/title_use_insurance"
+                    android:textColor="@color/label_color"
+                    android:textSize="@dimen/font_small" />
+
+                <Spinner
+                    android:id="@+id/spinner_insurance"
+                    style="@android:style/Widget.Holo.Light.Spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@id/shipping_agency"
+                    android:layout_marginBottom="@dimen/margin_vs"
+                    android:gravity="left"
+                    android:textSize="@dimen/font_small" />
+
+                <!-- <TextView -->
+                <!-- android:shopId="@+shopId/tv_insurance" -->
+                <!-- android:layout_width="wrap_content" -->
+                <!-- android:layout_height="wrap_content" -->
+                <!-- android:layout_alignParentRight="true" -->
+                <!-- android:layout_below="@shopId/shipping_agency" -->
+                <!-- android:layout_marginBottom="@dimen/margin_vs" -->
+                <!-- android:textColor="@color/href_link" -->
+                <!-- android:textSize="@dimen/fontvs" -->
+                <!-- android:visibility="gone" /> -->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@id/spinner_insurance"
+                    android:text="@string/title_left_stock"
+                    android:textColor="@color/label_color"
+                    android:textSize="@dimen/font_small" />
+
+                <!-- <Spinner -->
+                <!-- android:shopId="@+shopId/spinner_remaining_stock" -->
+                <!-- android:layout_height="wrap_content" -->
+                <!-- android:layout_width="wrap_content" -->
+                <!-- android:layout_alignParentRight="true" -->
+                <!-- android:layout_below="@shopId/spinner_insurance" -->
+                <!-- /> -->
+
+                <Spinner
+                    android:id="@+id/spinner_remaining_stock"
+                    style="@android:style/Widget.Holo.Light.Spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@id/spinner_insurance"
+                    android:layout_marginBottom="@dimen/margin_vs"
+                    android:gravity="left"
+                    android:textSize="@dimen/font_small" />
+
+                <!-- <TextView -->
+                <!-- android:shopId="@+shopId/tv_remaining_stock" -->
+                <!-- android:layout_width="wrap_content" -->
+                <!-- android:layout_height="wrap_content" -->
+                <!-- android:layout_alignParentRight="true" -->
+                <!-- android:layout_below="@shopId/spinner_insurance" -->
+                <!-- android:layout_marginBottom="@dimen/margin_vs" -->
+                <!-- android:textColor="@color/href_link" -->
+                <!-- android:textSize="@dimen/fontvs" -->
+                <!-- android:visibility="gone" /> -->
+
+
+                <!-- android:textSize="@dimen/fonts" -->
+                <!-- android:textColor="@color/href_link" -->
+
+
+                <!-- android:layout_marginBottom="@dimen/margin_small" -->
+
+
+                <!-- android:popupBackground="@color/white" -->
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/list_separator"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_below="@+id/list_detail_transaction"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_small"
+                android:background="@color/greyish_bg" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/list_separator"
+                android:layout_marginBottom="@dimen/margin_vs"
+                android:text="@string/title_total_item"
+                android:textColor="@color/label_color"
+                android:textSize="@dimen/font_small" />
+
+            <TextView
+                android:id="@+id/total_weight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/list_separator"
+                android:layout_marginBottom="@dimen/margin_vs"
+                android:text="1 Kg"
+                android:textColor="@color/black"
+                android:textSize="@dimen/font_small" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/total_weight"
+                android:layout_marginBottom="@dimen/margin_vs"
+                android:text="@string/title_sub_total"
+                android:textColor="@color/label_color"
+                android:textSize="@dimen/font_small" />
+
+            <TextView
+                android:id="@+id/sub_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/total_weight"
+                android:layout_marginBottom="@dimen/margin_vs"
+                android:textColor="@color/black"
+                android:textSize="@dimen/font_small" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/sub_total"
+                android:layout_marginBottom="@dimen/margin_vs"
+                android:text="@string/title_shipping_cost"
+                android:textColor="@color/label_color"
+                android:textSize="@dimen/font_small" />
+
+            <TextView
+                android:id="@+id/shipping_cost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/sub_total"
+                android:layout_marginBottom="@dimen/margin_vs"
+                android:textColor="@color/black"
+                android:textSize="@dimen/font_small" />
+
+            <TextView
+                android:id="@+id/title_insurance_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/shipping_cost"
+                android:layout_marginBottom="@dimen/margin_vs"
+                android:text="@string/title_insurance_cost"
+                android:textColor="@color/label_color"
+                android:textSize="@dimen/font_small" />
+
+            <TextView
+                android:id="@+id/insurance_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/shipping_cost"
+                android:layout_marginBottom="@dimen/margin_vs"
+                android:textColor="@color/black"
+                android:textSize="@dimen/font_small" />
+
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/tv_additional_cost_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@id/insurance_price"
+                android:layout_marginBottom="@dimen/margin_vs"
+                android:text="@string/title_additional_cost"
+                android:textColor="@color/label_color"
+                android:textSize="@dimen/font_small" />
+
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/tv_additional_cost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/insurance_price"
+                android:layout_marginBottom="@dimen/margin_vs"
+                android:text="Rp 20.000,-"
+                android:textColor="@color/black"
+                android:textSize="@dimen/font_small" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/margin_vs"
+        android:padding="@dimen/padding_small" >
+
+        <TextView
+            android:id="@+id/title_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="@string/title_total"
+            android:textColor="@color/black"
+            android:textSize="@dimen/font_small"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/total_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/black"
+            android:textSize="@dimen/font_small"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+</LinearLayout>

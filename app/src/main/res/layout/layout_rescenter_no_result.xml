@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/info_no_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_small"
+        android:text="@string/msg_no_res_center"
+        android:textColor="@color/black"
+        android:layout_margin="@dimen/margin_small"
+        android:background="@drawable/bg_yellow_border_yelow"
+        android:textSize="@dimen/font_small"
+        android:gravity="center"
+        />
+
+    <LinearLayout
+        android:id="@+id/include_no_result"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_small"
+        android:layout_below="@+id/info_no_result">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/margin_vs"
+            android:src="@drawable/status_no_result" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:paddingRight="@dimen/padding_small"
+            android:paddingLeft="@dimen/padding_small"
+            android:id="@+id/text_no_result"
+            android:textColor="@color/black"
+            android:text="@string/title_no_result"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</RelativeLayout>

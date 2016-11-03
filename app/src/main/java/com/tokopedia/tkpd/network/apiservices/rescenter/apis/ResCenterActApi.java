@@ -1,0 +1,82 @@
+package com.tokopedia.tkpd.network.apiservices.rescenter.apis;
+
+import com.tokopedia.tkpd.network.constants.TkpdBaseURL;
+import com.tokopedia.tkpd.network.retrofit.response.TkpdResponse;
+
+import java.util.Map;
+
+import retrofit2.Response;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.POST;
+import rx.Observable;
+
+/**
+ * @author Angga.Prasetiyo on 08/12/2015.
+ */
+public interface ResCenterActApi {
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_ACCEPT_ADMIN_RESOLUTION)
+    Observable<Response<TkpdResponse>> acceptAdminResolution(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_ACCEPT_RESOLUTION)
+    Observable<Response<TkpdResponse>> acceptResolution(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_CANCEL_RESOLUTION)
+    Observable<Response<TkpdResponse>> cancelResolution(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_CREATE_RES_SUBMIT)
+    Observable<Response<TkpdResponse>> createResolutionSubmit(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_CREATE_RES_VALIDATION)
+    Observable<Response<TkpdResponse>> createResolutionValidation(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_EDIT_RESI_RESOLUTION)
+    Observable<Response<TkpdResponse>> editResiResolution(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_FINISH_RES_RETURN)
+    Observable<Response<TkpdResponse>> finishResolutionReturn(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_INPUT_RESI_RESOLUTION)
+    Observable<Response<TkpdResponse>> inputResiResolution(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_REJECT_ADMIN_RES_SUBMIT)
+    Observable<Response<TkpdResponse>> rejectAdminResolutionSubmit(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_REJECT_ADMIN_RES_VALIDATION)
+    Observable<Response<TkpdResponse>> rejectAdminResolutionValidation(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_REPLY_CONVERSATION_SUBMIT)
+    Observable<Response<TkpdResponse>> replyConversationSubmit(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_REPLY_CONVERSATION_VALIDATION)
+    Observable<Response<TkpdResponse>> replyConversationValidation(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_REPLY_CONVERSATION_VALIDATION_NEW)
+    Observable<Response<TkpdResponse>> replyConversationValidationNew(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_REPORT_REOLUTION)
+    Observable<Response<TkpdResponse>> reportResolution(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_INPUT_ADDRESS_RESOLUTION)
+    Observable<Response<TkpdResponse>> inputAddressResolution(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_EDIT_ADDRESS_RESOLUTION)
+    Observable<Response<TkpdResponse>> editAddressResolution(@FieldMap Map<String, String> params);
+}

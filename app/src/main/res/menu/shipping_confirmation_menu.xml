@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/action_confirm"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/title_confirm_button"/>
+    <item
+        android:id="@+id/action_cancel"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/title_cancel"/>
+    <item
+        android:id="@+id/action_detail_ship"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/title_detail"/>
+
+</menu>

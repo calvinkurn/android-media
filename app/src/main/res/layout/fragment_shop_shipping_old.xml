@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:id="@+id/main_scroll"
+        android:background="@drawable/cards_ui_2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="@dimen/padding_small"
+        android:paddingRight="@dimen/padding_small"
+        android:layout_marginTop="@dimen/padding_small"
+        android:layout_marginBottom="@dimen/padding_small">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <LinearLayout
+                android:id="@+id/fragment_shipping_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/title_edit_shipping_segment"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/btn_height"
+                    android:text="@string/shop_shipping_setting"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/fontl"/>
+                <Spinner
+                    android:id="@+id/province_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/btn_height">
+                </Spinner>
+                <Spinner
+                    android:id="@+id/city_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/btn_height">
+                </Spinner>
+                <Spinner
+                    android:id="@+id/district_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/btn_height">
+                </Spinner>
+
+                <EditText
+                    android:id="@+id/postal_code"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/title_post_code"
+                    android:inputType="phone"
+                    android:digits="1234567890">
+                </EditText>
+            </LinearLayout>
+            <RelativeLayout
+                android:id="@+id/shipping_address_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_small"
+                android:layout_marginBottom="@dimen/padding_small"
+                android:orientation="vertical"
+                android:visibility="gone">
+                <TextView
+                    android:id="@+id/shop_phone_number_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/prompt_phone"
+                    android:textColor="@color/label_color"
+                    android:visibility="gone"/>
+                <TextView
+                    android:id="@+id/shop_phone_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/fontl"
+                    android:layout_marginLeft="@dimen/padding_small"
+                    android:layout_below="@id/shop_phone_number_title"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:id="@+id/change_phone_number_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/fontm"
+                    android:textStyle="bold"
+                    android:textColor="@color/green_500"
+                    android:text="@string/action_edit"
+                    android:layout_toEndOf="@id/shop_phone_number"
+                    android:layout_toRightOf="@id/shop_phone_number"
+                    android:layout_below="@id/shop_phone_number_title"
+                    android:gravity="end"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:id="@+id/location_field_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_delivery_location"
+                    android:textColor="@color/label_color"
+                    android:layout_below="@id/shop_phone_number"
+                    android:textSize="@dimen/fonts" />
+                <EditText
+                    android:id="@+id/address_text_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/location_field_title"
+                    android:hint="Alamat Jalan Toko"/>
+
+                <include layout="@layout/open_map_view"
+                    android:layout_below="@id/address_text_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </RelativeLayout>
+            <LinearLayout
+                android:id="@+id/fragment_shipping_main_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_small"
+                android:orientation="vertical">
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

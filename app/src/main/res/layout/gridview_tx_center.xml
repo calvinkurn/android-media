@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/cards_ui_selected" >
+
+    <TextView
+        android:id="@+id/menu_count"
+        android:layout_width="@dimen/img_thumb_l"
+        android:layout_height="@dimen/img_thumb_l"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="@dimen/margin_vs"
+        android:background="@drawable/border_circle"
+        android:padding="@dimen/padding_small"
+        android:text="01"
+        android:gravity="center"
+        android:textColor="@color/href_link"
+        android:textSize="@dimen/fontvl"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:layout_marginTop="@dimen/margin_small"
+        android:layout_toRightOf="@+id/menu_count"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/menu_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/menu_count"
+            android:text="TITLE "
+            android:textColor="@color/black"
+            android:textSize="@dimen/fonts"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/menu_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/menu_title"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:text="Sort desc"
+            android:textColor="@color/label_color"
+            android:textSize="@dimen/fontvs" />
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,25 @@
+package com.tokopedia.tkpd.purchase.presenter;
+
+import android.content.Context;
+
+import com.tokopedia.tkpd.purchase.fragment.TxVerificationFragment;
+import com.tokopedia.tkpd.purchase.model.response.txverification.TxVerData;
+import com.tokopedia.tkpd.util.UploadImageReVamp;
+
+/**
+ * Created by Angga.Prasetiyo on 24/05/2016.
+ */
+public interface TxVerificationPresenter {
+    void getPaymentVerification(Context context, int page, int typeRequest);
+
+    void processEditPayment(Context context, TxVerData data);
+
+    void uploadProofImage(Context context, UploadImageReVamp uploadImageHandler, TxVerData data);
+
+    void processToTxVerificationDetail(Context context, TxVerData data);
+
+    void uploadProofImageWSV4(Context context, String imagePath, TxVerData txVerData);
+
+    void onDestroyView();
+
+}

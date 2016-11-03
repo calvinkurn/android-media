@@ -1,0 +1,49 @@
+package com.tokopedia.tkpd.webview.fragment;
+
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.net.http.SslError;
+import android.support.annotation.NonNull;
+import android.webkit.SslErrorHandler;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+
+import com.tokopedia.tkpd.webview.listener.BaseCallbackListener;
+
+/**
+ * Created by Angga.Prasetiyo on 14/09/2015.
+ */
+public class BaseWebViewClient extends WebViewClient {
+    private static final String TAG = BaseWebViewClient.class.getSimpleName();
+    private WebViewCallback callback;
+
+    public BaseWebViewClient(@NonNull WebViewCallback callback) {
+        this.callback = callback;
+    }
+
+    @Override
+    public boolean shouldOverrideUrlLoading(WebView view, String url) {
+        return false;
+    }
+
+    @Override
+    public void onPageFinished(WebView view, String url) {
+        callback.onSuccessResult(url);
+    }
+
+    @Override
+    public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+        super.onReceivedSslError(view, handler, error);
+        handler.cancel();
+        callback.onErrorResult(error);
+    }
+
+    @Override
+    public void onPageStarted(WebView view, String url, Bitmap favicon) {
+        callback.onProgressResult(url);
+    }
+
+    public interface WebViewCallback extends BaseCallbackListener<String, String, SslError> {
+
+    }
+}

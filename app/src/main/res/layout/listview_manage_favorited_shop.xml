@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+    >
+
+    <RelativeLayout
+        android:id="@+id/shop_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/cards_ui_selected"
+        android:orientation="horizontal"
+        android:padding="@dimen/padding_small"
+        >
+
+        <ImageView
+            android:id="@+id/shop_avatar"
+            android:layout_width="@dimen/img_thumb_m"
+            android:layout_height="@dimen/img_thumb_m"
+            android:layout_marginBottom="0.5dp"
+            android:layout_marginTop="0.5dp"
+            android:src="@drawable/ic_notebook"
+            />
+
+        <TextView
+            android:id="@+id/shop_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_toRightOf="@+id/shop_avatar"
+            android:singleLine="true"
+            android:textColor="@color/href_link"
+            android:textSize="@dimen/fontvs"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/shop_name"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_toRightOf="@+id/shop_avatar"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:id="@+id/location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:textColor="@color/label_color"
+                android:textSize="@dimen/fontvs"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/fav_area"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            >
+
+            <View
+                android:layout_width="0.5dp"
+                android:layout_height="@dimen/img_thumb_m"
+                android:layout_marginRight="@dimen/margin_small"
+                android:background="@color/label_color"
+                />
+
+            <ImageView
+                android:id="@+id/fav_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingLeft="@dimen/padding_small"
+                android:paddingRight="@dimen/padding_small"
+                android:src="@drawable/ic_fav"
+                />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+</LinearLayout>

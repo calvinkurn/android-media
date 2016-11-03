@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="110dp"
+    android:layout_height="wrap_content"
+    android:layout_margin="1sp"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:paddingBottom="5sp"
+    android:paddingEnd="1sp"
+    android:paddingStart="1sp"
+    android:paddingTop="1sp">
+
+    <com.tokopedia.tkpd.customwidget.SquareImageView
+        android:id="@id/iv_pic"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/margin_vs"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/image_product_desc"
+        android:scaleType="fitCenter" />
+
+    <TextView
+        android:id="@id/tv_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_vs"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textColor="@color/href_link"
+        android:textSize="@dimen/fontvs" />
+
+    <TextView
+        android:id="@id/tv_price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/tkpd_prod_price"
+        android:textSize="@dimen/fontvs" />
+</LinearLayout>
+

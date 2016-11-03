@@ -1,0 +1,1281 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/padding_small"
+    android:paddingRight="@dimen/padding_small"
+    tools:context=".Cart">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true">
+
+        <LinearLayout
+            android:id="@+id/main_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Header Shopping Cart -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_small"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_small"
+                    android:layout_marginRight="@dimen/margin_small"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="@dimen/screen_per_3_pad"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="@string/title_shopping_cart"
+                        android:textSize="@dimen/fontvs"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="@dimen/screen_per_3_pad"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:text="@string/title_summary"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/fontvs"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="@dimen/screen_per_3_pad"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:text="@string/title_confirmation"
+                        android:textColor="@color/time_color"
+                        android:textSize="@dimen/fontvs" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="@dimen/margin_med"
+                        android:layout_height="@dimen/margin_med"
+                        android:src="@drawable/ic_shopping_cart_done" />
+
+                    <TextView
+                        android:layout_width="@dimen/screen_per_3_pad"
+                        android:layout_height="0.1dp"
+                        android:layout_gravity="center"
+                        android:background="@color/tkpd_dark_green"
+                        android:gravity="center" />
+
+                    <ImageView
+                        android:layout_width="@dimen/margin_med"
+                        android:layout_height="@dimen/margin_med"
+                        android:src="@drawable/ic_shopping_cart_done" />
+
+                    <TextView
+                        android:layout_width="@dimen/screen_per_3_pad"
+                        android:layout_height="0.1dp"
+                        android:layout_gravity="center"
+                        android:background="@color/time_color"
+                        android:gravity="center" />
+
+                    <ImageView
+                        android:layout_width="@dimen/margin_med"
+                        android:layout_height="@dimen/margin_med"
+                        android:src="@drawable/ic_shopping_cart_undone" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/saldo_method"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_small"
+                android:background="@drawable/cards_ui_2"
+                android:orientation="vertical"
+                android:visibility="gone"> <!-- done -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/header_inbox_message"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/margin_small">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/margin_vs"
+                        android:layout_marginRight="@dimen/margin_vs"
+                        android:text="@string/title_payment_method_s"
+                        android:textSize="@dimen/font_large"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/pay_method"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/font_large"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_small">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:id="@+id/voucher1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".35"
+                            android:text="@string/title_voucher"
+                            android:textSize="@dimen/font_small"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/voucher_amt1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".65"
+                            android:gravity="end"
+                            android:textSize="@dimen/font_medium"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".35"
+                            android:text="@string/title_total_invoice"
+                            android:textColor="@color/label_color"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/total_invoice"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".65"
+                            android:gravity="end"
+                            android:text="Total Invoice"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="italic" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".35"
+                            android:text="@string/title_admin_fee"
+                            android:textColor="@color/label_color"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/admin_fee"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".65"
+                            android:gravity="end"
+                            android:text="@string/title_gratis"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="italic" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".35"
+                            android:text="@string/title_use_total_balance"
+                            android:textColor="@color/label_color"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/total_tokopedia_balance"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:layout_weight=".65"
+                            android:gravity="end"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/sep1"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#F0F0F0" />
+
+                    <EditText
+                        android:id="@+id/password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:hint="@string/title_enter_password"
+                        android:inputType="textPassword"
+                        android:textSize="@dimen/fonts" />
+
+                    <View
+                        android:id="@+id/sep2"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="#F0F0F0" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/klikbca_method"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_small"
+                android:background="@drawable/cards_ui_2"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/header_inbox_message"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/margin_small">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/margin_vs"
+                        android:text="@string/title_payment_method_s"
+                        android:textSize="@dimen/font_large"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/pay_method_klikbca"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/font_large"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_small">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:id="@+id/voucher_klikbca_summary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".35"
+                            android:text="@string/title_voucher"
+                            android:textSize="@dimen/font_medium"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/voucher_amt_klikbca_summary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".65"
+                            android:gravity="end"
+                            android:textSize="@dimen/font_medium"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".35"
+                            android:text="@string/title_total_invoice"
+                            android:textColor="@color/label_color"
+                            android:textSize="@dimen/font_medium"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/total_invoice_klikbca_summary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".65"
+                            android:gravity="end"
+                            android:text="Total Invoice"
+                            android:textSize="@dimen/font_medium"
+                            android:textStyle="italic" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".35"
+                            android:text="@string/title_admin_fee"
+                            android:textColor="@color/label_color"
+                            android:textSize="@dimen/font_medium"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/admin_fee_klikbca_summary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".65"
+                            android:gravity="end"
+                            android:text="@string/title_gratis"
+                            android:textSize="@dimen/font_medium"
+                            android:textStyle="italic" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".35"
+                            android:text="@string/title_use_total_balance"
+                            android:textColor="@color/label_color"
+                            android:textSize="@dimen/fontvs"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/total_tokopedia_balance_klikbca_summary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".65"
+                            android:gravity="end"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+
+                    <View
+                        android:id="@+id/sep_klikbca_summary"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#F0F0F0" />
+
+                    <EditText
+                        android:id="@+id/user_id_klikbca_summary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:hint="Masukkan UserID BCA"
+                        android:textSize="@dimen/fonts" />
+
+                    <EditText
+                        android:id="@+id/password_klikbca"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:hint="@string/title_enter_password"
+                        android:inputType="textPassword"
+                        android:textSize="@dimen/fonts" />
+
+                    <View
+                        android:id="@+id/sep2_klikbca_summary"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="#F0F0F0" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/transfer_method"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_small"
+                android:background="@drawable/cards_ui_2"
+                android:orientation="vertical"
+                android:visibility="gone"> <!-- sudah -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/header_inbox_message"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/margin_small">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/margin_vs"
+                        android:text="@string/title_payment_method_s"
+                        android:textSize="@dimen/font_large"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/pay_method2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/font_large"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_small">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:id="@+id/voucher2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".35"
+                            android:text="@string/title_voucher"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/voucher_amt2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".65"
+                            android:gravity="end"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".35"
+                            android:text="@string/title_total_invoice"
+                            android:textColor="@color/label_color"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/total_invoice2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".65"
+                            android:gravity="end"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".35"
+                            android:text="@string/title_admin_fee"
+                            android:textColor="@color/label_color"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/admin_fee2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".65"
+                            android:gravity="end"
+                            android:text="@string/title_gratis"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".35"
+                            android:text="@string/title_use_total_balance"
+                            android:textColor="@color/label_color"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/total_tokopedia_balance2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".65"
+                            android:gravity="end"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".35"
+                            android:text="@string/title_unique_code"
+                            android:textColor="@color/label_color"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/unique_code"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".65"
+                            android:gravity="end"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:id="@+id/ll_kode_unik"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:background="@color/tkpd_yellow_status"
+                        android:orientation="vertical"
+                        android:padding="@dimen/padding_small">
+
+                        <TextView
+                            android:id="@+id/desc_unique_code"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/desc_unique_code"
+                            android:textColor="@color/time_color"
+                            android:textSize="@dimen/fontvvs" />
+                    </LinearLayout>
+
+                    <EditText
+                        android:id="@+id/password_trf"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:hint="@string/title_enter_password"
+                        android:inputType="textPassword"
+                        android:textSize="@dimen/fonts" />
+
+                    <!--<View-->
+                    <!--android:id="@+id/sep3"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="1dp"-->
+                    <!--android:layout_below="@id/password_trf"-->
+                    <!--android:layout_marginBottom="@dimen/margin_small"-->
+                    <!--android:background="#F0F0F0" />-->
+
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/clickpay_method"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_small"
+                android:background="@drawable/cards_ui_2"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/header_inbox_message"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/padding_small">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/margin_vs"
+                        android:text="@string/title_payment_method_s"
+                        android:textSize="@dimen/font_large"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/pay_method3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/font_large"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_small">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:id="@+id/voucher3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".35"
+                            android:text="@string/title_voucher"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/voucher_amt3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".65"
+                            android:gravity="end"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".35"
+                            android:text="@string/title_total_invoice"
+                            android:textColor="@color/label_color"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/total_invoice3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".65"
+                            android:gravity="end"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".35"
+                            android:text="@string/title_admin_fee"
+                            android:textColor="@color/label_color"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/admin_fee3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".65"
+                            android:gravity="end"
+                            android:text="@string/title_gratis"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:id="@+id/tokopedia_balance3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".35"
+                            android:text="@string/title_use_total_balance"
+                            android:textColor="@color/label_color"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/total_tokopedia_balance3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".65"
+                            android:gravity="end"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+
+                    <EditText
+                        android:id="@+id/card_number"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:hint="@string/hint_card_number"
+                        android:inputType="number" />
+
+                    <EditText
+                        android:id="@+id/token_response"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:hint="@string/hint_token_response"
+                        android:inputType="number" />
+
+                    <View
+                        android:id="@+id/sep5"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:background="#F0F0F0" />
+
+                    <TextView
+                        android:id="@+id/explnation"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:text="@string/hint_step_token"
+                        android:textSize="@dimen/font_small"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/title_step_1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:text="@string/title_step_1"
+                        android:textColor="@color/label_color"
+                        android:textSize="@dimen/font_small"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/step_1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_small" />
+
+                    <TextView
+                        android:id="@+id/title_step_2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:text="@string/title_step_2"
+                        android:textColor="@color/label_color"
+                        android:textSize="@dimen/font_small"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/step_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_small" />
+
+                    <TextView
+                        android:id="@+id/title_step_3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:text="@string/title_step_3"
+                        android:textColor="@color/label_color"
+                        android:textSize="@dimen/font_small"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/step_3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_small" />
+
+                    <TextView
+                        android:id="@+id/title_step_4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:text="@string/title_step_4"
+                        android:textColor="@color/label_color"
+                        android:textSize="@dimen/font_small"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/step_4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_small" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ecash_method"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_small"
+                android:background="@drawable/cards_ui_2"
+                android:orientation="vertical"
+                android:visibility="gone"><!-- done -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/header_inbox_message"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/padding_small">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/margin_vs"
+                        android:text="@string/title_payment_method_s"
+                        android:textSize="@dimen/font_large"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/pay_method4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/font_large"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_small">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:id="@+id/discount4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".35"
+                            android:text="@string/title_discount"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/total_discount4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".65"
+                            android:gravity="end"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:id="@+id/voucher4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".35"
+                            android:text="@string/title_voucher"
+                            android:textSize="@dimen/font_small"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/voucher_amt4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".65"
+                            android:gravity="end"
+                            android:textSize="@dimen/font_small"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".35"
+                            android:text="@string/title_total_invoice"
+                            android:textColor="@color/label_color"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/total_invoice4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".65"
+                            android:gravity="end"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".35"
+                            android:text="@string/title_admin_fee"
+                            android:textColor="@color/label_color"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/admin_fee4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".65"
+                            android:gravity="end"
+                            android:text="@string/title_gratis"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:id="@+id/tokopedia_balance4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".35"
+                            android:text="@string/title_use_total_balance"
+                            android:textColor="@color/label_color"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/total_tokopedia_balance4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".65"
+                            android:gravity="end"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/credit_method"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_small"
+                android:background="@drawable/cards_ui_2"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/header_inbox_message"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/padding_small">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/margin_vs"
+                        android:text="@string/title_payment_method_s"
+                        android:textSize="@dimen/font_large"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/pay_method5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Kartu Kredit"
+                        android:textSize="@dimen/font_large"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_small">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:id="@+id/voucher5"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".35"
+                            android:text="@string/title_voucher"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/voucher_amt5"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".65"
+                            android:gravity="end"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".35"
+                            android:text="@string/title_total_invoice"
+                            android:textColor="@color/label_color"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/total_invoice5"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".65"
+                            android:gravity="end"
+                            android:text="500000"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".35"
+                            android:text="@string/title_admin_fee"
+                            android:textColor="@color/label_color"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/admin_fee5"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".65"
+                            android:gravity="end"
+                            android:text="@string/title_gratis"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+                        <TextView
+                            android:id="@+id/tokopedia_balance5"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".35"
+                            android:text="@string/title_use_total_balance"
+                            android:textColor="@color/label_color"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/total_tokopedia_balance5"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_weight=".65"
+                            android:gravity="end"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/lv_cart"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white"
+    android:padding="@dimen/padding_small"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:showIn="@layout/content_layout_people_info">
+
+    <ImageView
+        android:id="@+id/user_avatar"
+        android:layout_width="@dimen/other_prod_img"
+        android:layout_height="@dimen/other_prod_img"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:background="@drawable/border_circle"
+        android:src="@drawable/remove"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/user_avatar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/margin_vs"
+        android:includeFontPadding="false"
+        android:textColor="@color/black"
+        android:textSize="@dimen/fontm"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/user_favorite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/user_name"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/tab_selector"
+        android:gravity="center"
+        android:src="@drawable/overflow_selected"
+        android:textColor="@color/href_link"
+        android:textSize="@dimen/fonts" />
+
+    <View
+        android:id="@+id/user_separator"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_below="@+id/user_favorite"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:layout_marginTop="@dimen/margin_small"
+        android:background="@color/tkpd_bg_color" />
+
+    <LinearLayout
+        android:id="@+id/message_user"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/user_separator"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/btn_shop"
+        android:orientation="horizontal"
+        android:padding="@dimen/padding_vs">
+
+        <ImageView
+            android:layout_width="@dimen/icon_prod_size"
+            android:layout_height="@dimen/icon_prod_size"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_message"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:paddingLeft="@dimen/padding_vs"
+            android:text="@string/title_message"
+            android:textSize="@dimen/fonts"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/manage_user"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/user_separator"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/btn_shop"
+        android:orientation="horizontal"
+        android:padding="@dimen/padding_vs"
+        android:visibility="visible">
+
+        <ImageView
+            android:layout_width="@dimen/icon_prod_size"
+            android:layout_height="@dimen/icon_prod_size"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_menu_general_setting"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:paddingLeft="@dimen/padding_vs"
+            android:text="@string/title_manage"
+            android:textSize="@dimen/fonts"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</RelativeLayout>

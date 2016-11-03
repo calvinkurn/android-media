@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/provider_layout"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:layout_gravity="center"
+    android:layout_margin="4dp"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:weightSum="6"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.75"/>
+    <ImageView
+        android:id="@+id/provider_image"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:adjustViewBounds="true"
+        android:layout_marginRight="16dp"
+        tools:src="@drawable/notif_red"
+        />
+
+    <TextView
+        android:id="@+id/provider_name"
+        android:layout_width="0dp"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_weight="4"
+        tools:text="masuk dengan facebook"
+        android:textColor="#AA000000"
+        android:textStyle="bold"
+        />
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.75"/>
+
+</LinearLayout>

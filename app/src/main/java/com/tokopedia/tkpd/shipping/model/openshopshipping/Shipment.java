@@ -1,0 +1,138 @@
+
+package com.tokopedia.tkpd.shipping.model.openshopshipping;
+
+import java.util.ArrayList;
+import java.util.List;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+public class Shipment {
+
+    @SerializedName("shipment_package")
+    @Expose
+    private List<ShipmentPackage> shipmentPackage = new ArrayList<ShipmentPackage>();
+    @SerializedName("shipment_image")
+    @Expose
+    private String shipmentImage;
+    @SerializedName("shipping_max_add_fee")
+    @Expose
+    private Integer shippingMaxAddFee;
+    @SerializedName("shipment_available")
+    @Expose
+    private Integer shipmentAvailable;
+    @SerializedName("shipment_id")
+    @Expose
+    private Integer shipmentId;
+    @SerializedName("shipment_name")
+    @Expose
+    private String shipmentName;
+
+    /**
+     * 
+     * @return
+     *     The shipmentPackage
+     */
+    public List<ShipmentPackage> getShipmentPackage() {
+        return shipmentPackage;
+    }
+
+    /**
+     * 
+     * @param shipmentPackage
+     *     The shipment_package
+     */
+    public void setShipmentPackage(List<ShipmentPackage> shipmentPackage) {
+        this.shipmentPackage = shipmentPackage;
+    }
+
+    /**
+     * 
+     * @return
+     *     The shipmentImage
+     */
+    public String getShipmentImage() {
+        return shipmentImage;
+    }
+
+    /**
+     * 
+     * @param shipmentImage
+     *     The shipment_image
+     */
+    public void setShipmentImage(String shipmentImage) {
+        this.shipmentImage = shipmentImage;
+    }
+
+    /**
+     * 
+     * @return
+     *     The shippingMaxAddFee
+     */
+    public Integer getShippingMaxAddFee() {
+        return shippingMaxAddFee;
+    }
+
+    /**
+     * 
+     * @param shippingMaxAddFee
+     *     The shipping_max_add_fee
+     */
+    public void setShippingMaxAddFee(Integer shippingMaxAddFee) {
+        this.shippingMaxAddFee = shippingMaxAddFee;
+    }
+
+    /**
+     * 
+     * @return
+     *     The shipmentAvailable
+     */
+    public Integer getShipmentAvailable() {
+        return shipmentAvailable;
+    }
+
+    /**
+     * 
+     * @param shipmentAvailable
+     *     The shipment_available
+     */
+    public void setShipmentAvailable(Integer shipmentAvailable) {
+        this.shipmentAvailable = shipmentAvailable;
+    }
+
+    /**
+     * 
+     * @return
+     *     The shipmentId
+     */
+    public Integer getShipmentId() {
+        return shipmentId;
+    }
+
+    /**
+     * 
+     * @param shipmentId
+     *     The shipment_id
+     */
+    public void setShipmentId(Integer shipmentId) {
+        this.shipmentId = shipmentId;
+    }
+
+    /**
+     * 
+     * @return
+     *     The shipmentName
+     */
+    public String getShipmentName() {
+        return shipmentName;
+    }
+
+    /**
+     * 
+     * @param shipmentName
+     *     The shipment_name
+     */
+    public void setShipmentName(String shipmentName) {
+        this.shipmentName = shipmentName;
+    }
+
+}

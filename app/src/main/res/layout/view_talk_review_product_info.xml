@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:baselineAligned="false"
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/margin_small">
+
+    <LinearLayout
+        android:id="@id/l_talk"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_vs"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:layout_marginRight="@dimen/margin_vs"
+        android:layout_marginStart="@dimen/margin_small"
+        android:layout_weight=".50"
+        android:background="@drawable/cards_ui_2_selected"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/padding_small"
+        android:paddingLeft="@dimen/padding_vs"
+        android:paddingRight="@dimen/padding_vs"
+        android:paddingTop="@dimen/padding_small">
+
+        <TextView
+            android:id="@id/tv_talk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textColor="@color/href_link"
+            android:textSize="@dimen/fontm"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_vs"
+            android:layout_marginStart="@dimen/margin_vs"
+            android:text="@string/title_talk_only"
+            android:textColor="#868686"
+            android:textSize="@dimen/fontm" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@id/l_review"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_small"
+        android:layout_marginLeft="@dimen/margin_vs"
+        android:layout_marginRight="@dimen/margin_small"
+        android:layout_marginStart="@dimen/margin_vs"
+        android:layout_weight=".50"
+        android:background="@drawable/cards_ui_2_selected"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/padding_small"
+        android:paddingLeft="@dimen/padding_vs"
+        android:paddingRight="@dimen/padding_vs"
+        android:paddingTop="@dimen/padding_small">
+
+        <TextView
+            android:id="@id/tv_review"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textColor="@color/href_link"
+            android:textSize="@dimen/fontm"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_vs"
+            android:layout_marginStart="@dimen/margin_vs"
+            android:text="@string/title_review"
+            android:textColor="#868686"
+            android:textSize="@dimen/fontm" />
+
+    </LinearLayout>
+
+</LinearLayout>

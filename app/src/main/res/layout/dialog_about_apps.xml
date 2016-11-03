@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:src="@drawable/ic_new_logo" />
+
+    <TextView
+        android:id="@+id/title_apps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/logo"
+        android:layout_centerHorizontal="true"
+        android:text="@string/app_name"
+        android:textSize="@dimen/font_large" 
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/title_version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title_apps"
+        android:layout_centerHorizontal="true"
+        android:text="Version"
+        android:textSize="@dimen/fontvs" />
+
+    <TextView
+        android:id="@+id/term_policy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title_version"
+        android:layout_centerHorizontal="true"
+        android:paddingBottom="20dp"
+        android:gravity="center"
+        android:textSize="@dimen/fontvs"
+        android:visibility="visible"/>
+
+</RelativeLayout>

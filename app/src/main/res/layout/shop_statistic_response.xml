@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/response"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="@dimen/padding_small"
+    android:background="@drawable/cards_ui_2"
+    android:padding="@dimen/padding_small"
+    android:visibility="gone">
+
+    <TextView
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/title_ss_response"
+        android:textStyle="bold"
+        android:paddingBottom="@dimen/padding_vs" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/tkpd_light_grey"
+        android:layout_below="@+id/header" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/header"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/padding_vs">
+
+        <LinearLayout
+            android:id="@+id/icon_area"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/header"
+            android:layout_weight="0.2"
+            android:background="@drawable/cards_ui_2"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/overall_icon"
+                android:layout_width="@dimen/img_thumb_m"
+                android:layout_height="@dimen/img_thumb_m"
+                android:layout_marginTop="@dimen/padding_small"
+                android:src="@drawable/ic_icon_repsis_speed_lambat" />
+
+            <TextView
+                android:id="@+id/overall_response"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Respon Sedang"
+                android:textSize="@dimen/font_small"
+                android:layout_marginTop="@dimen/padding_vs"
+                android:textColor="@color/tkpd_dark_gray"
+                android:paddingLeft="@dimen/padding_vs"
+                android:paddingRight="@dimen/padding_vs"
+                android:layout_marginBottom="@dimen/padding_small"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/speed_fast"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:drawableLeft="@drawable/ic_icon_repsis_speed_cepat"
+                    android:text="@string/title_1_day"
+                    android:gravity="center"
+                    android:layout_gravity="center_vertical"
+                    android:drawablePadding="@dimen/padding_vs"
+                    />
+                <TextView
+                    android:id="@+id/speed_medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:drawableLeft="@drawable/ic_icon_repsis_speed_sedang"
+                    android:text="@string/title_2_day"
+                    android:gravity="center"
+                    android:layout_gravity="center_vertical"
+                    android:drawablePadding="@dimen/padding_vs"
+                    />
+                <TextView
+                    android:id="@+id/speed_slow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:drawableLeft="@drawable/ic_icon_repsis_speed_lambat"
+                    android:text="@string/title_3_day"
+                    android:gravity="center"
+                    android:layout_gravity="center_vertical"
+                    android:drawablePadding="@dimen/padding_vs"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/response_fast"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:text="1"
+                    android:textStyle="bold"
+                    android:gravity="right|center_vertical"
+                    android:layout_marginLeft="@dimen/padding_small"
+                    android:layout_marginRight="@dimen/padding_vs"
+                    />
+                <TextView
+                    android:id="@+id/response_medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:text="16"
+                    android:textStyle="bold"
+                    android:gravity="right|center_vertical"
+                    android:layout_marginLeft="@dimen/padding_small"
+                    android:layout_marginRight="@dimen/padding_vs"
+                    />
+
+                <TextView
+                    android:id="@+id/response_slow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:text="161"
+                    android:textStyle="bold"
+                    android:gravity="right|center_vertical"
+                    android:layout_marginLeft="@dimen/padding_small"
+                    android:layout_marginRight="@dimen/padding_vs"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginLeft="@dimen/padding_vs">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <View
+                        android:id="@+id/fast_bar"
+                        android:layout_width="100dp"
+                        android:layout_height="12dp"
+                        android:layout_gravity="left|center"
+                        android:background="@color/green_600"
+                        android:layout_centerVertical="true" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <View
+                        android:id="@+id/medium_bar"
+                        android:layout_width="100dp"
+                        android:layout_height="12dp"
+                        android:layout_gravity="left|center_vertical"
+                        android:background="@color/yellow_600"
+                        android:layout_centerVertical="true" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <View
+                        android:id="@+id/slow_bar"
+                        android:layout_width="100dp"
+                        android:layout_height="12dp"
+                        android:layout_gravity="left|center_vertical"
+                        android:background="@color/red_600"
+                        android:layout_centerVertical="true" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

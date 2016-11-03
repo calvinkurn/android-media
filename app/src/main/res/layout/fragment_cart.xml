@@ -1,0 +1,619 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/padding_small"
+    android:paddingRight="@dimen/padding_small"
+    tools:context=".Cart">
+
+    <include
+        android:id="@+id/include_loading"
+        layout="@layout/loader"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true">
+
+        <LinearLayout
+            android:id="@+id/main_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Header Shopping Cart -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_small"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_small"
+                    android:layout_marginRight="@dimen/margin_small"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="@dimen/screen_per_3_pad"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="@string/title_shopping_cart"
+                        android:textSize="@dimen/fontvs"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="@dimen/screen_per_3_pad"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:text="@string/title_summary"
+                        android:textColor="@color/time_color"
+                        android:textSize="@dimen/fontvs" />
+
+                    <TextView
+                        android:layout_width="@dimen/screen_per_3_pad"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:text="@string/title_confirmation"
+                        android:textColor="@color/time_color"
+                        android:textSize="@dimen/fontvs" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="@dimen/margin_med"
+                        android:layout_height="@dimen/margin_med"
+                        android:src="@drawable/ic_shopping_cart_done" />
+
+                    <TextView
+                        android:layout_width="@dimen/screen_per_3_pad"
+                        android:layout_height="0.1dp"
+                        android:layout_gravity="center"
+                        android:background="@color/time_color"
+                        android:gravity="center" />
+
+                    <ImageView
+                        android:layout_width="@dimen/margin_med"
+                        android:layout_height="@dimen/margin_med"
+                        android:src="@drawable/ic_shopping_cart_undone" />
+
+                    <TextView
+                        android:layout_width="@dimen/screen_per_3_pad"
+                        android:layout_height="0.1dp"
+                        android:layout_gravity="center"
+                        android:background="@color/time_color"
+                        android:gravity="center" />
+
+                    <ImageView
+                        android:layout_width="@dimen/margin_med"
+                        android:layout_height="@dimen/margin_med"
+                        android:src="@drawable/ic_shopping_cart_undone" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="@dimen/page_with_pad"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/cart_margin"
+                android:layout_marginTop="@dimen/cart_margin"
+                android:background="@drawable/cards_ui_2"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/margin_small"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/cart_margin"
+                    android:text="@string/title_payment_method"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/payment_method"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/btn_height"
+                    android:layout_margin="@dimen/margin_small"
+                    android:background="@drawable/btn_shop"
+                    android:gravity="center"
+                    android:text="@string/msg_choose"
+                    android:textColor="@color/label_color"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_small"
+                android:background="@drawable/cards_ui_2"
+                android:paddingBottom="@dimen/padding_small"
+                android:paddingLeft="@dimen/padding_small"
+                android:paddingRight="@dimen/padding_small">
+
+                <TextView
+                    android:id="@+id/error_payment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_vs"
+                    android:background="#FFADAD"
+                    android:padding="@dimen/padding_vs"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <RelativeLayout
+                    android:id="@+id/payment_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/error_payment"
+                    android:paddingBottom="@dimen/padding_small">
+
+                    <TextView
+                        android:id="@+id/string_payment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/margin_small"
+                        android:paddingTop="@dimen/padding_small"
+                        android:text="Pembayaran"
+                        android:textColor="@color/label_color"
+                        android:textSize="@dimen/fontvs"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+
+                    <LinearLayout
+                        android:id="@+id/payment_total_sum"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_vs"
+                        android:layout_marginTop="@dimen/margin_small">
+
+                        <TextView
+                            android:id="@+id/string_saldo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Total Pembayaran"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/font_large"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/total_payment"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@id/string_saldo"
+                            android:gravity="right"
+                            android:text="Rp 200.000,-"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/font_large"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/use_saldo_wrapper"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/payment_label"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/promo_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/msg_promo_ecash"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/rp_currency"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_currency_rp"
+                            android:textColor="@color/label_color"
+                            android:textSize="@dimen/fonts"
+                            android:textStyle="bold"
+                            android:visibility="gone" />
+
+                        <EditText
+                            android:id="@+id/et_tkpd_balance"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@+id/rp_currency"
+                            android:hint="@string/title_use_tokopedia_balance"
+                            android:inputType="number"
+                            android:textSize="@dimen/fonts"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/saldo_left_wrapper"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/payment_total_sum">
+
+                        <TextView
+                            android:id="@+id/string_tot"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/et_tkpd_balance"
+                            android:layout_marginRight="@dimen/margin_small"
+                            android:text="Saldo Tokopedia Anda saat ini"
+                            android:textColor="@color/label_color"
+                            android:textSize="@dimen/fontvs" />
+
+                        <TextView
+                            android:id="@+id/tokopedia_balance"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@id/string_tot"
+                            android:gravity="right"
+                            android:text="Rp 2.000.213,-"
+                            android:textColor="@color/label_color"
+                            android:textSize="@dimen/fontvs" />
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/payment_wrapper"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/saldo_left_wrapper"
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:layout_marginTop="@dimen/margin_med"
+                        android:background="@drawable/cards_ui_selected"
+                        android:gravity="center"
+                        android:padding="@dimen/padding_small">
+
+                        <ImageView
+                            android:id="@+id/logo_payment"
+                            android:layout_width="55sp"
+                            android:layout_height="28sp"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="@dimen/margin_vs"
+                            android:layout_toLeftOf="@+id/spinner_payment"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/spinner_payment"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerInParent="true"
+                            android:drawablePadding="@dimen/padding_small"
+                            android:gravity="center"
+                            android:text="Pilih metode pembayaran dulu"
+                            android:textColor="@color/href_link"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:layout_width="@dimen/small_dp"
+                            android:layout_height="@dimen/small_dp"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="@dimen/margin_vs"
+                            android:layout_toRightOf="@+id/spinner_payment"
+                            android:background="@drawable/overflow_selected"
+                            android:src="@drawable/chevron_down" />
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/payment_label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/payment_wrapper"
+                        android:layout_marginBottom="@dimen/margin_vs"
+                        android:background="@color/green_200"
+                        android:padding="@dimen/margin_vs"
+                        android:text="Tidak dikenakan biaya"
+                        android:visibility="gone" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/checkout_but"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/btn_height"
+                    android:layout_below="@id/payment_area"
+                    android:background="@drawable/btn_buy"
+                    android:gravity="center"
+                    android:text="@string/tittle_checkout"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/font_small"
+                    android:textStyle="bold" />
+
+                <CheckBox
+                    android:id="@+id/use_voucher_but"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/btn_height"
+                    android:layout_below="@id/checkout_but"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:gravity="center|left"
+                    android:text="@string/title_use_promo_code"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/fontvs"
+                    android:textStyle="bold" />
+
+                <RelativeLayout
+                    android:id="@+id/use_voucher_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/use_voucher_but"
+                    android:layout_gravity="center">
+
+                    <TextView
+                        android:id="@+id/check_voucher"
+                        android:layout_width="90dp"
+                        android:layout_height="44dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginLeft="8dp"
+                        android:background="@color/green_500"
+                        android:gravity="center"
+                        android:text="@string/title_check"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/font_small"
+                        android:textStyle="bold" />
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/til_voucher"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_toLeftOf="@id/check_voucher">
+
+                        <EditText
+                            android:id="@+id/edit_voucher"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/btn_height"
+                            android:hint="Kode Voucher"
+                            android:singleLine="true" />
+                    </android.support.design.widget.TextInputLayout>
+
+                    <TextView
+                        android:id="@+id/voucher_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/til_voucher" />
+
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/holder_cashback"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+            <RelativeLayout
+                android:id="@+id/tokopedia_balance_area"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_small"
+                android:background="@drawable/cards_ui_2"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <!--  textview di bawah tidak ditemukan.
+                kemungkinan tidak dipakai atau ...... -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:text="@string/title_tokopedia_balance"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tokopedia_balance_old"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/balance_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tokopedia_balance_old">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/title_currency_rp" />
+
+                    <EditText
+                        android:id="@+id/balance_amount"
+                        android:layout_width="@dimen/balance_width"
+                        android:layout_height="wrap_content"
+                        android:inputType="number" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/use_balance_but"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/btn_height"
+                    android:layout_below="@id/balance_view"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:background="@drawable/btn_buy"
+                    android:gravity="center"
+                    android:text="@string/title_use_tokopedia_balance"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+
+            <!-- <RelativeLayout -->
+            <!-- android:layout_width="@dimen/page_with_pad" -->
+            <!-- android:layout_height="wrap_content" -->
+            <!-- android:background="@drawable/cards_ui_2" -->
+            <!-- android:layout_gravity="center" -->
+            <!-- android:layout_marginBottom="@dimen/margin_small" -->
+            <!-- android:visibility="gone" -->
+            <!-- android:padding="@dimen/padding_small"  > -->
+
+
+            <!-- <TextView -->
+            <!-- android:layout_width="wrap_content" -->
+            <!-- android:layout_height="wrap_content" -->
+            <!-- android:text="@string/title_total_payment" -->
+            <!-- android:textStyle="bold" -->
+            <!-- android:textSize="@dimen/fonts" -->
+            <!-- android:layout_alignParentLeft="true"/> -->
+
+
+            <!-- <TextView -->
+            <!-- android:shopId="@+shopId/total_payment" -->
+            <!-- android:layout_width="wrap_content" -->
+            <!-- android:layout_height="wrap_content" -->
+            <!-- android:textStyle="bold" -->
+            <!-- android:textSize="@dimen/fonts" -->
+            <!-- android:layout_alignParentRight="true"/> -->
+
+
+            <!-- <TextView -->
+            <!-- android:shopId="@+shopId/checkout_but" -->
+            <!-- android:layout_width="match_parent" -->
+            <!-- android:layout_height="@dimen/btn_height" -->
+            <!-- android:textStyle="bold" -->
+            <!-- android:textColor="@color/white" -->
+            <!-- android:layout_marginTop="@dimen/margin_small" -->
+            <!-- android:gravity="center" -->
+            <!-- android:textSize="@dimen/fonts" -->
+            <!-- android:text="@string/tittle_checkout" -->
+            <!-- android:background="@drawable/btn_buy_from_cart" -->
+            <!-- android:layout_below="@shopId/total_payment"/> -->
+
+
+            <!-- </RelativeLayout> -->
+
+            <!--
+            here
+            <RelativeLayout 
+                android:shopId="@+shopId/use_voucher_layout"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_small"
+                android:background="@drawable/cards_ui_2"
+                >
+                
+                <EditText 
+                    android:shopId="@+shopId/edit_voucher"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    />
+                
+                <TextView 
+                    android:shopId="@+shopId/check_voucher"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text="@string/title_check"
+                    android:layout_toRightOf="@shopId/edit_voucher"
+                    />
+                
+                <TextView 
+                    android:shopId="@+shopId/voucher_text"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_below="@shopId/edit_voucher"
+                    />
+			</RelativeLayout>
+                
+            -->
+
+            <LinearLayout
+                android:id="@+id/lv_cart"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/button_editor"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_alignParentBottom="true"
+        android:background="@color/green_btn"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/cancel_but"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".50"
+            android:gravity="center"
+            android:padding="@dimen/padding_small"
+            android:text="@string/title_cancel"
+            android:textColor="#ffffff" />
+
+        <View
+            android:layout_width="0.2dp"
+            android:layout_height="match_parent"
+            android:background="#116216" />
+
+        <TextView
+            android:id="@+id/save_but"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".50"
+            android:gravity="center"
+            android:padding="@dimen/padding_small"
+            android:text="@string/submit_but"
+            android:textColor="#ffffff" />
+    </LinearLayout>
+
+    <!-- <LinearLayout -->
+    <!-- android:shopId="@+shopId/button_editor" -->
+    <!-- android:layout_width="match_parent" -->
+    <!-- android:layout_height="wrap_content" -->
+    <!-- android:layout_alignParentBottom="true" -->
+    <!-- android:visibility="gone"> -->
+
+
+    <!-- <TextView -->
+    <!-- android:shopId="@+shopId/save_but" -->
+    <!-- android:layout_width="@dimen/half_screen" -->
+    <!-- android:layout_height="wrap_content" -->
+    <!-- android:text="@string/submit_but" -->
+    <!-- android:textStyle="bold" -->
+    <!-- android:gravity="center" -->
+    <!-- android:background="#FFFFFF" -->
+    <!-- android:padding="10dp" /> -->
+
+
+    <!-- <TextView -->
+    <!-- android:shopId="@+shopId/cancel_but" -->
+    <!-- android:layout_width="@dimen/half_screen" -->
+    <!-- android:layout_height="wrap_content" -->
+    <!-- android:text="@string/title_cancel" -->
+    <!-- android:textStyle="bold" -->
+    <!-- android:gravity="center" -->
+    <!-- android:background="#FFFFFF" -->
+    <!-- android:padding="10dp" /> -->
+    <!-- </LinearLayout> -->
+
+    <include
+        android:id="@+id/include_no_result"
+        layout="@layout/error_no_result"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+</RelativeLayout>

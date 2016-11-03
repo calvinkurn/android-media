@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:id="@+id/filter_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/cards_ui_flat"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/read_wrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btn_filter_hide"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_small">
+
+            <SearchView
+                android:id="@+id/search"
+                style="@style/SearchViewStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:iconifiedByDefault="false"></SearchView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/due_date"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".50"
+                    android:entries="@array/response_deadline_7" />
+
+                <Spinner
+                    android:id="@+id/shipping"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".50"
+                    android:entries="@array/shipping_type" />
+
+                <!-- <TextView -->
+                <!-- android:shopId="@+shopId/search_button" -->
+                <!-- android:layout_width="@dimen/tx_list_search_btn" -->
+                <!-- android:layout_height="@dimen/tx_list_search_btn_h" -->
+                <!-- android:layout_gravity="center" -->
+                <!-- android:background="@drawable/button_buy_from_cart" -->
+                <!-- android:gravity="center" -->
+                <!-- android:padding="@dimen/padding_vs" -->
+                <!-- android:text="@string/hint_search_message" -->
+                <!-- android:textColor="@color/white" -->
+                <!-- android:textSize="@dimen/fonts" -->
+                <!-- android:textStyle="bold" /> -->
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_alignParentTop="true"
+            android:background="#AAAAAA" />
+    </RelativeLayout>
+</LinearLayout>

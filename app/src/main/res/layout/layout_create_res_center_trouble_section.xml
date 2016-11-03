@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/cards_ui_2"
+    android:padding="@dimen/padding_small"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/padding_vs"
+        android:paddingBottom="@dimen/padding_vs"
+        android:text="@string/title_create_resolution_step_1_desc"
+        android:textSize="@dimen/fontvs" />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        android:id="@+id/spinner_trouble_category" />
+
+</LinearLayout>

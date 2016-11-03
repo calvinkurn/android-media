@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:showIn="@layout/fragment_people_info">
+
+    <LinearLayout
+        android:id="@+id/layout_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical">
+
+        <com.tokopedia.tkpd.people.customview.PeopleInfoHeaderView
+            android:id="@+id/layout_people_info_header_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:background="@color/greyish_bg" />
+
+        <com.tokopedia.tkpd.people.customview.PeopleInfoDetailView
+            android:id="@+id/layout_people_info_detail_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <com.tokopedia.tkpd.people.customview.PeopleInfoReputationView
+            android:id="@+id/layout_people_info_reputation_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <com.tokopedia.tkpd.people.customview.PeopleInfoShopOwnerView
+            android:id="@+id/layout_people_info_shop_owner_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+</ScrollView>
