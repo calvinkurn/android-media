@@ -1,0 +1,295 @@
+def getDpiId(String density) {
+
+    def DPI_ID = ['null': 0, 'mdpi': 1, 'hdpi': 2, 'xhdpi': 3, 'xxhdpi': 4] // Add here your supported dpi
+    if (density != null)
+        return DPI_ID.get(density);
+    return 0;
+}
+
+def getAPKArchiveFolder(variant) {
+    return "/Android/launching-android/" + "V" + variant.mergedFlavor.versionCode;
+}
+
+def allowSplit() {
+    return !project.hasProperty('tkpdBuildType');
+}
+
+def allowDistribution() {
+    if ( project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
+        return "true";
+    }
+    return "false";
+}
+
+def getTkpdVersionCode() {
+    return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : project.defaultVersionCode;
+}
+
+def getTkpdVersionName() {
+    return project.hasProperty('versionName') ? versionName : project.defaultVersionName;
+}
+
+def renameAPKFile(variant, density, versionCode) {
+
+    def fileName = variant.name.toUpperCase()
+    fileName += "-" + variant.mergedFlavor.versionName;
+    fileName += "-V" + versionCode;
+    fileName += "-" + density;
+    fileName += ".apk";
+    return fileName;
+}
+
+def archiveAPK(variant, output) {
+
+    String density = output.getFilter(com.android.build.OutputFile.DENSITY);
+    def originZipAlignedApkFile = output.outputFile;
+    def renameAPKFile = renameAPKFile(variant, density, output.versionCodeOverride);
+    copy {
+        from "$originZipAlignedApkFile"
+        into getAPKArchiveFolder(variant)
+        rename("$originZipAlignedApkFile.name", "$renameAPKFile")
+    }
+}
+
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.1.0'
+        classpath 'io.fabric.tools:gradle:1.+'
+        // the latest version of the android-apt plugin
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+        classpath 'com.google.gms:google-services:1.5.0-beta2'
+    }
+}
+
+//apply plugin: 'android-library'
+//apply plugin: 'eclipse'
+apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'android-apt'
+
+repositories {
+    jcenter()
+    mavenCentral()
+    jcenter()
+    maven { url 'https://maven.fabric.io/public' }
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+    maven { url "https://jitpack.io" }
+    maven { url 'http://maven.localytics.com/public' }
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
+
+final SUPPORT_GOOGLE_LIBRARY = '23.3.0'
+
+dependencies {
+    compile fileTree(include: '*.jar', dir: 'libs')
+    compile(name: 'VTAndroidAPI', ext: 'aar')
+    compile(name: "kirisame-1.2.4", ext: 'aar')
+    compile(name: "recyclerview-multiselect-release", ext: 'aar')
+    compile 'info.vividcode.android.zxing:capture-activity:2.3.0-1.2'
+    compile(name: "ASNECore-0.3.3", ext: 'aar')
+    compile(name: "facebook-0.3.3", ext: 'aar')
+    //    compile 'com.github.asne:asne-instagram:0.3.3'
+    compile('com.crashlytics.sdk.android:crashlytics:2.2.2@aar') {
+        transitive = true
+    }
+    compile 'com.android.support:recyclerview-v7:23.2.1'
+    compile 'com.android.support:support-v4:23.2.1'
+    compile 'com.android.support:appcompat-v7:23.2.1'
+    compile 'com.android.support:multidex:1.0.1'
+    compile 'com.android.support:support-v13:23.2.1'
+    compile 'com.google.android.gms:play-services-plus:8.3.0'
+    compile 'com.google.android.gms:play-services-base:8.3.0'
+    compile 'com.google.android.gms:play-services-appindexing:8.3.0'
+    compile 'com.google.android.gms:play-services-analytics:8.3.0'
+    compile 'com.google.android.gms:play-services-gcm:8.3.0'
+    compile 'com.google.android.gms:play-services-location:8.3.0'
+    compile 'com.google.android.gms:play-services-maps:8.3.0'
+    compile 'com.mcxiaoke.volley:library-aar:1.0.1'
+    compile 'com.github.anrwatchdog:anrwatchdog:1.1.+'
+    apt "com.github.Raizlabs.DBFlow:dbflow-processor:3.1.1"
+    compile "com.github.Raizlabs.DBFlow:dbflow-core:3.1.1"
+    compile "com.github.Raizlabs.DBFlow:dbflow:3.1.1"
+    compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'com.android.support:design:23.2.1'
+    compile 'org.parceler:parceler-api:1.0.4'
+    compile 'com.google.code.gson:gson:2.4'
+    apt "org.parceler:parceler:1.0.4"
+    compile 'com.sromku:simple-fb:4.1.1'
+    compile 'com.github.paolorotolo:appintro:3.4.0'
+    compile 'io.reactivex:rxandroid:1.0.1'
+    // Because RxAndroid releases are few and far between, it is recommended you also
+
+    // explicitly depend on RxJava's latest version for bug fixes and new features.
+    compile 'io.reactivex:rxjava:1.0.16'
+    compile 'io.reactivex:rxjava-math:1.0.0'
+    compile 'com.jakewharton.rxbinding:rxbinding:0.2.0'
+    compile 'com.jakewharton.timber:timber:2.4.2'
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
+//    compile 'com.squareup.okhttp:okhttp:2.6.0'
+//    compile 'com.squareup.okhttp:logging-interceptor:2.6.0'
+    compile 'com.squareup.okhttp3:okhttp:3.4.1'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.4.1'
+
+    compile 'com.jakewharton:butterknife:7.0.1'
+    compile "com.android.support:cardview-v7:${SUPPORT_GOOGLE_LIBRARY}"
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'com.nineoldandroids:library:2.4.0'
+    compile 'com.github.ksoichiro:android-observablescrollview:1.5.1'
+    compile ('com.github.ganfra:material-spinner:1.1.1'){
+        exclude group: 'com.nineoldandroids', module: 'library'
+
+        exclude group: 'com.android.support', module: 'appcompat-v7'
+    }
+    compile ('com.aurelhubert:ahbottomnavigation:1.4.0'){
+        exclude group: 'com.android.support', module: 'design'
+    }
+    compile 'com.appsflyer:af-android-sdk:4+@aar'
+    compile 'com.localytics.android:library:4.0+'
+    compile 'com.instabug.library:instabug:2+'
+    compile 'net.hockeyapp.android:HockeySDK:4.0.0'
+    compile'com.github.hotchemi:permissionsdispatcher:2.2.0@aar'
+    apt 'com.github.hotchemi:permissionsdispatcher-processor:2.2.0'
+
+}
+
+//configurations {
+//    all*.exclude group: 'com.google.android.gms', module: 'play-services'
+//}
+
+
+android {
+
+    project.ext {
+        defaultVersionCode = 2030104;
+        defaultVersionName = "2.3.1";
+    }
+
+    compileSdkVersion 24
+    buildToolsVersion '25'
+    useLibrary 'org.apache.http.legacy'
+    sourceSets {
+
+        packagingOptions {
+            exclude 'META-INF/LICENSE.txt'
+        }
+
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            resources.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            renderscript.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
+        }
+
+        // Move the tests to tests/java, tests/res, etc...
+        instrumentTest.setRoot('tests')
+
+        // Move the build types to build-types/<type>
+        // For instance, build-types/debug/java, build-types/debug/AndroidManifest.xml, ...
+        // This moves them out of them default location under src/<type>/... which would
+        // conflict with src/ being used by the main source set.
+        // Adding new build types or product flavors should be accompanied
+        // by a similar customization.
+        debug.setRoot('build-types/debug')
+        release.setRoot('build-types/release')
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file("debug.keystore")
+        }
+    }
+
+    buildTypes {
+
+        debug {
+            minifyEnabled false
+            zipAlignEnabled false
+            buildConfigField "boolean" , "ENABLE_DISTRIBUTION", allowDistribution()
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+
+        release {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources true
+            buildConfigField "boolean" , "ENABLE_DISTRIBUTION", allowDistribution()
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+
+            ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
+            ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
+
+            if (allowSplit()) {
+                applicationVariants.all { variant ->
+                    variant.outputs.each { output ->
+                        String density = output.getFilter(com.android.build.OutputFile.DENSITY);
+                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + getDpiId(density);
+                    }
+                    variant.assemble.doLast {
+                        variant.outputs.each { output ->
+                            if (output.zipAlign) {
+                                archiveAPK(variant, output);
+                            }
+                        }
+                    }
+                }
+            } else {
+                applicationVariants.all { variant ->
+                    variant.outputs.each { output ->
+                        output.versionCodeOverride = (getTkpdVersionCode() * 100);
+                    }
+                }
+            }
+        }
+    }
+
+    defaultConfig {
+        multiDexEnabled = true
+        applicationId "com.tokopedia.tkpd"
+        resConfigs "en", "id"
+        versionCode getTkpdVersionCode()
+        versionName getTkpdVersionName()
+    }
+
+
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+    }
+    splits {
+        density {
+            enable allowSplit()
+            exclude "tvdpi", "xxxhdpi", "ldpi" //Add or modify the supported density here`
+            compatibleScreens 'small', 'normal', 'large', 'xlarge' //Discouraged to touch this
+        }
+    }
+
+
+}
+
