@@ -141,7 +141,7 @@ public class ManageShopNotes extends TActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.action_add_notes:
+            case R2.id.action_add_notes:
                 if (ShopNoteListId.size() < 3 || ShopNoteListId.size() < 4 && containsReturnablePolicy) {
                     Intent intent = new Intent(ManageShopNotes.this, ShopNoteForm.class);
                     Bundle bundle = new Bundle();
@@ -154,7 +154,7 @@ public class ManageShopNotes extends TActivity {
                     // ErrorMessage.setText(getString(R.string.error_max_notes));
                 }
                 return true;
-            case R.id.action_add_returnable_policy:
+            case R2.id.action_add_returnable_policy:
                 if (!containsReturnablePolicy) {
                     Intent intent = new Intent(ManageShopNotes.this, ShopNoteForm.class);
                     Bundle bundle = new Bundle();

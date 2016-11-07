@@ -152,7 +152,7 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
             case android.R.id.home:
                 getActivity().onBackPressed();
                 return true;
-            case R.id.action_refresh:
+            case R2.id.action_refresh:
                 if (!isRequest) {
                     swipe.setRefreshing(true);
                     refresh();
@@ -577,17 +577,17 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
             public boolean onMenuItemClick(MenuItem item) {
                 DialogFragment dialog;
                 switch (item.getItemId()) {
-                    case R.id.action_delete:
-                    case R.id.action_delete_talk:
+                    case R2.id.action_delete:
+                    case R2.id.action_delete_talk:
                         dialog = DeleteTalkDialog.createInstance(deleteListener());
                         dialog.show(getFragmentManager(), DeleteTalkDialog.FRAGMENT_TAG);
                         return true;
-                    case R.id.action_follow:
-                    case R.id.action_unfollow:
+                    case R2.id.action_follow:
+                    case R2.id.action_unfollow:
                         dialog = FollowTalkDialog.createInstance(followListener(), isFollow);
                         dialog.show(getFragmentManager(), FollowTalkDialog.FRAGMENT_TAG);
                         return true;
-                    case R.id.action_report:
+                    case R2.id.action_report:
                         dialog = ReportTalkDialog.createInstance(reportListener());
                         dialog.show(getFragmentManager(), ReportTalkDialog.FRAGMENT_TAG);
                         return true;

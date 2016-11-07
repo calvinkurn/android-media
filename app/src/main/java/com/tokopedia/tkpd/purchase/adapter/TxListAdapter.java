@@ -281,19 +281,19 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.action_track:
+                case R2.id.action_track:
                     actionListener.actionTrackOrder(orderData);
                     return true;
-                case R.id.action_confirm_package:
+                case R2.id.action_confirm_package:
                     actionListener.actionConfirmDeliver(orderData);
                     return true;
-                case R.id.action_upload:
+                case R2.id.action_upload:
                     actionListener.actionUploadTx(orderData);
                     return true;
-                case R.id.action_open_dispute:
+                case R2.id.action_open_dispute:
                     actionListener.actionDispute(orderData, 0);
                     return true;
-                case R.id.action_show_complain:
+                case R2.id.action_show_complain:
                     actionListener.actionShowComplain(orderData);
                     return true;
                 default:

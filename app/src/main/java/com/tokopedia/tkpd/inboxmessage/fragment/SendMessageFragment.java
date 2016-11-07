@@ -100,7 +100,7 @@ public class SendMessageFragment extends BasePresenterFragment<SendMessagePresen
             case android.R.id.home:
                 onBackPressed();
                 return true;
-            case R.id.action_send:
+            case R2.id.action_send:
                 presenter.doSendMessage();
                 break;
         }

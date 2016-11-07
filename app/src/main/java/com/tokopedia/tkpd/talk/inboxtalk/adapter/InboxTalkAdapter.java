@@ -339,18 +339,18 @@ public class InboxTalkAdapter extends BaseRecyclerViewAdapter{
                 public boolean onMenuItemClick(MenuItem item) {
                     DialogFragment dialog;
                     switch (item.getItemId()) {
-                        case R.id.action_follow:
-                        case R.id.action_unfollow:
+                        case R2.id.action_follow:
+                        case R2.id.action_unfollow:
                             dialog = FollowTalkDialog.createInstance(followListener(talk,position)
                                     , talk.getTalkFollowStatus());
                             dialog.show(fragment.getFragmentManager(), FollowTalkDialog.FRAGMENT_TAG);
                             return true;
-                        case R.id.action_delete_talk:
-                        case R.id.action_delete:
+                        case R2.id.action_delete_talk:
+                        case R2.id.action_delete:
                             dialog = DeleteTalkDialog.createInstance(deleteListener(talk,position));
                             dialog.show(fragment.getFragmentManager(), DeleteTalkDialog.FRAGMENT_TAG);
                             return true;
-                        case R.id.action_report:
+                        case R2.id.action_report:
                             dialog = ReportTalkDialog.createInstance(reportListener(talk,position));
                             dialog.show(fragment.getFragmentManager(), ReportTalkDialog.FRAGMENT_TAG);
                             return true;

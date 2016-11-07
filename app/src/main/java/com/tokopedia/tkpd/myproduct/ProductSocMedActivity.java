@@ -665,7 +665,7 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.home:
+            case R2.id.home:
                 Log.d(TAG, messageTAG+" R.id.home !!!");
                 return true;
             case android.R.id.home:

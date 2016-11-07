@@ -163,7 +163,7 @@ public class NoReviewDataBinder extends DataBinder<NoReviewDataBinder.ViewHolder
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.action_skip:
+                    case R2.id.action_skip:
                         showDialogSkip(position);
                         return true;
                     default:

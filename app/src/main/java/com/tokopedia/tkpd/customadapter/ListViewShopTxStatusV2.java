@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.selling.model.SellingStatusTxModel;
 import com.tokopedia.tkpd.var.TkpdState;
 
@@ -161,11 +162,11 @@ public class ListViewShopTxStatusV2 extends BaseAdapter{
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()){
-                    case R.id.action_edit:
+                    case R2.id.action_edit:
                         listener.onEditRef(pos);
                         return true;
 
-                    case R.id.action_track:
+                    case R2.id.action_track:
                         listener.onTrack(pos);
                         return true;
 

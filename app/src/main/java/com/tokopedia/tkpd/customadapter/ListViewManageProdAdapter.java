@@ -35,6 +35,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.database.manager.DbManagerImpl;
 import com.tokopedia.tkpd.database.model.EtalaseDB;
 import com.tokopedia.tkpd.myproduct.ManageProduct;
@@ -571,7 +572,7 @@ public class ListViewManageProdAdapter extends BaseAdapter
                 boolean isEdit;
                 boolean isCopy;
                 switch (item.getItemId()) {
-                    case R.id.action_edit:
+                    case R2.id.action_edit:
 //			        	bundle = new Bundle();
 //						intent = new Intent(context, EditProduct.class);
 //						bundle.putString("product_id", ProductID);
@@ -582,7 +583,7 @@ public class ListViewManageProdAdapter extends BaseAdapter
                         intent = ProductActivity.moveToEditFragment(context, isEdit, ProductID);
                         context.startActivityForResult(intent, 1);
                         return true;
-                    case R.id.action_copy:
+                    case R2.id.action_copy:
 //			        	bundle = new Bundle();
 //						intent = new Intent(context, EditProduct.class);
 //						bundle.putString("product_id", ProductID);
@@ -593,7 +594,7 @@ public class ListViewManageProdAdapter extends BaseAdapter
                         intent = ProductActivity.moveToCopyFragment(context, isCopy, ProductID);
                         context.startActivityForResult(intent, 1);
                         return true;
-                    case R.id.action_edit_price:
+                    case R2.id.action_edit_price:
                         holder.Prices.setVisibility(View.VISIBLE);
                         holder.PriceView.setVisibility(View.GONE);
                         holder.Currency.setVisibility(View.VISIBLE);

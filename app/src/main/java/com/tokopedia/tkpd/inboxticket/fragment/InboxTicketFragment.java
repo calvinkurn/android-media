@@ -105,7 +105,7 @@ public class InboxTicketFragment extends BasePresenterFragment<InboxTicketFragme
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_help:
+            case R2.id.action_help:
                 goToHelp();
                 return true;
 

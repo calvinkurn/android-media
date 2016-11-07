@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.product.activity.ProductInfoActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.reputationproduct.facade.FacadeReputation;
@@ -330,7 +331,7 @@ public class ListViewReputationAdapter extends BaseAdapter {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
-                            case R.id.action_report:
+                            case R2.id.action_report:
                                 ReportTalkReview report = new ReportTalkReview(
                                         (Activity) context, 1, list.get(position).reviewId, "report_comment_review", shopId);
                                 report.ShowDialogReport();

@@ -403,11 +403,11 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.action_edit:
+                    case R2.id.action_edit:
                         listener.onEditRef(model);
                         return true;
 
-                    case R.id.action_track:
+                    case R2.id.action_track:
                         listener.onTrack(model);
                         return true;
 

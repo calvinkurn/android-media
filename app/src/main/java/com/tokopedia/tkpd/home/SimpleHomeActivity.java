@@ -171,14 +171,14 @@ public class SimpleHomeActivity extends TActivity implements SimpleHomeView{
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.home:
+            case R2.id.home:
                 Log.d(TAG, messageTAG + " R.id.home !!!");
                 return true;
             case android.R.id.home:
                 Log.d(TAG, messageTAG+" android.R.id.home !!!");
                 getSupportFragmentManager().popBackStack();
                 return true;
-            case R.id.action_cart:
+            case R2.id.action_cart:
                 return TActivity.onCartOptionSelected(this);
         }
 

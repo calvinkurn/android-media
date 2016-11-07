@@ -27,6 +27,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.tkpd.Cart;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.analytics.UnifyTracking;
 import com.tokopedia.tkpd.analytics.model.CustomerWrapper;
 import com.tokopedia.tkpd.app.MainApplication;
@@ -456,7 +457,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.home:
+            case R2.id.home:
                 Log.d(TAG, messageTAG + " R.id.home !!!");
                 return true;
             case android.R.id.home:

@@ -100,10 +100,10 @@ public class TxVerAdapter extends ArrayAdapter<TxVerData> {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.action_edit:
+                    case R2.id.action_edit:
                         actionListener.actionEditPayment(data);
                         return true;
-                    case R.id.action_upload:
+                    case R2.id.action_upload:
                         actionListener.actionUploadProof(data);
                         return true;
                     default:

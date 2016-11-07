@@ -122,7 +122,7 @@ public class TalkProductFragment extends BasePresenterFragment<TalkProductPresen
                 getActivity().onBackPressed();
                 return true;
 
-            case R.id.action_talk_add:
+            case R2.id.action_talk_add:
                 ShowDialogAddNew();
                 return true;
         }

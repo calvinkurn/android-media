@@ -305,13 +305,13 @@ public class ManageProduct extends TkpdActivity implements
                 int id = menuItem.getItemId();
 
                 switch (id) {
-                    case R.id.action_instagram:
+                    case R2.id.action_instagram:
                         onAddInstagram();
                         break;
-                    case R.id.action_gallery:
+                    case R2.id.action_gallery:
                         ManageProductPermissionsDispatcher.onAddFromGalleryWithCheck(ManageProduct.this);
                         break;
-                    case R.id.action_camera:
+                    case R2.id.action_camera:
                         ManageProductPermissionsDispatcher.onAddFromCameraWithCheck(ManageProduct.this);
                         break;
                 }
@@ -456,17 +456,17 @@ public class ManageProduct extends TkpdActivity implements
                 // Respond to clicks on the actions in the CAB
                 switch (item.getItemId()) {
                     // :)
-                    case R.id.action_update_etalase:
+                    case R2.id.action_update_etalase:
                         ActionTaken = true;
                         ShowEtalaseChange();
                         mode.finish();
                         return true;
-                    case R.id.action_update_categories:
+                    case R2.id.action_update_categories:
                         ActionTaken = true;
                         ShowCategoriesChange();
                         mode.finish();
                         return true;
-/*				case R.shopId.action_update_condition:
+/*				case R2.shopId.action_update_condition:
                     ActionTaken = true;
 					ShowConditionChange();
 					//=====================================DUMPER KRIS
@@ -474,17 +474,17 @@ public class ManageProduct extends TkpdActivity implements
 					//=====================================
 					mode.finish();
 					return true;*/
-                    case R.id.action_update_insurance:
+                    case R2.id.action_update_insurance:
                         ActionTaken = true;
                         ShowInsuranceChange();
                         mode.finish();
                         return true;
-                    case R.id.action_update_returnable:
+                    case R2.id.action_update_returnable:
                         ActionTaken = true;
                         changeMultipleReturnable();
                         mode.finish();
                         return true;
-                    case R.id.action_delete:
+                    case R2.id.action_delete:
                         ActionTaken = true;
                         ShowDeleteChange();
                         mode.finish();
@@ -737,7 +737,7 @@ public class ManageProduct extends TkpdActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
-            case R.id.add_product:
+            case R2.id.add_product:
                 if (isProdManager == 1) {
                     ProductActivity.moveToAddProduct(this);
                 } else {
@@ -745,10 +745,10 @@ public class ManageProduct extends TkpdActivity implements
                             getString(R.string.error_permission));
                 }
                 return true;
-            case R.id.filter:
+            case R2.id.filter:
                 ShowFilterDialog();
                 return true;
-            case R.id.sort:
+            case R2.id.sort:
                 if (!loading)
                     SortDialog.show();
                 return true;

@@ -283,7 +283,7 @@ public class ProductReviewAdapter extends BaseRecyclerViewAdapter {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
-                            case R.id.action_report:
+                            case R2.id.action_report:
                                 showDialogReport(review);
                                 return true;
                             default:

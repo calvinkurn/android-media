@@ -224,13 +224,13 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
         boolean checked = ((RadioButton) view).isChecked();
 
         switch(view.getId()) {
-            case R.id.register_next_male:
+            case R2.id.register_next_male:
                 if (checked)
                     registerNextFemale.setChecked(false);
 
                 presenter.updateData(RegisterNewNext.GENDER, RegisterViewModel.GENDER_MALE);
                 break;
-            case R.id.register_next_female:
+            case R2.id.register_next_female:
                 if (checked)
                     registerNextMale.setChecked(false);
 

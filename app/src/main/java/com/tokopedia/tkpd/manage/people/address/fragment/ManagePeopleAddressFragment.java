@@ -353,7 +353,7 @@ public class ManagePeopleAddressFragment extends BasePresenterFragment<ManagePeo
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_add_address:
+            case R2.id.action_add_address:
                 this.openFormAddressView(null);
                 return true;
             default:

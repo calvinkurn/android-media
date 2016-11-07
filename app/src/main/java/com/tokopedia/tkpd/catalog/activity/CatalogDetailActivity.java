@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterActivity;
 import com.tokopedia.tkpd.catalog.fragment.CatalogDetailFragment;
 import com.tokopedia.tkpd.catalog.fragment.CatalogDetailListFragment;
@@ -116,7 +117,7 @@ public class CatalogDetailActivity extends BasePresenterActivity implements ICat
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_share_prod:
+            case R2.id.action_share_prod:
                 if (shareData != null) startActivity(ShareActivity.createIntent(this, shareData));
                 else NetworkErrorHelper.showSnackbar(this, "Data katalog belum tersedia");
                 return true;

@@ -124,13 +124,13 @@ public class FragmentProductFeed extends Fragment implements ProductFeedView, De
                 int id = menuItem.getItemId();
 
                 switch (id) {
-                    case R.id.action_instagram:
+                    case R2.id.action_instagram:
                         onAddInstagram();
                         break;
-                    case R.id.action_gallery:
+                    case R2.id.action_gallery:
                         ProductActivity.moveToImageGalleryCamera(getActivity(), 0, false, 5);
                         break;
-                    case R.id.action_camera:
+                    case R2.id.action_camera:
                         onAddGallery();
                         break;
                 }

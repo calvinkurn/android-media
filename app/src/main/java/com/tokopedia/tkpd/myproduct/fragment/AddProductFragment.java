@@ -2038,7 +2038,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     @OnFocusChange(R2.id.add_product_price)
     public void onFocusChange(View v, boolean hasFocus) {
         switch (v.getId()) {
-            case R.id.add_product_price:
+            case R2.id.add_product_price:
                 Log.d(TAG, messageTAG + " price has focus " + hasFocus);
                 if (!hasFocus) {
                     InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);

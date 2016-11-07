@@ -44,11 +44,10 @@ class CatalogSpecAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(viewType, parent, false);
-        switch (viewType) {
-            case TYPE_VIEW_SPEC_ITEM:
-                return new SpecChildHolder(view);
-            case TYPE_VIEW_SPEC_SECTION:
-                return new SectionHolder(view);
+        if (viewType == TYPE_VIEW_SPEC_ITEM) {
+            return new SpecChildHolder(view);
+        } else if (viewType == TYPE_VIEW_SPEC_SECTION) {
+            return new SectionHolder(view);
         }
         return null;
     }

@@ -374,7 +374,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
             case android.R.id.home:
                 finish();
                 break;
-            case R.id.action_search:
+            case R2.id.action_search:
                 return false;
         }
         return super.onOptionsItemSelected(item);

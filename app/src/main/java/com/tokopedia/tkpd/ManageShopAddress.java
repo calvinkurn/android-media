@@ -415,7 +415,7 @@ public class ManageShopAddress extends TActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.add_address:
+            case R2.id.add_address:
                 if (LocationNameList.size() < 3) {
                     Intent intent = new Intent(ManageShopAddress.this, ShopAddressForm.class);
                     Bundle bundle = new Bundle();

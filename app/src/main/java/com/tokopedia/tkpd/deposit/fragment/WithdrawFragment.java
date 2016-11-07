@@ -227,7 +227,7 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
             case android.R.id.home:
                 getActivity().onBackPressed();
                 return true;
-            case R.id.action_send:
+            case R2.id.action_send:
                 presenter.onConfirmClicked();
                 break;
         }

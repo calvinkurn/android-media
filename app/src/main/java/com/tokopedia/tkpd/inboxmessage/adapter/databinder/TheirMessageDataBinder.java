@@ -78,12 +78,12 @@ public class TheirMessageDataBinder extends DataBinder<TheirMessageDataBinder.Vi
         @Override
         public boolean onMenuItemClick(MenuItem menuItem) {
             switch (menuItem.getItemId()) {
-                case R.id.action_copy:
+                case R2.id.action_copy:
                     ClipboardManager clipboard = (ClipboardManager) itemView.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
                     ClipData clip = ClipData.newPlainText("label", message.getText());
                     clipboard.setPrimaryClip(clip);
                     return true;
-                case R.id.action_report:
+                case R2.id.action_report:
                     if (!(nav.equals(MESSAGE_TRASH) || list.get(getAdapterPosition()).getUserLabelId() == 1)) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
                         builder.setMessage(R.string.dialog_spam);

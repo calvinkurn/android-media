@@ -80,7 +80,7 @@ public class SortProductActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_close:
+            case R2.id.action_close:
                 finish();
                 break;
         }

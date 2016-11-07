@@ -565,10 +565,10 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             case android.R.id.home:
                 getActivity().onBackPressed();
                 return true;
-            case R.id.action_wishlist:
+            case R2.id.action_wishlist:
                 presenter.processWishList(context, productData);
                 return true;
-            case R.id.action_report:
+            case R2.id.action_report:
                 presenter.reportProduct(context);
                 return true;
         }

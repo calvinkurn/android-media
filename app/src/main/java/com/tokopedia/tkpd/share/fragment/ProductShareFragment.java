@@ -259,7 +259,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
             case android.R.id.home:
                 getFragmentManager().popBackStack();
                 return true;
-            case R.id.action_close:
+            case R2.id.action_close:
                 getActivity().onBackPressed();
                 return true;
         }

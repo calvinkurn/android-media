@@ -477,7 +477,7 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
     public void onClick(View v) {
         int i = v.getId();
         switch (i) {
-            case R.id.fab_filter:
+            case R2.id.fab_filter:
                 bottomSheetFilterDialog.show();
                 break;
         }

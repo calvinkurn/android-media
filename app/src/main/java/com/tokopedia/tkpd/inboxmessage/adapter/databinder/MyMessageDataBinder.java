@@ -65,7 +65,7 @@ public class MyMessageDataBinder extends DataBinder<MyMessageDataBinder.ViewHold
         @Override
         public boolean onMenuItemClick(MenuItem menuItem) {
             switch (menuItem.getItemId()) {
-                case R.id.action_copy:
+                case R2.id.action_copy:
                     ClipboardManager clipboard = (ClipboardManager) itemView.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
                     ClipData clip = ClipData.newPlainText("label", message.getText());
                     clipboard.setPrimaryClip(clip);

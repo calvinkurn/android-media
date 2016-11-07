@@ -32,6 +32,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.PreviewProductImage;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.inboxreputation.adapter.ImageUploadAdapter;
 import com.tokopedia.tkpd.inboxreputation.interactor.ActReputationRetrofitInteractor;
 import com.tokopedia.tkpd.inboxreputation.interactor.ActReputationRetrofitInteractorImpl;
@@ -720,10 +721,10 @@ public class FragmentReputationProductView extends Fragment {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.action_report:
+                    case R2.id.action_report:
                         showDialogReport();
                         return true;
-                    case R.id.action_delete:
+                    case R2.id.action_delete:
                         progressDialog.showDialog();
                         deleteComment();
                         return true;

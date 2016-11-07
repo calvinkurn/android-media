@@ -21,6 +21,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.PreviewProductImage;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.customadapter.AbstractRecyclerAdapter;
 import com.tokopedia.tkpd.inboxreputation.adapter.ImageUploadAdapter;
 import com.tokopedia.tkpd.inboxreputation.model.ImageUpload;
@@ -322,7 +323,7 @@ public class ShopReputationAdapterR extends AbstractRecyclerAdapter{
             public boolean onMenuItemClick(MenuItem item) {
                 CommonUtils.dumper(item.getItemId());
                 switch (item.getItemId()) {
-                    case R.id.action_report:
+                    case R2.id.action_report:
                         listener.onReport(position);
                         return true;
                     default:

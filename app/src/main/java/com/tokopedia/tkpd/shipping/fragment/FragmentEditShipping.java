@@ -407,7 +407,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
             case android.R.id.home:
                 getActivity().finish();
                 return true;
-            case R.id.action_send:
+            case R2.id.action_send:
                 if(fragmentShippingHeader.isShown()){
                     submitData();
                 }else showErrorToast(getString(R.string.dialog_on_process));

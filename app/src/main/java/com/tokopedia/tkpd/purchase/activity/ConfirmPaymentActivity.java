@@ -699,29 +699,29 @@ public class ConfirmPaymentActivity extends BasePresenterActivity<ConfirmPayment
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             switch (resId) {
-                case R.id.remark:
+                case R2.id.remark:
                     tilEtRemark.setErrorEnabled(false);
                     break;
-                case R.id.nama_penyetor:
+                case R2.id.nama_penyetor:
                     tilEtDepositorName.setErrorEnabled(false);
                     break;
-                case R.id.input_total_payment:
+                case R2.id.input_total_payment:
                     tilEtPaymentAmount.setErrorEnabled(false);
                     CurrencyFormatHelper.SetToRupiah(etTotalPayment);
                     break;
-                case R.id.account_owner:
+                case R2.id.account_owner:
                     tilEtAccountOwner.setErrorEnabled(false);
                     confirmPaymentData.setBankAccountName(s.toString());
                     break;
-                case R.id.account_number:
+                case R2.id.account_number:
                     tilEtAccountNumber.setErrorEnabled(false);
                     confirmPaymentData.setBankAccountNumber(s.toString());
                     break;
-                case R.id.branch:
+                case R2.id.branch:
                     tilEtBankBranch.setErrorEnabled(false);
                     confirmPaymentData.setBankAccountBranch(s.toString());
                     break;
-                case R.id.password:
+                case R2.id.password:
                     if (s.length() <= 0) {
                         renderErrorDepositorPassword(getString(R.string.error_empty_password));
                     } else {
@@ -736,25 +736,25 @@ public class ConfirmPaymentActivity extends BasePresenterActivity<ConfirmPayment
         @Override
         public void afterTextChanged(Editable s) {
             switch (resId) {
-                case R.id.remark:
+                case R2.id.remark:
                     confirmPaymentData.setComments(s.toString());
                     break;
-                case R.id.nama_penyetor:
+                case R2.id.nama_penyetor:
                     confirmPaymentData.setDepositor(s.toString());
                     break;
-                case R.id.input_total_payment:
+                case R2.id.input_total_payment:
                     confirmPaymentData.setPaymentAmount(s.toString());
                     break;
-                case R.id.account_owner:
+                case R2.id.account_owner:
                     confirmPaymentData.setBankAccountName(s.toString());
                     break;
-                case R.id.account_number:
+                case R2.id.account_number:
                     confirmPaymentData.setBankAccountNumber(s.toString());
                     break;
-                case R.id.branch:
+                case R2.id.branch:
                     confirmPaymentData.setBankAccountBranch(s.toString());
                     break;
-                case R.id.password:
+                case R2.id.password:
                     confirmPaymentData.setPasswordDeposit(s.toString());
                     break;
             }

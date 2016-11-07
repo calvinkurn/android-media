@@ -260,15 +260,15 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch ((item.getItemId())) {
-                    case R.id.action_confirm:
+                    case R2.id.action_confirm:
                         onConfirm(position);
                         return true;
 
-                    case R.id.action_cancel:
+                    case R2.id.action_cancel:
                         onCancel(position);
                         return true;
 
-                    case R.id.action_detail_ship:
+                    case R2.id.action_detail_ship:
                         onOpenDetail(position);
                         return true;
 

@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.tkpd.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.tkpd.shopinfo.ShopInfoActivity;
@@ -179,11 +180,11 @@ public class ShopTalkViewAdapter extends TalkViewAdapter {
             public boolean onMenuItemClick(MenuItem item) {
                 DialogFragment dialog;
                 switch (item.getItemId()) {
-                    case R.id.action_delete:
+                    case R2.id.action_delete:
                         dialog = DeleteTalkDialog.createInstance(deleteListener(talk, position));
                         dialog.show(fragment.getFragmentManager(), DeleteTalkDialog.FRAGMENT_TAG);
                         return true;
-                    case R.id.action_report:
+                    case R2.id.action_report:
                         dialog = ReportTalkDialog.createInstance(reportListener(talk, position));
                         dialog.show(fragment.getFragmentManager(), ReportTalkDialog.FRAGMENT_TAG);
                         return true;
