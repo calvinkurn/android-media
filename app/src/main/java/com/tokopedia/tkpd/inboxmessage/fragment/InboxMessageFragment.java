@@ -181,7 +181,7 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
             @Override
             public void onShow(DialogInterface dialog) {
                 BottomSheetDialog bsd = (BottomSheetDialog) dialog;
-                FrameLayout frameLayout = (FrameLayout) bsd.findViewById(android.support.design.R.id.design_bottom_sheet);
+                FrameLayout frameLayout = (FrameLayout) bsd.findViewById(R.id.design_bottom_sheet);
                 if (frameLayout != null) {
                     BottomSheetBehavior<FrameLayout> behavior = BottomSheetBehavior.from(frameLayout);
                     behavior.setHideable(false);

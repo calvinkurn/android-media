@@ -80,7 +80,7 @@ public class BottomSheetFilterDialog {
             @Override
             public void onShow(DialogInterface dialogInterface) {
                 BottomSheetDialog dialog = (BottomSheetDialog) dialogInterface;
-                FrameLayout frameLayout = (FrameLayout) dialog.findViewById(android.support.design.R.id.design_bottom_sheet);
+                FrameLayout frameLayout = (FrameLayout) dialog.findViewById(R.id.design_bottom_sheet);
                 if (frameLayout != null) {
                     BottomSheetBehavior<FrameLayout> behavior = BottomSheetBehavior.from(frameLayout);
                     behavior.setHideable(false);

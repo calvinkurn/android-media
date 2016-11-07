@@ -83,7 +83,7 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
             Snackbar snackbar = Snackbar.make(parentView, CommonUtils.generateMessageError(getActivity(), getContext().getString(R.string.title_retry)), Snackbar.LENGTH_INDEFINITE);
 
             View snackbarView = snackbar.getView();
-            TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+            TextView textView = (TextView) snackbarView.findViewById(R.id.snackbar_text);
             textView.setTextColor(Color.WHITE);
 
             View.OnClickListener listener = new View.OnClickListener() {

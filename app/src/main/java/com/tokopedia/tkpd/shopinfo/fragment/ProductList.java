@@ -171,10 +171,10 @@ public class ProductList extends V2BaseFragment {
         holder.searchView.clearFocus();
         holder.searchView.requestFocusFromTouch();
 
-        View searchPlate = holder.searchView.findViewById(android.support.v7.appcompat.R.id.search_plate);
+        View searchPlate = holder.searchView.findViewById(R.id.search_plate);
         if (searchPlate!=null) {
             searchPlate.setPadding(0, 0 ,0 , 0);
-            EditText searchText = (EditText) searchPlate.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+            EditText searchText = (EditText) searchPlate.findViewById(R.id.search_src_text);
             if (searchText != null) {
                 searchText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
                 searchText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);

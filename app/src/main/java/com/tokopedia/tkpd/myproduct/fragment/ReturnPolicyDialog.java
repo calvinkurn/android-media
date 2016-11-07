@@ -90,7 +90,7 @@ public class ReturnPolicyDialog extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NO_TITLE, android.support.v7.appcompat.R.style.Base_Theme_AppCompat_Dialog);
+        setStyle(DialogFragment.STYLE_NO_TITLE, R.style.Base_Theme_AppCompat_Dialog);
         service = new MyShopNoteActService();
 
         if (getArguments() != null) {

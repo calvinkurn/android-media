@@ -284,7 +284,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         Snackbar snackbar = Snackbar.make(parentView, CommonUtils.generateMessageError(getActivity(), (String) data[0]), Snackbar.LENGTH_INDEFINITE);
 
         View snackbarView = snackbar.getView();
-        TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+        TextView textView = (TextView) snackbarView.findViewById(R.id.snackbar_text);
         textView.setTextColor(Color.WHITE);
 
         View.OnClickListener listener = new View.OnClickListener() {
