@@ -19,6 +19,7 @@ import com.localytics.android.Localytics;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowLog;
 import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.config.TkpdCoreGeneratedDatabaseHolder;
 import com.sromku.simple.fb.Permission;
 import com.sromku.simple.fb.SimpleFacebookConfiguration;
 import com.tkpd.library.TkpdMultiDexApplication;
