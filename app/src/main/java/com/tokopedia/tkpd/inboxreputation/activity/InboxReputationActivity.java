@@ -9,6 +9,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.DrawerPresenterActivity;
 import com.tokopedia.tkpd.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.tkpd.inboxreputation.adapter.SectionsPagerAdapter;
@@ -33,9 +34,9 @@ public class InboxReputationActivity extends DrawerPresenterActivity
     public static final String REVIEW_PRODUCT = "inbox-reputation-my-product";
     public static final String REVIEW_USER = "inbox-reputation-my-review";
 
-    @Bind(R.id.pager)
+    @Bind(R2.id.pager)
     ViewPager viewPager;
-    @Bind(R.id.indicator)
+    @Bind(R2.id.indicator)
     TabLayout indicator;
 
     @Override

@@ -22,6 +22,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.addtocart.model.responseatcform.Destination;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.database.model.City;
@@ -48,79 +49,79 @@ import butterknife.Bind;
 public class AddAddressFragment extends BasePresenterFragment<AddAddressPresenter>
         implements AddAddressFragmentView, ManageAddressConstant {
 
-    @Bind(R.id.receiver_name_layout)
+    @Bind(R2.id.receiver_name_layout)
     TextInputLayout receiverNameLayout;
 
-    @Bind(R.id.receiver_name)
+    @Bind(R2.id.receiver_name)
     EditText receiverNameEditText;
 
-    @Bind(R.id.address_type_layout)
+    @Bind(R2.id.address_type_layout)
     TextInputLayout addressTypeLayout;
 
-    @Bind(R.id.address_type)
+    @Bind(R2.id.address_type)
     EditText addressTypeEditText;
 
-    @Bind(R.id.address_layout)
+    @Bind(R2.id.address_layout)
     TextInputLayout addressLayout;
 
-    @Bind(R.id.address)
+    @Bind(R2.id.address)
     EditText addressEditText;
 
-    @Bind(R.id.post_code_layout)
+    @Bind(R2.id.post_code_layout)
     TextInputLayout postCodeLayout;
 
-    @Bind(R.id.post_code)
+    @Bind(R2.id.post_code)
     EditText postcodeEditText;
 
-    @Bind(R.id.receiver_phone_layout)
+    @Bind(R2.id.receiver_phone_layout)
     TextInputLayout receiverPhoneLayout;
 
-    @Bind(R.id.receiver_phone)
+    @Bind(R2.id.receiver_phone)
     EditText receiverPhoneEditText;
 
-    @Bind(R.id.province_error)
+    @Bind(R2.id.province_error)
     TextView provinceError;
 
-    @Bind(R.id.regency_error)
+    @Bind(R2.id.regency_error)
     TextView regencyError;
 
-    @Bind(R.id.sub_district_error)
+    @Bind(R2.id.sub_district_error)
     TextView subDistrictError;
 
-    @Bind(R.id.regency)
+    @Bind(R2.id.regency)
     Spinner spinnerRegency;
 
-    @Bind(R.id.sub_district)
+    @Bind(R2.id.sub_district)
     Spinner spinnerSubDistrict;
 
-    @Bind(R.id.provinsi)
+    @Bind(R2.id.provinsi)
     Spinner spinnerProvince;
 
-    @Bind(R.id.regency_progress)
+    @Bind(R2.id.regency_progress)
     ProgressBar progressRegency;
 
-    @Bind(R.id.district_progress)
+    @Bind(R2.id.district_progress)
     ProgressBar progressDistrict;
 
-    @Bind(R.id.regency_title)
+    @Bind(R2.id.regency_title)
     TextView regencyTitle;
 
-    @Bind(R.id.district_title)
+    @Bind(R2.id.district_title)
     TextView districtTitle;
 
-    @Bind(R.id.layout_value_location)
+    @Bind(R2.id.layout_value_location)
     View chooseLocation;
 
-    @Bind(R.id.value_location)
+    @Bind(R2.id.value_location)
     EditText locationEditText;
 
-    @Bind(R.id.password_layout)
+    @Bind(R2.id.password_layout)
     TextInputLayout passwordLayout;
 
-    @Bind(R.id.password)
+    @Bind(R2.id.password)
     EditText password;
 
-    @Bind(R.id.save_button)
+    @Bind(R2.id.save_button)
     TextView saveButton;
 
     ProvinceAdapter provinceAdapter;

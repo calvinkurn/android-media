@@ -11,6 +11,7 @@ import android.widget.ImageView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.myproduct.model.ImageModel;
 import com.tokopedia.tkpd.myproduct.model.constant.ImageModelType;
 
@@ -100,9 +101,9 @@ public class SmallPhotoAdapter extends RecyclerView.Adapter<SmallPhotoAdapter.Vi
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
-        @Bind(R.id.border_small_imageview_layout)
+        @Bind(R2.id.border_small_imageview_layout)
         FrameLayout borderSmallImageViewLayout;
-        @Bind(R.id.picture_small_gallery_imageview)
+        @Bind(R2.id.picture_small_gallery_imageview)
         ImageView pictureSmallGalleryImageView;
 
         SmallPhotoAdapterTouch smallPhotoAdapterTouch;
@@ -143,7 +144,7 @@ public class SmallPhotoAdapter extends RecyclerView.Adapter<SmallPhotoAdapter.Vi
             }
         }
 
-        @OnClick(R.id.border_small_imageview_layout)
+        @OnClick(R2.id.border_small_imageview_layout)
         public void HolderClick(){
             if(getSmallPhotoAdapterTouch() != null)
                 getSmallPhotoAdapterTouch().movePosition(position);

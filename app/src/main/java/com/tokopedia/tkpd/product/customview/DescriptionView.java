@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.analytics.UnifyTracking;
 import com.tokopedia.tkpd.product.listener.ProductDetailView;
 import com.tokopedia.tkpd.product.model.productdetail.ProductDetailData;
@@ -22,9 +23,9 @@ public class DescriptionView extends BaseView<ProductDetailData, ProductDetailVi
     private static final String TAG = DescriptionView.class.getSimpleName();
 
     private boolean isExpand = false;
-    @Bind(R.id.tv_desc)
+    @Bind(R2.id.tv_desc)
     DescriptionTextView tvDesc;
-    @Bind(R.id.iv_toggle)
+    @Bind(R2.id.iv_toggle)
     ImageView ivToggle;
 
     public DescriptionView(Context context, AttributeSet attrs) {

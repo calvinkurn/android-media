@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.catalog.model.CatalogDetailItemProduct;
 import com.tokopedia.tkpd.catalog.presenter.ICatalogDetailListPresenter;
 
@@ -87,15 +88,15 @@ class CatalogDetailProductAdapter extends
     }
 
     class ProductItemHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.product_name)
+        @Bind(R2.id.product_name)
         TextView productName;
-        @Bind(R.id.prod_price)
+        @Bind(R2.id.prod_price)
         TextView productPrice;
-        @Bind(R.id.prod_condition)
+        @Bind(R2.id.prod_condition)
         TextView productCondition;
-        @Bind(R.id.product_id)
+        @Bind(R2.id.product_id)
         TextView productId;
-        @Bind(R.id.main_view)
+        @Bind(R2.id.main_view)
         RelativeLayout productContainer;
 
         ProductItemHolder(View view) {

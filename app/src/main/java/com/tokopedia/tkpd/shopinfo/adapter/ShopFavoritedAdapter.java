@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.tkpd.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.tkpd.shopinfo.models.shopfavoritedmodel.ShopFavoritee;
@@ -35,13 +36,13 @@ public class ShopFavoritedAdapter extends BaseLinearRecyclerViewAdapter {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.user_name)
+        @Bind(R2.id.user_name)
         TextView userName;
 
-        @Bind(R.id.user_avatar)
+        @Bind(R2.id.user_avatar)
         ImageView userAvatar;
 
-        @Bind(R.id.user_layout)
+        @Bind(R2.id.user_layout)
         LinearLayout userLayout;
 
         public ViewHolder(View itemView) {

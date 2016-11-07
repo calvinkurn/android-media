@@ -4,6 +4,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.myproduct.fragment.AddProductFragment;
 import com.tokopedia.tkpd.myproduct.utils.DelegateOnClick;
 
@@ -17,23 +18,23 @@ import butterknife.OnClick;
 public class AddProductSubmit {
     DelegateOnClick delegateOnClick;
 
-    @Bind(R.id.add_product_submit)
+    @Bind(R2.id.add_product_submit)
     TextView submit;
-    @Bind(R.id.add_product_submit_and_push)
+    @Bind(R2.id.add_product_submit_and_push)
     TextView submitAndAdd;
 
     public AddProductSubmit(View view){
         ButterKnife.bind(this, view);
     }
 
-    @OnClick(R.id.add_product_submit)
+    @OnClick(R2.id.add_product_submit)
     public void saveAndPushProduct(){
         if(delegateOnClick != null && delegateOnClick instanceof AddProductFragment){
             ((AddProductFragment)delegateOnClick).pushProduct();
         }
     }
 
-    @OnClick(R.id.add_product_submit_and_push)
+    @OnClick(R2.id.add_product_submit_and_push)
     public void saveProduct(){
         if(delegateOnClick != null && delegateOnClick instanceof AddProductFragment){
             ((AddProductFragment)delegateOnClick).pushAndCreateNewProduct();

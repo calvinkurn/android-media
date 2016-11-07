@@ -33,7 +33,7 @@ public class InfoTopAds extends DialogFragment{
         fragment.setArguments(args);
         return fragment;
     }
-    @Bind(R.id.readMore) TextView readMore;
+    @Bind(R2.id.readMore) TextView readMore;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,7 +56,7 @@ public class InfoTopAds extends DialogFragment{
         ButterKnife.unbind(this);
     }
 
-    @OnClick(R.id.readMore)
+    @OnClick(R2.id.readMore)
     public void readMore(){
 //        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(TkpdUrl.INFO_TOPADS));
         Intent intent = new Intent(getActivity(), WebViewTopAdsActivity.class);

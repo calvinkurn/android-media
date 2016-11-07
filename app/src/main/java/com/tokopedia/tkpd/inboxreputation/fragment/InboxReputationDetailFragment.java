@@ -12,6 +12,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.inboxreputation.InboxReputationConstant;
 import com.tokopedia.tkpd.inboxreputation.adapter.InboxReputationDetailAdapter;
@@ -49,7 +50,7 @@ public class
         void postReport(Bundle param);
     }
 
-    @Bind(R.id.product_list)
+    @Bind(R2.id.product_list)
     RecyclerView listProduct;
 
     InboxReputationDetailFragmentPresenter presenter;

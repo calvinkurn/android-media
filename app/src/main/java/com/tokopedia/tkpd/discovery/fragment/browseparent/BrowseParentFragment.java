@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.analytics.AppEventTracking;
 import com.tokopedia.tkpd.analytics.TrackingUtils;
 import com.tokopedia.tkpd.analytics.UnifyTracking;
@@ -57,11 +58,11 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     public static final String SOURCE_EXTRA = "SOURCE_EXTRA";
     public static final String FILTER_EXTRA = "FILTER_EXTRA";
     public static final String POSITION_EXTRA = "POSITION_EXTRA";
-    @Bind(R.id.pager)
+    @Bind(R2.id.pager)
     ViewPager viewPager;
-    @Bind(R.id.tabs)
+    @Bind(R2.id.tabs)
     TabLayout tabLayout;
-    @Bind(R.id.discovery_ticker)
+    @Bind(R2.id.discovery_ticker)
     TextView discoveryTicker;
     public static final String TAG = BrowseParentFragment.class.getSimpleName();
     String source;
@@ -107,7 +108,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
             }
         }
     };
-//    @Bind(R.id.progressBar)
+//    @Bind(R2.id.progressBar)
 //    ProgressBar progressBar;
     private BrowserSectionsPagerAdapter mSectionsPagerAdapter;
 

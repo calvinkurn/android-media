@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.discovery.fragment.browseparent.BrowseParentFragment;
 import com.tokopedia.tkpd.discovery.model.BrowseProductActivityModel;
 import com.tokopedia.tkpd.dynamicfilter.model.DynamicFilterModel;
@@ -35,9 +36,9 @@ import butterknife.ButterKnife;
  */
 public class SortProductActivity extends AppCompatActivity {
 
-    @Bind(R.id.toolbar)
+    @Bind(R2.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.list)
+    @Bind(R2.id.list)
     RecyclerView recyclerView;
     private ListAdapter adapter;
     public static final String SORT_ACTION_INTENT = BuildConfig.APPLICATION_ID + ".SORT";

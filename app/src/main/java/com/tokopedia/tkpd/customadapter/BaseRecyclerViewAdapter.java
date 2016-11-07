@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.var.RecyclerViewItem;
 import com.tokopedia.tkpd.var.TkpdState;
 
@@ -39,7 +40,7 @@ public class BaseRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     public static class ViewHolderRetry extends RecyclerView.ViewHolder {
-        @Bind(R.id.main_retry)
+        @Bind(R2.id.main_retry)
         TextView retry;
 
         public ViewHolderRetry(View itemView) {
@@ -49,7 +50,7 @@ public class BaseRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     public static class ViewHolderErrorNetworkState extends RecyclerView.ViewHolder {
-        @Bind(R.id.button_retry)
+        @Bind(R2.id.button_retry)
         TextView retry;
 
         public ViewHolderErrorNetworkState(View itemView) {
@@ -59,7 +60,7 @@ public class BaseRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     public static class ViewHolderEmpty extends RecyclerView.ViewHolder {
-        @Bind(R.id.no_result_image)
+        @Bind(R2.id.no_result_image)
         ImageView emptyImage;
 
         public ViewHolderEmpty(View itemView) {

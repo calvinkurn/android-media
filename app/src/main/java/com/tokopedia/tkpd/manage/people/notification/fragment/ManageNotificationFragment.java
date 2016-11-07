@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.manage.people.notification.listener.ManageNotificationFragmentView;
 import com.tokopedia.tkpd.manage.people.notification.model.SettingNotification;
@@ -23,28 +24,28 @@ import butterknife.Bind;
 public class ManageNotificationFragment extends BasePresenterFragment<ManageNotificationPresenter>
         implements ManageNotificationFragmentView {
 
-    @Bind(R.id.newsletter)
+    @Bind(R2.id.newsletter)
     CheckBox newsletterCheckBox;
 
-    @Bind(R.id.reviews)
+    @Bind(R2.id.reviews)
     CheckBox reviewsCheckBox;
 
-    @Bind(R.id.talkabout)
+    @Bind(R2.id.talkabout)
     CheckBox talkCheckBox;
 
-    @Bind(R.id.message)
+    @Bind(R2.id.message)
     CheckBox messageCheckBox;
 
-    @Bind(R.id.admin_message)
+    @Bind(R2.id.admin_message)
     CheckBox adminCheckBox;
 
-    @Bind(R.id.save_but)
+    @Bind(R2.id.save_but)
     TextView saveButton;
 
-    @Bind(R.id.main_view)
+    @Bind(R2.id.main_view)
     View mainView;
 
-    @Bind(R.id.set_ring)
+    @Bind(R2.id.set_ring)
     TextView setRingButton;
 
     TkpdProgressDialog mProgressDialog;

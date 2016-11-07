@@ -15,6 +15,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.analytics.UnifyTracking;
 import com.tokopedia.tkpd.recharge.adapter.RechargeViewPagerAdapter;
 import com.tokopedia.tkpd.recharge.model.category.CategoryData;
@@ -36,11 +37,11 @@ import butterknife.ButterKnife;
 public class RechargeCategoryFragment extends
         Fragment implements RechargeCategoryView {
 
-    @Bind(R.id.tablayout_recharge)
+    @Bind(R2.id.tablayout_recharge)
     TabLayout tabLayoutRecharge;
-    @Bind(R.id.viewpager_pulsa)
+    @Bind(R2.id.viewpager_pulsa)
     WrapContentViewPager viewpagerRecharge;
-    @Bind(R.id.rechargeWrapperLayout)
+    @Bind(R2.id.rechargeWrapperLayout)
     LinearLayout wrapperLayout;
 
     private TkpdProgressDialog mainprogress;

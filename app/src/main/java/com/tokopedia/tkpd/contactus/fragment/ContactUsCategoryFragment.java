@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.contactus.ContactUsConstant;
 import com.tokopedia.tkpd.contactus.activity.ContactUsActivity;
@@ -47,52 +48,52 @@ public class ContactUsCategoryFragment extends
         void onOpenContactUsTicketForm(int lastCatId, ArrayList<String> path);
     }
 
-    @Bind(R.id.new_user)
+    @Bind(R2.id.new_user)
     ImageView typeNewUser;
 
-    @Bind(R.id.seller)
+    @Bind(R2.id.seller)
     ImageView typeSeller;
 
-    @Bind(R.id.buyer)
+    @Bind(R2.id.buyer)
     ImageView typeBuyer;
 
-    @Bind(R.id.other)
+    @Bind(R2.id.other)
     ImageView typeOther;
 
-    @Bind(R.id.new_user_text)
+    @Bind(R2.id.new_user_text)
     TextView textNewUser;
 
-    @Bind(R.id.seller_text)
+    @Bind(R2.id.seller_text)
     TextView textSeller;
 
-    @Bind(R.id.buyer_text)
+    @Bind(R2.id.buyer_text)
     TextView textBuyer;
 
-    @Bind(R.id.other_text)
+    @Bind(R2.id.other_text)
     TextView textOther;
 
-    @Bind(R.id.step_1)
+    @Bind(R2.id.step_1)
     View step1;
 
-    @Bind(R.id.step_2)
+    @Bind(R2.id.step_2)
     View step2;
 
-    @Bind(R.id.step_3)
+    @Bind(R2.id.step_3)
     View step3;
 
-    @Bind(R.id.problem_list)
+    @Bind(R2.id.problem_list)
     LinearLayout problemList;
 
-    @Bind(R.id.please_contact_us)
+    @Bind(R2.id.please_contact_us)
     View pleaseContactUs;
 
-    @Bind(R.id.scroll)
+    @Bind(R2.id.scroll)
     ScrollView mainView;
 
-    @Bind(R.id.finish_message)
+    @Bind(R2.id.finish_message)
     View finishMessage;
 
-    @Bind(R.id.solution)
+    @Bind(R2.id.solution)
     ObservableWebView solution;
 
     TkpdProgressDialog progressDialog;

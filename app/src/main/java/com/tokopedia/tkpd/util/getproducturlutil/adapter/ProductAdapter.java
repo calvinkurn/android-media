@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.tkpd.shopinfo.models.productmodel.Product;
 import com.tokopedia.tkpd.util.getproducturlutil.GetProductUrlUtil;
@@ -32,13 +33,13 @@ public class ProductAdapter extends BaseLinearRecyclerViewAdapter {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.image)
+        @Bind(R2.id.image)
         ImageView image;
 
-        @Bind(R.id.name)
+        @Bind(R2.id.name)
         TextView name;
 
-        @Bind(R.id.main)
+        @Bind(R2.id.main)
         View main;
 
         public ViewHolder(View itemView) {

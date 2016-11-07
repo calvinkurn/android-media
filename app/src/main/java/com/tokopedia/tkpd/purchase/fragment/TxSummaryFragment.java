@@ -7,6 +7,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.purchase.activity.PurchaseActivity;
 import com.tokopedia.tkpd.purchase.adapter.TxSummaryAdapter;
@@ -33,7 +34,7 @@ public class TxSummaryFragment extends BasePresenterFragment<TxSummaryPresenter>
     public static int INSTANCE_TYPE_PURCHASE = 1;
     public static int INSTANCE_TYPE_SALES = 2;
 
-    @Bind(R.id.menu_list)
+    @Bind(R2.id.menu_list)
     ListView lvSummary;
     private TxSummaryAdapter summaryAdapter;
     private int instanceType;

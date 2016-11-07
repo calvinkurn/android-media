@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.product.customview.BaseView;
 import com.tokopedia.tkpd.rescenter.edit.customadapter.AttachmentAdapter;
 import com.tokopedia.tkpd.rescenter.edit.listener.AppealResCenterListener;
@@ -19,9 +20,9 @@ import butterknife.Bind;
  */
 public class AppealAttachmentView extends BaseView<Object, AppealResCenterListener> {
 
-    @Bind(R.id.view_upload_proof)
+    @Bind(R2.id.view_upload_proof)
     View viewUploadProof;
-    @Bind(R.id.list_upload_proof)
+    @Bind(R2.id.list_upload_proof)
     RecyclerView attachmentRecyclerView;
 
     public AppealAttachmentView(Context context) {

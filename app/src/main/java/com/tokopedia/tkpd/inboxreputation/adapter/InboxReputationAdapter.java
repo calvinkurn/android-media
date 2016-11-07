@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.tkpd.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.tkpd.inboxreputation.model.inboxreputation.InboxReputationItem;
@@ -35,45 +36,45 @@ public class InboxReputationAdapter extends BaseLinearRecyclerViewAdapter {
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.username)
+        @Bind(R2.id.username)
         TextView title;
 
-        @Bind(R.id.date)
+        @Bind(R2.id.date)
         TextView date;
 
-        @Bind(R.id.avatar)
+        @Bind(R2.id.avatar)
         ImageView avatar;
 
-        @Bind(R.id.recap_text)
+        @Bind(R2.id.recap_text)
         TextView recapText;
 
-        @Bind(R.id.view_summary_review)
+        @Bind(R2.id.view_summary_review)
         View viewFooter;
 
-        @Bind(R.id.main_view)
+        @Bind(R2.id.main_view)
         View viewMain;
 
-        @Bind(R.id.reputation_holder)
+        @Bind(R2.id.reputation_holder)
         LinearLayout reputation;
 
         LabelUtils label;
 
-        @Bind(R.id.reputation_holder_user)
+        @Bind(R2.id.reputation_holder_user)
         View viewPercentage;
 
-        @Bind(R.id.rep_rating)
+        @Bind(R2.id.rep_rating)
         TextView textPercentage;
 
-        @Bind(R.id.rep_icon)
+        @Bind(R2.id.rep_icon)
         ImageView iconPercentage;
 
-        @Bind(R.id.deadline_icon)
+        @Bind(R2.id.deadline_icon)
         ImageView iconDeadline;
 
-        @Bind(R.id.deadline)
+        @Bind(R2.id.deadline)
         TextView deadline;
 
-        @Bind(R.id.notification)
+        @Bind(R2.id.notification)
         View notification;
 
         public ViewHolder(View itemView) {

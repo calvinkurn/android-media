@@ -14,6 +14,7 @@ import android.view.View;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.customadapter.LazyListView;
 import com.tokopedia.tkpd.network.NetworkErrorHelper;
@@ -51,9 +52,9 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
     private static final String ARG_PARAM_EXTRA_INSTANCE_FROM_NOTIFICATION
             = "ARG_PARAM_EXTRA_INSTANCE_FROM_NOTIFICATION";
 
-    @Bind(R.id.order_list)
+    @Bind(R2.id.order_list)
     LazyListView lvTXList;
-    @Bind(R.id.fab_filter)
+    @Bind(R2.id.fab_filter)
     FloatingActionButton fabFilter;
     private View loadMoreView;
 

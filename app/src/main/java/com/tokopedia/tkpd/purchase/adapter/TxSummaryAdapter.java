@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.purchase.model.TxSummaryItem;
 
 import java.text.MessageFormat;
@@ -64,11 +65,11 @@ public class TxSummaryAdapter extends ArrayAdapter<TxSummaryItem> {
 
 
     class ViewHolder {
-        @Bind(R.id.menu_title)
+        @Bind(R2.id.menu_title)
         TextView tvName;
-        @Bind(R.id.menu_count)
+        @Bind(R2.id.menu_count)
         TextView tvCount;
-        @Bind(R.id.menu_desc)
+        @Bind(R2.id.menu_desc)
         TextView tvDesc;
 
         public ViewHolder(View view) {

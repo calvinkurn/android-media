@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.rescenter.edit.model.passdata.EditResCenterFormData;
 
 import java.util.List;
@@ -30,11 +31,11 @@ public class LastProductTroubleAdapter extends RecyclerView.Adapter<LastProductT
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.title_product)
+        @Bind(R2.id.title_product)
         public TextView productView;
-        @Bind(R.id.title_trouble)
+        @Bind(R2.id.title_trouble)
         public TextView troubleView;
-        @Bind(R.id.title_remark)
+        @Bind(R2.id.title_remark)
         public TextView remarkView;
 
         public ViewHolder(View itemView) {

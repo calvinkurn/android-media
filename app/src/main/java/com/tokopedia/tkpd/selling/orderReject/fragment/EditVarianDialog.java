@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.selling.model.orderShipping.OrderProduct;
 import com.tokopedia.tkpd.selling.orderReject.adapter.ProductListAdapter;
 import com.tokopedia.tkpd.selling.orderReject.model.ModelEditDescription;
@@ -30,11 +31,11 @@ import butterknife.ButterKnife;
  */
 public class EditVarianDialog extends DialogFragment {
 
-    @Bind(R.id.description)
+    @Bind(R2.id.description)
     EditText descTxt;
-    @Bind(R.id.title)
+    @Bind(R2.id.title)
     TextView titleTxt;
-    @Bind(R.id.checkbox)
+    @Bind(R2.id.checkbox)
     CheckBox checkBox;
 
     public static final String TITLE = "title";

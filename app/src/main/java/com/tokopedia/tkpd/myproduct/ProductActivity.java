@@ -40,6 +40,7 @@ import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.DownloadResultSender;
 import com.tokopedia.tkpd.GalleryBrowser;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.fragment.TwitterDialogV4;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.instoped.InstagramAuth;
@@ -117,13 +118,13 @@ public class ProductActivity extends BaseProductActivity implements
     public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
     SimpleFacebook simplefacebook;
 
-    @Bind(R.id.toolbar)
+    @Bind(R2.id.toolbar)
     Toolbar toolbar;
 
-//    @Bind(R.id.app_bar_layout)
+//    @Bind(R2.id.app_bar_layout)
 //    AppBarLayout appBarLayout;
 
-    @Bind(R.id.add_product_container)
+    @Bind(R2.id.add_product_container)
     FrameLayout container;
 
     FloatingActionButton fab;

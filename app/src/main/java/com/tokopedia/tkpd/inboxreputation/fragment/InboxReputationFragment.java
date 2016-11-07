@@ -14,6 +14,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.customwidget.SwipeToRefresh;
 import com.tokopedia.tkpd.inboxreputation.InboxReputationConstant;
@@ -35,14 +36,14 @@ public class InboxReputationFragment extends BasePresenterFragment<InboxReputati
 
     private static final String TAG = InboxReputationFragment.class.getSimpleName();
 
-    @Bind(R.id.review_list)
+    @Bind(R2.id.review_list)
     RecyclerView mainList;
 
-    @Bind(R.id.swipe_refresh_layout)
+    @Bind(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
 
 
-    @Bind(R.id.fab)
+    @Bind(R2.id.fab)
     FloatingActionButton fab;
 
     private RefreshHandler refreshHandler;

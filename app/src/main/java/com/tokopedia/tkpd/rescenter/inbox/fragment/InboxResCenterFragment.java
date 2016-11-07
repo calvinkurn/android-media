@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.network.NetworkErrorHelper;
 import com.tokopedia.tkpd.network.SnackbarRetry;
@@ -41,9 +42,9 @@ public class InboxResCenterFragment extends BasePresenterFragment<InboxResCenter
     private static final String ARG_PARAM_INBOX_TAB = "ARG_PARAM_INBOX_TAB";
     private static final String ARG_PARAM_INBOX_LIST = "ARG_PARAM_INBOX_LIST";
 
-    @Bind(R.id.recycler_view)
+    @Bind(R2.id.recycler_view)
     RecyclerView recyclerView;
-    @Bind(R.id.fab)
+    @Bind(R2.id.fab)
     FloatingActionButton fab;
 
     private View rootView;

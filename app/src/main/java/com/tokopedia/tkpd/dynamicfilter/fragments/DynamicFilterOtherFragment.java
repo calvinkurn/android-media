@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.dynamicfilter.DynamicFilterActivity;
 import com.tokopedia.tkpd.dynamicfilter.adapter.DynamicFilterOtherAdapter;
 import com.tokopedia.tkpd.dynamicfilter.model.DynamicFilterModel;
@@ -50,16 +51,16 @@ public class DynamicFilterOtherFragment extends BaseFragment<DynamicFilterOtherP
         return  dynamicFilterOtherFragment;
     }
 
-    @Bind(R.id.dynamic_filter_other_search_container)
+    @Bind(R2.id.dynamic_filter_other_search_container)
     LinearLayout dynamicFilterOtherSearchContainer;
 
-    @Bind(R.id.dynamic_filter_other_search)
+    @Bind(R2.id.dynamic_filter_other_search)
     EditText dynamicFilterOtherSearch;
 
-    @Bind(R.id.dynamic_filter_other_recyclerview)
+    @Bind(R2.id.dynamic_filter_other_recyclerview)
     RecyclerView dynamicFilterOtherRecyclerView;
 
-    @Bind(R.id.dynamic_filter_other_finish)
+    @Bind(R2.id.dynamic_filter_other_finish)
     Button dynamicFilterOtherFinish;
 
     DynamicFilterOtherAdapter dynamicFilterOtherAdapter;
@@ -212,7 +213,7 @@ public class DynamicFilterOtherFragment extends BaseFragment<DynamicFilterOtherP
         dynamicFilterOtherAdapter.addAll(true, true, items);
     }
 
-    @OnClick(R.id.dynamic_filter_other_finish)
+    @OnClick(R2.id.dynamic_filter_other_finish)
     public void finishThis(){
         if(getActivity() != null && getActivity() instanceof DynamicFilterView){
             ((DynamicFilterView) getActivity()).finishThis();

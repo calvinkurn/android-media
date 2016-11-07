@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import com.bignerdranch.android.multiselector.ModalMultiSelectorCallback;
 import com.bignerdranch.android.multiselector.MultiSelector;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.myproduct.ProductActivity;
 import com.tokopedia.tkpd.myproduct.adapter.ImageGalleryAdapter;
 import com.tokopedia.tkpd.myproduct.model.ImageModel;
@@ -41,7 +42,7 @@ public class ImageGalleryFragment extends Fragment implements ImageGalleryAdapte
 
     List<ImageModel> datas;
 
-    @Bind(R.id.gallery_gridview)
+    @Bind(R2.id.gallery_gridview)
     RecyclerView recyclerView;
 
     RecyclerView.Adapter adapter;

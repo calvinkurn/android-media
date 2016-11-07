@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.talk.talkproduct.activity.TalkAddNew;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.customwidget.SwipeToRefresh;
@@ -65,11 +66,11 @@ public class TalkProductFragment extends BasePresenterFragment<TalkProductPresen
     TalkProductAdapter adapter;
     GridLayoutManager layoutManager;
 
-    @Bind(R.id.swipe_refresh_layout)
+    @Bind(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
-    @Bind(R.id.recycler_view)
+    @Bind(R2.id.recycler_view)
     RecyclerView recyclerView;
-    @Bind(R.id.include_loading)
+    @Bind(R2.id.include_loading)
     ProgressBar progressBar;
     SnackbarRetry snackbarRetry;
 

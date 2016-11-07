@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.database.manager.DbManagerImpl;
 import com.tokopedia.tkpd.database.model.PictureDB;
 import com.tokopedia.tkpd.myproduct.presenter.ImageGalleryImpl;
@@ -22,11 +23,11 @@ import butterknife.ButterKnife;
  * Created by m.normansyah on 18/01/2016.
  */
 public class ImageDescriptionDialog  extends DialogFragment {
-    @Bind(R.id.add_prod_img_desc_deskripsi)
+    @Bind(R2.id.add_prod_img_desc_deskripsi)
     EditText addProdDesc;
-    @Bind(R.id.add_prod_img_desc_cancel)
+    @Bind(R2.id.add_prod_img_desc_cancel)
     Button addProdCancel;
-    @Bind(R.id.add_prod_img_desc_ok)
+    @Bind(R2.id.add_prod_img_desc_ok)
     Button addProdOk;
 
     public static final String FRAGMENT_TAG = ImageDescriptionDialog.class.getSimpleName();

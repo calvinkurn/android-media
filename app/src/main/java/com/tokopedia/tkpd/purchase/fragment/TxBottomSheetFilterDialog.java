@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.DatePickerUtil;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.purchase.model.AllTxFilter;
 import com.tokopedia.tkpd.purchase.model.TxFilterItem;
 import com.tokopedia.tkpd.purchase.utils.FilterUtils;
@@ -40,15 +41,15 @@ public class TxBottomSheetFilterDialog implements AdapterView.OnItemSelectedList
     private List<TxFilterItem> txFilterItemList = new ArrayList<>();
     private ArrayAdapter<TxFilterItem> adapter;
 
-    @Bind(R.id.filter)
+    @Bind(R2.id.filter)
     Spinner spnFilter;
-    @Bind(R.id.search)
+    @Bind(R2.id.search)
     EditText searchField;
-    @Bind(R.id.start_date)
+    @Bind(R2.id.start_date)
     TextView tvStartDate;
-    @Bind(R.id.end_date)
+    @Bind(R2.id.end_date)
     TextView tvEndDate;
-    @Bind(R.id.search_button)
+    @Bind(R2.id.search_button)
     TextView tvSearchSubmit;
 
 
@@ -87,7 +88,7 @@ public class TxBottomSheetFilterDialog implements AdapterView.OnItemSelectedList
         hideKeyboard(activity.getCurrentFocus());
     }
 
-    @OnClick(R.id.start_date)
+    @OnClick(R2.id.start_date)
     void btnStartDateClicked() {
         DatePickerUtil datePicker = new DatePickerUtil(this.activity);
         datePicker.SetDate(
@@ -107,7 +108,7 @@ public class TxBottomSheetFilterDialog implements AdapterView.OnItemSelectedList
         });
     }
 
-    @OnClick(R.id.end_date)
+    @OnClick(R2.id.end_date)
     void btnEndDateClicked() {
         DatePickerUtil datePicker = new DatePickerUtil(this.activity);
         datePicker.SetDate(allTxFilter.getDayEnd(), allTxFilter.getMonthEnd(),
@@ -125,7 +126,7 @@ public class TxBottomSheetFilterDialog implements AdapterView.OnItemSelectedList
         });
     }
 
-    @OnClick(R.id.search_button)
+    @OnClick(R2.id.search_button)
     void btnSearchClicked() {
         allTxFilter.setQuery(searchField.getText().toString());
         onFilterListener.onFilterSearchButtonClicked(allTxFilter);

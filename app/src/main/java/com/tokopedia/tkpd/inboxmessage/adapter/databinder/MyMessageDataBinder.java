@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.inboxmessage.model.inboxmessagedetail.InboxMessageDetailItem;
 import com.tokopedia.tkpd.util.DataBindAdapter;
 import com.tokopedia.tkpd.util.DataBinder;
@@ -38,13 +39,13 @@ public class MyMessageDataBinder extends DataBinder<MyMessageDataBinder.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder
             implements View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
 
-        @Bind(R.id.message)
+        @Bind(R2.id.message)
         TextView message;
 
-        @Bind(R.id.hour)
+        @Bind(R2.id.hour)
         TextView hour;
 
-        @Bind(R.id.date)
+        @Bind(R2.id.date)
         TextView date;
 
         public ViewHolder(View itemView) {

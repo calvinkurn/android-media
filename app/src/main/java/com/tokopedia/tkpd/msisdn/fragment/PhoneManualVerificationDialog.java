@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.facade.FacadePhoneVerification;
 import com.tokopedia.tkpd.fragment.VerificationDialog;
 import com.tokopedia.tkpd.interfaces.PhoneVerificationInterfaces;
@@ -33,29 +34,29 @@ public class PhoneManualVerificationDialog extends DialogFragment{
     public static final String FRAGMENT_TAG = "PhoneManualVerificationDialog";
     public static final String VERIFICATION_NUMBER = "VERIFICATION_NUMBER";
 
-    @Bind(R.id.normal_verification_procedure)
+    @Bind(R2.id.normal_verification_procedure)
     LinearLayout VerificationFromSettingsLayout;
-    @Bind(R.id.phone_number_manual_form)
+    @Bind(R2.id.phone_number_manual_form)
     TextView PhoneNumberManualVerify;
-    @Bind(R.id.loading_manual_form)
+    @Bind(R2.id.loading_manual_form)
     ProgressBar circleManualForm;
-    @Bind(R.id.verify_from_android)
+    @Bind(R2.id.verify_from_android)
     LinearLayout VerifyFromAndroid;
-    @Bind(R.id.new_number)
+    @Bind(R2.id.new_number)
     EditText newPhoneNumber;
-    @Bind(R.id.phone_otp_layout)
+    @Bind(R2.id.phone_otp_layout)
     LinearLayout phoneOtpLayout;
-    @Bind(R.id.confirmation_number)
+    @Bind(R2.id.confirmation_number)
     EditText confirmationCode;
-    @Bind(R.id.verify_sms_text)
+    @Bind(R2.id.verify_sms_text)
     TextView sendSmsVerificationLink;
-    @Bind(R.id.sending_sms_info)
+    @Bind(R2.id.sending_sms_info)
     LinearLayout SendingSMSNotificationLayout ;
-    @Bind(R.id.manual_abort_button)
+    @Bind(R2.id.manual_abort_button)
     TextView abortManualButton;
-    @Bind(R.id.code_confirm_button_manual)
+    @Bind(R2.id.code_confirm_button_manual)
     TextView manualVerifyCodeButton;
-    @Bind(R.id.close_button) View closeButton;
+    @Bind(R2.id.close_button) View closeButton;
 
     FacadePhoneVerification facadePhoneVerification;
 
@@ -107,17 +108,17 @@ public class PhoneManualVerificationDialog extends DialogFragment{
         ButterKnife.unbind(this);
     }
 
-    @OnClick(R.id.manual_abort_button)
+    @OnClick(R2.id.manual_abort_button)
     public void onDismiss(){
         dismiss();
     }
 
-    @OnClick(R.id.close_button)
+    @OnClick(R2.id.close_button)
     public void onDismissDialog(){
         dismiss();
     }
 
-    @OnClick(R.id.code_confirm_button_manual)
+    @OnClick(R2.id.code_confirm_button_manual)
     public void DoVerification(){
         String inputConfirmationCode = confirmationCode.getText().toString();
         if(PhoneNumberValidation(ChooseNumber()) && VerificationCodeValidation(inputConfirmationCode)){
@@ -162,7 +163,7 @@ public class PhoneManualVerificationDialog extends DialogFragment{
         };
     }
 
-    @OnClick(R.id.verify_sms_text)
+    @OnClick(R2.id.verify_sms_text)
     public void requestVerificationSMSListener(View v) {
         if(PhoneNumberValidation(ChooseNumber())){
             facadePhoneVerification.requestVerificationCode(ChooseNumber(), requestListener());

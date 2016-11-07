@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.tkpd.discovery.activity.BrowseProductActivity;
 import com.tokopedia.tkpd.discovery.interfaces.FetchNetwork;
@@ -37,7 +38,7 @@ import butterknife.Bind;
 public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchNetwork {
     public static final int IDFRAGMENT = 1903_909;
 
-    @Bind(R.id.list_shop)
+    @Bind(R2.id.list_shop)
     RecyclerView list_shop;
 
     List<RecyclerViewItem> browseShopModelList = new ArrayList<>();

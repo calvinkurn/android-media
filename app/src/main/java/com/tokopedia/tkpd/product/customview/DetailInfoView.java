@@ -10,6 +10,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.discovery.activity.BrowseProductActivity;
 import com.tokopedia.tkpd.discovery.fragment.browseparent.ProductFragment;
 import com.tokopedia.tkpd.network.apiservices.topads.api.TopAdsApi;
@@ -27,29 +28,29 @@ import butterknife.Bind;
 public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailView> {
     private static final String TAG = DetailInfoView.class.getSimpleName();
 
-    @Bind({R.id.tv_category_1, R.id.tv_category_2, R.id.tv_category_3})
+    @Bind({R2.id.tv_category_1, R2.id.tv_category_2, R2.id.tv_category_3})
     List<TextView> tvCategories;
-    @Bind(R.id.tv_weight)
+    @Bind(R2.id.tv_weight)
     TextView tvWeight;
-    @Bind(R.id.tv_minimum)
+    @Bind(R2.id.tv_minimum)
     TextView tvMinOrder;
-    @Bind(R.id.tv_insurance)
+    @Bind(R2.id.tv_insurance)
     TextView tvInsurance;
-    @Bind(R.id.tv_catalog)
+    @Bind(R2.id.tv_catalog)
     TextView tvCatalog;
-    @Bind(R.id.tv_etalase)
+    @Bind(R2.id.tv_etalase)
     TextView tvEtalase;
-    @Bind(R.id.tv_condition)
+    @Bind(R2.id.tv_condition)
     TextView tvCondition;
-    @Bind(R.id.tv_returnable)
+    @Bind(R2.id.tv_returnable)
     TextView tvReturnable;
-    @Bind(R.id.tr_catalog)
+    @Bind(R2.id.tr_catalog)
     TableRow catalogView;
-    @Bind(R.id.tv_preorder)
+    @Bind(R2.id.tv_preorder)
     TextView tvPreOrder;
-    @Bind(R.id.tr_returnable)
+    @Bind(R2.id.tr_returnable)
     TableRow returnableView;
-    @Bind(R.id.tr_preorder)
+    @Bind(R2.id.tr_preorder)
     TableRow preOrderView;
 
     public DetailInfoView(Context context) {

@@ -15,6 +15,7 @@ import android.view.View;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.tkpd.GCMListenerService;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.DrawerPresenterActivity;
 import com.tokopedia.tkpd.app.MainApplication;
 import com.tokopedia.tkpd.gcm.NotificationModHandler;
@@ -40,9 +41,9 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
     private static final String BUNDLE_POSITION = "INBOX_TALK_POSITION";
     PagerAdapter adapter;
 
-    @Bind(R.id.pager)
+    @Bind(R2.id.pager)
     ViewPager mViewPager;
-    @Bind(R.id.indicator)
+    @Bind(R2.id.indicator)
     TabLayout indicator;
 
 

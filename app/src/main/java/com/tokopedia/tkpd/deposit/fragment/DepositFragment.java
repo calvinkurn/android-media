@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.DatePickerUtil;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.deposit.adapter.DepositAdapter;
 import com.tokopedia.tkpd.deposit.listener.DepositFragmentView;
@@ -34,37 +35,37 @@ import butterknife.Bind;
 public class DepositFragment extends BasePresenterFragment<DepositFragmentPresenter>
         implements DepositFragmentView {
 
-    @Bind(R.id.total_balance)
+    @Bind(R2.id.total_balance)
     TextView totalBalance;
 
-    @Bind(R.id.start_date)
+    @Bind(R2.id.start_date)
     EditText startDate;
 
-    @Bind(R.id.end_date)
+    @Bind(R2.id.end_date)
     EditText endDate;
 
-    @Bind(R.id.search_button)
+    @Bind(R2.id.search_button)
     TextView searchButton;
 
-    @Bind(R.id.withdraw_button)
+    @Bind(R2.id.withdraw_button)
     TextView drawButton;
 
-    @Bind(R.id.balance_list)
+    @Bind(R2.id.balance_list)
     RecyclerView listViewBalance;
 
-    @Bind(R.id.main_view)
+    @Bind(R2.id.main_view)
     View mainView;
 
-    @Bind(R.id.deposit_header)
+    @Bind(R2.id.deposit_header)
     RelativeLayout topSlideOffBar;
 
-    @Bind(R.id.review_warning_layout)
+    @Bind(R2.id.review_warning_layout)
     RelativeLayout reviewWarning;
 
-    @Bind(R.id.amount_review)
+    @Bind(R2.id.amount_review)
     TextView amountBeingReviewed;
 
-    @Bind(R.id.topup_button)
+    @Bind(R2.id.topup_button)
     TextView topupButton;
 
     DatePickerUtil datePicker;

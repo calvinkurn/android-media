@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.manage.people.profile.model.DataUser;
 import com.tokopedia.tkpd.manage.people.profile.model.Profile;
 import com.tokopedia.tkpd.manage.people.profile.presenter.ManagePeopleProfileFragmentPresenter;
@@ -19,25 +20,25 @@ import butterknife.Bind;
  */
 public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPresenter> {
 
-    @Bind(R.id.messenger)
+    @Bind(R2.id.messenger)
     public EditText messenger;
-    @Bind(R.id.change_email_button)
+    @Bind(R2.id.change_email_button)
     public View changeEmailBtn;
-    @Bind(R.id.email)
+    @Bind(R2.id.email)
     public EditText email;
-    @Bind(R.id.phone_section)
+    @Bind(R2.id.phone_section)
     public View phoneSection;
-    @Bind(R.id.change_hp_button)
+    @Bind(R2.id.change_hp_button)
     public View changeHpBtn;
-    @Bind(R.id.phone)
+    @Bind(R2.id.phone)
     public EditText phone;
-    @Bind(R.id.phone_verification_section)
+    @Bind(R2.id.phone_verification_section)
     public View phoneVerificationSection;
-    @Bind(R.id.verification)
+    @Bind(R2.id.verification)
     public EditText verification;
-    @Bind(R.id.verify_phone_button)
+    @Bind(R2.id.verify_phone_button)
     public View verificationBtn;
-    @Bind(R.id.password)
+    @Bind(R2.id.password)
     public EditText password;
 
     public ContactView(Context context) {

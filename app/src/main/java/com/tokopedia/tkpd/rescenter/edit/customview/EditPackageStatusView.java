@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import android.widget.RadioGroup;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.product.customview.BaseView;
 import com.tokopedia.tkpd.rescenter.detail.model.detailresponsedata.DetailResCenterData;
 import com.tokopedia.tkpd.rescenter.edit.listener.BuyerEditResCenterListener;
@@ -17,7 +18,7 @@ import butterknife.Bind;
  */
 public class EditPackageStatusView extends BaseView<DetailResCenterData, BuyerEditResCenterListener> {
 
-    @Bind(R.id.radioGroup)
+    @Bind(R2.id.radioGroup)
     RadioGroup radioGroup;
 
     public EditPackageStatusView(Context context) {

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.tkpd.selling.model.tracking.TrackHistory;
 
@@ -32,13 +33,13 @@ public class TrackingHistoryAdapter extends BaseLinearRecyclerViewAdapter {
 
     public class ViewHolder extends RecyclerView.ViewHolder  {
 
-        @Bind(R.id.status)
+        @Bind(R2.id.status)
         TextView status;
 
-        @Bind(R.id.city)
+        @Bind(R2.id.city)
         TextView city;
 
-        @Bind(R.id.time)
+        @Bind(R2.id.time)
         TextView time;
 
         public ViewHolder(View itemView) {

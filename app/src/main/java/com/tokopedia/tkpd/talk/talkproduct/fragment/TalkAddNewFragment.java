@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.analytics.UnifyTracking;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.network.NetworkErrorHelper;
@@ -35,13 +36,13 @@ public class TalkAddNewFragment extends BasePresenterFragment<TalkAddNewPresente
                                 implements TalkAddNewView{
 
 
-    @Bind(R.id.message)
+    @Bind(R2.id.message)
     EditText mMessage;
-    @Bind(R.id.product)
+    @Bind(R2.id.product)
     TextView mProdName;
-    @Bind(R.id.card_view) View cardView;
-    @Bind(R.id.send) View send;
-    @Bind(R.id.container) View container;
+    @Bind(R2.id.card_view) View cardView;
+    @Bind(R2.id.send) View send;
+    @Bind(R2.id.container) View container;
 
     TkpdProgressDialog mProgressDialog;
     String mMessageText;
@@ -131,7 +132,7 @@ public class TalkAddNewFragment extends BasePresenterFragment<TalkAddNewPresente
         presenter.unSubscribe();
     }
 
-    @OnClick(R.id.send)
+    @OnClick(R2.id.send)
     public void submit(){
         KeyboardHandler.DropKeyboard(getActivity(), mMessage);
         addNewTalk();

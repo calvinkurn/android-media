@@ -9,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterActivity;
 import com.tokopedia.tkpd.manage.people.address.listener.MPAddressActivityListener;
 import com.tokopedia.tkpd.manage.people.address.presenter.ManagePeopleAddressImpl;
@@ -21,7 +22,7 @@ import butterknife.Bind;
 public class ManagePeopleAddressActivity extends BasePresenterActivity<ManagePeopleAddressPresenter>
         implements MPAddressActivityListener, ManagePeopleAddressReceiver.Receiver {
 
-    @Bind(R.id.fab)
+    @Bind(R2.id.fab)
     FloatingActionButton fab;
 
     private Uri uriData;

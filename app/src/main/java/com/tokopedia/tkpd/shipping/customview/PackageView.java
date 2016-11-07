@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.shipping.fragment.EditShippingViewListener;
 import com.tokopedia.tkpd.shipping.model.editshipping.Courier;
 
@@ -18,7 +19,7 @@ import butterknife.Bind;
 public class PackageView extends EditShippingCourierView<Courier,
         EditShippingViewListener>{
 
-    @Bind (R.id.checkbox_holder) LinearLayout checkBoxHolder;
+    @Bind(R2.id.checkbox_holder) LinearLayout checkBoxHolder;
 
     private EditShippingViewListener mainView;
 

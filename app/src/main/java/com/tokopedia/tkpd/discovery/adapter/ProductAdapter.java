@@ -33,6 +33,7 @@ import com.tkpd.library.utils.URLParser;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.tkpd.InfoTopAds;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.tkpd.customadapter.TopAdsListRecyclerViewAdapter;
 import com.tokopedia.tkpd.customadapter.TopAdsRecyclerViewAdapter;
@@ -189,7 +190,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     //[START] This is banner HotList
 
     public static class ViewHolderSearchEmpty extends RecyclerView.ViewHolder {
-        @Bind(R.id.text)
+        @Bind(R2.id.text)
         TextView textView;
 
         public ViewHolderSearchEmpty(View itemView) {
@@ -210,13 +211,13 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     }
 
     public static class BannerHotListViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.hot_list_banner_indicator)
+        @Bind(R2.id.hot_list_banner_indicator)
         CirclePageIndicator hotListBannerIndicator;
 
-        @Bind(R.id.hot_list_banner_view_pager)
+        @Bind(R2.id.hot_list_banner_view_pager)
         ViewPager hotListBannerViewPager;
 
-        @Bind(R.id.hot_list_banner_hashtags)
+        @Bind(R2.id.hot_list_banner_hashtags)
         LinearLayout hotListBannerHashTags;
 
         HeaderHotAdapter headerHotAdapter;
@@ -338,16 +339,16 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
     public static class TopAds4ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.main_content)
+        @Bind(R2.id.main_content)
         LinearLayout mainContent;
 
-        @Bind(R.id.titlePromote)
+        @Bind(R2.id.titlePromote)
         TextView titlePromote;
 
-        @Bind(R.id.info_topads)
+        @Bind(R2.id.info_topads)
         ImageView infoTopAds;
 
-        @Bind(R.id.top_ads_linearlayout)
+        @Bind(R2.id.top_ads_linearlayout)
         LinearLayout topAdsRecyclerView;
 
         public TopAds4ViewHolder(View itemView) {
@@ -602,19 +603,19 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     }
 
     public static class ViewHolderProductitem extends RecyclerView.ViewHolder {
-        @Bind(R.id.product_image)
+        @Bind(R2.id.product_image)
         ImageView productImage;
-        @Bind(R.id.title)
+        @Bind(R2.id.title)
         TextView title;
-        @Bind(R.id.price)
+        @Bind(R2.id.price)
         TextView price;
-        @Bind(R.id.label_container)
+        @Bind(R2.id.label_container)
         FlowLayout labelContainer;
-        @Bind(R.id.shop_name)
+        @Bind(R2.id.shop_name)
         TextView shopName;
-        @Bind(R.id.location)
+        @Bind(R2.id.location)
         TextView location;
-        @Bind(R.id.badges_container)
+        @Bind(R2.id.badges_container)
         LinearLayout badgesContainer;
 
         private Context context;
@@ -667,7 +668,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             }
         }
 
-        @OnClick(R.id.container)
+        @OnClick(R2.id.container)
         public void onClick() {
             Bundle bundle = new Bundle();
             Intent intent = new Intent(context, ProductInfoActivity.class);

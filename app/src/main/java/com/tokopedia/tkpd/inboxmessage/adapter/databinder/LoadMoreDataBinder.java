@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.inboxmessage.presenter.InboxMessageDetailFragmentPresenter;
 import com.tokopedia.tkpd.util.DataBindAdapter;
 import com.tokopedia.tkpd.util.DataBinder;
@@ -23,10 +24,10 @@ public class LoadMoreDataBinder extends DataBinder<LoadMoreDataBinder.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.btn_load_more)
+        @Bind(R2.id.btn_load_more)
         Button loadMore;
 
-        @Bind(R.id.progressBar)
+        @Bind(R2.id.progressBar)
         ProgressBar progressBar;
 
         public ViewHolder(View itemView) {

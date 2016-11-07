@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.manage.people.address.adapter.ChooseAddressAdapter;
 import com.tokopedia.tkpd.manage.people.address.listener.ChooseAddressFragmentView;
@@ -30,16 +31,16 @@ import butterknife.Bind;
 
 public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFragmentPresenter> implements ChooseAddressFragmentView {
 
-    @Bind(R.id.main_view)
+    @Bind(R2.id.main_view)
     View mainView;
 
-    @Bind(R.id.address_list)
+    @Bind(R2.id.address_list)
     RecyclerView addressRV;
 
-    @Bind(R.id.search)
+    @Bind(R2.id.search)
     EditText search;
 
-    @Bind(R.id.search_but)
+    @Bind(R2.id.search_but)
     ImageView searchBut;
 
     ChooseAddressAdapter adapter;

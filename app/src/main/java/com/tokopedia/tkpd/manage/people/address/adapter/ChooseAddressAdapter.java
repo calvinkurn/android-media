@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.addtocart.model.responseatcform.Destination;
 import com.tokopedia.tkpd.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.tkpd.manage.people.address.ManageAddressConstant;
@@ -37,13 +38,13 @@ public class ChooseAddressAdapter extends BaseLinearRecyclerViewAdapter {
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        @Bind(R.id.title_address)
+        @Bind(R2.id.title_address)
         TextView titleAddress;
 
-        @Bind(R.id.address_detail)
+        @Bind(R2.id.address_detail)
         TextView addressDetail;
 
-        @Bind(R.id.edit_address)
+        @Bind(R2.id.edit_address)
         View btnEdit;
 
         public ViewHolder(View itemView) {

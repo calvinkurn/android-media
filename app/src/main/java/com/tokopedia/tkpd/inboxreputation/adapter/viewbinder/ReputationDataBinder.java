@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.inboxreputation.adapter.ImageUploadAdapter;
 import com.tokopedia.tkpd.inboxreputation.adapter.InboxReputationDetailAdapter;
 import com.tokopedia.tkpd.inboxreputation.interactor.CacheInboxReputationInteractor;
@@ -54,58 +55,58 @@ public class ReputationDataBinder extends DataBinder<ReputationDataBinder.ViewHo
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.product_avatar)
+        @Bind(R2.id.product_avatar)
         ImageView productAvatar;
 
-        @Bind(R.id.product_title)
+        @Bind(R2.id.product_title)
         TextView productName;
 
-        @Bind(R.id.product_review_date)
+        @Bind(R2.id.product_review_date)
         TextView productReviewDate;
 
-        @Bind(R.id.product_review)
+        @Bind(R2.id.product_review)
         TextView productReview;
 
-        @Bind(R.id.star_quality)
+        @Bind(R2.id.star_quality)
         ImageView quality;
 
-        @Bind(R.id.star_accuracy)
+        @Bind(R2.id.star_accuracy)
         ImageView accuracy;
 
-        @Bind(R.id.btn_overflow)
+        @Bind(R2.id.btn_overflow)
         ImageView overflow;
 
-        @Bind(R.id.give_reply)
+        @Bind(R2.id.give_reply)
         View viewGiveReply;
 
-        @Bind(R.id.btn_give_reply)
+        @Bind(R2.id.btn_give_reply)
         TextView btnGiveReply;
 
-        @Bind(R.id.view_review)
+        @Bind(R2.id.view_review)
         View viewReview;
 
-        @Bind(R.id.view_seller_reply)
+        @Bind(R2.id.view_seller_reply)
         View viewSellerReply;
 
-        @Bind(R.id.seller_avatar)
+        @Bind(R2.id.seller_avatar)
         ImageView sellerAvatar;
 
-        @Bind(R.id.seller_name)
+        @Bind(R2.id.seller_name)
         TextView sellerName;
 
-        @Bind(R.id.reputation_holder)
+        @Bind(R2.id.reputation_holder)
         LinearLayout reputationLabel;
 
-        @Bind(R.id.seller_reply)
+        @Bind(R2.id.seller_reply)
         TextView sellerReply;
 
-        @Bind(R.id.seller_reply_date)
+        @Bind(R2.id.seller_reply_date)
         TextView sellerReplyDate;
 
-        @Bind(R.id.btn_overflow_seller)
+        @Bind(R2.id.btn_overflow_seller)
         ImageView overflowSeller;
 
-        @Bind(R.id.image_holder)
+        @Bind(R2.id.image_holder)
         RecyclerView imageHolder;
 
         LabelUtils label;

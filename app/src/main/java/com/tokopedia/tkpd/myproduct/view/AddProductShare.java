@@ -14,6 +14,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ConnectionDetector;
 import com.tkpd.library.utils.TwitterHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.myproduct.fragment.AddProductFragment;
 import com.tokopedia.tkpd.myproduct.utils.DelegateOnClick;
 
@@ -34,28 +35,28 @@ public class AddProductShare {
     ConnectionDetector cd;
     DelegateOnClick delegateOnClick;
 
-    @Bind(R.id.add_product_facebook_but)
+    @Bind(R2.id.add_product_facebook_but)
     RelativeLayout facebookShareBut;
 
-    @Bind(R.id.twitter_but)
+    @Bind(R2.id.twitter_but)
     RelativeLayout twitterShareBut;
 
-    @Bind(R.id.add_product_facebook)
+    @Bind(R2.id.add_product_facebook)
     ImageView facebookShare;
 
-    @Bind(R.id.add_product_twitter)
+    @Bind(R2.id.add_product_twitter)
     ImageView addProductTwitter;
 
-    @Bind(R.id.facebook_checkbut)
+    @Bind(R2.id.facebook_checkbut)
     CheckBox facebookCheckBut;
 
-    @Bind(R.id.twitter_checkbut)
+    @Bind(R2.id.twitter_checkbut)
     CheckBox twitterCheckBut;
 
-    @Bind(R.id.add_product_facebook_text)
+    @Bind(R2.id.add_product_facebook_text)
     TextView facebookTextView;
 
-    @Bind(R.id.berbagi_title)
+    @Bind(R2.id.berbagi_title)
     TextView berbagiTitleTextView;
 
     public AddProductShare(View view){
@@ -65,18 +66,18 @@ public class AddProductShare {
 
 //    static int count =0;
 
-    @OnCheckedChanged(R.id.facebook_checkbut)
+    @OnCheckedChanged(R2.id.facebook_checkbut)
     public void facebookChecked(boolean checked){
         butFacebookToggle(checked);
         isFacebookAuth = checked;
     }
 
-    @OnCheckedChanged(R.id.twitter_checkbut)
+    @OnCheckedChanged(R2.id.twitter_checkbut)
     public void twitterChecked(boolean checked){
         butTwitterToggle(checked);
     }
 
-    @OnClick(R.id.add_product_facebook_but)
+    @OnClick(R2.id.add_product_facebook_but)
     public void authorizeFacebook(){
         if ( delegateOnClick != null && delegateOnClick instanceof AddProductFragment){
             isFacebookAuth = !isFacebookAuth;
@@ -84,7 +85,7 @@ public class AddProductShare {
         }
     }
 
-    @OnClick(R.id.twitter_but)
+    @OnClick(R2.id.twitter_but)
     public void authorizeTwitter() {
         twitterCall();
     }

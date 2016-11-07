@@ -20,6 +20,7 @@ import android.widget.FrameLayout;
 
 import com.google.gson.Gson;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.tkpd.discovery.model.Breadcrumb;
 import com.tokopedia.tkpd.dynamicfilter.fragments.DynamicFilterCategoryFragment;
@@ -47,11 +48,11 @@ import butterknife.ButterKnife;
  * Created by noiz354 on 7/11/16.
  */
 public class DynamicFilterActivity extends AppCompatActivity implements DynamicFilterView {
-    @Bind(R.id.dynamic_filter_list)
+    @Bind(R2.id.dynamic_filter_list)
     FrameLayout dynamicFilterList;
-    @Bind(R.id.toolbar)
+    @Bind(R2.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.dynamic_filter_detail)
+    @Bind(R2.id.dynamic_filter_detail)
     FrameLayout dynamicFilterDetail;
     private static final String TAG = DynamicFilterActivity.class.getSimpleName();
     DynamicFilterPresenter dynamicFilterPresenter;
@@ -66,7 +67,7 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
     public static final String ACTION_SELECT_FILTER = "ACTION_SELECT_FILTER";
     public static final String EXTRA_FILTER_KEY = "EXTRA_FILTER_KEY";
     public static final String EXTRA_FILTER_VALUE = "EXTRA_FILTER_VALUE";
-    @Bind(R.id.root)
+    @Bind(R2.id.root)
     CoordinatorLayout root;
     private SharedPreferences preferences;
     private FragmentManager fragmentManager;

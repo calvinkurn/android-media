@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.customwidget.SquareImageView;
 import com.tokopedia.tkpd.discovery.adapter.ProductAdapter;
 import com.tokopedia.tkpd.discovery.model.BrowseShopModel;
@@ -65,25 +66,25 @@ public class BrowseShopAdapter extends ProductAdapter {
 
     public static class ShopViewHolder extends RecyclerView.ViewHolder{
 
-        @Bind(R.id.shop_1)
+        @Bind(R2.id.shop_1)
         LinearLayout mainContent;
 
-        @Bind(R.id.item_shop_image)
+        @Bind(R2.id.item_shop_image)
         SquareImageView itemShopImage;
 
-        @Bind(R.id.item_shop_gold)
+        @Bind(R2.id.item_shop_gold)
         ImageView itemShopGold;
 
-        @Bind(R.id.item_shop_lucky)
+        @Bind(R2.id.item_shop_lucky)
         ImageView itemShopLucky;
 
-        @Bind(R.id.item_shop_name)
+        @Bind(R2.id.item_shop_name)
         TextView itemShopName;
 
-        @Bind(R.id.item_shop_bought)
+        @Bind(R2.id.item_shop_bought)
         TextView itemShopBought;
 
-        @Bind(R.id.item_shop_count_fav)
+        @Bind(R2.id.item_shop_count_fav)
         TextView itemShopCountFav;
 
         public ShopViewHolder(View itemView) {

@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.dynamicfilter.DynamicFilterActivity;
 import com.tokopedia.tkpd.dynamicfilter.adapter.DynamicFilterListAdapter;
 import com.tokopedia.tkpd.dynamicfilter.model.DynamicFilterModel;
@@ -57,10 +58,10 @@ public class DynamicFilterListFragment extends BaseFragment<DynamicFilterList> i
         return dynamicFilterFirstTimeFragment;
     }
 
-    @Bind(R.id.dynamic_filter_list_recyclerview)
+    @Bind(R2.id.dynamic_filter_list_recyclerview)
     RecyclerView dynamicFilterList;
 
-    @Bind(R.id.dynamic_filter_list_reset)
+    @Bind(R2.id.dynamic_filter_list_reset)
     Button dynamicFilterListReset;
 
     DynamicFilterListAdapter dynamicFilterListAdapter;
@@ -163,7 +164,7 @@ public class DynamicFilterListFragment extends BaseFragment<DynamicFilterList> i
         ButterKnife.unbind(this);
     }
 
-    @OnClick(R.id.dynamic_filter_list_reset)
+    @OnClick(R2.id.dynamic_filter_list_reset)
     public void onResetClick() {
         ((DynamicFilterActivity) getActivity()).resetSelectedFilter();
         getActivity().sendBroadcast(new Intent(DynamicFilterActivity.ACTION_RESET_FILTER));

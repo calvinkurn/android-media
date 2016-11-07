@@ -12,6 +12,7 @@ import android.view.Window;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.myproduct.adapter.ItemImageAdapter;
 import com.tokopedia.tkpd.myproduct.adapter.ItemImageAndText;
 
@@ -32,16 +33,16 @@ public class ImageChooserDialog extends DialogFragment {
     public static final String LISTENER = "LISTENER";
 
 
-    @Bind(R.id.title_dialog)
+    @Bind(R2.id.title_dialog)
     TextView titleDialog;
 
-    @Bind(R.id.recycler_view_item_image)
+    @Bind(R2.id.recycler_view_item_image)
     RecyclerView itemImage;
 
-    @Bind(R.id.title_cancel)
+    @Bind(R2.id.title_cancel)
     TextView cancelDialog;
 
-    @Bind(R.id.title_confirm)
+    @Bind(R2.id.title_confirm)
     TextView confirmDialog;
 
     private List<? extends ItemImageAndText> items;

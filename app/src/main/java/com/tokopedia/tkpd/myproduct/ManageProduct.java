@@ -66,6 +66,7 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.GalleryBrowser;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.TkpdActivity;
 import com.tokopedia.tkpd.customView.SimpleListView;
 import com.tokopedia.tkpd.customadapter.ListViewManageProdAdapter;
@@ -187,7 +188,7 @@ public class ManageProduct extends TkpdActivity implements
     private String IsAllowShop = "0";
     private ArrayList<String> SortValue;
     private ListViewManageProdAdapter lvadapter;
-    @Bind(R.id.prod_list)
+    @Bind(R2.id.prod_list)
     SimpleListView lvListProd;
     private Boolean loading = false;
     private AlertDialog.Builder SortMenu;
@@ -233,13 +234,13 @@ public class ManageProduct extends TkpdActivity implements
     private boolean isMultiSelect = false;
     private TkpdProgressDialog progress;
 
-    @Bind(R.id.blur_image)
+    @Bind(R2.id.blur_image)
     ImageView blurImage;
     private PagingHandler mPaging = new PagingHandler();
     private RetryHandler retryHandler;
     private SimpleSpinnerAdapter simpleSpinnerAdapter;
 
-    @Bind(R.id.fab_speed_dial)
+    @Bind(R2.id.fab_speed_dial)
     FabSpeedDial fabAddProduct;
 
 

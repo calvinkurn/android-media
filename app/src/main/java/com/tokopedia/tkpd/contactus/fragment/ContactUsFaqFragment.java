@@ -16,6 +16,7 @@ import android.widget.ScrollView;
 
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.contactus.activity.ContactUsActivity;
 import com.tokopedia.tkpd.contactus.activity.ContactUsActivity.BackButtonListener;
@@ -30,13 +31,13 @@ import static com.tokopedia.tkpd.contactus.ContactUsConstant.PARAM_URL;
  */
 public class ContactUsFaqFragment extends BasePresenterFragment {
 
-    @Bind(R.id.scroll_view)
+    @Bind(R2.id.scroll_view)
     ScrollView mainView;
 
-    @Bind(R.id.webview)
+    @Bind(R2.id.webview)
     WebView webView;
 
-    @Bind(R.id.progressbar)
+    @Bind(R2.id.progressbar)
     ProgressBar progressBar;
 
     ContactUsFaqListener listener;

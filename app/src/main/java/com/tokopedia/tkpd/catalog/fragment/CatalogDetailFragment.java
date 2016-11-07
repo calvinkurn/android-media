@@ -17,6 +17,7 @@ import com.tkpd.library.ui.view.ExpandableTextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.viewpagerindicator.LinePageIndicator;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.catalog.adapter.CatalogImageAdapter;
 import com.tokopedia.tkpd.catalog.adapter.CatalogSpecAdapterHelper;
@@ -52,39 +53,39 @@ public class CatalogDetailFragment extends BasePresenterFragment<ICatalogDetailP
     private static final String STATE_CATALOG_SPEC_LIST = "STATE_CATALOG_SPEC_LIST";
     private static final String STATE_CATALOG_SHARE_DATA = "STATE_CATALOG_SHARE_DATA";
 
-    @Bind(R.id.holder_btn_buy)
+    @Bind(R2.id.holder_btn_buy)
     View holderCatalogBtnBuy;
-    @Bind(R.id.btn_buy)
+    @Bind(R2.id.btn_buy)
     TextView btnBuy;
-    @Bind(R.id.holder_header_info)
+    @Bind(R2.id.holder_header_info)
     View holderCatalogHeaderInfo;
-    @Bind(R.id.tv_catalog_name)
+    @Bind(R2.id.tv_catalog_name)
     TextView tvCatalogName;
-    @Bind(R.id.tv_catalog_price)
+    @Bind(R2.id.tv_catalog_price)
     TextView tvCatalogPrice;
-    @Bind(R.id.holder_catalog_desc)
+    @Bind(R2.id.holder_catalog_desc)
     View holderCatalogDesc;
-    @Bind(R.id.expand_text_catalog_desc)
+    @Bind(R2.id.expand_text_catalog_desc)
     ExpandableTextView tvCatalogDesc;
-    @Bind(R.id.holder_catalog_image)
+    @Bind(R2.id.holder_catalog_image)
     View holderCatalogImage;
-    @Bind(R.id.vp_catalog_image)
+    @Bind(R2.id.vp_catalog_image)
     ViewPager vpCatalogImage;
-    @Bind(R.id.indicator)
+    @Bind(R2.id.indicator)
     LinePageIndicator indicator;
-    @Bind(R.id.holder_catalog_review)
+    @Bind(R2.id.holder_catalog_review)
     View holderReview;
-    @Bind(R.id.tv_review_desc)
+    @Bind(R2.id.tv_review_desc)
     TextView tvReviewDesc;
-    @Bind(R.id.tv_review_name)
+    @Bind(R2.id.tv_review_name)
     TextView tvReviewName;
-    @Bind(R.id.tv_review_score)
+    @Bind(R2.id.tv_review_score)
     TextView tvReviewScore;
-    @Bind(R.id.iv_review_logo)
+    @Bind(R2.id.iv_review_logo)
     ImageView ivReviewLogo;
-    @Bind(R.id.holder_catalog_spec)
+    @Bind(R2.id.holder_catalog_spec)
     View holderCatalogSpec;
-    @Bind(R.id.catalog_spec_list)
+    @Bind(R2.id.catalog_spec_list)
     RecyclerView rvCatalogSpec;
     private String catalogId;
     private ICatalogActionFragment catalogActionFragment;
@@ -341,7 +342,7 @@ public class CatalogDetailFragment extends BasePresenterFragment<ICatalogDetailP
         holderReview.setVisibility(View.GONE);
     }
 
-    @OnClick(R.id.btn_buy)
+    @OnClick(R2.id.btn_buy)
     void actionBuy() {
         if (catalogActionFragment != null)
             catalogActionFragment.navigateToCatalogProductList(catalogId);

@@ -19,6 +19,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.session.model.LoginInterruptModel;
 import com.tokopedia.tkpd.session.model.OTPModel;
 import com.tokopedia.tkpd.session.model.QuestionFormModel;
@@ -42,33 +43,33 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     private TkpdProgressDialog Progress;
     SecurityQuestion securityQuestion;
 
-    @Bind(R.id.input_text)
+    @Bind(R2.id.input_text)
     EditText vAnswer;
-    @Bind(R.id.input_otp)
+    @Bind(R2.id.input_otp)
     EditText vInputOtp;
-    @Bind(R.id.wrapper_input_text)
+    @Bind(R2.id.wrapper_input_text)
     TextInputLayout wrapperAnswer;
-    @Bind(R.id.wrapper_input_otp)
+    @Bind(R2.id.wrapper_input_otp)
     TextInputLayout wrapperInputOtp;
-    @Bind(R.id.title)
+    @Bind(R2.id.title)
     TextView vQuestion;
-    @Bind(R.id.view_security)
+    @Bind(R2.id.view_security)
     View vSecurity;
-    @Bind(R.id.view_otp)
+    @Bind(R2.id.view_otp)
     View vOtp;
-    @Bind(R.id.view_error)
+    @Bind(R2.id.view_error)
     View vError;
-    @Bind(R.id.send_otp)
+    @Bind(R2.id.send_otp)
     TextView vSendOtp;
-    @Bind(R.id.save_but)
+    @Bind(R2.id.save_but)
     TextView vSaveBut;
-    @Bind(R.id.exit_but)
+    @Bind(R2.id.exit_but)
     TextView vCancelBut;
-    @Bind(R.id.error_title)
+    @Bind(R2.id.error_title)
     TextView vErrorTitle;
-    @Bind(R.id.error_msg)
+    @Bind(R2.id.error_msg)
     TextView vErrorMessage;
-    @Bind(R.id.progress)
+    @Bind(R2.id.progress)
     ProgressBar vProgress;
 
     public interface SecurityQuestionListener {

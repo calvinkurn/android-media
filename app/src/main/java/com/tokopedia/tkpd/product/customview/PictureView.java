@@ -10,6 +10,7 @@ import android.util.AttributeSet;
 import com.tkpd.library.viewpagerindicator.LinePageIndicator;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.product.adapter.ImagePagerAdapter;
 import com.tokopedia.tkpd.product.listener.ProductDetailView;
 import com.tokopedia.tkpd.product.model.passdata.ProductPass;
@@ -27,9 +28,9 @@ import butterknife.Bind;
 public class PictureView extends BaseView<ProductDetailData, ProductDetailView> {
     private static final String TAG = PictureView.class.getSimpleName();
 
-    @Bind(R.id.view_pager)
+    @Bind(R2.id.view_pager)
     ViewPager vpImage;
-    @Bind(R.id.indicator)
+    @Bind(R2.id.indicator)
     LinePageIndicator indicator;
 
     private ImagePagerAdapter imagePagerAdapter;

@@ -60,6 +60,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SimpleSpinnerAdapter;
 import com.tkpd.library.utils.TwitterHandler;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.analytics.ScreenTracking;
 import com.tokopedia.tkpd.myproduct.ManageProduct;
 import com.tokopedia.tkpd.R;
@@ -234,18 +235,18 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         initPhotoAdapter(newPhotos);
     }
 
-    @Bind(R.id.add_product_copy)
+    @Bind(R2.id.add_product_copy)
     ViewStub addProductCopy;
 
-    @Bind(R.id.add_product_submit_ll)
+    @Bind(R2.id.add_product_submit_ll)
     ViewStub addProductSubmit;
     AddProductSubmit addProductSubmitContainer;
 
-    @Bind(R.id.add_product_soc_med_submit_ll)
+    @Bind(R2.id.add_product_soc_med_submit_ll)
     ViewStub addProductSocMedSubmit;
     AddProductSocMedSubmit addProductSocMedSubmitContainer;
 
-    @Bind(R.id.add_product_share)
+    @Bind(R2.id.add_product_share)
     ViewStub addProductShare;
     AddProductShare addProductShareContainer;
     private AddProductPresenter addProduct;
@@ -287,110 +288,110 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
      */
     public int positionAtSocMed;
 
-    @Bind(R.id.add_product_returnable_spinner)
+    @Bind(R2.id.add_product_returnable_spinner)
     Spinner addProductReturnableSpinner;
-    @Bind(R.id.add_product_policy_layout)
+    @Bind(R2.id.add_product_policy_layout)
     LinearLayout addProductPolicyLayout;
     GetShopNoteModel.ShopNoteModel returnPolicy = null;
     MyShopInfoModel.Info myShopInfoModel;
     NoteDetailModel.Detail detail;
 
-    //    @Bind(R.id.add_product_add_to_new_etalase_layout)
+    //    @Bind(R2.id.add_product_add_to_new_etalase_layout)
     ExpandableRelativeLayout addProductAddToNewEtalaseLayout;
-    @Bind(R.id.add_product_add_to_new_etalase_alert)
+    @Bind(R2.id.add_product_add_to_new_etalase_alert)
     TextInputLayout addProductAddToNewEtalaseAlert;
-    @Bind(R.id.add_product_add_to_new_etalase)
+    @Bind(R2.id.add_product_add_to_new_etalase)
     EditText addProductAddToNewEtalase;
 
-    @Bind(R.id.add_product_imagechveron)
+    @Bind(R2.id.add_product_imagechveron)
     ImageView chevron;
 
-    @Bind(R.id.add_product_minimum_order_alert)
+    @Bind(R2.id.add_product_minimum_order_alert)
     TextInputLayout addProductMinimumOrderAlert;
-    @Bind(R.id.add_product_minimum_order)
+    @Bind(R2.id.add_product_minimum_order)
     EditText addProductMinimumOrder;
 
-    @Bind(R.id.add_product_product_name_alert)
+    @Bind(R2.id.add_product_product_name_alert)
     TextInputLayout addProductPRoductNameAlert;
-    @Bind(R.id.add_product_product_name)
+    @Bind(R2.id.add_product_product_name)
     EditText addProductProductName;
 
     String selectedCurrencyDesc;
-    @Bind(R.id.add_product_currency)
+    @Bind(R2.id.add_product_currency)
     ClickToSelectEditText<SimpleTextModel> addProductCurrency;
-    @Bind(R.id.add_product_price)
+    @Bind(R2.id.add_product_price)
     EditText addProductPrice;
-    @Bind(R.id.add_product_price_alert)
+    @Bind(R2.id.add_product_price_alert)
     TextInputLayout addProductPriceAlert;
 
     RecyclerView.Adapter photoAdapter;
-    @Bind(R.id.add_product_images)
+    @Bind(R2.id.add_product_images)
     RecyclerView addProductImages;
     ArrayList<ImageModel> photos;
 
     TextDeleteAdapter categoryAdapter;
-    @Bind(R.id.add_product_category_spinner)
+    @Bind(R2.id.add_product_category_spinner)
     RecyclerView addProductCategorySpinner;
     ArrayList<TextDeleteModel> categoryModels;
 
-    @Bind(R.id.add_product_weight_unit)
+    @Bind(R2.id.add_product_weight_unit)
     ClickToSelectEditText addProductWeightUnit;
-    @Bind(R.id.add_product_weight)
+    @Bind(R2.id.add_product_weight)
     EditText addProductWeight;
-    @Bind(R.id.add_product_weight_alert)
+    @Bind(R2.id.add_product_weight_alert)
     TextInputLayout addProductWeightAlert;
 
-    @Bind(R.id.add_product_tittle_wholesale)
+    @Bind(R2.id.add_product_tittle_wholesale)
     RelativeLayout addProductTitleWholeSale;
 
-    //    @Bind(R.id.add_product_wholesale_layout)
+    //    @Bind(R2.id.add_product_wholesale_layout)
     ExpandableRelativeLayout wholeSaleContainer;
 
-    @Bind(R.id.add_product_wholesale_item)
+    @Bind(R2.id.add_product_wholesale_item)
     RecyclerView addProductWholeSaleItem;
-    @Bind(R.id.add_product_add_whole_sale_item)
+    @Bind(R2.id.add_product_add_whole_sale_item)
     TextView addProductAddWholeSaleItem;
     WholesaleAdapter wholesaleAdapter;
 
-    @Bind(R.id.add_product_add_to)
+    @Bind(R2.id.add_product_add_to)
     RecyclerView addProductAddTo;
     ArrayList<EtalaseModel> etalaseModels;
     ArrayList<TextDeleteModel> displayEtalaseModels;
     TextDeleteAdapter etalaseAdapter;
 
-    @Bind(R.id.add_product_parent)
+    @Bind(R2.id.add_product_parent)
     RelativeLayout addProductParent;
 
 
-    //    @Bind(R.id.add_product_desc)
+    //    @Bind(R2.id.add_product_desc)
     LimitedEditText addProductDesc;
     EditText addProductDescNormal;
 
-    @Bind(R.id.add_product_product_desc_layout)
+    @Bind(R2.id.add_product_product_desc_layout)
     TextInputLayout addProductProductDescLayout;
 
-    @Bind(R.id.add_product_condition)
+    @Bind(R2.id.add_product_condition)
     Spinner addProductCondition;
 
-    @Bind(R.id.add_product_insurance)
+    @Bind(R2.id.add_product_insurance)
     Spinner addProductInsurance;
 
-    @Bind(R.id.title_preorder)
+    @Bind(R2.id.title_preorder)
     RelativeLayout addProductTitlePreorder;
-    @Bind(R.id.chevron_preorder)
+    @Bind(R2.id.chevron_preorder)
     ImageView addProductChevronPreorder;
-    //    @Bind(R.id.preorder_content)
+    //    @Bind(R2.id.preorder_content)
     ExpandableRelativeLayout addProductPreOderContent;
-    @Bind(R.id.edittext_preorder)
+    @Bind(R2.id.edittext_preorder)
     EditText addProductEdittextPreorder;
 
-//    @Bind(R.id.add_product_catalog_layout)
+//    @Bind(R2.id.add_product_catalog_layout)
     LinearLayout addProductCatalogLayout;
-//    @Bind(R.id.add_product_catalog_frame)
+//    @Bind(R2.id.add_product_catalog_frame)
     TextView addProductCatalogFrame;
-    @Bind(R.id.add_product_prompt_catalog)
+    @Bind(R2.id.add_product_prompt_catalog)
     TextView addProductPromptCatalog;
-    @Bind(R.id.add_product_catalog)
+    @Bind(R2.id.add_product_catalog)
     ClickToSelectWithImage addProductCatalog;
     ArrayList<CatalogDataModel.Catalog> catalogs;
 
@@ -440,7 +441,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     TkpdProgressDialog editProgressDialog;
 
 
-    @OnTextChanged(R.id.add_product_add_to_new_etalase)
+    @OnTextChanged(R2.id.add_product_add_to_new_etalase)
     public void onTextChangedEtalase(CharSequence s, int start, int before,
                                      int count){
         Pair<Boolean, String> validate = VerificationUtils.validateNewEtalaseName(getActivity(), s.toString());
@@ -2034,7 +2035,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 //        return mDeleteMode;
 //    }
 
-    @OnFocusChange(R.id.add_product_price)
+    @OnFocusChange(R2.id.add_product_price)
     public void onFocusChange(View v, boolean hasFocus) {
         switch (v.getId()) {
             case R.id.add_product_price:
@@ -2047,7 +2048,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         }
     }
 
-    @OnTextChanged(R.id.edittext_preorder)
+    @OnTextChanged(R2.id.edittext_preorder)
     public void onTextChangedPreOrder(CharSequence s, int start, int before,
                                       int count){
         Pair<Boolean, String> validate = VerificationUtils.validatePreOrder(getActivity(), s.toString());
@@ -2058,7 +2059,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         }
     }
 
-//    @OnTextChanged(R.id.add_product_desc)
+//    @OnTextChanged(R2.id.add_product_desc)
 //    public void onTextChangedDescription(CharSequence s, int start, int before,
 //                                      int count){
 //        Pair<Boolean, String> validate = VerificationUtils.validateDescription(getActivity(), s.toString());
@@ -2071,7 +2072,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 //        }
 //    }
 
-    @OnTextChanged(R.id.add_product_minimum_order)
+    @OnTextChanged(R2.id.add_product_minimum_order)
     public void onTextChangedMinOrder(CharSequence s, int start, int before,
                                       int count){
         validateMinOrder(s);
@@ -2088,7 +2089,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         }
     }
 
-    @OnTextChanged(R.id.add_product_weight)
+    @OnTextChanged(R2.id.add_product_weight)
     public void onTextChangedMinWeight(CharSequence s, int start, int before,
                                        int count){
         validateProdWeight(s);
@@ -2119,7 +2120,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         addProductWeightAlert.setErrorEnabled(false);
     }
 
-    @OnTextChanged(R.id.add_product_product_name)
+    @OnTextChanged(R2.id.add_product_product_name)
     public void onTextChangedProdName(CharSequence s, int start, int before,
                               int count){
         if(addProductProductName.isEnabled()) {
@@ -2142,7 +2143,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         addProductPRoductNameAlert.setErrorEnabled(false);
     }
 
-    @OnTextChanged(R.id.add_product_price)
+    @OnTextChanged(R2.id.add_product_price)
     public void onTextChanged(CharSequence s, int start, int before,
                               int count) {
 
@@ -2184,7 +2185,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         addProductPriceAlert.setErrorEnabled(false);
     }
 
-    @OnClick(R.id.add_product_add_whole_sale_item)
+    @OnClick(R2.id.add_product_add_whole_sale_item)
     public void onWholeSaleAdd(){
         if(wholeSaleContainer != null) {
             wholesaleAdapter.add(new WholeSaleAdapterModel(0, 0, 0));
@@ -2483,7 +2484,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         return simpleTextModels;
     }
 
-    @OnClick(R.id.add_product_policy_layout)
+    @OnClick(R2.id.add_product_policy_layout)
     public void onClick(){
         if(addProductReturnableSpinner.getSelectedItem().toString().contains("Tambah")){
             DialogFragment fragment = ReturnPolicyDialog.newInstance();
@@ -2499,7 +2500,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         }
     }
 
-    @OnItemSelected(R.id.add_product_returnable_spinner)
+    @OnItemSelected(R2.id.add_product_returnable_spinner)
     public void selectReturnPolicy(AdapterView<?> parentView, View selectedItemView, int position, long id) {
         switch (position) {
             case 0:
@@ -2515,12 +2516,12 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     }
 
     //[REMOVE] move onclick to its container
-//    @OnClick(R.id.add_product_submit_and_push)
+//    @OnClick(R2.id.add_product_submit_and_push)
 //    public void pushProduct(){
 //        pushAndCreateNewProduct(true);
 //    }
 //
-//    @OnClick(R.id.add_product_submit)
+//    @OnClick(R2.id.add_product_submit)
 //    public void pushAndCreateNewProduct(){
 //        pushAndCreateNewProduct(false);
 //    }
@@ -2819,12 +2820,12 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         }
     }
 
-    @OnClick(R.id.title_preorder)
+    @OnClick(R2.id.title_preorder)
     public void togglePreOder(){
         togglePreorder();
     }
 
-    @OnClick(R.id.add_product_tittle_wholesale)
+    @OnClick(R2.id.add_product_tittle_wholesale)
     public void toggleWholeSale() {
 //        if (!VerificationUtils.validatePrice(addProductCurrency.getSelectedItem().toString(), addProductPrice.getText().toString())) {
         Pair<Boolean, String> verif = VerificationUtils.validatePrice(getActivity(), selectedCurrencyDesc, addProductPrice.getText().toString(),"checkwholesale");

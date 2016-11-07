@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.tkpd.network.NetworkErrorHelper;
 import com.tokopedia.tkpd.review.adapter.ProductReviewAdapter;
@@ -61,11 +62,11 @@ public class ProductReviewFragment extends Fragment implements ProductReviewView
     private boolean isFirstTime;
     private TkpdProgressDialog progressDialog;
 
-    @Bind(R.id.include_loading)
+    @Bind(R2.id.include_loading)
     ProgressBar progressBar;
-    @Bind(R.id.recycler_view)
+    @Bind(R2.id.recycler_view)
     RecyclerView recyclerView;
-    @Bind(R.id.view_rating_stats)
+    @Bind(R2.id.view_rating_stats)
     View statsView;
 
     SnackbarRetry snackbarRetry;

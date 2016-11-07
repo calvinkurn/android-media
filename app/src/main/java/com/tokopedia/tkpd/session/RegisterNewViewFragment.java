@@ -48,6 +48,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.analytics.ScreenTracking;
 import com.tokopedia.tkpd.analytics.UnifyTracking;
 import com.tokopedia.tkpd.home.ParentIndexHome;
@@ -94,28 +95,28 @@ import permissions.dispatcher.RuntimePermissions;
 public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implements RegisterNewView {
     public static final int PASSWORD_MINIMUM_LENGTH = 6;
 
-    @Bind(R.id.register_name)
+    @Bind(R2.id.register_name)
     AutoCompleteTextView registerName;
-    @Bind(R.id.register_password)
+    @Bind(R2.id.register_password)
     PasswordView registerPassword;
-    @Bind(R.id.register_privacy_policy)
+    @Bind(R2.id.register_privacy_policy)
     RelativeLayout registerPrivacyPolicy;
-    @Bind(R.id.checkbox_privacy_policy)
+    @Bind(R2.id.checkbox_privacy_policy)
     CheckBox checkboxPrivacyPolicy;
-    @Bind(R.id.register_next_progress)
+    @Bind(R2.id.register_next_progress)
     ProgressBar registerNextProgress;
-    @Bind(R.id.register_next)
+    @Bind(R2.id.register_next)
     RelativeLayout registerNext;
-    @Bind(R.id.register_next_button)
+    @Bind(R2.id.register_next_button)
     TextView registerNextButton;
-    @Bind(R.id.register_status)
+    @Bind(R2.id.register_status)
     LinearLayout registerStatus;
-    @Bind(R.id.register_status_message)
+    @Bind(R2.id.register_status_message)
     TextView registerStatusMessage;
-    @Bind(R.id.register_form)
+    @Bind(R2.id.register_form)
     ScrollView registerForm;
 
-    @Bind(R.id.step_1) LinearLayout linearLayout;
+    @Bind(R2.id.step_1) LinearLayout linearLayout;
     List<LoginProviderModel.ProvidersBean> listProvider;
     Context mContext;
 
@@ -233,12 +234,12 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
         return parentView;
     }
 
-    @OnClick(R.id.register_privacy_policy)
+    @OnClick(R2.id.register_privacy_policy)
     public void registerPrivacyPolicy(){
         checkboxPrivacyPolicy.setChecked(!checkboxPrivacyPolicy.isChecked());
     }
 
-//    @OnClick(R.id.facebook_login)
+//    @OnClick(R2.id.facebook_login)
     public void onFacebookLoginClick(){
         showProgress(true);
         presenter.loginFacebook(getActivity());
@@ -248,7 +249,7 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
                 );
     }
 
-//    @OnClick(R.id.gplus_login)
+//    @OnClick(R2.id.gplus_login)
     public void onGoogleLoginClick(){
         showProgress(true);
         if(getActivity() instanceof GoogleActivity){
@@ -343,7 +344,7 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
         //[END] Validate using server v4
     }
 
-    @OnClick(R.id.register_next)
+    @OnClick(R2.id.register_next)
     public void registerNext(){
         attemptRegisterStep1();
     }

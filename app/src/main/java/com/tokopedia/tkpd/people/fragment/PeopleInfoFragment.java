@@ -9,6 +9,7 @@ import android.view.View;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.tkpd.ManagePeople;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.inboxmessage.activity.SendMessageActivity;
 import com.tokopedia.tkpd.inboxmessage.fragment.SendMessageFragment;
@@ -38,13 +39,13 @@ public class PeopleInfoFragment extends BasePresenterFragment<PeopleInfoFragment
     public static final String TAG = PeopleInfoFragment.class.getSimpleName();
     public static final String EXTRA_PARAM_USER_ID = "EXTRA_PARAM_USER_ID";
 
-    @Bind(R.id.layout_people_info_header_view)
+    @Bind(R2.id.layout_people_info_header_view)
     PeopleInfoHeaderView peopleInfoHeaderView;
-    @Bind(R.id.layout_people_info_detail_view)
+    @Bind(R2.id.layout_people_info_detail_view)
     PeopleInfoDetailView peopleInfoDetailView;
-    @Bind(R.id.layout_people_info_reputation_view)
+    @Bind(R2.id.layout_people_info_reputation_view)
     PeopleInfoReputationView peopleInfoReputationView;
-    @Bind(R.id.layout_people_info_shop_owner_view)
+    @Bind(R2.id.layout_people_info_shop_owner_view)
     PeopleInfoShopOwnerView peopleInfoShopOwnerView;
 
 

@@ -33,6 +33,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.network.NetworkErrorHelper;
 import com.tokopedia.tkpd.selling.presenter.adapter.BaseSellingAdapter;
 import com.tokopedia.tkpd.selling.view.viewHolder.BaseSellingViewHolder;
@@ -56,9 +57,9 @@ import butterknife.OnClick;
  */
 public class FragmentSellingShipping extends BaseFragment<Shipping> implements ShippingView {
 
-    @Bind(R.id.order_list)
+    @Bind(R2.id.order_list)
     RecyclerView recyclerView;
-    @Bind(R.id.fab)
+    @Bind(R2.id.fab)
     FloatingActionButton fab;
     private View filterView;
     SearchView search;
@@ -517,7 +518,7 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
     }
 
 
-    @OnClick(R.id.fab)
+    @OnClick(R2.id.fab)
     public void onClick() {
         bottomSheetDialog.show();
     }

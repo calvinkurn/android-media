@@ -21,6 +21,7 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.tkpd.payment.model.responsedynamicpayment.DynamicPaymentData;
@@ -49,9 +50,9 @@ public class DynamicPaymentFragment extends BasePresenterFragment
     private static final String CONTAINS_LOGIN_URL = "login.pl";
     private static final long FORCE_TIMEOUT = 60000L;
 
-    @Bind(R.id.webview)
+    @Bind(R2.id.webview)
     WebView webView;
-    @Bind(R.id.progressbar)
+    @Bind(R2.id.progressbar)
     ProgressBar progressBar;
 
     private DynamicPaymentData dynamicPaymentData;

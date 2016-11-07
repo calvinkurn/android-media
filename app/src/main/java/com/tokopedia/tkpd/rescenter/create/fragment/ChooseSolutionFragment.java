@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.tkpd.ImageGallery;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.database.model.AttachmentResCenterDB;
 import com.tokopedia.tkpd.network.NetworkErrorHelper;
@@ -54,21 +55,21 @@ public class ChooseSolutionFragment extends BasePresenterFragment<ChooseSolution
 
     private static final String KEY_PARAM_PASS_DATA = "pass_data";
 
-    @Bind(R.id.invoice)
+    @Bind(R2.id.invoice)
     TextView invoice;
-    @Bind(R.id.shop_name)
+    @Bind(R2.id.shop_name)
     TextView shopName;
-    @Bind(R.id.view_solution_section)
+    @Bind(R2.id.view_solution_section)
     SolutionSectionCreateResCenterView solutionSectionView;
-    @Bind(R.id.view_attachment_section)
+    @Bind(R2.id.view_attachment_section)
     AttachmentSectionCreateResCenterView attachmenSectionView;
-    @Bind(R.id.action_submit)
+    @Bind(R2.id.action_submit)
     View submitButton;
-    @Bind(R.id.action_abort)
+    @Bind(R2.id.action_abort)
     View actionAbort;
-    @Bind(R.id.main_view)
+    @Bind(R2.id.main_view)
     View mainView;
-    @Bind(R.id.include_loading)
+    @Bind(R2.id.include_loading)
     View loading;
 
     private ActionParameterPassData passData;

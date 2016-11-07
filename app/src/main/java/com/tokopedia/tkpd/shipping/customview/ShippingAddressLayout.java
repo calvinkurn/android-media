@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.geolocation.activity.GeolocationActivity;
 import com.tokopedia.tkpd.geolocation.model.LocationPass;
 import com.tokopedia.tkpd.geolocation.utils.GeoLocationUtils;
@@ -27,24 +28,24 @@ public class ShippingAddressLayout extends EditShippingCustomView<ShopShipping,
         EditShippingPresenter,
         EditShippingViewListener>{
 
-    @Bind(R.id.address_text_field)
+    @Bind(R2.id.address_text_field)
     EditText addressArea;
 
-    @Bind(R.id.value_location) EditText chooseLocation;
+    @Bind(R2.id.value_location) EditText chooseLocation;
 
-    @Bind(R.id.shop_phone_number)
+    @Bind(R2.id.shop_phone_number)
     TextView phoneNumber;
 
-    @Bind(R.id.shop_phone_number_title) TextView phoneNumberTitle;
+    @Bind(R2.id.shop_phone_number_title) TextView phoneNumberTitle;
 
-    @Bind(R.id.change_phone_number_button) TextView phoneNumberButton;
+    @Bind(R2.id.change_phone_number_button) TextView phoneNumberButton;
 
-    @OnClick(R.id.value_location)
+    @OnClick(R2.id.value_location)
     void openGeoLocationMap(){
         mainView.openGeoLocation();
     }
 
-    @OnTextChanged(R.id.address_text_field)
+    @OnTextChanged(R2.id.address_text_field)
     void saveAddressArea(){
         presenter.saveAddressArea(addressArea.getText().toString());
     }

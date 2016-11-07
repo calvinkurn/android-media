@@ -22,6 +22,7 @@ import com.tkpd.library.ui.floatbutton.FabSpeedDial;
 import com.tkpd.library.ui.floatbutton.ListenerFabClick;
 import com.tkpd.library.ui.floatbutton.SimpleMenuListenerAdapter;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.analytics.ScreenTracking;
 import com.tokopedia.tkpd.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.tkpd.customwidget.SwipeToRefresh;
@@ -53,19 +54,19 @@ import static com.tokopedia.tkpd.home.presenter.ProductFeed.messageTag;
  */
 public class FragmentProductFeed extends Fragment implements ProductFeedView, DefaultRetryListener.OnClickRetry{
 
-    @Bind(R.id.index_main_recycler_view)
+    @Bind(R2.id.index_main_recycler_view)
     RecyclerView indexRecyclerView;
 
-    @Bind(R.id.include_loading)
+    @Bind(R2.id.include_loading)
     ProgressBar progressBar;
 
-    @Bind(R.id.main_content)
+    @Bind(R2.id.main_content)
     LinearLayout mainContent;
 
-    @Bind(R.id.swipe_refresh_layout)
+    @Bind(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeRefreshLayout;
 
-    @Bind(R.id.fab_speed_dial)
+    @Bind(R2.id.fab_speed_dial)
     FabSpeedDial fabAddProduct;
 
     RetryHandler retryHandlerFull;
@@ -167,7 +168,7 @@ public class FragmentProductFeed extends Fragment implements ProductFeedView, De
         });
     }
 
-    @OnClick(R.id.fab_speed_dial)
+    @OnClick(R2.id.fab_speed_dial)
     public void onFabClick(){
         productFeedPresenter.moveToAddProduct(getActivity());
     }

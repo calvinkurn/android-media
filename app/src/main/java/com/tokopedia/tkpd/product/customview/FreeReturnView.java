@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.home.BannerWebView;
 import com.tokopedia.tkpd.product.listener.ProductDetailView;
 import com.tokopedia.tkpd.product.model.productdetail.ProductDetailData;
@@ -30,11 +31,11 @@ import butterknife.Bind;
  */
 public class FreeReturnView extends BaseView<ProductDetailData, ProductDetailView> {
 
-    @Bind(R.id.layout_free_return)
+    @Bind(R2.id.layout_free_return)
     LinearLayout layoutFreeReturn;
-    @Bind(R.id.image_free_return)
+    @Bind(R2.id.image_free_return)
     ImageView imageFreeReturn;
-    @Bind(R.id.text_free_return)
+    @Bind(R2.id.text_free_return)
     TextView textFreeReturn;
 
     public FreeReturnView(Context context) {

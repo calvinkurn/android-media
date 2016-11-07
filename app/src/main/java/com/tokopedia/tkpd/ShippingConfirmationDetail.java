@@ -77,51 +77,51 @@ ShippingConfirmationDetail extends TActivity {
 
     private static final String PHONE_TOKOPEDIA = "021-53691015";
 
-    @Bind(R.id.payment_method)
+    @Bind(R2.id.payment_method)
     TextView PaymentMethod;
-    @Bind(R.id.invoice_text)
+    @Bind(R2.id.invoice_text)
     TextView Invoice;
-    @Bind(R.id.buyer_name)
+    @Bind(R2.id.buyer_name)
     TextView BuyerName;
-    @Bind(R.id.product_list)
+    @Bind(R2.id.product_list)
     ListView ProductListView;
-    @Bind(R.id.order_status)
+    @Bind(R2.id.order_status)
     ListView OrderStatus;
-    @Bind(R.id.deadline)
+    @Bind(R2.id.deadline)
     TextView Deadline;
-    @Bind(R.id.shipping_cost)
+    @Bind(R2.id.shipping_cost)
     TextView ShippingCost;
-    @Bind(R.id.additional_cost)
+    @Bind(R2.id.additional_cost)
     TextView AdditionalCost;
-    @Bind(R.id.destination)
+    @Bind(R2.id.destination)
     TextView Destination;
-    //	@Bind(R.id.last_status)
+    //	@Bind(R2.id.last_status)
 //	TextView LastStatus;
-    @Bind(R.id.destination_detail)
+    @Bind(R2.id.destination_detail)
     TextView DestinationDetail;
-    @Bind(R.id.quantity)
+    @Bind(R2.id.quantity)
     TextView Quantity;
-    @Bind(R.id.grand_total)
+    @Bind(R2.id.grand_total)
     TextView GrandTotal;
-    @Bind(R.id.error_message)
+    @Bind(R2.id.error_message)
     TextView ErrorMessage;
-    @Bind(R.id.confirm_button)
+    @Bind(R2.id.confirm_button)
     TextView ConfirmButton;
-    @Bind(R.id.cancel_button)
+    @Bind(R2.id.cancel_button)
     TextView CancelButton;
-    @Bind(R.id.sender_name)
+    @Bind(R2.id.sender_name)
     TextView SenderName;
-    @Bind(R.id.sender_phone)
+    @Bind(R2.id.sender_phone)
     TextView SenderPhone;
-    @Bind(R.id.sender_form)
+    @Bind(R2.id.sender_form)
     View SenderForm;
-    @Bind(R.id.layout_destination_default)
+    @Bind(R2.id.layout_destination_default)
     View viewDefaultDestination;
-    @Bind(R.id.layout_pickup_instant_shipping_courier)
+    @Bind(R2.id.layout_pickup_instant_shipping_courier)
     View viewPickupLocationCourier;
-    @Bind(R.id.pickup_detail_location)
+    @Bind(R2.id.pickup_detail_location)
     TextView pickupLocationDetail;
-    @Bind(R.id.destination_detail_location)
+    @Bind(R2.id.destination_detail_location)
     TextView deliveryLocationDetail;
 
     ListViewOrderStatus OrderAdapter;
@@ -414,17 +414,17 @@ ShippingConfirmationDetail extends TActivity {
 //		}
 //	}
 
-    @OnClick(R.id.invoice_text)
+    @OnClick(R2.id.invoice_text)
     public void invoiceClick() {
         AppUtils.InvoiceDialog(ShippingConfirmationDetail.this, invoice_uri, invoice_pdf, Invoice.getText().toString());
     }
 
-    @OnClick(R.id.buyer_name)
+    @OnClick(R2.id.buyer_name)
     public void onBuyerClick() {
         startActivity(PeopleInfoNoDrawerActivity.createInstance(ShippingConfirmationDetail.this, UserID));
     }
 
-    @OnClick(R.id.confirm_button)
+    @OnClick(R2.id.confirm_button)
     public void onConfirmButton() {
         Intent intent = new Intent(ShippingConfirmationDetail.this, ShippingConfirmationProdConf.class);
         intent.putExtras(getIntent().getExtras());

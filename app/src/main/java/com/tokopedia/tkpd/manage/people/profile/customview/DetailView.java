@@ -10,6 +10,7 @@ import android.widget.RadioGroup;
 
 import com.tkpd.library.ui.utilities.DatePickerUtil;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.manage.people.profile.model.DataUser;
 import com.tokopedia.tkpd.manage.people.profile.model.Profile;
 import com.tokopedia.tkpd.manage.people.profile.presenter.ManagePeopleProfileFragmentPresenter;
@@ -22,13 +23,13 @@ import butterknife.Bind;
  */
 public class DetailView extends BaseView<Profile, ManagePeopleProfileFragmentPresenter> {
 
-    @Bind(R.id.user_name)
+    @Bind(R2.id.user_name)
     public EditText userName;
-    @Bind(R.id.birth_date)
+    @Bind(R2.id.birth_date)
     public EditText birthDate;
-    @Bind(R.id.gender)
+    @Bind(R2.id.gender)
     public RadioGroup genderRadioGroup;
-    @Bind(R.id.hobbies)
+    @Bind(R2.id.hobbies)
     public EditText hobby;
 
     public DetailView(Context context) {

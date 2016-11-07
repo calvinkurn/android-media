@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.network.NetworkErrorHelper;
 import com.tokopedia.tkpd.network.SnackbarRetry;
 import com.tokopedia.tkpd.selling.SellingService;
@@ -50,15 +51,15 @@ public class ConfirmRejectOrderFragment extends Fragment implements SellingView 
 
     public static final String PRODUCT_DETAIL_KEY = "product_detail_key";
 
-    @Bind(R.id.reason)
+    @Bind(R2.id.reason)
     TextView reasonText;
-    @Bind(R.id.list)
+    @Bind(R2.id.list)
     RecyclerView recyclerView;
-    @Bind(R.id.confirm_button)
+    @Bind(R2.id.confirm_button)
     TextView confirmButton;
-    @Bind(R.id.pBar)
+    @Bind(R2.id.pBar)
     ProgressBar progressBar;
-    @Bind(R.id.title_edit_product)
+    @Bind(R2.id.title_edit_product)
     TextView titleEditProduct;
 
     private ProductListAdapter listAdapter;
@@ -136,7 +137,7 @@ public class ConfirmRejectOrderFragment extends Fragment implements SellingView 
         ((ConfirmRejectOrderActivity) getActivity()).ConfirmRejectOrder(SellingService.GET_PRODUCT_FORM_EDIT, bundle);
     }
 
-    @OnClick(R.id.confirm_button)
+    @OnClick(R2.id.confirm_button)
     public void onConfirm() {
         switch (type) {
             case stock:

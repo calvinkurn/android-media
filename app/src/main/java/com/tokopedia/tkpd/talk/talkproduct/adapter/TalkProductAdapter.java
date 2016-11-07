@@ -24,6 +24,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.MainApplication;
 import com.tokopedia.tkpd.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.tkpd.people.activity.PeopleInfoNoDrawerActivity;
@@ -85,31 +86,31 @@ public class TalkProductAdapter extends BaseRecyclerViewAdapter {
     }
 
     public static class TalkProductViewHolder extends RecyclerView.ViewHolder {
-//        @Bind(R.id.user_ava) ImageView pImageView;
+//        @Bind(R2.id.user_ava) ImageView pImageView;
 
-        @Bind(R.id.user_ava)
+        @Bind(R2.id.user_ava)
         ImageView UserImageView;
-        @Bind(R.id.rep_icon)
+        @Bind(R2.id.rep_icon)
         ImageView RepIcon;
-        @Bind(R.id.but_overflow)
+        @Bind(R2.id.but_overflow)
         View ButtonOverflow;
-        @Bind(R.id.product_name)
+        @Bind(R2.id.product_name)
         TextView pProdName;
-        @Bind(R.id.user_name)
+        @Bind(R2.id.user_name)
         TextView UserView;
-        @Bind(R.id.create_time)
+        @Bind(R2.id.create_time)
         TextView TimeView;
-        @Bind(R.id.message)
+        @Bind(R2.id.message)
         TextView MessageView;
-        @Bind(R.id.total_comment)
+        @Bind(R2.id.total_comment)
         TextView TotalCommentView;
-        @Bind(R.id.rep_rating)
+        @Bind(R2.id.rep_rating)
         TextView RepRate;
-        @Bind(R.id.main_view)
+        @Bind(R2.id.main_view)
         View CommentBut;
-        //        @Bind(R.id.)View ProdView;
-//        @Bind(R.id.detail_layout)View DetailLayout;
-        @Bind(R.id.reputation_view)
+        //        @Bind(R2.id.)View ProdView;
+//        @Bind(R2.id.detail_layout)View DetailLayout;
+        @Bind(R2.id.reputation_view)
         View viewReputation;
 
 

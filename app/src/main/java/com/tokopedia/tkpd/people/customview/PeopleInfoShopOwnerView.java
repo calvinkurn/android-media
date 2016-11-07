@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.people.model.PeopleInfoData;
 import com.tokopedia.tkpd.people.presenter.PeopleInfoFragmentPresenter;
 import com.tokopedia.tkpd.reputationproduct.util.ReputationLevelUtils;
@@ -23,18 +24,18 @@ import butterknife.Bind;
  */
 public class PeopleInfoShopOwnerView extends BaseView<PeopleInfoData, PeopleInfoFragmentPresenter> {
 
-    @Bind(R.id.shop_avatar)
+    @Bind(R2.id.shop_avatar)
     ImageView shopAvatar;
-    @Bind(R.id.shop_name)
+    @Bind(R2.id.shop_name)
     TextView shopName;
-    @Bind(R.id.shop_loc)
+    @Bind(R2.id.shop_loc)
     TextView shopLocation;
 
     @SuppressWarnings("unused")
-    @Bind(R.id.reputation_medal)
+    @Bind(R2.id.reputation_medal)
     LinearLayout reputationMedal;
     @SuppressWarnings("unused")
-    @Bind(R.id.reputation_point)
+    @Bind(R2.id.reputation_point)
     TextView reputationPoint;
 
     public PeopleInfoShopOwnerView(Context context) {

@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.BadgeUtil;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.customView.AspectRatioImageView;
 import com.tokopedia.tkpd.customwidget.FlowLayout;
 import com.tokopedia.tkpd.customwidget.SquareImageView;
@@ -34,21 +35,21 @@ public class ProductLargeDelegate {
 
     public class VHolder extends RecyclerView.ViewHolder{
 
-        @Bind(R.id.product_image)
+        @Bind(R2.id.product_image)
         public SquareImageView img;
-        @Bind(R.id.title)
+        @Bind(R2.id.title)
         public TextView name;
-        @Bind(R.id.price)
+        @Bind(R2.id.price)
         public TextView price;
-        @Bind(R.id.container)
+        @Bind(R2.id.container)
         public View mainView;
-        @Bind(R.id.badges_container)
+        @Bind(R2.id.badges_container)
         public LinearLayout containerBadge;
-        @Bind(R.id.label_container)
+        @Bind(R2.id.label_container)
         public FlowLayout containerLabel;
-        @Bind(R.id.shop_name)
+        @Bind(R2.id.shop_name)
         public View shopName;
-        @Bind(R.id.location)
+        @Bind(R2.id.location)
         public View location;
 
         public VHolder(View itemView) {

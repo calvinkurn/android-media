@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.database.model.AttachmentResCenterDB;
 import com.tokopedia.tkpd.network.NetworkErrorHelper;
@@ -60,19 +61,19 @@ public class BuyerEditSolutionResCenterFragment
 
     private static final String ARGS_PARAM_PASS_DATA = "pass_data";
 
-    @Bind(R.id.invoice)
+    @Bind(R2.id.invoice)
     TextView invoice;
-    @Bind(R.id.shop_name)
+    @Bind(R2.id.shop_name)
     TextView shopName;
-    @Bind(R.id.view_solution_section)
+    @Bind(R2.id.view_solution_section)
     EditSolutionView solutionSectionView;
-    @Bind(R.id.view_attachment_section)
+    @Bind(R2.id.view_attachment_section)
     EditAttachmentView attachmenSectionView;
-    @Bind(R.id.view_message_section)
+    @Bind(R2.id.view_message_section)
     MessageView messageView;
-    @Bind(R.id.main_view)
+    @Bind(R2.id.main_view)
     View mainView;
-    @Bind(R.id.include_loading)
+    @Bind(R2.id.include_loading)
     View loading;
 
     private ActionParameterPassData passData;
@@ -247,13 +248,13 @@ public class BuyerEditSolutionResCenterFragment
         attachmenSectionView.attachAdapter(attachmentAdapter);
     }
 
-    @OnClick(R.id.action_submit)
+    @OnClick(R2.id.action_submit)
     public void onSubmitClick() {
         KeyboardHandler.DropKeyboard(getActivity(), getView());
         presenter.setOnSubmitClick(getActivity());
     }
 
-    @OnClick(R.id.action_abort)
+    @OnClick(R2.id.action_abort)
     public void onAbortClick() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(R.string.dialog_discard_changes)

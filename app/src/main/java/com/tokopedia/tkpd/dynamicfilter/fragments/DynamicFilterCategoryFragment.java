@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.discovery.model.Breadcrumb;
 import com.tokopedia.tkpd.dynamicfilter.DynamicFilterActivity;
 import com.tokopedia.tkpd.dynamicfilter.adapter.DynamicCategoryAdapter;
@@ -42,10 +43,10 @@ import static com.tokopedia.tkpd.dynamicfilter.presenter.DynamicFilterPresenter.
  */
 public class DynamicFilterCategoryFragment extends BaseFragment<CategoryPresenter> implements CategoryView {
 
-    @Bind(R.id.dynamic_filter_category_recyclerview)
+    @Bind(R2.id.dynamic_filter_category_recyclerview)
     RecyclerView dynamicFilterCategory;
 
-    @Bind(R.id.dynamic_filter_category_finish)
+    @Bind(R2.id.dynamic_filter_category_finish)
     Button dynamicFilterCategoryFinish;
 
     DynamicCategoryAdapter dynamicCategoryAdapter;
@@ -149,7 +150,7 @@ public class DynamicFilterCategoryFragment extends BaseFragment<CategoryPresente
         }
     }
 
-    @OnClick(R.id.dynamic_filter_category_finish)
+    @OnClick(R2.id.dynamic_filter_category_finish)
     public void finishTo(){
         if(getActivity() != null && getActivity() instanceof DynamicFilterView){
             ((DynamicFilterView) getActivity()).finishThis();

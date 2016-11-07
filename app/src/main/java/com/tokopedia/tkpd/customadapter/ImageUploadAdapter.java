@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.image_upload)
+        @Bind(R2.id.image_upload)
         ImageView image;
 
         public ViewHolder(View itemView) {

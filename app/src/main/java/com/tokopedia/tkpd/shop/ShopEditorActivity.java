@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.TkpdActivity;
 import com.tokopedia.tkpd.gallery.ImageGalleryEntry;
 import com.tokopedia.tkpd.home.ParentIndexHome;
@@ -44,7 +45,7 @@ public class ShopEditorActivity extends TkpdActivity implements
     FragmentManager supportFragmentManager;
     String FRAGMENT;
 
-    @Bind(R.id.container)
+    @Bind(R2.id.container)
     FrameLayout container;
 
     @Override

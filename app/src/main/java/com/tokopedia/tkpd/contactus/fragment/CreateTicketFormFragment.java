@@ -29,6 +29,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.tkpd.GalleryBrowser;
 import com.tokopedia.tkpd.ImageGallery;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.contactus.ContactUsConstant;
 import com.tokopedia.tkpd.contactus.adapter.ImageUploadAdapter;
@@ -64,28 +65,28 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
         void onFinishCreateTicket();
     }
 
-    @Bind(R.id.category_list)
+    @Bind(R2.id.category_list)
     LinearLayout categoryPathList;
 
-    @Bind(R.id.main_category)
+    @Bind(R2.id.main_category)
     TextView mainCategory;
 
-    @Bind(R.id.invoice)
+    @Bind(R2.id.invoice)
     EditText invoice;
 
-    @Bind(R.id.detail)
+    @Bind(R2.id.detail)
     EditText detail;
 
-    @Bind(R.id.invoice_text)
+    @Bind(R2.id.invoice_text)
     View invoiceText;
 
-    @Bind(R.id.attachment_text)
+    @Bind(R2.id.attachment_text)
     View attachmentText;
 
-    @Bind(R.id.main)
+    @Bind(R2.id.main)
     View mainView;
 
-    @Bind(R.id.attachment)
+    @Bind(R2.id.attachment)
     RecyclerView attachment;
 
     ImageUploadAdapter imageAdapter;

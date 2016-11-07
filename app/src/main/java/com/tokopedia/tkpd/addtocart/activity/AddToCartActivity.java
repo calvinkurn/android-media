@@ -32,6 +32,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.addtocart.listener.AddToCartViewListener;
 import com.tokopedia.tkpd.addtocart.model.Insurance;
 import com.tokopedia.tkpd.addtocart.model.OrderData;
@@ -99,67 +100,67 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
 
     private Handler handler = new Handler();
 
-    @Bind(R.id.add_to_cart_coordinatlayout)
+    @Bind(R2.id.add_to_cart_coordinatlayout)
     CoordinatorLayout cartCoordinatLayout;
-    @Bind(R.id.iv_pic)
+    @Bind(R2.id.iv_pic)
     ImageView ivProduct;
-    @Bind(R.id.tv_name)
+    @Bind(R2.id.tv_name)
     TextView tvProductName;
-    @Bind(R.id.tv_preorder)
+    @Bind(R2.id.tv_preorder)
     TextView tvPreOrder;
-    @Bind(R.id.tv_preorder_info)
+    @Bind(R2.id.tv_preorder_info)
     TextView tvPreOrderInfo;
-    @Bind(R.id.et_form_qty)
+    @Bind(R2.id.et_form_qty)
     EditText etQuantity;
-    @Bind(R.id.sp_form_insurance)
+    @Bind(R2.id.sp_form_insurance)
     Spinner spInsurance;
-    @Bind(R.id.et_form_notes)
+    @Bind(R2.id.et_form_notes)
     EditText etRemark;
-    @Bind(R.id.tv_address_detail)
+    @Bind(R2.id.tv_address_detail)
     TextView tvAddressDetail;
-    @Bind(R.id.tv_address_name)
+    @Bind(R2.id.tv_address_name)
     TextView tvAddressName;
-    @Bind(R.id.btn_choose_address)
+    @Bind(R2.id.btn_choose_address)
     TextView btnAddressChange;
-    @Bind(R.id.btn_add_address)
+    @Bind(R2.id.btn_add_address)
     TextView btnAddressNew;
-    @Bind(R.id.sp_shipment)
+    @Bind(R2.id.sp_shipment)
     Spinner spShippingAgency;
-    @Bind(R.id.sp_shipment_package)
+    @Bind(R2.id.sp_shipment_package)
     Spinner spShippingService;
-    @Bind(R.id.tv_price_product)
+    @Bind(R2.id.tv_price_product)
     TextView tvProductPrice;
-    @Bind(R.id.tv_price_shipping)
+    @Bind(R2.id.tv_price_shipping)
     TextView tvShippingPrice;
-    @Bind(R.id.layout_product_price)
+    @Bind(R2.id.layout_product_price)
     RelativeLayout viewProductPrice;
-    @Bind(R.id.layout_shipping_price)
+    @Bind(R2.id.layout_shipping_price)
     RelativeLayout viewShippingPrice;
-    @Bind(R.id.pb_price)
+    @Bind(R2.id.pb_price)
     ProgressBar pbLoadingPrice;
-    @Bind(R.id.tv_error_shipping)
+    @Bind(R2.id.tv_error_shipping)
     TextView tvErrorShipping;
-    @Bind(R.id.btn_buy)
+    @Bind(R2.id.btn_buy)
     TextView btnBuy;
-    @Bind(R.id.product_view)
+    @Bind(R2.id.product_view)
     LinearLayout viewProduct;
-    @Bind(R.id.layout_value_geo_location)
+    @Bind(R2.id.layout_value_geo_location)
     View viewAssignLocation;
-    @Bind(R.id.layout_geo_location)
+    @Bind(R2.id.layout_geo_location)
     View viewFieldLocation;
-    @Bind(R.id.et_geo_location)
+    @Bind(R2.id.et_geo_location)
     EditText etValueLocation;
-    @Bind(R.id.til_form_qty)
+    @Bind(R2.id.til_form_qty)
     TextInputLayout tilAmount;
-    @Bind(R.id.til_form_notes)
+    @Bind(R2.id.til_form_notes)
     TextInputLayout tilRemark;
-    @Bind(R.id.container)
+    @Bind(R2.id.container)
     LinearLayout container;
-    @Bind(R.id.increase_button)
+    @Bind(R2.id.increase_button)
     View increaseButton;
-    @Bind(R.id.decrease_button)
+    @Bind(R2.id.decrease_button)
     View decreaseButton;
-    @Bind(R.id.calculate_cart_progress_bar)
+    @Bind(R2.id.calculate_cart_progress_bar)
     View calculateCartProgressBar;
 
     private AtcFormData atcFormData;
@@ -583,12 +584,12 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         }
     }
 
-    @OnClick({R.id.layout_value_geo_location, R.id.et_geo_location})
+    @OnClick({R2.id.layout_value_geo_location, R2.id.et_geo_location})
     void actionGeoLocation() {
         presenter.processChooseGeoLocation(this, orderData);
     }
 
-    @OnClick(R.id.btn_choose_address)
+    @OnClick(R2.id.btn_choose_address)
     void actionChangeAddress() {
         UnifyTracking.eventATCChangeAddress();
         Intent intent2 = new Intent(this, ChooseAddressActivity.class);
@@ -599,7 +600,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         navigateToActivityRequest(intent2, REQUEST_CHOOSE_ADDRESS);
     }
 
-    @OnClick(R.id.btn_add_address)
+    @OnClick(R2.id.btn_add_address)
     void actionAddNewAddress() {
         presenter.sendToGTM(this);
         Intent intent1 = new Intent(this, AddAddressActivity.class);
@@ -609,7 +610,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         startActivityForResult(intent1, ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
     }
 
-    @OnClick(R.id.btn_buy)
+    @OnClick(R2.id.btn_buy)
     void actionBuy() {
         if (presenter.isValidOrder(this, orderData)) {
             presenter.addToCartService(this, atcReceiver, createFinalOrderData());
@@ -617,7 +618,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         }
     }
 
-    @OnClick(R.id.increase_button)
+    @OnClick(R2.id.increase_button)
     void actionIncreaseQuantity() {
         etQuantity.requestFocus();
         if (!etQuantity.getText().toString().isEmpty()
@@ -627,7 +628,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         } else etQuantity.setText("1");
     }
 
-    @OnClick(R.id.decrease_button)
+    @OnClick(R2.id.decrease_button)
     void actionDecreaseQuantity() {
         etQuantity.requestFocus();
         if (!etQuantity.getText().toString().isEmpty()

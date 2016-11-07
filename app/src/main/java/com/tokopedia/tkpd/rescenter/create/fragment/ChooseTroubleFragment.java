@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.network.NetworkErrorHelper;
 import com.tokopedia.tkpd.rescenter.create.customview.ChooseCategorySectionCreateResCenterView;
@@ -41,23 +42,23 @@ public class ChooseTroubleFragment extends BasePresenterFragment<ChooseTroublePr
     private static final String KEY_PARAM_PASS_DATA = "pass_data";
     private CreateResCenterListener listener;
 
-    @Bind(R.id.invoice)
+    @Bind(R2.id.invoice)
     TextView invoice;
-    @Bind(R.id.shop_name)
+    @Bind(R2.id.shop_name)
     TextView shopName;
-    @Bind(R.id.view_category_section)
+    @Bind(R2.id.view_category_section)
     ChooseCategorySectionCreateResCenterView categorySection;
-    @Bind(R.id.view_trouble_section)
+    @Bind(R2.id.view_trouble_section)
     ChooseTroubleSectionCreateResCenterView troubleSectionView;
-    @Bind(R.id.view_product_section)
+    @Bind(R2.id.view_product_section)
     ChooseProductSectionCreateResCenterView productSection;
-    @Bind(R.id.action_choose_solution)
+    @Bind(R2.id.action_choose_solution)
     View chooseSolution;
-    @Bind(R.id.action_abort)
+    @Bind(R2.id.action_abort)
     View actionAbort;
-    @Bind(R.id.main_view)
+    @Bind(R2.id.main_view)
     View mainView;
-    @Bind(R.id.include_loading)
+    @Bind(R2.id.include_loading)
     View loading;
 
     private ActionParameterPassData passData;

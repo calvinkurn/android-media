@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.myproduct.fragment.ImageChooserDialog;
 
 import java.util.List;
@@ -60,10 +61,10 @@ public class ItemImageAdapter extends RecyclerView.Adapter<ItemImageAdapter.Imag
 
     public class ImageViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.image_selected)
+        @Bind(R2.id.image_selected)
         ImageView imageSelected;
 
-        @Bind(R.id.desc_selected)
+        @Bind(R2.id.desc_selected)
         TextView descSelected;
 
         public ImageViewHolder(View itemView) {

@@ -11,6 +11,7 @@ import android.view.WindowManager;
 
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.TkpdActivity;
 import com.tokopedia.tkpd.fragment.FragmentShopNewOrderDetailV2;
 import com.tokopedia.tkpd.fragment.FragmentShopShippingDetailV2;
@@ -35,7 +36,7 @@ import butterknife.ButterKnife;
  */
 public class SellingDetailActivity extends TkpdActivity implements  DownloadResultReceiver.Receiver {
 
-    @Bind(R.id.toolbar)
+    @Bind(R2.id.toolbar)
     Toolbar toolbar;
 
     public enum Type {

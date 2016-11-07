@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.product.customview.BaseView;
 import com.tokopedia.tkpd.rescenter.edit.customadapter.SolutionSpinnerAdapter;
 import com.tokopedia.tkpd.rescenter.edit.listener.BuyerEditSolutionListener;
@@ -23,13 +24,13 @@ import butterknife.OnItemSelected;
  */
 public class EditSolutionView extends BaseView<ActionParameterPassData, BuyerEditSolutionListener> {
 
-    @Bind(R.id.view_refund)
+    @Bind(R2.id.view_refund)
     View viewRefund;
-    @Bind(R.id.refund_box_prompt)
+    @Bind(R2.id.refund_box_prompt)
     TextInputLayout refundPrompt;
-    @Bind(R.id.spinner_solution)
+    @Bind(R2.id.spinner_solution)
     Spinner solutionSpinner;
-    @Bind(R.id.refund_box)
+    @Bind(R2.id.refund_box)
     EditText refundBox;
 
     private SolutionSpinnerAdapter solutionAdapter;
@@ -113,7 +114,7 @@ public class EditSolutionView extends BaseView<ActionParameterPassData, BuyerEdi
         }
     }
 
-    @OnItemSelected(R.id.spinner_solution)
+    @OnItemSelected(R2.id.spinner_solution)
     public void onSolutionSelected() {
         resetRefundBox();
         if (solutionSpinner.getSelectedItemPosition() != 0) {

@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.contactus.activity.ContactUsActivity;
 import com.tokopedia.tkpd.customwidget.SwipeToRefresh;
@@ -42,13 +43,13 @@ import butterknife.Bind;
 public class InboxTicketFragment extends BasePresenterFragment<InboxTicketFragmentPresenter>
         implements InboxTicketView, InboxTicketConstant {
 
-    @Bind(R.id.message_list)
+    @Bind(R2.id.message_list)
     RecyclerView listMessage;
 
-    @Bind(R.id.swipe_refresh_layout)
+    @Bind(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
 
-    @Bind(R.id.fab)
+    @Bind(R2.id.fab)
     FloatingActionButton fab;
 
     View filterLayout;

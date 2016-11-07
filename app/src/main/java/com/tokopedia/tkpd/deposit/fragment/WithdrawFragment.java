@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.analytics.ScreenTracking;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.database.model.Bank;
@@ -51,67 +52,67 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
     private static final String DEFAULT_TOTAL_BALANCE = "Rp.0,-";
     private static final String DEFAULT_TOTAL_WITHDRAWAL = "0";
 
-    @Bind(R.id.wrapper_total_balance)
+    @Bind(R2.id.wrapper_total_balance)
     TextInputLayout wrapperTotalBalance;
 
-    @Bind(R.id.wrapper_total_withdrawal)
+    @Bind(R2.id.wrapper_total_withdrawal)
     TextInputLayout wrapperTotalWithdrawal;
 
-    @Bind(R.id.wrapper_account_name)
+    @Bind(R2.id.wrapper_account_name)
     TextInputLayout wrapperAccountName;
 
-    @Bind(R.id.wrapper_bank_branch)
+    @Bind(R2.id.wrapper_bank_branch)
     TextInputLayout wrapperBankBranch;
 
-    @Bind(R.id.wrapper_account_number)
+    @Bind(R2.id.wrapper_account_number)
     TextInputLayout wrapperAccountNumber;
 
-    @Bind(R.id.wrapper_password)
+    @Bind(R2.id.wrapper_password)
     TextInputLayout wrapperPassword;
 
-    @Bind(R.id.wrapper_otp)
+    @Bind(R2.id.wrapper_otp)
     TextInputLayout wrapperCodeOTP;
 
-    @Bind(R.id.send_otp)
+    @Bind(R2.id.send_otp)
     TextView sendOTP;
 
-    @Bind(R.id.otp)
+    @Bind(R2.id.otp)
     EditText codeOTP;
 
-    @Bind(R.id.otp_view)
+    @Bind(R2.id.otp_view)
     View otpArea;
 
-    @Bind(R.id.total_balance)
+    @Bind(R2.id.total_balance)
     EditText totalBalance;
 
-    @Bind(R.id.total_withdrawal)
+    @Bind(R2.id.total_withdrawal)
     EditText totalWithdrawal;
 
-    @Bind(R.id.bank_list)
+    @Bind(R2.id.bank_list)
     Spinner bankListView;
 
-    @Bind(R.id.password)
+    @Bind(R2.id.password)
     EditText password;
 
-    @Bind(R.id.bank_name)
+    @Bind(R2.id.bank_name)
     TextView bankNameView;
 
-    @Bind(R.id.add_bank_form)
+    @Bind(R2.id.add_bank_form)
     LinearLayout bankForm;
 
-    @Bind(R.id.account_name)
+    @Bind(R2.id.account_name)
     EditText accountName;
 
-    @Bind(R.id.account_number)
+    @Bind(R2.id.account_number)
     EditText accountNumber;
 
-    @Bind(R.id.bank_branch)
+    @Bind(R2.id.bank_branch)
     EditText branchName;
 
-    @Bind(R.id.main_view)
+    @Bind(R2.id.main_view)
     View mainView;
 
-    @Bind(R.id.loading_layout)
+    @Bind(R2.id.loading_layout)
     View loadingLayout;
 
     TkpdProgressDialog progressDialog;

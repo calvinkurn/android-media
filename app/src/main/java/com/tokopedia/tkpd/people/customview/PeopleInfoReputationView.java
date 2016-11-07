@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.people.model.PeopleInfoData;
 import com.tokopedia.tkpd.people.presenter.PeopleInfoFragmentPresenter;
 
@@ -20,15 +21,15 @@ import butterknife.Bind;
  */
 public class PeopleInfoReputationView extends BaseView<PeopleInfoData, PeopleInfoFragmentPresenter> {
 
-    @Bind(R.id.icon_reputation)
+    @Bind(R2.id.icon_reputation)
     ImageView mainReputationIcon;
-    @Bind(R.id.user_reputation)
+    @Bind(R2.id.user_reputation)
     TextView mainReputationText;
-    @Bind(R.id.counter_positive)
+    @Bind(R2.id.counter_positive)
     TextView counterPositive;
-    @Bind(R.id.counter_neutral)
+    @Bind(R2.id.counter_neutral)
     TextView counterNeutral;
-    @Bind(R.id.counter_negative)
+    @Bind(R2.id.counter_negative)
     TextView counterNegative;
 
     public PeopleInfoReputationView(Context context) {

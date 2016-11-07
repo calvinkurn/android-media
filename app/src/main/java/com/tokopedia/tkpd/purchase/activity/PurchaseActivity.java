@@ -10,6 +10,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.tokopedia.tkpd.GCMListenerService;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.analytics.ScreenTracking;
 import com.tokopedia.tkpd.app.DrawerPresenterActivity;
 import com.tokopedia.tkpd.listener.GlobalMainTabSelectedListener;
@@ -38,9 +39,9 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
     public static final int TAB_TX_DELIVER = 4;
     public static final int TAB_TX_ALL = 5;
 
-    @Bind(R.id.pager)
+    @Bind(R2.id.pager)
     ViewPager viewPager;
-    @Bind(R.id.indicator)
+    @Bind(R2.id.indicator)
     TabLayout indicator;
 
     public String[] tabContents;

@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.product.listener.ProductDetailView;
 import com.tokopedia.tkpd.product.model.productdetail.ProductDetailData;
 
@@ -21,13 +22,13 @@ import butterknife.Bind;
 public class TalkReviewView extends BaseView<ProductDetailData, ProductDetailView> {
     private static final String TAG = TalkReviewView.class.getSimpleName();
 
-    @Bind(R.id.l_talk)
+    @Bind(R2.id.l_talk)
     LinearLayout llTalk;
-    @Bind(R.id.tv_talk)
+    @Bind(R2.id.tv_talk)
     TextView tvTalk;
-    @Bind(R.id.l_review)
+    @Bind(R2.id.l_review)
     LinearLayout llReview;
-    @Bind(R.id.tv_review)
+    @Bind(R2.id.tv_review)
     TextView tvReview;
 
     public TalkReviewView(Context context) {

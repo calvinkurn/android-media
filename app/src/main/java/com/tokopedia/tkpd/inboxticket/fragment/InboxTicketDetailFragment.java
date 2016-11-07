@@ -21,6 +21,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.customadapter.ImageUpload;
 import com.tokopedia.tkpd.customwidget.SwipeToRefresh;
@@ -59,31 +60,31 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
         void sendRating(Bundle param);
     }
 
-    @Bind(R.id.ticket_list)
+    @Bind(R2.id.ticket_list)
     RecyclerView listTicket;
 
-    @Bind(R.id.swipe_refresh_layout)
+    @Bind(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
 
-    @Bind(R.id.list_image_upload)
+    @Bind(R2.id.list_image_upload)
     RecyclerView listImage;
 
-    @Bind(R.id.attach_but)
+    @Bind(R2.id.attach_but)
     ImageView attachButton;
 
-    @Bind(R.id.send_but)
+    @Bind(R2.id.send_but)
     ImageView sendButton;
 
-    @Bind(R.id.new_comment)
+    @Bind(R2.id.new_comment)
     EditText comment;
 
-    @Bind(R.id.add_comment_area)
+    @Bind(R2.id.add_comment_area)
     View commentView;
 
-    @Bind(R.id.loading_layout)
+    @Bind(R2.id.loading_layout)
     View loading;
 
-    @Bind(R.id.ticket_notice)
+    @Bind(R2.id.ticket_notice)
     TextView ticketNotice;
 
     InboxTicketDetailAdapter adapter;

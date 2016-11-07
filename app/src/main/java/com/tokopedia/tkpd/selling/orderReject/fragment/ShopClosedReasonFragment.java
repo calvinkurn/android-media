@@ -28,6 +28,7 @@ import com.tkpd.library.ui.utilities.DatePickerUtil;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.network.NetworkErrorHelper;
 import com.tokopedia.tkpd.network.SnackbarRetry;
 import com.tokopedia.tkpd.selling.SellingService;
@@ -57,25 +58,25 @@ import butterknife.OnClick;
  */
 public class ShopClosedReasonFragment extends Fragment implements SellingView {
 
-    @Bind(R.id.reason)
+    @Bind(R2.id.reason)
     TextView reasonText;
-    @Bind(R.id.list)
+    @Bind(R2.id.list)
     RecyclerView recyclerView;
-    @Bind(R.id.start_date)
+    @Bind(R2.id.start_date)
     TextView startDate;
-    @Bind(R.id.end_date)
+    @Bind(R2.id.end_date)
     TextView endDate;
-    @Bind(R.id.note)
+    @Bind(R2.id.note)
     EditText noteTxt;
-    @Bind(R.id.confirm_button)
+    @Bind(R2.id.confirm_button)
     TextView confirmButton;
-    @Bind(R.id.arrow_display)
+    @Bind(R2.id.arrow_display)
     ImageView arrowDisplay;
-    @Bind(R.id.add_stock_empty)
+    @Bind(R2.id.add_stock_empty)
     ExpandableRelativeLayout expandableRelativeLayout;
-    @Bind(R.id.set_stock_empty)
+    @Bind(R2.id.set_stock_empty)
     LinearLayout setStockEmpty;
-    @Bind(R.id.pBar)
+    @Bind(R2.id.pBar)
     ProgressBar progressBar;
 
     private ProductListAdapter listAdapter;
@@ -108,7 +109,7 @@ public class ShopClosedReasonFragment extends Fragment implements SellingView {
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
     }
 
-//    @OnClick(R.id.start_date) void startDatePicker(){
+//    @OnClick(R2.id.start_date) void startDatePicker(){
 //        new DatePickerUtil(getActivity()).DatePickerCalendar(new DatePickerUtil.onDateSelectedListener() {
 //            @Override
 //            public void onDateSelected(int year, int month, int dayOfMonth) {
@@ -118,7 +119,7 @@ public class ShopClosedReasonFragment extends Fragment implements SellingView {
 //        });
 //    }
 
-    @OnClick(R.id.end_date)
+    @OnClick(R2.id.end_date)
     void endDatePicker() {
         calculateDate(endDate.getText().toString());
         DatePickerUtil datePickerUtil = new DatePickerUtil(getActivity());
@@ -135,7 +136,7 @@ public class ShopClosedReasonFragment extends Fragment implements SellingView {
         });
     }
 
-    @OnClick(R.id.confirm_button)
+    @OnClick(R2.id.confirm_button)
     void onConfirm() {
         if (validateForm()) {
             ModelRejectOrder modelRejectOrder = new ModelRejectOrder();
@@ -166,7 +167,7 @@ public class ShopClosedReasonFragment extends Fragment implements SellingView {
         }
     }
 
-    @OnClick(R.id.set_stock_empty)
+    @OnClick(R2.id.set_stock_empty)
     void onClickStockEmpty() {
         expandableRelativeLayout.toggle();
         if (expandableRelativeLayout.isExpanded())

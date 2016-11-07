@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.tkpd.inboxmessage.InboxMessageConstant;
 import com.tokopedia.tkpd.inboxmessage.model.inboxmessage.InboxMessageItem;
@@ -41,37 +42,37 @@ public class InboxMessageAdapter extends BaseLinearRecyclerViewAdapter
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.user_name)
+        @Bind(R2.id.user_name)
         TextView userName;
 
-        @Bind(R.id.date)
+        @Bind(R2.id.date)
         TextView date;
 
-        @Bind(R.id.user_ava)
+        @Bind(R2.id.user_ava)
         ImageView avatar;
 
-        @Bind(R.id.message)
+        @Bind(R2.id.message)
         TextView message;
 
-        @Bind(R.id.main)
+        @Bind(R2.id.main)
         View mainView;
 
-        @Bind(R.id.hour)
+        @Bind(R2.id.hour)
         TextView hour;
 
-        @Bind(R.id.label)
+        @Bind(R2.id.label)
         TextView label;
 
-        @Bind(R.id.reputation_view)
+        @Bind(R2.id.reputation_view)
         View viewReputation;
 
-        @Bind(R.id.rep_rating)
+        @Bind(R2.id.rep_rating)
         TextView textPercentage;
 
-        @Bind(R.id.rep_icon)
+        @Bind(R2.id.rep_icon)
         ImageView iconPercentage;
 
-        @Bind(R.id.title)
+        @Bind(R2.id.title)
         TextView title;
 
 

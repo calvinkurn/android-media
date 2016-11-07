@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.shipping.fragment.EditShippingViewListener;
 import com.tokopedia.tkpd.shipping.model.editshipping.Courier;
 
@@ -21,19 +22,19 @@ import butterknife.Bind;
 public class CourierView extends EditShippingCourierView<Courier,
         EditShippingViewListener>{
 
-    @Bind(R.id.courier_name_placeholder) LinearLayout courierNamePlaceHolder;
+    @Bind(R2.id.courier_name_placeholder) LinearLayout courierNamePlaceHolder;
 
-    @Bind(R.id.name) TextView courierNameText;
+    @Bind(R2.id.name) TextView courierNameText;
 
-    @Bind(R.id.img_courier) ImageView courierImageHolder;
+    @Bind(R2.id.img_courier) ImageView courierImageHolder;
 
-    @Bind(R.id.shipping_settings) LinearLayout shipmentSettings;
+    @Bind(R2.id.shipping_settings) LinearLayout shipmentSettings;
 
-    @Bind(R.id.children_layout) PackageView packageView;
+    @Bind(R2.id.children_layout) PackageView packageView;
 
-    @Bind(R.id.package_view_holder) LinearLayout packageViewHolder;
+    @Bind(R2.id.package_view_holder) LinearLayout packageViewHolder;
 
-    @Bind(R.id.courier_unavailable_warning)
+    @Bind(R2.id.courier_unavailable_warning)
     TextView courierUnavailableWarning;
 
     private EditShippingViewListener mainView;

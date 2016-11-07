@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.analytics.ScreenTracking;
 import com.tokopedia.tkpd.analytics.UnifyTracking;
 import com.tokopedia.tkpd.discovery.activity.BrowseProductActivity;
@@ -47,7 +48,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     public static final String TAG = "BrowseProductFragment";
 
-    @Bind(R.id.fragmentv2list)
+    @Bind(R2.id.fragmentv2list)
     RecyclerView mRecyclerView;
 
     private static String ARG_1 = "";

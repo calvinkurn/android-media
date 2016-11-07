@@ -25,6 +25,7 @@ import android.widget.RadioGroup;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.app.DrawerPresenterActivity;
 import com.tokopedia.tkpd.customadapter.RetryDataBinder;
@@ -77,13 +78,13 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
         return fragment;
     }
 
-    @Bind(R.id.message_list)
+    @Bind(R2.id.message_list)
     RecyclerView mainList;
 
-    @Bind(R.id.swipe_refresh_layout)
+    @Bind(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
 
-    @Bind(R.id.fab)
+    @Bind(R2.id.fab)
     FloatingActionButton fab;
 
     View filterLayout;

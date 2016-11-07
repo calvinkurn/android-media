@@ -25,6 +25,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.geolocation.activity.GeolocationActivity;
 import com.tokopedia.tkpd.geolocation.model.LocationPass;
 import com.tokopedia.tkpd.network.NetworkErrorHelper;
@@ -48,13 +49,13 @@ import butterknife.OnClick;
  */
 public class FragmentEditShipping extends Fragment implements EditShippingViewListener{
 
-    @Bind(R.id.fragment_shipping_main_layout) LinearLayout fragmentShipingMainLayout;
+    @Bind(R2.id.fragment_shipping_main_layout) LinearLayout fragmentShipingMainLayout;
 
-    @Bind(R.id.fragment_shipping_header) ShippingHeaderLayout fragmentShippingHeader;
+    @Bind(R2.id.fragment_shipping_header) ShippingHeaderLayout fragmentShippingHeader;
 
-    @Bind(R.id.shipping_address_layout) ShippingAddressLayout addressLayout;
+    @Bind(R2.id.shipping_address_layout) ShippingAddressLayout addressLayout;
 
-    @Bind(R.id.submit_button_create_shop) TextView submitButtonCreateShop;
+    @Bind(R2.id.submit_button_create_shop) TextView submitButtonCreateShop;
 
     private ShippingLocationDialog shippingLocationDialog;
     private EditShippingPresenter editShippingPresenter;
@@ -423,7 +424,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
         editShippingPresenter.refreshData();
     }
 
-    @OnClick(R.id.submit_button_create_shop)
+    @OnClick(R2.id.submit_button_create_shop)
     void submitButtonOnClickListener() {
         if(fragmentShipingMainLayout.getChildCount() > 1 && editShippingValid()){
             Intent intent = new Intent();

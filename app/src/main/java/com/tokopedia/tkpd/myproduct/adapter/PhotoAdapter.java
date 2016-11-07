@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.database.manager.DbManagerImpl;
 import com.tokopedia.tkpd.database.model.PictureDB;
 import com.tokopedia.tkpd.myproduct.BaseProductActivity;
@@ -80,9 +81,9 @@ public class PhotoAdapter  extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
 //            , View.OnLongClickListener
     {
 
-        @Bind(R.id.picture_gallery_imageview)
+        @Bind(R2.id.picture_gallery_imageview)
         ImageView mImageView;
-        @Bind(R.id.main_picture_info)
+        @Bind(R2.id.main_picture_info)
         TextView mainPicInfo;
 
         // helper variable

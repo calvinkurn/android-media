@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.product.customview.BaseView;
 import com.tokopedia.tkpd.rescenter.edit.customadapter.LastProductTroubleAdapter;
 import com.tokopedia.tkpd.rescenter.edit.listener.SellerEditResCenterListener;
@@ -22,13 +23,13 @@ import butterknife.OnClick;
  */
 public class EditSummaryResCenterView extends BaseView<EditResCenterFormData, SellerEditResCenterListener> {
 
-    @Bind(R.id.solution_text)
+    @Bind(R2.id.solution_text)
     TextView solutionText;
-    @Bind(R.id.remark)
+    @Bind(R2.id.remark)
     TextView remark;
-    @Bind(R.id.product_recyclerview)
+    @Bind(R2.id.product_recyclerview)
     RecyclerView productRecyclerView;
-    @Bind(R.id.chevron_up)
+    @Bind(R2.id.chevron_up)
     ImageView flagCollapse;
 
     private EditResCenterFormData data;
@@ -83,7 +84,7 @@ public class EditSummaryResCenterView extends BaseView<EditResCenterFormData, Se
         return data.getForm().getResolutionLast().getLastProductRelated() == 1;
     }
 
-    @OnClick(R.id.action_collapse)
+    @OnClick(R2.id.action_collapse)
     public void onCollapse() {
         if (isRelatedProduct(data)) {
             flagCollapse.setImageResource(productRecyclerView.getVisibility() == VISIBLE ? R.drawable.chevron_down : R.drawable.chevron_up);

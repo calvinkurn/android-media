@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.network.NetworkErrorHelper;
 import com.tokopedia.tkpd.network.SnackbarRetry;
@@ -56,10 +57,10 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
     InboxTalkAdapter adapter;
     private InboxTalkFilterDialog dialog;
 
-    @Bind(R.id.coordinator) CoordinatorLayout coordinatorLayout;
-    @Bind(R.id.talk_list) RecyclerView recyclerView;
-    @Bind(R.id.include_loading) ProgressBar progressBar;
-    @Bind(R.id.fab) FloatingActionButton floatingActionButton;
+    @Bind(R2.id.coordinator) CoordinatorLayout coordinatorLayout;
+    @Bind(R2.id.talk_list) RecyclerView recyclerView;
+    @Bind(R2.id.include_loading) ProgressBar progressBar;
+    @Bind(R2.id.fab) FloatingActionButton floatingActionButton;
     SnackbarRetry snackbarRetry;
 
 

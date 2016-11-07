@@ -25,6 +25,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.inboxreputation.InboxReputationConstant;
 import com.tokopedia.tkpd.inboxreputation.model.ImageUpload;
@@ -73,37 +74,37 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
         void editReview(Bundle param);
     }
 
-    @Bind(R.id.product_name)
+    @Bind(R2.id.product_name)
     TextView productName;
 
-    @Bind(R.id.product_avatar)
+    @Bind(R2.id.product_avatar)
     ImageView productAvatar;
 
-    @Bind(R.id.edittext_review)
+    @Bind(R2.id.edittext_review)
     EditText editTextReview;
 
-    @Bind(R.id.image_holder)
+    @Bind(R2.id.image_holder)
     RecyclerView imageHolder;
 
-    @Bind(R.id.ratingBarQuality)
+    @Bind(R2.id.ratingBarQuality)
     RatingBar starQuality;
 
-    @Bind(R.id.ratingBarAccuracy)
+    @Bind(R2.id.ratingBarAccuracy)
     RatingBar starAccuracy;
 
-    @Bind(R.id.prod_quality_desc)
+    @Bind(R2.id.prod_quality_desc)
     TextView starQualityDescription;
 
-    @Bind(R.id.prod_accuracy_desc)
+    @Bind(R2.id.prod_accuracy_desc)
     TextView starAccuracyDescription;
 
-    @Bind(R.id.submit)
+    @Bind(R2.id.submit)
     TextView submitButton;
 
-    @Bind(R.id.accuracy_error_message)
+    @Bind(R2.id.accuracy_error_message)
     TextView accuracyError;
 
-    @Bind(R.id.quality_error_message)
+    @Bind(R2.id.quality_error_message)
     TextView qualityError;
 
 

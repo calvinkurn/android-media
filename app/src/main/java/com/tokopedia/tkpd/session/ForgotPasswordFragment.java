@@ -14,6 +14,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.analytics.ScreenTracking;
 import com.tokopedia.tkpd.analytics.UnifyTracking;
 import com.tokopedia.tkpd.session.presenter.ForgotPassword;
@@ -33,17 +34,17 @@ import butterknife.OnClick;
  */
 public class ForgotPasswordFragment extends Fragment implements ForgotPasswordView{
 
-    @Bind(R.id.front_view)
+    @Bind(R2.id.front_view)
      View FrontView;
-    @Bind(R.id.success_view)
+    @Bind(R2.id.success_view)
      View SuccessView;
-    @Bind(R.id.email_send)
+    @Bind(R2.id.email_send)
     TextView EmailSend;
-    @Bind(R.id.send_button)
+    @Bind(R2.id.send_button)
      TextView SendButton;
-    @Bind(R.id.email)
+    @Bind(R2.id.email)
     EditText Email;
-    @Bind(R.id.til_email)
+    @Bind(R2.id.til_email)
     TextInputLayout tilEmail;
 
     ForgotPassword forgotPassword;
@@ -90,7 +91,7 @@ public class ForgotPasswordFragment extends Fragment implements ForgotPasswordVi
         forgotPassword.unSubscribe();
     }
 
-    @OnClick(R.id.send_button)
+    @OnClick(R2.id.send_button)
     public void onSendButtonClick(){
         Email.setError(null);
         if(Email.length() > 0)

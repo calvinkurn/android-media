@@ -8,6 +8,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.product.listener.ProductDetailView;
 import com.tokopedia.tkpd.product.model.productdetail.ProductDetailData;
 import com.tokopedia.tkpd.product.model.productdetail.ProductWholesalePrice;
@@ -22,11 +23,11 @@ import butterknife.Bind;
 public class WholesaleView extends BaseView<ProductDetailData, ProductDetailView> {
     private static final String TAG = WholesaleView.class.getSimpleName();
 
-    @Bind({R.id.wholesale_1, R.id.wholesale_2, R.id.wholesale_3, R.id.wholesale_4, R.id.wholesale_5})
+    @Bind({R2.id.wholesale_1, R2.id.wholesale_2, R2.id.wholesale_3, R2.id.wholesale_4, R2.id.wholesale_5})
     List<TableRow> rowWholesale;
-    @Bind({R.id.qty_ws_1, R.id.qty_ws_2, R.id.qty_ws_3, R.id.qty_ws_4, R.id.qty_ws_5})
+    @Bind({R2.id.qty_ws_1, R2.id.qty_ws_2, R2.id.qty_ws_3, R2.id.qty_ws_4, R2.id.qty_ws_5})
     List<TextView> wholesaleQty;
-    @Bind({R.id.price_ws_1, R.id.price_ws_2, R.id.price_ws_3, R.id.price_ws_4, R.id.price_ws_5})
+    @Bind({R2.id.price_ws_1, R2.id.price_ws_2, R2.id.price_ws_3, R2.id.price_ws_4, R2.id.price_ws_5})
     List<TextView> wholesalePrice;
 
     public WholesaleView(Context context) {

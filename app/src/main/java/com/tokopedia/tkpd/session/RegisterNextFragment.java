@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.session.presenter.RegisterNext;
 import com.tokopedia.tkpd.session.presenter.RegisterNextImpl;
 import com.tokopedia.tkpd.session.presenter.RegisterNextView;
@@ -44,21 +45,21 @@ import butterknife.OnEditorAction;
  */
 @Deprecated
 public class RegisterNextFragment extends Fragment implements RegisterNextView{
-    @Bind(R.id.email)
+    @Bind(R2.id.email)
     EditText mEmailView;
-    @Bind(R.id.password)
+    @Bind(R2.id.password)
     EditText mPasswordView;
-    @Bind(R.id.confirm_password)
+    @Bind(R2.id.confirm_password)
     EditText mConfirmPasswordView;
-    @Bind(R.id.checkbox_privacy_policy)
+    @Bind(R2.id.checkbox_privacy_policy)
     CheckBox cbTermPrivacy;
-    @Bind(R.id.text_detail_term_privacy)
+    @Bind(R2.id.text_detail_term_privacy)
     TextView detailTermPrivacy;
-    @Bind(R.id.sign_in_button)
+    @Bind(R2.id.sign_in_button)
     TextView RegisterBut;
-    @Bind(R.id.login_status)
+    @Bind(R2.id.login_status)
     LinearLayout mLoginStatusView;
-    @Bind(R.id.step_2)
+    @Bind(R2.id.step_2)
     LinearLayout mLoginFormView;
 
     RegisterNext registerNext;
@@ -242,7 +243,7 @@ public class RegisterNextFragment extends Fragment implements RegisterNextView{
         }
     }
 
-    @OnClick(R.id.text_detail_term_privacy)
+    @OnClick(R2.id.text_detail_term_privacy)
     public void onTextDetailTermClick(){
         if(cbTermPrivacy.isChecked()) {
             cbTermPrivacy.setChecked(false);
@@ -253,7 +254,7 @@ public class RegisterNextFragment extends Fragment implements RegisterNextView{
 
 
 
-    @OnEditorAction(R.id.password)
+    @OnEditorAction(R2.id.password)
     public boolean onPasswordEdit(KeyEvent key, int id){
 //        Toast.makeText(getActivity(), "Pressed: " + key, Toast.LENGTH_SHORT).show();
         if (id == R.id.login || id == EditorInfo.IME_NULL) {
@@ -265,7 +266,7 @@ public class RegisterNextFragment extends Fragment implements RegisterNextView{
 
 
 
-    @OnEditorAction(R.id.confirm_password)
+    @OnEditorAction(R2.id.confirm_password)
     public boolean onConfirmPassEdit(KeyEvent key, int id){
 //        Toast.makeText(getActivity(), "Pressed: " + key, Toast.LENGTH_SHORT).show();
         if (id == R.id.login || id == EditorInfo.IME_NULL) {
@@ -277,7 +278,7 @@ public class RegisterNextFragment extends Fragment implements RegisterNextView{
 
 
 
-    @OnClick(R.id.sign_in_button)
+    @OnClick(R2.id.sign_in_button)
     public void onRegisterClick(View view){
         attemptRegister();
     }

@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.shipping.fragment.EditShippingViewListener;
 import com.tokopedia.tkpd.shipping.fragment.ShippingLocationDialog;
 import com.tokopedia.tkpd.shipping.model.editshipping.ShopShipping;
@@ -32,22 +33,22 @@ public class ShippingHeaderLayout extends EditShippingCustomView<ShopShipping,
 
     EditShippingViewListener mainView;
 
-    @Bind(R.id.postal_code) EditText zipCode;
+    @Bind(R2.id.postal_code) EditText zipCode;
 
-    @Bind(R.id.title_edit_shipping_change_location)
+    @Bind(R2.id.title_edit_shipping_change_location)
     TextView editShippingProvinceCitiesDistrict;
 
-    @Bind(R.id.text_edit_shipping_province)
+    @Bind(R2.id.text_edit_shipping_province)
     EditText shopProvince;
 
-    @Bind(R.id.text_edit_shipping_city) EditText shopCity;
+    @Bind(R2.id.text_edit_shipping_city) EditText shopCity;
 
-    @Bind(R.id.text_edit_shipping_district) EditText shopDistrict;
+    @Bind(R2.id.text_edit_shipping_district) EditText shopDistrict;
 
-    @Bind(R.id.text_input_layout_postal_code)
+    @Bind(R2.id.text_input_layout_postal_code)
     TextInputLayout postalTextInputLayout;
 
-    @OnTextChanged(R.id.postal_code)
+    @OnTextChanged(R2.id.postal_code)
     void savePostalCodeToModel(){
         presenter.savePostalCode(zipCode.getText().toString());
     }
@@ -118,11 +119,11 @@ public class ShippingHeaderLayout extends EditShippingCustomView<ShopShipping,
         return zipCode.getText().toString();
     }
 
-    @OnClick({R.id.title_edit_shipping_change_location,
-            R.id.fragment_shipping_header,
-            R.id.text_edit_shipping_province,
-            R.id.text_edit_shipping_city,
-            R.id.text_edit_shipping_district})
+    @OnClick({R2.id.title_edit_shipping_change_location,
+            R2.id.fragment_shipping_header,
+            R2.id.text_edit_shipping_province,
+            R2.id.text_edit_shipping_city,
+            R2.id.text_edit_shipping_district})
     void editAddressSpinner(){
         mainView.editAddressSpinner();
     }

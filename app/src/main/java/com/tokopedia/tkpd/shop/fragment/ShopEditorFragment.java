@@ -23,6 +23,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.gallery.ImageGalleryEntry;
 import com.tokopedia.tkpd.network.NetworkErrorHelper;
 import com.tokopedia.tkpd.prototype.ShopSettingCache;
@@ -43,49 +44,49 @@ import butterknife.OnClick;
  */
 public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implements ShopEditorView {
 
-    @Bind(R.id.shop_name)
+    @Bind(R2.id.shop_name)
     EditText mShopNameText;
-    @Bind(R.id.shop_slogan)
+    @Bind(R2.id.shop_slogan)
     EditText mShopSloganText;
-    @Bind(R.id.shop_desc)
+    @Bind(R2.id.shop_desc)
     EditText mShopDescText;
-    @Bind(R.id.button_send)
+    @Bind(R2.id.button_send)
     TextView mBtnSend;
-    @Bind(R.id.progress_bar)
+    @Bind(R2.id.progress_bar)
     ProgressBar progressBar;
-    @Bind(R.id.shop_ava)
+    @Bind(R2.id.shop_ava)
     ImageView mShopAva;
-    @Bind(R.id.shop_editor_scrollview)
+    @Bind(R2.id.shop_editor_scrollview)
     ScrollView mShopEditor;
-    @Bind(R.id.edit_shop_schedule)
+    @Bind(R2.id.edit_shop_schedule)
     ImageButton editShopSchedule;
-    @Bind(R.id.close_image)
+    @Bind(R2.id.close_image)
     ImageView closeImage;
-    @Bind(R.id.shop_status)
+    @Bind(R2.id.shop_status)
     TextView shopStatus;
-    @Bind(R.id.schedule_info)
+    @Bind(R2.id.schedule_info)
     TextView scheduleInfo;
-    @Bind(R.id.schedule_date)
+    @Bind(R2.id.schedule_date)
     TextView scheduleDate;
-    @Bind(R.id.time_icon)
+    @Bind(R2.id.time_icon)
     ImageView timeIcon;
-    @Bind(R.id.icon_gold_merchant)
+    @Bind(R2.id.icon_gold_merchant)
     ImageView icon_gold_merchant;
-    @Bind(R.id.status_gold)
+    @Bind(R2.id.status_gold)
     TextView status_gold;
-    @Bind(R.id.desc_status_gold)
+    @Bind(R2.id.desc_status_gold)
     TextView desc_status;
-    @Bind(R.id.about_gm)
+    @Bind(R2.id.about_gm)
     TextView about_gm;
     private TkpdProgressDialog mProgressDialog;
     private UploadImageReVamp uploadimage2;
 
-    @OnClick(R.id.shop_ava)
+    @OnClick(R2.id.shop_ava)
     public void uploadImage(View vuew) {
         ImageGalleryEntry.moveToImageGallery((AppCompatActivity)getActivity(), 0, 1);
     }
 
-    @OnClick(R.id.button_send)
+    @OnClick(R2.id.button_send)
     public void kirimData(View view) {
         presenter.sendDataShop();
     }
@@ -129,12 +130,12 @@ public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implem
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
-    @OnClick(R.id.edit_shop_schedule)
+    @OnClick(R2.id.edit_shop_schedule)
     void showEditShopScheduleDialog(){
         presenter.onClickCloseShop(presenter);
     }
 
-    @OnClick(R.id.about_gm)
+    @OnClick(R2.id.about_gm)
     void showAboutGM(){
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://gold.tokopedia.com/"));
         startActivity(browserIntent);

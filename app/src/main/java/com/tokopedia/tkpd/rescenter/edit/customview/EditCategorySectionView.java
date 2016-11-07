@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.Spinner;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.product.customview.BaseView;
 import com.tokopedia.tkpd.rescenter.edit.customadapter.TroubleCategorySpinnerAdapter;
 import com.tokopedia.tkpd.rescenter.edit.listener.BuyerEditResCenterListener;
@@ -23,7 +24,7 @@ public class EditCategorySectionView extends BaseView<EditResCenterFormData, Buy
 
     private static final String TAG = EditCategorySectionView.class.getSimpleName();
 
-    @Bind(R.id.spinner_trouble_category)
+    @Bind(R2.id.spinner_trouble_category)
     Spinner categoryTroubleSpinner;
 
     private TroubleCategorySpinnerAdapter adapter;
@@ -74,7 +75,7 @@ public class EditCategorySectionView extends BaseView<EditResCenterFormData, Buy
         }
     }
 
-    @OnItemSelected(R.id.spinner_trouble_category)
+    @OnItemSelected(R2.id.spinner_trouble_category)
     public void onTroubleCategorySelected() {
         if (categoryTroubleSpinner.getSelectedItemPosition() != 0) {
             listener.getPresenter().setOnCategoryTroubleSelected(getTroubleCategoryChoosen());

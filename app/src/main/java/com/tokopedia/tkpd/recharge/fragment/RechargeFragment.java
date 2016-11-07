@@ -30,6 +30,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.analytics.UnifyTracking;
 import com.tokopedia.tkpd.home.fragment.FragmentIndexCategory;
 import com.tokopedia.tkpd.loyaltysystem.util.URLGenerator;
@@ -85,23 +86,23 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     //endregion
 
     //region widget variable
-    @Bind(R.id.pulsa_edittext)
+    @Bind(R2.id.pulsa_edittext)
     RechargeEditText rechargeEditText;
-    @Bind(R.id.buy_with_credit_checkbox)
+    @Bind(R2.id.buy_with_credit_checkbox)
     CheckBox buyWithCreditCheckbox;
-    @Bind(R.id.buy_wrapper_linearlayout)
+    @Bind(R2.id.buy_wrapper_linearlayout)
     LinearLayout wrapperLinearLayout;
-    @Bind(R.id.nominalTextview)
+    @Bind(R2.id.nominalTextview)
     TextView nominalTextview;
-    @Bind(R.id.telp_textview)
+    @Bind(R2.id.telp_textview)
     TextView tlpLabelTextView;
-    @Bind(R.id.recharge_progressbar)
+    @Bind(R2.id.recharge_progressbar)
     ProgressBar rechargeProgressbar;
-    @Bind(R.id.spnNominal)
+    @Bind(R2.id.spnNominal)
     Spinner spnNominal;
-    @Bind(R.id.errorNominal)
+    @Bind(R2.id.errorNominal)
     TextView errorNominal;
-    @Bind(R.id.btn_buy)
+    @Bind(R2.id.btn_buy)
     Button buyButton;
 
     //endregion
@@ -281,7 +282,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         RechargeFragmentPermissionsDispatcher.doLaunchContactPickerWithCheck(RechargeFragment.this);
     }
 
-    @OnClick(R.id.btn_buy)
+    @OnClick(R2.id.btn_buy)
     void buttonBuyClicked() {
         buyButton.setEnabled(false);
         if (SessionHandler.isV4Login(getActivity())) {
