@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.analytics.ScreenTracking;
 import com.tokopedia.tkpd.analytics.UnifyTracking;
 import com.tokopedia.tkpd.discovery.activity.BrowseProductActivity;
@@ -47,7 +48,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     public static final String TAG = "BrowseProductFragment";
 
-    @Bind(R.id.fragmentv2list)
+    @Bind(R2.id.fragmentv2list)
     RecyclerView mRecyclerView;
 
     private static String ARG_1 = "";
@@ -283,7 +284,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         Snackbar snackbar = Snackbar.make(parentView, CommonUtils.generateMessageError(getActivity(), (String) data[0]), Snackbar.LENGTH_INDEFINITE);
 
         View snackbarView = snackbar.getView();
-        TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+        TextView textView = (TextView) snackbarView.findViewById(R.id.snackbar_text);
         textView.setTextColor(Color.WHITE);
 
         View.OnClickListener listener = new View.OnClickListener() {

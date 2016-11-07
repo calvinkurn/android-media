@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.analytics.UnifyTracking;
 import com.tokopedia.tkpd.app.BasePresenterActivity;
 import com.tokopedia.tkpd.customView.OrderStatusView;
@@ -39,47 +40,47 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
 
     private static final String EXTRA_ORDER_DATA = "EXTRA_ORDER_DATA";
 
-    @Bind(R.id.invoice_text)
+    @Bind(R2.id.invoice_text)
     TextView tvInvoiceNumber;
-    @Bind(R.id.shop_name)
+    @Bind(R2.id.shop_name)
     TextView tvShopName;
-    @Bind(R.id.product_list)
+    @Bind(R2.id.product_list)
     NestedListView lvProduct;
-    @Bind(R.id.shipping_cost)
+    @Bind(R2.id.shipping_cost)
     TextView tvShippingCost;
-    @Bind(R.id.additional_cost)
+    @Bind(R2.id.additional_cost)
     TextView tvAdditionalCost;
-    @Bind(R.id.destination)
+    @Bind(R2.id.destination)
     TextView tvDestination;
-    @Bind(R.id.destination_detail)
+    @Bind(R2.id.destination_detail)
     TextView tvDestinationDetail;
-    @Bind(R.id.quantity)
+    @Bind(R2.id.quantity)
     TextView tvQuantity;
-    @Bind(R.id.grand_total)
+    @Bind(R2.id.grand_total)
     TextView tvGrandTotal;
-    @Bind(R.id.transaction)
+    @Bind(R2.id.transaction)
     TextView tvTransactionDate;
-    @Bind(R.id.see_all)
+    @Bind(R2.id.see_all)
     TextView btnShowMoreHistory;
-    @Bind(R.id.receive_btn)
+    @Bind(R2.id.receive_btn)
     TextView btnReceiveOrder;
-    @Bind(R.id.reject_btn)
+    @Bind(R2.id.reject_btn)
     TextView btnRejectOrder;
-    @Bind(R.id.ask_seller)
+    @Bind(R2.id.ask_seller)
     TextView btnAskSeller;
-    @Bind(R.id.track_btn)
+    @Bind(R2.id.track_btn)
     TextView btnTrackOrder;
-    @Bind(R.id.complain_but)
+    @Bind(R2.id.complain_but)
     TextView btnComplainOrder;
-    @Bind(R.id.upload_proof)
+    @Bind(R2.id.upload_proof)
     TextView btnUploadProof;
-    @Bind(R.id.sender_name)
+    @Bind(R2.id.sender_name)
     TextView tvSenderName;
-    @Bind(R.id.sender_phone)
+    @Bind(R2.id.sender_phone)
     TextView tvSenderPhone;
-    @Bind(R.id.sender_form)
+    @Bind(R2.id.sender_form)
     View holderFormSender;
-    @Bind(R.id.order_status_layout)
+    @Bind(R2.id.order_status_layout)
     LinearLayout holderOrderStatus;
 
     private OrderData orderData;
@@ -254,50 +255,50 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
         this.finish();
     }
 
-    @OnClick(R.id.invoice_text)
+    @OnClick(R2.id.invoice_text)
     void actionInvoice() {
         presenter.processInvoice(this, orderData);
     }
 
-    @OnClick(R.id.shop_name)
+    @OnClick(R2.id.shop_name)
     void actionToShop() {
         presenter.processToShop(this, orderData.getOrderShop());
     }
 
-    @OnClick(R.id.complain_but)
+    @OnClick(R2.id.complain_but)
     void actionShowComplain() {
         presenter.processShowComplain(this, orderData.getOrderButton());
     }
 
-    @OnClick(R.id.ask_seller)
+    @OnClick(R2.id.ask_seller)
     void actionAskSeller() {
         presenter.processAskSeller(this, orderData);
     }
 
-    @OnClick(R.id.reject_btn)
+    @OnClick(R2.id.reject_btn)
     void actionOpenDispute() {
         presenter.processOpenDispute(this, orderData, 0);
     }
 
-    @OnClick(R.id.receive_btn)
+    @OnClick(R2.id.receive_btn)
     void actionConfirmDeliver() {
         presenter.processConfirmDeliver(this, orderData);
         UnifyTracking.eventReceivedShipping();
     }
 
-    @OnClick(R.id.track_btn)
+    @OnClick(R2.id.track_btn)
     void actionTracking() {
         presenter.processTrackOrder(this, orderData);
         UnifyTracking.eventTrackOrder();
     }
 
-    @OnClick(R.id.upload_proof)
+    @OnClick(R2.id.upload_proof)
     void actionUploadProof() {
         presenter.processUploadProof(this, orderData);
     }
 
 
-    @OnClick(R.id.see_all)
+    @OnClick(R2.id.see_all)
     void actionSeeAllHistories() {
         presenter.processSeeAllHistories(this, orderData);
     }

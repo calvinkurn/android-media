@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.Window;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.manage.people.address.ManageAddressConstant;
 import com.tokopedia.tkpd.manage.people.address.activity.AddAddressActivity;
@@ -43,7 +44,7 @@ public class ManagePeopleAddressFragment extends BasePresenterFragment<ManagePeo
 
     private static final String EXTRA_PARAM_ARRAY_LIST = "EXTRA_PARAM_ARRAY_LIST";
 
-    @Bind(R.id.recycler_view)
+    @Bind(R2.id.recycler_view)
     RecyclerView recyclerView;
 
     private String querySearch;
@@ -352,7 +353,7 @@ public class ManagePeopleAddressFragment extends BasePresenterFragment<ManagePeo
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_add_address:
+            case R2.id.action_add_address:
                 this.openFormAddressView(null);
                 return true;
             default:

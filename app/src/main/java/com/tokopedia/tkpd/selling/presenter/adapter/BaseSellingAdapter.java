@@ -12,6 +12,7 @@ import com.bignerdranch.android.multiselector.MultiSelector;
 import com.bignerdranch.android.multiselector.SwappingHolder;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.var.TkpdState;
 
 import java.lang.reflect.Constructor;
@@ -47,7 +48,7 @@ public abstract class BaseSellingAdapter<T, VH extends RecyclerView.ViewHolder> 
     }
 
     public static class ViewHolderRetry extends SwappingHolder {
-        @Bind(R.id.button_retry)
+        @Bind(R2.id.button_retry)
         TextView retry;
 
         public ViewHolderRetry(View itemView) {
@@ -58,7 +59,7 @@ public abstract class BaseSellingAdapter<T, VH extends RecyclerView.ViewHolder> 
     }
 
     public static class ViewHolderEmpty extends SwappingHolder {
-        @Bind(R.id.no_result_image)
+        @Bind(R2.id.no_result_image)
         ImageView emptyImage;
 
         public ViewHolderEmpty(View itemView) {

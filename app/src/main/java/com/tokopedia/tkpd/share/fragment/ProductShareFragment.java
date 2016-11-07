@@ -16,6 +16,7 @@ import com.sromku.simple.fb.SimpleFacebook;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.DownloadResultSender;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.database.model.ProductDB;
 import com.tokopedia.tkpd.database.model.ProductDB_Table;
@@ -37,46 +38,46 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
 
     private ShareData shareData;
     private SimpleFacebook simpleFacebook;
-    @Bind(R.id.text_line)
+    @Bind(R2.id.text_line)
     TextView tvTitle;
 
-    @Bind(R.id.image_error)
+    @Bind(R2.id.image_error)
     ImageView errorImage;
 
-    @Bind(R.id.progress_bar)
+    @Bind(R2.id.progress_bar)
     ProgressBar progressBar;
 
-    @Bind(R.id.loading_add_product)
+    @Bind(R2.id.loading_add_product)
     TextView loadingAddProduct;
 
-    @Bind(R.id.bbm_share)
+    @Bind(R2.id.bbm_share)
     TextView bbmShare;
 
-    @Bind(R.id.whatsapp_share)
+    @Bind(R2.id.whatsapp_share)
     TextView whatsappShare;
 
-    @Bind(R.id.line_share)
+    @Bind(R2.id.line_share)
     TextView lineShare;
 
-    @Bind(R.id.instagram_share)
+    @Bind(R2.id.instagram_share)
     TextView instagramShare;
 
-    @Bind(R.id.facebook_share)
+    @Bind(R2.id.facebook_share)
     TextView facebookShare;
 
-    @Bind(R.id.twitter_share)
+    @Bind(R2.id.twitter_share)
     TextView twitterShare;
 
-    @Bind(R.id.pinterest_share)
+    @Bind(R2.id.pinterest_share)
     TextView pinterestShare;
 
-    @Bind(R.id.google_plus_share)
+    @Bind(R2.id.google_plus_share)
     TextView gplusShare;
 
-    @Bind(R.id.copy_url)
+    @Bind(R2.id.copy_url)
     TextView copyUrl;
 
-    @Bind(R.id.more_share)
+    @Bind(R2.id.more_share)
     TextView moreShare;
 
     public static ProductShareFragment newInstance(@NonNull ShareData shareData) {
@@ -258,7 +259,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
             case android.R.id.home:
                 getFragmentManager().popBackStack();
                 return true;
-            case R.id.action_close:
+            case R2.id.action_close:
                 getActivity().onBackPressed();
                 return true;
         }
@@ -271,52 +272,52 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
         simpleFacebook.clean();
     }
 
-    @OnClick(R.id.bbm_share)
+    @OnClick(R2.id.bbm_share)
     void shareBBM() {
         presenter.shareBBM(shareData);
     }
 
-    @OnClick(R.id.whatsapp_share)
+    @OnClick(R2.id.whatsapp_share)
     void shareWhatsApp() {
         presenter.shareWhatsApp(shareData);
     }
 
-    @OnClick(R.id.line_share)
+    @OnClick(R2.id.line_share)
     void shareLine() {
         presenter.shareLine(shareData);
     }
 
-    @OnClick(R.id.instagram_share)
+    @OnClick(R2.id.instagram_share)
     void shareInstagram() {
         presenter.shareInstagram(shareData);
     }
 
-    @OnClick(R.id.facebook_share)
+    @OnClick(R2.id.facebook_share)
     void shareFb() {
         presenter.shareFb(simpleFacebook, shareData);
     }
 
-    @OnClick(R.id.twitter_share)
+    @OnClick(R2.id.twitter_share)
     void shareTwitter() {
         presenter.shareTwitter(shareData);
     }
 
-    @OnClick(R.id.pinterest_share)
+    @OnClick(R2.id.pinterest_share)
     void sharePinterest() {
         presenter.sharePinterest(shareData);
     }
 
-    @OnClick(R.id.google_plus_share)
+    @OnClick(R2.id.google_plus_share)
     void shareGPlus() {
         presenter.shareGPlus(shareData);
     }
 
-    @OnClick(R.id.copy_url)
+    @OnClick(R2.id.copy_url)
     void shareCopy() {
         presenter.shareCopy(shareData);
     }
 
-    @OnClick(R.id.more_share)
+    @OnClick(R2.id.more_share)
     void shareMore() {
         presenter.shareMore(shareData);
     }

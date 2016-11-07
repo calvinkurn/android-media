@@ -18,6 +18,7 @@ import android.widget.EditText;
 import com.tkpd.library.ui.utilities.DatePickerUtil;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.shop.model.ShopScheduleModel;
 import com.tokopedia.tkpd.shop.model.shopData.ClosedDetail;
 import com.tokopedia.tkpd.shop.model.shopData.ClosedScheduleDetail;
@@ -59,13 +60,13 @@ public class ShopScheduleDialog extends DialogFragment {
         return fragment;
     }
 
-    @Bind(R.id.start_date)
+    @Bind(R2.id.start_date)
     EditText startDate;
-    @Bind(R.id.end_date)
+    @Bind(R2.id.end_date)
     EditText endDate;
-    @Bind(R.id.close_checkbox)
+    @Bind(R2.id.close_checkbox)
     CheckBox closeCheckbox;
-    @Bind(R.id.note_text)
+    @Bind(R2.id.note_text)
     EditText noteText;
 
     private DatePickerUtil datePicker;
@@ -208,7 +209,7 @@ public class ShopScheduleDialog extends DialogFragment {
         return dialog;
     }
 
-    @OnClick(R.id.start_date)
+    @OnClick(R2.id.start_date)
     void showStartDatePickerDialog() {
         calendar = Calendar.getInstance(TimeZone.getDefault());
         if(!startDate.getText().toString().isEmpty()){
@@ -231,7 +232,7 @@ public class ShopScheduleDialog extends DialogFragment {
         });
     }
 
-    @OnClick(R.id.end_date)
+    @OnClick(R2.id.end_date)
     void showEndDatePickerDialog() {
         calendar = Calendar.getInstance(TimeZone.getDefault());
         if(!endDate.getText().toString().isEmpty()){
@@ -258,7 +259,7 @@ public class ShopScheduleDialog extends DialogFragment {
         });
     }
 
-    @OnClick(R.id.close_checkbox)
+    @OnClick(R2.id.close_checkbox)
     void onCheckCloseShop() {
         calendar = Calendar.getInstance(TimeZone.getDefault());
         if (closeCheckbox.isChecked()) {

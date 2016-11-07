@@ -9,6 +9,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.shipping.fragment.EditShippingViewListener;
 import com.tokopedia.tkpd.shipping.model.editshipping.Service;
 
@@ -20,7 +21,7 @@ import butterknife.Bind;
 public class PackageViewCheckBox extends EditShippingCourierView<Service,
         EditShippingViewListener>{
 
-    @Bind(R.id.service_checkbox)
+    @Bind(R2.id.service_checkbox)
     CheckBox serviceCheckbox;
 
     EditShippingViewListener mainView;

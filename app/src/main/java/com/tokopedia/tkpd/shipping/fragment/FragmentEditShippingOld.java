@@ -35,6 +35,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.SimpleSpinnerAdapter;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.V2BaseFragment;
 import com.tokopedia.tkpd.geolocation.activity.GeolocationActivity;
 import com.tokopedia.tkpd.geolocation.model.LocationPass;
@@ -473,7 +474,7 @@ public class FragmentEditShippingOld extends V2BaseFragment implements EditShipp
             case android.R.id.home:
                 getActivity().finish();
                 return true;
-            case R.id.action_send:
+            case R2.id.action_send:
                 submitData();
         }
         return super.onOptionsItemSelected(item);

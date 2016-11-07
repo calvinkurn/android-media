@@ -21,6 +21,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.tkpd.GalleryBrowser;
 import com.tokopedia.tkpd.ImageGallery;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.customadapter.LazyListView;
 import com.tokopedia.tkpd.network.NetworkErrorHelper;
@@ -61,7 +62,7 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
     public static final int REQUEST_VERIFICATION_DETAIL = 2;
     private static final String TAG = TxVerificationFragment.class.getSimpleName();
 
-    @Bind(R.id.order_list)
+    @Bind(R2.id.order_list)
     LazyListView lvTXVerification;
 
     private View loadMoreView;

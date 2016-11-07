@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.discovery.model.history.SearchHistoryAdapter;
 import com.tokopedia.tkpd.discovery.model.history.SearchHistoryModel;
 import com.tokopedia.tkpd.discovery.presenter.history.SearchHistoryImpl;
@@ -25,11 +26,11 @@ public class DetailSearchHistoryViewHolder extends RecyclerView.ViewHolder {
 
 
     private final SearchHistoryImpl.OnItemClickListener listener;
-    @Bind(R.id.detail_search_textview)
+    @Bind(R2.id.detail_search_textview)
     TextView detailSearchTextView;
-    @Bind(R.id.icon_left)
+    @Bind(R2.id.icon_left)
     ImageView iconLeft;
-    @Bind(R.id.icon_right)
+    @Bind(R2.id.icon_right)
     ImageView iconRight;
     private static final String TAG = DetailSearchHistoryViewHolder.class.getSimpleName();
     private int type;

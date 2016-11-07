@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.product.facade.NetworkParam;
 import com.tokopedia.tkpd.product.interactor.RetrofitInteractor;
 import com.tokopedia.tkpd.product.interactor.RetrofitInteractorImpl;
@@ -24,13 +25,13 @@ import butterknife.Bind;
 public class ManageView extends BaseView<ProductDetailData, ProductDetailView> {
     private static final String TAG = ManageView.class.getSimpleName();
 
-    @Bind(R.id.tv_promote)
+    @Bind(R2.id.tv_promote)
     TextView tvPromote;
-    @Bind(R.id.tv_edit)
+    @Bind(R2.id.tv_edit)
     TextView tvEdit;
-    @Bind(R.id.tv_sold_out)
+    @Bind(R2.id.tv_sold_out)
     TextView tvSoldOut;
-    @Bind(R.id.tv_to_etalase)
+    @Bind(R2.id.tv_to_etalase)
     TextView tvToEtalase;
     private ProductDetailData data;
 

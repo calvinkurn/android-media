@@ -20,6 +20,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.msisdn.IncomingSms;
 import com.tokopedia.tkpd.msisdn.MSISDNConstant;
 import com.tokopedia.tkpd.msisdn.listener.MsisdnVerificationFragmentView;
@@ -41,37 +42,37 @@ import butterknife.ButterKnife;
 public class MsisdnVerificationFragment extends DialogFragment
         implements MsisdnVerificationFragmentView, IncomingSms.ReceiveSMSListener, MSISDNConstant {
 
-    @Bind(R.id.view_verification)
+    @Bind(R2.id.view_verification)
     View verificationView;
 
-    @Bind(R.id.view_phone_number)
+    @Bind(R2.id.view_phone_number)
     View phoneNumberView;
 
-    @Bind(R.id.send_otp)
+    @Bind(R2.id.send_otp)
     Button sendOtp;
 
-    @Bind(R.id.verify_otp)
+    @Bind(R2.id.verify_otp)
     Button verifyOtp;
 
-    @Bind(R.id.close_button)
+    @Bind(R2.id.close_button)
     Button closeButton;
 
-    @Bind(R.id.input_phone)
+    @Bind(R2.id.input_phone)
     EditText phoneNumberEditText;
 
-    @Bind(R.id.input_otp)
+    @Bind(R2.id.input_otp)
     EditText otpEditText;
 
-    @Bind(R.id.logo)
+    @Bind(R2.id.logo)
     ImageView logo;
 
-    @Bind(R.id.btn_no_thanks)
+    @Bind(R2.id.btn_no_thanks)
     TextView noThanksButton;
 
-    @Bind(R.id.username)
+    @Bind(R2.id.username)
     TextView username;
 
-    @Bind(R.id.verification_instruction)
+    @Bind(R2.id.verification_instruction)
     TextView instruction;
 
     MsisdnVerificationFragmentPresenter presenter;

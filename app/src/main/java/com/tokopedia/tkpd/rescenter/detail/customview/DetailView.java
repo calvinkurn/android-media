@@ -15,6 +15,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.loyaltysystem.util.URLGenerator;
 import com.tokopedia.tkpd.rescenter.create.customview.BaseView;
 import com.tokopedia.tkpd.rescenter.detail.dialog.ConfirmationDialog;
@@ -30,7 +31,7 @@ public class DetailView extends BaseView<Detail, DetailResCenterView> {
 
     public static final String TAG = DetailView.class.getSimpleName();
 
-    @Bind(R.id.webview)
+    @Bind(R2.id.webview)
     WebView webView;
 
     public DetailView(Context context) {

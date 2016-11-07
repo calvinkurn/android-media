@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.catalog.adapter.CatalogDetailAdapter;
 import com.tokopedia.tkpd.catalog.adapter.CatalogLocationAdapter;
@@ -45,21 +46,21 @@ import butterknife.Bind;
 public class CatalogDetailListFragment extends BasePresenterFragment<ICatalogDetailListPresenter>
         implements ICatalogDetailListView {
     public static final String CATALOG_ID = "catalog_id";
-    @Bind(R.id.sorting)
+    @Bind(R2.id.sorting)
     TextView mSorting;
-    @Bind(R.id.condition)
+    @Bind(R2.id.condition)
     TextView mCondition;
-    @Bind(R.id.location)
+    @Bind(R2.id.location)
     TextView mLocation;
-    @Bind(R.id.list)
+    @Bind(R2.id.list)
     RecyclerView mList;
-    @Bind(R.id.container)
+    @Bind(R2.id.container)
     CoordinatorLayout mContainer;
-    @Bind(R.id.filter_container)
+    @Bind(R2.id.filter_container)
     LinearLayout mFilterContainer;
-    @Bind(R.id.loading)
+    @Bind(R2.id.loading)
     ProgressBar mLoading;
-    @Bind(R.id.swipe_refresh_layout)
+    @Bind(R2.id.swipe_refresh_layout)
     SwipeRefreshLayout mRefresh;
 
     CatalogDetailAdapter mAdapter;

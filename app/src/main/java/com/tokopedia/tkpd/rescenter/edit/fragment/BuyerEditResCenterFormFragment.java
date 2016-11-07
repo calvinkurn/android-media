@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.network.NetworkErrorHelper;
 import com.tokopedia.tkpd.rescenter.detail.model.detailresponsedata.DetailResCenterData;
@@ -47,21 +48,21 @@ public class BuyerEditResCenterFormFragment extends BasePresenterFragment<BuyerE
 
     private ActionParameterPassData passData;
 
-    @Bind(R.id.invoice)
+    @Bind(R2.id.invoice)
     TextView invoice;
-    @Bind(R.id.shop_name)
+    @Bind(R2.id.shop_name)
     TextView shopName;
-    @Bind(R.id.include_loading)
+    @Bind(R2.id.include_loading)
     ProgressBar loading;
-    @Bind(R.id.main_view)
+    @Bind(R2.id.main_view)
     View mainView;
-    @Bind(R.id.view_edit_package_status)
+    @Bind(R2.id.view_edit_package_status)
     EditPackageStatusView editPackageStatusView;
-    @Bind(R.id.view_edit_category_section)
+    @Bind(R2.id.view_edit_category_section)
     EditCategorySectionView editCategorySectionView;
-    @Bind(R.id.view_edit_product_trouble_section)
+    @Bind(R2.id.view_edit_product_trouble_section)
     EditProductTroubleView editProductTroubleView;
-    @Bind(R.id.view_edit_trouble_section)
+    @Bind(R2.id.view_edit_trouble_section)
     EditTroubleSectionView editTroubleView;
 
     public static Fragment newInstance(ActionParameterPassData passData) {
@@ -310,13 +311,13 @@ public class BuyerEditResCenterFormFragment extends BasePresenterFragment<BuyerE
 
     }
 
-    @OnClick(R.id.action_choose_solution)
+    @OnClick(R2.id.action_choose_solution)
     public void onButtonNextClick() {
         KeyboardHandler.DropKeyboard(getActivity(), getView());
         presenter.setOnButtonNextClick(getActivity());
     }
 
-    @OnClick(R.id.action_abort)
+    @OnClick(R2.id.action_abort)
     public void onButtonAbortClick() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(R.string.dialog_discard_changes)

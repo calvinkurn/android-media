@@ -18,6 +18,7 @@ import com.appsflyer.AFInAppEventType;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.addtocart.model.ProductCartPass;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
@@ -74,41 +75,41 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public static final String STATE_OTHER_PRODUCTS = "STATE_OTHER_PRODUCTS";
     private static final String TAG = ProductDetailFragment.class.getSimpleName();
 
-    @Bind(R.id.view_header)
+    @Bind(R2.id.view_header)
     HeaderInfoView headerInfoView;
-    @Bind(R.id.view_detail)
+    @Bind(R2.id.view_detail)
     DetailInfoView detailInfoView;
-    @Bind(R.id.view_picture)
+    @Bind(R2.id.view_picture)
     PictureView pictureView;
-    @Bind(R.id.view_desc)
+    @Bind(R2.id.view_desc)
     DescriptionView descriptionView;
-    @Bind(R.id.view_talk_review)
+    @Bind(R2.id.view_talk_review)
     TalkReviewView talkReviewView;
-    @Bind(R.id.view_manage)
+    @Bind(R2.id.view_manage)
     ManageView manageView;
-    @Bind(R.id.view_shop_info)
+    @Bind(R2.id.view_shop_info)
     ShopInfoView shopInfoView;
-    @Bind(R.id.view_wholesale)
+    @Bind(R2.id.view_wholesale)
     WholesaleView wholesaleView;
-    @Bind(R.id.view_share)
+    @Bind(R2.id.view_share)
     ButtonShareView buttonShareView;
-    @Bind(R.id.view_rating)
+    @Bind(R2.id.view_rating)
     RatingView ratingView;
-    @Bind(R.id.view_error_product)
+    @Bind(R2.id.view_error_product)
     ErrorProductView errorProductView;
-    @Bind(R.id.view_error_shop)
+    @Bind(R2.id.view_error_shop)
     ErrorShopView errorShopView;
-    @Bind(R.id.view_new_shop)
+    @Bind(R2.id.view_new_shop)
     NewShopView newShopView;
-    @Bind(R.id.view_buy)
+    @Bind(R2.id.view_buy)
     ButtonBuyView buttonBuyView;
-    @Bind(R.id.view_last_update)
+    @Bind(R2.id.view_last_update)
     LastUpdateView lastUpdateView;
-    @Bind(R.id.view_progress)
+    @Bind(R2.id.view_progress)
     ProgressBar progressBar;
-    @Bind(R.id.view_free_return)
+    @Bind(R2.id.view_free_return)
     FreeReturnView freeReturnView;
-    @Bind(R.id.view_transaction_success)
+    @Bind(R2.id.view_transaction_success)
     TransactionSuccessView transactionSuccess;
 
     private ProductPass productPass;
@@ -564,10 +565,10 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             case android.R.id.home:
                 getActivity().onBackPressed();
                 return true;
-            case R.id.action_wishlist:
+            case R2.id.action_wishlist:
                 presenter.processWishList(context, productData);
                 return true;
-            case R.id.action_report:
+            case R2.id.action_report:
                 presenter.reportProduct(context);
                 return true;
         }

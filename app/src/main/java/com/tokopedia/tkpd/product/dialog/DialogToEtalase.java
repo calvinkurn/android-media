@@ -12,6 +12,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.product.facade.NetworkParam;
 import com.tokopedia.tkpd.product.model.etalase.Etalase;
 import com.tokopedia.tkpd.util.ValidationTextUtil;
@@ -31,11 +32,11 @@ public class DialogToEtalase extends Dialog {
     private final Context context;
     private final int productId;
 
-    @Bind(R.id.ok_button)
+    @Bind(R2.id.ok_button)
     TextView tvYes;
-    @Bind(R.id.spinner_etalase)
+    @Bind(R2.id.spinner_etalase)
     Spinner spinner;
-    @Bind(R.id.etalase_name)
+    @Bind(R2.id.etalase_name)
     EditText etNew;
 
     private final Listener listener;

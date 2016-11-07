@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.tkpd.customadapter.ImageUpload;
 import com.tokopedia.tkpd.customadapter.ImageUploadAdapter;
@@ -36,16 +37,16 @@ public class InboxTicketAdapter extends BaseLinearRecyclerViewAdapter implements
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.title)
+        @Bind(R2.id.title)
         TextView title;
 
-        @Bind(R.id.status)
+        @Bind(R2.id.status)
         TextView status;
 
-        @Bind(R.id.create_time)
+        @Bind(R2.id.create_time)
         TextView createTime;
 
-        @Bind(R.id.main)
+        @Bind(R2.id.main)
         View main;
 
         LabelUtils label;

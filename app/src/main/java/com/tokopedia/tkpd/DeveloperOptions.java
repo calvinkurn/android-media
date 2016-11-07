@@ -251,17 +251,17 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
                 MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
         switch (checkedId) {
-            case R.id.rb_dev_ws4_alpha:
+            case R2.id.rb_dev_ws4_alpha:
                 editor.putString(DOMAIN_WS_4, TkpdBaseURL.ALPHA_DOMAIN);
                 if (editor.commit())
                     Toast.makeText(this, TkpdBaseURL.ALPHA_DOMAIN, Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.rb_dev_ws4_staging:
+            case R2.id.rb_dev_ws4_staging:
                 editor.putString(DOMAIN_WS_4, TkpdBaseURL.STAGE_DOMAIN);
                 if (editor.commit())
                     Toast.makeText(this, TkpdBaseURL.STAGE_DOMAIN, Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.rb_dev_ws4_live:
+            case R2.id.rb_dev_ws4_live:
                 editor.putString(DOMAIN_WS_4, TkpdBaseURL.LIVE_DOMAIN);
                 if (editor.commit())
                     Toast.makeText(this, TkpdBaseURL.LIVE_DOMAIN, Toast.LENGTH_SHORT).show();

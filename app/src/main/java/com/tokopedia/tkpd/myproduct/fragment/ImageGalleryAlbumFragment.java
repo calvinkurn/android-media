@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.myproduct.ProductActivity;
 import com.tokopedia.tkpd.myproduct.adapter.ImageAlbumAdapter;
 import com.tokopedia.tkpd.myproduct.model.FolderModel;
@@ -44,7 +45,7 @@ public class ImageGalleryAlbumFragment extends Fragment {
         return imageGalleryAlbumFragment;
     }
 
-    @Bind(R.id.gallery_listview)
+    @Bind(R2.id.gallery_listview)
     RecyclerView recyclerView;
 
     RecyclerView.Adapter adapter;

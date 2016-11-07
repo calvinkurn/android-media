@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.Spinner;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.rescenter.create.customadapter.TroubleCategorySpinnerAdapter;
 import com.tokopedia.tkpd.rescenter.create.listener.ChooseTroubleListener;
 import com.tokopedia.tkpd.rescenter.create.model.responsedata.CreateResCenterFormData;
@@ -22,7 +23,7 @@ public class ChooseCategorySectionCreateResCenterView extends BaseView<CreateRes
 
     public static final String TAG = ChooseCategorySectionCreateResCenterView.class.getSimpleName();
 
-    @Bind(R.id.spinner_trouble_category)
+    @Bind(R2.id.spinner_trouble_category)
     Spinner categoryTroubleSpinner;
 
     private ChooseTroubleListener listener;

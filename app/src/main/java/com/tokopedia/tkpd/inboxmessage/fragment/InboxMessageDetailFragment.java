@@ -17,6 +17,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.analytics.UnifyTracking;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.customwidget.SwipeToRefresh;
@@ -49,40 +50,40 @@ public class InboxMessageDetailFragment extends BasePresenterFragment<InboxMessa
         void undoFlagSpam(Bundle param);
     }
 
-    @Bind(R.id.message_list)
+    @Bind(R2.id.message_list)
     RecyclerView mainList;
 
-    @Bind(R.id.swipe_refresh_layout)
+    @Bind(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
 
-    @Bind(R.id.msg_title)
+    @Bind(R2.id.msg_title)
     TextView title;
 
-    @Bind(R.id.add_comment_area)
+    @Bind(R2.id.add_comment_area)
     View replyView;
 
-    @Bind(R.id.add_url)
+    @Bind(R2.id.add_url)
     ImageView attachmentButton;
 
-    @Bind(R.id.new_comment)
+    @Bind(R2.id.new_comment)
     EditText replyEditText;
 
-    @Bind(R.id.send_but)
+    @Bind(R2.id.send_but)
     ImageView sendButton;
 
-    @Bind(R.id.header_date)
+    @Bind(R2.id.header_date)
     TextView headerDate;
 
-    @Bind(R.id.reputation_view)
+    @Bind(R2.id.reputation_view)
     View viewReputation;
 
-    @Bind(R.id.rep_rating)
+    @Bind(R2.id.rep_rating)
     TextView reputationPercentage;
 
-    @Bind(R.id.rep_icon)
+    @Bind(R2.id.rep_icon)
     ImageView reputationIcon;
 
-    @Bind(R.id.header)
+    @Bind(R2.id.header)
     View header;
 
     LinearLayoutManager layoutManager;

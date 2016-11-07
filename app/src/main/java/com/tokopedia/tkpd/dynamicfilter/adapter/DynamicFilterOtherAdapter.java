@@ -16,6 +16,7 @@ import android.widget.Filter;
 import android.widget.Filterable;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.discovery.adapter.ProductAdapter;
 import com.tokopedia.tkpd.dynamicfilter.model.DynamicFilterModel;
 import com.tokopedia.tkpd.dynamicfilter.presenter.DynamicFilterView;
@@ -106,10 +107,10 @@ public class DynamicFilterOtherAdapter extends ProductAdapter {
 
     public static class TextBoxViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.text_box_container)
+        @Bind(R2.id.text_box_container)
         TextInputLayout TextBoxContainer;
 
-        @Bind(R.id.text_box)
+        @Bind(R2.id.text_box)
         EditText textBox;
 
         TextBoxModel textBoxModel;
@@ -190,7 +191,7 @@ public class DynamicFilterOtherAdapter extends ProductAdapter {
 
     public class CheckBoxViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.checkbox)
+        @Bind(R2.id.checkbox)
         CheckBox checkBox;
 
         CheckBoxModel checkBoxModel;

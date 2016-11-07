@@ -413,7 +413,7 @@ public class ShopNoteForm extends TActivity {
             case android.R.id.home:
                 onBackPressed();
                 return true;
-            case R.id.action_send:
+            case R2.id.action_send:
                 if (Validate() && !IsSaving) {
                     IsSaving = true;
                     mProgressDialog = new TkpdProgressDialog(ShopNoteForm.this, TkpdProgressDialog.NORMAL_PROGRESS);

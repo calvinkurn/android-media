@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.tkpd.customwidget.SquareImageView;
 import com.tokopedia.tkpd.instoped.model.InstagramMediaModel;
@@ -59,9 +60,9 @@ public class MediaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     public class VHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.img)
+        @Bind(R2.id.img)
         public SquareImageView img;
-        @Bind(R.id.overlay)
+        @Bind(R2.id.overlay)
         public View overlay;
 
         OnImageClickedListener listener;

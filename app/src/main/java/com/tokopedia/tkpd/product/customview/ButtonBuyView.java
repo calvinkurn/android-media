@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.addtocart.model.ProductCartPass;
 import com.tokopedia.tkpd.product.listener.ProductDetailView;
 import com.tokopedia.tkpd.product.model.productdetail.ProductDetailData;
@@ -21,7 +22,7 @@ import butterknife.Bind;
 public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView> {
     private static final String TAG = ButtonBuyView.class.getSimpleName();
 
-    @Bind(R.id.tv_buy)
+    @Bind(R2.id.tv_buy)
     TextView tvBuy;
 
     public ButtonBuyView(Context context) {

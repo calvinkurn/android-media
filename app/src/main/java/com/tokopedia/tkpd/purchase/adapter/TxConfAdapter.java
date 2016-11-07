@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.purchase.model.response.txconfirmation.TxConfData;
 
 import java.util.ArrayList;
@@ -97,15 +98,15 @@ public class TxConfAdapter extends ArrayAdapter<TxConfData> {
     }
 
     class ViewHolder {
-        @Bind(R.id.shop_name)
+        @Bind(R2.id.shop_name)
         TextView tvShopName;
-        @Bind(R.id.tx_date)
+        @Bind(R2.id.tx_date)
         TextView tvCreateDate;
-        @Bind(R.id.due_date)
+        @Bind(R2.id.due_date)
         TextView tvDueDate;
-        @Bind(R.id.total_invoice_order)
+        @Bind(R2.id.total_invoice_order)
         TextView tvTotalLeftAmount;
-        @Bind(R.id.main_view)
+        @Bind(R2.id.main_view)
         View holderMain;
 
         public ViewHolder(View view) {

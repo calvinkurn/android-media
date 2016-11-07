@@ -55,6 +55,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.tkpd.Cart;
 import com.tokopedia.tkpd.EditAddressCart;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.analytics.PaymentTracking;
 import com.tokopedia.tkpd.analytics.ScreenTracking;
 import com.tokopedia.tkpd.analytics.UnifyTracking;
@@ -1119,7 +1120,7 @@ public class FragmentCart extends Fragment implements CartInterfaces.FragmentCar
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
                             switch (item.getItemId()) {
-                                case R.id.action_cart_edit:
+                                case R2.id.action_cart_edit:
                                     if (!EditMode) {
                                         isItemHighLight = true;
                                         itemTemp.ListProduct.TriggerEdit();
@@ -1135,7 +1136,7 @@ public class FragmentCart extends Fragment implements CartInterfaces.FragmentCar
                                         itemTemp.MainView.setBackgroundResource(R.drawable.cards_highlight);
                                     }
                                     return true;
-                                case R.id.action_cart_delete:
+                                case R2.id.action_cart_delete:
                                     isItemHighLight = true;
                                     CancelEdit();
                                     AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(context);

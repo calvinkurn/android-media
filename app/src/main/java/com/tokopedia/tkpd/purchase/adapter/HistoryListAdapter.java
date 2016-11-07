@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.purchase.model.response.txlist.OrderHistory;
 
 import java.util.ArrayList;
@@ -62,13 +63,13 @@ public class HistoryListAdapter extends ArrayAdapter<OrderHistory> {
     }
 
     class ViewHolder {
-        @Bind(R.id.actor)
+        @Bind(R2.id.actor)
         TextView tvActor;
-        @Bind(R.id.date)
+        @Bind(R2.id.date)
         TextView tvDate;
-        @Bind(R.id.state)
+        @Bind(R2.id.state)
         TextView tvStatus;
-        @Bind(R.id.comment)
+        @Bind(R2.id.comment)
         TextView tvComment;
 
         public ViewHolder(View view) {

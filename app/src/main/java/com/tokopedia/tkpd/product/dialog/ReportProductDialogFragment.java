@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.google.gson.GsonBuilder;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.contactus.ContactUsConstant;
 import com.tokopedia.tkpd.contactus.activity.ContactUsActivity;
 import com.tokopedia.tkpd.product.activity.ProductInfoActivity;
@@ -54,29 +55,29 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
 
     ProductDetailData productDetailData;
 
-    @Bind(R.id.cancel_but)
+    @Bind(R2.id.cancel_but)
     TextView cancelButton;
-    @Bind(R.id.report)
+    @Bind(R2.id.report)
     TextView reportButton;
-    @Bind(R.id.report_desc)
+    @Bind(R2.id.report_desc)
     EditText reportDesc;
-    @Bind(R.id.wrapper)
+    @Bind(R2.id.wrapper)
     TextInputLayout wrapper;
-    @Bind(R.id.report_type)
+    @Bind(R2.id.report_type)
     Spinner reportTypeSpinner;
-    @Bind(R.id.line_spinner)
+    @Bind(R2.id.line_spinner)
     View lineSpinner;
-    @Bind(R.id.error_spinner)
+    @Bind(R2.id.error_spinner)
     TextView errorSpinner;
-    @Bind(R.id.dummy_spinner)
+    @Bind(R2.id.dummy_spinner)
     TextView dummySpinner;
-    @Bind(R.id.redirect_text)
+    @Bind(R2.id.redirect_text)
     TextView redirectText;
-    @Bind(R.id.scrollView)
+    @Bind(R2.id.scrollView)
     View mainLayout;
-    @Bind(R.id.action_layout)
+    @Bind(R2.id.action_layout)
     View actionLayout;
-    @Bind(R.id.progressBar)
+    @Bind(R2.id.progressBar)
     ProgressBar progressBar;
 
     List<ReportType> reportTypeList;
@@ -123,12 +124,12 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
         super.onResume();
     }
 
-    @OnClick(R.id.cancel_but)
+    @OnClick(R2.id.cancel_but)
     public void dismissDialog() {
         dismiss();
     }
 
-    @OnClick(R.id.report)
+    @OnClick(R2.id.report)
     public void report() {
         resetError();
         if (isValidForm()) {
@@ -147,7 +148,7 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
         }
     }
 
-    @OnItemSelected(R.id.report_type)
+    @OnItemSelected(R2.id.report_type)
     public void onItemSpinnerSelected() {
         errorSpinner.setVisibility(View.GONE);
         lineSpinner.setBackgroundColor(getResources().getColor(R.color.white));
@@ -204,7 +205,7 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
         };
     }
 
-    @OnClick(R.id.dummy_spinner)
+    @OnClick(R2.id.dummy_spinner)
     public void onDummySpinnerClicked() {
         dummySpinner.setVisibility(View.GONE);
         reportTypeSpinner.setVisibility(View.VISIBLE);

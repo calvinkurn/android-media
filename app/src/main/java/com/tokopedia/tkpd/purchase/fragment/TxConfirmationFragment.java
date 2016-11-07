@@ -19,6 +19,7 @@ import android.widget.ListView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.customadapter.LazyListView;
 import com.tokopedia.tkpd.network.NetworkErrorHelper;
@@ -49,7 +50,7 @@ public class TxConfirmationFragment extends BasePresenterFragment<TxConfirmation
         AdapterView.OnItemClickListener, TxListUIReceiver.ActionListener {
     public static final int REQUEST_CONFIRMATION_DETAIL = 0;
 
-    @Bind(R.id.order_list)
+    @Bind(R2.id.order_list)
     LazyListView lvTXConf;
 
     private View loadMoreView;
@@ -397,10 +398,10 @@ public class TxConfirmationFragment extends BasePresenterFragment<TxConfirmation
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_confirm:
+            case R2.id.action_confirm:
                 presenter.processMultiConfirmPayment(getActivity(), txConfDataSelected);
                 return true;
-            case R.id.action_cancel:
+            case R2.id.action_cancel:
                 presenter.processMultipleCancelPayment(getActivity(), txConfDataSelected);
                 return true;
         }

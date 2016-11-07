@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.talkview.fragment.TalkViewFragment;
 import com.tokopedia.tkpd.talkview.model.TalkBaseModel;
 import com.tokopedia.tkpd.util.LabelUtils;
@@ -34,25 +35,25 @@ public abstract class TalkViewAdapter extends RecyclerView.Adapter<RecyclerView.
     protected TokenHandler token;
 
     public static class TalkViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.user_ava)
+        @Bind(R2.id.user_ava)
         public ImageView userImageView;
-        @Bind(R.id.user_name)
+        @Bind(R2.id.user_name)
         public TextView userView;
-        @Bind(R.id.create_time)
+        @Bind(R2.id.create_time)
         public TextView timeView;
-        @Bind(R.id.message)
+        @Bind(R2.id.message)
         public TextView messageView;
-        @Bind(R.id.rank)
+        @Bind(R2.id.rank)
         public TextView rank;
-        @Bind(R.id.but_overflow_comment)
+        @Bind(R2.id.but_overflow_comment)
         public View buttonOverflow;
-        @Bind(R.id.reputation)
+        @Bind(R2.id.reputation)
         public LinearLayout reputation;
-        @Bind(R.id.reputation_user)
+        @Bind(R2.id.reputation_user)
         public View reputationUser;
-        @Bind(R.id.rep_icon)
+        @Bind(R2.id.rep_icon)
         public ImageView iconReputation;
-        @Bind(R.id.rep_rating)
+        @Bind(R2.id.rep_rating)
         public TextView textReputation;
 
 

@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.inboxmessage.fragment.SendMessageFragment;
 import com.tokopedia.tkpd.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.tkpd.product.activity.ProductInfoActivity;
@@ -35,27 +36,27 @@ import butterknife.Bind;
 public class ShopInfoView extends BaseView<ProductDetailData, ProductDetailView> {
     private static final String TAG = ShopInfoView.class.getSimpleName();
 
-    @Bind(R.id.iv_ava)
+    @Bind(R2.id.iv_ava)
     ImageView ivShopAva;
-    @Bind(R.id.iv_gold)
+    @Bind(R2.id.iv_gold)
     ImageView ivGoldShop;
-    @Bind(R.id.iv_lucky)
+    @Bind(R2.id.iv_lucky)
     ImageView ivLuckyShop;
-    @Bind(R.id.tv_name)
+    @Bind(R2.id.tv_name)
     TextView tvShopName;
-    @Bind(R.id.tv_location)
+    @Bind(R2.id.tv_location)
     TextView tvShopLoc;
-    @Bind(R.id.iv_fav)
+    @Bind(R2.id.iv_fav)
     ImageView ivBtnFav;
-    @Bind(R.id.iv_message)
+    @Bind(R2.id.iv_message)
     ImageView ivShopMessage;
-    @Bind(R.id.l_rating)
+    @Bind(R2.id.l_rating)
     LinearLayout llRating;
-    @Bind(R.id.l_medal)
+    @Bind(R2.id.l_medal)
     LinearLayout llReputationMedal;
-    @Bind(R.id.tv_reputation)
+    @Bind(R2.id.tv_reputation)
     TextView tvReputationPoint;
-    @Bind(R.id.l_other)
+    @Bind(R2.id.l_other)
     LinearLayout layoutOther;
     private boolean isShopFavorite = false;
 

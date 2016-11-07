@@ -39,6 +39,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.service.DownloadService;
 import com.tokopedia.tkpd.session.google.GoogleActivity;
 import com.tokopedia.tkpd.session.model.LoginModel;
@@ -79,30 +80,30 @@ public class LoginFragment extends Fragment implements LoginView {
     Context mContext;
 
     View rootView;
-    @Bind(R.id.email_auto)
+    @Bind(R2.id.email_auto)
     AutoCompleteTextView mEmailView;
-    //    @Bind(R.id.gplus_login)
+    //    @Bind(R2.id.gplus_login)
 //    TextView mGplusLogin;
-    @Bind(R.id.password)
+    @Bind(R2.id.password)
     PasswordView mPasswordView;
-    @Bind(R.id.login_form)
+    @Bind(R2.id.login_form)
     ScrollView mLoginFormView;
-    @Bind(R.id.login_status)
+    @Bind(R2.id.login_status)
     RelativeLayout mLoginStatusView;
-    @Bind(R.id.login_status_message)
+    @Bind(R2.id.login_status_message)
     TextView mLoginStatusMessageView;
-    @Bind(R.id.sign_in_button)
+    @Bind(R2.id.sign_in_button)
     TextView signInButton;
-    @Bind(R.id.register_button)
+    @Bind(R2.id.register_button)
     TextView registerButton;
-    @Bind(R.id.forgot_pass)
+    @Bind(R2.id.forgot_pass)
     TextView forgotPass;
-//    @Bind(R.id.facebook_login)
+//    @Bind(R2.id.facebook_login)
 //    TextView facebookLogin;
 
-    @Bind(R.id.linearLayout)
+    @Bind(R2.id.linearLayout)
     LinearLayout linearLayout;
-    @Bind(R.id.accounts_sign_in)
+    @Bind(R2.id.accounts_sign_in)
     TextView accountSignIn;
 
     ArrayAdapter<String> autoCompleteAdapter;
@@ -203,7 +204,7 @@ public class LoginFragment extends Fragment implements LoginView {
                 AppEventTracking.GTMCacheValue.GMAIL);
     }
 
-//    @OnClick(R.id.gplus_login)
+//    @OnClick(R2.id.gplus_login)
 //    public void onGoogleLogin() {
 //        ((GoogleActivity) getActivity()).onSignInClicked();
 //    }
@@ -334,7 +335,7 @@ public class LoginFragment extends Fragment implements LoginView {
     }
 
     //
-//    @OnClick(R.id.facebook_login)
+//    @OnClick(R2.id.facebook_login)
     public void onFacebookClick() {
         login.loginFacebook();
         storeCacheGTM(AppEventTracking.GTMCacheKey.LOGIN_TYPE,

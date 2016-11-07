@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.tkpd.library.utils.SimpleSpinnerAdapter;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.shipping.model.editshipping.City;
 import com.tokopedia.tkpd.shipping.model.editshipping.District;
 import com.tokopedia.tkpd.shipping.model.editshipping.ProvinceCitiesDistrict;
@@ -36,46 +37,46 @@ import butterknife.OnItemSelected;
  */
 public class ShippingLocationDialog extends DialogFragment implements EditShippingLocationDialogPresenter {
 
-    @Bind(R.id.edit_shipping_province_spinner)
+    @Bind(R2.id.edit_shipping_province_spinner)
     Spinner provinceSpinner;
 
-    @Bind(R.id.edit_shipping_city_spinner)
+    @Bind(R2.id.edit_shipping_city_spinner)
     Spinner citySpinner;
 
-    @Bind(R.id.edit_shipping_district_spinner)
+    @Bind(R2.id.edit_shipping_district_spinner)
     Spinner districtSpinner;
 
-    @Bind(R.id.edit_shipping_confirm_button)
+    @Bind(R2.id.edit_shipping_confirm_button)
     TextView confirmEditButton;
 
-    @Bind(R.id.edit_shipping_cancel_button)
+    @Bind(R2.id.edit_shipping_cancel_button)
     TextView cancelButton;
 
-    @Bind(R.id.edit_shipping_select_province_text)
+    @Bind(R2.id.edit_shipping_select_province_text)
     TextView selectProvinceText;
 
-    @Bind(R.id.edit_shipping_select_city_text)
+    @Bind(R2.id.edit_shipping_select_city_text)
     TextView selectCityText;
 
-    @Bind(R.id.edit_shipping_select_district_text)
+    @Bind(R2.id.edit_shipping_select_district_text)
     TextView selectDistrictText;
 
-    @OnItemSelected(R.id.edit_shipping_province_spinner)
+    @OnItemSelected(R2.id.edit_shipping_province_spinner)
     void onProvinceSpinnerChanged(int selectedProvince){
         showSpinnerByProvinceType(selectedProvince);
     }
 
-    @OnItemSelected(R.id.edit_shipping_city_spinner)
+    @OnItemSelected(R2.id.edit_shipping_city_spinner)
     void onCitySpinnerChanged(int selectedCity){
         populateDistrictSpinner(provinceSpinner.getSelectedItemPosition(), selectedCity);
     }
 
-    @OnClick(R.id.edit_shipping_confirm_button)
+    @OnClick(R2.id.edit_shipping_confirm_button)
     void onConfirmChangeButtonClicked(){
         setDataLocation();
     }
 
-    @OnClick(R.id.edit_shipping_cancel_button)
+    @OnClick(R2.id.edit_shipping_cancel_button)
     void onCancelButtonClicked(){
         dismiss();
     }

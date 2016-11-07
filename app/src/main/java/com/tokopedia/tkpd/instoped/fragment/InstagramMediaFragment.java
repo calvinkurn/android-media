@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.tkpd.customwidget.SwipeToRefresh;
 import com.tokopedia.tkpd.instoped.InstagramAuth;
@@ -54,13 +55,13 @@ public class InstagramMediaFragment extends Fragment implements InstagramMediaFr
     InstagramMedia instagramMedia;
     int LANDSCAPE = Configuration.ORIENTATION_LANDSCAPE;
 
-    @Bind(R.id.list)
+    @Bind(R2.id.list)
     public RecyclerView mediaRV;
 
-    @Bind(R.id.no_result)
+    @Bind(R2.id.no_result)
     public LinearLayout noResult;
 
-    @Bind(R.id.no_result_image)
+    @Bind(R2.id.no_result_image)
     public ImageView emptyImage;
 
     public Toolbar toolbar;

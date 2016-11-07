@@ -16,6 +16,7 @@ import android.widget.ScrollView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.V2BaseFragment;
 import com.tokopedia.tkpd.var.TkpdUrl;
 
@@ -25,10 +26,10 @@ import butterknife.ButterKnife;
 
 public class WebViewTopAdsFragment extends V2BaseFragment {
 
-    @Bind(R.id.scroll_view)
+    @Bind(R2.id.scroll_view)
     ScrollView mainView;
 
-    @Bind(R.id.webview)
+    @Bind(R2.id.webview)
     WebView webView;
 
     public static final String SOURCE_EXTRA = "SOURCE";

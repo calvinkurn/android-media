@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.discovery.activity.BrowseProductActivity;
 import com.tokopedia.tkpd.discovery.presenter.history.SearchHistory;
 import com.tokopedia.tkpd.discovery.presenter.history.SearchHistoryImpl;
@@ -36,7 +37,7 @@ public class SearchHistoryFragment extends BaseFragment<SearchHistory> implement
         return instance;
     }
 
-    @Bind(R.id.list)
+    @Bind(R2.id.list)
     RecyclerView recyclerView;
 
     LinearLayoutManager linearLayoutManager;

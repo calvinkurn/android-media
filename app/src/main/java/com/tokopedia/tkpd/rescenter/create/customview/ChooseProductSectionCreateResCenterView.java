@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.rescenter.create.customadapter.ProductAdapter;
 import com.tokopedia.tkpd.rescenter.create.listener.ChooseTroubleListener;
 import com.tokopedia.tkpd.rescenter.create.model.passdata.PassProductTrouble;
@@ -22,7 +23,7 @@ import butterknife.Bind;
  */
 public class ChooseProductSectionCreateResCenterView extends BaseView<CreateResCenterFormData, ChooseTroubleListener> {
 
-    @Bind(R.id.product_recyclerview)
+    @Bind(R2.id.product_recyclerview)
     RecyclerView productRecyclerView;
 
     private ProductAdapter adapter;

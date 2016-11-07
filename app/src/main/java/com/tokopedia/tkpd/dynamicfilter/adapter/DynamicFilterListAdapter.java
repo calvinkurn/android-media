@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.discovery.adapter.ProductAdapter;
 import com.tokopedia.tkpd.dynamicfilter.model.DynamicFilterModel;
 import com.tokopedia.tkpd.dynamicfilter.presenter.DynamicFilterView;
@@ -150,7 +151,7 @@ public class DynamicFilterListAdapter extends ProductAdapter {
 
     public static class DynamicViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.dynamic_filter_list_text)
+        @Bind(R2.id.dynamic_filter_list_text)
         TextView dynamicFilterListText;
 
         DynamicListModel dynamicListModel;
@@ -201,7 +202,7 @@ public class DynamicFilterListAdapter extends ProductAdapter {
             return newDrawable;
         }
 
-        @OnClick(R.id.dynamic_filter_list_text)
+        @OnClick(R2.id.dynamic_filter_list_text)
         public void dynamicFilterClick() {
             Context context = itemView.getContext();
             if (context != null && context instanceof DynamicFilterView) {

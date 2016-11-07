@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import android.widget.EditText;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.product.customview.BaseView;
 import com.tokopedia.tkpd.rescenter.edit.listener.BuyerEditSolutionListener;
 
@@ -17,7 +18,7 @@ import butterknife.Bind;
 public class MessageView extends BaseView<Object, BuyerEditSolutionListener> {
 
 
-    @Bind(R.id.message_box)
+    @Bind(R2.id.message_box)
     EditText messageBox;
 
     public MessageView(Context context) {

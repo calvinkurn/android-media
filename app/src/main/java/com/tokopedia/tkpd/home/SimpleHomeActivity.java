@@ -15,6 +15,7 @@ import android.view.WindowManager;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.analytics.AppEventTracking;
 import com.tokopedia.tkpd.app.TActivity;
 import com.tokopedia.tkpd.home.fragment.ProductHistoryFragment;
@@ -33,7 +34,7 @@ public class SimpleHomeActivity extends TActivity implements SimpleHomeView{
     public static final int WISHLIST_FRAGMENT = 1;
     public static final int PRODUCT_HISTORY_FRAGMENT = 2;
 
-    @Bind(R.id.simple_home_toolbar)
+    @Bind(R2.id.simple_home_toolbar)
     Toolbar toolbar;
 
     SimpleHome simpleHome;
@@ -170,14 +171,14 @@ public class SimpleHomeActivity extends TActivity implements SimpleHomeView{
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.home:
+            case R2.id.home:
                 Log.d(TAG, messageTAG + " R.id.home !!!");
                 return true;
             case android.R.id.home:
                 Log.d(TAG, messageTAG+" android.R.id.home !!!");
                 getSupportFragmentManager().popBackStack();
                 return true;
-            case R.id.action_cart:
+            case R2.id.action_cart:
                 return TActivity.onCartOptionSelected(this);
         }
 

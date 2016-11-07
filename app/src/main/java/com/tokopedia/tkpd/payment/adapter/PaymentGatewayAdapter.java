@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.cart.model.GatewayList;
 
 import java.util.List;
@@ -53,11 +54,11 @@ public class PaymentGatewayAdapter extends ArrayAdapter<GatewayList> {
 
     static class ViewHolder {
 
-        @Bind(R.id.img)
+        @Bind(R2.id.img)
         ImageView ivLogo;
-        @Bind(R.id.name)
+        @Bind(R2.id.name)
         TextView tvName;
-        @Bind(R.id.payment_fee)
+        @Bind(R2.id.payment_fee)
         TextView tvFee;
 
         public ViewHolder(View view) {

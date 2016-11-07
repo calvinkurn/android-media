@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.tkpd.discovery.interfaces.FetchNetwork;
 import com.tokopedia.tkpd.discovery.model.BrowseCatalogModel;
@@ -42,7 +43,7 @@ import butterknife.Bind;
 public class CatalogFragment extends BaseFragment<Catalog> implements CatalogView, FetchNetwork {
     public static final int IDFRAGMENT = 123_348;
 
-    @Bind(R.id.list_catalog)
+    @Bind(R2.id.list_catalog)
     RecyclerView list_catalog;
 
     private List<RecyclerViewItem> browseCatalogModelList = new ArrayList<>();
@@ -139,7 +140,7 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
             Snackbar snackbar = Snackbar.make(parentView, CommonUtils.generateMessageError(getActivity(), (String) data[0]), Snackbar.LENGTH_INDEFINITE);
 
             View snackbarView = snackbar.getView();
-            TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+            TextView textView = (TextView) snackbarView.findViewById(R.id.snackbar_text);
             textView.setTextColor(Color.WHITE);
 
             View.OnClickListener listener = new View.OnClickListener() {

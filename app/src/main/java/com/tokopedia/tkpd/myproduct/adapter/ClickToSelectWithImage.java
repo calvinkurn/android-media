@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.myproduct.fragment.ImageChooserDialog;
 import com.tokopedia.tkpd.myproduct.model.CatalogDataModel;
 
@@ -28,10 +29,10 @@ public class ClickToSelectWithImage extends FrameLayout {
     private static final String NO_CATALOG_OPTION = "Tidak menggunakan katalog";
     Context context;
 
-    @Bind(R.id.image_selected)
+    @Bind(R2.id.image_selected)
     ImageView imageSelected;
 
-    @Bind(R.id.desc_selected)
+    @Bind(R2.id.desc_selected)
     TextView descSelected;
 
     ImageChooserDialog imageChooserDialog;

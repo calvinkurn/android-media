@@ -124,7 +124,7 @@ public class EtalaseShopEditor extends TActivity {
         // Pass the event to ActionBarDrawerToggle, if it returns
         // true, then it has handled the app icon touch event
         switch (item.getItemId()) {
-            case R.id.action_add_new:
+            case R2.id.action_add_new:
                 ShowAddNewDialog();
                 return true;
             case android.R.id.home:

@@ -14,6 +14,7 @@ import android.view.Window;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.network.NetworkErrorHelper;
 import com.tokopedia.tkpd.peoplefave.customadapter.PeopleFavoritedShopAdapter;
@@ -42,7 +43,7 @@ public class PeopleFavoritedShopFragment extends BasePresenterFragment<PeopleFav
     private static final String ARGS_PARAM_KEY_STORED_DATA = "param_key_stored_data";
     private String userID;
 
-    @Bind(R.id.listview_favoritee)
+    @Bind(R2.id.listview_favoritee)
     RecyclerView recyclerView;
 
     private boolean connectionStatus;

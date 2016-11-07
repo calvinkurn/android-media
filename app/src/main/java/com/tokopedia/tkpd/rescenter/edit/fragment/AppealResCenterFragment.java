@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.database.model.AttachmentResCenterDB;
 import com.tokopedia.tkpd.network.NetworkErrorHelper;
@@ -63,17 +64,17 @@ public class AppealResCenterFragment extends BasePresenterFragment<AppealResCent
 
     private ActionParameterPassData passData;
 
-    @Bind(R.id.invoice)
+    @Bind(R2.id.invoice)
     TextView invoice;
-    @Bind(R.id.shop_name)
+    @Bind(R2.id.shop_name)
     TextView shopName;
-    @Bind(R.id.include_loading)
+    @Bind(R2.id.include_loading)
     ProgressBar loading;
-    @Bind(R.id.main_view)
+    @Bind(R2.id.main_view)
     View mainView;
-    @Bind(R.id.view_edit_solution_section)
+    @Bind(R2.id.view_edit_solution_section)
     AppealSolutionView solutionView;
-    @Bind(R.id.view_attachment_section)
+    @Bind(R2.id.view_attachment_section)
     AppealAttachmentView attachmenSectionView;
 
     private List<AttachmentResCenterDB> attachmentData;
@@ -266,13 +267,13 @@ public class AppealResCenterFragment extends BasePresenterFragment<AppealResCent
         invoice.setText(spannableString);
     }
 
-    @OnClick(R.id.action_choose_solution)
+    @OnClick(R2.id.action_choose_solution)
     public void onButtonNextClick() {
         KeyboardHandler.DropKeyboard(getActivity(), getView());
         presenter.setOnButtonNextClick(getActivity());
     }
 
-    @OnClick(R.id.action_abort)
+    @OnClick(R2.id.action_abort)
     public void onButtonAbortClick() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(R.string.dialog_discard_changes)

@@ -16,6 +16,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.app.TActivity;
 import com.tokopedia.tkpd.fragment.EmailVerificationDialog;
@@ -62,15 +63,15 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
     private static final String IMAGE_PATH_DATA = "IMAGE_PATH_DATA";
     private static final String PROFILE_DATA = "PROFILE_DATA";
 
-    @Bind(R.id.layout_main)
+    @Bind(R2.id.layout_main)
     View layoutMain;
-    @Bind(R.id.layout_manage_people_profile_avatar_view)
+    @Bind(R2.id.layout_manage_people_profile_avatar_view)
     AvatarView avatarSection;
-    @Bind(R.id.layout_manage_people_profile_detail_view)
+    @Bind(R2.id.layout_manage_people_profile_detail_view)
     DetailView detailSection;
-    @Bind(R.id.layout_manage_people_profile_contact_view)
+    @Bind(R2.id.layout_manage_people_profile_contact_view)
     ContactView contactSection;
-    @Bind(R.id.save_button)
+    @Bind(R2.id.save_button)
     View saveButton;
 
     private ManagePeopleProfileView listener;

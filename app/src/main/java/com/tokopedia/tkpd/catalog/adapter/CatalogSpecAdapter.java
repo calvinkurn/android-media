@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.catalog.listener.ICatalogSpecSectionChanged;
 import com.tokopedia.tkpd.catalog.model.SpecChild;
 
@@ -43,11 +44,10 @@ class CatalogSpecAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(viewType, parent, false);
-        switch (viewType) {
-            case TYPE_VIEW_SPEC_ITEM:
-                return new SpecChildHolder(view);
-            case TYPE_VIEW_SPEC_SECTION:
-                return new SectionHolder(view);
+        if (viewType == TYPE_VIEW_SPEC_ITEM) {
+            return new SpecChildHolder(view);
+        } else if (viewType == TYPE_VIEW_SPEC_SECTION) {
+            return new SectionHolder(view);
         }
         return null;
     }
@@ -101,9 +101,9 @@ class CatalogSpecAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     static class SpecChildHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.tv_label)
+        @Bind(R2.id.tv_label)
         TextView tvLabel;
-        @Bind(R.id.tv_value)
+        @Bind(R2.id.tv_value)
         TextView tvValue;
 
         SpecChildHolder(View itemView) {
@@ -114,9 +114,9 @@ class CatalogSpecAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     static class SectionHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.tv_name)
+        @Bind(R2.id.tv_name)
         TextView tvName;
-        @Bind(R.id.toggle_button_section)
+        @Bind(R2.id.toggle_button_section)
         ToggleButton toggleButton;
 
         SectionHolder(View itemView) {

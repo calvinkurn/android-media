@@ -31,9 +31,9 @@ import butterknife.ButterKnife;
 @SuppressLint("ValidFragment")
 public class ManageGeneral extends TkpdActivity implements NotificationListener{
 
-    @Bind(R.id.pager)
+    @Bind(R2.id.pager)
     ViewPager mViewPager;
-    @Bind(R.id.indicator)
+    @Bind(R2.id.indicator)
     TabLayout indicator;
 
     @Override

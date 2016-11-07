@@ -30,6 +30,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.tkpd.PreviewProductImage;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.TActivity;
 import com.tokopedia.tkpd.inboxreputation.adapter.ImageUploadAdapter;
 import com.tokopedia.tkpd.inboxreputation.interactor.ActReputationRetrofitInteractor;
@@ -628,10 +629,10 @@ public class ReputationViewShop extends TActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.action_report:
+                    case R2.id.action_report:
                         showDialogReport();
                         return true;
-                    case R.id.action_delete:
+                    case R2.id.action_delete:
                         deleteComment();
                         return true;
                     default:

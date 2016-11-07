@@ -35,6 +35,7 @@ import com.tkpd.library.utils.ListViewHelper;
 import com.tkpd.library.utils.SimpleSpinnerAdapter;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.ShippingConfirmationDetail;
 import com.tokopedia.tkpd.analytics.TrackingUtils;
 import com.tokopedia.tkpd.analytics.UnifyTracking;
@@ -130,61 +131,61 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     private CompositeSubscription _subscriptions = new CompositeSubscription();
 
 
-    @Bind(R.id.buyer_name)
+    @Bind(R2.id.buyer_name)
     TextView BuyerName;
-    @Bind(R.id.invoice_text)
+    @Bind(R2.id.invoice_text)
     TextView Invoice;
-    @Bind(R.id.courier)
+    @Bind(R2.id.courier)
     TextView Courier;
-    @Bind(R.id.total_item)
+    @Bind(R2.id.total_item)
     TextView TotalItem;
-    @Bind(R.id.value)
+    @Bind(R2.id.value)
     TextView Value;
-    @Bind(R.id.receiver_name)
+    @Bind(R2.id.receiver_name)
     TextView ReceiverName;
-    @Bind(R.id.destination)
+    @Bind(R2.id.destination)
     TextView Destination;
-    @Bind(R.id.error_message)
+    @Bind(R2.id.error_message)
     TextView ErrorMessage;
-    @Bind(R.id.scan)
+    @Bind(R2.id.scan)
     ImageView ScanBarcode;
-    @Bind(R.id.confirm_button)
+    @Bind(R2.id.confirm_button)
     TextView ConfirmButton;
-    @Bind(R.id.detail_button)
+    @Bind(R2.id.detail_button)
     TextView DetailButton;
-    @Bind(R.id.ship_ref_number)
+    @Bind(R2.id.ship_ref_number)
     EditText ReferenceNumber;
-    @Bind(R.id.cancel_button)
+    @Bind(R2.id.cancel_button)
     TextView CancelButton;
-    @Bind(R.id.sender_name)
+    @Bind(R2.id.sender_name)
     TextView SenderName;
-    @Bind(R.id.sender_phone)
+    @Bind(R2.id.sender_phone)
     TextView SenderPhone;
-    @Bind(R.id.error_spinner)
+    @Bind(R2.id.error_spinner)
     TextView errorSpinner;
-    @Bind(R.id.checkBoxSwitchCourier)
+    @Bind(R2.id.checkBoxSwitchCourier)
     CheckBox SwitchCourier;
-    @Bind(R.id.spinner_kurir)
+    @Bind(R2.id.spinner_kurir)
     Spinner SpinnerAgency;
-    @Bind(R.id.spinner_type)
+    @Bind(R2.id.spinner_type)
     Spinner SpinnerService;
-    @Bind(R.id.sender_form)
+    @Bind(R2.id.sender_form)
     View SenderForm;
-    @Bind(R.id.product_list)
+    @Bind(R2.id.product_list)
     ListView ProductListView;
-    @Bind(R.id.layout)
+    @Bind(R2.id.layout)
     LinearLayout ShippingLayout;
-    @Bind(R.id.scroll_view)
+    @Bind(R2.id.scroll_view)
     ScrollView mainScroll;
-    @Bind(R.id.loadingSpinner)
+    @Bind(R2.id.loadingSpinner)
     ProgressBar editFormProgress;
-    @Bind(R.id.layout_destination_default)
+    @Bind(R2.id.layout_destination_default)
     public View viewDefaultDestination;
-    @Bind(R.id.layout_pickup_instant_shipping_courier)
+    @Bind(R2.id.layout_pickup_instant_shipping_courier)
     public View viewPickupLocationCourier;
-    @Bind(R.id.pickup_detail_location)
+    @Bind(R2.id.pickup_detail_location)
     public TextView pickupLocationDetail;
-    @Bind(R.id.destination_detail_location)
+    @Bind(R2.id.destination_detail_location)
     public TextView deliveryLocationDetail;
 
     public static class ShippingServices {
@@ -350,19 +351,19 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
         ListViewHelper.getListViewSize(ProductListView);
     }
 
-    @OnClick(R.id.buyer_name)
+    @OnClick(R2.id.buyer_name)
     public void onBuyerName() {
         startActivity(
                 PeopleInfoNoDrawerActivity.createInstance(getActivity(), userId)
         );
     }
 
-    @OnClick(R.id.detail_button)
+    @OnClick(R2.id.detail_button)
     public void onDetailClick() {
         startActivity(ShippingConfirmationDetail.createInstance(getActivity(), orderShippingList, permission, userId, invoiceUrl, invoicePdf));
     }
 
-    @OnItemSelected(R.id.spinner_kurir)
+    @OnItemSelected(R2.id.spinner_kurir)
     public void onAgencySelect(int position) {
         if (position == 0) {
             SpinnerService.setVisibility(View.INVISIBLE);
@@ -371,7 +372,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
         }
     }
 
-    @OnCheckedChanged(R.id.checkBoxSwitchCourier)
+    @OnCheckedChanged(R2.id.checkBoxSwitchCourier)
     public void onSwitchCourierChecked(CompoundButton buttonView, boolean isChecked) {
         if (isChecked) {
             ShippingLayout.setVisibility(View.VISIBLE);
@@ -383,7 +384,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
         }
     }
 
-    @OnClick(R.id.confirm_button)
+    @OnClick(R2.id.confirm_button)
     public void onConfirmClick() {
         if (checkConfirmationError()) {
             confirmShipping();
@@ -391,12 +392,12 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
         }
     }
 
-    @OnClick(R.id.invoice_text)
+    @OnClick(R2.id.invoice_text)
     public void onInvoiceClick() {
         AppUtils.InvoiceDialog(getActivity(), invoiceUrl, invoicePdf, Invoice.getText().toString());
     }
 
-    @OnClick(R.id.scan)
+    @OnClick(R2.id.scan)
     public void scanBarCode() {
         FragmentShopShippingDetailV2PermissionsDispatcher.onScanBarcodeWithCheck(FragmentShopShippingDetailV2.this);
     }
@@ -406,7 +407,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
         startActivityForResult(CommonUtils.requestBarcodeScanner(), 0);
     }
 
-    @OnClick(R.id.cancel_button)
+    @OnClick(R2.id.cancel_button)
     public void cancelDialog() {
         createCancelDialog();
     }

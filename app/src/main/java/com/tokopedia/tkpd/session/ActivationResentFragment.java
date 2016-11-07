@@ -21,6 +21,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.analytics.ScreenTracking;
 import com.tokopedia.tkpd.analytics.UnifyTracking;
 import com.tokopedia.tkpd.network.apiservices.accounts.AccountsService;
@@ -63,9 +64,9 @@ public class ActivationResentFragment extends Fragment implements BaseView {
             "\n" +
             "Jika email tidak ditemukan atau belum menerima email aktivasi silakan klik tombol di bawah ini:";
 
-    @Bind(R.id.email)
+    @Bind(R2.id.email)
     TextView email;
-    @Bind(R.id.resend_button)
+    @Bind(R2.id.resend_button)
     TextView resendButton;
 
     CompositeSubscription compositeSubscription;
@@ -221,7 +222,7 @@ public class ActivationResentFragment extends Fragment implements BaseView {
         outState.putString(EMAIL_KEY, email.getText().toString());
     }
 
-    @OnClick(R.id.resend_button)
+    @OnClick(R2.id.resend_button)
     public void resendActivation() {
         KeyboardHandler.DropKeyboard(getActivity(), email);
         mProgressDialog = new TkpdProgressDialog(getActivity(),

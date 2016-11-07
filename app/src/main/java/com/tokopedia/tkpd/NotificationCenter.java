@@ -326,9 +326,9 @@ public class NotificationCenter extends MultiPaneActivity implements Notificatio
 //	      return true;
 //	    }else{
         switch (item.getItemId()) {
-            case R.id.action_search:
+            case R2.id.action_search:
                 return onSearchOptionSelected();
-            case R.id.action_cart:
+            case R2.id.action_cart:
                 if (!SessionHandler.isV4Login(getBaseContext())) {
                     Intent intent = new Intent(this, Login.class);
                     intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);

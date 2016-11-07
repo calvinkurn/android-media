@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.product.activity.ProductInfoActivity;
 import com.tokopedia.tkpd.util.DataBindAdapter;
 import com.tokopedia.tkpd.util.DataBinder;
@@ -29,19 +30,19 @@ public class SkippedReputationDataBinder extends DataBinder<SkippedReputationDat
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.product_avatar)
+        @Bind(R2.id.product_avatar)
         ImageView productAvatar;
 
-        @Bind(R.id.product_title)
+        @Bind(R2.id.product_title)
         TextView productName;
 
-        @Bind(R.id.product_review_date)
+        @Bind(R2.id.product_review_date)
         TextView productReviewDate;
 
-        @Bind(R.id.btn_overflow)
+        @Bind(R2.id.btn_overflow)
         ImageView overflow;
 
-        @Bind(R.id.skipped_info)
+        @Bind(R2.id.skipped_info)
         TextView skippedInfo;
 
         public ViewHolder(View itemView) {

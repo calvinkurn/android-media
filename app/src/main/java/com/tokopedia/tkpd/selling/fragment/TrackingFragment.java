@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.selling.adapter.TrackingHistoryAdapter;
 import com.tokopedia.tkpd.selling.listener.TrackingFragmentView;
@@ -31,46 +32,46 @@ import butterknife.Bind;
 
 public class TrackingFragment  extends BasePresenterFragment<TrackingFragmentPresenter> implements TrackingFragmentView {
 
-    @Bind(R.id.mainView)
+    @Bind(R2.id.mainView)
     View mainView;
 
-    @Bind(R.id.loadingStatus)
+    @Bind(R2.id.loadingStatus)
     ProgressBar loadingStatus;
 
     //HEADER
-    @Bind(R.id.tracking_status)
+    @Bind(R2.id.tracking_status)
     TextView sendingStatus;
-    @Bind(R.id.view_status)
+    @Bind(R2.id.view_status)
     View statusView;
 
     //VIEW1
-    @Bind(R.id.ref_num)
+    @Bind(R2.id.ref_num)
     TextView refNumber;
-    @Bind(R.id.receiver_name_non_jne)
+    @Bind(R2.id.receiver_name_non_jne)
     TextView receiverName;
-    @Bind(R.id.date)
+    @Bind(R2.id.date)
     TextView sendingDate;
-    @Bind(R.id.tracking_code)
+    @Bind(R2.id.tracking_code)
     TextView serviceCode;
-    @Bind(R.id.view_receiver_non_jne)
+    @Bind(R2.id.view_receiver_non_jne)
     View viewReceiver;
-    @Bind(R.id.view_receiver_jne)
+    @Bind(R2.id.view_receiver_jne)
     View viewReceiverJNE;
 
     //VIEW DETAIL
-    @Bind(R.id.view_footer_tracking)
+    @Bind(R2.id.view_footer_tracking)
     View footerTracking;
-    @Bind(R.id.view_detail_shipping)
+    @Bind(R2.id.view_detail_shipping)
     View detailShipping;
-    @Bind(R.id.sender_name)
+    @Bind(R2.id.sender_name)
     TextView sellerName;
-    @Bind(R.id.sender_city)
+    @Bind(R2.id.sender_city)
     TextView sellerCity;
-    @Bind(R.id.receiver_name)
+    @Bind(R2.id.receiver_name)
     TextView buyerName;
-    @Bind(R.id.receiver_city)
+    @Bind(R2.id.receiver_city)
     TextView buyerCity;
-    @Bind(R.id.tracking_result)
+    @Bind(R2.id.tracking_result)
     RecyclerView addressRV;
 
 

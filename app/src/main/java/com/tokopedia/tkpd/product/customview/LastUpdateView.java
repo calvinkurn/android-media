@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.product.listener.ProductDetailView;
 import com.tokopedia.tkpd.product.model.productdetail.ProductDetailData;
 
@@ -18,7 +19,7 @@ import butterknife.Bind;
 public class LastUpdateView extends BaseView<ProductDetailData, ProductDetailView> {
     private static final String TAG = LastUpdateView.class.getSimpleName();
 
-    @Bind(R.id.tv_last_update)
+    @Bind(R2.id.tv_last_update)
     TextView tvLastUpdate;
 
     public LastUpdateView(Context context) {

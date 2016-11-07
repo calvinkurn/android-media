@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.home.BannerWebView;
 import com.tokopedia.tkpd.home.model.Ticker;
 import com.tokopedia.tkpd.util.SelectableSpannedMovementMethod;
@@ -44,13 +45,13 @@ public class TickerAnnouncementAdapter extends RecyclerView.Adapter<TickerAnnoun
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.announcement_ticker_container)
+        @Bind(R2.id.announcement_ticker_container)
         View announcementContainer;
 
-        @Bind(R.id.ticker_title)
+        @Bind(R2.id.ticker_title)
         TextView title;
 
-        @Bind(R.id.ticker_message)
+        @Bind(R2.id.ticker_message)
         TextView message;
 
 

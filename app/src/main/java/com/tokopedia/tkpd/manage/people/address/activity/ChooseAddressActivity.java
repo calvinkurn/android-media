@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterActivity;
 import com.tokopedia.tkpd.manage.people.address.ManageAddressConstant;
 import com.tokopedia.tkpd.manage.people.address.fragment.ChooseAddressFragment;
@@ -107,7 +108,7 @@ public class ChooseAddressActivity extends BasePresenterActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_add_address:
+            case R2.id.action_add_address:
                 Intent intent = new Intent(getBaseContext(), AddAddressActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putBoolean("is_edit", false);

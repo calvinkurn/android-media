@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.product.listener.ProductDetailView;
 import com.tokopedia.tkpd.product.model.productdetail.ProductDetailData;
 
@@ -21,13 +22,13 @@ import butterknife.Bind;
 public class RatingView extends BaseView<ProductDetailData, ProductDetailView> {
     private static final String TAG = RatingView.class.getSimpleName();
 
-    @Bind(R.id.tv_quality)
+    @Bind(R2.id.tv_quality)
     TextView tvQualityRate;
-    @Bind(R.id.tv_accuracy)
+    @Bind(R2.id.tv_accuracy)
     TextView tvAccuracyRate;
-    @Bind(R.id.iv_quality)
+    @Bind(R2.id.iv_quality)
     ImageView ivQualityRate;
-    @Bind(R.id.iv_accuracy)
+    @Bind(R2.id.iv_accuracy)
     ImageView ivAccuracyRate;
 
     public RatingView(Context context) {

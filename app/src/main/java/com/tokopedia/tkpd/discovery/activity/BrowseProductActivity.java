@@ -31,6 +31,7 @@ import com.google.gson.Gson;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.analytics.AppEventTracking;
 import com.tokopedia.tkpd.analytics.TrackingUtils;
 import com.tokopedia.tkpd.analytics.UnifyTracking;
@@ -94,9 +95,9 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
 
     private static final String TAG = BrowseProductActivity.class.getSimpleName();
     private static final String KEY_GTM = "GTMFilterData";
-    @Bind(R.id.container)
+    @Bind(R2.id.container)
     FrameLayout container;
-    @Bind(R.id.progressBar)
+    @Bind(R2.id.progressBar)
     ProgressBar progressBar;
     private SearchView searchView;
     private String searchQuery;
@@ -137,11 +138,11 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     private Fragment mLastFragment;
     private int keepActivitySettings;
     private boolean firstTime = true;
-    @Bind(R.id.root)
+    @Bind(R2.id.root)
     CoordinatorLayout coordinatorLayout;
-    @Bind(R.id.toolbar)
+    @Bind(R2.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.bottom_navigation)
+    @Bind(R2.id.bottom_navigation)
     AHBottomNavigation bottomNavigation;
     BrowseProductActivityModel browseProductActivityModel;
     DiscoveryInteractor discoveryInteractor;
@@ -373,7 +374,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
             case android.R.id.home:
                 finish();
                 break;
-            case R.id.action_search:
+            case R2.id.action_search:
                 return false;
         }
         return super.onOptionsItemSelected(item);

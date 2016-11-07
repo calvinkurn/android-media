@@ -18,6 +18,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.myproduct.presenter.ImageGalleryImpl;
 import com.tokopedia.tkpd.myproduct.utils.VerificationUtils;
 import com.tokopedia.tkpd.selling.model.orderShipping.OrderProduct;
@@ -35,17 +36,17 @@ import butterknife.ButterKnife;
 public class EditPriceDialog extends DialogFragment {
 
 
-    @Bind(R.id.title)
+    @Bind(R2.id.title)
     TextView titleTxt;
-    @Bind(R.id.checkbox)
+    @Bind(R2.id.checkbox)
     CheckBox checkBox;
-    @Bind(R.id.priceSpiner)
+    @Bind(R2.id.priceSpiner)
     Spinner priceSpiner;
-    @Bind(R.id.weightSpiner)
+    @Bind(R2.id.weightSpiner)
     Spinner weightSpiner;
-    @Bind(R.id.price)
+    @Bind(R2.id.price)
     EditText price;
-    @Bind(R.id.weight)
+    @Bind(R2.id.weight)
     EditText weight;
 
     public static final String TITLE = "title";

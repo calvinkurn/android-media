@@ -36,6 +36,7 @@ import com.tokopedia.tkpd.ForceUpdate;
 import com.tokopedia.tkpd.MaintenancePage;
 import com.tokopedia.tkpd.ManageGeneral;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.SplashScreen;
 import com.tokopedia.tkpd.analytics.ScreenTracking;
 import com.tokopedia.tkpd.analytics.nishikino.model.Authenticated;
@@ -337,11 +338,11 @@ public class TActivity extends AppCompatActivity implements SessionHandler.onLog
         switch (item.getItemId()) {
             case android.R.id.home:
                 return onHomeOptionSelected();
-            case R.id.action_settings:
+            case R2.id.action_settings:
                 return onSettingsOptionSelected();
-            case R.id.action_search:
+            case R2.id.action_search:
                 return onSearchOptionSelected();
-            case R.id.action_cart:
+            case R2.id.action_cart:
                 return onCartOptionSelected();
         }
         return super.onOptionsItemSelected(item);

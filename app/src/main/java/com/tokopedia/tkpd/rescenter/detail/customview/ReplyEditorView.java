@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.database.model.AttachmentResCenterDB;
 import com.tokopedia.tkpd.rescenter.create.customview.BaseView;
 import com.tokopedia.tkpd.rescenter.detail.customadapter.AttachmentAdapter;
@@ -26,13 +27,13 @@ import butterknife.Bind;
  */
 public class ReplyEditorView extends BaseView<DetailResCenterData.Detail, DetailResCenterView> {
 
-    @Bind(R.id.listview_attachment)
+    @Bind(R2.id.listview_attachment)
     RecyclerView attachmentRecyclerView;
-    @Bind(R.id.attach_but)
+    @Bind(R2.id.attach_but)
     View actionAttachment;
-    @Bind(R.id.send_but)
+    @Bind(R2.id.send_but)
     View actionSend;
-    @Bind(R.id.new_comment)
+    @Bind(R2.id.new_comment)
     EditText boxComment;
 
     private List<AttachmentResCenterDB> attachmentData;

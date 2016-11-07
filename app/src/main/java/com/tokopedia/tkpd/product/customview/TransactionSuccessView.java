@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.product.listener.ProductDetailView;
 import com.tokopedia.tkpd.product.model.productdetail.ProductDetailData;
 
@@ -17,7 +18,7 @@ import butterknife.Bind;
  */
 public class TransactionSuccessView extends BaseView<ProductDetailData, ProductDetailView> {
 
-    @Bind(R.id.tv_success)
+    @Bind(R2.id.tv_success)
     TextView tvSuccessRate;
 
     public TransactionSuccessView(Context context) {

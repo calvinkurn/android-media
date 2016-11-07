@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.OneOnClick;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.purchase.model.response.txverification.TxVerData;
 
 import java.text.MessageFormat;
@@ -99,10 +100,10 @@ public class TxVerAdapter extends ArrayAdapter<TxVerData> {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.action_edit:
+                    case R2.id.action_edit:
                         actionListener.actionEditPayment(data);
                         return true;
-                    case R.id.action_upload:
+                    case R2.id.action_upload:
                         actionListener.actionUploadProof(data);
                         return true;
                     default:
@@ -143,27 +144,27 @@ public class TxVerAdapter extends ArrayAdapter<TxVerData> {
     }
 
     class ViewHolder {
-        @Bind(R.id.date)
+        @Bind(R2.id.date)
         TextView tvPaymentDate;
-        @Bind(R.id.user_account)
+        @Bind(R2.id.user_account)
         TextView tvUserAccountName;
-        @Bind(R.id.system_account)
+        @Bind(R2.id.system_account)
         TextView tvSysAccountNumber;
-        @Bind(R.id.total_invoice)
+        @Bind(R2.id.total_invoice)
         TextView tvPayementAmount;
-        @Bind(R.id.payment_ref)
+        @Bind(R2.id.payment_ref)
         TextView tvPaymentRefNumber;
-        @Bind(R.id.user_bank_name)
+        @Bind(R2.id.user_bank_name)
         TextView tvUserAccountBankName;
-        @Bind(R.id.system_bank_name)
+        @Bind(R2.id.system_bank_name)
         TextView tvSysAccountBankName;
-        @Bind(R.id.payment_method_name)
+        @Bind(R2.id.payment_method_name)
         TextView tvSpecialPaymentMethod;
-        @Bind(R.id.but_overflow)
+        @Bind(R2.id.but_overflow)
         View btnOverflow;
-        @Bind(R.id.normal_payment_info)
+        @Bind(R2.id.normal_payment_info)
         LinearLayout holderNormalPayment;
-        @Bind(R.id.unchangeable_payment_info)
+        @Bind(R2.id.unchangeable_payment_info)
         LinearLayout holderUnchangeablePayment;
 
         public ViewHolder(View view) {

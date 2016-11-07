@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.dynamicfilter.presenter.DynamicFilterBase;
 import com.tokopedia.tkpd.dynamicfilter.presenter.DynamicFilterBaseDetailView;
 import com.tokopedia.tkpd.dynamicfilter.presenter.DynamicFilterBaseImpl;
@@ -27,13 +28,13 @@ public class DynamicFilterFirstTimeFragment extends BaseFragment<DynamicFilterBa
     public static final int FRAGMENT_ID = 123_123_123;
     public static final String FRAGMENT_TAG = "DynamicFilterFirstTimeFragment";
 
-    @Bind(R.id.dynamic_filter_first_time_detail)
+    @Bind(R2.id.dynamic_filter_first_time_detail)
     ImageView dynamicFilterFirstTimeDetail;
 
-    @Bind(R.id.dynamic_filter_first_time_text)
+    @Bind(R2.id.dynamic_filter_first_time_text)
     TextView dynamicFilterFirstTimeText;
 
-    @Bind(R.id.finish_first_time_btn)
+    @Bind(R2.id.finish_first_time_btn)
     Button finishFirstTimeBtn;
 
     @Override
@@ -96,7 +97,7 @@ public class DynamicFilterFirstTimeFragment extends BaseFragment<DynamicFilterBa
         ButterKnife.unbind(this);
     }
 
-    @OnClick(R.id.finish_first_time_btn)
+    @OnClick(R2.id.finish_first_time_btn)
     public void onClick() {
         if(getActivity() != null && getActivity() instanceof DynamicFilterView){
             ((DynamicFilterView) getActivity()).finishThis();

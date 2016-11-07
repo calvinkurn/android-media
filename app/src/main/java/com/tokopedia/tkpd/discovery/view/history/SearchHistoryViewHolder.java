@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.discovery.model.history.DetailSearchHistoryAdapter;
 import com.tokopedia.tkpd.discovery.model.history.SearchHistoryModel;
 import com.tokopedia.tkpd.discovery.presenter.history.SearchHistoryImpl;
@@ -25,13 +26,13 @@ public class SearchHistoryViewHolder extends RecyclerView.ViewHolder {
     public static final String HISTORY_TITLE = "History";
     public static final String HOTLIST_TITLE = "Hotlist";
     public static final String POPULAR_TITLE = "Popular Search";
-    @Bind(R.id.textview_search_history_header)
+    @Bind(R2.id.textview_search_history_header)
     TextView searchHistoryHeader;
 
-    @Bind(R.id.search_list)
+    @Bind(R2.id.search_list)
     RecyclerView searchHistoryList;
 
-    @Bind(R.id.clear_search_history)
+    @Bind(R2.id.clear_search_history)
     TextView clearSearchHistory;
 
     DetailSearchHistoryAdapter adapter;

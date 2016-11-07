@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.widget.ListView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.TActivity;
 import com.tokopedia.tkpd.purchase.adapter.HistoryListAdapter;
 import com.tokopedia.tkpd.purchase.model.response.txlist.OrderHistory;
@@ -30,7 +31,7 @@ public class TxHistoryActivity extends TActivity {
         return intent;
     }
 
-    @Bind(R.id.order_status)
+    @Bind(R2.id.order_status)
     ListView listView;
 
     @Override

@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.analytics.ScreenTracking;
 import com.tokopedia.tkpd.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.tkpd.customwidget.SwipeToRefresh;
@@ -50,9 +51,9 @@ public class FragmentHotListV2 extends Fragment implements HotListView{
     
     private HotListAdapter adapter;
     private HotList hotList;
-    @Bind(R.id.hot_product)
+    @Bind(R2.id.hot_product)
     RecyclerView recyclerView;
-    @Bind(R.id.swipe_refresh_layout)
+    @Bind(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
     private RecyclerView.LayoutManager layoutManager;
     

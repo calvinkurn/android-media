@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.OneOnClick;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.product.model.passdata.ProductPass;
 import com.tokopedia.tkpd.purchase.model.response.txlist.OrderProduct;
 
@@ -78,17 +79,17 @@ public class TxProductListAdapter extends ArrayAdapter<OrderProduct> {
     }
 
     class ViewHolder {
-        @Bind(R.id.product_image)
+        @Bind(R2.id.product_image)
         ImageView ivProductPic;
-        @Bind(R.id.product_name)
+        @Bind(R2.id.product_name)
         TextView tvProductName;
-        @Bind(R.id.product_price)
+        @Bind(R2.id.product_price)
         TextView tvProductPrice;
-        @Bind(R.id.total_order)
+        @Bind(R2.id.total_order)
         TextView tvDeliverQty;
-        @Bind(R.id.total_price)
+        @Bind(R2.id.total_price)
         TextView tvTotalPrice;
-        @Bind(R.id.message)
+        @Bind(R2.id.message)
         TextView tvNotes;
 
         public ViewHolder(View view) {

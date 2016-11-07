@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.OneOnClick;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.customView.TextViewCopyable;
 import com.tokopedia.tkpd.purchase.fragment.TxListFragment;
 import com.tokopedia.tkpd.purchase.model.response.txlist.OrderData;
@@ -234,35 +235,35 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
 
 
     class ViewHolder {
-        @Bind(R.id.tv_preorder)
+        @Bind(R2.id.tv_preorder)
         TextView tvPreOrder;
-        @Bind(R.id.shop_avatar)
+        @Bind(R2.id.shop_avatar)
         ImageView imgShopAvatar;
-        @Bind(R.id.but_overflow)
+        @Bind(R2.id.but_overflow)
         View btnOverflow;
-        @Bind(R.id.shop_name)
+        @Bind(R2.id.shop_name)
         TextView tvShopName;
-        @Bind(R.id.invoice_text)
+        @Bind(R2.id.invoice_text)
         TextView tvInvoice;
-        @Bind(R.id.date)
+        @Bind(R2.id.date)
         TextView tvDate;
-        @Bind(R.id.upload_button)
+        @Bind(R2.id.upload_button)
         TextView tvUploadTx;
-        @Bind(R.id.status)
+        @Bind(R2.id.status)
         TextView tvStatus;
-        @Bind(R.id.confirm_layout)
+        @Bind(R2.id.confirm_layout)
         LinearLayout linConfirmLayout;
-        @Bind(R.id.receive_button)
+        @Bind(R2.id.receive_button)
         TextView tvReceiveButton;
-        @Bind(R.id.reject_button)
+        @Bind(R2.id.reject_button)
         TextView tvRejectButton;
-        @Bind(R.id.track_button)
+        @Bind(R2.id.track_button)
         TextView tvTrackButton;
-        @Bind(R.id.main_view)
+        @Bind(R2.id.main_view)
         View mainView;
-        @Bind(R.id.ref_area)
+        @Bind(R2.id.ref_area)
         View refAreaView;
-        @Bind(R.id.reference_num)
+        @Bind(R2.id.reference_num)
         TextViewCopyable tvRefNum;
 
         public ViewHolder(View view) {
@@ -280,19 +281,19 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.action_track:
+                case R2.id.action_track:
                     actionListener.actionTrackOrder(orderData);
                     return true;
-                case R.id.action_confirm_package:
+                case R2.id.action_confirm_package:
                     actionListener.actionConfirmDeliver(orderData);
                     return true;
-                case R.id.action_upload:
+                case R2.id.action_upload:
                     actionListener.actionUploadTx(orderData);
                     return true;
-                case R.id.action_open_dispute:
+                case R2.id.action_open_dispute:
                     actionListener.actionDispute(orderData, 0);
                     return true;
-                case R.id.action_show_complain:
+                case R2.id.action_show_complain:
                     actionListener.actionShowComplain(orderData);
                     return true;
                 default:

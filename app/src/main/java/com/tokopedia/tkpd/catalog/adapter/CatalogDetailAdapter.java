@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.catalog.model.CatalogDetailItem;
 import com.tokopedia.tkpd.catalog.model.CatalogDetailItemShop;
 import com.tokopedia.tkpd.catalog.presenter.ICatalogDetailListPresenter;
@@ -109,17 +110,17 @@ public class CatalogDetailAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
     class ShopItemHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.seller_img)
+        @Bind(R2.id.seller_img)
         ImageView shopImage;
-        @Bind(R.id.seller_name)
+        @Bind(R2.id.seller_name)
         TextView shopName;
-        @Bind(R.id.seller_loc)
+        @Bind(R2.id.seller_loc)
         TextView shopLocation;
-        @Bind(R.id.seller_rating)
+        @Bind(R2.id.seller_rating)
         ImageView shopRating;
-        @Bind(R.id.list_product)
+        @Bind(R2.id.list_product)
         RecyclerView listProduct;
-        @Bind(R.id.header_seller)
+        @Bind(R2.id.header_seller)
         RelativeLayout shopContainer;
 
         ShopItemHolder(View view) {

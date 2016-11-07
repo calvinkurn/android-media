@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.customadapter.AbstractRecyclerAdapter;
 import com.tokopedia.tkpd.shopinfo.models.talkmodel.TalkModel;
 import com.tokopedia.tkpd.shopinfo.models.talkmodel.TalkUserReputation;
@@ -202,16 +203,16 @@ public class DiscussionAdapter extends AbstractRecyclerAdapter {
             public boolean onMenuItemClick(MenuItem item) {
                 CommonUtils.dumper(item.getItemId());
                 switch (item.getItemId()) {
-                    case R.id.action_follow:
+                    case R2.id.action_follow:
                         listener.onFollowTalk(position);
                         return true;
-                    case R.id.action_unfollow:
+                    case R2.id.action_unfollow:
                         listener.onUnfollowTalk(position);
                         return true;
-                    case R.id.action_delete_talk:
+                    case R2.id.action_delete_talk:
                         listener.onDeleteTalk(position);
                         return true;
-                    case R.id.action_report:
+                    case R2.id.action_report:
                         listener.onReportTalk(position);
                         return true;
                     default:

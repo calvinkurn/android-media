@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.product.listener.ProductDetailView;
 import com.tokopedia.tkpd.product.model.passdata.ProductPass;
 import com.tokopedia.tkpd.product.model.productdetail.ProductDetailData;
@@ -22,17 +23,17 @@ import butterknife.Bind;
 public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailView> {
     private static final String TAG = HeaderInfoView.class.getSimpleName();
 
-    @Bind(R.id.tv_name)
+    @Bind(R2.id.tv_name)
     TextView tvName;
-    @Bind(R.id.tv_price)
+    @Bind(R2.id.tv_price)
     TextView tvPrice;
-    @Bind(R.id.tv_viewed)
+    @Bind(R2.id.tv_viewed)
     TextView tvViewed;
-    @Bind(R.id.tv_brought)
+    @Bind(R2.id.tv_brought)
     TextView tvBrought;
-    @Bind(R.id.label_cashback)
+    @Bind(R2.id.label_cashback)
     TextView cashbackTextView;
-    @Bind(R.id.cashback_holder)
+    @Bind(R2.id.cashback_holder)
     LinearLayout cashbackHolder;
 
     public HeaderInfoView(Context context) {

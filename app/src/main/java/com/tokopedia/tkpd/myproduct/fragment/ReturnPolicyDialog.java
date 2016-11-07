@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.DownloadResultSender;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.myproduct.model.CreateShopNoteParam;
 import com.tokopedia.tkpd.myproduct.model.EditShopNoteParam;
 import com.tokopedia.tkpd.myproduct.model.NoteDetailModel;
@@ -51,15 +52,15 @@ public class ReturnPolicyDialog extends DialogFragment {
 
     AuthService service;
 
-    @Bind(R.id.return_policy_content)
+    @Bind(R2.id.return_policy_content)
     EditText returnPolicyContent;
-    @Bind(R.id.return_policy_cancel)
+    @Bind(R2.id.return_policy_cancel)
     Button returnPolicyCancel;
-    @Bind(R.id.return_policy_add)
+    @Bind(R2.id.return_policy_add)
     Button returnPolicyAdd;
-    @Bind(R.id.return_policy_progress_bar)
+    @Bind(R2.id.return_policy_progress_bar)
     ProgressBar returnPolicyProgressBar;
-    @Bind(R.id.return_policy_content_title)
+    @Bind(R2.id.return_policy_content_title)
     EditText returnPolicyContentTitle;
 
     public static DialogFragment newInstance(NoteDetailModel.Detail detail) {
@@ -89,7 +90,7 @@ public class ReturnPolicyDialog extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NO_TITLE, android.support.v7.appcompat.R.style.Base_Theme_AppCompat_Dialog);
+        setStyle(DialogFragment.STYLE_NO_TITLE, R.style.Base_Theme_AppCompat_Dialog);
         service = new MyShopNoteActService();
 
         if (getArguments() != null) {
@@ -149,7 +150,7 @@ public class ReturnPolicyDialog extends DialogFragment {
         //[END] display progressbar
     }
 
-    @OnClick(R.id.return_policy_add)
+    @OnClick(R2.id.return_policy_add)
     public void addReturnPolicy() {
         //[START] display progressbar
         showProgressBar();
@@ -197,7 +198,7 @@ public class ReturnPolicyDialog extends DialogFragment {
 //        getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 //    }
 
-    @OnClick(R.id.return_policy_cancel)
+    @OnClick(R2.id.return_policy_cancel)
     public void dismissCancel() {
         dismiss();
     }

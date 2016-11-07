@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.analytics.ScreenTracking;
 import com.tokopedia.tkpd.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.tkpd.customwidget.SwipeToRefresh;
@@ -42,13 +43,13 @@ import butterknife.ButterKnife;
 public class FragmentIndexFavoriteV2 extends Fragment implements FavoriteView, DefaultRetryListener.OnClickRetry {
     Favorite favorite;
     BaseRecyclerViewAdapter adapter;// FavoriteRecyclerViewAdapter
-    @Bind(R.id.index_favorite_recycler_view)
+    @Bind(R2.id.index_favorite_recycler_view)
     RecyclerView recyclerView;
-    @Bind(R.id.swipe_refresh_layout)
+    @Bind(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
-    @Bind(R.id.include_loading)
+    @Bind(R2.id.include_loading)
     ProgressBar progressBar;
-    @Bind(R.id.main_content)
+    @Bind(R2.id.main_content)
     RelativeLayout mainContent;
     RecyclerView.LayoutManager layoutManager;
     DefaultItemAnimator animator;

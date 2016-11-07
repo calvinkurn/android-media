@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.people.model.InputOutputData;
 import com.tokopedia.tkpd.people.model.PeopleAddressData;
 import com.tokopedia.tkpd.people.model.PeopleInfoData;
@@ -20,17 +21,17 @@ import butterknife.Bind;
  */
 public class PeopleInfoDetailView extends BaseView<InputOutputData, PeopleInfoFragmentPresenter> {
 
-    @Bind(R.id.user_email)
+    @Bind(R2.id.user_email)
     TextView email;
-    @Bind(R.id.user_yahoo)
+    @Bind(R2.id.user_yahoo)
     TextView yahoo;
-    @Bind(R.id.user_phone)
+    @Bind(R2.id.user_phone)
     TextView phone;
-    @Bind(R.id.user_address)
+    @Bind(R2.id.user_address)
     TextView address;
-    @Bind(R.id.user_hobby)
+    @Bind(R2.id.user_hobby)
     TextView hobby;
-    @Bind(R.id.user_birth)
+    @Bind(R2.id.user_birth)
     TextView birth;
 
     public PeopleInfoDetailView(Context context) {

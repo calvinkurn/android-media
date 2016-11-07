@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.util.DataBindAdapter;
 import com.tokopedia.tkpd.util.DataBinder;
 
@@ -26,7 +27,7 @@ public class NoResultDataBinder extends DataBinder<NoResultDataBinder.ViewHolder
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.no_result_image)
+        @Bind(R2.id.no_result_image)
         ImageView emptyImage;
 
         public ViewHolder(View itemView) {

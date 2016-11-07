@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.selling.presenter.ShippingImpl;
 
 import java.util.List;
@@ -295,15 +296,15 @@ public class ListViewShopShippingV2 extends BaseAdapter{
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch ((item.getItemId())){
-                    case R.id.action_confirm:
+                    case R2.id.action_confirm:
                         listenerLV.onConfirm(position);
                         return true;
 
-                    case R.id.action_cancel:
+                    case R2.id.action_cancel:
                         listenerLV.onCancel(position);
                         return true;
 
-                    case R.id.action_detail_ship:
+                    case R2.id.action_detail_ship:
                         listenerLV.onOpenDetail(position);
                         return true;
 

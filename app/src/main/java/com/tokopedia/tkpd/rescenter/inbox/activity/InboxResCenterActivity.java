@@ -13,6 +13,7 @@ import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.DrawerPresenterActivity;
 import com.tokopedia.tkpd.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.tkpd.rescenter.inbox.fragment.InboxResCenterFragment;
@@ -32,9 +33,9 @@ public class InboxResCenterActivity extends DrawerPresenterActivity<ResCenterPre
     public static final String TAG = InboxResCenterActivity.class.getSimpleName();
     public static final String EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION";
 
-    @Bind(R.id.pager)
+    @Bind(R2.id.pager)
     public ViewPager viewPager;
-    @Bind(R.id.indicator)
+    @Bind(R2.id.indicator)
     public TabLayout tabLayout;
 
     private SectionsPagerAdapter pagerAdapter;

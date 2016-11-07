@@ -24,6 +24,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterActivity;
 import com.tokopedia.tkpd.database.model.Bank;
 import com.tokopedia.tkpd.network.NetworkErrorHelper;
@@ -64,97 +65,97 @@ public class ConfirmPaymentActivity extends BasePresenterActivity<ConfirmPayment
     public static final int INSTANCE_EDIT = 1;
     public static final int INSTANCE_NEW = 0;
 
-    @Bind(R.id.tv_label_payment_method)
+    @Bind(R2.id.tv_label_payment_method)
     TextView tvLabelPaymentMethod;
-    @Bind(R.id.tv_label_bank)
+    @Bind(R2.id.tv_label_bank)
     TextView tvLabelOriginAccountBank;
-    @Bind(R.id.tv_label_dest_bank)
+    @Bind(R2.id.tv_label_dest_bank)
     TextView tvLabelDestAccountBank;
 
-    @Bind(R.id.spinner_dest_account)
+    @Bind(R2.id.spinner_dest_account)
     AppCompatSpinner spDestAccountBank;
-    @Bind(R.id.spinner_from_account)
+    @Bind(R2.id.spinner_from_account)
     AppCompatSpinner spOriginAccountBank;
-    @Bind(R.id.spinner_payment_method)
+    @Bind(R2.id.spinner_payment_method)
     AppCompatSpinner spPaymentMethod;
 
-    @Bind(R.id.tv_error_payment_method)
+    @Bind(R2.id.tv_error_payment_method)
     TextView tvErrorPaymentMethod;
-    @Bind(R.id.error_spinner_account_from)
+    @Bind(R2.id.error_spinner_account_from)
     TextView tvErrorOriginAccountBank;
-    @Bind(R.id.error_spinner_account_dest)
+    @Bind(R2.id.error_spinner_account_dest)
     TextView tvErrorDestAccountBank;
 
-    @Bind(R.id.dest_account)
+    @Bind(R2.id.dest_account)
     View viewAccountDestination;
-    @Bind(R.id.from_account)
+    @Bind(R2.id.from_account)
     View viewFormAccount;
-    @Bind(R.id.main_view)
+    @Bind(R2.id.main_view)
     View viewMain;
-    @Bind(R.id.new_account)
+    @Bind(R2.id.new_account)
     View viewNewAccount;
-    @Bind(R.id.total_payment_view)
+    @Bind(R2.id.total_payment_view)
     View viewInfoPayment;
-    @Bind(R.id.password_view)
+    @Bind(R2.id.password_view)
     View viewFormPassword;
-    @Bind(R.id.nama_penyetor_view)
+    @Bind(R2.id.nama_penyetor_view)
     View viewFormDepositor;
-    @Bind(R.id.et_choose_bank)
+    @Bind(R2.id.et_choose_bank)
     EditText tvChooseAccountBank;
-    @Bind(R.id.msg_success)
+    @Bind(R2.id.msg_success)
     TextView tvSuccessMessage;
-    @Bind(R.id.submit_but)
+    @Bind(R2.id.submit_but)
     TextView btnSubmit;
-    @Bind(R.id.total_payment)
+    @Bind(R2.id.total_payment)
     TextView tvTotalPayment;
-    @Bind(R.id.total_payment_success)
+    @Bind(R2.id.total_payment_success)
     TextView tvSuccessTotalPayment;
-    @Bind(R.id.title_conf_payment)
+    @Bind(R2.id.title_conf_payment)
     TextView tvLabelTotalPayment;
-    @Bind(R.id.tokopedia_deposit)
+    @Bind(R2.id.tokopedia_deposit)
     TextView tvSuccessTokopediaDeposit;
-    @Bind(R.id.remaining_tokopedia_deposit)
+    @Bind(R2.id.remaining_tokopedia_deposit)
     TextView tvRemainingTokopediaDeposit;
-    @Bind(R.id.check_account)
+    @Bind(R2.id.check_account)
     View btnSysAccountInfo;
-    @Bind(R.id.account_owner)
+    @Bind(R2.id.account_owner)
     EditText etAccountOwner;
-    @Bind(R.id.account_number)
+    @Bind(R2.id.account_number)
     EditText etAccountNumber;
-    @Bind(R.id.payment_date)
+    @Bind(R2.id.payment_date)
     EditText etPayementDate;
-    @Bind(R.id.password)
+    @Bind(R2.id.password)
     EditText etUserPassword;
-    @Bind(R.id.remark)
+    @Bind(R2.id.remark)
     EditText etNotes;
-    @Bind(R.id.input_total_payment)
+    @Bind(R2.id.input_total_payment)
     EditText etTotalPayment;
-    @Bind(R.id.nama_penyetor)
+    @Bind(R2.id.nama_penyetor)
     EditText etDepositorName;
-    @Bind(R.id.branch)
+    @Bind(R2.id.branch)
     EditText etAccountBankBranch;
-    @Bind(R.id.pay_conf)
+    @Bind(R2.id.pay_conf)
     View viewFormPayment;
-    @Bind(R.id.pay_conf_success)
+    @Bind(R2.id.pay_conf_success)
     View viewPaymentSuccess;
 
-    @Bind(R.id.input_layout_payment_date)
+    @Bind(R2.id.input_layout_payment_date)
     TextInputLayout tilEtDate;
-    @Bind(R.id.input_layout_account_owner)
+    @Bind(R2.id.input_layout_account_owner)
     TextInputLayout tilEtAccountOwner;
-    @Bind(R.id.input_layout_account_number)
+    @Bind(R2.id.input_layout_account_number)
     TextInputLayout tilEtAccountNumber;
-    @Bind(R.id.input_layout_choose_bank)
+    @Bind(R2.id.input_layout_choose_bank)
     TextInputLayout tilEtChooseBank;
-    @Bind(R.id.input_layout_branch)
+    @Bind(R2.id.input_layout_branch)
     TextInputLayout tilEtBankBranch;
-    @Bind(R.id.input_layout_depositor)
+    @Bind(R2.id.input_layout_depositor)
     TextInputLayout tilEtDepositorName;
-    @Bind(R.id.input_layout_total_payment)
+    @Bind(R2.id.input_layout_total_payment)
     TextInputLayout tilEtPaymentAmount;
-    @Bind(R.id.input_layout_remark)
+    @Bind(R2.id.input_layout_remark)
     TextInputLayout tilEtRemark;
-    @Bind(R.id.input_layout_password)
+    @Bind(R2.id.input_layout_password)
     TextInputLayout tilEtPassword;
 
 
@@ -301,17 +302,17 @@ public class ConfirmPaymentActivity extends BasePresenterActivity<ConfirmPayment
         finish();
     }
 
-    @OnClick(R.id.payment_date)
+    @OnClick(R2.id.payment_date)
     void actionChooseDate() {
         if (datePicker != null) datePicker.show();
     }
 
-    @OnClick(R.id.submit_but)
+    @OnClick(R2.id.submit_but)
     void actionSubmitConfirmation() {
         presenter.processSubmitConfirmation(this, confirmPaymentData, formConfirmData, formEditData);
     }
 
-    @OnClick(R.id.et_choose_bank)
+    @OnClick(R2.id.et_choose_bank)
     void actionChooseBank() {
         presenter.processChooseBank(this, new OnNewAccountBankSelected() {
             @Override
@@ -698,29 +699,29 @@ public class ConfirmPaymentActivity extends BasePresenterActivity<ConfirmPayment
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             switch (resId) {
-                case R.id.remark:
+                case R2.id.remark:
                     tilEtRemark.setErrorEnabled(false);
                     break;
-                case R.id.nama_penyetor:
+                case R2.id.nama_penyetor:
                     tilEtDepositorName.setErrorEnabled(false);
                     break;
-                case R.id.input_total_payment:
+                case R2.id.input_total_payment:
                     tilEtPaymentAmount.setErrorEnabled(false);
                     CurrencyFormatHelper.SetToRupiah(etTotalPayment);
                     break;
-                case R.id.account_owner:
+                case R2.id.account_owner:
                     tilEtAccountOwner.setErrorEnabled(false);
                     confirmPaymentData.setBankAccountName(s.toString());
                     break;
-                case R.id.account_number:
+                case R2.id.account_number:
                     tilEtAccountNumber.setErrorEnabled(false);
                     confirmPaymentData.setBankAccountNumber(s.toString());
                     break;
-                case R.id.branch:
+                case R2.id.branch:
                     tilEtBankBranch.setErrorEnabled(false);
                     confirmPaymentData.setBankAccountBranch(s.toString());
                     break;
-                case R.id.password:
+                case R2.id.password:
                     if (s.length() <= 0) {
                         renderErrorDepositorPassword(getString(R.string.error_empty_password));
                     } else {
@@ -735,25 +736,25 @@ public class ConfirmPaymentActivity extends BasePresenterActivity<ConfirmPayment
         @Override
         public void afterTextChanged(Editable s) {
             switch (resId) {
-                case R.id.remark:
+                case R2.id.remark:
                     confirmPaymentData.setComments(s.toString());
                     break;
-                case R.id.nama_penyetor:
+                case R2.id.nama_penyetor:
                     confirmPaymentData.setDepositor(s.toString());
                     break;
-                case R.id.input_total_payment:
+                case R2.id.input_total_payment:
                     confirmPaymentData.setPaymentAmount(s.toString());
                     break;
-                case R.id.account_owner:
+                case R2.id.account_owner:
                     confirmPaymentData.setBankAccountName(s.toString());
                     break;
-                case R.id.account_number:
+                case R2.id.account_number:
                     confirmPaymentData.setBankAccountNumber(s.toString());
                     break;
-                case R.id.branch:
+                case R2.id.branch:
                     confirmPaymentData.setBankAccountBranch(s.toString());
                     break;
-                case R.id.password:
+                case R2.id.password:
                     confirmPaymentData.setPasswordDeposit(s.toString());
                     break;
             }
@@ -766,7 +767,7 @@ public class ConfirmPaymentActivity extends BasePresenterActivity<ConfirmPayment
         super.onBackPressed();
     }
 
-    @OnClick(R.id.check_account)
+    @OnClick(R2.id.check_account)
     void actionShowSysAccount() {
         TokopediaBankAccount.createShowAccountDialog(this);
     }

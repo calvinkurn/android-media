@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.product.listener.ProductDetailView;
 import com.tokopedia.tkpd.product.model.productdetail.ProductDetailData;
 
@@ -17,9 +18,9 @@ import butterknife.Bind;
  */
 public class ErrorShopView extends BaseView<ProductDetailData, ProductDetailView> {
 
-    @Bind(R.id.tv_title)
+    @Bind(R2.id.tv_title)
     TextView tvTitle;
-    @Bind(R.id.tv_sub_title)
+    @Bind(R2.id.tv_sub_title)
     TextView tvSubTitle;
 
     public ErrorShopView(Context context) {

@@ -29,6 +29,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.tkpd.product.activity.ProductInfoActivity;
@@ -108,26 +109,26 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
 
     int paramMaster=0;
 
-    @Bind(R.id.new_comment) EditText comment;
-    @Bind(R.id.send_but) ImageView sendBut;
-    @Bind(R.id.comment_list) RecyclerView recyclerView;
-    @Bind(R.id.prod_img) ImageView pImageView;
-    @Bind(R.id.prod_name) TextView pNameView;
-    @Bind(R.id.add_comment_area) View addCommentArea;
-    @Bind(R.id.add_url) View addUrlView;
-    @Bind(R.id.user_ava) ImageView userTalkImageView;
-    @Bind(R.id.user_name) TextView userView;
-    @Bind(R.id.create_time) TextView timeView;
-    @Bind(R.id.message) TextView messageView;
-    @Bind(R.id.rank) TextView rank;
-    @Bind(R.id.but_overflow) View buttonOverflow;
-    @Bind(R.id.reputation) LinearLayout reputation;
-    @Bind(R.id.reputation_user) View reputationUser;
-    @Bind(R.id.rep_icon) ImageView iconReputation;
-    @Bind(R.id.rep_rating) TextView textReputation;
-    @Bind(R.id.swipe_refresh_layout) SwipeRefreshLayout swipe;
-    @Bind(R.id.header) View header;
-    @Bind(R.id.main) View mainLayout;
+    @Bind(R2.id.new_comment) EditText comment;
+    @Bind(R2.id.send_but) ImageView sendBut;
+    @Bind(R2.id.comment_list) RecyclerView recyclerView;
+    @Bind(R2.id.prod_img) ImageView pImageView;
+    @Bind(R2.id.prod_name) TextView pNameView;
+    @Bind(R2.id.add_comment_area) View addCommentArea;
+    @Bind(R2.id.add_url) View addUrlView;
+    @Bind(R2.id.user_ava) ImageView userTalkImageView;
+    @Bind(R2.id.user_name) TextView userView;
+    @Bind(R2.id.create_time) TextView timeView;
+    @Bind(R2.id.message) TextView messageView;
+    @Bind(R2.id.rank) TextView rank;
+    @Bind(R2.id.but_overflow) View buttonOverflow;
+    @Bind(R2.id.reputation) LinearLayout reputation;
+    @Bind(R2.id.reputation_user) View reputationUser;
+    @Bind(R2.id.rep_icon) ImageView iconReputation;
+    @Bind(R2.id.rep_rating) TextView textReputation;
+    @Bind(R2.id.swipe_refresh_layout) SwipeRefreshLayout swipe;
+    @Bind(R2.id.header) View header;
+    @Bind(R2.id.main) View mainLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -151,7 +152,7 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
             case android.R.id.home:
                 getActivity().onBackPressed();
                 return true;
-            case R.id.action_refresh:
+            case R2.id.action_refresh:
                 if (!isRequest) {
                     swipe.setRefreshing(true);
                     refresh();
@@ -576,17 +577,17 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
             public boolean onMenuItemClick(MenuItem item) {
                 DialogFragment dialog;
                 switch (item.getItemId()) {
-                    case R.id.action_delete:
-                    case R.id.action_delete_talk:
+                    case R2.id.action_delete:
+                    case R2.id.action_delete_talk:
                         dialog = DeleteTalkDialog.createInstance(deleteListener());
                         dialog.show(getFragmentManager(), DeleteTalkDialog.FRAGMENT_TAG);
                         return true;
-                    case R.id.action_follow:
-                    case R.id.action_unfollow:
+                    case R2.id.action_follow:
+                    case R2.id.action_unfollow:
                         dialog = FollowTalkDialog.createInstance(followListener(), isFollow);
                         dialog.show(getFragmentManager(), FollowTalkDialog.FRAGMENT_TAG);
                         return true;
-                    case R.id.action_report:
+                    case R2.id.action_report:
                         dialog = ReportTalkDialog.createInstance(reportListener());
                         dialog.show(getFragmentManager(), ReportTalkDialog.FRAGMENT_TAG);
                         return true;

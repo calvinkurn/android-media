@@ -131,11 +131,11 @@ public class TextDeleteAdapter extends RecyclerView.Adapter<TextDeleteAdapter.Vi
         @Override
         public void onClick(View v) {
 //            switch (v.getId()){
-//                case R.id.text_delete_delete_btn:
+//                case R2.id.text_delete_delete_btn:
 //                    // reset to certain position
 //                    ((ProductActivity)itemView.getContext()).deleteSpinner(type, position);
 //                    break;
-//                case R.id.text_delete_text:
+//                case R2.id.text_delete_text:
                     // show pop up here
                     switch(type){
                         case ProductActivity.ADD_PRODUCT_CATEGORY:

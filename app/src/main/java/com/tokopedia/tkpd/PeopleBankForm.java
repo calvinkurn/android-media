@@ -346,7 +346,7 @@ public class PeopleBankForm extends TActivity {
 			case android.R.id.home:
 				onBackPressed();
 				return true;
-			case R.id.action_save:
+			case R2.id.action_save:
 				ErrorMessage.setVisibility(View.INVISIBLE);
 				if(Validate()){
 					mProgressDialog = new TkpdProgressDialog(PeopleBankForm.this, TkpdProgressDialog.NORMAL_PROGRESS);

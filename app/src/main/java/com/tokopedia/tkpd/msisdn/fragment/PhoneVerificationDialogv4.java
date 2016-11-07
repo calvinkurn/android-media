@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.facade.FacadePhoneVerification;
 import com.tokopedia.tkpd.fragment.VerificationDialog;
 import com.tokopedia.tkpd.interfaces.PhoneVerificationInterfaces;
@@ -35,27 +36,27 @@ public class PhoneVerificationDialogv4 extends DialogFragment {
     public static final String USER_PHONE_NUMBER = "user_phone_number";
     public static final String VERIFICATION_NUMBER = "VERIFICATION_NUMBER";
 
-    @Bind(R.id.phone_verification_instruction)
+    @Bind(R2.id.phone_verification_instruction)
     TextView phoneVerificationInstruction;
-    @Bind(R.id.refresh_number)
+    @Bind(R2.id.refresh_number)
     TextView refreshLink;
-    @Bind(R.id.phone_number)
+    @Bind(R2.id.phone_number)
     TextView PhoneNumber;
-    @Bind(R.id.loading)
+    @Bind(R2.id.loading)
     ProgressBar circle;
-    @Bind(R.id.link_to_change_phone)
+    @Bind(R2.id.link_to_change_phone)
     TextView changePhoneNumberLink;
-    @Bind(R.id.normal_verification_footer)
+    @Bind(R2.id.normal_verification_footer)
     LinearLayout normalVerificationFooter;
-    @Bind(R.id.autoverify_abort_button)
+    @Bind(R2.id.autoverify_abort_button)
     TextView abortButton;
-    @Bind(R.id.verify_button)
+    @Bind(R2.id.verify_button)
     TextView confirmButton;
-    @Bind(R.id.reminder_footer_layout)
+    @Bind(R2.id.reminder_footer_layout)
     LinearLayout phoneReminderFooter;
-    @Bind(R.id.reminder_change_number)
+    @Bind(R2.id.reminder_change_number)
     TextView reminderChangeNumberButton;
-    @Bind(R.id.reminder_same_number_button)
+    @Bind(R2.id.reminder_same_number_button)
     TextView reminderSameNumberButton;
 
     FacadePhoneVerification facadePhoneVerification;
@@ -181,12 +182,12 @@ public class PhoneVerificationDialogv4 extends DialogFragment {
         ButterKnife.unbind(this);
     }
 
-    @OnClick(R.id.autoverify_abort_button)
+    @OnClick(R2.id.autoverify_abort_button)
     public void onCancel() {
         dismiss();
     }
 
-    @OnClick(R.id.verify_button)
+    @OnClick(R2.id.verify_button)
     public void onVerifyButton() {
         if (phoneNumber == null && TextUtils.isEmpty(phoneNumber)) {
             return;
@@ -201,7 +202,7 @@ public class PhoneVerificationDialogv4 extends DialogFragment {
         }
     }
 
-    @OnClick(R.id.link_to_change_phone)
+    @OnClick(R2.id.link_to_change_phone)
     public void changeToManual() {
         if (getActivity() != null && getActivity() instanceof MsisdnView) {
             dismiss();// dismiss this current dialog

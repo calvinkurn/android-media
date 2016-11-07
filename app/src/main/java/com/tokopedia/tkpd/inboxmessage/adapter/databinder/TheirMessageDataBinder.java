@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.inboxmessage.InboxMessageConstant;
 import com.tokopedia.tkpd.inboxmessage.model.inboxmessagedetail.InboxMessageDetailItem;
 import com.tokopedia.tkpd.inboxmessage.presenter.InboxMessageDetailFragmentPresenter;
@@ -43,16 +44,16 @@ public class TheirMessageDataBinder extends DataBinder<TheirMessageDataBinder.Vi
     public class ViewHolder extends RecyclerView.ViewHolder
             implements View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
 
-        @Bind(R.id.user_ava)
+        @Bind(R2.id.user_ava)
         ImageView avatar;
 
-        @Bind(R.id.message)
+        @Bind(R2.id.message)
         TextView message;
 
-        @Bind(R.id.hour)
+        @Bind(R2.id.hour)
         TextView hour;
 
-        @Bind(R.id.date)
+        @Bind(R2.id.date)
         TextView date;
 
         public ViewHolder(View itemView) {
@@ -77,12 +78,12 @@ public class TheirMessageDataBinder extends DataBinder<TheirMessageDataBinder.Vi
         @Override
         public boolean onMenuItemClick(MenuItem menuItem) {
             switch (menuItem.getItemId()) {
-                case R.id.action_copy:
+                case R2.id.action_copy:
                     ClipboardManager clipboard = (ClipboardManager) itemView.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
                     ClipData clip = ClipData.newPlainText("label", message.getText());
                     clipboard.setPrimaryClip(clip);
                     return true;
-                case R.id.action_report:
+                case R2.id.action_report:
                     if (!(nav.equals(MESSAGE_TRASH) || list.get(getAdapterPosition()).getUserLabelId() == 1)) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
                         builder.setMessage(R.string.dialog_spam);

@@ -7,6 +7,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.product.customview.BaseView;
 import com.tokopedia.tkpd.rescenter.edit.customadapter.TroubleSpinnerAdapter;
 import com.tokopedia.tkpd.rescenter.edit.listener.BuyerEditResCenterListener;
@@ -21,9 +22,9 @@ import butterknife.Bind;
  */
 public class EditTroubleSectionView extends BaseView<EditResCenterFormData, BuyerEditResCenterListener> {
 
-    @Bind(R.id.spinner_trouble)
+    @Bind(R2.id.spinner_trouble)
     public Spinner troubleSpinner;
-    @Bind(R.id.box_desc)
+    @Bind(R2.id.box_desc)
     public EditText descEditText;
 
     private EditResCenterFormData data;

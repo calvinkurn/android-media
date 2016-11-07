@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.contactus.activity.ContactUsActivity;
 import com.tokopedia.tkpd.customwidget.SwipeToRefresh;
@@ -42,13 +43,13 @@ import butterknife.Bind;
 public class InboxTicketFragment extends BasePresenterFragment<InboxTicketFragmentPresenter>
         implements InboxTicketView, InboxTicketConstant {
 
-    @Bind(R.id.message_list)
+    @Bind(R2.id.message_list)
     RecyclerView listMessage;
 
-    @Bind(R.id.swipe_refresh_layout)
+    @Bind(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
 
-    @Bind(R.id.fab)
+    @Bind(R2.id.fab)
     FloatingActionButton fab;
 
     View filterLayout;
@@ -104,7 +105,7 @@ public class InboxTicketFragment extends BasePresenterFragment<InboxTicketFragme
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_help:
+            case R2.id.action_help:
                 goToHelp();
                 return true;
 
@@ -146,7 +147,7 @@ public class InboxTicketFragment extends BasePresenterFragment<InboxTicketFragme
             @Override
             public void onShow(DialogInterface dialog) {
                 BottomSheetDialog bsd = (BottomSheetDialog) dialog;
-                FrameLayout frameLayout = (FrameLayout) bsd.findViewById(android.support.design.R.id.design_bottom_sheet);
+                FrameLayout frameLayout = (FrameLayout) bsd.findViewById(R.id.design_bottom_sheet);
                 if (frameLayout != null) {
                     BottomSheetBehavior<FrameLayout> behavior = BottomSheetBehavior.from(frameLayout);
                     behavior.setHideable(false);

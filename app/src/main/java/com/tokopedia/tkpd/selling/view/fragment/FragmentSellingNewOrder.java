@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.SearchView;
 import android.widget.Spinner;
 
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.selling.presenter.adapter.BaseSellingAdapter;
 import com.tokopedia.tkpd.selling.view.viewHolder.BaseSellingViewHolder;
 import com.tokopedia.tkpd.selling.view.viewHolder.OrderViewHolder;
@@ -48,9 +49,9 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
         return new FragmentSellingNewOrder();
     }
 
-    @Bind(R.id.order_list)
+    @Bind(R2.id.order_list)
     RecyclerView list;
-    @Bind(R.id.fab)
+    @Bind(R2.id.fab)
     FloatingActionButton fab;
     SearchView search;
     Spinner deadline;
@@ -183,7 +184,7 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
         });
     }
 
-    @OnClick(R.id.fab)
+    @OnClick(R2.id.fab)
     public void onClickFab(){
         bottomSheetDialog.show();
     }

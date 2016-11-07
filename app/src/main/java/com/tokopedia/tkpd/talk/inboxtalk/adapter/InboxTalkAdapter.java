@@ -22,6 +22,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.MainApplication;
 import com.tokopedia.tkpd.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.tkpd.people.activity.PeopleInfoNoDrawerActivity;
@@ -88,21 +89,21 @@ public class InboxTalkAdapter extends BaseRecyclerViewAdapter{
 
 
     public static class TalkProductViewHolder extends RecyclerView.ViewHolder{
-//        @Bind(R.id.user_ava) ImageView pImageView;
+//        @Bind(R2.id.user_ava) ImageView pImageView;
 
-        @Bind(R.id.user_ava)ImageView UserImageView;
-        @Bind(R.id.rep_icon)ImageView RepIcon;
-        @Bind(R.id.but_overflow)View ButtonOverflow;
-        @Bind(R.id.product_name)TextView pProdName;
-        @Bind(R.id.user_name)   TextView UserView;
-        @Bind(R.id.create_time)TextView TimeView;
-        @Bind(R.id.message)TextView MessageView;
-        @Bind(R.id.total_comment)TextView TotalCommentView;
-        @Bind(R.id.rep_rating)TextView RepRate;
-        @Bind(R.id.main_view)View CommentBut;
-        //        @Bind(R.id.)View ProdView;
-        @Bind(R.id.reputation_view)View viewReputation;
-        @Bind({R.id.user_name, R.id.product_name})
+        @Bind(R2.id.user_ava)ImageView UserImageView;
+        @Bind(R2.id.rep_icon)ImageView RepIcon;
+        @Bind(R2.id.but_overflow)View ButtonOverflow;
+        @Bind(R2.id.product_name)TextView pProdName;
+        @Bind(R2.id.user_name)   TextView UserView;
+        @Bind(R2.id.create_time)TextView TimeView;
+        @Bind(R2.id.message)TextView MessageView;
+        @Bind(R2.id.total_comment)TextView TotalCommentView;
+        @Bind(R2.id.rep_rating)TextView RepRate;
+        @Bind(R2.id.main_view)View CommentBut;
+        //        @Bind(R2.id.)View ProdView;
+        @Bind(R2.id.reputation_view)View viewReputation;
+        @Bind({R2.id.user_name, R2.id.product_name})
         List<TextView> textViews;
 
         TalkProductViewHolder(View view){
@@ -338,18 +339,18 @@ public class InboxTalkAdapter extends BaseRecyclerViewAdapter{
                 public boolean onMenuItemClick(MenuItem item) {
                     DialogFragment dialog;
                     switch (item.getItemId()) {
-                        case R.id.action_follow:
-                        case R.id.action_unfollow:
+                        case R2.id.action_follow:
+                        case R2.id.action_unfollow:
                             dialog = FollowTalkDialog.createInstance(followListener(talk,position)
                                     , talk.getTalkFollowStatus());
                             dialog.show(fragment.getFragmentManager(), FollowTalkDialog.FRAGMENT_TAG);
                             return true;
-                        case R.id.action_delete_talk:
-                        case R.id.action_delete:
+                        case R2.id.action_delete_talk:
+                        case R2.id.action_delete:
                             dialog = DeleteTalkDialog.createInstance(deleteListener(talk,position));
                             dialog.show(fragment.getFragmentManager(), DeleteTalkDialog.FRAGMENT_TAG);
                             return true;
-                        case R.id.action_report:
+                        case R2.id.action_report:
                             dialog = ReportTalkDialog.createInstance(reportListener(talk,position));
                             dialog.show(fragment.getFragmentManager(), ReportTalkDialog.FRAGMENT_TAG);
                             return true;

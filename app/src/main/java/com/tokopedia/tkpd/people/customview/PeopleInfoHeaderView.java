@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.people.model.InputOutputData;
 import com.tokopedia.tkpd.people.model.PeopleFavShop;
 import com.tokopedia.tkpd.people.model.PeopleInfoData;
@@ -22,15 +23,15 @@ import butterknife.Bind;
  */
 public class PeopleInfoHeaderView extends BaseView<InputOutputData, PeopleInfoFragmentPresenter> {
 
-    @Bind(R.id.user_avatar)
+    @Bind(R2.id.user_avatar)
     ImageView avatar;
-    @Bind(R.id.user_name)
+    @Bind(R2.id.user_name)
     TextView username;
-    @Bind(R.id.user_favorite)
+    @Bind(R2.id.user_favorite)
     TextView textFavorite;
-    @Bind(R.id.message_user)
+    @Bind(R2.id.message_user)
     View actionMessage;
-    @Bind(R.id.manage_user)
+    @Bind(R2.id.manage_user)
     View actionManage;
 
     public PeopleInfoHeaderView(Context context) {

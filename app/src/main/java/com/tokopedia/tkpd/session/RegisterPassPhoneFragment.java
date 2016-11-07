@@ -21,6 +21,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.TermPrivacy;
 import com.tokopedia.tkpd.analytics.ScreenTracking;
 import com.tokopedia.tkpd.analytics.UnifyTracking;
@@ -66,25 +67,25 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
         return registerPassPhoneFragment;
     }
 
-    @Bind(R.id.user_name)
+    @Bind(R2.id.user_name)
     EditText vName;
-    @Bind(R.id.date)
+    @Bind(R2.id.date)
     TextView vBDay;
-    @Bind(R.id.password)
+    @Bind(R2.id.password)
     PasswordView vPassword;
-    @Bind(R.id.password_retype)
+    @Bind(R2.id.password_retype)
     PasswordView vPasswordRetype;
-    @Bind(R.id.phone_number)
+    @Bind(R2.id.phone_number)
     EditText vPhoneNumber;
-    @Bind(R.id.send_button)
+    @Bind(R2.id.send_button)
     View vSendButton;
-    @Bind(R.id.tos_check)
+    @Bind(R2.id.tos_check)
     CheckBox vTos;
-    @Bind(R.id.error)
+    @Bind(R2.id.error)
     View vError;
-    @Bind(R.id.tos_tos)
+    @Bind(R2.id.tos_tos)
     TextView termAndCond;
-    @Bind(R.id.tos_privacy)
+    @Bind(R2.id.tos_privacy)
     TextView privacy;
 
     TkpdProgressDialog mProgressDialog;
@@ -105,12 +106,12 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
         }
     };
 
-    @OnClick(R.id.tos_tos)
+    @OnClick(R2.id.tos_tos)
     public void onClickTos() {
         TermPrivacy.start(getActivity(), TermPrivacy.T_AND_C);
     }
 
-    @OnClick(R.id.tos_privacy)
+    @OnClick(R2.id.tos_privacy)
     public void onClickPrivacy() {
         TermPrivacy.start(getActivity(), TermPrivacy.P_P);
     }
@@ -157,7 +158,7 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
         showProgress(false);
     }
 
-    @OnClick(R.id.date)
+    @OnClick(R2.id.date)
     public void onDateClick() {
         //datePicker.show();
         int year = (int) presenter.getData(RegisterThird.DATE_YEAR);
@@ -389,7 +390,7 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
         vBDay.setEnabled(enStatus);
     }
 
-    @OnClick(R.id.send_button)
+    @OnClick(R2.id.send_button)
     public void sendRegister() {
         if (checkValidation()) {
             saveData();

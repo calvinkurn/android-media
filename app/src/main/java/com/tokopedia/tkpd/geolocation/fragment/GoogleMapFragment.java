@@ -34,6 +34,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.geolocation.adapter.SuggestionLocationAdapter;
 import com.tokopedia.tkpd.geolocation.listener.GoogleMapView;
@@ -58,17 +59,17 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
     private static final String ARG_PARAM_GEOLOCATION_PASS_DATA = "ARG_PARAM_GEOLOCATION_PASS_DATA";
     private static final String STATE_MAPVIEW_SAVE_STATE = "STATE_MAPVIEW_SAVE_STATE";
 
-    @Bind(R.id.mapview)
+    @Bind(R2.id.mapview)
     MapView mapView;
-    @Bind(R.id.app_bar)
+    @Bind(R2.id.app_bar)
     Toolbar toolbar;
-    @Bind(R.id.autocomplete)
+    @Bind(R2.id.autocomplete)
     AutoCompleteTextView autoComplete;
-    @Bind(R.id.pointer_text)
+    @Bind(R2.id.pointer_text)
     TextView textPointer;
-    @Bind(R.id.pointer_submit)
+    @Bind(R2.id.pointer_submit)
     View submitPointer;
-    @Bind(R.id.fab)
+    @Bind(R2.id.fab)
     FloatingActionButton fab;
 
     private LocationPass locationPass;

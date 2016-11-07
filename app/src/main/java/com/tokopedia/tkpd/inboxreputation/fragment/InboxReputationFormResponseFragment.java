@@ -19,6 +19,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.inboxreputation.InboxReputationConstant;
 import com.tokopedia.tkpd.inboxreputation.adapter.ImageUploadAdapter;
@@ -53,46 +54,46 @@ public class InboxReputationFormResponseFragment
         void postResponse(Bundle param);
     }
 
-    @Bind(R.id.username)
+    @Bind(R2.id.username)
     TextView revieweeName;
 
-    @Bind(R.id.avatar)
+    @Bind(R2.id.avatar)
     ImageView revieweeAvatar;
 
-    @Bind(R.id.rep_icon)
+    @Bind(R2.id.rep_icon)
     ImageView iconPercentage;
 
-    @Bind(R.id.rep_rating)
+    @Bind(R2.id.rep_rating)
     TextView textPercentage;
 
-    @Bind(R.id.product_avatar)
+    @Bind(R2.id.product_avatar)
     ImageView productAvatar;
 
-    @Bind(R.id.product_title)
+    @Bind(R2.id.product_title)
     TextView productName;
 
-    @Bind(R.id.product_review_date)
+    @Bind(R2.id.product_review_date)
     TextView productReviewDate;
 
-    @Bind(R.id.product_review)
+    @Bind(R2.id.product_review)
     TextView productReview;
 
-    @Bind(R.id.star_quality)
+    @Bind(R2.id.star_quality)
     ImageView quality;
 
-    @Bind(R.id.star_accuracy)
+    @Bind(R2.id.star_accuracy)
     ImageView accuracy;
 
-    @Bind(R.id.btn_overflow)
+    @Bind(R2.id.btn_overflow)
     ImageView overflow;
 
-    @Bind(R.id.image_holder)
+    @Bind(R2.id.image_holder)
     RecyclerView imageHolder;
 
-    @Bind(R.id.send_button)
+    @Bind(R2.id.send_button)
     ImageButton sendButton;
 
-    @Bind(R.id.reply_box)
+    @Bind(R2.id.reply_box)
     EditText responseBox;
 
     private LabelUtils label;

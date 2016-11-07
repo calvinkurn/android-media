@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.tkpd.peoplefave.fragment.PeopleFavoritedShopFragment;
 import com.tokopedia.tkpd.peoplefave.listener.PeopleFavoritedShopFragmentView;
@@ -34,12 +35,12 @@ public class PeopleFavoritedShopAdapter extends BaseLinearRecyclerViewAdapter {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.shop_name) TextView shopName;
-        @Bind(R.id.shop_avatar) ImageView shopAvatar;
-        @Bind(R.id.shop_layout) LinearLayout shopLayout;
-        @Bind(R.id.prods) TextView product;
-        @Bind(R.id.etalase) TextView etalase;
-        @Bind(R.id.unfav) TextView actionUnfavorite;
+        @Bind(R2.id.shop_name) TextView shopName;
+        @Bind(R2.id.shop_avatar) ImageView shopAvatar;
+        @Bind(R2.id.shop_layout) LinearLayout shopLayout;
+        @Bind(R2.id.prods) TextView product;
+        @Bind(R2.id.etalase) TextView etalase;
+        @Bind(R2.id.unfav) TextView actionUnfavorite;
 
         public ViewHolder(View itemView) {
             super(itemView);

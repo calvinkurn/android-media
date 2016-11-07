@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.selling.model.orderShipping.OrderShippingList;
 
 import butterknife.Bind;
@@ -17,21 +18,21 @@ import butterknife.ButterKnife;
  * Created by Toped10 on 8/5/2016.
  */
 public class OrderViewHolder extends BaseSellingViewHolder<OrderShippingList> {
-    @Bind(R.id.user_name)
+    @Bind(R2.id.user_name)
     TextView UserName;
-    @Bind(R.id.user_avatar)
+    @Bind(R2.id.user_avatar)
     ImageView UserAvatar;
-    @Bind(R.id.deadline)
+    @Bind(R2.id.deadline)
     TextView Deadline;
-    @Bind(R.id.deadline_view)
+    @Bind(R2.id.deadline_view)
     View DeadlineView;
-    @Bind(R.id.invoice)
+    @Bind(R2.id.invoice)
     TextView Invoice;
-    @Bind(R.id.bounty)
+    @Bind(R2.id.bounty)
     TextView TotalTransaksi;
-    @Bind(R.id.main_view)
+    @Bind(R2.id.main_view)
     View MainView;
-    @Bind(R.id.order_date)
+    @Bind(R2.id.order_date)
     TextView vOrderDate;
 
     public OrderViewHolder(View itemView) {

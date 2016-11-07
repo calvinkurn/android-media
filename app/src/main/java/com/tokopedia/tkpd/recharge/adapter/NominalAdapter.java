@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.recharge.model.product.Attributes;
 import com.tokopedia.tkpd.recharge.model.product.Product;
 import com.tokopedia.tkpd.recharge.model.product.Promo;
@@ -133,31 +134,31 @@ public class NominalAdapter extends ArrayAdapter<Product> {
     }
 
     static class NormalViewHolder {
-        @Bind(R.id.nominal_description_textview)
+        @Bind(R2.id.nominal_description_textview)
         TextView nominalDescriptionTextview;
-        @Bind(R.id.nominal_tag_textview)
+        @Bind(R2.id.nominal_tag_textview)
         TextView nominalTagTextview;
-        @Bind(R.id.nominal_detail_textview)
+        @Bind(R2.id.nominal_detail_textview)
         TextView nominalDetailTextView;
-        @Bind(R.id.real_price_textview)
+        @Bind(R2.id.real_price_textview)
         TextView nominalPriceTextView;
-        @Bind(R.id.nominal_diskon_textview)
+        @Bind(R2.id.nominal_diskon_textview)
         TextView nominalDiskonTextView;
-        @Bind(R.id.lin_normal_view)
+        @Bind(R2.id.lin_normal_view)
         RelativeLayout linNormalView;
-        @Bind(R.id.lin_promo)
+        @Bind(R2.id.lin_promo)
         LinearLayout linPromoView;
-        @Bind(R.id.tv_promo_terms)
+        @Bind(R2.id.tv_promo_terms)
         TextView promoTermTextView;
-        @Bind(R.id.tv_promo_value_text)
+        @Bind(R2.id.tv_promo_value_text)
         TextView promoValueTextView;
-        @Bind(R.id.tv_promo_tag)
+        @Bind(R2.id.tv_promo_tag)
         TextView promoTagTextView;
-        @Bind(R.id.tv_promo_bonus_text)
+        @Bind(R2.id.tv_promo_bonus_text)
         TextView promoBonusTextView;
-        @Bind(R.id.tv_promo_new_price)
+        @Bind(R2.id.tv_promo_new_price)
         TextView promoNewPriceTextView;
-        @Bind(R.id.empty_stock)
+        @Bind(R2.id.empty_stock)
         TextView emptyStockTextView;
 
         public NormalViewHolder(View view) {

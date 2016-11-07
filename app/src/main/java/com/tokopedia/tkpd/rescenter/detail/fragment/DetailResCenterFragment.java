@@ -17,6 +17,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.tkpd.PreviewProductImage;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.addtocart.model.responseatcform.Destination;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.database.model.AttachmentResCenterDB;
@@ -68,13 +69,13 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     private ResCenterView mListener;
     private TkpdProgressDialog normalLoading;
 
-    @Bind(R.id.main_view)
+    @Bind(R2.id.main_view)
     View mainView;
-    @Bind(R.id.loading)
+    @Bind(R2.id.loading)
     View loadingView;
-    @Bind(R.id.custom_view_reply_editor)
+    @Bind(R2.id.custom_view_reply_editor)
     ReplyEditorView replyEditorView;
-    @Bind(R.id.custom_view_detail_rescenter)
+    @Bind(R2.id.custom_view_detail_rescenter)
     DetailView detailView;
 
     private String ahrefEditAddressURL;

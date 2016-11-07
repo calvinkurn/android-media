@@ -34,6 +34,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.customwidget.SwipeToRefresh;
 import com.tokopedia.tkpd.facade.FacadeActionShopTransaction;
 import com.tokopedia.tkpd.network.NetworkErrorHelper;
@@ -64,13 +65,13 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransaction> implements SellingStatusTransactionView, SearchView.OnQueryTextListener, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
-    @Bind(R.id.order_list)
+    @Bind(R2.id.order_list)
     RecyclerView recyclerView;
-    @Bind(R.id.swipe_refresh_layout)
+    @Bind(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
-    @Bind(R.id.fab)
+    @Bind(R2.id.fab)
     FloatingActionButton fab;
-    @Bind(R.id.root)
+    @Bind(R2.id.root)
     CoordinatorLayout rootView;
 
     private static final String ORDER_ID = "OrderID";
@@ -139,13 +140,13 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.start_date:
+            case R2.id.start_date:
                 datePicker.getDatePicker(onStartPicked(), new DatePickerV2.Date(startDate.getText().toString()));
                 break;
-            case R.id.end_date:
+            case R2.id.end_date:
                 datePicker.getDatePicker(onEndPicked(), new DatePickerV2.Date(endDate.getText().toString()));
                 break;
-            case R.id.search_button:
+            case R2.id.search_button:
                 String search = searchTxt.getQuery().toString();
                 if (!TextUtils.isEmpty(search)) {
                     if (ValidationTextUtil.isValidSalesQuery(search)) {
@@ -489,11 +490,11 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.action_edit:
+                    case R2.id.action_edit:
                         listener.onEditRef(model);
                         return true;
 
-                    case R.id.action_track:
+                    case R2.id.action_track:
                         listener.onTrack(model);
                         return true;
 
@@ -520,7 +521,7 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
         ButterKnife.unbind(this);
     }
 
-    @OnClick(R.id.fab)
+    @OnClick(R2.id.fab)
     public void onClick() {
         bottomSheetDialog.show();
     }
@@ -540,23 +541,23 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
     }
 
     public static class ViewHolder extends BaseSellingViewHolder<SellingStatusTxModel> {
-        @Bind(R.id.icon)
+        @Bind(R2.id.icon)
         ImageView icon;
-        @Bind(R.id.subtitle)
+        @Bind(R2.id.subtitle)
         TextView subtitle;
-        @Bind(R.id.title)
+        @Bind(R2.id.title)
         TextView title;
-        @Bind(R.id.overflow_btn)
+        @Bind(R2.id.overflow_btn)
         LinearLayout overflow_btn;
-        @Bind(R.id.deadline_view)
+        @Bind(R2.id.deadline_view)
         LinearLayout deadLineContainer;
-        @Bind(R.id.status)
+        @Bind(R2.id.status)
         TextView status;
-        @Bind(R.id.deadline_date)
+        @Bind(R2.id.deadline_date)
         TextView deadlineDate;
-        @Bind(R.id.invoice)
+        @Bind(R2.id.invoice)
         TextView invoice;
-        @Bind(R.id.list_item)
+        @Bind(R2.id.list_item)
         LinearLayout itemLayout;
 
         public ViewHolder(View itemView) {

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.bignerdranch.android.multiselector.MultiSelector;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.selling.presenter.ShippingImpl;
 
 import butterknife.Bind;
@@ -22,55 +23,55 @@ import butterknife.ButterKnife;
  */
 public class ShippingViewHolder extends BaseSellingViewHolder<ShippingImpl.Model> {
 
-    @Bind(R.id.invoice_text_selected)
+    @Bind(R2.id.invoice_text_selected)
     public TextView invoice_selected;
-    @Bind(R.id.ref_number)
+    @Bind(R2.id.ref_number)
     public Button vRefNumber;
-    @Bind(R.id.error_msg)
+    @Bind(R2.id.error_msg)
     public TextView vError;
-    @Bind(R.id.receiver_name)
+    @Bind(R2.id.receiver_name)
     public TextView vReceiver;
-    @Bind(R.id.insert_receiver_name)
+    @Bind(R2.id.insert_receiver_name)
     public TextView vInsertReceiver;
-    @Bind(R.id.dest)
+    @Bind(R2.id.dest)
     public TextView vDest;
-    @Bind(R.id.insert_dest)
+    @Bind(R2.id.insert_dest)
     public TextView vInsertDest;
-    @Bind(R.id.shipping)
+    @Bind(R2.id.shipping)
     public TextView vShipping;
-    @Bind(R.id.insert_shipping)
+    @Bind(R2.id.insert_shipping)
     public TextView vInsertShipping;
-    @Bind(R.id.insert_sender_detail)
+    @Bind(R2.id.insert_sender_detail)
     public TextView vInsertSenderDS;
-    @Bind(R.id.sender_detail)
+    @Bind(R2.id.sender_detail)
     public TextView vSenderDS;
-    @Bind(R.id.dropshipper)
+    @Bind(R2.id.dropshipper)
     public View Dropshipper;
-    @Bind(R.id.insert_dropshipper)
+    @Bind(R2.id.insert_dropshipper)
     public View InsertDropshipper;
-    @Bind(R.id.info_view)
+    @Bind(R2.id.info_view)
     public View InfoView;
-    @Bind(R.id.insert_view)
+    @Bind(R2.id.insert_view)
     public View InsertView;
-    @Bind(R.id.user_name)
+    @Bind(R2.id.user_name)
     public TextView UserName;
-    @Bind(R.id.insert_user_name)
+    @Bind(R2.id.insert_user_name)
     public TextView InsertUserName;
-    @Bind(R.id.but_overflow)
+    @Bind(R2.id.but_overflow)
     public LinearLayout BtnOverflow;
-    @Bind(R.id.deadline)
+    @Bind(R2.id.deadline)
     public TextView Deadline;
-    @Bind(R.id.deadline_view)
+    @Bind(R2.id.deadline_view)
     public View DeadlineView;
-    @Bind(R.id.invoice_text)
+    @Bind(R2.id.invoice_text)
     public TextView Invoice;
-    @Bind(R.id.shipping_price)
+    @Bind(R2.id.shipping_price)
     public TextView vShippingPrice;
-    @Bind(R.id.cancel_but)
+    @Bind(R2.id.cancel_but)
     public ImageView CancelBut;
-    @Bind(R.id.camera_but)
+    @Bind(R2.id.camera_but)
     public ImageView CameraBut;
-    @Bind(R.id.main_view)
+    @Bind(R2.id.main_view)
     public View MainView;
 //
 //    public ShippingViewHolder(View itemView) {

@@ -21,6 +21,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.tkpd.GalleryBrowser;
 import com.tokopedia.tkpd.ImageGallery;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterActivity;
 import com.tokopedia.tkpd.network.NetworkErrorHelper;
 import com.tokopedia.tkpd.purchase.adapter.TxVerInvoiceAdapter;
@@ -59,23 +60,23 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
     private TxVerData txVerData;
     private TxVerInvoiceAdapter invoiceAdapter;
 
-    @Bind(R.id.listView1)
+    @Bind(R2.id.listView1)
     ListView lvInvoice;
-    @Bind(R.id.date)
+    @Bind(R2.id.date)
     TextView tvPaymentDate;
-    @Bind(R.id.total_invoice)
+    @Bind(R2.id.total_invoice)
     TextView tvAmountPayment;
-    @Bind(R.id.account_owner)
+    @Bind(R2.id.account_owner)
     TextView tvOwnerAccountBank;
-    @Bind(R.id.account_number)
+    @Bind(R2.id.account_number)
     TextView tvSysAccountBank;
-    @Bind(R.id.changePayment)
+    @Bind(R2.id.changePayment)
     View btnEditPayment;
-    @Bind(R.id.upload_button)
+    @Bind(R2.id.upload_button)
     View btnUploadProof;
-    @Bind(R.id.transfer_account_information)
+    @Bind(R2.id.transfer_account_information)
     RelativeLayout holderAccountBankInfo;
-    @Bind(R.id.indomaret_code_detail_label)
+    @Bind(R2.id.indomaret_code_detail_label)
     TextView tvPaymentCode;
 
     private TkpdProgressDialog mProgressDialog;
@@ -248,12 +249,12 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
         }
     }
 
-    @OnClick(R.id.changePayment)
+    @OnClick(R2.id.changePayment)
     void actionEditPayment() {
         presenter.processEditPayment(this, txVerData);
     }
 
-    @OnClick(R.id.upload_button)
+    @OnClick(R2.id.upload_button)
     void actionUploadProof() {
         imageUploadHandler = ImageUploadHandler.createInstance(this);
         AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(this);

@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterActivity;
 import com.tokopedia.tkpd.invoice.listener.InvoiceViewListener;
 import com.tokopedia.tkpd.invoice.model.InvoiceRenderParam;
@@ -37,9 +38,9 @@ public class InvoiceRendererActivity extends BasePresenterActivity<InvoiceRender
 
     private static final String EXTRA_INVOICE_RENDER_PARAM = "EXTRA_INVOICE_RENDER_PARAM";
 
-    @Bind(R.id.webview)
+    @Bind(R2.id.webview)
     WebView webViewOauth;
-    @Bind(R.id.progress_bar)
+    @Bind(R2.id.progress_bar)
     ProgressBar progressBar;
 
     private InvoiceRenderParam invoiceParam;

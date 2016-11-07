@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.inboxreputation.adapter.ImageUploadAdapter;
 import com.tokopedia.tkpd.inboxreputation.intentservice.InboxReviewIntentService;
@@ -61,16 +62,16 @@ public class ImageUploadPreviewFragment extends
     public static final String NAV_UPLOAD_IMAGE = "nav_upload_image";
     private static final int MAX_CHAR = 128;
 
-    @Bind(R.id.preview_image)
+    @Bind(R2.id.preview_image)
     ViewPager previewImage;
 
-    @Bind(R.id.submit)
+    @Bind(R2.id.submit)
     TextView submitButton;
 
-    @Bind(R.id.image_upload_list)
+    @Bind(R2.id.image_upload_list)
     RecyclerView imageRecyclerView;
 
-    @Bind(R.id.image_description)
+    @Bind(R2.id.image_description)
     EditText description;
 
     ImageUploadFragmentPresenter presenter;

@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.manage.people.profile.model.Profile;
 import com.tokopedia.tkpd.manage.people.profile.presenter.ManagePeopleProfileFragmentPresenter;
 
@@ -23,9 +24,9 @@ public class AvatarView extends BaseView<Profile, ManagePeopleProfileFragmentPre
 
     private static final String TAG = AvatarView.class.getSimpleName();
 
-    @Bind(R.id.loading)
+    @Bind(R2.id.loading)
     View loading;
-    @Bind(R.id.avatar)
+    @Bind(R2.id.avatar)
     ImageView avatar;
 
 

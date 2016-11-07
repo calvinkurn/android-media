@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.PreviewProductImage;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.customadapter.ImageUpload;
 import com.tokopedia.tkpd.customadapter.ImageUploadAdapter;
 import com.tokopedia.tkpd.inboxticket.model.inboxticketdetail.TicketReplyDatum;
@@ -41,19 +42,19 @@ public class TicketDataBinder extends DataBinder<TicketDataBinder.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.user_ava)
+        @Bind(R2.id.user_ava)
         ImageView userAva;
 
-        @Bind(R.id.user_name)
+        @Bind(R2.id.user_name)
         TextView userName;
 
-        @Bind(R.id.create_time)
+        @Bind(R2.id.create_time)
         TextView createTime;
 
-        @Bind(R.id.image_upload_layout)
+        @Bind(R2.id.image_upload_layout)
         RecyclerView imageUploadLayout;
 
-        @Bind(R.id.message)
+        @Bind(R2.id.message)
         TextView message;
 
         LabelUtils label;

@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.TActivity;
 
 /**
@@ -129,7 +130,7 @@ public class FilterView extends LinearLayout implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.filter_btn:
+            case R2.id.filter_btn:
                 toggle();
                 break;
         }

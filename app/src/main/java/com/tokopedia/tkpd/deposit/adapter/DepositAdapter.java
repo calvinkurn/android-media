@@ -15,6 +15,7 @@ import android.view.Window;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.tkpd.deposit.model.Deposit;
 
@@ -33,16 +34,16 @@ public class DepositAdapter extends BaseLinearRecyclerViewAdapter {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.date)
+        @Bind(R2.id.date)
         TextView date;
 
-        @Bind(R.id.note)
+        @Bind(R2.id.note)
         TextView note;
 
-        @Bind(R.id.nominal)
+        @Bind(R2.id.nominal)
         TextView nominal;
 
-        @Bind(R.id.balance)
+        @Bind(R2.id.balance)
         TextView balance;
 
         public ViewHolder(View itemView) {

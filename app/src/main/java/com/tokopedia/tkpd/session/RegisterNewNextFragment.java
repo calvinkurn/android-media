@@ -26,6 +26,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.analytics.UnifyTracking;
 import com.tokopedia.tkpd.analytics.model.CustomerWrapper;
 import com.tokopedia.tkpd.home.ParentIndexHome;
@@ -94,25 +95,25 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
         return newInstance(email, password, false);
     }
 
-    @Bind(R.id.register_next_status)
+    @Bind(R2.id.register_next_status)
     LinearLayout registerNextStatus;
-    @Bind(R.id.register_next_status_message)
+    @Bind(R2.id.register_next_status_message)
     TextView registerNextStatusMessage;
-    @Bind(R.id.register_next_step_2)
+    @Bind(R2.id.register_next_step_2)
     LinearLayout registerNextStep2;
-    @Bind(R.id.register_next_full_name)
+    @Bind(R2.id.register_next_full_name)
     EditText registerNextFullName;
-    @Bind(R.id.register_next_phone_number)
+    @Bind(R2.id.register_next_phone_number)
     EditText registerNextPhoneNumber;
-    @Bind(R.id.register_next_male)
+    @Bind(R2.id.register_next_male)
     RadioButton registerNextMale;
-    @Bind(R.id.register_next_female)
+    @Bind(R2.id.register_next_female)
     RadioButton registerNextFemale;
-    @Bind(R.id.register_next_date)
+    @Bind(R2.id.register_next_date)
     TextView registerNextDate;
-    @Bind(R.id.register_finish_button)
+    @Bind(R2.id.register_finish_button)
     TextView registerFinish;
-    @Bind(R.id.register_next_detail_t_and_p)
+    @Bind(R2.id.register_next_detail_t_and_p)
     TextView registerNextTAndC;
 
     @Override
@@ -142,7 +143,7 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
         return R.layout.fragment_register_4;
     }
 
-    @OnClick(R.id.register_finish_button)
+    @OnClick(R2.id.register_finish_button)
     public void registerFinish(){
         String mName = registerNextFullName.getText().toString();
         String mPhone = registerNextPhoneNumber.getText().toString();
@@ -207,7 +208,7 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
 
     }
 
-    @OnClick(R.id.register_next_date)
+    @OnClick(R2.id.register_next_date)
     public void onDateTextClick(){
         //datePicker.show();
         DatePickerUtil datePicker = new DatePickerUtil(getActivity(), 1, 1, 2002);
@@ -217,19 +218,19 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
         datePicker.DatePickerCalendar((DatePickerUtil.onDateSelectedListener)presenter);
     }
 
-    @OnClick({R.id.register_next_male, R.id.register_next_female})
+    @OnClick({R2.id.register_next_male, R2.id.register_next_female})
     public void onRadioButtonClicked(View view) {
         // Is the button now checked?
         boolean checked = ((RadioButton) view).isChecked();
 
         switch(view.getId()) {
-            case R.id.register_next_male:
+            case R2.id.register_next_male:
                 if (checked)
                     registerNextFemale.setChecked(false);
 
                 presenter.updateData(RegisterNewNext.GENDER, RegisterViewModel.GENDER_MALE);
                 break;
-            case R.id.register_next_female:
+            case R2.id.register_next_female:
                 if (checked)
                     registerNextMale.setChecked(false);
 

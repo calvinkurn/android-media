@@ -82,7 +82,7 @@ public class InboxTalkFilterDialog {
             public void onShow(DialogInterface dialogInterface) {
                 BottomSheetDialog dialog = (BottomSheetDialog) dialogInterface;
                 FrameLayout frameLayout = (FrameLayout)
-                        dialog.findViewById(android.support.design.R.id.design_bottom_sheet);
+                        dialog.findViewById(R.id.design_bottom_sheet);
                 if (frameLayout != null) {
                     BottomSheetBehavior<FrameLayout> behavior = BottomSheetBehavior.from(frameLayout);
                     behavior.setHideable(false);

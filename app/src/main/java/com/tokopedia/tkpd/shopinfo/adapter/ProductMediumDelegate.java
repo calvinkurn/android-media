@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.BadgeUtil;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.customwidget.SquareImageView;
 import com.tokopedia.tkpd.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.tkpd.shopinfo.models.productmodel.List;
@@ -27,18 +28,18 @@ import butterknife.ButterKnife;
 public class ProductMediumDelegate {
 
     public class VHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.img)
+        @Bind(R2.id.img)
         public SquareImageView img;
-        @Bind(R.id.product_name)
+        @Bind(R2.id.product_name)
         public TextView name;
-        @Bind(R.id.product_price)
+        @Bind(R2.id.product_price)
         public TextView price;
-        @Bind(R.id.preorder)
+        @Bind(R2.id.preorder)
         public View preorder;
-        @Bind(R.id.grosir)
+        @Bind(R2.id.grosir)
         public View wholesale;
         public View mainView;
-        @Bind(R.id.container_badge)
+        @Bind(R2.id.container_badge)
         public LinearLayout containerBadge;
 
         public VHolder(View itemView) {

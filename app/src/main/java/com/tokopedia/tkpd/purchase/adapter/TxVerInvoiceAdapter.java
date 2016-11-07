@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.purchase.model.response.txverinvoice.Detail;
 
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ public class TxVerInvoiceAdapter extends ArrayAdapter<Detail> {
     }
 
     class ViewHolder {
-        @Bind(R.id.text)
+        @Bind(R2.id.text)
         TextView tvTitle;
 
         public ViewHolder(View convertView) {

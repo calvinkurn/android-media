@@ -8,6 +8,7 @@ import android.widget.ListView;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.MainApplication;
 import com.tokopedia.tkpd.customadapter.ListViewPeopleTransactionSummary;
 import com.tokopedia.tkpd.selling.presenter.PeopleTxCenter;
@@ -26,7 +27,7 @@ import butterknife.Bind;
  * Created by Toped10 on 7/28/2016.
  */
 public class FragmentSellingTxCenter extends BaseFragment<PeopleTxCenter> implements PeopleTxCenterView {
-    @Bind(R.id.menu_list)
+    @Bind(R2.id.menu_list)
     ListView TitleMenuListView;
 
     private RefreshHandler Refresh;

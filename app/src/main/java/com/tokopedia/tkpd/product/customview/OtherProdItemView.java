@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.product.listener.ProductDetailView;
 import com.tokopedia.tkpd.product.model.productother.ProductOther;
 
@@ -19,11 +20,11 @@ import butterknife.Bind;
 public class OtherProdItemView extends BaseView<ProductOther, ProductDetailView> {
     private static final String TAG = OtherProdItemView.class.getSimpleName();
 
-    @Bind(R.id.iv_pic)
+    @Bind(R2.id.iv_pic)
     ImageView ivPic;
-    @Bind(R.id.tv_name)
+    @Bind(R2.id.tv_name)
     TextView tvName;
-    @Bind(R.id.tv_price)
+    @Bind(R2.id.tv_price)
     TextView tvPrice;
 
     public OtherProdItemView(Context context) {

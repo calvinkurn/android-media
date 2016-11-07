@@ -11,6 +11,7 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.DrawerPresenterActivity;
 import com.tokopedia.tkpd.inboxmessage.InboxMessageConstant;
 import com.tokopedia.tkpd.inboxmessage.adapter.MessagePagerAdapter;
@@ -32,9 +33,9 @@ public class InboxMessageActivity extends DrawerPresenterActivity
         implements InboxMessageFragment.DoActionInboxMessageListener,
         InboxMessageConstant, InboxMessageResultReceiver.Receiver {
 
-    @Bind(R.id.pager)
+    @Bind(R2.id.pager)
     ViewPager viewPager;
-    @Bind(R.id.indicator)
+    @Bind(R2.id.indicator)
     TabLayout indicator;
 
     InboxMessageResultReceiver mReceiver;

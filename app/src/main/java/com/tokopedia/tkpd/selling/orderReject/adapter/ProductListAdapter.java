@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.selling.model.orderShipping.OrderProduct;
 import com.tokopedia.tkpd.selling.orderReject.fragment.EditPriceDialog;
 import com.tokopedia.tkpd.selling.orderReject.fragment.EditVarianDialog;
@@ -203,27 +204,27 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.image)
+        @Bind(R2.id.image)
         ImageView imageView;
-        @Bind(R.id.checkbox)
+        @Bind(R2.id.checkbox)
         CheckBox checkBox;
-        @Bind(R.id.title)
+        @Bind(R2.id.title)
         TextView titleTxt;
-        @Bind(R.id.price)
+        @Bind(R2.id.price)
         TextView priceTxt;
-        @Bind(R.id.weight)
+        @Bind(R2.id.weight)
         TextView weightTxt;
-        @Bind(R.id.label_stock_empty)
+        @Bind(R2.id.label_stock_empty)
         TextView labelEmptyStock;
-        @Bind(R.id.edit_description)
+        @Bind(R2.id.edit_description)
         ImageButton editDesc;
-        @Bind(R.id.edit_price)
+        @Bind(R2.id.edit_price)
         ImageButton editPrice;
-        @Bind(R.id.description)
+        @Bind(R2.id.description)
         TextView descTxt;
-        @Bind(R.id.container_description)
+        @Bind(R2.id.container_description)
         LinearLayout containerDesc;
-        @Bind(R.id.container_price)
+        @Bind(R2.id.container_price)
         LinearLayout containerPrice;
         Context context;
 

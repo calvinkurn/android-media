@@ -11,6 +11,8 @@ import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.TextView;
 
+import com.tokopedia.tkpd.R2;
+
 public class ClipboardHandler {
 	private Activity context;
 	
@@ -28,7 +30,7 @@ public class ClipboardHandler {
 			public boolean onMenuItemClick(MenuItem item) {
 				// TODO Auto-generated method stub
 				switch (item.getItemId()) {
-		        case com.tokopedia.tkpd.R.id.action_copy:
+		        case R2.id.action_copy:
 		        	CopyToClipboard(context,((TextView)v).getText().toString());
 		            return false;
 		    }

@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterActivity;
 import com.tokopedia.tkpd.network.NetworkErrorHelper;
 import com.tokopedia.tkpd.purchase.listener.TxConfDetailViewListener;
@@ -42,25 +43,25 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
 
     public static final int REQUEST_CONFIRMATION = 1;
 
-    @Bind(R.id.total_tx)
+    @Bind(R2.id.total_tx)
     TextView tvTotalTx;
-    @Bind(R.id.tx_date)
+    @Bind(R2.id.tx_date)
     TextView tvDateTx;
-    @Bind(R.id.due_date)
+    @Bind(R2.id.due_date)
     TextView tvDueDateTx;
-    @Bind(R.id.total_item)
+    @Bind(R2.id.total_item)
     TextView tvTotalItem;
-    @Bind(R.id.total_item_price)
+    @Bind(R2.id.total_item_price)
     TextView tvTotalItemPrice;
-    @Bind(R.id.deposit_used)
+    @Bind(R2.id.deposit_used)
     TextView tvDepositUsed;
-    @Bind(R.id.lv_cart)
+    @Bind(R2.id.lv_cart)
     LinearLayout lvContainer;
-    @Bind(R.id.check_account)
+    @Bind(R2.id.check_account)
     View btnSysAccountInfo;
-    @Bind(R.id.cancel_button)
+    @Bind(R2.id.cancel_button)
     View btnCancel;
-    @Bind(R.id.confirm_button)
+    @Bind(R2.id.confirm_button)
     View btnConfirm;
 
     private TxConfData txConfData;
@@ -228,17 +229,17 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
         super.onDestroy();
     }
 
-    @OnClick(R.id.check_account)
+    @OnClick(R2.id.check_account)
     void actionCheckAccount() {
         TokopediaBankAccount.createShowAccountDialog(this);
     }
 
-    @OnClick(R.id.cancel_button)
+    @OnClick(R2.id.cancel_button)
     void actionCancelTransaction() {
         presenter.processCancelTransaction(this, txConfData);
     }
 
-    @OnClick(R.id.confirm_button)
+    @OnClick(R2.id.confirm_button)
     void actionConfirmTransaction() {
         presenter.processConfirmTransaction(this, txConfData);
     }
@@ -267,45 +268,45 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
     }
 
     public class HolderCartItem {
-        @Bind(R.id.listview_prod)
+        @Bind(R2.id.listview_prod)
         LinearLayout containerProduct;
-        @Bind(R.id.shop_name)
+        @Bind(R2.id.shop_name)
         TextView tvShopName;
-        @Bind(R.id.total_price)
+        @Bind(R2.id.total_price)
         TextView tvTotalPrice;
-        @Bind(R.id.shipping_address)
+        @Bind(R2.id.shipping_address)
         TextView tvShippingAddress;
-        @Bind(R.id.shipping_agency)
+        @Bind(R2.id.shipping_agency)
         TextView tvShippingAgency;
-        @Bind(R.id.total_weight)
+        @Bind(R2.id.total_weight)
         TextView tvTotalWeight;
-        @Bind(R.id.sub_total)
+        @Bind(R2.id.sub_total)
         TextView tvSubTotal;
-        @Bind(R.id.shipping_cost)
+        @Bind(R2.id.shipping_cost)
         TextView tvShippingCost;
-        @Bind(R.id.insurance_price)
+        @Bind(R2.id.insurance_price)
         TextView tvInsurancePrice;
-        @Bind(R.id.edit)
+        @Bind(R2.id.edit)
         ImageView btnEdit;
-        @Bind(R.id.delete)
+        @Bind(R2.id.delete)
         ImageView btnDelete;
-        @Bind(R.id.error1)
+        @Bind(R2.id.error1)
         TextView tvError1;
-        @Bind(R.id.error2)
+        @Bind(R2.id.error2)
         TextView tvError2;
-        @Bind(R.id.detail_info)
+        @Bind(R2.id.detail_info)
         View viewDetailInfo;
-        @Bind(R.id.detail_info_but)
+        @Bind(R2.id.detail_info_but)
         View btnDetailInfo;
-        @Bind(R.id.error_area)
+        @Bind(R2.id.error_area)
         View viewError;
-        @Bind(R.id.main_view)
+        @Bind(R2.id.main_view)
         View viewMain;
-        @Bind(R.id.insurance)
+        @Bind(R2.id.insurance)
         TextView tvInsurance;
-        @Bind(R.id.remaining_stock)
+        @Bind(R2.id.remaining_stock)
         TextView btnChosen;
-        @Bind(R.id.chevron_sign)
+        @Bind(R2.id.chevron_sign)
         ImageView ivChevron;
 
         public HolderCartItem(View view) {
@@ -314,21 +315,21 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
     }
 
     class HolderProductCartItem {
-        @Bind(R.id.img)
+        @Bind(R2.id.img)
         ImageView ivPic;
-        @Bind(R.id.name)
+        @Bind(R2.id.name)
         TextView tvName;
-        @Bind(R.id.price)
+        @Bind(R2.id.price)
         TextView tvPrice;
-        @Bind(R.id.weight)
+        @Bind(R2.id.weight)
         TextView tvWeight;
-        @Bind(R.id.price_total)
+        @Bind(R2.id.price_total)
         TextView tvPriceTotal;
-        @Bind(R.id.error_msg)
+        @Bind(R2.id.error_msg)
         TextView tvError;
-        @Bind(R.id.notes)
+        @Bind(R2.id.notes)
         TextView tvNotes;
-        @Bind(R.id.qty)
+        @Bind(R2.id.qty)
         TextView tvQty;
 
         public HolderProductCartItem(View view) {

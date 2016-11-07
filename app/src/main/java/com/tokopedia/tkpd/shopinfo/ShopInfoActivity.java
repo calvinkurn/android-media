@@ -302,7 +302,7 @@ public class ShopInfoActivity extends TActivity {
 //    public boolean onCreateOptionsMenu(Menu menu) {TODO
 //        getMenuInflater().inflate(R.menu.menu_shop_info, menu);
 //        return true;
-//    case R.shopId.action_share:
+//    case R2.shopId.action_share:
 //            ShareSocmedHandler.ShareIntent(getActivity(), getString(R.string.message_share_shop), ShopUrl);
 //    return true;
 //    }

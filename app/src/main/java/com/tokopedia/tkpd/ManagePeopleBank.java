@@ -92,7 +92,7 @@ public class ManagePeopleBank extends TActivity implements ManagePeopleBankInter
 	    case android.R.id.home:
 	    	onBackPressed();
 	        return true;
-	    case R.id.action_add_bank :
+	    case R2.id.action_add_bank :
 	    	if(BankNameList.size()<10){
 		    	Intent intent = new Intent(ManagePeopleBank.this, PeopleBankForm.class);
 		    	intent.putExtra("is_verified_phone", isVerified);

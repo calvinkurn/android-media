@@ -23,6 +23,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.GalleryBrowser;
 import com.tokopedia.tkpd.ImageGallery;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.analytics.UnifyTracking;
 import com.tokopedia.tkpd.app.TActivity;
 import com.tokopedia.tkpd.gallery.ImageGalleryEntry;
@@ -55,46 +56,46 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     private TkpdProgressDialog progressDialog;
 
     // SUBMIT BUTTON
-    @Bind(R.id.submit_button)
+    @Bind(R2.id.submit_button)
     TextView submitButton;
 
     // VERIFY PHONE
-    @Bind(R.id.verify_button)
+    @Bind(R2.id.verify_button)
     TextView verifyButton;
-    @Bind(R.id.verify_instruction)
+    @Bind(R2.id.verify_instruction)
     TextView verifyInstruction;
 
     // SHOP AVATAR
-    @Bind(R.id.shop_avatar)
+    @Bind(R2.id.shop_avatar)
     ImageView shopAvatar;
-    @Bind(R.id.myImageViewText)
+    @Bind(R2.id.myImageViewText)
     TextView imageText;
 
     // DOMAIN CHECKER
-    @Bind(R.id.domain)
+    @Bind(R2.id.domain)
     EditText shopDomain;
-    @Bind(R.id.domain_input_layout)
+    @Bind(R2.id.domain_input_layout)
     TextInputLayout domainInput;
 
     // NAME CHECKER
-    @Bind(R.id.shop_name)
+    @Bind(R2.id.shop_name)
     EditText shopName;
-    @Bind(R.id.name_input_layout)
+    @Bind(R2.id.name_input_layout)
     TextInputLayout nameInput;
 
     // TAG CHECKER
-    @Bind(R.id.tag_input_layout)
+    @Bind(R2.id.tag_input_layout)
     TextInputLayout tagInput;
-    @Bind(R.id.shop_tag)
+    @Bind(R2.id.shop_tag)
     EditText shopTag;
 
     // DESC CHECKER
-    @Bind(R.id.desc_input_layout)
+    @Bind(R2.id.desc_input_layout)
     TextInputLayout descInput;
-    @Bind(R.id.shop_desc)
+    @Bind(R2.id.shop_desc)
     EditText shopDesc;
 
-    @OnClick(R.id.verify_button)
+    @OnClick(R2.id.verify_button)
     public void showVerificationDialog(){
         ((TActivity)getActivity()).phoneVerificationUtil.showVerificationDialog();
     }
@@ -110,12 +111,12 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
         }
     }
 
-    @OnClick(R.id.shop_avatar)
+    @OnClick(R2.id.shop_avatar)
     public void startUploadDialog(){
         ImageGalleryEntry.moveToImageGallery((AppCompatActivity)getActivity(), 0, 1);
     }
 
-    @OnClick(R.id.submit_button)
+    @OnClick(R2.id.submit_button)
     public void SubmitDialog(){
         showProgress(true);
         presenter.saveDescTag();
@@ -133,7 +134,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
         }
     }
 
-    @OnTextChanged(R.id.domain)
+    @OnTextChanged(R2.id.domain)
     void domainChanged() {
         if(shopDomain.getText().toString().length() != 0) {
             domainInput.setHint(getString(R.string.title_hint_domain) + " : "
@@ -172,7 +173,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
         }
     }
 
-    @OnTextChanged(R.id.shop_name)
+    @OnTextChanged(R2.id.shop_name)
     void nameChanged(){
         if(shopName.getText().toString().length() != 0) {
             presenter.checkShopName(shopName.getText().toString());
@@ -202,7 +203,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
         return nameInput.isErrorEnabled();
     }
 
-    @OnTextChanged(R.id.shop_tag)
+    @OnTextChanged(R2.id.shop_tag)
     void tagChanged(){
         checkTagError();
     }
@@ -232,7 +233,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
         return tagInput.isErrorEnabled();
     }
 
-    @OnTextChanged(R.id.shop_desc)
+    @OnTextChanged(R2.id.shop_desc)
     void descChanged(){
         checkDescError();
     }

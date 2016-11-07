@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.network.NetworkErrorHelper;
 import com.tokopedia.tkpd.rescenter.edit.customadapter.ProductAdapter;
@@ -44,15 +45,15 @@ public class BuyerEditProductResCenterFragment
     private ActionParameterPassData passData;
     private ProductAdapter adapter;
 
-    @Bind(R.id.invoice)
+    @Bind(R2.id.invoice)
     TextView invoice;
-    @Bind(R.id.shop_name)
+    @Bind(R2.id.shop_name)
     TextView shopName;
-    @Bind(R.id.recycler_view)
+    @Bind(R2.id.recycler_view)
     RecyclerView productRecyclerView;
-    @Bind(R.id.main_view)
+    @Bind(R2.id.main_view)
     View mainView;
-    @Bind(R.id.include_loading)
+    @Bind(R2.id.include_loading)
     View loading;
 
     public static Fragment newInstane(ActionParameterPassData passData) {
@@ -196,13 +197,13 @@ public class BuyerEditProductResCenterFragment
 
     }
 
-    @OnClick(R.id.action_submit)
+    @OnClick(R2.id.action_submit)
     public void onActionSubmit() {
         KeyboardHandler.DropKeyboard(getActivity(), getView());
         presenter.onSubmitButtonClicked(getActivity());
     }
 
-    @OnClick(R.id.action_abort)
+    @OnClick(R2.id.action_abort)
     public void onActionAbort() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(R.string.dialog_discard_changes)

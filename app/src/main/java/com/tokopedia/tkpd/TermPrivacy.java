@@ -28,7 +28,7 @@ public class TermPrivacy extends TActivity {
 
     private Fragment fragment;
     private Uri data;
-    @Bind(R.id.toolbar)
+    @Bind(R2.id.toolbar)
     Toolbar toolbar;
     FragmentManager supportFragmentManager;
 

@@ -12,6 +12,7 @@ import android.widget.EditText;
 
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.network.NetworkErrorHelper;
 import com.tokopedia.tkpd.shopinfo.adapter.ShopFavoritedAdapter;
@@ -27,10 +28,10 @@ import butterknife.Bind;
  */
 public class ShopFavoritedFragment extends BasePresenterFragment<ShopFavoritedFragmentPresenter> implements ShopFavoritedFragmentView {
 
-    @Bind(R.id.main_view)
+    @Bind(R2.id.main_view)
     View mainView;
 
-    @Bind(R.id.favoritee_list)
+    @Bind(R2.id.favoritee_list)
     RecyclerView favoriteeRV;
 
     ShopFavoritedAdapter adapter;

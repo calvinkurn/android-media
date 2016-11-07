@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.catalog.activity.CatalogDetailActivity;
 import com.tokopedia.tkpd.customwidget.SquareImageView;
 import com.tokopedia.tkpd.discovery.activity.BrowseProductActivity;
@@ -83,15 +84,15 @@ public class BrowseCatalogAdapter extends ProductAdapter {
 
     public static class CatalogViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.product_image)
+        @Bind(R2.id.product_image)
         SquareImageView productImage;
-        @Bind(R.id.title)
+        @Bind(R2.id.title)
         TextView title;
-        @Bind(R.id.price)
+        @Bind(R2.id.price)
         TextView price;
-        @Bind(R.id.seller)
+        @Bind(R2.id.seller)
         TextView seller;
-        @Bind(R.id.badges_container)
+        @Bind(R2.id.badges_container)
         LinearLayout badgesContainer;
 
         private Context context;
@@ -111,7 +112,7 @@ public class BrowseCatalogAdapter extends ProductAdapter {
             holder.price.setText(catalogModel.catalogPrice);
         }
 
-        @OnClick(R.id.container)
+        @OnClick(R2.id.container)
         public void onClick() {
 //            Intent intent = new Intent(context, Catalog.class);
 //            Bundle bundle = new Bundle();

@@ -14,6 +14,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.tkpd.manage.people.address.model.AddressModel;
 import com.tokopedia.tkpd.manage.people.address.presenter.ManagePeopleAddressFragmentPresenter;
@@ -37,28 +38,28 @@ public class ManagePeopleAddressAdapter extends BaseLinearRecyclerViewAdapter {
     public class MPAddressViewHolder extends RecyclerView.ViewHolder
             implements OnMapReadyCallback {
 
-        @Bind(R.id.address_name)
+        @Bind(R2.id.address_name)
         TextView addressName;
 
-        @Bind(R.id.address_detail)
+        @Bind(R2.id.address_detail)
         TextView addressDetail;
 
-        @Bind(R.id.mapview)
+        @Bind(R2.id.mapview)
         MapView mapView;
 
-        @Bind(R.id.action_edit)
+        @Bind(R2.id.action_edit)
         View editBtn;
 
-        @Bind(R.id.action_delete)
+        @Bind(R2.id.action_delete)
         View deleteBtn;
 
-        @Bind(R.id.action_default)
+        @Bind(R2.id.action_default)
         View defaultBtn;
 
-        @Bind(R.id.layout)
+        @Bind(R2.id.layout)
         View layoutMap;
 
-        @Bind(R.id.label_no_location)
+        @Bind(R2.id.label_no_location)
         View noLocationLabel;
 
         GoogleMap googleMap;

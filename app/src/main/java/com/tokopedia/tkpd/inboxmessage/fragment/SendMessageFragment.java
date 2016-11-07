@@ -15,6 +15,7 @@ import android.widget.EditText;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.app.BasePresenterFragment;
 import com.tokopedia.tkpd.inboxmessage.listener.SendMessageFragmentView;
 import com.tokopedia.tkpd.inboxmessage.presenter.SendMessagePresenter;
@@ -36,19 +37,19 @@ public class SendMessageFragment extends BasePresenterFragment<SendMessagePresen
     public static final java.lang.String PARAM_USER_ID = "to_user_id";
 
 
-    @Bind(R.id.send_msg_to)
+    @Bind(R2.id.send_msg_to)
     EditText sendTo;
 
-    @Bind(R.id.send_msg_content)
+    @Bind(R2.id.send_msg_content)
     EditText sendContent;
 
-    @Bind(R.id.send_msg_subject)
+    @Bind(R2.id.send_msg_subject)
     EditText sendSubject;
 
-    @Bind(R.id.send_msg_content_layout)
+    @Bind(R2.id.send_msg_content_layout)
     TextInputLayout sendContentLayout;
 
-    @Bind(R.id.send_msg_subject_layout)
+    @Bind(R2.id.send_msg_subject_layout)
     TextInputLayout sendSubjectLayout;
 
     TkpdProgressDialog mProgressDialog;
@@ -99,7 +100,7 @@ public class SendMessageFragment extends BasePresenterFragment<SendMessagePresen
             case android.R.id.home:
                 onBackPressed();
                 return true;
-            case R.id.action_send:
+            case R2.id.action_send:
                 presenter.doSendMessage();
                 break;
         }

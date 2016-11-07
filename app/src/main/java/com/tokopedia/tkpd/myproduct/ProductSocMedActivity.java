@@ -23,6 +23,7 @@ import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.DownloadResultSender;
 import com.tokopedia.tkpd.GalleryBrowser;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.instoped.model.InstagramMediaModel;
 import com.tokopedia.tkpd.instoped.model.InstagramMediaModelParc;
 import com.tokopedia.tkpd.myproduct.dialog.DialogFragmentImageAddProduct;
@@ -65,13 +66,13 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
         ,ImageChooserDialog.SelectWithImage
 {
     public static final String DEFAULT_HTTP = "http://www.glamour.com/images/fashion/2016/03/Iskra-02-main.jpg";
-    @Bind(R.id.toolbar)
+    @Bind(R2.id.toolbar)
     Toolbar toolbar;
 
-    @Bind(R.id.products_soc_med_thumbnail)
+    @Bind(R2.id.products_soc_med_thumbnail)
     RecyclerView productsSocMedThumnNail;
 
-    @Bind(R.id.product_soc_med_viewpager)
+    @Bind(R2.id.product_soc_med_viewpager)
     ViewPager productSocMedViewPager;
 
     PagerAdapter2 pagerAdapter;
@@ -664,7 +665,7 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.home:
+            case R2.id.home:
                 Log.d(TAG, messageTAG+" R.id.home !!!");
                 return true;
             case android.R.id.home:
