@@ -18,7 +18,7 @@
                 android:padding="@dimen/margin_small"
                 android:text="@string/klikbca_image_preview_zoom_instruction"
                 android:textColor="@color/white"/>
-            <com.tokopedia.tkpd.customwidget.TouchImageView
+            <com.tokopedia.core.customwidget.TouchImageView
                 android:id="@+id/examined_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />

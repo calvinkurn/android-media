@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:visibility="gone" />
 
-    <com.tokopedia.tkpd.customadapter.LazyListView
+    <com.tokopedia.core.customadapter.LazyListView
         android:id="@+id/listview_etalase"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

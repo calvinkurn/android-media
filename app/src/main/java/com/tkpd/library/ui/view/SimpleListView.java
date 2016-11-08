@@ -9,7 +9,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.tkpd.R;
+import com.tokopedia.core.R;
 
 /**
  * Created by Tkpd_Eka on 12/22/2014.

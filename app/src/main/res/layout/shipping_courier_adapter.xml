@@ -37,7 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-        <com.tokopedia.tkpd.shipping.customview.PackageView
+        <com.tokopedia.core.shipping.customview.PackageView
             android:id="@+id/children_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

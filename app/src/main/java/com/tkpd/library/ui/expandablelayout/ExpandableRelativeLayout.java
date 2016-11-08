@@ -16,7 +16,7 @@ import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.RelativeLayout;
 
-import com.tokopedia.tkpd.R;
+import com.tokopedia.core.R;
 
 import java.util.ArrayList;
 import java.util.List;

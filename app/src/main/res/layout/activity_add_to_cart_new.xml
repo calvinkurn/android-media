@@ -12,7 +12,7 @@
     android:padding="10dp"
     android:isScrollContainer="false"
     android:scrollbars="none"
-    tools:context="com.tokopedia.tkpd.addtocart.activity.AddToCartActivity">
+    tools:context="com.tokopedia.core.addtocart.activity.AddToCartActivity">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

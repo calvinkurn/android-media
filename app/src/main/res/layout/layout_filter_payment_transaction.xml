@@ -35,7 +35,7 @@
             <!--android:scrollHorizontally="true"-->
             <!--android:inputType="text"-->
             <!--android:ellipsize="end"/> -->
-            <com.tokopedia.tkpd.purchase.view.ClearableEditText
+            <com.tokopedia.core.purchase.view.ClearableEditText
                 android:id="@+id/search"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

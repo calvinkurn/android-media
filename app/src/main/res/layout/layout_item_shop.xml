@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.tokopedia.tkpd.customwidget.SquareImageView
+        <com.tokopedia.core.customwidget.SquareImageView
             android:id="@+id/item_shop_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

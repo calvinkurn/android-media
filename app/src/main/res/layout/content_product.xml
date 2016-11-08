@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.tokopedia.tkpd.myproduct.ProductActivity"
+    tools:context="com.tokopedia.core.myproduct.ProductActivity"
     tools:showIn="@layout/activity_product">
 
     <FrameLayout

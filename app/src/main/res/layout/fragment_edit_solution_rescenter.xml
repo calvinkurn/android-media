@@ -50,21 +50,21 @@
                     android:text="@string/title_shop"
                     android:textSize="@dimen/font_small" />
 
-                <com.tokopedia.tkpd.rescenter.edit.customview.EditAttachmentView
+                <com.tokopedia.core.rescenter.edit.customview.EditAttachmentView
                     android:id="@+id/view_attachment_section"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_small"
                     />
 
-                <com.tokopedia.tkpd.rescenter.edit.customview.EditSolutionView
+                <com.tokopedia.core.rescenter.edit.customview.EditSolutionView
                     android:id="@+id/view_solution_section"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_small"
                     />
 
-                <com.tokopedia.tkpd.rescenter.edit.customview.MessageView
+                <com.tokopedia.core.rescenter.edit.customview.MessageView
                     android:id="@+id/view_message_section"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

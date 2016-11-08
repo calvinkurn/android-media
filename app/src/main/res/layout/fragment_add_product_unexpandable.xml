@@ -112,7 +112,7 @@
                         android:layout_marginLeft="3dp"
                         android:textSize="@dimen/new_text_size_small" />
 
-                    <com.tokopedia.tkpd.myproduct.adapter.ClickToSelectWithImage
+                    <com.tokopedia.core.myproduct.adapter.ClickToSelectWithImage
                         android:id="@+id/add_product_catalog"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

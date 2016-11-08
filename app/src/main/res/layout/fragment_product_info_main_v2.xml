@@ -27,25 +27,25 @@
             android:animateLayoutChanges="true"
             android:orientation="vertical">
 
-            <com.tokopedia.tkpd.product.customview.ErrorShopView
+            <com.tokopedia.core.product.customview.ErrorShopView
                 android:id="@id/view_error_shop"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/padding_small" />
 
-            <com.tokopedia.tkpd.product.customview.ErrorProductView
+            <com.tokopedia.core.product.customview.ErrorProductView
                 android:id="@id/view_error_product"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/padding_small" />
 
-            <com.tokopedia.tkpd.product.customview.HeaderInfoView
+            <com.tokopedia.core.product.customview.HeaderInfoView
                 android:id="@id/view_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical" />
 
-            <com.tokopedia.tkpd.product.customview.PictureView
+            <com.tokopedia.core.product.customview.PictureView
                 android:id="@id/view_picture"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -53,75 +53,75 @@
                 android:paddingBottom="@dimen/margin_vs"
                 android:paddingTop="@dimen/margin_vs" />
 
-            <com.tokopedia.tkpd.product.customview.ManageView
+            <com.tokopedia.core.product.customview.ManageView
                 android:id="@id/view_manage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical" />
 
-            <com.tokopedia.tkpd.product.customview.RatingView
+            <com.tokopedia.core.product.customview.RatingView
                 android:id="@id/view_rating"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_small"
                 />
 
-            <com.tokopedia.tkpd.product.customview.TalkReviewView
+            <com.tokopedia.core.product.customview.TalkReviewView
                 android:id="@id/view_talk_review"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_small" />
 
-            <com.tokopedia.tkpd.product.customview.ButtonShareView
+            <com.tokopedia.core.product.customview.ButtonShareView
                 android:id="@id/view_share"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <com.tokopedia.tkpd.product.customview.TransactionSuccessView
+            <com.tokopedia.core.product.customview.TransactionSuccessView
                 android:id="@id/view_transaction_success"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_small" />
 
-            <com.tokopedia.tkpd.product.customview.FreeReturnView
+            <com.tokopedia.core.product.customview.FreeReturnView
                 android:id="@+id/view_free_return"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <com.tokopedia.tkpd.product.customview.DetailInfoView
+            <com.tokopedia.core.product.customview.DetailInfoView
                 android:id="@id/view_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <com.tokopedia.tkpd.product.customview.DescriptionView
+            <com.tokopedia.core.product.customview.DescriptionView
                 android:id="@id/view_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <com.tokopedia.tkpd.product.customview.WholesaleView
+            <com.tokopedia.core.product.customview.WholesaleView
                 android:id="@id/view_wholesale"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <com.tokopedia.tkpd.product.customview.LastUpdateView
+            <com.tokopedia.core.product.customview.LastUpdateView
                 android:id="@id/view_last_update"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <com.tokopedia.tkpd.product.customview.ShopInfoView
+            <com.tokopedia.core.product.customview.ShopInfoView
                 android:id="@id/view_shop_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <com.tokopedia.tkpd.product.customview.NewShopView
+            <com.tokopedia.core.product.customview.NewShopView
                 android:id="@id/view_new_shop"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
     </ScrollView>
 
-    <com.tokopedia.tkpd.product.customview.ButtonBuyView
+    <com.tokopedia.core.product.customview.ButtonBuyView
         android:id="@id/view_buy"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

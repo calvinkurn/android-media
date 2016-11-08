@@ -53,7 +53,7 @@
                 android:src="@drawable/ic_menu_search" />
         </LinearLayout>
 
-        <com.tokopedia.tkpd.customwidget.SwipeToRefresh
+        <com.tokopedia.core.customwidget.SwipeToRefresh
             android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -68,7 +68,7 @@
                 android:scrollbars="vertical"
                 />
 
-        </com.tokopedia.tkpd.customwidget.SwipeToRefresh>
+        </com.tokopedia.core.customwidget.SwipeToRefresh>
 
     </LinearLayout>
 

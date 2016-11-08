@@ -69,7 +69,7 @@
                     android:textSize="@dimen/fonts" />
             </LinearLayout>
 
-            <com.tokopedia.tkpd.session.PasswordView
+            <com.tokopedia.core.session.PasswordView
                 android:id="@+id/password"
                 style="@style/CustomFont"
                 android:layout_width="match_parent"
@@ -84,7 +84,7 @@
                 android:textColor="@color/black"
                 android:textSize="@dimen/font_small" />
 
-            <com.tokopedia.tkpd.session.PasswordView
+            <com.tokopedia.core.session.PasswordView
                 android:id="@+id/password_retype"
                 style="@style/CustomFont"
                 android:layout_width="match_parent"

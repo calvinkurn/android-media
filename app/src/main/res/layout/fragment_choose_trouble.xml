@@ -51,20 +51,20 @@
                     android:text="@string/title_shop"
                     android:textSize="@dimen/font_small" />
 
-                <com.tokopedia.tkpd.rescenter.create.customview.ChooseCategorySectionCreateResCenterView
+                <com.tokopedia.core.rescenter.create.customview.ChooseCategorySectionCreateResCenterView
                     android:id="@+id/view_category_section"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_small"/>
 
 
-                <com.tokopedia.tkpd.rescenter.create.customview.ChooseTroubleSectionCreateResCenterView
+                <com.tokopedia.core.rescenter.create.customview.ChooseTroubleSectionCreateResCenterView
                     android:id="@+id/view_trouble_section"
                     android:layout_marginTop="@dimen/margin_small"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
-                <com.tokopedia.tkpd.rescenter.create.customview.ChooseProductSectionCreateResCenterView
+                <com.tokopedia.core.rescenter.create.customview.ChooseProductSectionCreateResCenterView
                     android:id="@+id/view_product_section"
                     android:layout_marginTop="@dimen/margin_small"
                     android:layout_width="match_parent"

@@ -1,7 +1,6 @@
 package com.tkpd.library.utils;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -29,10 +28,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tokopedia.tkpd.app.MainApplication;
-import com.tokopedia.tkpd.network.retrofit.response.ResponseStatus;
-import com.tokopedia.tkpd.selling.model.partialDetails;
-import com.tokopedia.tkpd.R;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.network.retrofit.response.ResponseStatus;
+import com.tokopedia.core.selling.model.partialDetails;
+import com.tokopedia.core.R;
 
 import java.io.File;
 import java.io.FileNotFoundException;

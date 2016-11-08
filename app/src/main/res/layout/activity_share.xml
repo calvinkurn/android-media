@@ -6,6 +6,6 @@
     android:id="@+id/container"
     android:animateLayoutChanges="true"
     tools:ignore="MergeRootFrame"
-    tools:context="com.tokopedia.tkpd.share.ShareActivity"/>
+    tools:context="com.tokopedia.core.share.ShareActivity"/>
 
 

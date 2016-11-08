@@ -8,7 +8,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context="com.tokopedia.tkpd.MaintenancePage$PlaceholderFragment" >
+    tools:context="com.tokopedia.core.MaintenancePage$PlaceholderFragment" >
 
     <ImageView
         android:layout_width="wrap_content"

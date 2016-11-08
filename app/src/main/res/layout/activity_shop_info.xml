@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.tokopedia.tkpd.shopinfo.ShopInfoActivity">
+    tools:context="com.tokopedia.core.shopinfo.ShopInfoActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@id/app_bar_layout"

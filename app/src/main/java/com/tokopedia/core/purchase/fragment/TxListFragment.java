@@ -1,0 +1,514 @@
+package com.tokopedia.core.purchase.fragment;
+
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.Dialog;
+import android.app.Fragment;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.view.LayoutInflater;
+import android.view.View;
+
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.core.R;
+import com.tokopedia.core.R2;
+import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.customadapter.LazyListView;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.purchase.adapter.TxListAdapter;
+import com.tokopedia.core.purchase.interactor.TxOrderNetInteractor;
+import com.tokopedia.core.purchase.listener.TxListViewListener;
+import com.tokopedia.core.purchase.model.AllTxFilter;
+import com.tokopedia.core.purchase.model.response.txlist.OrderData;
+import com.tokopedia.core.purchase.presenter.TxListPresenter;
+import com.tokopedia.core.purchase.presenter.TxListPresenterImpl;
+import com.tokopedia.core.purchase.receiver.TxListUIReceiver;
+import com.tokopedia.core.purchase.utils.FilterUtils;
+import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.util.RefreshHandler;
+
+import java.util.List;
+
+import butterknife.Bind;
+
+/**
+ * Created by Angga.Prasetiyo on 21/04/2016.
+ * Modified by Kulomady on 26/06/2016
+ */
+public class TxListFragment extends BasePresenterFragment<TxListPresenter> implements
+        TxListViewListener, TxListAdapter.ActionListener,
+        RefreshHandler.OnRefreshHandlerListener, LazyListView.LazyLoadListener,
+        View.OnClickListener, TxBottomSheetFilterDialog.OnFilterListener,
+        TxListUIReceiver.ActionListener {
+
+    public static final int INSTANCE_STATUS = 1;
+    public static final int INSTANCE_RECEIVE = 2;
+    public static final int INSTANCE_ALL = 3;
+    private static final String ARG_PARAM_EXTRA_INSTANCE_TYPE = "ARG_PARAM_EXTRA_INSTANCE_TYPE";
+    private static final String ARG_PARAM_EXTRA_INSTANCE_FILTER = "ARG_PARAM_EXTRA_INSTANCE_FILTER";
+    private static final String ARG_PARAM_EXTRA_INSTANCE_FROM_NOTIFICATION
+            = "ARG_PARAM_EXTRA_INSTANCE_FROM_NOTIFICATION";
+
+    @Bind(R2.id.order_list)
+    LazyListView lvTXList;
+    @Bind(R2.id.fab_filter)
+    FloatingActionButton fabFilter;
+    private View loadMoreView;
+
+    private TkpdProgressDialog progressDialog;
+    private AllTxFilter allTxFilter;
+    private TxListAdapter txListAdapter;
+
+    private PagingHandler pagingHandler = new PagingHandler();
+    private RefreshHandler refreshHandler;
+    private StateFilterListener stateFilterListener;
+
+    private boolean isLoadMoreTerminated = true;
+    private int typeInstance;
+    private boolean isLoading = false;
+    private String txFilterID;
+
+    private TxBottomSheetFilterDialog bottomSheetFilterDialog;
+    private boolean instanceFromNotification;
+    private TxListUIReceiver txUIReceiver;
+
+
+    public static TxListFragment instanceStatusOrder() {
+        TxListFragment fragment = new TxListFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(ARG_PARAM_EXTRA_INSTANCE_TYPE, INSTANCE_STATUS);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    public static TxListFragment instanceDeliverOrder() {
+        TxListFragment fragment = new TxListFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(ARG_PARAM_EXTRA_INSTANCE_TYPE, INSTANCE_RECEIVE);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    public static TxListFragment instanceAllOrder(String txFilterID) {
+        TxListFragment fragment = new TxListFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(ARG_PARAM_EXTRA_INSTANCE_TYPE, INSTANCE_ALL);
+        bundle.putString(ARG_PARAM_EXTRA_INSTANCE_FILTER, txFilterID);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    public static Fragment instanceFromNotification(String txFilterID) {
+        TxListFragment fragment = new TxListFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(ARG_PARAM_EXTRA_INSTANCE_TYPE, INSTANCE_ALL);
+        bundle.putString(ARG_PARAM_EXTRA_INSTANCE_FILTER, txFilterID);
+        bundle.putBoolean(ARG_PARAM_EXTRA_INSTANCE_FROM_NOTIFICATION, true);
+        fragment.setupArguments(bundle);
+        return fragment;
+    }
+
+    @Override
+    protected boolean isRetainInstance() {
+        return false;
+    }
+
+    @Override
+    protected void onFirstTimeLaunched() {
+
+    }
+
+    @Override
+    public void onSaveState(Bundle state) {
+
+    }
+
+    @Override
+    public void onRestoreState(Bundle savedState) {
+
+    }
+
+    @Override
+    protected boolean getOptionsMenuEnable() {
+        return false;
+    }
+
+    @Override
+    protected void initialPresenter() {
+        presenter = new TxListPresenterImpl(this);
+    }
+
+    @Override
+    protected void initialListener(Activity activity) {
+        try {
+            stateFilterListener = (StateFilterListener) activity;
+        } catch (ClassCastException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void setupArguments(Bundle arguments) {
+        this.typeInstance = arguments.getInt(ARG_PARAM_EXTRA_INSTANCE_TYPE);
+        this.txFilterID = arguments.getString(ARG_PARAM_EXTRA_INSTANCE_FILTER,
+                FilterUtils.ALL_STATUS_FILTER_ID);
+        this.instanceFromNotification = arguments.getBoolean(ARG_PARAM_EXTRA_INSTANCE_FROM_NOTIFICATION,
+                false);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        if (isVisibleToUser && !isLoading && getActivity() != null
+                && (txListAdapter == null || txListAdapter.getCount() == 0)) {
+            if (stateFilterListener != null) txFilterID = stateFilterListener.getStateTxFilterID();
+            allTxFilter.setFilter(txFilterID);
+            refreshHandler.startRefresh();
+            if (getView() != null) NetworkErrorHelper.hideEmptyState(getView());
+        } else if (isVisibleToUser && !isLoading && getActivity() != null) {
+            String txFilterBefore = allTxFilter.getFilter();
+            if (stateFilterListener != null) txFilterID = stateFilterListener.getStateTxFilterID();
+            allTxFilter.setFilter(txFilterID);
+            if (FilterUtils.isChangedFilter(txFilterBefore, txFilterID)) {
+                resetData();
+            }
+        }
+        if (bottomSheetFilterDialog != null)
+            bottomSheetFilterDialog.setStateFilterSelection(txFilterID);
+        super.setUserVisibleHint(isVisibleToUser);
+    }
+
+    @Override
+    protected int getFragmentLayout() {
+        return R.layout.fragment_tx_list_order;
+    }
+
+    @SuppressLint("InflateParams")
+    @Override
+    protected void initView(View view) {
+        loadMoreView = LayoutInflater.from(getActivity()).inflate(R.layout.footer_list_view, null);
+        progressDialog = new TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS);
+    }
+
+    @Override
+    protected void setViewListener() {
+        refreshHandler = new RefreshHandler(getActivity(), getView(), this);
+        refreshHandler.setPullEnabled(true);
+        lvTXList.setAdapter(txListAdapter);
+        lvTXList.setOnLazyLoadListener(this);
+        fabFilter.setVisibility(typeInstance == INSTANCE_ALL && !instanceFromNotification
+                ? View.VISIBLE : View.GONE);
+        fabFilter.setOnClickListener(this);
+    }
+
+    private void getData(int typeRequest) {
+        if (getView() != null) NetworkErrorHelper.hideEmptyState(getView());
+        switch (typeInstance) {
+            case INSTANCE_ALL:
+                isLoading = true;
+                presenter.getAllOrderData(getActivity(), pagingHandler.getPage(), allTxFilter, typeRequest);
+                break;
+            case INSTANCE_RECEIVE:
+                isLoading = true;
+                presenter.getDeliverOrderData(getActivity(), pagingHandler.getPage(), typeRequest);
+                break;
+            case INSTANCE_STATUS:
+                isLoading = true;
+                presenter.getStatusOrderData(getActivity(), pagingHandler.getPage(), typeRequest);
+                break;
+        }
+    }
+
+    @Override
+    protected void initialVar() {
+        txListAdapter = new TxListAdapter(getActivity(), typeInstance, this);
+        allTxFilter = AllTxFilter.instanceFirst(txFilterID);
+        bottomSheetFilterDialog = new TxBottomSheetFilterDialog(getActivity(), allTxFilter, this);
+        txUIReceiver = new TxListUIReceiver(this);
+        IntentFilter intentFilter = new IntentFilter(TxListUIReceiver.FILTER_ACTION);
+        getActivity().registerReceiver(txUIReceiver, intentFilter);
+    }
+
+    @Override
+    protected void setActionVar() {
+        initialData();
+    }
+
+    private void initialData() {
+        if (getUserVisibleHint() && !isLoading && getActivity() != null
+                && (txListAdapter == null || txListAdapter.getCount() == 0)) {
+            refreshHandler.startRefresh();
+        }
+    }
+
+    @Override
+    public void navigateToActivityRequest(Intent intent, int requestCode) {
+        startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    public void navigateToActivity(Intent intent) {
+        startActivity(intent);
+    }
+
+    @Override
+    public void showProgressLoading() {
+        progressDialog.showDialog();
+    }
+
+    @Override
+    public void hideProgressLoading() {
+        progressDialog.dismiss();
+    }
+
+    @Override
+    public void showToastMessage(String message) {
+        View view = getView();
+        if (view != null) Snackbar.make(view, message, Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showDialog(Dialog dialog) {
+        if (!dialog.isShowing()) dialog.show();
+    }
+
+    @Override
+    public void dismissDialog(Dialog dialog) {
+        if (dialog.isShowing()) dialog.dismiss();
+    }
+
+    @Override
+    public void closeView() {
+
+    }
+
+    @Override
+    public void renderDataList(List<OrderData> orderDataList, boolean hasNext, int typeRequest) {
+        if (refreshHandler.isRefreshing()) {
+            refreshHandler.finishRefresh();
+            refreshHandler.setPullEnabled(true);
+        }
+        if (typeRequest == TxOrderNetInteractor.TypeRequest.PULL_REFRESH) {
+            pagingHandler.resetPage();
+            txListAdapter.clear();
+            txListAdapter.notifyDataSetChanged();
+        }
+        if (hasNext) pagingHandler.nextPage();
+        pagingHandler.setHasNext(hasNext);
+        txListAdapter.addAll(orderDataList);
+        txListAdapter.notifyDataSetChanged();
+        isLoading = false;
+        isLoadMoreTerminated = false;
+        refreshHandler.setPullEnabled(true);
+        lvTXList.removeFooterView(loadMoreView);
+        if (typeInstance == INSTANCE_ALL && !instanceFromNotification) fabFilter.show();
+    }
+
+    @Override
+    public void showFailedLoadMoreData(String message) {
+        isLoading = false;
+        lvTXList.removeFooterView(loadMoreView);
+        isLoadMoreTerminated = true;
+        View rootView = getView();
+        if (rootView != null)
+            NetworkErrorHelper.createSnackbarWithAction(getActivity(), message,
+                    new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            getData(TxOrderNetInteractor.TypeRequest.LOAD_MORE);
+                        }
+                    }).showRetrySnackbar();
+        if (typeInstance == INSTANCE_ALL && !instanceFromNotification) fabFilter.hide();
+    }
+
+    @Override
+    public void showFailedPullRefresh(String message) {
+        isLoading = false;
+        refreshHandler.finishRefresh();
+        refreshHandler.setPullEnabled(true);
+        View rootView = getView();
+        if (rootView != null) NetworkErrorHelper.showSnackbar(getActivity(), message);
+        if (typeInstance == INSTANCE_ALL && !instanceFromNotification) fabFilter.hide();
+    }
+
+    @Override
+    public void showFailedResetData(String message) {
+        isLoading = false;
+        lvTXList.removeFooterView(loadMoreView);
+        refreshHandler.finishRefresh();
+        refreshHandler.setPullEnabled(false);
+        if (typeInstance == INSTANCE_ALL && !instanceFromNotification) fabFilter.hide();
+        View rootView = getView();
+        if (rootView != null)
+            NetworkErrorHelper.showEmptyState(
+                    getActivity(),
+                    getView(),
+                    new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            refreshHandler.startRefresh();
+                            refreshHandler.setPullEnabled(true);
+                        }
+                    });
+
+    }
+
+    @Override
+    public void showEmptyData(int typeRequest) {
+        isLoading = false;
+        isLoadMoreTerminated = true;
+        lvTXList.removeFooterView(loadMoreView);
+        if (refreshHandler.isRefreshing()) refreshHandler.finishRefresh();
+        switch (typeRequest) {
+            case TxOrderNetInteractor.TypeRequest.INITIAL:
+                switch (typeInstance) {
+                    case INSTANCE_ALL:
+                        lvTXList.addCustomNoResult(getActivity().getResources()
+                                .getString(R.string.error_no_result_date_range)
+                                .replace("start", allTxFilter.getDateStart())
+                                .replace("end", allTxFilter.getDateEnd()));
+                        break;
+                    default:
+                        lvTXList.addNoResult();
+                        break;
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void showProcessGetData(int typeRequest) {
+        lvTXList.removeNoResult();
+        switch (typeRequest) {
+            case TxOrderNetInteractor.TypeRequest.INITIAL:
+                if (!refreshHandler.isRefreshing()) {
+                    refreshHandler.setRefreshing(true);
+                    refreshHandler.setPullEnabled(false);
+                }
+                break;
+            case TxOrderNetInteractor.TypeRequest.LOAD_MORE:
+                lvTXList.addFooterView(loadMoreView);
+                break;
+            case TxOrderNetInteractor.TypeRequest.PULL_REFRESH:
+                if (!refreshHandler.isRefreshing()) {
+                    refreshHandler.setRefreshing(true);
+                    refreshHandler.setPullEnabled(false);
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void resetData() {
+        txListAdapter.clear();
+        pagingHandler.resetPage();
+        txListAdapter.notifyDataSetChanged();
+        refreshHandler.startRefresh();
+    }
+
+    @Override
+    public void showMessageResiNumberCopied(String message) {
+        showToastMessage(message);
+    }
+
+    @Override
+    public void actionToDetail(OrderData data) {
+        presenter.processToDetailOrder(getActivity(), data, typeInstance);
+    }
+
+    @Override
+    public void actionInvoice(OrderData data) {
+        presenter.processToInvoice(getActivity(), data);
+    }
+
+    @Override
+    public void actionUploadTx(OrderData data) {
+        presenter.processUploadTx(getActivity(), data);
+    }
+
+    @Override
+    public void actionConfirmDeliver(OrderData data) {
+        presenter.processConfirmDeliver(getActivity(), data, typeInstance);
+    }
+
+    @Override
+    public void actionTrackOrder(OrderData data) {
+        presenter.processTrackOrder(getActivity(), data);
+    }
+
+    @Override
+    public void actionReject(OrderData data) {
+        presenter.processRejectOrder(getActivity(), data);
+    }
+
+    @Override
+    public void actionDispute(OrderData orderData, int state) {
+        presenter.processOpenDispute(getActivity(), orderData, state);
+    }
+
+    @Override
+    public void actionShowComplain(OrderData orderData) {
+        presenter.processShowComplain(getActivity(), orderData);
+    }
+
+    @Override
+    public void actionCopyResiNumber(String resiNumber) {
+        if (resiNumber != null) showToastMessage(getString(R.string.copied_to_clipboard));
+    }
+
+    @Override
+    public void onRefresh(View view) {
+        if (!isLoading) {
+            pagingHandler.resetPage();
+            getData(txListAdapter.getCount() == 0 ? TxOrderNetInteractor.TypeRequest.INITIAL
+                    : TxOrderNetInteractor.TypeRequest.PULL_REFRESH);
+        }
+    }
+
+    @Override
+    public void onLazyLoad(View view) {
+        if (pagingHandler.CheckNextPage() && !isLoading && !isLoadMoreTerminated)
+            getData(TxOrderNetInteractor.TypeRequest.LOAD_MORE);
+    }
+
+    @Override
+    public void onClick(View v) {
+        int i = v.getId();
+        switch (i) {
+            case R2.id.fab_filter:
+                bottomSheetFilterDialog.show();
+                break;
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.onDestroyView();
+        getActivity().unregisterReceiver(txUIReceiver);
+    }
+
+    @Override
+    public void onFilterSearchButtonClicked(AllTxFilter resultAllTxFilterUpdated) {
+        allTxFilter = resultAllTxFilterUpdated;
+        bottomSheetFilterDialog.dismiss();
+        resetData();
+    }
+
+    @Override
+    public void forceRefreshListData() {
+        resetData();
+    }
+
+    public interface StateFilterListener {
+        String getStateTxFilterID();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        presenter.onActivityResult(getActivity(), requestCode, resultCode, data);
+    }
+}

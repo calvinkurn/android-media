@@ -10,7 +10,7 @@
     android:paddingStart="1sp"
     android:paddingTop="1sp">
 
-    <com.tokopedia.tkpd.customwidget.SquareImageView
+    <com.tokopedia.core.customwidget.SquareImageView
         android:id="@id/iv_pic"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

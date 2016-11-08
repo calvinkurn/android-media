@@ -3,10 +3,9 @@ package com.tkpd.library.utils;
 import android.content.Context;
 
 import com.logentries.logger.AndroidLogger;
-import com.tokopedia.tkpd.app.MainApplication;
-import com.tokopedia.tkpd.gcm.GCMHandler;
-import com.tokopedia.tkpd.util.NewTokenHandler;
-import com.tokopedia.tkpd.util.SessionHandler;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.util.SessionHandler;
 
 import java.io.IOException;
 

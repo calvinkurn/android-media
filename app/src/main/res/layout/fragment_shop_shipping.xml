@@ -27,12 +27,12 @@
             android:animateLayoutChanges="true"
             android:orientation="vertical">
 
-            <com.tokopedia.tkpd.shipping.customview.ShippingHeaderLayout
+            <com.tokopedia.core.shipping.customview.ShippingHeaderLayout
                 android:id="@+id/fragment_shipping_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
-            <com.tokopedia.tkpd.shipping.customview.ShippingAddressLayout
+            <com.tokopedia.core.shipping.customview.ShippingAddressLayout
                 android:id="@+id/shipping_address_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>

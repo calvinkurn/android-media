@@ -23,12 +23,12 @@
         android:orientation="vertical"
         tools:context=".ManageShopNotes">
 
-        <com.tokopedia.tkpd.customwidget.SwipeToRefresh
+        <com.tokopedia.core.customwidget.SwipeToRefresh
             android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.tokopedia.tkpd.customView.SimpleListView
+            <com.tokopedia.core.customView.SimpleListView
                 android:id="@+id/shop_notes"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -36,7 +36,7 @@
                 android:divider="@android:color/transparent"
                 android:dividerHeight="@dimen/margin_small" />
 
-        </com.tokopedia.tkpd.customwidget.SwipeToRefresh>
+        </com.tokopedia.core.customwidget.SwipeToRefresh>
     </LinearLayout>
     </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

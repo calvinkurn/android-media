@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-        <com.tokopedia.tkpd.customwidget.SwipeToRefresh
+        <com.tokopedia.core.customwidget.SwipeToRefresh
             android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -18,7 +18,7 @@
                 android:layout_gravity="center"
                 android:scrollbars="vertical"
                 android:padding="@dimen/padding_vs"/>
-        </com.tokopedia.tkpd.customwidget.SwipeToRefresh>
+        </com.tokopedia.core.customwidget.SwipeToRefresh>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"

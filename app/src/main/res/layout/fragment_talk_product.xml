@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <com.tokopedia.tkpd.customwidget.SwipeToRefresh
+    <com.tokopedia.core.customwidget.SwipeToRefresh
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/swipe_refresh_layout">
@@ -13,7 +13,7 @@
             android:layout_height="match_parent"
             android:id="@+id/recycler_view">
         </android.support.v7.widget.RecyclerView>
-    </com.tokopedia.tkpd.customwidget.SwipeToRefresh>
+    </com.tokopedia.core.customwidget.SwipeToRefresh>
 
     <ProgressBar
         android:id="@+id/include_loading"

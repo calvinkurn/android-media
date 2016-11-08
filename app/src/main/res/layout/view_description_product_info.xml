@@ -21,7 +21,7 @@
             android:textSize="@dimen/fontm"
             android:textStyle="bold" />
 
-        <com.tokopedia.tkpd.product.customview.DescriptionTextView
+        <com.tokopedia.core.product.customview.DescriptionTextView
             android:id="@id/tv_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

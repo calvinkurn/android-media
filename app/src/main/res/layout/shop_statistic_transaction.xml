@@ -61,7 +61,7 @@
         android:layout_marginBottom="@dimen/margin_small"
         android:visibility="visible">
 
-        <com.tokopedia.tkpd.customView.SimplePieChart
+        <com.tokopedia.core.customView.SimplePieChart
             android:layout_width="@dimen/size_pie"
             android:layout_height="@dimen/size_pie"
             android:layout_centerInParent="true"

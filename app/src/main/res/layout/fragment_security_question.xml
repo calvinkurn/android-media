@@ -3,7 +3,7 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:background="@color/tkpd_bg_color_grery"
-    tools:context="com.tokopedia.tkpd.fragment.FragmentSecurityQuestion" >
+    tools:context="com.tokopedia.core.fragment.FragmentSecurityQuestion" >
 
     <LinearLayout
         android:layout_width="match_parent"

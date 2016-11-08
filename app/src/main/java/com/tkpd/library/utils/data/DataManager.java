@@ -2,11 +2,11 @@ package com.tkpd.library.utils.data;
 
 import android.content.Context;
 
-import com.tokopedia.tkpd.database.model.Bank;
-import com.tokopedia.tkpd.database.model.CategoryDB;
-import com.tokopedia.tkpd.database.model.City;
-import com.tokopedia.tkpd.database.model.District;
-import com.tokopedia.tkpd.database.model.Province;
+import com.tokopedia.core.database.model.Bank;
+import com.tokopedia.core.database.model.CategoryDB;
+import com.tokopedia.core.database.model.City;
+import com.tokopedia.core.database.model.District;
+import com.tokopedia.core.database.model.Province;
 
 import java.util.List;
 
@@ -54,7 +54,7 @@ public interface DataManager {
     void getListDepartment2(Context context, DataReceiver dataReceiver, int departmentId);
 
     /**
-     * get all list of shipping city used {@link com.tokopedia.tkpd.discovery.fragment.FragmentBrowseProduct}
+     * get all list of shipping city used {@link com.tokopedia.core.discovery.fragment.FragmentBrowseProduct}
      * or any browse related to it.
      * @param context
      * @param dataReceiver

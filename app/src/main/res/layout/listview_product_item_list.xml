@@ -14,7 +14,7 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <com.tokopedia.tkpd.customwidget.SquareImageView
+        <com.tokopedia.core.customwidget.SquareImageView
             android:id="@+id/product_image"
             android:layout_width="100dp"
             android:layout_height="100dp"
@@ -57,14 +57,14 @@
                     android:textColor="@color/orange_red"
                     android:textSize="12sp" />
 
-                <com.tokopedia.tkpd.customwidget.FlowLayout
+                <com.tokopedia.core.customwidget.FlowLayout
                     android:id="@+id/label_container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="left"
                     android:orientation="horizontal">
 
-                </com.tokopedia.tkpd.customwidget.FlowLayout>
+                </com.tokopedia.core.customwidget.FlowLayout>
 
             </LinearLayout>
 

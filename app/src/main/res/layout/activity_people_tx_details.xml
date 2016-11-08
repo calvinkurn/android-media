@@ -153,7 +153,7 @@
             android:background="@drawable/see_all_bg"
             android:orientation="vertical">
 
-            <com.tokopedia.tkpd.purchase.view.NestedListView
+            <com.tokopedia.core.purchase.view.NestedListView
                 android:id="@+id/product_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.tokopedia.tkpd.R;
+import com.tokopedia.core.R;
 
 public class NoResultHandler {
 

@@ -2,8 +2,8 @@ package com.tkpd.library.utils.data.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.tkpd.database.model.District;
-import com.tokopedia.tkpd.database.model.NetworkModel;
+import com.tokopedia.core.database.model.District;
+import com.tokopedia.core.database.model.NetworkModel;
 
 import java.util.ArrayList;
 import java.util.List;

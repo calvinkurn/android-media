@@ -28,8 +28,8 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.app.MainApplication;
+import com.tokopedia.core.R;
+import com.tokopedia.core.app.MainApplication;
 
 import java.io.File;
 import java.io.IOException;

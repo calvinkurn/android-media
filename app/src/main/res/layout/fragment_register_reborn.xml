@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/cards_ui_2"
-    tools:context="com.tokopedia.tkpd.session.RegisterNewViewFragment">
+    tools:context="com.tokopedia.core.session.RegisterNewViewFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView android:id="@+id/test_text" android:layout_width="match_parent" android:layout_height="match_parent"
@@ -75,7 +75,7 @@
                 android:imeOptions="actionNext"
                 android:textSize="@dimen/font_small" />
 
-            <com.tokopedia.tkpd.session.PasswordView
+            <com.tokopedia.core.session.PasswordView
                 android:id="@+id/register_password"
                 style="@style/CustomFont"
                 android:layout_width="match_parent"

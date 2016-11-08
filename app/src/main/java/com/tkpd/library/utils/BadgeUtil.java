@@ -1,13 +1,10 @@
 package com.tkpd.library.utils;
 
 import android.content.Context;
-import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import com.tokopedia.tkpd.R;
+import com.tokopedia.core.R;
 
 /**
  * Created by zulfikarrahman on 8/31/16.

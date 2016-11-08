@@ -49,14 +49,14 @@
                     android:text="@string/title_shop"
                     android:textSize="@dimen/font_small" />
 
-                <com.tokopedia.tkpd.rescenter.edit.customview.AppealAttachmentView
+                <com.tokopedia.core.rescenter.edit.customview.AppealAttachmentView
                     android:id="@+id/view_attachment_section"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_small"
                     />
 
-                <com.tokopedia.tkpd.rescenter.edit.customview.AppealSolutionView
+                <com.tokopedia.core.rescenter.edit.customview.AppealSolutionView
                     android:id="@+id/view_edit_solution_section"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

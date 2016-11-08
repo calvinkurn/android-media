@@ -10,7 +10,7 @@ import android.content.DialogInterface.OnDismissListener;
 import android.view.Window;
 import android.widget.DatePicker;
 
-import com.tokopedia.tkpd.R;
+import com.tokopedia.core.R;
 
 import java.util.Calendar;
 

@@ -170,7 +170,7 @@
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
-                <com.tokopedia.tkpd.customView.ObservableWebView
+                <com.tokopedia.core.customView.ObservableWebView
                     android:id="@+id/solution"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />

@@ -13,17 +13,17 @@
         android:animateLayoutChanges="true"
         android:orientation="vertical">
 
-        <com.tokopedia.tkpd.manage.people.profile.customview.AvatarView
+        <com.tokopedia.core.manage.people.profile.customview.AvatarView
             android:id="@+id/layout_manage_people_profile_avatar_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <com.tokopedia.tkpd.manage.people.profile.customview.DetailView
+        <com.tokopedia.core.manage.people.profile.customview.DetailView
             android:id="@+id/layout_manage_people_profile_detail_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <com.tokopedia.tkpd.manage.people.profile.customview.ContactView
+        <com.tokopedia.core.manage.people.profile.customview.ContactView
             android:id="@+id/layout_manage_people_profile_contact_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

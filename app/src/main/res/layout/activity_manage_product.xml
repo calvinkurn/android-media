@@ -12,12 +12,12 @@
             android:text="@string/title_no_result"
             android:visibility="gone" />
 
-        <com.tokopedia.tkpd.customwidget.SwipeToRefresh
+        <com.tokopedia.core.customwidget.SwipeToRefresh
             android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.tokopedia.tkpd.customView.SimpleListView
+            <com.tokopedia.core.customView.SimpleListView
                 android:id="@+id/prod_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -27,7 +27,7 @@
                 android:divider="@android:color/transparent"
                 android:listSelector="@android:color/transparent" />
 
-        </com.tokopedia.tkpd.customwidget.SwipeToRefresh>
+        </com.tokopedia.core.customwidget.SwipeToRefresh>
 
         <ImageView
             android:id="@+id/blur_image"

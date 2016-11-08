@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.widget.Toast;
 
-import com.tokopedia.tkpd.R;
+import com.tokopedia.core.R;
 
 public class ToastNetworkHandler {
 

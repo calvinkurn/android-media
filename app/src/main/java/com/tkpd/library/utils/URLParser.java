@@ -3,8 +3,8 @@ package com.tkpd.library.utils;
 import android.content.Context;
 import android.net.Uri;
 
-import com.tokopedia.tkpd.database.manager.DbManagerImpl;
-import com.tokopedia.tkpd.database.model.CategoryDB;
+import com.tokopedia.core.database.manager.DbManagerImpl;
+import com.tokopedia.core.database.model.CategoryDB;
 
 import org.json.JSONException;
 import org.json.JSONObject;

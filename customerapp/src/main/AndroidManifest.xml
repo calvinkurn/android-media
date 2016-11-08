@@ -1,5 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.tokopedia.tkpd3">
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.tokopedia.tkpd">
+
+    <uses-sdk tools:overrideLibrary="com.tokopedia.core"
+        />
+
 
     <application android:allowBackup="true"
                  android:icon="@drawable/qc_launcher"
@@ -7,7 +12,7 @@
                  android:supportsRtl="true"
                  android:theme="@style/Theme.Tokopedia3.Launcher">
         <activity
-            android:name="com.tokopedia.tkpd.SplashScreen"
+            android:name="com.tokopedia.core.SplashScreen"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
             <intent-filter>

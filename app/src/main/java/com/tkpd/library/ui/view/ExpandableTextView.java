@@ -23,7 +23,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.tkpd.R;
+import com.tokopedia.core.R;
 
 /**
  * @author anggaprasetiyo on 10/19/16.

@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
-import com.tokopedia.tkpd.R;
+import com.tokopedia.core.R;
 
 /**
  * Created by raditya.gumay on 07/03/2016.

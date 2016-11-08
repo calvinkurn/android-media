@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:background="@color/white" >
 
-            <com.tokopedia.tkpd.customwidget.SquareImageView
+            <com.tokopedia.core.customwidget.SquareImageView
                 android:id="@+id/shop_image_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -106,7 +106,7 @@
             android:layout_height="wrap_content"
             android:background="@color/white" >
 
-            <com.tokopedia.tkpd.customwidget.SquareImageView
+            <com.tokopedia.core.customwidget.SquareImageView
                 android:id="@+id/shop_image_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

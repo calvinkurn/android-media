@@ -12,7 +12,7 @@
         android:animateLayoutChanges="true"
         android:orientation="vertical">
 
-        <com.tokopedia.tkpd.people.customview.PeopleInfoHeaderView
+        <com.tokopedia.core.people.customview.PeopleInfoHeaderView
             android:id="@+id/layout_people_info_header_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
@@ -23,17 +23,17 @@
             android:layout_marginBottom="@dimen/margin_small"
             android:background="@color/greyish_bg" />
 
-        <com.tokopedia.tkpd.people.customview.PeopleInfoDetailView
+        <com.tokopedia.core.people.customview.PeopleInfoDetailView
             android:id="@+id/layout_people_info_detail_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <com.tokopedia.tkpd.people.customview.PeopleInfoReputationView
+        <com.tokopedia.core.people.customview.PeopleInfoReputationView
             android:id="@+id/layout_people_info_reputation_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <com.tokopedia.tkpd.people.customview.PeopleInfoShopOwnerView
+        <com.tokopedia.core.people.customview.PeopleInfoShopOwnerView
             android:id="@+id/layout_people_info_shop_owner_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.support.design.widget.Snackbar;
 import android.widget.TextView;
 
-import com.tokopedia.tkpd.R;
+import com.tokopedia.core.R;
 
 import com.tkpd.library.kirisame.Kirisame;
 

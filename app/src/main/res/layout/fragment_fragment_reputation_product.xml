@@ -14,7 +14,7 @@
         android:visibility="gone"
         android:layout_marginBottom="@dimen/margin_vs"
          />
-    <com.tokopedia.tkpd.customwidget.SwipeToRefresh
+    <com.tokopedia.core.customwidget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_gravity="center"
@@ -31,7 +31,7 @@
             android:visibility="gone" />
 
 
-    </com.tokopedia.tkpd.customwidget.SwipeToRefresh>
+    </com.tokopedia.core.customwidget.SwipeToRefresh>
     <ProgressBar
         android:id="@+id/include_loading"
         android:layout_width="wrap_content"

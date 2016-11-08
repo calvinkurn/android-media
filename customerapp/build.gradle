@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         multiDexEnabled = true
-        applicationId "com.tokopedia.tkpd3"
+        applicationId "com.tokopedia.tkpd"
         minSdkVersion 15
         targetSdkVersion 24
         versionCode 1
