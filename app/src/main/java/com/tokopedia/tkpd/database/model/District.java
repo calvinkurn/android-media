@@ -25,7 +25,7 @@ import java.util.List;
  * modified by m.normansyah on 6/10/2016
  */
 @ModelContainer
-@Table(database = DbFlowDatabase.class, primaryKeyConflict = ConflictAction.REPLACE)
+@Table(database = DbFlowDatabase.class, insertConflict = ConflictAction.REPLACE, updateConflict = ConflictAction.REPLACE)
 public class District extends BaseModel implements DatabaseConstant, Convert<ListDistricts.Districts, District>{
     public static final String DISTRICT_CITY_ID = "district_city_id";
     public static final String DISTRICT_ID = "district_id";

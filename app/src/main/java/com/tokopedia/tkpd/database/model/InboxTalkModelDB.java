@@ -11,7 +11,7 @@ import com.tokopedia.tkpd.database.DbFlowDatabase;
  * Created by stevenfredian on 4/11/16.
  */
 
-@Table(database = DbFlowDatabase.class, primaryKeyConflict = ConflictAction.REPLACE)
+@Table(database = DbFlowDatabase.class, insertConflict = ConflictAction.REPLACE, updateConflict = ConflictAction.REPLACE)
 public class InboxTalkModelDB extends BaseModel {
 
     @PrimaryKey

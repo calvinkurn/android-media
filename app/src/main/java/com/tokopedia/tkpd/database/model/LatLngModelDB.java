@@ -10,7 +10,7 @@ import com.tokopedia.tkpd.database.DbFlowDatabase;
 /**
  * Created by hangnadi on 2/3/16.
  */
-@Table(database = DbFlowDatabase.class, primaryKeyConflict = ConflictAction.REPLACE)
+@Table(database = DbFlowDatabase.class, insertConflict = ConflictAction.REPLACE, updateConflict = ConflictAction.REPLACE)
 public class LatLngModelDB extends BaseModel {
 
     @PrimaryKey

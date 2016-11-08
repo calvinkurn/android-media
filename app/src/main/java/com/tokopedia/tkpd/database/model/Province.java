@@ -23,7 +23,7 @@ import java.util.List;
  * modified by m.normansyah on 6/10/2016
  */
 @ModelContainer
-@Table(database = DbFlowDatabase.class, primaryKeyConflict = ConflictAction.REPLACE)
+@Table(database = DbFlowDatabase.class, insertConflict = ConflictAction.REPLACE, updateConflict = ConflictAction.REPLACE)
 public class Province extends BaseModel implements DatabaseConstant, Convert<ListProvince.Province, Province>{
 
     public static final String PROVINCE_ID = "province_id";

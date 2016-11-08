@@ -2465,9 +2465,8 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         if(level==1){
             categoryDBs = new Select().from(CategoryDB.class).where(CategoryDB_Table.levelId.is(level)).queryList();
         }else{
-            categoryDBs = new Select().from(CategoryDB.class).where(
-                    ConditionGroup.clause(CategoryDB_Table.levelId.is(level)).and(CategoryDB_Table.parentId.is(depId))
-            ).queryList();
+            categoryDBs = new Select().from(CategoryDB.class).where(CategoryDB_Table.levelId.is(level))
+                            .and(CategoryDB_Table.parentId.is(depId)).queryList();
         }
         if(categoryDBs ==null)
             return null;

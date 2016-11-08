@@ -98,12 +98,10 @@ public class CategoryDatabaseManager implements DBOperation<CategoryDB> {
     }
 
     public int getDepartmentCount(int level, int depId){
-        ConditionGroup conditions = ConditionGroup
-                .clause(CategoryDB_Table.levelId.is(level))
-                .and(CategoryDB_Table.parentId.is(depId));
         long count = new Select()
                 .from(CategoryDB.class)
-                .where(conditions).count();
+                .where(CategoryDB_Table.levelId.is(level))
+                .and(CategoryDB_Table.parentId.is(depId)).count();
         return (int)count;
     }
 
@@ -116,12 +114,10 @@ public class CategoryDatabaseManager implements DBOperation<CategoryDB> {
     }
 
     public List<CategoryDB> getDepartmentChild(int level, int depId){
-        ConditionGroup conditions = ConditionGroup
-                .clause(CategoryDB_Table.levelId.is(level))
-                .and(CategoryDB_Table.parentId.is(depId));
         List<CategoryDB> categoryDBs = new Select()
                 .from(CategoryDB.class)
-                .where(conditions)
+                .where(CategoryDB_Table.levelId.is(level))
+                .and(CategoryDB_Table.parentId.is(depId))
                 .queryList();
         return categoryDBs;
     }

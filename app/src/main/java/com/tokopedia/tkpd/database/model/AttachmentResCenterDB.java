@@ -13,7 +13,7 @@ import com.tokopedia.tkpd.database.DbFlowDatabase;
 /**
  * Created on 4/20/16.
  */
-@Table(database = DbFlowDatabase.class, primaryKeyConflict = ConflictAction.REPLACE)
+@Table(database = DbFlowDatabase.class, insertConflict = ConflictAction.REPLACE, updateConflict = ConflictAction.REPLACE)
 public class AttachmentResCenterDB extends BaseModel implements Parcelable {
 
     public static final String MODULE_CREATE_RESCENTER = "0";

@@ -12,7 +12,7 @@ import com.tokopedia.tkpd.database.DbFlowDatabase;
  * Created by ricoharisin on 12/3/15.
  */
 
-@Table(database = DbFlowDatabase.class, primaryKeyConflict = ConflictAction.REPLACE)
+@Table(database = DbFlowDatabase.class, insertConflict = ConflictAction.REPLACE, updateConflict = ConflictAction.REPLACE)
 public class ProductDetailModelDB extends BaseModel {
 
     @PrimaryKey
