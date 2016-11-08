@@ -337,7 +337,9 @@ public class MainApplication extends TkpdMultiDexApplication {
 		if(BuildConfig.DEBUG) {
 			FlowLog.setMinimumLoggingLevel(FlowLog.Level.V);
 		}
-		//FlowManager.init(new FlowConfig.Builder(this).build());
-        FlowManager.initModule(TkpdCoreGeneratedDatabaseHolder.class);
+		FlowManager.init(new FlowConfig.Builder(this)
+                .addDatabaseHolder(TkpdCoreGeneratedDatabaseHolder.class)
+                .build());
+        //FlowManager.initModule(TkpdCoreGeneratedDatabaseHolder.class);
 	}
 }

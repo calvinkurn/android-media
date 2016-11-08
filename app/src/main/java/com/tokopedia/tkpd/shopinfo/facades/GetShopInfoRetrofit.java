@@ -13,7 +13,7 @@ import com.tokopedia.tkpd.shopinfo.models.etalasemodel.EtalaseModel;
 
 import java.util.Map;
 
-import nope.yuuji.kirisame.Kirisame;
+import com.tkpd.library.kirisame.Kirisame;
 import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;

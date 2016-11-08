@@ -6,7 +6,7 @@ import android.widget.TextView;
 
 import com.tokopedia.tkpd.R;
 
-import nope.yuuji.kirisame.Kirisame;
+import com.tkpd.library.kirisame.Kirisame;
 
 /**
  * Created by Tkpd_Eka on 12/23/2015.

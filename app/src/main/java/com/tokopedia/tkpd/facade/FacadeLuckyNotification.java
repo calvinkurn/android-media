@@ -12,8 +12,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import nope.yuuji.kirisame.network.entity.NetError;
-import nope.yuuji.kirisame.network.entity.VolleyNetwork;
+import com.tkpd.library.kirisame.network.entity.NetError;
+import com.tkpd.library.kirisame.network.entity.VolleyNetwork;
 
 /**
  * Created by Nisie on 17/11/15.

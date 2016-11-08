@@ -31,7 +31,7 @@ public class SecondReceiver extends BroadcastReceiver {
 		  PendingIntent pendingIntent  = PendingIntent.getActivity(context, 0, intent, 0);
 		  
 		  builder
-		  .setSmallIcon(R.drawable.ic_launcher)
+		  .setSmallIcon(R.drawable.qc_launcher)
 		  .setContentTitle("ContentTitle")
 		  .setContentText("ContentText")
 		  .setContentInfo("ContentInfo")
@@ -42,10 +42,10 @@ public class SecondReceiver extends BroadcastReceiver {
 		  
 		  if (currentVersion >= requireVersion ){
 			  Notification notification = builder.build();
-			  notificationManager.notify(R.drawable.ic_launcher, notification);
+			  notificationManager.notify(R.drawable.qc_launcher, notification);
 		  }else{
 			  Notification notification = builder.getNotification();
-			  notificationManager.notify(R.drawable.ic_launcher, notification);
+			  notificationManager.notify(R.drawable.qc_launcher, notification);
 		  }  
 	}
 	

@@ -22,7 +22,7 @@ import java.util.Map;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import nope.yuuji.kirisame.network.entity.NetError;
+import com.tkpd.library.kirisame.network.entity.NetError;
 
 /**
  * Created by Angga.Prasetiyo on 04/11/2015.

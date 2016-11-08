@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.network.v4;
 
-import nope.yuuji.kirisame.network.entity.VolleyNetwork;
+import com.tkpd.library.kirisame.network.entity.VolleyNetwork;
 
 /**
  * Created by m.normansyah on 03/11/2015.

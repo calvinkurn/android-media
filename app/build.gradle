@@ -89,7 +89,6 @@ apt {
 
 dependencies {
     compile fileTree(include: '*.jar', dir: 'libs')
-    compile(name: "kirisame-1.2.4", ext: 'aar')
     compile 'com.bignerdranch.android:recyclerview-multiselect:0.2@aar'
     compile 'com.github.asne:asne-core:0.3.3@aar'
     compile 'com.github.asne:asne-facebook:0.3.3@aar'
@@ -116,9 +115,9 @@ dependencies {
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.mcxiaoke.volley:library-aar:1.0.1'
     compile 'com.github.anrwatchdog:anrwatchdog:1.1.+'
-    apt "com.github.Raizlabs.DBFlow:dbflow-processor:3.1.1"
-    compile "com.github.Raizlabs.DBFlow:dbflow-core:3.1.1"
-    compile "com.github.Raizlabs.DBFlow:dbflow:3.1.1"
+    apt "com.github.Raizlabs.DBFlow:dbflow-processor:3.0.1"
+    compile "com.github.Raizlabs.DBFlow:dbflow-core:3.0.1"
+    compile "com.github.Raizlabs.DBFlow:dbflow:3.0.1"
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'org.parceler:parceler-api:1.0.4'
     compile 'com.google.code.gson:gson:2.4'
@@ -215,16 +214,20 @@ android {
 
     buildTypes {
         debug {
-
+            buildConfigField "boolean" , "ENABLE_DISTRIBUTION", allowDistribution()
+            //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
 
         release {
-
+            //zipAlignEnabled true
+            //shrinkResources true
+            buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
+            //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
 
     defaultConfig {
-        multiDexEnabled = true
+        //multiDexEnabled = true
         resConfigs "en", "id"
         versionCode getTkpdVersionCode()
         versionName getTkpdVersionName()

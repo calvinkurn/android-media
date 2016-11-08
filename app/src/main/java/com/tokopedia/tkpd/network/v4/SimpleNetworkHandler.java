@@ -7,8 +7,8 @@ import com.android.volley.VolleyError;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import nope.yuuji.kirisame.network.entity.NetError;
-import nope.yuuji.kirisame.network.entity.VolleyNetwork;
+import com.tkpd.library.kirisame.network.entity.NetError;
+import com.tkpd.library.kirisame.network.entity.VolleyNetwork;
 
 /**
  * Created by Tkpd_Eka on 8/25/2015.

@@ -13,7 +13,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Map;
 
-import nope.yuuji.kirisame.network.entity.NetError;
+import com.tkpd.library.kirisame.network.entity.NetError;
 /**
  * Created by Nisie on 25/11/15.
  */

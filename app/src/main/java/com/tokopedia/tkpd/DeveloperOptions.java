@@ -34,7 +34,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import nope.yuuji.kirisame.network.util.VolleyNetworkRequestQueue;
+import com.tkpd.library.kirisame.network.util.VolleyNetworkRequestQueue;
 
 
 public class DeveloperOptions extends TActivity implements SessionHandler.onLogoutListener {

@@ -21,9 +21,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
-import nope.yuuji.kirisame.Kirisame;
-import nope.yuuji.kirisame.network.entity.NetError;
-import nope.yuuji.kirisame.network.entity.UploadImageUrlConnection;
+import com.tkpd.library.kirisame.Kirisame;
+import com.tkpd.library.kirisame.network.entity.NetError;
+import com.tkpd.library.kirisame.network.entity.UploadImageUrlConnection;
 
 /**
  * Created by Tkpd_Eka on 7/2/2015.

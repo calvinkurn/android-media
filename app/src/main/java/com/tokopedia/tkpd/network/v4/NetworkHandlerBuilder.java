@@ -13,7 +13,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import nope.yuuji.kirisame.network.entity.VolleyNetwork;
+import com.tkpd.library.kirisame.network.entity.VolleyNetwork;
 
 /**
  * Created by m.normansyah on 03/11/2015.

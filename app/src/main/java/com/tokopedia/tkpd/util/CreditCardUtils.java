@@ -32,10 +32,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import id.co.veritrans.android.api.VTDirect;
-import id.co.veritrans.android.api.VTInterface.ITokenCallback;
-import id.co.veritrans.android.api.VTModel.VTToken;
-import id.co.veritrans.android.api.VTUtil.VTConfig;
 
 /**
  * Created by Tkpd_Eka on 4/1/2015.
@@ -209,81 +205,6 @@ public class CreditCardUtils {
         holder.ccName.requestFocus();
     }
 
-    public VTDirect actionVeritrans(Model model, String clientKey, String amount, FragmentVeritransView fragmentVeritransView) {
-        setVeritransProductionMode();
-        VTConfig.CLIENT_KEY = clientKey;
-
-        VTDirect vtDirect = new VTDirect();
-        TkpdVTCardDetails cardDetails = new TkpdVTCardDetails();
-
-        cardDetails.setCard_number(model.ccNumber);
-        cardDetails.setCard_cvv(model.ccCVV);
-        cardDetails.setCard_exp_month(Integer.parseInt(model.ccMonth));
-        cardDetails.setCard_exp_year(Integer.parseInt(model.ccYear));
-        cardDetails.setBank(model.bankTypeName);
-        //set true or false to enable or disable 3dsecure
-        cardDetails.setSecure(true);
-        cardDetails.setGross_amount(amount);
-
-        //Set VTCardDetails to VTDirect
-        vtDirect.setCard_details(cardDetails);
-        vtDirect.getToken(getToken(context, fragmentVeritransView));
-        return vtDirect;
-    }
-
-    public VTDirect actionVeritransInstallment(Model model, String clientKey, String amount, FragmentVeritransView fragmentVeritransView) {
-        setVeritransProductionMode();
-        VTConfig.CLIENT_KEY = clientKey;
-
-        VTDirect vtDirect = new VTDirect();
-        TkpdVTCardDetails cardDetails = new TkpdVTCardDetails();
-
-        cardDetails.setCard_number(model.ccNumber);
-        cardDetails.setCard_cvv(model.ccCVV);
-        cardDetails.setCard_exp_month(Integer.parseInt(model.ccMonth));
-        cardDetails.setCard_exp_year(Integer.parseInt(model.ccYear));
-        cardDetails.setInstallment(model.installment);
-        cardDetails.setInstallmentTerm(model.term);
-        cardDetails.setBank(model.bankName);
-
-        //set true or false to enable or disable 3dsecure
-        cardDetails.setSecure(true);
-        cardDetails.setGross_amount(amount);
-
-        //Set VTCardDetails to VTDirect
-        vtDirect.setCard_details(cardDetails);
-        vtDirect.getToken(getToken(context, fragmentVeritransView));
-        return vtDirect;
-    }
-
-    private ITokenCallback getToken(final Context context, final FragmentVeritransView fragmentVeritransView) {
-        return new ITokenCallback() {
-            @Override
-            public void onSuccess(final VTToken vtToken) {
-                if (vtToken.getRedirect_url() != null) {
-                    //CreditCardWebView dialog = new CreditCardWebView(context, vtToken.getRedirect_url());
-                    fragmentVeritransView.getURL(vtToken.getRedirect_url());
-                    //TODO CreditCardWebViewnya diilangin||dialog.setListener, ganti jadi fragment.setListener
-                    fragmentVeritransView.setListener(new FragmentVeritransView.OnRedirectListener() {
-                        @Override
-                        public void onRedirect(boolean success) {
-                            if (success)
-                                listener.onGetVeritransToken(vtToken.getToken_id());
-                        }
-                    });
-                    fragmentVeritransView.showFragment();
-                } else {
-                    listener.onGetVeritransToken(vtToken.getToken_id());
-                }
-            }
-
-            @Override
-            public void onError(Exception e) {
-                e.printStackTrace();
-                Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        };
-    }
 
     public void insertFormCreditInformation() {
         if (frameView.getChildCount() == 0) {
@@ -731,16 +652,6 @@ public class CreditCardUtils {
         durationSpinnerAdapter = SimpleSpinnerAdapter.createAdapter(context, durationString);
         creditPeriodSpinner.setAdapter(durationSpinnerAdapter);
         creditPeriodSpinner.setOnItemSelectedListener(termSpinnerListener(durationArray));
-    }
-
-    private void setVeritransProductionMode() {
-        if (TkpdNetworkURLHandler.getHost(context).contains("www.")) {
-            VTConfig.VT_IsProduction = true;
-        } else if (!MainApplication.isDebug()) {
-            VTConfig.VT_IsProduction = true;
-        } else {
-            VTConfig.VT_IsProduction = false;
-        }
     }
 
 }

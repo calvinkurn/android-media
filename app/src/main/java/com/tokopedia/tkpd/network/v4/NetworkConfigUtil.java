@@ -13,7 +13,7 @@ import java.security.SignatureException;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import nope.yuuji.kirisame.Kirisame;
+import com.tkpd.library.kirisame.Kirisame;
 
 /**
  * Created by m.normansyah on 03/11/2015.

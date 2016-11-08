@@ -3,7 +3,7 @@ package com.tokopedia.tkpd.network.v4;
 import android.content.Context;
 import android.net.Network;
 
-import nope.yuuji.kirisame.network.entity.VolleyNetwork;
+import com.tkpd.library.kirisame.network.entity.VolleyNetwork;
 
 /**
  * Created by ricoharisin on 8/25/15.

@@ -21,8 +21,8 @@ import java.util.Locale;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import nope.yuuji.kirisame.Kirisame;
-import nope.yuuji.kirisame.network.entity.NetError;
+import com.tkpd.library.kirisame.Kirisame;
+import com.tkpd.library.kirisame.network.entity.NetError;
 
 /**
  * Created by ricoharisin on 8/24/2015.

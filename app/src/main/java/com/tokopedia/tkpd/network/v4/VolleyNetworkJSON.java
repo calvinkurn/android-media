@@ -16,8 +16,8 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import nope.yuuji.kirisame.network.entity.VolleyNetwork;
-import nope.yuuji.kirisame.network.util.VolleyNetworkRequestQueue;
+import com.tkpd.library.kirisame.network.entity.VolleyNetwork;
+import com.tkpd.library.kirisame.network.util.VolleyNetworkRequestQueue;
 
 public abstract class VolleyNetworkJSON extends VolleyNetwork {
 

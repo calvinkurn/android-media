@@ -14,9 +14,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Map;
 
-import nope.yuuji.kirisame.network.entity.NetError;
-import nope.yuuji.kirisame.network.entity.VolleyNetwork;
-import nope.yuuji.kirisame.network.util.VolleyNetworkRequestQueue;
+import com.tkpd.library.kirisame.network.entity.NetError;
+import com.tkpd.library.kirisame.network.entity.VolleyNetwork;
+import com.tkpd.library.kirisame.network.util.VolleyNetworkRequestQueue;
 
 /**
  * Created by ricoharisin on 8/25/15.
@@ -67,10 +67,6 @@ public class NetworkHandler extends VolleyNetwork {
         return super.getUrlWithQuery();
     }
 
-    public static void cancel(Context context, Object tag){
-        VolleyNetworkRequestQueue.getInstance(context).cancelByTag(tag);
-    }
-
     public void commit() {
         AddParam("device", "android");
         AddParam("app_version", BuildConfig.VERSION_CODE);
@@ -80,11 +76,6 @@ public class NetworkHandler extends VolleyNetwork {
         super.commit();
     }
 
-    public void commit(Object tag){
-        AddParam("device", "android");
-        NetworkLog();
-        super.commit(tag);
-    }
 
     @Override
     public void onRequestResponse(String s) {

@@ -4,7 +4,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import nope.yuuji.kirisame.network.entity.NetError;
+import com.tkpd.library.kirisame.network.entity.NetError;
 
 /**
  * Created by ricoharisin on 8/26/15.
