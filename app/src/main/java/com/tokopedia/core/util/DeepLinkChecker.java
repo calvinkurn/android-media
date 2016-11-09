@@ -6,8 +6,8 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.catalog.activity.CatalogDetailActivity;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.router.Router;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 
 import java.util.List;
@@ -176,7 +176,7 @@ public class DeepLinkChecker {
 //        bundle.putString("ctg_id", getLinkSegment(url).get(1));
 //        Intent intent = new Intent(context, Catalog.class);
 //        intent.putExtras(bundle);
-        context.startActivity(CatalogDetailActivity.createIntent(context, getLinkSegment(url).get(1)));
+        context.startActivity(Router.getCatalogDetailActivity(context, getLinkSegment(url).get(1)));
     }
 
     public static void openProduct(String url, Context context) {

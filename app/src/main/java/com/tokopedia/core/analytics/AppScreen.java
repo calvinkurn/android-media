@@ -31,7 +31,7 @@ import com.tokopedia.core.ShopNoteForm;
 import com.tokopedia.core.ShopStatisticDetail;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.addtocart.activity.AddToCartActivity;
-import com.tokopedia.core.catalog.activity.CatalogDetailActivity;
+//import com.tokopedia.discovery.catalog.activity.CatalogDetailActivity;
 import com.tokopedia.core.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.deposit.activity.WithdrawActivity;
@@ -244,8 +244,8 @@ public final class AppScreen {
             gtmName = AppScreen.SCREEN_PEOPLE;
         } else if (actClass instanceof PeopleInfoNoDrawerActivity) {
             gtmName = AppScreen.SCREEN_PEOPLE;
-        } else if (actClass instanceof CatalogDetailActivity) {
-            gtmName = AppScreen.SCREEN_CATALOG;
+       // } else if (actClass instanceof CatalogDetailActivity) {
+         //   gtmName = AppScreen.SCREEN_CATALOG;
         } else if (actClass instanceof ShopNotesDetail) {
             gtmName = AppScreen.SCREEN_SHOP_NOTE;
         } else if (actClass instanceof PreviewProductImage) {

@@ -12,7 +12,6 @@ import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
-import com.tokopedia.core.catalog.activity.CatalogDetailActivity;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.discovery.activity.BrowseProductActivity;
 import com.tokopedia.core.discovery.fragment.browseparent.ProductFragment;
@@ -27,6 +26,7 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.services.AuthService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.v4.NetworkConfig;
+import com.tokopedia.core.router.Router;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.constant.DownloadServiceConstant;
@@ -352,9 +352,7 @@ public class HotListImpl implements HotList {
                 hotListView.moveToOtherActivity(bundle, BrowseProductActivity.class);
                 break;
             case CATALOG_KEY:
-                bundle = new Bundle();
-                bundle.putString(CatalogDetailActivity.EXTRA_CATALOG_ID, urlParser.getHotAlias());
-                hotListView.moveToOtherActivity(bundle, CatalogDetailActivity.class);
+                hotListView.moveToOtherActivity(Router.getCatalogDetailActivity(mContext, urlParser.getHotAlias()));
                 break;
             default:
                 bundle = new Bundle();

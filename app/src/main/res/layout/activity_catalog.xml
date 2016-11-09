@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="#ffffff"
     android:orientation="vertical"
-    tools:context=".catalog.activity.CatalogDetailActivity">
+    tools:context="com.tokopedia.discovery.catalog.activity.CatalogDetailActivity">
 
     <FrameLayout
         android:id="@+id/activity_container"

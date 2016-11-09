@@ -24,7 +24,6 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.catalog.activity.CatalogDetailActivity;
 import com.tokopedia.core.discovery.activity.BrowseProductActivity;
 import com.tokopedia.core.discovery.adapter.browseparent.BrowserSectionsPagerAdapter;
 import com.tokopedia.core.discovery.model.Breadcrumb;
@@ -38,6 +37,7 @@ import com.tokopedia.core.discovery.view.BrowseProductParentView;
 import com.tokopedia.core.dynamicfilter.model.DynamicFilterModel;
 import com.tokopedia.core.dynamicfilter.presenter.DynamicFilterPresenter;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.router.Router;
 import com.tokopedia.core.session.base.BaseFragment;
 
 import org.parceler.Parcels;
@@ -243,7 +243,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
 //            Intent intent = new Intent(getActivity(), Catalog.class);
 //            intent.putExtra(HotList.CATALOG_ID_KEY, urlParser.getHotAlias());
 //            getActivity().startActivity(intent);
-            getActivity().startActivity(CatalogDetailActivity.createIntent(getActivity(),
+            getActivity().startActivity(Router.getCatalogDetailActivity(getActivity(),
                     urlParser.getHotAlias()));
             getActivity().finish();
         }

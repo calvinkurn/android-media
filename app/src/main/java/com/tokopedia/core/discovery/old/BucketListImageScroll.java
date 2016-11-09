@@ -14,10 +14,10 @@ import android.widget.RelativeLayout;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.catalog.activity.CatalogDetailActivity;
 import com.tokopedia.core.home.model.HorizontalProductList;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.router.Router;
 import com.tokopedia.core.util.TopAdsUtil;
 import com.tokopedia.core.var.ContainerAds;
 import com.tokopedia.core.var.ProductItem;
@@ -119,7 +119,7 @@ public class BucketListImageScroll {
 //						intent = new Intent(context, Catalog.class);
 //						bundle.putString("ctg_id", ID.get(pos));
 //						intent.putExtras(bundle);
-                        intent = CatalogDetailActivity.createIntent(context, ID.get(pos));
+                        intent = Router.getCatalogDetailActivity(context, ID.get(pos));
                     }
 					//intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 					context.startActivity(intent);

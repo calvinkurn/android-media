@@ -269,10 +269,6 @@
             android:label="@string/title_activity_catalog"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.catalog.activity.CatalogDetailActivity"
-            android:label="@string/title_activity_catalog"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.tokopedia.core.PaymentEditor"
             android:label="@string/title_activity_payment_editor"
             android:screenOrientation="portrait" />

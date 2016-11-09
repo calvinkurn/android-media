@@ -14,4 +14,5 @@ public class RouterUtils {
         intent.setClassName(context.getPackageName(), activityFullPath);
         return intent;
     }
+
 }

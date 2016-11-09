@@ -303,6 +303,11 @@ public class FragmentHotListV2 extends Fragment implements HotListView{
     }
 
     @Override
+    public void moveToOtherActivity(Intent intent) {
+        getActivity().startActivity(intent);
+    }
+
+    @Override
     public int getFragmentId() {
         throw new UnsupportedOperationException("need to implement this !!");
     }

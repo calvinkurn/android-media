@@ -1,5 +1,6 @@
 package com.tokopedia.core.home.presenter;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
@@ -123,5 +124,11 @@ public interface HotListView extends BaseView {
      * @return
      */
     int getScreenRotation();
+    /**
+     * some clicked trigger to move to other activity
+     * @param bundle
+     * @param clazz
+     */
+    void moveToOtherActivity(Intent intent);
 
 }

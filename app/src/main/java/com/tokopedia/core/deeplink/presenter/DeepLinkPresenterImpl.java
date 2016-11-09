@@ -16,7 +16,8 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
-import com.tokopedia.core.catalog.fragment.CatalogDetailFragment;
+import com.tokopedia.core.router.FragmentCreator;
+import com.tokopedia.core.util.FragmentCreatorUtil;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.deeplink.activity.DeepLinkActivity;
@@ -259,7 +260,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
 
     private void openCatalogProduct(List<String> linkSegment, Uri uriData) {
-        viewListener.inflateFragment(CatalogDetailFragment.newInstance(linkSegment.get(1)), "CATALOG_PRODUCT");
+        viewListener.inflateFragment(FragmentCreator.getCatalogDetailListFragment(context, linkSegment.get(1)), "CATALOG_PRODUCT");
     }
 
     /**

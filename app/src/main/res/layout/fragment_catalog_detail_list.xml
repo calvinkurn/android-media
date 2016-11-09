@@ -3,7 +3,7 @@
     android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.tokopedia.core.catalog.fragment.CatalogDetailListFragment">
+    tools:context="com.tokopedia.discovery.catalog.fragment.CatalogDetailListFragment">
 
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/container"
