@@ -25,7 +25,6 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.contactus.activity.ContactUsActivity;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.inboxticket.InboxTicketConstant;
 import com.tokopedia.core.inboxticket.adapter.InboxTicketAdapter;
@@ -34,6 +33,8 @@ import com.tokopedia.core.inboxticket.presenter.InboxTicketFragmentPresenter;
 import com.tokopedia.core.inboxticket.presenter.InboxTicketFragmentPresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.core.util.RouterUtils;
+import com.tokopedia.core.var.RouterConstant;
 
 import butterknife.Bind;
 
@@ -228,7 +229,8 @@ public class InboxTicketFragment extends BasePresenterFragment<InboxTicketFragme
 
     @Override
     public void goToHelp() {
-        startActivity(new Intent(getActivity(), ContactUsActivity.class));
+        Intent intent = RouterUtils.getActivityIntent(getActivity(), RouterConstant.INBOX_CONTACT_US_ACTIVITY);
+        startActivity(intent);
     }
 
     @Override

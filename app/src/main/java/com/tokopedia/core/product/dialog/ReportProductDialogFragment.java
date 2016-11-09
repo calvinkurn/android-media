@@ -26,8 +26,6 @@ import com.google.gson.GsonBuilder;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.contactus.ContactUsConstant;
-import com.tokopedia.core.contactus.activity.ContactUsActivity;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.product.fragment.ProductDetailFragment;
 import com.tokopedia.core.product.interactor.CacheInteractor;
@@ -39,6 +37,8 @@ import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.report.ReportProductPass;
 import com.tokopedia.core.session.model.network.ReportType;
 import com.tokopedia.core.session.model.network.ReportTypeModel;
+import com.tokopedia.core.util.RouterUtils;
+import com.tokopedia.core.var.RouterConstant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -179,7 +179,9 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
             status=true;
         }
 
-        stringNoResult.setSpan(redirect(ContactUsActivity.class, status, link)
+        Intent intent = RouterUtils.getActivityIntent(getActivity(), RouterConstant.INBOX_CONTACT_US_ACTIVITY);
+
+        stringNoResult.setSpan(redirect(intent, status, link)
                 , stringNoResult.toString().indexOf(linkStatus)
                 , stringNoResult.toString().indexOf(linkStatus) + linkStatus.length(), 0);
 
@@ -187,13 +189,12 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
         redirectText.setText(stringNoResult);
     }
 
-    private ClickableSpan redirect(final Class destination, final boolean status, final String link) {
+    private ClickableSpan redirect(final Intent intent, final boolean status, final String link) {
         return new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                Intent intent = new Intent(getActivity(), destination);
-                intent.putExtra(ContactUsConstant.PARAM_REDIRECT, status);
-                intent.putExtra(ContactUsConstant.PARAM_URL, link);
+                intent.putExtra("PARAM_REDIRECT", status);
+                intent.putExtra("PARAM_URL", link);
                 getActivity().startActivity(intent);
             }
 

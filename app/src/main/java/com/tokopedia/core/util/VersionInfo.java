@@ -19,7 +19,7 @@ import android.view.Window;
 import android.widget.TextView;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.contactus.activity.ContactUsActivity;
+import com.tokopedia.core.var.RouterConstant;
 
 /**
  * Created by Tkpd_Eka on 4/15/2015.
@@ -72,8 +72,8 @@ public class VersionInfo {
         return new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent goToContactUs = new Intent(context,ContactUsActivity.class);
-                context.startActivity(goToContactUs);
+                Intent intent = RouterUtils.getActivityIntent(context, RouterConstant.INBOX_CONTACT_US_ACTIVITY);
+                context.startActivity(intent);
                 dialog.dismiss();
             }
         };

@@ -10,8 +10,9 @@ import android.preference.PreferenceFragment;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.R;
-import com.tokopedia.core.contactus.activity.ContactUsActivity;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.util.RouterUtils;
+import com.tokopedia.core.var.RouterConstant;
 
 /**
  * Created by Angga.Prasetiyo on 13/01/2016.
@@ -101,7 +102,8 @@ public class AboutFragment extends PreferenceFragment {
         prefContactUs.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                getActivity().startActivity(new Intent(getActivity(), ContactUsActivity.class));
+                Intent intent = RouterUtils.getActivityIntent(getActivity(), RouterConstant.INBOX_CONTACT_US_ACTIVITY);
+                getActivity().startActivity(intent);
                 return false;
             }
         });

@@ -26,11 +26,11 @@ import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.EtalaseShopEditor;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
-import com.tokopedia.core.contactus.activity.ContactUsActivity;
 import com.tokopedia.core.drawer.interactor.NetworkInteractor;
 import com.tokopedia.core.drawer.interactor.NetworkInteractorImpl;
 import com.tokopedia.core.drawer.model.LoyaltyItem.LoyaltyItem;
@@ -51,9 +51,10 @@ import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shop.ShopEditorActivity;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity;
-import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.util.RouterUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
+import com.tokopedia.core.var.RouterConstant;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.var.ToolbarVariable;
 
@@ -520,7 +521,7 @@ public class DrawerVariable {
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.SETTING);
                 break;
             case TkpdState.DrawerPosition.CONTACT_US:
-                intent = new Intent(context, ContactUsActivity.class);
+                intent = RouterUtils.getActivityIntent(context, RouterConstant.INBOX_CONTACT_US_ACTIVITY);
                 if(TrackingUtils.getBoolean(AppEventTracking.GTM.CREATE_TICKET)) {
                     intent.putExtra("link", "https://tokopedia.com/contact-us-android");
                 }
