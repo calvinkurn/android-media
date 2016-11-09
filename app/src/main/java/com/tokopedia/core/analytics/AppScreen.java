@@ -32,7 +32,6 @@ import com.tokopedia.core.ShopStatisticDetail;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.addtocart.activity.AddToCartActivity;
 import com.tokopedia.core.catalog.activity.CatalogDetailActivity;
-import com.tokopedia.core.contactus.activity.ContactUsActivity;
 import com.tokopedia.core.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.deposit.activity.WithdrawActivity;
@@ -87,17 +86,17 @@ import com.tokopedia.core.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.core.rescenter.detail.activity.ResCenterActivity;
 import com.tokopedia.core.rescenter.edit.activity.EditResCenterActivity;
 import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
+import com.tokopedia.core.selling.activity.TrackingActivity;
+import com.tokopedia.core.selling.view.activity.ActivitySellingTransaction;
 import com.tokopedia.core.session.ActivationResentFragment;
 import com.tokopedia.core.session.ForgotPasswordFragment;
 import com.tokopedia.core.session.RegisterNewNextFragment;
 import com.tokopedia.core.session.RegisterNewViewFragment;
 import com.tokopedia.core.session.RegisterPassPhoneFragment;
 import com.tokopedia.core.session.RegisterThirdFragment;
-import com.tokopedia.core.selling.activity.TrackingActivity;
 import com.tokopedia.core.shipping.EditShippingActivity;
 import com.tokopedia.core.shop.ShopEditorActivity;
 import com.tokopedia.core.shopinfo.ReputationViewShop;
-import com.tokopedia.core.selling.view.activity.ActivitySellingTransaction;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.ShopInfoMore;
 import com.tokopedia.core.shopinfo.ShopNotesDetail;
@@ -164,8 +163,8 @@ public final class AppScreen {
             gtmName = AppScreen.SCREEN_INBOX_REPUTATION;
         } else if (actClass instanceof InboxTicketActivity) {
             gtmName = AppScreen.SCREEN_INBOX_TICKET;
-        } else if (actClass instanceof ContactUsActivity) {
-            gtmName = AppScreen.SCREEN_CONTACT_US;
+//        } else if (actClass instanceof ContactUsActivity) {
+//            gtmName = AppScreen.SCREEN_CONTACT_US;
         } else if (actClass instanceof ResCenterActivity) {
             gtmName = AppScreen.SCREEN_INBOX_RESOLUTION_CENTER_DETAIL;
         } else if (actClass instanceof OrderHistoryView) {

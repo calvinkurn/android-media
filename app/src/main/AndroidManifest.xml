@@ -333,11 +333,6 @@
             android:label="@string/title_activity_payment_confirmation_success"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.contactus.activity.ContactUsActivity"
-            android:screenOrientation="portrait"
-            android:hardwareAccelerated="true"
-            android:label="@string/title_activity_contact_us" />
-        <activity
             android:name="com.tokopedia.core.inboxticket.activity.InboxTicketActivity"
             android:screenOrientation="portrait"
             android:label="@string/title_activity_inbox_ticket"/>
