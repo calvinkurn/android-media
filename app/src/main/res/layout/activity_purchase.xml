@@ -4,8 +4,7 @@
     android:layout_height="match_parent"
     android:layout_alignParentTop="true"
     android:layout_centerHorizontal="true"
-    android:orientation="vertical"
-    tools:context=".purchase.activity.PurchaseActivity">
+    android:orientation="vertical">
 
     <include layout="@layout/layout_tab_indicator_main" />
 
