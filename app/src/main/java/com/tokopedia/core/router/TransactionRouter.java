@@ -15,6 +15,9 @@ import com.tokopedia.core.var.RouterConstant;
 
 public class TransactionRouter {
 
+    private static final String TRANSACTION_PURCHASE_ACTIVITY = "com.tokopedia.transaction.purchase.activity.PurchaseActivity";
+    private static final String TRANSACTION_TX_LIST_FRAGMENT = "com.tokopedia.transaction.purchase.fragment.TxListFragment";
+
     public static final String EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION";
     public static final String EXTRA_STATE_TX_FILTER = "EXTRA_STATE_TX_FILTER";
     public static final int TAB_TX_SUMMARY = 0;
@@ -40,60 +43,60 @@ public class TransactionRouter {
             = "ARG_PARAM_EXTRA_INSTANCE_FROM_NOTIFICATION";
 
     public static Intent createIntentPurchaseActivity(Context context) {
-        Intent intent = RouterUtils.getActivityIntent(context, RouterConstant.TRANSACTION_PURCHASE_ACTIVITY);
+        Intent intent = RouterUtils.getActivityIntent(context, TRANSACTION_PURCHASE_ACTIVITY);
         return intent;
     }
 
     public static Intent createIntentTxSummary(Context context) {
-        Intent intent = RouterUtils.getActivityIntent(context, RouterConstant.TRANSACTION_PURCHASE_ACTIVITY);
+        Intent intent = RouterUtils.getActivityIntent(context, TRANSACTION_PURCHASE_ACTIVITY);
         intent.putExtra(EXTRA_STATE_TAB_POSITION, TAB_TX_SUMMARY);
         return intent;
     }
 
     public static Intent createIntentTxCanceled(Context context) {
-        Intent intent = RouterUtils.getActivityIntent(context, RouterConstant.TRANSACTION_PURCHASE_ACTIVITY);
+        Intent intent = RouterUtils.getActivityIntent(context, TRANSACTION_PURCHASE_ACTIVITY);
         intent.putExtra(EXTRA_STATE_TAB_POSITION, TAB_TX_ALL);
         intent.putExtra(EXTRA_STATE_TX_FILTER, TRANSACTION_CANCELED_FILTER_ID);
         return intent;
     }
 
     public static Intent createIntentTxAll(Context context) {
-        Intent intent = RouterUtils.getActivityIntent(context, RouterConstant.TRANSACTION_PURCHASE_ACTIVITY);
+        Intent intent = RouterUtils.getActivityIntent(context, TRANSACTION_PURCHASE_ACTIVITY);
         intent.putExtra(EXTRA_STATE_TAB_POSITION, TAB_TX_ALL);
         intent.putExtra(EXTRA_STATE_TX_FILTER, ALL_STATUS_FILTER_ID);
         return intent;
     }
 
     public static Intent createIntentConfirmShipping(Context context) {
-        Intent intent = RouterUtils.getActivityIntent(context, RouterConstant.TRANSACTION_PURCHASE_ACTIVITY);
+        Intent intent = RouterUtils.getActivityIntent(context, TRANSACTION_PURCHASE_ACTIVITY);
         intent.putExtra(EXTRA_STATE_TAB_POSITION, TAB_TX_DELIVER);
         return intent;
     }
 
     public static Intent createIntentTxVerification(Context context) {
-        Intent intent = RouterUtils.getActivityIntent(context, RouterConstant.TRANSACTION_PURCHASE_ACTIVITY);
+        Intent intent = RouterUtils.getActivityIntent(context, TRANSACTION_PURCHASE_ACTIVITY);
         intent.putExtra(EXTRA_STATE_TAB_POSITION, TAB_TX_VERIFICATION);
         return intent;
     }
 
     public static Intent createIntentTxStatus(Context context) {
-        Intent intent = RouterUtils.getActivityIntent(context, RouterConstant.TRANSACTION_PURCHASE_ACTIVITY);
+        Intent intent = RouterUtils.getActivityIntent(context, TRANSACTION_PURCHASE_ACTIVITY);
         intent.putExtra(EXTRA_STATE_TAB_POSITION, TAB_TX_STATUS);
         return intent;
     }
 
     public static Intent createIntentConfirmPayment(Context context) {
-        Intent intent = RouterUtils.getActivityIntent(context, RouterConstant.TRANSACTION_PURCHASE_ACTIVITY);
+        Intent intent = RouterUtils.getActivityIntent(context, TRANSACTION_PURCHASE_ACTIVITY);
         intent.putExtra(EXTRA_STATE_TAB_POSITION, TAB_TX_CONFIRMATION);
         return intent;
     }
 
     public static ComponentName getPurchaseActivityComponentName(Context context) {
-        return RouterUtils.getActivityComponentName(context, RouterConstant.TRANSACTION_PURCHASE_ACTIVITY);
+        return RouterUtils.getActivityComponentName(context, TRANSACTION_PURCHASE_ACTIVITY);
     }
 
     public static Fragment instanceTxListFromNotification(Context context, String txFilterID) {
-        Fragment fragment = Fragment.instantiate(context, RouterConstant.TRANSACTION_TX_LIST_FRAGMENT);
+        Fragment fragment = Fragment.instantiate(context, TRANSACTION_TX_LIST_FRAGMENT);
         Bundle bundle = new Bundle();
         bundle.putInt(ARG_PARAM_EXTRA_INSTANCE_TYPE, INSTANCE_ALL);
         bundle.putString(ARG_PARAM_EXTRA_INSTANCE_FILTER, txFilterID);

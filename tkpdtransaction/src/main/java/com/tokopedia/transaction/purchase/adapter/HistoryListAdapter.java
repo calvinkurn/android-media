@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.transaction.purchase.model.response.txlist.OrderHistory;
+import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
 
 import java.util.ArrayList;
 
