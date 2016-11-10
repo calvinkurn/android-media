@@ -45,9 +45,9 @@ import com.tokopedia.core.network.apiservices.user.NotificationService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.notification.model.Notification;
-import com.tokopedia.core.selling.view.activity.ActivitySellingTransaction;
-import com.tokopedia.core.purchase.activity.PurchaseActivity;
 import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
+import com.tokopedia.core.router.TransactionRouter;
+import com.tokopedia.core.selling.view.activity.ActivitySellingTransaction;
 import com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity;
 import com.tokopedia.core.util.FullListViewHandler;
 import com.tokopedia.core.util.SessionHandler;
@@ -608,19 +608,19 @@ public class NotificationVariable {
                             intent.putExtras(bundle);
                             break;
                         case 5:
-                            intent = PurchaseActivity.createIntentConfirmPayment(context);
+                            intent = TransactionRouter.createIntentConfirmPayment(context);
                             break;
                         case 6:
-                            intent = PurchaseActivity.createIntentTxVerification(context);
+                            intent = TransactionRouter.createIntentTxVerification(context);
                             break;
                         case 7:
-                            intent = PurchaseActivity.createIntentTxStatus(context);
+                            intent = TransactionRouter.createIntentTxStatus(context);
                             break;
                         case 8:
-                            intent = PurchaseActivity.createIntentConfirmShipping(context);
+                            intent = TransactionRouter.createIntentConfirmShipping(context);
                             break;
                         case 9:
-                            intent = PurchaseActivity.createIntentTxAll(context);
+                            intent = TransactionRouter.createIntentTxAll(context);
                             break;
                         default:
                             break;

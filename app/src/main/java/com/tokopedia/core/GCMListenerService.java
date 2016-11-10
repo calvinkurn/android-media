@@ -3,6 +3,7 @@ package com.tokopedia.core;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,6 +26,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
@@ -36,16 +38,14 @@ import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.inboxticket.activity.InboxTicketActivity;
 import com.tokopedia.core.prototype.ManageProductCache;
 import com.tokopedia.core.prototype.ShopSettingCache;
-import com.tokopedia.core.purchase.activity.PurchaseActivity;
-import com.tokopedia.core.purchase.utils.FilterUtils;
 import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
+import com.tokopedia.core.router.TransactionRouter;
+import com.tokopedia.core.selling.view.activity.ActivitySellingTransaction;
 import com.tokopedia.core.session.Login;
 import com.tokopedia.core.session.presenter.SessionView;
-import com.tokopedia.core.selling.view.activity.ActivitySellingTransaction;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 
@@ -173,17 +173,14 @@ public class GCMListenerService extends GcmListenerService {
         if (!CheckSettings(Integer.parseInt(data.getString("tkp_code")))) {
             return;
         }
-        NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-        ArrayList<String> Content;
-        ArrayList<String> Desc;
-        ArrayList<Integer> Code;
 
         Class<?> resultclass = null;
         String title = null;
         String ticker = null;
         String desc = null;
-        Intent intent;
+        Intent intent = null;
         Bundle bundle = new Bundle();
+        ComponentName componentName = null;
         switch (Integer.parseInt(data.getString("tkp_code"))) {
             case TkpdState.GCMServiceState.GCM_MESSAGE:
                 resultclass = InboxMessageActivity.class;
@@ -268,43 +265,48 @@ public class GCMListenerService extends GcmListenerService {
                 desc = data.getString("desc");
                 break;
             case TkpdState.GCMServiceState.GCM_PURCHASE_VERIFIED:
-                resultclass = PurchaseActivity.class;
-                bundle.putInt(PurchaseActivity.EXTRA_STATE_TAB_POSITION,
-                        PurchaseActivity.TAB_TX_STATUS);
+                componentName = TransactionRouter.getPurchaseActivityComponentName(this);
+                intent = TransactionRouter.createIntentPurchaseActivity(this);
+                bundle.putInt(TransactionRouter.EXTRA_STATE_TAB_POSITION,
+                        TransactionRouter.TAB_TX_STATUS);
                 title = this.getString(R.string.title_notif_purchase_confirmed);
                 ticker = data.getString("desc");
                 desc = data.getString("desc");
                 break;
             case TkpdState.GCMServiceState.GCM_PURCHASE_ACCEPTED:
-                resultclass = PurchaseActivity.class;
-                bundle.putInt(PurchaseActivity.EXTRA_STATE_TAB_POSITION,
-                        PurchaseActivity.TAB_TX_STATUS);
+                componentName = TransactionRouter.getPurchaseActivityComponentName(this);
+                intent = TransactionRouter.createIntentPurchaseActivity(this);
+                bundle.putInt(TransactionRouter.EXTRA_STATE_TAB_POSITION,
+                        TransactionRouter.TAB_TX_STATUS);
                 title = this.getString(R.string.title_notif_purchase_accepted);
                 ticker = data.getString("desc");
                 desc = data.getString("desc");
                 break;
             case TkpdState.GCMServiceState.GCM_PURCHASE_PARTIAL_PROCESSED:
-                resultclass = PurchaseActivity.class;
-                bundle.putInt(PurchaseActivity.EXTRA_STATE_TAB_POSITION,
-                        PurchaseActivity.TAB_TX_STATUS);
+                componentName = TransactionRouter.getPurchaseActivityComponentName(this);
+                intent = TransactionRouter.createIntentPurchaseActivity(this);
+                bundle.putInt(TransactionRouter.EXTRA_STATE_TAB_POSITION,
+                        TransactionRouter.TAB_TX_STATUS);
                 title = this.getString(R.string.title_notif_purchase_partial_accepted);
                 ticker = data.getString("desc");
                 desc = data.getString("desc");
                 break;
             case TkpdState.GCMServiceState.GCM_PURCHASE_REJECTED:
-                resultclass = PurchaseActivity.class;
-                bundle.putInt(PurchaseActivity.EXTRA_STATE_TAB_POSITION,
-                        PurchaseActivity.TAB_TX_ALL);
-                bundle.putString(PurchaseActivity.EXTRA_STATE_TX_FILTER,
-                        FilterUtils.TRANSACTION_CANCELED_FILTER_ID);
+                componentName = TransactionRouter.getPurchaseActivityComponentName(this);
+                intent = TransactionRouter.createIntentPurchaseActivity(this);
+                bundle.putInt(TransactionRouter.EXTRA_STATE_TAB_POSITION,
+                        TransactionRouter.TAB_TX_ALL);
+                bundle.putString(TransactionRouter.EXTRA_STATE_TX_FILTER,
+                        TransactionRouter.TRANSACTION_CANCELED_FILTER_ID);
                 title = this.getString(R.string.title_notif_purchase_rejected);
                 ticker = data.getString("desc");
                 desc = data.getString("desc");
                 break;
             case TkpdState.GCMServiceState.GCM_PURCHASE_DELIVERED:
-                resultclass = PurchaseActivity.class;
-                bundle.putInt(PurchaseActivity.EXTRA_STATE_TAB_POSITION,
-                        PurchaseActivity.TAB_TX_DELIVER);
+                componentName = TransactionRouter.getPurchaseActivityComponentName(this);
+                intent = TransactionRouter.createIntentPurchaseActivity(this);
+                bundle.putInt(TransactionRouter.EXTRA_STATE_TAB_POSITION,
+                        TransactionRouter.TAB_TX_DELIVER);
                 title = this.getString(R.string.title_notif_purchase_delivered);
                 ticker = data.getString("desc");
                 desc = data.getString("desc");
@@ -368,7 +370,18 @@ public class GCMListenerService extends GcmListenerService {
             default:
                 return;
         }
+        if (intent == null) {
+            intent = new Intent(this, resultclass);
+        }
+        createNotification(intent, resultclass, title, ticker, desc, bundle, data, componentName);
+    }
 
+    private void createNotification(Intent intent, Class<?> resultclass, String title, String ticker, String desc,
+                                    Bundle bundle, Bundle data, ComponentName componentName) {
+        NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        ArrayList<String> Content;
+        ArrayList<String> Desc;
+        ArrayList<Integer> Code;
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_stat_notify)
                 .setAutoCancel(true);
@@ -430,8 +443,6 @@ public class GCMListenerService extends GcmListenerService {
             mBuilder.setStyle(inboxStyle);
             mBuilder.setTicker(ticker);
         }
-        intent = new Intent(this, resultclass);
-        if (resultclass.getName().equals(ParentIndexHome.class.getName())) ;
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("from_notif", true);
         intent.putExtra("unread", false);
@@ -449,7 +460,11 @@ public class GCMListenerService extends GcmListenerService {
             }
         }
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addParentStack(resultclass);
+        if (componentName != null) {
+            stackBuilder.addParentStack(componentName);
+        } else {
+            stackBuilder.addParentStack(resultclass);
+        }
         stackBuilder.addNextIntent(intent);
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
         //PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);

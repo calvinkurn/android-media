@@ -43,8 +43,8 @@ import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.inboxticket.activity.InboxTicketActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.myproduct.ManageProduct;
-import com.tokopedia.core.purchase.activity.PurchaseActivity;
 import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
+import com.tokopedia.core.router.TransactionRouter;
 import com.tokopedia.core.selling.view.activity.ActivitySellingTransaction;
 import com.tokopedia.core.session.Login;
 import com.tokopedia.core.session.presenter.SessionView;
@@ -579,23 +579,23 @@ public class DrawerVariable {
     }
 
     private void goToPeopleTransactionCanceled() {
-        context.startActivity(PurchaseActivity.createIntentTxCanceled(context));
+        context.startActivity(TransactionRouter.createIntentTxCanceled(context));
     }
 
     private void goToPeopleTransactionList() {
-        context.startActivity(PurchaseActivity.createIntentTxAll(context));
+        context.startActivity(TransactionRouter.createIntentTxAll(context));
     }
 
     private void goToPeopleConfirmShipping() {
-        context.startActivity(PurchaseActivity.createIntentConfirmShipping(context));
+        context.startActivity(TransactionRouter.createIntentConfirmShipping(context));
     }
 
     private void goToPeopleOrderStatus() {
-        context.startActivity(PurchaseActivity.createIntentTxStatus(context));
+        context.startActivity(TransactionRouter.createIntentTxStatus(context));
     }
 
     private void goToPeopleConfirmPayment() {
-        context.startActivity(PurchaseActivity.createIntentConfirmPayment(context));
+        context.startActivity(TransactionRouter.createIntentConfirmPayment(context));
     }
 
     private void goToManageProduct() {

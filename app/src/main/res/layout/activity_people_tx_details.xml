@@ -2,8 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/padding_small"
-    tools:context=".purchase.activity.TxDetailActivity">
+    android:paddingBottom="@dimen/padding_small">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -153,7 +152,7 @@
             android:background="@drawable/see_all_bg"
             android:orientation="vertical">
 
-            <com.tokopedia.core.purchase.view.NestedListView
+            <com.tokopedia.transaction.purchase.view.NestedListView
                 android:id="@+id/product_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

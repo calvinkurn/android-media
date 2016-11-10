@@ -74,12 +74,6 @@ import com.tokopedia.core.people.activity.PeopleInfoDrawerActivity;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.peoplefave.activity.PeopleFavoritedShop;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
-import com.tokopedia.core.purchase.activity.ConfirmPaymentActivity;
-import com.tokopedia.core.purchase.activity.PurchaseActivity;
-import com.tokopedia.core.purchase.activity.TxConfirmationDetailActivity;
-import com.tokopedia.core.purchase.activity.TxDetailActivity;
-import com.tokopedia.core.purchase.activity.TxHistoryActivity;
-import com.tokopedia.core.purchase.activity.TxVerDetailActivity;
 import com.tokopedia.core.reputationproduct.ReputationProduct;
 import com.tokopedia.core.reputationproduct.ReputationProductView;
 import com.tokopedia.core.rescenter.create.activity.CreateResCenterActivity;
@@ -145,12 +139,12 @@ public final class AppScreen {
             gtmName = AppScreen.SCREEN_ADDRESS_GEOLOCATION;
         }else if (actClass instanceof Cart){
             gtmName = AppScreen.SCREEN_CART;
-        }else if (actClass instanceof PurchaseActivity){
-            gtmName = AppScreen.SCREEN_TX_PEOPLE_TRANSACTION_BUYING_LIST;
-        } else if (actClass instanceof TxConfirmationDetailActivity) {
-            gtmName = AppScreen.SCREEN_TX_P_CONFIRM_DETAIL;
-        } else if (actClass instanceof ConfirmPaymentActivity) {
-            gtmName = AppScreen.SCREEN_TX_P_CONFIRM;
+//        }else if (actClass instanceof PurchaseActivity){
+//            gtmName = AppScreen.SCREEN_TX_PEOPLE_TRANSACTION_BUYING_LIST;
+//        } else if (actClass instanceof TxConfirmationDetailActivity) {
+//            gtmName = AppScreen.SCREEN_TX_P_CONFIRM_DETAIL;
+//        } else if (actClass instanceof ConfirmPaymentActivity) {
+//            gtmName = AppScreen.SCREEN_TX_P_CONFIRM;
         } else if (actClass instanceof SendMessageActivity) {
             gtmName = AppScreen.SCREEN_PEOPLE_SEND_MESSAGE;
         } else if (actClass instanceof SimpleHomeActivity) {
@@ -234,8 +228,8 @@ public final class AppScreen {
             gtmName = AppScreen.SCREEN_INBOX_REPUTATION_DETAIL;
         } else if (actClass instanceof InboxResCenterActivity) {
             gtmName = AppScreen.SCREEN_INBOX_RESOLUTION_CENTER;
-        } else if (actClass instanceof TxDetailActivity) {
-            gtmName = AppScreen.SCREEN_TX_PEOPLE_DETAIL;
+//        } else if (actClass instanceof TxDetailActivity) {
+//            gtmName = AppScreen.SCREEN_TX_PEOPLE_DETAIL;
         } else if (actClass instanceof ManageShop) {
             gtmName = AppScreen.SCREEN_SETTING_MANAGE_SHOP;
         } else if (actClass instanceof ShopInfoMore) {
@@ -262,8 +256,8 @@ public final class AppScreen {
             gtmName = AppScreen.SCREEN_DOWNLOAD_INVOICE;
         } else if (actClass instanceof PaymentConfirmationSuccess) {
             gtmName = AppScreen.SCREEN_CONFIRMATION_SUCCESS;
-        } else if (actClass instanceof TxVerDetailActivity) {
-            gtmName = AppScreen.SCREEN_PAYMENT_VERIFICATION_DETAIL;
+//        } else if (actClass instanceof TxVerDetailActivity) {
+//            gtmName = AppScreen.SCREEN_PAYMENT_VERIFICATION_DETAIL;
         } else if (actClass instanceof ServerErrorPage) {
             gtmName = AppScreen.SCREEN_SERVER_ERROR;
         } else if (actClass instanceof SplashScreen) {
@@ -272,8 +266,8 @@ public final class AppScreen {
             gtmName = AppScreen.SCREEN_PRODUCT_REPUTATION_VIEW_DETAIL;
         } else if (actClass instanceof DeepLinkActivity) {
             gtmName = AppScreen.SCREEN_DEEP_LINK;
-        } else if (actClass instanceof TxHistoryActivity){
-            gtmName = AppScreen.SCREEN_ORDER_HISTORY_DETAIL;
+//        } else if (actClass instanceof TxHistoryActivity){
+//            gtmName = AppScreen.SCREEN_ORDER_HISTORY_DETAIL;
         } else if (actClass instanceof InboxMessageDetailActivity){
             gtmName = AppScreen.SCREEN_INBOX_MESSAGE_DETAIL_VIEW;
         } else if (actClass instanceof InboxTicketDetailActivity){
