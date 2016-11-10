@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.adapter;
+package com.tokopedia.core.tracking.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
-import com.tokopedia.core.selling.model.tracking.TrackHistory;
+import com.tokopedia.core.tracking.model.tracking.TrackHistory;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.constant;
+package com.tokopedia.seller.selling.constant;
 
 /**
  * Created by m.normansyah on 11/20/15.

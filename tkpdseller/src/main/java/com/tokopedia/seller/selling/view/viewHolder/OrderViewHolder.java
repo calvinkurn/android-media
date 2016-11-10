@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.view.viewHolder;
+package com.tokopedia.seller.selling.view.viewHolder;
 
 import android.content.Context;
 import android.view.View;
@@ -8,7 +8,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.selling.model.orderShipping.OrderShippingList;
+import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

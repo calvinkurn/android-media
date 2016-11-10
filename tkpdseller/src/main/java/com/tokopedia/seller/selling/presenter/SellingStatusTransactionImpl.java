@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.presenter;
+package com.tokopedia.seller.selling.presenter;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -8,10 +8,10 @@ import android.util.Log;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.seller.facade.FacadeShopTransaction;
 import com.tokopedia.core.rxjava.RxUtils;
-import com.tokopedia.core.selling.model.SellingStatusTxModel;
-import com.tokopedia.core.selling.model.orderShipping.OrderShippingData;
+import com.tokopedia.seller.selling.model.SellingStatusTxModel;
 import com.tokopedia.core.service.constant.DownloadServiceConstant;
 import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.seller.selling.model.orderShipping.OrderShippingData;
 
 import java.util.List;
 

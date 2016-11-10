@@ -1,5 +1,5 @@
 
-package com.tokopedia.core.selling.model;
+package com.tokopedia.seller.selling.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.interactor;
+package com.tokopedia.core.tracking.interactor;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,7 +10,7 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.DialogNoConnection;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.selling.model.tracking.TrackingResponse;
+import com.tokopedia.core.tracking.model.tracking.TrackingResponse;
 
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;

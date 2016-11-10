@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.view.fragment;
+package com.tokopedia.seller.selling.view.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -35,13 +35,13 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.selling.presenter.adapter.BaseSellingAdapter;
-import com.tokopedia.core.selling.view.viewHolder.BaseSellingViewHolder;
-import com.tokopedia.core.selling.SellingService;
-import com.tokopedia.core.selling.presenter.Shipping;
-import com.tokopedia.core.selling.presenter.ShippingImpl;
-import com.tokopedia.core.selling.presenter.ShippingView;
-import com.tokopedia.core.selling.view.viewHolder.ShippingViewHolder;
+import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
+import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
+import com.tokopedia.seller.selling.SellingService;
+import com.tokopedia.seller.selling.presenter.Shipping;
+import com.tokopedia.seller.selling.presenter.ShippingImpl;
+import com.tokopedia.seller.selling.presenter.ShippingView;
+import com.tokopedia.seller.selling.view.viewHolder.ShippingViewHolder;
 import com.tokopedia.core.session.baseFragment.BaseFragment;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.RefreshHandler;

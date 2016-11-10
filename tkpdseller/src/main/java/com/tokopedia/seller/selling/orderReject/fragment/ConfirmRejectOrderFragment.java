@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.orderReject.fragment;
+package com.tokopedia.seller.selling.orderReject.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -22,18 +22,18 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
-import com.tokopedia.core.selling.SellingService;
-import com.tokopedia.core.selling.model.orderShipping.OrderProduct;
-import com.tokopedia.core.selling.model.orderShipping.OrderShippingList;
-import com.tokopedia.core.selling.orderReject.ConfirmRejectOrderActivity;
-import com.tokopedia.core.selling.orderReject.adapter.ProductListAdapter;
-import com.tokopedia.core.selling.orderReject.adapter.ProductListAdapter.Type;
-import com.tokopedia.core.selling.orderReject.adapter.SimpleDividerItemDecoration;
-import com.tokopedia.core.selling.orderReject.model.DataResponseReject;
-import com.tokopedia.core.selling.orderReject.model.ModelEditDescription;
-import com.tokopedia.core.selling.orderReject.model.ModelEditPrice;
-import com.tokopedia.core.selling.orderReject.model.ModelRejectOrder;
-import com.tokopedia.core.selling.presenter.listener.SellingView;
+import com.tokopedia.seller.selling.SellingService;
+import com.tokopedia.seller.selling.model.orderShipping.OrderProduct;
+import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
+import com.tokopedia.seller.selling.orderReject.ConfirmRejectOrderActivity;
+import com.tokopedia.seller.selling.orderReject.adapter.ProductListAdapter;
+import com.tokopedia.seller.selling.orderReject.adapter.ProductListAdapter.Type;
+import com.tokopedia.seller.selling.orderReject.adapter.SimpleDividerItemDecoration;
+import com.tokopedia.seller.selling.orderReject.model.DataResponseReject;
+import com.tokopedia.seller.selling.orderReject.model.ModelEditDescription;
+import com.tokopedia.seller.selling.orderReject.model.ModelEditPrice;
+import com.tokopedia.seller.selling.orderReject.model.ModelRejectOrder;
+import com.tokopedia.seller.selling.presenter.listener.SellingView;
 
 import org.parceler.Parcels;
 

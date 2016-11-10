@@ -40,7 +40,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.customadapter.ListViewShopOrderDetail;
-import com.tokopedia.core.selling.model.shopconfirmationdetail.ShippingConfirmDetModel;
+import com.tokopedia.seller.selling.model.shopconfirmationdetail.ShippingConfirmDetModel;
 import com.tokopedia.core.network.NetworkHandler;
 import com.tokopedia.core.network.NetworkHandler.NetworkHandlerListener;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;

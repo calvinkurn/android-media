@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.orderReject.model;
+package com.tokopedia.seller.selling.orderReject.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

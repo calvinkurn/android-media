@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.view.fragment;
+package com.tokopedia.seller.selling.view.fragment;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -15,13 +15,13 @@ import android.widget.SearchView;
 import android.widget.Spinner;
 
 import com.tokopedia.core.R2;
-import com.tokopedia.core.selling.presenter.adapter.BaseSellingAdapter;
-import com.tokopedia.core.selling.view.viewHolder.BaseSellingViewHolder;
-import com.tokopedia.core.selling.view.viewHolder.OrderViewHolder;
-import com.tokopedia.core.selling.model.orderShipping.OrderShippingList;
-import com.tokopedia.core.selling.presenter.NewOrder;
-import com.tokopedia.core.selling.presenter.NewOrderImpl;
-import com.tokopedia.core.selling.presenter.NewOrderView;
+import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
+import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
+import com.tokopedia.seller.selling.view.viewHolder.OrderViewHolder;
+import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
+import com.tokopedia.seller.selling.presenter.NewOrder;
+import com.tokopedia.seller.selling.presenter.NewOrderImpl;
+import com.tokopedia.seller.selling.presenter.NewOrderView;
 import com.tokopedia.core.R;
 import com.tokopedia.core.session.baseFragment.BaseFragment;
 import com.tokopedia.core.util.PagingHandler;

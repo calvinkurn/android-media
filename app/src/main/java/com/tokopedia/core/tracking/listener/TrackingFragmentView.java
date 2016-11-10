@@ -1,10 +1,10 @@
-package com.tokopedia.core.selling.listener;
+package com.tokopedia.core.tracking.listener;
 
 import android.app.Activity;
 import android.content.Context;
 
-import com.tokopedia.core.selling.adapter.TrackingHistoryAdapter;
-import com.tokopedia.core.selling.model.tracking.TrackingResponse;
+import com.tokopedia.core.tracking.adapter.TrackingHistoryAdapter;
+import com.tokopedia.core.tracking.model.tracking.TrackingResponse;
 
 /**
  * Created by Alifa on 10/12/2016.

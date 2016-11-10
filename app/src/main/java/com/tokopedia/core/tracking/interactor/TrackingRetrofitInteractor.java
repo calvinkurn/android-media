@@ -1,10 +1,10 @@
-package com.tokopedia.core.selling.interactor;
+package com.tokopedia.core.tracking.interactor;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.selling.model.tracking.TrackingResponse;
+import com.tokopedia.core.tracking.model.tracking.TrackingResponse;
 
 /**
  * Created by Alifa on 10/12/2016.

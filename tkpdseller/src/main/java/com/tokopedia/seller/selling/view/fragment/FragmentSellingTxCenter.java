@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.view.fragment;
+package com.tokopedia.seller.selling.view.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -11,9 +11,9 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customadapter.ListViewPeopleTransactionSummary;
-import com.tokopedia.core.selling.presenter.PeopleTxCenter;
-import com.tokopedia.core.selling.presenter.PeopleTxCenterImpl;
-import com.tokopedia.core.selling.presenter.PeopleTxCenterView;
+import com.tokopedia.seller.selling.presenter.PeopleTxCenter;
+import com.tokopedia.seller.selling.presenter.PeopleTxCenterImpl;
+import com.tokopedia.seller.selling.presenter.PeopleTxCenterView;
 import com.tokopedia.core.session.baseFragment.BaseFragment;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.var.NotificationVariable;

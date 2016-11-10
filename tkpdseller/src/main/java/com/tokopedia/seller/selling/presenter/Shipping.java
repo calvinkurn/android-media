@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.presenter;
+package com.tokopedia.seller.selling.presenter;
 
 import android.app.Dialog;
 import android.content.Context;

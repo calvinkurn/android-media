@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.view.viewHolder;
+package com.tokopedia.seller.selling.view.viewHolder;
 
 import android.content.Context;
 import android.view.View;

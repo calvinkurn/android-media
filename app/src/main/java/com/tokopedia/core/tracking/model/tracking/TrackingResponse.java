@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.model.tracking;
+package com.tokopedia.core.tracking.model.tracking;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

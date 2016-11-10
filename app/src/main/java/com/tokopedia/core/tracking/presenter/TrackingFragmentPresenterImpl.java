@@ -4,11 +4,11 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.selling.fragment.TrackingFragment;
-import com.tokopedia.core.selling.interactor.TrackingRetrofitInteractor;
-import com.tokopedia.core.selling.interactor.TrackingRetrofitInteractorImpl;
-import com.tokopedia.core.selling.listener.TrackingFragmentView;
-import com.tokopedia.core.selling.model.tracking.TrackingResponse;
+import com.tokopedia.core.tracking.fragment.TrackingFragment;
+import com.tokopedia.core.tracking.interactor.TrackingRetrofitInteractor;
+import com.tokopedia.core.tracking.interactor.TrackingRetrofitInteractorImpl;
+import com.tokopedia.core.tracking.listener.TrackingFragmentView;
+import com.tokopedia.core.tracking.model.tracking.TrackingResponse;
 
 /**
  * Created by Alifa on 10/12/2016.

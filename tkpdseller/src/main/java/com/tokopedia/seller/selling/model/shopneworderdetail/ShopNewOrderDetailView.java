@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.model.shopneworderdetail;
+package com.tokopedia.seller.selling.model.shopneworderdetail;
 
 /**
  * Created by Sebast on 5/12/2016.

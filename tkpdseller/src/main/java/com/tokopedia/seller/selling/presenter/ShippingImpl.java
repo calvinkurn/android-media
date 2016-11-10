@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.presenter;
+package com.tokopedia.seller.selling.presenter;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -21,12 +21,12 @@ import com.tokopedia.seller.facade.FacadeActionShopTransaction;
 import com.tokopedia.seller.facade.FacadeShopTransaction;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction;
-import com.tokopedia.core.selling.view.activity.SellingDetailActivity;
-import com.tokopedia.core.selling.SellingService;
-import com.tokopedia.core.selling.view.fragment.FragmentSellingShipping;
-import com.tokopedia.core.selling.model.ModelParamSelling;
-import com.tokopedia.core.selling.model.orderShipping.OrderShippingData;
-import com.tokopedia.core.selling.model.orderShipping.OrderShippingList;
+import com.tokopedia.seller.selling.view.activity.SellingDetailActivity;
+import com.tokopedia.seller.selling.SellingService;
+import com.tokopedia.seller.selling.view.fragment.FragmentSellingShipping;
+import com.tokopedia.seller.selling.model.ModelParamSelling;
+import com.tokopedia.seller.selling.model.orderShipping.OrderShippingData;
+import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
 import com.tokopedia.core.util.ValidationTextUtil;
 
 import org.parceler.Parcel;
@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
 /**
  * Created by Toped10 on 7/28/2016.
  */
-public class ShippingImpl extends com.tokopedia.core.selling.presenter.Shipping {
+public class ShippingImpl extends Shipping {
 
     private List<Model> modelList;
     //    private List<Fragment> detailList;

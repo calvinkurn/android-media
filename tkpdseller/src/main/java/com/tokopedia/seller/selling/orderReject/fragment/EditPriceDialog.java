@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.orderReject.fragment;
+package com.tokopedia.seller.selling.orderReject.fragment;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -21,9 +21,9 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.myproduct.presenter.ImageGalleryImpl;
 import com.tokopedia.core.myproduct.utils.VerificationUtils;
-import com.tokopedia.core.selling.model.orderShipping.OrderProduct;
-import com.tokopedia.core.selling.orderReject.adapter.ProductListAdapter;
-import com.tokopedia.core.selling.orderReject.model.ModelEditPrice;
+import com.tokopedia.seller.selling.model.orderShipping.OrderProduct;
+import com.tokopedia.seller.selling.orderReject.adapter.ProductListAdapter;
+import com.tokopedia.seller.selling.orderReject.model.ModelEditPrice;
 
 import org.parceler.Parcels;
 

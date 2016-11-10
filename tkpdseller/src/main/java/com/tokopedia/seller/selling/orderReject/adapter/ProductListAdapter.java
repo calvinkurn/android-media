@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.orderReject.adapter;
+package com.tokopedia.seller.selling.orderReject.adapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -19,11 +19,11 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.selling.model.orderShipping.OrderProduct;
-import com.tokopedia.core.selling.orderReject.fragment.EditPriceDialog;
-import com.tokopedia.core.selling.orderReject.fragment.EditVarianDialog;
-import com.tokopedia.core.selling.orderReject.model.ModelEditDescription;
-import com.tokopedia.core.selling.orderReject.model.ModelEditPrice;
+import com.tokopedia.seller.selling.model.orderShipping.OrderProduct;
+import com.tokopedia.seller.selling.orderReject.fragment.EditPriceDialog;
+import com.tokopedia.seller.selling.orderReject.fragment.EditVarianDialog;
+import com.tokopedia.seller.selling.orderReject.model.ModelEditDescription;
+import com.tokopedia.seller.selling.orderReject.model.ModelEditPrice;
 
 import java.util.ArrayList;
 import java.util.HashMap;

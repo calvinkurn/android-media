@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.orderReject;
+package com.tokopedia.seller.selling.orderReject;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,13 +11,13 @@ import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
-import com.tokopedia.core.selling.SellingService;
-import com.tokopedia.core.selling.model.orderShipping.OrderShippingList;
-import com.tokopedia.core.selling.orderReject.adapter.ProductListAdapter;
-import com.tokopedia.core.selling.orderReject.fragment.ConfirmRejectOrderFragment;
-import com.tokopedia.core.selling.orderReject.fragment.ShopClosedReasonFragment;
+import com.tokopedia.seller.selling.SellingService;
+import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
+import com.tokopedia.seller.selling.orderReject.adapter.ProductListAdapter;
+import com.tokopedia.seller.selling.orderReject.fragment.ConfirmRejectOrderFragment;
+import com.tokopedia.seller.selling.orderReject.fragment.ShopClosedReasonFragment;
 import com.tokopedia.core.presenter.BaseView;
-import com.tokopedia.core.selling.presenter.listener.SellingView;
+import com.tokopedia.seller.selling.presenter.listener.SellingView;
 
 import org.parceler.Parcels;
 

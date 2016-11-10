@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.model;
+package com.tokopedia.seller.selling.model;
 
 import java.util.List;
 

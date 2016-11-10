@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.orderReject.adapter;
+package com.tokopedia.seller.selling.orderReject.adapter;
 
 import android.content.Context;
 import android.graphics.Canvas;

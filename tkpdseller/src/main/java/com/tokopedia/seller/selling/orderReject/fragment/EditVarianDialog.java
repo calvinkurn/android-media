@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.orderReject.fragment;
+package com.tokopedia.seller.selling.orderReject.fragment;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -17,9 +17,9 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.selling.model.orderShipping.OrderProduct;
-import com.tokopedia.core.selling.orderReject.adapter.ProductListAdapter;
-import com.tokopedia.core.selling.orderReject.model.ModelEditDescription;
+import com.tokopedia.seller.selling.model.orderShipping.OrderProduct;
+import com.tokopedia.seller.selling.orderReject.adapter.ProductListAdapter;
+import com.tokopedia.seller.selling.orderReject.model.ModelEditDescription;
 
 import org.parceler.Parcels;
 

@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.view.fragment;
+package com.tokopedia.seller.selling.view.fragment;
 
 import android.Manifest;
 import android.app.Dialog;
@@ -30,16 +30,17 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
+import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.seller.facade.FacadeActionShopTransaction;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.selling.activity.TrackingActivity;
-import com.tokopedia.core.selling.presenter.adapter.BaseSellingAdapter;
-import com.tokopedia.core.selling.view.viewHolder.BaseSellingViewHolder;
-import com.tokopedia.core.selling.view.activity.SellingDetailActivity;
-import com.tokopedia.core.selling.model.SellingStatusTxModel;
-import com.tokopedia.core.selling.presenter.SellingStatusTransaction;
-import com.tokopedia.core.selling.presenter.SellingStatusTransactionImpl;
-import com.tokopedia.core.selling.presenter.SellingStatusTransactionView;
+
+import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
+import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
+import com.tokopedia.seller.selling.view.activity.SellingDetailActivity;
+import com.tokopedia.seller.selling.model.SellingStatusTxModel;
+import com.tokopedia.seller.selling.presenter.SellingStatusTransaction;
+import com.tokopedia.seller.selling.presenter.SellingStatusTransactionImpl;
+import com.tokopedia.seller.selling.presenter.SellingStatusTransactionView;
 import com.tokopedia.core.session.baseFragment.BaseFragment;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.var.TkpdState;

@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.fragment;
+package com.tokopedia.core.tracking.fragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -18,9 +18,9 @@ import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.selling.adapter.TrackingHistoryAdapter;
-import com.tokopedia.core.selling.listener.TrackingFragmentView;
-import com.tokopedia.core.selling.model.tracking.TrackingResponse;
+import com.tokopedia.core.tracking.adapter.TrackingHistoryAdapter;
+import com.tokopedia.core.tracking.listener.TrackingFragmentView;
+import com.tokopedia.core.tracking.model.tracking.TrackingResponse;
 import com.tokopedia.core.tracking.presenter.TrackingFragmentPresenter;
 import com.tokopedia.core.tracking.presenter.TrackingFragmentPresenterImpl;
 

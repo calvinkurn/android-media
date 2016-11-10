@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.presenter.listener;
+package com.tokopedia.seller.selling.presenter.listener;
 
 import com.tokopedia.core.presenter.BaseView;
 

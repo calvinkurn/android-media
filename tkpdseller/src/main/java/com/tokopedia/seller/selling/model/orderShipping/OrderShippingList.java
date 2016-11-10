@@ -1,5 +1,5 @@
 
-package com.tokopedia.core.selling.model.orderShipping;
+package com.tokopedia.seller.selling.model.orderShipping;
 
 import java.util.ArrayList;
 

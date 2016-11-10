@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.view.viewHolder;
+package com.tokopedia.seller.selling.view.viewHolder;
 
 import android.content.Context;
 import android.os.Build;
@@ -13,7 +13,7 @@ import com.bignerdranch.android.multiselector.MultiSelector;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.selling.presenter.ShippingImpl;
+import com.tokopedia.seller.selling.presenter.ShippingImpl;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

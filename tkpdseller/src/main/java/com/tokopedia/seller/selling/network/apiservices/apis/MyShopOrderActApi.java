@@ -2,7 +2,7 @@ package com.tokopedia.seller.selling.network.apiservices.apis;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.core.selling.model.ResponseConfirmShipping;
+import com.tokopedia.seller.selling.model.ResponseConfirmShipping;
 
 import java.util.Map;
 

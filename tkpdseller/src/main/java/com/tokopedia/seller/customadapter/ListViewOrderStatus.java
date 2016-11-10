@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
-import com.tokopedia.core.selling.model.shopconfirmationdetail.ShippingConfirmDetModel;
+import com.tokopedia.seller.selling.model.shopconfirmationdetail.ShippingConfirmDetModel;
 
 import android.app.Activity;
 import android.content.Context;

@@ -12,11 +12,11 @@ import com.tokopedia.seller.selling.network.apiservices.MyShopOrderActService;
 import com.tokopedia.core.network.apiservices.shop.MyShopOrderService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.selling.model.modelConfirmShipping.Data;
-import com.tokopedia.core.selling.model.modelEditRef.DataResponseEditRef;
-import com.tokopedia.core.selling.model.modelShippingForm.DataResponseGetShipment;
-import com.tokopedia.core.selling.model.modelShippingForm.Shipment;
-import com.tokopedia.core.selling.model.modelShippingForm.ShipmentPackage;
+import com.tokopedia.seller.selling.model.modelConfirmShipping.Data;
+import com.tokopedia.seller.selling.model.modelEditRef.DataResponseEditRef;
+import com.tokopedia.seller.selling.model.modelShippingForm.DataResponseGetShipment;
+import com.tokopedia.seller.selling.model.modelShippingForm.Shipment;
+import com.tokopedia.seller.selling.model.modelShippingForm.ShipmentPackage;
 import com.tokopedia.core.var.TkpdUrl;
 
 import org.json.JSONException;

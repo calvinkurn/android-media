@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.activity;
+package com.tokopedia.core.tracking.activity;
 
 import android.app.Activity;
 import android.app.FragmentManager;
@@ -12,7 +12,7 @@ import android.view.MenuItem;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.selling.fragment.TrackingFragment;
+import com.tokopedia.core.tracking.fragment.TrackingFragment;
 import com.tokopedia.core.tracking.presenter.TrackingFragmentPresenterImpl;
 
 /**

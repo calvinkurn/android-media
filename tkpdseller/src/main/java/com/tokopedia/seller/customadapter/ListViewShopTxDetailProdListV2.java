@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.selling.model.orderShipping.OrderProduct;
+import com.tokopedia.seller.selling.model.orderShipping.OrderProduct;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

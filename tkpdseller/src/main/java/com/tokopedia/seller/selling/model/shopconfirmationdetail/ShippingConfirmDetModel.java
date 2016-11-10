@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.model.shopconfirmationdetail;
+package com.tokopedia.seller.selling.model.shopconfirmationdetail;
 
 import java.util.ArrayList;
 

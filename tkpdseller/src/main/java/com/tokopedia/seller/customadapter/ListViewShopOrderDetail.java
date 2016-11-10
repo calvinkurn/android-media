@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.selling.model.shopconfirmationdetail.ShippingConfirmDetModel;
+import com.tokopedia.seller.selling.model.shopconfirmationdetail.ShippingConfirmDetModel;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.R;
 

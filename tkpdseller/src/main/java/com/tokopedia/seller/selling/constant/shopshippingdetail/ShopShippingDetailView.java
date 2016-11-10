@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.constant.shopshippingdetail;
+package com.tokopedia.seller.selling.constant.shopshippingdetail;
 
 /**
  * Created by noiz354 on 5/10/16.

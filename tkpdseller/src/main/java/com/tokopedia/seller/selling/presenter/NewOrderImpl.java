@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.presenter;
+package com.tokopedia.seller.selling.presenter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,10 +9,10 @@ import android.widget.Toast;
 
 import com.tokopedia.seller.facade.FacadeShopTransaction;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.selling.view.activity.SellingDetailActivity;
-import com.tokopedia.core.selling.view.fragment.FragmentSellingNewOrder;
-import com.tokopedia.core.selling.model.orderShipping.OrderShippingData;
-import com.tokopedia.core.selling.model.orderShipping.OrderShippingList;
+import com.tokopedia.seller.selling.view.activity.SellingDetailActivity;
+import com.tokopedia.seller.selling.view.fragment.FragmentSellingNewOrder;
+import com.tokopedia.seller.selling.model.orderShipping.OrderShippingData;
+import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
 import com.tokopedia.core.util.ValidationTextUtil;
 
 import org.parceler.Parcels;

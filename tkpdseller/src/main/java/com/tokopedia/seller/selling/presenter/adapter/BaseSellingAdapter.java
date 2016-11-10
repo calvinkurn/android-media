@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.presenter.adapter;
+package com.tokopedia.seller.selling.presenter.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

@@ -1,6 +1,6 @@
-package com.tokopedia.core.selling.model;
+package com.tokopedia.seller.selling.model;
 
-import com.tokopedia.core.selling.model.orderShipping.OrderShippingList;
+import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
 
 import org.parceler.Parcel;
 

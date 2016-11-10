@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.orderReject.fragment;
+package com.tokopedia.seller.selling.orderReject.fragment;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -15,8 +15,8 @@ import android.widget.TextView;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.selling.orderReject.ConfirmRejectOrderActivity;
-import com.tokopedia.core.selling.orderReject.adapter.ProductListAdapter;
+import com.tokopedia.seller.selling.orderReject.ConfirmRejectOrderActivity;
+import com.tokopedia.seller.selling.orderReject.adapter.ProductListAdapter;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

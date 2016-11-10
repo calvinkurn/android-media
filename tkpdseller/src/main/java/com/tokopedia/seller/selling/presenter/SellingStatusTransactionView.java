@@ -1,7 +1,7 @@
-package com.tokopedia.core.selling.presenter;
+package com.tokopedia.seller.selling.presenter;
 
 import com.tokopedia.core.presenter.BaseView;
-import com.tokopedia.core.selling.model.SellingStatusTxModel;
+import com.tokopedia.seller.selling.model.SellingStatusTxModel;
 
 import java.util.List;
 

@@ -15,10 +15,10 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
-import com.tokopedia.core.selling.model.partialDetails;
+import com.tokopedia.seller.selling.model.partialDetails;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
-import com.tokopedia.core.selling.model.orderShipping.OrderProduct;
+import com.tokopedia.seller.selling.model.orderShipping.OrderProduct;
 
 import java.util.ArrayList;
 import java.util.List;

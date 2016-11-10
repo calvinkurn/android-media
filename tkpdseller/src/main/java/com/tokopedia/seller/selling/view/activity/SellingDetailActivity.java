@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.view.activity;
+package com.tokopedia.seller.selling.view.activity;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -18,12 +18,12 @@ import com.tokopedia.seller.fragment.FragmentShopShippingDetailV2;
 import com.tokopedia.seller.fragment.FragmentShopTxStatusDetailV2;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
-import com.tokopedia.core.selling.SellingService;
-import com.tokopedia.core.selling.constant.SellingServiceConstant;
-import com.tokopedia.core.selling.presenter.listener.SellingView;
-import com.tokopedia.core.selling.model.SellingStatusTxModel;
-import com.tokopedia.core.selling.model.orderShipping.OrderShippingList;
-import com.tokopedia.core.selling.presenter.ShippingImpl;
+import com.tokopedia.seller.selling.SellingService;
+import com.tokopedia.seller.selling.constant.SellingServiceConstant;
+import com.tokopedia.seller.selling.presenter.listener.SellingView;
+import com.tokopedia.seller.selling.model.SellingStatusTxModel;
+import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
+import com.tokopedia.seller.selling.presenter.ShippingImpl;
 import com.tokopedia.core.service.DownloadService;
 
 import org.parceler.Parcels;

@@ -1,10 +1,10 @@
-package com.tokopedia.core.selling.presenter;
+package com.tokopedia.seller.selling.presenter;
 
 import android.content.Intent;
 import android.view.View;
 
 import com.tokopedia.core.presenter.BaseView;
-import com.tokopedia.core.selling.model.orderShipping.OrderShippingList;
+import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
 import com.tokopedia.core.util.PagingHandler;
 
 import java.util.List;

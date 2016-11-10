@@ -1,6 +1,8 @@
 package com.tokopedia.seller.selling.network.apiservices.apis;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.seller.selling.orderReject.model.ResponseEditDescription;
+import com.tokopedia.seller.selling.orderReject.model.ResponseEditPrice;
 
 import java.util.Map;
 
@@ -17,9 +19,9 @@ public interface ProductActApi {
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Product.PATH_EDIT_DESCRIPTION)
-    Observable<com.tokopedia.core.selling.orderReject.model.ResponseEditDescription> editDescription(@FieldMap Map<String, String> params);
+    Observable<ResponseEditDescription> editDescription(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Product.PATH_EDIT_WEIGHT_PRICE)
-    Observable<com.tokopedia.core.selling.orderReject.model.ResponseEditPrice> editWeightPrice(@FieldMap Map<String, String> params);
+    Observable<ResponseEditPrice> editWeightPrice(@FieldMap Map<String, String> params);
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.model;
+package com.tokopedia.seller.selling.model;
 
 /**
  * Created by Toped18 on 5/13/2016.

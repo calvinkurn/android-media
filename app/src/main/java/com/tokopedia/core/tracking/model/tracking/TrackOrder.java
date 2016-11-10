@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.model.tracking;
+package com.tokopedia.core.tracking.model.tracking;
 
 /**
  * Created by Alifa on 10/12/2016.
