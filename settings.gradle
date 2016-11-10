@@ -1,1 +1,1 @@
-include ':app', ':customerapp', ':tkpdinbox', ':tkpddiscovery'
+include ':app', ':customerapp', ':tkpdinbox', ':tkpddiscovery', ':tkpdseller'
