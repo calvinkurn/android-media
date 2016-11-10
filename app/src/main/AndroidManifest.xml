@@ -421,10 +421,7 @@
             android:label="@string/title_inbox_message"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.tokopedia.core.selling.orderReject.ConfirmRejectOrderActivity"
-            android:label="@string/title_reject_confirm" />
-        <activity
-            android:name="com.tokopedia.core.selling.activity.TrackingActivity"
+            android:name="com.tokopedia.core.tracking.activity.TrackingActivity"
             android:label="Tracking"
             android:screenOrientation="portrait" />
         <activity
@@ -664,16 +661,7 @@
             android:name="com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity"
             android:screenOrientation="portrait"
             android:label="@string/title_activity_people" />
-        <activity
-            android:name="com.tokopedia.core.selling.view.activity.SellingDetailActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_people_tx_details"
-            android:theme="@style/Theme.Tokopedia3"/>
 
-        <activity
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_shop_transaction_new"
-            android:name="com.tokopedia.core.selling.view.activity.ActivitySellingTransaction"/>
 
         <!--=======================================================-->
         <!--RECEIVERS REGISTRY-->
@@ -777,9 +765,6 @@
             android:name="com.tokopedia.core.manage.people.address.service.ManagePeopleAddressService"
             android:exported="false" />
         <service
-            android:name="com.tokopedia.core.selling.SellingService"
-            android:exported="false" />
-        <service
             android:name="com.tokopedia.core.inboxmessage.intentservice.InboxMessageIntentService"
             android:exported="false" />
         <service
@@ -796,9 +781,6 @@
                 <action android:name="com.google.android.gms.iid.InstanceID" />
             </intent-filter>
         </service>
-        <service
-            android:name="com.tokopedia.core.selling.SellingService"
-            android:exported="false" />
         <service
             android:name="com.tokopedia.core.product.intentservice.ProductInfoIntentService"
             android:exported="false" />

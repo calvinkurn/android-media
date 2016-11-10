@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'android-apt'
 
 android {
     compileSdkVersion 24
@@ -19,7 +20,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
 }
+
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -28,4 +36,6 @@ dependencies {
     })
     compile project(':app')
     testCompile 'junit:junit:4.12'
+    compile'com.github.hotchemi:permissionsdispatcher:2.2.0@aar'
+    apt 'com.github.hotchemi:permissionsdispatcher-processor:2.2.0'
 }

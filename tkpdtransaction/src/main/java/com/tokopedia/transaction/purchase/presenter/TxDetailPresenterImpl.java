@@ -19,6 +19,7 @@ import com.tokopedia.core.inboxmessage.activity.SendMessageActivity;
 import com.tokopedia.core.inboxmessage.fragment.SendMessageFragment;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.loyaltysystem.model.LoyaltyNotification;
+import com.tokopedia.core.router.TransactionRouter;
 import com.tokopedia.transaction.purchase.activity.TxDetailActivity;
 import com.tokopedia.transaction.purchase.activity.TxHistoryActivity;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;

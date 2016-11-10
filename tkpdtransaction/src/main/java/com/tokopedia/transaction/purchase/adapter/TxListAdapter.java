@@ -18,6 +18,7 @@ import com.tkpd.library.utils.OneOnClick;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.customView.TextViewCopyable;
+import com.tokopedia.core.router.TransactionRouter;
 import com.tokopedia.transaction.purchase.fragment.TxListFragment;
 import com.tokopedia.transaction.purchase.model.response.txlist.OrderData;
 import com.tokopedia.core.var.TkpdState;

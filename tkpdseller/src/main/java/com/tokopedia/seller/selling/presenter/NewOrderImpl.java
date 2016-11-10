@@ -230,7 +230,7 @@ public class NewOrderImpl extends NewOrder {
             public void OnSuccess(Model model, OrderShippingData Result) {
                 if (view.getPaging().getPage() == 1)
                     clearData();
-                view.getPaging().setNewParameter(Result);
+                //view.getPaging().setNewParameter(Result);
                 finishConnection();
                 modelNewOrder = model;
                 ListDatas.addAll(modelNewOrder.DataList);

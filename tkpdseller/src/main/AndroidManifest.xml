@@ -6,6 +6,23 @@
                  android:supportsRtl="true"
     >
 
+        <activity
+            android:name=".selling.orderReject.ConfirmRejectOrderActivity"
+            android:label="@string/title_reject_confirm" />
+        <activity
+            android:name=".selling.view.activity.SellingDetailActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_activity_people_tx_details"
+            android:theme="@style/Theme.Tokopedia3"/>
+
+        <activity
+            android:screenOrientation="portrait"
+            android:label="@string/title_activity_shop_transaction_new"
+            android:name=".selling.view.activity.ActivitySellingTransaction"/>
+        <service
+            android:name=".selling.SellingService"
+            android:exported="false" />
+
     </application>
 
 </manifest>

@@ -20,7 +20,7 @@ import com.tokopedia.seller.ShippingConfirmationDetail;
 import com.tokopedia.seller.facade.FacadeActionShopTransaction;
 import com.tokopedia.seller.facade.FacadeShopTransaction;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.selling.view.activity.ActivitySellingTransaction;
+import com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction;
 import com.tokopedia.core.selling.view.activity.SellingDetailActivity;
 import com.tokopedia.core.selling.SellingService;
 import com.tokopedia.core.selling.view.fragment.FragmentSellingShipping;
@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
 /**
  * Created by Toped10 on 7/28/2016.
  */
-public class ShippingImpl extends Shipping {
+public class ShippingImpl extends com.tokopedia.core.selling.presenter.Shipping {
 
     private List<Model> modelList;
     //    private List<Fragment> detailList;
@@ -229,7 +229,7 @@ public class ShippingImpl extends Shipping {
             public void OnSuccess(List<Model> model, OrderShippingData Result) {
                 if (view.getPaging().getPage() == 1)
                     modelList.clear();
-                view.getPaging().setNewParameter(Result);
+                //view.getPaging().setNewParameter(Result);
                 modelList.addAll(model);
                 view.notifyDataSetChanged(modelList);
                 onFinishConnection();

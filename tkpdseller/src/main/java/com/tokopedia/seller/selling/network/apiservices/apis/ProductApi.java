@@ -1,4 +1,4 @@
-package com.tokopedia.seller.selling.network.apiservice.apis;
+package com.tokopedia.seller.selling.network.apiservices.apis;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 
@@ -17,5 +17,5 @@ public interface ProductApi {
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Product.PATH_GET_EDIT_PRODUCT_FORM)
-    Observable<ResponseGetProductForm> getEditFormSelling(@FieldMap Map<String, String> params);
+    Observable<com.tokopedia.core.selling.orderReject.model.ResponseGetProductForm> getEditFormSelling(@FieldMap Map<String, String> params);
 }

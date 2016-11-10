@@ -40,7 +40,6 @@ import com.tokopedia.seller.ShippingConfirmationDetail;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.seller.customadapter.ListViewShopTxDetailProdListV2;
-import com.tokopedia.core.fragment.FragmentShopShippingDetailV2PermissionsDispatcher;
 import com.tokopedia.seller.facade.FacadeActionShopTransaction;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.selling.view.activity.SellingDetailActivity;

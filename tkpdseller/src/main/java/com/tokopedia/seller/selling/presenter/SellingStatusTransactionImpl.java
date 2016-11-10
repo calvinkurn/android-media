@@ -107,7 +107,7 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
     @Override
     public void OnSuccess(List<SellingStatusTxModel> model, OrderShippingData Result) {
         CommonUtils.dumper(TAG + " : size " + model.size());
-        mPaging.setNewParameter(Result);
+        //mPaging.setNewParameter(Result);
         if (mPaging.CheckNextPage()) {
             view.displayLoadMore(true);
         } else {

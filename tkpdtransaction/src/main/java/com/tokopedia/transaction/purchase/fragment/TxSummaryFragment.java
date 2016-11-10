@@ -161,7 +161,7 @@ public class TxSummaryFragment extends BasePresenterFragment<TxSummaryPresenter>
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (instanceType == INSTANCE_TYPE_PURCHASE) {
+        /*if (instanceType == INSTANCE_TYPE_PURCHASE) {
             switch (position) {
                 case 0:
                     listener.OnMenuClick(PurchaseActivity.TAB_TX_CONFIRMATION,
@@ -184,6 +184,6 @@ public class TxSummaryFragment extends BasePresenterFragment<TxSummaryPresenter>
                             FilterUtils.TRANSACTION_CANCELED_FILTER_ID);
                     break;
             }
-        }
+        }*/
     }
 }

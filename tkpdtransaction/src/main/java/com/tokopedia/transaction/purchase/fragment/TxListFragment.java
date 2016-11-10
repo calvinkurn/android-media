@@ -17,6 +17,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customadapter.LazyListView;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.router.TransactionRouter;
 import com.tokopedia.transaction.purchase.adapter.TxListAdapter;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 import com.tokopedia.transaction.purchase.listener.TxListViewListener;
@@ -137,8 +138,8 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
     @Override
     protected void setupArguments(Bundle arguments) {
         this.typeInstance = arguments.getInt(TransactionRouter.ARG_PARAM_EXTRA_INSTANCE_TYPE);
-        this.txFilterID = arguments.getString(TransactionRouter.ARG_PARAM_EXTRA_INSTANCE_FILTER,
-                FilterUtils.ALL_STATUS_FILTER_ID);
+       /* this.txFilterID = arguments.getString(TransactionRouter.ARG_PARAM_EXTRA_INSTANCE_FILTER,
+                FilterUtils.ALL_STATUS_FILTER_ID);*/
         this.instanceFromNotification = arguments.getBoolean(TransactionRouter.ARG_PARAM_EXTRA_INSTANCE_FROM_NOTIFICATION,
                 false);
     }

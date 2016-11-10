@@ -28,7 +28,6 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.customView.OrderStatusView;
 import com.tokopedia.seller.customadapter.ListViewShopTxDetailProdListV2;
-import com.tokopedia.core.fragment.FragmentShopTxStatusDetailV2PermissionsDispatcher;
 import com.tokopedia.seller.facade.FacadeActionShopTransaction;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.rxjava.RxUtils;
@@ -259,8 +258,7 @@ public class FragmentShopTxStatusDetailV2 extends Fragment {
     private void setOrderStatus() {
         holder.OrderStatusLayout.removeAllViews();
         for (int i = 0; (i < model.statusList.size() && i < 2); i++) {
-            holder.OrderStatusLayout.addView(OrderStatusView.createInstance(getActivity(),
-                    model.statusList.get(i)).getView());
+            //holder.OrderStatusLayout.addView(OrderStatusView.createInstance(getActivity(), model.statusList.get(i)).getView());
         }
     }
 
