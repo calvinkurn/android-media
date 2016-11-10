@@ -14,6 +14,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
+import com.tokopedia.core.router.TransactionRouter;
 import com.tokopedia.transaction.purchase.adapter.PurchaseTabAdapter;
 import com.tokopedia.transaction.purchase.fragment.TxListFragment;
 import com.tokopedia.transaction.purchase.fragment.TxSummaryFragment;
@@ -53,8 +54,8 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-        drawerPosition = extras.getInt(EXTRA_STATE_TAB_POSITION, 0);
-        stateTxFilterID = extras.getString(EXTRA_STATE_TX_FILTER, FilterUtils.ALL_STATUS_FILTER_ID);
+        drawerPosition = extras.getInt(TransactionRouter.EXTRA_STATE_TAB_POSITION, 0);
+        stateTxFilterID = extras.getString(TransactionRouter.EXTRA_STATE_TX_FILTER, TransactionRouter.ALL_STATUS_FILTER_ID);
     }
 
     @Override
@@ -134,7 +135,7 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
                 break;
             case 5:
                 switch (stateTxFilterID) {
-                    case FilterUtils.TRANSACTION_CANCELED_FILTER_ID:
+                    case TransactionRouter.TRANSACTION_CANCELED_FILTER_ID:
                         drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_TRANSACTION_CANCELED);
                         break;
                     default:

@@ -9,7 +9,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.transaction.purchase.adapter.HistoryListAdapter;
-import com.tokopedia.transaction.purchase.model.response.txlist.OrderHistory;
+import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
 
 import java.util.ArrayList;
 import java.util.List;
