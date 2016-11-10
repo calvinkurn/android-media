@@ -1,5 +1,7 @@
 package com.tokopedia.core.util;
 
+import android.app.Fragment;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 
@@ -15,4 +17,12 @@ public class RouterUtils {
         return intent;
     }
 
+    public static Fragment getFragment(Context context, String className) {
+        return Fragment.instantiate(context, className);
+    }
+
+    public static ComponentName getActivityComponentName(Context context, String activityFullPath) {
+        ComponentName componentName = new ComponentName(context.getPackageName(), activityFullPath);
+        return componentName;
+    }
 }

@@ -252,15 +252,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateVisible" />
         <activity
-            android:name="com.tokopedia.core.purchase.activity.ConfirmPaymentActivity"
-            android:label="@string/title_activity_payment_confirmation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.purchase.activity.TxConfirmationDetailActivity"
-            android:label="@string/title_activity_transaction_payment_confirmation_detail"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
             android:name="com.tokopedia.core.ShopEditor"
             android:label="@string/title_activity_shop_editor"
             android:screenOrientation="portrait" />
@@ -317,11 +308,11 @@
             android:label="@string/title_activity_people_withdraw_balance"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.ShippingConfirmationDetail"
+            android:name="com.tokopedia.core.com.tokopedia.seller.ShippingConfirmationDetail"
             android:label="@string/title_activity_shipping_confirmation_detail"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.ShippingConfirmationProdConf"
+            android:name="com.tokopedia.core.com.tokopedia.seller.ShippingConfirmationProdConf"
             android:label="@string/title_activity_shipping_confirmation_prod_conf"
             android:screenOrientation="portrait" />
         <activity
@@ -337,7 +328,7 @@
             android:screenOrientation="portrait"
             android:label="@string/title_activity_inbox_ticket_detail"/>
         <activity
-            android:name="com.tokopedia.core.OrderHistoryView"
+            android:name="com.tokopedia.core.com.tokopedia.seller.OrderHistoryView"
             android:label="@string/title_activity_order_history_view"
             android:screenOrientation="portrait" />
         <activity
@@ -389,10 +380,6 @@
         <activity
             android:name="com.tokopedia.core.product.activity.ProductInfoActivity"
             android:label="@string/title_activity_product_info"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.purchase.activity.TxVerDetailActivity"
-            android:label="@string/title_payment_verification"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.core.rescenter.detail.activity.ResCenterActivity"
@@ -592,14 +579,6 @@
             android:label="Informasi Toko"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.purchase.activity.TxDetailActivity"
-            android:label="@string/title_activity_people_tx_details"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.purchase.activity.TxHistoryActivity"
-            android:label="@string/title_activity_order_history_view"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.tokopedia.core.talk.talkproduct.activity.TalkProductActivity"
             android:label="@string/title_talk"
             android:screenOrientation="portrait" />
@@ -618,10 +597,6 @@
         <activity
             android:name="com.tokopedia.core.share.ShareActivity"
             android:label="@string/title_activity_share"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.purchase.activity.PurchaseActivity"
-            android:label="@string/title_purchase"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.core.rescenter.create.activity.CreateResCenterActivity"
@@ -806,9 +781,6 @@
             android:exported="false" />
         <service
             android:name="com.tokopedia.core.inboxmessage.intentservice.InboxMessageIntentService"
-            android:exported="false" />
-        <service
-            android:name="com.tokopedia.core.purchase.services.TxActionIntentService"
             android:exported="false" />
         <service
             android:name="com.localytics.android.GcmListenerService"

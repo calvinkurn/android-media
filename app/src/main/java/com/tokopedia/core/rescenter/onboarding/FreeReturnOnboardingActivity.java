@@ -12,8 +12,8 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.onboarding.BaseOnboardingActivity;
 import com.tokopedia.core.onboarding.fragment.OnBoardingFragment;
-import com.tokopedia.core.purchase.presenter.TxDetailPresenterImpl;
 import com.tokopedia.core.rescenter.create.activity.CreateResCenterActivity;
+import com.tokopedia.core.router.TransactionRouter;
 
 
 /**
@@ -87,7 +87,7 @@ public class FreeReturnOnboardingActivity extends BaseOnboardingActivity {
 
         startActivityForResult(CreateResCenterActivity.newInstance(this,
                 getIntent().getExtras().getString(CreateResCenterActivity.KEY_PARAM_ORDER_ID, "")),
-                TxDetailPresenterImpl.CREATE_RESCENTER_REQUEST_CODE);
+                TransactionRouter.CREATE_RESCENTER_REQUEST_CODE);
 
     }
 
@@ -104,10 +104,10 @@ public class FreeReturnOnboardingActivity extends BaseOnboardingActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == TxDetailPresenterImpl.CREATE_RESCENTER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == TransactionRouter.CREATE_RESCENTER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             setResult(Activity.RESULT_OK, data);
             finish();
-        } else if (requestCode == TxDetailPresenterImpl.CREATE_RESCENTER_REQUEST_CODE) {
+        } else if (requestCode == TransactionRouter.CREATE_RESCENTER_REQUEST_CODE) {
             finish();
         }
     }

@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.facade.FacadeShopTransaction;
+import com.tokopedia.seller.facade.FacadeShopTransaction;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.selling.model.SellingStatusTxModel;
 import com.tokopedia.core.selling.model.orderShipping.OrderShippingData;

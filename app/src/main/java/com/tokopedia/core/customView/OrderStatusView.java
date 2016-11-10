@@ -19,8 +19,7 @@ public class OrderStatusView {
     private TextView mComments;
     private LayoutInflater inflater;
 
-    public static OrderStatusView createInstance(Context context,
-                                                 com.tokopedia.core.selling.model.orderShipping.OrderHistory status) {
+    public static OrderStatusView createInstance(Context context, OrderHistory status) {
         OrderStatusView view = null;
             String actor = status.getHistoryActionBy();
             String date = status.getHistoryStatusDate();

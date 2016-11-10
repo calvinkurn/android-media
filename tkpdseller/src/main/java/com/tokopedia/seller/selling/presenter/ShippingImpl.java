@@ -16,9 +16,9 @@ import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
-import com.tokopedia.core.ShippingConfirmationDetail;
-import com.tokopedia.core.facade.FacadeActionShopTransaction;
-import com.tokopedia.core.facade.FacadeShopTransaction;
+import com.tokopedia.seller.ShippingConfirmationDetail;
+import com.tokopedia.seller.facade.FacadeActionShopTransaction;
+import com.tokopedia.seller.facade.FacadeShopTransaction;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.selling.view.activity.ActivitySellingTransaction;
 import com.tokopedia.core.selling.view.activity.SellingDetailActivity;

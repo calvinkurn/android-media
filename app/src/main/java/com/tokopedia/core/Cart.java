@@ -20,6 +20,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PaymentTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.model.Product;
@@ -43,8 +44,7 @@ import com.tokopedia.core.payment.model.responsecartstep2.CartStep2Data;
 import com.tokopedia.core.payment.model.responsecartstep2.Transaction;
 import com.tokopedia.core.payment.model.responsedynamicpayment.DynamicPaymentData;
 import com.tokopedia.core.payment.model.responsethankspayment.ThanksPaymentData;
-import com.tokopedia.core.purchase.activity.PurchaseActivity;
-import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.router.TransactionRouter;
 import com.tokopedia.core.var.TkpdCache;
 
 import org.json.JSONArray;
@@ -417,7 +417,7 @@ public class Cart extends TActivity implements ActivityCartCommunicator,
                         }
 
                         if (data.getIsSuccess() != null && data.getIsSuccess() == 1) {
-                            startActivity(PurchaseActivity.createIntentTxSummary(Cart.this));
+                            startActivity(TransactionRouter.createIntentTxSummary(Cart.this));
                             finish();
                         } else {
                             CommonUtils.UniversalToast(Cart.this,

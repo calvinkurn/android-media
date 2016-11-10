@@ -13,7 +13,6 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.home.ParentIndexHome;
 import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
-import com.tokopedia.core.selling.view.activity.ActivitySellingTransaction;
 import com.tokopedia.core.inboxticket.activity.InboxTicketActivity;
 import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity;
@@ -103,10 +102,6 @@ public class NotificationModHandler {
 	            	break;
 	            case 105:
 	            	resultclass = InboxResCenterActivity.class;
-	            	break;
-	            case 401:
-//	            	resultclass = ShopTransactionV2.class;
-					resultclass = ActivitySellingTransaction.class;
 	            	break;
 	            }
 	        } else {

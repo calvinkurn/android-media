@@ -2,8 +2,6 @@ package com.tokopedia.core.network.apiservices.product.apis;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.core.selling.orderReject.model.ResponseGetProduct;
-import com.tokopedia.core.selling.orderReject.model.ResponseGetProductForm;
 
 import java.util.Map;
 
@@ -62,11 +60,4 @@ public interface ProductApi {
     @GET(TkpdBaseURL.Product.PATH_GET_REPORT_PRODUCT_TYPE)
     Observable<Response<TkpdResponse>> getProductReportType(@QueryMap Map<String, String> params);
 
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.Product.PATH_GET_DETAIL_PRODUCT)
-    Observable<ResponseGetProduct> getProductDetailSelling(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.Product.PATH_GET_EDIT_PRODUCT_FORM)
-    Observable<ResponseGetProductForm> getEditFormSelling(@FieldMap Map<String, String> params);
 }

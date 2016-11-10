@@ -17,14 +17,12 @@ import com.tokopedia.core.ManagePeoplePassword;
 import com.tokopedia.core.ManageShop;
 import com.tokopedia.core.ManageShopAddress;
 import com.tokopedia.core.ManageShopNotes;
-import com.tokopedia.core.OrderHistoryView;
 import com.tokopedia.core.PaymentConfirmationSuccess;
 import com.tokopedia.core.PaymentEditor;
 import com.tokopedia.core.PeopleBankForm;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.R;
 import com.tokopedia.core.ServerErrorPage;
-import com.tokopedia.core.ShippingConfirmationDetail;
 import com.tokopedia.core.ShopAddressForm;
 import com.tokopedia.core.ShopEditor;
 import com.tokopedia.core.ShopNoteForm;
@@ -42,7 +40,6 @@ import com.tokopedia.core.fragment.FragmentCartFinish;
 import com.tokopedia.core.fragment.FragmentCartSummary;
 import com.tokopedia.core.fragment.FragmentSettingPeople;
 import com.tokopedia.core.fragment.FragmentSettingShop;
-import com.tokopedia.core.fragment.FragmentShopTxStatusDetailV2;
 import com.tokopedia.core.fragment.SettingsFragment;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.home.BannerWebView;
@@ -74,20 +71,12 @@ import com.tokopedia.core.people.activity.PeopleInfoDrawerActivity;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.peoplefave.activity.PeopleFavoritedShop;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
-import com.tokopedia.core.purchase.activity.ConfirmPaymentActivity;
-import com.tokopedia.core.purchase.activity.PurchaseActivity;
-import com.tokopedia.core.purchase.activity.TxConfirmationDetailActivity;
-import com.tokopedia.core.purchase.activity.TxDetailActivity;
-import com.tokopedia.core.purchase.activity.TxHistoryActivity;
-import com.tokopedia.core.purchase.activity.TxVerDetailActivity;
 import com.tokopedia.core.reputationproduct.ReputationProduct;
 import com.tokopedia.core.reputationproduct.ReputationProductView;
 import com.tokopedia.core.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.core.rescenter.detail.activity.ResCenterActivity;
 import com.tokopedia.core.rescenter.edit.activity.EditResCenterActivity;
 import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
-import com.tokopedia.core.selling.activity.TrackingActivity;
-import com.tokopedia.core.selling.view.activity.ActivitySellingTransaction;
 import com.tokopedia.core.session.ActivationResentFragment;
 import com.tokopedia.core.session.ForgotPasswordFragment;
 import com.tokopedia.core.session.RegisterNewNextFragment;
@@ -145,12 +134,12 @@ public final class AppScreen {
             gtmName = AppScreen.SCREEN_ADDRESS_GEOLOCATION;
         }else if (actClass instanceof Cart){
             gtmName = AppScreen.SCREEN_CART;
-        }else if (actClass instanceof PurchaseActivity){
-            gtmName = AppScreen.SCREEN_TX_PEOPLE_TRANSACTION_BUYING_LIST;
-        } else if (actClass instanceof TxConfirmationDetailActivity) {
-            gtmName = AppScreen.SCREEN_TX_P_CONFIRM_DETAIL;
-        } else if (actClass instanceof ConfirmPaymentActivity) {
-            gtmName = AppScreen.SCREEN_TX_P_CONFIRM;
+//        }else if (actClass instanceof PurchaseActivity){
+//            gtmName = AppScreen.SCREEN_TX_PEOPLE_TRANSACTION_BUYING_LIST;
+//        } else if (actClass instanceof TxConfirmationDetailActivity) {
+//            gtmName = AppScreen.SCREEN_TX_P_CONFIRM_DETAIL;
+//        } else if (actClass instanceof ConfirmPaymentActivity) {
+//            gtmName = AppScreen.SCREEN_TX_P_CONFIRM;
         } else if (actClass instanceof SendMessageActivity) {
             gtmName = AppScreen.SCREEN_PEOPLE_SEND_MESSAGE;
         } else if (actClass instanceof SimpleHomeActivity) {
@@ -167,11 +156,11 @@ public final class AppScreen {
 //            gtmName = AppScreen.SCREEN_CONTACT_US;
         } else if (actClass instanceof ResCenterActivity) {
             gtmName = AppScreen.SCREEN_INBOX_RESOLUTION_CENTER_DETAIL;
-        } else if (actClass instanceof OrderHistoryView) {
+       /* } else if (actClass instanceof OrderHistoryView) {
             gtmName = AppScreen.SCREEN_ORDER_HISTORY;
 //        }else if (actClass instanceof ShopTransactionV2){
         }else if (actClass instanceof ActivitySellingTransaction){
-            gtmName = AppScreen.SCREEN_TX_SHOP_TRANSACTION_SELLING_LIST;
+            gtmName = AppScreen.SCREEN_TX_SHOP_TRANSACTION_SELLING_LIST;*/
         } else if (actClass instanceof ManageProduct) {
             gtmName = AppScreen.SCREEN_MANAGE_PROD;
         } else if (actClass instanceof ProductActivity) {
@@ -210,16 +199,16 @@ public final class AppScreen {
             gtmName = AppScreen.SCREEN_RESOLUTION_CENTER_ADD;
         } else if (actClass instanceof CreditCardActivity) {
             gtmName = AppScreen.SCREEN_CREDIT_CARD;
-        } else if (actClass instanceof TrackingActivity) {
-            gtmName = AppScreen.SCREEN_TRACKING_DETAIL;
+      //  } else if (actClass instanceof TrackingActivity) {
+       //     gtmName = AppScreen.SCREEN_TRACKING_DETAIL;
         } else if (actClass instanceof EditAddressCart) {
             gtmName = AppScreen.SCREEN_CART_EDIT_ADDRESS;
         } else if (actClass instanceof ManageShopNotes) {
             gtmName = AppScreen.SCREEN_CONFIG_S_INFO;
         } else if (actClass instanceof ReputationViewShop) {
             gtmName = AppScreen.SCREEN_SHOP_REPUTATION;
-        } else if (actClass instanceof ShippingConfirmationDetail) {
-            gtmName = AppScreen.SCREEN_TX_S_CONFIRM_SHIPPING;
+      //  } else if (actClass instanceof ShippingConfirmationDetail) {
+       //     gtmName = AppScreen.SCREEN_TX_S_CONFIRM_SHIPPING;
         } else if (actClass instanceof ShopNoteForm) {
             gtmName = AppScreen.SCREEN_SGOP_NOTE_FORM;
         } else if (actClass instanceof ProductInfoActivity) {
@@ -234,8 +223,8 @@ public final class AppScreen {
             gtmName = AppScreen.SCREEN_INBOX_REPUTATION_DETAIL;
         } else if (actClass instanceof InboxResCenterActivity) {
             gtmName = AppScreen.SCREEN_INBOX_RESOLUTION_CENTER;
-        } else if (actClass instanceof TxDetailActivity) {
-            gtmName = AppScreen.SCREEN_TX_PEOPLE_DETAIL;
+//        } else if (actClass instanceof TxDetailActivity) {
+//            gtmName = AppScreen.SCREEN_TX_PEOPLE_DETAIL;
         } else if (actClass instanceof ManageShop) {
             gtmName = AppScreen.SCREEN_SETTING_MANAGE_SHOP;
         } else if (actClass instanceof ShopInfoMore) {
@@ -262,8 +251,8 @@ public final class AppScreen {
             gtmName = AppScreen.SCREEN_DOWNLOAD_INVOICE;
         } else if (actClass instanceof PaymentConfirmationSuccess) {
             gtmName = AppScreen.SCREEN_CONFIRMATION_SUCCESS;
-        } else if (actClass instanceof TxVerDetailActivity) {
-            gtmName = AppScreen.SCREEN_PAYMENT_VERIFICATION_DETAIL;
+//        } else if (actClass instanceof TxVerDetailActivity) {
+//            gtmName = AppScreen.SCREEN_PAYMENT_VERIFICATION_DETAIL;
         } else if (actClass instanceof ServerErrorPage) {
             gtmName = AppScreen.SCREEN_SERVER_ERROR;
         } else if (actClass instanceof SplashScreen) {
@@ -272,8 +261,8 @@ public final class AppScreen {
             gtmName = AppScreen.SCREEN_PRODUCT_REPUTATION_VIEW_DETAIL;
         } else if (actClass instanceof DeepLinkActivity) {
             gtmName = AppScreen.SCREEN_DEEP_LINK;
-        } else if (actClass instanceof TxHistoryActivity){
-            gtmName = AppScreen.SCREEN_ORDER_HISTORY_DETAIL;
+//        } else if (actClass instanceof TxHistoryActivity){
+//            gtmName = AppScreen.SCREEN_ORDER_HISTORY_DETAIL;
         } else if (actClass instanceof InboxMessageDetailActivity){
             gtmName = AppScreen.SCREEN_INBOX_MESSAGE_DETAIL_VIEW;
         } else if (actClass instanceof InboxTicketDetailActivity){
@@ -349,8 +338,8 @@ public final class AppScreen {
             return SCREEN_REGISTER_ACTIVATION;
         } else if (actClass instanceof AddProductFragment){
             return SCREEN_ADD_PRODUCT;
-        } else if (actClass instanceof FragmentShopTxStatusDetailV2){
-            return SCREEN_TX_PEOPLE_DETAIL;
+        //} else if (actClass instanceof FragmentShopTxStatusDetailV2){
+          //  return SCREEN_TX_PEOPLE_DETAIL;
         } else {
             return actClass.getClass().getSimpleName();
         }

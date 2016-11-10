@@ -17,7 +17,7 @@ import com.tokopedia.core.selling.constant.shopshippingdetail.ShopShippingDetail
 import com.tokopedia.core.R;
 import com.tokopedia.core.network.apiservices.product.ProductActService;
 import com.tokopedia.core.network.apiservices.product.ProductService;
-import com.tokopedia.core.network.apiservices.shop.MyShopOrderActService;
+import com.tokopedia.seller.selling.network.apiservices.MyShopOrderActService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;

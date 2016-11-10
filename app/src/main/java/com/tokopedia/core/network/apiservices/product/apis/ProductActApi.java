@@ -7,8 +7,6 @@ import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.myproduct.model.EditProductPictureModel;
 import com.tokopedia.core.myproduct.model.ProductSubmitModel;
 import com.tokopedia.core.myproduct.model.ProductValidationModel;
-import com.tokopedia.core.selling.orderReject.model.ResponseEditDescription;
-import com.tokopedia.core.selling.orderReject.model.ResponseEditPrice;
 
 import java.util.Map;
 
@@ -221,11 +219,5 @@ public interface ProductActApi {
     @POST(TkpdBaseURL.Product.PATH_REPORT_PRODUCT)
     Observable<Response<TkpdResponse>> report(@FieldMap Map<String, String> params);
 
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.Product.PATH_EDIT_DESCRIPTION)
-    Observable<ResponseEditDescription> editDescription(@FieldMap Map<String, String> params);
 
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.Product.PATH_EDIT_WEIGHT_PRICE)
-    Observable<ResponseEditPrice> editWeightPrice(@FieldMap Map<String, String> params);
 }

@@ -35,7 +35,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
-import com.tokopedia.core.facade.FacadeActionShopTransaction;
+import com.tokopedia.seller.facade.FacadeActionShopTransaction;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.selling.activity.TrackingActivity;
 import com.tokopedia.core.selling.presenter.adapter.BaseSellingAdapter;

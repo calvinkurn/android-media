@@ -30,7 +30,6 @@ import android.widget.Toast;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
-import com.tokopedia.core.selling.model.partialDetails;
 import com.tokopedia.core.R;
 
 import java.io.File;
@@ -368,23 +367,7 @@ public class CommonUtils {
 		return messageError;
 	}
 
-	public static String partialDetailGenerator(ArrayList<partialDetails> partialdetails){
-		String variable = "%s", nextItem = "*~*", acceptCount="~";
-		String join = variable+acceptCount+variable;
-		String join2 = nextItem+join;
-		String result = "";
-		for(int i=0;i<partialdetails.size();i++){
-			String formatter = null;
-			if(i == 0){
-				formatter = join;
-			}else{
-				formatter = join2;
-			}
 
-			result += String.format(formatter, partialdetails.get(i).getItemDesc(), partialdetails.get(i).getItemQty());
-		}
-		return result;
-	}
 
 
 	public static void hideKeyboard(Activity activity, View view){

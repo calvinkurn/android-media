@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
 
-import com.tokopedia.core.facade.FacadeShopTransaction;
+import com.tokopedia.seller.facade.FacadeShopTransaction;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.selling.view.activity.SellingDetailActivity;
 import com.tokopedia.core.selling.view.fragment.FragmentSellingNewOrder;

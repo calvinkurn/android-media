@@ -1,4 +1,4 @@
-package com.tokopedia.core.selling.view.activity;
+package com.tokopedia.seller.selling.view.activity;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
