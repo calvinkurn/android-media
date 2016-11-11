@@ -1728,7 +1728,7 @@ di Tokopedia Sekarang!</string>
 
 
     <string name="permission_camera_denied">Anda tidak memberikan izin akses untuk Kamera.</string>
-    <string name="permission_storage_denied" >Anda tidak memberikan izin akses untuk Media Penyimpanan.</string>
+    <string name="permission_storage_denied">Anda tidak memberikan izin akses untuk Media Penyimpanan.</string>
     <string name="permission_multi_denied">Anda tidak memberikan izin akses</string>
     <string name="permission_contacts_denied">Anda tidak memberikan izin akses untuk Kontak.</string>
     <string name="permission_location_denied">Anda tidak memberikan izin akses untuk Lokasi.</string>
@@ -1750,5 +1750,9 @@ di Tokopedia Sekarang!</string>
     <string name="permission_contacts">Kontak</string>
     <string name="permission_location">Lokasi</string>
     <string name="permission_accounts">Akun</string>
+
+    <string name="preorder">PO</string>
+    <string name="grosir">Grosir</string>
+    <string name="white_hex_color">#ffffff</string>
 
 </resources>

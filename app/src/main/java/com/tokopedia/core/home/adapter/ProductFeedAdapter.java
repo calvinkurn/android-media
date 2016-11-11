@@ -34,7 +34,7 @@ public class ProductFeedAdapter {
 
     public static class ViewHolderProductFeed extends RecyclerView.ViewHolder {
 
-        public LinearLayout mainContent;
+        public RelativeLayout mainContent;
         public LinearLayout badgesContainer;
         public FlowLayout labelsContainer;
         public TextView productName;
@@ -47,7 +47,7 @@ public class ProductFeedAdapter {
 
         public ViewHolderProductFeed(View itemLayoutView) {
             super(itemLayoutView);
-            mainContent = (LinearLayout) itemLayoutView.findViewById(R.id.container);
+            mainContent = (RelativeLayout) itemLayoutView.findViewById(R.id.container);
             badgesContainer = (LinearLayout) itemLayoutView.findViewById(R.id.badges_container);
             labelsContainer = (FlowLayout) itemLayoutView.findViewById(R.id.label_container);
             productName = (TextView) itemLayoutView.findViewById(R.id.title);

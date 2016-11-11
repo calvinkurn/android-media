@@ -1,5 +1,6 @@
 package com.tokopedia.core.discovery.fragment.browseparent;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -7,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
@@ -15,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
@@ -65,7 +68,10 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     @Bind(R2.id.discovery_ticker)
     TextView discoveryTicker;
     public static final String TAG = BrowseParentFragment.class.getSimpleName();
-    String source;
+    @Bind(R2.id.tab_container)
+    LinearLayout tabContainer;
+    private String source;
+    private String formatKey = "%d_%s";
     public DiscoveryActivityPresenter discoveryActivityPresenter = new DiscoveryActivityPresenter.DiscoveryActivityPresenterImpl() {
         @Override
         public BrowseProductActivityModel getBrowseProductActivityModel() {
@@ -107,8 +113,13 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
                 return null;
             }
         }
+
+        @Override
+        public boolean checkHasFilterAttrIsNull(int activeTab) {
+            return ((BrowseProductActivity) getActivity()).checkHasFilterAttrIsNull(activeTab);
+        }
     };
-//    @Bind(R2.id.progressBar)
+    //    @Bind(R2.id.progressBar)
 //    ProgressBar progressBar;
     private BrowserSectionsPagerAdapter mSectionsPagerAdapter;
 
@@ -216,12 +227,12 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     }
 
     @Override
-    public void setDynamicFilterAtrribute(DynamicFilterModel.Data filterAtrribute) {
+    public void setDynamicFilterAtrribute(DynamicFilterModel.Data filterAtrribute, int activeTab) {
         Log.d(TAG, filterAtrribute.toString());
         if (filterAtrribute.getSort() != null) {
             filterAtrribute.setSelected(filterAtrribute.getSort().get(0).getName());
         }
-        ((BrowseProductActivity) getActivity()).setFilterAttribute(filterAtrribute, source);
+        ((BrowseProductActivity) getActivity()).setFilterAttribute(filterAtrribute, activeTab);
     }
 
     @Override
@@ -235,6 +246,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
         if (uri.contains("/p/")) {
             BrowseProductActivity browseProductActivity = (BrowseProductActivity) getActivity();
             BrowseProductActivityModel model = browseProductActivity.getBrowseProductActivityModel();
+            model.setSource(DynamicFilterPresenter.DIRECTORY);
             model.setDepartmentId(productModel.result.departmentId);
             ((BrowseProductActivity) getActivity()).setFragment(BrowseParentFragment.newInstance(model), BrowseParentFragment.FRAGMENT_TAG);
         }
@@ -261,6 +273,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     public void setupWithViewPager() {
         Log.d(TAG, "setupWithViewPager source " + source);
         tabLayout.setVisibility(View.GONE);
+        tabContainer.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
         BrowseProductActivity productActivity = (BrowseProductActivity) getActivity();
         productActivity.changeBottomBar(source);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -272,10 +285,10 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
             @Override
             public void onPageSelected(int position) {
                 Log.d(TAG, MESSAGE_TAG + " >> position >> " + position);
+                ((BrowseProductActivity) getActivity()).getBrowseProductActivityModel().setActiveTab(position);
+                ((BrowseProductActivity) getActivity()).getBrowseProductActivityModel().setSource(source);
                 fetchData(position);
                 sendTabClickGTM();
-                ((BrowseProductActivity) getActivity()).getBrowseProductActivityModel().setTab(position);
-                ((BrowseProductActivity) getActivity()).getBrowseProductActivityModel().setSource(source);
             }
 
             @Override
@@ -304,7 +317,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
          */
         if (fragment != null && fragment instanceof ShopFragment) {
             ((ShopFragment) fragment).onCallNetwork();
-            if(source.startsWith("search")) {
+            if (source.startsWith("search")) {
                 source = DynamicFilterPresenter.SEARCH_SHOP;
             }
         }
@@ -314,26 +327,26 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
          */
         if (fragment != null && fragment instanceof CatalogFragment) {
             ((CatalogFragment) fragment).onCallNetwork();
-            if(source.startsWith("search")) {
+            if (source.startsWith("search")) {
                 source = DynamicFilterPresenter.SEARCH_CATALOG;
             }
         }
 
         if (fragment != null && fragment instanceof ProductFragment) {
-            if(source.startsWith("search")) {
+            if (source.startsWith("search")) {
                 source = DynamicFilterPresenter.SEARCH_PRODUCT;
             }
         }
         Log.d(TAG, "source " + source);
         BrowseProductActivity productActivity = (BrowseProductActivity) getActivity();
-        if (productActivity.checkHasFilterAttrIsNull(source)) {
-            presenter.fetchDynamicAttribute(getActivity(), source);
-        }
+//        if (productActivity.checkHasFilterAttrIsNull(getActiveTab())){
+//            presenter.fetchDynamicAttribute(getActivity(), source, getActiveTab());
+//        }
         productActivity.changeBottomBar(source);
     }
 
     public int getActiveTab() {
-        return tabLayout.getSelectedTabPosition();
+        return viewPager.getCurrentItem();
     }
 
     @Override
@@ -399,5 +412,15 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
                 UnifyTracking.eventDiscoverySearchCatalog();
                 break;
         }
+    }
+
+    @Override
+    public Context getContext() {
+        return super.getContext();
+    }
+
+    @Override
+    public DiscoveryActivityPresenter getActivityPresenter() {
+        return discoveryActivityPresenter;
     }
 }

@@ -35,6 +35,4 @@ public abstract class BrowseProductParent extends BaseImpl<BrowseProductParentVi
 
     public abstract List<Breadcrumb> getBreadCrumb();
 
-    public abstract void fetchDynamicAttribute(Context context, String source);
-
 }

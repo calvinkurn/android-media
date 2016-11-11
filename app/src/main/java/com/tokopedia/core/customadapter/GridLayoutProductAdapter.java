@@ -55,7 +55,6 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
             super(itemView);
             badgeContainer = (LinearLayout) itemView.findViewById(R.id.badges_container);
             mainContent = (LinearLayout) itemView.findViewById(R.id.main_content);
-            badgeContainer = (LinearLayout) itemView.findViewById(R.id.badges_container);
             productName = (TextView) itemView.findViewById(R.id.product_name);
             productPrice = (TextView) itemView.findViewById(R.id.product_price);
             shopName = (TextView) itemView.findViewById(R.id.product_shop);

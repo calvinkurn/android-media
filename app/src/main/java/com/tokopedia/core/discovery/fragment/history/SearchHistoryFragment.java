@@ -1,6 +1,7 @@
 package com.tokopedia.core.discovery.fragment.history;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -22,14 +23,14 @@ public class SearchHistoryFragment extends BaseFragment<SearchHistory> implement
     public static final String FRAGMENT_TAG = "SearchHistoryFragment";
     public static final String INIT_QUERY = "INIT_QUERY";
 
-    public static SearchHistoryFragment newInstance(){
+    public static SearchHistoryFragment newInstance() {
         SearchHistoryFragment instance = new SearchHistoryFragment();
         Bundle args = new Bundle();
         instance.setArguments(args);
         return instance;
     }
 
-    public static SearchHistoryFragment newInstance(String query){
+    public static SearchHistoryFragment newInstance(String query) {
         SearchHistoryFragment instance = new SearchHistoryFragment();
         Bundle args = new Bundle();
         args.putString(INIT_QUERY, query);
@@ -102,17 +103,22 @@ public class SearchHistoryFragment extends BaseFragment<SearchHistory> implement
 
     @Override
     public void sendSearchResult(String query) {
-        ((BrowseProductActivity)getActivity()).sendQuery(query);
+        ((BrowseProductActivity) getActivity()).sendQuery(query);
     }
 
     @Override
     public void clearSearchQuery() {
-        ((BrowseProductActivity)getActivity()).clearQuery();
+        ((BrowseProductActivity) getActivity()).clearQuery();
     }
 
     @Override
     public void sendHotlistResult(String selected) {
-        ((BrowseProductActivity)getActivity()).sendHotlist(selected);
+        ((BrowseProductActivity) getActivity()).sendHotlist(selected);
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initRecylerView();
+    }
 }
