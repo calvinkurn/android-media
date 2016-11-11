@@ -798,11 +798,18 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     }
 
     public void showEmptyState(NetworkErrorHelper.RetryClickedListener retryClickedListener){
-        NetworkErrorHelper.showEmptyState(BrowseProductActivity.this, coordinatorLayout, retryClickedListener);
+        NetworkErrorHelper.showEmptyState(BrowseProductActivity.this,container, retryClickedListener);
+        if (bottomNavigation!=null) {
+            bottomNavigation.hideBottomNavigation();
+        }
     }
 
     public void removeEmptyState(){
         NetworkErrorHelper.removeEmptyState(coordinatorLayout);
+        NetworkErrorHelper.removeEmptyState(container);
+            if (bottomNavigation!=null && bottomNavigation.isHidden() ) {
+                bottomNavigation.restoreBottomNavigation();
+            }
     }
 
     private void fetchHotListHeader(final String alias) {
