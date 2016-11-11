@@ -18,6 +18,8 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customadapter.LazyListView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.TransactionRouter;
+import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.transaction.purchase.adapter.TxListAdapter;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 import com.tokopedia.transaction.purchase.listener.TxListViewListener;
@@ -27,8 +29,6 @@ import com.tokopedia.transaction.purchase.presenter.TxListPresenter;
 import com.tokopedia.transaction.purchase.presenter.TxListPresenterImpl;
 import com.tokopedia.transaction.purchase.receiver.TxListUIReceiver;
 import com.tokopedia.transaction.purchase.utils.FilterUtils;
-import com.tokopedia.core.util.PagingHandler;
-import com.tokopedia.core.util.RefreshHandler;
 
 import java.util.List;
 
@@ -138,10 +138,11 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
     @Override
     protected void setupArguments(Bundle arguments) {
         this.typeInstance = arguments.getInt(TransactionRouter.ARG_PARAM_EXTRA_INSTANCE_TYPE);
-       /* this.txFilterID = arguments.getString(TransactionRouter.ARG_PARAM_EXTRA_INSTANCE_FILTER,
-                FilterUtils.ALL_STATUS_FILTER_ID);*/
-        this.instanceFromNotification = arguments.getBoolean(TransactionRouter.ARG_PARAM_EXTRA_INSTANCE_FROM_NOTIFICATION,
-                false);
+        this.txFilterID = arguments.getString(TransactionRouter.ARG_PARAM_EXTRA_INSTANCE_FILTER,
+                TransactionRouter.ALL_STATUS_FILTER_ID);
+        this.instanceFromNotification = arguments.getBoolean(
+                TransactionRouter.ARG_PARAM_EXTRA_INSTANCE_FROM_NOTIFICATION, false
+        );
     }
 
     @Override
@@ -183,7 +184,8 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
         refreshHandler.setPullEnabled(true);
         lvTXList.setAdapter(txListAdapter);
         lvTXList.setOnLazyLoadListener(this);
-        fabFilter.setVisibility(typeInstance == TransactionRouter.INSTANCE_ALL && !instanceFromNotification
+        fabFilter.setVisibility(typeInstance == TransactionRouter.INSTANCE_ALL
+                && !instanceFromNotification
                 ? View.VISIBLE : View.GONE);
         fabFilter.setOnClickListener(this);
     }
@@ -193,7 +195,9 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
         switch (typeInstance) {
             case TransactionRouter.INSTANCE_ALL:
                 isLoading = true;
-                presenter.getAllOrderData(getActivity(), pagingHandler.getPage(), allTxFilter, typeRequest);
+                presenter.getAllOrderData(
+                        getActivity(), pagingHandler.getPage(), allTxFilter, typeRequest
+                );
                 break;
             case INSTANCE_RECEIVE:
                 isLoading = true;
@@ -288,7 +292,8 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
         isLoadMoreTerminated = false;
         refreshHandler.setPullEnabled(true);
         lvTXList.removeFooterView(loadMoreView);
-        if (typeInstance == TransactionRouter.INSTANCE_ALL && !instanceFromNotification) fabFilter.show();
+        if (typeInstance == TransactionRouter.INSTANCE_ALL && !instanceFromNotification)
+            fabFilter.show();
     }
 
     @Override
@@ -305,7 +310,8 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
                             getData(TxOrderNetInteractor.TypeRequest.LOAD_MORE);
                         }
                     }).showRetrySnackbar();
-        if (typeInstance == TransactionRouter.INSTANCE_ALL && !instanceFromNotification) fabFilter.hide();
+        if (typeInstance == TransactionRouter.INSTANCE_ALL && !instanceFromNotification)
+            fabFilter.hide();
     }
 
     @Override
@@ -315,7 +321,8 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
         refreshHandler.setPullEnabled(true);
         View rootView = getView();
         if (rootView != null) NetworkErrorHelper.showSnackbar(getActivity(), message);
-        if (typeInstance == TransactionRouter.INSTANCE_ALL && !instanceFromNotification) fabFilter.hide();
+        if (typeInstance == TransactionRouter.INSTANCE_ALL && !instanceFromNotification)
+            fabFilter.hide();
     }
 
     @Override
@@ -324,7 +331,8 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
         lvTXList.removeFooterView(loadMoreView);
         refreshHandler.finishRefresh();
         refreshHandler.setPullEnabled(false);
-        if (typeInstance == TransactionRouter.INSTANCE_ALL && !instanceFromNotification) fabFilter.hide();
+        if (typeInstance == TransactionRouter.INSTANCE_ALL && !instanceFromNotification)
+            fabFilter.hide();
         View rootView = getView();
         if (rootView != null)
             NetworkErrorHelper.showEmptyState(
