@@ -8,7 +8,7 @@ import org.parceler.Parcel;
 /**
  * Created by Toped10 on 7/11/2016.
  */
-@Parcel
+@Parcel(parcelsIndex = false)
 public class FormProductData {
 
     /**
@@ -70,7 +70,7 @@ public class FormProductData {
     }
 
 
-    @Parcel
+    @Parcel(parcelsIndex = false)
     public static class ProductBean {
         @SerializedName("product_must_insurance")
         @Expose

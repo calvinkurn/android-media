@@ -3,12 +3,13 @@ package com.tokopedia.seller.selling.model;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
 
 import org.parceler.Parcel;
+import org.parceler.ParcelClass;
 
 /**
  * Created by Erry on 7/19/2016.
  */
 
-@Parcel
+@Parcel(parcelsIndex = false)
 public class SellingStatusTxModel {
     public String UserName;
     public String RefNum;

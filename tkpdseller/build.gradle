@@ -38,4 +38,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile'com.github.hotchemi:permissionsdispatcher:2.2.0@aar'
     apt 'com.github.hotchemi:permissionsdispatcher-processor:2.2.0'
+    compile "org.parceler:parceler-api:1.0.4"
+    apt "org.parceler:parceler:1.0.4"
 }

@@ -5,7 +5,7 @@ import org.parceler.Parcel;
 /**
  * Created by Toped10 on 6/3/2016.
  */
-@Parcel
+@Parcel(parcelsIndex = false)
 public class ModelEditDescription {
     public static final String MODEL_EDIT_DESCRIPTION_KEY = "model_edit_description_key";
     public static final String USER_ID = "user_id";
