@@ -1066,6 +1066,7 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                     case DISCOVER_LOGIN:
                     case RESET_PASSWORD:
                     case REGISTER_THIRD:
+                    case REGISTER_PASS_PHONE:
                         resultData.putInt(TYPE, type);
                         resultData.putInt(NETWORK_ERROR_FLAG, errorCode);
                         resultData.putString(MESSAGE_ERROR_FLAG, error.toString());
