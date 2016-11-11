@@ -19,7 +19,7 @@ import android.view.Window;
 import android.widget.TextView;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.var.RouterConstant;
+import com.tokopedia.core.router.InboxRouter;
 
 /**
  * Created by Tkpd_Eka on 4/15/2015.
@@ -72,7 +72,7 @@ public class VersionInfo {
         return new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent intent = RouterUtils.getActivityIntent(context, RouterConstant.INBOX_CONTACT_US_ACTIVITY);
+                Intent intent = InboxRouter.getContactUsActivityIntent(context);
                 context.startActivity(intent);
                 dialog.dismiss();
             }

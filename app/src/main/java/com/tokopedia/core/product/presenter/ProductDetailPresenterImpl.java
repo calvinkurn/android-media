@@ -29,6 +29,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
+import com.tokopedia.core.router.DiscoveryRouter;
 import com.tokopedia.core.discovery.activity.BrowseProductActivity;
 import com.tokopedia.core.home.ParentIndexHome;
 import com.tokopedia.core.home.fragment.FragmentIndexFavoriteV2;
@@ -527,7 +528,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void processToCatalog(Context context, String catalogId) {
-        viewListener.navigateToActivity(Router.getCatalogDetailActivity(context, catalogId));
+        viewListener.navigateToActivity(DiscoveryRouter.getCatalogDetailActivity(context, catalogId));
     }
 
     private static int getWishListIcon(int status) {

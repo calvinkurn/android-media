@@ -10,6 +10,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.router.TransactionRouter;
+import com.tokopedia.transaction.purchase.activity.PurchaseActivity;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.transaction.purchase.adapter.TxSummaryAdapter;
 import com.tokopedia.transaction.purchase.listener.TxSummaryViewListener;
