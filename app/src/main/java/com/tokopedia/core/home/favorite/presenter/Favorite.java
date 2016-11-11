@@ -1,4 +1,4 @@
-package com.tokopedia.core.home.presenter;
+package com.tokopedia.core.home.favorite.presenter;
 
 import android.content.Context;
 import android.os.Bundle;

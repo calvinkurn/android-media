@@ -1,6 +1,6 @@
 package com.tokopedia.core.home.model;
 
-import com.tokopedia.core.home.presenter.Favorite;
+import com.tokopedia.core.home.favorite.presenter.Favorite;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.ShopItem;
 import com.tokopedia.core.var.TkpdState;
