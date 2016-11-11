@@ -299,6 +299,7 @@ public class EditAddressCart extends TActivity {
                     @Override
                     public void onNext(String s) {
                         valueLocation.setText(s);
+                        addressGeoLocation = s;
                     }
                 }));
     }

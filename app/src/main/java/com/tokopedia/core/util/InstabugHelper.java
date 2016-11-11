@@ -1,6 +1,7 @@
 package com.tokopedia.core.util;
 
 import android.app.Application;
+import android.os.Debug;
 
 import com.instabug.library.Feature;
 import com.instabug.library.IBGCustomTextPlaceHolder;
@@ -14,6 +15,10 @@ import com.tokopedia.core.app.MainApplication;
  * Created by ricoharisin on 9/1/16.
  */
 public class InstabugHelper {
+
+    private static Boolean ENABLE_DISTRIBUTION = false;
+    private static Boolean DEBUG = false;
+
 
     public static void initInstabug(Application context) {
         new Instabug.Builder(context, getIBGToken())
@@ -66,7 +71,15 @@ public class InstabugHelper {
     }
 
     private static Boolean getIsDebug() {
-        return BuildConfig.DEBUG || BuildConfig.ENABLE_DISTRIBUTION;
+        return DEBUG || ENABLE_DISTRIBUTION;
+    }
+
+    public static void setDebug(Boolean debug) {
+        DEBUG = debug;
+    }
+
+    public static void setEnableDistribution(Boolean enableDistribution) {
+        ENABLE_DISTRIBUTION = enableDistribution;
     }
 
 
