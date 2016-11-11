@@ -133,7 +133,7 @@ public class InboxTicketAdapter extends BaseLinearRecyclerViewAdapter implements
             }
 
             @Override
-            public View.OnClickListener onImageClicked(int position, ImageUpload imageUpload) {
+            public View.OnClickListener onImageClicked(int position, ArrayList<ImageUpload> imageUpload) {
                 return new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
