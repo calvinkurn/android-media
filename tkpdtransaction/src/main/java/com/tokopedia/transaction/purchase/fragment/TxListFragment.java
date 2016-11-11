@@ -138,8 +138,8 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
     @Override
     protected void setupArguments(Bundle arguments) {
         this.typeInstance = arguments.getInt(TransactionRouter.ARG_PARAM_EXTRA_INSTANCE_TYPE);
-       /* this.txFilterID = arguments.getString(TransactionRouter.ARG_PARAM_EXTRA_INSTANCE_FILTER,
-                FilterUtils.ALL_STATUS_FILTER_ID);*/
+        this.txFilterID = arguments.getString(TransactionRouter.ARG_PARAM_EXTRA_INSTANCE_FILTER,
+                TransactionRouter.ALL_STATUS_FILTER_ID);
         this.instanceFromNotification = arguments.getBoolean(TransactionRouter.ARG_PARAM_EXTRA_INSTANCE_FROM_NOTIFICATION,
                 false);
     }

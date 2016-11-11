@@ -24,7 +24,7 @@ import com.tokopedia.core.inboxreputation.fragment.InboxReputationFragment;
 import com.tokopedia.core.inboxticket.fragment.InboxTicketFragment;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.rescenter.inbox.fragment.InboxResCenterFragment;
-import com.tokopedia.core.router.SellerFragmentCreator;
+import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TransactionRouter;
 import com.tokopedia.core.session.Login;
 import com.tokopedia.core.session.presenter.Session;
@@ -122,7 +122,7 @@ public class NotificationCenter extends MultiPaneActivity implements Notificatio
                     break;
                 case 401:
 //                    fragment = FragmentShopNewOrderV2.createInstance();
-                    fragment = SellerFragmentCreator.getFragmentSellingNewOrder(this);
+                    fragment = SellerRouter.getFragmentSellingNewOrder(this);
                     bundle.putBoolean("from_notif", true);
                     fragment.setArguments(bundle);
                     FragmentList.add(fragment);
