@@ -29,7 +29,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Nisie on 4/21/16.
  */
-public class InboxTicketAdapter extends BaseLinearRecyclerViewAdapter implements InboxTicketConstant{
+public class InboxTicketAdapter extends BaseLinearRecyclerViewAdapter implements InboxTicketConstant {
 
     private static final int VIEW_TICKET = 100;
     private static final String ON_GOING = "1";
@@ -187,7 +187,10 @@ public class InboxTicketAdapter extends BaseLinearRecyclerViewAdapter implements
     }
 
     public void setIsRead(int position) {
-        list.get(position).setTicketReadStatus(2);
-        notifyDataSetChanged();
+        if (list != null && list.size() >= position) {
+            list.get(position).setTicketReadStatus(2);
+            notifyDataSetChanged();
+        }
+
     }
 }
