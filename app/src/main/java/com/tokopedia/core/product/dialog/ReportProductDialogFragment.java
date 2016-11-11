@@ -35,10 +35,10 @@ import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.product.listener.ReportProductDialogView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.report.ReportProductPass;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.session.model.network.ReportType;
 import com.tokopedia.core.session.model.network.ReportTypeModel;
 import com.tokopedia.core.util.RouterUtils;
-import com.tokopedia.core.var.RouterConstant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -179,7 +179,7 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
             status=true;
         }
 
-        Intent intent = RouterUtils.getActivityIntent(getActivity(), RouterConstant.INBOX_CONTACT_US_ACTIVITY);
+        Intent intent = InboxRouter.getContactUsActivityIntent(getActivity());
 
         stringNoResult.setSpan(redirect(intent, status, link)
                 , stringNoResult.toString().indexOf(linkStatus)

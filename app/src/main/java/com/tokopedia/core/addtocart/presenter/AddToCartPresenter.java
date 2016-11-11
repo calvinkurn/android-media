@@ -55,4 +55,6 @@ public interface AddToCartPresenter {
     void sendAppsFlyerATC(@NonNull Context context, @NonNull OrderData orderData);
 
     void onViewDestroyed();
+
+    void processGetGTMTicker();
 }

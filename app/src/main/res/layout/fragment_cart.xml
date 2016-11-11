@@ -2,8 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/padding_small"
-    android:paddingRight="@dimen/padding_small"
     tools:context=".Cart">
 
     <include
@@ -14,10 +12,24 @@
         android:gravity="center"
         android:visibility="gone" />
 
+    <TextView
+        android:id="@+id/tv_ticker_gtm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/padding_vs"
+        android:background="@drawable/bg_yellow_border_yelow"
+        android:maxLines="3"
+        android:padding="@dimen/padding_small"
+        android:visibility="gone"
+        tools:text="vhashkjalsla asbhdkashahs askjdhasjdhas asdbaksdlasd" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true">
+        android:layout_below="@+id/tv_ticker_gtm"
+        android:paddingLeft="@dimen/padding_small"
+        android:paddingRight="@dimen/padding_small"
+        android:scrollbars="none">
 
         <LinearLayout
             android:id="@+id/main_view"
