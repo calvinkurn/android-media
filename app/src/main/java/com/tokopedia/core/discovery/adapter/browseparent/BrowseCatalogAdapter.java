@@ -17,7 +17,7 @@ import com.tokopedia.core.customwidget.SquareImageView;
 import com.tokopedia.core.discovery.activity.BrowseProductActivity;
 import com.tokopedia.core.discovery.adapter.ProductAdapter;
 import com.tokopedia.core.discovery.model.BrowseCatalogModel;
-import com.tokopedia.core.router.Router;
+import com.tokopedia.core.router.DiscoveryRouter;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 
@@ -119,7 +119,7 @@ public class BrowseCatalogAdapter extends ProductAdapter {
 //            bundle.putString("ctg_id", catalogModel.catalogId);
 //            intent.putExtras(bundle);
 //            context.startActivity(intent);
-            context.startActivity(Router.getCatalogDetailActivity(context, catalogModel.catalogId));
+            context.startActivity(DiscoveryRouter.getCatalogDetailActivity(context, catalogModel.catalogId));
         }
     }
 
