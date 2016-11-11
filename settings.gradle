@@ -1,1 +1,1 @@
-include ':app', ':customerapp', ':tkpdinbox', ':tkpddiscovery', ':tkpdtransaction', ':tkpdseller', ':tkpdsession'
+include ':app', ':customerapp', ':tkpdinbox', ':tkpddiscovery', ':tkpdtransaction', ':tkpdseller', ':tkpdsession', ':sellerapp'
