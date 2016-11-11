@@ -374,9 +374,10 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                 running.putBoolean(LOGIN_SHOW_DIALOG, true);
                 receiver.send(STATUS_RUNNING, running);
                 params = new HashMap<>();
+                params = AuthUtil.generateParams(this, params);
+
                 params.put(Login.UUID_KEY, intent.getStringExtra(Login.UUID_KEY));
                 params.put(Login.USER_ID, SessionHandler.getTempLoginSession(this));
-                params = AuthUtil.generateParams(this, params);
 
                 authKey = sessionHandler.getAccessToken(this);
                 authKey = sessionHandler.getTokenType(this) + " " + authKey;
@@ -569,7 +570,7 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                 CreatePasswordModel model = Parcels.unwrap(intent.getParcelableExtra(CREATE_PASSWORD_MODEL_KEY));
 
                 params = new HashMap<>();
-
+                params = AuthUtil.generateParams(getApplicationContext(), params);
                 params.put(RegisterPassPhone.BIRTHDAY, String.valueOf(model.getBdayDay()));
                 params.put(RegisterPassPhone.BIRTHMONTH, String.valueOf(model.getBdayMonth()));
                 params.put(RegisterPassPhone.BIRTHYEAR, String.valueOf(model.getBdayYear()));
@@ -587,8 +588,6 @@ public class DownloadService extends IntentService implements DownloadServiceCon
 
                 bundle = new Bundle();
                 bundle.putString(AccountsService.AUTH_KEY, authKey);
-
-                params = AuthUtil.generateParams(getApplicationContext(), params);
 
                 accountsService = new AccountsService(bundle);
                 accountsService.getApi().createPassword(params)
