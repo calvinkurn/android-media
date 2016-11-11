@@ -6,19 +6,18 @@ import android.util.Log;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
-import com.tokopedia.core.R;
 import com.tokopedia.core.network.apiservices.ace.AceSearchService;
 import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
 import com.tokopedia.core.network.apiservices.product.ProductActService;
 import com.tokopedia.core.network.apiservices.product.ProductService;
 import com.tokopedia.core.network.apiservices.shop.MyShopEtalaseService;
 import com.tokopedia.core.network.apiservices.user.FaveShopActService;
-import com.tokopedia.core.network.apiservices.user.WishListActService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.MapNulRemover;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.product.facade.NetworkParam;
@@ -57,15 +56,12 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class RetrofitInteractorImpl implements RetrofitInteractor {
     private static final String TAG = RetrofitInteractorImpl.class.getSimpleName();
-    private static final String DEFAULT_MSG_ERROR = "Terjadi Kesalahan, Mohon ulangi beberapa saat lagi";
-    private static final String TIMEOUT_MSG_ERROR = "Timeout connection, Mohon ulangi beberapa saat lagi";
 
     private final CompositeSubscription compositeSubscription;
     private final ProductService productService;
     private final ProductActService productActService;
     private final MyShopEtalaseService myShopEtalaseService;
     private final FaveShopActService faveShopActService;
-    private final WishListActService wishListService;
     private final AceSearchService aceSearchService;
     private final MojitoAuthService mojitoAuthService;
 
@@ -73,7 +69,6 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
         this.productService = new ProductService();
         this.myShopEtalaseService = new MyShopEtalaseService();
         this.faveShopActService = new FaveShopActService();
-        this.wishListService = new WishListActService();
         this.productActService = new ProductActService();
         this.compositeSubscription = new CompositeSubscription();
         this.aceSearchService = new AceSearchService();
@@ -98,11 +93,11 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (e instanceof UnknownHostException) {
-                    listener.onError("Tidak ada Koneksi Internet");
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
                 } else if (e instanceof SocketTimeoutException) {
-                    listener.onTimeout(TIMEOUT_MSG_ERROR);
+                    listener.onTimeout(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                 } else {
-                    listener.onError(DEFAULT_MSG_ERROR);
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
 
@@ -121,27 +116,27 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                     new ErrorHandler(new ErrorListener() {
                         @Override
                         public void onUnknown() {
-                            listener.onError(DEFAULT_MSG_ERROR);
+                            listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                         }
 
                         @Override
                         public void onTimeout() {
-                            listener.onTimeout(TIMEOUT_MSG_ERROR);
+                            listener.onTimeout(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                         }
 
                         @Override
                         public void onServerError() {
-                            listener.onError(TIMEOUT_MSG_ERROR);
+                            listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                         }
 
                         @Override
                         public void onBadRequest() {
-                            listener.onError(TIMEOUT_MSG_ERROR);
+                            listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                         }
 
                         @Override
                         public void onForbidden() {
-                            listener.onError(TIMEOUT_MSG_ERROR);
+                            listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                         }
                     }, response.code());
                 }
@@ -176,6 +171,14 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
+                if (e instanceof UnknownHostException) {
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
+                } else if (e instanceof SocketTimeoutException) {
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                } else {
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
+
             }
 
             @Override
@@ -185,10 +188,13 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                     if (!tkpdResponse.isError()) {
                         listener.onSuccess(tkpdResponse.convertDataObj(ProductDinkData.class));
                     } else {
-                        listener.onError(DEFAULT_MSG_ERROR);
+                        listener.onError((response.body().getErrorMessages() != null
+                                && !response.body().getErrorMessages().isEmpty())
+                                ? response.body().getErrorMessages().get(0)
+                                : ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                     }
                 } else {
-                    listener.onError(DEFAULT_MSG_ERROR);
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
         };
@@ -213,7 +219,14 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
 
             @Override
             public void onError(Throwable e) {
-
+                e.printStackTrace();
+                if (e instanceof UnknownHostException) {
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
+                } else if (e instanceof SocketTimeoutException) {
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                } else {
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
             }
 
             @Override
@@ -226,11 +239,16 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                             listener.onSuccess(status == 1);
                         } catch (Exception e) {
                             e.printStackTrace();
-                            listener.onError(DEFAULT_MSG_ERROR);
+                            listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                         }
+                    } else {
+                        listener.onError((response.body().getErrorMessages() != null
+                                && !response.body().getErrorMessages().isEmpty())
+                                ? response.body().getErrorMessages().get(0)
+                                : ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                     }
                 } else {
-                    listener.onError(DEFAULT_MSG_ERROR);
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
         };
@@ -254,7 +272,14 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
 
             @Override
             public void onError(Throwable e) {
-
+                e.printStackTrace();
+                if (e instanceof UnknownHostException) {
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
+                } else if (e instanceof SocketTimeoutException) {
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                } else {
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
             }
 
             @Override
@@ -269,15 +294,20 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                                 listener.onSuccess(etalaseData.getEtalaseList());
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                listener.onError(DEFAULT_MSG_ERROR);
+                                listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
-                            listener.onError(DEFAULT_MSG_ERROR);
+                            listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                         }
+                    } else {
+                        listener.onError((response.body().getErrorMessages() != null
+                                && !response.body().getErrorMessages().isEmpty())
+                                ? response.body().getErrorMessages().get(0)
+                                : ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                     }
                 } else {
-                    listener.onError(DEFAULT_MSG_ERROR);
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
         };
@@ -300,7 +330,14 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
 
             @Override
             public void onError(Throwable e) {
-                listener.onError(context.getString(R.string.msg_connection_timeout));
+                e.printStackTrace();
+                if (e instanceof UnknownHostException) {
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
+                } else if (e instanceof SocketTimeoutException) {
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                } else {
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
             }
 
             @Override
@@ -313,13 +350,16 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                             listener.onSuccess(status == 1);
                         } catch (Exception e) {
                             e.printStackTrace();
-                            listener.onError(DEFAULT_MSG_ERROR);
+                            listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                         }
                     } else {
-                        listener.onError(tkpdResponse.getErrorMessages().get(0));
+                        listener.onError((response.body().getErrorMessages() != null
+                                && !response.body().getErrorMessages().isEmpty())
+                                ? response.body().getErrorMessages().get(0)
+                                : ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                     }
                 } else {
-                    listener.onError(DEFAULT_MSG_ERROR);
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
 
             }
@@ -344,7 +384,14 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
 
             @Override
             public void onError(Throwable e) {
-
+                e.printStackTrace();
+                if (e instanceof UnknownHostException) {
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
+                } else if (e instanceof SocketTimeoutException) {
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                } else {
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
             }
 
             @Override
@@ -363,11 +410,16 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
-                            listener.onError(DEFAULT_MSG_ERROR);
+                            listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                         }
+                    } else {
+                        listener.onError((response.body().getErrorMessages() != null
+                                && !response.body().getErrorMessages().isEmpty())
+                                ? response.body().getErrorMessages().get(0)
+                                : ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                     }
                 } else {
-                    listener.onError(DEFAULT_MSG_ERROR);
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
 
             }
@@ -391,7 +443,14 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
 
             @Override
             public void onError(Throwable e) {
-                listener.onError(DEFAULT_MSG_ERROR);
+                e.printStackTrace();
+                if (e instanceof UnknownHostException) {
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
+                } else if (e instanceof SocketTimeoutException) {
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                } else {
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
             }
 
             @Override
@@ -399,7 +458,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                 if (response.code() == ResponseStatus.SC_CREATED) {
                     listener.onSuccess();
                 } else {
-                    listener.onError(DEFAULT_MSG_ERROR);
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
         };
@@ -423,15 +482,28 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                listener.onError(DEFAULT_MSG_ERROR);
+                if (e instanceof UnknownHostException) {
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
+                } else if (e instanceof SocketTimeoutException) {
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                } else {
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
             }
 
             @Override
             public void onNext(Response<TkpdResponse> response) {
                 if (response.isSuccessful()) {
-                    listener.onSuccess();
+                    if (!response.body().isError()) {
+                        listener.onSuccess();
+                    } else {
+                        listener.onError((response.body().getErrorMessages() != null
+                                && !response.body().getErrorMessages().isEmpty())
+                                ? response.body().getErrorMessages().get(0)
+                                : ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                    }
                 } else {
-                    listener.onError(DEFAULT_MSG_ERROR);
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
         };
@@ -455,13 +527,14 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
 
             @Override
             public void onError(Throwable e) {
-
+                e.printStackTrace();
+                listener.onError();
             }
 
             @Override
             public void onNext(Response<TkpdResponse> response) {
                 try {
-                    if (response.isSuccessful() && response.body().getJsonData()
+                    if (response.isSuccessful() && !response.body().isError() && response.body().getJsonData()
                             .get("is_product_manager").toString().equals("1")) {
                         listener.onSuccess(response.body().getJsonData().get("is_product_manager")
                                 .toString());
@@ -501,7 +574,13 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                listener.onError("");
+                if (e instanceof UnknownHostException) {
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
+                } else if (e instanceof SocketTimeoutException) {
+                    listener.onTimeout(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                } else {
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
             }
 
             @Override
@@ -556,7 +635,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                                     .getProductOthers());
                         } catch (JsonSyntaxException e) {
                             e.printStackTrace();
-                            listener.onError(DEFAULT_MSG_ERROR);
+                            listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                         }
                     }
 
@@ -590,11 +669,11 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                                 Log.e("DownloadReportType", e.getLocalizedMessage());
                                 String errorString;
                                 if (e instanceof SocketTimeoutException) {
-                                    errorString = context.getString(R.string.default_request_error_timeout);
+                                    errorString = ErrorNetMessage.MESSAGE_ERROR_TIMEOUT;
                                 } else if (e instanceof UnknownHostException) {
-                                    errorString = context.getString(R.string.default_request_error_unknown);
+                                    errorString = ErrorNetMessage.MESSAGE_ERROR_DEFAULT;
                                 } else {
-                                    errorString = context.getString(R.string.default_request_error_internal_server);
+                                    errorString = ErrorNetMessage.MESSAGE_ERROR_DEFAULT;
 
                                 }
                                 viewListener.showError(errorString);
@@ -615,7 +694,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                                         viewListener.showError(response.getErrorMessages().get(0));
                                     }
                                 } else {
-                                    viewListener.showError(context.getString(R.string.default_request_error_unknown));
+                                    viewListener.showError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                                 }
                             }
                         })

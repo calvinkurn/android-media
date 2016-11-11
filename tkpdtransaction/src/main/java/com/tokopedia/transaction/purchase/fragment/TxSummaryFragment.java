@@ -11,13 +11,12 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.router.TransactionRouter;
 import com.tokopedia.transaction.purchase.activity.PurchaseActivity;
+import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.transaction.purchase.adapter.TxSummaryAdapter;
 import com.tokopedia.transaction.purchase.listener.TxSummaryViewListener;
 import com.tokopedia.transaction.purchase.model.TxSummaryItem;
 import com.tokopedia.transaction.purchase.presenter.TxSummaryPresenter;
 import com.tokopedia.transaction.purchase.presenter.TxSummaryPresenterImpl;
-import com.tokopedia.transaction.purchase.utils.FilterUtils;
-import com.tokopedia.core.util.RefreshHandler;
 
 import java.util.List;
 

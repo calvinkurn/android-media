@@ -15,13 +15,13 @@ public interface AppEventTracking {
     String DEFAULT_EVENT = "Event";
 
 
-    interface GTMCacheKey{
+    interface GTMCacheKey {
         String REGISTER_TYPE = "REGISTER_TYPE";
         String LOGIN_TYPE = "LOGIN_TYPE";
         String SESSION_STATE = "SESSION_STATE";
     }
 
-    interface GTMCacheValue{
+    interface GTMCacheValue {
         String EMAIL = "Email";
         String FACEBOOK = "Facebook";
         String GMAIL = "Gmail";
@@ -29,7 +29,7 @@ public interface AppEventTracking {
         String LOGIN = "Login";
     }
 
-    interface Event{
+    interface Event {
         String HOMEPAGE = "clickHomePage";
         String PRODUCT_DETAIL_PAGE = "clickPDP";
         String ATC = "clickATC";
@@ -119,8 +119,8 @@ public interface AppEventTracking {
         String LOGIN = "Login";
         String SHOP_DETAIL = "Shop Detail Page";
         String SHOP_MANAGE = "Manage Shop";
-        String NOTES       = "Notes";
-        String LOCATION    = "Location";
+        String NOTES = "Notes";
+        String LOCATION = "Location";
         String ADD_PRODUCT = "Add Product";
         String HAMBURGER = "Hamburger Icon";
         String SALES = "Sales";
@@ -211,15 +211,15 @@ public interface AppEventTracking {
         String REPORT_NOT_LOGIN = "Report - Not Login";
         String REPORT_SUCCESS = "Report Success";
 
-        String SHOP_INFO        = "Shop Info";
-        String SHOP_SHIPPING    = "Shop Shipping";
-        String SHOP_PAYMENT     = "Shop Payment";
-        String SHOP_ETALASE     = "Shop Etalase";
-        String SHOP_NOTES       = "Shop Notes";
-        String SHOP_LOCATION    = "Shop Location";
+        String SHOP_INFO = "Shop Info";
+        String SHOP_SHIPPING = "Shop Shipping";
+        String SHOP_PAYMENT = "Shop Payment";
+        String SHOP_ETALASE = "Shop Etalase";
+        String SHOP_NOTES = "Shop Notes";
+        String SHOP_LOCATION = "Shop Location";
 
-        String DELETE   = "Delete";
-        String ADD      = "Add";
+        String DELETE = "Delete";
+        String ADD = "Add";
         String ADD_MORE = "Add More";
 
         String NAVIGATION_DRAWER = "Navigation Drawer";
@@ -263,7 +263,7 @@ public interface AppEventTracking {
         String OTHER = "Other";
     }
 
-    interface GTM{
+    interface GTM {
         String LUCKY_BUYER = "msg_lucky_buyer";
         String LUCKY_BUYER_DETAIL = "msg_lucky_buyer_detail";
         String LUCKY_BUYER_VALID = "msg_lucky_valid";
@@ -278,6 +278,13 @@ public interface AppEventTracking {
         String TICKER_SEARCH_TEXT = "ticker_text_search";
         String FILTER_SORT = "sort_filter_data";
         String EXCLUDED_URL = "excluded-url";
+
+        String TICKER_PDP = "is_show_ticker_pdp";
+        String TICKER_PDP_TEXT = "ticker_text_pdp";
+        String TICKER_CART = "is_show_ticker_cart";
+        String TICKER_CART_TEXT = "ticker_text_cart";
+        String TICKER_ATC = "is_show_ticker_atc";
+        String TICKER_ATC_TEXT = "ticker_text_atc";
     }
 
     interface LOCA {
