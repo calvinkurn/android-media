@@ -31,7 +31,7 @@ import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.discovery.activity.BrowseProductActivity;
 import com.tokopedia.core.home.ParentIndexHome;
-import com.tokopedia.core.home.fragment.FragmentIndexFavoriteV2;
+import com.tokopedia.core.home.favorite.view.FragmentIndexFavoriteV2;
 import com.tokopedia.core.inboxmessage.activity.SendMessageActivity;
 import com.tokopedia.core.myproduct.ProductActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;

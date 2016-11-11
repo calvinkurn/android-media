@@ -29,7 +29,6 @@ import com.tokopedia.core.ShopNoteForm;
 import com.tokopedia.core.ShopStatisticDetail;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.addtocart.activity.AddToCartActivity;
-//import com.tokopedia.discovery.catalog.activity.CatalogDetailActivity;
 import com.tokopedia.core.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.deposit.activity.WithdrawActivity;
@@ -45,9 +44,9 @@ import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.ParentIndexHome;
 import com.tokopedia.core.home.SimpleHomeActivity;
+import com.tokopedia.core.home.favorite.view.FragmentIndexFavoriteV2;
 import com.tokopedia.core.home.fragment.FragmentHotListV2;
 import com.tokopedia.core.home.fragment.FragmentIndexCategory;
-import com.tokopedia.core.home.fragment.FragmentIndexFavoriteV2;
 import com.tokopedia.core.home.fragment.FragmentProductFeed;
 import com.tokopedia.core.home.fragment.WishListFragment;
 import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
@@ -95,6 +94,8 @@ import com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity;
 import com.tokopedia.core.talk.talkproduct.activity.TalkAddNew;
 import com.tokopedia.core.talk.talkproduct.activity.TalkProductActivity;
 import com.tokopedia.core.talkview.activity.TalkViewActivity;
+
+//import com.tokopedia.discovery.catalog.activity.CatalogDetailActivity;
 
 
 /**

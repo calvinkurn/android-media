@@ -1,4 +1,4 @@
-package com.tokopedia.core.home.fragment;
+package com.tokopedia.core.home.favorite.view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,9 +24,8 @@ import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.home.ParentIndexHome;
 import com.tokopedia.core.home.adapter.FavoriteRecyclerViewAdapter;
-import com.tokopedia.core.home.presenter.Favorite;
-import com.tokopedia.core.home.presenter.FavoriteImpl;
-import com.tokopedia.core.home.presenter.FavoriteView;
+import com.tokopedia.core.home.favorite.presenter.Favorite;
+import com.tokopedia.core.home.favorite.presenter.FavoriteImpl;
 import com.tokopedia.core.home.util.DefaultRetryListener;
 import com.tokopedia.core.util.RetryHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
