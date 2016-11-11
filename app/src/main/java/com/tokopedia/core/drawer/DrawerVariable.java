@@ -227,7 +227,7 @@ public class DrawerVariable {
         createDrawer(false);
     }
 
-    public void setOnSearchClickListener(View.OnClickListener listener){
+    public void setOnSearchClickListener(View.OnClickListener listener) {
         toolbar.setSearchViewClickListener(listener);
     }
 
@@ -244,9 +244,9 @@ public class DrawerVariable {
         adapter = new DrawerAdapter(context, model.data);
         layoutManager = new LinearLayoutManager(context);
         animator = new DefaultItemAnimator();
-        if(withSearchBox){
+        if (withSearchBox) {
             toolbar.createToolbarWithSearchBox();
-        } else if(context instanceof TkpdActivity) {
+        } else if (context instanceof TkpdActivity) {
             toolbar.createToolbarWithDrawer();
         }
         initFacade();
@@ -522,7 +522,7 @@ public class DrawerVariable {
                 break;
             case TkpdState.DrawerPosition.CONTACT_US:
                 intent = RouterUtils.getActivityIntent(context, RouterConstant.INBOX_CONTACT_US_ACTIVITY);
-                if(TrackingUtils.getBoolean(AppEventTracking.GTM.CREATE_TICKET)) {
+                if (TrackingUtils.getBoolean(AppEventTracking.GTM.CREATE_TICKET)) {
                     intent.putExtra("link", "https://tokopedia.com/contact-us-android");
                 }
                 context.startActivity(intent);
@@ -698,6 +698,10 @@ public class DrawerVariable {
         holder.recyclerView.smoothScrollToPosition(0);
     }
 
+    public void updateBalance() {
+        getLoyalty();
+    }
+
     private void setCache() {
         setCacheHeader();
         setCachePeopleMenu();
@@ -796,7 +800,7 @@ public class DrawerVariable {
         if (TrackingUtils.getBoolean(AppEventTracking.GTM.REPORT)) {
             model.data.add(new DrawerItem("Laporkan", 0, R.drawable.ic_report_but, TkpdState.DrawerPosition.REPORT, false));
         }
-        if(!TrackingUtils.getBoolean(AppEventTracking.GTM.CONTACT_US)){
+        if (!TrackingUtils.getBoolean(AppEventTracking.GTM.CONTACT_US)) {
             model.data.add(new DrawerItem("Hubungi Kami", 0, R.drawable.ic_contact_us, TkpdState.DrawerPosition.CONTACT_US, false));
         }
         model.data.add(new DrawerItem("Keluar", 0, R.drawable.ic_menu_logout, TkpdState.DrawerPosition.LOGOUT, false));
@@ -1033,7 +1037,7 @@ public class DrawerVariable {
         networkInteractor.unsubscribe();
     }
 
-    private void sendGTMNavigationEvent(String label){
+    private void sendGTMNavigationEvent(String label) {
         UnifyTracking.eventDrawerClick(label);
     }
 }
