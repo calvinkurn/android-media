@@ -32,9 +32,9 @@ import com.tokopedia.core.inboxticket.listener.InboxTicketView;
 import com.tokopedia.core.inboxticket.presenter.InboxTicketFragmentPresenter;
 import com.tokopedia.core.inboxticket.presenter.InboxTicketFragmentPresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.RouterUtils;
-import com.tokopedia.core.var.RouterConstant;
 
 import butterknife.Bind;
 
@@ -229,7 +229,7 @@ public class InboxTicketFragment extends BasePresenterFragment<InboxTicketFragme
 
     @Override
     public void goToHelp() {
-        Intent intent = RouterUtils.getActivityIntent(getActivity(), RouterConstant.INBOX_CONTACT_US_ACTIVITY);
+        Intent intent = InboxRouter.getContactUsActivityIntent(getActivity());
         startActivity(intent);
     }
 

@@ -11,7 +11,7 @@ import com.tokopedia.core.util.RouterUtils;
 
 public class SellerRouter {
 
-    public static final String ACTIVITY_SELLING_TRANSACTION = "com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction";
+    private static final String ACTIVITY_SELLING_TRANSACTION = "com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction";
 
     public static Intent getActivitySellingTransaction(Context context) {
         return RouterUtils.getActivityIntent(context, ACTIVITY_SELLING_TRANSACTION);
