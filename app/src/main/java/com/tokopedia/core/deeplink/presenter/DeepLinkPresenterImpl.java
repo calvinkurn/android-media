@@ -219,11 +219,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private boolean isExcludedUrl(Uri uriData) {
-        CommonUtils.dumper("NISNIS" + TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_URL));
         if (!TextUtils.isEmpty(TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_URL))) {
             List<String> listExcludedString = Arrays.asList(TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_URL).split(","));
             for (String excludedString : listExcludedString) {
-                if (uriData.toString().endsWith(excludedString)) {
+                if (uriData.getPath().endsWith(excludedString)) {
                     return true;
                 }
             }
