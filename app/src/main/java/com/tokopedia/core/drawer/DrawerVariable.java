@@ -758,18 +758,18 @@ public class DrawerVariable {
     }
 
     private void createPeopleMenu() {
-        model.peopleMenu.list.add(new DrawerItem("Konfirmasi pembayaran", 0, 0, TkpdState.DrawerPosition.PEOPLE_CONFIRM_PAYMENT, false));
-        model.peopleMenu.list.add(new DrawerItem("Status pemesanan", 0, 0, TkpdState.DrawerPosition.PEOPLE_ORDER_STATUS, false));
-        model.peopleMenu.list.add(new DrawerItem("Konfirmasi penerimaan", 0, 0, TkpdState.DrawerPosition.PEOPLE_CONFIRM_SHIPPING, false));
+        model.peopleMenu.list.add(new DrawerItem("Konfirmasi Pembayaran", 0, 0, TkpdState.DrawerPosition.PEOPLE_CONFIRM_PAYMENT, false));
+        model.peopleMenu.list.add(new DrawerItem("Status Pemesanan", 0, 0, TkpdState.DrawerPosition.PEOPLE_ORDER_STATUS, false));
+        model.peopleMenu.list.add(new DrawerItem("Konfirmasi Penerimaan", 0, 0, TkpdState.DrawerPosition.PEOPLE_CONFIRM_SHIPPING, false));
         model.peopleMenu.list.add(new DrawerItem("Transaksi Dibatalkan", 0, 0, TkpdState.DrawerPosition.PEOPLE_TRANSACTION_CANCELED, false));
-        model.peopleMenu.list.add(new DrawerItem("Daftar pembelian", 0, 0, TkpdState.DrawerPosition.PEOPLE_TRANSACTION_LIST, false));
+        model.peopleMenu.list.add(new DrawerItem("Daftar Pembelian", 0, 0, TkpdState.DrawerPosition.PEOPLE_TRANSACTION_LIST, false));
     }
 
     private void createShopMenu() {
-        model.shopMenu.list.add(new DrawerItem("Order baru", 0, 0, TkpdState.DrawerPosition.SHOP_NEW_ORDER, false));
-        model.shopMenu.list.add(new DrawerItem("Konfirmasi pengiriman", 0, 0, TkpdState.DrawerPosition.SHOP_CONFIRM_SHIPPING, false));
-        model.shopMenu.list.add(new DrawerItem("Status pengiriman", 0, 0, TkpdState.DrawerPosition.SHOP_SHIPPING_STATUS, false));
-        model.shopMenu.list.add(new DrawerItem("Daftar penjualan", 0, 0, TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST, false));
+        model.shopMenu.list.add(new DrawerItem("Order Baru", 0, 0, TkpdState.DrawerPosition.SHOP_NEW_ORDER, false));
+        model.shopMenu.list.add(new DrawerItem("Konfirmasi Pengiriman", 0, 0, TkpdState.DrawerPosition.SHOP_CONFIRM_SHIPPING, false));
+        model.shopMenu.list.add(new DrawerItem("Status Pengiriman", 0, 0, TkpdState.DrawerPosition.SHOP_SHIPPING_STATUS, false));
+        model.shopMenu.list.add(new DrawerItem("Daftar Penjualan", 0, 0, TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST, false));
         model.shopMenu.list.add(new DrawerSeparator());
         model.shopMenu.list.add(new DrawerItem("Daftar Produk", 0, 0, TkpdState.DrawerPosition.MANAGE_PRODUCT, true));
         model.shopMenu.list.add(new DrawerItem("Etalase Toko", 0, 0, TkpdState.DrawerPosition.MANAGE_ETALASE, true));
@@ -777,10 +777,10 @@ public class DrawerVariable {
 
     private void createInboxMenu() {
         model.inboxMenu.list.add(new DrawerItem("Pesan", 0, 0, TkpdState.DrawerPosition.INBOX_MESSAGE, false));
-        model.inboxMenu.list.add(new DrawerItem("Diskusi produk", 0, 0, TkpdState.DrawerPosition.INBOX_TALK, false));
+        model.inboxMenu.list.add(new DrawerItem("Diskusi Produk", 0, 0, TkpdState.DrawerPosition.INBOX_TALK, false));
         model.inboxMenu.list.add(new DrawerItem("Ulasan", 0, 0, TkpdState.DrawerPosition.INBOX_REVIEW, false));
-        model.inboxMenu.list.add(new DrawerItem("Layanan pengguna", 0, 0, TkpdState.DrawerPosition.INBOX_TICKET, false));
-        model.inboxMenu.list.add(new DrawerItem("Pusat resolusi", 0, 0, TkpdState.DrawerPosition.RESOLUTION_CENTER, false));
+        model.inboxMenu.list.add(new DrawerItem("Layanan Pengguna", 0, 0, TkpdState.DrawerPosition.INBOX_TICKET, false));
+        model.inboxMenu.list.add(new DrawerItem("Pusat Resolusi", 0, 0, TkpdState.DrawerPosition.RESOLUTION_CENTER, false));
     }
 
     private void addMenuToDrawer() {
