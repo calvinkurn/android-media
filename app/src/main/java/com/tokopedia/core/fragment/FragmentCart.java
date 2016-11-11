@@ -56,6 +56,7 @@ import com.tokopedia.core.Cart;
 import com.tokopedia.core.EditAddressCart;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -1625,8 +1626,8 @@ public class FragmentCart extends Fragment implements CartInterfaces.FragmentCar
     }
 
     private void getGTMTicker() {
-        if (TrackingUtils.getGtmString("is_show_ticker_cart").equalsIgnoreCase("true")) {
-            String message = TrackingUtils.getGtmString("ticker_text_cart");
+        if (TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_CART).equalsIgnoreCase("true")) {
+            String message = TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_CART_TEXT);
             tvTickerGTM.setText(Html.fromHtml(message));
             tvTickerGTM.setVisibility(View.VISIBLE);
             tvTickerGTM.setAutoLinkMask(0);

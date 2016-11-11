@@ -22,6 +22,7 @@ import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.R;
 import com.tokopedia.core.addtocart.activity.AddToCartActivity;
 import com.tokopedia.core.addtocart.model.ProductCartPass;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -188,8 +189,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void processGetGTMTicker() {
-        if (TrackingUtils.getGtmString("is_show_ticker_pdp").equalsIgnoreCase("true")) {
-            String message = TrackingUtils.getGtmString("ticker_text_pdp");
+        if (TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_PDP).equalsIgnoreCase("true")) {
+            String message = TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_PDP_TEXT);
             viewListener.showTickerGTM(message);
         } else {
             viewListener.hideTickerGTM();

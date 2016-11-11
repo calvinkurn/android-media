@@ -29,6 +29,7 @@ import com.tokopedia.core.addtocart.model.responseatcform.ShipmentPackage;
 import com.tokopedia.core.addtocart.receiver.ATCResultReceiver;
 import com.tokopedia.core.addtocart.services.ATCIntentService;
 import com.tokopedia.core.addtocart.utils.NetParamUtil;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -441,8 +442,8 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
 
     @Override
     public void processGetGTMTicker() {
-        if (TrackingUtils.getGtmString("is_show_ticker_atc").equalsIgnoreCase("true")) {
-            String message = TrackingUtils.getGtmString("ticker_text_atc");
+        if (TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_ATC).equalsIgnoreCase("true")) {
+            String message = TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_ATC_TEXT);
             viewListener.showTickerGTM(message);
         } else {
             viewListener.hideTickerGTM();
