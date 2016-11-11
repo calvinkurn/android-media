@@ -24,10 +24,10 @@ import com.tokopedia.core.addtocart.activity.AddToCartActivity;
 import com.tokopedia.core.addtocart.model.ProductCartPass;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
-import com.tokopedia.core.router.Router;
 import com.tokopedia.core.discovery.activity.BrowseProductActivity;
 import com.tokopedia.core.home.ParentIndexHome;
 import com.tokopedia.core.home.fragment.FragmentIndexFavoriteV2;
@@ -49,6 +49,7 @@ import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.reputationproduct.ReputationProduct;
+import com.tokopedia.core.router.Router;
 import com.tokopedia.core.session.Login;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.shop.ShopEditorActivity;
@@ -182,6 +183,16 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             intent.putExtra(Session.WHICH_FRAGMENT_KEY,
                     TkpdState.DrawerPosition.LOGIN);
             viewListener.navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_LOGIN);
+        }
+    }
+
+    @Override
+    public void processGetGTMTicker() {
+        if (TrackingUtils.getGtmString("is_show_ticker_pdp").equalsIgnoreCase("true")) {
+            String message = TrackingUtils.getGtmString("ticker_text_pdp");
+            viewListener.showTickerGTM(message);
+        } else {
+            viewListener.hideTickerGTM();
         }
     }
 

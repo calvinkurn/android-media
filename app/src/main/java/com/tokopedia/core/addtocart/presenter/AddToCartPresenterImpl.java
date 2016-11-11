@@ -30,6 +30,7 @@ import com.tokopedia.core.addtocart.receiver.ATCResultReceiver;
 import com.tokopedia.core.addtocart.services.ATCIntentService;
 import com.tokopedia.core.addtocart.utils.NetParamUtil;
 import com.tokopedia.core.analytics.PaymentTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
@@ -436,5 +437,15 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     @Override
     public void onViewDestroyed() {
         keroNetInteractor.onViewDestroyed();
+    }
+
+    @Override
+    public void processGetGTMTicker() {
+        if (TrackingUtils.getGtmString("is_show_ticker_atc").equalsIgnoreCase("true")) {
+            String message = TrackingUtils.getGtmString("ticker_text_atc");
+            viewListener.showTickerGTM(message);
+        } else {
+            viewListener.hideTickerGTM();
+        }
     }
 }

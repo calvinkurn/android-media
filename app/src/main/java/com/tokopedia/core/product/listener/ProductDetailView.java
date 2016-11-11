@@ -265,4 +265,8 @@ public interface ProductDetailView extends ViewListener {
     void showReportDialog();
 
     void onProductReportClicked();
+
+    void showTickerGTM(String message);
+
+    void hideTickerGTM();
 }
