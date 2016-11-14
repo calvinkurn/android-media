@@ -18,7 +18,7 @@ import com.tokopedia.core.manage.people.profile.presenter.ManagePeopleProfileImp
 import com.tokopedia.core.manage.people.profile.presenter.ManagePeopleProfilePresenter;
 
 public class ManagePeopleProfileActivity extends BasePresenterActivity<ManagePeopleProfilePresenter>
-        implements ManagePeopleProfileView, EmailVerificationDialog.EmailChangeConfirmation, ManagePeopleProfileResultReceiver.Receiver {
+        implements ManagePeopleProfileView, ManagePeopleProfileResultReceiver.Receiver {
 
     private Bundle bundleData;
     private Uri uriData;
@@ -75,15 +75,6 @@ public class ManagePeopleProfileActivity extends BasePresenterActivity<ManagePeo
             Intent intent = getIntent();
             finish();
             startActivity(intent);
-        }
-    }
-
-
-    @Override
-    public void onEmailChanged() {
-        if (getFragmentManager().findFragmentByTag(ManagePeopleProfileFragment.class.getSimpleName()) != null) {
-            ManagePeopleProfileFragment fragment = (ManagePeopleProfileFragment) getFragmentManager().findFragmentByTag(ManagePeopleProfileFragment.class.getSimpleName());
-            fragment.setOnNotifiedEmailChanged();
         }
     }
 
