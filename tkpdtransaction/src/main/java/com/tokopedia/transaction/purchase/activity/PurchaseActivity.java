@@ -1,7 +1,5 @@
 package com.tokopedia.transaction.purchase.activity;
 
-import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -15,14 +13,15 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.TransactionRouter;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.transaction.cart.activity.CartActivity;
 import com.tokopedia.transaction.purchase.adapter.PurchaseTabAdapter;
 import com.tokopedia.transaction.purchase.fragment.TxListFragment;
 import com.tokopedia.transaction.purchase.fragment.TxSummaryFragment;
-import com.tokopedia.transaction.purchase.utils.FilterUtils;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdState;
 
 import butterknife.Bind;
+import butterknife.OnClick;
 
 
 /**
@@ -55,7 +54,9 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
     @Override
     protected void setupBundlePass(Bundle extras) {
         drawerPosition = extras.getInt(TransactionRouter.EXTRA_STATE_TAB_POSITION, 0);
-        stateTxFilterID = extras.getString(TransactionRouter.EXTRA_STATE_TX_FILTER, TransactionRouter.ALL_STATUS_FILTER_ID);
+        stateTxFilterID = extras.getString(
+                TransactionRouter.EXTRA_STATE_TX_FILTER, TransactionRouter.ALL_STATUS_FILTER_ID
+        );
     }
 
     @Override
@@ -192,5 +193,10 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
             ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
                     .hideSoftInputFromWindow(viewPager.getWindowToken(), 0);
         }
+    }
+
+    @OnClick(R2.id.btn_helper_cart)
+    void actionHelpToCart() {
+        startActivity(CartActivity.createInstance(this));
     }
 }
