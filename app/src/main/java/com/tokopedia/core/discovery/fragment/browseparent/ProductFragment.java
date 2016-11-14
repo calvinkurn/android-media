@@ -47,6 +47,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         implements FetchNetwork, FragmentBrowseProductView {
 
     public static final String TAG = "BrowseProductFragment";
+    public static final String INDEX = "FRAGMENT_INDEX";
 
     @Bind(R2.id.fragmentv2list)
     RecyclerView mRecyclerView;
@@ -94,10 +95,10 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         }
     }
 
-    public static ProductFragment newInstance() {
-        
+    public static ProductFragment newInstance(int index) {
+
         Bundle args = new Bundle();
-        
+        args.putInt(INDEX, index);
         ProductFragment fragment = new ProductFragment();
         fragment.setArguments(args);
         return fragment;
@@ -188,6 +189,9 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         } else {
             presenter.getTopAds(getPage(ProductFragment.TAG), TAG, getActivity(), spanCount);
         }
+        if (model.isEmpty()) {
+            productAdapter.setSearchNotFound();
+        }
         productAdapter.incrementPage();
     }
 
@@ -244,6 +248,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void setupRecyclerView() {
+        ((BrowseProductActivity) getActivity()).showLoading(true);
         mRecyclerView.setAdapter(productAdapter);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

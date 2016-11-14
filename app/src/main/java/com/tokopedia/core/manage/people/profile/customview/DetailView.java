@@ -111,8 +111,8 @@ public class DetailView extends BaseView<Profile, ManagePeopleProfileFragmentPre
                             Integer.parseInt(dataUser.getBirthMonth()),
                             Integer.parseInt(dataUser.getBirthYear())
                     );
-            datePicker.SetMaxYear(2000);
-            datePicker.SetMinYear(1934);
+            datePicker.SetMaxYear(2002);
+            datePicker.SetMinYear(1936);
             datePicker.SetShowToday(false);
             datePicker.DatePickerCalendar(new DatePickerUtil.onDateSelectedListener() {
                 @Override

@@ -41,24 +41,24 @@ public class BrowserSectionsPagerAdapter extends FragmentPagerAdapter {
         switch (position) {
             case BROWSE_PRODUCT:
                 if(fragments[BROWSE_PRODUCT] == null){
-                    fragments[BROWSE_PRODUCT] = ProductFragment.newInstance();
+                    fragments[BROWSE_PRODUCT] = ProductFragment.newInstance(position);
                 }
                 return fragments[BROWSE_PRODUCT];
             case BROWSE_CATALOG:
                 if(fragments[BROWSE_CATALOG] == null) {
                     if(mSectionViewPagerMaps.get(KATALOG)!= null && mSectionViewPagerMaps.get(KATALOG).equals(VISIBLE_ON)){
-                        fragments[BROWSE_CATALOG] = CatalogFragment.newInstance();
+                        fragments[BROWSE_CATALOG] = CatalogFragment.newInstance(position);
                     } else {
-                        fragments[BROWSE_CATALOG] = ShopFragment.newInstance();
+                        fragments[BROWSE_CATALOG] = ShopFragment.newInstance(position);
                     }
                 }return fragments[BROWSE_CATALOG];
             case BROWSE_SHOP:
                 if(fragments[BROWSE_SHOP] == null) {
-                    fragments[BROWSE_SHOP] = ShopFragment.newInstance();
+                    fragments[BROWSE_SHOP] = ShopFragment.newInstance(position);
                 }
                 return fragments[BROWSE_SHOP];
             default: {
-                return ProductFragment.newInstance();
+                return ProductFragment.newInstance(position);
             }
         }
     }

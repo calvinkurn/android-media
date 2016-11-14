@@ -29,4 +29,6 @@ public abstract class Shop extends BaseImpl<ShopView> {
 
     public abstract void loadMore(Context context);
 
+    public abstract void fetchDynamicAttribut();
+
 }

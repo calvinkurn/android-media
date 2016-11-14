@@ -101,6 +101,9 @@ public class List {
     public String productWholesale;
     @SerializedName("badges")
     @Expose
-    public java.util.List<ProductItem.Badge> badges = new ArrayList<ProductItem.Badge>();
+    public java.util.List<ProductItem.Badge> badges;
+    @SerializedName("labels")
+    @Expose
+    public java.util.List<ProductItem.Label> labels;
 
 }

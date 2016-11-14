@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
+import com.tokopedia.core.dynamicfilter.presenter.DynamicFilterPresenter;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 
@@ -20,13 +21,13 @@ import static com.tokopedia.core.network.apiservices.topads.api.TopAdsApi.SRC_HO
 public class NetworkParam {
     private static final String SEARCH_PRODUCT = "SEARCH_PRODUCT";
 
-    public static HashMap<String, String> generateHotListBannerParams(String key){
+    public static HashMap<String, String> generateHotListBannerParams(String key) {
         HashMap<String, String> result = new HashMap<>();
         result.put("key", key);
         return result;
     }
 
-    public static class Product{
+    public static class Product {
         public String device = "android";
         public String start;
         public String rows = "12";
@@ -67,13 +68,15 @@ public class NetworkParam {
         }
     }
 
-    public static HashMap<String, String> generateNetworkParamProduct(Product product){
+    public static HashMap<String, String> generateNetworkParamProduct(Product product) {
         HashMap<String, String> data = new HashMap<>();
         data.put(BrowseApi.DEVICE, product.device);
         data.put(BrowseApi.START, product.start);
         data.put(BrowseApi.ROWS, product.rows);
         data.put(BrowseApi.SC, product.sc);
-        data.put(BrowseApi.DEFAULT_SC, product.sc);
+        if (product.source.equals(DynamicFilterPresenter.HOT_PRODUCT)) {
+            data.put(BrowseApi.DEFAULT_SC, product.sc);
+        }
         data.put(BrowseApi.OB, product.ob);
         data.put(BrowseApi.Q, product.q);
         data.put(BrowseApi.H, product.h);
@@ -92,12 +95,12 @@ public class NetworkParam {
         data.put(BrowseApi.UNIQUE_ID, product.unique_id);
         data.put(BrowseApi.SOURCE, product.source);
 
-        if(product.extraFilter != null)
+        if (product.extraFilter != null)
             data.putAll(product.extraFilter);
         return data;
     }
 
-    public static HashMap<String, String> generateDummyProduct(){
+    public static HashMap<String, String> generateDummyProduct() {
         Product p = getDummyProduct();
         return generateNetworkParamProduct(p);
     }
@@ -113,7 +116,7 @@ public class NetworkParam {
         return p;
     }
 
-    public static Shop generateDummyShop(){
+    public static Shop generateDummyShop() {
         Shop shop = new Shop();
         shop.floc = "";
         shop.q = "cincin";
@@ -123,7 +126,7 @@ public class NetworkParam {
         return shop;
     }
 
-    public static HashMap<String, String> generateShopQuery(Shop shop){
+    public static HashMap<String, String> generateShopQuery(Shop shop) {
         HashMap<String, String> data = new HashMap<>();
         data.put(BrowseApi.FLOC, shop.floc);
         data.put(BrowseApi.Q, shop.q);
@@ -131,26 +134,26 @@ public class NetworkParam {
         data.put(BrowseApi.ROWS, Integer.toString(shop.rows));
         data.put(BrowseApi.START, Integer.toString(shop.start));
         data.put(BrowseApi.DEVICE, shop.device);
-        if(shop.extraFilter != null)
+        if (shop.extraFilter != null)
             data.putAll(shop.extraFilter);
         return data;
     }
 
-    public static HashMap<String, String> generateShopQuery(){
+    public static HashMap<String, String> generateShopQuery() {
         return generateShopQuery(generateDummyShop());
     }
 
-    public static class Shop{
+    public static class Shop {
         public String floc;
         public String q;
         public String fshop;
         public int rows = 12;
         public int start;
         public String device = "android";
-        public Map<String,String> extraFilter;
+        public Map<String, String> extraFilter;
     }
 
-    public static class TopAds{
+    public static class TopAds {
         public int page;
         public String q;
         public String depId;
@@ -167,7 +170,7 @@ public class NetworkParam {
         public boolean preorder;
         public String condition;
         public boolean returnable;
-        public Map<String,String> extraFilter;
+        public Map<String, String> extraFilter;
     }
 
     @Override
@@ -175,14 +178,14 @@ public class NetworkParam {
         return new Gson().toJson(this);
     }
 
-    public static HashMap<String, String> generateTopAds(Context context, TopAds topAds){
+    public static HashMap<String, String> generateTopAds(Context context, TopAds topAds) {
         HashMap<String, String> param = new HashMap<>();
         param.put(TopAdsApi.PAGE, Integer.toString(topAds.page));
         param.put(TopAdsApi.ITEM, Integer.toString(topAds.item));
         param.put(TopAdsApi.SRC, topAds.src);
-        switch (topAds.src){
+        switch (topAds.src) {
             case SRC_HOTLIST:
-                if(topAds.h != null && !topAds.h.equals("")) {
+                if (topAds.h != null && !topAds.h.equals("")) {
                     param.put(TopAdsApi.H, topAds.h);
                 } else {
                     param.put(TopAdsApi.DEP_ID, topAds.depId);
@@ -196,21 +199,21 @@ public class NetworkParam {
                 param.put(TopAdsApi.DEP_ID, topAds.depId);
                 break;
         }
-        if(topAds.extraFilter != null) {
+        if (topAds.extraFilter != null) {
             param.putAll(topAds.extraFilter);
         }
 
         return param;
     }
 
-    public static Catalog generateCatalog(){
+    public static Catalog generateCatalog() {
         Catalog catalog = new Catalog();
         catalog.q = "samsung";
         catalog.start = 0;
         return catalog;
     }
 
-    public static HashMap<String, String> generateCatalogQuery(Catalog catalog){
+    public static HashMap<String, String> generateCatalogQuery(Catalog catalog) {
         HashMap<String, String> data = new HashMap<>();
         data.put(BrowseApi.Q, catalog.q);
         data.put(BrowseApi.ROWS, Integer.toString(catalog.rows));
@@ -225,16 +228,16 @@ public class NetworkParam {
         data.put(BrowseApi.BREADCRUMB, Boolean.toString(catalog.breadcrumb));
         data.put(BrowseApi.IMAGE_SIZE, catalog.imageSize);
         data.put(BrowseApi.IMAGE_SQUARE, Boolean.toString(catalog.imageSquare));
-        if(catalog.extraFilter != null)
+        if (catalog.extraFilter != null)
             data.putAll(catalog.extraFilter);
         return data;
     }
 
-    public static HashMap<String, String> generateCatalogQuery(){
+    public static HashMap<String, String> generateCatalogQuery() {
         return generateCatalogQuery(generateCatalog());
     }
 
-    public static class Catalog{
+    public static class Catalog {
         public String device = "android";
         public int rows = 12;
         public int start;
@@ -249,6 +252,6 @@ public class NetworkParam {
         public boolean breadcrumb = false;
         public String imageSize = "200";
         public boolean imageSquare = true;
-        public Map<String,String> extraFilter;
+        public Map<String, String> extraFilter;
     }
 }

@@ -31,7 +31,7 @@ public class WebViewTopAdsActivity extends TActivity {
             fragment = WebViewTopAdsFragment.newInstance(bundle.getString(WebViewTopAdsFragment.SOURCE_EXTRA));
             manager = getFragmentManager();
             FragmentTransaction transaction = manager.beginTransaction();
-            transaction.setCustomAnimations(R.anim.slide_in_left, 0, 0, R.anim.slide_out_right);
+            transaction.setCustomAnimations(R.animator.slide_in_left, 0, 0, R.animator.slide_out_right);
             transaction.add(R.id.main_view, fragment, "first");
             transaction.commit();
 
