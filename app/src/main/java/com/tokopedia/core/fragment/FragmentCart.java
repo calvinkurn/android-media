@@ -1332,6 +1332,7 @@ public class FragmentCart extends Fragment implements CartInterfaces.FragmentCar
                             }
                         }
                         if (model.getTransactionLists().size() > 0) {
+                            MainView.setVisibility(View.VISIBLE);
                             getGTMTicker();
                             List list = model.getTransactionLists();
                             ArrayList<String> afProductIds = new ArrayList<>();
@@ -1573,6 +1574,7 @@ public class FragmentCart extends Fragment implements CartInterfaces.FragmentCar
 
                     @Override
                     public void onFailed(String error) {
+                        MainView.setVisibility(View.GONE);
                         progressdialog.dismiss();
                         NetworkErrorHelper.showEmptyState(getActivity(), getView(), error,
                                 new NetworkErrorHelper.RetryClickedListener() {
@@ -1586,6 +1588,7 @@ public class FragmentCart extends Fragment implements CartInterfaces.FragmentCar
 
                     @Override
                     public void onTimeout(String timeoutMessage) {
+                        MainView.setVisibility(View.GONE);
                         progressdialog.dismiss();
                         NetworkErrorHelper.showEmptyState(getActivity(), getView(), timeoutMessage,
                                 new NetworkErrorHelper.RetryClickedListener() {
@@ -1599,6 +1602,7 @@ public class FragmentCart extends Fragment implements CartInterfaces.FragmentCar
 
                     @Override
                     public void onError(String errorMessage) {
+                        MainView.setVisibility(View.GONE);
                         progressdialog.dismiss();
                         NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage,
                                 new NetworkErrorHelper.RetryClickedListener() {
@@ -1612,6 +1616,7 @@ public class FragmentCart extends Fragment implements CartInterfaces.FragmentCar
 
                     @Override
                     public void onNoConnection() {
+                        MainView.setVisibility(View.GONE);
                         progressdialog.dismiss();
                         NetworkErrorHelper.showEmptyState(getActivity(), getView(),
                                 new NetworkErrorHelper.RetryClickedListener() {
@@ -2090,13 +2095,14 @@ public class FragmentCart extends Fragment implements CartInterfaces.FragmentCar
 
                     @Override
                     public void onError(String message) {
+                        progressdialog.dismiss();
                         NetworkErrorHelper.showSnackbar(getActivity(),
                                 message);
                     }
 
                     @Override
                     public void onNoConnection() {
-
+                        progressdialog.dismiss();
                     }
                 }
         );
