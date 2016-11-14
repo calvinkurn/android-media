@@ -26,6 +26,7 @@ import com.tkpd.library.ui.utilities.NoResultHandler;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.customadapter.LazyListView;
@@ -67,6 +68,11 @@ public class EtalaseShopEditor extends TActivity {
     private NoResultHandler noResult;
     private String IsAllowShop = "0";
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_SHOP_ETALASE_LIST;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

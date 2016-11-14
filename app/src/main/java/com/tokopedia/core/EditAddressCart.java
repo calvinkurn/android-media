@@ -26,6 +26,7 @@ import com.tkpd.library.utils.Logger;
 import com.tokopedia.core.addtocart.model.responseatcform.Destination;
 import com.tokopedia.core.addtocart.model.responseatcform.Shipment;
 import com.tokopedia.core.addtocart.model.responseatcform.ShipmentPackage;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.LocationPass;
@@ -123,6 +124,11 @@ public class EditAddressCart extends TActivity {
     private String addressGeoLocation;
     private int isUpdateGeoLocation = 0;
     private PaymentNetInteractor interactor;
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_CART_EDIT_ADDRESS;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

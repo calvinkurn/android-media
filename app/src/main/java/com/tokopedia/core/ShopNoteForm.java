@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ConnectionDetector;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.facade.FacadeSendFormDialog;
 import com.tokopedia.core.fragment.ReturnPolicyDialog;
@@ -71,6 +72,11 @@ public class ShopNoteForm extends TActivity {
     GetShopNote facadeShopNote;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
     private FacadeSendFormDialog facadeSendFormDialog;
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_SGOP_NOTE_FORM;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.view.Menu;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.review.fragment.ProductReviewFragment;
@@ -40,6 +41,11 @@ public class ReputationProduct extends TActivity {
         initView();
         initVariable();
         setAdapter();
+    }
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_PRODUCT_REPUTATION_VIEW;
     }
 
     private void initVariable(){

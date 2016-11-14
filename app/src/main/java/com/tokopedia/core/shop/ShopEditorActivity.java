@@ -13,6 +13,7 @@ import android.widget.FrameLayout;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.home.ParentIndexHome;
@@ -47,6 +48,11 @@ public class ShopEditorActivity extends TkpdActivity implements
 
     @Bind(R2.id.container)
     FrameLayout container;
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_SHOP_EDITOR;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

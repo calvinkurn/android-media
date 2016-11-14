@@ -387,6 +387,7 @@ public final class AppScreen {
     public static final String SCREEN_SHOP_SEND_MESSAGE = "Shop Send Message";
     public static final String SCREEN_SHOP_DETAIL = "Shop Info Detail";
     public static final String SCREEN_SHOP_DETAIL_STATS = "Shop Info Detail Statistic";
+    public static final String SCREEN_SHOP_STATS = "Shop Info Statistic";
     public static final String SCREEN_SHOP_NOTE = "Shop Note View";
     public static final String SCREEN_SHOP_FAVORITER = "Shop Favorited List";
     public static final String SCREEN_TX_SHOP = "Shop Transaction";
@@ -398,6 +399,7 @@ public final class AppScreen {
     public static final String SCREEN_CONFIG_SHOP = "Shop Config";
     public static final String SCREEN_CONFIG_S_INFO = "Shop Edit Info";
     public static final String SCREEN_CONFIG_S_SHIPPING = "Shop Edit Shipping";
+    public static final String SCREEN_OPEN_CONFIG_S_SHIPPING = "Open Shop Edit Shipping";
     public static final String SCREEN_CONFIG_S_PAYMENT = "Shop Edit Payment";
     public static final String SCREEN_CONFIG_S_ETALASE = "Store - Etalase";
     public static final String SCREEN_CONFIG_S_NOTES = "Shop Edit Notes";
@@ -446,6 +448,8 @@ public final class AppScreen {
     public static final String SCREEN_HOME_PRODUCT_FEED = "Home - Product feed";
     public static final String SCREEN_HOME_PRODUCT_CATEGORY = "Top category page";
     public static final String SCREEN_HOME_HOTLIST = "Home - hot list";
+    public static final String SCREEN_TOPADS = "Top Ads Screen";
+    public static final String SCREEN_SORT_PRODUCT = "Sort Produk Activity";
     public static final String SCREEN_BROWSE_PRODUCT_FROM_SEARCH = "Browse Produk - From Search";
     public static final String SCREEN_BROWSE_PRODUCT_FROM_CATEGORY = "Browse Category";
     public static final String SCREEN_SEARCH_PAGE = "Search page";
@@ -518,4 +522,6 @@ public final class AppScreen {
     public static final String SCREEN_DEEP_LINK = "Deeplink page";
     public static final String SCREEN_PRODUCT_REPUTATION_VIEW_DETAIL = "Product Reputation View Detail";
     public static final String SCREEN_RECHARGE = "Recharge";
+    public static final String SCREEN_RECHARGE_PAYMENT = "Recharge Payment WebView";
+    public static final String SCREEN_SHARE = "Share Screen";
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.core;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 
 import android.os.Bundle;
@@ -14,6 +15,11 @@ public class PaymentConfirmationSuccess extends TActivity {
 	private TextView TokopediaDeposit;
 	private TextView RemainingDeposit;
 	private String ResultResponse;
+
+	@Override
+	protected String getScreenName() {
+		return AppScreen.SCREEN_CONFIRMATION_SUCCESS;
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

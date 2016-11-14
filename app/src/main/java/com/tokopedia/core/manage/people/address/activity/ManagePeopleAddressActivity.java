@@ -10,6 +10,7 @@ import android.view.View;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.manage.people.address.listener.MPAddressActivityListener;
 import com.tokopedia.core.manage.people.address.presenter.ManagePeopleAddressImpl;
@@ -28,6 +29,11 @@ public class ManagePeopleAddressActivity extends BasePresenterActivity<ManagePeo
     private Uri uriData;
     private Bundle bundleData;
     private ManagePeopleAddressReceiver mReceiver;
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_CONFIG_P_ADDRESS;
+    }
 
     @Override
     protected void setupURIPass(Uri data) {

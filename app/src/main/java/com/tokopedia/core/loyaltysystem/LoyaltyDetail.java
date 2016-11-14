@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 
@@ -12,6 +13,11 @@ public class LoyaltyDetail extends TActivity implements FragmentGeneralWebView.O
 
     public static int FRAGMENT_VIEW = R.id.main_view;
     private String Url;
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_LOYALTY;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

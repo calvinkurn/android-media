@@ -1,11 +1,17 @@
 package com.tokopedia.core;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 
 import android.os.Bundle;
 import android.view.Menu;
 
 public class ProfileEditAddress extends TActivity {
+
+	@Override
+	protected String getScreenName() {
+		return AppScreen.SCREEN_CONFIG_P_ADDRESS;
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

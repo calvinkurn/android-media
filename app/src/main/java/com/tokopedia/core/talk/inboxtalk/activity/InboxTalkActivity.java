@@ -16,6 +16,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.GCMListenerService;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.NotificationModHandler;
@@ -70,6 +71,10 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
 
     }
 
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_INBOX_TALK;
+    }
 
     private void setContent() {
         if (checkHasNoShop()) {

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.shopinfo.fragment.FragmentShopStatistic;
 
@@ -28,5 +29,10 @@ public class ShopInfoMore extends TActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_SHOP_INFO;
     }
 }

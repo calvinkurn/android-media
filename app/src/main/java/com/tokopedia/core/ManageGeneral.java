@@ -11,6 +11,7 @@ import android.support.v4.view.ViewPager;
 
 import com.tokopedia.core.GCMListenerService.NotificationListener;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.fragment.AboutFragment;
@@ -35,6 +36,11 @@ public class ManageGeneral extends TkpdActivity implements NotificationListener{
     ViewPager mViewPager;
     @Bind(R2.id.indicator)
     TabLayout indicator;
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_MANAGE_GENERAL;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -23,6 +23,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tkpd.library.utils.data.DataManagerImpl;
 import com.tkpd.library.utils.data.DataReceiver;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.Bank;
@@ -187,6 +188,11 @@ public class ShopAddressForm extends TActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_SHOP_ADDRESS_FORM;
     }
 
     @Override

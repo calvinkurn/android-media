@@ -23,6 +23,7 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.Bank;
@@ -62,6 +63,11 @@ public class PeopleBankForm extends TActivity {
 	private EditText CodeOTP;
 	private LocalCacheHandler handler;
 	private static int EXPIRE_TIME = 30;
+
+	@Override
+	protected String getScreenName() {
+		return AppScreen.SCREEN_PEOPLE_BANK_FORM;
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

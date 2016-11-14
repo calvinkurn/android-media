@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.customView.SimpleListView;
@@ -69,6 +70,11 @@ public class ManageShopNotes extends TActivity {
     private boolean containsReturnablePolicy;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
     GlobalCacheManager globalCacheManager = new GlobalCacheManager();
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_CONFIG_S_INFO;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

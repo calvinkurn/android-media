@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.NetworkHandler;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
@@ -85,7 +86,12 @@ public class ShopStatistic extends TActivity {
 	ArrayList<String> PaymentUriList = new ArrayList<String>();
 	ArrayList<String> EmptyList = new ArrayList<String>();
 	LayoutInflater iv;
-	
+
+	@Override
+	protected String getScreenName() {
+		return AppScreen.SCREEN_SHOP_STATS;
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

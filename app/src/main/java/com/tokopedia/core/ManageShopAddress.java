@@ -22,6 +22,7 @@ import com.google.gson.GsonBuilder;
 import com.tkpd.library.ui.utilities.NoResultHandler;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.customadapter.LazyListView;
@@ -81,6 +82,11 @@ public class ManageShopAddress extends TActivity {
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_SHOP_ADDRESS_EDITOR;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

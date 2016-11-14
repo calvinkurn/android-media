@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.talk.inboxtalk.intentservice.InboxTalkIntentService;
 import com.tokopedia.core.talk.inboxtalk.intentservice.InboxTalkResultReceiver;
@@ -46,6 +47,12 @@ public class TalkProductActivity extends TActivity implements InboxTalkResultRec
             fragmentTransaction.commit();
         }
     }
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_PRODUCT_TALK;
+    }
+
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
         TalkProductFragment fragment = (TalkProductFragment) getFragmentManager()

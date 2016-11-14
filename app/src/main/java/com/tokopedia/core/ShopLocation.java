@@ -5,6 +5,7 @@ import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.customadapter.ListViewShopLocation;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
@@ -18,6 +19,11 @@ public class ShopLocation extends TActivity {
 	private ListViewShopLocation ShopLocationAdapter;
 	private ListView ShopLocationListView;
 	private ShopModel model;
+
+	@Override
+	protected String getScreenName() {
+		return AppScreen.SCREEN_SHOP_LOCATION;
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

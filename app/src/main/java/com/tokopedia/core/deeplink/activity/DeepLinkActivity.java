@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.router.DiscoveryRouter;
@@ -48,6 +49,11 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     private static final String TAG = DeepLinkActivity.class.getSimpleName();
     private Uri uriData;
     private DownloadResultReceiver mReceiver;
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_DEEP_LINK;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -11,6 +11,7 @@ import android.support.v4.view.ViewPager;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.inboxmessage.InboxMessageConstant;
 import com.tokopedia.core.inboxmessage.adapter.MessagePagerAdapter;
@@ -39,6 +40,10 @@ public class InboxMessageActivity extends DrawerPresenterActivity
 
     InboxMessageResultReceiver mReceiver;
 
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_INBOX_MESSAGE;
+    }
 
     @Override
     protected void setupURIPass(Uri data) {

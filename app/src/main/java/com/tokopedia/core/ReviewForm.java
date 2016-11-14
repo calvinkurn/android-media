@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.customadapter.SpinnerWithImage;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
@@ -23,6 +24,11 @@ import com.tokopedia.core.product.activity.ProductInfoActivity;
 import java.util.ArrayList;
 
 public class ReviewForm extends TActivity {
+
+	@Override
+	protected String getScreenName() {
+		return AppScreen.SCREEN_REVIEW_FORM;
+	}
 
 	public static final String productIDVariabel	 = "p_id";
 	public static final String imageProdVariabel	 = "prod_img";

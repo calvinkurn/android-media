@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.os.Bundle;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.reputationproduct.fragment.FragmentReputationProductView;
 import com.tokopedia.core.review.model.product_review.ReviewProductModel;
@@ -21,6 +22,11 @@ public class ReputationProductView extends TActivity {
                 .beginTransaction()
                 .replace(R.id.fragment, getFragment())
                 .commit();
+    }
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_PRODUCT_REPUTATION_VIEW_DETAIL;
     }
 
     private Fragment getFragment() {

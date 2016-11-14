@@ -21,6 +21,7 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tkpd.library.utils.data.DataManager;
 import com.tkpd.library.utils.data.DataManagerImpl;
 import com.tkpd.library.utils.data.DataReceiver;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.customadapter.ListViewManagePeopleBank;
@@ -68,6 +69,10 @@ public class ManagePeopleBank extends TActivity implements ManagePeopleBankInter
 	LocalCacheHandler bankCache;
 	DataManager dataManager;
 
+	@Override
+	protected String getScreenName() {
+		return AppScreen.SCREEN_PEOPLE_BANK;
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

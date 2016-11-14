@@ -33,6 +33,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
@@ -114,6 +115,11 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     private boolean afterRestoreSavedInstance;
     private Subscription querySubscription;
     private QueryListener queryListener;
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_BROWSE_PRODUCT_FROM_SEARCH;
+    }
 
     public void sendHotlist(String selected) {
         fetchHotListHeader(selected);

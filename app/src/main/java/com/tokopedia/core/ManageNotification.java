@@ -9,6 +9,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.NetworkHandler;
@@ -34,6 +35,11 @@ public class ManageNotification extends TActivity {
 	private View MainView;
 	private TkpdProgressDialog mProgressDialog;
 	private TextView SetRing;
+
+	@Override
+	protected String getScreenName() {
+		return AppScreen.SCREEN_CONFIG_P_NOTIF;
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

@@ -9,6 +9,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.customadapter.SimpleListViewAdapter;
 import com.tokopedia.core.util.JSONHandler;
@@ -28,7 +29,12 @@ public class UserAddress extends TActivity {
 	private ArrayList<String> AddressName = new ArrayList<String>();
 	private View footerLV;
 	private TextView AddNewAddressBtn;
-	
+
+	@Override
+	protected String getScreenName() {
+		return AppScreen.SCREEN_PEOPLE_ADDRESS;
+	}
+
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		inflateView(R.layout.activity_user_address);

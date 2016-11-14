@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.inboxmessage.fragment.SendMessageFragment;
 
@@ -14,6 +15,11 @@ import com.tokopedia.core.inboxmessage.fragment.SendMessageFragment;
  * Created by Nisie on 5/26/16.
  */
 public class SendMessageActivity extends BasePresenterActivity {
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_PEOPLE_SEND_MESSAGE;
+    }
 
     @Override
     protected void setupURIPass(Uri data) {

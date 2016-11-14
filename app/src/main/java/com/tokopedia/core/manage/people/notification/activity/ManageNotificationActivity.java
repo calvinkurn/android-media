@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.manage.people.notification.fragment.ManageNotificationFragment;
 
@@ -13,6 +14,11 @@ import com.tokopedia.core.manage.people.notification.fragment.ManageNotification
  * Created by Nisie on 6/22/16.
  */
 public class ManageNotificationActivity extends BasePresenterActivity {
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_CONFIG_P_NOTIF;
+    }
 
     @Override
     protected void setupURIPass(Uri data) {

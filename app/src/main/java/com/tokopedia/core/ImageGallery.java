@@ -53,6 +53,11 @@ public class ImageGallery extends TActivity {
     private boolean isAlbum;        // true - state in Album folder || false - state in Photo folder
 
     @Override
+    protected String getScreenName() {
+        return ImageGallery.class.getSimpleName();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.picture_galery_layout);

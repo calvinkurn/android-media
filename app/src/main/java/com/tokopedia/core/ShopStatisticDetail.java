@@ -4,12 +4,18 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 
 
 public class ShopStatisticDetail extends TActivity {
 
     public static final String EXTRA_SHOP_INFO = "shop_info";
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_SHOP_DETAIL_STATS;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

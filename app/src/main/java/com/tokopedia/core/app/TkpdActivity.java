@@ -14,7 +14,7 @@ import com.tokopedia.core.var.TkpdCache;
 /**
  * Created by Nisie on 31/08/15.
  */
-public class TkpdActivity extends TActivity implements NotificationListener {
+public abstract class TkpdActivity extends TActivity implements NotificationListener {
 
     private Boolean isLogin;
 

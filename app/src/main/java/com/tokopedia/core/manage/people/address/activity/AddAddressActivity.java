@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.fragment.AddAddressFragment;
@@ -18,6 +19,11 @@ import com.tokopedia.core.manage.people.address.model.AddressModel;
  * Created by nisie on 9/6/16.
  */
 public class AddAddressActivity extends BasePresenterActivity implements ManageAddressConstant {
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_ADD_ADDRESS_FORM;
+    }
 
     @Override
     protected void setupURIPass(Uri data) {

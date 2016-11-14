@@ -3,6 +3,7 @@ package com.tokopedia.core.shipping;
 import android.os.Bundle;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.shipping.fragment.FragmentEditShipping;
 
@@ -16,5 +17,10 @@ public class EditShippingActivity extends TActivity {
 		if(savedInstanceState == null){
 			getFragmentManager().beginTransaction().add(R.id.main_view, FragmentEditShipping.createInstance()).commit();
 		}
+	}
+
+	@Override
+	protected String getScreenName() {
+		return AppScreen.SCREEN_CONFIG_S_SHIPPING;
 	}
 }

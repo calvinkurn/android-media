@@ -82,7 +82,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by Nisie on 31/08/15.
  */
-public class TActivity extends AppCompatActivity implements SessionHandler.onLogoutListener,
+public abstract class TActivity extends AppCompatActivity implements SessionHandler.onLogoutListener,
         HadesBroadcastReceiver.ReceiveListener,
         ErrorNetworkReceiver.ReceiveListener {
 
@@ -111,6 +111,8 @@ public class TActivity extends AppCompatActivity implements SessionHandler.onLog
     //[START] This is for downloading departmend id using IntentService
 
     public PhoneVerificationUtil phoneVerificationUtil;
+
+    protected abstract String getScreenName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

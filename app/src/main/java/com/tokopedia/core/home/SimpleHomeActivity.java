@@ -17,6 +17,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.home.fragment.ProductHistoryFragment;
 import com.tokopedia.core.home.fragment.WishListFragment;
@@ -40,6 +41,11 @@ public class SimpleHomeActivity extends TActivity implements SimpleHomeView{
     SimpleHome simpleHome;
 
     FragmentManager supportFragmentManager;
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_HOME_WISHLIST;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

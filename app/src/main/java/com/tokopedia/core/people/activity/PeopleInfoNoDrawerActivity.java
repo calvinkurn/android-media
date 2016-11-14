@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.people.listener.PeopleInfoView;
 import com.tokopedia.core.people.presenter.PeopleInfoImpl;
@@ -30,6 +31,11 @@ public class PeopleInfoNoDrawerActivity extends BasePresenterActivity<PeopleInfo
         bundle.putString(EXTRA_PARAM_USER_ID, userID);
         intent.putExtras(bundle);
         return intent;
+    }
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_PEOPLE;
     }
 
     @Override

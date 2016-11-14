@@ -1,5 +1,6 @@
 package com.tokopedia.core;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.fragment.SettingsFragment;
 
@@ -8,6 +9,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 public class SettingsNotification extends TActivity {
+
+	@Override
+	protected String getScreenName() {
+		return AppScreen.SCREEN_CONFIG_P_NOTIF;
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

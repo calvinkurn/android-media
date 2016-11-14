@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.shopinfo.fragment.ShopFavoritedFragment;
 import com.tokopedia.core.shopinfo.presenter.ShopFavoritedFragmentPresenterImpl;
@@ -21,6 +22,11 @@ import com.tokopedia.core.shopinfo.presenter.ShopFavoritedFragmentPresenterImpl;
 public class ShopFavoritedActivity extends BasePresenterActivity {
 
     private static final String TAG = "SHOP_FAVORITED_FRAGMENT";
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_SHOP_FAVORITER;
+    }
 
     public static Intent createInstance(Context context) {
         return new Intent(context, ShopFavoritedActivity.class);

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.inboxmessage.InboxMessageConstant;
 import com.tokopedia.core.inboxmessage.fragment.InboxMessageDetailFragment;
@@ -23,7 +24,11 @@ public class InboxMessageDetailActivity extends BasePresenterActivity
     private static final String TAG = "INBOX_MESSAGE_DETAIL_FRAGMENT";
     InboxMessageResultReceiver mReceiver;
 
-    
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_INBOX_MESSAGE_DETAIL_VIEW;
+    }
+
     @Override
     protected void setupURIPass(Uri data) {
 

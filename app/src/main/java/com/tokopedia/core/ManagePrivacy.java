@@ -9,6 +9,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.NetworkHandler;
 import com.tokopedia.core.network.NetworkHandler.NetworkHandlerListener;
@@ -33,7 +34,12 @@ public class ManagePrivacy extends TActivity {
 	private View MainView;
 	
 	private TkpdProgressDialog mProgressDialog;
-	
+
+	@Override
+	protected String getScreenName() {
+		return AppScreen.SCREEN_CONFIG_P_PRIVACY;
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

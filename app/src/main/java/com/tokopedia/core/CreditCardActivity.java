@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.facade.FacadeCreditCard;
 import com.tokopedia.core.fragment.FragmentCreditCard;
@@ -19,6 +20,11 @@ import java.util.ArrayList;
 
 
 public class CreditCardActivity extends TActivity {
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_CREDIT_CARD;
+    }
 
     public static class Param {
         public String clientKey;

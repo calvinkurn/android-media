@@ -15,6 +15,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.DownloadResultSender;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.myproduct.service.ProductService;
 import com.tokopedia.core.myproduct.service.ProductServiceConstant;
@@ -43,6 +44,11 @@ public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresen
     private DownloadResultReceiver addProductReceiver;
 
     ProductInfoResultReceiver mReceiver;
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_PRODUCT_INFO;
+    }
 
     public static Intent createInstance(Context context, @NonNull String productId) {
         Intent intent = new Intent(context, ProductInfoActivity.class);

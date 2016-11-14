@@ -8,6 +8,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.customadapter.SimpleListTabViewAdapter;
 import com.tokopedia.core.manage.people.notification.activity.ManageNotificationActivity;
@@ -29,6 +30,11 @@ public class ManagePeople extends TkpdActivity {
 	private ListView lvManage;
 	private ArrayList<String> Name = new ArrayList<String>();
 	private ArrayList<Integer> ResID = new ArrayList<Integer>();
+
+	@Override
+	protected String getScreenName() {
+		return AppScreen.SCREEN_MANAGE_PEOPLE;
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
