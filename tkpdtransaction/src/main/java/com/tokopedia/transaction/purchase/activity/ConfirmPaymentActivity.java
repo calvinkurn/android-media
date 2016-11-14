@@ -188,7 +188,7 @@ public class ConfirmPaymentActivity extends BasePresenterActivity<ConfirmPayment
     }
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_TX_P_CONFIRM;
     }
 

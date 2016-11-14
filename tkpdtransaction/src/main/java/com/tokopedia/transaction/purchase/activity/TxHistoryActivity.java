@@ -36,7 +36,7 @@ public class TxHistoryActivity extends TActivity {
     ListView listView;
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_ORDER_HISTORY_DETAIL;
     }
 

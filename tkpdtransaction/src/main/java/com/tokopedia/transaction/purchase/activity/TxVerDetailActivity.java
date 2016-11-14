@@ -95,7 +95,7 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
     }
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_PAYMENT_VERIFICATION_DETAIL;
     }
 

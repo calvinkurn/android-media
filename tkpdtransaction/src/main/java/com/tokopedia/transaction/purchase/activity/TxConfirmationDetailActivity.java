@@ -90,7 +90,7 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
     }
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_TX_P_CONFIRM_DETAIL;
     }
 

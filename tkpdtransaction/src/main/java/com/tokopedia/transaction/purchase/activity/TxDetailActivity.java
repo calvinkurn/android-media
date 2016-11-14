@@ -138,7 +138,7 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
     }
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_TX_PEOPLE_DETAIL;
     }
 
