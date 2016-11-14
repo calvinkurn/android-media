@@ -41,8 +41,18 @@ public class Wishlist {
     Boolean isPreOrder;
     @SerializedName("badges")
     @Expose
-    public List<ProductItem.Badge> badges = new ArrayList<ProductItem.Badge>();
+    public List<ProductItem.Badge> badges;
+    @SerializedName("labels")
+    @Expose
+    public List<ProductItem.Label> labels;
 
+    public List<ProductItem.Label> getLabels() {
+        return labels;
+    }
+
+    public void setLabels(List<ProductItem.Label> labels) {
+        this.labels = labels;
+    }
 
     public List<ProductItem.Badge> getBadges() {
         return badges;

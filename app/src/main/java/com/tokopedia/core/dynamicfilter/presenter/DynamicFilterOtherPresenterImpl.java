@@ -61,6 +61,7 @@ public class DynamicFilterOtherPresenterImpl extends DynamicFilterOtherPresenter
                 view.setupAdapter(viewItems);
                 view.setIsLoading(false);
             }
+            dataSize += maxListItem;
             view.setupRecylerView();
         }
     }
@@ -168,7 +169,7 @@ public class DynamicFilterOtherPresenterImpl extends DynamicFilterOtherPresenter
                 }
                 view.setIsLoading(false);
             }
-            dataSize = 0;
+            dataSize += maxListItem;
             view.setListItem(viewItems);
         }
     }
