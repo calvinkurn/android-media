@@ -190,6 +190,7 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
     }
 
     private void getData(int typeRequest) {
+        fabFilter.hide();
         if (getView() != null) NetworkErrorHelper.hideEmptyState(getView());
         switch (typeInstance) {
             case TransactionRouter.INSTANCE_ALL:
@@ -404,6 +405,7 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
         isLoadMoreTerminated = true;
         lvTXList.removeFooterView(loadMoreView);
         if (refreshHandler.isRefreshing()) refreshHandler.finishRefresh();
+        fabFilter.show();
         switch (typeRequest) {
             case TxOrderNetInteractor.TypeRequest.INITIAL:
                 switch (typeInstance) {
