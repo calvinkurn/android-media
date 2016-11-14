@@ -17,6 +17,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.TokopediaBankAccount;
@@ -86,6 +87,11 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
     @Override
     protected void initialPresenter() {
         presenter = new TxConfDetailPresenterImpl(this);
+    }
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_TX_P_CONFIRM_DETAIL;
     }
 
     @Override

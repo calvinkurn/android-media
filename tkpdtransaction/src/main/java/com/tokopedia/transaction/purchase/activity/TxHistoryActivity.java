@@ -7,6 +7,7 @@ import android.widget.ListView;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.transaction.purchase.adapter.HistoryListAdapter;
 import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
@@ -33,6 +34,11 @@ public class TxHistoryActivity extends TActivity {
 
     @Bind(R2.id.order_status)
     ListView listView;
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_ORDER_HISTORY_DETAIL;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

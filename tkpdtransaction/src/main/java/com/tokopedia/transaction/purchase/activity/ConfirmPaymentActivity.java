@@ -25,6 +25,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.database.model.Bank;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -184,6 +185,11 @@ public class ConfirmPaymentActivity extends BasePresenterActivity<ConfirmPayment
         intent.putExtra(EXTRA_CONFIRMATION_ID, confirmationId);
         intent.putExtra(EXTRA_INSTANCE_TYPE, INSTANCE_EDIT);
         return intent;
+    }
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_TX_P_CONFIRM;
     }
 
     @Override

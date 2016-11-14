@@ -11,6 +11,7 @@ import android.view.inputmethod.InputMethodManager;
 import com.tokopedia.core.GCMListenerService;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
@@ -50,6 +51,11 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
     @Override
     protected void setupURIPass(Uri data) {
 
+    }
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_TX_PEOPLE_TRANSACTION_BUYING_LIST;
     }
 
     @Override
