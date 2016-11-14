@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.fragment.FragmentBuyCredit;
 
@@ -13,6 +14,11 @@ public class BuyCredit extends TkpdActivity {
     public static Intent createIntent(Context context){
         Intent intent = new Intent(context, BuyCredit.class);
         return intent;
+    }
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_CREDIT_CARD_BUY;
     }
 
     @Override
