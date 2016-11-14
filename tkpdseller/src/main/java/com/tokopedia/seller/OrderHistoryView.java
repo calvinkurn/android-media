@@ -45,7 +45,7 @@ public class OrderHistoryView extends TActivity {
     }
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_ORDER_HISTORY;
     }
 

@@ -145,7 +145,7 @@ ShippingConfirmationDetail extends TActivity {
     private String OrderId;
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_TX_S_CONFIRM_SHIPPING;
     }
 

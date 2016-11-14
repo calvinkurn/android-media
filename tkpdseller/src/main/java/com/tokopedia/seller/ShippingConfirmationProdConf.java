@@ -138,7 +138,7 @@ public class ShippingConfirmationProdConf extends TActivity {
 	private Activity context;
 
 	@Override
-	protected String getScreenName() {
+	public String getScreenName() {
 		return AppScreen.SCREEN_TX_S_CONFIRM_SHIPPING_CONF;
 	}
 
