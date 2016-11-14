@@ -31,8 +31,6 @@ public interface ManagePeopleProfileFragmentPresenter {
 
     void setOnNotifiedEmailChanged(Context context);
 
-    void setOnNotifiedPhoneVerified(Context context);
-
     void refreshPage(Context context);
 
     void setOnFragmentDestroyed(Context context);
