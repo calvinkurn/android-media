@@ -37,7 +37,7 @@ public class CatalogDetailActivity extends BasePresenterActivity implements ICat
     }
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_CATALOG;
     }
 
