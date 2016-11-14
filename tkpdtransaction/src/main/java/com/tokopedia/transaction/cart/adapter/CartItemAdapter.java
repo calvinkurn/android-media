@@ -42,6 +42,8 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public interface CartAction {
         void onCancelCart(TransactionList data);
+
+        void onChangeShipment(TransactionList data);
     }
 
     public CartItemAdapter(Fragment hostFragment, CartAction cartAction) {
@@ -73,7 +75,6 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             final ViewHolder holderItemCart = (ViewHolder) holder;
             final CartItemEditable itemData = (CartItemEditable) dataList.get(position);
             bindCartHolder(holderItemCart, itemData);
-
         }
     }
 
@@ -132,6 +133,12 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holder.tvShipment.setText(String.format("%s - %s (Ubah)",
                 data.getTransactionList().getCartShipments().getShipmentName(),
                 data.getTransactionList().getCartShipments().getShipmentPackageName()));
+        holder.tvShippingAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cartAction.onChangeShipment(data.getTransactionList());
+            }
+        });
 
     }
 

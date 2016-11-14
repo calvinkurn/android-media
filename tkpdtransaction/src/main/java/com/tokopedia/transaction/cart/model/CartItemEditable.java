@@ -9,6 +9,8 @@ import com.tokopedia.transaction.cart.model.cartdata.TransactionList;
 public class CartItemEditable {
     private boolean isEditMode;
     private TransactionList transactionList;
+    private String strDropShip;
+    private String strPartialDeliver;
 
     public CartItemEditable(TransactionList data) {
         this.transactionList = data;
@@ -29,5 +31,21 @@ public class CartItemEditable {
 
     public void setTransactionList(TransactionList transactionList) {
         this.transactionList = transactionList;
+    }
+
+    public String getStrDropShip() {
+        return strDropShip;
+    }
+
+    public void setStrDropShip(String strDropShip) {
+        this.strDropShip = strDropShip;
+    }
+
+    public String getStrPartialDeliver() {
+        return strPartialDeliver;
+    }
+
+    public void setStrPartialDeliver(String strPartialDeliver) {
+        this.strPartialDeliver = strPartialDeliver;
     }
 }

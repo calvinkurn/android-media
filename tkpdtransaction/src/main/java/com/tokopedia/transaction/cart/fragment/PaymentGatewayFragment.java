@@ -40,8 +40,12 @@ public class PaymentGatewayFragment extends DialogFragment implements
         void onSelectedPaymentGateway(GatewayList gateway);
     }
 
-    public static DialogFragment newInstance(List<GatewayList> gatewayLists) {
-        DialogFragment dialogFragment = new PaymentGatewayFragment();
+    public void setActionListener(ActionListener actionListener) {
+        this.actionListener = actionListener;
+    }
+
+    public static PaymentGatewayFragment newInstance(List<GatewayList> gatewayLists) {
+        PaymentGatewayFragment dialogFragment = new PaymentGatewayFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(ARG_PARAM_EXTRA_GATEWAY_LIST,
                 new ArrayList<Parcelable>(gatewayLists));
@@ -61,7 +65,6 @@ public class PaymentGatewayFragment extends DialogFragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.gatewayList = getArguments().getParcelableArrayList(ARG_PARAM_EXTRA_GATEWAY_LIST);
-        this.actionListener = (ActionListener) getParentFragment();
     }
 
     @Override

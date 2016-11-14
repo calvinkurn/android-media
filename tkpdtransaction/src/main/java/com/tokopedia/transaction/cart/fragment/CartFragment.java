@@ -1,10 +1,10 @@
 package com.tokopedia.transaction.cart.fragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.Fragment;
-import android.app.FragmentManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
@@ -21,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
@@ -104,6 +105,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     private ICartActionFragment actionListener;
     private CheckoutData.Builder checkoutDataBuilder;
+    private TkpdProgressDialog progressDialogNormal;
 
     public static Fragment newInstance() {
         return new CartFragment();
@@ -157,7 +159,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     protected void initView(View view) {
-
+        progressDialogNormal = new TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS);
     }
 
     @Override
@@ -187,12 +189,12 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void showProgressLoading() {
-
+        progressDialogNormal.showDialog();
     }
 
     @Override
     public void hideProgressLoading() {
-
+        progressDialogNormal.dismiss();
     }
 
     @Override
@@ -230,9 +232,9 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         btnPaymentMethod.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentManager fm = getChildFragmentManager();
-                DialogFragment paymentGatewayFragment = PaymentGatewayFragment.newInstance(gatewayList);
-                paymentGatewayFragment.show(fm, PaymentGatewayFragment.class.getCanonicalName());
+                PaymentGatewayFragment dialog = PaymentGatewayFragment.newInstance(gatewayList);
+                dialog.setActionListener(CartFragment.this);
+                dialog.show(getFragmentManager(), PaymentGatewayFragment.class.getCanonicalName());
             }
         });
     }
@@ -260,7 +262,28 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void onCancelCart(TransactionList data) {
-        presenter.processCancelCart(getActivity(), data);
+    public void onCancelCart(final TransactionList data) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+        alertDialog.setTitle(context.getString(R.string.title_cancel_confirm));
+        alertDialog.setMessage(context.getString(R.string.msg_cancel_1)
+                + " "
+                + data.getCartShop().getShopName()
+                + " "
+                + context.getString(R.string.msg_cancel_3)
+                + " "
+                + data.getCartTotalAmountIdr());
+        alertDialog.setPositiveButton(context.getString(R.string.title_yes),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        presenter.processCancelCart(getActivity(), data);
+                    }
+                });
+        alertDialog.setNegativeButton(context.getString(R.string.title_no),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface arg0, int arg1) {
+
+                    }
+                });
+        showDialog(alertDialog.create());
     }
 }
