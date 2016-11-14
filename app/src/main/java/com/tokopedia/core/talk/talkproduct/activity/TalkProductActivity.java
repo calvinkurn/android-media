@@ -49,7 +49,7 @@ public class TalkProductActivity extends TActivity implements InboxTalkResultRec
     }
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_PRODUCT_TALK;
     }
 

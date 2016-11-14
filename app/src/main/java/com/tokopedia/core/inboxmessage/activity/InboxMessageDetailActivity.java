@@ -25,7 +25,7 @@ public class InboxMessageDetailActivity extends BasePresenterActivity
     InboxMessageResultReceiver mReceiver;
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_INBOX_MESSAGE_DETAIL_VIEW;
     }
 

@@ -21,7 +21,7 @@ public class RechargePaymentWebView extends TActivity
     private FragmentRechargeWebView fragment;
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_RECHARGE_PAYMENT;
     }
 

@@ -125,7 +125,7 @@ public class ShopEditor extends TActivity {
     private int cday;
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_SHOP_EDITOR;
     }
 

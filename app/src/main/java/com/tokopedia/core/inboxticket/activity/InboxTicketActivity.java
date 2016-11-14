@@ -19,7 +19,7 @@ import com.tokopedia.core.var.TkpdState;
 public class InboxTicketActivity extends DrawerPresenterActivity<InboxTicketPresenter> {
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_INBOX_TICKET;
     }
 

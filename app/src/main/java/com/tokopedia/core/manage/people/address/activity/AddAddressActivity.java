@@ -21,7 +21,7 @@ import com.tokopedia.core.manage.people.address.model.AddressModel;
 public class AddAddressActivity extends BasePresenterActivity implements ManageAddressConstant {
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_ADD_ADDRESS_FORM;
     }
 

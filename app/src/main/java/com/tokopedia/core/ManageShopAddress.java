@@ -84,7 +84,7 @@ public class ManageShopAddress extends TActivity {
     private GoogleApiClient client;
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_SHOP_ADDRESS_EDITOR;
     }
 

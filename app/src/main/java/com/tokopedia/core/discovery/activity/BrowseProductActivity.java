@@ -117,7 +117,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     private QueryListener queryListener;
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_BROWSE_PRODUCT_FROM_SEARCH;
     }
 

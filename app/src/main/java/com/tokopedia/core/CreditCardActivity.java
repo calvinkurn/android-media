@@ -22,7 +22,7 @@ import java.util.ArrayList;
 public class CreditCardActivity extends TActivity {
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_CREDIT_CARD;
     }
 

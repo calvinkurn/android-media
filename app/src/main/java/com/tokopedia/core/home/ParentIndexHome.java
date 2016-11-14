@@ -131,7 +131,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
     }
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_INDEX_HOME;
     }
 

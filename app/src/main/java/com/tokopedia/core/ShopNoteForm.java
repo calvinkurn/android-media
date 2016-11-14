@@ -74,7 +74,7 @@ public class ShopNoteForm extends TActivity {
     private FacadeSendFormDialog facadeSendFormDialog;
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_SGOP_NOTE_FORM;
     }
 

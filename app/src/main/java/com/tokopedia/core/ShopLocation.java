@@ -21,7 +21,7 @@ public class ShopLocation extends TActivity {
 	private ShopModel model;
 
 	@Override
-	protected String getScreenName() {
+	public String getScreenName() {
 		return AppScreen.SCREEN_SHOP_LOCATION;
 	}
 

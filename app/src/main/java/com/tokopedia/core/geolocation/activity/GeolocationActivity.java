@@ -46,7 +46,7 @@ public class GeolocationActivity extends BasePresenterActivity<GeolocationPresen
     }
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_ADDRESS_GEOLOCATION;
     }
 

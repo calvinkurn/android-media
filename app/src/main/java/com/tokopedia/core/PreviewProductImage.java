@@ -42,7 +42,7 @@ public class PreviewProductImage extends TActivity {
     private int lastPos = 0;
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_PRODUCT_IMAGE_PREVIEW;
     }
 

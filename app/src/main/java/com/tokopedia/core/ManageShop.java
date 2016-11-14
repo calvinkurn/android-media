@@ -24,7 +24,7 @@ public class ManageShop extends TkpdActivity {
 	private ArrayList<Integer> ResID = new ArrayList<Integer>();
 
 	@Override
-	protected String getScreenName() {
+	public String getScreenName() {
 		return AppScreen.SCREEN_SETTING_MANAGE_SHOP;
 	}
 

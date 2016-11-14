@@ -117,7 +117,7 @@ public class ReputationViewShop extends TActivity {
     }
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_SHOP_REPUTATION;
     }
 

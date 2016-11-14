@@ -72,7 +72,7 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
     }
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_INBOX_TALK;
     }
 

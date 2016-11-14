@@ -65,7 +65,7 @@ public class PeopleBankForm extends TActivity {
 	private static int EXPIRE_TIME = 30;
 
 	@Override
-	protected String getScreenName() {
+	public String getScreenName() {
 		return AppScreen.SCREEN_PEOPLE_BANK_FORM;
 	}
 

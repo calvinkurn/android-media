@@ -57,7 +57,7 @@ public class ManagePeoplePassword extends TActivity {
 	}
 
 	@Override
-	protected String getScreenName() {
+	public String getScreenName() {
 		return AppScreen.SCREEN_CONFIG_P_PASSWORD;
 	}
 

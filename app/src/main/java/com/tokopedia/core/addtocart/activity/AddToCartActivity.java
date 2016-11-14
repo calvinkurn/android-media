@@ -170,7 +170,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     private Subscription subscription;
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_ADD_TO_CART;
     }
 

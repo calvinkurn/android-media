@@ -70,7 +70,7 @@ public class ManagePeopleBank extends TActivity implements ManagePeopleBankInter
 	DataManager dataManager;
 
 	@Override
-	protected String getScreenName() {
+	public String getScreenName() {
 		return AppScreen.SCREEN_PEOPLE_BANK;
 	}
 

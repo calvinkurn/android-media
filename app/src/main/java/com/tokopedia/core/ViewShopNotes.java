@@ -43,7 +43,7 @@ public class ViewShopNotes extends TActivity {
     private TkpdProgressDialog mProgress;
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_SHOP_NOTE;
     }
 

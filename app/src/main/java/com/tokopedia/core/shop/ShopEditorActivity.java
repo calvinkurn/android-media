@@ -50,7 +50,7 @@ public class ShopEditorActivity extends TkpdActivity implements
     FrameLayout container;
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_SHOP_EDITOR;
     }
 

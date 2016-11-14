@@ -31,7 +31,7 @@ public class TrackingActivity extends BasePresenterActivity {
     }
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_TRACKING_DETAIL;
     }
 

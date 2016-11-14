@@ -24,7 +24,7 @@ public class BannerWebView extends TActivity implements FragmentGeneralWebView.O
     private FragmentBannerWebView fragment;
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_WEBVIEW_BANNER;
     }
 

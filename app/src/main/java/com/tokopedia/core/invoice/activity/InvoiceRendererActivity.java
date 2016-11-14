@@ -54,7 +54,7 @@ public class InvoiceRendererActivity extends BasePresenterActivity<InvoiceRender
     }
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_DOWNLOAD_INVOICE;
     }
 

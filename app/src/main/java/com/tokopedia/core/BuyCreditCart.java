@@ -22,7 +22,7 @@ public class BuyCreditCart extends TActivity {
     }
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_CREDIT_CARD_CART_BUY;
     }
 

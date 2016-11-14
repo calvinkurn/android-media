@@ -41,7 +41,7 @@ public class InboxReputationDetailActivity extends
     ReviewResultReceiver mReceiver;
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_INBOX_REPUTATION_DETAIL;
     }
 

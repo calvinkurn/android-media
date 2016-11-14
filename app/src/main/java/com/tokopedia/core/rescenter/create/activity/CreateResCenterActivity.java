@@ -34,7 +34,7 @@ public class CreateResCenterActivity extends BasePresenterActivity<CreateResCent
     private CreateResCenterReceiver receiver;
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_RESOLUTION_CENTER_ADD;
     }
 

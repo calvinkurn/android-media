@@ -70,7 +70,7 @@ public class EtalaseShopEditor extends TActivity {
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_SHOP_ETALASE_LIST;
     }
 

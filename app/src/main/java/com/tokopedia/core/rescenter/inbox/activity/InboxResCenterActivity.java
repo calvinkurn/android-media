@@ -50,7 +50,7 @@ public class InboxResCenterActivity extends DrawerPresenterActivity<ResCenterPre
     }
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_INBOX_RESOLUTION_CENTER;
     }
 

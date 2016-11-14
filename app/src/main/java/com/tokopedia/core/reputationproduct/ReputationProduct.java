@@ -44,7 +44,7 @@ public class ReputationProduct extends TActivity {
     }
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_PRODUCT_REPUTATION_VIEW;
     }
 

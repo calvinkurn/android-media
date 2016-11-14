@@ -43,7 +43,7 @@ public class SimpleHomeActivity extends TActivity implements SimpleHomeView{
     FragmentManager supportFragmentManager;
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_HOME_WISHLIST;
     }
 

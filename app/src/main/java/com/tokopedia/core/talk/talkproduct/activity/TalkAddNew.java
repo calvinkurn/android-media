@@ -45,7 +45,7 @@ public class TalkAddNew extends TActivity implements TalkAddNewResultReceiver.Re
 	}
 
 	@Override
-	protected String getScreenName() {
+	public String getScreenName() {
 		return AppScreen.SCREEN_PRODUCT_TALK_ADD;
 	}
 

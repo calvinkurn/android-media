@@ -480,7 +480,9 @@ public final class AppScreen {
     public static final String SCREEN_RESOLUTION_CENTER_EDIT = "Edit resolution center";
     public static final String SCREEN_RESOLUTION_CENTER = "Resolution center page";
     public static final String SCREEN_RESOLUTION_CENTER_ADD = "Add resolution center page";
+    public static final String SCREEN_SHOP_SELLING_DETAIL = "Selling Detail Page";
     public static final String SCREEN_ORDER_HISTORY = "History order";
+    public static final String SCREEN_ORDER_REJECT = "Confirm Reject Order Screen";
     public static final String SCREEN_ORDER_HISTORY_DETAIL = "History order detail";
     public static final String SCREEN_MANAGE_GENERAL = "General Setting";
     public static final String SCREEN_PEOPLE_BANK = "People Bank";
@@ -524,4 +526,5 @@ public final class AppScreen {
     public static final String SCREEN_RECHARGE = "Recharge";
     public static final String SCREEN_RECHARGE_PAYMENT = "Recharge Payment WebView";
     public static final String SCREEN_SHARE = "Share Screen";
+    public static final String SCREEN_GALLERY_BROWSE = "Browse Gallery Screen";
 }

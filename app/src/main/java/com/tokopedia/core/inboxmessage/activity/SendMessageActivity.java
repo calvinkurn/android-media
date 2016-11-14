@@ -17,7 +17,7 @@ import com.tokopedia.core.inboxmessage.fragment.SendMessageFragment;
 public class SendMessageActivity extends BasePresenterActivity {
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_PEOPLE_SEND_MESSAGE;
     }
 

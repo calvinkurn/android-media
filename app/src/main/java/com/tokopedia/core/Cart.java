@@ -70,7 +70,7 @@ public class Cart extends TActivity implements ActivityCartCommunicator,
     private static final String TAG = Cart.class.getSimpleName();
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_CART;
     }
 

@@ -35,7 +35,7 @@ public class ChooseAddressActivity extends BasePresenterActivity {
     }
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_CHOOSE_ADDR;
     }
 

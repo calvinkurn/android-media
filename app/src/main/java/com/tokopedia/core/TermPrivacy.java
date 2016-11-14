@@ -33,7 +33,7 @@ public class TermPrivacy extends TActivity {
     FragmentManager supportFragmentManager;
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_TERM_PRIVACY;
     }
 

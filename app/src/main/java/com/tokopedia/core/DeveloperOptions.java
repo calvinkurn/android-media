@@ -79,7 +79,7 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
     }
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_DEVELOPER;
     }
 

@@ -16,7 +16,7 @@ public class OpenShopEditShipping extends TActivity {
     public static String RESUME_OPEN_SHOP_KEY = "resume_open_shop";
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_OPEN_CONFIG_S_SHIPPING;
     }
 

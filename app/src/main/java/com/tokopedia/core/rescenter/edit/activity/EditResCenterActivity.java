@@ -33,7 +33,7 @@ public class EditResCenterActivity extends BasePresenterActivity<EditResCenterPr
     private boolean isEdit;
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_RESOLUTION_CENTER_EDIT;
     }
 

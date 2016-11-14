@@ -15,7 +15,7 @@ public class LoyaltyDetail extends TActivity implements FragmentGeneralWebView.O
     private String Url;
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_LOYALTY;
     }
 

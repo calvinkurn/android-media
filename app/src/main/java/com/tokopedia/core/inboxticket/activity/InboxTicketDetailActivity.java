@@ -28,7 +28,7 @@ public class InboxTicketDetailActivity extends BasePresenterActivity<InboxTicket
     InboxTicketResultReceiver mReceiver;
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_INBOX_TICKET_DETAIL;
     }
 

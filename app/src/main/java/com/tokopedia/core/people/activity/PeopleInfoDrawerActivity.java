@@ -32,7 +32,7 @@ public class PeopleInfoDrawerActivity extends DrawerPresenterActivity<PeopleInfo
     }
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_PEOPLE;
     }
 

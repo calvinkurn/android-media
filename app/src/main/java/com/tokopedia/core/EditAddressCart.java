@@ -126,7 +126,7 @@ public class EditAddressCart extends TActivity {
     private PaymentNetInteractor interactor;
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_CART_EDIT_ADDRESS;
     }
 

@@ -24,7 +24,7 @@ public class ShopFavoritedActivity extends BasePresenterActivity {
     private static final String TAG = "SHOP_FAVORITED_FRAGMENT";
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_SHOP_FAVORITER;
     }
 

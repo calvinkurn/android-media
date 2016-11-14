@@ -41,7 +41,7 @@ public class InboxMessageActivity extends DrawerPresenterActivity
     InboxMessageResultReceiver mReceiver;
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_INBOX_MESSAGE;
     }
 

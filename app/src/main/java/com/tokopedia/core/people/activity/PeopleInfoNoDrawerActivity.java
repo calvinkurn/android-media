@@ -34,7 +34,7 @@ public class PeopleInfoNoDrawerActivity extends BasePresenterActivity<PeopleInfo
     }
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_PEOPLE;
     }
 

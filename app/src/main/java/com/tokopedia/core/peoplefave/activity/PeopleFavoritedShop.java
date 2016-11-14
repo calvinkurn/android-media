@@ -31,7 +31,7 @@ public class PeopleFavoritedShop extends BasePresenterActivity<PeopleFavoritedSh
 	}
 
 	@Override
-	protected String getScreenName() {
+	public String getScreenName() {
 		return AppScreen.SCREEN_PEOPLE_FAV;
 	}
 

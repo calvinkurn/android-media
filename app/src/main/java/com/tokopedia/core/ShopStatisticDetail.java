@@ -13,7 +13,7 @@ public class ShopStatisticDetail extends TActivity {
     public static final String EXTRA_SHOP_INFO = "shop_info";
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_SHOP_DETAIL_STATS;
     }
 

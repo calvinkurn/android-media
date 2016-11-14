@@ -51,7 +51,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     private DownloadResultReceiver mReceiver;
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_DEEP_LINK;
     }
 

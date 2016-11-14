@@ -17,7 +17,7 @@ public class BuyCredit extends TkpdActivity {
     }
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_CREDIT_CARD_BUY;
     }
 

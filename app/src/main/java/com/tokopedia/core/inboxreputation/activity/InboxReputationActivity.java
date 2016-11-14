@@ -40,7 +40,7 @@ public class InboxReputationActivity extends DrawerPresenterActivity
     TabLayout indicator;
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_INBOX_REPUTATION;
     }
 

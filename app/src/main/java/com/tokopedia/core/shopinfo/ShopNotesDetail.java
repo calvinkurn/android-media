@@ -36,7 +36,7 @@ public class ShopNotesDetail extends TActivity {
     private String shopDomain;
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_SHOP_NOTE;
     }
 

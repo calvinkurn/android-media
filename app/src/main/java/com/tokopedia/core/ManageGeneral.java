@@ -38,7 +38,7 @@ public class ManageGeneral extends TkpdActivity implements NotificationListener{
     TabLayout indicator;
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_MANAGE_GENERAL;
     }
 

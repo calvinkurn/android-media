@@ -46,7 +46,7 @@ public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresen
     ProductInfoResultReceiver mReceiver;
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_PRODUCT_INFO;
     }
 

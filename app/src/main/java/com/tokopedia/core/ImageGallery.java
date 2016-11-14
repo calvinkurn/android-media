@@ -53,7 +53,7 @@ public class ImageGallery extends TActivity {
     private boolean isAlbum;        // true - state in Album folder || false - state in Photo folder
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return ImageGallery.class.getSimpleName();
     }
 

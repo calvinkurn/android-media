@@ -50,7 +50,7 @@ public class NotificationCenter extends MultiPaneActivity implements Notificatio
     private TabLayout indicator;
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_NOTIFICATION;
     }
 

@@ -88,7 +88,7 @@ public class ShopStatistic extends TActivity {
 	LayoutInflater iv;
 
 	@Override
-	protected String getScreenName() {
+	public String getScreenName() {
 		return AppScreen.SCREEN_SHOP_STATS;
 	}
 

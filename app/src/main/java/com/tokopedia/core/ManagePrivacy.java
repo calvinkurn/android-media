@@ -36,7 +36,7 @@ public class ManagePrivacy extends TActivity {
 	private TkpdProgressDialog mProgressDialog;
 
 	@Override
-	protected String getScreenName() {
+	public String getScreenName() {
 		return AppScreen.SCREEN_CONFIG_P_PRIVACY;
 	}
 

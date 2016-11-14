@@ -19,7 +19,7 @@ import com.tokopedia.core.deposit.presenter.WithdrawPresenter;
 public class WithdrawActivity extends BasePresenterActivity<WithdrawPresenter>{
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_DEPOSIT_WITHDRAW;
     }
 

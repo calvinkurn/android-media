@@ -266,7 +266,7 @@ public class ManageProduct extends TkpdActivity implements
     private DownloadResultReceiver mReceiver;
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_MANAGE_PROD;
     }
 

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.fragment.EmailVerificationDialog;
 import com.tokopedia.core.manage.people.profile.fragment.ManagePeopleProfileFragment;
@@ -51,6 +52,11 @@ public class ManagePeopleProfileActivity extends BasePresenterActivity<ManagePeo
     @Override
     protected void setViewListener() {
 
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_CONFIG_P_PROFILE;
     }
 
     @Override

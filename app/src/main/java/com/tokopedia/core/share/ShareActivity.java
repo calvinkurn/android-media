@@ -23,7 +23,7 @@ public class ShareActivity extends TActivity implements ShareView {
     }
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_SHARE;
     }
 
