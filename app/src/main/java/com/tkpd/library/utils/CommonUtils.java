@@ -532,12 +532,6 @@ public class CommonUtils {
 		mgr.hideSoftInputFromWindow(windowToken, 0);
 	}
 
-	public static void forceShowKeyboard(Context context){
-		((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE))
-				.toggleSoftInput(InputMethodManager.SHOW_FORCED,
-						InputMethodManager.HIDE_IMPLICIT_ONLY);
-	}
-
 	public static double round(double value, int places) {
 		if (places < 0) throw new IllegalArgumentException();
 
