@@ -279,22 +279,15 @@ public class ProductActivity extends BaseProductActivity implements
                         processSingleImage(intent, imageUri);
                     }
                 } else {
-                    finish();
                     CommonUtils.UniversalToast(getBaseContext(),
                             getString(R.string.title_no_shop));
+
+                    finish();
                 }
             } else {
-                Intent intent1;
-                String shopID = SessionHandler.getShopID(this);
-                if (shopID == null || shopID.equals("0")) {
-                    intent1 = new Intent(this, ParentIndexHome.class);
-                    intent1.putExtra(ParentIndexHome.EXTRA_INIT_FRAGMENT,
-                            ParentIndexHome.INIT_STATE_FRAGMENT_HOME);
-                } else {
-                    intent1 = new Intent(this, Login.class);
-                    intent1.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-                }
-                startActivity(intent1);
+                Intent intentLogin = new Intent(this, Login.class);
+                intentLogin.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
+                startActivity(intentLogin);
                 finish();
             }
         } else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
