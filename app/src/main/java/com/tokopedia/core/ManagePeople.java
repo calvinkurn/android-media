@@ -95,20 +95,20 @@ public class ManagePeople extends TkpdActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 0 && resultCode == RESULT_OK) {
-            NetworkErrorHelper.showSnackbar(this, getString(R.string.message_success_change_profile));
-        }
-        if (resultCode == RESULT_OK) {
-            if (requestCode == 0) {
-                bundles.putBundle("profile", data.getExtras());
-                datas.putExtras(bundles);
-                super.RefreshDrawer();
-                setResult(resultCode, datas);
-            }
-            if (requestCode == 1) {
-                bundles.putBundle("privacy", data.getExtras());
-                datas.putExtras(bundles);
-                setResult(resultCode, datas);
+        if(resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case 0:
+                    NetworkErrorHelper.showSnackbar(this, getString(R.string.message_success_change_profile));
+                    super.RefreshDrawer();
+                    setResult(resultCode, datas);
+                    break;
+                case 1:
+                    bundles.putBundle("privacy", data.getExtras());
+                    datas.putExtras(bundles);
+                    setResult(resultCode, datas);
+                    break;
+                default:
+                    break;
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
