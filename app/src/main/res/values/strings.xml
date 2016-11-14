@@ -1754,5 +1754,7 @@ di Tokopedia Sekarang!</string>
     <string name="preorder">PO</string>
     <string name="grosir">Grosir</string>
     <string name="white_hex_color">#ffffff</string>
-
+    <string name="success_delete_shop_note">Anda berhasil menghapus catatan.</string>
+    <string name="error_max_shop_notes_content_length">Maksimal panjang catatan adalah 6000 karakter</string>
+    <string name="error_max_shop_notes_title_length">Maksimal panjang judul catatan adalah 128 karakter</string>
 </resources>

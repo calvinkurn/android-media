@@ -1,11 +1,5 @@
 package com.tokopedia.core.customadapter;
 
-import java.util.ArrayList;
-
-import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.ManageShopAddress;
-import com.tokopedia.core.R;
-
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -15,6 +9,12 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.ManageShopAddress;
+import com.tokopedia.core.R;
+
+import java.util.ArrayList;
 
 public class ListViewManageShopLocation extends BaseAdapter {
 

@@ -219,12 +219,8 @@
             android:label="@string/title_activity_manage_shop"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.ManageShopNotes"
+            android:name="com.tokopedia.core.manage.shop.notes.activity.ManageShopNotesActivity"
             android:label="@string/title_activity_manage_shop_notes"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.ShopNoteForm"
-            android:label="@string/title_activity_shop_note_form"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.core.shipping.EditShippingActivity"
