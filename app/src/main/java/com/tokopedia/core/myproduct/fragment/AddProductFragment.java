@@ -95,6 +95,7 @@ import com.tokopedia.core.myproduct.model.NoteDetailModel;
 import com.tokopedia.core.myproduct.model.SimpleTextModel;
 import com.tokopedia.core.myproduct.model.TextDeleteModel;
 import com.tokopedia.core.myproduct.model.WholeSaleAdapterModel;
+import com.tokopedia.core.myproduct.model.editProductForm.EditProductForm;
 import com.tokopedia.core.myproduct.presenter.AddProductPresenter;
 import com.tokopedia.core.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.core.myproduct.presenter.AddProductView;
@@ -1400,7 +1401,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     }
 
     @NonNull
-    public static ImageModel getImageModel(String path, File photo, ProductImage productImage) {
+    public static ImageModel getImageModel(String path, File photo, EditProductForm.ProductImage productImage) {
         try {
             Pair<Integer, Integer> resolution = MetadataUtil.getWidthFromImage(photo.getAbsolutePath());
             int width = resolution.getModel1();
@@ -2567,7 +2568,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         }
 
         if (isPush) {
-            ProductDb = InputAddProductModel.compileAllForEdit(verif.getModel1(), ProductDb, producteditHelper.productDetailData);
+            ProductDb = InputAddProductModel.compileAllForEdit(verif.getModel1(), ProductDb, producteditHelper.editProductForm);
             Bundle bundle = new Bundle();
             bundle.putParcelable(ProductService.PRODUCT_EDIT_PHOTOS, Parcels.wrap(producteditHelper.toParcelFormatForPhotos()));
             bundle.putLong(ProductService.PRODUCT_DATABASE_ID, ProductDb.getId());
@@ -2615,7 +2616,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                 addProductAddToNewEtalase.setError(validate.getModel2());
                 addProductAddToNewEtalaseAlert.setError(validate.getModel2());
             }
-            if (addProductAddToNewEtalaseAlert.isErrorEnabled()) {
+            if (validate.getModel1()) {
                 Snackbar.make(parentView, addProductAddToNewEtalaseAlert.getError(), Snackbar.LENGTH_LONG).show();
                 return null;
             }
