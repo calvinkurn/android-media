@@ -37,6 +37,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ListViewHelper;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.customadapter.ListViewShopOrderDetail;
@@ -135,6 +136,11 @@ public class ShippingConfirmationProdConf extends TActivity {
 	private String newServiceID = "";
 
 	private Activity context;
+
+	@Override
+	protected String getScreenName() {
+		return AppScreen.SCREEN_TX_S_CONFIRM_SHIPPING_CONF;
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
