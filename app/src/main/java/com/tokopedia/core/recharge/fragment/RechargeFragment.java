@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -246,9 +247,19 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     public void onRechargeTextChanged(CharSequence s, int start, int before, int count) {
         String temp = s.toString();
         temp = validateTextPrefix(temp);
-        if (temp.length() >= 3) {
+        if (temp.length() >= 3 && temp.length() <5) {
             String phonePrefix = temp.substring(0, temp.length() <= 4 ? temp.length() : 4);
             if (s.length() >= 3) {
+                this.rechargePresenter.validatePhonePrefix(phonePrefix,
+                        category.getId(),
+                        category.getAttributes().getValidatePrefix());
+            } else {
+                isAlreadyHavePhonePrefixInView = false;
+                hideFormAndImageOperator();
+            }
+        } else if (temp.length() >= 5 && isAlreadyHavePhonePrefixInView==false) {
+            String phonePrefix = temp.substring(0, 5);
+            if (s.length() >= 5) {
                 this.rechargePresenter.validatePhonePrefix(phonePrefix,
                         category.getId(),
                         category.getAttributes().getValidatePrefix());
@@ -362,6 +373,11 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     @Override
     public void showImageOperator(String imageUrl) {
         this.rechargeEditText.setImgOperator(imageUrl);
+    }
+
+    @Override
+    public void setMinAndMaxtLength(int minLength, int maxLength) {
+        this.rechargeEditText.getAutoCompleteTextView().setFilters(new InputFilter[] {new InputFilter.LengthFilter(maxLength)});
     }
 
     @Override

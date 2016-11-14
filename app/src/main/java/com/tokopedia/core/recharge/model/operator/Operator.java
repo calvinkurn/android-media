@@ -15,6 +15,12 @@ public class Operator {
     @SerializedName("type")
     @Expose
     private String type;
+    @SerializedName("minimum_length")
+    @Expose
+    private Integer minimumLength;
+    @SerializedName("maximum_length")
+    @Expose
+    private Integer maximumLength;
 
     /**
      * 
@@ -68,6 +74,42 @@ public class Operator {
      */
     public void setType(String type) {
         this.type = type;
+    }
+
+    /**
+     *
+     * @return
+     * The minimumLength
+     */
+    public Integer getMinimumLength() {
+        return minimumLength;
+    }
+
+    /**
+     *
+     * @param minimumLength
+     * The minimum_length
+     */
+    public void setMinimumLength(Integer minimumLength) {
+        this.minimumLength = minimumLength;
+    }
+
+    /**
+     *
+     * @return
+     * The maximumLength
+     */
+    public Integer getMaximumLength() {
+        return maximumLength;
+    }
+
+    /**
+     *
+     * @param maximumLength
+     * The maximum_length
+     */
+    public void setMaximumLength(Integer maximumLength) {
+        this.maximumLength = maximumLength;
     }
 
 }

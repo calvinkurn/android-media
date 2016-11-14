@@ -16,6 +16,8 @@ public interface RechargeView {
 
     void showImageOperator(String image);
 
+    void setMinAndMaxtLength(int minLength, int maxLength);
+
     void hideProgressFetchData();
 
     void hideFormAndImageOperator();

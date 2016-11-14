@@ -139,6 +139,7 @@ public class RechargePresenterImpl implements RechargePresenter,
     @Override
     public void onSuccess(RechargeOperatorModelDB operator) {
         view.showImageOperator(operator.image);
+        view.setMinAndMaxtLength(operator.minimumLength,operator.maximumLength );
     }
 
     @Override

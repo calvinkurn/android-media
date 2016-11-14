@@ -26,13 +26,15 @@ public class RechargeOperatorManager implements DbFlowOperation<RechargeOperator
 
     }
 
-    public void store(String prefix, String name, int operatorId, int status, String image) {
+    public void store(String prefix, String name, int operatorId, int status, String image, int minLength, int maxLength) {
         RechargeOperatorModelDB db = new RechargeOperatorModelDB();
         db.operatorId = operatorId;
         db.image = image;
         db.name = name;
         db.status = status;
         db.prefix = prefix;
+        db.minimumLength = minLength;
+        db.maximumLength = maxLength;
         db.save();
     }
 
@@ -99,7 +101,9 @@ public class RechargeOperatorManager implements DbFlowOperation<RechargeOperator
                                 operator.getAttributes().getName(),
                                 operator.getId(),
                                 operator.getAttributes().getStatus(),
-                                operator.getAttributes().getImage());
+                                operator.getAttributes().getImage(),
+                                operator.getAttributes().getMinimumLength(),
+                                operator.getAttributes().getMaximumLength());
                     }
                 } else {
                     store(
@@ -107,7 +111,9 @@ public class RechargeOperatorManager implements DbFlowOperation<RechargeOperator
                             operator.getAttributes().getName(),
                             operator.getId(),
                             operator.getAttributes().getStatus(),
-                            operator.getAttributes().getImage()
+                            operator.getAttributes().getImage(),
+                            operator.getAttributes().getMinimumLength(),
+                            operator.getAttributes().getMaximumLength()
                     );
                 }
             }
