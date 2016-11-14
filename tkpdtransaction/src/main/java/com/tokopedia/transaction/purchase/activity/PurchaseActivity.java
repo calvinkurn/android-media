@@ -196,4 +196,12 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
                     .hideSoftInputFromWindow(viewPager.getWindowToken(), 0);
         }
     }
+
+    @Override
+        protected void initView() {
+                super.initView();
+                if (getIntent().getExtras() != null &&
+                                getIntent().getExtras().getBoolean(TransactionRouter.EXTRA_UPDATE_BALANCE, false))
+                        drawer.updateBalance();
+            }
 }

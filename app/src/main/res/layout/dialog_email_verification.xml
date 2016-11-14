@@ -69,6 +69,7 @@
                 android:layout_height="wrap_content"
 				android:layout_weight="0.7"
                 android:hint="Kode OTP"
+				android:inputType="number"
 				android:enabled="false"
 				android:paddingLeft="@dimen/padding_vs"
                 android:textSize="@dimen/fonts"/>

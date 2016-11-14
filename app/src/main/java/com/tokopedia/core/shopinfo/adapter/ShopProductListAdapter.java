@@ -37,7 +37,6 @@ public class ShopProductListAdapter extends RecyclerView.Adapter {
 
     static final int TYPE_LARGE = 6;
     static final int TYPE_MEDIUM = 3;
-    static final int TYPE_SMALL = 2;
     static final int TYPE_LIST = 9;
     static final int TYPE_LOADING = 7;
     static final int TYPE_NO_RESULT = 8;
@@ -50,8 +49,6 @@ public class ShopProductListAdapter extends RecyclerView.Adapter {
     private int EXTRA_TYPE = 0;
 
     ProductSmallDelegate small;
-//    ProductLargeDelegate medium;
-//    ProductLargeDelegate large;
     ProductLargeDelegate grid;
     ProductListDelegate list;
     ExtrasDelegate extras;
@@ -100,9 +97,6 @@ public class ShopProductListAdapter extends RecyclerView.Adapter {
             case TYPE_MEDIUM:
                 TYPE = TYPE_LARGE;
                 break;
-//            case TYPE_SMALL:
-//                TYPE = TYPE_MEDIUM;
-//                break;
             case TYPE_LIST:
                 TYPE = TYPE_MEDIUM;
         }
@@ -154,8 +148,6 @@ public class ShopProductListAdapter extends RecyclerView.Adapter {
             case TYPE_LARGE:
             case TYPE_MEDIUM:
                 return grid.onCreateViewHolder(parent);
-//            case TYPE_SMALL:
-//                return small.onCreateViewHolder(parent);
             case TYPE_LIST:
                 return list.onCreateViewHolder(parent);
             case TYPE_LOADING:
@@ -181,10 +173,6 @@ public class ShopProductListAdapter extends RecyclerView.Adapter {
                 grid.onBindViewHolder(productModel.list.get(position - 1), holder);
                 grid.onItemClickListener(onProductItemClick(position - 1), holder);
                 break;
-//            case TYPE_SMALL:
-//                small.onBindViewHolder(productModel.list.get(position - 1), holder);
-//                small.onItemClickListener(onProductItemClick(position - 1), holder);
-//                break;
             case TYPE_LIST:
                 list.onBindViewHolder(productModel.list.get(position - 1), holder);
                 list.onItemClickListener(onProductItemClick(position - 1), holder);
@@ -223,8 +211,6 @@ public class ShopProductListAdapter extends RecyclerView.Adapter {
                 return R.drawable.ic_grid_box;
             case TYPE_MEDIUM:
                 return R.drawable.ic_grid_2;
-//            case TYPE_SMALL:
-//                return R.drawable.ic_grid;
             case TYPE_LIST:
                 return R.drawable.ic_grid_list;
             default:

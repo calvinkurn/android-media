@@ -11,8 +11,8 @@
     <color name="colorGreen">#42B459</color>
     <color name="colorBlack">#494949</color>
     <color name="colorGray">#DDDDDD</color>
-    
 
+    <color name="label_text_color">#9b9b9b</color>
     <color name="grey">#888888</color>
     <color name="greyish_brown_70">#b2515151</color>
     <color name="greyish_bg">#ededed</color>

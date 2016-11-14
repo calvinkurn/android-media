@@ -6,6 +6,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -54,7 +55,7 @@ public class DataFeedAdapter extends ProductAdapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        switch (viewType){
+        switch (viewType) {
             case PRODUCT_ITEM_TYPE:
                 return createViewProductFeed(parent);
             case HISTORY_PRODUCT_LIST_ITEM:
@@ -66,7 +67,7 @@ public class DataFeedAdapter extends ProductAdapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        switch (getItemViewType(position)){
+        switch (getItemViewType(position)) {
             case PRODUCT_ITEM_TYPE:
                 bindProductFeedViewHolder((ProductFeedAdapter.ViewHolderProductFeed) holder, (ProductItem) data.get(position));
                 break;
@@ -85,7 +86,7 @@ public class DataFeedAdapter extends ProductAdapter {
 
     @Override
     protected int isInType(RecyclerViewItem recyclerViewItem) {
-        switch (recyclerViewItem.getType()){
+        switch (recyclerViewItem.getType()) {
             case PRODUCT_ITEM_TYPE:
             case HISTORY_PRODUCT_LIST_ITEM:
                 return recyclerViewItem.getType();
@@ -124,16 +125,20 @@ public class DataFeedAdapter extends ProductAdapter {
 
     private void setLabels(ProductFeedAdapter.ViewHolderProductFeed holder, ProductItem data) {
         holder.labelsContainer.removeAllViews();
-        if(data.getLabels() != null)
-            for (ProductItem.Label label: data.getLabels()) {
+        if (data.getLabels() != null)
+            for (ProductItem.Label label : data.getLabels()) {
                 View view = LayoutInflater.from(context).inflate(R.layout.label_layout, null);
                 TextView labelText = (TextView) view.findViewById(R.id.label);
                 labelText.setText(label.getTitle());
-                ColorStateList tint = ColorStateList.valueOf(Color.parseColor(label.getColor()));
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    labelText.setBackgroundTintList(tint);
-                } else {
-                    ViewCompat.setBackgroundTintList(labelText, tint);
+                if (!label.getColor().toLowerCase().equals("#ffffff")) {
+                    labelText.setBackgroundResource(R.drawable.bg_label);
+                    labelText.setTextColor(ContextCompat.getColor(context, R.color.white));
+                    ColorStateList tint = ColorStateList.valueOf(Color.parseColor(label.getColor()));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        labelText.setBackgroundTintList(tint);
+                    } else {
+                        ViewCompat.setBackgroundTintList(labelText, tint);
+                    }
                 }
                 holder.labelsContainer.addView(view);
             }
@@ -154,11 +159,11 @@ public class DataFeedAdapter extends ProductAdapter {
     }
 
     private void bindHistoryProductViewHolder(ProductFeedAdapter.ViewHolderHistoryProduct holder, int position) {
-        if (data != null && data.size() > 0){
+        if (data != null && data.size() > 0) {
             HistoryProductListItem dataHistory = (HistoryProductListItem) data.get(0);
             if (!dataHistory.getProductItems().isEmpty()) {
                 renderHistoryProduct(holder, dataHistory);
-            }else {
+            } else {
                 renderEmptyHistoryProduct(holder);
             }
         } else {
@@ -229,7 +234,7 @@ public class DataFeedAdapter extends ProductAdapter {
      * History Product Feed
      */
     @Parcel
-    public static class HistoryProductListItem extends RecyclerViewItem{
+    public static class HistoryProductListItem extends RecyclerViewItem {
         public static final int HISTORY_PRODUCT_LIST_ITEM = 129_212;
         List<ProductItem> productItems;
 
@@ -237,7 +242,7 @@ public class DataFeedAdapter extends ProductAdapter {
             setType(HISTORY_PRODUCT_LIST_ITEM);
         }
 
-        public HistoryProductListItem(List<ProductItem> productItems){
+        public HistoryProductListItem(List<ProductItem> productItems) {
             this();
             this.productItems = productItems;
         }
@@ -259,10 +264,10 @@ public class DataFeedAdapter extends ProductAdapter {
         data.addAll(newData);
     }
 
-    public void updateHistoryAdapter(RecyclerViewItem recyclerViewItem){
-        if(recyclerViewItem != null && recyclerViewItem instanceof HistoryProductListItem){
+    public void updateHistoryAdapter(RecyclerViewItem recyclerViewItem) {
+        if (recyclerViewItem != null && recyclerViewItem instanceof HistoryProductListItem) {
             HistoryProductListItem item = (HistoryProductListItem) recyclerViewItem;
-            if(historyAdapter!= null){
+            if (historyAdapter != null) {
                 historyAdapter.setData(item.getProductItems());
             } else {
                 historyAdapter = new HistoryProductRecyclerViewAdapter(context, item.getProductItems());
@@ -275,7 +280,7 @@ public class DataFeedAdapter extends ProductAdapter {
         return super.addTopAds(listProduct, page);
     }
 
-    public boolean isHistory(int position){
+    public boolean isHistory(int position) {
         boolean isInRange = position >= 0 && position < data.size();
         return isInRange && data.get(position) != null && data.get(position) instanceof HistoryProductListItem;
     }

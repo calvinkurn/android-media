@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -43,6 +44,10 @@ import butterknife.ButterKnife;
  * Created by noiz354 on 7/11/16.
  */
 public class DynamicFilterActivity extends AppCompatActivity implements DynamicFilterView {
+
+    private static final String FILTER_SELECTED_PRICE_MIN = "pmin";
+    private static final String FILTER_SELECTED_PRICE_MAX = "pmax";
+
     @Bind(R2.id.dynamic_filter_list)
     FrameLayout dynamicFilterList;
     @Bind(R2.id.toolbar)
@@ -112,12 +117,16 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
 
     private void setFilterList2(List<DynamicFilterModel.Filter> data) {
         Fragment dynamicFilterListFragment = DynamicFilterListFragment.newInstance2(data);
-        setFragment(dynamicFilterListFragment, DynamicFilterListView.FRAGMENT_TAG, R.id.dynamic_filter_list);
+        setFragment(dynamicFilterListFragment,
+                DynamicFilterListView.FRAGMENT_TAG, R.id.dynamic_filter_list);
     }
 
     private void setFirstTimeDetail() {
-        DynamicFilterFirstTimeFragment dynamicFilterFirstTimeFragment = new DynamicFilterFirstTimeFragment();
-        setFragment(dynamicFilterFirstTimeFragment, DynamicFilterFirstTimeFragment.FRAGMENT_TAG, R.id.dynamic_filter_detail);
+        DynamicFilterFirstTimeFragment dynamicFilterFirstTimeFragment =
+                new DynamicFilterFirstTimeFragment();
+
+        setFragment(dynamicFilterFirstTimeFragment,
+                DynamicFilterFirstTimeFragment.FRAGMENT_TAG, R.id.dynamic_filter_detail);
     }
 
     public void setFragment(Fragment fragment, String TAG, int layoutId) {
@@ -206,11 +215,19 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
 
     @Override
     public void finishThis() {
-        if(saveFilterSelectionPosition() && saveFilterSelection() && saveFilterText()) {
-            Intent intent = new Intent();
-            intent.putExtra(EXTRA_RESULT, Parcels.wrap(selectedFilter));
-            setResult(RESULT_OK, intent);
-            finish();
+        if (saveFilterSelectionPosition() && saveFilterSelection() && saveFilterText()) {
+//            Intent intent = new Intent();
+//            intent.putExtra(EXTRA_RESULT, Parcels.wrap(selectedFilter));
+//            setResult(RESULT_OK, intent);
+//            finish();
+            if (isFormValid()) {
+                Intent intent = new Intent();
+                intent.putExtra(EXTRA_RESULT, Parcels.wrap(selectedFilter));
+                setResult(RESULT_OK, intent);
+                finish();
+            } else {
+                showFailedFormValidationMessage();
+            }
         }
     }
 
@@ -272,5 +289,46 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
             context.startActivityForResult(intent, REQUEST_CODE);
             context.overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);
         }
+    }
+
+    private boolean isFormValid() {
+        boolean isFormValid = false;
+        if (selectedFilter != null && selectedFilter.size() > 0) {
+            double priceMin = -1;
+            double priceMax = -1;
+            for (Map.Entry<String, String> entry : selectedFilter.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                if (FILTER_SELECTED_PRICE_MIN.equals(key)) {
+                    priceMin = getPriceFromSelectedFilter(priceMin, value);
+
+                } else if (FILTER_SELECTED_PRICE_MAX.equals(key)) {
+                    priceMax = getPriceFromSelectedFilter(priceMax, value);
+                }
+                isFormValid = priceMax != -1 && priceMin != -1 && priceMin < priceMax;
+            }
+        } else {
+            isFormValid = true;
+        }
+        return isFormValid;
+    }
+
+    private double getPriceFromSelectedFilter(double price, String value) {
+        if (!value.startsWith(".")) {
+            try {
+                price = Double.parseDouble(value);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                price = -1;
+            }
+
+        }
+        return price;
+    }
+
+
+    private void showFailedFormValidationMessage() {
+        Snackbar.make(root, getString(R.string.msg_filter_invalid_amount),
+                Snackbar.LENGTH_SHORT).show();
     }
 }

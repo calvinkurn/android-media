@@ -17,6 +17,7 @@ import android.widget.ScrollView;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity.BackButtonListener;
@@ -24,12 +25,15 @@ import com.tokopedia.core.var.TkpdUrl;
 
 import butterknife.Bind;
 
+import static com.tokopedia.core.analytics.container.GTMContainer.getContainer;
 import static com.tokopedia.inbox.contactus.ContactUsConstant.PARAM_URL;
 
 /**
  * Created by nisie on 8/12/16.
  */
 public class ContactUsFaqFragment extends BasePresenterFragment {
+
+    private static final String GTM_CONTACTUS_URL = "url_contactus";
 
     @Bind(R2.id.scroll_view)
     ScrollView mainView;
@@ -62,10 +66,13 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
 
     @Override
     protected void onFirstTimeLaunched() {
-
-        if(getArguments().getString(PARAM_URL,"").equals(""))
-            url = TkpdUrl.CONTACT_US_FAQ + "&app_version=" + BuildConfig.VERSION_CODE;
-        else
+        String url;
+        if (getArguments().getString(PARAM_URL, "").equals("")) {
+            if (!GTMContainer.getContainer().getString(GTM_CONTACTUS_URL).equals(""))
+                url = GTMContainer.getContainer().getString(GTM_CONTACTUS_URL) + "&app_version=" + BuildConfig.VERSION_CODE;
+            else
+                url = TkpdUrl.CONTACT_US_FAQ + "&app_version=" + BuildConfig.VERSION_CODE;
+        } else
             url = getArguments().getString(PARAM_URL);
 
         webView.loadUrl(url);
@@ -178,13 +185,13 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            if(mainView!=null)
+            if (mainView != null)
                 mainView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mainView.smoothScrollTo(0, 0);
-                }
-            }, 300);
+                    @Override
+                    public void run() {
+                        mainView.smoothScrollTo(0, 0);
+                    }
+                }, 300);
         }
 
         @Override
@@ -206,7 +213,7 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if(progressBar != null)
+        if (progressBar != null)
             progressBar.setIndeterminate(false);
     }
 

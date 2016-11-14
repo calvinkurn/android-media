@@ -108,7 +108,8 @@ public class PreviewProductImage extends TActivity {
                                     @Override
                                     public void onClick(DialogInterface dialog,
                                                         int which) {
-                                        ImageHandler.loadImageBitmap2(getApplicationContext(), fileLoc.get(vp.getCurrentItem()), target2);
+                                        if (fileLoc.size() > 0)
+                                            ImageHandler.loadImageBitmap2(getApplicationContext(), fileLoc.get(vp.getCurrentItem()), target2);
 //										PicassoHelper.getPicasso().load(fileLoc.get(vp.getCurrentItem())).into(target);
                                     }
                                 });

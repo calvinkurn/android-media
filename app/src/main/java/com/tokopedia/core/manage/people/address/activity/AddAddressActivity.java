@@ -48,7 +48,7 @@ public class AddAddressActivity extends BasePresenterActivity implements ManageA
     @Override
     protected void initView() {
         Bundle bundle;
-        if(getIntent().getExtras() == null) {
+        if (getIntent().getExtras() == null) {
             bundle = new Bundle();
         } else {
             bundle = getIntent().getExtras();
@@ -64,11 +64,13 @@ public class AddAddressActivity extends BasePresenterActivity implements ManageA
                 }
             }
         }
-        AddAddressFragment fragment = AddAddressFragment.createInstance(bundle);
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
-        fragmentTransaction.commit();
+        if (getFragmentManager().findFragmentById(R.id.container) == null) {
+            AddAddressFragment fragment = AddAddressFragment.createInstance(bundle);
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
+            fragmentTransaction.commit();
+        }
     }
 
     @Override
