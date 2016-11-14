@@ -41,7 +41,7 @@ import rx.subscriptions.CompositeSubscription;
 public class WishListImpl implements WishList {
     WishListView wishListView;
 
-    List<RecyclerViewItem> data;
+    List<RecyclerViewItem> data = new ArrayList<>();
 
     WishlistPaging mPaging;
 
@@ -55,7 +55,7 @@ public class WishListImpl implements WishList {
 
     MojitoAuthService mojitoAuthService;
 
-    List<Wishlist> dataWishlist;
+    List<Wishlist> dataWishlist = new ArrayList<>();
 
     public WishListImpl(WishListView wishListView) {
         this.wishListView = wishListView;
@@ -304,7 +304,6 @@ public class WishListImpl implements WishList {
             product.setId(wishlists.get(i).getId());
             product.setImgUri(wishlists.get(i).getImageUrl());
             product.setIsNewGold(wishlists.get(i).getShop().getIsGoldMerchant() ? 1 : 0);
-            product.setLuckyShop(wishlists.get(i).getShop().getLuckyMerchant());
             product.setName(wishlists.get(i).getName());
             product.setPrice(wishlists.get(i).getPriceFmt());
             product.setShop(wishlists.get(i).getShop().getName());
@@ -313,7 +312,10 @@ public class WishListImpl implements WishList {
             product.setIsAvailable(wishlists.get(i).getIsAvailable());
             product.setWholesale(wishlists.get(i).getWholesale().size() > 0 ? "1" : "0");
             product.setPreorder(wishlists.get(i).getIsPreOrder() ? "1" : "0");
+            product.setIsGold(wishlists.get(i).getShop().getIsGoldMerchant() ? "1" : "0");
+            product.setLuckyShop(wishlists.get(i).getShop().getLuckyMerchant());
             product.setBadges(wishlists.get(i).getBadges());
+            product.setLabels(wishlists.get(i).getLabels());
             products.add(product);
         }
 

@@ -124,7 +124,8 @@ public class DataFeedAdapter extends ProductAdapter {
     }
 
     private void setLabels(ProductFeedAdapter.ViewHolderProductFeed holder, ProductItem data) {
-        if (data.getLabels() != null && holder.labelsContainer.getChildCount() == 0)
+        holder.labelsContainer.removeAllViews();
+        if (data.getLabels() != null)
             for (ProductItem.Label label : data.getLabels()) {
                 View view = LayoutInflater.from(context).inflate(R.layout.label_layout, null);
                 TextView labelText = (TextView) view.findViewById(R.id.label);

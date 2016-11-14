@@ -35,4 +35,5 @@ public abstract class BrowseProductParent extends BaseImpl<BrowseProductParentVi
 
     public abstract List<Breadcrumb> getBreadCrumb();
 
+    public abstract void fetchFromNetwork(Context context);
 }

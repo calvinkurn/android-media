@@ -78,33 +78,38 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
     @Override
     public void initData(@NonNull Context context) {
         Log.d(TAG, "isAfterRotate " + isAfterRotate + " init Data network params " + p.toString());
-        view.initDiscoveryTicker();
         ((DiscoveryInteractorImpl) discoveryInteractor).setCompositeSubscription(compositeSubscription);
         if (!isAfterRotate) {
-            p.breadcrumb = true;
-            p.userId = SessionHandler.getLoginID(context);
-            view.setLoadingProgress(true);
-            switch (browseProductActivityModel.getSource()) {
-                case DynamicFilterPresenter.SEARCH_CATALOG:
-                case DynamicFilterPresenter.SEARCH_PRODUCT:
-                case DynamicFilterPresenter.SEARCH_SHOP:
-                    p.source = browseProductActivityModel.getSource();
-                    if (SessionHandler.isV4Login(context)) {
-                        p.unique_id = AuthUtil.md5(p.userId);
-                    } else {
-                        p.unique_id = AuthUtil.md5(GCMHandler.getRegistrationId(context));
-                    }
-                    discoveryInteractor.getProducts(NetworkParam.generateNetworkParamProduct(p));
-                    break;
-                case DynamicFilterPresenter.HOT_PRODUCT:
-                    p.unique_id = null;
-                    discoveryInteractor.getProducts(NetworkParam.generateNetworkParamProduct(p));
-                    break;
-                case DynamicFilterPresenter.DIRECTORY:
-                    p.unique_id = null;
-                    discoveryInteractor.getProducts(NetworkParam.generateNetworkParamProduct(p));
-                    break;
-            }
+            fetchFromNetwork(context);
+        }
+    }
+
+    @Override
+    public void fetchFromNetwork(Context context) {
+        view.initDiscoveryTicker();
+        p.breadcrumb = true;
+        p.userId = SessionHandler.getLoginID(context);
+        view.setLoadingProgress(true);
+        switch (browseProductActivityModel.getSource()) {
+            case DynamicFilterPresenter.SEARCH_CATALOG:
+            case DynamicFilterPresenter.SEARCH_PRODUCT:
+            case DynamicFilterPresenter.SEARCH_SHOP:
+                p.source = browseProductActivityModel.getSource();
+                if (SessionHandler.isV4Login(context)) {
+                    p.unique_id = AuthUtil.md5(p.userId);
+                } else {
+                    p.unique_id = AuthUtil.md5(GCMHandler.getRegistrationId(context));
+                }
+                discoveryInteractor.getProducts(NetworkParam.generateNetworkParamProduct(p));
+                break;
+            case DynamicFilterPresenter.HOT_PRODUCT:
+                p.unique_id = null;
+                discoveryInteractor.getProducts(NetworkParam.generateNetworkParamProduct(p));
+                break;
+            case DynamicFilterPresenter.DIRECTORY:
+                p.unique_id = null;
+                discoveryInteractor.getProducts(NetworkParam.generateNetworkParamProduct(p));
+                break;
         }
     }
 
@@ -204,7 +209,7 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
 
     @Override
     public void onSuccess(int type, Pair<String, ? extends ObjContainer> data) {
-        Log.d(TAG, "onSuccess type " + type);
+        Log.d(TAG, "onSuccess type "+type);
         ArrayMap<String, String> visibleTab = new ArrayMap<>();
         switch (type) {
             case DiscoveryListener.DYNAMIC_ATTRIBUTE:
@@ -217,11 +222,11 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                 if (browseProductModel.result.redirect_url == null) {
                     // if has catalog, show three tabs
                     String source = browseProductActivityModel.getSource();
-                    Log.d(TAG, "source " + source);
+                    Log.d(TAG, "source "+source);
                     if (browseProductModel.result.hasCatalog != null && Integer.parseInt(browseProductModel.result.hasCatalog) == 1 && !source.equals(DynamicFilterPresenter.HOT_PRODUCT)) {
                         visibleTab.put(BrowserSectionsPagerAdapter.PRODUK, view.VISIBLE_ON);
                         visibleTab.put(BrowserSectionsPagerAdapter.KATALOG, view.VISIBLE_ON);
-                        if (browseProductActivityModel.getSource().startsWith("search")) {
+                        if(browseProductActivityModel.getSource().startsWith("search")){
                             visibleTab.put(BrowserSectionsPagerAdapter.TOKO, view.VISIBLE_ON);
                         }
                         view.initSectionAdapter(visibleTab);
@@ -250,8 +255,7 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                             view.setCurrentTabs(0);
                         }
                     }
-
-                    if (view.getActivityPresenter().checkHasFilterAttrIsNull(index)) {
+                    if(view.getActivityPresenter().checkHasFilterAttrIsNull(index)) {
                         discoveryInteractor.getDynamicAttribute(view.getContext(), DynamicFilterPresenter.SEARCH_PRODUCT, browseProductActivityModel.getDepartmentId());
                     }
                     view.setLoadingProgress(false);

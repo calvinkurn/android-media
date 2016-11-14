@@ -101,10 +101,6 @@ public class HistoryProductRecyclerViewAdapter extends RecyclerView.Adapter<Hist
             }
         };
     }
-//    @Override
-//    public long getItemId(int position) {
-//        return data.get(position).hashCode();
-//    }
 
     @Override
     public int getItemCount() {
