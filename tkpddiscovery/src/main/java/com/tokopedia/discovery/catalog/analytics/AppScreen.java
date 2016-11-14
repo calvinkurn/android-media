@@ -5,4 +5,9 @@ package com.tokopedia.discovery.catalog.analytics;
  */
 
 public class AppScreen {
+
+    private AppScreen(){
+
+    }
+
 }
