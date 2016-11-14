@@ -8,7 +8,6 @@ import android.os.Parcelable;
  */
 
 public class ShipmentCartPassData implements Parcelable {
-
     private String weight;
     private String shopId;
     private String addressId;
@@ -19,6 +18,23 @@ public class ShipmentCartPassData implements Parcelable {
     private String addressName;
     private String latitude;
     private String longitude;
+    private String receiverName;
+    private String receiverPhone;
+
+    private ShipmentCartPassData(Builder builder) {
+        setWeight(builder.weight);
+        setShopId(builder.shopId);
+        setAddressId(builder.addressId);
+        setQuantity(builder.quantity);
+        setShippingId(builder.shippingId);
+        setShippingPackageId(builder.shippingPackageId);
+        setAddressTitle(builder.addressTitle);
+        setAddressName(builder.addressName);
+        setLatitude(builder.latitude);
+        setLongitude(builder.longitude);
+        setReceiverName(builder.receiverName);
+        setReceiverPhone(builder.receiverPhone);
+    }
 
     public String getWeight() {
         return weight;
@@ -100,6 +116,108 @@ public class ShipmentCartPassData implements Parcelable {
         this.longitude = longitude;
     }
 
+    public String getReceiverName() {
+        return receiverName;
+    }
+
+    public void setReceiverName(String receiverName) {
+        this.receiverName = receiverName;
+    }
+
+    public String getReceiverPhone() {
+        return receiverPhone;
+    }
+
+    public void setReceiverPhone(String receiverPhone) {
+        this.receiverPhone = receiverPhone;
+    }
+
+    public ShipmentCartPassData() {
+    }
+
+
+    public static final class Builder {
+        private String weight;
+        private String shopId;
+        private String addressId;
+        private String quantity;
+        private String shippingId;
+        private String shippingPackageId;
+        private String addressTitle;
+        private String addressName;
+        private String latitude;
+        private String longitude;
+        private String receiverName;
+        private String receiverPhone;
+
+        public Builder() {
+        }
+
+        public Builder weight(String val) {
+            weight = val;
+            return this;
+        }
+
+        public Builder shopId(String val) {
+            shopId = val;
+            return this;
+        }
+
+        public Builder addressId(String val) {
+            addressId = val;
+            return this;
+        }
+
+        public Builder quantity(String val) {
+            quantity = val;
+            return this;
+        }
+
+        public Builder shippingId(String val) {
+            shippingId = val;
+            return this;
+        }
+
+        public Builder shippingPackageId(String val) {
+            shippingPackageId = val;
+            return this;
+        }
+
+        public Builder addressTitle(String val) {
+            addressTitle = val;
+            return this;
+        }
+
+        public Builder addressName(String val) {
+            addressName = val;
+            return this;
+        }
+
+        public Builder latitude(String val) {
+            latitude = val;
+            return this;
+        }
+
+        public Builder longitude(String val) {
+            longitude = val;
+            return this;
+        }
+
+        public Builder receiverName(String val) {
+            receiverName = val;
+            return this;
+        }
+
+        public Builder receiverPhone(String val) {
+            receiverPhone = val;
+            return this;
+        }
+
+        public ShipmentCartPassData build() {
+            return new ShipmentCartPassData(this);
+        }
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -117,9 +235,8 @@ public class ShipmentCartPassData implements Parcelable {
         dest.writeString(this.addressName);
         dest.writeString(this.latitude);
         dest.writeString(this.longitude);
-    }
-
-    public ShipmentCartPassData() {
+        dest.writeString(this.receiverName);
+        dest.writeString(this.receiverPhone);
     }
 
     protected ShipmentCartPassData(Parcel in) {
@@ -133,20 +250,19 @@ public class ShipmentCartPassData implements Parcelable {
         this.addressName = in.readString();
         this.latitude = in.readString();
         this.longitude = in.readString();
+        this.receiverName = in.readString();
+        this.receiverPhone = in.readString();
     }
 
-    public static final Creator<ShipmentCartPassData> CREATOR =
-            new Creator<ShipmentCartPassData>() {
-                @Override
-                public ShipmentCartPassData createFromParcel(Parcel source) {
-                    return new ShipmentCartPassData(source);
-                }
+    public static final Creator<ShipmentCartPassData> CREATOR = new Creator<ShipmentCartPassData>() {
+        @Override
+        public ShipmentCartPassData createFromParcel(Parcel source) {
+            return new ShipmentCartPassData(source);
+        }
 
-                @Override
-                public ShipmentCartPassData[] newArray(int size) {
-                    return new ShipmentCartPassData[size];
-                }
-            };
-
-
+        @Override
+        public ShipmentCartPassData[] newArray(int size) {
+            return new ShipmentCartPassData[size];
+        }
+    };
 }

@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.transaction.cart.model.CartItemEditable;
+import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import com.tokopedia.transaction.cart.model.cartdata.TransactionList;
 
 import java.util.ArrayList;
@@ -42,6 +43,8 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public interface CartAction {
         void onCancelCart(TransactionList data);
+
+        void onCancelCartProduct(TransactionList data, CartProduct cartProduct);
 
         void onChangeShipment(TransactionList data);
     }

@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.cart.presenter;
 
 import android.app.Activity;
+import android.support.annotation.NonNull;
 
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -10,6 +11,7 @@ import com.tokopedia.transaction.cart.interactor.CartDataInteractor;
 import com.tokopedia.transaction.cart.interactor.ICartDataInteractor;
 import com.tokopedia.transaction.cart.listener.ICartView;
 import com.tokopedia.transaction.cart.model.cartdata.CartModel;
+import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import com.tokopedia.transaction.cart.model.cartdata.TransactionList;
 
 import rx.Subscriber;
@@ -30,7 +32,7 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
-    public void processGetCartData(Activity activity) {
+    public void processGetCartData(@NonNull Activity activity) {
         TKPDMapParam<String, String> params = AuthUtil.generateParamsNetwork(activity);
         cartDataInteractor.getCartData(params, new Subscriber<CartModel>() {
             @Override
@@ -55,31 +57,63 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
-    public void processCancelCart(Activity activity, TransactionList data) {
+    public void processCancelCart(@NonNull Activity activity, @NonNull TransactionList data) {
         TKPDMapParam<String, String> maps = new TKPDMapParam<>();
         maps.put("address_id", data.getCartDestination().getAddressId());
         maps.put("shipment_id", data.getCartShipments().getShipmentId());
         maps.put("shipment_package_id", data.getCartShipments().getShipmentPackageId());
         maps.put("shop_id", data.getCartShop().getShopId());
-        cartDataInteractor.cancelCart(maps, new TKPDMapParam<String, String>(), new Subscriber<CartModel>() {
-            @Override
-            public void onCompleted() {
+        cartDataInteractor.cancelCart(maps, new TKPDMapParam<String, String>(),
+                new Subscriber<CartModel>() {
+                    @Override
+                    public void onCompleted() {
 
-            }
+                    }
 
-            @Override
-            public void onError(Throwable e) {
+                    @Override
+                    public void onError(Throwable e) {
 
-            }
+                    }
 
-            @Override
-            public void onNext(CartModel data) {
-                view.renderDepositInfo(data.getDepositIdr());
-                view.renderTotalPayment(data.getGrandTotalWithoutLPIDR());
-                view.renderPaymentGatewayOption(data.getGatewayList());
-                view.renderLoyaltyBalance(data.getLpAmountIdr(), data.getLpAmount() != 0);
-                view.renderCartListData(data.getTransactionLists());
-            }
-        });
+                    @Override
+                    public void onNext(CartModel data) {
+                        view.renderDepositInfo(data.getDepositIdr());
+                        view.renderTotalPayment(data.getGrandTotalWithoutLPIDR());
+                        view.renderPaymentGatewayOption(data.getGatewayList());
+                        view.renderLoyaltyBalance(data.getLpAmountIdr(), data.getLpAmount() != 0);
+                        view.renderCartListData(data.getTransactionLists());
+                    }
+                });
+    }
+
+    @Override
+    public void processCancelCartProduct(@NonNull Activity activity, @NonNull TransactionList cartData,
+                                         @NonNull CartProduct cartProductData) {
+        TKPDMapParam<String, String> maps = new TKPDMapParam<>();
+        maps.put("product_cart_id", cartProductData.getProductCartId());
+        maps.put("address_id", cartData.getCartDestination().getAddressId());
+        maps.put("shipment_id", cartData.getCartShipments().getShipmentId());
+        maps.put("shipment_package_id", cartData.getCartShipments().getShipmentPackageId());
+        cartDataInteractor.cancelCart(maps, new TKPDMapParam<String, String>(),
+                new Subscriber<CartModel>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(CartModel data) {
+                        view.renderDepositInfo(data.getDepositIdr());
+                        view.renderTotalPayment(data.getGrandTotalWithoutLPIDR());
+                        view.renderPaymentGatewayOption(data.getGatewayList());
+                        view.renderLoyaltyBalance(data.getLpAmountIdr(), data.getLpAmount() != 0);
+                        view.renderCartListData(data.getTransactionLists());
+                    }
+                });
     }
 }

@@ -1,7 +1,9 @@
 package com.tokopedia.transaction.cart.presenter;
 
 import android.app.Activity;
+import android.support.annotation.NonNull;
 
+import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import com.tokopedia.transaction.cart.model.cartdata.TransactionList;
 
 
@@ -10,7 +12,10 @@ import com.tokopedia.transaction.cart.model.cartdata.TransactionList;
  */
 
 public interface ICartPresenter {
-    void processGetCartData(Activity activity);
+    void processGetCartData(@NonNull Activity activity);
 
-    void processCancelCart(Activity activity, TransactionList data);
+    void processCancelCart(@NonNull Activity activity, @NonNull TransactionList data);
+
+    void processCancelCartProduct(@NonNull Activity activity, @NonNull TransactionList cartData,
+                                  @NonNull CartProduct cartProductData);
 }

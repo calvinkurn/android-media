@@ -26,10 +26,13 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.transaction.cart.activity.ShipmentCartActivity;
 import com.tokopedia.transaction.cart.adapter.CartItemAdapter;
 import com.tokopedia.transaction.cart.listener.ICartActionFragment;
 import com.tokopedia.transaction.cart.listener.ICartView;
 import com.tokopedia.transaction.cart.model.CheckoutData;
+import com.tokopedia.transaction.cart.model.ShipmentCartPassData;
+import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import com.tokopedia.transaction.cart.model.cartdata.GatewayList;
 import com.tokopedia.transaction.cart.model.cartdata.TransactionList;
 import com.tokopedia.transaction.cart.presenter.CartPresenter;
@@ -278,12 +281,53 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                         presenter.processCancelCart(getActivity(), data);
                     }
                 });
-        alertDialog.setNegativeButton(context.getString(R.string.title_no),
+        alertDialog.setNegativeButton(context.getString(R.string.title_no), null);
+        showDialog(alertDialog.create());
+    }
+
+    @Override
+    public void onCancelCartProduct(final TransactionList data, final CartProduct cartProduct) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+        alertDialog.setTitle(getString(R.string.title_cancel_confirm));
+        alertDialog.setMessage(getString(R.string.msg_cancel_1)
+                + " "
+                + data.getCartShop().getShopName()
+                + " "
+                + getString(R.string.msg_cancel_2)
+                + " "
+                + cartProduct.getProductName()
+                + " "
+                + getString(R.string.msg_cancel_3)
+                + " "
+                + cartProduct.getProductTotalPriceIdr());
+        alertDialog.setPositiveButton(context.getString(R.string.title_yes),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface arg0, int arg1) {
-
+                        presenter.processCancelCartProduct(getActivity(), data, cartProduct);
                     }
                 });
+
+        alertDialog.setNegativeButton(context.getString(R.string.title_no), null);
         showDialog(alertDialog.create());
+    }
+
+    @Override
+    public void onChangeShipment(TransactionList data) {
+        navigateToActivity(ShipmentCartActivity.createInstance(context,
+                new ShipmentCartPassData.Builder()
+                        .weight(data.getCartTotalWeight())
+                        .shopId(data.getCartShop().getShopId())
+                        .addressId(data.getCartDestination().getAddressId())
+                        .quantity(data.getCartTotalProduct())
+                        .shippingId(data.getCartShipments().getShipmentId())
+                        .shippingPackageId(data.getCartShipments().getShipmentPackageId())
+                        .addressTitle(data.getCartDestination().getAddressName())
+                        .addressName(data.getCartDestination().getReceiverName())
+                        .latitude(data.getCartDestination().getLatitude())
+                        .longitude(data.getCartDestination().getLongitude())
+                        .receiverPhone(data.getCartDestination().getReceiverPhone())
+                        .receiverName(data.getCartDestination().getReceiverName())
+                        .build()
+        ));
     }
 }
