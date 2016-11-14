@@ -335,16 +335,67 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
         View rootView = getView();
         if (rootView != null)
             NetworkErrorHelper.showEmptyState(
-                    getActivity(),
-                    getView(),
+                    getActivity(), getView(),
                     new NetworkErrorHelper.RetryClickedListener() {
                         @Override
                         public void onRetryClicked() {
                             refreshHandler.startRefresh();
                             refreshHandler.setPullEnabled(true);
                         }
-                    });
+                    }
+            );
 
+    }
+
+    @Override
+    public void showNoConnectionLoadMoreData(String message) {
+        isLoading = false;
+        lvTXList.removeFooterView(loadMoreView);
+        isLoadMoreTerminated = true;
+        View rootView = getView();
+        if (rootView != null)
+            NetworkErrorHelper.createSnackbarWithAction(getActivity(), message,
+                    new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            getData(TxOrderNetInteractor.TypeRequest.LOAD_MORE);
+                        }
+                    }).showRetrySnackbar();
+        if (typeInstance == TransactionRouter.INSTANCE_ALL && !instanceFromNotification)
+            fabFilter.hide();
+    }
+
+    @Override
+    public void showNoConnectionPullRefresh(String message) {
+        isLoading = false;
+        refreshHandler.finishRefresh();
+        refreshHandler.setPullEnabled(true);
+        View rootView = getView();
+        if (rootView != null) NetworkErrorHelper.showSnackbar(getActivity(), message);
+        if (typeInstance == TransactionRouter.INSTANCE_ALL && !instanceFromNotification)
+            fabFilter.hide();
+    }
+
+    @Override
+    public void showNoConnectionResetData(String message) {
+        isLoading = false;
+        lvTXList.removeFooterView(loadMoreView);
+        refreshHandler.finishRefresh();
+        refreshHandler.setPullEnabled(false);
+        if (typeInstance == TransactionRouter.INSTANCE_ALL && !instanceFromNotification)
+            fabFilter.hide();
+        View rootView = getView();
+        if (rootView != null)
+            NetworkErrorHelper.showEmptyState(
+                    getActivity(), getView(),
+                    new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            refreshHandler.startRefresh();
+                            refreshHandler.setPullEnabled(true);
+                        }
+                    }
+            );
     }
 
     @Override

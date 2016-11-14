@@ -21,14 +21,6 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.facade.FacadeLuckyNotification;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.loyaltysystem.model.LoyaltyNotification;
-import com.tokopedia.transaction.purchase.activity.TxDetailActivity;
-import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
-import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractorImpl;
-import com.tokopedia.transaction.purchase.listener.TxListViewListener;
-import com.tokopedia.transaction.purchase.model.AllTxFilter;
-import com.tokopedia.transaction.purchase.model.response.txlist.OrderData;
-import com.tokopedia.transaction.purchase.model.response.txlist.OrderListData;
-import com.tokopedia.transaction.purchase.receiver.TxListUIReceiver;
 import com.tokopedia.core.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.core.rescenter.detail.activity.ResCenterActivity;
 import com.tokopedia.core.rescenter.detail.model.passdata.ActivityParamenterPassData;
@@ -38,6 +30,14 @@ import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.UploadImageHandler;
+import com.tokopedia.transaction.purchase.activity.TxDetailActivity;
+import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
+import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractorImpl;
+import com.tokopedia.transaction.purchase.listener.TxListViewListener;
+import com.tokopedia.transaction.purchase.model.AllTxFilter;
+import com.tokopedia.transaction.purchase.model.response.txlist.OrderData;
+import com.tokopedia.transaction.purchase.model.response.txlist.OrderListData;
+import com.tokopedia.transaction.purchase.receiver.TxListUIReceiver;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -90,6 +90,21 @@ public class TxListPresenterImpl implements TxListPresenter {
                     }
 
                     @Override
+                    public void onNoConnection(String message) {
+                        switch (typeRequest) {
+                            case TxOrderNetInteractor.TypeRequest.INITIAL:
+                                viewListener.showNoConnectionResetData(message);
+                                break;
+                            case TxOrderNetInteractor.TypeRequest.PULL_REFRESH:
+                                viewListener.showNoConnectionPullRefresh(message);
+                                break;
+                            case TxOrderNetInteractor.TypeRequest.LOAD_MORE:
+                                viewListener.showNoConnectionLoadMoreData(message);
+                                break;
+                        }
+                    }
+
+                    @Override
                     public void onEmptyData() {
                         viewListener.showEmptyData(typeRequest);
                     }
@@ -121,6 +136,21 @@ public class TxListPresenterImpl implements TxListPresenter {
                                 break;
                             case TxOrderNetInteractor.TypeRequest.LOAD_MORE:
                                 viewListener.showFailedLoadMoreData(message);
+                                break;
+                        }
+                    }
+
+                    @Override
+                    public void onNoConnection(String message) {
+                        switch (typeRequest) {
+                            case TxOrderNetInteractor.TypeRequest.INITIAL:
+                                viewListener.showNoConnectionResetData(message);
+                                break;
+                            case TxOrderNetInteractor.TypeRequest.PULL_REFRESH:
+                                viewListener.showNoConnectionPullRefresh(message);
+                                break;
+                            case TxOrderNetInteractor.TypeRequest.LOAD_MORE:
+                                viewListener.showNoConnectionLoadMoreData(message);
                                 break;
                         }
                     }
@@ -162,6 +192,21 @@ public class TxListPresenterImpl implements TxListPresenter {
                                 break;
                             case TxOrderNetInteractor.TypeRequest.LOAD_MORE:
                                 viewListener.showFailedLoadMoreData(message);
+                                break;
+                        }
+                    }
+
+                    @Override
+                    public void onNoConnection(String message) {
+                        switch (typeRequest) {
+                            case TxOrderNetInteractor.TypeRequest.INITIAL:
+                                viewListener.showNoConnectionResetData(message);
+                                break;
+                            case TxOrderNetInteractor.TypeRequest.PULL_REFRESH:
+                                viewListener.showNoConnectionPullRefresh(message);
+                                break;
+                            case TxOrderNetInteractor.TypeRequest.LOAD_MORE:
+                                viewListener.showNoConnectionLoadMoreData(message);
                                 break;
                         }
                     }
@@ -290,7 +335,8 @@ public class TxListPresenterImpl implements TxListPresenter {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(
                 Html.fromHtml(
-                        context.getString(R.string.dialog_package_not_rcv).replace("XXX", data.getOrderShop().getShopName())
+                        context.getString(R.string.dialog_package_not_rcv)
+                                .replace("XXX", data.getOrderShop().getShopName())
                 )
         );
         builder.setPositiveButton(context.getString(R.string.action_ask_courier),
