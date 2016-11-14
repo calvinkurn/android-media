@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.tokopedia.core.util.RouterUtils;
-import com.tokopedia.core.var.RouterConstant;
 
 /**
  * Created by Nathaniel on 11/9/2016.

@@ -56,4 +56,8 @@ public interface AddToCartViewListener extends ViewListener {
     String getGoogleMapLocation();
 
     void hideNetworkError();
+
+    void showTickerGTM(String message);
+
+    void hideTickerGTM();
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.core;
+package com.tokopedia.sellerapp;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.tokopedia.tkpd", appContext.getPackageName());
+        assertEquals("com.tokopedia.sellerapp", appContext.getPackageName());
     }
 }

@@ -16,8 +16,6 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
-import com.tokopedia.core.router.FragmentCreator;
-import com.tokopedia.core.util.FragmentCreatorUtil;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.deeplink.activity.DeepLinkActivity;
@@ -35,6 +33,7 @@ import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.product.fragment.ProductDetailFragment;
 import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.recharge.fragment.RechargeCategoryFragment;
+import com.tokopedia.core.router.DiscoveryRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.util.AppUtils;
@@ -259,7 +258,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
 
     private void openCatalogProduct(List<String> linkSegment, Uri uriData) {
-        viewListener.inflateFragment(FragmentCreator.getCatalogDetailListFragment(context, linkSegment.get(1)), "CATALOG_PRODUCT");
+        viewListener.inflateFragment(DiscoveryRouter.getCatalogDetailListFragment(context, linkSegment.get(1)), "CATALOG_PRODUCT");
     }
 
     /**

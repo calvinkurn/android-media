@@ -40,7 +40,7 @@ import com.tokopedia.core.discovery.view.BrowseProductParentView;
 import com.tokopedia.core.dynamicfilter.model.DynamicFilterModel;
 import com.tokopedia.core.dynamicfilter.presenter.DynamicFilterPresenter;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.router.Router;
+import com.tokopedia.core.router.DiscoveryRouter;
 import com.tokopedia.core.session.base.BaseFragment;
 
 import org.parceler.Parcels;
@@ -255,7 +255,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
 //            Intent intent = new Intent(getActivity(), Catalog.class);
 //            intent.putExtra(HotList.CATALOG_ID_KEY, urlParser.getHotAlias());
 //            getActivity().startActivity(intent);
-            getActivity().startActivity(Router.getCatalogDetailActivity(getActivity(),
+            getActivity().startActivity(DiscoveryRouter.getCatalogDetailActivity(getActivity(),
                     urlParser.getHotAlias()));
             getActivity().finish();
         }

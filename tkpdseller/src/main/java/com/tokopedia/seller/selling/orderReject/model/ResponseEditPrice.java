@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by Toped10 on 6/9/2016.
  */
-@Parcel
+@Parcel(parcelsIndex = false)
 public class ResponseEditPrice {
     /**
      * status : OK
@@ -83,7 +83,7 @@ public class ResponseEditPrice {
         this.message_error = message_error;
     }
 
-    @Parcel
+    @Parcel(parcelsIndex = false)
     public static class DataBean {
         @SerializedName("is_success")
         @Expose

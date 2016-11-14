@@ -94,4 +94,6 @@ public interface ProductDetailPresenter {
     void initRetrofitInteractor();
 
     void reportProduct(@NonNull Context context);
+
+    void processGetGTMTicker();
 }

@@ -44,6 +44,7 @@ import com.tokopedia.core.inboxticket.activity.InboxTicketActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.myproduct.ManageProduct;
 import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TransactionRouter;
 import com.tokopedia.core.session.Login;
@@ -54,7 +55,6 @@ import com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity;
 import com.tokopedia.core.util.RouterUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
-import com.tokopedia.core.var.RouterConstant;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.var.ToolbarVariable;
 
@@ -521,8 +521,8 @@ public class DrawerVariable {
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.SETTING);
                 break;
             case TkpdState.DrawerPosition.CONTACT_US:
-                intent = RouterUtils.getActivityIntent(context, RouterConstant.INBOX_CONTACT_US_ACTIVITY);
-                if (TrackingUtils.getBoolean(AppEventTracking.GTM.CREATE_TICKET)) {
+                intent = InboxRouter.getContactUsActivityIntent(context);
+                if(TrackingUtils.getBoolean(AppEventTracking.GTM.CREATE_TICKET)) {
                     intent.putExtra("link", "https://tokopedia.com/contact-us-android");
                 }
                 context.startActivity(intent);

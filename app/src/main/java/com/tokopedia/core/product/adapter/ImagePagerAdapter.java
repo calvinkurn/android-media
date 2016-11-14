@@ -103,7 +103,8 @@ public class ImagePagerAdapter extends PagerAdapter {
 
         @Override
         public void onClick(View v) {
-            actionListener.onItemImageClicked(productImages.get(position), position);
+            if (actionListener != null)
+                actionListener.onItemImageClicked(productImages.get(position), position);
         }
     }
 

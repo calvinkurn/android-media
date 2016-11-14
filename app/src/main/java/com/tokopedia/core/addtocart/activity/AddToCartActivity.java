@@ -14,6 +14,7 @@ import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
+import android.text.util.Linkify;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -98,6 +99,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
 
     private Handler handler = new Handler();
 
+    @Bind(R2.id.tv_ticker_gtm)
+    TextView tvTickerGTM;
     @Bind(R2.id.add_to_cart_coordinatlayout)
     CoordinatorLayout cartCoordinatLayout;
     @Bind(R2.id.iv_pic)
@@ -265,6 +268,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     @Override
     public void renderFormProductInfo(ProductDetail data) {
         this.mProductDetail = data;
+        presenter.processGetGTMTicker();
         List<Insurance> insurances = Insurance.createList(getResources()
                 .getStringArray(R.array.insurance_option));
         ArrayAdapter<Insurance> insuranceAdapter = new ArrayAdapter<>(this,
@@ -370,6 +374,20 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     public void hideNetworkError() {
         container.setVisibility(View.VISIBLE);
         findViewById(R.id.main_scroll).setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showTickerGTM(String message) {
+        tvTickerGTM.setText(Html.fromHtml(message));
+        tvTickerGTM.setVisibility(View.VISIBLE);
+        tvTickerGTM.setAutoLinkMask(0);
+        Linkify.addLinks(tvTickerGTM, Linkify.WEB_URLS);
+
+    }
+
+    @Override
+    public void hideTickerGTM() {
+        tvTickerGTM.setVisibility(View.GONE);
     }
 
     @Override

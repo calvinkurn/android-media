@@ -6,7 +6,10 @@
         />
 
 
-    <application android:allowBackup="true"
+    <application
+        tools:replace="android:name"
+        android:name="com.tokopedia.tkpd.ConsumerMainApplication"
+        android:allowBackup="true"
                  android:icon="@drawable/qc_launcher"
                  android:label="@string/app_name"
                  android:supportsRtl="true"

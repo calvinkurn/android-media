@@ -1,4 +1,4 @@
-package com.tokopedia.core;
+package com.tokopedia.sellerapp;
 
 import org.junit.Test;
 

@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by Toped10 on 7/11/2016.
  */
-@Parcel
+@Parcel(parcelsIndex = false)
 public class ResponseGetProduct {
 
     /**
