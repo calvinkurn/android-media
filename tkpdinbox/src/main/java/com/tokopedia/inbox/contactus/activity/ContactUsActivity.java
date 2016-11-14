@@ -50,7 +50,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
     }
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_CONTACT_US;
     }
 
