@@ -2708,6 +2708,10 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
         // 7. get harga grosir - compile ketika disini doang - kosongkan terlebih dahulu,
         Log.d(TAG, messageTAG + wholesaleAdapter.getDatas());
+        if(!wholesaleAdapter.isNoError()){
+            Snackbar.make(parentView, "Terjadi kesalahan pada harga grosir", Snackbar.LENGTH_LONG).show();
+            return null;
+        }
         inputAddProductModel.setWholeSales(wholesaleAdapter.getDatas());
 
         // 9. get terima pengembalian
