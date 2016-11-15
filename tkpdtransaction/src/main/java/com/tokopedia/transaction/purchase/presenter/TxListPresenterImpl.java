@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,9 +17,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.facade.FacadeLuckyNotification;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
-import com.tokopedia.core.loyaltysystem.model.LoyaltyNotification;
 import com.tokopedia.transaction.purchase.activity.TxDetailActivity;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractorImpl;
@@ -39,7 +36,6 @@ import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.UploadImageHandler;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.MessageFormat;
@@ -350,25 +346,6 @@ public class TxListPresenterImpl implements TxListPresenter {
         netInteractor.unSubscribeObservable();
     }
 
-    private void checkClover(final Context context, JSONObject lucky, final String message)
-            throws JSONException {
-        viewListener.showProgressLoading();
-        FacadeLuckyNotification facade = new FacadeLuckyNotification(context);
-        facade.getLoyaltyNotification(lucky, new FacadeLuckyNotification.OnGetNotification() {
-            @Override
-            public void onSuccess(LoyaltyNotification notification) {
-                viewListener.hideProgressLoading();
-                processReviewWithNotif(context, notification, message);
-            }
-
-            @Override
-            public void onEmpty() {
-                viewListener.hideProgressLoading();
-                processReview(context, message);
-            }
-        });
-    }
-
     private void processReview(final Context context, String message) {
         viewListener.hideProgressLoading();
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -394,26 +371,6 @@ public class TxListPresenterImpl implements TxListPresenter {
         builder.setMessage(message).setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 viewListener.navigateToActivity(InboxResCenterActivity.createIntent(context));
-            }
-        });
-        Dialog alertDialog = builder.create();
-        alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        viewListener.showDialog(builder.create());
-    }
-
-    private void processReviewWithNotif(final Context context,
-                                        final LoyaltyNotification notification, String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage(message).setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                Intent intent = new Intent(context, InboxReputationActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putBoolean("unread", true);
-                bundle.putBoolean("lucky", true);
-                bundle.putParcelable("lucky_notif", notification);
-                intent.putExtras(bundle);
-                dialog.dismiss();
-                viewListener.navigateToActivity(intent);
             }
         });
         Dialog alertDialog = builder.create();
@@ -501,19 +458,8 @@ public class TxListPresenterImpl implements TxListPresenter {
                         public void onSuccess(String message, JSONObject lucky) {
                             TxListUIReceiver.sendBroadcastForceRefreshListData(context);
                             viewListener.hideProgressLoading();
-                            if (lucky != null) {
-                                try {
-                                    checkClover(context, lucky, message);
-                                    dialog.dismiss();
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                    processReview(context, message);
-                                    dialog.dismiss();
-                                }
-                            } else {
-                                processReview(context, message);
-                                dialog.dismiss();
-                            }
+                            processReview(context, message);
+                            dialog.dismiss();
                         }
 
                         @Override
@@ -532,19 +478,8 @@ public class TxListPresenterImpl implements TxListPresenter {
                         @Override
                         public void onSuccess(String message, JSONObject lucky) {
                             TxListUIReceiver.sendBroadcastForceRefreshListData(context);
-                            if (lucky != null) {
-                                try {
-                                    checkClover(context, lucky, message);
-                                    dialog.dismiss();
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                    processReview(context, message);
-                                    dialog.dismiss();
-                                }
-                            } else {
-                                processReview(context, message);
-                                dialog.dismiss();
-                            }
+                            processReview(context, message);
+                            dialog.dismiss();
                         }
 
                         @Override
