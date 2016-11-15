@@ -39,9 +39,11 @@ import com.tokopedia.core.inboxmessage.activity.SendMessageActivity;
 import com.tokopedia.core.inboxmessage.fragment.SendMessageFragment;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
+import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.session.Login;
 import com.tokopedia.core.session.presenter.Session;
+import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.shopinfo.adapter.ShopTabPagerAdapter;
 import com.tokopedia.core.shopinfo.facades.ActionShopInfoRetrofit;
 import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
@@ -546,14 +548,22 @@ public class ShopInfoActivity extends TActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShareSocmedHandler.ShareIntent(ShopInfoActivity.this, compileShare(), shopModel.info.shopUrl);
+                Intent shareIntent = new Intent(ShopInfoActivity.this, ShareActivity.class);
+                ShareData shareData = ShareData.Builder.aShareData()
+                        .setType(ShareData.SHOP_TYPE)
+                        .setName(getString(R.string.message_share_shop))
+                        .setTextContent(compileShare())
+                        .setUri(shopModel.info.shopUrl)
+                        .build();
+                shareIntent.putExtra(ShareData.TAG, shareData);
+                startActivity(shareIntent);
             }
         };
     }
 
     private String compileShare() {
         String share = "";
-        share = shopModel.info.shopName + " - " + shopModel.info.shopLocation + " | Tokopedia ";
+        share = shopModel.info.shopName + " - " + shopModel.info.shopLocation + " | Tokopedia \n";
         return share;
     }
 

@@ -643,9 +643,9 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                             if (!shareUrl.isEmpty()) {
                                 Intent sintent = new Intent(BrowseProductActivity.this, ShareActivity.class);
                                 ShareData shareData = ShareData.Builder.aShareData()
-                                        .setType(getString(R.string.share_product_key))
+                                        .setType(ShareData.DISCOVERY_TYPE)
                                         .setName(getString(R.string.message_share_catalog))
-                                        .setTextContent(getString(R.string.message_share_category) + shareUrl)
+                                        .setTextContent(getString(R.string.message_share_category))
                                         .setUri(shareUrl)
                                         .build();
                                 sintent.putExtra(ShareData.TAG, shareData);
