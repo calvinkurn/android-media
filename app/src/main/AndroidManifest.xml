@@ -319,11 +319,11 @@
             android:label="@string/title_activity_payment_confirmation_success"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.inboxticket.activity.InboxTicketActivity"
+            android:name="com.tokopedia.core.com.tokopedia.inbox.inboxticket.inboxticket.activity.InboxTicketActivity"
             android:label="@string/title_activity_inbox_ticket"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.inboxticket.activity.InboxTicketDetailActivity"
+            android:name="com.tokopedia.core.com.tokopedia.inbox.inboxticket.inboxticket.activity.InboxTicketDetailActivity"
             android:label="@string/title_activity_inbox_ticket_detail"
             android:screenOrientation="portrait" />
         <activity

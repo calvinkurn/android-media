@@ -22,9 +22,9 @@ import com.tokopedia.core.app.MultiPaneActivity;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.inboxmessage.fragment.InboxMessageFragment;
 import com.tokopedia.core.inboxreputation.fragment.InboxReputationFragment;
-import com.tokopedia.core.inboxticket.fragment.InboxTicketFragment;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.rescenter.inbox.fragment.InboxResCenterFragment;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TransactionRouter;
 import com.tokopedia.core.session.Login;
@@ -123,7 +123,7 @@ public class NotificationCenter extends MultiPaneActivity implements Notificatio
                     }
                     break;
                 case 104:
-                    FragmentList.add(new InboxTicketFragment());
+                    FragmentList.add(InboxRouter.instanceInboxTicketFragmentFromNotification(this));
                     CONTENT.add(getString(R.string.title_activity_inbox_ticket));
                     break;
                 case 401:

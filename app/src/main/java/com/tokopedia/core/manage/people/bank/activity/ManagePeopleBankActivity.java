@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.view.Menu;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.inboxreputation.intentservice.InboxReviewIntentService;
 import com.tokopedia.core.manage.people.bank.ManagePeopleBankConstant;
@@ -132,6 +133,11 @@ public class ManagePeopleBankActivity extends BasePresenterActivity
     @Override
     protected void setActionVar() {
 
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_PEOPLE_BANK;
     }
 
     @Override
