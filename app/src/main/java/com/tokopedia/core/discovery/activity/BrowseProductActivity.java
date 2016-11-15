@@ -805,7 +805,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                             data.getParcelableExtra(DynamicFilterView.EXTRA_FILTERS)
                     );
 
-                    filtersMap.put(browseProductActivityModel.getSource(), filters);
+                    filtersMap.put(browseProductActivityModel.getActiveTab(), filters);
                     browseProductActivityModel.setFilterOptions(filters);
                     Log.d(TAG, "filter option " + filters);
                     sendFilterGTM(filters);

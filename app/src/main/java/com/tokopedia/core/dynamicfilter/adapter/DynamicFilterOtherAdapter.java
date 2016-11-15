@@ -318,9 +318,9 @@ public class DynamicFilterOtherAdapter extends ProductAdapter {
         }
     }
 
-    interface CONSTANT {
-        String CHECKBOX = "checkbox";
-        String TEXTBOX = "textbox";
+    interface Constant {
+        String CHECK_BOX = "checkbox";
+        String TEXT_BOX = "textbox";
 
         int TEXT_BOX_MODEL_TYPE = 129_648;
         int CHECK_BOX_MODEL_TYPE = 743_271;
