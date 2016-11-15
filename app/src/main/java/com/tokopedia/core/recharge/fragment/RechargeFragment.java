@@ -186,6 +186,9 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         setRechargeEditTextTouchCallback();
         if (!category.getAttributes().getValidatePrefix())
             this.rechargePresenter.updateMinLenghAndOperator(category.getAttributes().getDefaultOperatorId());
+        if (!category.getAttributes().getClientNumber().getIsShown()) {
+            rechargeEditText.setVisibility(View.GONE);
+        }
         return view;
     }
 
@@ -251,13 +254,16 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         String temp = s.toString();
         temp = validateTextPrefix(temp);
         if (!category.getAttributes().getValidatePrefix() && minLengthDefaultOperator>-1) {
-            if (s.length()>minLengthDefaultOperator) {
+            if (s.length()>=minLengthDefaultOperator) {
                 this.rechargePresenter.validateWithDefaultOperator(
                         category.getId(),
                         category.getAttributes().getDefaultOperatorId());
+            } else {
+                isAlreadyHavePhonePrefixInView = false;
+                hideFormAndImageOperator();
             }
         } else {
-            if (temp.length() >= 3 && temp.length() <5) {
+            if (temp.length() >= 3) {
                 String phonePrefix = temp.substring(0, temp.length() <= 4 ? temp.length() : 4);
                 if (s.length() >= 3) {
                     this.rechargePresenter.validatePhonePrefix(phonePrefix,
