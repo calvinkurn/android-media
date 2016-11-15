@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.transaction.cart.model.CartItemEditable;
+import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import com.tokopedia.transaction.cart.model.cartdata.TransactionList;
 
@@ -38,6 +39,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private static final int TYPE_CART_ITEM = R.layout.cart_item_holder;
     private final Fragment hostFragment;
     private final CartAction cartAction;
+    private boolean editMode;
 
     private List<Object> dataList = new ArrayList<>();
 
@@ -48,6 +50,18 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void onCancelCartProduct(TransactionList data, CartProduct cartProduct);
 
         void onChangeShipment(TransactionList data);
+
+        void onSubmitEditCart(TransactionList cartData, List<ProductEditData> cartProductEditDataList);
+    }
+
+    public void enableEditMode() {
+        this.editMode = true;
+        this.notifyDataSetChanged();
+    }
+
+    public void disableEditMode() {
+        this.editMode = false;
+        this.notifyDataSetChanged();
     }
 
     public CartItemAdapter(Fragment hostFragment, CartAction cartAction) {
@@ -83,6 +97,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private void bindCartHolder(final ViewHolder holder, final CartItemEditable data) {
+
         holder.tvShopName.setText(data.getTransactionList().getCartShop().getShopName());
         final CartProductItemAdapter adapterProduct = new CartProductItemAdapter(hostFragment);
         adapterProduct.setCartProductAction(new CartProductItemAdapter.CartProductAction() {
@@ -106,7 +121,16 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holder.tvShipment.setText(String.format("%s - %s (Ubah)",
                 data.getTransactionList().getCartShipments().getShipmentName(),
                 data.getTransactionList().getCartShipments().getShipmentPackageName()));
+        holder.holderActionEditor.setVisibility(editMode ? View.VISIBLE : View.GONE);
 
+        if (editMode) {
+            holder.holderActionEditor.setVisibility(View.VISIBLE);
+            holder.holderContainer.setBackgroundResource(R.drawable.cards_highlight);
+        } else {
+            holder.holderActionEditor.setVisibility(View.GONE);
+            holder.holderContainer.setBackgroundResource(R.drawable.cards_ui_2);
+            adapterProduct.enableEditMode();
+        }
 
         holder.tvShippingAddress.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,7 +168,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             cartAction.onCancelCart(data.getTransactionList());
                             return true;
                         } else if (i == R.id.action_cart_edit) {
-                            holder.holderActionEditor.setVisibility(View.VISIBLE);
+                            enableEditMode();
                             adapterProduct.enableEditMode();
                             return true;
                         }
@@ -152,6 +176,24 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     }
                 });
                 popupMenu.show();
+            }
+        });
+
+        holder.btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                disableEditMode();
+                adapterProduct.disableEditMode();
+            }
+        });
+        holder.btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    cartAction.onSubmitEditCart(data.getTransactionList(), adapterProduct.getCartProductEditDataList());
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -164,10 +206,8 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public int getItemViewType(int position) {
-        if (dataList.get(position) instanceof CartItemEditable) {
-            return TYPE_CART_ITEM;
-        }
-        return super.getItemViewType(position);
+        return dataList.get(position) instanceof CartItemEditable
+                ? TYPE_CART_ITEM : super.getItemViewType(position);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

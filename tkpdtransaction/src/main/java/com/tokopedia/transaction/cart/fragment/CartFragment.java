@@ -35,6 +35,7 @@ import com.tokopedia.transaction.cart.listener.ICartActionFragment;
 import com.tokopedia.transaction.cart.listener.ICartView;
 import com.tokopedia.transaction.cart.model.CheckoutData;
 import com.tokopedia.transaction.cart.model.ShipmentCartPassData;
+import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import com.tokopedia.transaction.cart.model.cartdata.GatewayList;
 import com.tokopedia.transaction.cart.model.cartdata.TransactionList;
@@ -300,6 +301,11 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                         .receiverName(data.getCartDestination().getReceiverName())
                         .build()
         ), ShipmentCartActivity.INTENT_REQUEST_CODE);
+    }
+
+    @Override
+    public void onSubmitEditCart(TransactionList cartData, List<ProductEditData> cartProductEditDataList) {
+        presenter.processSubmitEditCart(getActivity(), cartData, cartProductEditDataList);
     }
 
     @NonNull

@@ -240,6 +240,12 @@ public class CartDataInteractor implements ICartDataInteractor {
                 .subscribe(subscriber);
     }
 
+    @Override
+    public void updateCart(TKPDMapParam<String, String> paramUpdate,
+                           TKPDMapParam<String, String> paramCart, Subscriber<CartModel> subscriber) {
+
+    }
+
     @NonNull
     private Func2<CalculateShipmentWrapper, Response<TkpdResponse>, CalculateShipmentWrapper> transformShipmentData() {
         return new Func2<CalculateShipmentWrapper, Response<TkpdResponse>, CalculateShipmentWrapper>() {

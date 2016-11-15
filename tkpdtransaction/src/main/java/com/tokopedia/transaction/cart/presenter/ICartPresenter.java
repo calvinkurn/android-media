@@ -3,8 +3,11 @@ package com.tokopedia.transaction.cart.presenter;
 import android.app.Activity;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import com.tokopedia.transaction.cart.model.cartdata.TransactionList;
+
+import java.util.List;
 
 
 /**
@@ -18,4 +21,7 @@ public interface ICartPresenter {
 
     void processCancelCartProduct(@NonNull Activity activity, @NonNull TransactionList cartData,
                                   @NonNull CartProduct cartProductData);
+
+    void processSubmitEditCart(Activity activity, TransactionList cartData,
+                               List<ProductEditData> cartProductEditDataList);
 }
