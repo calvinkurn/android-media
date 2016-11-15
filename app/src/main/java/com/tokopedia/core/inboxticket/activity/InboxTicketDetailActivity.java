@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.inboxticket.InboxTicketConstant;
 import com.tokopedia.core.inboxticket.fragment.InboxTicketDetailFragment;
@@ -26,6 +27,10 @@ public class InboxTicketDetailActivity extends BasePresenterActivity<InboxTicket
 
     InboxTicketResultReceiver mReceiver;
 
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_INBOX_TICKET_DETAIL;
+    }
 
     @Override
     protected void setupURIPass(Uri data) {

@@ -1,5 +1,6 @@
 package com.tokopedia.core.discovery.fragment.browseparent;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -13,8 +14,10 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
+import com.tokopedia.core.discovery.activity.BrowseProductActivity;
 import com.tokopedia.core.discovery.interfaces.FetchNetwork;
 import com.tokopedia.core.discovery.presenter.DiscoveryActivityPresenter;
+import com.tokopedia.core.dynamicfilter.model.DynamicFilterModel;
 import com.tokopedia.core.home.fragment.FragmentProductFeed;
 import com.tokopedia.core.discovery.adapter.browseparent.BrowseShopAdapter;
 import com.tokopedia.core.discovery.presenter.browseparent.Shop;
@@ -36,7 +39,7 @@ import butterknife.Bind;
  */
 public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchNetwork {
     public static final int IDFRAGMENT = 1903_909;
-
+    public static final String INDEX = "FRAGMENT_INDEX";
     @Bind(R2.id.list_shop)
     RecyclerView list_shop;
 
@@ -45,9 +48,9 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
     private GridLayoutManager gridLayoutManager;
     private static final String TAG = ShopFragment.class.getSimpleName();
 
-    public static ShopFragment newInstance() {
-
+    public static ShopFragment newInstance(int index) {
         Bundle args = new Bundle();
+        args.putInt(INDEX, index);
         ShopFragment fragment = new ShopFragment();
         fragment.setArguments(args);
         return fragment;
@@ -223,5 +226,18 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
             DiscoveryActivityPresenter discoveryActivityPresenter = (DiscoveryActivityPresenter) getActivity();
             presenter.callNetwork(discoveryActivityPresenter);
         }
+    }
+
+    @Override
+    public Context getContext() {
+        return super.getContext();
+    }
+
+    @Override
+    public void setDynamicFilterAtrribute(DynamicFilterModel.Data filterAtrribute, int activeTab) {
+        if (filterAtrribute.getSort() != null) {
+            filterAtrribute.setSelected(filterAtrribute.getSort().get(0).getName());
+        }
+        ((BrowseProductActivity) getActivity()).setFilterAttribute(filterAtrribute, activeTab);
     }
 }

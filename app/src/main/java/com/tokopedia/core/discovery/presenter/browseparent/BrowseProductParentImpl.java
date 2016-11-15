@@ -7,6 +7,7 @@ import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
 import com.tokopedia.core.discovery.activity.BrowseProductActivity;
+import com.tokopedia.core.discovery.fragment.browseparent.ProductFragment;
 import com.tokopedia.core.discovery.interfaces.DiscoveryListener;
 import com.tokopedia.core.discovery.model.NetworkParam;
 import com.tokopedia.core.discovery.interactor.DiscoveryInteractor;
@@ -45,6 +46,7 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
     NetworkParam.Product p;
     HotListBannerModel hotListBannerModel;
     BrowseProductActivityModel browseProductActivityModel;
+    private int index;
 
     public BrowseProductParentImpl(BrowseProductParentView view) {
         super(view);
@@ -74,50 +76,47 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
     }
 
     @Override
-    public void fetchDynamicAttribute(Context context, String source) {
-        subscribe();
-        discoveryInteractor.getDynamicAttribute(context, source, p.sc);
+    public void initData(@NonNull Context context) {
+        Log.d(TAG, "isAfterRotate " + isAfterRotate + " init Data network params " + p.toString());
+        ((DiscoveryInteractorImpl) discoveryInteractor).setCompositeSubscription(compositeSubscription);
+        if (!isAfterRotate) {
+            fetchFromNetwork(context);
+        }
     }
 
     @Override
-    public void initData(@NonNull Context context) {
-        Log.d(TAG, "isAfterRotate " + isAfterRotate + " init Data network params " + p.toString());
+    public void fetchFromNetwork(Context context) {
         view.initDiscoveryTicker();
-        ((DiscoveryInteractorImpl) discoveryInteractor).setCompositeSubscription(compositeSubscription);
-        if (!isAfterRotate) {
-            p.breadcrumb = true;
-            p.userId = SessionHandler.getLoginID(context);
-            view.setLoadingProgress(true);
-            switch (browseProductActivityModel.getSource()) {
-                case DynamicFilterPresenter.SEARCH_CATALOG:
-                case DynamicFilterPresenter.SEARCH_PRODUCT:
-                case DynamicFilterPresenter.SEARCH_SHOP:
-                    p.source = browseProductActivityModel.getSource();
-                    if (SessionHandler.isV4Login(context)) {
-                        p.unique_id = AuthUtil.md5(p.userId);
-                    } else {
-                        p.unique_id = AuthUtil.md5(GCMHandler.getRegistrationId(context));
-                    }
-                    discoveryInteractor.getProducts(NetworkParam.generateNetworkParamProduct(p));
-                    break;
-                case DynamicFilterPresenter.HOT_PRODUCT:
-                    p.unique_id = null;
-                    discoveryInteractor.getProducts(NetworkParam.generateNetworkParamProduct(p));
-                    break;
-                case DynamicFilterPresenter.DIRECTORY:
-                    p.unique_id = null;
-                    discoveryInteractor.getProducts(NetworkParam.generateNetworkParamProduct(p));
-                    break;
-            }
-            if (((BrowseProductActivity) context).checkHasFilterAttrIsNull(browseProductActivityModel.getSource())) {
-                fetchDynamicAttribute(context, browseProductActivityModel.getSource());
-            }
+        p.breadcrumb = true;
+        p.userId = SessionHandler.getLoginID(context);
+        view.setLoadingProgress(true);
+        switch (browseProductActivityModel.getSource()) {
+            case DynamicFilterPresenter.SEARCH_CATALOG:
+            case DynamicFilterPresenter.SEARCH_PRODUCT:
+            case DynamicFilterPresenter.SEARCH_SHOP:
+                p.source = browseProductActivityModel.getSource();
+                if (SessionHandler.isV4Login(context)) {
+                    p.unique_id = AuthUtil.md5(p.userId);
+                } else {
+                    p.unique_id = AuthUtil.md5(GCMHandler.getRegistrationId(context));
+                }
+                discoveryInteractor.getProducts(NetworkParam.generateNetworkParamProduct(p));
+                break;
+            case DynamicFilterPresenter.HOT_PRODUCT:
+                p.unique_id = null;
+                discoveryInteractor.getProducts(NetworkParam.generateNetworkParamProduct(p));
+                break;
+            case DynamicFilterPresenter.DIRECTORY:
+                p.unique_id = null;
+                discoveryInteractor.getProducts(NetworkParam.generateNetworkParamProduct(p));
+                break;
         }
     }
 
     @Override
     public void fetchArguments(Bundle argument) {
         if (argument != null && !isAfterRotate) {
+            index = argument.getInt(ProductFragment.INDEX, 0);
             browseProductActivityModel = Parcels.unwrap(argument.getParcelable(BrowseParentFragment.BROWSE_PRODUCT_ACTIVITY_MODEL));
             view.setSource(browseProductActivityModel.getSource());
             Log.d(TAG, "BROWSE_PRODUCT_ACTIVITY_MODEL " + browseProductActivityModel.toString());
@@ -215,7 +214,7 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
         switch (type) {
             case DiscoveryListener.DYNAMIC_ATTRIBUTE:
                 DynamicFilterModel.DynamicFilterContainer dynamicFilterContainer = (DynamicFilterModel.DynamicFilterContainer) data.getModel2();
-                view.setDynamicFilterAtrribute(dynamicFilterContainer.body().getData());
+                view.setDynamicFilterAtrribute(dynamicFilterContainer.body().getData(), index);
                 break;
             case DiscoveryListener.BROWSE_PRODUCT:
                 browseProductModel = (BrowseProductModel) data.getModel2().body();
@@ -236,7 +235,7 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                         } else {
                             view.setupWithTabViewPager();
                         }
-                        view.setCurrentTabs(browseProductActivityModel.getTab());
+                        view.setCurrentTabs(browseProductActivityModel.getActiveTab());
                     } else if (source.equals(DynamicFilterPresenter.HOT_PRODUCT)) {
                         visibleTab.put(BrowserSectionsPagerAdapter.PRODUK, view.VISIBLE_ON);
                         view.initSectionAdapter(visibleTab);
@@ -256,6 +255,10 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                             view.setCurrentTabs(0);
                         }
                     }
+                    if(view.getActivityPresenter().checkHasFilterAttrIsNull(index)) {
+                        discoveryInteractor.getDynamicAttribute(view.getContext(), DynamicFilterPresenter.SEARCH_PRODUCT, browseProductActivityModel.getDepartmentId());
+                    }
+                    view.setLoadingProgress(false);
                 } else {
                     view.redirectUrl(browseProductModel);
                 }
@@ -264,6 +267,5 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                 Log.d("MNORMANSYAH", "masuk sini gan!!");
                 break;
         }
-        view.setLoadingProgress(false);
     }
 }

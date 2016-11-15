@@ -148,15 +148,15 @@ public class TicketDataBinder extends DataBinder<TicketDataBinder.ViewHolder> {
             }
 
             @Override
-            public View.OnClickListener onImageClicked(final int position, final ImageUpload imageUpload) {
+            public View.OnClickListener onImageClicked(final int position, final ArrayList<ImageUpload> imageUpload) {
                 return new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(context, PreviewProductImage.class);
                         Bundle bundle = new Bundle();
                         ArrayList<String> listImage = new ArrayList<>();
-                        for (int i = 0; i < list.get(position).getTicketDetailAttachment().size(); i++) {
-                            listImage.add(list.get(position).getTicketDetailAttachment().get(i).getImgLink());
+                        for (int i = 0; i < imageUpload.size(); i++) {
+                            listImage.add(imageUpload.get(i).getPicSrc());
                         }
                         bundle.putStringArrayList("fileloc", listImage);
                         bundle.putInt("img_pos", position);

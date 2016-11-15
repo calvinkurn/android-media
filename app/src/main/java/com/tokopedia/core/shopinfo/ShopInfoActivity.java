@@ -34,6 +34,7 @@ import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.ManageShop;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.inboxmessage.activity.SendMessageActivity;
 import com.tokopedia.core.inboxmessage.fragment.SendMessageFragment;
@@ -110,6 +111,11 @@ public class ShopInfoActivity extends TActivity {
             });
         }
     };
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_SHOP;
+    }
 
     public static Bundle createBundle(String id, String domain) {
         Bundle bundle = new Bundle();
@@ -380,6 +386,11 @@ public class ShopInfoActivity extends TActivity {
             ImageHandler.loadImageCircle2(this, holder.shopAvatar, shopModel.info.shopAvatar);
             if (!shopModel.info.shopCover.isEmpty()) {
                 holder.goldShop.setVisibility(View.VISIBLE);
+                if(shopModel.info.shopIsOfficial == 1){
+                    holder.goldShop.setImageResource(R.drawable.ic_badge_official);
+                } else {
+                    holder.goldShop.setImageResource(R.drawable.ic_shop_gold);
+                }
                 ImageHandler.loadImageCover2(holder.banner, shopModel.info.shopCover);
             } else
                 holder.infoShop.setBackgroundResource(0);
@@ -416,7 +427,11 @@ public class ShopInfoActivity extends TActivity {
         holder.location.setText(shopModel.info.shopLocation);
         holder.location.setVisibility(View.VISIBLE);
         holder.collapsingToolbarLayout.setTitle(" ");
-        showGoldCover();
+        if(shopModel.info.shopIsOfficial==1){
+            showOfficialCover();
+        } else {
+            showGoldCover();
+        }
         showShopAction();
         setShopAlreadyFavorite();
         showNotice();
@@ -465,6 +480,18 @@ public class ShopInfoActivity extends TActivity {
             holder.infoShop.setBackgroundResource(0);
         } else {
             holder.goldShop.setVisibility(View.VISIBLE);
+            ImageHandler.loadImageCover2(holder.banner, shopModel.info.shopCover);
+            holder.infoShop.setBackgroundResource(R.drawable.cover_shader);
+        }
+    }
+
+    private void showOfficialCover() {
+        if (shopModel.info.shopIsOfficial == 0) {
+            holder.goldShop.setVisibility(View.INVISIBLE);
+            holder.infoShop.setBackgroundResource(0);
+        } else {
+            holder.goldShop.setVisibility(View.VISIBLE);
+            holder.goldShop.setImageResource(R.drawable.ic_badge_official);
             ImageHandler.loadImageCover2(holder.banner, shopModel.info.shopCover);
             holder.infoShop.setBackgroundResource(R.drawable.cover_shader);
         }

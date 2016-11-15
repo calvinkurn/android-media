@@ -12,6 +12,7 @@ import android.view.Menu;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.gcm.NotificationModHandler;
@@ -43,6 +44,11 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
     DownloadResultReceiver mReceiver;
 
     FragmentManager fragmentManager;
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_TX_SHOP_TRANSACTION_SELLING_LIST;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

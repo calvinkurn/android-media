@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.inbox.contactus.ContactUsConstant;
 import com.tokopedia.inbox.contactus.fragment.ContactUsCategoryFragment;
@@ -46,6 +47,11 @@ public class ContactUsActivity extends BasePresenterActivity implements
     @Override
     protected void initialPresenter() {
 
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_CONTACT_US;
     }
 
     @Override

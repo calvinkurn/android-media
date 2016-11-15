@@ -30,8 +30,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.discovery.activity.BrowseProductActivity;
-import com.tokopedia.core.home.ParentIndexHome;
-import com.tokopedia.core.home.favorite.view.FragmentIndexFavoriteV2;
+import com.tokopedia.core.home.SimpleHomeActivity;
 import com.tokopedia.core.inboxmessage.activity.SendMessageActivity;
 import com.tokopedia.core.myproduct.ProductActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -642,11 +641,20 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(context, ParentIndexHome.class);
-                        intent.putExtra(FragmentIndexFavoriteV2.WISHLISH_EXTRA_KEY, true);
-                        intent.putExtra(ParentIndexHome.EXTRA_INIT_FRAGMENT,
-                                ParentIndexHome.INIT_STATE_FRAGMENT_FAVORITE);
+
+//                        Intent intent = new Intent(context, ParentIndexHome.class);
+//                        intent.putExtra(FragmentIndexFavoriteV2.WISHLISH_EXTRA_KEY, true);
+//                        intent.putExtra(ParentIndexHome.EXTRA_INIT_FRAGMENT,
+//                                ParentIndexHome.INIT_STATE_FRAGMENT_FAVORITE);
+//                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                        Intent intent = new Intent(context, SimpleHomeActivity.class);
+                        intent.putExtra(
+                                SimpleHomeActivity.FRAGMENT_TYPE,
+                                SimpleHomeActivity.WISHLIST_FRAGMENT);
+
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
                         viewListener.navigateToActivity(intent);
                         viewListener.closeView();
                     }

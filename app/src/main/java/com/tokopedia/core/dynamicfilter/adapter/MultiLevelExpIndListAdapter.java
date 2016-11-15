@@ -12,17 +12,17 @@ import java.util.List;
  * Initially all elements in the list are single items. When you want to collapse an item and all its
  * descendants call {@link #collapseGroup(int)}. When you want to exapand a group call {@link #expandGroup(int)}.
  * Note that groups inside other groups are kept collapsed.
- *
+ * <p>
  * To collapse an item and all its descendants or expand a group at a certain position
  * you can call {@link #toggleGroup(int)}.
- *
+ * <p>
  * To preserve state (i.e. which items are collapsed) when a configuration change happens (e.g. screen rotation)
  * you should call {@link #saveGroups()} inside onSaveInstanceState and save the returned value into
  * the Bundle. When the activity/fragment is recreated you can call {@link #restoreGroups(List)}
  * to restore the previous state. The actual data (e.g. the comments in the sample app) is not preserved,
  * so you should save it yourself with a static field or implementing Parcelable or using setRetainInstance(true)
  * or saving data to a file or something like that.
- *
+ * <p>
  * To see an example of how to extend this abstract class see MyAdapter.java in sampleapp.
  */
 public abstract class MultiLevelExpIndListAdapter extends RecyclerView.Adapter {
@@ -43,7 +43,6 @@ public abstract class MultiLevelExpIndListAdapter extends RecyclerView.Adapter {
      * e.g.: if the user click on item 6 then mGroups(item(6)) = {all items/groups below item 6}
      */
     private HashMap<ExpIndData, List<? extends ExpIndData>> mGroups;
-
 
 
     /**
@@ -72,7 +71,7 @@ public abstract class MultiLevelExpIndListAdapter extends RecyclerView.Adapter {
         /**
          * @param groupSize Set the number of items in the group.
          *                  Note: groups contained in other groups are counted just as one, not
-         *                        as the number of items that they contain.
+         *                  as the number of items that they contain.
          */
         void setGroupSize(int groupSize);
 
@@ -133,15 +132,15 @@ public abstract class MultiLevelExpIndListAdapter extends RecyclerView.Adapter {
             notifyItemInserted(position);
     }
 
-    private void initCollapse(List<? extends ExpIndData> datas){
+    private void initCollapse(List<? extends ExpIndData> datas) {
         for (ExpIndData d : datas) {
-            if(!d.getChildren().isEmpty()) {
+            if (!d.getChildren().isEmpty()) {
                 collapseGroup(getDataIndex(d));
             }
         }
     }
 
-    private int getDataIndex(ExpIndData indData){
+    private int getDataIndex(ExpIndData indData) {
         return mData.indexOf(indData);
     }
 
@@ -161,6 +160,7 @@ public abstract class MultiLevelExpIndListAdapter extends RecyclerView.Adapter {
     /**
      * Remove an item or group.If it's a group it removes also all the
      * items and groups that it contains.
+     *
      * @param item The item or group to be removed.
      * @return true if this adapter was modified by this operation, false otherwise.
      */
@@ -172,7 +172,8 @@ public abstract class MultiLevelExpIndListAdapter extends RecyclerView.Adapter {
      * Remove an item or group. If it's a group it removes also all the
      * items and groups that it contains if expandGroupBeforeRemoval is false.
      * If it's true the group is expanded and then only the item is removed.
-     * @param item The item or group to be removed.
+     *
+     * @param item                     The item or group to be removed.
      * @param expandGroupBeforeRemoval True to expand the group before removing the item.
      *                                 False to remove also all the items and groups contained if
      *                                 the item to be removed is a group.
@@ -206,6 +207,7 @@ public abstract class MultiLevelExpIndListAdapter extends RecyclerView.Adapter {
 
     /**
      * Expand the group at position "posititon".
+     *
      * @param position The position (range [0,n-1]) of the group that has to be expanded
      */
     public void expandGroup(int position) {
@@ -227,6 +229,7 @@ public abstract class MultiLevelExpIndListAdapter extends RecyclerView.Adapter {
 
     /**
      * Collapse the descendants of the item at position "position".
+     *
      * @param position The position (range [0,n-1]) of the element that has to be collapsed
      */
     public void collapseGroup(int position) {
@@ -266,10 +269,11 @@ public abstract class MultiLevelExpIndListAdapter extends RecyclerView.Adapter {
 
     /**
      * Collpase/expand the item at position "position"
+     *
      * @param position The position (range [0,n-1]) of the element that has to be collapsed/expanded
      */
     public void toggleGroup(int position) {
-        if (getItemAt(position).isGroup()){
+        if (getItemAt(position).isGroup()) {
             expandGroup(position);
         } else {
             collapseGroup(position);
@@ -280,39 +284,50 @@ public abstract class MultiLevelExpIndListAdapter extends RecyclerView.Adapter {
      * In onSaveInstanceState, you should save the groups' indices returned by this function
      * in the Bundle so that later they can be restored using {@link #restoreGroups(List)}.
      * saveGroups() expand all the groups so you should call this function only inside onSaveInstanceState.
+     *
      * @return A list of indices of items that are groups.
      */
     public ArrayList<Integer> saveGroups() {
-        boolean notify = mNotifyOnChange;
-        mNotifyOnChange = false;
         ArrayList<Integer> groupsIndices = new ArrayList<Integer>();
-        for (int i = 0; i < mData.size(); i++) {
-            if (mData.get(i).isGroup()) {
-                expandGroup(i);
-                groupsIndices.add(i);
+        try {
+            boolean notify = mNotifyOnChange;
+            mNotifyOnChange = false;
+            for (int i = 0; i < mData.size(); i++) {
+                if (mData.get(i).isGroup()) {
+                    expandGroup(i);
+                    groupsIndices.add(i);
+                }
             }
+            mNotifyOnChange = notify;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            return groupsIndices;
         }
-        mNotifyOnChange = notify;
-        return groupsIndices;
     }
 
     /**
      * Call this function to restore the groups that were collapsed before the configuration change
      * happened (e.g. screen rotation). See {@link #saveGroups()}.
+     *
      * @param groupsNum The list of indices of items that are groups and should be collapsed.
      */
     public void restoreGroups(List<Integer> groupsNum) {
-        if (groupsNum == null)
-            return;
-        boolean notify = mNotifyOnChange;
-        mNotifyOnChange = false;
-        for (int i = groupsNum.size() - 1; i >= 0; i--) {
-            collapseGroup(groupsNum.get(i));
+        try {
+            if (groupsNum == null)
+                return;
+            boolean notify = mNotifyOnChange;
+            mNotifyOnChange = false;
+            for (int i = groupsNum.size() - 1; i >= 0; i--) {
+                collapseGroup(groupsNum.get(i));
+            }
+            mNotifyOnChange = notify;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        mNotifyOnChange = notify;
     }
 
-    public List<ExpIndData> getData(){
+    public List<ExpIndData> getData() {
         return mData;
     }
 }

@@ -28,7 +28,7 @@
             android:isScrollContainer="false"
             android:padding="10dp"
             android:scrollbars="none"
-            tools:context="com.tokopedia.tkpd.addtocart.activity.AddToCartActivity">
+            tools:context="com.tokopedia.core.addtocart.activity.AddToCartActivity">
 
             <LinearLayout
                 android:id="@+id/container"

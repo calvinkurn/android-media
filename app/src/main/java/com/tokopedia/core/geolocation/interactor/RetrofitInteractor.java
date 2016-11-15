@@ -1,5 +1,7 @@
 package com.tokopedia.core.geolocation.interactor;
 
+import android.content.Context;
+
 import com.tokopedia.core.geolocation.model.LocationPass;
 
 /**
@@ -7,7 +9,7 @@ import com.tokopedia.core.geolocation.model.LocationPass;
  */
 public interface RetrofitInteractor {
 
-    void generateAddress(GenerateAddressListener listener);
+    void generateAddress(Context context, GenerateAddressListener listener);
 
     void unSubscribe();
 

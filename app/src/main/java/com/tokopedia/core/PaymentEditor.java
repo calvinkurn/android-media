@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.customadapter.ListViewPaymentEditor;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -33,6 +34,11 @@ public class PaymentEditor extends TActivity {
     private ListViewPaymentEditor PaymentAdapter;
     private TkpdProgressDialog mProgressDialog;
     private View rootView;
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_CONFIG_S_PAYMENT;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

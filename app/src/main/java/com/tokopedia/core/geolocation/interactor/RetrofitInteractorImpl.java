@@ -1,9 +1,11 @@
 package com.tokopedia.core.geolocation.interactor;
 
+import android.content.Context;
 import android.util.Log;
 
-import com.tokopedia.core.database.manager.LatLngCacheManager;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.geolocation.model.LocationPass;
+import com.tokopedia.core.geolocation.presenter.GoogleMapPresenterImpl;
 
 import java.util.concurrent.TimeUnit;
 
@@ -13,6 +15,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+
+import static com.tokopedia.core.database.model.LatLngModelDB_Table.locationID;
 
 /**
  * Created by hangnadi on 1/31/16.
@@ -27,25 +31,22 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     }
 
     @Override
-    public void generateAddress(final GenerateAddressListener listener) {
+    public void generateAddress(final Context context, final GenerateAddressListener listener) {
 
         listener.onPreConnection();
 
-        LatLngCacheManager cacheManager = new LatLngCacheManager();
+        LocalCacheHandler cache = new LocalCacheHandler(context, GoogleMapPresenterImpl.CACHE_LATITUDE_LONGITUDE);
 
-        compositeSubscription.add(Observable.just(cacheManager)
+        compositeSubscription.add(Observable.just(cache)
                 .unsubscribeOn(Schedulers.newThread())
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<LatLngCacheManager, LocationPass>() {
+                .map(new Func1<LocalCacheHandler, LocationPass>() {
                     @Override
-                    public LocationPass call(LatLngCacheManager cacheManager) {
+                    public LocationPass call(LocalCacheHandler cache) {
 
-                        String locationID = String.valueOf(LatLngCacheManager.CountTable());
-                        cacheManager.getCache(locationID);
-
-                        double latitude = cacheManager.getLatitude();
-                        double longitude = cacheManager.getLongitude();
+                        double latitude = Double.parseDouble(cache.getString(GoogleMapPresenterImpl.CACHE_LATITUDE));
+                        double longitude = Double.parseDouble(cache.getString(GoogleMapPresenterImpl.CACHE_LONGITUDE));
 
                         return listener.convertData(latitude, longitude);
                     }

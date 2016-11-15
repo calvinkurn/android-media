@@ -2,7 +2,7 @@ package com.tokopedia.core.payment.interactor;
 
 import android.content.Context;
 
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.R;
 import com.tokopedia.core.network.apiservices.transaction.TXActService;
 import com.tokopedia.core.network.apiservices.transaction.TXCartActService;
 import com.tokopedia.core.network.apiservices.transaction.TXCartService;
@@ -362,12 +362,7 @@ public class PaymentNetInteractorImpl implements PaymentNetInteractor {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                NetworkErrorHelper.showDialog(context, new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        checkVoucher(context, params, listener);
-                    }
-                });
+                listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
             }
 
             @Override
@@ -569,12 +564,7 @@ public class PaymentNetInteractorImpl implements PaymentNetInteractor {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                NetworkErrorHelper.showDialog(context, new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        updateInsurance(context, params, listener);
-                    }
-                });
+                listener.onError(context.getString(R.string.default_request_error_unknown));
             }
 
             @Override
@@ -661,12 +651,7 @@ public class PaymentNetInteractorImpl implements PaymentNetInteractor {
 
             @Override
             public void onError(Throwable e) {
-                NetworkErrorHelper.showDialog(context, new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        updateCart(context, params, listener);
-                    }
-                });
+                listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
             }
 
             @Override
@@ -721,12 +706,7 @@ public class PaymentNetInteractorImpl implements PaymentNetInteractor {
 
             @Override
             public void onError(Throwable e) {
-                NetworkErrorHelper.showDialog(context, new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        cancelCart(context, params, listener);
-                    }
-                });
+                listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
             }
 
             @Override
@@ -814,12 +794,7 @@ public class PaymentNetInteractorImpl implements PaymentNetInteractor {
 
             @Override
             public void onError(Throwable e) {
-                NetworkErrorHelper.showDialog(context, new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        cancelProduct(context, params, listener);
-                    }
-                });
+                listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
             }
 
             @Override
@@ -906,12 +881,7 @@ public class PaymentNetInteractorImpl implements PaymentNetInteractor {
 
             @Override
             public void onError(Throwable e) {
-                NetworkErrorHelper.showDialog(context, new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        editAddress(context, params, listener);
-                    }
-                });
+                listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
             }
 
             @Override
