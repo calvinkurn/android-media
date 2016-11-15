@@ -19,7 +19,17 @@ import com.tokopedia.core.inboxmessage.activity.SendMessageActivity;
 import com.tokopedia.core.inboxmessage.fragment.SendMessageFragment;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.loyaltysystem.model.LoyaltyNotification;
+import com.tokopedia.core.rescenter.create.activity.CreateResCenterActivity;
+import com.tokopedia.core.rescenter.detail.activity.ResCenterActivity;
+import com.tokopedia.core.rescenter.detail.model.passdata.ActivityParamenterPassData;
+import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
+import com.tokopedia.core.rescenter.onboarding.FreeReturnOnboardingActivity;
 import com.tokopedia.core.router.TransactionRouter;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.tracking.activity.TrackingActivity;
+import com.tokopedia.core.util.AppUtils;
+import com.tokopedia.core.util.UploadImageHandler;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.transaction.purchase.activity.TxDetailActivity;
 import com.tokopedia.transaction.purchase.activity.TxHistoryActivity;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
@@ -29,16 +39,6 @@ import com.tokopedia.transaction.purchase.model.response.txlist.OrderButton;
 import com.tokopedia.transaction.purchase.model.response.txlist.OrderData;
 import com.tokopedia.transaction.purchase.model.response.txlist.OrderShop;
 import com.tokopedia.transaction.purchase.receiver.TxListUIReceiver;
-import com.tokopedia.core.rescenter.create.activity.CreateResCenterActivity;
-import com.tokopedia.core.rescenter.detail.activity.ResCenterActivity;
-import com.tokopedia.core.rescenter.detail.model.passdata.ActivityParamenterPassData;
-import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
-import com.tokopedia.core.rescenter.onboarding.FreeReturnOnboardingActivity;
-import com.tokopedia.core.tracking.activity.TrackingActivity;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.util.AppUtils;
-import com.tokopedia.core.util.UploadImageHandler;
-import com.tokopedia.core.var.TkpdState;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -314,7 +314,14 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
                         confirmPurchase(context, dialog, orderData);
                     }
                 });
+        builder.setNeutralButton(R.string.title_cancel,
+                new DialogInterface.OnClickListener() {
 
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
         return builder.create();
     }
 

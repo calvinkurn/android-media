@@ -520,7 +520,7 @@ public class TxListPresenterImpl implements TxListPresenter {
                                     orderData.getOrderDetail().getDetailOrderId()), CREATE_RESCENTER_REQUEST_CODE);
                     }
                 });
-        builder.setPositiveButton(context.getString(R.string.title_ok),
+        builder.setPositiveButton(context.getString(R.string.title_finish),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(final DialogInterface dialog, int which) {
@@ -528,6 +528,14 @@ public class TxListPresenterImpl implements TxListPresenter {
                     }
                 });
 
+        builder.setNeutralButton(R.string.title_cancel,
+                new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
         return builder.create();
     }
 
