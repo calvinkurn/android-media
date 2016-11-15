@@ -438,6 +438,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
 
 
     public void sendQuery(String query) {
+        breadcrumbs = null;
         saveQueryCache(query);
         resetBrowseProductActivityModel();
         browseProductActivityModel.setQ(query);

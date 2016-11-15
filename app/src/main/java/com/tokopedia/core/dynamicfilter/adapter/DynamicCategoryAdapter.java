@@ -1,5 +1,6 @@
 package com.tokopedia.core.dynamicfilter.adapter;
 
+import android.content.Context;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 /**
  * Created by Tokopedia on 9/5/2016.
  * Modified by erry
@@ -55,15 +57,19 @@ public class DynamicCategoryAdapter extends MultiLevelExpIndListAdapter {
         parentViewHolder.dynamicParentViewHolder.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    dynamicFilterView.putSelectedFilter(BrowseApi.SC, getSelectedIds());
-                    dynamicFilterView.saveCheckedPosition(dynamicObject.getKey(), true);
-                } else {
-                    dynamicFilterView.removeCheckedPosition(dynamicObject.getKey());
-                    if (getSelectedIds().isEmpty()) {
-                        dynamicFilterView.removeSelecfedFilter(BrowseApi.SC);
+                parentViewHolder.getDynamicObject().setChecked(isChecked);
+                Context context = parentViewHolder.itemView.getContext();
+                if (context != null && context instanceof DynamicFilterView) {
+                    if (isChecked) {
+                        ((DynamicFilterView) context).putSelectedFilter(BrowseApi.SC, getSelectedIds());
+                        ((DynamicFilterView) context).saveCheckedPosition(dynamicObject.getKey(), true);
                     } else {
-                        dynamicFilterView.putSelectedFilter(BrowseApi.SC, getSelectedIds());
+                        ((DynamicFilterView) context).removeCheckedPosition(dynamicObject.getKey());
+                        if (getSelectedIds().isEmpty()) {
+                            ((DynamicFilterView) context).removeSelecfedFilter(BrowseApi.SC);
+                        } else {
+                            ((DynamicFilterView) context).putSelectedFilter(BrowseApi.SC, getSelectedIds());
+                        }
                     }
                 }
             }
@@ -117,7 +123,7 @@ public class DynamicCategoryAdapter extends MultiLevelExpIndListAdapter {
     }
 
     private String getSelectedIds() {
-        StringBuilder buffer = new StringBuilder();
+        StringBuffer buffer = new StringBuffer();
         for (ExpIndData data : getData()) {
             DynamicObject object = (DynamicObject) data;
             if (object.isChecked()) {
