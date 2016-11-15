@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.transaction.cart.adapter.ShipmentCartAdapter;
+import com.tokopedia.transaction.cart.adapter.ShipmentPackageCartAdapter;
+import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentData;
 import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartData;
 
 
@@ -17,13 +20,15 @@ public interface IShipmentCartView {
      *
      * @param data hasil dari network
      */
-    void renderShipmentCart(@NonNull ShipmentCartData data);
+    void renderShipmentCart(@NonNull CalculateShipmentData data);
 
     void renderSpinnerShipment();
 
     void renderCostShipment();
 
     void renderErrorCalculateShipment(String error);
+
+    void renderErrorEditShipment(String error);
 
     void showLoading();
 
@@ -38,4 +43,10 @@ public interface IShipmentCartView {
     void navigateToChooseAddress();
 
     void navigateToAddAddress();
+
+    void navigateToCart(String message);
+
+    ShipmentCartAdapter getShipmentAdapter();
+
+    ShipmentPackageCartAdapter getShipmentPackageAdapter();
 }

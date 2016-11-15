@@ -6,12 +6,16 @@ import com.tokopedia.transaction.cart.interactor.ICartDataInteractor;
 import com.tokopedia.transaction.cart.listener.IShipmentCartView;
 import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentData;
 import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentWrapper;
+import com.tokopedia.transaction.cart.model.calculateshipment.Shipment;
+import com.tokopedia.transaction.cart.model.calculateshipment.ShipmentPackage;
 import com.tokopedia.transaction.cart.model.savelocation.LocationData;
 import com.tokopedia.transaction.cart.model.savelocation.SaveLocationWrapper;
+import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartData;
 import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartWrapper;
 
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 import rx.Subscriber;
 
@@ -80,7 +84,12 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
 
                 @Override
                 public void onNext(CalculateShipmentData data) {
-
+                    view.renderShipmentCart(data);
+                    view.getShipmentAdapter().setAdapterData((ArrayList<Shipment>) data.getShipment());
+                    if (data.getShipment().size() > 0){
+                        view.getShipmentPackageAdapter().setAdapterData((ArrayList<ShipmentPackage>)
+                                data.getShipment().get(0).getShipmentPackage());
+                    }
                 }
             });
         }
@@ -88,7 +97,29 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
 
     @Override
     public void processEditShipmentCart(ShipmentCartWrapper wrapper) {
+        if (this.view != null) {
+            this.view.showLoading();
+            this.interactor.editShipmentCart(wrapper, new Subscriber<ShipmentCartData>() {
+                @Override
+                public void onCompleted() {
+                }
 
+                @Override
+                public void onError(Throwable e) {
+                    view.renderErrorEditShipment(e.getMessage());
+                }
+
+                @Override
+                public void onNext(ShipmentCartData shipmentCartData) {
+                    view.dismisLoading();
+                    if (shipmentCartData.getStatus().equalsIgnoreCase("1")){
+                        view.navigateToCart(shipmentCartData.getMessage());
+                    }else {
+                        view.renderErrorEditShipment(shipmentCartData.getMessage());
+                    }
+                }
+            });
+        }
     }
 
     @Override
