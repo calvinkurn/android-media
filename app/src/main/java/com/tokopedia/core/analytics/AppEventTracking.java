@@ -14,6 +14,9 @@ public interface AppEventTracking {
     String DEFAULT_CHANNEL = "Email";
     String DEFAULT_EVENT = "Event";
 
+    interface GTMKey{
+        String ACCOUNTS_TYPE = "ACCOUNTS_TYPE";
+    }
 
     interface GTMCacheKey {
         String REGISTER_TYPE = "REGISTER_TYPE";
@@ -82,6 +85,9 @@ public interface AppEventTracking {
         String ADD_PRODUCT = "clickAddProduct";
         String SALES = "clickSales";
         String NAVIGATION_DRAWER = "clickNavigationDrawer";
+        String LOGIN_ERROR = "loginError";
+        String REGISTER_LOGIN = "registerLogin";
+        String LOGIN_CLICK = "clickLogin";
     }
 
     interface Category {
@@ -146,6 +152,9 @@ public interface AppEventTracking {
         String TALK_SUCCESS = "Talk Success";
         String PRICE_ALERT_SUCCESS = "Price Alert Success";
         String REPORT_SUCCESS = "Report Success";
+        String LOGIN = "Login Success";
+        String LOGIN_ERROR = "Login Error";
+        String REGISTER = "Register";
     }
 
     interface EventLabel {
@@ -249,6 +258,8 @@ public interface AppEventTracking {
         String PROFILE = "Profile";
         String SHOP_EN = "Shop";
 
+        String REGISTER = "Register";
+        String CTA = "CTA";
     }
 
     interface SOCIAL_MEDIA {

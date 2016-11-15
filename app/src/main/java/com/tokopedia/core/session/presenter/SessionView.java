@@ -41,14 +41,9 @@ public interface SessionView {
 
     void moveToNewRegisterNext(String email, String password, boolean isAutoVerify);
 
-    @Deprecated
-    void moveToRegisterNext(RegisterViewModel model);
+    void moveToRegisterPassPhone(CreatePasswordModel model, List<String> createPasswordList, Bundle data);
 
-    void moveToRegisterThird(RegisterViewModel model, String type);
-
-    void moveToRegisterPassPhone(CreatePasswordModel model, List<String> createPasswordList);
-
-    void moveToActivationResend(String email);
+    void moveToActivationResend(String email, Bundle bundle);
 
     void moveToRegister();
 

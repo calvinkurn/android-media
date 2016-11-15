@@ -18,6 +18,7 @@ import com.tokopedia.core.session.api.RegisterApi;
 import com.tokopedia.core.session.model.CreatePasswordModel;
 import com.tokopedia.core.session.model.network.ValidateEmailData;
 import com.tokopedia.core.session.service.RegisterService;
+import com.tokopedia.core.util.AppEventTracking;
 
 import org.parceler.Parcels;
 
@@ -82,118 +83,20 @@ public class RegisterPassPhoneImpl extends RegisterThird implements DatePickerUt
     }
 
     @Override
-    public void register(Context context) {
+    public void register(Context context, Bundle bundle) {
         if (context != null && context instanceof SessionView) {
             view.showProgress(true);
             boolean isNeedLogin = true;
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(DownloadService.CREATE_PASSWORD_MODEL_KEY, Parcels.wrap(createPassModel));
-            bundle.putBoolean(DownloadService.IS_NEED_LOGIN, isNeedLogin);
-            ((SessionView) context).sendDataFromInternet(DownloadService.REGISTER_PASS_PHONE, bundle);
-        }
-    }
 
-    @Override
-    public List<String> getEmailListOfAccountsUserHasLoggedInto(Context context) {
-        Set<String> listOfAddresses = new LinkedHashSet<>();
-        Pattern emailPattern = Patterns.EMAIL_ADDRESS; // API level 8+
-        Account[] accounts = AccountManager.get(context).getAccounts();
-        if (accounts != null) {
-            for (Account account : accounts) {
-                if (emailPattern.matcher(account.name).matches()) {
-                    listOfAddresses.add(account.name);
-                }
+            Bundle data = new Bundle();
+            if (bundle.getInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE, 0) != 0){
+                data.putInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE,
+                        bundle.getInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE, 0));
             }
+            data.putParcelable(DownloadService.CREATE_PASSWORD_MODEL_KEY, Parcels.wrap(createPassModel));
+            data.putBoolean(DownloadService.IS_NEED_LOGIN, isNeedLogin);
+            ((SessionView) context).sendDataFromInternet(DownloadService.REGISTER_PASS_PHONE, data);
         }
-        return new ArrayList<>(listOfAddresses);
-    }
-
-    @Override
-    public boolean isEmailAddressFromDevice(Context context) {
-        List<String> list = getEmailListOfAccountsUserHasLoggedInto(context);
-        boolean result = false;
-        if (list.size() > 0) {
-            A:
-            for (String email : list) {
-                if (email.equals(createPassModel.getEmail())) {
-                    result = true;
-                    break A;
-                }
-            }
-        }
-        return result;
-    }
-
-    @Override
-    public void validateEmail(final Context context, String email) {
-        NetworkCalculator networkCalculator = new NetworkCalculator(NetworkConfig.GET, context, TkpdBaseURL.User.URL_REGISTER + RegisterApi.VALIDATE_EMAIL_PL)
-                .setIdentity()
-                .addParam(RegisterApi.USER_EMAIL, email)// DEMO_EMAIL
-                .compileAllParam()
-                .finish();
-        compositeSubscription.add(
-                registerService.getApi().validateEmail(
-                        NetworkCalculator.getContentMd5(networkCalculator),
-                        NetworkCalculator.getDate(networkCalculator),
-                        NetworkCalculator.getAuthorization(networkCalculator),
-                        NetworkCalculator.getxMethod(networkCalculator),
-                        NetworkCalculator.getUserId(context),
-                        NetworkCalculator.getDeviceId(context),
-                        NetworkCalculator.getHash(networkCalculator),
-                        NetworkCalculator.getDeviceTime(networkCalculator),
-                        email // DEMO_EMAIL
-                ).subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.io())
-                        .subscribe(
-                                new Subscriber<ValidateEmailData>() {
-                                    @Override
-                                    public void onCompleted() {
-                                        Log.i(TAG, getMessageTAG() + "onCompleted()");
-                                    }
-
-                                    @Override
-                                    public void onError(Throwable e) {
-                                        Log.e(TAG, getMessageTAG() + e.getLocalizedMessage());
-//                                        view.showUnknownError(e);
-                                        view.showProgress(false);
-                                        view.enView(false);
-                                        //[BUGFIX] AN-1500
-                                        // [Register v2] Still directed to register form when
-                                        // using already registered Facebook
-                                        if (context != null && context instanceof SessionView) {
-                                            ((SessionView) context).prevFragment();
-                                        }
-                                        //[BUGFIX] AN-1500
-                                        // [Register v2] Still directed to register form when
-                                        // using already registered Facebook
-                                    }
-
-                                    @Override
-                                    public void onNext(ValidateEmailData validateEmailData) {
-                                        view.showProgress(false);
-                                        view.enView(true);
-                                        isValidateEmail = true;
-                                        if (Integer.parseInt(validateEmailData.getData().getEmail_status()) == ValidateEmailData.Data.EMAIL_STATUS_REGISTERED) {
-                                            view.showErrorValidateEmail();
-                                            //[BUGFIX] AN-1500
-                                            // [Register v2] Still directed to register form when
-                                            // using already registered Facebook
-                                            if (context != null && context instanceof SessionView) {
-                                                ((SessionView) context).prevFragment();
-                                            }
-                                            //[BUGFIX] AN-1500
-                                            // [Register v2] Still directed to register form when
-                                            // using already registered Facebooker
-                                        } else {
-                                            //[START] now can do a lot of things
-                                            view.enView(true);
-                                            //[END] now can do a lot of things
-                                        }
-                                    }
-                                }
-                        )
-        );
     }
 
     @Override
@@ -214,7 +117,7 @@ public class RegisterPassPhoneImpl extends RegisterThird implements DatePickerUt
 
     @Override
     public String getMessageTAG() {
-        return getMessageTAG(RegisterThirdImpl.class);
+        return "RegisterPassPhone";
     }
 
     @Override
@@ -245,7 +148,7 @@ public class RegisterPassPhoneImpl extends RegisterThird implements DatePickerUt
                     createPassModel.getBdayMonth(), createPassModel.getBdayDay());
         }
         view.setData(RegisterNewImpl.convertToMap(BIRTHDAY,
-                RegisterImpl.RegisterUtil.formatDateText(createPassModel.getBdayDay(),
+                RegisterNewImpl.RegisterUtil.formatDateText(createPassModel.getBdayDay(),
                         createPassModel.getBdayMonth(), createPassModel.getBdayYear())));
 
         view.setAllowedField();
@@ -331,7 +234,7 @@ public class RegisterPassPhoneImpl extends RegisterThird implements DatePickerUt
         createPassModel.setBdayMonth(month);
         createPassModel.setBdayDay(dayOfMonth);
         view.setData(RegisterNewImpl.convertToMap(BIRTHDAY,
-                RegisterImpl.RegisterUtil.formatDateText(
+                RegisterNewImpl.RegisterUtil.formatDateText(
                         createPassModel.getBdayDay(), createPassModel.getBdayMonth(),
                         createPassModel.getBdayYear())));
     }

@@ -61,7 +61,5 @@ public abstract class RegisterNew extends BaseImpl<RegisterNewView>{
 
     public abstract void unSubscribeFacade();
 
-    public abstract void initCacheGTM(Context context);
-
-    public abstract void storeCacheGTM(String key, String value);
+    public abstract void sendGTMRegisterError(Context context, String label);
 }

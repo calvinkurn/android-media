@@ -131,7 +131,7 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
     public void showErrorValidateEmail() {
 //        showProgress(false);
         showErrorValidateEmail(getString(R.string.alert_email_address_is_already_registered));
-        sendGTMRegisterError(AppEventTracking.EventLabel.EMAIL);
+        presenter.sendGTMRegisterError(getActivity(), AppEventTracking.EventLabel.EMAIL);
     }
 
     @Override
@@ -141,7 +141,7 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
         snackbar.show();
         enableDisableAllFieldsForEmailValidationForm(true);
 
-        sendGTMRegisterError(AppEventTracking.EventLabel.EMAIL);
+        presenter.sendGTMRegisterError(getActivity(), AppEventTracking.EventLabel.EMAIL);
     }
 
     @Override
@@ -243,9 +243,6 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
         showProgress(true);
         presenter.loginFacebook(getActivity());
         CommonUtils.dumper("LocalTag : TYPE : FACEBOOK");
-        presenter.storeCacheGTM(AppEventTracking.GTMCacheKey.REGISTER_TYPE,
-                AppEventTracking.GTMCacheValue.FACEBOOK
-                );
     }
 
 //    @OnClick(R2.id.gplus_login)
@@ -260,9 +257,6 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
     @Override
     public void startLoginWithGoogle(String type, LoginGoogleModel loginGoogleModel) {
         presenter.startLoginWithGoogle(getActivity(), type, loginGoogleModel);
-        presenter.storeCacheGTM(AppEventTracking.GTMCacheKey.REGISTER_TYPE,
-                AppEventTracking.GTMCacheValue.GMAIL
-        );
     }
 
     /**
@@ -290,12 +284,12 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
             registerPassword.setPasswordError(getString(R.string.error_field_required));
             focusView = registerPassword;
             cancel = true;
-            sendGTMRegisterError(AppEventTracking.EventLabel.PASSWORD);
+            presenter.sendGTMRegisterError(getActivity(), AppEventTracking.EventLabel.PASSWORD);
         } else if (mPassword.length() < PASSWORD_MINIMUM_LENGTH) {
             registerPassword.setPasswordError(getString(R.string.error_invalid_password));
             focusView = registerPassword;
             cancel = true;
-            sendGTMRegisterError(AppEventTracking.EventLabel.PASSWORD);
+            presenter.sendGTMRegisterError(getActivity(), AppEventTracking.EventLabel.PASSWORD);
         }
 
         // Check for a valid email address.
@@ -303,21 +297,18 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
             registerName.setError(getString(R.string.error_field_required));
             focusView = registerName;
             cancel = true;
-            sendGTMRegisterError(AppEventTracking.EventLabel.EMAIL);
+            presenter.sendGTMRegisterError(getActivity(), AppEventTracking.EventLabel.EMAIL);
         } else if (!CommonUtils.EmailValidation(mEmail)) {
             registerName.setError(getString(R.string.error_invalid_email));
             focusView = registerName;
             cancel = true;
-            sendGTMRegisterError(AppEventTracking.EventLabel.EMAIL);
+            presenter.sendGTMRegisterError(getActivity(), AppEventTracking.EventLabel.EMAIL);
         }
 
         if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
             focusView.requestFocus();
         } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
+
             validateEmailAddressTask();
         }
     }
@@ -329,18 +320,8 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
             return;
         }
         enableDisableAllFieldsForEmailValidationForm(false);
-//        IsSaving = true;
 
-        //[START] Validate email using server
-//        FacadeRegister.ParamEmailValidation param = new FacadeRegister.ParamEmailValidation();
-//        param.action = VALIDATE_EMAIL;
-//        param.email = mEmail;
-//        facadeRegister.validateEmailUsingDefaultTokopedia(param, OnEmailValidateTokopediaDefaultConnection());
-        //[START] Validate email using server
-
-        //[START] Validate using server v4
         presenter.validateEmail(getActivity(), registerName.getText().toString(), registerPassword.getText().toString());
-        //[END] Validate using server v4
     }
 
     @OnClick(R2.id.register_next)
@@ -357,8 +338,6 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
             registerPassword.setEnabled(true);
             registerNext.setEnabled(true);
             checkboxPrivacyPolicy.setEnabled(true);
-//            registerFacebookLogin.setEnabled(true);
-//            registerGPlusLogin.setEnabled(true);
         } else {
             registerNextProgress.setVisibility(View.VISIBLE);
             registerNextButton.setText(getString(R.string.processing));
@@ -366,8 +345,6 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
             registerPassword.setEnabled(false);
             registerNext.setEnabled(false);
             checkboxPrivacyPolicy.setEnabled(false);
-//            registerFacebookLogin.setEnabled(false);
-//            registerGPlusLogin.setEnabled(false);
         }
     }
 
@@ -547,8 +524,11 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
         showProgress(false);
         //[START] move to activation resent
         if (text.contains("belum diaktivasi")) {
-            if (mContext != null && mContext instanceof SessionView)
-                ((SessionView) mContext).moveToActivationResend(registerName.getText().toString());
+            if (mContext != null && mContext instanceof SessionView) {
+                Bundle bundle = new Bundle();
+                bundle.putInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE, DownloadService.REGISTER_WEBVIEW);
+                ((SessionView) mContext).moveToActivationResend(registerName.getText().toString(),bundle);
+            }
         }
         switch (type){
             case DownloadService.DISCOVER_LOGIN:
@@ -647,8 +627,6 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
     @NeedsPermission(Manifest.permission.GET_ACCOUNTS)
     public void onRegisterWithGoogle() {
         ((GoogleActivity) getActivity()).onSignInClicked();
-        presenter.storeCacheGTM(AppEventTracking.GTMCacheKey.REGISTER_TYPE,
-                AppEventTracking.GTMCacheValue.GMAIL);
     }
 
     @Override
@@ -727,8 +705,6 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
                 newFragment.show(getFragmentManager().beginTransaction(), "dialog");
                 getActivity().getWindow().setSoftInputMode(
                         WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-                presenter.storeCacheGTM(AppEventTracking.GTMCacheKey.REGISTER_TYPE,
-                        listProvider.get(position).getName());
             }
         };
     }
@@ -745,7 +721,9 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
                 }else if (bundle.getString("path").contains("code")){
                     presenter.loginWebView(getActivity(), bundle);
                 }else if (bundle.getString("path").contains("activation-social")){
-                    ((SessionView) mContext).moveToActivationResend(registerName.getText().toString());
+                    Bundle lbundle = new Bundle();
+                    lbundle.putInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE, DownloadService.REGISTER_WEBVIEW);
+                    ((SessionView) mContext).moveToActivationResend(registerName.getText().toString(), lbundle);
                 }
                 break;
             default:
@@ -762,11 +740,6 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
     public void onStart() {
         super.onStart();
         ScreenTracking.screen(this);
-        presenter.initCacheGTM(getActivity());
-    }
-
-    private void sendGTMRegisterError(String label){
-        UnifyTracking.eventRegisterError(label);
     }
 
     @Override

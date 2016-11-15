@@ -36,11 +36,10 @@ import com.tokopedia.core.session.model.LoginViewModel;
 import com.tokopedia.core.session.model.RegisterSuccessModel;
 import com.tokopedia.core.session.model.RegisterViewModel;
 import com.tokopedia.core.session.presenter.LoginImpl;
-import com.tokopedia.core.session.presenter.RegisterImpl;
+import com.tokopedia.core.session.presenter.RegisterNewImpl;
 import com.tokopedia.core.session.presenter.RegisterNewNext;
 import com.tokopedia.core.session.presenter.RegisterNewNextImpl;
 import com.tokopedia.core.session.presenter.RegisterNewNextView;
-import com.tokopedia.core.session.presenter.RegisterNextImpl;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.util.SessionHandler;
@@ -65,7 +64,7 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
     DatePickerDialog.OnDateSetListener callBack = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-            registerNextDate.setText(RegisterImpl.RegisterUtil.formatDateText(
+            registerNextDate.setText(RegisterNewImpl.RegisterUtil.formatDateText(
                     dayOfMonth,
                     monthOfYear,
                     year
@@ -159,8 +158,8 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
             focusView = registerNextFullName;
             cancel = true;
             sendGTMRegisterError(AppEventTracking.EventLabel.FULLNAME);
-        } else if(RegisterImpl.RegisterUtil.checkRegexNameLocal(mName)
-                || RegisterImpl.RegisterUtil.isExceedMaxCharacter(mName) ){
+        } else if(RegisterNewImpl.RegisterUtil.checkRegexNameLocal(mName)
+                || RegisterNewImpl.RegisterUtil.isExceedMaxCharacter(mName) ){
             registerNextFullName.setError(getString(R.string.error_illegal_character));
             focusView = registerNextFullName;
             cancel = true;
@@ -173,9 +172,9 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
             cancel = true;
             sendGTMRegisterError(AppEventTracking.EventLabel.HANDPHONE);
         }else {
-            boolean validatePhoneNumber = RegisterNextImpl.validatePhoneNumber(mPhone);
+            boolean validatePhoneNumber = RegisterNewNextImpl.validatePhoneNumber(mPhone);
             Log.e(RegisterNewNextView.TAG, messageTAG + " valid nomornya : " + validatePhoneNumber);
-            RegisterNextImpl.testPhoneNumberValidation();
+            RegisterNewNextImpl.testPhoneNumberValidation();
             if(!validatePhoneNumber){
                 registerNextPhoneNumber.setError(getString(R.string.error_invalid_phone_number));
                 focusView = registerNextPhoneNumber;
@@ -191,13 +190,9 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
         }
 
         if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
             if(focusView!=null)
                 focusView.requestFocus();
         } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
             View view = getActivity().getCurrentFocus();
             KeyboardHandler.DropKeyboard(getActivity(),view);
             RegisterViewModel registerViewModel = presenter.compileAll(registerNextFullName.getText().toString(), registerNextPhoneNumber.getText().toString());
@@ -210,7 +205,12 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
     @OnClick(R2.id.register_next_date)
     public void onDateTextClick(){
         //datePicker.show();
-        DatePickerUtil datePicker = new DatePickerUtil(getActivity(), 1, 1, 2002);
+
+        int day = (int) presenter.getData(RegisterNewNext.DATE_DAY);
+        int month = (int) presenter.getData(RegisterNewNext.DATE_MONTH);
+        int year = (int) presenter.getData(RegisterNewNext.DATE_YEAR);
+        if(year==0) year=2002;
+        DatePickerUtil datePicker = new DatePickerUtil(getActivity(), day, month, year);
         datePicker.SetMaxYear(2002);
         datePicker.SetMinYear(1934);
         datePicker.SetShowToday(false);
@@ -340,31 +340,21 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
                     case RegisterSuccessModel.USER_PENDING:
                         sendLocalyticsRegisterEvent(registerSuccessModel.getUserId());
                         sendGTMRegisterEvent();
-                        ((SessionView)getActivity()).moveToActivationResend(email);
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE, DownloadService.REGISTER_WEBVIEW);
+                        ((SessionView)getActivity()).moveToActivationResend(email, bundle);
                         break;
                     case RegisterSuccessModel.USER_ACTIVE:
-                        // [START] do some login here.
                         LoginViewModel loginViewModel = new LoginViewModel();
                         loginViewModel.setUsername(email);
                         loginViewModel.setPassword(password);
-                        LoginImpl.login(DownloadService.REGISTER_LOGIN, getActivity(), LoginModel.EmailType, loginViewModel);
-                        //[END] do some login here.
-
-                        //[START] Old code just move to home
-//                        SessionHandler sessionHandler = new SessionHandler(getActivity());
-//                        sessionHandler.SetLoginSession(true, registerSuccessModel.getUserId()+"","","");
-//                        LocalyticsContainer handler = AnalyticsHandler.init(getActivity()).Localytics();
-//                        handler.tagEvent(getString(R.string.event_register) + " with e-mail");
-//                        CommonUtils.dumper("LocalTag : DEFAULT REGISTER");
-//                        getActivity().startActivity(new Intent(getActivity(), ParentIndexHome.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-//                        ((AppCompatActivity) getActivity()).finish();
-                        //[END] Old code just move to home
+                        LoginImpl.login(DownloadService.LOGIN_ACCOUNTS_TOKEN, getActivity(), LoginModel.EmailType, loginViewModel);
                         break;
                     default:
                         break;
                 }
                 break;
-            case DownloadService.REGISTER_LOGIN:
+            case DownloadService.MAKE_LOGIN:
                 if(new SessionHandler(getActivity()).isV4Login()) {// go back to home
                     TrackingUtils.eventLoca(getString(R.string.event_register) + " with e-mail");
                         CommonUtils.dumper("LocalTag : DEFAULT REGISTER");

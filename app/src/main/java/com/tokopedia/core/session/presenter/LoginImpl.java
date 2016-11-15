@@ -16,7 +16,10 @@ import com.sromku.simple.fb.listeners.OnNewPermissionsListener;
 import com.sromku.simple.fb.listeners.OnProfileListener;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.constant.DownloadServiceConstant;
@@ -27,12 +30,11 @@ import com.tokopedia.core.session.model.InfoModel;
 import com.tokopedia.core.session.model.LoginEmailModel;
 import com.tokopedia.core.session.model.LoginFacebookViewModel;
 import com.tokopedia.core.session.model.LoginGoogleModel;
+import com.tokopedia.core.session.model.LoginModel;
 import com.tokopedia.core.session.model.LoginProviderModel;
 import com.tokopedia.core.session.model.LoginSecurityModel;
-import com.tokopedia.core.session.model.LoginModel;
 import com.tokopedia.core.session.model.LoginViewModel;
 import com.tokopedia.core.session.model.SecurityModel;
-import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.util.SessionHandler;
 
 import org.json.JSONObject;
@@ -114,10 +116,7 @@ public class LoginImpl implements Login {
 
     @Override
     public void initData() {
-
-        // set email and history of email
         loginView.setAutoCompleteAdapter(LoginIdList);
-//        loginView.setEmailText(loginViewModel.getUsername());
         loginView.showProgress(loginViewModel.isProgressShow());
         if (sessionHandler.isV4Login()) {
             loginView.destroyActivity();
@@ -143,8 +142,41 @@ public class LoginImpl implements Login {
         facade.unSubscribe();
     }
 
+    @Override
+    public void sendGTMScreen(Context context) {
+        Nishikino.init(context).startAnalytics().sendScreen(AppScreen.SCREEN_LOGIN);
+    }
+
+    @Override
+    public void sendGTMRegisterThrougLogin() {
+        Nishikino.init(mContext).startAnalytics()
+                .sendButtonClick(
+                        AppEventTracking.Event.REGISTER_LOGIN,
+                        AppEventTracking.Category.LOGIN,
+                        AppEventTracking.Action.REGISTER,
+                        AppEventTracking.EventLabel.REGISTER);
+    }
+    @Override
+    public void sendCTAAction() {
+        Nishikino.init(mContext).startAnalytics()
+                .sendButtonClick(
+                        AppEventTracking.Event.LOGIN_CLICK,
+                        AppEventTracking.Category.LOGIN,
+                        AppEventTracking.Action.CLICK,
+                        AppEventTracking.EventLabel.CTA);
+    }
+    @Override
+    public void sendGTMLoginError(String label) {
+        Nishikino.init(mContext).startAnalytics()
+                .sendButtonClick(
+                        AppEventTracking.Event.LOGIN_ERROR,
+                        AppEventTracking.Category.LOGIN,
+                        AppEventTracking.Action.LOGIN_ERROR,
+                        label);
+    }
+    
+    
     public void downloadProviderLogin() {
-//        ((SessionView)mContext).sendDataFromInternet(DownloadService.DISCOVER_LOGIN, new Bundle());
         facade.downloadProvider(loginView.getActivity(), new LoginInteractor.DiscoverLoginListener() {
             @Override
             public void onSuccess(LoginProviderModel result) {
@@ -187,12 +219,7 @@ public class LoginImpl implements Login {
         return new GsonBuilder().create().fromJson(cache, type);
     }
 
-    /**
-     * @param DownServiceConstType {@link DownloadService#REGISTER_LOGIN} & {@link DownloadService#REGISTER_THIRD_LOGIN}
-     * @param context
-     * @param action
-     * @param data
-     */
+
     public static void login(int DownServiceConstType, Context context, String action, Object... data) {
         boolean isNeedLogin = true;
         switch (action) {
@@ -215,17 +242,10 @@ public class LoginImpl implements Login {
     @Override
     public void sendDataFromInternet(String action, Object... data) {
         boolean isNeedLogin = true;
+        Bundle bundle;
         switch (action) {
             case LoginModel.EmailType:
-                loginViewModel = (LoginViewModel) data[0];// override the instance here
-                loginViewModel.setUuid(getUUID());// store uuid
-
-
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(DownloadService.LOGIN_VIEW_MODEL_KEY, Parcels.wrap(loginViewModel));
-                bundle.putBoolean(DownloadService.IS_NEED_LOGIN, isNeedLogin);
-
-                ((SessionView) mContext).sendDataFromInternet(DownloadService.LOGIN_EMAIL, bundle);
+                getToken(action,(LoginViewModel)data[0]);
                 break;
             case LoginModel.GoogleType:
                 LoginGoogleModel loginGoogleModel = (LoginGoogleModel) data[0];
@@ -294,23 +314,12 @@ public class LoginImpl implements Login {
         loginViewModel.setUsername((String) data[0]);
         loginViewModel.setPassword((String) data[1]);
         outstate.putParcelable(LOGIN_VIEW_MODEL_TAG, Parcels.wrap(loginViewModel));
-//        outstate.putParcelable(LOGIN_FACEBOOK_MODEL_TAG,Parcels.wrap(loginFacebookViewModel));
-//        outstate.putParcelable(LOGIN_GOOGLE_MODEL_TAG,Parcels.wrap(loginGoogleModel));
-//        outstate.putParcelable(LOGIN_EMAIL_TAG,Parcels.wrap(loginEmailModel));
-//        outstate.putParcelable(LOGIN_SECURITY_MODEL_TAG, Parcels.wrap(loginSecurityModel));
-//        outstate.putParcelable(LOGIN_THIRD_MODEL_TAG, Parcels.wrap(loginThirdModel));
     }
 
     @Override
     public void fetchDataAfterRotate(Bundle instate) {
         if (instate != null) {
             loginViewModel = Parcels.unwrap(instate.getParcelable(LOGIN_VIEW_MODEL_TAG));
-
-//            loginFacebookViewModel = Parcels.unwrap(instate.getParcelable(LOGIN_FACEBOOK_MODEL_TAG));
-//            loginGoogleModel = Parcels.unwrap(instate.getParcelable(LOGIN_GOOGLE_MODEL_TAG));
-//            loginEmailModel = Parcels.unwrap(instate.getParcelable(LOGIN_EMAIL_TAG));
-//            loginSecurityModel = Parcels.unwrap(instate.getParcelable(LOGIN_SECURITY_MODEL_TAG));
-//            loginThirdModel = Parcels.unwrap(instate.getParcelable(LOGIN_THIRD_MODEL_TAG));
         }
     }
 
@@ -415,12 +424,6 @@ public class LoginImpl implements Login {
                         loginFacebookViewModel.setInterest(response.getRelationshipStatus());// 9
                         loginFacebookViewModel.setWork(response.getWork() + "");
 
-//                        if(response.getEmail().equals(null)) {
-//                            Toast.makeText(mContext, "tidak bisa mendapatkan email dari facebook", Toast.LENGTH_LONG).show();
-//                            return;
-//                        }
-
-
                         sendDataFromInternet(LoginModel.FacebookType, loginFacebookViewModel);
                     }
 
@@ -485,25 +488,6 @@ public class LoginImpl implements Login {
     @Override
     public void setData(int type, Bundle data) {
         switch (type) {
-            case DownloadService.LOGIN_FACEBOOK:
-            case DownloadService.LOGIN_GOOGLE:
-            case DownloadService.LOGIN_EMAIL:
-                loginView.showProgress(false);
-                // if need to move to security
-                if (data.getBoolean(DownloadService.LOGIN_MOVE_SECURITY, false)) {// move to security
-                    LoginSecurityModel loginSecurityModel = Parcels.unwrap(data.getParcelable(DownloadService.LOGIN_SECURITY_QUESTION_DATA));
-                    loginView.moveToFragmentSecurityQuestion(
-                            loginSecurityModel.getSecurityQuestion().getUserCheckSecurity1(),
-                            loginSecurityModel.getSecurityQuestion().getUserCheckSecurity2(),
-                            loginSecurityModel.getUserId());
-                } else if (sessionHandler.isV4Login()) {// go back to home
-                    loginView.destroyActivity();
-                } else if (data.getInt(DownloadService.VALIDATION_OF_DEVICE_ID, LoginEmailModel.INVALID_DEVICE_ID) == LoginEmailModel.INVALID_DEVICE_ID) {
-                    //[START] AN-1042 [Home & Login V2] [Login] double toast appear when wrong input password
-//                    loginView.showDialog("invalid device id, unable to process next step");
-                    //[START] AN-1042 [Home & Login V2] [Login] double toast appear when wrong input password
-                }
-                break;
             case DownloadServiceConstant.MAKE_LOGIN:
                 loginView.showProgress(false);
                 // if need to move to security
@@ -516,9 +500,7 @@ public class LoginImpl implements Login {
                 } else if (sessionHandler.isV4Login()) {// go back to home
                     loginView.destroyActivity();
                 } else if (data.getInt(DownloadService.VALIDATION_OF_DEVICE_ID, LoginEmailModel.INVALID_DEVICE_ID) == LoginEmailModel.INVALID_DEVICE_ID) {
-                    //[START] AN-1042 [Home & Login V2] [Login] double toast appear when wrong input password
-//                    loginView.showDialog("invalid device id, unable to process next step");
-                    //[START] AN-1042 [Home & Login V2] [Login] double toast appear when wrong input password
+
                 }
                 break;
             case DownloadService.LOGIN_ACCOUNTS_INFO:
@@ -530,32 +512,11 @@ public class LoginImpl implements Login {
                 if (infoModel.isCreatedPassword()) {
                     ((SessionView) mContext).sendDataFromInternet(DownloadService.MAKE_LOGIN, data);
                 } else {
-//                    CreatePasswordModel createPasswordModel = new CreatePasswordModel();
-//                    if(Parcels.unwrap(parcelable) instanceof LoginGoogleModel){
-//                        LoginGoogleModel loginGoogleModel = Parcels.unwrap(parcelable);
-//                        if (loginGoogleModel.getFullName() != null) {
-//                            createPasswordModel.setFullName(loginGoogleModel.getFullName());
-//                        }
-//                        if (loginGoogleModel.getGender().contains("male")) {
-//                            createPasswordModel.setGender(RegisterViewModel.GENDER_MALE + "");
-//                        } else {
-//                            createPasswordModel.setGender(RegisterViewModel.GENDER_FEMALE + "");
-//                        }
-//                        if (loginGoogleModel.getBirthday() != null) {
-//                            createPasswordModel.setDateText(loginGoogleModel.getBirthday());
-//                        }
-//                        if (loginGoogleModel.getEmail() != null) {
-//                            createPasswordModel.setEmail(loginGoogleModel.getEmail());
-//                        }
-//                    }
-//                    data.putBoolean(DownloadServiceConstant.LOGIN_MOVE_REGISTER_THIRD, true);
-//                    data.putParcelable(DownloadServiceConstant.LOGIN_GOOGLE_MODEL_KEY, Parcels.wrap(createPasswordModel));
-//                    ((SessionView) mContext).moveToRegisterPassPhone(createPasswordModel, infoModel.getCreatePasswordList());
                     CreatePasswordModel createPasswordModel = new CreatePasswordModel();
                     createPasswordModel = setModelFromParcelable(createPasswordModel, parcelable, infoModel);
                     data.putBoolean(DownloadServiceConstant.LOGIN_MOVE_REGISTER_THIRD, true);
                     data.putParcelable(DownloadServiceConstant.LOGIN_GOOGLE_MODEL_KEY, Parcels.wrap(createPasswordModel));
-                    ((SessionView) mContext).moveToRegisterPassPhone(createPasswordModel, infoModel.getCreatePasswordList());
+                    ((SessionView) mContext).moveToRegisterPassPhone(createPasswordModel, infoModel.getCreatePasswordList(), data);
                 }
                 break;
             case DownloadServiceConstant.DISCOVER_LOGIN:
@@ -567,44 +528,10 @@ public class LoginImpl implements Login {
     }
 
     private CreatePasswordModel setModelFromParcelable(CreatePasswordModel createPasswordModel, Parcelable parcelable, InfoModel infoModel) {
-//        if (Parcels.unwrap(parcelable) instanceof LoginGoogleModel) {
-//            LoginGoogleModel loginGoogleModel = Parcels.unwrap(parcelable);
-//            if (loginGoogleModel.getFullName() != null) {
-//                createPasswordModel.setFullName(loginGoogleModel.getFullName());
-//            }
-//            if (loginGoogleModel.getGender().contains("male")) {
-//                createPasswordModel.setGender(RegisterViewModel.GENDER_MALE + "");
-//            } else {
-//                createPasswordModel.setGender(RegisterViewModel.GENDER_FEMALE + "");
-//            }
-//            if (loginGoogleModel.getBirthday() != null) {
-//                createPasswordModel.setDateText(loginGoogleModel.getBirthday());
-//            }
-//            if (loginGoogleModel.getEmail() != null) {
-//                createPasswordModel.setEmail(loginGoogleModel.getEmail());
-//            }
-//        }else if(Parcels.unwrap(parcelable) instanceof LoginFacebookViewModel){
-//            LoginFacebookViewModel loginFacebookViewModel = Parcels.unwrap(parcelable);
-//            if (loginFacebookViewModel.getFullName() != null) {
-//                createPasswordModel.setFullName(loginFacebookViewModel.getFullName());
-//            }
-//            if (loginFacebookViewModel.getGender().contains("male")) {
-//                createPasswordModel.setGender(RegisterViewModel.GENDER_MALE + "");
-//            } else {
-//                createPasswordModel.setGender(RegisterViewModel.GENDER_FEMALE + "");
-//            }
-//            if (loginFacebookViewModel.getBirthday() != null) {
-//                createPasswordModel.setDateText(loginFacebookViewModel.getBirthday());
-//            }
-//            if (loginFacebookViewModel.getEmail() != null) {
-//                createPasswordModel.setEmail(loginFacebookViewModel.getEmail());
-//            }
-//        }else{
         createPasswordModel.setFullName(infoModel.getName());
         createPasswordModel.setEmail(infoModel.getEmail());
         if (infoModel.getPhone() != null)
             createPasswordModel.setMsisdn(infoModel.getPhone());
-//        }
         return createPasswordModel;
     }
 

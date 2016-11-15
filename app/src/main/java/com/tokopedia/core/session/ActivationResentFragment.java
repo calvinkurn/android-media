@@ -145,6 +145,7 @@ public class ActivationResentFragment extends Fragment implements BaseView {
             , Bundle savedInstanceState) {
         View parent = inflater.inflate(R.layout.activity_activation_resent, container, false);
         ButterKnife.bind(this, parent);
+        SnackbarManager.make(getActivity(),"Akun anda belum diaktivasi. Cek email anda untuk mengaktivasi akun.",Snackbar.LENGTH_LONG).show();
         return parent;
     }
 
@@ -176,8 +177,6 @@ public class ActivationResentFragment extends Fragment implements BaseView {
                             .getString(R.string.alert_account_pending_first_half);
                     String t3 = ActivationResentFragment.this.getActivity().getString(R.string
                             .alert_account_pending_second_half);
-//                        Toast.makeText(getActivity(), getActivity()
-//                                .getString(R.string.warning_activation), Toast.LENGTH_LONG).show();
                     alertboxNavigateToParentIndexHome(
                             t1 + "" + email.getText() + " " + t3
                     );
@@ -265,28 +264,28 @@ public class ActivationResentFragment extends Fragment implements BaseView {
                     new ErrorHandler(new ErrorListener() {
                         @Override
                         public void onUnknown() {
-                            listener.onError("Network Unknown Error!");
+                            listener.onError(getActivity().getString(R.string.default_request_error_unknown));
                         }
 
                         @Override
                         public void onTimeout() {
-                            listener.onError("Network Timeout Error!");
+                            listener.onError(getActivity().getString(R.string.default_request_error_timeout));
                             listener.onTimeout();
                         }
 
                         @Override
                         public void onServerError() {
-                            listener.onError("Network Internal Server Error!");
+                            listener.onError(getActivity().getString(R.string.default_request_error_internal_server));
                         }
 
                         @Override
                         public void onBadRequest() {
-                            listener.onError("Network Bad Request Error!");
+                            listener.onError(getActivity().getString(R.string.default_request_error_bad_request));
                         }
 
                         @Override
                         public void onForbidden() {
-
+                            listener.onError(getActivity().getString(R.string.default_request_error_forbidden_auth));
                         }
                     }, response.code());
                 }
@@ -298,45 +297,6 @@ public class ActivationResentFragment extends Fragment implements BaseView {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber));
 
-//        new NetworkHandlerBuilder(NetworkConfig.POST, getActivity(),
-//                TkpdBaseURL.User.URL_GENERAL_ACTION + TkpdBaseURL.User.PATH_RESEND_CODE)
-//                .setNeedLogin(false)
-//                .setIdentity()
-//                .addParam("email", emailText)
-//                .setAllParamSupply(true)
-//                .setNetworkResponse(new OnNetworkResponseListener() {
-//                    @Override
-//                    public void onResponse(JSONObject Response) {
-//                        if (mProgressDialog != null)
-//                            mProgressDialog.dismiss();
-//
-//                        if (Response.toString().equals(""))
-//                            return;
-//
-//                        String t1 = ActivationResentFragment.this.getActivity()
-//                                .getString(R.string.alert_account_pending_first_half);
-//                        String t3 = ActivationResentFragment.this.getActivity().getString(R.string
-//                                .alert_account_pending_second_half);
-////                        Toast.makeText(getActivity(), getActivity()
-////                                .getString(R.string.warning_activation), Toast.LENGTH_LONG).show();
-//                        alertboxNavigateToParentIndexHome(
-//                                t1 + "" + emailText + " " + t3
-//                        );
-//                    }
-//
-//                    @Override
-//                    public void onMessageError(ArrayList<String> MessageError) {
-//                        SnackbarManager.make(getActivity(), MessageError.toString(), Snackbar.LENGTH_LONG).show();
-//                        if (mProgressDialog != null)
-//                            mProgressDialog.dismiss();
-//                    }
-//
-//                    @Override
-//                    public void onNetworkError(NetError error, int errorCode) {
-//                        if (mProgressDialog != null)
-//                            mProgressDialog.dismiss();
-//                    }
-//                }).finish().commit();
     }
 
     @Override

@@ -126,4 +126,12 @@ public interface Login {
     void getProvider();
 
     void unSubscribe();
+
+    void sendGTMScreen(Context context);
+
+    void sendGTMRegisterThrougLogin();
+
+    void sendCTAAction();
+
+    void sendGTMLoginError(String label);
 }

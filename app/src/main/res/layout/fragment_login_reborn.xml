@@ -49,18 +49,6 @@
                 android:textSize="@dimen/font_small" />
 
             <TextView
-                android:id="@+id/sign_in_button"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:background="#0A8F08"
-                android:gravity="center"
-                android:padding="@dimen/padding_small"
-                android:text="@string/action_sign_in"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"
-                android:visibility="gone" />
-
-            <TextView
                 android:id="@+id/accounts_sign_in"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"

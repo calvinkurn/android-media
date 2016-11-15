@@ -35,7 +35,15 @@ import com.tokopedia.core.fragment.FragmentSecurityQuestion;
 import com.tokopedia.core.home.ParentIndexHome;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
+import com.tokopedia.core.service.constant.DownloadServiceConstant;
+import com.tokopedia.core.session.intentservice.LoginResultReceiver;
+import com.tokopedia.core.session.intentservice.LoginService;
+import com.tokopedia.core.session.intentservice.RegisterResultReceiver;
+import com.tokopedia.core.session.intentservice.RegisterService;
+import com.tokopedia.core.session.intentservice.ResetPasswordResultReceiver;
+import com.tokopedia.core.session.intentservice.ResetPasswordService;
 import com.tokopedia.core.session.model.CreatePasswordModel;
+import com.tokopedia.core.session.model.LoginFacebookViewModel;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionImpl;
 import com.tokopedia.core.session.presenter.SessionView;
@@ -65,12 +73,15 @@ import java.util.Map;
  * 3. RegisterNewViewFragment {@link RegisterNewViewFragment}
  * 4. Facebook Login Fragment {@link LoginFragment}
  * 5. Google Login Fragment {@link LoginFragment}
- * 6. RegisterThirdFragment {@link RegisterThirdFragment}
  * <p/>
  * inside session package :
  * 1. Logout Fragment currently dialog is discard when rotate.
  */
-public class Login extends GoogleActivity implements SessionView, GoogleActivity.GoogleListener, DownloadResultReceiver.Receiver {
+public class Login extends GoogleActivity implements SessionView, GoogleActivity.GoogleListener
+            , DownloadResultReceiver.Receiver
+            , LoginResultReceiver.Receiver
+            , RegisterResultReceiver.Receiver
+            , ResetPasswordResultReceiver.Receiver{
 
     //    int whichFragmentKey;
     LocalCacheHandler cacheGTM;
@@ -79,6 +90,9 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     Toolbar toolbar;
     SimpleFacebook simplefacebook;
     DownloadResultReceiver mReceiver;
+    LoginResultReceiver loginReceiver;
+    RegisterResultReceiver registerReceiver;
+    ResetPasswordResultReceiver resetPasswordReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,7 +149,14 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
          /* Starting Download Service */
         mReceiver = new DownloadResultReceiver(new Handler());
         mReceiver.setReceiver(this);
-        cacheGTM = new LocalCacheHandler(this, AppEventTracking.GTM_CACHE);
+
+        loginReceiver = new LoginResultReceiver(new Handler());
+        loginReceiver.setReceiver(this);
+        registerReceiver = new RegisterResultReceiver(new Handler());
+        registerReceiver.setReceiver(this);
+        resetPasswordReceiver = new ResetPasswordResultReceiver(new Handler());
+        resetPasswordReceiver.setReceiver(this);
+
     }
 
     @Override
@@ -148,26 +169,10 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     }
 
     @Override
-    public void moveToRegisterThird(RegisterViewModel model, String type) {
+    public void moveToRegisterPassPhone(CreatePasswordModel model, List<String> createPasswordList, Bundle bundle) {
         Log.d(TAG, messageTAG + " moveToRegisterThird : " + model);
         if (isFragmentCreated(REGISTER_THIRD)) {
-            Fragment fragment = RegisterThirdFragment.newInstance(model, type);
-            moveToFragment(fragment, true, REGISTER_THIRD, TkpdState.DrawerPosition.REGISTER_THIRD);
-        }
-    }
-
-    public void moveToRegisterPassPhone(CreatePasswordModel model) {
-        Log.d(TAG, messageTAG + " moveToRegisterThird : " + model);
-        if (isFragmentCreated(REGISTER_THIRD)) {
-            Fragment fragment = RegisterPassPhoneFragment.newInstance(model,null);
-            moveToFragment(fragment, false, REGISTER_THIRD, TkpdState.DrawerPosition.REGISTER_THIRD);
-        }
-    }
-    @Override
-    public void moveToRegisterPassPhone(CreatePasswordModel model, List<String> createPasswordList) {
-        Log.d(TAG, messageTAG + " moveToRegisterThird : " + model);
-        if (isFragmentCreated(REGISTER_THIRD)) {
-            Fragment fragment = RegisterPassPhoneFragment.newInstance(model,createPasswordList);
+            Fragment fragment = RegisterPassPhoneFragment.newInstance(model,createPasswordList,bundle);
             moveToFragment(fragment, false, REGISTER_THIRD, TkpdState.DrawerPosition.REGISTER_THIRD);
         }
     }
@@ -182,14 +187,6 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         }
     }
 
-    @Override
-    public void moveToRegisterNext(RegisterViewModel model) {
-        Log.d(TAG, messageTAG + " moveToRegisterNext : " + model);
-        if (isFragmentCreated(REGISTER_NEXT_TAG)) {
-            Fragment fragment = RegisterNextFragment.newInstance(model.getmName(), model.getmPhone(), model.getmGender(), model.getDateText(), model.getmEmail());
-            moveToFragment(fragment, true, REGISTER_NEXT_TAG, TkpdState.DrawerPosition.REGISTER_NEXT);
-        }
-    }
 
     @Override
     public void moveTo(int type) {
@@ -248,22 +245,18 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     }
 
     @Override
-    public void moveToActivationResend(String email) {
-        // START CLEAR ALL FRAGMENT STACK
+    public void moveToActivationResend(String email, Bundle bundle) {
         if (supportFragmentManager.getBackStackEntryCount() > 1) {
             FragmentManager.BackStackEntry first = supportFragmentManager.getBackStackEntryAt(1);
             supportFragmentManager.popBackStack(first.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
-        // END OF CLEAR ALL FRAGMENT STACK
-        showError("Akun anda belum diaktivasi. Cek email anda untuk mengaktivasi akun.");
         Fragment fragment = ActivationResentFragment.newInstance(email);
         moveToFragment(fragment, false, ACTIVATION_RESEND_TAG, TkpdState.DrawerPosition.ACTIVATION_RESENT);
-
-        // Change the header
 
         session.setWhichFragment(TkpdState.DrawerPosition.ACTIVATION_RESENT);
         setToolbarTitle();
         invalidateOptionsMenu();
+        session.sendGTMEvent(bundle, bundle.getInt(DownloadServiceConstant.TYPE, 0));
     }
 
     @Override
@@ -279,18 +272,14 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
 
     @Override
     public void moveToForgotPassword() {
-        // START CLEAR ALL FRAGMENT STACK
         Log.d(TAG, messageTAG + supportFragmentManager.getBackStackEntryCount());
         if (supportFragmentManager.getBackStackEntryCount() > 1) {
             FragmentManager.BackStackEntry first = supportFragmentManager.getBackStackEntryAt(1);
             supportFragmentManager.popBackStack(first.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
-        // END OF CLEAR ALL FRAGMENT STACK
-
         Fragment fragment = new ForgotPasswordFragment();
         moveToFragment(fragment, true, FORGOT_PASSWORD_TAG, TkpdState.DrawerPosition.FORGOT_PASSWORD);
 
-        // Change the header
         session.setWhichFragment(TkpdState.DrawerPosition.FORGOT_PASSWORD);
         setToolbarTitle();
         invalidateOptionsMenu();
@@ -341,16 +330,14 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                 break;
             case TkpdState.DrawerPosition.REGISTER:
                 if (isFragmentCreated(REGISTER_FRAGMENT_TAG)) {
-//                    Fragment fragment = RegisterFragment.newInstance("test 1", "test 2");
                     Fragment fragment = RegisterNewViewFragment.newInstance();
                     moveToFragment(fragment, true, REGISTER_FRAGMENT_TAG, TkpdState.DrawerPosition.REGISTER);
 
-                    // Change the header
                     session.setWhichFragment(TkpdState.DrawerPosition.REGISTER);
                     setToolbarTitle();
                     invalidateOptionsMenu();
                 } else {
-                    Log.d(TAG, messageTAG + RegisterFragment.class.getSimpleName() + " is not created !!!");
+                    Log.d(TAG, messageTAG + RegisterNewViewFragment.class.getSimpleName() + " is not created !!!");
                 }
                 break;
             case TkpdState.DrawerPosition.SECURITY_QUESTION:
@@ -367,7 +354,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                 if (isFragmentCreated(REGISTER_NEXT_TAG)) {
                     Log.d(TAG, messageTAG + " : currently RegisterNext cannot be called outside registerFragment");
                 } else {
-                    Log.d(TAG, messageTAG + RegisterNextFragment.class.getSimpleName() + " is not created !!!");
+                    Log.d(TAG, messageTAG + RegisterNewNextFragment.class.getSimpleName() + " is not created !!!");
                 }
                 break;
             case TkpdState.DrawerPosition.ACTIVATION_RESENT:
@@ -388,7 +375,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                 }
                 break;
         }
-        sendNotifLocalyticsCallback();
+        session.sendNotifLocalyticsCallback(getIntent());
     }
 
     @Override
@@ -561,7 +548,128 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
         int type = resultData.getInt(DownloadService.TYPE, DownloadService.INVALID_TYPE);
-        Fragment fragment = null;
+
+        Fragment fragment = findFragment(type);
+
+        if (fragment != null && fragment instanceof BaseView && type != DownloadService.INVALID_TYPE) {
+            switch (resultCode) {
+                case DownloadService.STATUS_RUNNING:
+                    showProgressDialog(fragment,type,resultData);
+                    break;
+                case DownloadService.STATUS_FINISHED:
+                    finishTask(fragment,type,resultData);
+                    break;
+                case DownloadService.STATUS_ERROR:
+                    sendMessageError(fragment,type,resultData);
+                    break;
+            }
+        }
+    }
+
+    private void finishTask(Fragment fragment, int type, Bundle resultData) {
+        switch (type) {
+            case DownloadService.LOGIN_EMAIL:
+            case DownloadService.SECURITY_QUESTION_GET:
+            case DownloadService.REQUEST_OTP:
+            case DownloadService.ANSWER_SECURITY_QUESTION:
+            case DownloadService.REGISTER:
+            case DownloadService.REGISTER_PASS_PHONE:
+            case DownloadService.LOGIN_ACCOUNTS_INFO:
+            case DownloadService.MAKE_LOGIN:
+                sendBroadcast(new Intent(ShopInfoActivity.LOGIN_ACTION));
+                if (resultData.getBoolean(DownloadService.RETRY_FLAG, false)) {
+                    boolean retry = resultData.getBoolean(DownloadService.RETRY_FLAG, false);
+                    ((BaseView) fragment).ariseRetry(type, retry);
+                } else {
+                    if (resultData.getBoolean(DownloadService.LOGIN_MOVE_REGISTER_THIRD, false)) {// register new for third party
+                        CreatePasswordModel model = Parcels.unwrap(resultData.getParcelable(DownloadService.LOGIN_GOOGLE_MODEL_KEY));
+                        moveToRegisterPassPhone(model,null, resultData);
+                    } else {
+                        session.sendGTMEvent(resultData, type);
+                        session.sendLocalyticsEvent(resultData, type);
+                        ((BaseView) fragment).setData(type, resultData);
+                    }
+                }
+                break;
+            case DownloadService.LOGIN_GOOGLE:
+            case DownloadService.REGISTER_GOOGLE:
+            case DownloadService.LOGIN_ACCOUNTS_TOKEN:
+            case DownloadService.LOGIN_FACEBOOK:
+            case DownloadService.LOGIN_WEBVIEW:
+            case DownloadService.REGISTER_FACEBOOK:
+                Log.d("steven","berhasil minta token");
+                sendDataFromInternet(DownloadService.LOGIN_ACCOUNTS_INFO,resultData);
+                break;
+            case DownloadService.RESET_PASSWORD:
+                ((BaseView) fragment).setData(type,resultData);
+                break;
+
+        }
+    }
+
+    private void sendMessageError(Fragment fragment, int type, Bundle resultData) {
+        switch (resultData.getInt(DownloadService.NETWORK_ERROR_FLAG, DownloadService.INVALID_NETWORK_ERROR_FLAG)) {
+            case NetworkConfig.BAD_REQUEST_NETWORK_ERROR:
+                ((BaseView) fragment).onNetworkError(type, getString(R.string.default_request_error_unknown));
+                break;
+            case NetworkConfig.INTERNAL_SERVER_ERROR:
+                ((BaseView) fragment).onNetworkError(type, getString(R.string.default_request_error_internal_server));
+                break;
+            case NetworkConfig.FORBIDDEN_NETWORK_ERROR:
+                ((BaseView) fragment).onNetworkError(type, getString(R.string.default_request_error_forbidden_auth));
+                break;
+            case DownloadService.INVALID_NETWORK_ERROR_FLAG:
+            default:
+                String messageError = resultData.getString(DownloadService.MESSAGE_ERROR_FLAG, DownloadService.INVALID_MESSAGE_ERROR);
+                if (!messageError.equals(DownloadService.INVALID_MESSAGE_ERROR)) {
+                    ((BaseView) fragment).onMessageError(type, messageError);
+                }
+        }
+    }
+
+    private void showProgressDialog(Fragment fragment, int type, Bundle resultData) {
+        switch (type) {
+            case DownloadService.LOGIN_EMAIL:
+            case DownloadService.LOGIN_GOOGLE:
+            case DownloadService.LOGIN_FACEBOOK:
+            case DownloadService.LOGIN_ACCOUNTS_TOKEN:
+            case DownloadService.LOGIN_ACCOUNTS_INFO:
+            case DownloadService.LOGIN_ACCOUNTS_PROFILE:
+            case DownloadService.MAKE_LOGIN:
+            case DownloadService.LOGIN_WEBVIEW:
+            case DownloadService.REGISTER_FACEBOOK:
+                //[START] show progress bar
+                if (fragment instanceof LoginFragment) {
+                    boolean showDialog = resultData.getBoolean(DownloadService.LOGIN_SHOW_DIALOG, false);
+                    ((LoginFragment) fragment).showProgress(showDialog);
+                }
+                if(fragment instanceof RegisterNewViewFragment){
+                    boolean showDialog = resultData.getBoolean(DownloadService.LOGIN_SHOW_DIALOG, false);
+                    ((RegisterNewViewFragment) fragment).showProgress(showDialog);
+                }
+                if(fragment instanceof RegisterPassPhoneFragment){
+                    boolean showDialog = resultData.getBoolean(DownloadService.LOGIN_SHOW_DIALOG, false);
+                    ((RegisterPassPhoneFragment) fragment).showProgress(showDialog);
+                }
+                break;
+            case DownloadService.REQUEST_OTP:
+            case DownloadService.ANSWER_SECURITY_QUESTION:
+                if (fragment instanceof FragmentSecurityQuestion) {
+                    boolean showDialog = resultData.getBoolean(DownloadService.SECURITY_QUESTION_LOADING, false);
+                    ((FragmentSecurityQuestion) fragment).displayProgress(showDialog);
+                }
+                break;
+            case DownloadService.REGISTER:
+                if (fragment instanceof RegisterNewNextFragment) {
+                    boolean showDialog = resultData.getBoolean(DownloadService.REGISTER_QUESTION_LOADING, false);
+                    ((RegisterNewNextFragment) fragment).showProgress(showDialog);
+                }
+                break;
+        }
+    }
+
+    private Fragment findFragment(int type) {
+        Fragment fragment;
         switch (type) {
             case DownloadService.LOGIN_EMAIL:
                 fragment = supportFragmentManager.findFragmentByTag(LOGIN_FRAGMENT_TAG);
@@ -572,15 +680,12 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                 fragment = supportFragmentManager.findFragmentByTag(SECURITY_QUESTION_TAG);
                 break;
             case DownloadService.REGISTER:
-            case DownloadService.REGISTER_LOGIN:
                 fragment = supportFragmentManager.findFragmentByTag(REGISTER_NEXT_TAG);
                 break;
-
-            case DownloadService.REGISTER_THIRD:
-            case DownloadService.REGISTER_THIRD_LOGIN:
             case DownloadService.REGISTER_PASS_PHONE:
                 fragment = supportFragmentManager.findFragmentByTag(REGISTER_THIRD);
                 break;
+            case DownloadService.REGISTER_GOOGLE:
             case DownloadService.LOGIN_GOOGLE:
             case DownloadService.LOGIN_FACEBOOK:
             case DownloadService.LOGIN_ACCOUNTS_TOKEN:
@@ -588,12 +693,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
             case DownloadService.LOGIN_ACCOUNTS_PROFILE:
             case DownloadService.LOGIN_WEBVIEW:
             case DownloadService.MAKE_LOGIN:
-            case DownloadService.DISCOVER_LOGIN:
             case DownloadService.REGISTER_FACEBOOK:
-//                fragment = supportFragmentManager.findFragmentByTag(LOGIN_FRAGMENT_TAG);
-//                if(fragment==null || !fragment.isVisible()){
-//                    fragment = supportFragmentManager.findFragmentByTag(REGISTER_FRAGMENT_TAG);
-//                }
                 fragment = supportFragmentManager.findFragmentById(R.id.login_fragment);
                 break;
             case DownloadService.RESET_PASSWORD:
@@ -602,137 +702,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
             default:
                 throw new UnsupportedOperationException("please pass type when want to process it !!!");
         }
-
-        //check if Fragment implement necessary interface
-        if (fragment != null && fragment instanceof BaseView && type != DownloadService.INVALID_TYPE) {
-            switch (resultCode) {
-                case DownloadService.STATUS_RUNNING:
-                    switch (type) {
-                        case DownloadService.LOGIN_EMAIL:
-                        case DownloadService.LOGIN_GOOGLE:
-                        case DownloadService.LOGIN_FACEBOOK:
-                        case DownloadService.LOGIN_ACCOUNTS_TOKEN:
-                        case DownloadService.LOGIN_ACCOUNTS_INFO:
-                        case DownloadService.LOGIN_ACCOUNTS_PROFILE:
-                        case DownloadService.MAKE_LOGIN:
-                        case DownloadService.LOGIN_WEBVIEW:
-                        case DownloadService.DISCOVER_LOGIN:
-                        case DownloadService.REGISTER_FACEBOOK:
-                            //[START] show progress bar
-                            if (fragment instanceof LoginFragment) {
-                                boolean showDialog = resultData.getBoolean(DownloadService.LOGIN_SHOW_DIALOG, false);
-                                ((LoginFragment) fragment).showProgress(showDialog);
-                            }
-                            if(fragment instanceof RegisterNewViewFragment){
-                                boolean showDialog = resultData.getBoolean(DownloadService.LOGIN_SHOW_DIALOG, false);
-                                ((RegisterNewViewFragment) fragment).showProgress(showDialog);
-                            }
-                            if(fragment instanceof RegisterPassPhoneFragment){
-                                boolean showDialog = resultData.getBoolean(DownloadService.LOGIN_SHOW_DIALOG, false);
-                                ((RegisterPassPhoneFragment) fragment).showProgress(showDialog);
-                            }
-                            break;
-                        case DownloadService.REQUEST_OTP:
-                        case DownloadService.ANSWER_SECURITY_QUESTION:
-                            if (fragment instanceof FragmentSecurityQuestion) {
-                                boolean showDialog = resultData.getBoolean(DownloadService.SECURITY_QUESTION_LOADING, false);
-                                ((FragmentSecurityQuestion) fragment).displayProgress(showDialog);
-                            }
-                            break;
-                        case DownloadService.REGISTER:
-                            //[START] This is old register
-//                            if(fragment instanceof  RegisterNextFragment){
-//                                boolean showDialog = resultData.getBoolean(DownloadService.REGISTER_QUESTION_LOADING, false);
-//                                ((RegisterNextFragment)fragment).showProgress(showDialog);
-//                            }
-                            //[END] This is old register
-
-                            if (fragment instanceof RegisterNewNextFragment) {
-                                boolean showDialog = resultData.getBoolean(DownloadService.REGISTER_QUESTION_LOADING, false);
-                                ((RegisterNewNextFragment) fragment).showProgress(showDialog);
-                            }
-                            break;
-                        case DownloadService.REGISTER_THIRD:
-                            if (fragment instanceof RegisterThirdFragment) {
-                                boolean showDialog = resultData.getBoolean(DownloadService.REGISTER_QUESTION_LOADING, false);
-                                ((RegisterThirdFragment) fragment).showProgress(showDialog);
-                            }
-                            break;
-                    }
-                    break;
-                case DownloadService.STATUS_FINISHED:
-                    switch (type) {
-                        case DownloadService.LOGIN_EMAIL:
-//                        case DownloadService.LOGIN_GOOGLE:
-//                        case DownloadService.LOGIN_FACEBOOK:
-                        case DownloadService.SECURITY_QUESTION_GET:
-                        case DownloadService.REQUEST_OTP:
-                        case DownloadService.ANSWER_SECURITY_QUESTION:
-                        case DownloadService.REGISTER:
-                        case DownloadService.REGISTER_LOGIN:
-                        case DownloadService.REGISTER_THIRD:
-                        case DownloadService.REGISTER_THIRD_LOGIN:
-                        case DownloadService.REGISTER_PASS_PHONE:
-                        case DownloadService.LOGIN_ACCOUNTS_INFO:
-                        case DownloadService.MAKE_LOGIN:
-                            sendBroadcast(new Intent(ShopInfoActivity.LOGIN_ACTION));
-                            if (resultData.getBoolean(DownloadService.RETRY_FLAG, false)) {
-                                boolean retry = resultData.getBoolean(DownloadService.RETRY_FLAG, false);
-                                ((BaseView) fragment).ariseRetry(type, retry);
-                            } else {
-                                if (resultData.getBoolean(DownloadService.LOGIN_MOVE_REGISTER_THIRD, false)) {// register new for third party
-                                    CreatePasswordModel model = Parcels.unwrap(resultData.getParcelable(DownloadService.LOGIN_GOOGLE_MODEL_KEY));
-                                    moveToRegisterPassPhone(model);
-                                } else {
-                                    ((BaseView) fragment).setData(type, resultData);
-                                    sendGTMEvent();
-                                    sendLocalytics(resultData);
-                                }
-                            }
-                            break;
-                        case DownloadService.DISCOVER_LOGIN:
-                            if(fragment instanceof LoginFragment || fragment instanceof RegisterNewViewFragment)
-                                ((BaseView) fragment).setData(type, resultData);
-                            break;
-
-                        case DownloadService.LOGIN_GOOGLE:
-                        case DownloadService.LOGIN_ACCOUNTS_TOKEN:
-                        case DownloadService.LOGIN_FACEBOOK:
-                        case DownloadService.LOGIN_WEBVIEW:
-                        case DownloadService.REGISTER_FACEBOOK:
-                            Log.d("steven","berhasil minta token");
-                            sendDataFromInternet(DownloadService.LOGIN_ACCOUNTS_INFO,resultData);
-                            break;
-                        case DownloadService.RESET_PASSWORD:
-                            ((BaseView) fragment).setData(type,resultData);
-                            break;
-//                        case DownloadService.LOGIN_ACCOUNTS_INFO:
-//                            Log.d("steven", "berhasil minta info");
-//                            sendDataFromInternet(DownloadService.LOGIN_ACCOUNTS_PROFILE,resultData);
-//                            break;
-                    }
-                    break;
-                case DownloadService.STATUS_ERROR:
-                    switch (resultData.getInt(DownloadService.NETWORK_ERROR_FLAG, DownloadService.INVALID_NETWORK_ERROR_FLAG)) {
-                        case NetworkConfig.BAD_REQUEST_NETWORK_ERROR:
-                            ((BaseView) fragment).onNetworkError(type, " BAD_REQUEST_NETWORK_ERROR !!!");
-                            break;
-                        case NetworkConfig.INTERNAL_SERVER_ERROR:
-                            ((BaseView) fragment).onNetworkError(type, " INTERNAL_SERVER_ERROR !!!");
-                            break;
-                        case NetworkConfig.FORBIDDEN_NETWORK_ERROR:
-                            ((BaseView) fragment).onNetworkError(type, " FORBIDDEN_NETWORK_ERROR !!!");
-                            break;
-                        case DownloadService.INVALID_NETWORK_ERROR_FLAG:
-                        default:
-                            String messageError = resultData.getString(DownloadService.MESSAGE_ERROR_FLAG, DownloadService.INVALID_MESSAGE_ERROR);
-                            if (!messageError.equals(DownloadService.INVALID_MESSAGE_ERROR)) {
-                                ((BaseView) fragment).onMessageError(type, messageError);
-                            }
-                    }
-                    break;
-            }// end of status download service
-        }
+        return fragment;
     }
 
     @Override
@@ -741,24 +711,39 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
             case DownloadService.REQUEST_OTP:
             case DownloadService.ANSWER_SECURITY_QUESTION:
             case DownloadService.SECURITY_QUESTION_GET:
-            case DownloadService.LOGIN_EMAIL:
-            case DownloadService.LOGIN_GOOGLE:
-            case DownloadService.LOGIN_FACEBOOK:
-            case DownloadService.REGISTER:
-            case DownloadService.REGISTER_LOGIN:
-            case DownloadService.REGISTER_THIRD:
-            case DownloadService.REGISTER_THIRD_LOGIN:
-            case DownloadService.REGISTER_PASS_PHONE:
-            case DownloadService.LOGIN_ACCOUNTS_TOKEN:
-            case DownloadService.LOGIN_ACCOUNTS_INFO:
-            case DownloadService.LOGIN_ACCOUNTS_PROFILE:
-            case DownloadService.MAKE_LOGIN:
-            case DownloadService.LOGIN_WEBVIEW:
-            case DownloadService.DISCOVER_LOGIN:
-            case DownloadService.REGISTER_FACEBOOK:
-            case DownloadService.RESET_PASSWORD:
                 DownloadService.startDownload(this, mReceiver, data, type);
                 break;
+
+            case DownloadService.REGISTER_GOOGLE:
+            case DownloadService.LOGIN_GOOGLE:
+                DownloadService.setLoginGoogleModel((LoginGoogleModel) Parcels.unwrap(data.getParcelable(DownloadServiceConstant.LOGIN_GOOGLE_MODEL_KEY)));
+                LoginService.startLogin(this, loginReceiver, data, type);
+                break;
+
+            case DownloadService.LOGIN_FACEBOOK:
+            case DownloadService.REGISTER_FACEBOOK:
+                DownloadService.setLoginFacebookViewModel((LoginFacebookViewModel) Parcels.unwrap(data.getParcelable(DownloadServiceConstant.LOGIN_FACEBOOK_MODEL_KEY)));
+                LoginService.startLogin(this, loginReceiver, data, type);
+                break;
+
+
+            case DownloadService.LOGIN_ACCOUNTS_TOKEN:
+            case DownloadService.LOGIN_ACCOUNTS_INFO:
+            case DownloadService.MAKE_LOGIN:
+            case DownloadService.LOGIN_WEBVIEW:
+                LoginService.startLogin(this, loginReceiver, data, type);
+                break;
+
+            case DownloadService.REGISTER:
+            case DownloadService.REGISTER_PASS_PHONE:
+                RegisterService.startRegister(this, registerReceiver, data,type);
+                break;
+
+            case DownloadService.RESET_PASSWORD:
+                ResetPasswordService.startDownload(this, resetPasswordReceiver, data, type);
+                break;
+
+
             default:
                 throw new UnsupportedOperationException("please pass type when want to process it !!!");
         }
@@ -778,77 +763,13 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        sendNotifLocalyticsCallback();
-    }
-
-    private void sendNotifLocalyticsCallback() {
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            if (bundle.containsKey(AppEventTracking.LOCA.NOTIFICATION_BUNDLE)){
-                TrackingUtils.eventLocaNotificationCallback(getIntent());
-            }
-        }
+        session.sendNotifLocalyticsCallback(getIntent());
     }
 
     @Override
     public void showError(String text) {
         if(text!=null){
             SnackbarManager.make(this,text, Snackbar.LENGTH_LONG).show();
-        }
-    }
-
-    private void sendGTMEvent() {
-        switch (cacheGTM.getString(AppEventTracking.GTMCacheKey.SESSION_STATE)) {
-            case AppEventTracking.GTMCacheValue.LOGIN:
-                UnifyTracking.eventLoginSuccess(cacheGTM.getString(
-                        AppEventTracking.GTMCacheKey.LOGIN_TYPE,
-                        AppEventTracking.DEFAULT_CHANNEL
-                ));
-                break;
-            case AppEventTracking.GTMCacheValue.REGISTER:
-                UnifyTracking.eventRegisterSuccess(cacheGTM.getString(
-                        AppEventTracking.GTMCacheKey.REGISTER_TYPE,
-                        AppEventTracking.DEFAULT_CHANNEL
-                ));
-                break;
-        }
-    }
-
-    private void sendLocalytics(Bundle bundle) {
-        switch (cacheGTM.getString(AppEventTracking.GTMCacheKey.SESSION_STATE)) {
-            case AppEventTracking.GTMCacheValue.LOGIN:
-                Map<String, String> attributesLogin = new HashMap<String, String>();
-                CustomerWrapper customerLogin = new CustomerWrapper();
-                customerLogin.setCustomerId(bundle.getString(AppEventTracking.USER_ID_KEY,
-                        AppEventTracking.NOT_AVAILABLE));
-                customerLogin.setFullName(bundle.getString(AppEventTracking.FULLNAME_KEY,
-                        AppEventTracking.NOT_AVAILABLE));
-                customerLogin.setEmailAddress(bundle.getString(AppEventTracking.EMAIL_KEY,
-                        AppEventTracking.NOT_AVAILABLE));
-                customerLogin.setExtraAttr(attributesLogin);
-                customerLogin.setMethod(cacheGTM.getString(
-                        AppEventTracking.GTMCacheKey.LOGIN_TYPE,
-                        AppEventTracking.DEFAULT_CHANNEL));
-
-                UnifyTracking.eventLoginLoca(customerLogin);
-
-                break;
-            case AppEventTracking.GTMCacheValue.REGISTER:
-                Map<String, String> attributesRegister = new HashMap<String, String>();
-                CustomerWrapper customerRegister = new CustomerWrapper();
-                customerRegister.setCustomerId(bundle.getString(AppEventTracking.USER_ID_KEY,
-                        AppEventTracking.NOT_AVAILABLE));
-                customerRegister.setFullName(bundle.getString(AppEventTracking.FULLNAME_KEY,
-                        AppEventTracking.NOT_AVAILABLE));
-                customerRegister.setEmailAddress(bundle.getString(AppEventTracking.EMAIL_KEY,
-                        AppEventTracking.NOT_AVAILABLE));
-                customerRegister.setExtraAttr(attributesRegister);
-                customerRegister.setMethod(cacheGTM.getString(
-                        AppEventTracking.GTMCacheKey.REGISTER_TYPE,
-                        AppEventTracking.DEFAULT_CHANNEL
-                ));
-                UnifyTracking.eventRegisterLoca(customerRegister);
-                break;
         }
     }
 }

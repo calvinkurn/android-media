@@ -40,11 +40,8 @@ public abstract class RegisterThird extends BaseImpl<RegisterThirdView>{
 
     public abstract void setData(HashMap<String, Object> data);
 
-    public abstract void register(Context context);
+    public abstract void register(Context context, Bundle bundle);
 
-    public abstract List<String> getEmailListOfAccountsUserHasLoggedInto(Context context);
-    public abstract boolean isEmailAddressFromDevice(Context context);
-    public abstract void validateEmail(Context context, final String email);
     public abstract Object getData(String type);
     public abstract void calculateDateTime();
 

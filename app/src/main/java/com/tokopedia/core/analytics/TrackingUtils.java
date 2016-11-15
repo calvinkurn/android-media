@@ -14,7 +14,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.home.ParentIndexHome;
 import com.tokopedia.core.home.fragment.FragmentIndexCategory;
 import com.tokopedia.core.session.RegisterNewNextFragment;
-import com.tokopedia.core.session.RegisterThirdFragment;
+import com.tokopedia.core.session.RegisterPassPhoneFragment;
 import com.tokopedia.core.util.SessionHandler;
 
 import org.json.JSONArray;
@@ -46,7 +46,7 @@ public class TrackingUtils extends TrackingConfig {
 
     public static void fragmentBasedAFEvent(android.support.v4.app.Fragment fragment){
         Map<String, Object> afValue = new HashMap<>();
-        if (fragment instanceof RegisterNewNextFragment || fragment instanceof RegisterThirdFragment){
+        if (fragment instanceof RegisterNewNextFragment || fragment instanceof RegisterPassPhoneFragment){
             afValue.put(AFInAppEventParameterName.REGSITRATION_METHOD,"register_normal");
         } else if (fragment instanceof FragmentIndexCategory){
             afValue.put(AFInAppEventParameterName.DESCRIPTION, Jordan.AF_SCREEN_HOME_MAIN);

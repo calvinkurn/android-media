@@ -20,6 +20,9 @@ import java.util.Calendar;
  */
 public class RegisterNewNextImpl extends RegisterNewNext implements DatePickerUtil.onDateSelectedListener{
 
+    public static final int MAX_PHONE_NUMBER = 13;
+    public static final int MIN_PHONE_NUMBER = 6;
+
     RegisterViewModel registerViewModel;
 
     public RegisterNewNextImpl(RegisterNewNextView registerNewNextView){
@@ -50,7 +53,7 @@ public class RegisterNewNextImpl extends RegisterNewNext implements DatePickerUt
         }
         view.initDatePickerDialog(context, registerViewModel.getmDateYear(), registerViewModel.getmDateMonth(), registerViewModel.getmDateDay());
         view.initDatePicker(registerViewModel.getMaxDate(), registerViewModel.getMinDate());
-        view.setData(RegisterNewNextView.TTL, RegisterImpl.RegisterUtil.formatDateText(registerViewModel.getmDateDay(), registerViewModel.getmDateMonth(), registerViewModel.getmDateYear()));
+        view.setData(RegisterNewNextView.TTL, RegisterNewImpl.RegisterUtil.formatDateText(registerViewModel.getmDateDay(), registerViewModel.getmDateMonth(), registerViewModel.getmDateYear()));
         showTermsAndOptionsTextView(context);
 
     }
@@ -64,6 +67,12 @@ public class RegisterNewNextImpl extends RegisterNewNext implements DatePickerUt
                 return registerViewModel.getmPassword();
             case FULLNAME:
                 return registerViewModel.getmName();
+            case DATE_DAY:
+                return registerViewModel.getmDateDay();
+            case DATE_MONTH:
+                return registerViewModel.getmDateMonth();
+            case DATE_YEAR:
+                return registerViewModel.getmDateYear();
         }
         return null;
     }
@@ -113,7 +122,7 @@ public class RegisterNewNextImpl extends RegisterNewNext implements DatePickerUt
     @Override
     public void saveBeforeDestroy(Context context, String fullName, String phone) {
         SessionHandler.saveRegisterNext(context, fullName, phone, registerViewModel.getmGender(),
-                RegisterImpl.RegisterUtil.formatDateText(registerViewModel.getmDateDay(), registerViewModel.getmDateMonth(), registerViewModel.getmDateYear()));
+                RegisterNewImpl.RegisterUtil.formatDateText(registerViewModel.getmDateDay(), registerViewModel.getmDateMonth(), registerViewModel.getmDateYear()));
     }
 
     @Override
@@ -241,6 +250,34 @@ public class RegisterNewNextImpl extends RegisterNewNext implements DatePickerUt
         registerViewModel.setmDateYear(year);
         registerViewModel.setmDateMonth(month);
         registerViewModel.setmDateDay(dayOfMonth);
-        view.setData(RegisterNewNextView.TTL, RegisterImpl.RegisterUtil.formatDateText(registerViewModel.getmDateDay(), registerViewModel.getmDateMonth(), registerViewModel.getmDateYear()));
+        view.setData(RegisterNewNextView.TTL, RegisterNewImpl.RegisterUtil.formatDateText(registerViewModel.getmDateDay(), registerViewModel.getmDateMonth(), registerViewModel.getmDateYear()));
+    }
+
+    public static void testPhoneNumberValidation() {
+        Log.d(TAG, "Phone number 1234567890 validation result: " + validatePhoneNumber("1234567890"));
+        Log.d(TAG, "Phone number 123-456-7890 validation result: " + validatePhoneNumber("123-456-7890"));
+        Log.d(TAG, "Phone number 123-456-7890 x1234 validation result: " + validatePhoneNumber("123-456-7890 x1234"));
+        Log.d(TAG, "Phone number 123-456-7890 ext1234 validation result: " + validatePhoneNumber("123-456-7890 ext1234"));
+        Log.d(TAG, "Phone number (123)-456-7890 validation result: " + validatePhoneNumber("(123)-456-7890"));
+        Log.d(TAG, "Phone number 123.456.7890 validation result: " + validatePhoneNumber("123.456.7890"));
+        Log.d(TAG, "Phone number 123 456 7890 validation result: " + validatePhoneNumber("123 456 7890"));
+    }
+
+    public static boolean validatePhoneNumber(String phoneNo) {
+        Log.d(TAG, "Phone number " + phoneNo + " start validating");
+        //validate phone numbers of format "1234567890"
+        for (int i = MIN_PHONE_NUMBER; i <= MAX_PHONE_NUMBER; i++) {
+            if (phoneNo.matches("\\d{" + i + "}")) return true;
+        }
+        //validating phone number with -, . or spaces
+//        else if(phoneNo.matches("\\d{3}[-\\.\\s]\\d{3}[-\\.\\s]\\d{4}")) return true;
+        //validating phone number with extension length from 3 to 5
+//        else if(phoneNo.matches("\\d{3}-\\d{3}-\\d{4}\\s(x|(ext))\\d{3,5}")) return true;
+        //validating phone number where area code is in braces ()
+//        else if(phoneNo.matches("\\(\\d{3}\\)-\\d{3}-\\d{4}")) return true;
+        //return false if nothing matches the input
+//        else
+        return false;
+
     }
 }

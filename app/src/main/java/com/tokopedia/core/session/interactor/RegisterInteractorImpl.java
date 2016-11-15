@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.google.gson.GsonBuilder;
+import com.tokopedia.core.R;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
@@ -48,7 +49,7 @@ public class RegisterInteractorImpl implements RegisterInteractor {
     }
 
     @Override
-    public void downloadProvider(Context context, final RegisterInteractor.DiscoverLoginListener listener) {
+    public void downloadProvider(final Context context, final RegisterInteractor.DiscoverLoginListener listener) {
         if (compositeSubscription.isUnsubscribed()) {
             this.compositeSubscription = new CompositeSubscription();
         }
@@ -84,28 +85,28 @@ public class RegisterInteractorImpl implements RegisterInteractor {
                     new ErrorHandler(new ErrorListener() {
                         @Override
                         public void onUnknown() {
-                            listener.onError("Network Unknown Error!");
+                            listener.onError(context.getString(R.string.default_request_error_unknown));
                         }
 
                         @Override
                         public void onTimeout() {
-                            listener.onError("Network Timeout Error!");
+                            listener.onError(context.getString(R.string.default_request_error_timeout));
                             listener.onTimeout();
                         }
 
                         @Override
                         public void onServerError() {
-                            listener.onError("Network Internal Server Error!");
+                            listener.onError(context.getString(R.string.default_request_error_internal_server));
                         }
 
                         @Override
                         public void onBadRequest() {
-                            listener.onError("Network Bad Request Error!");
+                            listener.onError(context.getString(R.string.default_request_error_bad_request));
                         }
 
                         @Override
                         public void onForbidden() {
-
+                            listener.onError(context.getString(R.string.default_request_error_forbidden_auth));
                         }
                     }, response.code());
                 }
@@ -124,7 +125,7 @@ public class RegisterInteractorImpl implements RegisterInteractor {
     }
 
     @Override
-    public void validateEmail(Context context, Map<String, String> params, final ValidateEmailListener listener) {
+    public void validateEmail(final Context context, Map<String, String> params, final ValidateEmailListener listener) {
         if (compositeSubscription.isUnsubscribed()) {
             this.compositeSubscription = new CompositeSubscription();
         }
@@ -139,7 +140,7 @@ public class RegisterInteractorImpl implements RegisterInteractor {
 
             @Override
             public void onError(Throwable e) {
-                Log.e("ASDASDM", e.toString());
+                Log.e("validating email", e.toString());
                 listener.onThrowable(e);
             }
 
@@ -158,28 +159,28 @@ public class RegisterInteractorImpl implements RegisterInteractor {
                     new ErrorHandler(new ErrorListener() {
                         @Override
                         public void onUnknown() {
-                            listener.onError("Network Unknown Error!");
+                            listener.onError(context.getString(R.string.default_request_error_unknown));
                         }
 
                         @Override
                         public void onTimeout() {
-                            listener.onError("Network Timeout Error!");
+                            listener.onError(context.getString(R.string.default_request_error_timeout));
                             listener.onTimeout();
                         }
 
                         @Override
                         public void onServerError() {
-                            listener.onError("Network Internal Server Error!");
+                            listener.onError(context.getString(R.string.default_request_error_internal_server));
                         }
 
                         @Override
                         public void onBadRequest() {
-                            listener.onError("Network Bad Request Error!");
+                            listener.onError(context.getString(R.string.default_request_error_bad_request));
                         }
 
                         @Override
                         public void onForbidden() {
-
+                            listener.onError(context.getString(R.string.default_request_error_forbidden_auth));
                         }
                     }, response.code());
                 }

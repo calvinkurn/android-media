@@ -793,6 +793,16 @@
         <service
             android:name="com.tokopedia.core.talk.talkproduct.intentservice.TalkAddNewIntentService"
             android:exported="false" />
+        <service
+            android:name=".session.intentservice.LoginService"
+            android:exported="false" />
+        <service
+            android:name=".session.intentservice.ResetPasswordService"
+            android:exported="false" />
+        <service
+            android:name=".session.intentservice.RegisterService"
+            android:exported="false"/>
+
         <!-- ======================================================= -->
         <!-- PROVIDERS REGISTRY -->
         <!-- ======================================================= -->

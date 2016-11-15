@@ -81,7 +81,6 @@ import com.tokopedia.core.session.ForgotPasswordFragment;
 import com.tokopedia.core.session.RegisterNewNextFragment;
 import com.tokopedia.core.session.RegisterNewViewFragment;
 import com.tokopedia.core.session.RegisterPassPhoneFragment;
-import com.tokopedia.core.session.RegisterThirdFragment;
 import com.tokopedia.core.shipping.EditShippingActivity;
 import com.tokopedia.core.shop.ShopEditorActivity;
 import com.tokopedia.core.shopinfo.ReputationViewShop;
@@ -311,7 +310,7 @@ public final class AppScreen {
     }
 
     public static String convertAFFragmentEvent(android.support.v4.app.Fragment fragment){
-        if (fragment instanceof RegisterNewNextFragment || fragment instanceof RegisterThirdFragment){
+        if (fragment instanceof RegisterNewNextFragment || fragment instanceof RegisterPassPhoneFragment){
             return AFInAppEventType.COMPLETE_REGISTRATION;
         } else {
             return AFInAppEventType.CONTENT_VIEW;

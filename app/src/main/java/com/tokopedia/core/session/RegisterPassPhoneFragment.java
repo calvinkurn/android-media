@@ -30,11 +30,10 @@ import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.session.model.CreatePasswordModel;
 import com.tokopedia.core.session.model.LoginViewModel;
-import com.tokopedia.core.session.presenter.RegisterImpl;
 import com.tokopedia.core.session.presenter.RegisterNew;
 import com.tokopedia.core.session.presenter.RegisterNewImpl;
+import com.tokopedia.core.session.presenter.RegisterNewNextImpl;
 import com.tokopedia.core.session.presenter.RegisterNewNextView;
-import com.tokopedia.core.session.presenter.RegisterNextImpl;
 import com.tokopedia.core.session.presenter.RegisterPassPhoneImpl;
 import com.tokopedia.core.session.presenter.RegisterThird;
 import com.tokopedia.core.session.presenter.RegisterThirdView;
@@ -58,9 +57,8 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
     public static final String messageTAG = "RegisterPassPhoneFragment : ";
     private List<String> allowedFieldList;
 
-    public static Fragment newInstance(CreatePasswordModel createPasswordModel, List<String> createPasswordList) {
+    public static Fragment newInstance(CreatePasswordModel createPasswordModel, List<String> createPasswordList, Bundle bundle) {
         RegisterPassPhoneFragment registerPassPhoneFragment = new RegisterPassPhoneFragment();
-        Bundle bundle = new Bundle();
         bundle.putParcelable(RegisterNew.DATA, Parcels.wrap(createPasswordModel));
         registerPassPhoneFragment.setArguments(bundle);
         registerPassPhoneFragment.allowedFieldList = createPasswordList;
@@ -95,7 +93,7 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
     DatePickerDialog.OnDateSetListener callBack = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-            vBDay.setText(RegisterImpl.RegisterUtil.formatDateText(
+            vBDay.setText(RegisterNewImpl.RegisterUtil.formatDateText(
                     dayOfMonth,
                     monthOfYear,
                     year
@@ -188,7 +186,6 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
 //                LoginImpl.login(DownloadService.REGISTER_THIRD_LOGIN, getActivity(), LoginModel.EmailType, loginViewModel);
                 break;
             case DownloadService.MAKE_LOGIN:
-            case DownloadService.REGISTER_THIRD_LOGIN:
                 showProgress(false);
                 if (new SessionHandler(getActivity()).isV4Login()) {// go back to home
                     getActivity().startActivity(new Intent(getActivity(), ParentIndexHome.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
@@ -301,7 +298,7 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
             sendGTMRegisterError(AppEventTracking.EventLabel.FULLNAME);
             return false;
         }
-        if (RegisterImpl.RegisterUtil.checkRegexNameLocal(vName.getText().toString())) {
+        if (RegisterNewImpl.RegisterUtil.checkRegexNameLocal(vName.getText().toString())) {
             vName.setError(getString(R.string.error_illegal_character));
             vName.requestFocus();
             sendGTMRegisterError(AppEventTracking.EventLabel.FULLNAME);
@@ -339,9 +336,9 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
         }
 
         String mPhone = vPhoneNumber.getText().toString();
-        boolean validatePhoneNumber = RegisterNextImpl.validatePhoneNumber(mPhone);
+        boolean validatePhoneNumber = RegisterNewNextImpl.validatePhoneNumber(mPhone);
         Log.e(RegisterNewNextView.TAG, messageTAG + " valid nomornya : " + validatePhoneNumber);
-        RegisterNextImpl.testPhoneNumberValidation();
+        RegisterNewNextImpl.testPhoneNumberValidation();
         if (vPhoneNumber.length() == 0) {
             vPhoneNumber.setError(getText(R.string.error_field_required));
             vPhoneNumber.requestFocus();
@@ -394,7 +391,7 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
     public void sendRegister() {
         if (checkValidation()) {
             saveData();
-            presenter.register(getActivity());
+            presenter.register(getActivity(),getArguments());
         }
     }
 

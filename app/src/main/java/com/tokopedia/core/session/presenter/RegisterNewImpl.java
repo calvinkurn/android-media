@@ -21,6 +21,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.constant.DownloadServiceConstant;
 import com.tokopedia.core.session.interactor.RegisterInteractor;
@@ -70,105 +71,21 @@ public class RegisterNewImpl extends RegisterNew implements TextWatcher{
         facade = RegisterInteractorImpl.createInstance(this);
     }
 
+    public static class RegisterUtil{
+        public static boolean checkRegexNameLocal(String param){
+            String regex = "[A-Za-z]+";
+            return !param.replaceAll("\\s","").matches(regex);
+        }
+        public static boolean isExceedMaxCharacter(String text) {
+            return text.length()>35;
+        }
+        public static String formatDateText(int mDateDay, int mDateMonth, int mDateYear) {
+            return String.format("%d / %d / %d", mDateDay, mDateMonth, mDateYear);
+        }
+    }
+
     @Override
     public void validateEmail(final Context context, final String email, final String password) {
-
-//        NetworkCalculator networkCalculator = new NetworkCalculator(NetworkConfig.POST, context, RegisterApi.frenky+RegisterApi.VALIDATE_EMAIL_FRENKY)
-//                .setIdentity()
-//                .addParam(RegisterApi.USER_EMAIL, email)
-//                .compileAllParam()
-//                .finish();
-//
-//        RetrofitUtils.createRetrofit(RegisterApi.frenky).create(RegisterApi.class)
-//                .validateEmailDev(
-//                        NetworkCalculator.getContentMd5(networkCalculator),
-//                        NetworkCalculator.getDate(networkCalculator),
-//                        NetworkCalculator.getAuthorization(networkCalculator),
-//                        NetworkCalculator.getxMethod(networkCalculator),
-//                        NetworkCalculator.getUserId(context),
-//                        NetworkCalculator.getDeviceId(context),
-//                        NetworkCalculator.getHash(networkCalculator),
-//                        NetworkCalculator.getDeviceTime(networkCalculator),
-//                        email
-//                ).subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .unsubscribeOn(Schedulers.io())
-//                .subscribe(
-//                        new Subscriber<ValidateEmailData>() {
-//                            @Override
-//                            public void onCompleted() {
-//                                Log.i(TAG, getMessageTAG() + "onCompleted()");
-//                            }
-//
-//                            @Override
-//                            public void onError(Throwable e) {
-//                                Log.e(TAG, getMessageTAG() + e.getLocalizedMessage());
-//                                view.showUnknownError(e);
-//                            }
-//
-//                            @Override
-//                            public void onNext(ValidateEmailData validateEmailData) {
-//                                Log.d(TAG, getMessageTAG()+validateEmailData);
-//                                if (Integer.parseInt(validateEmailData.getData().getEmail_status()) == ValidateEmailData.Data.EMAIL_STATUS_REGISTERED) {
-//                                            view.showErrorValidateEmail();
-//                                        } else {
-//                                            //[START] move to register next
-//                                            view.enableDisableAllFieldsForEmailValidationForm(true);
-//                                            view.moveToRegisterNext(email, password);
-//                                            //[END] move to register next
-//                                        }
-//                            }
-//                        }
-//                );
-
-        //lama
-//        NetworkCalculator networkCalculator = new NetworkCalculator(NetworkConfig.GET, context, TkpdBaseURL.User.URL_REGISTER+ RegisterApi.VALIDATE_EMAIL_PL)
-//                .setIdentity()
-//                .addParam(RegisterApi.USER_EMAIL, email)
-//                .compileAllParam()
-//                .finish();
-//
-//        compositeSubscription.add(
-//                registerService.getApi().validateEmail(
-//                        NetworkCalculator.getContentMd5(networkCalculator),
-//                        NetworkCalculator.getDate(networkCalculator),
-//                        NetworkCalculator.getAuthorization(networkCalculator),
-//                        NetworkCalculator.getxMethod(networkCalculator),
-//                        NetworkCalculator.getUserId(context),
-//                        NetworkCalculator.getDeviceId(context),
-//                        NetworkCalculator.getHash(networkCalculator),
-//                        NetworkCalculator.getDeviceTime(networkCalculator),
-//                        email
-//                ).subscribeOn(Schedulers.io())
-//                        .observeOn(AndroidSchedulers.mainThread())
-//                        .unsubscribeOn(Schedulers.io())
-//                        .subscribe(
-//                                new Subscriber<ValidateEmailData>() {
-//                                    @Override
-//                                    public void onCompleted() {
-//                                        Log.i(TAG, getMessageTAG() + "onCompleted()");
-//                                    }
-//
-//                                    @Override
-//                                    public void onError(Throwable e) {
-//                                        Log.e(TAG, getMessageTAG() + e.getLocalizedMessage());
-//                                        view.showUnknownError(e);
-//                                    }
-//
-//                                    @Override
-//                                    public void onNext(ValidateEmailData validateEmailData) {
-//                                        if (Integer.parseInt(validateEmailData.getData().getEmail_status()) == ValidateEmailData.Data.EMAIL_STATUS_REGISTERED) {
-//                                            view.showErrorValidateEmail();
-//                                        } else {
-//                                            //[START] move to register next
-//                                            view.enableDisableAllFieldsForEmailValidationForm(true);
-//                                            view.moveToRegisterNext(email, password);
-//                                            //[END] move to register next
-//                                        }
-//                                    }
-//                                }
-//                        )
-//        );
         Map<String, String> params = new HashMap<>();
         params.put("email",email);
         facade.validateEmail(context, params , new RegisterInteractor.ValidateEmailListener() {
@@ -180,8 +97,6 @@ public class RegisterNewImpl extends RegisterNew implements TextWatcher{
                     view.enableDisableAllFieldsForEmailValidationForm(true);
                     view.moveToRegisterNext(email,password);
                     sendGTMClick();
-                    storeCacheGTM(AppEventTracking.GTMCacheKey.REGISTER_TYPE,
-                            AppEventTracking.GTMCacheValue.EMAIL);
                 }
             }
 
@@ -260,13 +175,7 @@ public class RegisterNewImpl extends RegisterNew implements TextWatcher{
             bundle.putParcelable(DownloadService.LOGIN_GOOGLE_MODEL_KEY, Parcels.wrap(loginGoogleModel));
             bundle.putBoolean(DownloadService.IS_NEED_LOGIN, false);
 
-            ((SessionView)context).sendDataFromInternet(DownloadService.LOGIN_GOOGLE, bundle);
-            //[START] move to RegisterPassPhone
-//            if(context!=null&&context instanceof SessionView){
-//                ((SessionView)context).moveToRegisterThird(registerViewModel);
-//            }
-            //[END] move to RegisterPassPhone
-//            }
+            ((SessionView)context).sendDataFromInternet(DownloadService.REGISTER_GOOGLE, bundle);
         }
     }
 
@@ -356,42 +265,9 @@ public class RegisterNewImpl extends RegisterNew implements TextWatcher{
                             ((SessionView)context).sendDataFromInternet(DownloadService.REGISTER_FACEBOOK
                                     , bundle);
                         }
-                        // dismiss progress
+
                         view.showProgress(false);
 
-//                        RegisterViewModel registerViewModel = new RegisterViewModel();
-//                        // update data and UI
-////                        if(registerViewModel!=null){
-//                            if(loginFacebookViewModel.getFullName()!=null){
-//                                registerViewModel.setmName(loginFacebookViewModel.getFullName());
-////                                registerView.updateData(RegisterView.NAME, loginFacebookViewModel.getFullName());
-//                            }
-//                            if(loginFacebookViewModel.getGender().contains("male")){
-//                                registerViewModel.setmGender(RegisterViewModel.GENDER_MALE);
-////                                registerView.updateData(RegisterView.GENDER, RegisterViewModel.GENDER_MALE);
-//                            }else{
-//                                registerViewModel.setmGender(RegisterViewModel.GENDER_FEMALE);
-////                                registerView.updateData(RegisterView.GENDER, RegisterViewModel.GENDER_FEMALE);
-//                            }
-//                            if(loginFacebookViewModel.getBirthday()!=null){
-//                                Log.d(TAG, getMessageTAG()+" need to verify birthday ");
-//                                registerViewModel.setDateText(loginFacebookViewModel.getBirthday());
-//                            }
-//                            if(loginFacebookViewModel.getEmail()!=null){
-//                                registerViewModel.setmEmail(loginFacebookViewModel.getEmail());
-//                            }
-////                        }
-//
-//                        if(response.getEmail()==null){
-//                            Toast.makeText(context, "tidak bisa mendapatkan email dari facebook", Toast.LENGTH_LONG).show();
-//                            return;
-//                        }
-//
-//                        //[START] move to RegisterPassPhone
-//                        if(context!=null&&context instanceof SessionView){
-//                            ((SessionView)context).moveToRegisterThird(registerViewModel);
-//                        }
-                        //[END] move to RegisterPassPhone
                     }
 
                     @Override
@@ -456,7 +332,7 @@ public class RegisterNewImpl extends RegisterNew implements TextWatcher{
                     createPasswordModel = setModelFromParcelable(createPasswordModel,parcelable,infoModel);
                     data.putBoolean(DownloadServiceConstant.LOGIN_MOVE_REGISTER_THIRD, true);
                     data.putParcelable(DownloadServiceConstant.LOGIN_GOOGLE_MODEL_KEY, Parcels.wrap(createPasswordModel));
-                    ((SessionView) context).moveToRegisterPassPhone(createPasswordModel, infoModel.getCreatePasswordList());
+                    ((SessionView) context).moveToRegisterPassPhone(createPasswordModel, infoModel.getCreatePasswordList(),data);
                 }
             break;
 
@@ -592,24 +468,18 @@ public class RegisterNewImpl extends RegisterNew implements TextWatcher{
     }
 
     @Override
+    public void sendGTMRegisterError(Context context, String label) {
+        Nishikino.init(context).startAnalytics().sendButtonClick(
+                AppEventTracking.Event.REGISTER_ERROR,
+                AppEventTracking.Category.REGISTER,
+                AppEventTracking.Action.REGISTER_ERROR,
+                label);
+    }
+
+    @Override
     public void unSubscribeFacade() {
         facade.unSubscribe();
     }
-
-    @Override
-    public void initCacheGTM(Context context) {
-        cacheGTM = new LocalCacheHandler(context, AppEventTracking.GTM_CACHE);
-        cacheGTM.putString(AppEventTracking.GTMCacheKey.SESSION_STATE,
-                AppEventTracking.GTMCacheValue.REGISTER);
-        cacheGTM.applyEditor();
-    }
-
-    @Override
-    public void storeCacheGTM(String key, String value) {
-        cacheGTM.putString(key, value);
-        cacheGTM.applyEditor();
-    }
-
 
     public static HashMap<String, Object> convertToMap(String key, Object value){
         HashMap<String, Object> temp = new HashMap<>();

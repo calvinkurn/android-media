@@ -82,8 +82,6 @@ public class LoginFragment extends Fragment implements LoginView {
     View rootView;
     @Bind(R2.id.email_auto)
     AutoCompleteTextView mEmailView;
-    //    @Bind(R2.id.gplus_login)
-//    TextView mGplusLogin;
     @Bind(R2.id.password)
     PasswordView mPasswordView;
     @Bind(R2.id.login_form)
@@ -92,15 +90,10 @@ public class LoginFragment extends Fragment implements LoginView {
     RelativeLayout mLoginStatusView;
     @Bind(R2.id.login_status_message)
     TextView mLoginStatusMessageView;
-    @Bind(R2.id.sign_in_button)
-    TextView signInButton;
     @Bind(R2.id.register_button)
     TextView registerButton;
     @Bind(R2.id.forgot_pass)
     TextView forgotPass;
-//    @Bind(R2.id.facebook_login)
-//    TextView facebookLogin;
-
     @Bind(R2.id.linearLayout)
     LinearLayout linearLayout;
     @Bind(R2.id.accounts_sign_in)
@@ -109,9 +102,6 @@ public class LoginFragment extends Fragment implements LoginView {
     ArrayAdapter<String> autoCompleteAdapter;
     List<LoginProviderModel.ProvidersBean> listProvider;
     Snackbar snackbar;
-
-    LocalCacheHandler cacheGTM;
-
 
     public static LoginFragment newInstance(String mEmail, boolean goToIndex) {
         Bundle extras = new Bundle();
@@ -136,17 +126,12 @@ public class LoginFragment extends Fragment implements LoginView {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        cacheGTM = new LocalCacheHandler(getActivity(), AppEventTracking.GTM_CACHE);
-        cacheGTM.putString(AppEventTracking.GTMCacheKey.SESSION_STATE,
-                AppEventTracking.GTMCacheValue.LOGIN);
-        cacheGTM.applyEditor();
-
         login = new LoginImpl(this);
         login.initLoginInstance(mContext);
         login.fetchDataAfterRotate(savedInstanceState);
         login.fetchIntenValues(getArguments());
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-        // this is for testing only
+
         if (savedInstanceState != null)
             Log.d(TAG, LoginFragment.class.getSimpleName() + " : get testing data : " + (anTestInt = savedInstanceState.getInt(TEST_INT_KEY)));
     }
@@ -164,6 +149,7 @@ public class LoginFragment extends Fragment implements LoginView {
     public void onResume() {
         super.onResume();
         login.initData();
+        login.sendGTMScreen(getActivity());
     }
 
     @Override
@@ -171,6 +157,7 @@ public class LoginFragment extends Fragment implements LoginView {
         super.onDestroyView();
         login.unSubscribe();
         ButterKnife.unbind(this);
+        KeyboardHandler.DropKeyboard(getActivity(),getView());
         dismissSnackbar();
     }
 
@@ -200,15 +187,7 @@ public class LoginFragment extends Fragment implements LoginView {
     @Override
     public void startLoginWithGoogle(String LoginType, Object model) {
         login.startLoginWithGoogle(LoginType, model);
-        storeCacheGTM(AppEventTracking.GTMCacheKey.LOGIN_TYPE,
-                AppEventTracking.GTMCacheValue.GMAIL);
     }
-
-//    @OnClick(R2.id.gplus_login)
-//    public void onGoogleLogin() {
-//        ((GoogleActivity) getActivity()).onSignInClicked();
-//    }
-
 
     @Override
     public void setListener() {
@@ -230,10 +209,10 @@ public class LoginFragment extends Fragment implements LoginView {
                                 KeyboardHandler.DropKeyboard(mContext, mEmailView);
                                 LoginViewModel model = new LoginViewModel();
                                 if (mPasswordView != null && mEmailView != null) {
-                                    model.setUsername(mEmailView.getText().toString());
-                                    model.setPassword(mPasswordView.getText().toString());
-                                    model.setIsEmailClick(true);
-                                    login.sendDataFromInternet(LoginModel.EmailType, model);
+//                                    model.setUsername(mEmailView.getText().toString());
+//                                    model.setPassword(mPasswordView.getText().toString());
+//                                    model.setIsEmailClick(true);
+//                                    login.sendDataFromInternet(LoginModel.EmailType, model);
                                 }
                             }
                             return true;
@@ -249,35 +228,7 @@ public class LoginFragment extends Fragment implements LoginView {
                 mPasswordView.requestFocus();
             }
         });
-        signInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // save last input email
-                InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(mEmailView.getWindowToken(), 0);
-                if (login.addAutoCompleteData(mEmailView.getText().toString())) {
-                    setAutoCompleteAdapter(login.getLastLoginIdList());
-                    notifyAutoCompleteAdapter();
-                }
 
-                FocusPair focusPair = validateSignIn();
-                if (focusPair.isFocus()) {
-                    focusPair.getView().requestFocus();
-                } else {
-                    // Show a progress spinner, and kick off a background task to
-                    // perform the user login attempt.
-                    mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
-                    KeyboardHandler.DropKeyboard(mContext, mEmailView);
-                    LoginViewModel model = new LoginViewModel();
-                    if (mPasswordView != null && mEmailView != null) {
-                        model.setUsername(mEmailView.getText().toString());
-                        model.setPassword(mPasswordView.getText().toString());
-                        model.setIsEmailClick(true);
-                        login.sendDataFromInternet(LoginModel.EmailType, model);
-                    }
-                }
-            }
-        });
 
         accountSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -303,7 +254,8 @@ public class LoginFragment extends Fragment implements LoginView {
                         model.setUsername(mEmailView.getText().toString());
                         model.setPassword(mPasswordView.getText().toString());
                         model.setIsEmailClick(true);
-                        login.getToken(LoginModel.EmailType, model);
+                        login.sendDataFromInternet(LoginModel.EmailType, model);
+                        login.sendCTAAction();
                     }
                 }
             }
@@ -313,6 +265,7 @@ public class LoginFragment extends Fragment implements LoginView {
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                login.sendGTMRegisterThrougLogin();
                 ((SessionView) getActivity()).moveToRegister();
             }
         });
@@ -325,21 +278,10 @@ public class LoginFragment extends Fragment implements LoginView {
                 }
             }
         });
-//
-//        facebookLogin.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                login.loginFacebook();
-//            }
-//        });
     }
 
-    //
-//    @OnClick(R2.id.facebook_login)
     public void onFacebookClick() {
         login.loginFacebook();
-        storeCacheGTM(AppEventTracking.GTMCacheKey.LOGIN_TYPE,
-                AppEventTracking.GTMCacheValue.FACEBOOK);
     }
 
     @Override
@@ -415,10 +357,12 @@ public class LoginFragment extends Fragment implements LoginView {
             mPasswordView.setPasswordError(getString(R.string.error_field_required));
             focusPair.setView(mPasswordView);
             focusPair.setIsFocus(true);
+            login.sendGTMLoginError(AppEventTracking.EventLabel.PASSWORD);
         } else if (password.length() < 4) {
             mPasswordView.setPasswordError(getString(R.string.error_incorrect_password));
             focusPair.setView(mPasswordView);
             focusPair.setIsFocus(true);
+            login.sendGTMLoginError(AppEventTracking.EventLabel.PASSWORD);
         }
 
         // Check for a valid email address.
@@ -426,10 +370,12 @@ public class LoginFragment extends Fragment implements LoginView {
             mEmailView.setError(getString(R.string.error_field_required));
             focusPair.setView(mEmailView);
             focusPair.setIsFocus(true);
+            login.sendGTMLoginError(AppEventTracking.EventLabel.EMAIL);
         } else if (!CommonUtils.EmailValidation(email)) {
             mEmailView.setError(getString(R.string.error_invalid_email));
             focusPair.setView(mEmailView);
             focusPair.setIsFocus(true);
+            login.sendGTMLoginError(AppEventTracking.EventLabel.EMAIL);
         }
 
         return focusPair;
@@ -537,8 +483,6 @@ public class LoginFragment extends Fragment implements LoginView {
     public void onGooglePlusClicked() {
         showProgress(true);
         ((GoogleActivity) getActivity()).onSignInClicked();
-        storeCacheGTM(AppEventTracking.GTMCacheKey.LOGIN_TYPE,
-                AppEventTracking.GTMCacheValue.GMAIL);
     }
 
     @Override
@@ -609,8 +553,6 @@ public class LoginFragment extends Fragment implements LoginView {
                 newFragment.show(getFragmentManager().beginTransaction(), "dialog");
                 getActivity().getWindow().setSoftInputMode(
                         WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-                storeCacheGTM(AppEventTracking.GTMCacheKey.LOGIN_TYPE,
-                        listProvider.get(position).getName());
             }
         };
     }
@@ -626,10 +568,12 @@ public class LoginFragment extends Fragment implements LoginView {
     public void onMessageError(int type, Object... data) {
         String text = (String) data[0];
         showProgress(false);
-        //[START] move to activation resent
-        if (text.contains("belum diaktivasi")) {
+
+        if (checkEmailHasBeenActive(text)) {
             if (mContext != null && mContext instanceof SessionView) {
-                ((SessionView) mContext).moveToActivationResend(mEmailView.getText().toString());
+                Bundle bundle = new Bundle();
+                bundle.putInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE, DownloadService.LOGIN_WEBVIEW);
+                ((SessionView) mContext).moveToActivationResend(mEmailView.getText().toString(),bundle);
             }
         }
         switch (type) {
@@ -645,8 +589,11 @@ public class LoginFragment extends Fragment implements LoginView {
                 login.getProvider();
                 break;
         }
-        //[END] move to activation resent
         mPasswordView.setText("");
+    }
+
+    private boolean checkEmailHasBeenActive(String text) {
+        return text.contains("belum diaktivasi");
     }
 
     private View.OnClickListener retryDiscover() {
@@ -683,7 +630,9 @@ public class LoginFragment extends Fragment implements LoginView {
                 } else if (bundle.getString("path").contains("code")) {
                     login.sendDataFromInternet(LoginModel.WebViewType, bundle);
                 } else if (bundle.getString("path").contains("activation-social")) {
-                    ((SessionView) mContext).moveToActivationResend(mEmailView.getText().toString());
+                    Bundle lbundle = new Bundle();
+                    lbundle.putInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE, DownloadService.REGISTER_WEBVIEW);
+                    ((SessionView) mContext).moveToActivationResend(mEmailView.getText().toString(),lbundle);
                 }
                 break;
             default:
@@ -695,10 +644,6 @@ public class LoginFragment extends Fragment implements LoginView {
         if(snackbar!=null) snackbar.dismiss();
     }
 
-    private void storeCacheGTM(String key, String value) {
-        cacheGTM.putString(key, value);
-        cacheGTM.applyEditor();
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
