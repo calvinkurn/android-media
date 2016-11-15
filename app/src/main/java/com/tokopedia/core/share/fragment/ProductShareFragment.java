@@ -166,6 +166,27 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
         getActivity().invalidateOptionsMenu();
         progressBar.setVisibility(View.GONE);
         loadingAddProduct.setVisibility(View.GONE);
+        if (this.shareData != null){
+            if (shareData.getType() != null){
+                switch (shareData.getType()){
+                    case ShareData.CATALOG_TYPE:
+                        tvTitle.setText("Bagikan Katalog Ini!");
+                        break;
+                    case ShareData.SHOP_TYPE:
+                        tvTitle.setText("Bagikan Toko Ini!");
+                        break;
+                    case ShareData.HOTLIST_TYPE:
+                        tvTitle.setText("Bagikan Hotlist Ini!");
+                        break;
+                    case ShareData.DISCOVERY_TYPE:
+                        tvTitle.setText("Bagikan Pencarian Ini!");
+                        break;
+                    case ShareData.PRODUCT_TYPE:
+                        tvTitle.setText("Bagikan Produk Ini!");
+                        break;
+                }
+            }
+        }
     }
 
     public void onError(int type, Bundle resultData) {

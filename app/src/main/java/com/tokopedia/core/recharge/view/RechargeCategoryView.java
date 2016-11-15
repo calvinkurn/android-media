@@ -10,4 +10,6 @@ public interface RechargeCategoryView {
     void renderDataRechargeCategory(CategoryData rechargeCategory);
 
     void failedRenderDataRechargeCategory();
+
+    void renderErrorNetwork();
 }

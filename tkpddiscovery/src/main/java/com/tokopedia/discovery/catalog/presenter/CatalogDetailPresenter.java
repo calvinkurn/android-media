@@ -105,9 +105,9 @@ public class CatalogDetailPresenter implements ICatalogDetailPresenter {
 
     private ShareData generateCatalogShareData(Activity activity, String catalogUrl) {
         return ShareData.Builder.aShareData()
-                .setType(activity.getString(R.string.share_catalog_key))
                 .setName(activity.getString(R.string.message_share_catalog))
-                .setTextContent(activity.getString(R.string.share_text_content) + " " + catalogUrl)
+                .setType(ShareData.CATALOG_TYPE)
+                .setTextContent(activity.getString(R.string.share_text_content))
                 .setUri(catalogUrl)
                 .build();
     }

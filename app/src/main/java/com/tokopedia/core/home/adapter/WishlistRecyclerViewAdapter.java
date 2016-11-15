@@ -91,7 +91,6 @@ public class WishlistRecyclerViewAdapter extends RecyclerView.Adapter<WishlistRe
     }
 
     private void setProductImage(ViewHolder holder, ProductItem data) {
-//        ImageHandler.LoadImageFit(holder.productImage, data.imgUri);
         ImageHandler.loadImageFit2(holder.getContext(), holder.productImage, data.imgUri);
     }
 
@@ -102,13 +101,9 @@ public class WishlistRecyclerViewAdapter extends RecyclerView.Adapter<WishlistRe
     }
 
     private void setBadges(ViewHolder holder, ProductItem data) {
-        holder.badgesContainer.removeAllViews();
-        if (data.getBadges() != null)
+        if (data.getBadges() != null && holder.badgesContainer.getChildCount() == 0)
             for (ProductItem.Badge badges : data.getBadges()) {
-                View view = LayoutInflater.from(context).inflate(R.layout.badge_layout, null);
-                ImageView imageBadge = (ImageView) view.findViewById(R.id.badge);
-                holder.badgesContainer.addView(view);
-                LuckyShopImage.loadImage(imageBadge, badges.getImageUrl());
+                LuckyShopImage.loadImage(context, badges.getImageUrl(), holder.badgesContainer);
             }
     }
 }
