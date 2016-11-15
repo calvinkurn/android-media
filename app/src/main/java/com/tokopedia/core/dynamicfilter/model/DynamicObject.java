@@ -18,7 +18,6 @@ public class DynamicObject implements MultiLevelExpIndListAdapter.ExpIndData {
     private boolean isChecked;
     private List<DynamicObject> mChildren;
     private boolean mIsGroup;
-    private int mGroupSize;
     private String depId;
     public String key;
 
@@ -26,25 +25,15 @@ public class DynamicObject implements MultiLevelExpIndListAdapter.ExpIndData {
     }
 
 
-    public DynamicObject(HadesV1Model.Category model, int size) {
-        if (size > 0) {
-            mParentText = model.getName();
-        } else {
-            mParentText = model.getName();
-        }
-        this.mGroupSize = size;
+    public DynamicObject(HadesV1Model.Category model) {
+        mParentText = model.getName();
         this.depId = model.getId();
         mChildren = new ArrayList<>();
         initKey(model.getParent(), model.getId());
     }
 
-    public DynamicObject(CategoryDB model, int size) {
-        if (size > 0) {
-            mParentText = model.getNameCategory();
-        } else {
-            mParentText = model.getNameCategory();
-        }
-        this.mGroupSize = size;
+    public DynamicObject(CategoryDB model) {
+        mParentText = model.getNameCategory();
         this.depId = String.valueOf(model.getDepartmentId());
         mChildren = new ArrayList<>();
         initKey(model.getParentId(), String.valueOf(model.getDepartmentId()));
@@ -95,7 +84,8 @@ public class DynamicObject implements MultiLevelExpIndListAdapter.ExpIndData {
 
     @Override
     public void setGroupSize(int groupSize) {
-        mGroupSize = groupSize;
+
+
     }
 
     public void addChild(List<DynamicObject> childs, int increment) {

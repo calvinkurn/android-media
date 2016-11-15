@@ -23,10 +23,10 @@ public class DynamicCategoryAdapter extends MultiLevelExpIndListAdapter {
      */
     private final View.OnClickListener mListener;
 
-    private final Context mContext;
+    private final DynamicFilterView dynamicFilterView;
 
-    public DynamicCategoryAdapter(Context mContext, View.OnClickListener mListener) {
-        this.mContext = mContext;
+    public DynamicCategoryAdapter(DynamicFilterView dynamicFilterView, View.OnClickListener mListener) {
+        this.dynamicFilterView = dynamicFilterView;
         this.mListener = mListener;
     }
 
@@ -35,9 +35,9 @@ public class DynamicCategoryAdapter extends MultiLevelExpIndListAdapter {
         View v;
         RecyclerView.ViewHolder viewHolder;
         int resource = R.layout.dynamic_parent_view_holder_layout;
-        v = LayoutInflater.from(parent.getContext()).inflate(resource, parent, false);
-        viewHolder = new DynamicViewHolder(v);
-        v.setOnClickListener(mListener);
+        View view = LayoutInflater.from(parent.getContext()).inflate(resource, parent, false);
+        viewHolder = new DynamicViewHolder(view);
+        view.setOnClickListener(mListener);
         return viewHolder;
     }
 
@@ -67,8 +67,8 @@ public class DynamicCategoryAdapter extends MultiLevelExpIndListAdapter {
                 }
             }
         });
-        if (mContext != null && mContext instanceof DynamicFilterView) {
-            Boolean isChecked = ((DynamicFilterView) mContext).getCheckedPosition(dynamicObject.getKey());
+        if (dynamicFilterView != null) {
+            Boolean isChecked = dynamicFilterView.getCheckedPosition(dynamicObject.getKey());
             if (isChecked != null && isChecked) {
                 parentViewHolder.dynamicParentViewHolder.setChecked(true);
             } else {
@@ -116,7 +116,7 @@ public class DynamicCategoryAdapter extends MultiLevelExpIndListAdapter {
     }
 
     private String getSelectedIds() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         for (ExpIndData data : getData()) {
             DynamicObject object = (DynamicObject) data;
             if (object.isChecked()) {

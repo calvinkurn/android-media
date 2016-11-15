@@ -29,7 +29,6 @@ import com.tokopedia.core.session.base.BaseFragment;
 
 import org.parceler.Parcels;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -40,21 +39,25 @@ import butterknife.OnClick;
  */
 public class DynamicFilterCategoryFragment extends BaseFragment<CategoryPresenter> implements CategoryView {
 
+    private static final String GROUPS_KEY = "groups_key";
+
     @Bind(R2.id.dynamic_filter_category_recyclerview)
     RecyclerView dynamicFilterCategory;
 
     @Bind(R2.id.dynamic_filter_category_finish)
     Button dynamicFilterCategoryFinish;
 
-    DynamicCategoryAdapter dynamicCategoryAdapter;
-    TkpdProgressDialog dialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+    private DynamicCategoryAdapter dynamicCategoryAdapter;
+    private TkpdProgressDialog dialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+
     private BroadcastReceiver resetFilterReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             dynamicCategoryAdapter.reset();
         }
     };
-    private static final String GROUPS_KEY = "groups_key";
+
+
     public static DynamicFilterCategoryFragment newInstance(List<Breadcrumb> breadCrumb, List<DynamicFilterModel.Filter> filterList,
                                                             String currentCategory) {
 
@@ -118,8 +121,10 @@ public class DynamicFilterCategoryFragment extends BaseFragment<CategoryPresente
     }
 
     @Override
-    public void setupAdapter(ArrayList<DynamicObject> dynamicParentObject) {
-        dynamicCategoryAdapter = new DynamicCategoryAdapter(getActivity(), new View.OnClickListener() {
+    public void setupAdapter(List<DynamicObject> dynamicParentObject) {
+        dynamicCategoryAdapter = new DynamicCategoryAdapter(
+                (DynamicFilterView) getActivity(), new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 int position = dynamicFilterCategory.getChildAdapterPosition(v);
