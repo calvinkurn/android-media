@@ -670,7 +670,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
 
     private void openFilter(DynamicFilterModel.Data filterAttribute, String source) {
         List<Breadcrumb> crumb = getProductBreadCrumb();
-        if (crumb != null) {
+        if (breadcrumbs == null && crumb != null) {
             breadcrumbs = crumb;
         }
         if (filterAttribute != null && breadcrumbs != null) {
@@ -681,7 +681,6 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                     browseProductActivityModel.getParentDepartement(), source);
 
         }
-        return;
     }
 
 
