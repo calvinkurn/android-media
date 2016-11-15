@@ -133,6 +133,7 @@ public class CartPresenter implements ICartPresenter {
     @Override
     public void processSubmitEditCart(Activity activity, TransactionList cartData,
                                       List<ProductEditData> cartProductEditDataList) {
+        view.showProgressLoading();
         TKPDMapParam<String, String> maps = new TKPDMapParam<>();
         maps.put("carts", new Gson().toJson(cartProductEditDataList));
         maps.put("cart_shop_id", cartData.getCartShop().getShopId());

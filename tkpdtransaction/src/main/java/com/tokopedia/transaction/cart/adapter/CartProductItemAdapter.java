@@ -2,6 +2,9 @@ package com.tokopedia.transaction.cart.adapter;
 
 import android.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.Html;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +28,7 @@ import butterknife.ButterKnife;
  * @author anggaprasetiyo on 11/10/16.
  */
 
-public class CartProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+class CartProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int TYPE_PRODUCT_ITEM = R.layout.cart_product_item_holder;
     private final Fragment hostFragment;
 
@@ -107,10 +110,65 @@ public class CartProductItemAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             final ProductItemHolder productItemHolder = (ProductItemHolder) holder;
             final CartProductItemEditable item = (CartProductItemEditable) dataList.get(position);
             bindProductItemHolder(productItemHolder, item);
+            bindProductItemEditableListener(productItemHolder, item, position);
         }
     }
 
+    private void bindProductItemEditableListener(ProductItemHolder holder,
+                                                 CartProductItemEditable item, final int position) {
+        holder.etNotesProduct.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (dataList.get(position) instanceof CartProductItemEditable) {
+                    ((CartProductItemEditable) dataList.get(position))
+                            .getProductEditData().setProductNotes(s.toString()
+                    );
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        holder.etQuantityProduct.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (dataList.get(position) instanceof CartProductItemEditable) {
+                    int qty = ((CartProductItemEditable) dataList.get(position))
+                            .getProductEditData().getProductQuantity();
+                    try {
+                        ((CartProductItemEditable) dataList.get(position))
+                                .getProductEditData().setProductQuantity(
+                                Integer.parseInt(s.toString())
+                        );
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                        ((CartProductItemEditable) dataList.get(position))
+                                .getProductEditData().setProductQuantity(qty);
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+    }
+
     private void bindProductItemHolder(ProductItemHolder holder, final CartProductItemEditable item) {
+        renderEditableMode(holder);
         holder.tvNameProduct.setText(item.getCartProduct().getProductName());
         holder.tvPriceProduct.setText(item.getCartProduct().getProductTotalPriceIdr());
         holder.tvWeightProduct.setText(item.getCartProduct().getProductTotalWeight());
@@ -123,6 +181,19 @@ public class CartProductItemAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     cartProductAction.onCancelCartProduct(item.getCartProduct());
             }
         });
+        holder.etQuantityProduct.setText(item.getTempQuantity());
+        holder.etNotesProduct.setText(Html.fromHtml(item.getTempNotes()));
+
+    }
+
+    private void renderEditableMode(ProductItemHolder holder) {
+        if (editMode) {
+            holder.etNotesProduct.setEnabled(true);
+            holder.etQuantityProduct.setEnabled(true);
+        } else {
+            holder.etNotesProduct.setEnabled(false);
+            holder.etQuantityProduct.setEnabled(false);
+        }
     }
 
     @Override

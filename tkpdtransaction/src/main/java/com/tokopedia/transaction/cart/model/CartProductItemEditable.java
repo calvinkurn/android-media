@@ -56,6 +56,9 @@ public class CartProductItemEditable {
     }
 
     public ProductEditData getProductEditData() {
+//        int qtyDummy = productEditData.getProductQuantity()+2;
+//        productEditData.setProductQuantity(qtyDummy);
+//        productEditData.setProductNotes("Ini adalah test edit notes");
         return productEditData;
     }
 

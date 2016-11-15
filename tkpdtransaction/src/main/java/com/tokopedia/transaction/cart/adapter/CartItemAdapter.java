@@ -2,6 +2,7 @@ package com.tokopedia.transaction.cart.adapter;
 
 import android.app.Fragment;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -125,11 +126,12 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         if (editMode) {
             holder.holderActionEditor.setVisibility(View.VISIBLE);
-            holder.holderContainer.setBackgroundResource(R.drawable.cards_highlight);
+            holder.holderContainer.setCardBackgroundColor(hostFragment.getResources().getColor(R.color.grey_100));
+            adapterProduct.enableEditMode();
         } else {
             holder.holderActionEditor.setVisibility(View.GONE);
-            holder.holderContainer.setBackgroundResource(R.drawable.cards_ui_2);
-            adapterProduct.enableEditMode();
+            holder.holderContainer.setCardBackgroundColor(hostFragment.getResources().getColor(R.color.white));
+            adapterProduct.disableEditMode();
         }
 
         holder.tvShippingAddress.setOnClickListener(new View.OnClickListener() {
@@ -169,7 +171,6 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             return true;
                         } else if (i == R.id.action_cart_edit) {
                             enableEditMode();
-                            adapterProduct.enableEditMode();
                             return true;
                         }
                         return false;
@@ -190,7 +191,8 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             @Override
             public void onClick(View v) {
                 try {
-                    cartAction.onSubmitEditCart(data.getTransactionList(), adapterProduct.getCartProductEditDataList());
+                    cartAction.onSubmitEditCart(data.getTransactionList(),
+                            adapterProduct.getCartProductEditDataList());
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
@@ -212,7 +214,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R2.id.holder_container)
-        LinearLayout holderContainer;
+        CardView holderContainer;
         @Bind(R2.id.tv_error_1)
         TextView tvError1;
         @Bind(R2.id.tv_error_2)
