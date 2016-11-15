@@ -76,7 +76,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         RechargeView, AdapterView.OnItemSelectedListener,
         CompoundButton.OnCheckedChangeListener, View.OnFocusChangeListener, View.OnTouchListener {
 
-    //region final static member variable
+    //region final static member variabl
     private static final String TAG = "RechargeFragment";
     private static final int CONTACT_PICKER_RESULT = 1001;
     private static final String ARG_PARAM_CATEGORY = "ARG_PARAM_CATEGORY";
@@ -116,6 +116,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     private Product selectedProduct;
     private LocalCacheHandler cacheHandlerPhoneBook;
     private LastOrder lastOrder;
+    private int minLengthDefaultOperator = -1;
     //endregion
 
     public static RechargeFragment newInstance(Category category) {
@@ -183,6 +184,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         hideProgressFetchData();
         setRechargeEditTextCallback();
         setRechargeEditTextTouchCallback();
+        if (!category.getAttributes().getValidatePrefix())
+            this.rechargePresenter.updateMinLenghAndOperator(category.getAttributes().getDefaultOperatorId());
         return view;
     }
 
@@ -247,35 +250,32 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     public void onRechargeTextChanged(CharSequence s, int start, int before, int count) {
         String temp = s.toString();
         temp = validateTextPrefix(temp);
-        if (temp.length() >= 3 && temp.length() <5) {
-            String phonePrefix = temp.substring(0, temp.length() <= 4 ? temp.length() : 4);
-            if (s.length() >= 3) {
-                this.rechargePresenter.validatePhonePrefix(phonePrefix,
+        if (!category.getAttributes().getValidatePrefix() && minLengthDefaultOperator>-1) {
+            if (s.length()>minLengthDefaultOperator) {
+                this.rechargePresenter.validateWithDefaultOperator(
                         category.getId(),
-                        category.getAttributes().getValidatePrefix());
-            } else {
-                isAlreadyHavePhonePrefixInView = false;
-                hideFormAndImageOperator();
-            }
-        } else if (temp.length() >= 5 && isAlreadyHavePhonePrefixInView==false) {
-            String phonePrefix = temp.substring(0, 5);
-            if (s.length() >= 5) {
-                this.rechargePresenter.validatePhonePrefix(phonePrefix,
-                        category.getId(),
-                        category.getAttributes().getValidatePrefix());
-            } else {
-                isAlreadyHavePhonePrefixInView = false;
-                hideFormAndImageOperator();
+                        category.getAttributes().getDefaultOperatorId());
             }
         } else {
-            isAlreadyHavePhonePrefixInView = false;
-            hideFormAndImageOperator();
+            if (temp.length() >= 3 && temp.length() <5) {
+                String phonePrefix = temp.substring(0, temp.length() <= 4 ? temp.length() : 4);
+                if (s.length() >= 3) {
+                    this.rechargePresenter.validatePhonePrefix(phonePrefix,
+                            category.getId(),
+                            category.getAttributes().getValidatePrefix());
+                } else {
+                    isAlreadyHavePhonePrefixInView = false;
+                    hideFormAndImageOperator();
+                }
+            } else {
+                isAlreadyHavePhonePrefixInView = false;
+                hideFormAndImageOperator();
+            }
         }
         if (s.length() == 0) {
             isAlreadyHavePhonePrefixInView = false;
             setPhoneBookVisibility();
             hideFormAndImageOperator();
-
         }
     }
 
@@ -377,6 +377,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
     @Override
     public void setMinAndMaxtLength(int minLength, int maxLength) {
+        this.minLengthDefaultOperator = minLength;
         this.rechargeEditText.getAutoCompleteTextView().setFilters(new InputFilter[] {new InputFilter.LengthFilter(maxLength)});
     }
 
