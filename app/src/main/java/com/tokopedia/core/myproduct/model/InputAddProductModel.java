@@ -1,6 +1,7 @@
 package com.tokopedia.core.myproduct.model;
 
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.raizlabs.android.dbflow.sql.language.Select;
@@ -21,6 +22,7 @@ import com.tokopedia.core.database.model.WeightUnitDB;
 import com.tokopedia.core.database.model.WeightUnitDB_Table;
 import com.tokopedia.core.database.model.WholesalePriceDB;
 import com.tokopedia.core.database.model.WholesalePriceDB_Table;
+import com.tokopedia.core.myproduct.model.editProductForm.EditProductForm;
 import com.tokopedia.core.myproduct.model.editproduct.EditProductModel;
 import com.tokopedia.core.myproduct.presenter.ImageGalleryImpl;
 import com.tokopedia.core.myproduct.utils.ProductEditHelper;
@@ -366,7 +368,7 @@ public class InputAddProductModel {
     }
 
     public static ProductDB compileAllForEdit(InputAddProductModel inputAddProductModel,
-                                              ProductDB produk, ProductDetailData productDetailData){
+                                              ProductDB produk, EditProductForm.Data editProductForm){
 
         // 1
         WeightUnitDB weightUnitDB =
@@ -399,9 +401,7 @@ public class InputAddProductModel {
         }
 
         // 6
-        StockStatusDB stockStatusDB = new Select().from(StockStatusDB.class)
-                .where(StockStatusDB_Table.stockDetail.eq(inputAddProductModel.getStockStatus()))
-                .querySingle();
+        StockStatusDB stockStatusDB = getStockStatusDB(inputAddProductModel);
 
         if(produk==null)
             produk = new ProductDB();
@@ -420,8 +420,8 @@ public class InputAddProductModel {
         produk.setKebijakanReturnableDB(returnableDB);
         produk.setProductPreOrder(inputAddProductModel.getPreOrder());
         produk.setCatalogid(inputAddProductModel.getCatalog());
-        produk.setProductId(productDetailData.getInfo().getProductId());// product id
-        produk.setProductUrl(productDetailData.getInfo().getProductUrl());// product url
+        produk.setProductId(Integer.parseInt(editProductForm.getProduct().getProductId()));// product id
+        produk.setProductUrl(editProductForm.getProduct().getProductUrl());// product url
         produk.setStockStatusDB(stockStatusDB);
         produk.save();
 
@@ -456,6 +456,19 @@ public class InputAddProductModel {
 
 
         return produk;
+    }
+
+    @NonNull
+    public static StockStatusDB getStockStatusDB(InputAddProductModel inputAddProductModel) {
+        StockStatusDB stockStatusDB = new Select().from(StockStatusDB.class)
+                .where(StockStatusDB_Table.stockDetail.eq(inputAddProductModel.getStockStatus()))
+                .querySingle();
+
+        if(stockStatusDB == null){
+            stockStatusDB = new StockStatusDB(inputAddProductModel.getStockStatus());
+            stockStatusDB.save();
+        }
+        return stockStatusDB;
     }
 
     public static ProductDB compileAll(InputAddProductModel inputAddProductModel,
@@ -493,6 +506,11 @@ public class InputAddProductModel {
         StockStatusDB stockStatusDB = new Select().from(StockStatusDB.class)
                 .where(StockStatusDB_Table.stockDetail.eq(inputAddProductModel.getStockStatus()))
                 .querySingle();
+
+        if(stockStatusDB == null){
+            stockStatusDB = new StockStatusDB(inputAddProductModel.getStockStatus());
+            stockStatusDB.save();
+        }
 
         if(produk==null)
             produk = new ProductDB();

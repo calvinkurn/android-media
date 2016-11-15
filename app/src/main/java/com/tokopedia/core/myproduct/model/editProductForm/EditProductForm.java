@@ -2,6 +2,7 @@ package com.tokopedia.core.myproduct.model.editProductForm;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.product.model.productdetail.ProductPreOrder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -283,6 +284,48 @@ public class EditProductForm {
         @SerializedName("info")
         @Expose
         private Info info;
+        @SerializedName("catalog")
+        @Expose
+        private Catalog catalog;
+        @SerializedName("preorder")
+        @Expose
+        private ProductPreOrder preorder;
+
+
+        /**
+         *
+         * @return
+         * The preorder
+         */
+        public ProductPreOrder getPreorder() {
+            return preorder;
+        }
+
+        /**
+         *
+         * @param preorder
+         * The preorder
+         */
+        public void setPreorder(ProductPreOrder preorder) {
+            this.preorder = preorder;
+        }
+        /**
+         *
+         * @return
+         * The catalog
+         */
+        public Catalog getCatalog() {
+            return catalog;
+        }
+
+        /**
+         *
+         * @param catalog
+         * The catalog
+         */
+        public void setCatalog(Catalog catalog) {
+            this.catalog = catalog;
+        }
 
         /**
          *
@@ -657,6 +700,47 @@ public class EditProductForm {
         @SerializedName("product_url")
         @Expose
         private String productUrl;
+        @SerializedName("product_condition_name")
+        @Expose
+        private String productConditionName;
+        @SerializedName("product_insurance")
+        @Expose
+        private String productInsurance;
+
+        /**
+         *
+         * @return
+         * The productInsurance
+         */
+        public String getProductInsurance() {
+            return productInsurance;
+        }
+
+        /**
+         *
+         * @param productInsurance
+         * The product_insurance
+         */
+        public void setProductInsurance(String productInsurance) {
+            this.productInsurance = productInsurance;
+        }
+        /**
+         *
+         * @return
+         * The productConditionName
+         */
+        public String getProductConditionName() {
+            return productConditionName;
+        }
+
+        /**
+         *
+         * @param productConditionName
+         * The product_condition_name
+         */
+        public void setProductConditionName(String productConditionName) {
+            this.productConditionName = productConditionName;
+        }
 
         public String getProductNameEditable() {
             return productNameEditable;
@@ -1169,6 +1253,53 @@ public class EditProductForm {
          */
         public void setWholesalePrice(String wholesalePrice) {
             this.wholesalePrice = wholesalePrice;
+        }
+
+    }
+
+    public class Catalog {
+
+        @SerializedName("catalog_name")
+        @Expose
+        private String catalogName;
+        @SerializedName("catalog_id")
+        @Expose
+        private String catalogId;
+
+        /**
+         *
+         * @return
+         * The catalogName
+         */
+        public String getCatalogName() {
+            return catalogName;
+        }
+
+        /**
+         *
+         * @param catalogName
+         * The catalog_name
+         */
+        public void setCatalogName(String catalogName) {
+            this.catalogName = catalogName;
+        }
+
+        /**
+         *
+         * @return
+         * The catalogId
+         */
+        public String getCatalogId() {
+            return catalogId;
+        }
+
+        /**
+         *
+         * @param catalogId
+         * The catalog_id
+         */
+        public void setCatalogId(String catalogId) {
+            this.catalogId = catalogId;
         }
 
     }
