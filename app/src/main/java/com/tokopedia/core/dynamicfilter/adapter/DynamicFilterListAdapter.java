@@ -38,7 +38,7 @@ public class DynamicFilterListAdapter extends ProductAdapter {
     private static final int DYNAMIC_FILTER_MODEL = 912_282;
     private int activeLocation = -1;
     private Context context;
-    NotifyActive notifyActive = new NotifyActive() {
+    private NotifyActive notifyActive = new NotifyActive() {
         @Override
         public void notify(boolean status, int position) {
             //[START] reset old active position
@@ -50,7 +50,7 @@ public class DynamicFilterListAdapter extends ProductAdapter {
             activeLocation = position;
 
             //[START] reset old active position
-            activatedPositon();
+            activatePosition(activeLocation);
             //[END] reset old active position
 
             notifyDataSetChanged();
@@ -67,19 +67,22 @@ public class DynamicFilterListAdapter extends ProductAdapter {
 
             }
         }
-
-        private void activatedPositon() {
-            RecyclerViewItem recyclerViewItem = getData().get(activeLocation);
-            if (recyclerViewItem != null && recyclerViewItem instanceof DynamicListModel) {
-                DynamicListModel dynamicListModel = (DynamicListModel) recyclerViewItem;
-                dynamicListModel.active = true;
-
-                // set data again
-                data.set(activeLocation, dynamicListModel);
-
-            }
-        }
     };
+
+    public void activatePosition(int location) {
+        RecyclerViewItem recyclerViewItem = getData().get(location);
+        if (recyclerViewItem != null && recyclerViewItem instanceof DynamicListModel) {
+            DynamicListModel dynamicListModel = (DynamicListModel) recyclerViewItem;
+            dynamicListModel.active = true;
+            // set data again
+            data.set(location, dynamicListModel);
+        }
+        if (activeLocation != location) {
+            // Update active location if not same
+            activeLocation = location;
+        }
+    }
+
 
     public void setActiveIndicator(String key, boolean active) {
         for (RecyclerViewItem item : getData()) {

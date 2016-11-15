@@ -113,10 +113,6 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
     @Override
     public void setFragmentForFirstTime3(List<DynamicFilterModel.Filter> data) {
         setFragmentBasedOnData(DynamicFilterModel.Filter.createCategory());
-        setFilterList2(data);
-    }
-
-    private void setFilterList2(List<DynamicFilterModel.Filter> data) {
         Fragment dynamicFilterListFragment = DynamicFilterListFragment.newInstance2(data);
         setFragment(dynamicFilterListFragment, DynamicFilterListView.FRAGMENT_TAG, R.id.dynamic_filter_list);
     }
@@ -174,6 +170,11 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
     @Override
     public Boolean getCheckedPosition(String key) {
         return selectedPositions.get(key);
+    }
+
+    @Override
+    public Map<String, Boolean> getSelectedPositions() {
+        return selectedPositions;
     }
 
     @Override

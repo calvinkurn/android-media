@@ -139,14 +139,9 @@ public class DynamicFilterListFragment extends BaseFragment<DynamicFilterList> i
     }
 
     @Override
-    public void setupAdapter(List<String> title) {
-        dynamicFilterListAdapter = new DynamicFilterListAdapter(getActivity(), new ArrayList<RecyclerViewItem>(DynamicFilterListAdapter.convertTo(title)));
-        linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-    }
-
-    @Override
-    public void setupAdapter2(List<DynamicFilterModel.Filter> dataList) {
+    public void setupAdapter(List<DynamicFilterModel.Filter> dataList) {
         dynamicFilterListAdapter = new DynamicFilterListAdapter(getActivity(), new ArrayList<RecyclerViewItem>(DynamicFilterListAdapter.convertTo2(dataList)));
+        dynamicFilterListAdapter.activatePosition(0);
         linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
     }
 

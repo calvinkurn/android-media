@@ -14,8 +14,5 @@ public interface DynamicFilterListView extends BaseView {
 
     void setupRecyclerView();
 
-    @Deprecated
-    void setupAdapter(List<String> title);
-
-    void setupAdapter2(List<DynamicFilterModel.Filter> dataList);
+    void setupAdapter(List<DynamicFilterModel.Filter> dataList);
 }

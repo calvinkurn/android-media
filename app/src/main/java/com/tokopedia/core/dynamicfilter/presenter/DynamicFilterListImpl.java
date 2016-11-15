@@ -66,7 +66,7 @@ public class DynamicFilterListImpl extends DynamicFilterList {
     @Override
     public void initDataInstance(Context context) {
         if (!isAfterRotate) {
-            view.setupAdapter2(dataList);
+            view.setupAdapter(dataList);
         }
 
     }
