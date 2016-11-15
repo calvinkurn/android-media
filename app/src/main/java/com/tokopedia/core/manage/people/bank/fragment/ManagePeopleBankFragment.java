@@ -24,7 +24,6 @@ import com.tokopedia.core.manage.people.bank.presenter.ManagePeopleBankFragmentP
 import com.tokopedia.core.manage.people.bank.presenter.ManagePeopleBankFragmentPresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
-import com.tokopedia.core.service.CheckVerification;
 import com.tokopedia.core.util.SessionHandler;
 
 import butterknife.Bind;
@@ -286,7 +285,6 @@ public class ManagePeopleBankFragment extends BasePresenterFragment<ManagePeople
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_add_bank) {
             if (adapter.getList().size() < 10) {
-                LocalCacheHandler cache = new LocalCacheHandler(getActivity(), CheckVerification.VERIFICATION_STATUS);
                 getActivity().getIntent().putExtra(PARAM_IS_PHONE_VERIFIED, SessionHandler.isMsisdnVerified());
                 listener.onAddBank();
             } else

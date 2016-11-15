@@ -307,14 +307,6 @@
             android:label="@string/title_activity_people_withdraw_balance"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.com.tokopedia.seller.ShippingConfirmationDetail"
-            android:label="@string/title_activity_shipping_confirmation_detail"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.com.tokopedia.seller.ShippingConfirmationProdConf"
-            android:label="@string/title_activity_shipping_confirmation_prod_conf"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.tokopedia.core.PaymentConfirmationSuccess"
             android:label="@string/title_activity_payment_confirmation_success"
             android:screenOrientation="portrait" />
@@ -325,10 +317,6 @@
         <activity
             android:name="com.tokopedia.core.inboxticket.activity.InboxTicketDetailActivity"
             android:label="@string/title_activity_inbox_ticket_detail"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.com.tokopedia.seller.OrderHistoryView"
-            android:label="@string/title_activity_order_history_view"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.core.PreviewProductImage"
@@ -729,7 +717,6 @@
             </intent-filter>
         </service>
         <service android:name="com.google.android.gms.analytics.CampaignTrackingService" />
-        <service android:name="com.tokopedia.core.service.CheckVerification" />
         <service
             android:name="com.tokopedia.core.service.DownloadService"
             android:exported="false" />
