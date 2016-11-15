@@ -34,7 +34,6 @@ import com.tokopedia.transaction.cart.adapter.CartItemAdapter;
 import com.tokopedia.transaction.cart.listener.ICartActionFragment;
 import com.tokopedia.transaction.cart.listener.ICartView;
 import com.tokopedia.transaction.cart.model.CheckoutData;
-import com.tokopedia.transaction.cart.model.ShipmentCartPassData;
 import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import com.tokopedia.transaction.cart.model.cartdata.GatewayList;
@@ -285,22 +284,8 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void onChangeShipment(TransactionList data) {
-        navigateToActivityRequest(ShipmentCartActivity.createInstance(context,
-                new ShipmentCartPassData.Builder()
-                        .weight(data.getCartTotalWeight())
-                        .shopId(data.getCartShop().getShopId())
-                        .addressId(data.getCartDestination().getAddressId())
-                        .quantity(data.getCartTotalProduct())
-                        .shippingId(data.getCartShipments().getShipmentId())
-                        .shippingPackageId(data.getCartShipments().getShipmentPackageId())
-                        .addressTitle(data.getCartDestination().getAddressName())
-                        .addressName(data.getCartDestination().getReceiverName())
-                        .latitude(data.getCartDestination().getLatitude())
-                        .longitude(data.getCartDestination().getLongitude())
-                        .receiverPhone(data.getCartDestination().getReceiverPhone())
-                        .receiverName(data.getCartDestination().getReceiverName())
-                        .build()
-        ), ShipmentCartActivity.INTENT_REQUEST_CODE);
+        navigateToActivityRequest(ShipmentCartActivity.createInstance(getActivity(), data),
+                ShipmentCartActivity.INTENT_REQUEST_CODE);
     }
 
     @Override
