@@ -174,4 +174,4 @@ public protected *;
 -keep public class com.myapp.customcomponents.**
 
 #recharge
--keep class com.tokopedia.tkpd.recharge.** { *; }
+-keep class com.tokopedia.core.recharge.model.** { *; }

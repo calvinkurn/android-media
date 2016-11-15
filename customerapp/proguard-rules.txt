@@ -196,7 +196,7 @@
 }
 
 #recharge
--keep class com.tokopedia.tkpd.recharge.** { *; }
+-keep class com.tokopedia.core.recharge.model.** { *; }
 
 
 -keepattributes *Annotation*,EnclosingMethod,Signature
