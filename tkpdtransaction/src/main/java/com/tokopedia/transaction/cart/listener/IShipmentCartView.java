@@ -20,11 +20,13 @@ public interface IShipmentCartView {
      *
      * @param data hasil dari network
      */
-    void renderShipmentCart(@NonNull CalculateShipmentData data);
+    void renderCalculateShipment(@NonNull CalculateShipmentData data);
 
     void renderSpinnerShipment();
 
     void renderCostShipment();
+
+    void renderGeocodeLocation(String location);
 
     void renderErrorCalculateShipment(String error);
 

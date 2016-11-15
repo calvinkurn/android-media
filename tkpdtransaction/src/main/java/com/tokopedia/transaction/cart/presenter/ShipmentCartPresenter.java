@@ -1,5 +1,7 @@
 package com.tokopedia.transaction.cart.presenter;
 
+import com.tokopedia.core.geolocation.model.LocationPass;
+import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.transaction.cart.interactor.CartDataInteractor;
 import com.tokopedia.transaction.cart.interactor.ICartDataInteractor;
@@ -17,7 +19,12 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
+import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author anggaprasetiyo on 11/2/16.
@@ -55,6 +62,39 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
     }
 
     @Override
+    public void processGeoCodeLocation(LocationPass locationPass) {
+        Observable<String> observable = Observable.just(locationPass)
+                .map(new Func1<LocationPass, String>() {
+                    @Override
+                    public String call(LocationPass locationPass) {
+                        return GeoLocationUtils.reverseGeoCode(view.getActivity(),
+                                locationPass.getLatitude(),
+                                locationPass.getLongitude());
+                    }
+                });
+        CompositeSubscription subscription = new CompositeSubscription();
+        subscription.add(observable
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(String location) {
+                        view.renderGeocodeLocation(location);
+                    }
+                }));
+    }
+
+    @Override
     public void processCalculateShipment(CalculateShipmentWrapper wrapper) {
         if (this.view != null) {
             this.view.showLoading();
@@ -84,7 +124,7 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
 
                 @Override
                 public void onNext(CalculateShipmentData data) {
-                    view.renderShipmentCart(data);
+                    view.renderCalculateShipment(data);
                     view.getShipmentAdapter().setAdapterData((ArrayList<Shipment>) data.getShipment());
                     if (data.getShipment().size() > 0){
                         view.getShipmentPackageAdapter().setAdapterData((ArrayList<ShipmentPackage>)

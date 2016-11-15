@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.cart.presenter;
 
 
+import com.tokopedia.core.geolocation.model.LocationPass;
 import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentWrapper;
 import com.tokopedia.transaction.cart.model.savelocation.LocationData;
 import com.tokopedia.transaction.cart.model.savelocation.SaveLocationWrapper;
@@ -18,6 +19,8 @@ public interface IShipmentCartPresenter {
     void goToGeolocation(LocationData data);
 
     void backToCart();
+
+    void processGeoCodeLocation(LocationPass locationPass);
 
     void processCalculateShipment(CalculateShipmentWrapper wrapper);
 
