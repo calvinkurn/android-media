@@ -22,6 +22,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.ui.widget.TouchViewPager;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.customadapter.TouchImageAdapter;
 import com.tokopedia.core.customadapter.TouchImageAdapter.OnImageStateChange;
@@ -39,6 +40,11 @@ public class PreviewProductImage extends TActivity {
     private ArrayList<String> imgDesc;
     private int pos;
     private int lastPos = 0;
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_PRODUCT_IMAGE_PREVIEW;
+    }
 
     private SimpleTarget<Bitmap> target2 = new SimpleTarget<Bitmap>() {
         @Override

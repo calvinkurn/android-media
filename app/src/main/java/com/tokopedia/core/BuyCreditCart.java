@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.widget.ImageView;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.fragment.FragmentBuyCreditCart;
 
@@ -18,6 +19,11 @@ public class BuyCreditCart extends TActivity {
         int container;
         ImageView stateCart;
         ImageView stateConfirm;
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_CREDIT_CARD_CART_BUY;
     }
 
     @Override

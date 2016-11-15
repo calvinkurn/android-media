@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.rescenter.create.fragment.ChooseProductTroubleFragment;
 import com.tokopedia.core.rescenter.create.fragment.ChooseSolutionFragment;
@@ -31,6 +32,11 @@ public class CreateResCenterActivity extends BasePresenterActivity<CreateResCent
     private Bundle bundleData;
     private Uri uriData;
     private CreateResCenterReceiver receiver;
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_RESOLUTION_CENTER_ADD;
+    }
 
     public static Intent newInstance(Context context, String orderID) {
         Intent intent = new Intent(context, CreateResCenterActivity.class);

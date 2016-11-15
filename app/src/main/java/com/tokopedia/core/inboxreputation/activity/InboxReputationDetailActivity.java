@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.inboxreputation.fragment.ImageUploadPreviewFragment;
@@ -38,6 +39,11 @@ public class InboxReputationDetailActivity extends
     public static final String NAV_RESPONSE_PRODUCT = "response product";
 
     ReviewResultReceiver mReceiver;
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_INBOX_REPUTATION_DETAIL;
+    }
 
     @Override
     protected void setupURIPass(Uri data) {
