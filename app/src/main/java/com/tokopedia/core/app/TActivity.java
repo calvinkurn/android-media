@@ -58,7 +58,6 @@ import com.tokopedia.core.service.HadesService;
 import com.tokopedia.core.service.constant.HadesConstant;
 import com.tokopedia.core.session.Login;
 import com.tokopedia.core.session.presenter.Session;
-import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.PhoneVerificationUtil;
 import com.tokopedia.core.util.RequestManager;
@@ -271,7 +270,7 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
     }
 
     private void sendToLocalytics(){
-        ScreenTracking.screenLoca(AppScreen.convertAppScreen(this));
+        ScreenTracking.screenLoca(getScreenName());
     }
 
     private HUDIntent.HUDInterface onBindServiceListener(){
