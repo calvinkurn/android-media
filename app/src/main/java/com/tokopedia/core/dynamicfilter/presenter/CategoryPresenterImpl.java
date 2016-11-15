@@ -32,8 +32,8 @@ import rx.schedulers.Schedulers;
 public class CategoryPresenterImpl extends CategoryPresenter {
 
     private static final String TAG = CategoryPresenterImpl.class.getSimpleName();
-    HadesV1Model hadesV1Model;
-    CategoryDatabaseManager manager = new CategoryDatabaseManager();
+    private HadesV1Model hadesV1Model;
+    private CategoryDatabaseManager manager = new CategoryDatabaseManager();
     private String currentCategory;
 
     public CategoryPresenterImpl(CategoryView view) {
@@ -124,10 +124,11 @@ public class CategoryPresenterImpl extends CategoryPresenter {
                 ));
     }
 
-    public static void saveHadesV1Model(Response<HadesV1Model> hadesV1ModelResponse, CategoryDatabaseManager manager) {
+    private static void saveHadesV1Model(Response<HadesV1Model> hadesV1ModelResponse,
+                                         CategoryDatabaseManager manager) {
         HadesV1Model body = hadesV1ModelResponse.body();
         HadesV1Model.Data data = body.getData();
-        List<CategoryDB> resultCategories = new ArrayList<CategoryDB>();
+        List<CategoryDB> resultCategories = new ArrayList<>();
         List<HadesV1Model.Category> level1List = data.getCategories();
         for (HadesV1Model.Category level1 :
                 level1List) {
@@ -141,8 +142,8 @@ public class CategoryPresenterImpl extends CategoryPresenter {
                     level1.getIdentifier()));
             //[END] LEVEL 1
 
-            List<HadesV1Model.Child> level2List = level1.getChild();
-            for (HadesV1Model.Child level2 :
+            List<HadesV1Model.Category> level2List = level1.getChildList();
+            for (HadesV1Model.Category level2 :
                     level2List) {
                 //[START] LEVEL 2
                 resultCategories.add(new CategoryDB(
@@ -155,8 +156,8 @@ public class CategoryPresenterImpl extends CategoryPresenter {
                 ));
                 //[END] LEVEL 2
 
-                List<HadesV1Model.Child_> level3List = level2.getChild();
-                for (HadesV1Model.Child_ level3 :
+                List<HadesV1Model.Category> level3List = level2.getChildList();
+                for (HadesV1Model.Category level3 :
                         level3List) {
                     //[START] LEVEL 3
                     resultCategories.add(new CategoryDB(
@@ -200,18 +201,18 @@ public class CategoryPresenterImpl extends CategoryPresenter {
             category.setParent(Integer.valueOf(breadcrumb.parentId));
             category.setTree(Integer.valueOf(breadcrumb.tree));
             if (breadcrumb.child != null) {
-                List<HadesV1Model.Child> children = new ArrayList<>();
+                List<HadesV1Model.Category> children = new ArrayList<>();
                 for (Breadcrumb breadcrumb2 : breadcrumb.child) {
-                    HadesV1Model.Child child = new HadesV1Model.Child();
+                    HadesV1Model.Category child = new HadesV1Model.Category();
                     child.setId(breadcrumb2.id);
                     child.setIdentifier(breadcrumb2.id);
                     child.setTree(Integer.valueOf(breadcrumb2.tree));
                     child.setParent(Integer.valueOf(breadcrumb2.parentId));
                     child.setName(breadcrumb2.name);
                     if (breadcrumb2.child != null) {
-                        List<HadesV1Model.Child_> children_ = new ArrayList<>();
+                        List<HadesV1Model.Category> children_ = new ArrayList<>();
                         for (Breadcrumb breadcrumb3 : breadcrumb2.child) {
-                            HadesV1Model.Child_ child_ = new HadesV1Model.Child_();
+                            HadesV1Model.Category child_ = new HadesV1Model.Category();
                             child_.setId(breadcrumb3.id);
                             child_.setIdentifier(breadcrumb3.id);
                             child_.setTree(Integer.valueOf(breadcrumb3.tree));
@@ -219,11 +220,11 @@ public class CategoryPresenterImpl extends CategoryPresenter {
                             child_.setName(breadcrumb3.name);
                             children_.add(child_);
                         }
-                        child.setChild(children_);
+                        child.setChildList(children_);
                     }
                     children.add(child);
                 }
-                category.setChild(children);
+                category.setChildList(children);
             }
             categories.add(category);
         }
@@ -285,16 +286,16 @@ public class CategoryPresenterImpl extends CategoryPresenter {
         for (int i = 0; i < categories.size(); i++) {
             ArrayList<DynamicObject> nestedParentList = new ArrayList<>();
             HadesV1Model.Category level1 = categories.get(i);
-            List<HadesV1Model.Child> departmentChild = level1.getChild();
+            List<HadesV1Model.Category> departmentChild = level1.getChildList();
             for (int j = 0; j < departmentChild.size(); j++) {
-                HadesV1Model.Child level2 = departmentChild.get(j);
-                List<HadesV1Model.Child_> departmentChildLvl2 = level2.getChild();
+                HadesV1Model.Category level2 = departmentChild.get(j);
+                List<HadesV1Model.Category> departmentChildLvl2 = level2.getChildList();
                 DynamicObject nestedParent = new DynamicObject(level2, departmentChildLvl2.size());
                 nestedParentList.add(nestedParent);
                 // Every nested parent gets some children
                 ArrayList<DynamicObject> children = new ArrayList<>();
                 for (int k = 0; k < departmentChildLvl2.size(); k++) {
-                    HadesV1Model.Child_ level3 = departmentChildLvl2.get(k);
+                    HadesV1Model.Category level3 = departmentChildLvl2.get(k);
                     DynamicObject object = new DynamicObject(level3, departmentChildLvl2.size());
                     children.add(object);
                 }
@@ -308,11 +309,11 @@ public class CategoryPresenterImpl extends CategoryPresenter {
         return parentObjectList;
     }
 
-    public ArrayList<DynamicObject> lookupCategoryFromDB(String currentCategory) {
+    private ArrayList<DynamicObject> lookupCategoryFromDB(String currentCategory) {
         return lookupCategoryFromDB(0, currentCategory);
     }
 
-    public ArrayList<DynamicObject> lookupCategoryFromDB(int level, String currentCategory) {
+    private ArrayList<DynamicObject> lookupCategoryFromDB(int level, String currentCategory) {
         Log.d(TAG, "lookupCategoryFromDB level " + level + " currentCategoryId " + currentCategory);
         manager = new CategoryDatabaseManager();
         List<CategoryDB> categoryDBList = new ArrayList<>();

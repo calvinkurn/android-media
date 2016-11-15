@@ -25,29 +25,6 @@ public class DynamicObject implements MultiLevelExpIndListAdapter.ExpIndData {
     public DynamicObject() {
     }
 
-    public DynamicObject(HadesV1Model.Child model, int size) {
-        if (size > 0) {
-            mParentText = model.getName();
-        } else {
-            mParentText = model.getName();
-        }
-        this.mGroupSize = size;
-        this.depId = model.getId();
-        mChildren = new ArrayList<DynamicObject>();
-        initKey(model.getParent(), model.getId());
-    }
-
-    public DynamicObject(HadesV1Model.Child_ model, int size) {
-        if (size > 0) {
-            mParentText = model.getName();
-        } else {
-            mParentText = model.getName();
-        }
-        this.mGroupSize = size;
-        this.depId = model.getId();
-        mChildren = new ArrayList<>();
-        initKey(model.getParent(), model.getId());
-    }
 
     public DynamicObject(HadesV1Model.Category model, int size) {
         if (size > 0) {
