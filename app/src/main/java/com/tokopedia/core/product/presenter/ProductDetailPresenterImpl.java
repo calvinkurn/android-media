@@ -608,12 +608,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     @Override
                     public void onError(String error) {
                         viewListener.finishLoadingWishList();
-                        NetworkErrorHelper.showDialogCustomMSG(context, new NetworkErrorHelper.RetryClickedListener() {
-                            @Override
-                            public void onRetryClicked() {
-                                requestAddWishList(context, productId);
-                            }
-                        }, error);
+                        viewListener.showWishListRetry(error);
                     }
                 });
     }
@@ -635,12 +630,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     @Override
                     public void onError(String error) {
                         viewListener.finishLoadingWishList();
-                        NetworkErrorHelper.showDialogCustomMSG(context, new NetworkErrorHelper.RetryClickedListener() {
-                            @Override
-                            public void onRetryClicked() {
-                                requestRemoveWishList(context, productId);
-                            }
-                        }, error);
+                        viewListener.showWishListRetry(error);
                     }
                 });
     }
