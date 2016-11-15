@@ -62,6 +62,7 @@ import com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActi
 import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
 import com.tokopedia.core.manage.people.bank.fragment.ManagePeopleBankFormFragment;
 import com.tokopedia.core.manage.people.notification.activity.ManageNotificationActivity;
+import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity;
 import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.myproduct.ManageProduct;
 import com.tokopedia.core.myproduct.ProductActivity;
@@ -178,7 +179,7 @@ public final class AppScreen {
             gtmName = AppScreen.SCREEN_PEOPLE_BANK;
         } else if (actClass instanceof ManageNotificationActivity) {
             gtmName = AppScreen.SCREEN_CONFIG_P_NOTIF;
-        } else if (actClass instanceof ManagePeoplePassword) {
+        } else if (actClass instanceof ManagePasswordActivity) {
             gtmName = AppScreen.SCREEN_CONFIG_P_PASSWORD;
         } else if (actClass instanceof ShopEditor) {
             gtmName = AppScreen.SCREEN_SHOP_EDITOR;

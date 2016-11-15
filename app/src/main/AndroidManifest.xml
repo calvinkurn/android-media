@@ -661,6 +661,10 @@
             android:label="@string/title_activity_people"
             android:screenOrientation="portrait" />
 
+        <activity android:name=".manage.people.password.activity.ManagePasswordActivity"
+            android:label="@string/title_activity_manage_people_password"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <!--=======================================================-->
         <!--RECEIVERS REGISTRY-->
@@ -795,6 +799,10 @@
         <service
             android:name=".manage.people.bank.intentservice.ManagePeopleBankIntentService"
             android:exported="false" />
+        <service
+            android:name=".manage.people.password.intentservice.ManagePasswordIntentService"
+            android:exported="false" />
+
         <!-- ======================================================= -->
         <!-- PROVIDERS REGISTRY -->
         <!-- ======================================================= -->

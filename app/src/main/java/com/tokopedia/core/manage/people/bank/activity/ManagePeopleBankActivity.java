@@ -135,6 +135,11 @@ public class ManagePeopleBankActivity extends BasePresenterActivity
     }
 
     @Override
+    public String getScreenName() {
+        return null;
+    }
+
+    @Override
     public void onBackPressed() {
         if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStack();
