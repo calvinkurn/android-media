@@ -34,7 +34,7 @@ public class CategoryPresenterImpl extends CategoryPresenter {
     private static final String TAG = CategoryPresenterImpl.class.getSimpleName();
     private HadesV1Model hadesV1Model;
     private CategoryDatabaseManager categoryDatabaseManager = new CategoryDatabaseManager();
-    private String currentCategory;
+    private int categoryId;
 
     public CategoryPresenterImpl(CategoryView view) {
         super(view);
@@ -64,9 +64,8 @@ public class CategoryPresenterImpl extends CategoryPresenter {
                 fetchAllDepartment(context);
             }
         } else {
-            List<HadesV1Model.Category> categories = hadesV1Model.getData().getCategories();
-            List<DynamicObject> dynamicObjectList = getDynamicObjectList(categories);
-            view.setupAdapter(dynamicObjectList);
+            List<HadesV1Model.Category> categoryList = hadesV1Model.getData().getCategories();
+            view.setupAdapter(getDynamicObjectList(categoryList));
             view.setupRecyclerView();
         }
 
@@ -161,7 +160,7 @@ public class CategoryPresenterImpl extends CategoryPresenter {
     public void fetchArguments(Bundle argument) {
         List<Breadcrumb> breadCrumb = Parcels.unwrap(
                 argument.getParcelable(DynamicFilterPresenter.EXTRA_PRODUCT_BREADCRUMB_LIST));
-        currentCategory = argument.getString(DynamicFilterPresenter.EXTRA_CURRENT_CATEGORY, "");
+        categoryId = Integer.parseInt(argument.getString(DynamicFilterPresenter.EXTRA_CURRENT_CATEGORY, ""));
 
         if (breadCrumb != null) {
             hadesV1Model = setupDataBreadcrumb(breadCrumb);
@@ -232,47 +231,42 @@ public class CategoryPresenterImpl extends CategoryPresenter {
      * @return
      */
     private List<DynamicObject> getDynamicObjectList() {
-        List<DynamicObject> list = getDynamicObjectListFromDatabase(1, currentCategory);
+        List<DynamicObject> list = getDynamicObjectListFromDatabase(1);
         if (list.isEmpty()) {
-            list = getDynamicObjectListFromDatabase(2, currentCategory);
+            list = getDynamicObjectListFromDatabase(2);
             if (list.isEmpty()) {
-                list = getDynamicObjectListFromDatabase(3, currentCategory);
+                list = getDynamicObjectListFromDatabase(3);
                 if (list.isEmpty()) {
-                    list = getDynamicObjectListFromDatabase(currentCategory);
+                    list = getDynamicObjectListFromDatabase(0);
                 }
             }
         }
         return list;
     }
 
-    private List<DynamicObject> getDynamicObjectListFromDatabase(String currentCategory) {
-        return getDynamicObjectListFromDatabase(0, currentCategory);
-    }
 
-    private List<DynamicObject> getDynamicObjectListFromDatabase(int level, String currentCategory) {
-        Log.d(TAG, "getDynamicObjectListFromDatabase level " + level + " currentCategoryId " + currentCategory);
+    private List<DynamicObject> getDynamicObjectListFromDatabase(int level) {
+        Log.d(TAG, "getDynamicObjectListFromDatabase level " + level + " currentCategoryId " + categoryId);
         categoryDatabaseManager = new CategoryDatabaseManager();
         List<CategoryDB> categoryDBList;
         if (level == 0) {
-            categoryDBList = categoryDatabaseManager.getDepartementChild(Integer.parseInt(currentCategory));
+            categoryDBList = categoryDatabaseManager.getDepartementChild(categoryId);
         } else {
-            categoryDBList = categoryDatabaseManager.getDepartmentChild(level, Integer.parseInt(currentCategory));
+            categoryDBList = categoryDatabaseManager.getDepartmentChild(level, categoryId);
         }
-        return getDynamicObjects(currentCategory, categoryDBList);
+        return getDynamicObjects(categoryDBList);
     }
 
 
     @NonNull
-    private ArrayList<DynamicObject> getDynamicObjects(String currentCategory, List<CategoryDB> departmentParent) {
+    private ArrayList<DynamicObject> getDynamicObjects(List<CategoryDB> departmentParent) {
         ArrayList<DynamicObject> parentObjectList = new ArrayList<>();
         Log.d(TAG, "List CategoryDB size " + departmentParent.size());
         for (int i = 0; i < departmentParent.size(); i++) {
             List<DynamicObject> nestedParentList = new ArrayList<>();
             CategoryDB level1 = departmentParent.get(i);
             Log.d(TAG, "CategoryDB dep_id " + level1.getDepartmentId() + " level id " + level1.getLevelId());
-            if (level1.getDepartmentId() == Integer.parseInt(currentCategory)
-                    // incase no current category
-                    || currentCategory == null || currentCategory.equals("")) {
+            if (level1.getDepartmentId() == categoryId) {
                 int levelId_ONE = level1.getLevelId();
                 List<CategoryDB> departmentChild = categoryDatabaseManager.getDepartmentChild(1 + levelId_ONE, level1.getDepartmentId());
 
