@@ -1,5 +1,6 @@
 package com.tokopedia.core;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 
 import android.os.Bundle;
@@ -7,6 +8,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 public class ServerErrorPage extends TActivity {
+
+	@Override
+	public String getScreenName() {
+		return AppScreen.SCREEN_SERVER_ERROR;
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

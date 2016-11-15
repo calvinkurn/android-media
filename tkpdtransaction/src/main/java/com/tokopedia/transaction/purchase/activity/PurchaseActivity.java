@@ -1,7 +1,5 @@
 package com.tokopedia.transaction.purchase.activity;
 
-import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -11,6 +9,7 @@ import android.view.inputmethod.InputMethodManager;
 import com.tokopedia.core.GCMListenerService;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
@@ -18,7 +17,6 @@ import com.tokopedia.core.router.TransactionRouter;
 import com.tokopedia.transaction.purchase.adapter.PurchaseTabAdapter;
 import com.tokopedia.transaction.purchase.fragment.TxListFragment;
 import com.tokopedia.transaction.purchase.fragment.TxSummaryFragment;
-import com.tokopedia.transaction.purchase.utils.FilterUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
@@ -50,6 +48,11 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
     @Override
     protected void setupURIPass(Uri data) {
 
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_TX_PEOPLE_TRANSACTION_BUYING_LIST;
     }
 
     @Override

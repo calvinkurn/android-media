@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.shopinfo.fragment.ShopTalkViewFragment;
@@ -32,6 +33,11 @@ public class TalkViewActivity extends TActivity
     TalkViewResultReceiver mReceiver;
     InboxTalkResultReceiver mReceiverTalk;
     TalkDetailResultReceiver mReceiverTalkDetail;
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_PRODUCT_TALK_VIEW;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

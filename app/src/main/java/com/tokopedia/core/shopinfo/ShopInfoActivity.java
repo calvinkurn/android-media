@@ -34,6 +34,7 @@ import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.ManageShop;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.inboxmessage.activity.SendMessageActivity;
 import com.tokopedia.core.inboxmessage.fragment.SendMessageFragment;
@@ -110,6 +111,11 @@ public class ShopInfoActivity extends TActivity {
             });
         }
     };
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_SHOP;
+    }
 
     public static Bundle createBundle(String id, String domain) {
         Bundle bundle = new Bundle();

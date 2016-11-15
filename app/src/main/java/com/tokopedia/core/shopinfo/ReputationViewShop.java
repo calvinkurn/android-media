@@ -31,6 +31,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.inboxreputation.adapter.ImageUploadAdapter;
 import com.tokopedia.core.inboxreputation.interactor.ActReputationRetrofitInteractor;
@@ -113,6 +114,11 @@ public class ReputationViewShop extends TActivity {
         View postCommentView;
         ImageButton postCommentButton;
         EditText postCommentBox;
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_SHOP_REPUTATION;
     }
 
     @Override
