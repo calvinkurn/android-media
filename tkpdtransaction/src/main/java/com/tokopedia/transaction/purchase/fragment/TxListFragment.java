@@ -10,6 +10,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.R;
@@ -35,8 +36,8 @@ import java.util.List;
 import butterknife.Bind;
 
 /**
- * Created by Angga.Prasetiyo on 21/04/2016.
- * Modified by Kulomady on 26/06/2016
+ * @author by Angga.Prasetiyo on 21/04/2016.
+ *         Modified by Kulomady on 26/06/2016
  */
 public class TxListFragment extends BasePresenterFragment<TxListPresenter> implements
         TxListViewListener, TxListAdapter.ActionListener,
@@ -140,8 +141,8 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
         this.typeInstance = arguments.getInt(TransactionRouter.ARG_PARAM_EXTRA_INSTANCE_TYPE);
         this.txFilterID = arguments.getString(TransactionRouter.ARG_PARAM_EXTRA_INSTANCE_FILTER,
                 TransactionRouter.ALL_STATUS_FILTER_ID);
-        this.instanceFromNotification = arguments.getBoolean(TransactionRouter.ARG_PARAM_EXTRA_INSTANCE_FROM_NOTIFICATION,
-                false);
+        this.instanceFromNotification = arguments.getBoolean(
+                TransactionRouter.ARG_PARAM_EXTRA_INSTANCE_FROM_NOTIFICATION, false);
     }
 
     @Override
@@ -255,7 +256,8 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
     @Override
     public void showToastMessage(String message) {
         View view = getView();
-        if (view != null) Snackbar.make(view, message, Snackbar.LENGTH_LONG).show();
+        if (view != null) Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show();
+        else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -405,7 +407,8 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
         isLoadMoreTerminated = true;
         lvTXList.removeFooterView(loadMoreView);
         if (refreshHandler.isRefreshing()) refreshHandler.finishRefresh();
-        fabFilter.show();
+        if (typeInstance == TransactionRouter.INSTANCE_ALL && !instanceFromNotification)
+            fabFilter.show();
         switch (typeRequest) {
             case TxOrderNetInteractor.TypeRequest.INITIAL:
                 switch (typeInstance) {
