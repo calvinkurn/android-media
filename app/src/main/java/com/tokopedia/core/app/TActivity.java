@@ -249,8 +249,6 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
     }
 
     private void sendToGTM() {
-
-        CommonUtils.dumper("GTM ScreenName "+this.getScreenName());
         if(TextUtils.isEmpty(this.getScreenName())){
             try {
                 throw new Exception("ScreenName cannot null");
@@ -266,7 +264,13 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
         authEvent.setUserSeller(SessionHandler.getShopID(this).equals("0") ? 0 : 1);
 
         CommonUtils.dumper("GAv4 appdata " + new JSONObject(authEvent.getAuthDataLayar()).toString());
-        ScreenTracking.eventAuthScreen(authEvent, this);
+        if(TextUtils.isEmpty(this.getScreenName()))
+        {
+            ScreenTracking.eventAuthScreen(authEvent, this.getClass().getSimpleName());
+        }else {
+            ScreenTracking.eventAuthScreen(authEvent, this.getScreenName());
+        }
+
     }
 
     private void sendToLocalytics(){

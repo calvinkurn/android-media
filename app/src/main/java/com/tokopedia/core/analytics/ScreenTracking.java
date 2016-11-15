@@ -53,10 +53,10 @@ public class ScreenTracking extends TrackingUtils {
         getAFEngine().sendTrackEvent(AFInAppEventType.CONTENT_VIEW, afValue);
     }
 
-    public static void eventAuthScreen(Authenticated authenticated, TActivity activity){
+    public static void eventAuthScreen(Authenticated authenticated, String screenName){
         getGTMEngine()
                 .eventAuthenticate(authenticated)
-                .sendScreen(activity.getScreenName());
+                .sendScreen(screenName);
     }
 
     public static void sendLocaProductDetailEvent(ProductDetailData successResult, Map<String,String> attributes){
