@@ -7,6 +7,8 @@ import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
@@ -182,12 +185,12 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
-
+        this.startActivityForResult(intent, requestCode);
     }
 
     @Override
     public void navigateToActivity(Intent intent) {
-
+        this.startActivity(intent);
     }
 
     @Override
@@ -202,22 +205,24 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void showToastMessage(String message) {
-
+        View rootView = getView();
+        if (rootView != null) Snackbar.make(rootView, message, Snackbar.LENGTH_SHORT).show();
+        else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void showDialog(Dialog dialog) {
-
+        if (!dialog.isShowing()) dialog.show();
     }
 
     @Override
     public void dismissDialog(Dialog dialog) {
-
+        if (dialog != null && dialog.isShowing()) dialog.dismiss();
     }
 
     @Override
     public void closeView() {
-
+        getActivity().finish();
     }
 
     @Override
@@ -266,6 +271,39 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void onCancelCart(final TransactionList data) {
+        AlertDialog.Builder alertDialog = generateDialogCancelCart(data);
+        showDialog(alertDialog.create());
+    }
+
+
+    @Override
+    public void onCancelCartProduct(final TransactionList data, final CartProduct cartProduct) {
+        AlertDialog.Builder alertDialog = generateDialogCancelCartProduct(data, cartProduct);
+        showDialog(alertDialog.create());
+    }
+
+    @Override
+    public void onChangeShipment(TransactionList data) {
+        navigateToActivityRequest(ShipmentCartActivity.createInstance(context,
+                new ShipmentCartPassData.Builder()
+                        .weight(data.getCartTotalWeight())
+                        .shopId(data.getCartShop().getShopId())
+                        .addressId(data.getCartDestination().getAddressId())
+                        .quantity(data.getCartTotalProduct())
+                        .shippingId(data.getCartShipments().getShipmentId())
+                        .shippingPackageId(data.getCartShipments().getShipmentPackageId())
+                        .addressTitle(data.getCartDestination().getAddressName())
+                        .addressName(data.getCartDestination().getReceiverName())
+                        .latitude(data.getCartDestination().getLatitude())
+                        .longitude(data.getCartDestination().getLongitude())
+                        .receiverPhone(data.getCartDestination().getReceiverPhone())
+                        .receiverName(data.getCartDestination().getReceiverName())
+                        .build()
+        ), ShipmentCartActivity.INTENT_REQUEST_CODE);
+    }
+
+    @NonNull
+    private AlertDialog.Builder generateDialogCancelCart(final TransactionList data) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
         alertDialog.setTitle(context.getString(R.string.title_cancel_confirm));
         alertDialog.setMessage(context.getString(R.string.msg_cancel_1)
@@ -282,52 +320,36 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                     }
                 });
         alertDialog.setNegativeButton(context.getString(R.string.title_no), null);
-        showDialog(alertDialog.create());
+        return alertDialog;
     }
 
-    @Override
-    public void onCancelCartProduct(final TransactionList data, final CartProduct cartProduct) {
+    @NonNull
+    private AlertDialog.Builder generateDialogCancelCartProduct(
+            final TransactionList cartData, final CartProduct cartProductData) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
         alertDialog.setTitle(getString(R.string.title_cancel_confirm));
         alertDialog.setMessage(getString(R.string.msg_cancel_1)
                 + " "
-                + data.getCartShop().getShopName()
+                + cartData.getCartShop().getShopName()
                 + " "
                 + getString(R.string.msg_cancel_2)
                 + " "
-                + cartProduct.getProductName()
+                + cartProductData.getProductName()
                 + " "
                 + getString(R.string.msg_cancel_3)
                 + " "
-                + cartProduct.getProductTotalPriceIdr());
+                + cartProductData.getProductTotalPriceIdr());
         alertDialog.setPositiveButton(context.getString(R.string.title_yes),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface arg0, int arg1) {
-                        presenter.processCancelCartProduct(getActivity(), data, cartProduct);
+                        presenter.processCancelCartProduct(
+                                getActivity(), cartData, cartProductData
+                        );
                     }
                 });
 
         alertDialog.setNegativeButton(context.getString(R.string.title_no), null);
-        showDialog(alertDialog.create());
+        return alertDialog;
     }
 
-    @Override
-    public void onChangeShipment(TransactionList data) {
-        navigateToActivity(ShipmentCartActivity.createInstance(context,
-                new ShipmentCartPassData.Builder()
-                        .weight(data.getCartTotalWeight())
-                        .shopId(data.getCartShop().getShopId())
-                        .addressId(data.getCartDestination().getAddressId())
-                        .quantity(data.getCartTotalProduct())
-                        .shippingId(data.getCartShipments().getShipmentId())
-                        .shippingPackageId(data.getCartShipments().getShipmentPackageId())
-                        .addressTitle(data.getCartDestination().getAddressName())
-                        .addressName(data.getCartDestination().getReceiverName())
-                        .latitude(data.getCartDestination().getLatitude())
-                        .longitude(data.getCartDestination().getLongitude())
-                        .receiverPhone(data.getCartDestination().getReceiverPhone())
-                        .receiverName(data.getCartDestination().getReceiverName())
-                        .build()
-        ));
-    }
 }

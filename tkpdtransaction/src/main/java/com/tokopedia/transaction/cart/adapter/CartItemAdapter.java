@@ -41,6 +41,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private List<Object> dataList = new ArrayList<>();
 
+
     public interface CartAction {
         void onCancelCart(TransactionList data);
 
@@ -84,9 +85,35 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private void bindCartHolder(final ViewHolder holder, final CartItemEditable data) {
         holder.tvShopName.setText(data.getTransactionList().getCartShop().getShopName());
         final CartProductItemAdapter adapterProduct = new CartProductItemAdapter(hostFragment);
+        adapterProduct.setCartProductAction(new CartProductItemAdapter.CartProductAction() {
+            @Override
+            public void onCancelCartProduct(CartProduct cartProduct) {
+                if (cartAction != null)
+                    cartAction.onCancelCartProduct(data.getTransactionList(), cartProduct);
+            }
+        });
         adapterProduct.fillDataList(data.getTransactionList().getCartProducts());
         holder.rvCartProduct.setLayoutManager(new LinearLayoutManager(hostFragment.getActivity()));
         holder.rvCartProduct.setAdapter(adapterProduct);
+
+        holder.tvInsurancePrice.setText(data.getTransactionList().getCartInsurancePriceIdr());
+        holder.tvShippingCost.setText(data.getTransactionList().getCartShippingRateIdr());
+        holder.tvSubTotal.setText(data.getTransactionList().getCartTotalProductPriceIdr());
+        holder.tvTotalPrice.setText(data.getTransactionList().getCartTotalAmountIdr());
+        holder.tvWeight.setText(data.getTransactionList().getCartTotalWeight());
+        holder.tvShippingAddress.setText(String.format("%s (Ubah)",
+                data.getTransactionList().getCartDestination().getReceiverName()));
+        holder.tvShipment.setText(String.format("%s - %s (Ubah)",
+                data.getTransactionList().getCartShipments().getShipmentName(),
+                data.getTransactionList().getCartShipments().getShipmentPackageName()));
+
+
+        holder.tvShippingAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cartAction.onChangeShipment(data.getTransactionList());
+            }
+        });
         holder.holderDetailCartToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,28 +145,13 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             return true;
                         } else if (i == R.id.action_cart_edit) {
                             holder.holderActionEditor.setVisibility(View.VISIBLE);
-                            adapterProduct.isEditableMode(true);
+                            adapterProduct.enableEditMode();
                             return true;
                         }
                         return false;
                     }
                 });
-            }
-        });
-        holder.tvInsurancePrice.setText(data.getTransactionList().getCartInsurancePriceIdr());
-        holder.tvShippingCost.setText(data.getTransactionList().getCartShippingRateIdr());
-        holder.tvSubTotal.setText(data.getTransactionList().getCartTotalProductPriceIdr());
-        holder.tvTotalPrice.setText(data.getTransactionList().getCartTotalAmountIdr());
-        holder.tvWeight.setText(data.getTransactionList().getCartTotalWeight());
-        holder.tvShippingAddress.setText(String.format("%s (Ubah)",
-                data.getTransactionList().getCartDestination().getReceiverName()));
-        holder.tvShipment.setText(String.format("%s - %s (Ubah)",
-                data.getTransactionList().getCartShipments().getShipmentName(),
-                data.getTransactionList().getCartShipments().getShipmentPackageName()));
-        holder.tvShippingAddress.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cartAction.onChangeShipment(data.getTransactionList());
+                popupMenu.show();
             }
         });
 

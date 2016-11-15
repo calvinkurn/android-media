@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.transaction.cart.model.CartProductItemEditable;
+import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 
 import java.util.ArrayList;
@@ -28,9 +29,17 @@ public class CartProductItemAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private static final int TYPE_PRODUCT_ITEM = R.layout.cart_product_item_holder;
     private final Fragment hostFragment;
 
-
     private List<Object> dataList = new ArrayList<>();
     private boolean editMode;
+    private CartProductAction cartProductAction;
+
+    public void setCartProductAction(CartProductAction cartProductAction) {
+        this.cartProductAction = cartProductAction;
+    }
+
+    public interface CartProductAction {
+        void onCancelCartProduct(CartProduct cartProduct);
+    }
 
     public CartProductItemAdapter(Fragment hostFragment) {
         this.hostFragment = hostFragment;
@@ -41,6 +50,44 @@ public class CartProductItemAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             this.dataList.add(new CartProductItemEditable(data));
         }
         this.notifyDataSetChanged();
+    }
+
+    public void disableEditMode() {
+        resetEditState();
+        editMode = false;
+        this.notifyDataSetChanged();
+    }
+
+    public void enableEditMode() {
+        editMode = true;
+        this.notifyDataSetChanged();
+    }
+
+    public List<ProductEditData> getCartProductEditDataList() throws IllegalAccessException {
+        if (editMode) {
+            List<ProductEditData> productEditDatas = new ArrayList<>();
+            for (int i = 0; i < dataList.size(); i++) {
+                Object object = dataList.get(i);
+                if (object instanceof CartProductItemEditable) {
+                    productEditDatas.add(((CartProductItemEditable) object).getProductEditData());
+                }
+            }
+            return productEditDatas;
+        } else {
+            throw new IllegalAccessException("is not edit mode!!");
+        }
+    }
+
+    private void resetEditState() {
+        for (int i = 0; i < dataList.size(); i++) {
+            Object object = dataList.get(i);
+            if (object instanceof CartProductItemEditable) {
+                ((CartProductItemEditable) dataList.get(i)).setProductEditData(
+                        ProductEditData.initInstance(((CartProductItemEditable) object)
+                                .getCartProduct())
+                );
+            }
+        }
     }
 
     @Override
@@ -63,12 +110,19 @@ public class CartProductItemAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         }
     }
 
-    private void bindProductItemHolder(ProductItemHolder holder, CartProductItemEditable item) {
+    private void bindProductItemHolder(ProductItemHolder holder, final CartProductItemEditable item) {
         holder.tvNameProduct.setText(item.getCartProduct().getProductName());
         holder.tvPriceProduct.setText(item.getCartProduct().getProductTotalPriceIdr());
         holder.tvWeightProduct.setText(item.getCartProduct().getProductTotalWeight());
         holder.etQuantityProduct.setEnabled(editMode);
         holder.etNotesProduct.setEnabled(editMode);
+        holder.btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (cartProductAction != null)
+                    cartProductAction.onCancelCartProduct(item.getCartProduct());
+            }
+        });
     }
 
     @Override

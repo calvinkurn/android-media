@@ -173,6 +173,9 @@ public class CartDataInteractor implements ICartDataInteractor {
                         throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                     }
                 })
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
                 .subscribe(subscriber)
         );
     }

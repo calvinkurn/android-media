@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.cart.model;
 
 
+import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 
 /**
@@ -12,12 +13,14 @@ public class CartProductItemEditable {
     private CartProduct cartProduct;
     private String tempQuantity;
     private String tempNotes;
+    private ProductEditData productEditData;
 
     public CartProductItemEditable(CartProduct cartProduct) {
         this.cartProduct = cartProduct;
         this.isEditMode = false;
         this.tempNotes = cartProduct.getProductNotes();
         this.tempQuantity = cartProduct.getProductQuantity() + "";
+        this.productEditData = ProductEditData.initInstance(cartProduct);
     }
 
     public boolean isEditMode() {
@@ -50,5 +53,13 @@ public class CartProductItemEditable {
 
     public void setTempNotes(String tempNotes) {
         this.tempNotes = tempNotes;
+    }
+
+    public ProductEditData getProductEditData() {
+        return productEditData;
+    }
+
+    public void setProductEditData(ProductEditData productEditData) {
+        this.productEditData = productEditData;
     }
 }

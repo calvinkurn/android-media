@@ -58,12 +58,14 @@ public class CartPresenter implements ICartPresenter {
 
     @Override
     public void processCancelCart(@NonNull Activity activity, @NonNull TransactionList data) {
+        view.showProgressLoading();
         TKPDMapParam<String, String> maps = new TKPDMapParam<>();
         maps.put("address_id", data.getCartDestination().getAddressId());
         maps.put("shipment_id", data.getCartShipments().getShipmentId());
         maps.put("shipment_package_id", data.getCartShipments().getShipmentPackageId());
         maps.put("shop_id", data.getCartShop().getShopId());
-        cartDataInteractor.cancelCart(maps, new TKPDMapParam<String, String>(),
+        cartDataInteractor.cancelCart(AuthUtil.generateParamsNetwork(activity, maps),
+                AuthUtil.generateParamsNetwork(activity),
                 new Subscriber<CartModel>() {
                     @Override
                     public void onCompleted() {
@@ -72,7 +74,8 @@ public class CartPresenter implements ICartPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        e.printStackTrace();
+                        view.hideProgressLoading();
                     }
 
                     @Override
@@ -82,6 +85,7 @@ public class CartPresenter implements ICartPresenter {
                         view.renderPaymentGatewayOption(data.getGatewayList());
                         view.renderLoyaltyBalance(data.getLpAmountIdr(), data.getLpAmount() != 0);
                         view.renderCartListData(data.getTransactionLists());
+                        view.hideProgressLoading();
                     }
                 });
     }
@@ -89,12 +93,15 @@ public class CartPresenter implements ICartPresenter {
     @Override
     public void processCancelCartProduct(@NonNull Activity activity, @NonNull TransactionList cartData,
                                          @NonNull CartProduct cartProductData) {
+        view.showProgressLoading();
         TKPDMapParam<String, String> maps = new TKPDMapParam<>();
         maps.put("product_cart_id", cartProductData.getProductCartId());
         maps.put("address_id", cartData.getCartDestination().getAddressId());
         maps.put("shipment_id", cartData.getCartShipments().getShipmentId());
         maps.put("shipment_package_id", cartData.getCartShipments().getShipmentPackageId());
-        cartDataInteractor.cancelCart(maps, new TKPDMapParam<String, String>(),
+        maps.put("shop_id", cartData.getCartShop().getShopId());
+        cartDataInteractor.cancelCart(AuthUtil.generateParamsNetwork(activity, maps),
+                AuthUtil.generateParamsNetwork(activity),
                 new Subscriber<CartModel>() {
                     @Override
                     public void onCompleted() {
@@ -103,7 +110,8 @@ public class CartPresenter implements ICartPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        e.printStackTrace();
+                        view.hideProgressLoading();
                     }
 
                     @Override
@@ -113,6 +121,7 @@ public class CartPresenter implements ICartPresenter {
                         view.renderPaymentGatewayOption(data.getGatewayList());
                         view.renderLoyaltyBalance(data.getLpAmountIdr(), data.getLpAmount() != 0);
                         view.renderCartListData(data.getTransactionLists());
+                        view.hideProgressLoading();
                     }
                 });
     }

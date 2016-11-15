@@ -15,7 +15,7 @@ import com.tokopedia.transaction.cart.model.ShipmentCartPassData;
  */
 
 public class ShipmentCartActivity extends BasePresenterActivity {
-
+    public static final int INTENT_REQUEST_CODE = BasePresenterActivity.class.hashCode();
     private static final String EXTRA_SHIPMENT_CART_PASS_DATA = "EXTRA_SHIPMENT_CART_PASS_DATA";
     private ShipmentCartPassData shipmentCartPassData;
 
