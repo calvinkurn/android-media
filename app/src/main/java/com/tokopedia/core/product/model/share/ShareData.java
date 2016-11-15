@@ -1,6 +1,7 @@
 package com.tokopedia.core.product.model.share;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.Html;
@@ -10,6 +11,13 @@ import android.text.Html;
  */
 public class ShareData implements Parcelable {
     public static final String TAG = ShareData.class.getSimpleName();
+    public static final String CATALOG_TYPE = "Catalog";
+    public static final String SHOP_TYPE = "Shop";
+    public static final String PRODUCT_TYPE = "Product";
+    public static final String DISCOVERY_TYPE = "Discovery";
+    public static final String HOTLIST_TYPE = "Hotlist";
+    private static final String ARG_UTM_MEDIUM = "Android%20Share%20Button";
+
     private String type;
     private String name;
     private String price;
@@ -18,9 +26,52 @@ public class ShareData implements Parcelable {
     private String imgUri;
     private Bitmap bitmap;
     private String textContent;
+    private String source;
 
     public ShareData() {
     }
+
+    protected ShareData(Parcel in) {
+        type = in.readString();
+        name = in.readString();
+        price = in.readString();
+        uri = in.readString();
+        description = in.readString();
+        imgUri = in.readString();
+        bitmap = in.readParcelable(Bitmap.class.getClassLoader());
+        textContent = in.readString();
+        source = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(type);
+        dest.writeString(name);
+        dest.writeString(price);
+        dest.writeString(uri);
+        dest.writeString(description);
+        dest.writeString(imgUri);
+        dest.writeParcelable(bitmap, flags);
+        dest.writeString(textContent);
+        dest.writeString(source);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<ShareData> CREATOR = new Creator<ShareData>() {
+        @Override
+        public ShareData createFromParcel(Parcel in) {
+            return new ShareData(in);
+        }
+
+        @Override
+        public ShareData[] newArray(int size) {
+            return new ShareData[size];
+        }
+    };
 
     public String getName() {
         return name;
@@ -72,9 +123,9 @@ public class ShareData implements Parcelable {
 
     public String getTextContent() {
         if (getType() != null){
-            return this.textContent;
+            return (this.textContent != null) ? (this.textContent + "\n" + renderShareUri()) : renderShareUri();
         }
-        return String.valueOf(Html.fromHtml("Jual " + name + " hanya " + price + ", lihat gambar klik " + uri));
+        return String.valueOf(Html.fromHtml("Jual " + name + " hanya " + price + ", lihat gambar klik " + uri + "\n"));
     }
 
     public void setTextContent(String textContent) {
@@ -89,47 +140,31 @@ public class ShareData implements Parcelable {
         this.type = type;
     }
 
-    protected ShareData(Parcel in) {
-        name = in.readString();
-        price = in.readString();
-        uri = in.readString();
-        description = in.readString();
-        imgUri = in.readString();
-        bitmap = (Bitmap) in.readValue(Bitmap.class.getClassLoader());
-        textContent = in.readString();
-        type = in.readString();
+    public String getSource() {
+        return source;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public void setSource(String source) {
+        this.source = source;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
-        dest.writeString(price);
-        dest.writeString(uri);
-        dest.writeString(description);
-        dest.writeString(imgUri);
-        dest.writeValue(bitmap);
-        dest.writeString(textContent);
-        dest.writeString(type);
-    }
+    public String renderShareUri() {
+        String campaign = "Product";
+        if (getType() != null)
+            campaign = getType();
 
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<ShareData> CREATOR = new Parcelable.Creator<ShareData>() {
-        @Override
-        public ShareData createFromParcel(Parcel in) {
-            return new ShareData(in);
+        String renderedUrl;
+        if (getUri().contains("?")) {
+            Uri uri = Uri.parse(String.format("%s&utm_source=%s&utm_campaign=%s&utm_medium=%s",
+                    getUri(), getSource(), campaign, ARG_UTM_MEDIUM));
+            renderedUrl = uri.toString();
+        } else {
+            Uri uri = Uri.parse(String.format("%s?utm_source=%s&utm_campaign=%s&utm_medium=%s",
+                    getUri(), getSource(), campaign, ARG_UTM_MEDIUM));
+            renderedUrl = uri.toString();
         }
-
-        @Override
-        public ShareData[] newArray(int size) {
-            return new ShareData[size];
-        }
-    };
-
+        return renderedUrl;
+    }
 
     public static class Builder {
         private String name;
@@ -140,6 +175,7 @@ public class ShareData implements Parcelable {
         private Bitmap bitmap;
         private String type;
         private String textContent;
+        private String source;
 
         private Builder() {
         }
@@ -188,6 +224,11 @@ public class ShareData implements Parcelable {
             return this;
         }
 
+        public Builder setSource(String source) {
+            this.source = source;
+            return this;
+        }
+
         public Builder but() {
             return aShareData().setName(name).setPrice(price).setUri(uri).setDescription(description).setImgUri(imgUri).setBitmap(bitmap);
         }
@@ -202,6 +243,7 @@ public class ShareData implements Parcelable {
             shareData.setBitmap(bitmap);
             shareData.setType(type);
             shareData.setTextContent(textContent);
+            shareData.setSource(source);
             return shareData;
         }
     }
