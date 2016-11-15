@@ -34,7 +34,7 @@ public interface BrowseApi {
     int PRODUCT_BEST_MATCH = 23;
 
     String MIDDLE_V1_ACE = "/search/v1/";
-    String SEARCH_V2_PRODUCT = "v2.3/product";
+    String SEARCH_V2_PRODUCT = "v2.4/product";
     String SEARCH_V1_SHOP = "v1/shop";
     String SEARCH_V1_CATALOG = "v1/catalog";
     String SEARCH_V2_CATALOG = "v2.1/catalog";

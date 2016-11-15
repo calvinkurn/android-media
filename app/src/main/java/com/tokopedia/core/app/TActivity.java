@@ -17,6 +17,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -82,7 +83,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by Nisie on 31/08/15.
  */
-public class TActivity extends AppCompatActivity implements SessionHandler.onLogoutListener,
+public abstract class TActivity extends AppCompatActivity implements SessionHandler.onLogoutListener,
         HadesBroadcastReceiver.ReceiveListener,
         ErrorNetworkReceiver.ReceiveListener {
 
@@ -111,6 +112,8 @@ public class TActivity extends AppCompatActivity implements SessionHandler.onLog
     //[START] This is for downloading departmend id using IntentService
 
     public PhoneVerificationUtil phoneVerificationUtil;
+
+    public abstract String getScreenName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -247,6 +250,15 @@ public class TActivity extends AppCompatActivity implements SessionHandler.onLog
     }
 
     private void sendToGTM() {
+
+        CommonUtils.dumper("GTM ScreenName "+this.getScreenName());
+        if(TextUtils.isEmpty(this.getScreenName())){
+            try {
+                throw new Exception("ScreenName cannot null");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         Authenticated authEvent = new Authenticated();
         authEvent.setUserFullName(SessionHandler.getLoginName(this));

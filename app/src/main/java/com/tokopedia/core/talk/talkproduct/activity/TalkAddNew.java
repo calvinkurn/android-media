@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.view.WindowManager;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.talk.talkproduct.fragment.TalkAddNewFragment;
 import com.tokopedia.core.talk.talkproduct.intentservice.TalkAddNewIntentService;
@@ -41,6 +42,11 @@ public class TalkAddNew extends TActivity implements TalkAddNewResultReceiver.Re
 			fragmentTransaction.addToBackStack(null);
 			fragmentTransaction.commit();
 		}
+	}
+
+	@Override
+	public String getScreenName() {
+		return AppScreen.SCREEN_PRODUCT_TALK_ADD;
 	}
 
 	public void addNewTalk(Bundle bundle) {

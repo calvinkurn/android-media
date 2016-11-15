@@ -10,6 +10,7 @@ import android.support.v4.view.ViewPager;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.inboxreputation.adapter.SectionsPagerAdapter;
@@ -37,6 +38,11 @@ public class InboxReputationActivity extends DrawerPresenterActivity
     ViewPager viewPager;
     @Bind(R2.id.indicator)
     TabLayout indicator;
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_INBOX_REPUTATION;
+    }
 
     @Override
     protected void setupURIPass(Uri data) {

@@ -16,6 +16,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.GCMListenerService.NotificationListener;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.MultiPaneActivity;
 import com.tokopedia.core.gcm.NotificationModHandler;
@@ -47,6 +48,11 @@ public class NotificationCenter extends MultiPaneActivity implements Notificatio
     private List<Fragment> detailList = new ArrayList<>();
     private ArrayList<Integer> NotificationCode;
     private TabLayout indicator;
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_NOTIFICATION;
+    }
 
     @Override
     public void onStart() {

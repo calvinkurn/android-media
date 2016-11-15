@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.seller.selling.SellingService;
@@ -39,6 +40,11 @@ public class ConfirmRejectOrderActivity extends TActivity implements DownloadRes
 
     private FragmentManager fragmentManager;
     DownloadResultReceiver mReceiver;
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_ORDER_REJECT;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

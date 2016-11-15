@@ -12,13 +12,11 @@ import com.tokopedia.core.EditAddressCart;
 import com.tokopedia.core.EtalaseShopEditor;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.ManagePeople;
-import com.tokopedia.core.ManagePeopleBank;
 import com.tokopedia.core.ManagePeoplePassword;
 import com.tokopedia.core.ManageShop;
 import com.tokopedia.core.ManageShopAddress;
 import com.tokopedia.core.PaymentConfirmationSuccess;
 import com.tokopedia.core.PaymentEditor;
-import com.tokopedia.core.PeopleBankForm;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.R;
 import com.tokopedia.core.ServerErrorPage;
@@ -59,6 +57,8 @@ import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActivity;
+import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
+import com.tokopedia.core.manage.people.bank.fragment.ManagePeopleBankFormFragment;
 import com.tokopedia.core.manage.people.notification.activity.ManageNotificationActivity;
 import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.manage.shop.notes.activity.ManageShopNotesActivity;
@@ -174,10 +174,8 @@ public final class AppScreen {
             gtmName = AppScreen.SCREEN_CONFIG_P_PROFILE;
         } else if (actClass instanceof ManagePeopleAddressActivity) {
             gtmName = AppScreen.SCREEN_CONFIG_P_ADDRESS;
-        } else if (actClass instanceof ManagePeopleBank) {
+        } else if (actClass instanceof ManagePeopleBankActivity) {
             gtmName = AppScreen.SCREEN_PEOPLE_BANK;
-        } else if (actClass instanceof PeopleBankForm) {
-            gtmName = AppScreen.SCREEN_PEOPLE_BANK_FORM;
         } else if (actClass instanceof ManageNotificationActivity) {
             gtmName = AppScreen.SCREEN_CONFIG_P_NOTIF;
         } else if (actClass instanceof ManagePeoplePassword) {
@@ -298,6 +296,8 @@ public final class AppScreen {
             return SCREEN_CART_SUMMARY;
         } else if (actClass instanceof FragmentCartFinish) {
             return SCREEN_CART_FINISH;
+        } else if (actClass instanceof ManagePeopleBankFormFragment) {
+            return SCREEN_PEOPLE_BANK_FORM;
         } else {
             return actClass.getClass().getSimpleName();
         }
@@ -388,6 +388,7 @@ public final class AppScreen {
     public static final String SCREEN_SHOP_SEND_MESSAGE = "Shop Send Message";
     public static final String SCREEN_SHOP_DETAIL = "Shop Info Detail";
     public static final String SCREEN_SHOP_DETAIL_STATS = "Shop Info Detail Statistic";
+    public static final String SCREEN_SHOP_STATS = "Shop Info Statistic";
     public static final String SCREEN_SHOP_NOTE = "Shop Note View";
     public static final String SCREEN_SHOP_FAVORITER = "Shop Favorited List";
     public static final String SCREEN_TX_SHOP = "Shop Transaction";
@@ -399,6 +400,7 @@ public final class AppScreen {
     public static final String SCREEN_CONFIG_SHOP = "Shop Config";
     public static final String SCREEN_CONFIG_S_INFO = "Shop Edit Info";
     public static final String SCREEN_CONFIG_S_SHIPPING = "Shop Edit Shipping";
+    public static final String SCREEN_OPEN_CONFIG_S_SHIPPING = "Open Shop Edit Shipping";
     public static final String SCREEN_CONFIG_S_PAYMENT = "Shop Edit Payment";
     public static final String SCREEN_CONFIG_S_ETALASE = "Store - Etalase";
     public static final String SCREEN_CONFIG_S_NOTES = "Shop Edit Notes";
@@ -447,6 +449,8 @@ public final class AppScreen {
     public static final String SCREEN_HOME_PRODUCT_FEED = "Home - Product feed";
     public static final String SCREEN_HOME_PRODUCT_CATEGORY = "Top category page";
     public static final String SCREEN_HOME_HOTLIST = "Home - hot list";
+    public static final String SCREEN_TOPADS = "Top Ads Screen";
+    public static final String SCREEN_SORT_PRODUCT = "Sort Produk Activity";
     public static final String SCREEN_BROWSE_PRODUCT_FROM_SEARCH = "Browse Produk - From Search";
     public static final String SCREEN_BROWSE_PRODUCT_FROM_CATEGORY = "Browse Category";
     public static final String SCREEN_SEARCH_PAGE = "Search page";
@@ -477,7 +481,9 @@ public final class AppScreen {
     public static final String SCREEN_RESOLUTION_CENTER_EDIT = "Edit resolution center";
     public static final String SCREEN_RESOLUTION_CENTER = "Resolution center page";
     public static final String SCREEN_RESOLUTION_CENTER_ADD = "Add resolution center page";
+    public static final String SCREEN_SHOP_SELLING_DETAIL = "Selling Detail Page";
     public static final String SCREEN_ORDER_HISTORY = "History order";
+    public static final String SCREEN_ORDER_REJECT = "Confirm Reject Order Screen";
     public static final String SCREEN_ORDER_HISTORY_DETAIL = "History order detail";
     public static final String SCREEN_MANAGE_GENERAL = "General Setting";
     public static final String SCREEN_PEOPLE_BANK = "People Bank";
@@ -519,4 +525,7 @@ public final class AppScreen {
     public static final String SCREEN_DEEP_LINK = "Deeplink page";
     public static final String SCREEN_PRODUCT_REPUTATION_VIEW_DETAIL = "Product Reputation View Detail";
     public static final String SCREEN_RECHARGE = "Recharge";
+    public static final String SCREEN_RECHARGE_PAYMENT = "Recharge Payment WebView";
+    public static final String SCREEN_SHARE = "Share Screen";
+    public static final String SCREEN_GALLERY_BROWSE = "Browse Gallery Screen";
 }

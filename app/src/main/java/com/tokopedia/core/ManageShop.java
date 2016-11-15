@@ -7,6 +7,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.customadapter.SimpleListTabViewAdapter;
@@ -23,10 +24,15 @@ public class ManageShop extends TkpdActivity {
     private ArrayList<String> Name = new ArrayList<String>();
     private ArrayList<Integer> ResID = new ArrayList<Integer>();
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        inflateView(R.layout.activity_manage_shop);
+	@Override
+	public String getScreenName() {
+		return AppScreen.SCREEN_SETTING_MANAGE_SHOP;
+	}
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		inflateView(R.layout.activity_manage_shop);
 
 
         Name.add(getString(R.string.title_shop_information_menu));

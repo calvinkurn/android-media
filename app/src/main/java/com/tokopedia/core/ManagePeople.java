@@ -8,10 +8,12 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.customadapter.SimpleListTabViewAdapter;
-import com.tokopedia.core.manage.people.notification.activity.ManageNotificationActivity;
 import com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActivity;
+import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
+import com.tokopedia.core.manage.people.notification.activity.ManageNotificationActivity;
 import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 
@@ -29,6 +31,11 @@ public class ManagePeople extends TkpdActivity {
     private ListView lvManage;
     private ArrayList<String> Name = new ArrayList<String>();
     private ArrayList<Integer> ResID = new ArrayList<Integer>();
+
+	@Override
+	public String getScreenName() {
+		return AppScreen.SCREEN_MANAGE_PEOPLE;
+	}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,18 +74,13 @@ public class ManagePeople extends TkpdActivity {
                         startActivity(intent);
                         break;
                     case 2:
-                        intent = new Intent(ManagePeople.this, ManagePeopleBank.class);
+                        intent = new Intent(ManagePeople.this, ManagePeopleBankActivity.class);
                         startActivity(intent);
                         break;
                     case 3:
                         intent = new Intent(ManagePeople.this, ManageNotificationActivity.class);
                         startActivity(intent);
                         break;
-                /*case 4:
-					intent = new Intent(ManagePeople.this, ManagePrivacy.class);
-					startActivityForResult(intent, 1);
-					GAUtility.SendEvent(ManagePeople.this, "Cat Manage People", "Act Click Btn", "Lbl Privacy");
-					break;*/
                     case 4:
                         intent = new Intent(ManagePeople.this, ManagePeoplePassword.class);
                         startActivity(intent);
@@ -95,7 +97,7 @@ public class ManagePeople extends TkpdActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case 0:
                     NetworkErrorHelper.showSnackbar(this, getString(R.string.message_success_change_profile));

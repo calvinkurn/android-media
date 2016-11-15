@@ -21,6 +21,8 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
+import com.tokopedia.core.manage.people.profile.interactor.ManagePeopleProfileInteractor;
+import com.tokopedia.core.manage.people.profile.interactor.ManagePeopleProfileInteractorImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.NetworkHandler;
 import com.tokopedia.core.network.NetworkHandler.NetworkHandlerListener;
@@ -59,14 +61,11 @@ public class EmailVerificationDialog extends DialogFragment {
     private TextView requestOTPButton;
     private String UserEmail;
     private LinearLayout CheckEmailInstruction, ChangeEmailLayout;
-    private int timeoutCounter;
-    private Handler timeOutHandler;
     private TkpdProgressDialog mTkpdProgressDialog;
     private LocalCacheHandler handler;
     private static int EXPIRE_TIME = 30;
     public static String FRAGMENT_TAG = "dialog_email";
-    PeopleActService peopleActService;
-    CompositeSubscription compositeSubscription;
+    ManagePeopleProfileInteractor networkInteractor;
 
     public interface EmailChangeConfirmation {
         public void onEmailChanged();
@@ -78,29 +77,17 @@ public class EmailVerificationDialog extends DialogFragment {
         return dialog;
     }
 
-    interface EditEmailListener {
-        void onError(String error);
-
-        void onThrowable(Throwable e);
-
-        void onTimeout();
-
-        void onSuccess(JSONObject result);
-    }
-
     @Override
     public void onAttach(Activity activity) {
         // TODO Auto-generated method stub
         context = getActivity();
         emailChangeComm = (EmailChangeConfirmation) context;
-        timeOutHandler = new Handler();
         handler = new LocalCacheHandler(getActivity(), "SEND_OTP_EMAIL");
         super.onAttach(activity);
     }
 
     @Override
     public void onStop() {
-        timeOutHandler.removeCallbacks(runnable);
         super.onStop();
     }
 
@@ -109,15 +96,13 @@ public class EmailVerificationDialog extends DialogFragment {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_TITLE, 0);
-        peopleActService = new PeopleActService();
-        compositeSubscription = new CompositeSubscription();
+        networkInteractor = ManagePeopleProfileInteractorImpl.createInstance();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // TODO Auto-generated method stub
-        timeoutCounter = 0;
 
         View view = inflater.inflate(R.layout.dialog_email_verification, container, false);
 
@@ -166,116 +151,26 @@ public class EmailVerificationDialog extends DialogFragment {
 
 
     private void SendEmailVerificationCode() {
-        timeOutHandler.post(runnable);
-//		NetworkHandler network = new NetworkHandler(context, TkpdUrl.GET_PEOPLE);
-//		String newEmail = EmailInput.getText().toString();
-//		network.AddParam("act", "edit_email");
-//		network.AddParam("new_email", newEmail);
-//		network.AddParam("password", UserPassword.getText().toString());
-//        network.AddParam("otp_code", inputOtpCodeField.getText().toString());
-//
-//		network.Commit(new NetworkHandlerListener() {
-//
-//			@Override
-//			public void onSuccess(Boolean status) {
-//				timeOutHandler.removeCallbacks(runnable);
-//				mTkpdProgressDialog.dismiss();
-//				emailChangeComm.onEmailChanged();
-//			}
-//
-//			@Override
-//			public void getResponse(JSONObject Result) {
-//				try {
-//					int Status = Result.getInt("is_success");
-//					if (Status == 1) {
-//						ChangeEmailLayout.setVisibility(View.GONE);
-//						CheckEmailInstruction.setVisibility(View.VISIBLE);
-//					}
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//
-//			@Override
-//			public void getMessageError(ArrayList<String> MessageError) {
-//				// TODO Auto-generated method stub
-//				printErrorMessage(MessageError);
-//			}
-//		});
-        editEmail(listener());
-    }
-
-    private void editEmail(final EditEmailListener listener) {
-        Observable<Response<TkpdResponse>> observable = peopleActService.getApi()
-                .editEmail(AuthUtil.generateParams(context, getParam()));
-
-        Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
+        networkInteractor.editEmail(getActivity(), getParam(), new ManagePeopleProfileInteractor.EditEmailListener() {
             @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.e("ASDASDM", e.toString());
-                listener.onThrowable(e);
-            }
-
-            @Override
-            public void onNext(Response<TkpdResponse> response) {
-                if (response.isSuccessful()) {
-                    final TkpdResponse tkpdResponse = response.body();
-                    if (!tkpdResponse.isError()) {
-                        JSONObject result = tkpdResponse.getJsonData();
-                        listener.onSuccess(result);
-                    } else {
-                        listener.onError(response.body().getErrorMessages().get(0));
-                    }
-                } else {
-                    new ErrorHandler(new ErrorListener() {
-                        @Override
-                        public void onUnknown() {
-                            listener.onError("Network Unknown Error!");
-                        }
-
-                        @Override
-                        public void onTimeout() {
-                            listener.onError("Network Timeout Error!");
-                            listener.onTimeout();
-                        }
-
-                        @Override
-                        public void onServerError() {
-                            listener.onError("Network Internal Server Error!");
-                        }
-
-                        @Override
-                        public void onBadRequest() {
-                            listener.onError("Network Bad Request Error!");
-                        }
-
-                        @Override
-                        public void onForbidden() {
-
-                        }
-                    }, response.code());
-                }
-            }
-        };
-
-        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(subscriber));
-    }
-
-    public EditEmailListener listener() {
-        return new EditEmailListener() {
-            @Override
-            public void onError(String error) {
+            public void onSuccess() {
+                ChangeEmailLayout.setVisibility(View.GONE);
+                CheckEmailInstruction.setVisibility(View.VISIBLE);
                 mTkpdProgressDialog.dismiss();
-                SnackbarManager.make(context, error,
+                emailChangeComm.onEmailChanged();
+            }
+
+            @Override
+            public void onTimeout() {
+                mTkpdProgressDialog.dismiss();
+                SnackbarManager.make(context, getResources().getString(R.string.msg_connection_timeout),
                         Snackbar.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailAuth() {
+                mTkpdProgressDialog.dismiss();
+                NetworkErrorHelper.showSnackbar(getActivity());
             }
 
             @Override
@@ -287,70 +182,72 @@ public class EmailVerificationDialog extends DialogFragment {
                     SnackbarManager.make(context, getResources().getString(R.string.msg_no_connection),
                             Snackbar.LENGTH_LONG).show();
                 }
+            }
+
+            @Override
+            public void onError(String error) {
+                mTkpdProgressDialog.dismiss();
+                SnackbarManager.make(context, error,
+                        Snackbar.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onNullData() {
+                mTkpdProgressDialog.dismiss();
+                NetworkErrorHelper.showSnackbar(getActivity());
+            }
+
+            @Override
+            public void onNoConnection() {
+                mTkpdProgressDialog.dismiss();
+                NetworkErrorHelper.showSnackbar(getActivity());
+            }
+        });
+    }
+
+    private void RequestOTPCode() {
+        networkInteractor.sendOTPEditEmail(getActivity(), new HashMap<String, String>(), new ManagePeopleProfileInteractor.RequestOTPListener() {
+            @Override
+            public void onSuccess() {
+                mTkpdProgressDialog.dismiss();
+                Toast.makeText(context, "Kode OTP telah dikirim ke nomor Handphone teregistrasi", Toast.LENGTH_LONG).show();
 
             }
 
             @Override
             public void onTimeout() {
                 mTkpdProgressDialog.dismiss();
-                SnackbarManager.make(context, getResources().getString(R.string.msg_connection_timeout),
-                        Snackbar.LENGTH_LONG).show();
+                NetworkErrorHelper.showSnackbar(context);
             }
 
             @Override
-            public void onSuccess(JSONObject result) {
-                int status = result.optInt("is_success");
-                if (status == 1) {
-                    ChangeEmailLayout.setVisibility(View.GONE);
-                    CheckEmailInstruction.setVisibility(View.VISIBLE);
-                }
-                timeOutHandler.removeCallbacks(runnable);
+            public void onFailAuth() {
+
+            }
+
+            @Override
+            public void onThrowable(Throwable e) {
+
+            }
+
+            @Override
+            public void onError(String error) {
                 mTkpdProgressDialog.dismiss();
-                emailChangeComm.onEmailChanged();
+                NetworkErrorHelper.showSnackbar(context, error);
             }
-        };
-    }
 
-    private void RequestOTPCode() {
-        timeOutHandler.post(runnable);
-        NetworkHandler network = new NetworkHandler(context, TkpdUrl.GET_PEOPLE);
-        network.AddParam("act", "send_otp_edit_email");
-        network.Commit(new NetworkHandlerListener() {
             @Override
-            public void onSuccess(Boolean status) {
+            public void onNullData() {
+
+            }
+
+            @Override
+            public void onNoConnection() {
                 mTkpdProgressDialog.dismiss();
-                timeoutCounter = 0;
-                timeOutHandler.removeCallbacks(runnable);
-                handler.setExpire(EXPIRE_TIME);
-            }
-
-            @Override
-            public void getResponse(JSONObject Result) {
-                try {
-                    int Status = Result.getInt("is_success");
-                    if (Status == 1) {
-
-                        Toast.makeText(context, "Kode OTP telah dikirim ke nomor Handphone teregistrasi", Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(context, "Kode OTP gagal dikirim", Toast.LENGTH_SHORT).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void getMessageError(ArrayList<String> MessageError) {
-                mTkpdProgressDialog.dismiss();
-                String messageError = "";
-                for (int i = 0; i < MessageError.size(); i++) {
-                    messageError += MessageError.get(i);
-                    if ((i + 1) < MessageError.size())
-                        messageError += "\n";
-                }
-                NetworkErrorHelper.showSnackbar(context, messageError);
+                NetworkErrorHelper.showSnackbar(context);
             }
         });
+
     }
 
     public boolean EmailFormValidation() {
@@ -396,19 +293,4 @@ public class EmailVerificationDialog extends DialogFragment {
             }
         };
     }
-
-    private Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            timeoutCounter++;
-            if (timeoutCounter == 5) {
-                Toast.makeText(context, "Sedang Terjadi Gangguan Koneksi, Mohon Tunggu", Toast.LENGTH_LONG).show();
-            } else if (timeoutCounter == 20) {
-                Toast.makeText(context, "Terjadi Masalah Koneksi, Silahkan coba di lain kesempatan", Toast.LENGTH_LONG).show();
-                mTkpdProgressDialog.dismiss();
-                dismiss();
-            }
-            timeOutHandler.postDelayed(this, 3000);
-        }
-    };
 }

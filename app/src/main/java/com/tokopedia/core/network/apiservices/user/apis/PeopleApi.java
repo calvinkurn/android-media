@@ -6,10 +6,7 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import java.util.Map;
 
 import retrofit2.Response;
-import retrofit2.http.FieldMap;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.POST;
 import retrofit2.http.QueryMap;
 import rx.Observable;
 
@@ -21,13 +18,11 @@ public interface PeopleApi {
     @GET(TkpdBaseURL.User.PATH_GET_ADDRESS)
     Observable<Response<TkpdResponse>> getAddress(@QueryMap Map<String, String> params);
 
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.User.PATH_GET_BANK_ACCOUNT)
-    Observable<Response<TkpdResponse>> getBankAccount(@FieldMap Map<String, String> params);
+    @GET(TkpdBaseURL.User.PATH_GET_BANK_ACCOUNT)
+    Observable<Response<TkpdResponse>> getBankAccount(@QueryMap Map<String, String> params);
 
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.User.PATH_GET_DEFAULT_BANK_ACCOUNT)
-    Observable<Response<TkpdResponse>> getDefaultBankAccount(@FieldMap Map<String, String> params);
+    @GET(TkpdBaseURL.User.PATH_GET_DEFAULT_BANK_ACCOUNT)
+    Observable<Response<TkpdResponse>> getDefaultBankAccount(@QueryMap Map<String, String> params);
 
     @GET(TkpdBaseURL.User.PATH_GET_FAVORITE_SHOP)
     Observable<Response<TkpdResponse>> getFavoriteShop(@QueryMap Map<String, String> params);

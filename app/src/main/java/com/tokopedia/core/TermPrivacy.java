@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.fragment.FragmentTermPrivacy;
 
@@ -30,6 +31,11 @@ public class TermPrivacy extends TActivity {
     @Bind(R2.id.toolbar)
     Toolbar toolbar;
     FragmentManager supportFragmentManager;
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_TERM_PRIVACY;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

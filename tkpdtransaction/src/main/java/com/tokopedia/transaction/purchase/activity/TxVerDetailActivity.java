@@ -22,6 +22,7 @@ import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.AppUtils;
@@ -91,6 +92,11 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
     @Override
     protected void setupURIPass(Uri data) {
 
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_PAYMENT_VERIFICATION_DETAIL;
     }
 
     @Override

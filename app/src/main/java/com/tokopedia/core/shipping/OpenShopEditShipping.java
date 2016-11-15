@@ -3,6 +3,7 @@ package com.tokopedia.core.shipping;
 import android.os.Bundle;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.shipping.fragment.FragmentEditShipping;
 
@@ -13,6 +14,11 @@ import com.tokopedia.core.shipping.fragment.FragmentEditShipping;
 public class OpenShopEditShipping extends TActivity {
 
     public static String RESUME_OPEN_SHOP_KEY = "resume_open_shop";
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_OPEN_CONFIG_S_SHIPPING;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

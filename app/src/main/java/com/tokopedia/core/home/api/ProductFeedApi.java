@@ -28,7 +28,7 @@ public interface ProductFeedApi {
     String GET_LIST_FAVE_SHOP_ID = "/v4/home/get_list_fave_shop_id.pl";
     String LIMIT = "Limit";
     String SEARCH_V1_PRODUCT = "/search/v1/product";
-    String SEARCH_V2_3_PRODUCT = "/search/v2.3/product";
+    String SEARCH_V2_4_PRODUCT = "/search/v2.4/product";
     String GET_RECENT_VIEW_PRODUCT_PL = "get_recent_view_product.pl";
 
     @GET(GET_RECENT_VIEW_PRODUCT_PL)
@@ -57,7 +57,7 @@ public interface ProductFeedApi {
             @Query("start") String start
     );
 
-    @GET(SEARCH_V2_3_PRODUCT)
+    @GET(SEARCH_V2_4_PRODUCT)
     Observable<ProductFeedData3> getProductFeed3(
             @Query("shop_id") String shopId,
             @Query("rows") String rows,

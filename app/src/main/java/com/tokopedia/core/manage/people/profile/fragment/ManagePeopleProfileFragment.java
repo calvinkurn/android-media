@@ -280,8 +280,14 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
 
     @Override
     public void showEmailVerificationDialog(String userEmail) {
-        DialogFragment fragment = (DialogFragment) EmailVerificationDialog.newInstance(userEmail);
-        fragment.show(getFragmentManager(), EmailVerificationDialog.FRAGMENT_TAG);
+        DialogFragment fragment = EmailVerificationDialogFragment.createInstance(userEmail,
+                new EmailVerificationDialogFragment.EmailChangeConfirmationListener() {
+                    @Override
+                    public void onEmailChanged() {
+                        presenter.setOnNotifiedEmailChanged(getActivity());
+                    }
+                });
+        fragment.show(getFragmentManager(), EmailVerificationDialogFragment.class.getSimpleName());
     }
 
     @Override
@@ -313,16 +319,6 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
                         showSnackBarView(getActivity().getString(R.string.error_gallery_valid));
                     }
                 });
-    }
-
-    @Override
-    public void setOnNotifiedEmailChanged() {
-        presenter.setOnNotifiedEmailChanged(getActivity());
-    }
-
-    @Override
-    public void setOnNotifiedPhoneVerified() {
-        presenter.setOnNotifiedPhoneVerified(getActivity());
     }
 
     @Override

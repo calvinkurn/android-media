@@ -23,6 +23,7 @@ import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -127,6 +128,11 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
                 TrackingUtils.eventLocaNotificationCallback(getIntent());
             }
         }
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_INDEX_HOME;
     }
 
     @Override
