@@ -80,13 +80,13 @@ public class CategoryPresenterImpl extends CategoryPresenter {
 
                         // delete all existing database
                         manager.deleteAll();
-                        // [END] delete all existing database
+                        //delete all existing database
 
-                        //[START] save to db
+                        //save to db
                         saveHadesV1Model(hadesV1ModelResponse, manager);
-                        //[END] save to db
+                        //save to db
 
-                        // get only parent
+                        //get only parent
                         List<CategoryDB> departmentParent = manager.getDepartmentParent();
                         int[] depCount = new int[departmentParent.size()];
                         for (int i = 0; i < departmentParent.size(); i++) {
@@ -124,57 +124,37 @@ public class CategoryPresenterImpl extends CategoryPresenter {
                 ));
     }
 
-    private static void saveHadesV1Model(Response<HadesV1Model> hadesV1ModelResponse,
-                                         CategoryDatabaseManager manager) {
+    private void saveHadesV1Model(Response<HadesV1Model> hadesV1ModelResponse,
+                                  CategoryDatabaseManager manager) {
         HadesV1Model body = hadesV1ModelResponse.body();
         HadesV1Model.Data data = body.getData();
-        List<CategoryDB> resultCategories = new ArrayList<>();
-        List<HadesV1Model.Category> level1List = data.getCategories();
-        for (HadesV1Model.Category level1 :
-                level1List) {
-            //[START] LEVEL 1
-            resultCategories.add(new CategoryDB(
-                    level1.getName(),
-                    level1.getTree(),
-                    0,
-                    0,
-                    Integer.parseInt(level1.getId()),
-                    level1.getIdentifier()));
-            //[END] LEVEL 1
 
-            List<HadesV1Model.Category> level2List = level1.getChildList();
-            for (HadesV1Model.Category level2 :
-                    level2List) {
-                //[START] LEVEL 2
-                resultCategories.add(new CategoryDB(
-                        level2.getName(),
-                        level2.getTree(),
-                        0,
-                        Integer.parseInt(level1.getId()),
-                        Integer.parseInt(level2.getId()),
-                        level2.getIdentifier()
-                ));
-                //[END] LEVEL 2
 
-                List<HadesV1Model.Category> level3List = level2.getChildList();
-                for (HadesV1Model.Category level3 :
-                        level3List) {
-                    //[START] LEVEL 3
-                    resultCategories.add(new CategoryDB(
-                            level3.getName(),
-                            level3.getTree(),
-                            0,
-                            Integer.parseInt(level2.getId()),
-                            Integer.parseInt(level3.getId()),
-                            level3.getIdentifier()
-                    ));
-                    //[END] LEVEL 3
-                }
+        List<CategoryDB> categoryDBList = getCategoryDBList(data.getCategories(), 0);
+        manager.setCategory(categoryDBList);
+        manager.store();
+    }
+
+    private List<CategoryDB> getCategoryDBList(List<HadesV1Model.Category> categoryList, int parentCategoryId) {
+        List<CategoryDB> categoryDBList = new ArrayList<>();
+        for (HadesV1Model.Category category : categoryList) {
+            CategoryDB categoryDB = getCategoryDB(category, parentCategoryId);
+            categoryDBList.add(categoryDB);
+            if (category.getChildList() != null) {
+                categoryDBList.addAll(getCategoryDBList(category.getChildList(), Integer.parseInt(category.getId())));
             }
         }
+        return categoryDBList;
+    }
 
-        manager.setCategory(resultCategories);
-        manager.store();
+    private CategoryDB getCategoryDB(HadesV1Model.Category category, int parentCategoryId) {
+        return new CategoryDB(
+                category.getName(),
+                category.getTree(),
+                0,
+                parentCategoryId,
+                Integer.parseInt(category.getId()),
+                category.getIdentifier());
     }
 
     @Override
@@ -188,52 +168,41 @@ public class CategoryPresenterImpl extends CategoryPresenter {
         }
     }
 
-    private HadesV1Model setupDataBreadcrumb(List<Breadcrumb> breadCrumb) {
+    private HadesV1Model setupDataBreadcrumb(List<Breadcrumb> breadcrumbList) {
         HadesV1Model hadesV1Model = new HadesV1Model();
         HadesV1Model.Data data = new HadesV1Model.Data();
-        List<HadesV1Model.Category> categories = new ArrayList<>();
 
-        for (Breadcrumb breadcrumb : breadCrumb) {
-            HadesV1Model.Category category = new HadesV1Model.Category();
-            category.setId(breadcrumb.id);
-            category.setIdentifier(breadcrumb.identifier);
-            category.setName(breadcrumb.name);
-            category.setParent(Integer.valueOf(breadcrumb.parentId));
-            category.setTree(Integer.valueOf(breadcrumb.tree));
-            if (breadcrumb.child != null) {
-                List<HadesV1Model.Category> children = new ArrayList<>();
-                for (Breadcrumb breadcrumb2 : breadcrumb.child) {
-                    HadesV1Model.Category child = new HadesV1Model.Category();
-                    child.setId(breadcrumb2.id);
-                    child.setIdentifier(breadcrumb2.id);
-                    child.setTree(Integer.valueOf(breadcrumb2.tree));
-                    child.setParent(Integer.valueOf(breadcrumb2.parentId));
-                    child.setName(breadcrumb2.name);
-                    if (breadcrumb2.child != null) {
-                        List<HadesV1Model.Category> children_ = new ArrayList<>();
-                        for (Breadcrumb breadcrumb3 : breadcrumb2.child) {
-                            HadesV1Model.Category child_ = new HadesV1Model.Category();
-                            child_.setId(breadcrumb3.id);
-                            child_.setIdentifier(breadcrumb3.id);
-                            child_.setTree(Integer.valueOf(breadcrumb3.tree));
-                            child_.setParent(Integer.valueOf(breadcrumb3.parentId));
-                            child_.setName(breadcrumb3.name);
-                            children_.add(child_);
-                        }
-                        child.setChildList(children_);
-                    }
-                    children.add(child);
-                }
-                category.setChildList(children);
-            }
-            categories.add(category);
-        }
-
-        data.setCategories(categories);
+        data.setCategories(getCategoryList(breadcrumbList));
         hadesV1Model.setData(data);
-
         return hadesV1Model;
 
+    }
+
+    private List<HadesV1Model.Category> getCategoryList(List<Breadcrumb> breadcrumbList) {
+        List<HadesV1Model.Category> categoryList = new ArrayList<>();
+        for (Breadcrumb breadcrumbChild : breadcrumbList) {
+            categoryList.add(getCategory(breadcrumbChild));
+        }
+        return categoryList;
+    }
+
+    /**
+     * Convert Breadcrumb object to Category
+     *
+     * @param breadcrumb
+     * @return
+     */
+    private HadesV1Model.Category getCategory(Breadcrumb breadcrumb) {
+        HadesV1Model.Category category = new HadesV1Model.Category();
+        category.setId(breadcrumb.id);
+        category.setIdentifier(breadcrumb.identifier);
+        category.setName(breadcrumb.name);
+        category.setParent(Integer.valueOf(breadcrumb.parentId));
+        category.setTree(Integer.valueOf(breadcrumb.tree));
+        if (breadcrumb.child != null) {
+            category.setChildList(getCategoryList(breadcrumb.child));
+        }
+        return category;
     }
 
     @Override
@@ -253,9 +222,7 @@ public class CategoryPresenterImpl extends CategoryPresenter {
 
     @Override
     public void initDataInstance(Context context) {
-        if (!isAfterRotate) {
 
-        }
     }
 
 
@@ -316,7 +283,7 @@ public class CategoryPresenterImpl extends CategoryPresenter {
     private ArrayList<DynamicObject> lookupCategoryFromDB(int level, String currentCategory) {
         Log.d(TAG, "lookupCategoryFromDB level " + level + " currentCategoryId " + currentCategory);
         manager = new CategoryDatabaseManager();
-        List<CategoryDB> categoryDBList = new ArrayList<>();
+        List<CategoryDB> categoryDBList;
         if (level == 0) {
             categoryDBList = manager.getDepartementChild(Integer.parseInt(currentCategory));
         } else {
