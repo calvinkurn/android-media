@@ -34,6 +34,8 @@ public interface DynamicFilterView {
 
     Boolean getCheckedPosition(String key);
 
+    Map<String, Boolean> getSelectedPositions();
+
     Map<String, String> getSelectedFilter();
 
     void removeCheckedPosition(String key);

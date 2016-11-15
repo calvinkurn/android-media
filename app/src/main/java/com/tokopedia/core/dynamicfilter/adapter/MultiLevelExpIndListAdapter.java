@@ -315,4 +315,12 @@ public abstract class MultiLevelExpIndListAdapter extends RecyclerView.Adapter {
     public List<ExpIndData> getData(){
         return mData;
     }
+
+    public boolean isNotifyOnChange() {
+        return mNotifyOnChange;
+    }
+
+    public void setNotifyOnChange(boolean notifyOnChange) {
+        mNotifyOnChange = notifyOnChange;
+    }
 }

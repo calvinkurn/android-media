@@ -132,6 +132,7 @@ public class DynamicFilterCategoryFragment extends BaseFragment<CategoryPresente
             }
         });
         dynamicCategoryAdapter.addAll(dynamicParentObject);
+        dynamicCategoryAdapter.expandCheckedCategory();
     }
 
     @Override
