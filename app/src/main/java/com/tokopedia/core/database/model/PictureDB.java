@@ -18,8 +18,7 @@ import com.tokopedia.core.database.DbFlowDatabase;
  */
 @ModelContainer
 @Table(database = DbFlowDatabase.class)
-public class PictureDB extends BaseModel  implements DatabaseConstant
-{
+public class PictureDB extends BaseModel implements DatabaseConstant {
 
     public static final int NOT_PRIMARY_IMAGE = 0;
     public static final int PRIMARY_IMAGE = 1;
@@ -28,9 +27,10 @@ public class PictureDB extends BaseModel  implements DatabaseConstant
 
     private ProductDB productDB;
 
-    public PictureDB(){}
+    public PictureDB() {
+    }
 
-    public PictureDB(String path, int width, int height){
+    public PictureDB(String path, int width, int height) {
         this(path, width, height, NOT_SYNC_TO_SERVER, NOT_PRIMARY_IMAGE, null, null);
     }
 
@@ -43,6 +43,18 @@ public class PictureDB extends BaseModel  implements DatabaseConstant
         this.picturePrimary = picturePrimary;
         this.pictureThumbnailUrl = pictureThumbnailUrl;
         this.pictureImageSourceUrl = pictureImageSourceUrl;
+    }
+
+    public PictureDB(String path, int width, int height, int pictureId, int picturePrimary, String pictureThumbnailUrl, String pictureImageSourceUrl, String pictureDescription) {
+        super();
+        this.path = path;
+        this.width = width;
+        this.height = height;
+        this.pictureId = pictureId;
+        this.picturePrimary = picturePrimary;
+        this.pictureThumbnailUrl = pictureThumbnailUrl;
+        this.pictureImageSourceUrl = pictureImageSourceUrl;
+        this.pictureDescription = pictureDescription;
     }
 
     @ContainerKey(ID)
@@ -76,11 +88,11 @@ public class PictureDB extends BaseModel  implements DatabaseConstant
     @Column
     public String pictureDescription;
 
-    public void linkToProduct(ProductDB productDb){
+    public void linkToProduct(ProductDB productDb) {
         productDbContainer = createProductDbContainer(productDb);
     }
 
-    public static ProductDbContainer createProductDbContainer(ProductDB productDb){
+    public static ProductDbContainer createProductDbContainer(ProductDB productDb) {
         return new ProductDbContainer(FlowManager.getContainerAdapter(ProductDB.class)
                 .toForeignKeyContainer(productDb));
     }
@@ -94,7 +106,7 @@ public class PictureDB extends BaseModel  implements DatabaseConstant
     }
 
     public ProductDB getProductDB() {
-        if(productDbContainer != null)
+        if (productDbContainer != null)
             return productDbContainer.toModel();
         return productDB;
     }

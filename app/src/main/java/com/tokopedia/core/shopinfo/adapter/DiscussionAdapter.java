@@ -114,7 +114,7 @@ public class DiscussionAdapter extends AbstractRecyclerAdapter {
         return 0;
     }
 
-    public void setRetryListener(View.OnClickListener listener){
+    public void setRetryListener(View.OnClickListener listener) {
         onRetryClick = listener;
     }
 
@@ -138,6 +138,12 @@ public class DiscussionAdapter extends AbstractRecyclerAdapter {
             holder.repRating.setVisibility(View.INVISIBLE);
             holder.repIcon.setImageResource(R.drawable.ic_icon_repsis_smile);
         }
+
+        if (!SessionHandler.isV4Login(context))
+            holder.butOverflow.setVisibility(View.GONE);
+        else
+            holder.butOverflow.setVisibility(View.VISIBLE);
+
         setListener(model, holder);
     }
 
@@ -219,7 +225,7 @@ public class DiscussionAdapter extends AbstractRecyclerAdapter {
 
         });
         String userId = SessionHandler.getLoginID(context);
-        if(userId.equals("")){
+        if (userId.equals("")) {
             popup.getMenu().findItem(R.id.action_follow).setVisible(false);
         }
         popup.show();
@@ -232,13 +238,13 @@ public class DiscussionAdapter extends AbstractRecyclerAdapter {
             menuID = R.menu.delete_report_menu;
         } else {
             if (token.getLoginID(context).equals(talk.getTalkUserId())) {
-                if (talk.getTalkFollowStatus()==1) {
+                if (talk.getTalkFollowStatus() == 1) {
                     menuID = R.menu.unfollow_delete_menu;
                 } else {
                     menuID = R.menu.follow_delete_menu;
                 }
             } else {
-                if (talk.getTalkFollowStatus()==1) {
+                if (talk.getTalkFollowStatus() == 1) {
                     menuID = R.menu.unfollow_report_menu;
                 } else {
                     menuID = R.menu.follow_report_menu;

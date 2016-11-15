@@ -295,43 +295,44 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
         vPasswordRetype.setError(null);
         vBDay.setError(null);
         vError.setVisibility(View.GONE);
-        if (vName.length() == 0) {
+        if (vName.length() == 0 && vName.isEnabled()) {
             vName.setError(getText(R.string.error_field_required));
             vName.requestFocus();
             sendGTMRegisterError(AppEventTracking.EventLabel.FULLNAME);
             return false;
         }
-        if (RegisterImpl.RegisterUtil.checkRegexNameLocal(vName.getText().toString())) {
+        if (RegisterImpl.RegisterUtil.checkRegexNameLocal(vName.getText().toString())&& vName.isEnabled()) {
             vName.setError(getString(R.string.error_illegal_character));
             vName.requestFocus();
             sendGTMRegisterError(AppEventTracking.EventLabel.FULLNAME);
             return false;
         }
-        if (vName.length() > 35) {
+        if (vName.length() > 35  && vName.isEnabled()) {
             vName.setError(getString(R.string.error_max_35_character));
             vName.requestFocus();
             sendGTMRegisterError(AppEventTracking.EventLabel.FULLNAME);
             return false;
         }
-        if (vPassword.length() == 0) {
+        if (vPassword.length() == 0 && vPassword.isEnabled()) {
             vPassword.setError(getText(R.string.error_field_required));
             vPassword.requestFocus();
             sendGTMRegisterError(AppEventTracking.EventLabel.PASSWORD);
             return false;
         }
-        if (vPasswordRetype.length() == 0) {
+        if (vPasswordRetype.length() == 0 && vPasswordRetype.getVisibility() == View.VISIBLE) {
             vPasswordRetype.setError(getText(R.string.error_field_required));
             vPasswordRetype.requestFocus();
             sendGTMRegisterError(AppEventTracking.EventLabel.PASSWORD_CONFIRMATION);
             return false;
         }
-        if (!vPasswordRetype.getText().toString().equals(vPassword.getText().toString())) {
+        if (!vPasswordRetype.getText().toString().equals(vPassword.getText().toString())
+                && vPasswordRetype.getVisibility() == View.VISIBLE) {
             vPasswordRetype.setError(getText(R.string.error_password_not_same));
             vPasswordRetype.requestFocus();
             sendGTMRegisterError(AppEventTracking.EventLabel.PASSWORD_CONFIRMATION);
             return false;
         }
-        if(vBDay.getText().equals("Tanggal / Bulan / Tahun")){
+        if(vBDay.getText().equals("Tanggal / Bulan / Tahun")  && vBDay.isEnabled()){
             vBDay.setError(getText(R.string.error_field_required));
             vBDay.requestFocus();
             sendGTMRegisterError(AppEventTracking.EventLabel.BIRTHDATE);

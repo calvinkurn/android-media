@@ -10,6 +10,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
@@ -132,7 +133,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_1:
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_2:
                 ViewHolderProductitem itemHolder = (ViewHolderProductitem) holder;
-                itemHolder.bindData((ProductItem) data.get(position));
+                itemHolder.bindData((ProductItem) data.get(position), itemHolder);
                 break;
             case TkpdState.RecyclerView.VIEW_TOP_ADS_LIST:
                 bindTopAdsListViewHolder((ProductFeedAdapter.ViewHolderProductTopAds) holder, position);
@@ -315,7 +316,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if(position == 0) {
+                if (position == 0) {
                     return 2;
                 } else {
                     return 1;
@@ -533,7 +534,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             } else {
                 data.add(horizontalProductListTop);
             }
-            if(productIsEmpty){
+            if (productIsEmpty) {
                 setSearchNotFound();
             }
             notifyItemInserted(posTop);
@@ -624,7 +625,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             this.context = itemView.getContext();
         }
 
-        public void bindData(ProductItem data) {
+        public void bindData(ProductItem data, ViewHolderProductitem viewHolder) {
             this.data = data;
             if (data.getSpannedName() != null)
                 title.setText(data.getSpannedName());
@@ -641,7 +642,8 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             else
                 shopName.setText(Html.fromHtml(data.shop));
             ImageHandler.loadImageThumbs(context, productImage, data.imgUri);
-            if (data.getBadges() != null && badgesContainer.getChildCount() == 0) {
+            viewHolder.badgesContainer.removeAllViews();
+            if (data.getBadges() != null) {
                 for (ProductItem.Badge badges : data.getBadges()) {
                     View view = LayoutInflater.from(context).inflate(R.layout.badge_layout, null);
                     ImageView imageBadge = (ImageView) view.findViewById(R.id.badge);
@@ -649,16 +651,21 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                     badgesContainer.addView(view);
                 }
             }
-            if(data.getLabels() != null && labelContainer.getChildCount() == 0){
+            viewHolder.labelContainer.removeAllViews();
+            if (data.getLabels() != null) {
                 for (ProductItem.Label label : data.getLabels()) {
                     View view = LayoutInflater.from(context).inflate(R.layout.label_layout, null);
                     TextView labelText = (TextView) view.findViewById(R.id.label);
                     labelText.setText(label.getTitle());
-                    ColorStateList tint = ColorStateList.valueOf(Color.parseColor(label.getColor()));
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        labelText.setBackgroundTintList(tint);
-                    } else {
-                        ViewCompat.setBackgroundTintList(labelText, tint);
+                    if (!label.getColor().toLowerCase().equals("#ffffff")) {
+                        labelText.setBackgroundResource(R.drawable.bg_label);
+                        labelText.setTextColor(ContextCompat.getColor(context, R.color.white));
+                        ColorStateList tint = ColorStateList.valueOf(Color.parseColor(label.getColor()));
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            labelText.setBackgroundTintList(tint);
+                        } else {
+                            ViewCompat.setBackgroundTintList(labelText, tint);
+                        }
                     }
                     labelContainer.addView(view);
                 }

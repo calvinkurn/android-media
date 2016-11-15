@@ -170,7 +170,6 @@ public class SearchHistoryImpl extends SearchHistory {
         // initialize broadcast listener
         ((DiscoveryInteractorImpl) discoveryInteractor).setCompositeSubscription(compositeSubscription);
         context.registerReceiver(searchReceiver, new IntentFilter(BrowseProductActivity.SEARCH_ACTION_INTENT));
-        getSearchData(context);
     }
 
     @Override

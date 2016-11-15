@@ -46,7 +46,7 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
     public interface ProductImageListener {
         View.OnClickListener onUploadClicked(int position);
 
-        View.OnClickListener onImageClicked(int position, ImageUpload imageUpload);
+        View.OnClickListener onImageClicked(int position, ArrayList<ImageUpload> imageUpload);
     }
 
 
@@ -96,7 +96,7 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
             e.printStackTrace();
         }
 
-        holder.image.setOnClickListener(listener.onImageClicked(position, data.get(position)));
+        holder.image.setOnClickListener(listener.onImageClicked(position, data));
 
         setBorder(holder, position);
 

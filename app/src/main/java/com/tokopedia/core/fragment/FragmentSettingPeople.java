@@ -11,14 +11,14 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-import com.tokopedia.core.ManagePeopleBank;
 import com.tokopedia.core.ManagePeoplePassword;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.customadapter.SimpleListTabViewAdapter;
 import com.tokopedia.core.manage.ManageConstant;
-import com.tokopedia.core.manage.people.notification.activity.ManageNotificationActivity;
 import com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActivity;
+import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
+import com.tokopedia.core.manage.people.notification.activity.ManageNotificationActivity;
 import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 
@@ -77,7 +77,7 @@ public class FragmentSettingPeople extends Fragment implements ManageConstant {
                         startActivity(intent);
                         break;
                     case 2:
-                        intent = new Intent(getActivity(), ManagePeopleBank.class);
+                        intent = new Intent(getActivity(), ManagePeopleBankActivity.class);
                         startActivity(intent);
                         break;
                     case 3:

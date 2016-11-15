@@ -29,11 +29,10 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.fragment.GoogleMapFragment;
-import com.tokopedia.core.geolocation.interactor.CacheInteractor;
-import com.tokopedia.core.geolocation.interactor.CacheInteractorImpl;
 import com.tokopedia.core.geolocation.interactor.RetrofitInteractor;
 import com.tokopedia.core.geolocation.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.geolocation.listener.GoogleMapView;
@@ -48,10 +47,12 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
     private static final String TAG = GoogleMapPresenterImpl.class.getSimpleName();
     private static final String STATE_IS_ALLOW_GENERATE_ADDRESS = "STATE_IS_ALLOW_GENERATE_ADDRESS";
     private static final String STATE_IS_USE_EXISTING_LOCATION = "STATE_IS_USE_EXISTING_LOCATION";
+    public static final String CACHE_LATITUDE_LONGITUDE = "cache_latitude_longitude";
+    public static final String CACHE_LATITUDE = "cache_latitude";
+    public static final String CACHE_LONGITUDE = "cache_longitude";
 
     private final GoogleMapView view;
     private final RetrofitInteractor retrofitInteractor;
-    private final CacheInteractor cacheInteractor;
     private final GoogleApiClient googleApiClient;
     private final LocationRequest locationRequest;
 
@@ -66,7 +67,6 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
         this.context = context;
         this.view = googleMapFragment;
         this.retrofitInteractor = new RetrofitInteractorImpl();
-        this.cacheInteractor = new CacheInteractorImpl();
         this.locationRequest = LocationRequest.create()
                 .setInterval(DEFAULT_UPDATE_INTERVAL_IN_MILLISECONDS)
                 .setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS)
@@ -229,7 +229,7 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
 
     private void generateAddress(final Context context) {
         if (isAllowGenerateAddress) {
-            retrofitInteractor.generateAddress(new RetrofitInteractor.GenerateAddressListener() {
+            retrofitInteractor.generateAddress(context, new RetrofitInteractor.GenerateAddressListener() {
 
                 @Override
                 public void onSuccess(LocationPass locationPass) {
@@ -281,7 +281,10 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
     }
 
     private void saveLatLng(LatLng target) {
-        cacheInteractor.storeLatLng(target.latitude, target.longitude);
+        LocalCacheHandler cache = new LocalCacheHandler(context, CACHE_LATITUDE_LONGITUDE);
+        cache.putString(CACHE_LATITUDE, String.valueOf(target.latitude));
+                cache.putString(CACHE_LONGITUDE, String.valueOf(target.longitude));
+                cache.applyEditor();
     }
 
     @Override
@@ -367,6 +370,5 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
     @Override
     public void onDestroy() {
         retrofitInteractor.unSubscribe();
-        cacheInteractor.dropCache();
     }
 }

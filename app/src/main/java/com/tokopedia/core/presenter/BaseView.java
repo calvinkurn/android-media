@@ -1,5 +1,6 @@
 package com.tokopedia.core.presenter;
 
+import android.content.Context;
 import android.os.Bundle;
 
 /**
@@ -10,6 +11,7 @@ public interface BaseView {
 
     /**
      * fragment id hold by Activity
+     *
      * @return fragment id determined for Activity
      */
     int getFragmentId();
@@ -17,6 +19,7 @@ public interface BaseView {
 
     /**
      * arise network timeout
+     *
      * @param type please see DownloadServiceConstant
      * @param data non null data
      */
@@ -24,6 +27,7 @@ public interface BaseView {
 
     /**
      * set data to the presenter to view for user
+     *
      * @param type please see DownloadServiceConstant
      * @param data non null data
      */
@@ -31,6 +35,7 @@ public interface BaseView {
 
     /**
      * message error sent from server
+     *
      * @param type please see DownloadServiceConstant
      * @param data non null data
      */
@@ -38,8 +43,14 @@ public interface BaseView {
 
     /**
      * message error sent from server
+     *
      * @param type please see DownloadServiceConstant
      * @param data non null data
      */
     void onMessageError(int type, Object... data);
+
+    /**
+     * get Activity Context
+     */
+    Context getContext();
 }

@@ -63,7 +63,7 @@ public class ImageDescriptionDialog  extends DialogFragment {
             long imageId = bundle.getLong(IMAGE_ID,-1);
             if(imageId!= -1){
                 this.imageId = imageId;
-                DbManagerImpl.getInstance().getGambarById(imageId);
+                pictureDB = DbManagerImpl.getInstance().getGambarById(imageId);
             }
         }
     }

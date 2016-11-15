@@ -159,8 +159,8 @@ public class DynamicFilterCategoryFragment extends BaseFragment<CategoryPresente
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putIntegerArrayList(GROUPS_KEY, dynamicCategoryAdapter.saveGroups());
         super.onSaveInstanceState(outState);
+        outState.putIntegerArrayList(GROUPS_KEY, dynamicCategoryAdapter.saveGroups());
     }
 
     @Override

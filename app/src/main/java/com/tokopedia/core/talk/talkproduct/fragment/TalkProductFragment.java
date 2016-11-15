@@ -183,7 +183,7 @@ public class TalkProductFragment extends BasePresenterFragment<TalkProductPresen
     protected void initialVar() {
 //        pagingHandler = new PagingHandler();
         items = new ArrayList<>();
-        adapter = TalkProductAdapter.createAdapter(getActivity(), this, items, false, false, bundle,presenter);
+        adapter = TalkProductAdapter.createAdapter(getActivity(), this, items, false, false, bundle, presenter);
         recyclerView.setAdapter(adapter);
     }
 
@@ -214,7 +214,7 @@ public class TalkProductFragment extends BasePresenterFragment<TalkProductPresen
     }
 
     @Override
-    public void cancelRequest(){
+    public void cancelRequest() {
         isRequest = false;
         refresh.setPullEnabled(true);
     }
@@ -226,7 +226,7 @@ public class TalkProductFragment extends BasePresenterFragment<TalkProductPresen
         param.put("per_page", "10");
         param.put("product_id", productID);
         param.put("shop_domain", shopID);
-        if(paramMaster==1) param.put("master", String.valueOf(paramMaster));
+        if (paramMaster == 1) param.put("master", String.valueOf(paramMaster));
         return param;
     }
 
@@ -268,6 +268,7 @@ public class TalkProductFragment extends BasePresenterFragment<TalkProductPresen
 
     @Override
     public void onSuccessConnection(TalkProductModel parse, int page) {
+        setActionEnabled(true);
         isRequest = false;
         refresh.setPullEnabled(true);
         if (page == 1) {
@@ -283,11 +284,12 @@ public class TalkProductFragment extends BasePresenterFragment<TalkProductPresen
 
     @Override
     public void onTimeoutConnection(int page) {
-        onTimeoutConnection("",page);
+        onTimeoutConnection("", page);
     }
 
     @Override
     public void onTimeoutConnection(String error, int page) {
+        setActionEnabled(false);
         isRequest = false;
         if (page == 1) {
             refresh.finishRefresh();
@@ -312,6 +314,10 @@ public class TalkProductFragment extends BasePresenterFragment<TalkProductPresen
             adapter.notifyDataSetChanged();
             snackbarRetry.showRetrySnackbar();
         }
+    }
+
+    private void setActionEnabled(boolean isEnabled) {
+        setMenuVisibility(isEnabled);
     }
 
     private NetworkErrorHelper.RetryClickedListener refreshSnackbarListener() {
@@ -408,10 +414,10 @@ public class TalkProductFragment extends BasePresenterFragment<TalkProductPresen
     }
 
     public void ShowDialogAddNew() {
-        Intent intent = new Intent(getActivity(),TalkAddNew.class);
-        intent.putExtra("prod_id",productID);
-        intent.putExtra("prod_name",productName);
-        startActivityForResult(intent,ADD_TALK);
+        Intent intent = new Intent(getActivity(), TalkAddNew.class);
+        intent.putExtra("prod_id", productID);
+        intent.putExtra("prod_name", productName);
+        startActivityForResult(intent, ADD_TALK);
     }
 
     @Override
@@ -434,7 +440,7 @@ public class TalkProductFragment extends BasePresenterFragment<TalkProductPresen
                     items.remove(position);
                     adapter.notifyDataSetChanged();
                     SnackbarManager.make(getActivity(),
-                            getString(R.string.message_success_delete_talk),Snackbar.LENGTH_LONG).show();
+                            getString(R.string.message_success_delete_talk), Snackbar.LENGTH_LONG).show();
                     Bundle bundle = new Bundle();
                     bundle.putBoolean(TalkProductActivity.RESULT_TALK_HAS_ADDED, true);
                     getActivity().setResult(Activity.RESULT_OK, new Intent().putExtras(bundle));

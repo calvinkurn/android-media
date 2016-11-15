@@ -26,7 +26,7 @@ public class BrowseProductActivityModel {
     public String obCatalog; //set to default sort
     public boolean isSearchDeeplink = false;
     public String source = DynamicFilterPresenter.SEARCH_PRODUCT;
-    public int tab;
+    public int activeTab;
     public String unique_id;
     public Map<String, String> filterOptions;
 
@@ -78,12 +78,12 @@ public class BrowseProductActivityModel {
         this.unique_id = unique_id;
     }
 
-    public int getTab() {
-        return tab;
+    public int getActiveTab() {
+        return activeTab;
     }
 
-    public void setTab(int tab) {
-        this.tab = tab;
+    public void setActiveTab(int tab) {
+        this.activeTab = tab;
     }
 
     public String getAdSrc() {

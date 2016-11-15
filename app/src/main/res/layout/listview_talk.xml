@@ -82,7 +82,8 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
-                tools:text="GameBoy Advance SP" />
+                tools:text="GameBoy Advance SP"
+                android:textStyle="bold"/>
 
             <!--message-->
             <TextView

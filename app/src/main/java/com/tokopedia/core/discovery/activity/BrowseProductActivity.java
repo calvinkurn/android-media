@@ -24,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
@@ -95,8 +96,6 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
 
     private static final String TAG = BrowseProductActivity.class.getSimpleName();
     private static final String KEY_GTM = "GTMFilterData";
-    @Bind(R2.id.container)
-    FrameLayout container;
     @Bind(R2.id.progressBar)
     ProgressBar progressBar;
     private SearchView searchView;
@@ -106,9 +105,8 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     private SearchInteractor searchInteractor;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
     //    private DynamicFilterModel.Data filterAttribute;
-    private HashMap<String, DynamicFilterModel.Data> filterAttributMap = new HashMap<>();
-    private HashMap<String, Map<String, String>> filtersMap = new HashMap<>();
-    private HashMap<String, Fragment> fragmentHashMap = new HashMap<>();
+    private HashMap<Integer, DynamicFilterModel.Data> filterAttributMap = new HashMap<>();
+    private HashMap<Integer, Map<String, String>> filtersMap = new HashMap<>();
     private SharedPreferences preferences;
     private List<Breadcrumb> breadcrumbs;
     private boolean afterRestoreSavedInstance;
@@ -123,6 +121,10 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
 
     public enum GridType {
         GRID_1, GRID_2, GRID_3
+    }
+
+    public enum FDest{
+        SORT, FILTER;
     }
 
     public static final String EXTRA_SOURCE = "EXTRA_SOURCE";
@@ -144,6 +146,8 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     Toolbar toolbar;
     @Bind(R2.id.bottom_navigation)
     AHBottomNavigation bottomNavigation;
+    @Bind(R2.id.container)
+    FrameLayout container;
     BrowseProductActivityModel browseProductActivityModel;
     DiscoveryInteractor discoveryInteractor;
     LocalCacheHandler cacheGTM;
@@ -164,7 +168,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
             browseProductActivityModel = Parcels.unwrap(savedInstanceState.getParcelable(EXTRA_BROWSE_MODEL));
             filterAttributMap = Parcels.unwrap(savedInstanceState.getParcelable(EXTRA_FILTER_MAP_ATTR));
             filtersMap = Parcels.unwrap(savedInstanceState.getParcelable(EXTRA_FILTER_MAP));
-            browseProductActivityModel.setFilterOptions(filtersMap.get(browseProductActivityModel.getSource()));
+            browseProductActivityModel.setFilterOptions(filtersMap.get(browseProductActivityModel.getActiveTab()));
         }
         if (SessionHandler.isV4Login(this)) {
             String userId = SessionHandler.getLoginID(this);
@@ -350,7 +354,9 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
             searchView.setQuery(browseProductActivityModel.getQ(), false);
             browseProductActivityModel.setSearchDeeplink(false);
         }
-        searchView.clearFocus();
+        if (CommonUtils.isFinishActivitiesOptionEnabled(this)) {
+            searchView.clearFocus();
+        }
         return true;
     }
 
@@ -427,13 +433,14 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         return false;
     }
 
-    public void setFilterAttribute(DynamicFilterModel.Data filterAttribute, String source) {
-        if (checkHasFilterAttrIsNull(source))
-            filterAttributMap.put(source, filterAttribute);
+    public void setFilterAttribute(DynamicFilterModel.Data filterAttribute, int activeTab) {
+        if (checkHasFilterAttrIsNull(activeTab))
+            filterAttributMap.put(activeTab, filterAttribute);
     }
 
-    public boolean checkHasFilterAttrIsNull(String source) {
-        return filterAttributMap.get(source) == null;
+    @Override
+    public boolean checkHasFilterAttrIsNull(int activeTab) {
+        return filterAttributMap.get(activeTab) == null;
     }
 
 
@@ -473,6 +480,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     }
 
     private void resetBrowseProductActivityModel() {
+        deleteFilterAndSortCache();
         browseProductActivityModel.setAdSrc(TopAdsApi.SRC_BROWSE_PRODUCT);
         browseProductActivityModel.alias = null;
         browseProductActivityModel.removeBannerModel();
@@ -586,19 +594,20 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
             @Override
             public boolean onTabSelected(final int position, boolean wasSelected) {
+                BrowseParentFragment parentFragment = (BrowseParentFragment)
+                        fragmentManager.findFragmentById(R.id.container);
                 Intent intent;
-                DynamicFilterModel.Data filterAttribute = filterAttributMap.get(source);
+                DynamicFilterModel.Data filterAttribute = filterAttributMap.get(parentFragment.getActiveTab());
                 switch (position) {
                     case 0:
-                        BrowseParentFragment parentFragment = (BrowseParentFragment) fragmentManager.findFragmentById(R.id.container);
                         if (parentFragment.getActiveFragment() instanceof ShopFragment) {
-                            openFilter(filterAttribute, source);
+                            openFilter(filterAttribute, source, parentFragment.getActiveTab(), FDest.FILTER);
                         } else {
-                            openSort(filterAttribute, source);
+                            openSort(filterAttribute, source, parentFragment.getActiveTab(), FDest.SORT);
                         }
                         break;
                     case 1:
-                        openFilter(filterAttribute, source);
+                        openFilter(filterAttribute, source, parentFragment.getActiveTab(), FDest.FILTER);
                         break;
                     case 2:
                         intent = new Intent(CHANGE_GRID_ACTION_INTENT);
@@ -648,27 +657,40 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                 return true;
             }
         });
+        bottomNavigation.setUseElevation(true, getResources().getDimension(R.dimen.bottom_navigation_elevation));
+        bottomNavigation.setOnNavigationPositionListener(new AHBottomNavigation.OnNavigationPositionListener() {
+            @Override
+            public void onPositionChange(int y) {
+                CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) container.getLayoutParams();
+                layoutParams.setMargins(0, 0, 0, y);
+                container.setLayoutParams(layoutParams);
+            }
+        });
         if (firstTime) {
-            bottomNavigation.setCurrentItem(0, false);
+            if(!source.contains("shop")){
+                bottomNavigation.setCurrentItem(0, false);
+            }
             firstTime = false;
         }
     }
 
-    private void openSort(DynamicFilterModel.Data filterAttribute, String source) {
-        Intent intent;
+    private void openSort(DynamicFilterModel.Data filterAttribute, String source, int activeTab, FDest dest) {
         if (filterAttribute != null) {
             if (browseProductActivityModel.getOb() != null) {
                 filterAttribute.setSelectedOb(browseProductActivityModel.getOb());
             }
-            intent = new Intent(BrowseProductActivity.this, SortProductActivity.class);
+            Intent intent = new Intent(BrowseProductActivity.this, SortProductActivity.class);
             intent.putExtra(EXTRA_DATA, Parcels.wrap(filterAttribute));
             intent.putExtra(EXTRA_SOURCE, source);
             startActivityForResult(intent, REQUEST_SORT);
             overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);
+        } else {
+            fetchDynamicAttribute(activeTab, source, dest);
         }
     }
 
-    private void openFilter(DynamicFilterModel.Data filterAttribute, String source) {
+    private void openFilter(DynamicFilterModel.Data filterAttribute, String source, int activeTab, FDest dest) {
+        Log.d(TAG, "openFilter source "+source);
         List<Breadcrumb> crumb = getProductBreadCrumb();
         if (crumb != null) {
             breadcrumbs = crumb;
@@ -680,14 +702,63 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                     filterAttribute.getFilter(),
                     browseProductActivityModel.getParentDepartement(), source);
 
+        } else {
+            fetchDynamicAttribute(activeTab, source, dest);
         }
-        return;
     }
 
+    private void fetchDynamicAttribute(final int activeTab, final String source, final FDest dest){
+        Log.d(TAG, "Source "+source);
+        discoveryInteractor.setDiscoveryListener(new DiscoveryListener() {
+            @Override
+            public void onComplete(int type, ImageGalleryImpl.Pair<String, ? extends ObjContainer> data) {
+                Log.d(TAG, "onComplete type "+type);
+            }
+
+            @Override
+            public void onFailed(int type, ImageGalleryImpl.Pair<String, ? extends ObjContainer> data) {
+                Log.e(TAG, "onFailed type "+type);
+                Toast.makeText(BrowseProductActivity.this, getString(R.string.try_again), Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onSuccess(int type, ImageGalleryImpl.Pair<String, ? extends ObjContainer> data) {
+                Log.d(TAG, "onSuccess type "+type);
+                switch (type){
+                    case DYNAMIC_ATTRIBUTE:
+                        DynamicFilterModel.DynamicFilterContainer dynamicFilterContainer = (DynamicFilterModel.DynamicFilterContainer) data.getModel2();
+                        DynamicFilterModel.Data filterAtrribute = dynamicFilterContainer.body().getData();
+                        if (filterAtrribute.getSort() != null) {
+                            filterAtrribute.setSelected(filterAtrribute.getSort().get(0).getName());
+                        }
+                        setFilterAttribute(filterAtrribute, activeTab);
+                        switch (dest){
+                            case FILTER:
+                                openFilter(filterAtrribute, source, activeTab, dest);
+                                break;
+                            case SORT:
+                                openSort(filterAtrribute, source, activeTab, dest);
+                                break;
+                        }
+                        break;
+                }
+            }
+        });
+        ((DiscoveryInteractorImpl) discoveryInteractor).setCompositeSubscription(compositeSubscription);
+        if(source.contains("catalog")){
+            discoveryInteractor.getDynamicAttribute(this, DynamicFilterPresenter.SEARCH_CATALOG, browseProductActivityModel.getDepartmentId());
+        } else if (source.contains("shop")){
+            discoveryInteractor.getDynamicAttribute(this, DynamicFilterPresenter.SEARCH_SHOP, browseProductActivityModel.getDepartmentId());
+        } else if(source.contains("directory")) {
+            discoveryInteractor.getDynamicAttribute(this, DynamicFilterPresenter.DIRECTORY, browseProductActivityModel.getDepartmentId());
+        } else {
+            discoveryInteractor.getDynamicAttribute(this, DynamicFilterPresenter.SEARCH_PRODUCT, browseProductActivityModel.getDepartmentId());
+        }
+    }
 
     private List<AHBottomNavigationItem> getBottomItemsShop() {
         List<AHBottomNavigationItem> items = new ArrayList<>();
-        items.add(new AHBottomNavigationItem("Filter", R.drawable.ic_filter_list_black_24dp));
+        items.add(new AHBottomNavigationItem(getString(R.string.filter), R.drawable.ic_filter_list_black_24dp));
         return items;
     }
 
@@ -699,8 +770,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         items.add(new AHBottomNavigationItem(getString(R.string.share), R.drawable.ic_share_black_24dp));
         return items;
     }
-
-
+    
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -710,9 +780,9 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                 case REQUEST_SORT:
                     DynamicFilterModel.Data sortData = Parcels.unwrap(data.getParcelableExtra(BrowseParentFragment.SORT_EXTRA));
                     String source = data.getStringExtra(BrowseParentFragment.SOURCE_EXTRA);
-                    filterAttributMap.put(browseProductActivityModel.getSource(), sortData);
+                    filterAttributMap.put(browseProductActivityModel.getActiveTab(), sortData);
                     String newOb = sortData.getSelectedOb();
-                    if(source.equals(DynamicFilterPresenter.SEARCH_CATALOG)) {
+                    if(browseProductActivityModel.getActiveTab() == 1) {
                         browseProductActivityModel.setObCatalog(newOb);
                     } else {
                         browseProductActivityModel.setOb(newOb);
@@ -725,7 +795,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                     break;
                 case DynamicFilterView.REQUEST_CODE:
                     Map<String, String> filters = Parcels.unwrap(data.getParcelableExtra(DynamicFilterView.EXTRA_RESULT));
-                    filtersMap.put(browseProductActivityModel.getSource(), filters);
+                    filtersMap.put(browseProductActivityModel.getActiveTab(), filters);
                     browseProductActivityModel.setFilterOptions(filters);
                     Log.d(TAG, "filter option " + filters);
                     sendFilterGTM(filters);
@@ -837,7 +907,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                         if (browseProductActivityModel.getOb() != null) {
                             body.query.ob = browseProductActivityModel.getOb();
                         }
-                        Map<String, String> filters = filtersMap.get(browseProductActivityModel.getSource());
+                        Map<String, String> filters = filtersMap.get(browseProductActivityModel.getActiveTab());
                         if (filters != null) {
                             for (Map.Entry<String, String> set : filters.entrySet()) {
                                 if (set.getKey().equals("ob")) {
@@ -866,7 +936,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                             editor.apply();
                         }
                         Log.d(TAG, "Hotlist query " + body.query.toString());
-                        filtersMap.put(browseProductActivityModel.getSource(), filters);
+                        filtersMap.put(browseProductActivityModel.getActiveTab(), filters);
                         browseProductActivityModel.setFilterOptions(filters);
                         browseProductActivityModel.setOb(body.query.ob);
                         browseProductActivityModel.setHotListBannerModel(body);
@@ -952,6 +1022,10 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                 !TextUtils.isEmpty(keyword)) {
             UnifyTracking.eventDiscoverySearch(keyword);
         }
+    }
+
+    public void showBottomBar() {
+        bottomNavigation.restoreBottomNavigation(true);
     }
 
     public GridType getGridType() {
