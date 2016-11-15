@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.CardView;
+import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -16,16 +17,31 @@ import android.widget.TextView;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.addtocart.model.responseatcform.Destination;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.geolocation.activity.GeolocationActivity;
+import com.tokopedia.core.geolocation.model.LocationPass;
+import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
+import com.tokopedia.transaction.cart.adapter.ShipmentCartAdapter;
+import com.tokopedia.transaction.cart.adapter.ShipmentPackageCartAdapter;
 import com.tokopedia.transaction.cart.listener.IShipmentCartView;
 import com.tokopedia.transaction.cart.model.ShipmentCartPassData;
+import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentData;
+import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentWrapper;
+import com.tokopedia.transaction.cart.model.calculateshipment.Shipment;
+import com.tokopedia.transaction.cart.model.savelocation.SaveLocationWrapper;
 import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartData;
+import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartWrapper;
 import com.tokopedia.transaction.cart.presenter.IShipmentCartPresenter;
+import com.tokopedia.transaction.cart.presenter.ShipmentCartPresenter;
+
+import java.util.List;
 
 import butterknife.Bind;
+import butterknife.OnClick;
 
 /**
  * @author anggaprasetiyo on 11/2/16.
@@ -35,6 +51,8 @@ import butterknife.Bind;
 public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPresenter>
         implements IShipmentCartView {
     public static final int CHOOSE_ADDRESS = 0;
+    public static final int CREATE_NEW_ADDRESS = 1;
+    private static final int CHOOSE_LOCATION = 2;
     private static final String ARG_PARAM_EXTRA_SHIPMENT_CART_PASS_DATA =
             "ARG_PARAM_EXTRA_SHIPMENT_CART_PASS_DATA";
 
@@ -76,8 +94,15 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
     AppCompatTextView btnSave;
     @Bind(R2.id.container)
     LinearLayout holderContainer;
+    private ShipmentCartPassData shipmentCartPassData;
+    private CalculateShipmentData shipmentData;
+    private ShipmentCartAdapter adapterShipment;
+    private ShipmentPackageCartAdapter adapterShipmentPackage;
+    private ShipmentCartWrapper wrapper;
 
-    private ShipmentCartPassData shipmentCart;
+
+    private String latitude, longitude, addressGeoLocation; //sementara
+    private int isUpdateGeoLocation = 0;
 
     public static ShipmentCartFragment newInstance(ShipmentCartPassData passData) {
         ShipmentCartFragment fragment = new ShipmentCartFragment();
@@ -95,7 +120,7 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
 
     @Override
     protected void onFirstTimeLaunched() {
-
+        calculateShipment();
     }
 
     @Override
@@ -115,7 +140,7 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
 
     @Override
     protected void initialPresenter() {
-
+        presenter = new ShipmentCartPresenter(this);
     }
 
     @Override
@@ -125,7 +150,7 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
 
     @Override
     protected void setupArguments(Bundle arguments) {
-        shipmentCart = arguments.getParcelable(ARG_PARAM_EXTRA_SHIPMENT_CART_PASS_DATA);
+        shipmentCartPassData = arguments.getParcelable(ARG_PARAM_EXTRA_SHIPMENT_CART_PASS_DATA);
     }
 
     @Override
@@ -135,6 +160,7 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
 
     @Override
     protected void initView(View view) {
+        spShipment.setAdapter(adapterShipment);
 
     }
 
@@ -145,22 +171,47 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
 
     @Override
     protected void initialVar() {
-
+        shipmentData = new CalculateShipmentData();
+        adapterShipment = ShipmentCartAdapter.newInstance(getActivity());
+        adapterShipmentPackage = ShipmentPackageCartAdapter.newInstance(getActivity());
+        wrapper = new ShipmentCartWrapper();
+        wrapper.setOldAddressId(shipmentCartPassData.getAddressId());
+        wrapper.setOldShipmentId(shipmentCartPassData.getShippingId());
+        wrapper.setOldShipmentPackageId(shipmentCartPassData.getShippingPackageId());
+        wrapper.setAddressId(shipmentCartPassData.getAddressId());
+        wrapper.setShipmentId(shipmentCartPassData.getShippingId());
+        wrapper.setShipmentPackageId(shipmentCartPassData.getShippingPackageId());
+        wrapper.setShopId(shipmentCartPassData.getShopId());
     }
 
     @Override
     protected void setActionVar() {
+    }
 
+    private void calculateShipment() {
+        CalculateShipmentWrapper calculateShipmentWrapper = new CalculateShipmentWrapper();
+        calculateShipmentWrapper.setShopId(shipmentCartPassData.getShopId());
+        calculateShipmentWrapper.setAddressId(shipmentCartPassData.getAddressId());
+        calculateShipmentWrapper.setWeight(shipmentCartPassData.getWeight());
+        presenter.processCalculateShipment(calculateShipmentWrapper);
     }
 
     @Override
-    public void renderShipmentCart(@NonNull ShipmentCartData data) {
-
+    public void renderShipmentCart(@NonNull CalculateShipmentData data) {
+        shipmentData = data;
     }
 
     @Override
     public void renderSpinnerShipment() {
-
+        adapterShipment.notifyDataSetChanged();
+        int selectedPosition = 0;
+        List<Shipment> shipments = shipmentData.getShipment();
+        for (int i = 0; i < shipments.size(); i++) {
+            if (wrapper.getAddressId().equalsIgnoreCase(shipments.get(i).getShipmentId())) {
+                selectedPosition = i;
+            }
+        }
+        spShipment.setSelection(selectedPosition);
     }
 
     @Override
@@ -170,6 +221,11 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
 
     @Override
     public void renderErrorCalculateShipment(String error) {
+
+    }
+
+    @Override
+    public void renderErrorEditShipment(String error) {
 
     }
 
@@ -197,7 +253,7 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
     public void navigateToChooseAddress() {
         Intent intent = new Intent(getActivity(), ChooseAddressActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(ChooseAddressActivity.REQUEST_CODE_PARAM_ADDRESS, shipmentCart.getAddressId());
+        bundle.putString(ChooseAddressActivity.REQUEST_CODE_PARAM_ADDRESS, shipmentCartPassData.getAddressId());
         intent.putExtras(bundle);
         startActivityForResult(intent, ShipmentCartFragment.CHOOSE_ADDRESS);
     }
@@ -210,5 +266,80 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
         bundle.putBoolean(ManageAddressConstant.IS_EDIT, false);
         intent.putExtras(bundle);
         startActivityForResult(intent, ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
+    }
+
+    @Override
+    public void navigateToCart(String message) {
+        Bundle bundle = new Bundle();
+        bundle.putString("response", message);
+        Intent intent = getActivity().getIntent();
+        intent.putExtras(bundle);
+        getActivity().setResult(Activity.RESULT_OK, intent);
+        getActivity().finish();
+    }
+
+    @Override
+    public ShipmentCartAdapter getShipmentAdapter() {
+        return adapterShipment;
+    }
+
+    @Override
+    public ShipmentPackageCartAdapter getShipmentPackageAdapter() {
+        return adapterShipmentPackage;
+    }
+
+    @OnClick(R2.id.btn_save)
+    public void actionSaveShipment(){
+        presenter.processEditShipmentCart(wrapper);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data != null && resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case CHOOSE_ADDRESS:
+                    onSuccessSelectAddress(data.getExtras());
+                    break;
+                case ManageAddressConstant.REQUEST_CODE_PARAM_CREATE:
+                    onSuccessSelectAddress(data.getExtras());
+                    break;
+                case CHOOSE_LOCATION:
+                    getNewLocation(data.getExtras());
+                    break;
+            }
+        }
+    }
+
+    private void onSuccessSelectAddress(Bundle bundle) {
+        Destination temp = bundle.getParcelable(ManageAddressConstant.EXTRA_ADDRESS);
+        latitude = temp.getLatitude();
+        longitude = temp.getLongitude();
+        addressGeoLocation = GeoLocationUtils.reverseGeoCode(getActivity(), latitude, longitude);
+        tvValueLocation.setText(addressGeoLocation);
+        tvTitleAddress.setText(Html.fromHtml(temp.getAddressName()));
+        tvDetailAddress.setText(Html.fromHtml(temp.getAddressDetail()));
+        shipmentCartPassData.setAddressId(temp.getAddressId());
+        calculateShipment();
+    }
+
+    private void getNewLocation(Bundle bundle) {
+        LocationPass locationPass = bundle.getParcelable(GeolocationActivity.EXTRA_EXISTING_LOCATION);
+        if (locationPass != null) {
+            isUpdateGeoLocation = 1;
+            latitude = locationPass.getLatitude();
+            longitude = locationPass.getLongitude();
+            if (locationPass.getGeneratedAddress().equals(getString(R.string.choose_this_location))) {
+                addressGeoLocation = latitude + ", " + longitude;
+            } else {
+                addressGeoLocation = locationPass.getGeneratedAddress();
+            }
+            tvValueLocation.setText(addressGeoLocation);
+        }
+        SaveLocationWrapper location = new SaveLocationWrapper();
+        location.setLatitude(latitude);
+        location.setLongitude(longitude);
+        location.setAddressId(wrapper.getAddressId());
+        presenter.processSaveLocationShipment(location);
     }
 }
