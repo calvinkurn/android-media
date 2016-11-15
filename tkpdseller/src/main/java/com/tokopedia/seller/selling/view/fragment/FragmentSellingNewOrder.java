@@ -96,7 +96,7 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
         setRetainInstance(true);
         page = new PagingHandler();
         linearLayoutManager = new LinearLayoutManager(getActivity());
-        adapter = new BaseSellingAdapter<OrderShippingList, OrderViewHolder>(OrderShippingList.class, R.layout.selling_order_list_item, OrderViewHolder.class) {
+        adapter = new BaseSellingAdapter<OrderShippingList, OrderViewHolder>(OrderShippingList.class, getActivity(),  R.layout.selling_order_list_item, OrderViewHolder.class) {
             @Override
             protected void populateViewHolder(OrderViewHolder viewHolder, OrderShippingList model, int position) {
                 viewHolder.bindDataModel(getActivity(), model);
@@ -268,6 +268,16 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
     @Override
     public void addRetry() {
         adapter.setIsRetry(true);
+    }
+
+    @Override
+    public void addEmptyView() {
+        adapter.setIsDataEmpty(true);
+    }
+
+    @Override
+    public void removeEmpty() {
+        adapter.setIsDataEmpty(false);
     }
 
     @Override

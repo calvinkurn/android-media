@@ -71,4 +71,8 @@ public interface ShippingView extends BaseView {
     void clearMultiSelector();
 
     void moveToDetailResult(Intent intent, int i);
+
+    void addEmptyView();
+
+    void removeEmpty();
 }

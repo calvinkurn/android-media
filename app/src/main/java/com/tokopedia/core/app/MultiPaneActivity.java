@@ -25,7 +25,6 @@ public abstract class MultiPaneActivity extends TkpdActivity implements MultiPan
     private int menuID;
 
     private List<Fragment> fragmentList = new ArrayList<>();
-    private boolean isDialogShow;
 
     protected abstract List<Fragment> getFragmentList();
 
@@ -83,14 +82,6 @@ public abstract class MultiPaneActivity extends TkpdActivity implements MultiPan
 
     public DetailsPagerAdapter getFragmentAdapter() {
         return pagerAdapter;
-    }
-
-    public boolean getIsDialogShow() {
-        return isDialogShow;
-    }
-
-    public void setIsDialogShow(boolean isDialogShow) {
-        this.isDialogShow = isDialogShow;
     }
 
     public class DetailsPagerAdapter extends FragmentStatePagerAdapter{

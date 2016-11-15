@@ -1,5 +1,6 @@
 package com.tokopedia.seller.selling.presenter.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,8 @@ import butterknife.ButterKnife;
  */
 public abstract class BaseSellingAdapter<T, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
 
+    private static final int EMPTY_VIEW = 1232412;
+    private final Context context;
     Class<T> mModelClass;
     protected int mModelLayout;
     Class<VH> mViewHolderClass;
@@ -33,6 +36,7 @@ public abstract class BaseSellingAdapter<T, VH extends RecyclerView.ViewHolder> 
     private List<T> mListModel;
 
     private OnRetryListener listener;
+    private int isDataEmpty;
 
     public interface OnRetryListener {
         public void onRetryCliked();
@@ -70,7 +74,8 @@ public abstract class BaseSellingAdapter<T, VH extends RecyclerView.ViewHolder> 
     protected int loading = 0;
     protected int retry = 0;
 
-    public BaseSellingAdapter(Class<T> mModelClass, int mModelLayout, Class<VH> mViewHolderClass) {
+    public BaseSellingAdapter(Class<T> mModelClass, Context context, int mModelLayout, Class<VH> mViewHolderClass) {
+        this.context = context;
         this.mModelClass = mModelClass;
         this.mModelLayout = mModelLayout;
         this.mViewHolderClass = mViewHolderClass;
@@ -88,9 +93,11 @@ public abstract class BaseSellingAdapter<T, VH extends RecyclerView.ViewHolder> 
             return (VH) createViewLoading(parent);
         } else if (viewType == TkpdState.RecyclerView.VIEW_RETRY) {
             return (VH) createViewRetry(parent);
-        } else if (getListData().size() == 0) {
+        } else if (viewType == TkpdState.RecyclerView.VIEW_EMPTY ) {
             return (VH) createViewEmpty(parent);
-        } else {
+        } else if (viewType == EMPTY_VIEW){
+            return (VH) new ViewHolder(new View(context));
+        }else{
             return getViewHolder(mModelLayout, parent);
         }
     }
@@ -126,6 +133,8 @@ public abstract class BaseSellingAdapter<T, VH extends RecyclerView.ViewHolder> 
                 break;
             case TkpdState.RecyclerView.VIEW_EMPTY:
                 ImageHandler.loadImageWithId(((ViewHolderEmpty) holder).emptyImage, R.drawable.status_no_result);
+                break;
+            case EMPTY_VIEW:
                 break;
             default:
                 if (position < getListData().size()){
@@ -164,18 +173,30 @@ public abstract class BaseSellingAdapter<T, VH extends RecyclerView.ViewHolder> 
             return TkpdState.RecyclerView.VIEW_LOADING;
         } else if (isRetry() && isLastItemPosition(position)) {
             return TkpdState.RecyclerView.VIEW_RETRY;
-        } else if (getListData().size() == 0) {
+        } else if (isDataEmpty() && isEmpty()) {
             return TkpdState.RecyclerView.VIEW_EMPTY;
-        } else {
+        } else if(isEmpty()){
+            return EMPTY_VIEW;
+        }else {
             return mModelLayout;
         }
     }
 
     private boolean isRetry() {
-        if (retry == 1) {
-            return true;
-        } else
-            return false;
+        return retry == 1;
+    }
+
+    private boolean isDataEmpty(){
+        return isDataEmpty == 1;
+    }
+
+    public void setIsDataEmpty(boolean isDataEmpty){
+        if(isDataEmpty){
+            this.isDataEmpty = 1;
+        }else{
+            this.isDataEmpty = 0;
+        }
+        notifyDataSetChanged();
     }
 
     public void setIsLoading(boolean isLoading) {
@@ -202,10 +223,7 @@ public abstract class BaseSellingAdapter<T, VH extends RecyclerView.ViewHolder> 
     }
 
     public boolean isLoading() {
-        if (loading == 1) {
-            return true;
-        } else
-            return false;
+        return loading == 1;
     }
 
     public void setOnRetryListener(OnRetryListener listener) {

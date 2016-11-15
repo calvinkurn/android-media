@@ -224,6 +224,7 @@ public class FacadeShopTransaction {
 
                                     if (response.getStringData() == null || response.getStringData().equals("{}")) {
                                         listener.OnNoResult();
+                                        return;
                                     }
 
                                     JSONObject jsonObject = null;
@@ -324,6 +325,7 @@ public class FacadeShopTransaction {
                                     Log.d(STUART, responseData.body().getStringData());
                                     if (response.getStringData() == null || response.getStringData().equals("{}")) {
                                         listener.OnNoResult();
+                                        return;
                                     }
 
                                     JSONObject jsonObject = null;
@@ -387,8 +389,9 @@ public class FacadeShopTransaction {
                                 if(responseData.isSuccessful()) {
                                     TkpdResponse response = responseData.body();
 
-                                    if (response.getStringData() == null) {
+                                    if (response.getStringData() == null || response.getStringData().equals("{}")) {
                                         listener.OnNoResult();
+                                        return;
                                     }
 
                                     JSONObject jsonObject = null;

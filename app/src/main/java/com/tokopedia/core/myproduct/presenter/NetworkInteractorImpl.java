@@ -313,10 +313,10 @@ public class NetworkInteractorImpl implements NetworkInteractor {
 //                    @Override
 //                    public DepartmentParentModel call(DepartmentParentModel departmentParentModel) {
 //                        if(departmentParentModel != null
-//                                && departmentParentModel.getMessage_error() != null
-//                                && departmentParentModel.getMessage_error().length > 0){
+//                                && departmentParentModel.getMessageError() != null
+//                                && departmentParentModel.getMessageError().length > 0){
 //                            throw new RuntimeException(
-//                                    Arrays.toString(departmentParentModel.getMessage_error())
+//                                    Arrays.toString(departmentParentModel.getMessageError())
 //                            );
 //                        }
 //                        return departmentParentModel;
