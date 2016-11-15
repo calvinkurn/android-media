@@ -188,6 +188,9 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             this.rechargePresenter.updateMinLenghAndOperator(category.getAttributes().getDefaultOperatorId());
         if (!category.getAttributes().getClientNumber().getIsShown()) {
             rechargeEditText.setVisibility(View.GONE);
+            this.rechargePresenter.validateWithDefaultOperator(
+                    category.getId(),
+                    category.getAttributes().getDefaultOperatorId());
         }
         return view;
     }
@@ -323,7 +326,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
     @Override
     public void renderDataProducts(List<Product> productList) {
-        if (rechargeEditText.getText().length() > 0) {
+        if (rechargeEditText.getText().length() > 0 || !category.getAttributes().getClientNumber().getIsShown()) {
             if (productList != null && productList.size() > 0) {
                 this.productList = productList;
                 isAlreadyHavePhonePrefixInView = true;
