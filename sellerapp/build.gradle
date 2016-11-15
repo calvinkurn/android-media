@@ -1,28 +1,166 @@
 apply plugin: 'com.android.application'
 
-android {
-    compileSdkVersion 24
-    buildToolsVersion "25.0.0"
+def getDpiId(String density) {
 
-    defaultConfig {
-        multiDexEnabled = true
-        applicationId "com.tokopedia.sellerapp"
-        minSdkVersion 15
-        targetSdkVersion 24
-        versionCode 1
-        versionName "1.0"
+    def DPI_ID = ['null': 0, 'mdpi': 1, 'hdpi': 2, 'xhdpi': 3, 'xxhdpi': 4]
+    if (density != null)
+        return DPI_ID.get(density);
+    return 0;
+}
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+def getAPKArchiveFolder(variant) {
+    return "/Android/launching-android/" + "V" + variant.mergedFlavor.versionCode;
+}
 
+def allowSplit() {
+    return !project.hasProperty('tkpdBuildType');
+}
+
+def allowDistribution() {
+    if ( project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
+        return "true";
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    return "false";
+}
+
+def getTkpdVersionCode() {
+    return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : project.defaultVersionCode;
+}
+
+def getTkpdVersionName() {
+    return project.hasProperty('versionName') ? versionName : project.defaultVersionName;
+}
+
+def renameAPKFile(variant, density, versionCode) {
+
+    def fileName = variant.name.toUpperCase()
+    fileName += "-" + variant.mergedFlavor.versionName;
+    fileName += "-V" + versionCode;
+    fileName += "-" + density;
+    fileName += ".apk";
+    return fileName;
+}
+
+def archiveAPK(variant, output) {
+
+    String density = output.getFilter(com.android.build.OutputFile.DENSITY);
+    def originZipAlignedApkFile = output.outputFile;
+    def renameAPKFile = renameAPKFile(variant, density, output.versionCodeOverride);
+    copy {
+        from "$originZipAlignedApkFile"
+        into getAPKArchiveFolder(variant)
+        rename("$originZipAlignedApkFile.name", "$renameAPKFile")
+    }
+}
+
+
+android {
+
+    project.ext {
+        defaultVersionCode = 2030104;
+        defaultVersionName = "2.3.1";
+    }
+
+    compileSdkVersion 24
+    buildToolsVersion '25'
+    useLibrary 'org.apache.http.legacy'
+    sourceSets {
+
+        packagingOptions {
+            exclude 'META-INF/LICENSE.txt'
+        }
+
+        main {
+            java.srcDirs = ['src/main/java']
+            resources.srcDirs = ['src/main/java']
+            aidl.srcDirs = ['src/main/java']
+            renderscript.srcDirs = ['src/main/java']
+            res.srcDirs = ['src/main/res']
+            assets.srcDirs = ['assets']
+        }
+
+        instrumentTest.setRoot('tests')
+        debug.setRoot('build-types/debug')
+        release.setRoot('build-types/release')
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file("debug.keystore")
         }
     }
+
+    buildTypes {
+
+        debug {
+            minifyEnabled false
+            zipAlignEnabled false
+            buildConfigField "boolean" , "ENABLE_DISTRIBUTION", allowDistribution()
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+
+        release {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources true
+            buildConfigField "boolean" , "ENABLE_DISTRIBUTION", allowDistribution()
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+
+            ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
+            ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
+
+            if (allowSplit()) {
+                applicationVariants.all { variant ->
+                    variant.outputs.each { output ->
+                        String density = output.getFilter(com.android.build.OutputFile.DENSITY);
+                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + getDpiId(density);
+                    }
+                    variant.assemble.doLast {
+                        variant.outputs.each { output ->
+                            if (output.zipAlign) {
+                                archiveAPK(variant, output);
+                            }
+                        }
+                    }
+                }
+            } else {
+                applicationVariants.all { variant ->
+                    variant.outputs.each { output ->
+                        output.versionCodeOverride = (getTkpdVersionCode() * 100);
+                    }
+                }
+            }
+        }
+    }
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 24
+        multiDexEnabled = true
+        applicationId "com.tokopedia.sellerapp"
+        resConfigs "en", "id"
+        versionCode getTkpdVersionCode()
+        versionName getTkpdVersionName()
+    }
+
+
     dexOptions {
         javaMaxHeapSize "4g"
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+    }
+    splits {
+        density {
+            enable allowSplit()
+            exclude "tvdpi", "xxxhdpi", "ldpi" //Add or modify the supported density here`
+            compatibleScreens 'small', 'normal', 'large', 'xlarge' //Discouraged to touch this
+        }
     }
 }
 
