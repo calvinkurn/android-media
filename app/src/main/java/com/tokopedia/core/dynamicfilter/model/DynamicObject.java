@@ -15,7 +15,7 @@ public class DynamicObject implements MultiLevelExpIndListAdapter.ExpIndData {
 
     private int mIndentation;
     private String mParentText;
-    boolean isChecked;
+    private boolean isChecked;
     private List<DynamicObject> mChildren;
     private boolean mIsGroup;
     private int mGroupSize;
@@ -45,7 +45,7 @@ public class DynamicObject implements MultiLevelExpIndListAdapter.ExpIndData {
         }
         this.mGroupSize = size;
         this.depId = model.getId();
-        mChildren = new ArrayList<DynamicObject>();
+        mChildren = new ArrayList<>();
         initKey(model.getParent(), model.getId());
     }
 
@@ -57,7 +57,7 @@ public class DynamicObject implements MultiLevelExpIndListAdapter.ExpIndData {
         }
         this.mGroupSize = size;
         this.depId = model.getId();
-        mChildren = new ArrayList<DynamicObject>();
+        mChildren = new ArrayList<>();
         initKey(model.getParent(), model.getId());
     }
 
@@ -69,7 +69,7 @@ public class DynamicObject implements MultiLevelExpIndListAdapter.ExpIndData {
         }
         this.mGroupSize = size;
         this.depId = String.valueOf(model.getDepartmentId());
-        mChildren = new ArrayList<DynamicObject>();
+        mChildren = new ArrayList<>();
         initKey(model.getParentId(), String.valueOf(model.getDepartmentId()));
     }
 
@@ -77,9 +77,7 @@ public class DynamicObject implements MultiLevelExpIndListAdapter.ExpIndData {
         return key;
     }
 
-    private void initKey(int parentId, String depId){
-        String formatText = "%d_%s";
-        String format = String.format(formatText, parentId, depId);
+    private void initKey(int parentId, String depId) {
         this.key = depId;
     }
 
@@ -141,10 +139,10 @@ public class DynamicObject implements MultiLevelExpIndListAdapter.ExpIndData {
 
     public static DynamicObject createOptionForAll(CategoryDB model) {
         DynamicObject object = new DynamicObject();
-        object.mParentText = "Semua " +
-                model.getNameCategory();
+        object.mParentText = "Semua " + model.getNameCategory();
+
         object.depId = String.valueOf(model.getDepartmentId());
-        object.mChildren = new ArrayList<DynamicObject>();
+        object.mChildren = new ArrayList<>();
         object.initKey(model.getParentId(), String.valueOf(model.getDepartmentId()));
         return object;
     }

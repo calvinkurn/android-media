@@ -34,11 +34,9 @@ import butterknife.OnClick;
  * Created by noiz354 on 7/11/16.
  */
 public class DynamicFilterListAdapter extends ProductAdapter {
-    public static final int DYNAMIC_FILTER_TYPE = 1_912_281;
-    public static final int DYNAMIC_FILTER_TYPE_ACTIVE = 1_912_282;
-    public static final int DYNAMIC_FILTER_MODEL = 912_282;
     private static final String TAG = DynamicFilterListAdapter.class.getSimpleName();
-    int activeLocation = -1;
+    private static final int DYNAMIC_FILTER_MODEL = 912_282;
+    private int activeLocation = -1;
     private Context context;
     NotifyActive notifyActive = new NotifyActive() {
         @Override
@@ -87,12 +85,12 @@ public class DynamicFilterListAdapter extends ProductAdapter {
         for (RecyclerViewItem item : getData()) {
             DynamicListModel model = (DynamicListModel) item;
             for (DynamicFilterModel.Option o : model.filter.getOptions()) {
-                if(o.getKey().equals(key)){
+                if (o.getKey().equals(key)) {
                     model.setHasFilter(active);
                 }
             }
         }
-        if(key.equals("sc")){
+        if (key.equals("sc")) {
             DynamicListModel model = (DynamicListModel) getData().get(0);
             model.setHasFilter(active);
         }

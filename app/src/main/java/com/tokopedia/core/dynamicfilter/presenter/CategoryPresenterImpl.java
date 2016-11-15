@@ -24,8 +24,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-import static com.tokopedia.core.dynamicfilter.presenter.DynamicFilterPresenter.BREADCRUMB;
-import static com.tokopedia.core.dynamicfilter.presenter.DynamicFilterPresenter.CURR_CATEGORY;
 
 /**
  * Created by noiz354 on 7/12/16.
@@ -180,8 +178,10 @@ public class CategoryPresenterImpl extends CategoryPresenter {
 
     @Override
     public void fetchArguments(Bundle argument) {
-        List<Breadcrumb> breadCrumb = Parcels.unwrap(argument.getParcelable(BREADCRUMB));
-        currentCategory = argument.getString(CURR_CATEGORY, "");
+        List<Breadcrumb> breadCrumb = Parcels.unwrap(
+                argument.getParcelable(DynamicFilterPresenter.EXTRA_PRODUCT_BREADCRUMB_LIST));
+        currentCategory = argument.getString(DynamicFilterPresenter.EXTRA_CURRENT_CATEGORY, "");
+
         if (breadCrumb != null) {
             hadesV1Model = setupDataBreadcrumb(breadCrumb);
         }

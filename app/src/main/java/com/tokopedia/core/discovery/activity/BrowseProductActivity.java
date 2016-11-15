@@ -724,7 +724,10 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                     sendSortGTM(browseProductActivityModel.getOb());
                     break;
                 case DynamicFilterView.REQUEST_CODE:
-                    Map<String, String> filters = Parcels.unwrap(data.getParcelableExtra(DynamicFilterView.EXTRA_RESULT));
+                    Map<String, String> filters = Parcels.unwrap(
+                            data.getParcelableExtra(DynamicFilterView.EXTRA_FILTERS)
+                    );
+
                     filtersMap.put(browseProductActivityModel.getSource(), filters);
                     browseProductActivityModel.setFilterOptions(filters);
                     Log.d(TAG, "filter option " + filters);

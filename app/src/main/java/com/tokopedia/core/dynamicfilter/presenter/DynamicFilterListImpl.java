@@ -16,7 +16,7 @@ import java.util.List;
 public class DynamicFilterListImpl extends DynamicFilterList {
 
     List<String> titleList;
-    List<DynamicFilterModel.Filter> dataList;
+    private List<DynamicFilterModel.Filter> dataList;
 
     public DynamicFilterListImpl(DynamicFilterListView view) {
         super(view);
@@ -34,14 +34,14 @@ public class DynamicFilterListImpl extends DynamicFilterList {
 
     @Override
     public void initData(@NonNull Context context) {
-        if(!isAfterRotate) {
+        if (!isAfterRotate) {
             view.setupRecyclerView();
         }
     }
 
     @Override
     public void fetchArguments(Bundle argument) {
-        if(argument!= null && !isAfterRotate){
+        if (argument != null && !isAfterRotate) {
             titleList = Parcels.unwrap(argument.getParcelable(TITLE_LIST));
 
             dataList = Parcels.unwrap(argument.getParcelable(DATA_LIST));
@@ -65,12 +65,9 @@ public class DynamicFilterListImpl extends DynamicFilterList {
 
     @Override
     public void initDataInstance(Context context) {
-        if(!isAfterRotate) {
-            //[START] Old Code
-//            view.setupAdapter(titleList);
-            //[END] Old Code
-
+        if (!isAfterRotate) {
             view.setupAdapter2(dataList);
         }
+
     }
 }

@@ -23,6 +23,7 @@ import com.tokopedia.core.dynamicfilter.model.DynamicObject;
 import com.tokopedia.core.dynamicfilter.presenter.CategoryPresenter;
 import com.tokopedia.core.dynamicfilter.presenter.CategoryPresenterImpl;
 import com.tokopedia.core.dynamicfilter.presenter.CategoryView;
+import com.tokopedia.core.dynamicfilter.presenter.DynamicFilterPresenter;
 import com.tokopedia.core.dynamicfilter.presenter.DynamicFilterView;
 import com.tokopedia.core.session.base.BaseFragment;
 
@@ -33,10 +34,6 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
-
-import static com.tokopedia.core.dynamicfilter.presenter.DynamicFilterPresenter.BREADCRUMB;
-import static com.tokopedia.core.dynamicfilter.presenter.DynamicFilterPresenter.CURR_CATEGORY;
-import static com.tokopedia.core.dynamicfilter.presenter.DynamicFilterPresenter.FILTER_CATEGORY;
 
 /**
  * Created by noiz354 on 7/12/16.
@@ -63,9 +60,9 @@ public class DynamicFilterCategoryFragment extends BaseFragment<CategoryPresente
 
         DynamicFilterCategoryFragment dynamicFilterCategoryFragment = new DynamicFilterCategoryFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable(BREADCRUMB, Parcels.wrap(breadCrumb));
-        bundle.putParcelable(FILTER_CATEGORY, Parcels.wrap(filterList));
-        bundle.putString(CURR_CATEGORY, currentCategory);
+        bundle.putParcelable(DynamicFilterPresenter.EXTRA_PRODUCT_BREADCRUMB_LIST, Parcels.wrap(breadCrumb));
+        bundle.putParcelable(DynamicFilterPresenter.EXTRA_FILTER_CATEGORY_LIST, Parcels.wrap(filterList));
+        bundle.putString(DynamicFilterPresenter.EXTRA_CURRENT_CATEGORY, currentCategory);
         dynamicFilterCategoryFragment.setArguments(bundle);
         return dynamicFilterCategoryFragment;
 

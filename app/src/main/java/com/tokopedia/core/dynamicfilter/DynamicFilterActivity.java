@@ -21,7 +21,6 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.discovery.model.Breadcrumb;
 import com.tokopedia.core.dynamicfilter.fragments.DynamicFilterCategoryFragment;
-import com.tokopedia.core.dynamicfilter.fragments.DynamicFilterFirstTimeFragment;
 import com.tokopedia.core.dynamicfilter.fragments.DynamicFilterListFragment;
 import com.tokopedia.core.dynamicfilter.fragments.DynamicFilterOtherFragment;
 import com.tokopedia.core.dynamicfilter.model.DynamicFilterModel;
@@ -110,29 +109,21 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
         return super.onOptionsItemSelected(item);
     }
 
+
+    @Override
+    public void setFragmentForFirstTime3(List<DynamicFilterModel.Filter> data) {
+        setFragmentBasedOnData(DynamicFilterModel.Filter.createCategory());
+        setFilterList2(data);
+    }
+
     private void setFilterList2(List<DynamicFilterModel.Filter> data) {
         Fragment dynamicFilterListFragment = DynamicFilterListFragment.newInstance2(data);
         setFragment(dynamicFilterListFragment, DynamicFilterListView.FRAGMENT_TAG, R.id.dynamic_filter_list);
     }
 
-    private void setFirstTimeDetail() {
-        DynamicFilterFirstTimeFragment dynamicFilterFirstTimeFragment = new DynamicFilterFirstTimeFragment();
-        setFragment(dynamicFilterFirstTimeFragment, DynamicFilterFirstTimeFragment.FRAGMENT_TAG, R.id.dynamic_filter_detail);
-    }
-
-    public void setFragment(Fragment fragment, String TAG, int layoutId) {
-        fragmentManager.beginTransaction().replace(layoutId, fragment, TAG).commit();
-    }
-
-    @Override
-    public void setFragmentForFirstTime3(List<DynamicFilterModel.Filter> data) {
-        setFirstTimeDetail();
-        setFilterList2(data);
-    }
-
     @Override
     public void setFragmentBasedOnData(DynamicFilterModel.Filter data) {
-        if (data.getTitle().toLowerCase().equals("kategori")) {
+        if (data.getTitle().equals(DynamicFilterModel.Filter.TITLE_CATEGORY)) {
             DynamicFilterCategoryFragment categoryFragment =
                     DynamicFilterCategoryFragment.newInstance(
                             dynamicFilterPresenter.getBreadCrumb(), dynamicFilterPresenter.getFilterCategory(),
@@ -142,6 +133,12 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
             setFragment(DynamicFilterOtherFragment.newInstance(data), DynamicFilterOtherFragment.FRAGMENT_TAG, R.id.dynamic_filter_detail);
         }
     }
+
+    @Override
+    public void setFragment(Fragment fragment, String TAG, int layoutId) {
+        fragmentManager.beginTransaction().replace(layoutId, fragment, TAG).commit();
+    }
+
 
     @Override
     public void putSelectedFilter(String key, String value) {
@@ -206,9 +203,9 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
 
     @Override
     public void finishThis() {
-        if(saveFilterSelectionPosition() && saveFilterSelection() && saveFilterText()) {
+        if (saveFilterSelectionPosition() && saveFilterSelection() && saveFilterText()) {
             Intent intent = new Intent();
-            intent.putExtra(EXTRA_RESULT, Parcels.wrap(selectedFilter));
+            intent.putExtra(EXTRA_FILTERS, Parcels.wrap(selectedFilter));
             setResult(RESULT_OK, intent);
             finish();
         }
@@ -258,19 +255,19 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
         return true;
     }
 
-    public static void moveTo(FragmentActivity context, Map<String, String> filters,
-                              List<Breadcrumb> productBreadCrumb,
-                              List<DynamicFilterModel.Filter> filterList,
+    public static void moveTo(FragmentActivity fragmentActivity, Map<String, String> filterList,
+                              List<Breadcrumb> productBreadCrumbList,
+                              List<DynamicFilterModel.Filter> filterCategoryList,
                               String currentCategory, String source) {
-        if (context != null) {
-            Intent intent = new Intent(context, DynamicFilterActivity.class);
-            intent.putExtra(DynamicFilterView.EXTRA_RESULT, Parcels.wrap(filters));
-            intent.putExtra(DynamicFilterPresenter.BREADCRUMB, Parcels.wrap(productBreadCrumb));
-            intent.putExtra(DynamicFilterPresenter.FILTER_CATEGORY, Parcels.wrap(filterList));
-            intent.putExtra(DynamicFilterPresenter.FILTER_SOURCE, source);
-            intent.putExtra(DynamicFilterPresenter.CURR_CATEGORY, currentCategory);
-            context.startActivityForResult(intent, REQUEST_CODE);
-            context.overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);
+        if (fragmentActivity != null) {
+            Intent intent = new Intent(fragmentActivity, DynamicFilterActivity.class);
+            intent.putExtra(DynamicFilterView.EXTRA_FILTERS, Parcels.wrap(filterList));
+            intent.putExtra(DynamicFilterPresenter.EXTRA_PRODUCT_BREADCRUMB_LIST, Parcels.wrap(productBreadCrumbList));
+            intent.putExtra(DynamicFilterPresenter.EXTRA_FILTER_CATEGORY_LIST, Parcels.wrap(filterCategoryList));
+            intent.putExtra(DynamicFilterPresenter.EXTRA_FILTER_SOURCE, source);
+            intent.putExtra(DynamicFilterPresenter.EXTRA_CURRENT_CATEGORY, currentCategory);
+            fragmentActivity.startActivityForResult(intent, REQUEST_CODE);
+            fragmentActivity.overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);
         }
     }
 }
