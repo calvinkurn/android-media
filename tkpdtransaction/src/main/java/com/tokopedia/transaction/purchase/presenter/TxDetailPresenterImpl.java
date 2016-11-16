@@ -284,13 +284,13 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
     private Dialog generateDialogConfirm(final Context context, final OrderData orderData) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(Html.fromHtml(context.getString(R.string.dialog_package_received)));
-        builder.setNegativeButton(context.getString(R.string.title_no),
+        builder.setNegativeButton(context.getString(R.string.title_cancel),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
                     }
                 });
-        builder.setPositiveButton(context.getString(R.string.title_yes),
+        builder.setPositiveButton(context.getString(R.string.title_done),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(final DialogInterface dialog, int which) {
@@ -320,7 +320,7 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
     private Dialog generateDialogFreeReturn(final Context context, final OrderData orderData) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(Html.fromHtml(orderData.getOrderDetail().getDetailFreeReturnMsg()));
-        builder.setNegativeButton(context.getString(R.string.title_open_dispute),
+        builder.setNeutralButton(context.getString(R.string.title_open_dispute),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         LocalCacheHandler cache = new LocalCacheHandler(context,
@@ -346,7 +346,7 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
                         confirmPurchase(context, dialog, orderData);
                     }
                 });
-        builder.setNeutralButton(R.string.title_cancel,
+        builder.setNegativeButton(R.string.title_cancel,
                 new DialogInterface.OnClickListener() {
 
                     @Override
