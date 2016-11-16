@@ -1,14 +1,18 @@
 package com.tokopedia.core.loyaltysystem.util;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.R;
 
 /**
  * Created by ricoharisin on 9/21/15.
@@ -40,48 +44,30 @@ public class LuckyShopImage {
         }
     }
 
-    public static void loadImage(final ImageView image, String url, final int stateView) {
-        //url = "https://clover-staging.tokopedia.com/badges/merchant/v1?shop_id=318446";
-        if (!url.equals("")) {
-            ImageHandler.loadImageBitmap2(image.getContext(), url, new SimpleTarget<Bitmap>() {
-                @Override
-                public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap>
-                        glideAnimation) {
-                    CommonUtils.dumper("Lucky bitmap: " + bitmap.getHeight());
-                    if (bitmap.getHeight() <= 1 && bitmap.getWidth() <= 1) {
-                        image.setVisibility(stateView);
-                    } else {
-                        //Bitmap newbitmap = ImageHandler.ResizeBitmap(bitmap, 0.5f);
-                        image.setVisibility(View.VISIBLE);
-                        image.setImageBitmap(bitmap);
-                    }
-                }
-            });
+    public static void loadImage(Context context, String url, final LinearLayout container) {
+        if (url != null && !url.equals("")) {
+            final View view = LayoutInflater.from(context).inflate(R.layout.badge_layout, null);
+            ImageHandler.loadImageBitmap2(view.getContext(), url,
+                    new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
+                            ImageView image = (ImageView) view.findViewById(R.id.badge);
+                            if (bitmap.getHeight() <= 1 && bitmap.getWidth() <= 1) {
+                                view.setVisibility(View.GONE);
+                            } else {
+                                Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 30, 30, true);
+                                image.setImageBitmap(scaled);
+                                view.setVisibility(View.VISIBLE);
+                                container.addView(view);
+                            }
+                        }
 
-//            ImageHandler.LoadImageBitmap(url, new Target() {
-//                @Override
-//                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom loadedFrom) {
-//                    CommonUtils.dumper("Lucky bitmap: " + bitmap.getHeight());
-//                    if (bitmap.getHeight() <= 1 && bitmap.getWidth() <= 1) {
-//                        image.setVisibility(stateView);
-//                    } else {
-//                        //Bitmap newbitmap = ImageHandler.ResizeBitmap(bitmap, 0.5f);
-//                        image.setVisibility(View.VISIBLE);
-//                        image.setImageBitmap(bitmap);
-//                    }
-//
-//                }
-//
-//                @Override
-//                public void onBitmapFailed(Drawable drawable) {
-//
-//                }
-//
-//                @Override
-//                public void onPrepareLoad(Drawable drawable) {
-//
-//                }
-//            });
+                        @Override
+                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                            super.onLoadFailed(e, errorDrawable);
+                            view.setVisibility(View.GONE);
+                        }
+                    });
         }
     }
 }

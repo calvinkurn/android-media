@@ -245,10 +245,9 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                             counterError = 0;
                             Drawable drawable;
                             drawable = new BitmapDrawable(itemView.getResources(), resource);
-                            try {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                                 hotListBannerViewPager.setBackground(drawable);
-                            } catch (NoSuchMethodError e) {
-                                e.printStackTrace();
+                            } else {
                                 hotListBannerViewPager.setBackgroundDrawable(drawable);
                             }
                         }
@@ -258,11 +257,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                         public void onLoadStarted(Drawable placeholder) {
                             super.onLoadStarted(placeholder);
                             counterError = 0;
-                            try {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                                 hotListBannerViewPager.setBackground(placeholder);
-                            } catch (NoSuchMethodError e) {
+                            } else {
                                 hotListBannerViewPager.setBackgroundDrawable(placeholder);
-                                e.printStackTrace();
                             }
                         }
                     });
@@ -645,10 +643,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             viewHolder.badgesContainer.removeAllViews();
             if (data.getBadges() != null) {
                 for (ProductItem.Badge badges : data.getBadges()) {
-                    View view = LayoutInflater.from(context).inflate(R.layout.badge_layout, null);
-                    ImageView imageBadge = (ImageView) view.findViewById(R.id.badge);
-                    LuckyShopImage.loadImage(imageBadge, badges.getImageUrl());
-                    badgesContainer.addView(view);
+                    LuckyShopImage.loadImage(context, badges.getImageUrl(), badgesContainer);
                 }
             }
             viewHolder.labelContainer.removeAllViews();

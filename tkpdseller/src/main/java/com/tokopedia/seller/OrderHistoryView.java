@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.customadapter.ListViewOrderStatus;
 import com.tokopedia.seller.selling.model.shopconfirmationdetail.*;
@@ -41,6 +42,11 @@ public class OrderHistoryView extends TActivity {
         bundle.putBoolean("DATA_FROM_WS_V4", true);
         intent.putExtras(bundle);
         return intent;
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_ORDER_HISTORY;
     }
 
     public static Intent createInstanceBuyer(Context context, String statusList,

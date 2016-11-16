@@ -146,8 +146,6 @@ public class WishListFragment extends Fragment implements WishListView{
     @Override
     public void setAdapter() {
         recyclerView.setAdapter(adapter);
-//        itemDecorator.setRightMostView(TkpdState.RecyclerView.VIEW_PRODUCT_RIGHT);
-//        recyclerView.addItemDecoration(itemDecorator);
     }
 
     @Override

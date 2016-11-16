@@ -12,6 +12,7 @@ import android.view.WindowManager;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.seller.fragment.FragmentShopNewOrderDetailV2;
 import com.tokopedia.seller.fragment.FragmentShopShippingDetailV2;
@@ -45,6 +46,12 @@ public class SellingDetailActivity extends TkpdActivity implements  DownloadResu
         STATUS,
         TRANSACTION
     }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_SHOP_SELLING_DETAIL;
+    }
+
     private FragmentManager fragmentManager;
     public static final String DATA_EXTRA2 = "DATA_EXTRA2";
     public static final String TYPE_EXTRA = "TYPE_EXTRA";

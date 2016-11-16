@@ -19,6 +19,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -67,6 +68,11 @@ public class Cart extends TActivity implements ActivityCartCommunicator,
     private Boolean Status = false;
     private Dialog briDialog;
     private static final String TAG = Cart.class.getSimpleName();
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_CART;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.deposit.fragment.WithdrawFragment;
 import com.tokopedia.core.deposit.presenter.WithdrawPresenter;
@@ -16,6 +17,11 @@ import com.tokopedia.core.deposit.presenter.WithdrawPresenter;
  * Created by Nisie on 4/13/16.
  */
 public class WithdrawActivity extends BasePresenterActivity<WithdrawPresenter>{
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_DEPOSIT_WITHDRAW;
+    }
 
     public static Intent createInstance(Context context) {
         return new Intent(context, WithdrawActivity.class);

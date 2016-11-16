@@ -1,7 +1,5 @@
 package com.tokopedia.core.fragment;
 
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
@@ -10,18 +8,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
 
 import com.tokopedia.core.EtalaseShopEditor;
 import com.tokopedia.core.ManageShopAddress;
-import com.tokopedia.core.ManageShopNotes;
 import com.tokopedia.core.PaymentEditor;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.customadapter.SimpleListTabViewAdapter;
+import com.tokopedia.core.manage.shop.notes.activity.ManageShopNotesActivity;
 import com.tokopedia.core.shipping.EditShippingActivity;
 import com.tokopedia.core.shop.ShopEditorActivity;
+
+import java.util.ArrayList;
 
 public class FragmentSettingShop extends Fragment{
 	private SimpleListTabViewAdapter lvAdapter;
@@ -83,7 +83,7 @@ public class FragmentSettingShop extends Fragment{
 					startActivity(intent);
 					break;
 				case 4:
-					intent = new Intent(getActivity(), ManageShopNotes.class);
+					intent = new Intent(getActivity(), ManageShopNotesActivity.class);
 					startActivity(intent);
 					break;
 				case 5:

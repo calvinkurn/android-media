@@ -35,15 +35,21 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
 
     @Override
     public void shareBBM(ShareData data) {
-        UnifyTracking.eventShare(AppEventTracking.SOCIAL_MEDIA.BBM);
+        UnifyTracking.eventShare(
+                data.getSource() != null ? data.getSource() : "",
+                AppEventTracking.SOCIAL_MEDIA.BBM
+        );
+        data.setSource(AppEventTracking.SOCIAL_MEDIA.BBM);
         ShareSocmedHandler.ShareSpecific(activity, TkpdState.PackageName.BlackBerry,
-                TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.getUri(), null, null);
+                TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.renderShareUri(), null, null);
     }
 
     @Override
     public void shareFb(final SimpleFacebook simpleFacebook, final ShareData data) {
-        UnifyTracking.eventShare(AppEventTracking.SOCIAL_MEDIA.FACEBOOK);
-
+        UnifyTracking.eventShare( data.getSource() != null ? data.getSource() : "",
+                AppEventTracking.SOCIAL_MEDIA.FACEBOOK
+        );
+        data.setSource(AppEventTracking.SOCIAL_MEDIA.FACEBOOK);
         ConnectionDetector detector =  new ConnectionDetector(this.activity);
         if (detector.isConnectingToInternet()){
             simpleFacebook.publish(new Feed.Builder()
@@ -52,7 +58,7 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
                     .setCaption(data.getPrice())
                     .setDescription(data.getDescription())
                     .setPicture(data.getImgUri())
-                    .setLink(data.getUri())
+                    .setLink(data.renderShareUri())
                     .build(), true, new OnPublishListener() {
                 @Override
                 public void onFail(String reason) {
@@ -82,113 +88,131 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
 
     @Override
     public void shareTwitter(ShareData data) {
-        UnifyTracking.eventShare(AppEventTracking.SOCIAL_MEDIA.TWITTER);
+        UnifyTracking.eventShare( data.getSource() != null ? data.getSource() : "",
+                AppEventTracking.SOCIAL_MEDIA.TWITTER
+        );
+        data.setSource(AppEventTracking.SOCIAL_MEDIA.TWITTER);
         if(data.getBitmap()!=null) {
             ShareSocmedHandler.ShareSpecific(activity, TkpdState.PackageName.Twitter,
                     TkpdState.PackageName.TYPE_IMAGE, data.getTextContent(),
-                    data.getUri(), data.getBitmap(), TkpdState.PackageName
+                    data.renderShareUri(), data.getBitmap(), TkpdState.PackageName
                             .TWITTER_DEFAULT + "url=" + data.getUri() + "&text=" + data.getName());
         } else if (data.getImgUri()!=null){
             ShareSocmedHandler.ShareSpecificUri(activity, TkpdState.PackageName.Twitter,
                     TkpdState.PackageName.TYPE_IMAGE, data.getTextContent(),
-                    data.getUri(), data.getImgUri(), TkpdState.PackageName
+                    data.renderShareUri(), data.getImgUri(), TkpdState.PackageName
                             .TWITTER_DEFAULT + "url=" + data.getUri() + "&text=" + data.getName());
         } else {
             ShareSocmedHandler.ShareSpecific(activity, TkpdState.PackageName.Twitter,
-                    TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.getUri(), null, null);
+                    TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.renderShareUri(), null, null);
         }
 
     }
 
     @Override
     public void shareWhatsApp(ShareData data) {
-        UnifyTracking.eventShare(AppEventTracking.SOCIAL_MEDIA.WHATSHAPP);
-
+        UnifyTracking.eventShare( data.getSource() != null ? data.getSource() : "",
+                AppEventTracking.SOCIAL_MEDIA.WHATSHAPP
+        );
+        data.setSource(AppEventTracking.SOCIAL_MEDIA.WHATSHAPP);
         ShareSocmedHandler.ShareSpecific(activity, TkpdState.PackageName.Whatsapp,
-                TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.getUri(), null, null);
+                TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.renderShareUri(), null, null);
 
     }
 
     @Override
     public void shareLine(ShareData data) {
-        UnifyTracking.eventShare(AppEventTracking.SOCIAL_MEDIA.LINE);
+        UnifyTracking.eventShare( data.getSource() != null ? data.getSource() : "",
+                AppEventTracking.SOCIAL_MEDIA.LINE
+        );
+        data.setSource(AppEventTracking.SOCIAL_MEDIA.LINE);
         if (data.getBitmap() != null) {
             ShareSocmedHandler.ShareSpecific(activity, TkpdState.PackageName.Line,
-                    TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.getUri(),
+                    TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.renderShareUri(),
                     data.getBitmap(), null);
         } else if (data.getImgUri() != null){
             ShareSocmedHandler.ShareSpecificUri(activity, TkpdState.PackageName.Line,
-                    TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.getUri(),
+                    TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.renderShareUri(),
                     data.getImgUri(), null);
         } else {
             ShareSocmedHandler.ShareSpecific(activity, TkpdState.PackageName.Line,
-                    TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.getUri(), null, null);
+                    TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.renderShareUri(), null, null);
         }
     }
 
     @Override
     public void sharePinterest(ShareData data) {
-        ShareSocmedHandler.ShareSpecific(activity, TkpdState.PackageName.Pinterest,
-                TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.getUri(),
-                data.getBitmap(), null);
-        UnifyTracking.eventShare(AppEventTracking.SOCIAL_MEDIA.PINTEREST);
+        UnifyTracking.eventShare( data.getSource() != null ? data.getSource() : "",
+                AppEventTracking.SOCIAL_MEDIA.PINTEREST
+        );
+        data.setSource(AppEventTracking.SOCIAL_MEDIA.PINTEREST);
         if(data.getBitmap() != null) {
             ShareSocmedHandler.ShareSpecific(activity, TkpdState.PackageName.Pinterest,
-                    TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.getUri(),
+                    TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.renderShareUri(),
                     data.getBitmap(), null);
         } else if (data.getImgUri() != null){
             ShareSocmedHandler.ShareSpecificUri(activity, TkpdState.PackageName.Pinterest,
-                    TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.getUri(),
+                    TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.renderShareUri(),
                     data.getImgUri(), null);
         } else {
             ShareSocmedHandler.ShareSpecific(activity, TkpdState.PackageName.Pinterest,
-                    TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.getUri(), null, null);
+                    TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.renderShareUri(), null, null);
         }
     }
 
     @Override
     public void shareMore(ShareData data) {
-        UnifyTracking.eventShare(AppEventTracking.SOCIAL_MEDIA.OTHER);
+        UnifyTracking.eventShare( data.getSource() != null ? data.getSource() : "",
+                AppEventTracking.SOCIAL_MEDIA.OTHER
+        );
+        data.setSource(AppEventTracking.SOCIAL_MEDIA.OTHER);
         if (data.getBitmap() != null) {
-            ShareSocmedHandler.ShareIntentImage(activity, null, data.getTextContent(), data.getUri(),
+            ShareSocmedHandler.ShareIntentImage(activity, null, data.getTextContent(), data.renderShareUri(),
                     data.getBitmap());
         } else if (data.getImgUri()!= null){
-            ShareSocmedHandler.ShareIntentImageUri(activity, null, data.getTextContent(), data.getUri(),
+            ShareSocmedHandler.ShareIntentImageUri(activity, null, data.getTextContent(), data.renderShareUri(),
                     data.getImgUri());
         } else {
-            ShareSocmedHandler.ShareIntentImageUri(activity, null, data.getTextContent(), data.getUri(),
+            ShareSocmedHandler.ShareIntentImageUri(activity, null, data.getTextContent(), data.renderShareUri(),
                     data.getImgUri());
         }
     }
 
     @Override
     public void shareInstagram(ShareData data) {
-        UnifyTracking.eventShare(AppEventTracking.SOCIAL_MEDIA.INSTAGRAM);
+        UnifyTracking.eventShare( data.getSource() != null ? data.getSource() : "",
+                AppEventTracking.SOCIAL_MEDIA.INSTAGRAM
+        );
+        data.setSource(AppEventTracking.SOCIAL_MEDIA.INSTAGRAM);
         if(data.getBitmap() != null) {
             ShareSocmedHandler.ShareSpecific(activity, TkpdState.PackageName.Instagram,
-                    TkpdState.PackageName.TYPE_IMAGE, data.getTextContent(), data.getUri(),
+                    TkpdState.PackageName.TYPE_IMAGE, data.getTextContent(), data.renderShareUri(),
                     data.getBitmap(), null);
         } else if(data.getImgUri()!= null){
             ShareSocmedHandler.ShareSpecificUri(activity, TkpdState.PackageName.Instagram,
-                    TkpdState.PackageName.TYPE_IMAGE, data.getTextContent(), data.getUri(),
+                    TkpdState.PackageName.TYPE_IMAGE, data.getTextContent(), data.renderShareUri(),
                     data.getImgUri(), null);
         } else {
             ShareSocmedHandler.ShareSpecific(activity, TkpdState.PackageName.Instagram,
-                    TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.getUri(), null, null);
+                    TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.renderShareUri(), null, null);
         }
     }
 
     @Override
     public void shareGPlus(ShareData data) {
-        UnifyTracking.eventShare(AppEventTracking.SOCIAL_MEDIA.GOOGLE_PLUS);
+        UnifyTracking.eventShare( data.getSource() != null ? data.getSource() : "",
+                AppEventTracking.SOCIAL_MEDIA.GOOGLE_PLUS
+        );
+        data.setSource(AppEventTracking.SOCIAL_MEDIA.GOOGLE_PLUS);
         ShareSocmedHandler.ShareSpecific(activity, TkpdState.PackageName.Gplus,
-                TkpdState.PackageName.TYPE_IMAGE, data.getTextContent(), data.getUri(),
+                TkpdState.PackageName.TYPE_IMAGE, data.getTextContent(), data.renderShareUri(),
                 data.getBitmap(), null);
     }
 
     @Override
     public void shareCopy(ShareData data) {
-        ClipboardHandler.CopyToClipboard(activity, data.getUri());
+        data.setSource("Copy");
+        ClipboardHandler.CopyToClipboard(activity, data.renderShareUri());
         Toast.makeText(activity, "Copied to clipboard", Toast.LENGTH_SHORT).show();
     }
 
