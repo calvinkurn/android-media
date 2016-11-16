@@ -187,6 +187,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         if (!category.getAttributes().getValidatePrefix())
             this.rechargePresenter.updateMinLenghAndOperator(category.getAttributes().getDefaultOperatorId());
         if (!category.getAttributes().getClientNumber().getIsShown()) {
+            tlpLabelTextView.setVisibility(View.GONE);
             rechargeEditText.setVisibility(View.GONE);
             this.rechargePresenter.validateWithDefaultOperator(
                     category.getId(),
