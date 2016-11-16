@@ -26,7 +26,7 @@ public class RechargeOperatorManager implements DbFlowOperation<RechargeOperator
 
     }
 
-    public void store(String prefix, String name, int operatorId, int status, String image, int minLength, int maxLength) {
+    public void store(String prefix, String name, int operatorId, int status, String image, int minLength, int maxLength, String nominalText, Boolean showProduct, Boolean showPrice) {
         RechargeOperatorModelDB db = new RechargeOperatorModelDB();
         db.operatorId = operatorId;
         db.image = image;
@@ -35,6 +35,9 @@ public class RechargeOperatorManager implements DbFlowOperation<RechargeOperator
         db.prefix = prefix;
         db.minimumLength = minLength;
         db.maximumLength = maxLength;
+        db.nominalText =  nominalText;
+        db.showPrice =  showPrice;
+        db.showProduct = showProduct;
         db.save();
     }
 
@@ -103,7 +106,11 @@ public class RechargeOperatorManager implements DbFlowOperation<RechargeOperator
                                 operator.getAttributes().getStatus(),
                                 operator.getAttributes().getImage(),
                                 operator.getAttributes().getMinimumLength(),
-                                operator.getAttributes().getMaximumLength());
+                                operator.getAttributes().getMaximumLength(),
+                                operator.getAttributes().getRule().getProductText(),
+                                operator.getAttributes().getRule().getShowProduct(),
+                                operator.getAttributes().getRule().getShowPrice()
+                        );
                     }
                 } else {
                     store(
@@ -113,7 +120,10 @@ public class RechargeOperatorManager implements DbFlowOperation<RechargeOperator
                             operator.getAttributes().getStatus(),
                             operator.getAttributes().getImage(),
                             operator.getAttributes().getMinimumLength(),
-                            operator.getAttributes().getMaximumLength()
+                            operator.getAttributes().getMaximumLength(),
+                            operator.getAttributes().getRule().getProductText(),
+                            operator.getAttributes().getRule().getShowProduct(),
+                            operator.getAttributes().getRule().getShowPrice()
                     );
                 }
             }

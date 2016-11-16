@@ -33,6 +33,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.database.model.RechargeOperatorModelDB;
 import com.tokopedia.core.home.fragment.FragmentIndexCategory;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.recharge.activity.RechargePaymentWebView;
@@ -120,6 +121,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     private LastOrder lastOrder;
     private int minLengthDefaultOperator = -1;
     private Bundle bundle;
+    private Boolean showPrice = true;
     //endregion
 
     public static RechargeFragment newInstance(Category category) {
@@ -166,15 +168,12 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(false);
-        Bundle bundle = this.getArguments();
-        category = bundle.getParcelable(ARG_PARAM_CATEGORY);
-        rechargePresenter = new RechargePresenterImpl(getContext(), this);
-
-/*        super.onCreate(savedInstanceState);
-        setRetainInstance(false);
-        if (getArguments() != null) {
+        if (this.getArguments() != null) {
+            Bundle bundle = this.getArguments();
+            category = bundle.getParcelable(ARG_PARAM_CATEGORY);
+            rechargePresenter = new RechargePresenterImpl(getContext(), this);
             setupArguments(getArguments());
-        }*/
+        }
     }
 
     @Nullable
@@ -266,7 +265,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     public void onRechargeTextChanged(CharSequence s, int start, int before, int count) {
         String temp = s.toString();
         temp = validateTextPrefix(temp);
-        if (!category.getAttributes().getValidatePrefix() && minLengthDefaultOperator>-1) {
+        if (!category.getAttributes().getValidatePrefix()) {
             if (s.length()>=minLengthDefaultOperator) {
                 this.rechargePresenter.validateWithDefaultOperator(
                         category.getId(),
@@ -343,7 +342,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 NominalAdapter adapter = new NominalAdapter(
                         getActivity(),
                         android.R.layout.simple_spinner_item,
-                        productList
+                        productList,
+                        this.showPrice
                 );
                 spnNominal.setAdapter(adapter);
                 spnNominal.setOnItemSelectedListener(this);
@@ -395,10 +395,25 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     }
 
     @Override
-    public void setMinAndMaxtLength(int minLength, int maxLength) {
-        this.minLengthDefaultOperator = minLength;
-        this.rechargeEditText.getAutoCompleteTextView().setFilters(new InputFilter[] {new InputFilter.LengthFilter(maxLength)});
+    public void setOperatorView(RechargeOperatorModelDB operator) {
+        try {
+            this.minLengthDefaultOperator = operator.minimumLength;
+            this.rechargeEditText.getAutoCompleteTextView().setFilters(new InputFilter[]{new InputFilter.LengthFilter(operator.maximumLength)});
+            if (operator.nominalText != null && operator.nominalText.length() > 0)
+                this.nominalTextview.setText(operator.nominalText);
+            if (!operator.showProduct) {
+                this.spnNominal.setVisibility(View.GONE);
+                this.nominalTextview.setVisibility(View.GONE);
+            }
+            if (!operator.showPrice) {
+                this.showPrice = false;
+            }
+
+        } catch (Exception e) {
+
+        }
     }
+
 
     @Override
     public void hideProgressFetchData() {
