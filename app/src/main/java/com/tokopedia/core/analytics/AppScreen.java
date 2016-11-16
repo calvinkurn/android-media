@@ -15,7 +15,6 @@ import com.tokopedia.core.ManagePeople;
 import com.tokopedia.core.ManagePeoplePassword;
 import com.tokopedia.core.ManageShop;
 import com.tokopedia.core.ManageShopAddress;
-import com.tokopedia.core.ManageShopNotes;
 import com.tokopedia.core.PaymentConfirmationSuccess;
 import com.tokopedia.core.PaymentEditor;
 import com.tokopedia.core.PreviewProductImage;
@@ -23,7 +22,6 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.ServerErrorPage;
 import com.tokopedia.core.ShopAddressForm;
 import com.tokopedia.core.ShopEditor;
-import com.tokopedia.core.ShopNoteForm;
 import com.tokopedia.core.ShopStatisticDetail;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.addtocart.activity.AddToCartActivity;
@@ -61,6 +59,8 @@ import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
 import com.tokopedia.core.manage.people.bank.fragment.ManagePeopleBankFormFragment;
 import com.tokopedia.core.manage.people.notification.activity.ManageNotificationActivity;
 import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
+import com.tokopedia.core.manage.shop.notes.activity.ManageShopNotesActivity;
+import com.tokopedia.core.manage.shop.notes.fragment.ManageShopNotesFormFragment;
 import com.tokopedia.core.myproduct.ManageProduct;
 import com.tokopedia.core.myproduct.ProductActivity;
 import com.tokopedia.core.myproduct.fragment.AddProductFragment;
@@ -196,13 +196,14 @@ public final class AppScreen {
             //     gtmName = AppScreen.SCREEN_TRACKING_DETAIL;
         } else if (actClass instanceof EditAddressCart) {
             gtmName = AppScreen.SCREEN_CART_EDIT_ADDRESS;
-        } else if (actClass instanceof ManageShopNotes) {
+        } else if (actClass instanceof ManageShopNotesActivity) {
             gtmName = AppScreen.SCREEN_CONFIG_S_INFO;
         } else if (actClass instanceof ReputationViewShop) {
             gtmName = AppScreen.SCREEN_SHOP_REPUTATION;
             //  } else if (actClass instanceof ShippingConfirmationDetail) {
             //     gtmName = AppScreen.SCREEN_TX_S_CONFIRM_SHIPPING;
-        } else if (actClass instanceof ShopNoteForm) {
+        } else if (actClass instanceof ManageShopNotesActivity
+                && !(getFragment(actClass) instanceof ManageShopNotesFormFragment)) {
             gtmName = AppScreen.SCREEN_SGOP_NOTE_FORM;
         } else if (actClass instanceof ProductInfoActivity) {
             gtmName = AppScreen.SCREEN_PRODUCT_INFO;

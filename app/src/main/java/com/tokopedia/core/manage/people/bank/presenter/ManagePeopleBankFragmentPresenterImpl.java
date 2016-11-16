@@ -24,7 +24,6 @@ import com.tokopedia.core.manage.people.bank.model.ActSettingBankPass;
 import com.tokopedia.core.manage.people.bank.model.BankAccountPass;
 import com.tokopedia.core.manage.people.bank.model.ManagePeopleBankResult;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.service.CheckVerification;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 
@@ -250,8 +249,6 @@ public class ManagePeopleBankFragmentPresenterImpl implements ManagePeopleBankFr
 
     @Override
     public void onEditBank(ActSettingBankPass pass) {
-        LocalCacheHandler cache = new LocalCacheHandler(viewListener.getActivity(),
-                CheckVerification.VERIFICATION_STATUS);
         viewListener.getActivity().getIntent().putExtra(PARAM_IS_PHONE_VERIFIED,
                 SessionHandler.isMsisdnVerified());
         viewListener.getBankFormListener().onEditBank(pass);

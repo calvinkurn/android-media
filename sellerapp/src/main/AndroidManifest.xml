@@ -3,6 +3,7 @@
     package="com.tokopedia.sellerapp">
 
     <application
+        android:name=".SellerMainApplication"
         android:allowBackup="true"
         android:icon="@drawable/qc_launcher"
         android:label="@string/app_name"
@@ -18,5 +19,17 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.tokopedia.seller.ShippingConfirmationDetail"
+            android:label="@string/title_activity_shipping_confirmation_detail"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.tokopedia.seller.ShippingConfirmationProdConf"
+            android:label="@string/title_activity_shipping_confirmation_prod_conf"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.tokopedia.seller.OrderHistoryView"
+            android:label="@string/title_activity_order_history_view"
+            android:screenOrientation="portrait" />
     </application>
 </manifest>

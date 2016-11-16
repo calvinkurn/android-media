@@ -541,6 +541,11 @@ public class FragmentIndexCategory extends Fragment implements
         ((LinearLayout) holder.tabLayoutRecharge.getParent()).setVisibility(View.GONE);
     }
 
+    @Override
+    public void renderErrorNetwork() {
+
+    }
+
     private void addChildTablayout(CategoryData rechargeCategory, List<Integer> newRechargePositions) {
         for (int i = 0; i < rechargeCategory.getData().size(); i++) {
             com.tokopedia.core.recharge.model.category.Category category = rechargeCategory.getData().get(i);

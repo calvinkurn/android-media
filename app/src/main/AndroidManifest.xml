@@ -36,7 +36,6 @@
     <uses-feature android:name="android.hardware.camera" />
 
     <application
-        android:name="com.tokopedia.core.app.MainApplication"
         android:allowBackup="true"
         android:icon="@drawable/qc_launcher"
         android:label="@string/app_name"
@@ -222,12 +221,8 @@
             android:label="@string/title_activity_manage_shop"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.ManageShopNotes"
+            android:name="com.tokopedia.core.manage.shop.notes.activity.ManageShopNotesActivity"
             android:label="@string/title_activity_manage_shop_notes"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.ShopNoteForm"
-            android:label="@string/title_activity_shop_note_form"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.core.shipping.EditShippingActivity"
@@ -305,14 +300,6 @@
         <activity
             android:name="com.tokopedia.core.deposit.activity.WithdrawActivity"
             android:label="@string/title_activity_people_withdraw_balance"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.com.tokopedia.seller.ShippingConfirmationDetail"
-            android:label="@string/title_activity_shipping_confirmation_detail"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.com.tokopedia.seller.ShippingConfirmationProdConf"
-            android:label="@string/title_activity_shipping_confirmation_prod_conf"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.core.PaymentConfirmationSuccess"
@@ -721,7 +708,6 @@
             </intent-filter>
         </service>
         <service android:name="com.google.android.gms.analytics.CampaignTrackingService" />
-        <service android:name="com.tokopedia.core.service.CheckVerification" />
         <service
             android:name="com.tokopedia.core.service.DownloadService"
             android:exported="false" />

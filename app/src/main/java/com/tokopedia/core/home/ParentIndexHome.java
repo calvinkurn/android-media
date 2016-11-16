@@ -36,7 +36,6 @@ import com.tokopedia.core.home.fragment.FragmentIndexCategory;
 import com.tokopedia.core.home.fragment.FragmentProductFeed;
 import com.tokopedia.core.interfaces.IndexHomeInterafaces;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
-import com.tokopedia.core.loyaltysystem.util.LoyaltyNotificationUtil;
 import com.tokopedia.core.myproduct.ProductActivity;
 import com.tokopedia.core.myproduct.fragment.AddProductFragment;
 import com.tokopedia.core.onboarding.OnboardingActivity;
@@ -472,8 +471,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
         super.onResume();
 
         sendNotifLocalyticsCallback();
-
-        getLoyaltyNotification();
     }
 
     @Override
@@ -552,10 +549,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
         cache.applyEditor();
     }
 
-    private void getLoyaltyNotification() {
-        LoyaltyNotificationUtil loyalty = new LoyaltyNotificationUtil(this);
-        loyalty.checkLoyaltyNotification();
-    }
 
     private int getDefaultTabPosition() {
         if (SessionHandler.isV2Login(getApplicationContext()) || SessionHandler.isV4Login(getApplicationContext())) {
