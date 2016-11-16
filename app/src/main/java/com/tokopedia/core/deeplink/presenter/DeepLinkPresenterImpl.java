@@ -264,6 +264,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             if (maps.get("utm_medium") != null) {
                 bundle.putString(RechargeFragment.ARG_UTM_MEDIUM, maps.get("utm_medium"));
             }
+            if (maps.get("utm_campaign") != null) {
+                bundle.putString(RechargeFragment.ARG_UTM_CAMPAIGN, maps.get("utm_campaign"));
+            }
+            if (maps.get("utm_content") != null) {
+                bundle.putString(RechargeFragment.ARG_UTM_CONTENT, maps.get("utm_content"));
+            }
         }
         bundle.putBoolean(EXTRA_ALLOW_ERROR, true);
         RechargeCategoryFragment fragment = RechargeCategoryFragment.newInstance(bundle);

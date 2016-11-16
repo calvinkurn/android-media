@@ -134,6 +134,17 @@ public class WholesaleAdapter extends RecyclerView.Adapter<WholesaleAdapter.View
         }
         throw new RuntimeException(WholesaleAdapter.class.getSimpleName()+" please pass 3 String, int, int , int in String format ");
     }
+
+    public boolean isNoError() {
+        boolean isNoError = true;
+        for (WholeSaleAdapterModel model : datas){
+            isNoError &= model.isNoErrorQOne();
+            isNoError &= model.isNoErrorQTwo();
+            isNoError &= model.isNoErrorPrice();
+        }
+        return isNoError;
+    }
+
     public interface ViewHolderListener{
         boolean checkValue();
     }
@@ -164,7 +175,7 @@ public class WholesaleAdapter extends RecyclerView.Adapter<WholesaleAdapter.View
         private boolean checkFirstText(CharSequence s) {
             if ((getCurrencyUnit() != null || getPrice() != null)) {
                 if(isFristEditOne || isFristEditTwo){
-                    setQtyOne();
+                    setQtyOne(wholesaleItemQtyOne.getText().toString(), true);
                 }else{
                     Pair<Boolean, String> res = VerificationUtils.validateWholeSaleItemQuantity(
                             WholesaleAdapter.QTY1,
@@ -173,11 +184,12 @@ public class WholesaleAdapter extends RecyclerView.Adapter<WholesaleAdapter.View
                             s.toString(), dataBefore);
                     if (!res.getModel1()) {
                         wholesaleItemQtyOne.setError(res.getModel2());
+                        setQtyOne(wholesaleItemQtyOne.getText().toString(), false);
                         return false;
                     } else {
                         wholesaleItemQtyOne.setError(null);
                         if (data != null) {
-                            setQtyOne();
+                            setQtyOne(wholesaleItemQtyOne.getText().toString(), true);
                         }
                     }
                     Log.d(TAG, MESSAGE_TAG + "wholesaleItemQtyOne" + res);
@@ -188,12 +200,15 @@ public class WholesaleAdapter extends RecyclerView.Adapter<WholesaleAdapter.View
             return false;
         }
 
-        private void setQtyOne() {
-            if(!wholesaleItemQtyOne.getText().toString().isEmpty()) {
-                Log.d(TAG, MESSAGE_TAG + " [before] success edit for qty one : " + data);
-                data.setQuantityOne(Double.parseDouble(wholesaleItemQtyOne.getText().toString()));
-                Log.d(TAG, MESSAGE_TAG + " [after] success edit for qty one : " + data);
-                notifyChanged();
+        private void setQtyOne(String value, boolean noError) {
+            data.setNoErrorQOne(noError);
+            if(noError){
+                if (value != null && !value.isEmpty()) {
+                    Log.d(TAG, MESSAGE_TAG + " [before] success edit for qty one : " + data);
+                    data.setQuantityOne(Double.parseDouble(value));
+                    Log.d(TAG, MESSAGE_TAG + " [after] success edit for qty one : " + data);
+                    notifyChanged();
+                }
             }
         }
 
@@ -214,18 +229,19 @@ public class WholesaleAdapter extends RecyclerView.Adapter<WholesaleAdapter.View
         private boolean checkPrice(CharSequence s) {
             if ((getCurrencyUnit() != null || getPrice() != null)) {
                 if(isFristEditPrice){
-                    setPrice(s.toString().replace(",", ""));
+                    setPrice(s.toString().replace(",", ""), true);
                 }else{
                     Pair<Boolean, String> res = VerificationUtils.validateWholeSalePrice(
                             itemView.getContext(), getCurrencyUnit(), getPrice(),
                             s.toString(), dataBefore);
                     if (!res.getModel1()) {
                         wholesaleItemQtyPrice.setError(res.getModel2());
+                        setPrice(null, false);
                         return false;
                     } else {
                         wholesaleItemQtyPrice.setError(null);
                         if (data != null) {
-                            setPrice(s.toString().replace(",", ""));
+                            setPrice(s.toString().replace(",", ""), true);
                         }
                     }
                     Log.d(TAG, MESSAGE_TAG + "wholesaleItemQtyPrice" + res);
@@ -247,15 +263,18 @@ public class WholesaleAdapter extends RecyclerView.Adapter<WholesaleAdapter.View
             }
         }
 
-        private void setPrice(String price) {
-            if(!wholesaleItemQtyPrice.getText().toString().isEmpty()) {
-                try {
-                    Log.d(TAG, MESSAGE_TAG + " [before] success edit for qty price : " + data);
-                    data.setWholeSalePrice(Double.parseDouble(price));
-                    Log.d(TAG, MESSAGE_TAG + " [after] success edit for qty price : " + data);
-                    notifyChanged();
-                } catch (NumberFormatException e){
-                    wholesaleItemQtyPrice.setError("Mohon masukan nominal angka dengan benar");
+        private void setPrice(String price, boolean isNoError) {
+            data.setNoErrorPrice(isNoError);
+            if(isNoError) {
+                if (!wholesaleItemQtyPrice.getText().toString().isEmpty()) {
+                    try {
+                        Log.d(TAG, MESSAGE_TAG + " [before] success edit for qty price : " + data);
+                        data.setWholeSalePrice(Double.parseDouble(price));
+                        Log.d(TAG, MESSAGE_TAG + " [after] success edit for qty price : " + data);
+                        notifyChanged();
+                    } catch (NumberFormatException e) {
+                        wholesaleItemQtyPrice.setError("Mohon masukan nominal angka dengan benar");
+                    }
                 }
             }
         }
@@ -270,7 +289,7 @@ public class WholesaleAdapter extends RecyclerView.Adapter<WholesaleAdapter.View
         private boolean checkSecondText(CharSequence s) {
             if ((getCurrencyUnit() != null || getPrice() != null) ) { //
                 if(isFristEditTwo || isFristEditOne){
-                    setQtyTwo();
+                    setQtyTwo(wholesaleItemQtyTwo.getText().toString(), true);
                 }else{
                     Pair<Boolean, String> res = VerificationUtils.validateWholeSaleItemQuantity(
                             WholesaleAdapter.QTY2,
@@ -279,11 +298,12 @@ public class WholesaleAdapter extends RecyclerView.Adapter<WholesaleAdapter.View
                             s.toString(), dataBefore);
                     if (!res.getModel1()) {
                         wholesaleItemQtyTwo.setError(res.getModel2());
+                        setQtyTwo(null, false);
                         return false;
                     } else {
                         wholesaleItemQtyTwo.setError(null);
                         if (data != null) {
-                            setQtyTwo();
+                            setQtyTwo(wholesaleItemQtyTwo.getText().toString(), true);
                         }
                     }
                     Log.d(TAG, MESSAGE_TAG + "wholesaleItemQtyTwo" + res);
@@ -294,12 +314,15 @@ public class WholesaleAdapter extends RecyclerView.Adapter<WholesaleAdapter.View
             return false;
         }
 
-        private void setQtyTwo() {
-            if(!wholesaleItemQtyTwo.getText().toString().isEmpty()) {
-                Log.d(TAG, MESSAGE_TAG + " [before] success edit for qty two : " + data);
-                data.setQuantityTwo(Double.parseDouble(wholesaleItemQtyTwo.getText().toString()));
-                Log.d(TAG, MESSAGE_TAG + " [after] success edit for qty two : " + data);
-                notifyChanged();
+        private void setQtyTwo(String value, boolean noError) {
+            data.setNoErrorQTwo(noError);
+            if(noError){
+                if (value != null && !value.isEmpty()) {
+                    Log.d(TAG, MESSAGE_TAG + " [before] success edit for qty two : " + data);
+                    data.setQuantityTwo(Double.parseDouble(value));
+                    Log.d(TAG, MESSAGE_TAG + " [after] success edit for qty two : " + data);
+                    notifyChanged();
+                }
             }
         }
 

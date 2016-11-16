@@ -5,11 +5,14 @@ import android.text.TextUtils;
 
 import com.appsflyer.AppsFlyerLib;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
 
+import java.io.IOException;
 import java.util.Map;
 
 import rx.Observable;
@@ -104,7 +107,7 @@ public class AppsflyerContainer implements IAppsflyerContainer {
                         AdvertisingIdClient.Info adInfo = null;
                         try {
                             adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
-                        } catch (Exception e) {
+                        } catch (IOException | GooglePlayServicesNotAvailableException | GooglePlayServicesRepairableException e) {
                             e.printStackTrace();
                         }
                         return adInfo;

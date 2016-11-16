@@ -160,15 +160,6 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="tkpd" />
-            </intent-filter>
-            <intent-filter>
-
                 <!-- LOCALYTICS TEST MESSAGE KEY -->
                 <data android:scheme="ampe5ce78bb486192da7790186-01e0f208-0058-11e5-9b02-00739d24cb30" />
 
@@ -472,12 +463,6 @@
                     android:scheme="http" />
                 <data
                     android:host="apps.tokopedia.com"
-                    android:scheme="https" />
-                <data
-                    android:host="www.apps.tokopedia.com"
-                    android:scheme="http" />
-                <data
-                    android:host="www.apps.tokopedia.com"
                     android:scheme="https" />
             </intent-filter>
         </activity>

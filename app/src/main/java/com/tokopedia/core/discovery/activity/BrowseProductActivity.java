@@ -451,6 +451,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
 
 
     public void sendQuery(String query) {
+        breadcrumbs = null;
         saveQueryCache(query);
         resetBrowseProductActivityModel();
         browseProductActivityModel.setQ(query);
@@ -698,7 +699,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     private void openFilter(DynamicFilterModel.Data filterAttribute, String source, int activeTab, FDest dest) {
         Log.d(TAG, "openFilter source "+source);
         List<Breadcrumb> crumb = getProductBreadCrumb();
-        if (crumb != null) {
+        if (breadcrumbs == null && crumb != null) {
             breadcrumbs = crumb;
         }
         if (filterAttribute != null && breadcrumbs != null) {
@@ -776,7 +777,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         items.add(new AHBottomNavigationItem(getString(R.string.share), R.drawable.ic_share_black_24dp));
         return items;
     }
-    
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -800,7 +801,10 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                     sendSortGTM(browseProductActivityModel.getOb());
                     break;
                 case DynamicFilterView.REQUEST_CODE:
-                    Map<String, String> filters = Parcels.unwrap(data.getParcelableExtra(DynamicFilterView.EXTRA_RESULT));
+                    Map<String, String> filters = Parcels.unwrap(
+                            data.getParcelableExtra(DynamicFilterView.EXTRA_FILTERS)
+                    );
+
                     filtersMap.put(browseProductActivityModel.getActiveTab(), filters);
                     browseProductActivityModel.setFilterOptions(filters);
                     Log.d(TAG, "filter option " + filters);
@@ -874,11 +878,18 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     }
 
     public void showEmptyState(NetworkErrorHelper.RetryClickedListener retryClickedListener){
-        NetworkErrorHelper.showEmptyState(BrowseProductActivity.this, coordinatorLayout, retryClickedListener);
+        NetworkErrorHelper.showEmptyState(BrowseProductActivity.this,container, retryClickedListener);
+        if (bottomNavigation!=null) {
+            bottomNavigation.hideBottomNavigation();
+        }
     }
 
     public void removeEmptyState(){
         NetworkErrorHelper.removeEmptyState(coordinatorLayout);
+        NetworkErrorHelper.removeEmptyState(container);
+            if (bottomNavigation!=null && bottomNavigation.isHidden() ) {
+                bottomNavigation.restoreBottomNavigation();
+            }
     }
 
     private void fetchHotListHeader(final String alias) {

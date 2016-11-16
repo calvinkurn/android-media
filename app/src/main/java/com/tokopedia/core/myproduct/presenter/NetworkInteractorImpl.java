@@ -291,69 +291,6 @@ public class NetworkInteractorImpl implements NetworkInteractor {
                             }
                         }
                 ));
-        // OLD CODE
-//        NetworkCalculator depParent = new NetworkCalculator(
-//                NetworkConfig.POST, context
-//                , TkpdBaseURL.Etc.URL_DEPARTMENT+"/"+TkpdBaseURL.Etc.PATH_GET_DEPARTMENT_PARENT)
-//                .setIdentity()
-//                .compileAllParam()
-//                .finish();
-//
-//        compositeSubscription.add(RetrofitUtils.createRetrofit().create(Department.class).getDepParent(
-//                NetworkCalculator.getContentMd5(depParent),// 1
-//                NetworkCalculator.getDate(depParent),// 2
-//                NetworkCalculator.getAuthorization(depParent),// 3
-//                NetworkCalculator.getxMethod(depParent),// 4
-//                NetworkCalculator.getUserId(context),// 5
-//                NetworkCalculator.getDeviceId(context),// 6
-//                NetworkCalculator.getHash(depParent),// 7
-//                NetworkCalculator.getDeviceTime(depParent)// 8
-//        )
-//                .map(new Func1<DepartmentParentModel, DepartmentParentModel>() {
-//                    @Override
-//                    public DepartmentParentModel call(DepartmentParentModel departmentParentModel) {
-//                        if(departmentParentModel != null
-//                                && departmentParentModel.getMessageError() != null
-//                                && departmentParentModel.getMessageError().length > 0){
-//                            throw new RuntimeException(
-//                                    Arrays.toString(departmentParentModel.getMessageError())
-//                            );
-//                        }
-//                        return departmentParentModel;
-//                    }
-//                })
-//                .retry(RetrofitUtils.RETRY_COUNT)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .unsubscribeOn(Schedulers.io())
-//                .subscribe(
-//                        new Subscriber<DepartmentParentModel>() {
-//                            @Override
-//                            public void onCompleted() {
-//
-//                            }
-//
-//                            @Override
-//                            public void onError(Throwable e) {
-//                                if (!checkNotNull(fetchDepartment))
-//                                    return;
-//
-//                                if(BuildConfig.DEBUG){
-//                                    e = new Throwable("fetchDepartment ["+e.getMessage()+"]");
-//                                }
-//
-//                                fetchDepartment.onFailureFetchDepartment(e);
-//                            }
-//
-//                            @Override
-//                            public void onNext(DepartmentParentModel departmentParentModel) {
-//                                if ( !checkNotNull(departmentParentModel) && !checkNotNull(fetchDepartment))
-//                                    return;
-//
-//                                fetchDepartment.onSuccessFetchDepartment(departmentParentModel);
-//                            }
-//                        }
-//                ));
     }
 
     private HashMap<String, String> generateFetchEtalaseParam(Context context) {
@@ -607,58 +544,34 @@ public class NetworkInteractorImpl implements NetworkInteractor {
     }
 
     @Override
-    public void editProductDetail(CompositeSubscription compositeSubscription, final Context context, String productId, String productName, String shopDomain) {
+    public void editProductDetail(CompositeSubscription compositeSubscription, final Context context, final String productId, String productName, String shopDomain) {
 
         if (!checkNotNull(fetchEditData))
             return;
 
-        final String userId = SessionHandler.getLoginID(context);
-        final String deviceId = GCMHandler.getRegistrationId(context);
-
-        ProductPass productPass = ProductPass.Builder.aProductPass()
-                .setProductId(Integer.parseInt(productId))
-                .setProductName(productName)
-                .setShopDomain(shopDomain)
-                .build();
-        Observable<Response<TkpdResponse>> observable = productService.getApi().getProductDetail(AuthUtil.generateParams(context, NetworkParam.paramProductDetail(productPass)));
-        final Observable<EditProductForm> editProductForm = getEditProductForm(context, "300", productId, SessionHandler.getShopID(context), SessionHandler.getLoginID(context));
-        Observable<Map<String, Object>> result = observable
-                .map(new Func1<Response<TkpdResponse>, Map<String, Object>>() {
+        Map<String, Object> result = new HashMap<String, Object>();
+        Observable<Map<String, Object>> resultObservable = Observable.just(result)
+                .flatMap(new Func1<Map<String, Object>, Observable<Map<String, Object>>>() {
                     @Override
-                    public Map<String, Object> call(Response<TkpdResponse> response) {
-                        Map<String, Object> result = new HashMap<String, Object>();
-                        if (response.isSuccessful()) {
-                            if (!response.body().isError()) {
-                                ProductDetailData productDetailData = response.body().convertDataObj(ProductDetailData.class);
-                                result.put(PRODUCT_DETAIL_DATA, productDetailData);
-
-                            } else {
-                                if (response.body().isNullData()) {
-                                    throw new RuntimeException("product detail is null ");
-                                } else {
-                                    throw new RuntimeException(response.body().getErrorMessages().toString());
-                                }
+                    public Observable<Map<String, Object>> call(Map<String, Object> stringObjectMap) {
+                        Observable<EditProductForm> editProductFormObservable = getEditProductForm(context, "300", productId, SessionHandler.getShopID(context), SessionHandler.getLoginID(context));
+                        return Observable.zip(Observable.just(stringObjectMap), editProductFormObservable, new Func2<Map<String, Object>, EditProductForm, Map<String, Object>>() {
+                            @Override
+                            public Map<String, Object> call(Map<String, Object> stringObjectMap, EditProductForm editProductForm) {
+                                stringObjectMap.put(EDIT_PRODUCT_FORM, editProductForm);
+                                return stringObjectMap;
                             }
-                        }
-                        return result;
+                        });
                     }
                 })
                 .flatMap(new Func1<Map<String, Object>, Observable<Map<String, Object>>>() {
                     @Override
                     public Observable<Map<String, Object>> call(Map<String, Object> stringObjectMap) {
-                        EditProductForm edit = editProductForm.toBlocking().first();
-                        stringObjectMap.put(EDIT_PRODUCT_FORM, edit);
-                        return Observable.just(stringObjectMap);
-                    }
-                })
-                .flatMap(new Func1<Map<String, Object>, Observable<Map<String, Object>>>() {
-                    @Override
-                    public Observable<Map<String, Object>> call(Map<String, Object> stringObjectMap) {
-                        ProductDetailData productDetailData = (ProductDetailData) stringObjectMap.get(PRODUCT_DETAIL_DATA);
-                        Observable<List<ImageModel>> imageDownload = Observable.from(productDetailData.getProductImages())
-                                .flatMap(new Func1<ProductImage, Observable<ImageModel>>() {
+                        EditProductForm editProductForm1 = (EditProductForm) stringObjectMap.get(EDIT_PRODUCT_FORM);
+                        Observable<List<ImageModel>> imageDownload = Observable.from(editProductForm1.getData().getProductImages())
+                                .flatMap(new Func1<EditProductForm.ProductImage, Observable<ImageModel>>() {
                                     @Override
-                                    public Observable<ImageModel> call(ProductImage productImage) {
+                                    public Observable<ImageModel> call(EditProductForm.ProductImage productImage) {
                                         FutureTarget<File> future = Glide.with(context)
                                                 .load(productImage.getImageSrc())
                                                 .downloadOnly(4096, 2160);
@@ -690,11 +603,11 @@ public class NetworkInteractorImpl implements NetworkInteractor {
                 .flatMap(new Func1<Map<String, Object>, Observable<Map<String, Object>>>() {
                     @Override
                     public Observable<Map<String, Object>> call(Map<String, Object> stringObjectMap) {
-                        ProductDetailData productDetailData = (ProductDetailData) stringObjectMap.get(PRODUCT_DETAIL_DATA);
-                        final Observable<List<DepartmentParentModel>> departmentData = Observable.from(productDetailData.getBreadcrumb())
-                                .flatMap(new Func1<ProductBreadcrumb, Observable<DepartmentParentModel>>() {
+                        EditProductForm editProductForm = (EditProductForm) stringObjectMap.get(EDIT_PRODUCT_FORM);
+                        final Observable<List<DepartmentParentModel>> departmentData = Observable.from(editProductForm.getData().getBreadcrumb())
+                                .flatMap(new Func1<EditProductForm.Breadcrumb, Observable<DepartmentParentModel>>() {
                                     @Override
-                                    public Observable<DepartmentParentModel> call(ProductBreadcrumb productBreadcrumb) {
+                                    public Observable<DepartmentParentModel> call(EditProductForm.Breadcrumb productBreadcrumb) {
                                         final String departmentId = productBreadcrumb.getDepartmentId();
                                         final NetworkCalculator depChild = new NetworkCalculator(
                                                 NetworkConfig.GET,
@@ -713,7 +626,6 @@ public class NetworkInteractorImpl implements NetworkInteractor {
                                         Observable<DepartmentParentModel> child = new DepartmentService()
                                                 .getApi()
                                                 .getChild2(AuthUtil.generateParams(context, param));
-
                                         return child;
                                     }
                                 }).toList();
@@ -729,13 +641,13 @@ public class NetworkInteractorImpl implements NetworkInteractor {
                 .flatMap(new Func1<Map<String, Object>, Observable<Map<String, Object>>>() {
                     @Override
                     public Observable<Map<String, Object>> call(Map<String, Object> stringObjectMap) {
-                        ProductDetailData productDetailData = (ProductDetailData) stringObjectMap.get(PRODUCT_DETAIL_DATA);
-                        int lastIndex = productDetailData.getBreadcrumb().size() - 1;
-                        ProductBreadcrumb productBreadcrumb = productDetailData.getBreadcrumb().get(lastIndex);
+                        EditProductForm editProductForm = (EditProductForm) stringObjectMap.get(EDIT_PRODUCT_FORM);
+                        int lastIndex = editProductForm.getData().getBreadcrumb().size() - 1;
+                        EditProductForm.Breadcrumb productBreadcrumb = editProductForm.getData().getBreadcrumb().get(lastIndex);
 
                         Map<String, String> param = new HashMap<>();
                         param.put("sc", productBreadcrumb.getDepartmentId());
-                        param.put("q", productDetailData.getInfo().getProductName());
+                        param.put("q", editProductForm.getData().getProduct().getProductName());
                         param.put("source", "search_catalog");
                         Observable<CatalogDataModel> catalog = new AceSearchService().getApi().getCatalog(
                                 AuthUtil.generateParams(context, param));
@@ -749,7 +661,7 @@ public class NetworkInteractorImpl implements NetworkInteractor {
                     }
                 });
 
-        compositeSubscription.add(result.subscribeOn(Schedulers.io())
+        compositeSubscription.add(resultObservable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
                 .subscribe(
@@ -762,9 +674,6 @@ public class NetworkInteractorImpl implements NetworkInteractor {
                             @Override
                             public void onError(Throwable e) {
                                 Log.e(TAG, messageTAG + e);
-//                                if(e!= null && BuildConfig.DEBUG){
-//                                    e = new Throwable("failed at editProductDetail ["+e.getMessage()+"]");
-//                                }
                                 fetchEditData.onFailureFetchEditData(e);
                             }
 
@@ -772,13 +681,15 @@ public class NetworkInteractorImpl implements NetworkInteractor {
                             public void onNext(Map<String, Object> stringObjectMap) {
                                 Log.d(TAG, messageTAG + stringObjectMap);
                                 List<DepartmentParentModel> dep = (List<DepartmentParentModel>) stringObjectMap.get(DEPARTMENT_DATA);
-                                ProductDetailData productDetailData = (ProductDetailData) stringObjectMap.get(PRODUCT_DETAIL_DATA);
-                                if (productDetailData.getBreadcrumb().size() == 3) {
-                                    saveKategoriToDb(dep, productDetailData, 1, 3);
-                                } else if (productDetailData.getBreadcrumb().size() == 2) {
-                                    saveKategoriToDb(dep, productDetailData, 0, 1);
+
+                                EditProductForm editProductForm = (EditProductForm) stringObjectMap.get(EDIT_PRODUCT_FORM);
+
+                                if (editProductForm.getData().getBreadcrumb().size() == 3) {
+                                    saveKategoriToDb(dep, editProductForm, 1, 3);
+                                } else if (editProductForm.getData().getBreadcrumb().size() == 2) {
+                                    saveKategoriToDb(dep, editProductForm, 0, 1);
                                 } else {
-                                    saveKategoriToDb(dep, productDetailData, -1, -1);
+                                    saveKategoriToDb(dep, editProductForm, -1, -1);
                                 }
                                 fetchEditData.onSuccessFetchEditData(stringObjectMap);
                             }
@@ -814,9 +725,9 @@ public class NetworkInteractorImpl implements NetworkInteractor {
                 });
     }
 
-    private void saveKategoriToDb(List<DepartmentParentModel> dep, ProductDetailData productDetailData, int startIndex, int limit) {
+    private void saveKategoriToDb(List<DepartmentParentModel> dep, EditProductForm productDetailData, int startIndex, int limit) {
         int count = startIndex;
-        List<ProductBreadcrumb> breadcrumb = productDetailData.getBreadcrumb();
+        List<EditProductForm.Breadcrumb> breadcrumb = productDetailData.getData().getBreadcrumb();
         for (DepartmentParentModel departmentParentModel : dep) {
             if (count == limit)
                 break;

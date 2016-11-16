@@ -80,10 +80,13 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     private static final String ARG_PARAM_CATEGORY = "ARG_PARAM_CATEGORY";
     public static final String ARG_UTM_SOURCE = "ARG_UTM_SOURCE";
     public static final String ARG_UTM_MEDIUM = "ARG_UTM_MEDIUM";
+    public static final String ARG_UTM_CAMPAIGN = "ARG_UTM_CAMPAIGN";
+    public static final String ARG_UTM_CONTENT = "ARG_UTM_CONTENT";
     private final static int OUT_OF_STOCK = 3;
     private static final String LAST_INPUT_KEY = "lastInputKey";
     private static final int LOGIN_REQUEST_CODE = 198;
     private static final String KEY_PHONEBOOK = "phoneBook";
+
     //endregion
 
     //region widget variable
@@ -658,8 +661,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 "&instant_checkout=" + (buyWithCreditCheckbox.isChecked() ? "1" : "0") +
                 "&utm_source=" + bundle.getString(ARG_UTM_SOURCE, "android") +
                 "&utm_medium=" + bundle.getString(ARG_UTM_MEDIUM, "widget") +
-                "&utm_campaign=" + category.getAttributes().getName() +
-                "&utm_content=" + VersionInfo.getVersionInfo(getActivity());
+                "&utm_campaign=" + bundle.getString(ARG_UTM_CAMPAIGN, category.getAttributes().getName()) +
+                "&utm_content=" + bundle.getString(ARG_UTM_CONTENT, VersionInfo.getVersionInfo(getActivity()));
 
         Log.i("RECHARGE", "PULSA URL: " + Uri.encode(url) + "\n RAW : " + url);
 
