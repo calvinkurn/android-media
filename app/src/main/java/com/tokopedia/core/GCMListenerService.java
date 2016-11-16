@@ -1,5 +1,6 @@
 package com.tokopedia.core;
 
+import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -11,10 +12,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -52,6 +55,7 @@ import com.tokopedia.core.var.TkpdState;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -377,12 +381,12 @@ public class GCMListenerService extends GcmListenerService {
     }
 
     private void createNotification(Intent intent, Class<?> resultclass, String title, String ticker, String desc,
-                                    Bundle bundle, Bundle data, ComponentName componentName) {
+                                    Bundle bundle, final Bundle data, ComponentName componentName) {
         NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         ArrayList<String> Content;
         ArrayList<String> Desc;
         ArrayList<Integer> Code;
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
+        final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_stat_notify)
                 .setAutoCancel(true);
         NotificationCompat.InboxStyle inboxStyle;
@@ -443,12 +447,51 @@ public class GCMListenerService extends GcmListenerService {
             mBuilder.setStyle(inboxStyle);
             mBuilder.setTicker(ticker);
         }
+
+
+        if(!TextUtils.isEmpty(data.getString("url_img"))){
+
+            ImageHandler.loadImageBitmapNotification(
+                    this,
+                    data.getString("url_img"), new OnGetFileListener() {
+                        @Override
+                        public void onFileReady(File file) {
+                            NotificationCompat.BigPictureStyle bigStyle = new NotificationCompat.BigPictureStyle();
+                            bigStyle.bigPicture(Bitmap.createScaledBitmap(BitmapFactory.decodeFile(file.getAbsolutePath()), getResources().getDimensionPixelSize(R.dimen.notif_width), getResources().getDimensionPixelSize(R.dimen.notif_height), true));
+                            bigStyle.setBigContentTitle(data.getString("title"));
+                            bigStyle.setSummaryText(data.getString("desc"));
+
+                            mBuilder.setStyle(bigStyle);
+                        }
+                    }
+            );
+
+        }else {
+
+        }
+
+        if(!TextUtils.isEmpty(data.getString("url_icon"))){
+            ImageHandler.loadImageBitmapNotification(
+                    this,
+                    data.getString("url_icon"), new OnGetFileListener() {
+                        @Override
+                        public void onFileReady(File file) {
+                            mBuilder.setLargeIcon(Bitmap.createScaledBitmap(BitmapFactory.decodeFile(file.getAbsolutePath()), getResources().getDimensionPixelSize(R.dimen.icon_size), getResources().getDimensionPixelSize(R.dimen.icon_size), true));
+                        }
+                    }
+            );
+        }else {
+            mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_stat_notify));
+        }
+
+
+
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("from_notif", true);
         intent.putExtra("unread", false);
         if (Integer.parseInt(data.getString("tkp_code")) == TkpdState.GCMServiceState.GCM_PROMO || Integer.parseInt(data.getString("tkp_code")) == TkpdState.GCMServiceState.GCM_GENERAL) {
-            data = localyticsIntent(data);
-            intent.putExtras(data);
+            Bundle dataLocalytics = localyticsIntent(data);
+            intent.putExtras(dataLocalytics);
         } else {
             intent.putExtras(bundle);
         }
@@ -596,76 +639,39 @@ public class GCMListenerService extends GcmListenerService {
 
     private void createImageNotification(final Bundle data, final Class<?> intentClass) throws NullPointerException {
 
-//        Target target = new Target() {
-//
-//            @Override
-//            public void onBitmapFailed(Drawable arg0) {
-//
-//            }
-//
-//            @Override
-//            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom arg1) {
-//                NotificationManager mNotificationManager = (NotificationManager) getBaseContext().getSystemService(Context.NOTIFICATION_SERVICE);
-//
-//                Notification.Builder mBuilder = new Notification.Builder(getBaseContext())
-//                        .setSmallIcon(R.drawable.ic_stat_notify)
-//                        .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_stat_notify))
-//                        .setAutoCancel(true);
-//                Notification.BigPictureStyle bigStyle = new Notification.BigPictureStyle();
-//                mBuilder.setContentTitle(data.getString("title"));
-//                mBuilder.setContentText(data.getString("desc"));
-//                bigStyle.bigPicture(Bitmap.createScaledBitmap(bitmap, getResources().getDimensionPixelSize(R.dimen.notif_width), getResources().getDimensionPixelSize(R.dimen.notif_height), true));
-//                bigStyle.setSummaryText(data.getString("desc"));
-//                mBuilder.setStyle(bigStyle);
-//                mBuilder.setTicker(data.getString("desc"));
-//
-//                if (isAllowBell()) {
-//                    mBuilder.setSound(getSoundUri());
-//                    if (isVibrate()) {
-//                        mBuilder.setVibrate(pattern);
-//                    }
-//                }
-//
-//                Intent intent = createIntent(intentClass, data);
-//
-//                TaskStackBuilder stackBuilder = TaskStackBuilder.create(getBaseContext());
-//                stackBuilder.addParentStack(intentClass);
-//                stackBuilder.addNextIntent(intent);
-//                PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
-//                mBuilder.setContentIntent(resultPendingIntent);
-//                Notification notif = mBuilder.build();
-//                if (isVibrate() && isAllowBell()) notif.defaults |= Notification.DEFAULT_VIBRATE;
-//                mNotificationManager.notify(Integer.parseInt(data.getString("tkp_code")), notif);
-//
-//            }
-//
-//            @Override
-//            public void onPrepareLoad(Drawable arg0) {
-//
-//            }
-//
-//        };
-//
-//
-//        ImageHandler.LoadImageBitmap(data.getString("url_img"), target);
+        final NotificationManager mNotificationManager = (NotificationManager) getBaseContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
-        ImageHandler.loadImageBitmap2(
+        final Notification.Builder mBuilder = new Notification.Builder(getBaseContext())
+                .setSmallIcon(R.drawable.ic_stat_notify)
+                .setAutoCancel(true);
+
+        if(!TextUtils.isEmpty(data.getString("url_icon"))){
+            ImageHandler.loadImageBitmapNotification(
+                    this,
+                    data.getString("url_icon"), new OnGetFileListener() {
+                        @Override
+                        public void onFileReady(File file) {
+                            mBuilder.setLargeIcon(Bitmap.createScaledBitmap(BitmapFactory.decodeFile(file.getAbsolutePath()), getResources().getDimensionPixelSize(R.dimen.icon_size), getResources().getDimensionPixelSize(R.dimen.icon_size), true));
+                        }
+                    }
+            );
+        }else {
+            mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_stat_notify));
+        }
+
+        ImageHandler.loadImageBitmapNotification(
                 getApplicationContext(),
                 data.getString("url_img"),
-                new SimpleTarget<Bitmap>() {
+                new OnGetFileListener() {
+                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                     @Override
-                    public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
-                        NotificationManager mNotificationManager = (NotificationManager) getBaseContext().getSystemService(Context.NOTIFICATION_SERVICE);
-
-                        Notification.Builder mBuilder = new Notification.Builder(getBaseContext())
-                                .setSmallIcon(R.drawable.ic_stat_notify)
-                                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_stat_notify))
-                                .setAutoCancel(true);
+                    public void onFileReady(File file) {
                         Notification.BigPictureStyle bigStyle = new Notification.BigPictureStyle();
+                        bigStyle.bigPicture(Bitmap.createScaledBitmap(BitmapFactory.decodeFile(file.getAbsolutePath()), getResources().getDimensionPixelSize(R.dimen.notif_width), getResources().getDimensionPixelSize(R.dimen.notif_height), true));
+                        bigStyle.setSummaryText(data.getString("desc"));
+
                         mBuilder.setContentTitle(data.getString("title"));
                         mBuilder.setContentText(data.getString("desc"));
-                        bigStyle.bigPicture(Bitmap.createScaledBitmap(bitmap, getResources().getDimensionPixelSize(R.dimen.notif_width), getResources().getDimensionPixelSize(R.dimen.notif_height), true));
-                        bigStyle.setSummaryText(data.getString("desc"));
                         mBuilder.setStyle(bigStyle);
                         mBuilder.setTicker(data.getString("desc"));
 
@@ -695,6 +701,7 @@ public class GCMListenerService extends GcmListenerService {
                     }
                 }
         );
+
     }
 
     private void sendUpdateNotification(Bundle data) {
@@ -904,4 +911,9 @@ public class GCMListenerService extends GcmListenerService {
     private void sendLocalyticsPushReceived(Bundle data) {
         TrackingUtils.eventLocaNotificationReceived(data);
     }
+
+    public interface OnGetFileListener{
+        void onFileReady(File file);
+    }
+
 }
