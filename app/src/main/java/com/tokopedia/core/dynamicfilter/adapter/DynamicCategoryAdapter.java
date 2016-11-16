@@ -1,7 +1,9 @@
 package com.tokopedia.core.dynamicfilter.adapter;
 
 import android.content.Context;
+import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,21 +14,27 @@ import com.tokopedia.core.dynamicfilter.model.DynamicObject;
 import com.tokopedia.core.dynamicfilter.presenter.DynamicFilterView;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Created by Tokopedia on 9/5/2016.
  * Modified by erry
  */
 public class DynamicCategoryAdapter extends MultiLevelExpIndListAdapter {
 
+    private static final String TAG = "DynamicCategoryAdapter";
     /**
      * This is called when the user click on an item or group.
      */
     private final View.OnClickListener mListener;
 
-    private final Context mContext;
+    private final DynamicFilterView dynamicFilterView;
 
-    public DynamicCategoryAdapter(Context mContext, View.OnClickListener mListener) {
-        this.mContext = mContext;
+    public DynamicCategoryAdapter(DynamicFilterView dynamicFilterView, View.OnClickListener mListener) {
+        this.dynamicFilterView = dynamicFilterView;
         this.mListener = mListener;
     }
 
@@ -35,9 +43,9 @@ public class DynamicCategoryAdapter extends MultiLevelExpIndListAdapter {
         View v;
         RecyclerView.ViewHolder viewHolder;
         int resource = R.layout.dynamic_parent_view_holder_layout;
-        v = LayoutInflater.from(parent.getContext()).inflate(resource, parent, false);
-        viewHolder = new DynamicViewHolder(v);
-        v.setOnClickListener(mListener);
+        View view = LayoutInflater.from(parent.getContext()).inflate(resource, parent, false);
+        viewHolder = new DynamicViewHolder(view);
+        view.setOnClickListener(mListener);
         return viewHolder;
     }
 
@@ -53,22 +61,41 @@ public class DynamicCategoryAdapter extends MultiLevelExpIndListAdapter {
                 parentViewHolder.getDynamicObject().setChecked(isChecked);
                 Context context = parentViewHolder.itemView.getContext();
                 if (context != null && context instanceof DynamicFilterView) {
-                    if (isChecked) {
-                        ((DynamicFilterView) context).putSelectedFilter(BrowseApi.SC, getSelectedIds());
-                        ((DynamicFilterView) context).saveCheckedPosition(dynamicObject.getKey(), true);
-                    } else {
-                        ((DynamicFilterView) context).removeCheckedPosition(dynamicObject.getKey());
-                        if (getSelectedIds().isEmpty()) {
-                            ((DynamicFilterView) context).removeSelecfedFilter(BrowseApi.SC);
-                        } else {
-                            ((DynamicFilterView) context).putSelectedFilter(BrowseApi.SC, getSelectedIds());
-                        }
+                    checkFilter(isChecked, ((DynamicFilterView) context));
+                }
+            }
+
+            private void checkFilter(boolean checked, DynamicFilterView dynamicFilterView) {
+                if (checked) {
+                    dynamicFilterView.saveCheckedPosition(dynamicObject.getKey(), true);
+                } else {
+                    dynamicFilterView.removeCheckedPosition(dynamicObject.getKey());
+                }
+                String selectedIds = getSelectedIds();
+                if (TextUtils.isEmpty(selectedIds)) {
+                    dynamicFilterView.removeSelecfedFilter(BrowseApi.SC);
+                } else {
+                    dynamicFilterView.putSelectedFilter(BrowseApi.SC, selectedIds);
+                }
+            }
+
+            private String getSelectedIds() {
+                StringBuffer buffer = new StringBuffer();
+                Map<String, Boolean> selectedPositionMap = dynamicFilterView.getSelectedPositions();
+                for (String selectedKey : selectedPositionMap.keySet()) {
+                    if (selectedPositionMap.get(selectedKey)) {
+                        buffer.append(selectedKey).append(",");
                     }
+                }
+                if (buffer.length() > 0) {
+                    return buffer.substring(0, buffer.length() - 1);
+                } else {
+                    return buffer.toString();
                 }
             }
         });
-        if (mContext != null && mContext instanceof DynamicFilterView) {
-            Boolean isChecked = ((DynamicFilterView) mContext).getCheckedPosition(dynamicObject.getKey());
+        if (dynamicFilterView != null) {
+            Boolean isChecked = dynamicFilterView.getCheckedPosition(dynamicObject.getKey());
             if (isChecked != null && isChecked) {
                 parentViewHolder.dynamicParentViewHolder.setChecked(true);
             } else {
@@ -115,22 +142,78 @@ public class DynamicCategoryAdapter extends MultiLevelExpIndListAdapter {
         }
     }
 
-    private String getSelectedIds() {
-        StringBuffer buffer = new StringBuffer();
-        for (ExpIndData data : getData()) {
-            DynamicObject object = (DynamicObject) data;
-            if (object.isChecked()) {
-                buffer.append(object.getDepId()).append(",");
-            }
-        }
-        if (buffer.length() > 0) {
-            return buffer.substring(0, buffer.length() - 1);
-        } else {
-            return buffer.toString();
-        }
-    }
 
     public void reset() {
         notifyItemRangeChanged(0, getItemCount());
     }
+
+    /**
+     * Expand all checked category
+     */
+    public void expandCheckedCategory() {
+        Map<String, Boolean> selectedPositionMap = new ArrayMap<>();
+        selectedPositionMap.putAll(dynamicFilterView.getSelectedPositions());
+        // Find group set of category key
+        Set<Integer> groupKeySet = new HashSet<>();
+        findCheckedParentList(getData(), selectedPositionMap, groupKeySet);
+        // Expand and collapse the adapter to find selected category
+        List<Integer> groupsNum = saveGroups();
+        collapseUncheckedGroup(groupsNum, groupKeySet);
+
+        notifyDataSetChanged();
+    }
+
+    /**
+     * List all selected category key
+     *
+     * @param expIndDataList
+     * @param selectedPositionMap
+     * @param groupKeySet
+     * @return
+     */
+    private boolean findCheckedParentList(List<ExpIndData> expIndDataList, Map<String, Boolean> selectedPositionMap,
+                                          Set<Integer> groupKeySet) {
+        boolean groupChecked = false;
+        for (ExpIndData expIndData : expIndDataList) {
+            // Exit if selected group is empty
+            if (selectedPositionMap.size() < 1) {
+                break;
+            }
+            DynamicObject dynamicObject = (DynamicObject) expIndData;
+            // Expand the item itself in case there's duplicate key, eg "Mainan & Hobi Lainnya" and "Mainan & Hobi"
+            Boolean checked = dynamicFilterView.getCheckedPosition(dynamicObject.getKey());
+            if (checked != null && checked) {
+                selectedPositionMap.remove(dynamicObject.getKey());
+                groupChecked = true;
+                groupKeySet.add(Integer.parseInt(dynamicObject.getKey()));
+            }
+
+            boolean childChecked = findCheckedParentList((List<ExpIndData>) dynamicObject.getChildren(), selectedPositionMap, groupKeySet);
+            // Expand parent if the child selected
+            if (childChecked) {
+                groupKeySet.add(Integer.parseInt(dynamicObject.getKey()));
+                groupChecked = true;
+            }
+        }
+        return groupChecked;
+    }
+
+    /**
+     * Collapse all group except checked category
+     *
+     * @param groupsNum
+     * @param parentExpandKeyList
+     */
+    private void collapseUncheckedGroup(List<Integer> groupsNum, Set<Integer> parentExpandKeyList) {
+        boolean notify = isNotifyOnChange();
+        setNotifyOnChange(false);
+        for (int i = groupsNum.size() - 1; i >= 0; i--) {
+            DynamicObject dynamicObject = (DynamicObject) getItemAt(groupsNum.get(i));
+            if (!parentExpandKeyList.contains(Integer.valueOf(dynamicObject.getKey()))) {
+                collapseGroup(groupsNum.get(i));
+            }
+        }
+        setNotifyOnChange(notify);
+    }
 }
+

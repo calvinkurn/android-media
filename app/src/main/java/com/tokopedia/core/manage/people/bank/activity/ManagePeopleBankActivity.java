@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.Menu;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;

@@ -29,16 +29,22 @@ public class DynamicFilterPresenterImpl implements DynamicFilterPresenter {
     public void fetchExtras(Intent intent) {
         if (intent != null) {
             // set which activity should be moved after login process done
-            List<Breadcrumb> bcr = Parcels.unwrap(intent.getParcelableExtra(BREADCRUMB));
-            List<DynamicFilterModel.Filter> filterList = Parcels.unwrap(intent.getParcelableExtra(FILTER_CATEGORY));
-            currentCategory = intent.getStringExtra(CURR_CATEGORY);
+            List<Breadcrumb> bcr = Parcels.unwrap(
+                    intent.getParcelableExtra(EXTRA_PRODUCT_BREADCRUMB_LIST));
+            List<DynamicFilterModel.Filter> filterList = Parcels.unwrap(
+                    intent.getParcelableExtra(EXTRA_FILTER_CATEGORY_LIST));
+
+            currentCategory = intent.getStringExtra(EXTRA_CURRENT_CATEGORY);
+
             if (bcr != null) {
                 breadcrumbs = bcr;
             }
             if (filterList != null) {
                 this.filterList = filterList;
             }
-            if(!intent.getStringExtra(FILTER_SOURCE).equals("search_shop") && !filterList.get(0).getTitle().equals("Kategori")){
+            if (!intent.getStringExtra(EXTRA_FILTER_SOURCE).equals("search_shop") &&
+                    !filterList.get(0).getTitle().equals(DynamicFilterModel.Filter.TITLE_CATEGORY)) {
+
                 filterList.add(0, DynamicFilterModel.Filter.createCategory());
             }
             view.get().setFragmentForFirstTime3(filterList);

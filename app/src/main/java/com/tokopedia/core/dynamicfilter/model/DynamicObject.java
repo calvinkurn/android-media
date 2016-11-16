@@ -15,61 +15,27 @@ public class DynamicObject implements MultiLevelExpIndListAdapter.ExpIndData {
 
     private int mIndentation;
     private String mParentText;
-    boolean isChecked;
+    private boolean isChecked;
     private List<DynamicObject> mChildren;
     private boolean mIsGroup;
-    private int mGroupSize;
     private String depId;
     public String key;
 
     public DynamicObject() {
     }
 
-    public DynamicObject(HadesV1Model.Child model, int size) {
-        if (size > 0) {
-            mParentText = model.getName();
-        } else {
-            mParentText = model.getName();
-        }
-        this.mGroupSize = size;
+
+    public DynamicObject(HadesV1Model.Category model) {
+        mParentText = model.getName();
         this.depId = model.getId();
-        mChildren = new ArrayList<DynamicObject>();
+        mChildren = new ArrayList<>();
         initKey(model.getParent(), model.getId());
     }
 
-    public DynamicObject(HadesV1Model.Child_ model, int size) {
-        if (size > 0) {
-            mParentText = model.getName();
-        } else {
-            mParentText = model.getName();
-        }
-        this.mGroupSize = size;
-        this.depId = model.getId();
-        mChildren = new ArrayList<DynamicObject>();
-        initKey(model.getParent(), model.getId());
-    }
-
-    public DynamicObject(HadesV1Model.Category model, int size) {
-        if (size > 0) {
-            mParentText = model.getName();
-        } else {
-            mParentText = model.getName();
-        }
-        this.mGroupSize = size;
-        this.depId = model.getId();
-        mChildren = new ArrayList<DynamicObject>();
-        initKey(model.getParent(), model.getId());
-    }
-
-    public DynamicObject(CategoryDB model, int size) {
-        if (size > 0) {
-            mParentText = model.getNameCategory();
-        } else {
-            mParentText = model.getNameCategory();
-        }
-        this.mGroupSize = size;
+    public DynamicObject(CategoryDB model) {
+        mParentText = model.getNameCategory();
         this.depId = String.valueOf(model.getDepartmentId());
-        mChildren = new ArrayList<DynamicObject>();
+        mChildren = new ArrayList<>();
         initKey(model.getParentId(), String.valueOf(model.getDepartmentId()));
     }
 
@@ -77,9 +43,7 @@ public class DynamicObject implements MultiLevelExpIndListAdapter.ExpIndData {
         return key;
     }
 
-    private void initKey(int parentId, String depId){
-        String formatText = "%d_%s";
-        String format = String.format(formatText, parentId, depId);
+    private void initKey(int parentId, String depId) {
         this.key = depId;
     }
 
@@ -120,7 +84,8 @@ public class DynamicObject implements MultiLevelExpIndListAdapter.ExpIndData {
 
     @Override
     public void setGroupSize(int groupSize) {
-        mGroupSize = groupSize;
+
+
     }
 
     public void addChild(List<DynamicObject> childs, int increment) {
@@ -141,10 +106,10 @@ public class DynamicObject implements MultiLevelExpIndListAdapter.ExpIndData {
 
     public static DynamicObject createOptionForAll(CategoryDB model) {
         DynamicObject object = new DynamicObject();
-        object.mParentText = "Semua " +
-                model.getNameCategory();
+        object.mParentText = "Semua " + model.getNameCategory();
+
         object.depId = String.valueOf(model.getDepartmentId());
-        object.mChildren = new ArrayList<DynamicObject>();
+        object.mChildren = new ArrayList<>();
         object.initKey(model.getParentId(), String.valueOf(model.getDepartmentId()));
         return object;
     }
