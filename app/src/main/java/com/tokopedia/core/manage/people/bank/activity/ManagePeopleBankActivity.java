@@ -32,11 +32,6 @@ public class ManagePeopleBankActivity extends BasePresenterActivity
 
     ManageBankResultReceiver mReceiver;
 
-    @Override
-    public String getScreenName() {
-        return AppScreen.SCREEN_PEOPLE_BANK;
-    }
-
     public static Intent createInstance(Context context) {
         return new Intent(context, ManagePeopleBankActivity.class);
     }
