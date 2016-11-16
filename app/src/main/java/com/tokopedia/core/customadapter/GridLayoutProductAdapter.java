@@ -220,13 +220,9 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
     }
 
     private void setBadges(ViewHolder holder, ProductItem data) {
-        holder.badgeContainer.removeAllViews();
-        if (data.getBadges() != null) {
+        if (data.getBadges() != null && holder.badgeContainer.getChildCount() == 0) {
             for (ProductItem.Badge badges : data.getBadges()) {
-                View view = LayoutInflater.from(context).inflate(R.layout.badge_layout, null);
-                ImageView imageBadge = (ImageView) view.findViewById(R.id.badge);
-                holder.badgeContainer.addView(view);
-                LuckyShopImage.loadImage(imageBadge, badges.getImageUrl());
+                LuckyShopImage.loadImage(context, badges.getImageUrl(), holder.badgeContainer);
             }
         }
     }

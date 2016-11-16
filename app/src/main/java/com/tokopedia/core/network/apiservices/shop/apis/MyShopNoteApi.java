@@ -6,9 +6,8 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import java.util.Map;
 
 import retrofit2.Response;
-import retrofit2.http.FieldMap;
-import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.POST;
+import retrofit2.http.GET;
+import retrofit2.http.QueryMap;
 import rx.Observable;
 
 /**
@@ -16,7 +15,6 @@ import rx.Observable;
  */
 public interface MyShopNoteApi {
 
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.Shop.PATH_GET_SHOP_NOTE)
-    Observable<Response<TkpdResponse>> getNote(@FieldMap Map<String, String> params);
+    @GET(TkpdBaseURL.Shop.PATH_GET_SHOP_NOTE)
+    Observable<Response<TkpdResponse>> getNote(@QueryMap Map<String, String> params);
 }

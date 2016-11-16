@@ -14,11 +14,9 @@ import android.view.Window;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.facade.FacadeLuckyNotification;
 import com.tokopedia.core.inboxmessage.activity.SendMessageActivity;
 import com.tokopedia.core.inboxmessage.fragment.SendMessageFragment;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
-import com.tokopedia.core.loyaltysystem.model.LoyaltyNotification;
 import com.tokopedia.core.router.TransactionRouter;
 import com.tokopedia.transaction.purchase.activity.TxDetailActivity;
 import com.tokopedia.transaction.purchase.activity.TxHistoryActivity;
@@ -40,7 +38,6 @@ import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.UploadImageHandler;
 import com.tokopedia.core.var.TkpdState;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -184,46 +181,6 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
         netInteractor.unSubscribeObservable();
     }
 
-    private void checkClover(final Context context, JSONObject lucky, final String message)
-            throws JSONException {
-        viewListener.showProgressLoading();
-        FacadeLuckyNotification facade = new FacadeLuckyNotification(context);
-        facade.getLoyaltyNotification(lucky, new FacadeLuckyNotification.OnGetNotification() {
-            @Override
-            public void onSuccess(LoyaltyNotification notification) {
-                viewListener.hideProgressLoading();
-                processReviewWithNotif(context, notification, message);
-            }
-
-            @Override
-            public void onEmpty() {
-                viewListener.hideProgressLoading();
-                processReview(context, message);
-            }
-        });
-    }
-
-    private void processReviewWithNotif(final Context context,
-                                        final LoyaltyNotification notification, String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage(message).setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                Intent intent = new Intent(context, InboxReputationActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putBoolean("unread", true);
-                bundle.putBoolean("lucky", true);
-                bundle.putParcelable("lucky_notif", notification);
-                intent.putExtras(bundle);
-                dialog.dismiss();
-                viewListener.navigateToActivity(intent);
-                viewListener.closeWithResult(TkpdState.TxActivityCode.BuyerItemReceived, null);
-            }
-        });
-        Dialog alertDialog = builder.create();
-        alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        viewListener.showDialog(builder.create());
-    }
-
     private void processReview(final Context context, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         if (message == null || message.isEmpty())
@@ -335,19 +292,8 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
                                             TxListUIReceiver.sendBroadcastForceRefreshListData(context);
                                             viewListener.hideProgressLoading();
                                             TrackingUtils.eventLoca(context.getString(R.string.confirm_received));
-                                            if (lucky != null) {
-                                                try {
-                                                    checkClover(context, lucky, message);
-                                                    dialog.dismiss();
-                                                } catch (JSONException e) {
-                                                    e.printStackTrace();
-                                                    processReview(context, message);
-                                                    dialog.dismiss();
-                                                }
-                                            } else {
-                                                processReview(context, message);
-                                                dialog.dismiss();
-                                            }
+                                            processReview(context, message);
+                                            dialog.dismiss();
                                         }
 
                         @Override
@@ -367,19 +313,8 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
                         public void onSuccess(String message, JSONObject lucky) {
                             viewListener.hideProgressLoading();
                             TxListUIReceiver.sendBroadcastForceRefreshListData(context);
-                            if (lucky != null) {
-                                try {
-                                    checkClover(context, lucky, message);
-                                    dialog.dismiss();
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                    processReview(context, message);
-                                    dialog.dismiss();
-                                }
-                            } else {
-                                processReview(context, message);
-                                dialog.dismiss();
-                            }
+                            processReview(context, message);
+                            dialog.dismiss();
                         }
 
                         @Override

@@ -152,6 +152,7 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter,
     @Override
     public void onNetworkError() {
         Log.e(TAG, "onNetworkError: ");
+        this.view.renderErrorNetwork();
     }
 
     private void compareStatus(final Status newStatus) {
