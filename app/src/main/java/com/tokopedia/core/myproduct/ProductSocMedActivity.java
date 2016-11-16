@@ -126,10 +126,6 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
                 }
             };
 
-//    public void recalculateView() {
-//        productSocMedViewPager.reMeasureCurrentPage(productSocMedViewPager.getCurrentItem());
-//    }
-
     SparseArray<InstagramMediaModel> instagramMediaModelSparseArray;
 
     private List<ImageModel> imageModels = new ArrayList<ImageModel>(){
@@ -157,15 +153,6 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
     };
 
     private List<InstagramMediaModel> images = new ArrayList<>();
-
-//    private List<String> images = new ArrayList<String>(){
-//        {
-//            add(DEFAULT_HTTP);
-//            add(DEFAULT_HTTP);
-//            add(DEFAULT_HTTP);
-//            add(DEFAULT_HTTP);
-//        }
-//    };
 
     TkpdProgressDialog tkpdProgressDialog;
 
@@ -290,17 +277,6 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
 
     @Override
     public AddProductFragment getFragment(int position){
-//        ArrayFragmentStatePagerAdapter fragmentStatePagerAdapter = (ArrayFragmentStatePagerAdapter) productSocMedViewPager.getAdapter();
-//        AddProductFragment addProductFragment = (AddProductFragment) fragmentStatePagerAdapter.instantiateItem(productSocMedViewPager, position);
-//        return addProductFragment;
-
-//        Fragment fragment = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + productSocMedViewPager.getCurrentItem());
-//        if(checkNotNull(fragment) && fragment instanceof AddProductFragment){
-//            return (AddProductFragment) fragment;
-//        }
-//
-//        return null;
-
         return (AddProductFragment) pagerAdapter.findFragmentByPosition(position);
     }
 
@@ -321,8 +297,6 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
         if(productSocMedViewPager.getChildCount() == countUploaded()){
             finish();
         }
-//        recreateAddProducts(images);
-        // [END] remove fragment and recreates fragment
     }
 
     private int countUploaded() {
@@ -397,10 +371,6 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
         switch (((ChooserDialogFragment)dialog).getType()){
             case ProductActivity.ADD_PRODUCT_CATEGORY:
                 if(adf != null ){
-                    //[START] This is old using json reading
-//                    ((AddProductFragment) fragment).addCategoryAfterSelect(item);
-                    //[END] This is old using json reading
-
                     adf.addCategoryAfterSelectV2(item);
                 }
                 break;
@@ -419,19 +389,6 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
     public void onLongClick() {
         Log.e(TAG, "onLongClick not implemented yet");
     }
-
-//    @Override
-//    public ModalMultiSelectorCallback getMultiSelectorCallback(String FRAGMENT_TAG) {
-//        ModalMultiSelectorCallback callback = null;
-//        switch (FRAGMENT_TAG){
-//            case AddProductFragment.FRAGMENT_TAG:
-//                callback = getFragment(productSocMedViewPager.getCurrentItem()).getmDeleteMode();
-//                break;
-//            default:
-//                throw new RuntimeException("please register TAG in here !!");
-//        }
-//        return callback;
-//    }
 
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
@@ -466,12 +423,6 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
                                 ((BaseView) fragment).setData(type, resultData);
                             }
                             break;
-                            //[START] show progress bar
-//                            if(fragment instanceof AddProductFragment){
-////                                boolean showDialog = resultData.getBoolean(ProductService.ADD_PRODUCT_SHOW_DIALOG, false);
-//                                showProgress(true);
-//                            }
-//                            break;
                     }
                     break;
                 case ProductService.STATUS_FINISHED:
@@ -593,58 +544,6 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
                     , convertTo(item), position);
         }
     }
-
-    /**
-     * This inner class for social media add product
-     */
-//    @Deprecated
-//    protected static class PagerAdapter extends FixedFragmentStatePagerAdapter
-//    {
-//
-//        List<InstagramMediaModel> instagramMediaModels;
-//
-//        public PagerAdapter(FragmentManager fm, List<InstagramMediaModel> socMedDatas) {
-//            super(fm);
-//            instagramMediaModels = socMedDatas;
-//        }
-//
-//        @Override
-//        public Fragment getItem(int position) {
-//            return AddProductFragment.newInstance2(AddProductType.ADD_FROM_SOCIAL_MEDIA.getType()
-//                    , instagramMediaModels, position);
-//        }
-//
-//        @Override
-//        public int getCount() {
-//            return instagramMediaModels.size();
-//        }
-//
-//        void remove(int position){
-//            instagramMediaModels.remove(position);
-//        }
-
-//        List<String> socMedDatas;
-
-//        public PagerAdapter(FragmentManager fm, List<String> socMedDatas) {
-//            super(fm);
-//            this.socMedDatas = socMedDatas;
-//        }
-
-//        @Override
-//        public Fragment getItem(int position) {
-//            return AddProductFragment.newInstance(AddProductType.ADD_FROM_SOCIAL_MEDIA.getType()
-//                    , socMedDatas, position);
-//        }
-//
-//        @Override
-//        public int getCount() {
-//            return socMedDatas.size();
-//        }
-//
-//        void remove(int position){
-//            socMedDatas.remove(position);
-//        }
-//    }
 
     public void showProgress(boolean isShow) {
         if(isShow){

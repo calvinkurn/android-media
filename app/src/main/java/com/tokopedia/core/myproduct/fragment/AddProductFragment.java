@@ -37,6 +37,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -95,6 +96,7 @@ import com.tokopedia.core.myproduct.model.NoteDetailModel;
 import com.tokopedia.core.myproduct.model.SimpleTextModel;
 import com.tokopedia.core.myproduct.model.TextDeleteModel;
 import com.tokopedia.core.myproduct.model.WholeSaleAdapterModel;
+import com.tokopedia.core.myproduct.model.editProductForm.EditProductForm;
 import com.tokopedia.core.myproduct.presenter.AddProductPresenter;
 import com.tokopedia.core.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.core.myproduct.presenter.AddProductView;
@@ -176,7 +178,6 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
             imageModel.setDbId(0);
             photos.set(i, imageModel);
 
-//            photoAdapter.notifyItemChanged(i);
             setSelectedImageAsPrimary(0);
         } else {
             // do nothing
@@ -294,7 +295,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     MyShopInfoModel.Info myShopInfoModel;
     NoteDetailModel.Detail detail;
 
-    //    @Bind(R2.id.add_product_add_to_new_etalase_layout)
+    @Bind(R2.id.add_product_add_to_new_etalase_layout)
     ExpandableRelativeLayout addProductAddToNewEtalaseLayout;
     @Bind(R2.id.add_product_add_to_new_etalase_alert)
     TextInputLayout addProductAddToNewEtalaseAlert;
@@ -342,7 +343,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     @Bind(R2.id.add_product_tittle_wholesale)
     RelativeLayout addProductTitleWholeSale;
 
-    //    @Bind(R2.id.add_product_wholesale_layout)
+    @Bind(R2.id.add_product_wholesale_layout)
     ExpandableRelativeLayout wholeSaleContainer;
 
     @Bind(R2.id.add_product_wholesale_item)
@@ -358,10 +359,10 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     TextDeleteAdapter etalaseAdapter;
 
     @Bind(R2.id.add_product_parent)
-    RelativeLayout addProductParent;
+    ScrollView addProductParent;
 
 
-    //    @Bind(R2.id.add_product_desc)
+    @Bind(R2.id.add_product_desc)
     LimitedEditText addProductDesc;
     EditText addProductDescNormal;
 
@@ -378,15 +379,13 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     RelativeLayout addProductTitlePreorder;
     @Bind(R2.id.chevron_preorder)
     ImageView addProductChevronPreorder;
-    //    @Bind(R2.id.preorder_content)
+    @Bind(R2.id.preorder_content)
     ExpandableRelativeLayout addProductPreOderContent;
     @Bind(R2.id.edittext_preorder)
     EditText addProductEdittextPreorder;
 
-    //    @Bind(R2.id.add_product_catalog_layout)
+    @Bind(R2.id.add_product_catalog_layout)
     LinearLayout addProductCatalogLayout;
-    //    @Bind(R2.id.add_product_catalog_frame)
-    TextView addProductCatalogFrame;
     @Bind(R2.id.add_product_prompt_catalog)
     TextView addProductPromptCatalog;
     @Bind(R2.id.add_product_catalog)
@@ -655,21 +654,6 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-//        if (multiSelector != null) {
-//            Bundle bundle = savedInstanceState;
-//            if (bundle != null) {
-//                multiSelector.restoreSelectionStates(bundle.getBundle(ImageGalleryFragment.SELECTABLE_TAG));
-//            }
-//
-//            if (multiSelector.isSelectable()) {
-//                if (mDeleteMode != null) {
-//                    mDeleteMode.setClearOnPrepare(false);
-//                    ((AppCompatActivity) getActivity()).startSupportActionMode(mDeleteMode);
-//                }
-//
-//            }
-//        }
-
         if (checkNotNull(errorMessageTemp)) {
             Snackbar.make(parentView, errorMessageTemp, Snackbar.LENGTH_LONG).show();
             errorMessageTemp = null;
@@ -708,11 +692,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         outState.putInt(SAVED_RETURN_POLICY, addProductReturnableSpinner.getSelectedItemPosition());// 14
         outState.putInt(SAVED_CONDITION, addProductCondition.getSelectedItemPosition());// 15
         outState.putInt(SAVED_INSURANCE, addProductInsurance.getSelectedItemPosition());// 16
-        if (addProductDesc != null) {
-            outState.putString(SAVED_DESCRIPTION, addProductDesc.getText().toString());// 17
-        } else {
-            outState.putString(SAVED_DESCRIPTION, addProductDescNormal.getText().toString());
-        }
+        outState.putString(SAVED_DESCRIPTION, addProductDesc.getText().toString());// 17
         outState.putParcelable(SAVED_CONDITIONS, Parcels.wrap(conditions));
         outState.putParcelable(SAVED_INSURANCES, Parcels.wrap(insurances));
         if (checkNotNull(tkpdProgressDialog))
@@ -791,16 +771,6 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
             categoryOwned = Parcels.unwrap(savedInstanceState.getParcelable(SAVED_NEXT_CATEGORY_CHOOSER));
             catalogs = Parcels.unwrap(savedInstanceState.getParcelable(SAVED_CATALOGS));
             isCreateNewActivity = savedInstanceState.getBoolean(CREATE_NEW_AFTER_FINISH, false);
-            int productType = savedInstanceState.getInt(PRODUCT_TYPE, -1);
-//            if(productType!= -1){
-//                if(productType == AddProductType.ADD.getType()){
-//                    addProductType = AddProductType.ADD;
-//                }else if(productType == AddProductType.EDIT.getType()){
-//                    addProductType = AddProductType.EDIT;
-//                }else if(productType == AddProductType.ADD_FROM_SOCIAL_MEDIA.getType()){
-//                    addProductType = AddProductType.ADD_FROM_SOCIAL_MEDIA;
-//                }
-//            }
         }
         //[END] currently disable rotateion
         th = new TwitterHandler(getActivity());
@@ -847,11 +817,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         addProductProductName.clearFocus();
         addProductPrice.clearFocus();
         addProductWeight.clearFocus();
-        if (addProductDesc != null) {
-            addProductDesc.clearFocus();
-        } else {
-            addProductDescNormal.clearFocus();
-        }
+        addProductDesc.clearFocus();
         addProductEdittextPreorder.clearFocus();
     }
 
@@ -885,40 +851,9 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
         changeTitle(addProductType.getType());
 
-        if (addProductType == AddProductType.ADD_FROM_SOCIAL_MEDIA) {
-            parentView = inflater.inflate(R.layout.fragment_add_product_unexpandable, container, false);
-        } else {
-            parentView = inflater.inflate(R.layout.fragment_add_product, container, false);
-        }
+        parentView = inflater.inflate(R.layout.fragment_add_product, container, false);
 
         ButterKnife.bind(this, parentView);
-        addProductAddToNewEtalaseLayout = (ExpandableRelativeLayout) parentView.findViewById(R.id.add_product_add_to_new_etalase_layout);
-        addProductPreOderContent = (ExpandableRelativeLayout) parentView.findViewById(R.id.preorder_content);
-        wholeSaleContainer = (ExpandableRelativeLayout) parentView.findViewById(R.id.add_product_wholesale_layout);
-        addProductDesc = (LimitedEditText) parentView.findViewById(R.id.add_product_desc);
-        addProductCatalogLayout = (LinearLayout) parentView.findViewById(R.id.add_product_catalog_layout);
-        addProductCatalogFrame = (TextView) parentView.findViewById(R.id.add_product_catalog_frame);
-
-        if (addProductAddToNewEtalaseLayout == null) {
-            addProductAddToNewEtalase.setHint(R.string.prompt_etalase_hint);
-        }
-        if (addProductDesc == null) {
-            addProductDescNormal = (EditText) parentView.findViewById(R.id.add_product_desc_normal);
-            addProductDescNormal.setOnTouchListener(new View.OnTouchListener() {
-                public boolean onTouch(View view, MotionEvent event) {
-                    // TODO Auto-generated method stub
-                    if (view.getId() == R.id.add_product_desc_normal) {
-                        view.getParent().requestDisallowInterceptTouchEvent(true);
-                        switch (event.getAction() & MotionEvent.ACTION_MASK) {
-                            case MotionEvent.ACTION_UP:
-                                view.getParent().requestDisallowInterceptTouchEvent(false);
-                                break;
-                        }
-                    }
-                    return false;
-                }
-            });
-        }
 
         if (addProductType != null) {
             if (type == AddProductType.ADD.getType()) {
@@ -1059,10 +994,8 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
             }
         }
 
-        if (addProductDesc != null) {
-            addProductDesc.setMaxLines(2000);
-            addProductDesc.setMaxCharacters(2000);
-        }
+        addProductDesc.setMaxLines(2000);
+        addProductDesc.setMaxCharacters(2000);
 
         initVar();
         setupUI(addProductParent);
@@ -1208,18 +1141,10 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
                 if (model.getText().contains(TAMBAH_ETALASE_BARU)) {
                     addProductAddToNewEtalase.setEnabled(true);
-                    if (addProductAddToNewEtalaseLayout != null) {
-                        addProductAddToNewEtalaseLayout.expand();
-                    } else {
-                        addProductAddToNewEtalase.setHint(R.string.prompt_etalase_name);
-                    }
+                    addProductAddToNewEtalaseLayout.expand();
                 } else {
                     addProductAddToNewEtalase.setEnabled(false);
-                    if (addProductAddToNewEtalaseLayout != null) {
-                        addProductAddToNewEtalaseLayout.collapse();
-                    } else {
-                        addProductAddToNewEtalase.setHint(R.string.prompt_etalase_hint);
-                    }
+                    addProductAddToNewEtalaseLayout.collapse();
                 }
                 break;
         }
@@ -1400,7 +1325,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     }
 
     @NonNull
-    public static ImageModel getImageModel(String path, File photo, ProductImage productImage) {
+    public static ImageModel getImageModel(String path, File photo, EditProductForm.ProductImage productImage) {
         try {
             Pair<Integer, Integer> resolution = MetadataUtil.getWidthFromImage(photo.getAbsolutePath());
             int width = resolution.getModel1();
@@ -1509,11 +1434,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                         photos.set(0, firstImage);
 
                     if (instagramMediaModel != null) {
-                        if (addProductDesc != null) {
-                            addProductDesc.setText(instagramMediaModel.captionText);
-                        } else {
-                            addProductDescNormal.setText(instagramMediaModel.captionText);
-                        }
+                        addProductDesc.setText(instagramMediaModel.captionText);
                     }
                     break;
                 case ADD_MULTIPLE_FROM_GALERY:
@@ -1616,11 +1537,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
             addProductInsurance.setAdapter(SimpleSpinnerAdapter.createAdapterAddProduct(getActivity(), insurances));
             addProductInsurance.setSelection(insurance);
 
-            if (addProductDesc != null) {
-                addProductDesc.setText(description);
-            } else {
-                addProductDescNormal.setText(description);
-            }
+            addProductDesc.setText(description);
             addProductProductDescLayout.setError(null);
             addProductProductDescLayout.setErrorEnabled(false);
 
@@ -1815,14 +1732,8 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
     @Override
     public void setProductDesc(String productDescription) {
-        if (addProductDesc != null) {
-            addProductDesc.setText(productDescription);
-            addProductDesc.requestFocus();
-        } else {
-            addProductDescNormal.setText(productDescription);
-            addProductDescNormal.requestFocus();
-        }
-
+        addProductDesc.setText(productDescription);
+        addProductDesc.requestFocus();
     }
 
     @Override
@@ -2196,18 +2107,8 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
     @OnClick(R2.id.add_product_add_whole_sale_item)
     public void onWholeSaleAdd() {
-        if (wholeSaleContainer != null) {
-            wholesaleAdapter.add(new WholeSaleAdapterModel(0, 0, 0));
-            addProductWholeSaleItem.scrollToPosition(wholesaleAdapter.getDatas().size() - 1);
-        } else {
-            if (!VerificationUtils.validatePrice(selectedCurrencyDesc, addProductPrice.getText().toString())) {
-                addProductPriceAlert.setError(getString(R.string.error_field_required));
-                addProductPrice.requestFocus();
-            } else {
-                wholesaleAdapter.add(new WholeSaleAdapterModel(0, 0, 0));
-                addProductWholeSaleItem.scrollToPosition(wholesaleAdapter.getDatas().size() - 1);
-            }
-        }
+        wholesaleAdapter.add(new WholeSaleAdapterModel(0, 0, 0));
+        addProductWholeSaleItem.scrollToPosition(wholesaleAdapter.getDatas().size() - 1);
     }
 
     @Override
@@ -2261,12 +2162,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                     categoryAdapter.setSimpleTextModels(simpleTextModels);
                 }
                 catalogs = new ArrayList<>();
-                if (addProductCatalogLayout != null) {
-                    addProductCatalogLayout.setVisibility(View.GONE);
-                } else {
-                    addProductCatalog.setVisibility(View.INVISIBLE);
-                    addProductCatalogFrame.setVisibility(View.VISIBLE);
-                }
+                addProductCatalogLayout.setVisibility(View.GONE);
                 this.catalogs = null;
                 break;
             case 3:// LEVEl 2
@@ -2341,12 +2237,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
             for (int i = 0; i < catalogs.size(); i++) {
                 temp[i + 1] = catalogs.get(i).getCatalogName();
             }
-            if (addProductCatalogLayout != null) {
-                addProductCatalogLayout.setVisibility(View.VISIBLE);
-            } else {
-                addProductCatalog.setVisibility(View.VISIBLE);
-                addProductCatalogFrame.setVisibility(View.GONE);
-            }
+            addProductCatalogLayout.setVisibility(View.VISIBLE);
             addProductCatalog.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -2356,12 +2247,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
         } else {
             this.catalogs = new ArrayList<>();
-            if (addProductCatalogLayout != null) {
-                addProductCatalogLayout.setVisibility(View.GONE);
-            } else {
-                addProductCatalog.setVisibility(View.INVISIBLE);
-                addProductCatalogFrame.setVisibility(View.VISIBLE);
-            }
+            addProductCatalogLayout.setVisibility(View.GONE);
 
             this.catalogs = null;
         }
@@ -2567,7 +2453,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         }
 
         if (isPush) {
-            ProductDb = InputAddProductModel.compileAllForEdit(verif.getModel1(), ProductDb, producteditHelper.productDetailData);
+            ProductDb = InputAddProductModel.compileAllForEdit(verif.getModel1(), ProductDb, producteditHelper.editProductForm);
             Bundle bundle = new Bundle();
             bundle.putParcelable(ProductService.PRODUCT_EDIT_PHOTOS, Parcels.wrap(producteditHelper.toParcelFormatForPhotos()));
             bundle.putLong(ProductService.PRODUCT_DATABASE_ID, ProductDb.getId());
@@ -2605,8 +2491,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         inputAddProductModel.setStockStatus(stockStatus.getText());
         TextDeleteModel etalaseModel = displayEtalaseModels.get(displayEtalaseModels.size() - 1);
         long etalaseId = etalaseModel.getEtalaseId();
-        if ((addProductAddToNewEtalaseLayout == null && addProductAddToNewEtalase.isEnabled()) ||
-                (addProductAddToNewEtalaseLayout != null && addProductAddToNewEtalaseLayout.isExpanded())) {// jika tambah baru, override menjadi yang diketik
+        if (addProductAddToNewEtalaseLayout.isExpanded()) {// jika tambah baru, override menjadi yang diketik
             Pair<Boolean, String> validate = VerificationUtils.validateNewEtalaseName(getActivity(), addProductAddToNewEtalase.getText().toString());
             if (validate.getModel1()) {
                 addProductAddToNewEtalase.setError(null);
@@ -2615,7 +2500,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                 addProductAddToNewEtalase.setError(validate.getModel2());
                 addProductAddToNewEtalaseAlert.setError(validate.getModel2());
             }
-            if (addProductAddToNewEtalaseAlert.isErrorEnabled()) {
+            if (validate.getModel1()) {
                 Snackbar.make(parentView, addProductAddToNewEtalaseAlert.getError(), Snackbar.LENGTH_LONG).show();
                 return null;
             }
@@ -2708,6 +2593,10 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
         // 7. get harga grosir - compile ketika disini doang - kosongkan terlebih dahulu,
         Log.d(TAG, messageTAG + wholesaleAdapter.getDatas());
+        if(!wholesaleAdapter.isNoError()){
+            Snackbar.make(parentView, "Terjadi kesalahan pada harga grosir", Snackbar.LENGTH_LONG).show();
+            return null;
+        }
         inputAddProductModel.setWholeSales(wholesaleAdapter.getDatas());
 
         // 9. get terima pengembalian
@@ -2739,11 +2628,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 //            return null;
 //        }
         String description;
-        if (addProductDesc != null) {
-            description = addProductDesc.getText().toString();
-        } else {
-            description = addProductDescNormal.getText().toString();
-        }
+        description = addProductDesc.getText().toString();
         inputAddProductModel.setDescription(description);
 
         // 13. preorder
@@ -2754,23 +2639,17 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         inputAddProductModel.setPreOrder(preorder);
 
         // 14. catalog
-        if (
-                (addProductCatalogLayout != null && addProductCatalogLayout.getVisibility() == View.VISIBLE)
-                        || (addProductCatalogFrame != null && addProductCatalogFrame.getVisibility() == View.GONE)) {
-            Long catalogId = -1L;
-            String selectedCatalog = addProductCatalog.getSelectedItem();
-            if (selectedCatalog.equals(getActivity().getString(R.string.no_catalog_selected))) {
-                inputAddProductModel.setCatalog(-1);
-            } else {
-                for (CatalogDataModel.Catalog catalog : catalogs) {
-                    if (selectedCatalog.equals(catalog.getCatalogName())) {
-                        catalogId = Long.parseLong(catalog.getCatalogId());
-                    }
-                }
-                inputAddProductModel.setCatalog(catalogId);
-            }
-        } else {
+        Long catalogId = -1L;
+        String selectedCatalog = addProductCatalog.getSelectedItem();
+        if(selectedCatalog.equals(getActivity().getString(R.string.no_catalog_selected))){
             inputAddProductModel.setCatalog(-1);
+        } else {
+            for (CatalogDataModel.Catalog catalog : catalogs) {
+                if (selectedCatalog.equals(catalog.getCatalogName())) {
+                    catalogId = Long.parseLong(catalog.getCatalogId());
+                }
+            }
+            inputAddProductModel.setCatalog(catalogId);
         }
 
         Log.d(TAG, messageTAG + inputAddProductModel);
@@ -2847,29 +2726,28 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         }
     }
 
-    private void togglePreorder() {
-        if (addProductPreOderContent != null) {
-            addProductPreOderContent.toggle();
-            addProductPreOderContent.getViewTreeObserver()
-                    .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+    private void togglePreorder(){
+        addProductPreOderContent.toggle();
+        addProductPreOderContent.getViewTreeObserver()
+                .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 
-                        @Override
-                        public void onGlobalLayout() {
-                            int w = addProductPreOderContent.getWidth();
-                            int h = addProductPreOderContent.getHeight();
-                            Log.v("W-H~WHOLESALE", w + "-" + h);
-                            addProductPreOderContent.getViewTreeObserver()
-                                    .removeOnGlobalLayoutListener(this);
-                        }
-                    });
-            if (checkNotNull(getActivity()) && getActivity() instanceof ProductSocMedActivity) {
+                    @Override
+                    public void onGlobalLayout() {
+                        int w = addProductPreOderContent.getWidth();
+                        int h = addProductPreOderContent.getHeight();
+                        Log.v("W-H~WHOLESALE", w + "-" + h);
+                        addProductPreOderContent.getViewTreeObserver()
+                                .removeOnGlobalLayoutListener(this);
+                    }
+                });
+        if (checkNotNull(getActivity()) && getActivity() instanceof ProductSocMedActivity) {
 //            ((ProductSocMedActivity) getActivity()).recalculateView();
-            }
-            if (addProductPreOderContent.isExpanded())
-                addProductChevronPreorder.setImageResource(R.drawable.chevron_down);
-            else
-                addProductChevronPreorder.setImageResource(R.drawable.chevron_up);
         }
+        if (addProductPreOderContent.isExpanded())
+            addProductChevronPreorder.setImageResource(R.drawable.chevron_down);
+        else
+            addProductChevronPreorder.setImageResource(R.drawable.chevron_up);
+
     }
 
     private void toggleWholeSaleAfterVerify() {
