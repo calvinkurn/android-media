@@ -8,9 +8,9 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 24
+        multiDexEnabled = true
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
@@ -25,19 +25,20 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
-
 }
-
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
+
     compile project(':app')
-    testCompile 'junit:junit:4.12'
+
     compile'com.github.hotchemi:permissionsdispatcher:2.2.0@aar'
     apt 'com.github.hotchemi:permissionsdispatcher-processor:2.2.0'
     compile "org.parceler:parceler-api:1.0.4"
     apt "org.parceler:parceler:1.0.4"
+
+    testCompile 'junit:junit:4.12'
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
 }
