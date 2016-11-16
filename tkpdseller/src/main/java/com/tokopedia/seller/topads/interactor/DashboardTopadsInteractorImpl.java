@@ -30,7 +30,7 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
     TopAdsManagementService topAdsManagementService;
 
     public DashboardTopadsInteractorImpl() {
-        compositeSubscription.unsubscribe();
+        compositeSubscription = new CompositeSubscription();
         topAdsManagementService = new TopAdsManagementService();
     }
 
@@ -198,6 +198,7 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
                     public void onNext(Response<CreditResponse> response) {
                         if (response.isSuccessful()) {
                             // do something
+                            listenerGetDashboardCredit.onSuccess(response.body());
                         } else {
                             listenerGetDashboardCredit.onError(context.getString(R.string.default_request_error_unknown));
                         }
