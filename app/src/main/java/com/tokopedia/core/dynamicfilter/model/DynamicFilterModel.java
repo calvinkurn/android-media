@@ -24,54 +24,42 @@ public class DynamicFilterModel {
     String status;
 
     /**
-     * 
-     * @return
-     *     The processTime
+     * @return The processTime
      */
     public String getProcessTime() {
         return processTime;
     }
 
     /**
-     * 
-     * @param processTime
-     *     The process_time
+     * @param processTime The process_time
      */
     public void setProcessTime(String processTime) {
         this.processTime = processTime;
     }
 
     /**
-     * 
-     * @return
-     *     The data
+     * @return The data
      */
     public Data getData() {
         return data;
     }
 
     /**
-     * 
-     * @param data
-     *     The data
+     * @param data The data
      */
     public void setData(Data data) {
         this.data = data;
     }
 
     /**
-     * 
-     * @return
-     *     The status
+     * @return The status
      */
     public String getStatus() {
         return status;
     }
 
     /**
-     * 
-     * @param status
-     *     The status
+     * @param status The status
      */
     public void setStatus(String status) {
         this.status = status;
@@ -85,42 +73,34 @@ public class DynamicFilterModel {
 
         @SerializedName("filter")
         @Expose
-        List<Filter> filter = new ArrayList<Filter>();
+        List<Filter> filter = new ArrayList<>();
         @SerializedName("sort")
         @Expose
-        List<Sort> sort = new ArrayList<Sort>();
+        List<Sort> sort = new ArrayList<>();
 
         /**
-         *
-         * @return
-         *     The filter
+         * @return The filter
          */
         public List<Filter> getFilter() {
             return filter;
         }
 
         /**
-         *
-         * @param filter
-         *     The filter
+         * @param filter The filter
          */
         public void setFilter(List<Filter> filter) {
             this.filter = filter;
         }
 
         /**
-         *
-         * @return
-         *     The sort
+         * @return The sort
          */
         public List<Sort> getSort() {
             return sort;
         }
 
         /**
-         *
-         * @param sort
-         *     The sort
+         * @param sort The sort
          */
         public void setSort(List<Sort> sort) {
             this.sort = sort;
@@ -150,6 +130,7 @@ public class DynamicFilterModel {
 
     @Parcel
     public static class Filter {
+        public static final String TITLE_CATEGORY = "Kategori";
 
         @SerializedName("title")
         @Expose
@@ -159,57 +140,45 @@ public class DynamicFilterModel {
         Search search;
         @SerializedName("options")
         @Expose
-        List<Option> options = new ArrayList<Option>();
+        List<Option> options = new ArrayList<>();
 
         /**
-         *
-         * @return
-         *     The title
+         * @return The title
          */
         public String getTitle() {
             return title;
         }
 
         /**
-         *
-         * @param title
-         *     The title
+         * @param title The title
          */
         public void setTitle(String title) {
             this.title = title;
         }
 
         /**
-         *
-         * @return
-         *     The search
+         * @return The search
          */
         public Search getSearch() {
             return search;
         }
 
         /**
-         *
-         * @param search
-         *     The search
+         * @param search The search
          */
         public void setSearch(Search search) {
             this.search = search;
         }
 
         /**
-         *
-         * @return
-         *     The options
+         * @return The options
          */
         public List<Option> getOptions() {
             return options;
         }
 
         /**
-         *
-         * @param options
-         *     The options
+         * @param options The options
          */
         public void setOptions(List<Option> options) {
             this.options = options;
@@ -222,7 +191,7 @@ public class DynamicFilterModel {
 
         public static Filter createCategory() {
             Filter filter = new Filter();
-            filter.setTitle("Kategori");
+            filter.setTitle(TITLE_CATEGORY);
             filter.setOptions(new ArrayList<Option>());
             Search search = new Search();
             search.setPlaceholder("");
@@ -250,72 +219,56 @@ public class DynamicFilterModel {
         String inputType;
 
         /**
-         *
-         * @return
-         *     The name
+         * @return The name
          */
         public String getName() {
             return name;
         }
 
         /**
-         *
-         * @param name
-         *     The name
+         * @param name The name
          */
         public void setName(String name) {
             this.name = name;
         }
 
         /**
-         *
-         * @return
-         *     The key
+         * @return The key
          */
         public String getKey() {
             return key;
         }
 
         /**
-         *
-         * @param key
-         *     The key
+         * @param key The key
          */
         public void setKey(String key) {
             this.key = key;
         }
 
         /**
-         *
-         * @return
-         *     The value
+         * @return The value
          */
         public String getValue() {
             return value;
         }
 
         /**
-         *
-         * @param value
-         *     The value
+         * @param value The value
          */
         public void setValue(String value) {
             this.value = value;
         }
 
         /**
-         *
-         * @return
-         *     The inputType
+         * @return The inputType
          */
         public String getInputType() {
             return inputType;
         }
 
         /**
-         *
-         * @param inputType
-         *     The input_type
+         * @param inputType The input_type
          */
         public void setInputType(String inputType) {
             this.inputType = inputType;
@@ -334,36 +287,28 @@ public class DynamicFilterModel {
         String placeholder;
 
         /**
-         *
-         * @return
-         *     The searchable
+         * @return The searchable
          */
         public Integer getSearchable() {
             return searchable;
         }
 
         /**
-         *
-         * @param searchable
-         *     The searchable
+         * @param searchable The searchable
          */
         public void setSearchable(Integer searchable) {
             this.searchable = searchable;
         }
 
         /**
-         *
-         * @return
-         *     The placeholder
+         * @return The placeholder
          */
         public String getPlaceholder() {
             return placeholder;
         }
 
         /**
-         *
-         * @param placeholder
-         *     The placeholder
+         * @param placeholder The placeholder
          */
         public void setPlaceholder(String placeholder) {
             this.placeholder = placeholder;
@@ -388,72 +333,56 @@ public class DynamicFilterModel {
         String inputType;
 
         /**
-         *
-         * @return
-         *     The name
+         * @return The name
          */
         public String getName() {
             return name;
         }
 
         /**
-         *
-         * @param name
-         *     The name
+         * @param name The name
          */
         public void setName(String name) {
             this.name = name;
         }
 
         /**
-         *
-         * @return
-         *     The key
+         * @return The key
          */
         public String getKey() {
             return key;
         }
 
         /**
-         *
-         * @param key
-         *     The key
+         * @param key The key
          */
         public void setKey(String key) {
             this.key = key;
         }
 
         /**
-         *
-         * @return
-         *     The value
+         * @return The value
          */
         public String getValue() {
             return value;
         }
 
         /**
-         *
-         * @param value
-         *     The value
+         * @param value The value
          */
         public void setValue(String value) {
             this.value = value;
         }
 
         /**
-         *
-         * @return
-         *     The inputType
+         * @return The inputType
          */
         public String getInputType() {
             return inputType;
         }
 
         /**
-         *
-         * @param inputType
-         *     The input_type
+         * @param inputType The input_type
          */
         public void setInputType(String inputType) {
             this.inputType = inputType;
