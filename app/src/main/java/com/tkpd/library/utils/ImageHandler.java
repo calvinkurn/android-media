@@ -91,6 +91,23 @@ public class ImageHandler {
                 .into(imageview);
     }
 
+
+    public static void loadImageWithoutPlaceholder(ImageView imageview, String url, int resId) {
+        if (url != null && !TextUtils.isEmpty(url)) {
+            Glide.with(imageview.getContext())
+                    .load(url)
+                    .dontAnimate()
+                    .error(resId)
+                    .into(imageview);
+        } else {
+            Glide.with(imageview.getContext())
+                    .load(url)
+                    .placeholder(resId)
+                    .error(resId)
+                    .into(imageview);
+        }
+    }
+
 //    public static void LoadImageBitmapwithUIL(final ImageView imageview, final String url, ImageLoadingListener listener) {
 //        ImageLoader.getInstance().displayImage(url, imageview, initOptions(), listener);
 //    }

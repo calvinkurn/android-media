@@ -28,6 +28,7 @@ public interface Login {
     String GO_TO_INDEX_KEY = "login";
     String PROVIDER_LIST = "provider";
     String PROVIDER_CACHE_KEY = "provider_cache";
+    String BACKGROUND_CACHE_KEY = "background_cache_key";
 
     int EmailType = 0;
     int FacebookType = 1;

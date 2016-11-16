@@ -79,6 +79,10 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="alert_email_address_is_already_registered">Alamat email sudah terdaftar.</string>
     <string name="alert_check_your_internet_connection">Silakan periksa koneksi internet Anda</string>
     <string name="processing">Pengolahan...</string>
+
+
+    <string name="welcome_text_1">Ini adalah aplikasi khusus untuk berjualan di Tokopedia.</string>
+    <string name="welcome_text_2">Yuk mulai kelola tokomu di Tokopedia, mudah &amp; gratis!</string>
     <!-- Strings related to login and register -->
 
     <!-- Strings related to phone and email verification -->

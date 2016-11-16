@@ -5,6 +5,7 @@ package com.tokopedia.core.util;
  * modified by Hafizh 8/23/2016
  */
 public interface AppEventTracking {
+    String GTM_CACHE = "GTM_CACHE";
     String EMAIL_KEY = "EMAIL_KEY";
     String USER_ID_KEY = "USER_ID_KEY";
     String FULLNAME_KEY = "FULLNAME_KEY";
