@@ -50,7 +50,6 @@ import java.util.Map;
  * @author Angga.Prasetiyo on 21/04/2016.
  */
 public class TxListPresenterImpl implements TxListPresenter {
-    private static final String TAG = TxListPresenterImpl.class.getSimpleName();
     private static final int CREATE_RESCENTER_REQUEST_CODE = 789;
     private final TxListViewListener viewListener;
     private final TxOrderNetInteractor netInteractor;
@@ -225,8 +224,10 @@ public class TxListPresenterImpl implements TxListPresenter {
 
     @Override
     public void processToInvoice(Context context, OrderData data) {
-        AppUtils.InvoiceDialog((Activity) context, data.getOrderDetail().getDetailPdfUri(),
-                data.getOrderDetail().getDetailPdf(), data.getOrderDetail().getDetailInvoice());
+        AppUtils.InvoiceDialog(
+                context, data.getOrderDetail().getDetailPdfUri(),
+                data.getOrderDetail().getDetailInvoice()
+        );
     }
 
     @Override
@@ -325,11 +326,12 @@ public class TxListPresenterImpl implements TxListPresenter {
         if (orderData.getOrderDetail().getDetailFreeReturn() == 1) {
             dialogConfirm = generateDialogFreeReturn(context, orderData);
         } else {
-            dialogConfirm = generateDialogConfirm(context, typeInstance, orderData);
+            dialogConfirm = generateDialogConfirm(context, orderData);
         }
         viewListener.showDialog(dialogConfirm);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void processOpenDispute(final Context context, final OrderData data, int state) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -470,9 +472,11 @@ public class TxListPresenterImpl implements TxListPresenter {
         viewListener.showDialog(builder.create());
     }
 
-    private Dialog generateDialogConfirm(final Context context, int typeInstance,
+    @SuppressWarnings("deprecation")
+    private Dialog generateDialogConfirm(final Context context,
                                          final OrderData orderData) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(context.getString(R.string.label_title_dialog_order_received));
         builder.setMessage(Html.fromHtml(context.getString(R.string.dialog_package_received)));
         builder.setNegativeButton(context.getString(R.string.title_cancel),
                 new DialogInterface.OnClickListener() {
@@ -507,8 +511,10 @@ public class TxListPresenterImpl implements TxListPresenter {
         return builder.create();
     }
 
+    @SuppressWarnings("deprecation")
     private Dialog generateDialogFreeReturn(final Context context, final OrderData orderData) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(context.getString(R.string.label_title_dialog_order_received_free_return));
         builder.setMessage(Html.fromHtml(orderData.getOrderDetail().getDetailFreeReturnMsg()));
         builder.setNeutralButton(context.getString(R.string.title_open_dispute),
                 new DialogInterface.OnClickListener() {

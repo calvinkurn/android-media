@@ -283,7 +283,12 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
     @SuppressWarnings("deprecation")
     private Dialog generateDialogConfirm(final Context context, final OrderData orderData) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage(Html.fromHtml(context.getString(R.string.dialog_package_received)));
+        builder.setTitle(context.getString(R.string.label_title_dialog_order_received));
+        builder.setMessage(
+                Html.fromHtml(context.getString(R.string.dialog_package_received).replace(
+                        "xx_shop_name_xx", orderData.getOrderShop().getShopName()
+                ))
+        );
         builder.setNegativeButton(context.getString(R.string.title_cancel),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -319,6 +324,7 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
     @SuppressWarnings("deprecation")
     private Dialog generateDialogFreeReturn(final Context context, final OrderData orderData) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(context.getString(R.string.label_title_dialog_order_received_free_return));
         builder.setMessage(Html.fromHtml(orderData.getOrderDetail().getDetailFreeReturnMsg()));
         builder.setNeutralButton(context.getString(R.string.title_open_dispute),
                 new DialogInterface.OnClickListener() {
