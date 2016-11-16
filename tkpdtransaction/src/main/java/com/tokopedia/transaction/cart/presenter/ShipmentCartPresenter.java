@@ -125,11 +125,6 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
                 @Override
                 public void onNext(CalculateShipmentData data) {
                     view.renderCalculateShipment(data);
-                    view.getShipmentAdapter().setAdapterData((ArrayList<Shipment>) data.getShipment());
-                    if (data.getShipment().size() > 0){
-                        view.getShipmentPackageAdapter().setAdapterData((ArrayList<ShipmentPackage>)
-                                data.getShipment().get(0).getShipmentPackage());
-                    }
                 }
             });
         }
@@ -152,9 +147,9 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
                 @Override
                 public void onNext(ShipmentCartData shipmentCartData) {
                     view.dismisLoading();
-                    if (shipmentCartData.getStatus().equalsIgnoreCase("1")){
+                    if (shipmentCartData.getStatus().equalsIgnoreCase("1")) {
                         view.navigateToCart(shipmentCartData.getMessage());
-                    }else {
+                    } else {
                         view.renderErrorEditShipment(shipmentCartData.getMessage());
                     }
                 }

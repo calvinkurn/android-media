@@ -10,6 +10,7 @@ import android.support.v7.widget.CardView;
 import android.text.Html;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -58,6 +59,7 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
     private static final int CHOOSE_LOCATION = 2;
     private static final String ARG_PARAM_EXTRA_SHIPMENT_CART_PASS_DATA =
             "ARG_PARAM_EXTRA_SHIPMENT_CART_PASS_DATA";
+    private static final String NO_COURIER_AVAILABLE = "Agen kurir tidak tersedia";
 
     @Bind(R2.id.tv_title_address)
     TextView tvTitleAddress;
@@ -103,6 +105,9 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
     private ShipmentPackageCartAdapter adapterShipmentPackage;
     private ShipmentCartWrapper wrapper;
     private LocationPass locationPass;
+
+
+    private ArrayAdapter<String> emptyAdapter;
 
 
     public static ShipmentCartFragment newInstance(ShipmentCartPassData passData) {
@@ -167,6 +172,9 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
 
     @Override
     protected void setViewListener() {
+        tvTitleAddress.setText(Html.fromHtml(shipmentCartPassData.getAddressTitle()));
+        tvDetailAddress.setText(Html.fromHtml(shipmentCartPassData.getAddressName()));
+
         spShipment.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -186,6 +194,7 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 ShipmentPackage shipmentPackage = (ShipmentPackage) adapterView.getSelectedItem();
                 wrapper.setShipmentPackageId(shipmentPackage.getShipmentId());
+                tvPrice.setText(shipmentPackage.getPrice());
             }
 
             @Override
@@ -245,11 +254,14 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
     public void renderCalculateShipment(@NonNull CalculateShipmentData data) {
         shipmentData = data;
         adapterShipment.setAdapterData((ArrayList<Shipment>) data.getShipment());
+        spShipment.setAdapter(adapterShipment);
         if (data.getShipment().size() > 0) {
             renderShipmentPackageSpinner(data.getShipment().get(0));
         } else {
             adapterShipmentPackage.setAdapterData(new ArrayList<ShipmentPackage>());
         }
+        spShipmentPackage.setAdapter(adapterShipmentPackage);
+
     }
 
     @Override
@@ -344,6 +356,16 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
         return adapterShipmentPackage;
     }
 
+    @Override
+    public void renderEmptyShipment() {
+        spShipment.setAdapter(getEmptyAdapter());
+    }
+
+    @Override
+    public void renderEmptyShipmentPackage() {
+        spShipmentPackage.setAdapter(getEmptyAdapter());
+    }
+
     @OnClick(R2.id.btn_save)
     public void actionSaveShipment() {
         presenter.processEditShipmentCart(wrapper);
@@ -394,5 +416,10 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
         location.setLongitude(locationPass.getLongitude());
         location.setAddressId(wrapper.getAddressId());
         presenter.processSaveLocationShipment(location);
+    }
+
+    private ArrayAdapter<String> getEmptyAdapter() {
+        emptyAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, new String[]{NO_COURIER_AVAILABLE});
+        return emptyAdapter;
     }
 }

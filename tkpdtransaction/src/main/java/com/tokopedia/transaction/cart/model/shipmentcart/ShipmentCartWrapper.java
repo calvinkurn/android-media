@@ -15,6 +15,8 @@ public class ShipmentCartWrapper {
     private String oldAddressId;
     private String oldShipmentId;
     private String oldShipmentPackageId;
+    private boolean isValidShipment = true;
+    private boolean isValidShipmentPackage = true;
     private ShipmentCartData shipmentCartData;
 
     public ShipmentCartWrapper() {

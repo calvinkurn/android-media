@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.cart.fragment.ShipmentCartFragment;
 import com.tokopedia.transaction.cart.model.ShipmentCartPassData;
 
 
@@ -52,7 +53,8 @@ public class ShipmentCartActivity extends BasePresenterActivity {
 
     @Override
     protected void setViewListener() {
-
+        getFragmentManager().beginTransaction().add(R.id.container,
+                ShipmentCartFragment.newInstance(shipmentCartPassData)).commit();
     }
 
     @Override

@@ -51,4 +51,8 @@ public interface IShipmentCartView {
     ShipmentCartAdapter getShipmentAdapter();
 
     ShipmentPackageCartAdapter getShipmentPackageAdapter();
+
+    void renderEmptyShipment();
+
+    void renderEmptyShipmentPackage();
 }

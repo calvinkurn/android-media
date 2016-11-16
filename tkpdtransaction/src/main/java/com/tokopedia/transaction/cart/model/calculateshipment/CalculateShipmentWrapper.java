@@ -1,6 +1,8 @@
 package com.tokopedia.transaction.cart.model.calculateshipment;
 
 
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 /**
@@ -22,7 +24,8 @@ public class CalculateShipmentWrapper {
         map.put("weight", this.mWeight);
         map.put("do", this.mDo);
         map.put("recalculate", this.mRecalculate);
-        return map;
+
+        return (TKPDMapParam<String, String>) AuthUtil.generateParams(MainApplication.getAppContext(), map);
     }
 
     public CalculateShipmentData getData() {
