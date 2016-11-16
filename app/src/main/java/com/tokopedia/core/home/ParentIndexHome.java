@@ -18,35 +18,35 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.Cart;
+import com.tokopedia.core.GCMListenerService.NotificationListener;
 import com.tokopedia.core.GalleryBrowser;
+import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdActivity;
+import com.tokopedia.core.customadapter.ListViewHotProductParent;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
+import com.tokopedia.core.home.favorite.view.FragmentIndexFavoriteV2;
+import com.tokopedia.core.home.fragment.FragmentHotListV2;
 import com.tokopedia.core.home.fragment.FragmentIndexCategory;
+import com.tokopedia.core.home.fragment.FragmentProductFeed;
+import com.tokopedia.core.interfaces.IndexHomeInterafaces;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.myproduct.ProductActivity;
 import com.tokopedia.core.myproduct.fragment.AddProductFragment;
 import com.tokopedia.core.onboarding.OnboardingActivity;
 import com.tokopedia.core.rxjava.RxUtils;
+import com.tokopedia.core.session.Login;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
-import com.tokopedia.core.GCMListenerService.NotificationListener;
-import com.tokopedia.core.R;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TkpdActivity;
-import com.tokopedia.core.customadapter.ListViewHotProductParent;
-import com.tokopedia.core.home.fragment.FragmentHotListV2;
-import com.tokopedia.core.home.fragment.FragmentIndexFavoriteV2;
-import com.tokopedia.core.home.fragment.FragmentProductFeed;
-import com.tokopedia.core.interfaces.IndexHomeInterafaces;
-import com.tokopedia.core.loyaltysystem.util.LoyaltyNotificationUtil;
-import com.tokopedia.core.session.Login;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.util.WrappedTabPageIndicator;
-import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.core.var.TkpdState;
 
 import org.parceler.Parcels;
 
@@ -127,6 +127,11 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
                 TrackingUtils.eventLocaNotificationCallback(getIntent());
             }
         }
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_INDEX_HOME;
     }
 
     @Override
@@ -466,8 +471,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
         super.onResume();
 
         sendNotifLocalyticsCallback();
-
-        getLoyaltyNotification();
     }
 
     @Override
@@ -546,10 +549,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
         cache.applyEditor();
     }
 
-    private void getLoyaltyNotification() {
-        LoyaltyNotificationUtil loyalty = new LoyaltyNotificationUtil(this);
-        loyalty.checkLoyaltyNotification();
-    }
 
     private int getDefaultTabPosition() {
         if (SessionHandler.isV2Login(getApplicationContext()) || SessionHandler.isV4Login(getApplicationContext())) {

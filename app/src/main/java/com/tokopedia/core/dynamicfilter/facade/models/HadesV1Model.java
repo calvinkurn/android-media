@@ -15,18 +15,14 @@ public class HadesV1Model {
     private Data data;
 
     /**
-     * 
-     * @return
-     *     The data
+     * @return The data
      */
     public Data getData() {
         return data;
     }
 
     /**
-     * 
-     * @param data
-     *     The data
+     * @param data The data
      */
     public void setData(Data data) {
         this.data = data;
@@ -39,8 +35,6 @@ public class HadesV1Model {
 
         data.setCategories(categories);
 
-
-
     }
 
     public static class Data {
@@ -50,18 +44,14 @@ public class HadesV1Model {
         private List<Category> categories = new ArrayList<Category>();
 
         /**
-         *
-         * @return
-         *     The categories
+         * @return The categories
          */
         public List<Category> getCategories() {
             return categories;
         }
 
         /**
-         *
-         * @param categories
-         *     The categories
+         * @param categories The categories
          */
         public void setCategories(List<Category> categories) {
             this.categories = categories;
@@ -69,247 +59,6 @@ public class HadesV1Model {
 
     }
 
-
-    public static class Child {
-
-        @SerializedName("id")
-        @Expose
-        private String id;
-        @SerializedName("name")
-        @Expose
-        private String name;
-        @SerializedName("parent")
-        @Expose
-        private Integer parent;
-        @SerializedName("tree")
-        @Expose
-        private Integer tree;
-        @SerializedName("identifier")
-        @Expose
-        private String identifier;
-        @SerializedName("child")
-        @Expose
-        private List<Child_> child = new ArrayList<Child_>();
-
-        /**
-         *
-         * @return
-         *     The id
-         */
-        public String getId() {
-            return id;
-        }
-
-        /**
-         *
-         * @param id
-         *     The id
-         */
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        /**
-         *
-         * @return
-         *     The name
-         */
-        public String getName() {
-            return name;
-        }
-
-        /**
-         *
-         * @param name
-         *     The name
-         */
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        /**
-         *
-         * @return
-         *     The parent
-         */
-        public Integer getParent() {
-            return parent;
-        }
-
-        /**
-         *
-         * @param parent
-         *     The parent
-         */
-        public void setParent(Integer parent) {
-            this.parent = parent;
-        }
-
-        /**
-         *
-         * @return
-         *     The tree
-         */
-        public Integer getTree() {
-            return tree;
-        }
-
-        /**
-         *
-         * @param tree
-         *     The tree
-         */
-        public void setTree(Integer tree) {
-            this.tree = tree;
-        }
-
-        /**
-         *
-         * @return
-         *     The identifier
-         */
-        public String getIdentifier() {
-            return identifier;
-        }
-
-        /**
-         *
-         * @param identifier
-         *     The identifier
-         */
-        public void setIdentifier(String identifier) {
-            this.identifier = identifier;
-        }
-
-        /**
-         *
-         * @return
-         *     The child
-         */
-        public List<Child_> getChild() {
-            return child;
-        }
-
-        /**
-         *
-         * @param child
-         *     The child
-         */
-        public void setChild(List<Child_> child) {
-            this.child = child;
-        }
-
-    }
-
-    public static class Child_ {
-
-        @SerializedName("id")
-        @Expose
-        private String id;
-        @SerializedName("name")
-        @Expose
-        private String name;
-        @SerializedName("parent")
-        @Expose
-        private Integer parent;
-        @SerializedName("tree")
-        @Expose
-        private Integer tree;
-        @SerializedName("identifier")
-        @Expose
-        private String identifier;
-
-        /**
-         *
-         * @return
-         *     The id
-         */
-        public String getId() {
-            return id;
-        }
-
-        /**
-         *
-         * @param id
-         *     The id
-         */
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        /**
-         *
-         * @return
-         *     The name
-         */
-        public String getName() {
-            return name;
-        }
-
-        /**
-         *
-         * @param name
-         *     The name
-         */
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        /**
-         *
-         * @return
-         *     The parent
-         */
-        public Integer getParent() {
-            return parent;
-        }
-
-        /**
-         *
-         * @param parent
-         *     The parent
-         */
-        public void setParent(Integer parent) {
-            this.parent = parent;
-        }
-
-        /**
-         *
-         * @return
-         *     The tree
-         */
-        public Integer getTree() {
-            return tree;
-        }
-
-        /**
-         *
-         * @param tree
-         *     The tree
-         */
-        public void setTree(Integer tree) {
-            this.tree = tree;
-        }
-
-        /**
-         *
-         * @return
-         *     The identifier
-         */
-        public String getIdentifier() {
-            return identifier;
-        }
-
-        /**
-         *
-         * @param identifier
-         *     The identifier
-         */
-        public void setIdentifier(String identifier) {
-            this.identifier = identifier;
-        }
-
-    }
 
     public static class Category {
 
@@ -330,114 +79,84 @@ public class HadesV1Model {
         private String identifier;
         @SerializedName("child")
         @Expose
-        private List<Child> child = new ArrayList<Child>();
+        private List<Category> childList = new ArrayList<>();
 
         /**
-         *
-         * @return
-         *     The id
+         * @return The id
          */
         public String getId() {
             return id;
         }
 
         /**
-         *
-         * @param id
-         *     The id
+         * @param id The id
          */
         public void setId(String id) {
             this.id = id;
         }
 
         /**
-         *
-         * @return
-         *     The name
+         * @return The name
          */
         public String getName() {
             return name;
         }
 
         /**
-         *
-         * @param name
-         *     The name
+         * @param name The name
          */
         public void setName(String name) {
             this.name = name;
         }
 
         /**
-         *
-         * @return
-         *     The parent
+         * @return The parent
          */
         public Integer getParent() {
             return parent;
         }
 
         /**
-         *
-         * @param parent
-         *     The parent
+         * @param parent The parent
          */
         public void setParent(Integer parent) {
             this.parent = parent;
         }
 
         /**
-         *
-         * @return
-         *     The tree
+         * @return The tree
          */
         public Integer getTree() {
             return tree;
         }
 
         /**
-         *
-         * @param tree
-         *     The tree
+         * @param tree The tree
          */
         public void setTree(Integer tree) {
             this.tree = tree;
         }
 
         /**
-         *
-         * @return
-         *     The identifier
+         * @return The identifier
          */
         public String getIdentifier() {
             return identifier;
         }
 
         /**
-         *
-         * @param identifier
-         *     The identifier
+         * @param identifier The identifier
          */
         public void setIdentifier(String identifier) {
             this.identifier = identifier;
         }
 
-        /**
-         *
-         * @return
-         *     The child
-         */
-        public List<Child> getChild() {
-            return child;
+        public List<Category> getChildList() {
+            return childList;
         }
 
-        /**
-         *
-         * @param child
-         *     The child
-         */
-        public void setChild(List<Child> child) {
-            this.child = child;
+        public void setChildList(List<Category> childList) {
+            this.childList = childList;
         }
 
     }

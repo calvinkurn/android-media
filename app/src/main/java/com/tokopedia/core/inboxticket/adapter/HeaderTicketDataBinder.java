@@ -170,15 +170,15 @@ public class HeaderTicketDataBinder extends DataBinder<HeaderTicketDataBinder.Vi
             }
 
             @Override
-            public View.OnClickListener onImageClicked(int position, ImageUpload imageUpload) {
+            public View.OnClickListener onImageClicked(int position, final ArrayList<ImageUpload> imageUpload) {
                 return new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(context, PreviewProductImage.class);
                         Bundle bundle = new Bundle();
                         ArrayList<String> listImage = new ArrayList<>();
-                        for(int i = 0 ; i < data.getTicket().getTicketAttachment().size(); i++){
-                            listImage.add(data.getTicket().getTicketAttachment().get(i).getImgLink());
+                        for(int i = 0 ; i < imageUpload.size(); i++){
+                            listImage.add(imageUpload.get(i).getPicSrc());
                         }
                         bundle.putStringArrayList("fileloc", listImage);
                         intent.putExtras(bundle);

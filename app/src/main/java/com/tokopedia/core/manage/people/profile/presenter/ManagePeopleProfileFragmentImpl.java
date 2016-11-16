@@ -174,12 +174,6 @@ public class ManagePeopleProfileFragmentImpl implements ManagePeopleProfileFragm
     }
 
     @Override
-    public void setOnNotifiedPhoneVerified(Context context) {
-        refreshPage(context);
-        deleteCache(context);
-    }
-
-    @Override
     public void refreshPage(Context context) {
         dataManager.refreshProfile(context);
     }

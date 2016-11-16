@@ -14,6 +14,7 @@ import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -55,8 +56,10 @@ import com.tokopedia.core.Cart;
 import com.tokopedia.core.EditAddressCart;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.model.Basket;
@@ -198,6 +201,7 @@ public class FragmentCart extends Fragment implements CartInterfaces.FragmentCar
     private String VoucherCode = "";
     private String mEcashFlag = "0";
     private TextView TokopediaBalance;
+    private TextView tvTickerGTM;
     private TextView TotalPayment;
     private TextView SaveBut;
     private TextView CancelBut;
@@ -356,6 +360,7 @@ public class FragmentCart extends Fragment implements CartInterfaces.FragmentCar
         atcReceiver = new PaymentResultReceiver(new Handler(), this);
         mainContainer = container;
         PromoText = (TextView) view.findViewById(R.id.promo_text);
+        tvTickerGTM = (TextView) view.findViewById(R.id.tv_ticker_gtm);
         progressdialog = new TkpdProgressDialog(context, TkpdProgressDialog.MAIN_PROGRESS, view);
         progressdialog.setLoadingViewId(R.id.include_loading);
         progressdialog.showDialog();
@@ -1327,6 +1332,8 @@ public class FragmentCart extends Fragment implements CartInterfaces.FragmentCar
                             }
                         }
                         if (model.getTransactionLists().size() > 0) {
+                            MainView.setVisibility(View.VISIBLE);
+                            getGTMTicker();
                             List list = model.getTransactionLists();
                             ArrayList<String> afProductIds = new ArrayList<>();
                             ArrayList<Purchase> allPurchase = new ArrayList<>();
@@ -1555,6 +1562,7 @@ public class FragmentCart extends Fragment implements CartInterfaces.FragmentCar
                             sendAppsFlyerATC(afValue);
 
                         } else {
+                            tvTickerGTM.setVisibility(View.GONE);
                             MainView.setVisibility(View.GONE);
                             noResult.showMessage(false);
                             cache.putInt(TkpdCache.Key.IS_HAS_CART, 0);
@@ -1566,6 +1574,7 @@ public class FragmentCart extends Fragment implements CartInterfaces.FragmentCar
 
                     @Override
                     public void onFailed(String error) {
+                        MainView.setVisibility(View.GONE);
                         progressdialog.dismiss();
                         NetworkErrorHelper.showEmptyState(getActivity(), getView(), error,
                                 new NetworkErrorHelper.RetryClickedListener() {
@@ -1579,6 +1588,7 @@ public class FragmentCart extends Fragment implements CartInterfaces.FragmentCar
 
                     @Override
                     public void onTimeout(String timeoutMessage) {
+                        MainView.setVisibility(View.GONE);
                         progressdialog.dismiss();
                         NetworkErrorHelper.showEmptyState(getActivity(), getView(), timeoutMessage,
                                 new NetworkErrorHelper.RetryClickedListener() {
@@ -1592,6 +1602,7 @@ public class FragmentCart extends Fragment implements CartInterfaces.FragmentCar
 
                     @Override
                     public void onError(String errorMessage) {
+                        MainView.setVisibility(View.GONE);
                         progressdialog.dismiss();
                         NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage,
                                 new NetworkErrorHelper.RetryClickedListener() {
@@ -1605,6 +1616,7 @@ public class FragmentCart extends Fragment implements CartInterfaces.FragmentCar
 
                     @Override
                     public void onNoConnection() {
+                        MainView.setVisibility(View.GONE);
                         progressdialog.dismiss();
                         NetworkErrorHelper.showEmptyState(getActivity(), getView(),
                                 new NetworkErrorHelper.RetryClickedListener() {
@@ -1616,6 +1628,18 @@ public class FragmentCart extends Fragment implements CartInterfaces.FragmentCar
                         );
                     }
                 });
+    }
+
+    private void getGTMTicker() {
+        if (TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_CART).equalsIgnoreCase("true")) {
+            String message = TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_CART_TEXT);
+            tvTickerGTM.setText(Html.fromHtml(message));
+            tvTickerGTM.setVisibility(View.VISIBLE);
+            tvTickerGTM.setAutoLinkMask(0);
+            Linkify.addLinks(tvTickerGTM, Linkify.WEB_URLS);
+        } else {
+            tvTickerGTM.setVisibility(View.VISIBLE);
+        }
     }
 
     public void sendAppsFlyerATC(@NonNull Map<String, Object> afValue) {
@@ -2071,13 +2095,14 @@ public class FragmentCart extends Fragment implements CartInterfaces.FragmentCar
 
                     @Override
                     public void onError(String message) {
+                        progressdialog.dismiss();
                         NetworkErrorHelper.showSnackbar(getActivity(),
                                 message);
                     }
 
                     @Override
                     public void onNoConnection() {
-
+                        progressdialog.dismiss();
                     }
                 }
         );

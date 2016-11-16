@@ -7,12 +7,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.text.Html;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.appsflyer.AFInAppEventType;
 import com.tkpd.library.utils.CommonUtils;
@@ -75,6 +78,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public static final String STATE_OTHER_PRODUCTS = "STATE_OTHER_PRODUCTS";
     private static final String TAG = ProductDetailFragment.class.getSimpleName();
 
+    @Bind(R2.id.tv_ticker_gtm)
+    TextView tvTickerGTM;
     @Bind(R2.id.view_header)
     HeaderInfoView headerInfoView;
     @Bind(R2.id.view_detail)
@@ -306,6 +311,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onProductDetailLoaded(@NonNull ProductDetailData successResult) {
+        presenter.processGetGTMTicker();
         this.productData = successResult;
         this.errorProductView.renderData(successResult);
         this.errorShopView.renderData(successResult);
@@ -463,6 +469,20 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void onProductReportClicked() {
         presenter.reportProduct(context);
+    }
+
+    @Override
+    public void showTickerGTM(String message) {
+        tvTickerGTM.setText(message);
+        tvTickerGTM.setVisibility(View.VISIBLE);
+        tvTickerGTM.setAutoLinkMask(0);
+        Linkify.addLinks(tvTickerGTM, Linkify.WEB_URLS);
+        tvTickerGTM.setText(Html.fromHtml(tvTickerGTM.getText().toString()));
+    }
+
+    @Override
+    public void hideTickerGTM() {
+        tvTickerGTM.setVisibility(View.GONE);
     }
 
     @Override

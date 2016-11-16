@@ -22,17 +22,18 @@ import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.AppUtils;
+import com.tokopedia.core.util.ImageUploadHandler;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.transaction.purchase.adapter.TxVerInvoiceAdapter;
 import com.tokopedia.transaction.purchase.listener.TxVerDetailViewListener;
 import com.tokopedia.transaction.purchase.model.response.txverification.TxVerData;
 import com.tokopedia.transaction.purchase.model.response.txverinvoice.Detail;
 import com.tokopedia.transaction.purchase.presenter.TxVerDetailPresenter;
 import com.tokopedia.transaction.purchase.presenter.TxVerDetailPresenterImpl;
-import com.tokopedia.core.util.AppUtils;
-import com.tokopedia.core.util.ImageUploadHandler;
-import com.tokopedia.core.util.RequestPermissionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,6 +92,11 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
     @Override
     protected void setupURIPass(Uri data) {
 
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_PAYMENT_VERIFICATION_DETAIL;
     }
 
     @Override
@@ -222,7 +228,8 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == ImageGallery.RESULT_CODE || resultCode == Activity.RESULT_OK) {
+        if (resultCode == ImageGallery.RESULT_CODE || resultCode == Activity.RESULT_OK
+                || resultCode == ConfirmPaymentActivity.RESULT_FORM_FAILED) {
             switch (requestCode) {
                 case REQUEST_EDIT_PAYMENT:
                     if (resultCode == RESULT_OK) {
@@ -311,31 +318,31 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
 
     @OnPermissionDenied(Manifest.permission.CAMERA)
     void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(this,Manifest.permission.CAMERA);
+        RequestPermissionUtil.onPermissionDenied(this, Manifest.permission.CAMERA);
     }
 
     @OnNeverAskAgain(Manifest.permission.CAMERA)
     void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(this,Manifest.permission.CAMERA);
+        RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.CAMERA);
     }
 
     @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(this,Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onPermissionDenied(this, Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
     @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(this,Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
-    @OnPermissionDenied({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     void showDeniedForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
 
-        RequestPermissionUtil.onPermissionDenied(this,listPermission);
+        RequestPermissionUtil.onPermissionDenied(this, listPermission);
     }
 
     @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
@@ -344,6 +351,6 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
 
-        RequestPermissionUtil.onNeverAskAgain(this,listPermission);
+        RequestPermissionUtil.onNeverAskAgain(this, listPermission);
     }
 }

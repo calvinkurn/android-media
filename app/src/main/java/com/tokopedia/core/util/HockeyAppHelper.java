@@ -12,6 +12,8 @@ import net.hockeyapp.android.UpdateManager;
  */
 public class HockeyAppHelper {
 
+    private static Boolean ENABLE_DISTRIBUTION = false;
+
     public static void handleLogin(Activity activity) {
         if (isAllow()) {
             LoginManager.register(activity, "a2ba10bfc3ec8f60d1c6d7c9ac27fe4a", LoginManager.LOGIN_MODE_EMAIL_ONLY);
@@ -28,6 +30,10 @@ public class HockeyAppHelper {
     }
 
     private static Boolean isAllow() {
-        return BuildConfig.ENABLE_DISTRIBUTION;
+        return ENABLE_DISTRIBUTION;
+    }
+
+    public static void setEnableDistribution(Boolean enableDistribution) {
+        ENABLE_DISTRIBUTION = enableDistribution;
     }
 }

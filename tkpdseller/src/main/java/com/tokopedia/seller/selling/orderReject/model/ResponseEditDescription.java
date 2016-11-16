@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by Toped10 on 6/9/2016.
  */
-@Parcel
+@Parcel(parcelsIndex = false)
 public class ResponseEditDescription {
 
     /**
@@ -75,7 +75,7 @@ public class ResponseEditDescription {
         this.data = data;
     }
 
-    @Parcel
+    @Parcel(parcelsIndex = false)
     public static class DataBean {
         @SerializedName("is_success")
         @Expose

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.fragment.AddAddressFragment;
@@ -18,6 +19,11 @@ import com.tokopedia.core.manage.people.address.model.AddressModel;
  * Created by nisie on 9/6/16.
  */
 public class AddAddressActivity extends BasePresenterActivity implements ManageAddressConstant {
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_ADD_ADDRESS_FORM;
+    }
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -42,7 +48,7 @@ public class AddAddressActivity extends BasePresenterActivity implements ManageA
     @Override
     protected void initView() {
         Bundle bundle;
-        if(getIntent().getExtras() == null) {
+        if (getIntent().getExtras() == null) {
             bundle = new Bundle();
         } else {
             bundle = getIntent().getExtras();
@@ -58,11 +64,13 @@ public class AddAddressActivity extends BasePresenterActivity implements ManageA
                 }
             }
         }
-        AddAddressFragment fragment = AddAddressFragment.createInstance(bundle);
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
-        fragmentTransaction.commit();
+        if (getFragmentManager().findFragmentById(R.id.container) == null) {
+            AddAddressFragment fragment = AddAddressFragment.createInstance(bundle);
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
+            fragmentTransaction.commit();
+        }
     }
 
     @Override

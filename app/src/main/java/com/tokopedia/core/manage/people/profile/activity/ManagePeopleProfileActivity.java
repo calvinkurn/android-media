@@ -1,11 +1,13 @@
 package com.tokopedia.core.manage.people.profile.activity;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.fragment.EmailVerificationDialog;
 import com.tokopedia.core.manage.people.profile.fragment.ManagePeopleProfileFragment;
@@ -17,7 +19,7 @@ import com.tokopedia.core.manage.people.profile.presenter.ManagePeopleProfileImp
 import com.tokopedia.core.manage.people.profile.presenter.ManagePeopleProfilePresenter;
 
 public class ManagePeopleProfileActivity extends BasePresenterActivity<ManagePeopleProfilePresenter>
-        implements ManagePeopleProfileView, EmailVerificationDialog.EmailChangeConfirmation, ManagePeopleProfileResultReceiver.Receiver {
+        implements ManagePeopleProfileView, ManagePeopleProfileResultReceiver.Receiver {
 
     private Bundle bundleData;
     private Uri uriData;
@@ -54,6 +56,11 @@ public class ManagePeopleProfileActivity extends BasePresenterActivity<ManagePeo
     }
 
     @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_CONFIG_P_PROFILE;
+    }
+
+    @Override
     protected void initVar() {
         mReceiver = new ManagePeopleProfileResultReceiver(new Handler());
         mReceiver.setReceiver(this);
@@ -70,14 +77,10 @@ public class ManagePeopleProfileActivity extends BasePresenterActivity<ManagePeo
             getFragmentManager().beginTransaction()
                     .add(R.id.container, fragment, tag)
                     .commit();
-        }
-    }
-
-    @Override
-    public void onEmailChanged() {
-        if (getFragmentManager().findFragmentByTag(ManagePeopleProfileFragment.class.getSimpleName()) != null) {
-            ManagePeopleProfileFragment fragment = (ManagePeopleProfileFragment) getFragmentManager().findFragmentByTag(ManagePeopleProfileFragment.class.getSimpleName());
-            fragment.setOnNotifiedEmailChanged();
+        } else {
+            Intent intent = getIntent();
+            finish();
+            startActivity(intent);
         }
     }
 

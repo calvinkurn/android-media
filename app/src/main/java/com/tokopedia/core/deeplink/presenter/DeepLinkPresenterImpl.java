@@ -16,8 +16,6 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
-import com.tokopedia.core.router.FragmentCreator;
-import com.tokopedia.core.util.FragmentCreatorUtil;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.deeplink.activity.DeepLinkActivity;
@@ -35,6 +33,8 @@ import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.product.fragment.ProductDetailFragment;
 import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.recharge.fragment.RechargeCategoryFragment;
+import com.tokopedia.core.recharge.fragment.RechargeFragment;
+import com.tokopedia.core.router.DiscoveryRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.util.AppUtils;
@@ -46,6 +46,8 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.tokopedia.core.recharge.fragment.RechargeCategoryFragment.EXTRA_ALLOW_ERROR;
 
 /**
  * Created by Angga.Prasetiyo on 14/12/2015.
@@ -219,11 +221,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private boolean isExcludedUrl(Uri uriData) {
-        CommonUtils.dumper("NISNIS" + TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_URL));
         if (!TextUtils.isEmpty(TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_URL))) {
             List<String> listExcludedString = Arrays.asList(TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_URL).split(","));
             for (String excludedString : listExcludedString) {
-                if (uriData.toString().endsWith(excludedString)) {
+                if (uriData.getPath().endsWith(excludedString)) {
                     return true;
                 }
             }
@@ -254,13 +255,24 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private void openRecharge(List<String> linkSegment, Uri uriData) {
         Log.d(TAG, "openRecharge() called with: "
                 + "linkSegment = [" + linkSegment + "], uriData = [" + uriData + "]");
-        RechargeCategoryFragment fragment = new RechargeCategoryFragment();
+        Bundle bundle = new Bundle();
+        if (isValidCampaignUrl(uriData)) {
+            Map<String, String> maps = splitQuery(uriData);
+            if (maps.get("utm_source") != null) {
+                bundle.putString(RechargeFragment.ARG_UTM_SOURCE, maps.get("utm_source"));
+            }
+            if (maps.get("utm_medium") != null) {
+                bundle.putString(RechargeFragment.ARG_UTM_MEDIUM, maps.get("utm_medium"));
+            }
+        }
+        bundle.putBoolean(EXTRA_ALLOW_ERROR, true);
+        RechargeCategoryFragment fragment = RechargeCategoryFragment.newInstance(bundle);
         viewListener.inflateFragmentV4(fragment, "RECHARGE");
     }
 
 
     private void openCatalogProduct(List<String> linkSegment, Uri uriData) {
-        viewListener.inflateFragment(FragmentCreator.getCatalogDetailListFragment(context, linkSegment.get(1)), "CATALOG_PRODUCT");
+        viewListener.inflateFragment(DiscoveryRouter.getCatalogDetailListFragment(context, linkSegment.get(1)), "CATALOG_PRODUCT");
     }
 
     /**

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Window;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 
 public class WebViewTopAdsActivity extends TActivity {
@@ -21,6 +22,11 @@ public class WebViewTopAdsActivity extends TActivity {
     }
 
     @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_TOPADS;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         super.onCreate(savedInstanceState);
@@ -31,7 +37,7 @@ public class WebViewTopAdsActivity extends TActivity {
             fragment = WebViewTopAdsFragment.newInstance(bundle.getString(WebViewTopAdsFragment.SOURCE_EXTRA));
             manager = getFragmentManager();
             FragmentTransaction transaction = manager.beginTransaction();
-            transaction.setCustomAnimations(R.anim.slide_in_left, 0, 0, R.anim.slide_out_right);
+            transaction.setCustomAnimations(R.animator.slide_in_left, 0, 0, R.animator.slide_out_right);
             transaction.add(R.id.main_view, fragment, "first");
             transaction.commit();
 

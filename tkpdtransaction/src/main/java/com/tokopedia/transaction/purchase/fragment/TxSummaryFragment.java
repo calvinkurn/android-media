@@ -9,14 +9,14 @@ import android.widget.ListView;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.router.TransactionRouter;
 import com.tokopedia.transaction.purchase.activity.PurchaseActivity;
+import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.transaction.purchase.adapter.TxSummaryAdapter;
 import com.tokopedia.transaction.purchase.listener.TxSummaryViewListener;
 import com.tokopedia.transaction.purchase.model.TxSummaryItem;
 import com.tokopedia.transaction.purchase.presenter.TxSummaryPresenter;
 import com.tokopedia.transaction.purchase.presenter.TxSummaryPresenterImpl;
-import com.tokopedia.transaction.purchase.utils.FilterUtils;
-import com.tokopedia.core.util.RefreshHandler;
 
 import java.util.List;
 
@@ -161,29 +161,29 @@ public class TxSummaryFragment extends BasePresenterFragment<TxSummaryPresenter>
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        /*if (instanceType == INSTANCE_TYPE_PURCHASE) {
+        if (instanceType == INSTANCE_TYPE_PURCHASE) {
             switch (position) {
                 case 0:
-                    listener.OnMenuClick(PurchaseActivity.TAB_TX_CONFIRMATION,
-                            FilterUtils.ALL_STATUS_FILTER_ID);
+                    listener.OnMenuClick(TransactionRouter.TAB_TX_CONFIRMATION,
+                            TransactionRouter.ALL_STATUS_FILTER_ID);
                     break;
                 case 1:
-                    listener.OnMenuClick(PurchaseActivity.TAB_TX_VERIFICATION,
-                            FilterUtils.ALL_STATUS_FILTER_ID);
+                    listener.OnMenuClick(TransactionRouter.TAB_TX_VERIFICATION,
+                            TransactionRouter.ALL_STATUS_FILTER_ID);
                     break;
                 case 2:
-                    listener.OnMenuClick(PurchaseActivity.TAB_TX_STATUS,
-                            FilterUtils.ALL_STATUS_FILTER_ID);
+                    listener.OnMenuClick(TransactionRouter.TAB_TX_STATUS,
+                            TransactionRouter.ALL_STATUS_FILTER_ID);
                     break;
                 case 3:
-                    listener.OnMenuClick(PurchaseActivity.TAB_TX_DELIVER,
-                            FilterUtils.ALL_STATUS_FILTER_ID);
+                    listener.OnMenuClick(TransactionRouter.TAB_TX_DELIVER,
+                            TransactionRouter.ALL_STATUS_FILTER_ID);
                     break;
                 case 4:
-                    listener.OnMenuClick(PurchaseActivity.TAB_TX_ALL,
-                            FilterUtils.TRANSACTION_CANCELED_FILTER_ID);
+                    listener.OnMenuClick(TransactionRouter.TAB_TX_ALL,
+                            TransactionRouter.TRANSACTION_CANCELED_FILTER_ID);
                     break;
             }
-        }*/
+        }
     }
 }

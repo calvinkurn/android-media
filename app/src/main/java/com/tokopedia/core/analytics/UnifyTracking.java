@@ -533,12 +533,12 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventShare(String label){
+    public static void eventShare(String source, String label){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.PRODUCT_DETAIL_PAGE,
                 AppEventTracking.Category.PRODUCT_DETAIL,
                 AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.SHARE_TO + label
+                AppEventTracking.EventLabel.SHARE_TO + label + "-" + source
         ).getEvent());
     }
 

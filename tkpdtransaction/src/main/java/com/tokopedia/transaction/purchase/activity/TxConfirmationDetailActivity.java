@@ -17,15 +17,16 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.TokopediaBankAccount;
 import com.tokopedia.transaction.purchase.listener.TxConfDetailViewListener;
 import com.tokopedia.transaction.purchase.model.response.txconfirmation.TxConfData;
 import com.tokopedia.transaction.purchase.model.response.txlist.OrderData;
 import com.tokopedia.transaction.purchase.model.response.txlist.OrderProduct;
 import com.tokopedia.transaction.purchase.presenter.TxConfDetailPresenter;
 import com.tokopedia.transaction.purchase.presenter.TxConfDetailPresenterImpl;
-import com.tokopedia.core.util.TokopediaBankAccount;
 
 import java.text.MessageFormat;
 import java.util.List;
@@ -89,6 +90,11 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
     }
 
     @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_TX_P_CONFIRM_DETAIL;
+    }
+
+    @Override
     protected int getLayoutId() {
         return R.layout.activity_transaction_payment_confirmation_detail;
     }
@@ -147,6 +153,7 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
             holder.tvSubTotal.setText(data.getOrderDetail().getDetailProductPriceIdr());
             holder.tvShippingCost.setText(data.getOrderDetail().getDetailShippingPriceIdr());
             holder.tvInsurancePrice.setText(data.getOrderDetail().getDetailInsurancePriceIdr());
+            holder.tvAdditionalCostPrice.setText(data.getOrderDetail().getDetailTotalAddFeeIdr());
             holder.tvInsurance.setText(!data.getOrderDetail().getDetailInsurancePrice().equals("0")
                     || data.getOrderDetail().getDetailForceInsurance().equals("1")
                     ? getString(R.string.yes) : getString(R.string.No));
@@ -286,6 +293,8 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
         TextView tvShippingCost;
         @Bind(R2.id.insurance_price)
         TextView tvInsurancePrice;
+        @Bind(R2.id.additional_cost)
+        TextView tvAdditionalCostPrice;
         @Bind(R2.id.edit)
         ImageView btnEdit;
         @Bind(R2.id.delete)

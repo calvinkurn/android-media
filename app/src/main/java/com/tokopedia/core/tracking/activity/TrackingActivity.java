@@ -11,6 +11,7 @@ import android.os.PersistableBundle;
 import android.view.MenuItem;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.tracking.fragment.TrackingFragment;
 import com.tokopedia.core.tracking.presenter.TrackingFragmentPresenterImpl;
@@ -27,6 +28,11 @@ public class TrackingActivity extends BasePresenterActivity {
         Intent intent = new Intent(context, TrackingActivity.class);
         intent.putExtras(bundle);
         return intent;
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_TRACKING_DETAIL;
     }
 
     @Override

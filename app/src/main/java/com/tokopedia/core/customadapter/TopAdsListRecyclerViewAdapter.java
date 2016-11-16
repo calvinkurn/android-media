@@ -49,7 +49,7 @@ public class TopAdsListRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ProductAdapter.ViewHolderProductitem) {
             ProductAdapter.ViewHolderProductitem holderProductitem = (ProductAdapter.ViewHolderProductitem) holder;
-            holderProductitem.bindData(getItem(position));
+            holderProductitem.bindData(getItem(position), holderProductitem);
         }
     }
 

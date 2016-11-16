@@ -75,11 +75,15 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
                             BuildConfig.APPLICATION_ID +
                             "/drawable/product_no_photo_default")
                     .setImageDescription("").build());
+            imagePagerAdapter.addAll(productImageList);
+            indicator.notifyDataSetChanged();
+            setVisibility(VISIBLE);
+        } else {
+            imagePagerAdapter.addAll(productImageList);
+            indicator.notifyDataSetChanged();
+            setVisibility(VISIBLE);
+            imagePagerAdapter.setActionListener(new PagerAdapterAction(data));
         }
-        imagePagerAdapter.addAll(productImageList);
-        indicator.notifyDataSetChanged();
-        setVisibility(VISIBLE);
-        imagePagerAdapter.setActionListener(new PagerAdapterAction(data));
     }
 
     public void renderTempData(ProductPass productPass) {

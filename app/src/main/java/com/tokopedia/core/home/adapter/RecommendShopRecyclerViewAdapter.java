@@ -17,7 +17,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.home.presenter.Favorite;
+import com.tokopedia.core.home.favorite.presenter.Favorite;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.TopAdsUtil;
 import com.tokopedia.core.var.ShopItem;

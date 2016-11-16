@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.tokopedia.core.discovery.adapter.browseparent.BrowseCatalogAdapter;
+import com.tokopedia.core.discovery.fragment.browseparent.CatalogFragment;
 import com.tokopedia.core.discovery.interactor.DiscoveryInteractor;
 import com.tokopedia.core.discovery.interactor.DiscoveryInteractorImpl;
 import com.tokopedia.core.discovery.interfaces.DiscoveryListener;
@@ -16,6 +17,8 @@ import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.discovery.presenter.DiscoveryActivityPresenter;
 import com.tokopedia.core.discovery.presenter.FragmentDiscoveryPresenterImpl;
 import com.tokopedia.core.discovery.view.CatalogView;
+import com.tokopedia.core.dynamicfilter.model.DynamicFilterModel;
+import com.tokopedia.core.dynamicfilter.presenter.DynamicFilterPresenter;
 import com.tokopedia.core.myproduct.presenter.ImageGalleryImpl.Pair;
 import com.tokopedia.core.util.PagingHandler;
 
@@ -27,10 +30,12 @@ import java.util.List;
  */
 public class CatalogImpl extends Catalog implements DiscoveryListener {
 
-    DiscoveryInteractor discoveryInteractor;
-    WeakReference<Context> context;
-    NetworkParam.Catalog catalog;
+    private DiscoveryInteractor discoveryInteractor;
+    private NetworkParam.Catalog catalog;
     private BrowseCatalogModel catalogModel;
+
+    private DiscoveryActivityPresenter activityPresenter;
+    private int index;
 
     public CatalogImpl(CatalogView view) {
         super(view);
@@ -39,10 +44,8 @@ public class CatalogImpl extends Catalog implements DiscoveryListener {
     @Override
     public void callNetwork(DiscoveryActivityPresenter discoveryActivityPresenter) {
         // jika datanya kosong, maka itu dianggap first time.
+        this.activityPresenter = discoveryActivityPresenter;
         if (view.getDataSize() <= 0) {
-            //[START] This is for testing purpose
-//            catalog = NetworkParam.generateCatalog();
-            //[END] This is for testing purpose
 
             catalog = new NetworkParam.Catalog();
             catalog.start = 0;
@@ -80,7 +83,7 @@ public class CatalogImpl extends Catalog implements DiscoveryListener {
 
     @Override
     public void fetchArguments(Bundle argument) {
-
+        index = argument.getInt(CatalogFragment.INDEX, 0);
     }
 
     @Override
@@ -143,6 +146,11 @@ public class CatalogImpl extends Catalog implements DiscoveryListener {
 
                 Pair<List<BrowseCatalogAdapter.CatalogModel>, PagingHandler.PagingHandlerModel> listPagingHandlerModelPair = parseBrowseCategoryModel(catalogModel);
                 view.notifyChangeData(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
+                fetchDynamicAttribut();
+                break;
+            case DiscoveryListener.DYNAMIC_ATTRIBUTE:
+                DynamicFilterModel.DynamicFilterContainer dynamicFilterContainer = (DynamicFilterModel.DynamicFilterContainer) data.getModel2();
+                view.setDynamicFilterAtrribute(dynamicFilterContainer.body().getData(), index);
                 break;
             default:
 
@@ -152,5 +160,12 @@ public class CatalogImpl extends Catalog implements DiscoveryListener {
 
     public BrowseCatalogModel getCatalogModel() {
         return catalogModel;
+    }
+
+    @Override
+    public void fetchDynamicAttribut() {
+        if (activityPresenter.checkHasFilterAttrIsNull(index)) {
+            discoveryInteractor.getDynamicAttribute(view.getContext(), DynamicFilterPresenter.SEARCH_CATALOG, activityPresenter.getBrowseProductActivityModel().getDepartmentId());
+        }
     }
 }

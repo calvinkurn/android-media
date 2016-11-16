@@ -21,6 +21,7 @@ import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.discovery.interfaces.FetchNetwork;
 import com.tokopedia.core.discovery.model.BrowseCatalogModel;
 import com.tokopedia.core.discovery.presenter.DiscoveryActivityPresenter;
+import com.tokopedia.core.dynamicfilter.model.DynamicFilterModel;
 import com.tokopedia.core.home.fragment.FragmentProductFeed;
 import com.tokopedia.core.discovery.activity.BrowseProductActivity;
 import com.tokopedia.core.discovery.adapter.browseparent.BrowseCatalogAdapter;
@@ -42,6 +43,7 @@ import butterknife.Bind;
  */
 public class CatalogFragment extends BaseFragment<Catalog> implements CatalogView, FetchNetwork {
     public static final int IDFRAGMENT = 123_348;
+    public static final String INDEX = "FRAGMENT_INDEX";
 
     @Bind(R2.id.list_catalog)
     RecyclerView list_catalog;
@@ -66,7 +68,7 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
 
     private void changeLayoutType(BrowseProductActivity.GridType gridType) {
         this.gridType = gridType;
-        switch (gridType){
+        switch (gridType) {
             case GRID_1:
                 spanCount = 1;
                 linearLayoutManager = new LinearLayoutManager(getActivity());
@@ -75,14 +77,12 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
                 break;
             case GRID_2:
                 spanCount = 2;
-//                gridLayoutManager = new GridLayoutManager(getActivity(), spanCount);
                 gridLayoutManager.setSpanCount(spanCount);
                 browseCatalogAdapter.setGridView(gridType);
                 list_catalog.setLayoutManager(gridLayoutManager);
                 break;
             case GRID_3:
                 spanCount = 1;
-//                gridLayoutManager = new GridLayoutManager(getActivity(), spanCount);
                 gridLayoutManager.setSpanCount(spanCount);
                 browseCatalogAdapter.setGridView(gridType);
                 list_catalog.setLayoutManager(gridLayoutManager);
@@ -90,8 +90,8 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
         }
     }
 
-    public static CatalogFragment newInstance() {
-        
+    public static CatalogFragment newInstance(int index) {
+
         Bundle args = new Bundle();
         CatalogFragment fragment = new CatalogFragment();
         fragment.setArguments(args);
@@ -135,7 +135,7 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
                 presenter.loadMore(getActivity());
             }
         });
-        if(!browseCatalogAdapter.isEmpty()) {
+        if (!browseCatalogAdapter.isEmpty()) {
 
             Snackbar snackbar = Snackbar.make(parentView, CommonUtils.generateMessageError(getActivity(), (String) data[0]), Snackbar.LENGTH_INDEFINITE);
 
@@ -173,7 +173,7 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
 
     @Override
     public void onCallNetwork() {
-        if(getActivity() != null && getActivity() instanceof DiscoveryActivityPresenter) {
+        if (getActivity() != null && getActivity() instanceof DiscoveryActivityPresenter) {
             DiscoveryActivityPresenter discoveryActivityPresenter = (DiscoveryActivityPresenter) getActivity();
             presenter.callNetwork(discoveryActivityPresenter);
         }
@@ -197,7 +197,7 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
                 }
             }
         });
-        changeLayoutType(((BrowseProductActivity)getActivity()).getGridType());
+        changeLayoutType(((BrowseProductActivity) getActivity()).getGridType());
     }
 
     @Override
@@ -242,10 +242,10 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
     public void notifyChangeData(List<BrowseCatalogAdapter.CatalogModel> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
         browseCatalogAdapter.addAll(false, new ArrayList<RecyclerViewItem>(model));
         browseCatalogAdapter.setPagingHandlerModel(pagingHandlerModel);
-        browseCatalogAdapter.setGridView(((BrowseProductActivity)getActivity()).getGridType());
-        if(browseCatalogAdapter.checkHasNext()){
+        browseCatalogAdapter.setGridView(((BrowseProductActivity) getActivity()).getGridType());
+        if (browseCatalogAdapter.checkHasNext()) {
             browseCatalogAdapter.setIsLoading(true);
-        }else{
+        } else {
             browseCatalogAdapter.setIsLoading(false);
         }
         browseCatalogAdapter.notifyDataSetChanged();
@@ -253,8 +253,8 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
         browseCatalogAdapter.incrementPage();
     }
 
-    private int getLastItemPosition(){
-        switch (gridType){
+    private int getLastItemPosition() {
+        switch (gridType) {
             case GRID_1:
                 return linearLayoutManager.findFirstVisibleItemPosition();
             case GRID_2:
@@ -266,19 +266,19 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
 
     @Override
     public boolean isLoading() {
-        switch (gridType){
+        switch (gridType) {
             case GRID_1:
-                return browseCatalogAdapter.getItemViewType(linearLayoutManager.findLastCompletelyVisibleItemPosition())== TkpdState.RecyclerView.VIEW_LOADING;
+                return browseCatalogAdapter.getItemViewType(linearLayoutManager.findLastCompletelyVisibleItemPosition()) == TkpdState.RecyclerView.VIEW_LOADING;
             case GRID_2:
             case GRID_3:
             default:
-                return browseCatalogAdapter.getItemViewType(gridLayoutManager.findLastCompletelyVisibleItemPosition())== TkpdState.RecyclerView.VIEW_LOADING;
+                return browseCatalogAdapter.getItemViewType(gridLayoutManager.findLastCompletelyVisibleItemPosition()) == TkpdState.RecyclerView.VIEW_LOADING;
         }
     }
 
     @Override
     public int getStartIndexForQuery(String TAG) {
-        if(browseCatalogAdapter!=null && browseCatalogAdapter.getPagingHandlerModel() != null){
+        if (browseCatalogAdapter != null && browseCatalogAdapter.getPagingHandlerModel() != null) {
             return browseCatalogAdapter.getPagingHandlerModel().getStartIndex();
         } else {
             return 0;
@@ -287,7 +287,7 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
 
     @Override
     public BrowseCatalogModel getDataModel() {
-        Log.d(TAG, "presenter "+presenter);
+        Log.d(TAG, "presenter " + presenter);
         return ((CatalogImpl) presenter).getCatalogModel();
     }
 
@@ -301,5 +301,16 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
         return browseCatalogAdapter.getData() != null ? browseCatalogAdapter.getData().size() : -1;
     }
 
+    @Override
+    public Context getContext() {
+        return super.getContext();
+    }
 
+    @Override
+    public void setDynamicFilterAtrribute(DynamicFilterModel.Data filterAtrribute, int activeTab) {
+        if (filterAtrribute.getSort() != null) {
+            filterAtrribute.setSelected(filterAtrribute.getSort().get(0).getName());
+        }
+        ((BrowseProductActivity) getActivity()).setFilterAttribute(filterAtrribute, activeTab);
+    }
 }

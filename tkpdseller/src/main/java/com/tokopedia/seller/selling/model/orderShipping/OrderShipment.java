@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 
 import org.parceler.Parcel;
 
-@Parcel
+@Parcel(parcelsIndex = false)
 public class OrderShipment {
 
     @SerializedName("shipment_logo")

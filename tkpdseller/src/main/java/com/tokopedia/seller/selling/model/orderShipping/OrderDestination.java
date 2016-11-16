@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 
 import org.parceler.Parcel;
 
-@Parcel
+@Parcel(parcelsIndex = false)
 public class OrderDestination {
 
     @SerializedName("receiver_phone_is_tokopedia")
