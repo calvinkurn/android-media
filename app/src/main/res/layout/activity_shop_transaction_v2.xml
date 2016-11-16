@@ -17,6 +17,7 @@
             android:background="@drawable/bg_yellow_border_yelow"
             android:maxLines="3"
             android:padding="@dimen/padding_small"
+            android:scrollbars = "vertical"
             android:visibility="gone" />
 
 

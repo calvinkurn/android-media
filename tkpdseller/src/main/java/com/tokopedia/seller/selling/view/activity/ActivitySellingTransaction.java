@@ -10,6 +10,7 @@ import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.method.ScrollingMovementMethod;
 import android.text.util.Linkify;
 import android.view.Menu;
 import android.view.View;
@@ -73,6 +74,7 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
 
     private void initView() {
         sellerTickerView = (TextView) findViewById(R.id.seller_ticker);
+        sellerTickerView.setMovementMethod(new ScrollingMovementMethod());
         initSellerTicker();
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setOffscreenPageLimit(4);
