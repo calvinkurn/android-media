@@ -3,6 +3,8 @@ package com.tokopedia.core.manage.shop.notes.fragment;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
@@ -217,4 +219,49 @@ public class ManageShopNotesFormFragment extends BasePresenterFragment<ManageSho
         KeyboardHandler.DropKeyboard(getActivity(), getView());
         presenter.onDestroyView();
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setTextWatcher();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    private void setTextWatcher() {
+        noteContent.addTextChangedListener(watcher(layoutNoteContent));
+        noteName.addTextChangedListener(watcher(layoutNoteName));
+    }
+
+    private TextWatcher watcher(final TextInputLayout wrapper) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0) {
+                    notifyError(wrapper, null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        };
+    }
+
+    public void notifyError(TextInputLayout wrapper, String errorMessage) {
+        wrapper.setError(errorMessage);
+        if (errorMessage == null) wrapper.setErrorEnabled(false);
+        wrapper.requestFocus();
+    }
+
+
 }
