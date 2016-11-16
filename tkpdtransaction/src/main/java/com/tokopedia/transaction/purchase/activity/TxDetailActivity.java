@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.customView.OrderStatusView;
@@ -134,6 +135,11 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
         renderOrderStatus();
         renderDetailInfo();
         renderProductList();
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_TX_PEOPLE_DETAIL;
     }
 
     private void renderProductList() {

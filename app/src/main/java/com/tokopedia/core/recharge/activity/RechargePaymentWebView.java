@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.recharge.view.widget.FragmentRechargeWebView;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
@@ -18,6 +19,11 @@ public class RechargePaymentWebView extends TActivity
         implements FragmentGeneralWebView.OnFragmentInteractionListener{
 
     private FragmentRechargeWebView fragment;
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_RECHARGE_PAYMENT;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

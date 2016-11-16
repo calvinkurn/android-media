@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.geolocation.listener.GeolocationView;
 import com.tokopedia.core.geolocation.model.LocationPass;
@@ -42,6 +43,11 @@ public class GeolocationActivity extends BasePresenterActivity<GeolocationPresen
         bundle.putParcelable(EXTRA_EXISTING_LOCATION, locationPass);
         intent.putExtras(bundle);
         return intent;
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_ADDRESS_GEOLOCATION;
     }
 
     @Override

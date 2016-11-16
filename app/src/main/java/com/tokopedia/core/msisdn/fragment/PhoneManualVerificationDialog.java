@@ -20,8 +20,6 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.facade.FacadePhoneVerification;
 import com.tokopedia.core.fragment.VerificationDialog;
 import com.tokopedia.core.interfaces.PhoneVerificationInterfaces;
-import com.tokopedia.core.msisdn.presenter.MsisdnView;
-import com.tokopedia.core.service.CheckVerification;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -116,51 +114,6 @@ public class PhoneManualVerificationDialog extends DialogFragment{
     @OnClick(R2.id.close_button)
     public void onDismissDialog(){
         dismiss();
-    }
-
-    @OnClick(R2.id.code_confirm_button_manual)
-    public void DoVerification(){
-        String inputConfirmationCode = confirmationCode.getText().toString();
-        if(PhoneNumberValidation(ChooseNumber()) && VerificationCodeValidation(inputConfirmationCode)){
-//            mProgressDialog.showDialog();// SHOW LOADING
-            facadePhoneVerification.sendVerification(inputConfirmationCode, ChooseNumber(), doVerificationListener());
-        }else{
-            dismiss();
-        }
-    }
-
-    private boolean VerificationCodeValidation(String verificationCode){
-        boolean Validation = true;
-        confirmationCode.setError(null);
-        if(verificationCode.length() == 0){
-            confirmationCode.setError(getString(R.string.error_field_required));
-            confirmationCode.requestFocus();
-            Validation = false;
-        }
-        return Validation;
-    }
-
-    private PhoneVerificationInterfaces.sendVerificationListener doVerificationListener(){
-        return new PhoneVerificationInterfaces.sendVerificationListener() {
-            @Override
-            public void onVerificationSuccess() {
-                if(getActivity()!= null && getActivity() instanceof MsisdnView){
-                    ((MsisdnView)getActivity()).moveToThankYou(-99);
-                }
-                LocalCacheHandler.clearCache(getActivity(), VERIFICATION_NUMBER);
-                LocalCacheHandler cache = new LocalCacheHandler(getActivity(), CheckVerification.VERIFICATION_STATUS);
-                cache.putBoolean(CheckVerification.VERIFIED, true);
-                cache.putBoolean(CheckVerification.ALLOW_SHOP, true);
-                cache.applyEditor();
-
-            }
-
-            @Override
-            public void onProcessDone() {
-                // dismiss dialog
-//                mProgressDialog.dismiss();
-            }
-        };
     }
 
     @OnClick(R2.id.verify_sms_text)

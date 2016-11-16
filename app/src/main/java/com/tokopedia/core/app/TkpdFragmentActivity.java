@@ -13,9 +13,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.ForceUpdate;
 import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.network.NetworkConfig;
-import com.tokopedia.core.service.CheckVerification;
 import com.tokopedia.core.util.RequestManager;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
@@ -27,7 +25,6 @@ import java.util.Properties;
 public class TkpdFragmentActivity extends FragmentActivity{
 
 	private Boolean isPause = false;
-	private Boolean VerificationOpened;
 
 	public TkpdFragmentActivity() {
 	}
@@ -44,7 +41,6 @@ public class TkpdFragmentActivity extends FragmentActivity{
     protected void onStart() {
 		super.onStart();
 		isPause = false;
-		VerificationOpened = false;
 		MainApplication.setActivityState(TkpdState.Application.ACTIVITY);
 		MainApplication.setActivityname(this.getClass().getSimpleName());
 		if (!MainApplication.isTablet()) {
@@ -80,7 +76,6 @@ public class TkpdFragmentActivity extends FragmentActivity{
 	protected void onResume() {
 		super.onResume();
 		isPause = false;
-		VerificationService();
 		MainApplication.setActivityState(TkpdState.Application.FRAGMENT_ACTIVITY);
 		MainApplication.setActivityname(this.getClass().getSimpleName());
 		//RequestManager.retryRequestList(this.getClass().getSimpleName());
@@ -110,11 +105,6 @@ public class TkpdFragmentActivity extends FragmentActivity{
 		return isPause;
 	}
 
-	public void VerificationService(){
-		if(SessionHandler.isV4Login(getBaseContext())){
-			startService(new Intent(getBaseContext(), CheckVerification.class));
-		}		
-	}
 
     @Override
     protected void onNewIntent(Intent intent)
