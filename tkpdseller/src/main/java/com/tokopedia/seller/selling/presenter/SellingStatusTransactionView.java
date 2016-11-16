@@ -17,8 +17,6 @@ public interface SellingStatusTransactionView extends BaseView {
 
     boolean getUserVisible();
 
-    void initView();
-
     void setRefreshPullEnable(boolean b);
 
     String getQuery();

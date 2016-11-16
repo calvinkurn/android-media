@@ -2,9 +2,12 @@ package com.tokopedia.seller.selling.view.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -22,6 +25,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.PopupMenu;
 import android.widget.SearchView;
 import android.widget.Spinner;
@@ -61,6 +65,8 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
     RecyclerView recyclerView;
     @Bind(R2.id.fab)
     FloatingActionButton fab;
+    @Bind(R2.id.root)
+    View rootView;
     private View filterView;
     SearchView search;
     Spinner dueDate;
@@ -433,6 +439,12 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        initRefreshView();
+        initView();
+        super.onViewCreated(view, savedInstanceState);
+    }
+
     public void initView() {
         filterView = getActivity().getLayoutInflater().inflate(R.layout.filter_layout_selling_shipping, null);
         search = ButterKnife.findById(filterView, R.id.search);
@@ -501,9 +513,8 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
         search.setOnQueryTextListener(onSearchListener());
     }
 
-    @Override
     public void initRefreshView() {
-        refresh = new RefreshHandler(getActivity(), getView(), onRefreshListener());
+        refresh = new RefreshHandler(getActivity(), rootView, onRefreshListener());
     }
 
     private SearchView.OnQueryTextListener onSearchListener() {

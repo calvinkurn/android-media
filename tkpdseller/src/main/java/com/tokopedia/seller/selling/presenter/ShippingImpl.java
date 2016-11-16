@@ -80,10 +80,8 @@ public class ShippingImpl extends Shipping {
 
     @Override
     public void initData(@NonNull Context context) {
-        view.initView();
         view.setAdapter();
         view.setListener();
-        view.initRefreshView();
         if(!isAfterRotate) {
             if (isAllowLoading()) {
                 view.setRefreshPullEnabled(false);

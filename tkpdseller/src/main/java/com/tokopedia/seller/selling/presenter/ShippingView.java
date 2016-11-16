@@ -54,13 +54,9 @@ public interface ShippingView extends BaseView {
 
     void addRetry();
 
-    void initRefreshView();
-
     void setListener();
 
     void setAdapter();
-
-    void initView();
 
     String getSelectedShipping();
 

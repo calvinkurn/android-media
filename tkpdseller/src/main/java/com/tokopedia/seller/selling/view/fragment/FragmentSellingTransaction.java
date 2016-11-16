@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -279,9 +280,16 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
         return getUserVisibleHint();
     }
 
+    @Nullable
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        initView();
+        return view;
+    }
+
     public void initView() {
-        refresh = new RefreshHandler(getActivity(), getView(), onRefreshListener());
+        refresh = new RefreshHandler(getActivity(), rootView, onRefreshListener());
         setRefreshPullEnable(true);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);

@@ -51,7 +51,6 @@ public class NewOrderImpl extends NewOrder {
 
     @Override
     public void initData(@NonNull Context context) {
-        view.initView();
         view.initListener();
         if(!isAfterRotate) {
             if (isAllowLoading()) {

@@ -190,7 +190,6 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
 
     @Override
     public void initData(@NonNull Context context) {
-        view.initView();
         view.initListener();
         if (!isAfterRotate) {
             if (isAllowLoading()) {
