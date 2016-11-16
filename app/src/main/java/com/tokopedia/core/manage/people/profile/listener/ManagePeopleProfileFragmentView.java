@@ -35,10 +35,6 @@ public interface ManagePeopleProfileFragmentView {
 
     void showPhoneVerificationDialog(String userPhone);
 
-    void setOnNotifiedEmailChanged();
-
-    void setOnNotifiedPhoneVerified();
-
     void setReceiveResult(int resultCode, Bundle resultData);
 
     void showSnackBarView(String message);

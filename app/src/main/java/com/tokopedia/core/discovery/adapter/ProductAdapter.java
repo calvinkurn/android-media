@@ -133,7 +133,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_1:
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_2:
                 ViewHolderProductitem itemHolder = (ViewHolderProductitem) holder;
-                itemHolder.bindData((ProductItem) data.get(position));
+                itemHolder.bindData((ProductItem) data.get(position), itemHolder);
                 break;
             case TkpdState.RecyclerView.VIEW_TOP_ADS_LIST:
                 bindTopAdsListViewHolder((ProductFeedAdapter.ViewHolderProductTopAds) holder, position);
@@ -245,10 +245,9 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                             counterError = 0;
                             Drawable drawable;
                             drawable = new BitmapDrawable(itemView.getResources(), resource);
-                            try {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                                 hotListBannerViewPager.setBackground(drawable);
-                            } catch (NoSuchMethodError e) {
-                                e.printStackTrace();
+                            } else {
                                 hotListBannerViewPager.setBackgroundDrawable(drawable);
                             }
                         }
@@ -258,11 +257,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                         public void onLoadStarted(Drawable placeholder) {
                             super.onLoadStarted(placeholder);
                             counterError = 0;
-                            try {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                                 hotListBannerViewPager.setBackground(placeholder);
-                            } catch (NoSuchMethodError e) {
+                            } else {
                                 hotListBannerViewPager.setBackgroundDrawable(placeholder);
-                                e.printStackTrace();
                             }
                         }
                     });
@@ -625,7 +623,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             this.context = itemView.getContext();
         }
 
-        public void bindData(ProductItem data) {
+        public void bindData(ProductItem data, ViewHolderProductitem viewHolder) {
             this.data = data;
             if (data.getSpannedName() != null)
                 title.setText(data.getSpannedName());
@@ -642,15 +640,14 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             else
                 shopName.setText(Html.fromHtml(data.shop));
             ImageHandler.loadImageThumbs(context, productImage, data.imgUri);
-            if (data.getBadges() != null && badgesContainer.getChildCount() == 0) {
+            viewHolder.badgesContainer.removeAllViews();
+            if (data.getBadges() != null) {
                 for (ProductItem.Badge badges : data.getBadges()) {
-                    View view = LayoutInflater.from(context).inflate(R.layout.badge_layout, null);
-                    ImageView imageBadge = (ImageView) view.findViewById(R.id.badge);
-                    LuckyShopImage.loadImage(imageBadge, badges.getImageUrl());
-                    badgesContainer.addView(view);
+                    LuckyShopImage.loadImage(context, badges.getImageUrl(), badgesContainer);
                 }
             }
-            if (data.getLabels() != null && labelContainer.getChildCount() == 0) {
+            viewHolder.labelContainer.removeAllViews();
+            if (data.getLabels() != null) {
                 for (ProductItem.Label label : data.getLabels()) {
                     View view = LayoutInflater.from(context).inflate(R.layout.label_layout, null);
                     TextView labelText = (TextView) view.findViewById(R.id.label);

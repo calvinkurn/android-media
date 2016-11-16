@@ -19,6 +19,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ListViewHelper;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.customadapter.ListViewOrderStatus;
@@ -142,6 +143,11 @@ ShippingConfirmationDetail extends TActivity {
     String UserID;
 
     private String OrderId;
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_TX_S_CONFIRM_SHIPPING;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

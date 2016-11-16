@@ -46,6 +46,7 @@ import com.tokopedia.core.addtocart.presenter.AddToCartPresenter;
 import com.tokopedia.core.addtocart.presenter.AddToCartPresenterImpl;
 import com.tokopedia.core.addtocart.receiver.ATCResultReceiver;
 import com.tokopedia.core.addtocart.services.ATCIntentService;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
@@ -168,6 +169,10 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     private ATCResultReceiver atcReceiver;
     private Subscription subscription;
 
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_ADD_TO_CART;
+    }
 
     public static Intent createInstance(Context context, ProductCartPass data) {
         return new Intent(context, AddToCartActivity.class).putExtra(EXTRA_PRODUCT_CART, data);

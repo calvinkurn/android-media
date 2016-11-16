@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Window;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 
 public class WebViewTopAdsActivity extends TActivity {
@@ -18,6 +19,11 @@ public class WebViewTopAdsActivity extends TActivity {
         void onBackPressed();
 
         boolean canGoBack();
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_TOPADS;
     }
 
     @Override

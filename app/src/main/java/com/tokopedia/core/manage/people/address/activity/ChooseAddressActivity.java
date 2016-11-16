@@ -14,6 +14,7 @@ import android.view.MenuItem;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.fragment.ChooseAddressFragment;
@@ -31,6 +32,11 @@ public class ChooseAddressActivity extends BasePresenterActivity {
 
     public static Intent createInstance(Context context) {
         return new Intent(context, ChooseAddressActivity.class);
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_CHOOSE_ADDR;
     }
 
     @Override

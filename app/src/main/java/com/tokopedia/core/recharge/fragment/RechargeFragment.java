@@ -76,10 +76,12 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         RechargeView, AdapterView.OnItemSelectedListener,
         CompoundButton.OnCheckedChangeListener, View.OnFocusChangeListener, View.OnTouchListener {
 
-    //region final static member variabl
+    //region final static member variable
     private static final String TAG = "RechargeFragment";
     private static final int CONTACT_PICKER_RESULT = 1001;
     private static final String ARG_PARAM_CATEGORY = "ARG_PARAM_CATEGORY";
+    public static final String ARG_UTM_SOURCE = "ARG_UTM_SOURCE";
+    public static final String ARG_UTM_MEDIUM = "ARG_UTM_MEDIUM";
     private final static int OUT_OF_STOCK = 3;
     private static final String LAST_INPUT_KEY = "lastInputKey";
     private static final int LOGIN_REQUEST_CODE = 198;
@@ -117,6 +119,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     private LocalCacheHandler cacheHandlerPhoneBook;
     private LastOrder lastOrder;
     private int minLengthDefaultOperator = -1;
+    private Bundle bundle;
     //endregion
 
     public static RechargeFragment newInstance(Category category) {
@@ -166,6 +169,12 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         Bundle bundle = this.getArguments();
         category = bundle.getParcelable(ARG_PARAM_CATEGORY);
         rechargePresenter = new RechargePresenterImpl(getContext(), this);
+
+/*        super.onCreate(savedInstanceState);
+        setRetainInstance(false);
+        if (getArguments() != null) {
+            setupArguments(getArguments());
+        }*/
     }
 
     @Nullable
@@ -674,8 +683,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 "&operator_id=" + selectedProduct.getRelationships().getOperator().getData().getId().toString() +
                 "&is_promo=" + (selectedProduct.getAttributes().getPromo() != null ? "1" : "0") +
                 "&instant_checkout=" + (buyWithCreditCheckbox.isChecked() ? "1" : "0") +
-                "&utm_source=android" +
-                "&utm_medium=widget" +
+                "&utm_source=" + bundle.getString(ARG_UTM_SOURCE, "android") +
+                "&utm_medium=" + bundle.getString(ARG_UTM_MEDIUM, "widget") +
                 "&utm_campaign=" + category.getAttributes().getName() +
                 "&utm_content=" + VersionInfo.getVersionInfo(getActivity());
 
@@ -766,5 +775,11 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     @OnShowRationale(Manifest.permission.READ_CONTACTS)
     void showRationaleForContacts(final PermissionRequest request) {
         RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.READ_CONTACTS);
+    }
+
+    public void setupArguments(Bundle argument) {
+        bundle = argument;
+        category = bundle.getParcelable(ARG_PARAM_CATEGORY);
+        rechargePresenter = new RechargePresenterImpl(getContext(), this);
     }
 }

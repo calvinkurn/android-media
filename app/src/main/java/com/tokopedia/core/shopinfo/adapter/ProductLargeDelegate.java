@@ -96,7 +96,8 @@ public class ProductLargeDelegate {
     }
 
     private void setLabels(VHolder holder, List data) {
-        if (data.labels != null && holder.containerLabel.getChildCount() == 0) {
+        holder.containerLabel.removeAllViews();
+        if (data.labels != null) {
             for (ProductItem.Label label : data.labels) {
                 View view = LayoutInflater.from(holder.mainView.getContext()).inflate(R.layout.label_layout, null);
                 TextView labelText = (TextView) view.findViewById(R.id.label);
@@ -119,7 +120,8 @@ public class ProductLargeDelegate {
 
     private void setBadge(VHolder holder, List item) {
         java.util.List<ProductItem.Badge> badgeList = item.badges;
-        if (badgeList != null && holder.containerBadge.getChildCount() == 0) {
+        holder.containerBadge.removeAllViews();
+        if(badgeList != null) {
             for (int i = 0; i < badgeList.size(); i++) {
                 ProductItem.Badge badge = badgeList.get(i);
                 ImageView badgeImage = BadgeUtil.createDynamicBadge(holder.itemView.getContext());

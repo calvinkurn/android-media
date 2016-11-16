@@ -1,6 +1,8 @@
 package com.tokopedia.core.recharge.fragment;
 
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,6 +19,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.recharge.adapter.RechargeViewPagerAdapter;
 import com.tokopedia.core.recharge.model.category.CategoryData;
 import com.tokopedia.core.recharge.presenter.RechargeCategoryPresenterImpl;
@@ -36,6 +39,7 @@ import butterknife.ButterKnife;
  */
 public class RechargeCategoryFragment extends
         Fragment implements RechargeCategoryView {
+    public static final String EXTRA_ALLOW_ERROR = "extra_allow_error";
 
     @Bind(R2.id.tablayout_recharge)
     TabLayout tabLayoutRecharge;
@@ -45,11 +49,23 @@ public class RechargeCategoryFragment extends
     LinearLayout wrapperLayout;
 
     private TkpdProgressDialog mainprogress;
-
+    private Bundle extraData;
 
     public RechargeCategoryFragment() {
     }
+    public static RechargeCategoryFragment newInstance(Bundle bundle){
+        RechargeCategoryFragment fragment = new RechargeCategoryFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            setupArguments(getArguments());
+        }
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -65,6 +81,10 @@ public class RechargeCategoryFragment extends
                 TkpdProgressDialog.MAIN_PROGRESS,
                 getActivity().getWindow().getDecorView().getRootView());
         mainprogress.setLoadingViewId(R.id.include_loading);
+        fetchDataForFirstTime();
+    }
+
+    private void fetchDataForFirstTime() {
         RechargeCategoryPresenterImpl rechargeCategoryPresenter = new RechargeCategoryPresenterImpl(getActivity(), this);
 
         showFetchDataLoading();
@@ -95,7 +115,7 @@ public class RechargeCategoryFragment extends
         }
 
         final RechargeViewPagerAdapter rechargeViewPagerAdapter = new RechargeViewPagerAdapter(
-                getChildFragmentManager(), rechargeCategory.getData()
+                getChildFragmentManager(), rechargeCategory.getData(), extraData
         );
         viewpagerRecharge.setAdapter(rechargeViewPagerAdapter);
         viewpagerRecharge.getAdapter().notifyDataSetChanged();
@@ -115,6 +135,27 @@ public class RechargeCategoryFragment extends
     public void failedRenderDataRechargeCategory() {
         hideFetchDataLoading();
         ((LinearLayout) tabLayoutRecharge.getParent()).setVisibility(View.GONE);
+    }
+
+    @Override
+    public void renderErrorNetwork() {
+        if (extraData.getBoolean(EXTRA_ALLOW_ERROR)){
+            hideFetchDataLoading();
+            NetworkErrorHelper.showEmptyState(getActivity(), getView(), getRetryListener());
+        }
+    }
+
+    @NonNull
+    private NetworkErrorHelper.RetryClickedListener getRetryListener() {
+        return new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                fetchDataForFirstTime();
+            }
+        };
+    }
+    public void setupArguments(Bundle bundle) {
+        this.extraData = bundle;
     }
 
     private void addChildTablayout(CategoryData rechargeCategory, List<Integer> newRechargePositions) {

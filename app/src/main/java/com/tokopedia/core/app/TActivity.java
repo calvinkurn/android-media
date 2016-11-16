@@ -17,6 +17,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -57,7 +58,6 @@ import com.tokopedia.core.service.HadesService;
 import com.tokopedia.core.service.constant.HadesConstant;
 import com.tokopedia.core.session.Login;
 import com.tokopedia.core.session.presenter.Session;
-import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.PhoneVerificationUtil;
 import com.tokopedia.core.util.RequestManager;
@@ -82,7 +82,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by Nisie on 31/08/15.
  */
-public class TActivity extends AppCompatActivity implements SessionHandler.onLogoutListener,
+public abstract class TActivity extends AppCompatActivity implements SessionHandler.onLogoutListener,
         HadesBroadcastReceiver.ReceiveListener,
         ErrorNetworkReceiver.ReceiveListener {
 
@@ -111,6 +111,8 @@ public class TActivity extends AppCompatActivity implements SessionHandler.onLog
     //[START] This is for downloading departmend id using IntentService
 
     public PhoneVerificationUtil phoneVerificationUtil;
+
+    public abstract String getScreenName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -247,6 +249,13 @@ public class TActivity extends AppCompatActivity implements SessionHandler.onLog
     }
 
     private void sendToGTM() {
+        if(TextUtils.isEmpty(this.getScreenName())){
+            try {
+                throw new Exception("ScreenName cannot null");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         Authenticated authEvent = new Authenticated();
         authEvent.setUserFullName(SessionHandler.getLoginName(this));
@@ -255,11 +264,17 @@ public class TActivity extends AppCompatActivity implements SessionHandler.onLog
         authEvent.setUserSeller(SessionHandler.getShopID(this).equals("0") ? 0 : 1);
 
         CommonUtils.dumper("GAv4 appdata " + new JSONObject(authEvent.getAuthDataLayar()).toString());
-        ScreenTracking.eventAuthScreen(authEvent, this);
+        if(TextUtils.isEmpty(this.getScreenName()))
+        {
+            ScreenTracking.eventAuthScreen(authEvent, this.getClass().getSimpleName());
+        }else {
+            ScreenTracking.eventAuthScreen(authEvent, this.getScreenName());
+        }
+
     }
 
     private void sendToLocalytics(){
-        ScreenTracking.screenLoca(AppScreen.convertAppScreen(this));
+        ScreenTracking.screenLoca(getScreenName());
     }
 
     private HUDIntent.HUDInterface onBindServiceListener(){

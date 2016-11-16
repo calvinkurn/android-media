@@ -220,7 +220,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
                 @Override
                 public void onRetryClicked() {
                     presenter.subscribe();
-                    presenter.initData(getActivity());
+                    presenter.fetchFromNetwork(getActivity());
                 }
             });
         }
@@ -339,9 +339,6 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
         }
         Log.d(TAG, "source " + source);
         BrowseProductActivity productActivity = (BrowseProductActivity) getActivity();
-//        if (productActivity.checkHasFilterAttrIsNull(getActiveTab())){
-//            presenter.fetchDynamicAttribute(getActivity(), source, getActiveTab());
-//        }
         productActivity.changeBottomBar(source);
     }
 

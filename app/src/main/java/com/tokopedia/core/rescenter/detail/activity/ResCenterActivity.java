@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.rescenter.detail.fragment.DetailResCenterFragment;
 import com.tokopedia.core.rescenter.detail.listener.ResCenterView;
@@ -36,6 +37,11 @@ public class ResCenterActivity extends BasePresenterActivity<ResCenterPresenter>
         bundle.putParcelable(EXTRA_RES_CENTER_PASS, activityParamenterPassData);
         intent.putExtras(bundle);
         return intent;
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_INBOX_RESOLUTION_CENTER_DETAIL;
     }
 
     @Override

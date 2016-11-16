@@ -2,9 +2,12 @@ package com.tokopedia.core.customadapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -12,10 +15,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.home.presenter.WishListView;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.R;
@@ -24,6 +29,7 @@ import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,14 +45,13 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         public LinearLayout badgeContainer;
-        public LinearLayout mainContent;
+        public FlowLayout labelContainer;
+        public RelativeLayout mainContent;
         public LinearLayout wishlistContent;
         public TextView productName;
         public TextView productPrice;
         public TextView shopName;
         public ImageView productImage;
-        public View preorder;
-        public View grosir;
         public ImageView deleteWishlistBut;
         public TextView buyWishlistBut;
 
@@ -54,17 +59,15 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
         public ViewHolder(View itemView) {
             super(itemView);
             badgeContainer = (LinearLayout) itemView.findViewById(R.id.badges_container);
-            mainContent = (LinearLayout) itemView.findViewById(R.id.main_content);
-            productName = (TextView) itemView.findViewById(R.id.product_name);
-            productPrice = (TextView) itemView.findViewById(R.id.product_price);
-            shopName = (TextView) itemView.findViewById(R.id.product_shop);
+            labelContainer = (FlowLayout) itemView.findViewById(R.id.label_container);
+            mainContent = (RelativeLayout) itemView.findViewById(R.id.container);
+            productName = (TextView) itemView.findViewById(R.id.title);
+            productPrice = (TextView) itemView.findViewById(R.id.price);
+            shopName = (TextView) itemView.findViewById(R.id.shop_name);
             productImage = (ImageView) itemView.findViewById(R.id.product_image);
-            grosir = itemView.findViewById(R.id.grosir);
-            preorder = itemView.findViewById(R.id.preorder);
             wishlistContent = (LinearLayout) itemView.findViewById(R.id.wishlist);
             buyWishlistBut = (TextView) itemView.findViewById(R.id.buy_button);
             deleteWishlistBut = (ImageView) itemView.findViewById(R.id.delete_but);
-//            freeReturns = (ImageView) itemView.findViewById(R.id.prod_free_return);
         }
 
         public Context getContext() {
@@ -100,9 +103,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
     }
 
     private ViewHolder createProductView(ViewGroup viewGroup) {
-        View itemLayoutView = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.listview_product_item, null);
-
+        View itemLayoutView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.listview_product_item, null);
         ViewHolder viewHolder = new ViewHolder(itemLayoutView);
         return viewHolder;
     }
@@ -129,9 +130,23 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
         viewHolder.productPrice.setText(product.price);
         viewHolder.shopName.setText(Html.fromHtml(product.shop));
         setProductImage(viewHolder, product);
-        setWholesale(viewHolder, product);
-        setPreorder(viewHolder, product);
+        if(product.labels == null) {
+            product.labels = new ArrayList<ProductItem.Label>();
+            if (product.preorder != null && product.preorder.equals("1")) {
+                ProductItem.Label label = new ProductItem.Label();
+                label.setTitle(context.getString(R.string.preorder));
+                label.setColor(context.getString(R.string.white_hex_color));
+                product.labels.add(label);
+            }
+            if (product.wholesale != null && product.wholesale.equals("1")) {
+                ProductItem.Label label = new ProductItem.Label();
+                label.setTitle(context.getString(R.string.grosir));
+                label.setColor(context.getString(R.string.white_hex_color));
+                product.labels.add(label);
+            }
+        }
         setBadges(viewHolder, product);
+        setLabels(viewHolder, product);
         viewHolder.mainContent.setOnClickListener(onProductItemClicked(position));
     }
 
@@ -141,9 +156,36 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
         viewHolder.productPrice.setText(product.price);
         viewHolder.shopName.setText(Html.fromHtml(product.shop));
         setProductImage(viewHolder, product);
-        setWholesale(viewHolder, product);
-        setPreorder(viewHolder, product);
+        if(product.labels == null) {
+            product.labels = new ArrayList<ProductItem.Label>();
+            if (product.preorder != null && product.preorder.equals("1")) {
+                ProductItem.Label label = new ProductItem.Label();
+                label.setTitle(context.getString(R.string.preorder));
+                label.setColor(context.getString(R.string.white_hex_color));
+                product.labels.add(label);
+            }
+            if (product.wholesale != null && product.wholesale.equals("1")) {
+                ProductItem.Label label = new ProductItem.Label();
+                label.setTitle(context.getString(R.string.grosir));
+                label.setColor(context.getString(R.string.white_hex_color));
+                product.labels.add(label);
+            }
+        }
+        if(product.badges == null){
+            product.badges = new ArrayList<>();
+            if(product.isGold.equals("1")){
+                ProductItem.Badge badge = new ProductItem.Badge();
+                badge.setImageUrl("https://ecs7.tokopedia.net/img/gold-active-large.png");
+                product.badges.add(badge);
+            }
+            if(!product.luckyShop.isEmpty()){
+                ProductItem.Badge badge = new ProductItem.Badge();
+                badge.setImageUrl(product.luckyShop);
+                product.badges.add(badge);
+            }
+        }
         setBadges(viewHolder, product);
+        setLabels(viewHolder, product);
 
         if (product.getIsWishlist()) {
             viewHolder.wishlistContent.setVisibility(View.VISIBLE);
@@ -157,10 +199,9 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
                 viewHolder.buyWishlistBut.setOnClickListener(null);
             }
         }
-
-
         viewHolder.mainContent.setOnClickListener(onProductItemClicked(position));
     }
+
 
     private View.OnClickListener onProductItemClicked(final int position) {
         return new View.OnClickListener() {
@@ -179,32 +220,37 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
     }
 
     private void setBadges(ViewHolder holder, ProductItem data) {
-        holder.badgeContainer.removeAllViews();
-        if (data.getBadges() != null)
+        if (data.getBadges() != null && holder.badgeContainer.getChildCount() == 0) {
             for (ProductItem.Badge badges : data.getBadges()) {
-                View view = LayoutInflater.from(context).inflate(R.layout.badge_layout, null);
-                ImageView imageBadge = (ImageView) view.findViewById(R.id.badge);
-                holder.badgeContainer.addView(view);
-                LuckyShopImage.loadImage(imageBadge, badges.getImageUrl());
+                LuckyShopImage.loadImage(context, badges.getImageUrl(), holder.badgeContainer);
             }
+        }
     }
 
     private void setProductImage(ViewHolder holder, ProductItem product) {
         ImageHandler.loadImageFit2(holder.getContext(), holder.productImage, product.imgUri);
     }
 
-    private void setWholesale(ViewHolder holder, ProductItem data) {
-        if (data.wholesale != null)
-            holder.grosir.setVisibility(data.wholesale.equals("0") ? View.GONE : View.VISIBLE);
-        else
-            holder.grosir.setVisibility(View.GONE);
-    }
-
-    private void setPreorder(ViewHolder holder, ProductItem data) {
-        if (data.preorder != null)
-            holder.preorder.setVisibility(data.preorder.equals("0") ? View.INVISIBLE : View.VISIBLE);
-        else
-            holder.preorder.setVisibility(View.INVISIBLE);
+    private void setLabels(ViewHolder holder, ProductItem data){
+        holder.labelContainer.removeAllViews();
+        if(data.getLabels() != null){
+            for (ProductItem.Label label : data.getLabels()) {
+                View view = LayoutInflater.from(context).inflate(R.layout.label_layout, null);
+                TextView labelText = (TextView) view.findViewById(R.id.label);
+                labelText.setText(label.getTitle());
+                if(!label.getColor().toLowerCase().equals("#ffffff")){
+                    labelText.setBackgroundResource(R.drawable.bg_label);
+                    labelText.setTextColor(ContextCompat.getColor(context, R.color.white));
+                    ColorStateList tint = ColorStateList.valueOf(Color.parseColor(label.getColor()));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        labelText.setBackgroundTintList(tint);
+                    } else {
+                        ViewCompat.setBackgroundTintList(labelText, tint);
+                    }
+                }
+                holder.labelContainer.addView(view);
+            }
+        }
     }
 
     private void setProductImageWoFit(ViewHolder holder, ProductItem product) {

@@ -18,7 +18,7 @@ public class RechargeService extends GlobalAuthService<RechargeApi> {
 
     @Override
     protected String getBaseUrl() {
-        return TkpdBaseURL.RECHARGE_API_DOMAIN;
+        return TkpdBaseURL.RECHARGE_STAGING_DOMAIN;
     }
 
     @Override

@@ -191,8 +191,7 @@ public abstract class VolleyNetwork {
         return new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-                onRequestError(onResponseRequestError(volleyError)
-                        , volleyError.networkResponse.statusCode);
+
             }
         };
     }

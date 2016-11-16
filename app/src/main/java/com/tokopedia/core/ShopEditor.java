@@ -39,6 +39,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.NetworkHandler;
@@ -122,6 +123,11 @@ public class ShopEditor extends TActivity {
     private int cyear;
     private int cmonth;
     private int cday;
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_SHOP_EDITOR;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

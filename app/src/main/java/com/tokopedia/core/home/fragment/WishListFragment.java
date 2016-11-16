@@ -64,7 +64,7 @@ public class WishListFragment extends Fragment implements WishListView{
     GridLayoutProductAdapter adapter;
     TkpdProgressDialog progressDialog;
     Boolean isDeleteDialogShown;
-    SnackbarRetry snackbarRetry;
+    Boolean isLoadingMore = false;
 //    ItemDecorator itemDecorator;
 
     WishList wishList;
@@ -77,7 +77,6 @@ public class WishListFragment extends Fragment implements WishListView{
         progressDialog.setCancelable(false);
         wishList.fetchSavedsInstance(savedInstanceState);
         wishList.initDataInstance(getActivity());
-        snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), getRetryListener());
         isDeleteDialogShown = false;
     }
 
@@ -147,8 +146,6 @@ public class WishListFragment extends Fragment implements WishListView{
     @Override
     public void setAdapter() {
         recyclerView.setAdapter(adapter);
-//        itemDecorator.setRightMostView(TkpdState.RecyclerView.VIEW_PRODUCT_RIGHT);
-//        recyclerView.addItemDecoration(itemDecorator);
     }
 
     @Override
@@ -233,7 +230,7 @@ public class WishListFragment extends Fragment implements WishListView{
             swipeToRefresh.setRefreshing(false);
             NetworkErrorHelper.showSnackbar(getActivity());
         } else if (adapter.getData().size() > 0) {
-           snackbarRetry.showRetrySnackbar();
+            showLoadMoreError();
         } else {
             displayLoading(false);
             displayMainContent(false);
@@ -241,6 +238,13 @@ public class WishListFragment extends Fragment implements WishListView{
                                 getView(),
                                 getRetryListener());
         }
+    }
+
+    private void showLoadMoreError() {
+        isLoadingMore = true;
+        NetworkErrorHelper.createSnackbarWithAction(
+                getActivity(), getRetryListener()
+        ).showRetrySnackbar();
     }
 
     @Override
@@ -356,8 +360,10 @@ public class WishListFragment extends Fragment implements WishListView{
             @Override
             public void onRetryClicked() {
                 wishList.fetchDataFromInternet(getActivity());
-                if (!snackbarRetry.isShown()) {
+                if (!isLoadingMore) {
                     displayLoading(true);
+                } else {
+                    isLoadingMore = false;
                 }
             }
         };
