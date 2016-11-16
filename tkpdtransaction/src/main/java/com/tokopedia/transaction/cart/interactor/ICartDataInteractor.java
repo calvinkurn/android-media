@@ -27,4 +27,6 @@ public interface ICartDataInteractor {
 
     void editShipmentCart(ShipmentCartWrapper wrapper, Subscriber<ShipmentCartData> subscriber);
 
+    void updateCart(TKPDMapParam<String, String> paramUpdate,
+                    TKPDMapParam<String, String> paramCart, Subscriber<CartModel> subscriber);
 }

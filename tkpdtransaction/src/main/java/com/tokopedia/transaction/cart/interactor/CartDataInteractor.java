@@ -101,38 +101,17 @@ public class CartDataInteractor implements ICartDataInteractor {
     }
 
     @Override
-    public void cancelCart(TKPDMapParam<String, String> paramCancelCart,
+    public void cancelCart(final TKPDMapParam<String, String> paramCancelCart,
                            final TKPDMapParam<String, String> paramCartInfo,
                            Subscriber<CartModel> subscriber) {
-        Observable<Response<TkpdResponse>> observable = txCartActService.getApi().cancelCart(paramCancelCart);
+        Observable<Response<TkpdResponse>> observable
+                = txCartActService.getApi().cancelCart(paramCancelCart);
 
         compositeSubscription.add(observable
                 .flatMap(new Func1<Response<TkpdResponse>, Observable<Response<TkpdResponse>>>() {
                     @Override
                     public Observable<Response<TkpdResponse>> call(Response<TkpdResponse> response) {
-                        if (response.isSuccessful() && !response.body().isError()
-                                && !response.body().isNullData()) {
-                            if (!response.body().getJsonData().isNull(KEY_FLAG_IS_SUCCESS)) {
-                                try {
-                                    int status = response.body().getJsonData()
-                                            .getInt(KEY_FLAG_IS_SUCCESS);
-                                    String message = status == 1 ? response.body()
-                                            .getStatusMessages().get(0)
-                                            : response.body().getErrorMessages().get(0);
-                                    switch (status) {
-                                        case 1:
-                                            return txService.getApi().doPayment(paramCartInfo);
-                                        default:
-                                            throw new RuntimeException("Gagal");
-                                    }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                    throw new RuntimeException(e);
-                                }
-                            }
-                            throw new RuntimeException("");
-                        }
-                        throw new RuntimeException("");
+                        return getResponseObservableUpdateDelete(response, paramCartInfo);
                     }
                 })
                 .map(new Func1<Response<TkpdResponse>, CartModel>() {
@@ -175,6 +154,9 @@ public class CartDataInteractor implements ICartDataInteractor {
                         throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                     }
                 })
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
                 .subscribe(subscriber)
         );
     }
@@ -235,6 +217,93 @@ public class CartDataInteractor implements ICartDataInteractor {
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .subscribe(subscriber);
+    }
+
+    @Override
+    public void updateCart(TKPDMapParam<String, String> paramUpdate,
+                           final TKPDMapParam<String, String> paramCart,
+                           Subscriber<CartModel> subscriber) {
+        final Observable<Response<TkpdResponse>> observable = txCartActService.getApi()
+                .editCart(paramUpdate);
+        compositeSubscription.add(observable
+                .flatMap(new Func1<Response<TkpdResponse>, Observable<Response<TkpdResponse>>>() {
+                    @Override
+                    public Observable<Response<TkpdResponse>> call(Response<TkpdResponse> response) {
+                        return getResponseObservableUpdateDelete(response, paramCart);
+                    }
+                })
+                .map(new Func1<Response<TkpdResponse>, CartModel>() {
+                    @Override
+                    public CartModel call(Response<TkpdResponse> response) {
+                        if (response.isSuccessful()) {
+                            if (!response.body().isError()) {
+                                return response.body().convertDataObj(CartModel.class);
+                            } else {
+                                throw new RuntimeException(response.body().getErrorMessages().get(0));
+                            }
+                        } else {
+                            new ErrorHandler(new ErrorListener() {
+                                @Override
+                                public void onUnknown() {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                                }
+
+                                @Override
+                                public void onTimeout() {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                                }
+
+                                @Override
+                                public void onServerError() {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                                }
+
+                                @Override
+                                public void onBadRequest() {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                                }
+
+                                @Override
+                                public void onForbidden() {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                                }
+                            }, response.code());
+                        }
+                        throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                    }
+                })
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribe(subscriber));
+    }
+
+    @NonNull
+    private Observable<Response<TkpdResponse>> getResponseObservableUpdateDelete(
+            Response<TkpdResponse> response, TKPDMapParam<String, String> paramCart) {
+        if (response.isSuccessful() && !response.body().isError()
+                && !response.body().isNullData()) {
+            if (!response.body().getJsonData().isNull(KEY_FLAG_IS_SUCCESS)) {
+                try {
+                    int status = response.body().getJsonData()
+                            .getInt(KEY_FLAG_IS_SUCCESS);
+                    String message = status == 1 ? response.body()
+                            .getStatusMessages().get(0)
+                            : response.body().getErrorMessages().get(0);
+                    switch (status) {
+                        case 1:
+                            return txService.getApi().doPayment(paramCart);
+                        default:
+                            throw new RuntimeException("Gagal");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException(e);
+                }
+            }
+            throw new RuntimeException("");
+        }
+        throw new RuntimeException("");
     }
 
     @NonNull

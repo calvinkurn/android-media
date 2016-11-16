@@ -9,6 +9,7 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.cart.fragment.ShipmentCartFragment;
 import com.tokopedia.transaction.cart.model.ShipmentCartPassData;
+import com.tokopedia.transaction.cart.model.cartdata.TransactionList;
 
 
 /**
@@ -16,13 +17,13 @@ import com.tokopedia.transaction.cart.model.ShipmentCartPassData;
  */
 
 public class ShipmentCartActivity extends BasePresenterActivity {
+    public static final int INTENT_REQUEST_CODE = BasePresenterActivity.class.hashCode();
+    private static final String EXTRA_CART_DATA = "EXTRA_CART__DATA";
+    private TransactionList cartData;
 
-    private static final String EXTRA_SHIPMENT_CART_PASS_DATA = "EXTRA_SHIPMENT_CART_PASS_DATA";
-    private ShipmentCartPassData shipmentCartPassData;
-
-    public static Intent createInstance(Context context, ShipmentCartPassData passData) {
+    public static Intent createInstance(Context context, TransactionList cartData) {
         Intent intent = new Intent(context, ShipmentCartActivity.class);
-        intent.putExtra(EXTRA_SHIPMENT_CART_PASS_DATA, passData);
+        intent.putExtra(EXTRA_CART_DATA, cartData);
         return intent;
     }
 
@@ -33,7 +34,7 @@ public class ShipmentCartActivity extends BasePresenterActivity {
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-        shipmentCartPassData = extras.getParcelable(EXTRA_SHIPMENT_CART_PASS_DATA);
+        this.cartData = extras.getParcelable(EXTRA_CART_DATA);
     }
 
     @Override

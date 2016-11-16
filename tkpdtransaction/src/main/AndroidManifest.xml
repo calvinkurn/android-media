@@ -30,6 +30,10 @@
             android:name="com.tokopedia.transaction.purchase.activity.PurchaseActivity"
             android:label="@string/title_purchase"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.tokopedia.transaction.cart.activity.CartActivity"
+            android:label="@string/title_activity_cart"
+            android:screenOrientation="portrait" />
 
         <service
             android:name="com.tokopedia.transaction.purchase.services.TxActionIntentService"
