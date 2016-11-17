@@ -2501,7 +2501,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                 addProductAddToNewEtalase.setError(validate.getModel2());
                 addProductAddToNewEtalaseAlert.setError(validate.getModel2());
             }
-            if (validate.getModel1()) {
+            if (!validate.getModel1()) {
                 Snackbar.make(parentView, addProductAddToNewEtalaseAlert.getError(), Snackbar.LENGTH_LONG).show();
                 return null;
             }

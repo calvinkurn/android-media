@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by m.normansyah on 03/12/2015.
  */
-@Parcel
+@Parcel(parcelsIndex = false)
 public class ImageModel {
     // this is for url / path from sdcard
     String path;

@@ -8,7 +8,7 @@ import org.parceler.Parcel;
 /**
  * Created by noiz354 on 6/2/16.
  */
-@Parcel
+@Parcel(parcelsIndex = false)
 public class ActResponseModelData {
 
     @SerializedName("is_success")

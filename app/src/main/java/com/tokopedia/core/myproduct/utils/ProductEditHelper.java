@@ -414,7 +414,7 @@ public class ProductEditHelper {
         }
     }
 
-    @Parcel
+    @Parcel(parcelsIndex = false)
     public static class ProductEditImage{
         public ImageModel oriImageModel;
         public int imageStatus = IMAGE_STILL;
