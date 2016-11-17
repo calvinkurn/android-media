@@ -19,6 +19,7 @@ public interface SellingServiceConstant {
     String INVALID_MESSAGE_ERROR = "default";
     String NETWORK_ERROR_FLAG ="NETWORK_ERROR_FLAG";
     int INVALID_NETWORK_ERROR_FLAG = -1;
+    int MESSAGE_ERROR_FLAG_RESPONSE = -2;
 
     // HotList input
     String PAGE_KEY = "PAGE_KEY";
@@ -61,7 +62,7 @@ public interface SellingServiceConstant {
     String FAVORITE_HAS_NEXT_KEY = "FAVORITE_HAS_NEXT_KEY";
 
     // some response string
-    String noNetworkConnection = "Tidak ada koneksi";
+    String noNetworkConnection = "Terjadi Kesalahan Koneksi";
 
     // login bypass
     String LOGIN_BYPASS_MODEL_KEY = "LOGIN_BYPASS_MODEL";

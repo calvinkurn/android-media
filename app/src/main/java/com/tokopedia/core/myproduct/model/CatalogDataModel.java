@@ -40,7 +40,7 @@ public class CatalogDataModel {
         this.messageError = messageError;
     }
 
-    @Parcel
+    @Parcel(parcelsIndex = false)
     public static class Catalog extends ItemImageAndText {
         public Catalog(){}
 

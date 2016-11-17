@@ -19,6 +19,7 @@ import com.tokopedia.core.util.SessionHandler;
 
 import org.json.JSONArray;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -89,9 +90,9 @@ public class TrackingUtils extends TrackingConfig {
         getGTMEngine().eventNetworkError(error);
     }
 
-    static void eventAppsFlyerViewListingSearch(JSONArray productsId, String keyword) {
+    static void eventAppsFlyerViewListingSearch(JSONArray productsId, String keyword, ArrayList<String> prodIds) {
         Map<String, Object> listViewEvent = new HashMap<>();
-        listViewEvent.put(AFInAppEventParameterName.CONTENT_ID, productsId.toString());
+        listViewEvent.put(AFInAppEventParameterName.CONTENT_ID, prodIds);
         listViewEvent.put(AFInAppEventParameterName.CURRENCY, "IDR");
         listViewEvent.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTTYPE);
         listViewEvent.put(AFInAppEventParameterName.SEARCH_STRING, keyword);
@@ -104,9 +105,9 @@ public class TrackingUtils extends TrackingConfig {
         getAFEngine().sendTrackEvent(AFInAppEventType.SEARCH, listViewEvent);
     }
 
-    static void eventAppsFlyerContentView(JSONArray productsId, String keyword) {
+    static void eventAppsFlyerContentView(JSONArray productsId, String keyword, ArrayList<String> prodIds) {
         Map<String, Object> listViewEvent = new HashMap<>();
-        listViewEvent.put(AFInAppEventParameterName.CONTENT_ID, productsId.toString());
+        listViewEvent.put(AFInAppEventParameterName.CONTENT_ID, prodIds);
         listViewEvent.put(AFInAppEventParameterName.CURRENCY, "IDR");
         listViewEvent.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTTYPE);
         listViewEvent.put(AFInAppEventParameterName.SEARCH_STRING, keyword);

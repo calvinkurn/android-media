@@ -157,13 +157,15 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     }
 
     private void showTickerGTM(String message) {
-        if (message != null) {
-            discoveryTicker.setText(Html.fromHtml(message));
-            discoveryTicker.setVisibility(View.VISIBLE);
-            discoveryTicker.setAutoLinkMask(0);
-            Linkify.addLinks(discoveryTicker, Linkify.WEB_URLS);
-        } else {
-            discoveryTicker.setVisibility(View.GONE);
+        if (discoveryTicker != null) {
+            if (message != null) {
+                discoveryTicker.setText(Html.fromHtml(message));
+                discoveryTicker.setVisibility(View.VISIBLE);
+                discoveryTicker.setAutoLinkMask(0);
+                Linkify.addLinks(discoveryTicker, Linkify.WEB_URLS);
+            } else {
+                discoveryTicker.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -220,6 +222,8 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
                 @Override
                 public void onRetryClicked() {
                     presenter.subscribe();
+                    presenter.fetchRotationData(null);
+                    presenter.initData(getActivity());
                     presenter.fetchFromNetwork(getActivity());
                 }
             });

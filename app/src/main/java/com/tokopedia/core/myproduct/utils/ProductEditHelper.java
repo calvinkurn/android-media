@@ -53,9 +53,9 @@ public class ProductEditHelper {
 
 
     List<ImageModel> imageModelList;// original image Model
-    public ProductDetailData productDetailData;
+//    public ProductDetailData productDetailData;
     CatalogDataModel catalogDataModel;
-    private EditProductForm.Data editProductForm;
+    public EditProductForm.Data editProductForm;
 
     public ArrayList<ProductEditImage> toParcelFormatForPhotos(){
         ArrayList<ProductEditImage> productEditImages = new ArrayList<>();
@@ -213,10 +213,10 @@ public class ProductEditHelper {
             imageModelList = new LinkedList<>(imageModelList);
         }
 
-        object  = originalData.get(NetworkInteractor.PRODUCT_DETAIL_DATA);
+        /*object  = originalData.get(NetworkInteractor.PRODUCT_DETAIL_DATA);
         if(object != null && object instanceof ProductDetailData) {
             productDetailData = (ProductDetailData) object;
-        }
+        }*/
 
         object  = originalData.get(NetworkInteractor.CATALOG_MODEL_EDIT);
         if(object != null && object instanceof CatalogDataModel){
@@ -232,7 +232,7 @@ public class ProductEditHelper {
     public Pair<Integer, Map<String, String>> compareWithEdittedData(InputAddProductModel inputAddProductModel, TextDeleteModel stockStatus){
         int count = 0;
         // 1. jika nama tidak sama
-        if(!inputAddProductModel.getProductName().equals(productDetailData.getInfo().getProductName())){
+        if(!inputAddProductModel.getProductName().equals(editProductForm.getProduct().getProductName())){
             count++;
         }
 
@@ -240,8 +240,8 @@ public class ProductEditHelper {
         TextDeleteModel categoryEdit = inputAddProductModel.getCategories().get(inputAddProductModel.getCategories().size() - 1);
         CategoryDB categoryDBEdit = DbManagerImpl.getInstance().getKategoriByDepId(categoryEdit.getDepartmentId());
 
-        int lastIndex = productDetailData.getBreadcrumb().size()-1;
-        int kategoriOri = Integer.parseInt(productDetailData.getBreadcrumb().get(lastIndex).getDepartmentId());
+        int lastIndex = editProductForm.getBreadcrumb().size()-1;
+        int kategoriOri = Integer.parseInt(editProductForm.getBreadcrumb().get(lastIndex).getDepartmentId());
         CategoryDB categoryDBOld = DbManagerImpl.getInstance().getKategoriByDepId(kategoriOri);
 
         if(!categoryDBOld.equals(categoryDBEdit)){
@@ -249,43 +249,48 @@ public class ProductEditHelper {
         }
 
         // 3. deskripsi
-        if(!inputAddProductModel.getDescription().equals(productDetailData.getInfo().getProductDescription())){
+        if(!inputAddProductModel.getDescription().equals(editProductForm.getProduct().getProductShortDesc())){
             count++;
         }
 
         // 4. compare preorder
-        if(!productDetailData.getPreOrder().getPreorderProcessTime().equals(inputAddProductModel.getPreOrder()+"")){
+        if(!editProductForm.getPreorder().getPreorderProcessTime().equals(inputAddProductModel.getPreOrder()+"")){
             count++;
         }
 
         // 5. compare harga unit dan harga
         String currencyUnitEdit = inputAddProductModel.getCurrencyUnit().toLowerCase();
-        String productPrice = productDetailData.getInfo().getProductPrice().replace(".","");
-        String[] hargaDanUnitHarga = productPrice.split(" ");
-        String UnitHargaOld = hargaDanUnitHarga[0].toLowerCase();
+        String productPrice = editProductForm.getProduct().getProductPrice().replace(".","");
+
+        String UnitHargaOld = "";
+        if(editProductForm.getProduct().getProductCurrencyId().equals("1")){
+            UnitHargaOld = "rp";
+        }else{
+            UnitHargaOld = "$";
+        }
+
         if(!UnitHargaOld.equals(currencyUnitEdit)){
             count++;
         }
 
-        String harga = hargaDanUnitHarga[1];
-        if(!harga.equals(inputAddProductModel.getPrice())){
+        if(!productPrice.equals(inputAddProductModel.getPrice())){
             count++;
         }
 
 
         // 6. compare berat unit dan berat
-        String productWeightUnit = productDetailData.getInfo().getProductWeightUnit().toLowerCase();
+        String productWeightUnit = convertProductWeight(editProductForm.getProduct().getProductWeightUnit().toLowerCase());
         if(!inputAddProductModel.getWeightUnit().toLowerCase().contains(productWeightUnit)){
             count++;
         }
 
-        String productWeightOld = productDetailData.getInfo().getProductWeight().replace(".", "");
+        String productWeightOld = editProductForm.getProduct().getProductWeight().replace(".", "");
         if(!inputAddProductModel.getWeight().equals(productWeightOld)){
             count++;
         }
 
         // 7. compare minimum order
-        String productMinOrder = productDetailData.getInfo().getProductMinOrder().replace(".", "");
+        String productMinOrder = editProductForm.getProduct().getProductMinOrder().replace(".", "");
         if(Integer.parseInt(productMinOrder)!=inputAddProductModel.getMinimumOrder()){
             count++;
         }
@@ -325,7 +330,7 @@ public class ProductEditHelper {
         // 16. catalog checking
         String catalogChange = "";
         long catalog = inputAddProductModel.getCatalog();
-        long catalogOld = Long.parseLong(productDetailData.getInfo().getProductCatalogId());
+        long catalogOld = Long.parseLong(editProductForm.getCatalog().getCatalogId());
         if(catalogOld!=catalog&&catalog!=-1){
             count++;
             catalogChange += "1";
@@ -334,8 +339,8 @@ public class ProductEditHelper {
         }
 
         // 8. compare etalase
-        int productStatusOld = Integer.parseInt(productDetailData.getInfo().getProductStatus());
-        long etalaseIdOld = Long.parseLong(productDetailData.getInfo().getProductEtalaseId());
+        int productStatusOld = Integer.parseInt(editProductForm.getProduct().getProductStatus());
+        long etalaseIdOld = Long.parseLong(editProductForm.getProduct().getProductEtalaseId());
         String PRD_STATE = "";
         switch(productStatusOld){
             case NetworkInteractor.PRD_STATE_ACTIVE:
@@ -351,13 +356,13 @@ public class ProductEditHelper {
         }
 
         // set returnable 12
-        Integer productReturnable = productDetailData.getInfo().getProductReturnable();
+        Integer productReturnable = editProductForm.getInfo().getProductReturnable();
         if(productReturnable != inputAddProductModel.getReturnable() && inputAddProductModel.getReturnable() >= 0){
             count++;
         }
 
         // set bekas/baru 13
-        String prodCondOld = productDetailData.getInfo().getProductCondition().toLowerCase();
+        String prodCondOld = editProductForm.getProduct().getProductConditionName().toLowerCase(); // // TODO: 10/18/16
         int prodCondNew = inputAddProductModel.getCondition();
         int condition = -1;
         switch (prodCondOld){
@@ -376,7 +381,7 @@ public class ProductEditHelper {
         // set asuransi 14
         int asuranceNew = inputAddProductModel.getMustAsurance();
         int asuranceOld = -1;
-        switch (productDetailData.getInfo().getProductInsurance().toLowerCase()){
+        switch (editProductForm.getProduct().getProductInsurance().toLowerCase()){ // // TODO: 10/18/16
             case "ya":
                 asuranceOld = AddProductView.MUST_ASURANCE_YES;
                 break;
@@ -397,7 +402,19 @@ public class ProductEditHelper {
         return result;
     }
 
-    @Parcel
+    public static String convertProductWeight(String productWeightUnit) {
+        if(productWeightUnit != null) {
+            if(productWeightUnit.equals("1")){
+                return "gr";
+            }else{
+                return "kg";
+            }
+        }else{
+            return null;
+        }
+    }
+
+    @Parcel(parcelsIndex = false)
     public static class ProductEditImage{
         public ImageModel oriImageModel;
         public int imageStatus = IMAGE_STILL;

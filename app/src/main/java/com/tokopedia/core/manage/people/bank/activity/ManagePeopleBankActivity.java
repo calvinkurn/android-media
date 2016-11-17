@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.Menu;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
@@ -32,13 +31,13 @@ public class ManagePeopleBankActivity extends BasePresenterActivity
 
     ManageBankResultReceiver mReceiver;
 
+    public static Intent createInstance(Context context) {
+        return new Intent(context, ManagePeopleBankActivity.class);
+    }
+
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_PEOPLE_BANK;
-    }
-
-    public static Intent createInstance(Context context) {
-        return new Intent(context, ManagePeopleBankActivity.class);
     }
 
     @Override
