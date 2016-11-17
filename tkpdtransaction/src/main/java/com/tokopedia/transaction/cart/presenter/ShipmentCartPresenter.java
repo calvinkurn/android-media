@@ -28,6 +28,7 @@ import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author anggaprasetiyo on 11/2/16.
+ * modified by alvarisi
  */
 
 public class ShipmentCartPresenter implements IShipmentCartPresenter {

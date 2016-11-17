@@ -1,5 +1,8 @@
 package com.tokopedia.transaction.cart.model.calculateshipment;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -7,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * @author by alvarisi on 11/3/16.
  */
 
-public class ShipmentPackage {
+public class ShipmentPackage implements Parcelable {
 
     @SerializedName("price_total")
     @Expose
@@ -33,6 +36,31 @@ public class ShipmentPackage {
     @SerializedName("package_available")
     @Expose
     private Integer packageAvailable;
+
+    protected ShipmentPackage(Parcel in) {
+        priceTotal = in.readString();
+        shipmentId = in.readString();
+        desc = in.readString();
+        name = in.readString();
+        spId = in.readString();
+        isShowMap = in.readInt();
+        price = in.readString();
+    }
+
+    public static final Creator<ShipmentPackage> CREATOR = new Creator<ShipmentPackage>() {
+        @Override
+        public ShipmentPackage createFromParcel(Parcel in) {
+            return new ShipmentPackage(in);
+        }
+
+        @Override
+        public ShipmentPackage[] newArray(int size) {
+            return new ShipmentPackage[size];
+        }
+    };
+
+    public ShipmentPackage() {
+    }
 
     /**
      * @return The priceTotal
@@ -141,6 +169,24 @@ public class ShipmentPackage {
         shipment.setName(info);
         shipment.setSpId("0");
         shipment.setPrice("0");
+        shipment.setShipmentId(String.valueOf(0));
+        shipment.isShowMap = 0;
         return shipment;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(priceTotal);
+        parcel.writeString(shipmentId);
+        parcel.writeString(desc);
+        parcel.writeString(name);
+        parcel.writeString(spId);
+        parcel.writeInt(isShowMap);
+        parcel.writeString(price);
     }
 }

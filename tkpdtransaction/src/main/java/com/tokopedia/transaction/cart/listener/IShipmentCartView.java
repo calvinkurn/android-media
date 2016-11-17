@@ -54,5 +54,5 @@ public interface IShipmentCartView {
 
     void renderEmptyShipment();
 
-    void renderEmptyShipmentPackage();
+    void renderEmptyShipmentPackageSpinner();
 }

@@ -30,19 +30,19 @@ public class ShipmentPackageCartAdapter extends ArrayAdapter<ShipmentPackage> {
     }
 
     private ShipmentPackageCartAdapter(Context context, ArrayList<ShipmentPackage> shipmentPackages) {
-        super(context, android.R.layout.simple_list_item_1, shipmentPackages);
+        super(context, android.R.layout.simple_spinner_dropdown_item, shipmentPackages);
         mShipmentPackages = shipmentPackages;
     }
 
     @NonNull
     @Override
-    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+    public View getView(int position, View convertnView, @NonNull ViewGroup parent) {
         ShipmentPackage shipment = getItem(position);
         ViewHolder viewHolder;
         if (convertView == null) {
             viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(getContext());
-            convertView = inflater.inflate(android.R.layout.select_dialog_item, parent, false);
+            convertView = inflater.inflate(android.R.layout.simple_spinner_item, parent, false);
             viewHolder.shipment = (TextView) convertView.findViewById(android.R.id.text1);
             convertView.setTag(viewHolder);
         } else {
