@@ -546,6 +546,7 @@ public interface  TkpdBaseURL {
 
     interface TopAds {
         String URL_TOPADS = TOPADS_DOMAIN + "promo/v1.1/display/";
+        String URL_TOPADS_SHOP = TOPADS_DOMAIN + "promo/v1/display/";
 
         String PATH_DISPLAY_SHOP = "shops";
     }

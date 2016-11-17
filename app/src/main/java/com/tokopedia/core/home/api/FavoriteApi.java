@@ -15,7 +15,7 @@ import rx.Observable;
  */
 public interface FavoriteApi {
 
-    @GET(TkpdBaseURL.TopAds.URL_TOPADS + TkpdBaseURL.TopAds.PATH_DISPLAY_SHOP)
+    @GET(TkpdBaseURL.TopAds.URL_TOPADS_SHOP + TkpdBaseURL.TopAds.PATH_DISPLAY_SHOP)
     Observable<Response<TopAdsHome>> getTopAdsApi(
             @Header("Tkpd-UserId") String contentMD5,// 1
             @Header("Tkpd-SessionId") String tkpdSessionId,// 2
