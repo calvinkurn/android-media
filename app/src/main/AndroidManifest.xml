@@ -8,6 +8,8 @@
         android:minSdkVersion="15"
         android:targetSdkVersion="24" />
 
+
+    <permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" android:protectionLevel="signature"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -243,10 +245,6 @@
         <activity
             android:name="com.tokopedia.core.ShopEditor"
             android:label="@string/title_activity_shop_editor"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".Catalog"
-            android:label="@string/title_activity_catalog"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.core.PaymentEditor"

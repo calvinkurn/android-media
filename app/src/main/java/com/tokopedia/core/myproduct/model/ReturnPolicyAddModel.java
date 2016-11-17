@@ -9,7 +9,7 @@ import org.parceler.Transient;
 /**
  * Created by m.normansyah on 17/12/2015.
  */
-@Parcel
+@Parcel(parcelsIndex = false)
 public class ReturnPolicyAddModel {
 
     /**
@@ -41,7 +41,7 @@ public class ReturnPolicyAddModel {
     @Expose
     double serverProcessTime;
 
-    @Parcel
+    @Parcel(parcelsIndex = false)
     public static class Data{
 
         /**
