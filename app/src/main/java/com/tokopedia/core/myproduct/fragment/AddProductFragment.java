@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ScaleDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -2641,7 +2642,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         // 14. catalog
         Long catalogId = -1L;
         String selectedCatalog = addProductCatalog.getSelectedItem();
-        if(selectedCatalog.equals(getActivity().getString(R.string.no_catalog_selected))){
+        if(selectedCatalog.equals(getActivity().getString(R.string.no_catalog_selected))||catalogs==null){
             inputAddProductModel.setCatalog(-1);
         } else {
             for (CatalogDataModel.Catalog catalog : catalogs) {
@@ -2736,8 +2737,13 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                         int w = addProductPreOderContent.getWidth();
                         int h = addProductPreOderContent.getHeight();
                         Log.v("W-H~WHOLESALE", w + "-" + h);
-                        addProductPreOderContent.getViewTreeObserver()
-                                .removeOnGlobalLayoutListener(this);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                            addProductPreOderContent.getViewTreeObserver()
+                                    .removeOnGlobalLayoutListener(this);
+                        }else{
+                            addProductPreOderContent.getViewTreeObserver()
+                                    .removeGlobalOnLayoutListener(this);
+                        }
                     }
                 });
         if (checkNotNull(getActivity()) && getActivity() instanceof ProductSocMedActivity) {
@@ -2761,8 +2767,13 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                             int w = wholeSaleContainer.getWidth();
                             int h = wholeSaleContainer.getHeight();
                             Log.v("W-H~WHOLESALE", w + "-" + h);
-                            wholeSaleContainer.getViewTreeObserver()
-                                    .removeOnGlobalLayoutListener(this);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                                wholeSaleContainer.getViewTreeObserver()
+                                        .removeOnGlobalLayoutListener(this);
+                            }else{
+                                wholeSaleContainer.getViewTreeObserver()
+                                        .removeGlobalOnLayoutListener(this);
+                            }
                         }
                     });
             if (checkNotNull(getActivity()) && getActivity() instanceof ProductSocMedActivity) {
