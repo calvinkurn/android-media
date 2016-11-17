@@ -136,7 +136,7 @@ public class ManagePeopleBankActivity extends BasePresenterActivity
 
     @Override
     public String getScreenName() {
-        return null;
+        return AppScreen.SCREEN_PEOPLE_BANK;
     }
 
     @Override
