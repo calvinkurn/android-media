@@ -740,6 +740,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
     <string name="title_activity_manage_product">Pengaturan Produk</string>
     <string name="title_activity_choose_address">Alamat</string>
     <string name="title_activity_cart">Keranjang</string>
+    <string name="title_activity_cart_shipment">Ubah Pengiriman</string>
     <string name="title_activity_shop_editor">Ubah Informasi Toko</string>
     <string name="title_activity_share">Bagikan Produk</string>
     <string name="title_cat_toys">Mainan &amp; Hobi</string>
