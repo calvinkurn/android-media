@@ -194,6 +194,17 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
         selectedFilter.remove(key);
         Intent intent = new Intent(ACTION_SELECT_FILTER);
         intent.putExtra(EXTRA_FILTER_KEY, key);
+
+        //for prevent disable reset selected indicator for category harga
+        if(selectedFilter.containsKey("pmax")){
+            return;
+        }
+        if(selectedFilter.containsKey("pmin")){
+            return;
+        }
+        if(selectedFilter.containsKey("wholesale")){
+            return;
+        }
         intent.putExtra(EXTRA_FILTER_VALUE, false);
         sendBroadcast(intent);
     }
