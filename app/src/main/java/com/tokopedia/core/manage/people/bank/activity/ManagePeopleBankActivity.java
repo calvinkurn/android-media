@@ -139,6 +139,11 @@ public class ManagePeopleBankActivity extends BasePresenterActivity
     protected void setActionVar() {
 
     }
+                
+    @Override
+     public String getScreenName() {		
+         return AppScreen.SCREEN_PEOPLE_BANK;		
+     }
 
     @Override
     public void onBackPressed() {
