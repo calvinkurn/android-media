@@ -61,6 +61,7 @@ public class RechargeOperatorManager implements DbFlowOperation<RechargeOperator
         RechargeOperatorModelDB result =  new Select().from(RechargeOperatorModelDB.class)
                 .where(RechargeOperatorModelDB_Table.prefix.is(prefix))
                 .querySingle();
+
         if (result == null && prefix.length() == 4){
             result = new Select().from(RechargeOperatorModelDB.class)
                     .where(RechargeOperatorModelDB_Table.prefix.is(prefix.substring(0, 3)))

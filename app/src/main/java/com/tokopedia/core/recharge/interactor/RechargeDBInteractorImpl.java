@@ -74,7 +74,9 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
     }
 
     @Override
-    public void getListProductDefaultOperator(final OnGetListProduct onGetListProduct, final int categoryId, final String operatorId) {
+    public void getListProductDefaultOperator(
+            final OnGetListProduct onGetListProduct,final int categoryId, final String operatorId) {
+
         Observable.just(true)
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
