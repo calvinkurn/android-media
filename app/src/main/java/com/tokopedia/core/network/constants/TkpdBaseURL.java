@@ -28,6 +28,8 @@ public interface  TkpdBaseURL {
     String JS_ALPHA_DOMAIN = "https://js-alpha.tokopedia.com/";
     String KERO_DOMAIN = "https://kero.tokopedia.com/";
     String JAHE_DOMAIN = "https://jahe.tokopedia.com";
+    String PULSA_WEB_DOMAIN = "https://pulsa.tokopedia.com";
+    String PULSA_WEB_STAGING_DOMAIN = "https://pulsa-staging.tokopedia.com";
 
     interface Product {
         String URL_PRODUCT = BASE_DOMAIN + "v4/product/";
