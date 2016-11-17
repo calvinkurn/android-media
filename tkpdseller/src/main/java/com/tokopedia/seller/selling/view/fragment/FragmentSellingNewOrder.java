@@ -3,6 +3,7 @@ package com.tokopedia.seller.selling.view.fragment;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
@@ -53,6 +54,8 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
     RecyclerView list;
     @Bind(R2.id.fab)
     FloatingActionButton fab;
+    @Bind(R2.id.root)
+    View mainView;
     SearchView search;
     Spinner deadline;
     View filterLayout;
@@ -96,7 +99,7 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
         setRetainInstance(true);
         page = new PagingHandler();
         linearLayoutManager = new LinearLayoutManager(getActivity());
-        adapter = new BaseSellingAdapter<OrderShippingList, OrderViewHolder>(OrderShippingList.class, R.layout.selling_order_list_item, OrderViewHolder.class) {
+        adapter = new BaseSellingAdapter<OrderShippingList, OrderViewHolder>(OrderShippingList.class, getActivity(), R.layout.selling_order_list_item, OrderViewHolder.class) {
             @Override
             protected void populateViewHolder(OrderViewHolder viewHolder, OrderShippingList model, int position) {
                 viewHolder.bindDataModel(getActivity(), model);
@@ -124,7 +127,7 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
     @Override
     public void onResume() {
         super.onResume();
-        if(shouldRefreshList) {
+        if (shouldRefreshList) {
             shouldRefreshList = false;
             refresh.setRefreshing(true);
             refresh.setIsRefreshing(true);
@@ -140,8 +143,8 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == getActivity().RESULT_OK){
-            switch (requestCode){
+        if (resultCode == getActivity().RESULT_OK) {
+            switch (requestCode) {
                 case PROCESS_ORDER:
                     shouldRefreshList = true;
                     break;
@@ -149,9 +152,16 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
         }
     }
 
+    @Nullable
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        initView();
+        return view;
+    }
+
     public void initView() {
-        refresh = new RefreshHandler(getActivity(), getView(), onRefreshListener());
+        refresh = new RefreshHandler(getActivity(), mainView, onRefreshListener());
         setRefreshPullEnable(true);
         list.setLayoutManager(linearLayoutManager);
         list.setAdapter(adapter);
@@ -185,7 +195,7 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
     }
 
     @OnClick(R2.id.fab)
-    public void onClickFab(){
+    public void onClickFab() {
         bottomSheetDialog.show();
     }
 
@@ -271,8 +281,18 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
     }
 
     @Override
+    public void addEmptyView() {
+        adapter.setIsDataEmpty(true);
+    }
+
+    @Override
+    public void removeEmpty() {
+        adapter.setIsDataEmpty(false);
+    }
+
+    @Override
     protected void initPresenter() {
-        if(presenter == null) {
+        if (presenter == null) {
             presenter = new NewOrderImpl(this);
         }
     }
@@ -323,9 +343,9 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 //to avoid called itemselected when oncreate
-                if(inhibit_spinner_deadline){
+                if (inhibit_spinner_deadline) {
                     inhibit_spinner_deadline = false;
-                }else {
+                } else {
                     presenter.onDeadlineSelected();
                 }
             }

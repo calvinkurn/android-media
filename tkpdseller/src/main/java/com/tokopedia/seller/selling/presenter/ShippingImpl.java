@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
+import com.tokopedia.core.R2;
 import com.tokopedia.seller.ShippingConfirmationDetail;
 import com.tokopedia.seller.facade.FacadeActionShopTransaction;
 import com.tokopedia.seller.facade.FacadeShopTransaction;
@@ -41,9 +42,23 @@ import java.util.regex.Pattern;
  */
 public class ShippingImpl extends Shipping {
 
-    private List<Model> modelList;
+    public static final int JNE_SHIPPING = 1;
+    public static final int TIKI_SHIPPING = 2;
+    public static final int RPX_SHIPPING = 3;
+    public static final int POS_INDONESIA_SHIPPING = 4;
+    public static final int WAHANA_SHIPPING = 6;
+    public static final int PANDU_SHIPPING = 8;
+    public static final int FIRST_SHIPPING = 9;
+    public static final String LIST_MODEL = "ListModel";
+    public static final String LIST_CHECKED = "ListChecked";
+    public static final int GOJEK_SHIPPING = 10;
+    public static final int SICEPAT_SHIPPING = 11;
+    public static final int NINJA_EXPRESS_SHIPPING = 12;
+    public static final int GRAB_SHIPPING = 13;
+
+    private List<Model> modelList= new ArrayList<>();
     //    private List<Fragment> detailList;
-    private List<Model> checkedList;
+    private List<Model> checkedList= new ArrayList<>();
     private boolean isLoading;
 
     private FacadeShopTransaction facade;
@@ -65,11 +80,9 @@ public class ShippingImpl extends Shipping {
 
     @Override
     public void initData(@NonNull Context context) {
+        view.setAdapter();
+        view.setListener();
         if(!isAfterRotate) {
-            view.initView();
-            view.setAdapter();
-            view.setListener();
-            view.initRefreshView();
             if (isAllowLoading()) {
                 view.setRefreshPullEnabled(false);
             }
@@ -89,19 +102,19 @@ public class ShippingImpl extends Shipping {
 
     @Override
     public void getRotationData(Bundle argument) {
-
+        modelList = Parcels.unwrap(argument.getParcelable(LIST_MODEL));
+        checkedList = Parcels.unwrap(argument.getParcelable(LIST_CHECKED));
     }
 
     @Override
     public void saveDataBeforeRotation(Bundle argument) {
-
+        argument.putParcelable(LIST_MODEL, Parcels.wrap(modelList));
+        argument.putParcelable(LIST_CHECKED, Parcels.wrap(checkedList));
     }
 
     @Override
     public void initDataInstance(Context context) {
         this.context = context;
-        modelList = new ArrayList<>();
-        checkedList = new ArrayList<>();
         facade = FacadeShopTransaction.createInstance(context);
         view.initHandlerAndAdapter();
         checkValidationToSendGoogleAnalytic(view.getUserVisible(), context);
@@ -131,21 +144,27 @@ public class ShippingImpl extends Shipping {
     public int getServiceAgent() {
         switch (view.getSelectedShipping()) {
             case "JNE":
-                return 1;
+                return JNE_SHIPPING;
             case "TIKI":
-                return 2;
+                return TIKI_SHIPPING;
             case "RPX":
-                return 3;
+                return RPX_SHIPPING;
             case "Pos Indonesia":
-                return 4;
+                return POS_INDONESIA_SHIPPING;
             case "Wahana":
-                return 6;
-            case "Cahaya":
-                return 7;
+                return WAHANA_SHIPPING;
             case "Pandu":
-                return 8;
+                return PANDU_SHIPPING;
             case "First":
-                return 9;
+                return FIRST_SHIPPING;
+            case "GO-JEK":
+                return GOJEK_SHIPPING;
+            case "SiCepat":
+                return SICEPAT_SHIPPING;
+            case "Ninja Xpress":
+                return NINJA_EXPRESS_SHIPPING;
+            case "Grab":
+                return GRAB_SHIPPING;
             default:
                 return 0;
         }
@@ -156,7 +175,7 @@ public class ShippingImpl extends Shipping {
         if (remark.length() == 0) {
             remark.setError(context.getString(R.string.error_field_required));
         } else if (remark.length() < 5 && remark.length() > 0) {
-            remark.setError("Minimal 5 karakter");
+            remark.setError(context.getString(R2.string.char_should_min_5));
         } else if (remark.length() >= 5) {
             actionCancelShipping(pos, remark.getText().toString(), context);
             dialog.dismiss();
@@ -209,7 +228,7 @@ public class ShippingImpl extends Shipping {
         if (ValidationTextUtil.isValidSalesQuery(query)) {
             doRefresh();
         } else {
-            showToastMessage("Keyword terlalu pendek, minimal 3 karakter");
+            showToastMessage(context.getString(R2.string.keyword_min_3_char));
         }
     }
 
@@ -229,7 +248,7 @@ public class ShippingImpl extends Shipping {
             public void OnSuccess(List<Model> model, OrderShippingData Result) {
                 if (view.getPaging().getPage() == 1)
                     modelList.clear();
-                //view.getPaging().setNewParameter(Result);
+                view.getPaging().setNewParameter(Result.getPaging());
                 modelList.addAll(model);
                 view.notifyDataSetChanged(modelList);
                 onFinishConnection();
@@ -242,6 +261,7 @@ public class ShippingImpl extends Shipping {
                 onFinishConnection();
                 if (view.getPaging().getPage() == 1)
                     clearData();
+                    view.addEmptyView();
 //                if (modelList.size() == 0) {
 //                    view.addNoResult();
 //                }
@@ -346,6 +366,7 @@ public class ShippingImpl extends Shipping {
         view.removeRetry();
         view.removeLoading();
         isLoading = false;
+        view.removeEmpty();
         view.finishRefresh();
     }
 

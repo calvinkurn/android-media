@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 
 import com.bignerdranch.android.multiselector.ModalMultiSelectorCallback;
 import com.tkpd.library.ui.animation.FlipAnimation;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.customadapter.ImageGalleryAdapter;
 import com.tokopedia.core.customadapter.ImageGalleryAlbumAdapter;
@@ -47,7 +48,12 @@ public class GalleryBrowser extends TActivity implements ImageGalleryView{
 	private ListView mListView;		// ListView for viewing list of Album Photo
 	private boolean isAlbum = true;		// true - state in Album folder || false - state in Photo folder
 	ImageGalleryImpl imageGallery;
-	
+
+	@Override
+	public String getScreenName() {
+		return AppScreen.SCREEN_GALLERY_BROWSE;
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

@@ -23,25 +23,23 @@ import com.tokopedia.core.dynamicfilter.model.DynamicObject;
 import com.tokopedia.core.dynamicfilter.presenter.CategoryPresenter;
 import com.tokopedia.core.dynamicfilter.presenter.CategoryPresenterImpl;
 import com.tokopedia.core.dynamicfilter.presenter.CategoryView;
+import com.tokopedia.core.dynamicfilter.presenter.DynamicFilterPresenter;
 import com.tokopedia.core.dynamicfilter.presenter.DynamicFilterView;
 import com.tokopedia.core.session.base.BaseFragment;
 
 import org.parceler.Parcels;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
 
-import static com.tokopedia.core.dynamicfilter.presenter.DynamicFilterPresenter.BREADCRUMB;
-import static com.tokopedia.core.dynamicfilter.presenter.DynamicFilterPresenter.CURR_CATEGORY;
-import static com.tokopedia.core.dynamicfilter.presenter.DynamicFilterPresenter.FILTER_CATEGORY;
-
 /**
  * Created by noiz354 on 7/12/16.
  */
 public class DynamicFilterCategoryFragment extends BaseFragment<CategoryPresenter> implements CategoryView {
+
+    private static final String GROUPS_KEY = "groups_key";
 
     @Bind(R2.id.dynamic_filter_category_recyclerview)
     RecyclerView dynamicFilterCategory;
@@ -49,23 +47,25 @@ public class DynamicFilterCategoryFragment extends BaseFragment<CategoryPresente
     @Bind(R2.id.dynamic_filter_category_finish)
     Button dynamicFilterCategoryFinish;
 
-    DynamicCategoryAdapter dynamicCategoryAdapter;
-    TkpdProgressDialog dialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+    private DynamicCategoryAdapter dynamicCategoryAdapter;
+    private TkpdProgressDialog dialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+
     private BroadcastReceiver resetFilterReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             dynamicCategoryAdapter.reset();
         }
     };
-    private static final String GROUPS_KEY = "groups_key";
+
+
     public static DynamicFilterCategoryFragment newInstance(List<Breadcrumb> breadCrumb, List<DynamicFilterModel.Filter> filterList,
                                                             String currentCategory) {
 
         DynamicFilterCategoryFragment dynamicFilterCategoryFragment = new DynamicFilterCategoryFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable(BREADCRUMB, Parcels.wrap(breadCrumb));
-        bundle.putParcelable(FILTER_CATEGORY, Parcels.wrap(filterList));
-        bundle.putString(CURR_CATEGORY, currentCategory);
+        bundle.putParcelable(DynamicFilterPresenter.EXTRA_PRODUCT_BREADCRUMB_LIST, Parcels.wrap(breadCrumb));
+        bundle.putParcelable(DynamicFilterPresenter.EXTRA_FILTER_CATEGORY_LIST, Parcels.wrap(filterList));
+        bundle.putString(DynamicFilterPresenter.EXTRA_CURRENT_CATEGORY, currentCategory);
         dynamicFilterCategoryFragment.setArguments(bundle);
         return dynamicFilterCategoryFragment;
 
@@ -121,8 +121,10 @@ public class DynamicFilterCategoryFragment extends BaseFragment<CategoryPresente
     }
 
     @Override
-    public void setupAdapter(ArrayList<DynamicObject> dynamicParentObject) {
-        dynamicCategoryAdapter = new DynamicCategoryAdapter(getActivity(), new View.OnClickListener() {
+    public void setupAdapter(List<DynamicObject> dynamicParentObject) {
+        dynamicCategoryAdapter = new DynamicCategoryAdapter(
+                (DynamicFilterView) getActivity(), new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 int position = dynamicFilterCategory.getChildAdapterPosition(v);
@@ -130,6 +132,7 @@ public class DynamicFilterCategoryFragment extends BaseFragment<CategoryPresente
             }
         });
         dynamicCategoryAdapter.addAll(dynamicParentObject);
+        dynamicCategoryAdapter.expandCheckedCategory();
     }
 
     @Override

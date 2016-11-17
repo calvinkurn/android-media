@@ -73,7 +73,7 @@ public class BrowseShopAdapter extends ProductAdapter {
         SquareImageView itemShopImage;
 
         @Bind(R2.id.item_shop_gold)
-        ImageView itemShopGold;
+        ImageView itemShopBadge;
 
         @Bind(R2.id.item_shop_lucky)
         ImageView itemShopLucky;
@@ -105,17 +105,21 @@ public class BrowseShopAdapter extends ProductAdapter {
             itemShopCountFav.setText(shopModel.numberOfFavorite + " " + context.getString(R.string.title_favorite));
             itemShopName.setText(shopModel.shopName);
             if (shopModel.isGold.equals("1")) {
-                itemShopGold.setVisibility(View.VISIBLE);
+                itemShopBadge.setImageResource(R.drawable.ic_shop_gold);
+                itemShopBadge.setVisibility(View.VISIBLE);
             } else {
-                itemShopGold.setVisibility(View.GONE);
+                itemShopBadge.setVisibility(View.GONE);
             }
             if (shopModel.luckyImage != null){
                 LuckyShopImage.loadImage(itemShopLucky, shopModel.luckyImage);
             }
             if(shopModel.isOfficial){
                 itemShopBought.setVisibility(View.GONE);
+                itemShopBadge.setVisibility(View.VISIBLE);
+                itemShopBadge.setImageResource(R.drawable.ic_badge_official);
             } else {
                 itemShopBought.setVisibility(View.VISIBLE);
+                itemShopBadge.setVisibility(View.GONE);
             }
             mainContent.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -34,6 +34,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
@@ -112,6 +113,11 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     private boolean afterRestoreSavedInstance;
     private Subscription querySubscription;
     private QueryListener queryListener;
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_BROWSE_PRODUCT_FROM_SEARCH;
+    }
 
     public void sendHotlist(String selected) {
         fetchHotListHeader(selected);
@@ -445,6 +451,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
 
 
     public void sendQuery(String query) {
+        breadcrumbs = null;
         saveQueryCache(query);
         resetBrowseProductActivityModel();
         browseProductActivityModel.setQ(query);
@@ -643,9 +650,9 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                             if (!shareUrl.isEmpty()) {
                                 Intent sintent = new Intent(BrowseProductActivity.this, ShareActivity.class);
                                 ShareData shareData = ShareData.Builder.aShareData()
-                                        .setType(getString(R.string.share_product_key))
+                                        .setType(ShareData.DISCOVERY_TYPE)
                                         .setName(getString(R.string.message_share_catalog))
-                                        .setTextContent(getString(R.string.message_share_category) + shareUrl)
+                                        .setTextContent(getString(R.string.message_share_category))
                                         .setUri(shareUrl)
                                         .build();
                                 sintent.putExtra(ShareData.TAG, shareData);
@@ -692,7 +699,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     private void openFilter(DynamicFilterModel.Data filterAttribute, String source, int activeTab, FDest dest) {
         Log.d(TAG, "openFilter source "+source);
         List<Breadcrumb> crumb = getProductBreadCrumb();
-        if (crumb != null) {
+        if (breadcrumbs == null && crumb != null) {
             breadcrumbs = crumb;
         }
         if (filterAttribute != null && breadcrumbs != null) {
@@ -770,7 +777,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         items.add(new AHBottomNavigationItem(getString(R.string.share), R.drawable.ic_share_black_24dp));
         return items;
     }
-    
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -794,7 +801,10 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                     sendSortGTM(browseProductActivityModel.getOb());
                     break;
                 case DynamicFilterView.REQUEST_CODE:
-                    Map<String, String> filters = Parcels.unwrap(data.getParcelableExtra(DynamicFilterView.EXTRA_RESULT));
+                    Map<String, String> filters = Parcels.unwrap(
+                            data.getParcelableExtra(DynamicFilterView.EXTRA_FILTERS)
+                    );
+
                     filtersMap.put(browseProductActivityModel.getActiveTab(), filters);
                     browseProductActivityModel.setFilterOptions(filters);
                     Log.d(TAG, "filter option " + filters);
@@ -868,11 +878,18 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     }
 
     public void showEmptyState(NetworkErrorHelper.RetryClickedListener retryClickedListener){
-        NetworkErrorHelper.showEmptyState(BrowseProductActivity.this, coordinatorLayout, retryClickedListener);
+        NetworkErrorHelper.showEmptyState(BrowseProductActivity.this,container, retryClickedListener);
+        if (bottomNavigation!=null) {
+            bottomNavigation.hideBottomNavigation();
+        }
     }
 
     public void removeEmptyState(){
         NetworkErrorHelper.removeEmptyState(coordinatorLayout);
+        NetworkErrorHelper.removeEmptyState(container);
+            if (bottomNavigation!=null && bottomNavigation.isHidden() ) {
+                bottomNavigation.restoreBottomNavigation();
+            }
     }
 
     private void fetchHotListHeader(final String alias) {

@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.inboxticket.fragment.InboxTicketFragment;
 import com.tokopedia.core.inboxticket.presenter.InboxTicketPresenter;
@@ -16,6 +17,11 @@ import com.tokopedia.core.var.TkpdState;
  * Created by Nisie on 4/21/16.
  */
 public class InboxTicketActivity extends DrawerPresenterActivity<InboxTicketPresenter> {
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_INBOX_TICKET;
+    }
 
     @Override
     protected void setupURIPass(Uri data) {

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.database.model.PagingHandler;
 
 
 public class OrderShippingData {
@@ -17,7 +18,7 @@ public class OrderShippingData {
     private Order order;
     @SerializedName("paging")
     @Expose
-    private Paging paging;
+    private PagingHandler.PagingHandlerModel paging;
     @SerializedName("list")
     @Expose
     private java.util.List<OrderShippingList> orderShippingList = new ArrayList<OrderShippingList>();
@@ -63,7 +64,7 @@ public class OrderShippingData {
      * @return
      *     The paging
      */
-    public Paging getPaging() {
+    public PagingHandler.PagingHandlerModel getPaging() {
         return paging;
     }
 
@@ -72,7 +73,7 @@ public class OrderShippingData {
      * @param paging
      *     The paging
      */
-    public void setPaging(Paging paging) {
+    public void setPaging(PagingHandler.PagingHandlerModel paging) {
         this.paging = paging;
     }
 

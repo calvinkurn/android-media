@@ -67,6 +67,7 @@ import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.customView.SimpleListView;
 import com.tokopedia.core.customadapter.ListViewManageProdAdapter;
@@ -264,6 +265,10 @@ public class ManageProduct extends TkpdActivity implements
     GetShopNoteModel.ShopNoteModel returnPolicy = null;
     private DownloadResultReceiver mReceiver;
 
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_MANAGE_PROD;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

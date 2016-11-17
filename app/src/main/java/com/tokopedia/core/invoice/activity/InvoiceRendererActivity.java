@@ -19,6 +19,7 @@ import android.widget.ProgressBar;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.invoice.listener.InvoiceViewListener;
 import com.tokopedia.core.invoice.model.InvoiceRenderParam;
@@ -50,6 +51,11 @@ public class InvoiceRendererActivity extends BasePresenterActivity<InvoiceRender
         Intent intent = new Intent(context, InvoiceRendererActivity.class);
         intent.putExtra(EXTRA_INVOICE_RENDER_PARAM, data);
         return intent;
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_DOWNLOAD_INVOICE;
     }
 
     @Override

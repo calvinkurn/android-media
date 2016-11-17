@@ -54,13 +54,9 @@ public interface ShippingView extends BaseView {
 
     void addRetry();
 
-    void initRefreshView();
-
     void setListener();
 
     void setAdapter();
-
-    void initView();
 
     String getSelectedShipping();
 
@@ -71,4 +67,8 @@ public interface ShippingView extends BaseView {
     void clearMultiSelector();
 
     void moveToDetailResult(Intent intent, int i);
+
+    void addEmptyView();
+
+    void removeEmpty();
 }

@@ -33,6 +33,7 @@ import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.product.fragment.ProductDetailFragment;
 import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.recharge.fragment.RechargeCategoryFragment;
+import com.tokopedia.core.recharge.fragment.RechargeFragment;
 import com.tokopedia.core.router.DiscoveryRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.analytics.AppScreen;
@@ -45,6 +46,8 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.tokopedia.core.recharge.fragment.RechargeCategoryFragment.EXTRA_ALLOW_ERROR;
 
 /**
  * Created by Angga.Prasetiyo on 14/12/2015.
@@ -252,7 +255,24 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private void openRecharge(List<String> linkSegment, Uri uriData) {
         Log.d(TAG, "openRecharge() called with: "
                 + "linkSegment = [" + linkSegment + "], uriData = [" + uriData + "]");
-        RechargeCategoryFragment fragment = new RechargeCategoryFragment();
+        Bundle bundle = new Bundle();
+        if (isValidCampaignUrl(uriData)) {
+            Map<String, String> maps = splitQuery(uriData);
+            if (maps.get("utm_source") != null) {
+                bundle.putString(RechargeFragment.ARG_UTM_SOURCE, maps.get("utm_source"));
+            }
+            if (maps.get("utm_medium") != null) {
+                bundle.putString(RechargeFragment.ARG_UTM_MEDIUM, maps.get("utm_medium"));
+            }
+            if (maps.get("utm_campaign") != null) {
+                bundle.putString(RechargeFragment.ARG_UTM_CAMPAIGN, maps.get("utm_campaign"));
+            }
+            if (maps.get("utm_content") != null) {
+                bundle.putString(RechargeFragment.ARG_UTM_CONTENT, maps.get("utm_content"));
+            }
+        }
+        bundle.putBoolean(EXTRA_ALLOW_ERROR, true);
+        RechargeCategoryFragment fragment = RechargeCategoryFragment.newInstance(bundle);
         viewListener.inflateFragmentV4(fragment, "RECHARGE");
     }
 

@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.OneOnClick;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.instoped.InstagramAuth;
 import com.tokopedia.core.instoped.fragment.InstagramMediaFragment;
@@ -75,6 +76,11 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
         public static String APK_URL = "http://android-jenkins.office.tokopedia.com:8080/job/android-tkpd/lastSuccessfulBuild/artifact/build/outputs/apk/dev-debug.apk";
         public static String UPDATE_STABLE_URL = "http://android-jenkins.office.tokopedia.com:8080/job/android-tkpd-release/lastSuccessfulBuild/api/json";
         public static String APK_STABLE_URL = "http://android-jenkins.office.tokopedia.com:8080/job/android-tkpd-release/lastSuccessfulBuild/artifact/build/outputs/apk/release-debug.apk";
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_DEVELOPER;
     }
 
     @Override
