@@ -18,7 +18,6 @@ import android.widget.TextView;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
-import com.tokopedia.core.loyaltysystem.model.LoyaltyNotification;
 import com.tokopedia.core.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.core.rescenter.detail.activity.ResCenterActivity;
 import com.tokopedia.core.rescenter.detail.model.passdata.ActivityParamenterPassData;
@@ -429,8 +428,7 @@ public class TxListPresenterImpl implements TxListPresenter {
         viewListener.showDialog(builder.create());
     }
 
-    private Dialog generateDialogConfirm(final Context context, int typeInstance,
-                                         final OrderData orderData) {
+    private Dialog generateDialogConfirm(final Context context, final OrderData orderData) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(context.getString(R.string.label_title_dialog_order_received));
         builder.setMessage(
