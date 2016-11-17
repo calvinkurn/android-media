@@ -856,7 +856,7 @@ Namun tidak perlu khawatir karena staff kami selalu melakukan pengecekan.]]>
     <string name="dialog_package_received">
  <![CDATA[
 Apakah pesanan dari toko xx_shop_name_xx sudah Anda terima?  <br /> <br />
-Pilih “Ya” jika Anda sudah menerima pesanan dengan baik dan lengkap.<br />
+Pilih “Selesai” jika Anda sudah menerima pesanan dengan baik dan lengkap.<br />
 Transaksi akan dinyatakan selesai, dan dana otomatis diteruskan ke penjual.<br />
 Pilih “Komplain” jika pesanan Anda bermasalah.
 ]]>
@@ -1757,6 +1757,6 @@ di Tokopedia Sekarang!</string>
     <string name="grosir">Grosir</string>
     <string name="white_hex_color">#ffffff</string>
     <string name="label_title_dialog_order_received">Sudah Terima</string>
-    <string name="label_title_dialog_order_received_free_return">Konfirmasi Terima Pengiriman</string>
+    <string name="label_title_dialog_order_received_free_return">Sudah Terima</string>
 
 </resources>

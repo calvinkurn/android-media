@@ -477,7 +477,11 @@ public class TxListPresenterImpl implements TxListPresenter {
                                          final OrderData orderData) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(context.getString(R.string.label_title_dialog_order_received));
-        builder.setMessage(Html.fromHtml(context.getString(R.string.dialog_package_received)));
+        builder.setMessage(
+                Html.fromHtml(context.getString(R.string.dialog_package_received).replace(
+                        "xx_shop_name_xx", orderData.getOrderShop().getShopName()
+                ))
+        );
         builder.setNegativeButton(context.getString(R.string.title_cancel),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
