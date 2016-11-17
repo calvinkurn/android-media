@@ -36,11 +36,6 @@ public class ManagePeopleBankActivity extends BasePresenterActivity
     }
 
     @Override
-    public String getScreenName() {
-        return AppScreen.SCREEN_PEOPLE_BANK;
-    }
-
-    @Override
     protected void setupURIPass(Uri data) {
 
     }
@@ -138,10 +133,10 @@ public class ManagePeopleBankActivity extends BasePresenterActivity
     protected void setActionVar() {
 
     }
-                
+
     @Override
-     public String getScreenName() {		
-         return AppScreen.SCREEN_PEOPLE_BANK;		
+     public String getScreenName() {
+         return AppScreen.SCREEN_PEOPLE_BANK;
      }
 
     @Override

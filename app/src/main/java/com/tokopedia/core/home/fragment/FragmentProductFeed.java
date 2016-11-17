@@ -27,11 +27,11 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.home.adapter.DataFeedAdapter;
-import com.tokopedia.core.home.util.DefaultRetryListener;
-import com.tokopedia.core.home.util.ItemDecorator;
 import com.tokopedia.core.home.presenter.ProductFeed;
 import com.tokopedia.core.home.presenter.ProductFeed2Impl;
 import com.tokopedia.core.home.presenter.ProductFeedView;
+import com.tokopedia.core.home.util.DefaultRetryListener;
+import com.tokopedia.core.home.util.ItemDecorator;
 import com.tokopedia.core.instoped.InstagramAuth;
 import com.tokopedia.core.myproduct.ProductActivity;
 import com.tokopedia.core.util.RetryHandler;
@@ -91,6 +91,7 @@ public class FragmentProductFeed extends Fragment implements ProductFeedView, De
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_index_main_v2, container, false);
+
         ButterKnife.bind(this, parentView);
         productFeedPresenter.initAnalyticsHandler(getActivity());
 
