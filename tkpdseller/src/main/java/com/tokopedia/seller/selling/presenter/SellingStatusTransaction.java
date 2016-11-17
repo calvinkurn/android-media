@@ -14,13 +14,17 @@ public abstract class SellingStatusTransaction extends BaseImpl<SellingStatusTra
         super(view);
     }
 
-    public abstract void callNetworkTransaction(Context context, String search, String filter, String startDate, String endDate);
-
-    public abstract void callNetworkStatus(Context context, String search);
-
-    public abstract void loadMore(Context context);
-
-    public abstract PagingHandler getPaging();
-
     public abstract void checkValidationToSendGoogleAnalytic(boolean isVisibleToUser, Context context);
+
+    public abstract void getStatusTransactionList(boolean isVisibleToUser, SellingStatusTransactionImpl.Type type);
+
+    public abstract void onQuerySubmit(String query);
+
+    public abstract void onQueryChange(String newText);
+
+    public abstract void onRefreshView();
+
+    public abstract void onScrollList(boolean isLastItemVisible);
+
+    public abstract void refreshOnFilter();
 }

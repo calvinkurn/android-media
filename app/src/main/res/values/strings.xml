@@ -699,6 +699,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
     </string-array>
 
     <string name="title_saldo_tokopedia">Saldo Tokopedia</string>
+    <string name="title_transfer">Transfer</string>
     <string name="title_mandiri_clickpay">Mandiri Clickpay</string>
     <string name="title_mandiri_ecash">Mandiri Ecash</string>
     <string name="title_bca_klikpay">BCA Klikpay</string>
@@ -1065,6 +1066,10 @@ Jika Anda memiliki masalah dengan pemesanan Anda, mohon klik tombol komplain dan
     <string name="shipping_cahaya">Cahaya</string>
     <string name="shipping_pandu">Pandu</string>
     <string name="shipping_first">First</string>
+    <string name="shipping_gojek">GO-JEK</string>
+    <string name="shipping_sicepat">SiCepat</string>
+    <string name="shipping_ninja">Ninja Xpress</string>
+    <string name="shipping_grab">Grab</string>
     <string name="msg_remove_wishlist">Sukses menghapus wishlist</string>
     <string name="msg_add_wishlist">Sukses menambah wishlist</string>
     <string name="go_to_wishlist">Lihat Wishlist</string>
@@ -1754,6 +1759,13 @@ di Tokopedia Sekarang!</string>
     <string name="preorder">PO</string>
     <string name="grosir">Grosir</string>
     <string name="white_hex_color">#ffffff</string>
+    <string name="char_should_min_5">Minimal 5 karakter</string>
+    <string name="keyword_min_3_char">Keyword terlalu pendek, minimal 3 karakter</string>
+    <string name="title_reason_reject">Alasan Penolakan:</string>
+
+    <string name="item_choose_time_end">Pilih Jatuh Tempo</string>
+    <string name="item_choose_courrier">Pilih Kurir</string>
+
     <string name="success_delete_shop_note">Anda berhasil menghapus catatan.</string>
     <string name="error_max_shop_notes_content_length">Maksimal panjang catatan adalah 6000 karakter</string>
     <string name="error_max_shop_notes_title_length">Maksimal panjang judul catatan adalah 128 karakter</string>
