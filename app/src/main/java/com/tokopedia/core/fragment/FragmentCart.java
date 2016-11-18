@@ -1638,7 +1638,7 @@ public class FragmentCart extends Fragment implements CartInterfaces.FragmentCar
             tvTickerGTM.setAutoLinkMask(0);
             Linkify.addLinks(tvTickerGTM, Linkify.WEB_URLS);
         } else {
-            tvTickerGTM.setVisibility(View.VISIBLE);
+            tvTickerGTM.setVisibility(View.GONE);
         }
     }
 
@@ -2090,6 +2090,7 @@ public class FragmentCart extends Fragment implements CartInterfaces.FragmentCar
         interactor.updateInsurance(context, maps, new PaymentNetInteractor.OnUpdateInsurance() {
                     @Override
                     public void onSuccess(String message) {
+                        CancelEdit();
                         GetCartInfoRetrofit();
                     }
 
