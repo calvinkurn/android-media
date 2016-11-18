@@ -42,7 +42,6 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private static final int TYPE_CART_ITEM = R.layout.cart_item_holder;
     private final Fragment hostFragment;
     private final CartAction cartAction;
-    private boolean editMode;
 
     private List<Object> dataList = new ArrayList<>();
 
@@ -57,14 +56,28 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void onSubmitEditCart(TransactionList cartData, List<ProductEditData> cartProductEditDataList);
     }
 
-    public void enableEditMode() {
-        this.editMode = true;
-        this.notifyDataSetChanged();
+    private void enableEditMode(TransactionList cartData) {
+        for (int i = 0; i < dataList.size(); i++) {
+            if (dataList.get(i) instanceof CartItemEditable
+                    && ((CartItemEditable) dataList.get(i)).getTransactionList().getCartString()
+                    .equals(cartData.getCartString())) {
+                ((CartItemEditable) dataList.get(i)).setEditMode(true);
+                this.notifyItemChanged(i);
+                return;
+            }
+        }
     }
 
-    public void disableEditMode() {
-        this.editMode = false;
-        this.notifyDataSetChanged();
+    private void disableEditMode(TransactionList cartData) {
+        for (int i = 0; i < dataList.size(); i++) {
+            if (dataList.get(i) instanceof CartItemEditable
+                    && ((CartItemEditable) dataList.get(i)).getTransactionList().getCartString()
+                    .equals(cartData.getCartString())) {
+                ((CartItemEditable) dataList.get(i)).setEditMode(false);
+                this.notifyItemChanged(i);
+                return;
+            }
+        }
     }
 
     public CartItemAdapter(Fragment hostFragment, CartAction cartAction) {
@@ -126,28 +139,17 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holder.tvShipment.setText(String.format("%s - %s (Ubah)",
                 cartData.getCartShipments().getShipmentName(),
                 cartData.getCartShipments().getShipmentPackageName()));
-        holder.holderActionEditor.setVisibility(editMode ? View.VISIBLE : View.GONE);
-        
+        holder.holderActionEditor.setVisibility(data.isEditMode() ? View.VISIBLE : View.GONE);
+
         ArrayAdapter<CartInsurance> cartInsuranceAdapter
                 = new ArrayAdapter<>(
                 hostFragment.getActivity(), android.R.layout.simple_spinner_item,
                 CartInsurance.createListForAdapter()
         );
+        cartInsuranceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         holder.spUseInsurance.setAdapter(cartInsuranceAdapter);
 
-        if (editMode) {
-            holder.holderActionEditor.setVisibility(View.VISIBLE);
-            holder.holderContainer.setCardBackgroundColor(
-                    hostFragment.getResources().getColor(R.color.grey_100)
-            );
-            adapterProduct.enableEditMode();
-        } else {
-            holder.holderActionEditor.setVisibility(View.GONE);
-            holder.holderContainer.setCardBackgroundColor(
-                    hostFragment.getResources().getColor(R.color.white)
-            );
-            adapterProduct.disableEditMode();
-        }
+        renderEditableMode(holder, data, adapterProduct);
 
         holder.tvShippingAddress.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -185,7 +187,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             cartAction.onCancelCart(cartData);
                             return true;
                         } else if (i == R.id.action_cart_edit) {
-                            enableEditMode();
+                            enableEditMode(cartData);
                             return true;
                         }
                         return false;
@@ -198,7 +200,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holder.btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                disableEditMode();
+                disableEditMode(cartData);
                 adapterProduct.disableEditMode();
             }
         });
@@ -214,6 +216,27 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
         });
 
+    }
+
+    private void renderEditableMode(ViewHolder holder, CartItemEditable data,
+                                    CartProductItemAdapter adapterProduct) {
+        if (data.isEditMode()) {
+            holder.holderActionEditor.setVisibility(View.VISIBLE);
+            holder.holderContainer.setCardBackgroundColor(
+                    hostFragment.getResources().getColor(R.color.grey_100)
+            );
+            holder.btnOverflow.setEnabled(false);
+            adapterProduct.enableEditMode();
+            adapterProduct.notifyDataSetChanged();
+        } else {
+            holder.holderActionEditor.setVisibility(View.GONE);
+            holder.holderContainer.setCardBackgroundColor(
+                    hostFragment.getResources().getColor(R.color.white)
+            );
+            holder.btnOverflow.setEnabled(true);
+            adapterProduct.disableEditMode();
+            adapterProduct.notifyDataSetChanged();
+        }
     }
 
     @Override
