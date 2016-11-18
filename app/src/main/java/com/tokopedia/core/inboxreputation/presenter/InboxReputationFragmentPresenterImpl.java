@@ -383,7 +383,7 @@ public class InboxReputationFragmentPresenterImpl implements InboxReputationFrag
         param.setAct(ACT_GET_REPUTATION);
         param.setNav(viewListener.getArguments().getString(PARAM_NAV));
         param.setKeyword(invoiceId);
-        param.setFilter(getFilter());
+        param.setFilter("");
         return param.getInboxReputationParam();
     }
 
