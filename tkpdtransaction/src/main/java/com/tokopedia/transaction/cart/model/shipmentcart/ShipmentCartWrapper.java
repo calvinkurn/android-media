@@ -33,7 +33,7 @@ public class ShipmentCartWrapper {
         maps.put("shipment_id", this.shipmentId);
         maps.put("shipment_package_id", this.shipmentPackageId);
         maps.put("shop_id", this.shopId);
-        return AuthUtil.generateParamsNetwork(MainApplication.getAppContext(), maps);
+        return maps;
     }
 
     public String getShopId() {

@@ -3,12 +3,19 @@ package com.tokopedia.transaction.cart.model.shipmentcart;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 /**
  * @author by alvarisi on 11/3/16.
  */
 
 public class ShipmentCartData implements Parcelable {
+    @SerializedName("message_status")
+    @Expose
     private String message;
+    @SerializedName("status")
+    @Expose
     private String status;
 
     public ShipmentCartData() {

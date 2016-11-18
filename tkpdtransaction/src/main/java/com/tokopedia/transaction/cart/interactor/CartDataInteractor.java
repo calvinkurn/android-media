@@ -25,6 +25,7 @@ import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
@@ -328,12 +329,30 @@ public class CartDataInteractor implements ICartDataInteractor {
                             if (!response.body().isError()) {
                                 if (!response.body().isNullData() &&
                                         !response.body().getJsonData().isNull(KEY_FLAG_IS_SUCCESS)){
-                                    return response.body().convertDataObj(ShipmentCartData.class);
+                                    int status = 0;
+                                    try {
+                                        status = response.body().getJsonData()
+                                                .getInt(KEY_FLAG_IS_SUCCESS);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                    String message;
+                                    if (status == 1) {
+                                        message = response.body()
+                                                .getStatusMessages().get(0);
+                                    }
+                                    else {
+                                        message = response.body().getErrorMessages().get(0);
+                                    }
+                                    ShipmentCartData shipmentCartData = new ShipmentCartData();
+                                    shipmentCartData.setStatus(String.valueOf(status));
+                                    shipmentCartData.setMessage(message);
+                                    return shipmentCartData;
                                 }else {
                                     throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_NULL_DATA);
                                 }
                             } else  {
-                                throw new RuntimeException(response.body().getErrorMessages().get(0));
+                                throw new RuntimeException();
                             }
                         } else {
                             new ErrorHandler(new ErrorListener() {

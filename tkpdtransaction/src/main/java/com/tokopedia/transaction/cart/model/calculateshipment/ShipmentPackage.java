@@ -26,7 +26,7 @@ public class ShipmentPackage implements Parcelable {
     private String name;
     @SerializedName("sp_id")
     @Expose
-    private String spId;
+    private String shipmentPackageId;
     @SerializedName("is_show_map")
     @Expose
     private int isShowMap;
@@ -42,7 +42,7 @@ public class ShipmentPackage implements Parcelable {
         shipmentId = in.readString();
         desc = in.readString();
         name = in.readString();
-        spId = in.readString();
+        shipmentPackageId = in.readString();
         isShowMap = in.readInt();
         price = in.readString();
     }
@@ -119,17 +119,17 @@ public class ShipmentPackage implements Parcelable {
     }
 
     /**
-     * @return The spId
+     * @return The shipmentPackageId
      */
-    public String getSpId() {
-        return spId;
+    public String getShipmentPackageId() {
+        return shipmentPackageId;
     }
 
     /**
-     * @param spId The sp_id
+     * @param shipmentPackageId The sp_id
      */
-    public void setSpId(String spId) {
-        this.spId = spId;
+    public void setShipmentPackageId(String shipmentPackageId) {
+        this.shipmentPackageId = shipmentPackageId;
     }
 
     /**
@@ -167,7 +167,7 @@ public class ShipmentPackage implements Parcelable {
     public static ShipmentPackage createSelectionInfo(String info) {
         ShipmentPackage shipment = new ShipmentPackage();
         shipment.setName(info);
-        shipment.setSpId("0");
+        shipment.setShipmentPackageId("0");
         shipment.setPrice("0");
         shipment.setShipmentId(String.valueOf(0));
         shipment.isShowMap = 0;
@@ -185,7 +185,7 @@ public class ShipmentPackage implements Parcelable {
         parcel.writeString(shipmentId);
         parcel.writeString(desc);
         parcel.writeString(name);
-        parcel.writeString(spId);
+        parcel.writeString(shipmentPackageId);
         parcel.writeInt(isShowMap);
         parcel.writeString(price);
     }

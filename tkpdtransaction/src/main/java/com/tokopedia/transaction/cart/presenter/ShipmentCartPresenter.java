@@ -1,7 +1,9 @@
 package com.tokopedia.transaction.cart.presenter;
 
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.geolocation.model.LocationPass;
 import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.transaction.cart.interactor.CartDataInteractor;
 import com.tokopedia.transaction.cart.interactor.ICartDataInteractor;
@@ -112,7 +114,7 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
     public void processEditShipmentCart(ShipmentCartWrapper wrapper) {
         if (this.view != null) {
             this.view.showLoading();
-            this.interactor.editShipmentCart(wrapper.getParams(), new Subscriber<ShipmentCartData>() {
+            this.interactor.editShipmentCart(AuthUtil.generateParamsNetwork(view.getActivity(), wrapper.getParams()), new Subscriber<ShipmentCartData>() {
                 @Override
                 public void onCompleted() {
                     view.dismisLoading();

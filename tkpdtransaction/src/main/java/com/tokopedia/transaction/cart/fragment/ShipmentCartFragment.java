@@ -217,8 +217,8 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
                 ShipmentPackage shipmentPackage = (ShipmentPackage) adapterView.getSelectedItem();
 
                 wrapper.setShipmentPackageId(
-                        shipmentPackage.getShipmentId() != null ?
-                                shipmentPackage.getShipmentId() : String.valueOf(0)
+                        shipmentPackage.getShipmentPackageId() != null ?
+                                shipmentPackage.getShipmentPackageId() : String.valueOf(0)
                 );
 
                 tvPrice.setText(shipmentPackage.getPrice());
@@ -260,7 +260,7 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
                 }
             }
             spShipmentPackage.setAdapter(adapterShipmentPackage);
-            wrapper.setShipmentPackageId(shipmentPackages.get(selectedPosition).getShipmentId());
+            wrapper.setShipmentPackageId(shipmentPackages.get(selectedPosition).getShipmentPackageId());
             spShipmentPackage.setSelection(selectedPosition);
         } else {
             renderEmptyShipmentPackageSpinner();
