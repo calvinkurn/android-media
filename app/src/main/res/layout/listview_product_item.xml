@@ -25,6 +25,7 @@
         android:layout_marginTop="5dp"
         android:ellipsize="end"
         android:maxLines="2"
+        android:maxHeight="38dp"
         android:text="Nexus 5X 32 GB sedia carbon black, ice blue,  pure white dan juga warna rose gold"
         android:textColor="@color/tkpd_main_green"
         android:textSize="15sp" />
