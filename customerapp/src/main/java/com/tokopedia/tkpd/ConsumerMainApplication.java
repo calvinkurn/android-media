@@ -12,9 +12,9 @@ public class ConsumerMainApplication extends MainApplication {
 
     @Override
     public void onCreate() {
-        super.onCreate();
         HockeyAppHelper.setEnableDistribution(BuildConfig.ENABLE_DISTRIBUTION);
         InstabugHelper.setEnableDistribution(BuildConfig.ENABLE_DISTRIBUTION);
         InstabugHelper.setDebug(BuildConfig.DEBUG);
+        super.onCreate();
     }
 }
