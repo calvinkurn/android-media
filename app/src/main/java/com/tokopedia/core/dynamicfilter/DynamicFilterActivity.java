@@ -283,6 +283,19 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
     }
 
     private boolean isFormValid() {
+        boolean isFormValid;
+        if (selectedFilter.containsKey(FILTER_SELECTED_PRICE_MAX)
+                || selectedFilter.containsKey(FILTER_SELECTED_PRICE_MIN)) {
+            isFormValid = isPriceFormValid();
+        } else {
+            //other form is doesn't have validation so always return valid
+            isFormValid = true;
+        }
+
+        return isFormValid;
+    }
+
+    private boolean isPriceFormValid() {
         boolean isFormValid = false;
         if (selectedFilter != null && selectedFilter.size() > 0) {
             double priceMin = -1;
