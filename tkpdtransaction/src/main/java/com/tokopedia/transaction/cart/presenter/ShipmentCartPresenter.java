@@ -76,7 +76,7 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
             if (!this.view.isLoading()) {
                 this.view.showLoading();
             }
-            this.interactor.calculateShipment(wrapper, new Subscriber<CalculateShipmentData>() {
+            this.interactor.calculateShipment(wrapper.getParams(), new Subscriber<CalculateShipmentData>() {
                 @Override
                 public void onCompleted() {
                     view.dismisLoading();
@@ -112,7 +112,7 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
     public void processEditShipmentCart(ShipmentCartWrapper wrapper) {
         if (this.view != null) {
             this.view.showLoading();
-            this.interactor.editShipmentCart(wrapper, new Subscriber<ShipmentCartData>() {
+            this.interactor.editShipmentCart(wrapper.getParams(), new Subscriber<ShipmentCartData>() {
                 @Override
                 public void onCompleted() {
                     view.dismisLoading();
@@ -139,7 +139,7 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
     public void processSaveLocationShipment(SaveLocationWrapper wrapper) {
         if (this.view != null) {
             this.view.showLoading();
-            this.interactor.editLocationShipment(wrapper, new Subscriber<SaveLocationData>() {
+            this.interactor.editLocationShipment(wrapper.getParams(), new Subscriber<SaveLocationData>() {
                 @Override
                 public void onCompleted() {
                 }

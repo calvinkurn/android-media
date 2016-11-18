@@ -1,6 +1,8 @@
 package com.tokopedia.transaction.cart.model.savelocation;
 
 
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 /**
@@ -23,7 +25,7 @@ public class SaveLocationWrapper {
         map.put("longitude", this.longitude);
         map.put("act", "edit_address");
         map.put("is_from_cart", "1");
-        return map;
+        return AuthUtil.generateParamsNetwork(MainApplication.getAppContext(), map);
     }
 
     public SaveLocationData getData() {

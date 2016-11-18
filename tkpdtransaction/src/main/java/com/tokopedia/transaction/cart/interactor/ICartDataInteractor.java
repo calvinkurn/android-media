@@ -25,11 +25,11 @@ public interface ICartDataInteractor {
 
     void calculateCart(TKPDMapParam<String, String> param, Subscriber<Object> subscriber);
 
-    void calculateShipment(CalculateShipmentWrapper wrapper, Subscriber<CalculateShipmentData> subscriber);
+    void calculateShipment(TKPDMapParam<String, String> param, Subscriber<CalculateShipmentData> subscriber);
 
-    void editShipmentCart(ShipmentCartWrapper wrapper, Subscriber<ShipmentCartData> subscriber);
+    void editShipmentCart(TKPDMapParam<String, String> param, Subscriber<ShipmentCartData> subscriber);
 
-    void editLocationShipment(SaveLocationWrapper wrapper, Subscriber<SaveLocationData> subscriber);
+    void editLocationShipment(TKPDMapParam<String, String> param, Subscriber<SaveLocationData> subscriber);
 
     void updateCart(TKPDMapParam<String, String> paramUpdate,
                     TKPDMapParam<String, String> paramCart, Subscriber<CartModel> subscriber);

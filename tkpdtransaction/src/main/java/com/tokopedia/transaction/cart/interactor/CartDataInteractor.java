@@ -165,15 +165,15 @@ public class CartDataInteractor implements ICartDataInteractor {
     }
 
     @Override
-    public void calculateShipment(CalculateShipmentWrapper wrapper, Subscriber<CalculateShipmentData> subscriber) {
-        Observable.just(wrapper)
-                .flatMap(new Func1<CalculateShipmentWrapper, Observable<Response<TkpdResponse>>>() {
+    public void calculateShipment(TKPDMapParam<String, String> param, Subscriber<CalculateShipmentData> subscriber) {
+        Observable.just(param)
+                .flatMap(new Func1<TKPDMapParam<String, String>, Observable<Response<TkpdResponse>>>() {
                     @Override
-                    public Observable<Response<TkpdResponse>> call(CalculateShipmentWrapper wrapper) {
+                    public Observable<Response<TkpdResponse>> call(TKPDMapParam<String, String> stringStringTKPDMapParam) {
                         TXCartService service = new TXCartService();
                         return service
                                 .getApi()
-                                .calculateCart(wrapper.getParams());
+                                .calculateCart(stringStringTKPDMapParam);
                     }
                 })
                 .map(new Func1<Response<TkpdResponse>, CalculateShipmentData>() {
@@ -310,15 +310,15 @@ public class CartDataInteractor implements ICartDataInteractor {
     }
 
     @Override
-    public void editShipmentCart(ShipmentCartWrapper wrapper, Subscriber<ShipmentCartData> subscriber) {
-        Observable.just(wrapper)
-                .flatMap(new Func1<ShipmentCartWrapper, Observable<Response<TkpdResponse>>>() {
+    public void editShipmentCart(TKPDMapParam<String, String> param, Subscriber<ShipmentCartData> subscriber) {
+        Observable.just(param)
+                .flatMap(new Func1<TKPDMapParam<String, String>, Observable<Response<TkpdResponse>>>() {
                     @Override
-                    public Observable<Response<TkpdResponse>> call(ShipmentCartWrapper wrapper) {
+                    public Observable<Response<TkpdResponse>> call(TKPDMapParam<String, String> params) {
                         TXCartActService service = new TXCartActService();
                         return service
                                 .getApi()
-                                .editAddress(wrapper.getParams());
+                                .editAddress(params);
                     }
                 })
                 .map(new Func1<Response<TkpdResponse>, ShipmentCartData>() {
@@ -373,15 +373,15 @@ public class CartDataInteractor implements ICartDataInteractor {
     }
 
     @Override
-    public void editLocationShipment(SaveLocationWrapper wrapper, Subscriber<SaveLocationData> subscriber) {
-        Observable.just(wrapper)
-                .flatMap(new Func1<SaveLocationWrapper, Observable<Response<TkpdResponse>>>() {
+    public void editLocationShipment(TKPDMapParam<String, String> param, Subscriber<SaveLocationData> subscriber) {
+        Observable.just(param)
+                .flatMap(new Func1<TKPDMapParam<String, String>, Observable<Response<TkpdResponse>>>() {
                     @Override
-                    public Observable<Response<TkpdResponse>> call(SaveLocationWrapper wrapper) {
+                    public Observable<Response<TkpdResponse>> call(TKPDMapParam<String, String> params) {
                         PeopleActService service = new PeopleActService();
                         return service
                                 .getApi()
-                                .editAddress(wrapper.getParams());
+                                .editAddress(params);
                     }
                 })
                 .map(new Func1<Response<TkpdResponse>, SaveLocationData>() {

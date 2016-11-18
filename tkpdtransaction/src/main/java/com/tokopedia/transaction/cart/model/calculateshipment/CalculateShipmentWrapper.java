@@ -25,7 +25,7 @@ public class CalculateShipmentWrapper {
         map.put("do", this.mDo);
         map.put("recalculate", this.mRecalculate);
 
-        return (TKPDMapParam<String, String>) AuthUtil.generateParams(MainApplication.getAppContext(), map);
+        return AuthUtil.generateParamsNetwork(MainApplication.getAppContext(), map);
     }
 
     public CalculateShipmentData getData() {

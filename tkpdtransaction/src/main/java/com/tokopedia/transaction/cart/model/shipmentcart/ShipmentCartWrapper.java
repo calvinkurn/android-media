@@ -1,6 +1,8 @@
 package com.tokopedia.transaction.cart.model.shipmentcart;
 
 
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 /**
@@ -31,7 +33,7 @@ public class ShipmentCartWrapper {
         maps.put("shipment_id", this.shipmentId);
         maps.put("shipment_package_id", this.shipmentPackageId);
         maps.put("shop_id", this.shopId);
-        return maps;
+        return AuthUtil.generateParamsNetwork(MainApplication.getAppContext(), maps);
     }
 
     public String getShopId() {
