@@ -7,7 +7,7 @@ import java.util.ArrayList;
 /**
  * Created by m.normansyah on 10/12/2015.
  */
-@Parcel(parcelsIndex = false)
+@Parcel
 public class EtalaseModel {
     String text;
     ArrayList<String> childs;

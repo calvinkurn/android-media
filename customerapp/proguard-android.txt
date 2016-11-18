@@ -175,3 +175,14 @@ public protected *;
 
 #recharge
 -keep class com.tokopedia.core.recharge.model.** { *; }
+
+#selling
+-keep class com.tokopedia.seller.selling.model.** { *; }
+
+# Parceler configuration
+-keep interface org.parceler.Parcel
+-keep @org.parceler.Parcel class * { *; }
+-keep class **$$Parcelable { *; }
+-keep class org.parceler.Parceler$$Parcels
+
+-keep class com.tokopedia.core.home.model.** { *; }
