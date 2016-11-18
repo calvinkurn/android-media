@@ -18,7 +18,7 @@ import com.tkpd.library.utils.OneOnClick;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.customView.TextViewCopyable;
-import com.tokopedia.core.router.transactionmodule.TransactionRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.transaction.purchase.fragment.TxListFragment;
 import com.tokopedia.transaction.purchase.model.response.txlist.OrderData;
@@ -198,7 +198,7 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
     private int getMenuId(OrderData item) {
         int MenuID = 0;
         switch (instanceType) {
-            case TransactionRouter.INSTANCE_ALL:
+            case TransactionPurchaseRouter.INSTANCE_ALL:
 
                 break;
             case TxListFragment.INSTANCE_RECEIVE:

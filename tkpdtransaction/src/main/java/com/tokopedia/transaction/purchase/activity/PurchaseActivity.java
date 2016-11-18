@@ -13,7 +13,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
-import com.tokopedia.core.router.transactionmodule.TransactionRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.transaction.purchase.adapter.PurchaseTabAdapter;
@@ -57,8 +57,8 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-        drawerPosition = extras.getInt(TransactionRouter.EXTRA_STATE_TAB_POSITION, 0);
-        stateTxFilterID = extras.getString(TransactionRouter.EXTRA_STATE_TX_FILTER, TransactionRouter.ALL_STATUS_FILTER_ID);
+        drawerPosition = extras.getInt(TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION, 0);
+        stateTxFilterID = extras.getString(TransactionPurchaseRouter.EXTRA_STATE_TX_FILTER, TransactionPurchaseRouter.ALL_STATUS_FILTER_ID);
     }
 
     @Override
@@ -138,7 +138,7 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
                 break;
             case 5:
                 switch (stateTxFilterID) {
-                    case TransactionRouter.TRANSACTION_CANCELED_FILTER_ID:
+                    case TransactionPurchaseRouter.TRANSACTION_CANCELED_FILTER_ID:
                         drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_TRANSACTION_CANCELED);
                         break;
                     default:
@@ -201,7 +201,7 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
         protected void initView() {
                 super.initView();
                 if (getIntent().getExtras() != null &&
-                                getIntent().getExtras().getBoolean(TransactionRouter.EXTRA_UPDATE_BALANCE, false))
+                        getIntent().getExtras().getBoolean(TransactionPurchaseRouter.EXTRA_UPDATE_BALANCE, false))
                         drawer.updateBalance();
             }
 }
