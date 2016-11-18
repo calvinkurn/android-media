@@ -26,7 +26,7 @@ import com.tokopedia.core.inboxticket.fragment.InboxTicketFragment;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.rescenter.inbox.fragment.InboxResCenterFragment;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.TransactionRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.session.Login;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.talk.inboxtalk.fragment.InboxTalkFragment;

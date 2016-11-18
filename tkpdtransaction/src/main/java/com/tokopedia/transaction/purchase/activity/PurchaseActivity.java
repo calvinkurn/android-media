@@ -13,12 +13,12 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
-import com.tokopedia.core.router.TransactionRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.transaction.purchase.adapter.PurchaseTabAdapter;
 import com.tokopedia.transaction.purchase.fragment.TxListFragment;
 import com.tokopedia.transaction.purchase.fragment.TxSummaryFragment;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdState;
 
 import butterknife.Bind;
 

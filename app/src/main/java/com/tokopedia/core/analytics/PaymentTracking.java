@@ -5,13 +5,13 @@ import com.appsflyer.AFInAppEventType;
 import com.localytics.android.Localytics;
 import com.tokopedia.core.R;
 import com.tokopedia.core.addtocart.model.OrderData;
-import com.tokopedia.core.addtocart.model.ProductCartPass;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.payment.model.responsecartstep2.Transaction;
+import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 
 import org.json.JSONArray;
 

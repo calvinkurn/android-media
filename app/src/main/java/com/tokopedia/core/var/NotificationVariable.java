@@ -47,7 +47,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.notification.model.Notification;
 import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.TransactionRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity;
 import com.tokopedia.core.util.FullListViewHandler;
 import com.tokopedia.core.util.SessionHandler;

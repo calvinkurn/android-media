@@ -22,7 +22,7 @@ import com.tokopedia.core.rescenter.detail.activity.ResCenterActivity;
 import com.tokopedia.core.rescenter.detail.model.passdata.ActivityParamenterPassData;
 import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.core.rescenter.onboarding.FreeReturnOnboardingActivity;
-import com.tokopedia.core.router.TransactionRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.AppUtils;

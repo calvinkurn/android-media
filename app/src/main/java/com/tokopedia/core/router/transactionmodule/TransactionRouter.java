@@ -1,4 +1,4 @@
-package com.tokopedia.core.router;
+package com.tokopedia.core.router.transactionmodule;
 
 import android.app.Fragment;
 import android.content.ComponentName;

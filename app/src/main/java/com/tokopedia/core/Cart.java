@@ -45,7 +45,7 @@ import com.tokopedia.core.payment.model.responsecartstep2.CartStep2Data;
 import com.tokopedia.core.payment.model.responsecartstep2.Transaction;
 import com.tokopedia.core.payment.model.responsedynamicpayment.DynamicPaymentData;
 import com.tokopedia.core.payment.model.responsethankspayment.ThanksPaymentData;
-import com.tokopedia.core.router.TransactionRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.var.TkpdCache;
 
 import org.json.JSONArray;

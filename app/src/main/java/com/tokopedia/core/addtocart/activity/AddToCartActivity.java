@@ -37,7 +37,6 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.addtocart.listener.AddToCartViewListener;
 import com.tokopedia.core.addtocart.model.Insurance;
 import com.tokopedia.core.addtocart.model.OrderData;
-import com.tokopedia.core.addtocart.model.ProductCartPass;
 import com.tokopedia.core.addtocart.model.responseatcform.AtcFormData;
 import com.tokopedia.core.addtocart.model.responseatcform.Destination;
 import com.tokopedia.core.addtocart.model.responseatcform.ProductDetail;
@@ -57,6 +56,7 @@ import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.network.retrofit.utils.DialogNoConnection;
+import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.shipping.model.kero.Attribute;
 import com.tokopedia.core.shipping.model.kero.Product;
 

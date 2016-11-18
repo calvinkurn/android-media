@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.router.TransactionRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.transaction.purchase.model.TxFilterItem;
 
 import java.util.ArrayList;

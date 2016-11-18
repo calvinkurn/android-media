@@ -6,10 +6,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.Menu;
 
-import com.tokopedia.core.addtocart.model.ProductCartPass;
 import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productother.ProductOther;
+import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.util.AppIndexHandler;
 
 import java.util.List;

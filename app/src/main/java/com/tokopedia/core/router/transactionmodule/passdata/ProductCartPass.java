@@ -1,10 +1,10 @@
-package com.tokopedia.core.addtocart.model;
+package com.tokopedia.core.router.transactionmodule.passdata;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Created by Angga.Prasetiyo on 11/03/2016.
+ * @author by Angga.Prasetiyo on 11/03/2016.
  */
 public class ProductCartPass implements Parcelable {
     private static final String TAG = ProductCartPass.class.getSimpleName();
@@ -186,7 +186,15 @@ public class ProductCartPass implements Parcelable {
         }
 
         public Builder but() {
-            return aProductCartPass().setProductId(productId).setProductName(productName).setImageUri(imageUri).setMinOrder(minOrder).setProductCategory(productCategory).setWeight(weight).setShopId(shopId).setPrice(price);
+            return aProductCartPass()
+                    .setProductId(productId)
+                    .setProductName(productName)
+                    .setImageUri(imageUri)
+                    .setMinOrder(minOrder)
+                    .setProductCategory(productCategory)
+                    .setWeight(weight)
+                    .setShopId(shopId)
+                    .setPrice(price);
         }
 
         public ProductCartPass build() {

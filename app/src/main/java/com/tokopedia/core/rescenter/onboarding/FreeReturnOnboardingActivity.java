@@ -13,7 +13,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.onboarding.BaseOnboardingActivity;
 import com.tokopedia.core.onboarding.fragment.OnBoardingFragment;
 import com.tokopedia.core.rescenter.create.activity.CreateResCenterActivity;
-import com.tokopedia.core.router.TransactionRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 
 
 /**

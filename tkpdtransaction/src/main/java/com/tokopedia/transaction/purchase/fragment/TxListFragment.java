@@ -18,7 +18,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customadapter.LazyListView;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.router.TransactionRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.transaction.purchase.adapter.TxListAdapter;

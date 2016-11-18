@@ -18,7 +18,7 @@ import com.tokopedia.core.rescenter.inbox.model.ResCenterHeader;
 import com.tokopedia.core.rescenter.inbox.model.ResCenterInboxItem;
 import com.tokopedia.core.rescenter.inbox.model.ResolutionDetail;
 import com.tokopedia.core.rescenter.inbox.presenter.InboxResCenterPresenter;
-import com.tokopedia.core.router.TransactionRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.var.TkpdState;
 
 import java.util.ArrayList;

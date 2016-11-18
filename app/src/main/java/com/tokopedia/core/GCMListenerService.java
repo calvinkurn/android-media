@@ -20,8 +20,6 @@ import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.gcm.GcmListenerService;
 import com.tkpd.library.utils.CommonUtils;
@@ -43,7 +41,7 @@ import com.tokopedia.core.prototype.ManageProductCache;
 import com.tokopedia.core.prototype.ShopSettingCache;
 import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.TransactionRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.session.Login;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;

@@ -34,7 +34,7 @@ import com.tokopedia.core.payment.model.responsecartstep1.Cart;
 import com.tokopedia.core.payment.model.responsecartstep1.CartProduct;
 import com.tokopedia.core.payment.model.responsecartstep2.CartStep2Data;
 import com.tokopedia.core.payment.model.responsecartstep2.SystemBank;
-import com.tokopedia.core.router.TransactionRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.util.TokopediaBankAccount;
 import com.tokopedia.core.var.TkpdCache;
 

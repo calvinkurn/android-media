@@ -5,10 +5,10 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.addtocart.model.OrderData;
-import com.tokopedia.core.addtocart.model.ProductCartPass;
 import com.tokopedia.core.addtocart.model.responseatcform.AtcFormData;
 import com.tokopedia.core.addtocart.model.responseatcform.Destination;
 import com.tokopedia.core.addtocart.receiver.ATCResultReceiver;
+import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 
 /**
  * Created by Angga.Prasetiyo on 11/03/2016.

@@ -7,6 +7,7 @@ import com.tokopedia.core.addtocart.model.responseatcform.AtcFormData;
 import com.tokopedia.core.addtocart.model.responseatcform.Destination;
 import com.tokopedia.core.addtocart.model.responseatcform.Shipment;
 import com.tokopedia.core.addtocart.model.responseatcform.Shop;
+import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 
 import java.util.List;
 
