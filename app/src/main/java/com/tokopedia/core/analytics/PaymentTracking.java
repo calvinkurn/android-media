@@ -4,7 +4,6 @@ import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
 import com.localytics.android.Localytics;
 import com.tokopedia.core.R;
-import com.tokopedia.core.addtocart.model.OrderData;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
@@ -68,9 +67,10 @@ public class PaymentTracking extends TrackingUtils {
         getAFEngine().sendTrackEvent(Jordan.AF_KEY_CRITEO, afValue);
     }
 
-    public static void atcLoca(ProductCartPass productCartPass, OrderData orderData, Map<String, String> values) {
+    public static void atcLoca(ProductCartPass productCartPass, String productId,
+                               String priceItem, Map<String, String> values) {
         eventLoca("event : " + MainApplication.getAppContext().getString(R.string.event_add_to_cart), values);
-        getLocaEngine().tagAddedToCart(productCartPass.getProductName(), orderData.getProductId(), productCartPass.getProductCategory(), Long.parseLong(orderData.getPriceItem().replace("Rp", "").replace(".", "").trim()), null)
+        getLocaEngine().tagAddedToCart(productCartPass.getProductName(), productId, productCartPass.getProductCategory(), Long.parseLong(priceItem.replace("Rp", "").replace(".", "").trim()), null)
                 .setProfileAttribute(
                         MainApplication.getAppContext().getString(R.string.profile_last_date_add_to_cart),
                         new GregorianCalendar().getTime(),

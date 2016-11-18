@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 
-import com.tokopedia.core.addtocart.activity.AddToCartActivity;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.database.CacheDuration;
 import com.tokopedia.core.home.interactor.CacheHomeInteractor;
@@ -15,6 +14,7 @@ import com.tokopedia.core.home.model.wishlist.WishlistPaging;
 import com.tokopedia.core.home.service.FavoritePart1Service;
 import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
+import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.SessionHandler;
@@ -253,7 +253,7 @@ public class WishListImpl implements WishList {
                         .setShopId(dataDetail.getShop().getId())
                         .setPrice(dataDetail.getPriceFmt()).build();
                 context.startActivity(
-                        AddToCartActivity.createInstance(context, pass)
+                        TransactionAddToCartRouter.createInstanceAddToCartActivity(context, pass)
                 );
 
                 return;

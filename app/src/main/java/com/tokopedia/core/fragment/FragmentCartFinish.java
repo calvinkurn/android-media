@@ -34,7 +34,7 @@ import com.tokopedia.core.payment.model.responsecartstep1.Cart;
 import com.tokopedia.core.payment.model.responsecartstep1.CartProduct;
 import com.tokopedia.core.payment.model.responsecartstep2.CartStep2Data;
 import com.tokopedia.core.payment.model.responsecartstep2.SystemBank;
-import com.tokopedia.core.router.transactionmodule.TransactionRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.util.TokopediaBankAccount;
 import com.tokopedia.core.var.TkpdCache;
 
@@ -237,7 +237,7 @@ public class FragmentCartFinish extends Fragment {
 
                     @Override
                     public void onClick(View v) {
-                        startActivity(TransactionRouter.createIntentTxStatus(context));
+                        startActivity(TransactionPurchaseRouter.createIntentTxStatus(context));
                         context.finish();
                         sendGTMConfirm();
                     }
@@ -269,7 +269,7 @@ public class FragmentCartFinish extends Fragment {
 
 					@Override
 					public void onClick(View v) {
-						startActivity(TransactionRouter.createIntentConfirmPayment(context));
+						startActivity(TransactionPurchaseRouter.createIntentConfirmPayment(context));
 						context.finish();
 						CommonUtils.dumper("LOCALTAG : CHECKOUT FINISH");
                         sendGTMConfirm();
@@ -331,7 +331,7 @@ public class FragmentCartFinish extends Fragment {
 
                     @Override
                     public void onClick(View v) {
-                        startActivity(TransactionRouter.createIntentTxStatus(context));
+                        startActivity(TransactionPurchaseRouter.createIntentTxStatus(context));
                         context.finish();
                         sendGTMConfirm();
                     }
@@ -395,7 +395,7 @@ public class FragmentCartFinish extends Fragment {
 
                 @Override
                 public void onClick(View v) {
-                    startActivity(TransactionRouter.createIntentTxStatus(context));
+                    startActivity(TransactionPurchaseRouter.createIntentTxStatus(context));
                     context.finish();
                     sendGTMConfirm();
                 }
@@ -425,7 +425,7 @@ public class FragmentCartFinish extends Fragment {
 
                 @Override
                 public void onClick(View v) {
-                    startActivity(TransactionRouter.createIntentConfirmPayment(context));
+                    startActivity(TransactionPurchaseRouter.createIntentConfirmPayment(context));
                     context.finish();
                     CommonUtils.dumper("LOCALTAG : CHECKOUT FINISH");
                     sendGTMConfirm();
@@ -519,7 +519,7 @@ public class FragmentCartFinish extends Fragment {
 
                 @Override
                 public void onClick(View v) {
-                    startActivity(TransactionRouter.createIntentTxStatus(context));
+                    startActivity(TransactionPurchaseRouter.createIntentTxStatus(context));
                     context.finish();
                     sendGTMConfirm();
                 }
@@ -820,7 +820,7 @@ public class FragmentCartFinish extends Fragment {
     }
 
     private void goToChangePayment() {
-        startActivity(TransactionRouter.createIntentTxVerification(context));
+        startActivity(TransactionPurchaseRouter.createIntentTxVerification(context));
         context.finish();
         sendGTMConfirm();
     }

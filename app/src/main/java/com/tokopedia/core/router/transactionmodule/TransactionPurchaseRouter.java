@@ -12,10 +12,12 @@ import com.tokopedia.core.util.RouterUtils;
  * Created by Nathaniel on 11/9/2016.
  */
 
-public class TransactionRouter {
+public class TransactionPurchaseRouter {
 
-    private static final String TRANSACTION_PURCHASE_ACTIVITY = "com.tokopedia.transaction.purchase.activity.PurchaseActivity";
-    private static final String TRANSACTION_TX_LIST_FRAGMENT = "com.tokopedia.transaction.purchase.fragment.TxListFragment";
+    private static final String TRANSACTION_PURCHASE_ACTIVITY
+            = "com.tokopedia.transaction.purchase.activity.PurchaseActivity";
+    private static final String TRANSACTION_TX_LIST_FRAGMENT
+            = "com.tokopedia.transaction.purchase.fragment.TxListFragment";
 
     public static final String EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION";
     public static final String EXTRA_STATE_TX_FILTER = "EXTRA_STATE_TX_FILTER";
@@ -43,8 +45,7 @@ public class TransactionRouter {
             = "ARG_PARAM_EXTRA_INSTANCE_FROM_NOTIFICATION";
 
     public static Intent createIntentPurchaseActivity(Context context) {
-        Intent intent = RouterUtils.getActivityIntent(context, TRANSACTION_PURCHASE_ACTIVITY);
-        return intent;
+        return RouterUtils.getActivityIntent(context, TRANSACTION_PURCHASE_ACTIVITY);
     }
 
     public static Intent createIntentTxSummary(Context context) {

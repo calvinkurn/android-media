@@ -18,7 +18,7 @@ import com.tokopedia.core.rescenter.inbox.model.ResCenterHeader;
 import com.tokopedia.core.rescenter.inbox.model.ResCenterInboxItem;
 import com.tokopedia.core.rescenter.inbox.model.ResolutionDetail;
 import com.tokopedia.core.rescenter.inbox.presenter.InboxResCenterPresenter;
-import com.tokopedia.core.router.transactionmodule.TransactionRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.var.TkpdState;
 
 import java.util.ArrayList;
@@ -158,8 +158,8 @@ public class ResCenterInboxAdapter extends ResCenterExtendedAdapter {
         String linkStatus = context.getString(R.string.msg_no_res_center1);
         String linkTransactions = context.getString(R.string.msg_no_res_center2);
 
-        stringNoResult.setSpan(redirect(TransactionRouter.createIntentPurchaseActivity(context), TransactionRouter.TAB_TX_STATUS), stringNoResult.toString().indexOf(linkStatus), stringNoResult.toString().indexOf(linkStatus) + linkStatus.length(), 0);
-        stringNoResult.setSpan(redirect(TransactionRouter.createIntentPurchaseActivity(context), TransactionRouter.TAB_TX_ALL), stringNoResult.toString().indexOf(linkTransactions), stringNoResult.toString().indexOf(linkTransactions) + linkTransactions.length(), 0);
+        stringNoResult.setSpan(redirect(TransactionPurchaseRouter.createIntentPurchaseActivity(context), TransactionPurchaseRouter.TAB_TX_STATUS), stringNoResult.toString().indexOf(linkStatus), stringNoResult.toString().indexOf(linkStatus) + linkStatus.length(), 0);
+        stringNoResult.setSpan(redirect(TransactionPurchaseRouter.createIntentPurchaseActivity(context), TransactionPurchaseRouter.TAB_TX_ALL), stringNoResult.toString().indexOf(linkTransactions), stringNoResult.toString().indexOf(linkTransactions) + linkTransactions.length(), 0);
 
         holder.additionalInfoText.setMovementMethod(LinkMovementMethod.getInstance());
         holder.additionalInfoText.setText(stringNoResult);
@@ -170,7 +170,7 @@ public class ResCenterInboxAdapter extends ResCenterExtendedAdapter {
             @Override
             public void onClick(View widget) {
                 Bundle bundle = new Bundle();
-                bundle.putInt(TransactionRouter.EXTRA_STATE_TAB_POSITION, stateTab);
+                bundle.putInt(TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION, stateTab);
                 intent.putExtras(bundle);
                 context.startActivity(intent);
                 ((Activity) context).finish();

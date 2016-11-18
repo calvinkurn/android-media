@@ -12,7 +12,6 @@ import com.tokopedia.core.EditAddressCart;
 import com.tokopedia.core.EtalaseShopEditor;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.ManagePeople;
-import com.tokopedia.core.ManagePeoplePassword;
 import com.tokopedia.core.ManageShop;
 import com.tokopedia.core.ManageShopAddress;
 import com.tokopedia.core.PaymentConfirmationSuccess;
@@ -24,7 +23,6 @@ import com.tokopedia.core.ShopAddressForm;
 import com.tokopedia.core.ShopEditor;
 import com.tokopedia.core.ShopStatisticDetail;
 import com.tokopedia.core.SplashScreen;
-import com.tokopedia.core.addtocart.activity.AddToCartActivity;
 import com.tokopedia.core.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.deposit.activity.WithdrawActivity;
@@ -118,8 +116,8 @@ public final class AppScreen {
             gtmName = AppScreen.SCREEN_INDEX_HOME;
         } else if (actClass instanceof BrowseProductActivity) {
             gtmName = AppScreen.SCREEN_BROWSE_PRODUCT_FROM_SEARCH;
-        } else if (actClass instanceof AddToCartActivity) {
-            gtmName = AppScreen.SCREEN_ADD_TO_CART;
+//        } else if (actClass instanceof AddToCartActivity) {
+//            gtmName = AppScreen.SCREEN_ADD_TO_CART;
         } else if (actClass instanceof TalkViewActivity && !(getFragment(actClass) instanceof ShopTalkViewFragment)) {
             gtmName = AppScreen.SCREEN_PRODUCT_TALK_VIEW;
         } else if (actClass instanceof TalkViewActivity && getFragment(actClass) instanceof ShopTalkViewFragment) {

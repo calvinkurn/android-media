@@ -41,7 +41,7 @@ import com.tokopedia.core.prototype.ManageProductCache;
 import com.tokopedia.core.prototype.ShopSettingCache;
 import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.transactionmodule.TransactionRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.session.Login;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -267,48 +267,48 @@ public class GCMListenerService extends GcmListenerService {
                 desc = data.getString("desc");
                 break;
             case TkpdState.GCMServiceState.GCM_PURCHASE_VERIFIED:
-                componentName = TransactionRouter.getPurchaseActivityComponentName(this);
-                intent = TransactionRouter.createIntentPurchaseActivity(this);
-                bundle.putInt(TransactionRouter.EXTRA_STATE_TAB_POSITION,
-                        TransactionRouter.TAB_TX_STATUS);
+                componentName = TransactionPurchaseRouter.getPurchaseActivityComponentName(this);
+                intent = TransactionPurchaseRouter.createIntentPurchaseActivity(this);
+                bundle.putInt(TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION,
+                        TransactionPurchaseRouter.TAB_TX_STATUS);
                 title = this.getString(R.string.title_notif_purchase_confirmed);
                 ticker = data.getString("desc");
                 desc = data.getString("desc");
                 break;
             case TkpdState.GCMServiceState.GCM_PURCHASE_ACCEPTED:
-                componentName = TransactionRouter.getPurchaseActivityComponentName(this);
-                intent = TransactionRouter.createIntentPurchaseActivity(this);
-                bundle.putInt(TransactionRouter.EXTRA_STATE_TAB_POSITION,
-                        TransactionRouter.TAB_TX_STATUS);
+                componentName = TransactionPurchaseRouter.getPurchaseActivityComponentName(this);
+                intent = TransactionPurchaseRouter.createIntentPurchaseActivity(this);
+                bundle.putInt(TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION,
+                        TransactionPurchaseRouter.TAB_TX_STATUS);
                 title = this.getString(R.string.title_notif_purchase_accepted);
                 ticker = data.getString("desc");
                 desc = data.getString("desc");
                 break;
             case TkpdState.GCMServiceState.GCM_PURCHASE_PARTIAL_PROCESSED:
-                componentName = TransactionRouter.getPurchaseActivityComponentName(this);
-                intent = TransactionRouter.createIntentPurchaseActivity(this);
-                bundle.putInt(TransactionRouter.EXTRA_STATE_TAB_POSITION,
-                        TransactionRouter.TAB_TX_STATUS);
+                componentName = TransactionPurchaseRouter.getPurchaseActivityComponentName(this);
+                intent = TransactionPurchaseRouter.createIntentPurchaseActivity(this);
+                bundle.putInt(TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION,
+                        TransactionPurchaseRouter.TAB_TX_STATUS);
                 title = this.getString(R.string.title_notif_purchase_partial_accepted);
                 ticker = data.getString("desc");
                 desc = data.getString("desc");
                 break;
             case TkpdState.GCMServiceState.GCM_PURCHASE_REJECTED:
-                componentName = TransactionRouter.getPurchaseActivityComponentName(this);
-                intent = TransactionRouter.createIntentPurchaseActivity(this);
-                bundle.putInt(TransactionRouter.EXTRA_STATE_TAB_POSITION,
-                        TransactionRouter.TAB_TX_ALL);
-                bundle.putString(TransactionRouter.EXTRA_STATE_TX_FILTER,
-                        TransactionRouter.TRANSACTION_CANCELED_FILTER_ID);
+                componentName = TransactionPurchaseRouter.getPurchaseActivityComponentName(this);
+                intent = TransactionPurchaseRouter.createIntentPurchaseActivity(this);
+                bundle.putInt(TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION,
+                        TransactionPurchaseRouter.TAB_TX_ALL);
+                bundle.putString(TransactionPurchaseRouter.EXTRA_STATE_TX_FILTER,
+                        TransactionPurchaseRouter.TRANSACTION_CANCELED_FILTER_ID);
                 title = this.getString(R.string.title_notif_purchase_rejected);
                 ticker = data.getString("desc");
                 desc = data.getString("desc");
                 break;
             case TkpdState.GCMServiceState.GCM_PURCHASE_DELIVERED:
-                componentName = TransactionRouter.getPurchaseActivityComponentName(this);
-                intent = TransactionRouter.createIntentPurchaseActivity(this);
-                bundle.putInt(TransactionRouter.EXTRA_STATE_TAB_POSITION,
-                        TransactionRouter.TAB_TX_DELIVER);
+                componentName = TransactionPurchaseRouter.getPurchaseActivityComponentName(this);
+                intent = TransactionPurchaseRouter.createIntentPurchaseActivity(this);
+                bundle.putInt(TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION,
+                        TransactionPurchaseRouter.TAB_TX_DELIVER);
                 title = this.getString(R.string.title_notif_purchase_delivered);
                 ticker = data.getString("desc");
                 desc = data.getString("desc");

@@ -192,11 +192,6 @@
             android:label="@string/title_activity_add_address"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.addtocart.activity.AddToCartActivity"
-            android:label="@string/title_activity_add_to_cart_v2"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
             android:name="com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity"
             android:label="@string/title_activity_choose_address"
             android:screenOrientation="portrait" />
@@ -701,9 +696,6 @@
         <service android:name="com.google.android.gms.analytics.CampaignTrackingService" />
         <service
             android:name="com.tokopedia.core.service.DownloadService"
-            android:exported="false" />
-        <service
-            android:name="com.tokopedia.core.addtocart.services.ATCIntentService"
             android:exported="false" />
         <service
             android:name="com.tokopedia.core.talkview.intentservice.TalkViewIntentService"
