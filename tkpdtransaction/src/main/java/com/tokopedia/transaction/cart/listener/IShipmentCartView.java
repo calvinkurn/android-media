@@ -26,19 +26,25 @@ public interface IShipmentCartView {
 
     void renderSpinnerShipment();
 
-    void renderCostShipment();
-
     void renderGeocodeLocation(String location);
+
+    void renderEditLocationShipment(@NonNull String message);
 
     void renderErrorCalculateShipment(String error);
 
     void renderErrorEditShipment(String error);
+
+    void renderErrorEditLocationShipment(String error);
+
+    boolean isLoading();
 
     void showLoading();
 
     void dismisLoading();
 
     void renderResultChangeAddress(@NonNull Bundle bundle);
+
+    void renderResultChooseLocation(@NonNull Bundle bundle);
 
     void showGeolocationMap(ShipmentPackage shipmentPackage);
 

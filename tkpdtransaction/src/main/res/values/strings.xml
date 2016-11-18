@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">tkpdtransaction</string>
+    <string name="shipment_no_courier_available">Agen kurir tidak tersedia</string>
 </resources>

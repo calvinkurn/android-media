@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.tokopedia.core.network.apiservices.transaction.TXCartActService;
 import com.tokopedia.core.network.apiservices.transaction.TXCartService;
 import com.tokopedia.core.network.apiservices.transaction.TXService;
+import com.tokopedia.core.network.apiservices.user.PeopleActService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -13,6 +14,8 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentData;
 import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentWrapper;
 import com.tokopedia.transaction.cart.model.cartdata.CartModel;
+import com.tokopedia.transaction.cart.model.savelocation.SaveLocationData;
+import com.tokopedia.transaction.cart.model.savelocation.SaveLocationWrapper;
 import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartData;
 import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartWrapper;
 
@@ -306,17 +309,6 @@ public class CartDataInteractor implements ICartDataInteractor {
         throw new RuntimeException("");
     }
 
-    @NonNull
-    private Func2<CalculateShipmentWrapper, Response<TkpdResponse>, CalculateShipmentWrapper> transformShipmentData() {
-        return new Func2<CalculateShipmentWrapper, Response<TkpdResponse>, CalculateShipmentWrapper>() {
-            @Override
-            public CalculateShipmentWrapper call(CalculateShipmentWrapper wrapper, Response<TkpdResponse> response) {
-                wrapper.setData(response.body().convertDataObj(CalculateShipmentData.class));
-                return wrapper;
-            }
-        };
-    }
-
     @Override
     public void editShipmentCart(ShipmentCartWrapper wrapper, Subscriber<ShipmentCartData> subscriber) {
         Observable.just(wrapper)
@@ -337,6 +329,69 @@ public class CartDataInteractor implements ICartDataInteractor {
                                 if (!response.body().isNullData() &&
                                         !response.body().getJsonData().isNull(KEY_FLAG_IS_SUCCESS)){
                                     return response.body().convertDataObj(ShipmentCartData.class);
+                                }else {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_NULL_DATA);
+                                }
+                            } else  {
+                                throw new RuntimeException(response.body().getErrorMessages().get(0));
+                            }
+                        } else {
+                            new ErrorHandler(new ErrorListener() {
+                                @Override
+                                public void onUnknown() {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                                }
+
+                                @Override
+                                public void onTimeout() {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                                }
+
+                                @Override
+                                public void onServerError() {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                                }
+
+                                @Override
+                                public void onBadRequest() {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                                }
+
+                                @Override
+                                public void onForbidden() {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                                }
+                            }, response.code());
+                        }
+                        throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                    }
+                })
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribe(subscriber);
+    }
+
+    @Override
+    public void editLocationShipment(SaveLocationWrapper wrapper, Subscriber<SaveLocationData> subscriber) {
+        Observable.just(wrapper)
+                .flatMap(new Func1<SaveLocationWrapper, Observable<Response<TkpdResponse>>>() {
+                    @Override
+                    public Observable<Response<TkpdResponse>> call(SaveLocationWrapper wrapper) {
+                        PeopleActService service = new PeopleActService();
+                        return service
+                                .getApi()
+                                .editAddress(wrapper.getParams());
+                    }
+                })
+                .map(new Func1<Response<TkpdResponse>, SaveLocationData>() {
+                    @Override
+                    public SaveLocationData call(Response<TkpdResponse> response) {
+                        if (response.isSuccessful()) {
+                            if (!response.body().isError()) {
+                                if (!response.body().isNullData() &&
+                                        !response.body().getJsonData().isNull(KEY_FLAG_IS_SUCCESS)){
+                                    return response.body().convertDataObj(SaveLocationData.class);
                                 }else {
                                     throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_NULL_DATA);
                                 }

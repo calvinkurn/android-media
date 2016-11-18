@@ -59,12 +59,10 @@ import butterknife.OnClick;
 
 public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPresenter>
         implements IShipmentCartView {
-    public static final int CHOOSE_ADDRESS = 0;
-    public static final int CREATE_NEW_ADDRESS = 1;
-    private static final int CHOOSE_LOCATION = 2;
+    public static final int CHOOSE_ADDRESS = 10;
+    private static final int CHOOSE_LOCATION = 12;
     private static final String ARG_PARAM_EXTRA_TRANSACTION_DATA =
             "ARG_PARAM_EXTRA_TRANSACTION_DATA";
-    private static final String NO_COURIER_AVAILABLE = "Agen kurir tidak tersedia";
 
     @Bind(R2.id.tv_title_address)
     TextView tvTitleAddress;
@@ -178,14 +176,16 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
     protected void setViewListener() {
         cvGeoLocation.setVisibility(View.GONE);
         tvTitleAddress.setText(Html.fromHtml(transactionPassData.getCartDestination().getAddressName()));
-        tvDetailAddress.setText(Html.fromHtml(renderDetailAddressFromTransaction(transactionPassData.getCartDestination())));
+        tvDetailAddress.setText(Html.fromHtml(renderDetailAddressFromTransaction(
+                transactionPassData.getCartDestination()))
+        );
         spShipment.setOnItemSelectedListener(getShipmentItemSelectionListener());
         spShipmentPackage.setOnItemSelectedListener(getShipmentPackageItemSelectionListener());
         btnChangeValueLocation.setOnClickListener(getChangeLocationListener());
         tvValueLocation.setOnClickListener(getChangeLocationListener());
     }
 
-    private View.OnClickListener getChangeLocationListener(){
+    private View.OnClickListener getChangeLocationListener() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -215,7 +215,12 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 ShipmentPackage shipmentPackage = (ShipmentPackage) adapterView.getSelectedItem();
-                wrapper.setShipmentPackageId(shipmentPackage.getShipmentId() != null ? shipmentPackage.getShipmentId() : String.valueOf(0));
+
+                wrapper.setShipmentPackageId(
+                        shipmentPackage.getShipmentId() != null ?
+                                shipmentPackage.getShipmentId() : String.valueOf(0)
+                );
+
                 tvPrice.setText(shipmentPackage.getPrice());
                 showGeolocationMap(shipmentPackage);
             }
@@ -228,11 +233,12 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
     }
 
     private String renderDetailAddressFromTransaction(CartDestination destination) {
-        return destination.getReceiverName()
-                + "\n" + Html.fromHtml(destination.getAddressName()).toString()
-                + "\n" + destination.getAddressDistrict() + ", " + destination.getAddressCity() + ", " + destination.getAddressPostal()
-                + "\n" + destination.getAddressProvince()
-                + "\n" + destination.getReceiverPhone();
+        return String.format("%s\n%s\n%s, %s, %s\n%s\n%s", destination.getReceiverName(),
+                Html.fromHtml(destination.getAddressName()).toString(),
+                destination.getAddressDistrict(), destination.getAddressCity(),
+                destination.getAddressPostal(), destination.getAddressProvince(),
+                destination.getReceiverPhone()
+        );
     }
 
     private void renderShipmentPackageSpinner(Shipment shipment) {
@@ -243,9 +249,6 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
             }
         }
         if (shipmentPackages.size() > 0) {
-//            if (!shipmentPackages.get(0).getShipmentId().equalsIgnoreCase(String.valueOf(0))) {
-//                shipmentPackages.add(0, ShipmentPackage.createSelectionInfo(getString(R.string.atc_selection_shipment_package_info)));
-//            }
             adapterShipmentPackage.setAdapterData(
                     (ArrayList<ShipmentPackage>) shipmentPackages
             );
@@ -316,7 +319,6 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
             }
         }
         if (shipments.size() > 0) {
-//            shipmentData.getShipment().add(0, Shipment.createSelectionInfo(getString(R.string.atc_selection_shipment_info)));
             adapterShipment.setAdapterData(shipments);
             spShipment.setAdapter(adapterShipment);
             renderShipmentPackageSpinner(shipments.get(0));
@@ -332,11 +334,6 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
             }
         }
         spShipment.setSelection(selectedPosition);
-    }
-
-    @Override
-    public void renderCostShipment() {
-
     }
 
     @Override
@@ -356,11 +353,22 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
 
     @Override
     public void renderErrorEditShipment(String error) {
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), error, new NetworkErrorHelper.RetryClickedListener() {
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), error,
+                new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
             }
         });
+    }
+
+    @Override
+    public void renderErrorEditLocationShipment(String error) {
+
+    }
+
+    @Override
+    public boolean isLoading() {
+        return progressdialog.isProgress();
     }
 
     @Override
@@ -371,11 +379,6 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
     @Override
     public void dismisLoading() {
         progressdialog.dismiss();
-    }
-
-    @Override
-    public void renderResultChangeAddress(@NonNull Bundle bundle) {
-
     }
 
     @Override
@@ -391,7 +394,9 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
     public void navigateToChooseAddress() {
         Intent intent = new Intent(getActivity(), ChooseAddressActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(ChooseAddressActivity.REQUEST_CODE_PARAM_ADDRESS, transactionPassData.getCartDestination().getAddressId());
+        bundle.putString(ChooseAddressActivity.REQUEST_CODE_PARAM_ADDRESS,
+                transactionPassData.getCartDestination().getAddressId()
+        );
         intent.putExtras(bundle);
         startActivityForResult(intent, ShipmentCartFragment.CHOOSE_ADDRESS);
     }
@@ -466,19 +471,20 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
         if (data != null && resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case CHOOSE_ADDRESS:
-                    onSuccessSelectAddress(data.getExtras());
+                    renderResultChangeAddress(data.getExtras());
                     break;
                 case ManageAddressConstant.REQUEST_CODE_PARAM_CREATE:
-                    onSuccessSelectAddress(data.getExtras());
+                    renderResultChangeAddress(data.getExtras());
                     break;
                 case CHOOSE_LOCATION:
-                    getNewLocation(data.getExtras());
+                    renderResultChooseLocation(data.getExtras());
                     break;
             }
         }
     }
 
-    private void onSuccessSelectAddress(Bundle bundle) {
+    @Override
+    public void renderResultChangeAddress(@NonNull Bundle bundle) {
         Destination temp = bundle.getParcelable(ManageAddressConstant.EXTRA_ADDRESS);
         assert temp != null;
         locationPass.setLatitude(temp.getLatitude());
@@ -490,12 +496,15 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
         fetchGeocodeLocation();
     }
 
-    private void getNewLocation(Bundle bundle) {
+    @Override
+    public void renderResultChooseLocation(@NonNull Bundle bundle) {
         LocationPass locationResult = bundle.getParcelable(GeolocationActivity.EXTRA_EXISTING_LOCATION);
         if (locationResult != null) {
             this.locationPass = locationResult;
             if (locationResult.getGeneratedAddress().equals(getString(R.string.choose_this_location))) {
-                this.locationPass.setGeneratedAddress(locationPass.getLatitude() + ", " + locationPass.getLongitude());
+                this.locationPass.setGeneratedAddress(String.format("%s, %s", locationPass.getLatitude(),
+                        locationPass.getLongitude())
+                );
             } else {
                 this.locationPass.setGeneratedAddress(locationResult.getGeneratedAddress());
             }
@@ -511,7 +520,9 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
     private ArrayAdapter<Shipment> getEmptyShipmentAdapter() {
         ArrayAdapter<Shipment> adapter = new ArrayAdapter<>(getActivity(),
                 android.R.layout.simple_spinner_item,
-                new Shipment[]{Shipment.createSelectionInfo(NO_COURIER_AVAILABLE)});
+                new Shipment[]{Shipment.createSelectionInfo(
+                        getString(com.tokopedia.transaction.R.string.shipment_no_courier_available))}
+        );
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         return adapter;
     }
@@ -519,9 +530,15 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
     private ArrayAdapter<ShipmentPackage> getEmptyShipmentPackageAdapter() {
         ArrayAdapter<ShipmentPackage> adapter = new ArrayAdapter<>(getActivity(),
                 android.R.layout.simple_spinner_item,
-                new ShipmentPackage[]{ShipmentPackage.createSelectionInfo(NO_COURIER_AVAILABLE)});
+                new ShipmentPackage[]{ShipmentPackage.createSelectionInfo(
+                        getString(com.tokopedia.transaction.R.string.shipment_no_courier_available))}
+        );
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         return adapter;
     }
 
+    @Override
+    public void renderEditLocationShipment(@NonNull String message) {
+        calculateShipment();
+    }
 }

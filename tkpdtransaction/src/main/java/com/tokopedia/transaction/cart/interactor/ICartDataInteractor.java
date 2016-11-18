@@ -5,6 +5,8 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentData;
 import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentWrapper;
 import com.tokopedia.transaction.cart.model.cartdata.CartModel;
+import com.tokopedia.transaction.cart.model.savelocation.SaveLocationData;
+import com.tokopedia.transaction.cart.model.savelocation.SaveLocationWrapper;
 import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartData;
 import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartWrapper;
 
@@ -26,6 +28,8 @@ public interface ICartDataInteractor {
     void calculateShipment(CalculateShipmentWrapper wrapper, Subscriber<CalculateShipmentData> subscriber);
 
     void editShipmentCart(ShipmentCartWrapper wrapper, Subscriber<ShipmentCartData> subscriber);
+
+    void editLocationShipment(SaveLocationWrapper wrapper, Subscriber<SaveLocationData> subscriber);
 
     void updateCart(TKPDMapParam<String, String> paramUpdate,
                     TKPDMapParam<String, String> paramCart, Subscriber<CartModel> subscriber);

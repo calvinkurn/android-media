@@ -8,16 +8,13 @@ import com.tokopedia.transaction.cart.interactor.ICartDataInteractor;
 import com.tokopedia.transaction.cart.listener.IShipmentCartView;
 import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentData;
 import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentWrapper;
-import com.tokopedia.transaction.cart.model.calculateshipment.Shipment;
-import com.tokopedia.transaction.cart.model.calculateshipment.ShipmentPackage;
-import com.tokopedia.transaction.cart.model.savelocation.LocationData;
+import com.tokopedia.transaction.cart.model.savelocation.SaveLocationData;
 import com.tokopedia.transaction.cart.model.savelocation.SaveLocationWrapper;
 import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartData;
 import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartWrapper;
 
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -76,7 +73,9 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
     @Override
     public void processCalculateShipment(CalculateShipmentWrapper wrapper) {
         if (this.view != null) {
-            this.view.showLoading();
+            if (!this.view.isLoading()) {
+                this.view.showLoading();
+            }
             this.interactor.calculateShipment(wrapper, new Subscriber<CalculateShipmentData>() {
                 @Override
                 public void onCompleted() {
@@ -116,6 +115,7 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
             this.interactor.editShipmentCart(wrapper, new Subscriber<ShipmentCartData>() {
                 @Override
                 public void onCompleted() {
+                    view.dismisLoading();
                 }
 
                 @Override
@@ -125,7 +125,6 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
 
                 @Override
                 public void onNext(ShipmentCartData shipmentCartData) {
-                    view.dismisLoading();
                     if (shipmentCartData.getStatus().equalsIgnoreCase("1")) {
                         view.navigateToCart(shipmentCartData.getMessage());
                     } else {
@@ -138,6 +137,28 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
 
     @Override
     public void processSaveLocationShipment(SaveLocationWrapper wrapper) {
+        if (this.view != null) {
+            this.view.showLoading();
+            this.interactor.editLocationShipment(wrapper, new Subscriber<SaveLocationData>() {
+                @Override
+                public void onCompleted() {
+                }
 
+                @Override
+                public void onError(Throwable e) {
+                    view.dismisLoading();
+                    view.renderErrorEditLocationShipment(e.getMessage());
+                }
+
+                @Override
+                public void onNext(SaveLocationData saveLocationData) {
+                    if (saveLocationData.getStatus().equalsIgnoreCase("1")) {
+                        view.renderEditLocationShipment(saveLocationData.getMessage());
+                    } else {
+                        view.renderErrorEditLocationShipment(saveLocationData.getMessage());
+                    }
+                }
+            });
+        }
     }
 }
