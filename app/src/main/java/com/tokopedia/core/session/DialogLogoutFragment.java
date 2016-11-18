@@ -27,7 +27,6 @@ import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.rxjava.RxUtils;
-import com.tokopedia.core.service.CheckVerification;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdUrl;
 
@@ -107,9 +106,6 @@ public class DialogLogoutFragment extends DialogFragment {
                                                 AddProductPresenterImpl.FETCH_ETALASE);
                                         fetchEtalaseTimer.setExpire(0);
                                         DbManagerImpl.getInstance().removeAllEtalase();
-
-
-                                        activity.stopService(new Intent(activity, CheckVerification.class));
                                         SessionHandler.clearUserData(activity);
                                         NotificationModHandler notif = new NotificationModHandler(activity);
                                         notif.cancelNotif();

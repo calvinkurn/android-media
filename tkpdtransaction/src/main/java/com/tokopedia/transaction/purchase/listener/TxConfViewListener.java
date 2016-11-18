@@ -18,6 +18,12 @@ public interface TxConfViewListener extends ViewListener {
 
     void showFailedResetData(String message);
 
+    void showNoConnectionLoadMoreData(String message);
+
+    void showNoConnectionPullRefresh(String message);
+
+    void showNoConnectionResetData(String message);
+
     void showEmptyData(int typeRequest);
 
     void showProcessGetData(int typeRequest);

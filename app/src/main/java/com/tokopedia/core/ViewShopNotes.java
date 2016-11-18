@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.shop.NotesService;
@@ -40,6 +41,11 @@ public class ViewShopNotes extends TActivity {
     private View NoteLayout;
     private CoordinatorLayout rootView;
     private TkpdProgressDialog mProgress;
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_SHOP_NOTE;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

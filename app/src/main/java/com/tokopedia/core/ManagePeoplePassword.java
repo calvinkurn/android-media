@@ -10,12 +10,12 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.home.interactor.CacheHomeInteractorImpl;
 import com.tokopedia.core.network.NetworkHandler;
 import com.tokopedia.core.network.NetworkHandler.NetworkHandlerListener;
-import com.tokopedia.core.service.CheckVerification;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdUrl;
 
@@ -55,6 +55,11 @@ public class ManagePeoplePassword extends TActivity {
 		});
 	}
 
+	@Override
+	public String getScreenName() {
+		return AppScreen.SCREEN_CONFIG_P_PASSWORD;
+	}
+
 	private void SavePassword(){
 		mProgressDialog.showDialog();
 		NetworkHandler network = new NetworkHandler(ManagePeoplePassword.this, TkpdUrl.GET_PEOPLE);
@@ -91,8 +96,6 @@ public class ManagePeoplePassword extends TActivity {
 	private void logout() {
 
 		CacheHomeInteractorImpl.deleteAllCache();
-
-		stopService(new Intent(ManagePeoplePassword.this, CheckVerification.class));
 		SessionHandler.clearUserData(ManagePeoplePassword.this);
 		NotificationModHandler notif = new NotificationModHandler(ManagePeoplePassword.this);
 		notif.cancelNotif();

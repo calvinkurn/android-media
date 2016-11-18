@@ -12,7 +12,6 @@ import com.tkpd.library.utils.CommonUtils;
  */
 public class PagingHandler extends com.tokopedia.core.database.model.PagingHandler {
 
-
 	public void setNewParameter(PagingHandlerModel pagingHanderModel){
 		Gson gson = new GsonBuilder().create();
 		if(pagingHanderModel!=null){

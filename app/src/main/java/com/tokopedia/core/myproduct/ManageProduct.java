@@ -67,6 +67,7 @@ import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.customView.SimpleListView;
 import com.tokopedia.core.customadapter.ListViewManageProdAdapter;
@@ -100,12 +101,12 @@ import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.prototype.ProductCache;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.session.Login;
-import com.tokopedia.core.util.RequestPermissionUtil;
-import com.tokopedia.core.util.RetryHandler;
-import com.tokopedia.core.util.RetryHandler.OnConnectionTimeout;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.RefreshHandler.OnRefreshHandlerListener;
+import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.core.util.RetryHandler;
+import com.tokopedia.core.util.RetryHandler.OnConnectionTimeout;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
@@ -123,13 +124,13 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import retrofit2.Response;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
+import retrofit2.Response;
 import rx.subscriptions.CompositeSubscription;
 
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
@@ -264,6 +265,10 @@ public class ManageProduct extends TkpdActivity implements
     GetShopNoteModel.ShopNoteModel returnPolicy = null;
     private DownloadResultReceiver mReceiver;
 
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_MANAGE_PROD;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

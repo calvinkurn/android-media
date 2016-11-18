@@ -8,7 +8,7 @@ import org.parceler.Parcel;
 /**
  * Created by m.normansyah on 23/12/2015.
  */
-@Parcel
+@Parcel(parcelsIndex = false)
 public class MyShopInfoModel {
 
     /**
@@ -76,7 +76,7 @@ public class MyShopInfoModel {
         this.server_process_time = server_process_time;
     }
 
-    @Parcel
+    @Parcel(parcelsIndex = false)
     public static class Data {
         /**
          * this is for parcelable
@@ -132,7 +132,7 @@ public class MyShopInfoModel {
         }
     }
 
-    @Parcel
+    @Parcel(parcelsIndex = false)
     public static class Image {
         /**
          * this is for parcelable
@@ -164,7 +164,7 @@ public class MyShopInfoModel {
         }
     }
 
-    @Parcel
+    @Parcel(parcelsIndex = false)
     public static class ClosedDetail{
 
         /**
@@ -209,7 +209,7 @@ public class MyShopInfoModel {
         }
     }
 
-    @Parcel
+    @Parcel(parcelsIndex = false)
     public static class Info {
 
         /**

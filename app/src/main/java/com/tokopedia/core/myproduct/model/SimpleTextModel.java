@@ -7,7 +7,7 @@ import org.parceler.Parcel;
 /**
  * Created by m.normansyah on 12/9/15.
  */
-@Parcel
+@Parcel(parcelsIndex = false)
 public class SimpleTextModel implements Listable{
     String text;
     int position;

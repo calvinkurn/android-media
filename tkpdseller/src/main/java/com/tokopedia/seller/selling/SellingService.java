@@ -420,8 +420,8 @@ public class SellingService extends IntentService implements SellingServiceConst
                     public void onError(Throwable e) {
                         Bundle resultData = new Bundle();
                         resultData.putInt(TYPE, type);
-                        resultData.putInt(NETWORK_ERROR_FLAG, ResponseStatus.SC_REQUEST_TIMEOUT);
-                        resultData.putString(MESSAGE_ERROR_FLAG, noNetworkConnection);
+                        resultData.putInt(NETWORK_ERROR_FLAG, INVALID_NETWORK_ERROR_FLAG);
+                        resultData.putString(MESSAGE_ERROR_FLAG, getString(R.string.error_connection_problem));
                         receiver.send(STATUS_ERROR, resultData);
                     }
 
@@ -584,8 +584,8 @@ public class SellingService extends IntentService implements SellingServiceConst
                     public void onError(Throwable e) {
                         Bundle resultData = new Bundle();
                         resultData.putInt(TYPE, type);
-                        resultData.putInt(NETWORK_ERROR_FLAG, ResponseStatus.SC_REQUEST_TIMEOUT);
-                        resultData.putString(MESSAGE_ERROR_FLAG, noNetworkConnection);
+                        resultData.putInt(NETWORK_ERROR_FLAG, INVALID_NETWORK_ERROR_FLAG);
+                        resultData.putString(MESSAGE_ERROR_FLAG, getString(R.string.error_connection_problem));
                         receiver.send(STATUS_ERROR, resultData);
                     }
 
@@ -699,26 +699,7 @@ public class SellingService extends IntentService implements SellingServiceConst
 
             public ErrorListener(int errorCode) {
                 this.errorCode = errorCode;
-                switch (errorCode) {
-                    case ResponseStatus.SC_REQUEST_TIMEOUT:
-                        error = NetworkConfig.TIMEOUT_TEXT;
-                        break;
-                    case ResponseStatus.SC_GATEWAY_TIMEOUT:
-                        error = NetworkConfig.TIMEOUT_TEXT;
-                        break;
-                    case ResponseStatus.SC_INTERNAL_SERVER_ERROR:
-                        error = "SERVER ERROR";
-                        break;
-                    case ResponseStatus.SC_FORBIDDEN:
-                        error = "FORBIDDEN ACCESS";
-                        break;
-                    case ResponseStatus.SC_BAD_GATEWAY:
-                        error = "INVALID INPUT";
-                        break;
-                    case ResponseStatus.SC_BAD_REQUEST:
-                        error = "INVALID INPUT";
-                        break;
-                }
+                error = getString(R.string.error_connection_problem);
             }
 
             public void onResponse() {
@@ -810,6 +791,7 @@ public class SellingService extends IntentService implements SellingServiceConst
                 case REJECT_NEW_ORDER:
                     resultData.putInt(TYPE, type);
                     resultData.putInt(ShopShippingDetailView.POSITION, position);
+                    resultData.putInt(NETWORK_ERROR_FLAG, MESSAGE_ERROR_FLAG_RESPONSE);
                     resultData.putString(MESSAGE_ERROR_FLAG, MessageError.toString().replace("[", "").replace("]", ""));
                     receiver.send(STATUS_ERROR, resultData);
 //                    sendBroadcast(STATUS_ERROR, resultData);
@@ -817,6 +799,7 @@ public class SellingService extends IntentService implements SellingServiceConst
                 case REJECT_ORDER_WITH_REASON:
                     resultData.putInt(ShopShippingDetailView.POSITION, position);
                     resultData.putInt(TYPE, type);
+                    resultData.putInt(NETWORK_ERROR_FLAG, MESSAGE_ERROR_FLAG_RESPONSE);
                     resultData.putString(MESSAGE_ERROR_FLAG, MessageError.toString().replace("[", "").replace("]", ""));
                     receiver.send(STATUS_ERROR, resultData);
 //                    sendBroadcast(STATUS_ERROR, resultData);
@@ -826,6 +809,7 @@ public class SellingService extends IntentService implements SellingServiceConst
                 case REJECT_ORDER_WITH_DESCRIPTION:
                 case REJECT_ORDER:
                     resultData.putInt(TYPE, type);
+                    resultData.putInt(NETWORK_ERROR_FLAG, MESSAGE_ERROR_FLAG_RESPONSE);
                     resultData.putString(MESSAGE_ERROR_FLAG, MessageError.toString().replace("[", "").replace("]", ""));
                     receiver.send(STATUS_ERROR, resultData);
                     break;
@@ -834,18 +818,12 @@ public class SellingService extends IntentService implements SellingServiceConst
                 case CANCEL_SHIPPING:
                     resultData.putInt(TYPE, type);
                     resultData.putInt(ShopShippingDetailView.POSITION, position);
+                    resultData.putInt(NETWORK_ERROR_FLAG, MESSAGE_ERROR_FLAG_RESPONSE);
                     resultData.putString(MESSAGE_ERROR_FLAG, MessageError.toString().replace("[", "").replace("]", ""));
                     receiver.send(STATUS_ERROR, resultData);
                     break;
             }
         }
-    }
-
-    private void sendBroadcast(int resultCode, Bundle result) {
-        Intent intent = new Intent(RECEIVER_BROADCAST_ORDER_NAME);
-        intent.putExtra(RESULT_CODE, resultCode);
-        intent.putExtra(DATA, result);
-        LocalBroadcastManager.getInstance(SellingService.this).sendBroadcast(intent);
     }
 
     /**

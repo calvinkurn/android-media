@@ -160,14 +160,16 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
         }
     }
 
-    private void showTickerGTM(String message) throws Exception {
-        if (message != null) {
-            discoveryTicker.setText(Html.fromHtml(message));
-            discoveryTicker.setVisibility(View.VISIBLE);
-            discoveryTicker.setAutoLinkMask(0);
-            Linkify.addLinks(discoveryTicker, Linkify.WEB_URLS);
-        } else {
-            discoveryTicker.setVisibility(View.GONE);
+    private void showTickerGTM(String message) {
+        if (discoveryTicker != null) {
+            if (message != null) {
+                discoveryTicker.setText(Html.fromHtml(message));
+                discoveryTicker.setVisibility(View.VISIBLE);
+                discoveryTicker.setAutoLinkMask(0);
+                Linkify.addLinks(discoveryTicker, Linkify.WEB_URLS);
+            } else {
+                discoveryTicker.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -224,6 +226,8 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
                 @Override
                 public void onRetryClicked() {
                     presenter.subscribe();
+                    presenter.fetchRotationData(null);
+                    presenter.initData(getActivity());
                     presenter.fetchFromNetwork(getActivity());
                 }
             });

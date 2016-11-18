@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.shopinfo.facades.GetShopNote;
@@ -34,7 +35,12 @@ public class ShopNotesDetail extends TActivity {
     private String noteId;
     private String shopDomain;
 
-    public static Intent createIntent(Context context,String shopId, String shopDomain, String noteId){
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_SHOP_NOTE;
+    }
+
+    public static Intent createIntent(Context context, String shopId, String shopDomain, String noteId){
         Intent intent =  new Intent(context, ShopNotesDetail.class);
         intent.putExtra("shop_id", shopId);
         intent.putExtra("note_id", noteId);

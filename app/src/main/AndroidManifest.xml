@@ -4,9 +4,12 @@
     package="com.tokopedia.core"
     android:installLocation="preferExternal">
 
-    <uses-sdk android:minSdkVersion="15"
-        android:targetSdkVersion="24"/>
+    <uses-sdk
+        android:minSdkVersion="15"
+        android:targetSdkVersion="24" />
 
+
+    <permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" android:protectionLevel="signature"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -24,7 +27,9 @@
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="18" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" tools:node="remove" />
+    <uses-permission
+        android:name="android.permission.RECORD_AUDIO"
+        tools:node="remove" />
 
     <permission
         android:name="${applicationId}.permission.C2D_MESSAGE"
@@ -33,7 +38,6 @@
     <uses-feature android:name="android.hardware.camera" />
 
     <application
-        android:name="com.tokopedia.core.app.MainApplication"
         android:allowBackup="true"
         android:icon="@drawable/qc_launcher"
         android:label="@string/app_name"
@@ -158,15 +162,6 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="tkpd" />
-            </intent-filter>
-            <intent-filter>
-
                 <!-- LOCALYTICS TEST MESSAGE KEY -->
                 <data android:scheme="ampe5ce78bb486192da7790186-01e0f208-0058-11e5-9b02-00739d24cb30" />
 
@@ -219,12 +214,8 @@
             android:label="@string/title_activity_manage_shop"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.ManageShopNotes"
+            android:name="com.tokopedia.core.manage.shop.notes.activity.ManageShopNotesActivity"
             android:label="@string/title_activity_manage_shop_notes"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.ShopNoteForm"
-            android:label="@string/title_activity_shop_note_form"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.core.shipping.EditShippingActivity"
@@ -256,10 +247,6 @@
             android:label="@string/title_activity_shop_editor"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Catalog"
-            android:label="@string/title_activity_catalog"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.tokopedia.core.PaymentEditor"
             android:label="@string/title_activity_payment_editor"
             android:screenOrientation="portrait" />
@@ -284,12 +271,8 @@
             android:label="@string/title_activity_manage_notification"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.ManagePeopleBank"
+            android:name="com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity"
             android:label="@string/title_activity_manage_people_bank"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.PeopleBankForm"
-            android:label="@string/title_activity_people_bank_form"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.core.peoplefave.activity.PeopleFavoritedShop"
@@ -308,28 +291,16 @@
             android:label="@string/title_activity_people_withdraw_balance"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.com.tokopedia.seller.ShippingConfirmationDetail"
-            android:label="@string/title_activity_shipping_confirmation_detail"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.com.tokopedia.seller.ShippingConfirmationProdConf"
-            android:label="@string/title_activity_shipping_confirmation_prod_conf"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.tokopedia.core.PaymentConfirmationSuccess"
             android:label="@string/title_activity_payment_confirmation_success"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.core.inboxticket.activity.InboxTicketActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_inbox_ticket"/>
+            android:label="@string/title_activity_inbox_ticket"
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.core.inboxticket.activity.InboxTicketDetailActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_inbox_ticket_detail"/>
-        <activity
-            android:name="com.tokopedia.core.com.tokopedia.seller.OrderHistoryView"
-            android:label="@string/title_activity_order_history_view"
+            android:label="@string/title_activity_inbox_ticket_detail"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.core.PreviewProductImage"
@@ -491,12 +462,6 @@
                 <data
                     android:host="apps.tokopedia.com"
                     android:scheme="https" />
-                <data
-                    android:host="www.apps.tokopedia.com"
-                    android:scheme="http" />
-                <data
-                    android:host="www.apps.tokopedia.com"
-                    android:scheme="https" />
             </intent-filter>
         </activity>
         <activity
@@ -619,21 +584,21 @@
             android:name="com.tokopedia.core.discovery.activity.BrowseProductActivity"
             android:label="Pencarian"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:theme="@style/Theme.BrowseProduct"/>
+            android:theme="@style/Theme.BrowseProduct"
+            android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity
             android:name="com.tokopedia.core.dynamicfilter.DynamicFilterActivity"
             android:label="Filter"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3"
-            android:windowSoftInputMode="adjustPan|adjustResize"/>
+            android:windowSoftInputMode="adjustPan|adjustResize" />
 
         <activity
             android:name="com.tokopedia.core.discovery.activity.SortProductActivity"
             android:label="Urutkan"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3"/>
+            android:theme="@style/Theme.Tokopedia3" />
 
         <activity
             android:name="com.tokopedia.core.topads.WebViewTopAdsActivity"
@@ -654,14 +619,18 @@
 
         <activity
             android:name="com.tokopedia.core.people.activity.PeopleInfoDrawerActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_people" />
+            android:label="@string/title_activity_people"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_people" />
+            android:label="@string/title_activity_people"
+            android:screenOrientation="portrait" />
 
+        <activity android:name=".manage.people.password.activity.ManagePasswordActivity"
+            android:label="@string/title_activity_manage_people_password"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <!--=======================================================-->
         <!--RECEIVERS REGISTRY-->
@@ -730,7 +699,6 @@
             </intent-filter>
         </service>
         <service android:name="com.google.android.gms.analytics.CampaignTrackingService" />
-        <service android:name="com.tokopedia.core.service.CheckVerification" />
         <service
             android:name="com.tokopedia.core.service.DownloadService"
             android:exported="false" />
@@ -793,12 +761,19 @@
         <service
             android:name="com.tokopedia.core.talk.talkproduct.intentservice.TalkAddNewIntentService"
             android:exported="false" />
+        <service
+            android:name=".manage.people.bank.intentservice.ManagePeopleBankIntentService"
+            android:exported="false" />
+        <service
+            android:name=".manage.people.password.intentservice.ManagePasswordIntentService"
+            android:exported="false" />
+
         <!-- ======================================================= -->
         <!-- PROVIDERS REGISTRY -->
         <!-- ======================================================= -->
         <service
             android:name="com.tokopedia.core.shop.ShopEditService"
-            android:exported="false"/>
+            android:exported="false" />
     </application>
 
 </manifest>

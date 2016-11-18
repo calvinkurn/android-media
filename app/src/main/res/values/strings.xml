@@ -299,7 +299,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_promo">Promosi</string>
     <string name="title_promote">Promoted</string>
     <string name="title_sold_out">Gudangkan</string>
-    <string name="message_share_category">Klik link ini untuk menemukan produk yang baru saya temukan di Tokopedia </string>
+    <string name="message_share_category">Klik link ini untuk menemukan produk yang baru saya temukan di Tokopedia \n</string>
     <string name="title_to_etalase">Ke etalase</string>
     <string name="toast_promo_error">        Anda belum dapat menggunakan fitur Promo pada saat ini.\n
 		Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\n
@@ -699,6 +699,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
     </string-array>
 
     <string name="title_saldo_tokopedia">Saldo Tokopedia</string>
+    <string name="title_transfer">Transfer</string>
     <string name="title_mandiri_clickpay">Mandiri Clickpay</string>
     <string name="title_mandiri_ecash">Mandiri Ecash</string>
     <string name="title_bca_klikpay">BCA Klikpay</string>
@@ -742,7 +743,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
     <string name="title_activity_choose_address">Alamat</string>
     <string name="title_activity_cart">Keranjang</string>
     <string name="title_activity_shop_editor">Ubah Informasi Toko</string>
-    <string name="title_activity_share">Bagikan Produk</string>
+    <string name="title_activity_share">Bagikan</string>
     <string name="title_cat_toys">Mainan &amp; Hobi</string>
     <string name="title_cat_elektronik">Elektronik</string>
     <string name="title_cat_home_appliances">Rumah Tangga</string>
@@ -854,11 +855,12 @@ Namun tidak perlu khawatir karena staff kami selalu melakukan pengecekan.]]>
     <string name="title_package_received">Paket diterima</string>
     <string name="title_package_not_received">Paket belum diterima</string>
     <string name="dialog_package_received">
-<![CDATA[
-	Apakah Anda yakin Anda telah menerima pesanan Anda ? <br /> <br />
-	Silakan konfirmasi jika Anda telah menerima pesanan Anda selengkapnya dan transaksi Anda akan dianggap selesai dan dana akan diteruskan kepada penjual. <br />
-Jika Anda memiliki masalah dengan pemesanan Anda, mohon klik tombol komplain dan silakan diskusikan dengan Penjual. <br />
-	]]>
+ <![CDATA[
+Apakah pesanan dari toko xx_shop_name_xx sudah Anda terima?  <br /> <br />
+Pilih “Selesai” jika Anda sudah menerima pesanan dengan baik dan lengkap.<br />
+Transaksi akan dinyatakan selesai, dan dana otomatis diteruskan ke penjual.<br />
+Pilih “Komplain” jika pesanan Anda bermasalah.
+]]>
     </string>
     <string name="dialog_package_not_rcv">
         <![CDATA[
@@ -1065,6 +1067,10 @@ Jika Anda memiliki masalah dengan pemesanan Anda, mohon klik tombol komplain dan
     <string name="shipping_cahaya">Cahaya</string>
     <string name="shipping_pandu">Pandu</string>
     <string name="shipping_first">First</string>
+    <string name="shipping_gojek">GO-JEK</string>
+    <string name="shipping_sicepat">SiCepat</string>
+    <string name="shipping_ninja">Ninja Xpress</string>
+    <string name="shipping_grab">Grab</string>
     <string name="msg_remove_wishlist">Sukses menghapus wishlist</string>
     <string name="msg_add_wishlist">Sukses menambah wishlist</string>
     <string name="go_to_wishlist">Lihat Wishlist</string>
@@ -1612,12 +1618,11 @@ di Tokopedia Sekarang!</string>
     <string name="search_product">Cari Produk</string>
 
     <!-- Start of Strings related Share Mods -->
-    <string name="share_product_key">PRODUK</string>
-    <string name="share_catalog_key">KATALOG</string>
     <string name="share_text_content">Klik link ini untuk menemukan produk yang baru saya temukan di Tokopedia, Klik </string>
+    <string name="message_share_shop">Klik link ini untuk menemukan toko dari Tokopedia. </string>
+    <!-- End of Strings related Share Mods -->
     <string name="shop_name_available">Nama toko tersedia</string>
     <string name="prompt_send_comment">Apakah anda yakin ingin mengirim komentar ini?</string>
-    <!-- End of Strings related Share Mods -->
 
     <string name="title_edit_stok_reject_order">Atur Stok Kosong pada produk</string>
     <string name="title_edit_product_reject_order">Perbarui keterangan varian pada deskripsi produk</string>
@@ -1639,6 +1644,7 @@ di Tokopedia Sekarang!</string>
 
     <string name="msg_server_error_2">Terjadi Kendala Pada Server, Silahkan Laporkan</string>
     <string name="filter_description">Silahkan pilih menu di sebelah kiri untuk menemukan produk yang lebih spesifik</string>
+    <string name="msg_filter_invalid_amount">Invalid amount price</string>
     <string name="no_catalog_selected">Tidak ada katalog</string>
     <string name="ibg_report_bug">Laporkan Bug</string>
     <string name="ibg_report_feedback">Kritik dan Saran</string>
@@ -1754,5 +1760,16 @@ di Tokopedia Sekarang!</string>
     <string name="preorder">PO</string>
     <string name="grosir">Grosir</string>
     <string name="white_hex_color">#ffffff</string>
+    <string name="char_should_min_5">Minimal 5 karakter</string>
+    <string name="keyword_min_3_char">Keyword terlalu pendek, minimal 3 karakter</string>
+    <string name="title_reason_reject">Alasan Penolakan:</string>
+    <string name="label_title_dialog_order_received">Sudah Terima</string>
+    <string name="label_title_dialog_order_received_free_return">Sudah Terima</string>
 
+    <string name="item_choose_time_end">Pilih Jatuh Tempo</string>
+    <string name="item_choose_courrier">Pilih Kurir</string>
+
+    <string name="success_delete_shop_note">Anda berhasil menghapus catatan.</string>
+    <string name="error_max_shop_notes_content_length">Maksimal panjang catatan adalah 6000 karakter</string>
+    <string name="error_max_shop_notes_title_length">Maksimal panjang judul catatan adalah 128 karakter</string>
 </resources>

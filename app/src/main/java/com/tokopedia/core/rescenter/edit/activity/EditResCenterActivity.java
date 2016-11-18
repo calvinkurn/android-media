@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.rescenter.detail.model.detailresponsedata.DetailResCenterData;
 import com.tokopedia.core.rescenter.detail.model.passdata.ActivityParamenterPassData;
@@ -30,6 +31,11 @@ public class EditResCenterActivity extends BasePresenterActivity<EditResCenterPr
 
     private ActionParameterPassData passData;
     private boolean isEdit;
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_RESOLUTION_CENTER_EDIT;
+    }
 
     private static Parcelable generateEditPassData(ActivityParamenterPassData passData,
                                                    DetailResCenterData detailData) {

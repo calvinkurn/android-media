@@ -15,7 +15,7 @@
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Alasan Penolakan: "
+            android:text="@string/title_reason_reject"
             android:textSize="15sp"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp" />
@@ -23,7 +23,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Keterangan"
+            android:text="@string/title_remark"
             android:textColor="@color/light_blue_300" />
 
         <EditText

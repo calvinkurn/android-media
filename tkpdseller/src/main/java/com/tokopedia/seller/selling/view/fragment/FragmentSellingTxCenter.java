@@ -27,6 +27,7 @@ import butterknife.Bind;
  * Created by Toped10 on 7/28/2016.
  */
 public class FragmentSellingTxCenter extends BaseFragment<PeopleTxCenter> implements PeopleTxCenterView {
+    public static final String TYPE = "type";
     @Bind(R2.id.menu_list)
     ListView TitleMenuListView;
 
@@ -44,7 +45,7 @@ public class FragmentSellingTxCenter extends BaseFragment<PeopleTxCenter> implem
     public static FragmentSellingTxCenter createInstance(String type) {
         FragmentSellingTxCenter fragment = new FragmentSellingTxCenter();
         Bundle bundle = new Bundle();
-        bundle.putString("type", type);
+        bundle.putString(TYPE, type);
         fragment.setArguments(bundle);
         return fragment;
     }

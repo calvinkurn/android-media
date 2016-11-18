@@ -87,6 +87,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     private static final String DATAPROCESSORDER = "data_process_order";
     private Bundle bundle;
     private boolean isConfirmDone = false;
+    public static final int REQUEST_CODE_BARCODE = 1;
 
     public FragmentShopShippingDetailV2() {
 
@@ -403,7 +404,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
 
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     public void onScanBarcode() {
-        startActivityForResult(CommonUtils.requestBarcodeScanner(), 0);
+        startActivityForResult(CommonUtils.requestBarcodeScanner(), REQUEST_CODE_BARCODE);
     }
 
     @OnClick(R2.id.cancel_button)
@@ -558,8 +559,11 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK)
-            ReferenceNumber.setText(CommonUtils.getBarcode(data));
+        if (resultCode == Activity.RESULT_OK) {
+            if(requestCode == REQUEST_CODE_BARCODE) {
+                ReferenceNumber.setText(CommonUtils.getBarcode(data));
+            }
+        }
     }
 
     @Override

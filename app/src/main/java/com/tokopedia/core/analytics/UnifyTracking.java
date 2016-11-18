@@ -11,6 +11,7 @@ import com.tokopedia.core.var.ProductItem;
 
 import org.json.JSONArray;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -533,12 +534,12 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventShare(String label){
+    public static void eventShare(String source, String label){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.PRODUCT_DETAIL_PAGE,
                 AppEventTracking.Category.PRODUCT_DETAIL,
                 AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.SHARE_TO + label
+                AppEventTracking.EventLabel.SHARE_TO + label + "-" + source
         ).getEvent());
     }
 
@@ -715,16 +716,22 @@ public class UnifyTracking extends TrackingUtils {
 
     public static  void eventAppsFlyerViewListingSearch(java.util.List<ProductItem> model, String keyword){
         JSONArray afProdIds = new JSONArray();
-        for (int i = 0; i < model.size(); i++){
-            if (i < 3) {
-                afProdIds.put(model.get(i).getId());
-            } else {
-                break;
+        ArrayList<String> prodIdArray = new ArrayList<>();
+
+        if(model.size() > 0)
+        {
+            for (int i = 0; i < model.size(); i++){
+                if (i < 3) {
+                    prodIdArray.add(model.get(i).getId());
+                    afProdIds.put(model.get(i).getId());
+                } else {
+                    break;
+                }
             }
         }
 
-        eventAppsFlyerViewListingSearch(afProdIds, keyword);
-        eventAppsFlyerContentView(afProdIds, keyword);
+        eventAppsFlyerViewListingSearch(afProdIds, keyword, prodIdArray);
+        eventAppsFlyerContentView(afProdIds, keyword, prodIdArray);
     }
 
 

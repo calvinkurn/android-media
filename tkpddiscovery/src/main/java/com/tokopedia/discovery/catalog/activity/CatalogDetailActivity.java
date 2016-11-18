@@ -10,6 +10,7 @@ import android.view.MenuItem;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.discovery.catalog.fragment.CatalogDetailFragment;
 import com.tokopedia.discovery.catalog.fragment.CatalogDetailListFragment;
@@ -33,6 +34,11 @@ public class CatalogDetailActivity extends BasePresenterActivity implements ICat
         Intent intent = new Intent(context, CatalogDetailActivity.class);
         intent.putExtra(EXTRA_CATALOG_ID, catalogId);
         return intent;
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_CATALOG;
     }
 
     @Override

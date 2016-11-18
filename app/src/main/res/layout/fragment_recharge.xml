@@ -10,6 +10,7 @@
         android:id="@+id/recharge_progressbar"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:visibility="gone"
         android:layout_gravity="center" />
 
     <TextView

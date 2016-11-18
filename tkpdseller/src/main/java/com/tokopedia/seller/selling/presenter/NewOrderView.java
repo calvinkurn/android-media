@@ -17,8 +17,6 @@ public interface NewOrderView extends BaseView {
 
     boolean getUserVisible();
 
-    void initView();
-
     void setRefreshPullEnable(boolean b);
 
     void disableFilter();
@@ -56,4 +54,8 @@ public interface NewOrderView extends BaseView {
     void addRetry();
 
     void moveToDetailResult(Intent intent, int code);
+
+    void addEmptyView();
+
+    void removeEmpty();
 }

@@ -28,4 +28,19 @@ public class RechargeOperatorModelDB extends BaseModel {
 
     @Column
     public int status;
+
+    @Column
+    public int minimumLength;
+
+    @Column
+    public int maximumLength;
+
+    @Column
+    public String nominalText;
+
+    @Column
+    public Boolean showPrice;
+
+    @Column
+    public Boolean showProduct;
 }
