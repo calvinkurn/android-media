@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.transaction.cart.model.CartInsurance;
 import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
@@ -40,7 +42,6 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private static final int TYPE_CART_ITEM = R.layout.cart_item_holder;
     private final Fragment hostFragment;
     private final CartAction cartAction;
-    private boolean editMode;
 
     private List<Object> dataList = new ArrayList<>();
 
@@ -55,14 +56,28 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void onSubmitEditCart(TransactionList cartData, List<ProductEditData> cartProductEditDataList);
     }
 
-    public void enableEditMode() {
-        this.editMode = true;
-        this.notifyDataSetChanged();
+    private void enableEditMode(TransactionList cartData) {
+        for (int i = 0; i < dataList.size(); i++) {
+            if (dataList.get(i) instanceof CartItemEditable
+                    && ((CartItemEditable) dataList.get(i)).getTransactionList().getCartString()
+                    .equals(cartData.getCartString())) {
+                ((CartItemEditable) dataList.get(i)).setEditMode(true);
+                this.notifyItemChanged(i);
+                return;
+            }
+        }
     }
 
-    public void disableEditMode() {
-        this.editMode = false;
-        this.notifyDataSetChanged();
+    private void disableEditMode(TransactionList cartData) {
+        for (int i = 0; i < dataList.size(); i++) {
+            if (dataList.get(i) instanceof CartItemEditable
+                    && ((CartItemEditable) dataList.get(i)).getTransactionList().getCartString()
+                    .equals(cartData.getCartString())) {
+                ((CartItemEditable) dataList.get(i)).setEditMode(false);
+                this.notifyItemChanged(i);
+                return;
+            }
+        }
     }
 
     public CartItemAdapter(Fragment hostFragment, CartAction cartAction) {
@@ -99,45 +114,47 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private void bindCartHolder(final ViewHolder holder, final CartItemEditable data) {
 
-        holder.tvShopName.setText(data.getTransactionList().getCartShop().getShopName());
+        final TransactionList cartData = data.getTransactionList();
+
         final CartProductItemAdapter adapterProduct = new CartProductItemAdapter(hostFragment);
         adapterProduct.setCartProductAction(new CartProductItemAdapter.CartProductAction() {
             @Override
             public void onCancelCartProduct(CartProduct cartProduct) {
                 if (cartAction != null)
-                    cartAction.onCancelCartProduct(data.getTransactionList(), cartProduct);
+                    cartAction.onCancelCartProduct(cartData, cartProduct);
             }
         });
-        adapterProduct.fillDataList(data.getTransactionList().getCartProducts());
+        adapterProduct.fillDataList(cartData.getCartProducts());
         holder.rvCartProduct.setLayoutManager(new LinearLayoutManager(hostFragment.getActivity()));
         holder.rvCartProduct.setAdapter(adapterProduct);
 
-        holder.tvInsurancePrice.setText(data.getTransactionList().getCartInsurancePriceIdr());
-        holder.tvShippingCost.setText(data.getTransactionList().getCartShippingRateIdr());
-        holder.tvSubTotal.setText(data.getTransactionList().getCartTotalProductPriceIdr());
-        holder.tvTotalPrice.setText(data.getTransactionList().getCartTotalAmountIdr());
-        holder.tvWeight.setText(data.getTransactionList().getCartTotalWeight());
+        holder.tvShopName.setText(cartData.getCartShop().getShopName());
+        holder.tvInsurancePrice.setText(cartData.getCartInsurancePriceIdr());
+        holder.tvShippingCost.setText(cartData.getCartShippingRateIdr());
+        holder.tvSubTotal.setText(cartData.getCartTotalProductPriceIdr());
+        holder.tvTotalPrice.setText(cartData.getCartTotalAmountIdr());
+        holder.tvWeight.setText(cartData.getCartTotalWeight());
         holder.tvShippingAddress.setText(String.format("%s (Ubah)",
-                data.getTransactionList().getCartDestination().getReceiverName()));
+                cartData.getCartDestination().getReceiverName()));
         holder.tvShipment.setText(String.format("%s - %s (Ubah)",
-                data.getTransactionList().getCartShipments().getShipmentName(),
-                data.getTransactionList().getCartShipments().getShipmentPackageName()));
-        holder.holderActionEditor.setVisibility(editMode ? View.VISIBLE : View.GONE);
+                cartData.getCartShipments().getShipmentName(),
+                cartData.getCartShipments().getShipmentPackageName()));
+        holder.holderActionEditor.setVisibility(data.isEditMode() ? View.VISIBLE : View.GONE);
 
-        if (editMode) {
-            holder.holderActionEditor.setVisibility(View.VISIBLE);
-            holder.holderContainer.setCardBackgroundColor(hostFragment.getResources().getColor(R.color.grey_100));
-            adapterProduct.enableEditMode();
-        } else {
-            holder.holderActionEditor.setVisibility(View.GONE);
-            holder.holderContainer.setCardBackgroundColor(hostFragment.getResources().getColor(R.color.white));
-            adapterProduct.disableEditMode();
-        }
+        ArrayAdapter<CartInsurance> cartInsuranceAdapter
+                = new ArrayAdapter<>(
+                hostFragment.getActivity(), android.R.layout.simple_spinner_item,
+                CartInsurance.createListForAdapter()
+        );
+        cartInsuranceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        holder.spUseInsurance.setAdapter(cartInsuranceAdapter);
+
+        renderEditableMode(holder, data, adapterProduct);
 
         holder.tvShippingAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cartAction.onChangeShipment(data.getTransactionList());
+                cartAction.onChangeShipment(cartData);
             }
         });
         holder.holderDetailCartToggle.setOnClickListener(new View.OnClickListener() {
@@ -167,10 +184,10 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     public boolean onMenuItemClick(MenuItem item) {
                         int i = item.getItemId();
                         if (i == R.id.action_cart_delete) {
-                            cartAction.onCancelCart(data.getTransactionList());
+                            cartAction.onCancelCart(cartData);
                             return true;
                         } else if (i == R.id.action_cart_edit) {
-                            enableEditMode();
+                            enableEditMode(cartData);
                             return true;
                         }
                         return false;
@@ -183,7 +200,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holder.btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                disableEditMode();
+                disableEditMode(cartData);
                 adapterProduct.disableEditMode();
             }
         });
@@ -191,7 +208,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             @Override
             public void onClick(View v) {
                 try {
-                    cartAction.onSubmitEditCart(data.getTransactionList(),
+                    cartAction.onSubmitEditCart(cartData,
                             adapterProduct.getCartProductEditDataList());
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
@@ -199,6 +216,27 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
         });
 
+    }
+
+    private void renderEditableMode(ViewHolder holder, CartItemEditable data,
+                                    CartProductItemAdapter adapterProduct) {
+        if (data.isEditMode()) {
+            holder.holderActionEditor.setVisibility(View.VISIBLE);
+            holder.holderContainer.setCardBackgroundColor(
+                    hostFragment.getResources().getColor(R.color.grey_100)
+            );
+            holder.btnOverflow.setEnabled(false);
+            adapterProduct.enableEditMode();
+            adapterProduct.notifyDataSetChanged();
+        } else {
+            holder.holderActionEditor.setVisibility(View.GONE);
+            holder.holderContainer.setCardBackgroundColor(
+                    hostFragment.getResources().getColor(R.color.white)
+            );
+            holder.btnOverflow.setEnabled(true);
+            adapterProduct.disableEditMode();
+            adapterProduct.notifyDataSetChanged();
+        }
     }
 
     @Override
