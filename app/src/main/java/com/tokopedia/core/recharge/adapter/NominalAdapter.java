@@ -30,11 +30,13 @@ public class NominalAdapter extends ArrayAdapter<Product> {
     private final static int OUT_OF_STOCK = 3;
     private final LayoutInflater inflater;
     private List<Product> productList;
+    private Boolean isShowPrice = true;
 
-    public NominalAdapter(Context context, int resource, List<Product> productList) {
+    public NominalAdapter(Context context, int resource, List<Product> productList, Boolean isShowPrice) {
         super(context, resource, productList);
         this.productList = productList;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.isShowPrice = isShowPrice;
     }
 
     @Override
@@ -91,6 +93,8 @@ public class NominalAdapter extends ArrayAdapter<Product> {
         holder.nominalTagTextview.setVisibility(View.GONE);
         //holder.linPromoView.setVisibility(View.VISIBLE);
         holder.nominalPriceTextView.setTextColor(ContextCompat.getColor(getContext(),R.color.grey_600));
+        if (!isShowPrice)
+            holder.nominalPriceTextView.setVisibility(View.GONE);
     }
 
     private void renderProductPromo(NormalViewHolder holder, Product product) {
@@ -104,6 +108,12 @@ public class NominalAdapter extends ArrayAdapter<Product> {
                 Paint.STRIKE_THRU_TEXT_FLAG);
         holder.nominalTagTextview.setTextColor(ContextCompat.getColor(getContext(),R.color.red_300));
         holder.nominalPriceTextView.setTextColor(ContextCompat.getColor(getContext(),R.color.red_300));
+        if (isShowPrice) {
+            holder.nominalPriceTextView.setVisibility(View.GONE);
+            holder.nominalTagTextview.setVisibility(View.GONE);
+            holder.nominalDiskonTextView.setVisibility(View.GONE);
+        }
+
     }
 
     private void renderEmptyStock(NormalViewHolder holder, Attributes product) {

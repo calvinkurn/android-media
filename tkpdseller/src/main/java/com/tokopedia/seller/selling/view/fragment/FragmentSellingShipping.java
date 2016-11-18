@@ -2,9 +2,12 @@ package com.tokopedia.seller.selling.view.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -22,6 +25,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.PopupMenu;
 import android.widget.SearchView;
 import android.widget.Spinner;
@@ -61,6 +65,8 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
     RecyclerView recyclerView;
     @Bind(R2.id.fab)
     FloatingActionButton fab;
+    @Bind(R2.id.root)
+    View rootView;
     private View filterView;
     SearchView search;
     Spinner dueDate;
@@ -79,8 +85,8 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
     private BaseSellingAdapter adapter;
     private MultiSelector multiSelector = new MultiSelector();
     public ActionMode actionMode;
-    private boolean inhibit_spinner_shipping = true;
-    private boolean inhibit_spinner_duedate = true;
+    private boolean inhibitSpinnerShipping = true;
+    private boolean inhibitSpinnerDuedate = true;
     private boolean shouldRefreshList = false;
 
 
@@ -160,7 +166,7 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
         setRetainInstance(true);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         page = new PagingHandler();
-        adapter = new BaseSellingAdapter<ShippingImpl.Model, ShippingViewHolder>(ShippingImpl.Model.class, R.layout.selling_shipping_list_item, ShippingViewHolder.class) {
+        adapter = new BaseSellingAdapter<ShippingImpl.Model, ShippingViewHolder>(ShippingImpl.Model.class,getActivity(),  R.layout.selling_shipping_list_item, ShippingViewHolder.class) {
             @Override
             protected void populateViewHolder(final ShippingViewHolder viewHolder, final ShippingImpl.Model model, int position) {
                 viewHolder.bindDataModel(getActivity(), model);
@@ -368,6 +374,16 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
     }
 
     @Override
+    public void addEmptyView() {
+        adapter.setIsDataEmpty(true);
+    }
+
+    @Override
+    public void removeEmpty() {
+        adapter.setIsDataEmpty(false);
+    }
+
+    @Override
     public void notifyDataSetChanged(List<ShippingImpl.Model> modelList) {
         adapter.clearData();
         adapter.setListModel(modelList);
@@ -423,6 +439,12 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        initRefreshView();
+        initView();
+        super.onViewCreated(view, savedInstanceState);
+    }
+
     public void initView() {
         filterView = getActivity().getLayoutInflater().inflate(R.layout.filter_layout_selling_shipping, null);
         search = ButterKnife.findById(filterView, R.id.search);
@@ -460,8 +482,8 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 //to avoid called itemselected when oncreate
-                if (inhibit_spinner_duedate) {
-                    inhibit_spinner_duedate = false;
+                if (inhibitSpinnerDuedate) {
+                    inhibitSpinnerDuedate = false;
                 } else {
                     presenter.doRefresh();
                 }
@@ -476,8 +498,8 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 //to avoid called itemselected when oncreate
-                if (inhibit_spinner_shipping) {
-                    inhibit_spinner_shipping = false;
+                if (inhibitSpinnerShipping) {
+                    inhibitSpinnerShipping = false;
                 } else {
                     presenter.doRefresh();
                 }
@@ -491,9 +513,8 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
         search.setOnQueryTextListener(onSearchListener());
     }
 
-    @Override
     public void initRefreshView() {
-        refresh = new RefreshHandler(getActivity(), getView(), onRefreshListener());
+        refresh = new RefreshHandler(getActivity(), rootView, onRefreshListener());
     }
 
     private SearchView.OnQueryTextListener onSearchListener() {

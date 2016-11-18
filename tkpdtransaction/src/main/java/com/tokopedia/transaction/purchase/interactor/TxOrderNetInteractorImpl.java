@@ -382,7 +382,7 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (e instanceof UnknownHostException) {
-                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
+                    listener.onNoConnection(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
                 } else if (e instanceof SocketTimeoutException) {
                     listener.onError(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                 } else {
@@ -432,7 +432,7 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (e instanceof UnknownHostException) {
-                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
+                    listener.onNoConnection(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
                 } else if (e instanceof SocketTimeoutException) {
                     listener.onError(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                 } else {
@@ -449,8 +449,9 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
                             || data.getTxConfDataList().isEmpty()) {
                         listener.onEmptyData();
                     } else {
-                        listener.onSuccess(response.body().getJsonData(),
-                                response.body().convertDataObj(TxConfListData.class));
+                        listener.onSuccess(
+                                response.body().convertDataObj(TxConfListData.class)
+                        );
                     }
                 } else {
                     listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
@@ -482,7 +483,7 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
             @Override
             public void onError(Throwable e) {
                 if (e instanceof UnknownHostException) {
-                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
+                    listener.onNoConnection(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
                 } else if (e instanceof SocketTimeoutException) {
                     listener.onError(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                 } else {
@@ -619,7 +620,7 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
             @Override
             public void onError(Throwable e) {
                 if (e instanceof UnknownHostException) {
-                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
+                    listener.onNoConnection(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
                 } else if (e instanceof SocketTimeoutException) {
                     listener.onError(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                 } else {
@@ -671,7 +672,7 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (e instanceof UnknownHostException) {
-                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
+                    listener.onNoConnection(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
                 } else if (e instanceof SocketTimeoutException) {
                     listener.onError(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                 } else {

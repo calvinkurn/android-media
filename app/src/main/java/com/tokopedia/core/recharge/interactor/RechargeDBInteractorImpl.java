@@ -73,6 +73,39 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                 });
     }
 
+    @Override
+    public void getListProductDefaultOperator(
+            final OnGetListProduct onGetListProduct,final int categoryId, final String operatorId) {
+
+        Observable.just(true)
+                .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<Boolean, List<Product>>() {
+                    @Override
+                    public List<Product> call(Boolean rechargeOperatorModelDB) {
+                        return new RechargeProductManager().getListData(categoryId,
+                                    Integer.parseInt(operatorId));
+                    }
+                })
+                .subscribe(new Subscriber<List<Product>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        onGetListProduct.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(List<Product> products) {
+                        onGetListProduct.onSuccess(products);
+                    }
+                });
+    }
+
 
     @Override
     public void getCategory(final OnGetCategory onGetCategory) {

@@ -135,9 +135,9 @@ public class ManagePeopleBankActivity extends BasePresenterActivity
     }
 
     @Override
-    public String getScreenName() {
-        return AppScreen.SCREEN_PEOPLE_BANK;
-    }
+     public String getScreenName() {
+         return AppScreen.SCREEN_PEOPLE_BANK;
+     }
 
     @Override
     public void onBackPressed() {

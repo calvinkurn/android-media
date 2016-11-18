@@ -164,23 +164,20 @@ public class SellingDetailActivity extends TkpdActivity implements  DownloadResu
                             break;
                     }
                     break;
-                case DownloadService.STATUS_ERROR:
-                    switch (resultData.getInt(DownloadService.NETWORK_ERROR_FLAG, DownloadService.INVALID_NETWORK_ERROR_FLAG)) {
-                        case NetworkConfig.BAD_REQUEST_NETWORK_ERROR:
-                            ((BaseView) fragment).onNetworkError(type, " BAD_REQUEST_NETWORK_ERROR !!!");
-                            break;
-                        case NetworkConfig.INTERNAL_SERVER_ERROR:
-                            ((BaseView) fragment).onNetworkError(type, " INTERNAL_SERVER_ERROR !!!");
-                            break;
-                        case NetworkConfig.FORBIDDEN_NETWORK_ERROR:
-                            ((BaseView) fragment).onNetworkError(type, " FORBIDDEN_NETWORK_ERROR !!!");
-                            break;
-                        case DownloadService.INVALID_NETWORK_ERROR_FLAG:
-                        default:
-                            String messageError = resultData.getString(DownloadService.MESSAGE_ERROR_FLAG, DownloadService.INVALID_MESSAGE_ERROR);
-                            if (!messageError.equals(DownloadService.INVALID_MESSAGE_ERROR)) {
+                case SellingService.STATUS_ERROR:
+                    switch (resultData.getInt(SellingService.NETWORK_ERROR_FLAG, SellingService.INVALID_NETWORK_ERROR_FLAG)) {
+                        case SellingService.MESSAGE_ERROR_FLAG_RESPONSE:
+                            String messageError = resultData.getString(SellingService.MESSAGE_ERROR_FLAG, SellingService.INVALID_MESSAGE_ERROR);
+                            if (!messageError.equals(SellingService.INVALID_MESSAGE_ERROR)) {
                                 ((BaseView) fragment).onMessageError(type, messageError);
                             }
+                            break;
+                        case NetworkConfig.BAD_REQUEST_NETWORK_ERROR:
+                        case NetworkConfig.INTERNAL_SERVER_ERROR:
+                        case NetworkConfig.FORBIDDEN_NETWORK_ERROR:
+                        case SellingService.INVALID_NETWORK_ERROR_FLAG:
+                        default:
+                            ((BaseView) fragment).onNetworkError(type, getString(R.string.error_connection_problem));
                     }
                     break;
             }// end of status download service
