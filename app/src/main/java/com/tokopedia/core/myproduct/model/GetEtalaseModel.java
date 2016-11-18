@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by m.normansyah on 17/12/2015.
  */
-@Parcel(parcelsIndex = false)
+@Parcel
 public class GetEtalaseModel {
     /**
      * this is for parcelable
@@ -38,7 +38,7 @@ public class GetEtalaseModel {
     @Expose
     String server_process_time;
 
-    @Parcel(parcelsIndex = false)
+    @Parcel
     public static class Data{
         /**
          * this is for parcelable
@@ -66,7 +66,7 @@ public class GetEtalaseModel {
         }
     }
 
-    @Parcel(parcelsIndex = false)
+    @Parcel
     public static class EtalaseModel{
         /**
          * This is for parcelable
@@ -133,7 +133,7 @@ public class GetEtalaseModel {
         }
     }
 
-    @Parcel(parcelsIndex = false)
+    @Parcel
     public static class Paging{
 
         /**

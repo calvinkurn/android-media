@@ -488,7 +488,7 @@ public class ShippingImpl extends Shipping {
         }
     }
 
-    @Parcel(parcelsIndex = false)
+    @Parcel
     public static class Model {
         public String UserName;
         public String AvatarUrl;
