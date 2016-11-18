@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.core.geolocation.model.LocationPass;
 import com.tokopedia.transaction.cart.adapter.ShipmentCartAdapter;
 import com.tokopedia.transaction.cart.adapter.ShipmentPackageCartAdapter;
 import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentData;
+import com.tokopedia.transaction.cart.model.calculateshipment.ShipmentPackage;
 import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartData;
 
 
@@ -38,7 +40,7 @@ public interface IShipmentCartView {
 
     void renderResultChangeAddress(@NonNull Bundle bundle);
 
-    void showGeolocationMap();
+    void showGeolocationMap(ShipmentPackage shipmentPackage);
 
     Activity getActivity();
 
@@ -47,6 +49,8 @@ public interface IShipmentCartView {
     void navigateToAddAddress();
 
     void navigateToCart(String message);
+
+    void navigateToGeolocation(LocationPass locationPass);
 
     ShipmentCartAdapter getShipmentAdapter();
 

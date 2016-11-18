@@ -13,13 +13,6 @@ import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartWrapper;
  */
 
 public interface IShipmentCartPresenter {
-    void goToChangeAddress();
-
-    void goToAddAddress();
-
-    void goToGeolocation(LocationData data);
-
-    void backToCart();
 
     void processGeoCodeLocation(LocationPass locationPass);
 

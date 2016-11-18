@@ -41,28 +41,6 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
     }
 
     @Override
-    public void goToChangeAddress() {
-        if (view != null) {
-
-        }
-    }
-
-    @Override
-    public void goToAddAddress() {
-
-    }
-
-    @Override
-    public void goToGeolocation(LocationData data) {
-
-    }
-
-    @Override
-    public void backToCart() {
-
-    }
-
-    @Override
     public void processGeoCodeLocation(LocationPass locationPass) {
         Observable<String> observable = Observable.just(locationPass)
                 .map(new Func1<LocationPass, String>() {
@@ -102,7 +80,7 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
             this.interactor.calculateShipment(wrapper, new Subscriber<CalculateShipmentData>() {
                 @Override
                 public void onCompleted() {
-
+                    view.dismisLoading();
                 }
 
                 @Override

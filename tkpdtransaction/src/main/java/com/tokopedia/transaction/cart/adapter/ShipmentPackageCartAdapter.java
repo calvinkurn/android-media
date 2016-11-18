@@ -36,7 +36,7 @@ public class ShipmentPackageCartAdapter extends ArrayAdapter<ShipmentPackage> {
 
     @NonNull
     @Override
-    public View getView(int position, View convertnView, @NonNull ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         ShipmentPackage shipment = getItem(position);
         ViewHolder viewHolder;
         if (convertView == null) {
