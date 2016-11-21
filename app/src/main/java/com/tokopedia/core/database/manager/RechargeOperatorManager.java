@@ -38,9 +38,6 @@ public class RechargeOperatorManager implements DbFlowOperation<RechargeOperator
         db.nominalText =  nominalText;
         db.showPrice =  showPrice;
         db.showProduct = showProduct;
-        db.showProductDummy = true;
-        db.showProductDummy2 = true;
-        db.showProductDummy3 = true;
         db.save();
     }
 

@@ -44,12 +44,4 @@ public class RechargeOperatorModelDBAttrs extends BaseModel {
     @Column
     public Boolean showProduct;
 
-    @Column
-    public Boolean showProductDummy;
-
-    @Column
-    public Boolean showProductDummy2;
-
-    @Column
-    public Boolean showProductDummy3;
 }

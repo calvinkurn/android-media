@@ -14,7 +14,7 @@ public class DbFlowDatabase {
 
     public static final String NAME = "tokopedia";
 
-    public static final int VERSION = 5;
+    public static final int VERSION = 4;
 
     @Migration(version = DbFlowDatabase.VERSION, database = DbFlowDatabase.class)
     public static class Migration2 extends BaseMigration {
@@ -22,12 +22,6 @@ public class DbFlowDatabase {
         @Override
         public void migrate(DatabaseWrapper database) {
             //database.execSQL("DROP TABLE IF EXISTS RechargeOperatorModelDB_Table");
-            //database.execSQL("ALTER TABLE RechargeOperatorModelDBAttrs ADD COLUMN maximumLength INTEGER DEFAULT 0");
-            //database.execSQL("DROP TABLE IF EXISTS " + RechargeOperatorModelDBAttrs.class);
-            /*SQLite.update(RechargeOperatorModelDBAttrs.class)
-                    .set(Employee_Table.status.eq("Invalid"))
-                    .where(Employee_Table.job.eq("Laid Off"))
-                    .execute(database); // required inside a migration to pass the wrapper*/
         }
     }
 }
