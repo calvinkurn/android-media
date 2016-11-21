@@ -19,6 +19,7 @@ import com.tokopedia.core.manage.ManageConstant;
 import com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActivity;
 import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
 import com.tokopedia.core.manage.people.notification.activity.ManageNotificationActivity;
+import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity;
 import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 
@@ -90,7 +91,7 @@ public class FragmentSettingPeople extends Fragment implements ManageConstant {
 					GAUtility.SendEvent(getActivity(), "Cat Manage People", "Act Click Btn", "Lbl Privacy");
 					break;*/
                     case 4:
-                        intent = new Intent(getActivity(), ManagePeoplePassword.class);
+                        intent = new Intent(getActivity(), ManagePasswordActivity.class);
                         startActivity(intent);
                         break;
                 }

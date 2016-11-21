@@ -148,11 +148,15 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
 
     @Override
     public void initDiscoveryTicker() {
-        if (TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_SEARCH).equalsIgnoreCase("true")) {
-            String message = TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_SEARCH_TEXT);
-            showTickerGTM(message);
-        } else {
-            showTickerGTM(null);
+        try {
+            if (TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_SEARCH).equalsIgnoreCase("true")) {
+                String message = TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_SEARCH_TEXT);
+                showTickerGTM(message);
+            } else {
+                showTickerGTM(null);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 

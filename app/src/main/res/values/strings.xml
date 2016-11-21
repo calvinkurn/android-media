@@ -855,11 +855,12 @@ Namun tidak perlu khawatir karena staff kami selalu melakukan pengecekan.]]>
     <string name="title_package_received">Paket diterima</string>
     <string name="title_package_not_received">Paket belum diterima</string>
     <string name="dialog_package_received">
-<![CDATA[
-	Apakah Anda yakin Anda telah menerima pesanan Anda ? <br /> <br />
-	Silakan konfirmasi jika Anda telah menerima pesanan Anda selengkapnya dan transaksi Anda akan dianggap selesai dan dana akan diteruskan kepada penjual. <br />
-Jika Anda memiliki masalah dengan pemesanan Anda, mohon klik tombol komplain dan silakan diskusikan dengan Penjual. <br />
-	]]>
+ <![CDATA[
+Apakah pesanan dari toko xx_shop_name_xx sudah Anda terima?  <br /> <br />
+Pilih “Selesai” jika Anda sudah menerima pesanan dengan baik dan lengkap.<br />
+Transaksi akan dinyatakan selesai, dan dana otomatis diteruskan ke penjual.<br />
+Pilih “Komplain” jika pesanan Anda bermasalah.
+]]>
     </string>
     <string name="dialog_package_not_rcv">
         <![CDATA[
@@ -1762,6 +1763,8 @@ di Tokopedia Sekarang!</string>
     <string name="char_should_min_5">Minimal 5 karakter</string>
     <string name="keyword_min_3_char">Keyword terlalu pendek, minimal 3 karakter</string>
     <string name="title_reason_reject">Alasan Penolakan:</string>
+    <string name="label_title_dialog_order_received">Sudah Terima</string>
+    <string name="label_title_dialog_order_received_free_return">Sudah Terima</string>
 
     <string name="item_choose_time_end">Pilih Jatuh Tempo</string>
     <string name="item_choose_courrier">Pilih Kurir</string>

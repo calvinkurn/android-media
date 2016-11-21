@@ -18,6 +18,8 @@ public interface RechargeDBInteractor {
 
     void getListProduct(OnGetListProduct onGetListProduct, String prefix, int categoryId, Boolean validatePrefix);
 
+    void getListProductDefaultOperator(OnGetListProduct onGetListProduct, int categoryId, String operatorId);
+
     void getCategory(OnGetCategory onGetCategory);
 
     void getStatus(OnGetStatus onGetStatus);

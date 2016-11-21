@@ -13,6 +13,10 @@ public interface RechargePresenter {
 
     void validatePhonePrefix(String phonePrefix, int categoryId, Boolean validatePrefix);
 
+    void updateMinLenghAndOperator(String operatorId);
+
+    void validateWithDefaultOperator( int categoryId, String operatorId);
+
     boolean isAlreadyHavePhonebookDataOnCache(String key);
 
     boolean isAlreadyHaveLastOrderDataOnCache();
