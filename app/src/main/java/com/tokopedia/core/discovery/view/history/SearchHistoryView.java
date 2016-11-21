@@ -11,5 +11,5 @@ public interface SearchHistoryView extends BaseView {
     void sendSearchResult(String query);
     void clearSearchQuery();
 
-    void sendHotlistResult(String selected);
+    void sendHotlistResult(String selected, String keyword);
 }
