@@ -11,6 +11,7 @@
         android:id="@+id/prod_image"
         android:layout_width="@dimen/img_thumb_m"
         android:layout_height="@dimen/img_thumb_m"
+        android:layout_marginRight="@dimen/margin_vs"
         android:src="@drawable/remove"
         android:contentDescription="@string/product_image" />
 

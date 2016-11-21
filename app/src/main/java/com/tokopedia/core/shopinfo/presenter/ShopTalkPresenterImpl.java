@@ -149,7 +149,10 @@ public class ShopTalkPresenterImpl implements ShopTalkPresenter {
                     public void onSuccess() {
                         viewListener.finishLoading();
                         viewListener.setActionsEnabled(true);
-                        viewListener.onSuccessFollowTalk(shopTalk);
+                        if (shopTalk.getTalkFollowStatus() == ShopTalk.IS_FOLLOWING)
+                            viewListener.onSuccessUnfollowTalk(shopTalk);
+                        else
+                            viewListener.onSuccessFollowTalk(shopTalk);
                     }
 
                     @Override

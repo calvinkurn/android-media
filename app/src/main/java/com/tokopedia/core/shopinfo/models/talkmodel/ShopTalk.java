@@ -11,6 +11,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class ShopTalk implements Parcelable {
 
+    public static final int IS_FOLLOWING = 1;
+
     @SerializedName("talk_create_time")
     @Expose
     private String talkCreateTime;

@@ -34,4 +34,6 @@ public interface ShopTalkFragmentView {
     void onSuccessReportTalk(ShopTalk shopTalk);
 
     void onSuccessFollowTalk(ShopTalk shopTalk);
+
+    void onSuccessUnfollowTalk(ShopTalk shopTalk);
 }

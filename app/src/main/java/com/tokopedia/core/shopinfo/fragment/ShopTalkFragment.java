@@ -155,7 +155,6 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
             @Override
             public void onUnfollowTalk(ShopTalk shopTalk) {
                 presenter.onUnfollowTalk(shopTalk);
-
             }
 
             @Override
@@ -182,15 +181,14 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
 
     private void createDeleteDialog(final ShopTalk shopTalk) {
         new AlertDialog.Builder(context)
-                .setTitle(getString(R.string.title_delete))
+                .setTitle(getString(R.string.title_delete_discussion))
                 .setMessage(getString(R.string.prompt_delete_talk))
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         presenter.onDeleteTalk(shopTalk);
-
                     }
                 })
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.No, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                     }
                 })
@@ -336,6 +334,13 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
     @Override
     public void onSuccessFollowTalk(ShopTalk shopTalk) {
         SnackbarManager.make(getActivity(), getString(R.string.message_success_follow), Snackbar.LENGTH_LONG).show();
+        adapter.getList().get(shopTalk.getPosition()).setTalkFollowStatus((shopTalk.getTalkFollowStatus() + 1) % 2);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onSuccessUnfollowTalk(ShopTalk shopTalk) {
+        SnackbarManager.make(getActivity(), getString(R.string.message_success_unfollow), Snackbar.LENGTH_LONG).show();
         adapter.getList().get(shopTalk.getPosition()).setTalkFollowStatus((shopTalk.getTalkFollowStatus() + 1) % 2);
         adapter.notifyDataSetChanged();
     }
