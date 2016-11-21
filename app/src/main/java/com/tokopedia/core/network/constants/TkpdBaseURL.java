@@ -173,6 +173,7 @@ public interface  TkpdBaseURL {
 
         String PATH_ANSWER_QUESTION = "answer_question.pl";
         String PATH_REQUEST_OTP = "request_otp.pl";
+        String PATH_REQUEST_OTP_PHONE = "msisdn/send_verification_otp.pl";
 
         String PATH_GET_QUESTION_FORM = "get_question_form.pl";
 

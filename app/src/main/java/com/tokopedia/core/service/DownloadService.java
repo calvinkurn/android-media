@@ -4,22 +4,18 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.os.ResultReceiver;
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.data.DataManagerImpl;
 import com.tkpd.library.utils.data.DataReceiver;
 import com.tokopedia.core.R;
 import com.tokopedia.core.SplashScreen;
-import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.database.model.Bank;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.database.model.City;
@@ -29,7 +25,6 @@ import com.tokopedia.core.home.model.HotListModel;
 import com.tokopedia.core.home.presenter.HotList;
 import com.tokopedia.core.home.presenter.HotListImpl;
 import com.tokopedia.core.network.NetworkHandler;
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.apiservices.search.HotListService;
 import com.tokopedia.core.network.apiservices.user.InterruptActService;
 import com.tokopedia.core.network.apiservices.user.InterruptService;
@@ -39,47 +34,27 @@ import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.services.AuthService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.MapNulRemover;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.service.constant.DownloadServiceConstant;
-import com.tokopedia.core.session.model.AccountsModel;
 import com.tokopedia.core.session.model.AccountsParameter;
-import com.tokopedia.core.session.model.CreatePasswordModel;
-import com.tokopedia.core.session.model.ErrorModel;
-import com.tokopedia.core.session.model.InfoModel;
 import com.tokopedia.core.session.model.LoginBypassModel;
 import com.tokopedia.core.session.model.LoginBypassSuccessModel;
-import com.tokopedia.core.session.model.LoginEmailModel;
 import com.tokopedia.core.session.model.LoginFacebookViewModel;
 import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.core.session.model.LoginInterruptErrorModel;
 import com.tokopedia.core.session.model.LoginInterruptModel;
-import com.tokopedia.core.session.model.LoginProviderModel;
 import com.tokopedia.core.session.model.LoginSecurityModel;
-import com.tokopedia.core.session.model.LoginThirdModel;
-import com.tokopedia.core.session.model.LoginViewModel;
 import com.tokopedia.core.session.model.OTPModel;
 import com.tokopedia.core.session.model.QuestionFormModel;
-import com.tokopedia.core.session.model.RegisterSuccessModel;
-import com.tokopedia.core.session.model.RegisterViewModel;
-import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.session.model.SecurityQuestionViewModel;
-import com.tokopedia.core.session.model.ShopRepModel;
 import com.tokopedia.core.session.model.TokenModel;
-import com.tokopedia.core.session.model.UserRepModel;
 import com.tokopedia.core.session.presenter.Login;
 import com.tokopedia.core.session.presenter.LoginImpl;
-import com.tokopedia.core.session.presenter.Register;
-import com.tokopedia.core.session.presenter.RegisterNext;
-import com.tokopedia.core.session.presenter.RegisterPassPhone;
 import com.tokopedia.core.session.presenter.SecurityQuestion;
-import com.tokopedia.core.session.subscriber.AccountSubscriber;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.var.RecyclerViewItem;
 
 import org.json.JSONArray;
@@ -97,8 +72,6 @@ import java.util.Map;
 
 import retrofit2.Response;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -163,6 +136,11 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                 Log.d(TAG, SecurityQuestion.class.getSimpleName() + " request otp " + securityQuestionViewModel);
                 intent.putExtra(REQUEST_OTP_MODEL, Parcels.wrap(securityQuestionViewModel));
                 break;
+            case REQUEST_OTP_PHONE:
+                SecurityQuestionViewModel securityQuestionViewModelOTP = Parcels.unwrap(bundle.getParcelable(REQUEST_OTP_MODEL));
+                Log.d(TAG, SecurityQuestion.class.getSimpleName() + " request otp phone" + securityQuestionViewModelOTP);
+                intent.putExtra(REQUEST_OTP_MODEL, Parcels.wrap(securityQuestionViewModelOTP));
+                break;
             case SECURITY_QUESTION_GET:
                 securityQuestionViewModel = Parcels.unwrap(bundle.getParcelable(SECURITY_QUESTION_GET_MODEL));
                 Log.d(TAG, SecurityQuestion.class.getSimpleName() + " try to fetch security question form : " + securityQuestionViewModel);
@@ -225,8 +203,7 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                         .subscribeOn(Schedulers.io())
                         .unsubscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber(type))
-                ;
+                        .subscribe(new Subscriber(type));
                 break;
             case SECURITY_QUESTION_GET:
                 running = new Bundle();
@@ -260,6 +237,24 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                 params.put("user_id", SessionHandler.getTempLoginSession(getApplicationContext()));
                 service = new InterruptActService();
                 ((InterruptActService) service).getApi().answerQuestion(AuthUtil.generateParams(getApplicationContext(), params, SessionHandler.getTempLoginSession(getApplicationContext())))
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber(type));
+                break;
+            case REQUEST_OTP_PHONE:
+                /* Update UI: Download Service is Running */
+                running = new Bundle();
+                running.putInt(TYPE, type);
+                running.putBoolean(SECURITY_QUESTION_LOADING, true);
+                receiver.send(STATUS_RUNNING, running);
+                securityQuestionViewModel = Parcels.unwrap(intent.getParcelableExtra(REQUEST_OTP_MODEL));
+                params = new HashMap<>();
+                params.put(SecurityQuestion.USER_CHECK_SECURITY_TWO, securityQuestionViewModel.getSecurity2() + "");
+                params.put("user_id", SessionHandler.getTempLoginSession(getApplicationContext()));
+                params = AuthUtil.generateParams(getApplicationContext(), params, SessionHandler.getTempLoginSession(getApplicationContext()));
+                service = new InterruptActService();
+                ((InterruptActService) service).getApi().requestOTPPhone(params)
                         .subscribeOn(Schedulers.io())
                         .unsubscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())

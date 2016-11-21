@@ -64,6 +64,7 @@ public class ActivationResentFragment extends Fragment implements BaseView {
             "\n" +
             "Jika email tidak ditemukan atau belum menerima email aktivasi silakan klik tombol di bawah ini:";
 
+    @Bind(R2.id.head) TextView nameEditText;
     @Bind(R2.id.email)
     TextView email;
     @Bind(R2.id.resend_button)
@@ -145,6 +146,8 @@ public class ActivationResentFragment extends Fragment implements BaseView {
             , Bundle savedInstanceState) {
         View parent = inflater.inflate(R.layout.activity_activation_resent, container, false);
         ButterKnife.bind(this, parent);
+        resendButton.setBackgroundResource(R.drawable.bg_rounded_corners);
+        nameEditText.setText("Halo, ");
         SnackbarManager.make(getActivity(),"Akun anda belum diaktivasi. Cek email anda untuk mengaktivasi akun.",Snackbar.LENGTH_LONG).show();
         return parent;
     }

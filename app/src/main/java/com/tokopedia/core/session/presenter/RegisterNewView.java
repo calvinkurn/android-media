@@ -34,25 +34,15 @@ public interface RegisterNewView extends BaseView {
 
     void showErrorValidateEmail();
 
-    void moveToRegisterNext(String email, String password);
+    void moveToRegisterNext(String name, String email, String password);
 
     void alertBox();
 
     void setData(HashMap<String, Object> data);
 
-    void startLoginWithGoogle(String type, LoginGoogleModel loginGoogleModel);
-
-    void showProvider(List<LoginProviderModel.ProvidersBean> data);
-
     void finishActivity();
 
-    void addProgressBar();
-
-    void removeProgressBar();
-
     void showErrorValidateEmail(String s);
-
-    boolean checkHasNoProvider();
 
     void showError(String string);
 }

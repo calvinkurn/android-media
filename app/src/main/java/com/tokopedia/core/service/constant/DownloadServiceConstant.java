@@ -113,6 +113,8 @@ public interface DownloadServiceConstant {
     int REGISTER_GOOGLE = 25;
     int REGISTER_WEBVIEW = 26;
 
+    int REQUEST_OTP_PHONE = 27;
+
     String FACEBOOK = "facebook";
     String GOOGLE = "gplus";
     String WEBVIEW = "webview";

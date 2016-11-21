@@ -368,6 +368,8 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                             result.putInt(TYPE, DownloadService.MAKE_LOGIN);
                             SecurityModel securityModel = accountsParameter.getSecurityModel();
                             if (securityModel != null) {
+                                sessionHandler.setTempPhoneNumber(accountsParameter.getInfoModel().getPhone());
+                                sessionHandler.setTempLoginName(accountsParameter.getInfoModel().getName());
                                 sessionHandler.setTempLoginSession(Integer.toString(securityModel.getUser_id()));
                                 result.putParcelable(LOGIN_SECURITY_QUESTION_DATA, securityModel);
                                 result.putParcelable("accounts",accountsParameter);

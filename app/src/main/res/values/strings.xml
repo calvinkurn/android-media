@@ -38,7 +38,7 @@
     <string name="title_activity_register">Daftar</string>
     <!-- <string name="prompt_email">Email</string> -->
     <!-- <string name="prompt_password">Password</string> -->
-    <string name="prompt_phone">Nomor Telepon</string>
+    <string name="prompt_phone">Nomor Ponsel</string>
     <string name="prompt_confirm_password">Konfirmasi kata sandi</string>
     <string name="title_register">Daftar Sekarang!</string>
     <string name="title_register_wo_u">Daftar</string>
@@ -50,7 +50,7 @@
     <string name="title_login_info">Informasi Login</string>
     <string name="title_next">Selanjutnya</string>
     <string name="show_password">Tampilkan kata sandi</string>
-    <string name="title_gender">Gender</string>
+    <string name="title_gender">Jenis Kelamin</string>
     <string name="title_birthday">Tanggal Lahir</string>
     <!-- <string name="login_progress_signing_in">Signing in&#8230;</string> -->
     <!-- <string name="error_invalid_email">This email address is invalid</string> -->
@@ -68,9 +68,9 @@
     <string name="message_need_to_select_gender">Silahkan memilih gender</string>
     <string name="message_confirmation_logout">Apakah Anda ingin keluar ?</string>
     <string name="error_not_logged">Anda harus login untuk menggunakan fitur ini</string>
-    <string name="title_forgot_password_1">Kesulitan mengakses akun Anda?</string>
+    <string name="title_forgot_password_1">Lupa kata sandi?</string>
     <string name="title_forgot_password_hint">Masukkan email login Anda dibawah ini. Kami akan mengirimkan pesan email beserta link untuk reset kata sandi Anda.</string>
-    <string name="title_reset_password">Atur ulang kata sandi</string>
+    <string name="title_reset_password">Reset Kata Sandi</string>
     <string name="title_reset_success">Kata sandi Anda akan diatur ulang</string>
     <string name="title_reset_success_hint_1">Sebuah email telah dikirim ke email kontak Anda dikaitkan dengan akun Anda,</string>
     <string name="title_reset_success_hint_2">Harap bersabar, pengiriman email dapat tertunda. \n
@@ -80,7 +80,9 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="alert_check_your_internet_connection">Silakan periksa koneksi internet Anda</string>
     <string name="processing">Pengolahan...</string>
 
-
+    <string name="title_activation_resent">Kirim Ulang Email Aktivasi</string>
+    <string name="warning_check_activation_resent_1">Cek email kamu untuk aktivasi akun Tokopedia.\nKlik tombol kirim ulang jika kamu belum menerima email aktivasi.</string>
+    <string name="warning_check_activation_resent_2">Pastikan untuk cek folder spam dan folder sampah sebelum melakukan kirim ulang email aktivasi.</string>
     <string name="welcome_text_1">Ini adalah aplikasi khusus untuk berjualan di Tokopedia.</string>
     <string name="welcome_text_2">Yuk mulai kelola tokomu di Tokopedia, mudah &amp; gratis!</string>
     <!-- Strings related to login and register -->
@@ -103,6 +105,8 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="link_change_email">Ubah Email</string>
     <string name="error_phone_wrong_format">Nomor Telepon tidak benar</string>
     <string name="error_phone_too_long">Nomor Terlalu Panjang</string>
+    <string name="error_download_provider">"Gagal mendownload provider"</string>
+
     <!-- Strings related to add product -->
     <string name="title_activity_add_product">Tambah Produk</string>
     <string name="title_activity_edit_product">Ubah Produk</string>
@@ -398,6 +402,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
     <string name="title_delete">Hapus</string>
     <string name="action_edit">Ubah</string>
     <string name="title_confirm">Konfirmasi</string>
+    <string name="title_confirm_otp">Verifikasi</string>
     <string name="title_copy">Salin Invoice</string>
     <string name="title_no">Tidak</string>
     <string name="title_yes">Ya</string>
@@ -406,6 +411,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
     <string name="title_shop_owner">Pemilik Toko</string>
     <string name="title_name">Nama</string>
     <string name="title_email">Email</string>
+    <string name="title_phone_number">Nomor Ponsel</string>
     <string name="title_shop_location">Lokasi Toko</string>
     <string name="title_transaction_statistic">Statistik Transaksi</string>
     <string name="title_successfull_transaction">Transaksi yang sukses</string>
@@ -791,7 +797,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
     <string name="title_activity_manage_people_profile">Pengaturan Profil</string>
     <string name="title_activity_people_favorited_shop">Toko Favorit</string>
     <string name="title_activity_manage_people_password">Ganti kata sandi</string>
-    <string name="title_activity_activation">Aktivasi</string>
+    <string name="title_activity_activation">Email Aktivasi</string>
     <string name="title_manage">Pengaturan</string>
 
     <!-- Strings related to shop transaction -->
@@ -968,7 +974,7 @@ Jika Anda memiliki masalah dengan pemesanan Anda, mohon klik tombol komplain dan
     <string name="error_review_message">Ulasan Anda terlalu pendek, min 30 karakter</string>
     <string name="error_review_rate">Pilih Nilai Ulasan</string>
     <string name="dialog_skip_review_confirmation">Apakah Anda ingin lewatkan ulasan ini ?</string>
-    <string name="title_activity_forgot_password">Lupa kata sandi</string>
+    <string name="title_activity_forgot_password">Lupa Kata Sandi</string>
     <string name="toast_success_report">Terimakasih untuk laporan Anda. Laporan tersebut akan diteruskan ke moderator kami.</string>
     <string name="title_activity_inbox_ticket">Kotak Masuk Tiket</string>
     <string name="title_activity_inbox_ticket_detail">Detil Kotak Masuk Tiket</string>
@@ -1081,7 +1087,7 @@ Jika Anda memiliki masalah dengan pemesanan Anda, mohon klik tombol komplain dan
     <string name="title_sender_name">Nama Pengirim (Dropshipper)</string>
     <string name="title_sender_phone">No. Telp pengirim (Dropshipper)</string>
     <string name="msg_under_maintenance">Tokopedia sedang maintenance, silahkan coba beberapa saat lagi</string>
-    <string name="title_otp">Kode OTP</string>
+    <string name="title_otp">Masukkan Kode Verifikasi</string>
     <string name="title_otp_email">Kirim OTP ke Email</string>
     <string name="title_otp_phone">Kirim OTP ke HP</string>
     <string name="send_otp">Kirim OTP</string>
@@ -1195,13 +1201,18 @@ Jika Anda memiliki masalah dengan pemesanan Anda, mohon klik tombol komplain dan
     <string name="label_find_own_product">Cari Produk Kamu</string>
     <string name="title_activity_buy_credit">BuyCredit</string>
     <!--string related to Security Question -->
-    <string name="title_security_question">Pertanyaan Keamanan</string>
     <string name="msg_security_question">Hi Toppers, Mohon kesediaannya menjawab pertanyaan berikut untuk membantu kami memastikan bahwa Anda adalah pemilik akun Tokopedia ini.</string>
+    <string name="bar_security_question">Verifikasi Keamanan</string>
+    <string name="title_security_question">Halo, User</string>
+    <string name="content_security_question">Kami telah mengirimkan kode verifikasi ke nomor ponsel/email kamu.</string>
+    <string name="content_security_question_phone">Kami telah mengirimkan kode verifikasi ke nomor ponsel kamu.</string>
+    <string name="content_security_question_email">Kami telah mengirimkan kode verifikasi ke email kamu.</string>
     <string name="msg_otp">Hi Toppers, Mohon kesediaannya mengisi kode OTP berikut untuk membantu kami memastikan bahwa Anda adalah pemilik akun Tokopedia ini.</string>
-    <string name="title_error_security">Jawaban Anda Salah</string>
+    <string name="title_error_security">Kode Verifikasi Salah</string>
     <string name="msg_error_security">Silakan coba lagi agar bisa login dan menggunakan akun Anda.</string>
     <string name="title_error_otp">Kode OTP Salah</string>
     <string name="title_mismatch_otp">Kode OTP tidak benar.</string>
+    <string name="phone_number_otp">Nomor Ponsel</string>
     <!-- String Buy Credit -->
     <string name="title_choose_provider">Pilih Provider</string>
     <string name="title_credit_value">Nominal Pulsa</string>

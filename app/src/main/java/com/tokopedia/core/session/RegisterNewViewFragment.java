@@ -18,10 +18,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.KeyEvent;
@@ -36,6 +42,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -45,6 +52,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
@@ -90,18 +98,15 @@ import permissions.dispatcher.RuntimePermissions;
  * 1. list of email account from devices.
  * 2. show password
  */
-@RuntimePermissions
+//@RuntimePermissions
 public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implements RegisterNewView {
     public static final int PASSWORD_MINIMUM_LENGTH = 6;
+    public static final String VALIDATE_EMAIL = "validate_email";
 
     @Bind(R2.id.register_name)
     AutoCompleteTextView registerName;
     @Bind(R2.id.register_password)
     PasswordView registerPassword;
-    @Bind(R2.id.register_privacy_policy)
-    RelativeLayout registerPrivacyPolicy;
-    @Bind(R2.id.checkbox_privacy_policy)
-    CheckBox checkboxPrivacyPolicy;
     @Bind(R2.id.register_next_progress)
     ProgressBar registerNextProgress;
     @Bind(R2.id.register_next)
@@ -112,11 +117,21 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
     LinearLayout registerStatus;
     @Bind(R2.id.register_status_message)
     TextView registerStatusMessage;
-    @Bind(R2.id.register_form)
-    ScrollView registerForm;
+    @Bind(R2.id.wrapper_name)
+    TextInputLayout wrapperName;
+    @Bind(R2.id.wrapper_email)
+    TextInputLayout wrapperEmail;
+    @Bind(R2.id.wrapper_password)
+    TextInputLayout wrapperPassword;
 
-    @Bind(R2.id.step_1) LinearLayout linearLayout;
-    List<LoginProviderModel.ProvidersBean> listProvider;
+    @Bind(R2.id.login_button)
+    TextView loginButton;
+
+
+    @Bind(R2.id.name)
+    EditText name;
+
+    @Bind(R2.id.linearLayout) LinearLayout linearLayout;
     Context mContext;
 
     Snackbar snackbar;
@@ -145,13 +160,13 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
     }
 
     @Override
-    public void moveToRegisterNext(String email, String password) {
+    public void moveToRegisterNext(String name, String email, String password) {
 //        IsSaving = false;
         if(snackbar!=null){
             snackbar.dismiss();
         }
         if(getActivity()!=null&&getActivity() instanceof SessionView){
-            ((SessionView)getActivity()).moveToNewRegisterNext(email, password, isEmailAddressFromDevice());
+            ((SessionView)getActivity()).moveToNewRegisterNext(name, email, password, isEmailAddressFromDevice());
         }
     }
 
@@ -168,9 +183,6 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
         }else if(data.containsKey(RegisterNew.PASSWORD)){
             String password = (String)data.get(RegisterNew.PASSWORD);
             registerPassword.setText(password);
-        }else if(data.containsKey(RegisterNew.IS_CHECKED)){
-            boolean isChecked = (boolean)data.get(RegisterNew.IS_CHECKED);
-            checkboxPrivacyPolicy.setChecked(isChecked);
         }
     }
 
@@ -203,21 +215,34 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
                     });
 
 
-            registerForm.animate().setDuration(shortAnimTime)
+            linearLayout.animate().setDuration(shortAnimTime)
                     .alpha(show ? 0 : 1)
                     .setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
-                            if (registerForm != null)
-                                registerForm.setVisibility(show ? View.GONE
+                            if (linearLayout != null)
+                                linearLayout.setVisibility(show ? View.GONE
                                         : View.VISIBLE);
                         }
                     });
+
+            loginButton.animate().setDuration(shortAnimTime)
+                    .alpha(show ? 0 : 1)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            if (loginButton != null)
+                                loginButton.setVisibility(show ? View.GONE
+                                        : View.VISIBLE);
+                        }
+                    });
+
         } else {
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
             registerStatus.setVisibility(show ? View.VISIBLE : View.GONE);
-            registerForm.setVisibility(show ? View.GONE : View.VISIBLE);
+            linearLayout.setVisibility(show ? View.GONE : View.VISIBLE);
+            loginButton.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 
@@ -226,37 +251,19 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+//        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         View parentView = super.onCreateView(inflater, container, savedInstanceState);
         initView();
         showProgress(false);
         return parentView;
     }
 
-    @OnClick(R2.id.register_privacy_policy)
-    public void registerPrivacyPolicy(){
-        checkboxPrivacyPolicy.setChecked(!checkboxPrivacyPolicy.isChecked());
-    }
-
-//    @OnClick(R2.id.facebook_login)
-    public void onFacebookLoginClick(){
-        showProgress(true);
-        presenter.loginFacebook(getActivity());
-        CommonUtils.dumper("LocalTag : TYPE : FACEBOOK");
-    }
-
-//    @OnClick(R2.id.gplus_login)
-    public void onGoogleLoginClick(){
-        showProgress(true);
-        if(getActivity() instanceof GoogleActivity){
-            ((GoogleActivity)getActivity()).onSignInClicked();
-        }
-        CommonUtils.dumper("LocalTag : TYPE : GOOGLE");
-    }
-
     @Override
-    public void startLoginWithGoogle(String type, LoginGoogleModel loginGoogleModel) {
-        presenter.startLoginWithGoogle(getActivity(), type, loginGoogleModel);
+    public void onResume() {
+        super.onResume();
+        registerName.addTextChangedListener(watcher(wrapperEmail));
+        registerPassword.addTextChangedListener(watcher(wrapperPassword));
+        name.addTextChangedListener(watcher(wrapperName));
     }
 
     /**
@@ -270,10 +277,13 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
 //            return;
 //        }
         // Reset errors.
-        registerName.setError(null);
-        registerPassword.setPasswordError(null);
+        setWrapperError(wrapperName,null);
+        setWrapperError(wrapperEmail,null);
+        setWrapperError(wrapperPassword,null);
+
 
         // Store values at the time of the login attempt.
+        String mName = name.getText().toString();
         String mEmail = registerName.getText().toString();
         String mPassword = registerPassword.getText().toString();
 
@@ -281,12 +291,12 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
         View focusView = null;
         // Check for a valid password
         if (TextUtils.isEmpty(mPassword)) {
-            registerPassword.setPasswordError(getString(R.string.error_field_required));
+            setWrapperError(wrapperPassword, getString(R.string.error_field_required));
             focusView = registerPassword;
             cancel = true;
             presenter.sendGTMRegisterError(getActivity(), AppEventTracking.EventLabel.PASSWORD);
         } else if (mPassword.length() < PASSWORD_MINIMUM_LENGTH) {
-            registerPassword.setPasswordError(getString(R.string.error_invalid_password));
+            setWrapperError(wrapperPassword, getString(R.string.error_invalid_password));
             focusView = registerPassword;
             cancel = true;
             presenter.sendGTMRegisterError(getActivity(), AppEventTracking.EventLabel.PASSWORD);
@@ -294,15 +304,33 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
 
         // Check for a valid email address.
         if (TextUtils.isEmpty(mEmail)) {
-            registerName.setError(getString(R.string.error_field_required));
+            setWrapperError(wrapperEmail, getString(R.string.error_field_required));
             focusView = registerName;
             cancel = true;
             presenter.sendGTMRegisterError(getActivity(), AppEventTracking.EventLabel.EMAIL);
         } else if (!CommonUtils.EmailValidation(mEmail)) {
-            registerName.setError(getString(R.string.error_invalid_email));
+            setWrapperError(wrapperEmail, getString(R.string.error_invalid_email));
             focusView = registerName;
             cancel = true;
             presenter.sendGTMRegisterError(getActivity(), AppEventTracking.EventLabel.EMAIL);
+        }
+
+        // Check for a valid name.
+        if (TextUtils.isEmpty(mName)) {
+            setWrapperError(wrapperName, getString(R.string.error_field_required));
+            focusView = name;
+            cancel = true;
+//            sendGTMRegisterError(AppEventTracking.EventLabel.FULLNAME);
+        }else if(RegisterNewImpl.RegisterUtil.checkRegexNameLocal(mName)){
+            setWrapperError(wrapperName, getString(R.string.error_illegal_character));
+            focusView = name;
+            cancel = true;
+//            sendGTMRegisterError(AppEventTracking.EventLabel.FULLNAME);
+        }else if(RegisterNewImpl.RegisterUtil.isExceedMaxCharacter(mName)){
+            setWrapperError(wrapperName, getString(R.string.error_max_35_character));
+            focusView = name;
+            cancel = true;
+//            sendGTMRegisterError(AppEventTracking.EventLabel.FULLNAME);
         }
 
         if (cancel) {
@@ -310,6 +338,16 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
         } else {
 
             validateEmailAddressTask();
+        }
+    }
+
+    private void setWrapperError(TextInputLayout wrapper, String s) {
+        if(s == null) {
+            wrapper.setError(s);
+            wrapper.setErrorEnabled(false);
+        }else {
+            wrapper.setErrorEnabled(true);
+            wrapper.setError(s);
         }
     }
 
@@ -321,12 +359,18 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
         }
         enableDisableAllFieldsForEmailValidationForm(false);
 
-        presenter.validateEmail(getActivity(), registerName.getText().toString(), registerPassword.getText().toString());
+        presenter.validateEmail(getActivity(), name.getText().toString(),
+                registerName.getText().toString(), registerPassword.getText().toString());
     }
 
     @OnClick(R2.id.register_next)
     public void registerNext(){
         attemptRegisterStep1();
+    }
+
+    @OnClick(R2.id.login_button)
+    public void moveToLogin(){
+        ((SessionView) mContext).moveToLogin();
     }
 
     @Override
@@ -337,14 +381,12 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
             registerName.setEnabled(true);
             registerPassword.setEnabled(true);
             registerNext.setEnabled(true);
-            checkboxPrivacyPolicy.setEnabled(true);
         } else {
             registerNextProgress.setVisibility(View.VISIBLE);
             registerNextButton.setText(getString(R.string.processing));
             registerName.setEnabled(false);
             registerPassword.setEnabled(false);
             registerNext.setEnabled(false);
-            checkboxPrivacyPolicy.setEnabled(false);
         }
     }
 
@@ -360,25 +402,8 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
                 return false;
             }
         });
-//        if(mEmail != null && mEmail.length() > 0) {
-//            registerName.setText(mEmail);
-//        } else {
-            setupEmailAddressToEmailTextView();
-//        }
-        checkboxPrivacyPolicy.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                int cursorPosition = registerPassword.getSelectionStart();
-                if (isChecked) {
-                    registerPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                } else {
-                    registerPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                }
-                registerPassword.setTypeface(typeface);
-                registerPassword.setSelection(cursorPosition);
-            }
-        });
-        registerName.addTextChangedListener((TextWatcher) presenter);
+        setupEmailAddressToEmailTextView();
+//      registerName.addTextChangedListener((TextWatcher) presenter);
 
         registerPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -390,12 +415,60 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
                 return false;
             }
         });
+
+        String sourceString = "Sudah punya akun? Masuk";
+
+        Spannable spannable = new SpannableString(sourceString);
+
+        spannable.setSpan(new ClickableSpan() {
+                              @Override
+                              public void onClick(View view) {
+
+                              }
+
+                              @Override
+                              public void updateDrawState(TextPaint ds) {
+                                  ds.setUnderlineText(true);
+                                  ds.setColor(getResources().getColor(R.color.tkpd_main_green));
+                              }
+                          }
+                , sourceString.indexOf("Masuk")
+                , sourceString.length()
+                ,0);
+
+        loginButton.setText(spannable, TextView.BufferType.SPANNABLE);
+
+        registerNextButton.setBackgroundResource(R.drawable.bg_rounded_corners);
+    }
+
+    private TextWatcher watcher(final TextInputLayout wrapper) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0) {
+                    setWrapperError(wrapper, null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() == 0){
+                    setWrapperError(wrapper, getString(R.string.error_field_required));
+                }
+            }
+        };
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         presenter.unSubscribeFacade();
+        KeyboardHandler.DropKeyboard(getActivity(),getView());
         ButterKnife.unbind(this);
         dismissSnackbar();
     }
@@ -426,11 +499,8 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
         if(registerName!=null){
             presenter.saveData(RegisterNewImpl.convertToMap(RegisterNew.EMAIL, registerName.getText().toString()));
         }
-        if(registerPassword!=null){
+        if(registerPassword!=null) {
             presenter.saveData(RegisterNewImpl.convertToMap(RegisterNew.PASSWORD, registerPassword.getText().toString()));
-        }
-        if(checkboxPrivacyPolicy!=null){
-            presenter.saveData(RegisterNewImpl.convertToMap(RegisterNew.IS_CHECKED, checkboxPrivacyPolicy.isChecked()));
         }
     }
 
@@ -438,7 +508,7 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
     public List<String> getEmailListOfAccountsUserHasLoggedInto() {
         Set<String> listOfAddresses = new LinkedHashSet<>();
         Pattern emailPattern = Patterns.EMAIL_ADDRESS; // API level 8+
-        Account[] accounts = AccountManager.get(getActivity()).getAccounts();
+        Account[] accounts = AccountManager.get(getActivity()).getAccountsByType("com.google");
         if (accounts != null) {
             for (Account account : accounts) {
                 if (emailPattern.matcher(account.name).matches()) {
@@ -531,27 +601,12 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
             }
         }
         switch (type){
-            case DownloadService.DISCOVER_LOGIN:
-                removeProgressBar();
-                snackbar = SnackbarManager.make(getActivity(),"Gagal mendownload provider"
-                        ,Snackbar.LENGTH_INDEFINITE).setAction("Coba lagi", retryDiscover());
-                snackbar.show();
-                break;
             default:
                 ((SessionView)mContext).showError(text);
                 break;
         }
         //[END] move to activation resent
         registerPassword.setText("");
-    }
-
-    private View.OnClickListener retryDiscover() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.getProvider(getActivity());
-            }
-        };
     }
 
     public void showDialog(String dialogText) {
@@ -586,103 +641,6 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
     }
 
     @Override
-    public void showProvider(List<LoginProviderModel.ProvidersBean> data) {
-        listProvider=data;
-        if(listProvider!=null && checkHasNoProvider()){
-            presenter.saveProvider(listProvider);
-
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-
-            layoutParams.setMargins(0, 20, 0, 0);
-
-            for (int i = 0; i < listProvider.size(); i++) {
-                LoginTextView tv = new LoginTextView(getActivity());
-                String color = listProvider.get(i).getColor();
-                if(listProvider.get(i).getId().equalsIgnoreCase("facebook")) {
-                    tv.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            onFacebookLoginClick();
-                        }
-                    });
-                }else if(listProvider.get(i).getId().equalsIgnoreCase("gplus")){
-                    tv.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            RegisterNewViewFragmentPermissionsDispatcher.onRegisterWithGoogleWithCheck(RegisterNewViewFragment.this);
-                        }
-                    });
-                }else{
-                    tv.setOnClickListener(loginProvideOnClick(i));
-                }
-                generateLayout(tv, Color.parseColor(color), i);
-                if(linearLayout!=null) {
-                    linearLayout.addView(tv, linearLayout.getChildCount(), layoutParams);
-                }
-            }
-        }
-    }
-
-    @NeedsPermission(Manifest.permission.GET_ACCOUNTS)
-    public void onRegisterWithGoogle() {
-        ((GoogleActivity) getActivity()).onSignInClicked();
-    }
-
-    @Override
-    public void addProgressBar() {
-        ProgressBar pb = new ProgressBar(getActivity(), null, android.R.attr.progressBarStyle);
-        int lastPos = linearLayout.getChildCount()-1;
-        if (!(linearLayout.getChildAt(lastPos) instanceof ProgressBar))
-            linearLayout.addView(pb, linearLayout.getChildCount());
-    }
-
-    @Override
-    public void removeProgressBar() {
-        int lastPos = linearLayout.getChildCount()-1;
-        if (linearLayout.getChildAt(lastPos) instanceof ProgressBar)
-            linearLayout.removeViewAt(linearLayout.getChildCount()-1);
-    }
-
-    private void generateLayout(LoginTextView tv, int color, int position) {
-        //generate background
-        GradientDrawable shape = new GradientDrawable();
-        shape.setShape(GradientDrawable.RECTANGLE);
-        shape.setCornerRadii(new float[]{3, 3, 3, 3, 3, 3, 3, 3});
-        shape.setColor(color);
-        if(color == Color.WHITE) shape.setStroke(1, Color.BLACK);
-
-        try {
-            tv.setBackground(shape);
-        }catch (NoSuchMethodError error){
-            tv.setBackgroundDrawable(shape);
-        }
-
-        //generate other view
-        TextView textView = (TextView) tv.findViewById(R.id.provider_name);
-        textView.setTextColor(getInverseColor(color));
-        textView.setText(String.format("Daftar Dengan %s", listProvider.get(position).getName()));
-        ImageView imageView = (ImageView) tv.findViewById(R.id.provider_image);
-        ImageHandler.loadImage2(imageView, listProvider.get(position).getImage()
-                , R.drawable.ic_icon_toped_announce);
-
-    }
-
-    private int getInverseColor(int color){
-        double y = (299 * Color.red(color) + 587 * Color.green(color) + 114 * Color.blue(color)) / 1000;
-        return y >= 128 ? Color.BLACK : Color.WHITE;
-    }
-
-    public boolean checkHasNoProvider() {
-        for (int i = 0; i < linearLayout.getChildCount(); i++) {
-            if(linearLayout.getChildAt(i) instanceof LoginTextView){
-                return false;
-            }
-        }
-        return true;
-    }
-
-    @Override
     public void showError(String string) {
         SnackbarManager.make(getActivity(),string, Snackbar.LENGTH_LONG).show();
     }
@@ -695,40 +653,9 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
         }
     }
 
-    private View.OnClickListener loginProvideOnClick(final int position) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                WebViewLoginFragment newFragment = WebViewLoginFragment
-                        .createInstance(listProvider.get(position).getUrl());
-                newFragment.setTargetFragment(RegisterNewViewFragment.this, 100);
-                newFragment.show(getFragmentManager().beginTransaction(), "dialog");
-                getActivity().getWindow().setSoftInputMode(
-                        WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-            }
-        };
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode){
-            case 100:
-                Bundle bundle = data.getBundleExtra("bundle");
-                if(bundle.getString("path").contains("error")){
-                    snackbar = SnackbarManager.make(getActivity(), bundle.getString("message"), Snackbar.LENGTH_LONG);
-                    snackbar.show();
-                }else if (bundle.getString("path").contains("code")){
-                    presenter.loginWebView(getActivity(), bundle);
-                }else if (bundle.getString("path").contains("activation-social")){
-                    Bundle lbundle = new Bundle();
-                    lbundle.putInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE, DownloadService.REGISTER_WEBVIEW);
-                    ((SessionView) mContext).moveToActivationResend(registerName.getText().toString(), lbundle);
-                }
-                break;
-            default:
-                break;
-        }
     }
 
 
@@ -740,26 +667,5 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
     public void onStart() {
         super.onStart();
         ScreenTracking.screen(this);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        RegisterNewViewFragmentPermissionsDispatcher.onRequestPermissionsResult(RegisterNewViewFragment.this, requestCode, grantResults);
-    }
-
-    @OnShowRationale(Manifest.permission.GET_ACCOUNTS)
-    void showRationaleForGetAccounts(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.GET_ACCOUNTS);
-    }
-
-    @OnPermissionDenied(Manifest.permission.GET_ACCOUNTS)
-    void showDeniefForGetAccounts() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.GET_ACCOUNTS);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.GET_ACCOUNTS)
-    void showNeverAskForGetAccounts() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.GET_ACCOUNTS);
     }
 }

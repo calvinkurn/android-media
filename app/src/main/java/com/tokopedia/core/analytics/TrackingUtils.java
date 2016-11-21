@@ -3,11 +3,13 @@ package com.tokopedia.core.analytics;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
+import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
@@ -28,6 +30,15 @@ import java.util.Map;
  */
 
 public class TrackingUtils extends TrackingConfig {
+
+    public static void screen(Fragment fragment){
+        Nishikino.init(MainApplication.getAppContext()).startAnalytics().
+                sendScreen(AppScreen.convertFragmentScreen(fragment));
+    }
+    public static void screen(android.app.Fragment fragment){
+        Nishikino.init(MainApplication.getAppContext()).startAnalytics().
+                sendScreen(AppScreen.convertFragmentScreen(fragment));
+    }
 
     public static void eventCampaign(Campaign campaign){
         getGTMEngine()

@@ -53,7 +53,8 @@ public class RegisterNewNextImpl extends RegisterNewNext implements DatePickerUt
         }
         view.initDatePickerDialog(context, registerViewModel.getmDateYear(), registerViewModel.getmDateMonth(), registerViewModel.getmDateDay());
         view.initDatePicker(registerViewModel.getMaxDate(), registerViewModel.getMinDate());
-        view.setData(RegisterNewNextView.TTL, RegisterNewImpl.RegisterUtil.formatDateText(registerViewModel.getmDateDay(), registerViewModel.getmDateMonth(), registerViewModel.getmDateYear()));
+        //view.setData(RegisterNewNextView.TTL, RegisterImpl.RegisterUtil.formatDateText(registerViewModel.getmDateDay(), registerViewModel.getmDateMonth(), registerViewModel.getmDateYear()));
+        view.setData(RegisterNewNextView.TTL, RegisterNewImpl.RegisterUtil.formatDateTextString(1, 1, 1989));
         showTermsAndOptionsTextView(context);
 
     }
@@ -250,7 +251,7 @@ public class RegisterNewNextImpl extends RegisterNewNext implements DatePickerUt
         registerViewModel.setmDateYear(year);
         registerViewModel.setmDateMonth(month);
         registerViewModel.setmDateDay(dayOfMonth);
-        view.setData(RegisterNewNextView.TTL, RegisterNewImpl.RegisterUtil.formatDateText(registerViewModel.getmDateDay(), registerViewModel.getmDateMonth(), registerViewModel.getmDateYear()));
+        view.setData(RegisterNewNextView.TTL, RegisterNewImpl.RegisterUtil.formatDateTextString(registerViewModel.getmDateDay(), registerViewModel.getmDateMonth(), registerViewModel.getmDateYear()));
     }
 
     public static void testPhoneNumberValidation() {

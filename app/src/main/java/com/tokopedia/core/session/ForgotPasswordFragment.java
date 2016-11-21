@@ -4,6 +4,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.TextPaint;
+import android.text.TextWatcher;
+import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +52,8 @@ public class ForgotPasswordFragment extends Fragment implements ForgotPasswordVi
     EditText Email;
     @Bind(R2.id.til_email)
     TextInputLayout tilEmail;
+    @Bind(R2.id.register_button)
+    TextView registerButton;
 
     ForgotPassword forgotPassword;
     TkpdProgressDialog progressDialog;
@@ -73,7 +81,73 @@ public class ForgotPasswordFragment extends Fragment implements ForgotPasswordVi
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_forgot_password, container, false);
         ButterKnife.bind(this,rootView);
+
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((SessionView) getActivity()).moveToRegisterInitial();
+            }
+        });
+        String sourceString = "Belum punya akun? "+ "Daftar Sekarang";
+
+        Spannable spannable = new SpannableString(sourceString);
+
+        spannable.setSpan(new ClickableSpan() {
+                              @Override
+                              public void onClick(View view) {
+
+                              }
+
+                              @Override
+                              public void updateDrawState(TextPaint ds) {
+                                  ds.setUnderlineText(true);
+                                  ds.setColor(getResources().getColor(R.color.tkpd_main_green));
+                              }
+                          }
+                , sourceString.indexOf("Daftar")
+                , sourceString.length()
+                ,0);
+
+        registerButton.setText(spannable, TextView.BufferType.SPANNABLE);
+
+        SendButton.setBackgroundResource(R.drawable.bg_rounded_corners);
         return rootView;
+    }
+
+
+
+    private TextWatcher watcher(final TextInputLayout wrapper) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0) {
+                    setWrapperError(wrapper, null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() == 0){
+                    setWrapperError(wrapper, getString(R.string.error_field_required));
+                }
+            }
+        };
+    }
+
+
+    private void setWrapperError(TextInputLayout wrapper, String s) {
+        if(s == null) {
+            wrapper.setError(s);
+            wrapper.setErrorEnabled(false);
+        }else {
+            wrapper.setErrorEnabled(true);
+            wrapper.setError(s);
+        }
     }
 
     @Override
@@ -83,6 +157,7 @@ public class ForgotPasswordFragment extends Fragment implements ForgotPasswordVi
         ScreenTracking.screen(this);
         forgotPassword.subscribe();
         forgotPassword.initData(getActivity());
+        Email.addTextChangedListener(watcher(tilEmail));
     }
 
     @Override

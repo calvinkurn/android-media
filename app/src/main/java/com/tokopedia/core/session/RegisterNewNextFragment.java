@@ -7,25 +7,34 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.DatePickerUtil;
+import com.tkpd.library.ui.widget.MaterialSpinner;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.home.ParentIndexHome;
@@ -41,9 +50,8 @@ import com.tokopedia.core.session.presenter.RegisterNewNext;
 import com.tokopedia.core.session.presenter.RegisterNewNextImpl;
 import com.tokopedia.core.session.presenter.RegisterNewNextView;
 import com.tokopedia.core.session.presenter.SessionView;
-import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.var.TkpdState;
 
 import org.parceler.Parcels;
@@ -53,7 +61,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.tokopedia.core.session.presenter.Login.NAME;
 
 /**
  * Created by m.normansyah on 1/25/16.
@@ -64,7 +75,7 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
     DatePickerDialog.OnDateSetListener callBack = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-            registerNextDate.setText(RegisterNewImpl.RegisterUtil.formatDateText(
+            dateText.setText(RegisterNewImpl.RegisterUtil.formatDateTextString(
                     dayOfMonth,
                     monthOfYear,
                     year
@@ -78,19 +89,15 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
     DatePickerDialog datePicker;
     DatePicker dp;
 
-    public static Fragment newInstance(String email, String password, boolean isAutoVerify){
+    public static Fragment newInstance(String name, String email, String password, boolean isAutoVerify){
         RegisterNewNextFragment fragment = new RegisterNewNextFragment();
         Bundle bundle = new Bundle();
+        bundle.putString(NAME, name);
         bundle.putString(EMAIL, email);
         bundle.putString(PASSWORD, password);
         bundle.putBoolean(IS_AUTO_VERIFY, isAutoVerify);
         fragment.setArguments(bundle);
         return fragment;
-    }
-
-    @Deprecated
-    public static Fragment newInstance(String email, String password){
-        return newInstance(email, password, false);
     }
 
     @Bind(R2.id.register_next_status)
@@ -100,24 +107,125 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
     @Bind(R2.id.register_next_step_2)
     LinearLayout registerNextStep2;
     @Bind(R2.id.register_next_full_name)
-    EditText registerNextFullName;
+    TextView registerNextFullName;
     @Bind(R2.id.register_next_phone_number)
     EditText registerNextPhoneNumber;
-    @Bind(R2.id.register_next_male)
-    RadioButton registerNextMale;
-    @Bind(R2.id.register_next_female)
-    RadioButton registerNextFemale;
-    @Bind(R2.id.register_next_date)
-    TextView registerNextDate;
     @Bind(R2.id.register_finish_button)
     TextView registerFinish;
     @Bind(R2.id.register_next_detail_t_and_p)
     TextView registerNextTAndC;
+    @Bind(R2.id.wrapper_phone)
+    TextInputLayout wrapperPhone;
+    @Bind(R2.id.wrapper_gender)
+    TextInputLayout wrapperGender;
+    @Bind(R2.id.spinner)
+    MaterialSpinner spinner;
+    @Bind(R2.id.wrapper_date)
+    TextInputLayout wrapperDate;
+    @Bind(R2.id.date)
+    MaterialSpinner dateText;
+
+
+    String name;
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        spinner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popup =new PopupMenu(spinner.getContext(),spinner);
+                popup.getMenuInflater().inflate(R.menu.gender_menu,popup.getMenu());
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        spinner.setText(item.getTitle());
+                        setWrapperError(wrapperGender,null);
+                        if(item.getTitle().equals("Pria")){
+                            presenter.updateData(RegisterNewNext.GENDER, RegisterViewModel.GENDER_MALE);
+                        }else if(item.getTitle().equals("Wanita")){
+                            presenter.updateData(RegisterNewNext.GENDER, RegisterViewModel.GENDER_FEMALE);
+                        }
+                        return true;
+                    }
+                });
+
+                popup.show();
+            }
+        });
+
+        name = getArguments().getString(NAME);
+        registerNextFullName.setText("Halo, "+ name +"!");
+
+        registerFinish.setBackgroundResource(R.drawable.bg_rounded_corners);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        registerNextPhoneNumber.addTextChangedListener(watcher(wrapperPhone));
+        registerNextPhoneNumber.addTextChangedListener(watcher(registerNextPhoneNumber));
+    }
+
+    private TextWatcher watcher(final EditText editText) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String phone = CustomPhoneNumberUtil.transform(s.toString());
+                if(s.toString().length() != phone.length()) {
+                    editText.removeTextChangedListener(this);
+                    editText.setText(phone);
+                    editText.setSelection(phone.length());
+                    editText.addTextChangedListener(this);
+                }
+            }
+        };
+    }
+
+    private TextWatcher watcher(final TextInputLayout wrapper) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0) {
+                    setWrapperError(wrapper, null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() == 0){
+                    setWrapperError(wrapper, getString(R.string.error_field_required));
+                }
+            }
+        };
+    }
+
+    @OnClick(R2.id.date)
+    public void onDateTextClickNew(){
+        //datePicker.show();
+        DatePickerUtil datePicker = new DatePickerUtil(getActivity(), 1, 1, 1989);
+        datePicker.SetMaxYear(2002);
+        datePicker.SetMinYear(1934);
+        datePicker.SetShowToday(false);
+        datePicker.DatePickerCalendar((DatePickerUtil.onDateSelectedListener)presenter);
+    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        if(registerNextFullName!=null){
-            presenter.updateData(RegisterNewNext.FULLNAME, registerNextFullName.getText().toString());
+        if(name!=null){
+            presenter.updateData(RegisterNewNext.FULLNAME, name);
         }
         if(registerNextPhoneNumber!=null){
             presenter.updateData(RegisterNewNext.PHONT, registerNextPhoneNumber.getText().toString());
@@ -128,7 +236,7 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
     @Override
     public void onPause() {
         super.onPause();
-        presenter.saveBeforeDestroy(getActivity(), registerNextFullName.getText().toString(), registerNextPhoneNumber.getText().toString());
+        presenter.saveBeforeDestroy(getActivity(), name, registerNextPhoneNumber.getText().toString());
     }
 
     @Override
@@ -143,31 +251,18 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
 
     @OnClick(R2.id.register_finish_button)
     public void registerFinish(){
-        String mName = registerNextFullName.getText().toString();
         String mPhone = registerNextPhoneNumber.getText().toString();
-        String mBirthDay = registerNextDate.getText().toString();
+        String mBirthDay = dateText.getText().toString();
 
         View focusView = null;
         boolean cancel = false;
 
-        registerNextFullName.setError(null);
-        registerNextPhoneNumber.setError(null);
-
-        if(TextUtils.isEmpty(mName)){
-            registerNextFullName.setError(getString(R.string.error_field_required));
-            focusView = registerNextFullName;
-            cancel = true;
-            sendGTMRegisterError(AppEventTracking.EventLabel.FULLNAME);
-        } else if(RegisterNewImpl.RegisterUtil.checkRegexNameLocal(mName)
-                || RegisterNewImpl.RegisterUtil.isExceedMaxCharacter(mName) ){
-            registerNextFullName.setError(getString(R.string.error_illegal_character));
-            focusView = registerNextFullName;
-            cancel = true;
-            sendGTMRegisterError(AppEventTracking.EventLabel.FULLNAME);
-        }
+        setWrapperError(wrapperPhone, null);
+        setWrapperError(wrapperGender, null);
+        setWrapperError(wrapperDate, null);
 
         if(TextUtils.isEmpty(mPhone)){
-            registerNextPhoneNumber.setError(getString(R.string.error_field_required));
+            setWrapperError(wrapperPhone, getString(R.string.error_field_required));
             focusView = registerNextPhoneNumber;
             cancel = true;
             sendGTMRegisterError(AppEventTracking.EventLabel.HANDPHONE);
@@ -176,15 +271,15 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
             Log.e(RegisterNewNextView.TAG, messageTAG + " valid nomornya : " + validatePhoneNumber);
             RegisterNewNextImpl.testPhoneNumberValidation();
             if(!validatePhoneNumber){
-                registerNextPhoneNumber.setError(getString(R.string.error_invalid_phone_number));
+                setWrapperError(wrapperPhone, getString(R.string.error_invalid_phone_number));
                 focusView = registerNextPhoneNumber;
                 cancel = true;
                 sendGTMRegisterError(AppEventTracking.EventLabel.HANDPHONE);
             }
         }
 
-        if(!registerNextMale.isChecked() && !registerNextFemale.isChecked()){
-            SnackbarManager.make(getActivity(), getString(R.string.message_need_to_select_gender), Snackbar.LENGTH_SHORT).show();
+        if(spinner.getText().length()==0){
+            setWrapperError(wrapperGender, getString(R.string.message_need_to_select_gender));
             sendGTMRegisterError(AppEventTracking.EventLabel.GENDER);
             cancel = true;
         }
@@ -195,46 +290,35 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
         } else {
             View view = getActivity().getCurrentFocus();
             KeyboardHandler.DropKeyboard(getActivity(),view);
-            RegisterViewModel registerViewModel = presenter.compileAll(registerNextFullName.getText().toString(), registerNextPhoneNumber.getText().toString());
+            RegisterViewModel registerViewModel = presenter.compileAll(name, registerNextPhoneNumber.getText().toString());
             sendGTMClickStepTwo();
             presenter.register(getActivity(), registerViewModel);
         }
 
     }
 
-    @OnClick(R2.id.register_next_date)
-    public void onDateTextClick(){
-        //datePicker.show();
+//    @OnClick(R2.id.register_next_date)
+//    public void onDateTextClick(){
+//        //datePicker.show();
+//
+//        int day = (int) presenter.getData(RegisterNewNext.DATE_DAY);
+//        int month = (int) presenter.getData(RegisterNewNext.DATE_MONTH);
+//        int year = (int) presenter.getData(RegisterNewNext.DATE_YEAR);
+//        if(year==0) year=2002;
+//        DatePickerUtil datePicker = new DatePickerUtil(getActivity(), day, month, year);
+//        datePicker.SetMaxYear(2002);
+//        datePicker.SetMinYear(1934);
+//        datePicker.SetShowToday(false);
+//        datePicker.DatePickerCalendar((DatePickerUtil.onDateSelectedListener)presenter);
+//    }
 
-        int day = (int) presenter.getData(RegisterNewNext.DATE_DAY);
-        int month = (int) presenter.getData(RegisterNewNext.DATE_MONTH);
-        int year = (int) presenter.getData(RegisterNewNext.DATE_YEAR);
-        if(year==0) year=2002;
-        DatePickerUtil datePicker = new DatePickerUtil(getActivity(), day, month, year);
-        datePicker.SetMaxYear(2002);
-        datePicker.SetMinYear(1934);
-        datePicker.SetShowToday(false);
-        datePicker.DatePickerCalendar((DatePickerUtil.onDateSelectedListener)presenter);
-    }
-
-    @OnClick({R2.id.register_next_male, R2.id.register_next_female})
-    public void onRadioButtonClicked(View view) {
-        // Is the button now checked?
-        boolean checked = ((RadioButton) view).isChecked();
-
-        switch(view.getId()) {
-            case R2.id.register_next_male:
-                if (checked)
-                    registerNextFemale.setChecked(false);
-
-                presenter.updateData(RegisterNewNext.GENDER, RegisterViewModel.GENDER_MALE);
-                break;
-            case R2.id.register_next_female:
-                if (checked)
-                    registerNextMale.setChecked(false);
-
-                presenter.updateData(RegisterNewNext.GENDER, RegisterViewModel.GENDER_FEMALE);
-                break;
+    private void setWrapperError(TextInputLayout wrapper, String s) {
+        if(s == null) {
+            wrapper.setError(s);
+            wrapper.setErrorEnabled(false);
+        }else {
+            wrapper.setErrorEnabled(true);
+            wrapper.setError(s);
         }
     }
 
@@ -255,7 +339,7 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
         switch (type){
             case FULLNAME:
                 String text = (String)data[0];
-                registerNextFullName.setText(text);
+                registerNextFullName.setText("Halo, "+ text +"!");
                 break;
             case TELEPHONE:
                 text = (String)data[0];
@@ -268,7 +352,7 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
                 break;
             case TTL:
                 text = (String)data[0];
-                registerNextDate.setText(text);
+                dateText.setText(text);
                 break;
             default:
                 throw new RuntimeException(messageTAG+"please register type here!!!");
@@ -280,8 +364,8 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
      */
     @Override
     public void showProgress(final boolean show) {
-        final WeakReference<LinearLayout> loginstatus = new WeakReference<LinearLayout>(registerNextStatus);
-        final WeakReference<LinearLayout> loginForm = new WeakReference<LinearLayout>(registerNextStep2);
+        final WeakReference<LinearLayout> loginstatus = new WeakReference<>(registerNextStatus);
+        final WeakReference<LinearLayout> loginForm = new WeakReference<>(registerNextStep2);
 //        registerNext.updateData(RegisterNext.IS_LOADING, show);
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
         // for very easy animations. If available, use these APIs to fade-in
@@ -384,6 +468,15 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
         SnackbarManager.make(getActivity(), text, Snackbar.LENGTH_LONG).show();
         showProgress(false);
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.unSubscribe();
+        KeyboardHandler.DropKeyboard(getActivity(),getView());
+        ButterKnife.unbind(this);
+    }
+
     private void sendLocalyticsRegisterEvent(int userId){
         Map<String, String> attributesLogin = new HashMap<String, String>();
         CustomerWrapper customerLogin = new CustomerWrapper();

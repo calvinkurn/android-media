@@ -10,6 +10,7 @@ import com.tokopedia.core.presenter.BaseView;
 public interface RegisterNewNextView extends BaseView {
     String PASSWORD = "RegisterNewNextFragment PASSWORD";
     String EMAIL = "RegisterNewNextFragment EMAIL";
+    String NAME = "RegisterNewNextFragment NAME";
     String IS_AUTO_VERIFY = "RegisterNewNextFragment ISAUTOVERIFY";
     String TAG = "MNORMANSYAH";
     String messageTAG = "RegisterNewNextView : ";

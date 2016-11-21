@@ -24,6 +24,7 @@ public interface SessionView {
     String ACTIVATION_RESEND_TAG = "ACTIVATION_RESEND";
     String FORGOT_PASSWORD_TAG = "FORGOT_PASSWORD";
     String REGISTER_THIRD = "REGISTER_THIRD";
+    String REGISTER_INITIAL = "REGISTER_INITIAL";
 
     String WHICH_FRAGMENT_KEY = "WHICH_FRAGMENT_KEY";
     String MOVE_TO_CART_KEY = "MOVE_TO_CART_KEY";
@@ -40,7 +41,7 @@ public interface SessionView {
 
     String getBirthdayFromGoogle(Person user);
 
-    void moveToNewRegisterNext(String email, String password, boolean isAutoVerify);
+    void moveToNewRegisterNext(String name, String email, String password, boolean isAutoVerify);
 
     void moveToRegisterPassPhone(CreatePasswordModel model, List<String> createPasswordList, Bundle data);
 
@@ -65,4 +66,8 @@ public interface SessionView {
     void prevFragment();
 
     void showError(String text);
+
+    void moveToRegisterInitial();
+
+    void moveToLogin();
 }

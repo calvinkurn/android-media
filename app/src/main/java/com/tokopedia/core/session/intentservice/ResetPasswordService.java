@@ -95,7 +95,12 @@ public class ResetPasswordService extends IntentService implements DownloadServi
                 case RESET_PASSWORD :
                     result = new Bundle();
                     result.putInt(TYPE, type);
-                    if (jsonObject.optInt("is_success", 0) == 1) {
+                    if (jsonObject.optString("status", "").equals("TOO_MANY_REQUEST")) {
+                        Bundle resultData = new Bundle();
+                        resultData.putInt(TYPE, DownloadService.RESET_PASSWORD);
+                        resultData.putString(MESSAGE_ERROR_FLAG,jsonObject.optString("message_error","") );
+                        receiver.send(STATUS_ERROR, resultData);
+                    } else if (jsonObject.optInt("is_success", 0) == 1) {
                         receiver.send(STATUS_FINISHED, result);
                     } else {
                         sendMessageErrorToReceiver(context.getString(R.string.default_request_error_unknown));

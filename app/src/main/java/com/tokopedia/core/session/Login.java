@@ -179,10 +179,10 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
 
 
     @Override
-    public void moveToNewRegisterNext(String email, String password, boolean isAutoVerify) {
+    public void moveToNewRegisterNext(String name, String email, String password, boolean isAutoVerify) {
         Log.d(TAG, messageTAG + " moveToRegisterNext : " + email + " password : " + password);
         if (isFragmentCreated(REGISTER_NEXT_TAG)) {
-            Fragment fragment = RegisterNewNextFragment.newInstance(email, password, isAutoVerify);
+            Fragment fragment = RegisterNewNextFragment.newInstance(name, email, password, isAutoVerify);
             moveToFragment(fragment, true, REGISTER_NEXT_TAG, TkpdState.DrawerPosition.REGISTER_NEXT);
         }
     }
@@ -230,9 +230,10 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                 toolbar.setTitle(getString(R.string.title_activity_register));
                 break;
             case TkpdState.DrawerPosition.SECURITY_QUESTION:
-                toolbar.setTitle(getString(R.string.title_security_question));
+                toolbar.setTitle(getString(R.string.bar_security_question));
                 break;
             case TkpdState.DrawerPosition.REGISTER_NEXT:
+            case TkpdState.DrawerPosition.REGISTER_INITIAL:
                 toolbar.setTitle(getString(R.string.title_activity_register));
                 break;
             case TkpdState.DrawerPosition.ACTIVATION_RESENT:
@@ -266,6 +267,28 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
 
         // Change the header
         session.setWhichFragment(TkpdState.DrawerPosition.REGISTER);
+        setToolbarTitle();
+        invalidateOptionsMenu();
+    }
+
+    @Override
+    public void moveToRegisterInitial() {
+        Fragment fragment = RegisterInitialFragment.newInstance();
+        moveToFragment(fragment, true, REGISTER_INITIAL, TkpdState.DrawerPosition.REGISTER_INITIAL);
+
+        // Change the header
+        session.setWhichFragment(TkpdState.DrawerPosition.REGISTER_INITIAL);
+        setToolbarTitle();
+        invalidateOptionsMenu();
+    }
+
+    @Override
+    public void moveToLogin() {
+        Fragment loginFragment = LoginFragment.newInstance("", false, "","","");
+        moveToFragment(loginFragment, true, LOGIN_FRAGMENT_TAG, TkpdState.DrawerPosition.LOGIN);
+
+        // Change the header
+        session.setWhichFragment(TkpdState.DrawerPosition.LOGIN);
         setToolbarTitle();
         invalidateOptionsMenu();
     }
@@ -318,11 +341,17 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                     Intent intent = getIntent();
                     String mEmail = "";
                     boolean GoToIndex = false;
+                    String login = "";
+                    String name = "";
+                    String url = "";
                     if (intent != null) {
                         mEmail = intent.getStringExtra(com.tokopedia.core.session.presenter.Login.EXTRA_EMAIL);
                         GoToIndex = intent.getBooleanExtra(com.tokopedia.core.session.presenter.Login.GO_TO_INDEX_KEY, false);
+                        login = intent.getStringExtra("login");
+                        url = intent.getStringExtra("url");
+                        name = intent.getStringExtra("name");
                     }
-                    Fragment loginFragment = LoginFragment.newInstance(mEmail, GoToIndex);
+                    Fragment loginFragment = LoginFragment.newInstance(mEmail, GoToIndex, login, name, url);
                     moveToFragment(loginFragment, true, LOGIN_FRAGMENT_TAG, TkpdState.DrawerPosition.LOGIN);
                 } else {
                     Log.d(TAG, messageTAG + LoginFragment.class.getSimpleName() + " is not created !!!");
@@ -330,7 +359,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                 break;
             case TkpdState.DrawerPosition.REGISTER:
                 if (isFragmentCreated(REGISTER_FRAGMENT_TAG)) {
-                    Fragment fragment = RegisterNewViewFragment.newInstance();
+                    Fragment fragment = RegisterInitialFragment.newInstance();
                     moveToFragment(fragment, true, REGISTER_FRAGMENT_TAG, TkpdState.DrawerPosition.REGISTER);
 
                     session.setWhichFragment(TkpdState.DrawerPosition.REGISTER);
@@ -490,8 +519,8 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
 
                 // [START] pass some data to register fragment
                 fragment = supportFragmentManager.findFragmentById(R.id.login_fragment);
-                if (fragment instanceof RegisterNewViewFragment && fragment.isVisible()) {
-                    ((RegisterNewViewFragment) fragment).startLoginWithGoogle(LoginModel.GoogleType, model);
+                if (fragment instanceof RegisterInitialFragment && fragment.isVisible()) {
+                    ((RegisterInitialFragment) fragment).startLoginWithGoogle(LoginModel.GoogleType, model);
                 }
                 // [END] pass some data to register fragment
 
@@ -709,6 +738,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     public void sendDataFromInternet(int type, Bundle data) {
         switch (type) {
             case DownloadService.REQUEST_OTP:
+            case DownloadService.REQUEST_OTP_PHONE:
             case DownloadService.ANSWER_SECURITY_QUESTION:
             case DownloadService.SECURITY_QUESTION_GET:
                 DownloadService.startDownload(this, mReceiver, data, type);

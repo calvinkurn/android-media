@@ -79,13 +79,34 @@ public class RegisterNewImpl extends RegisterNew implements TextWatcher{
         public static boolean isExceedMaxCharacter(String text) {
             return text.length()>35;
         }
+
         public static String formatDateText(int mDateDay, int mDateMonth, int mDateYear) {
             return String.format("%d / %d / %d", mDateDay, mDateMonth, mDateYear);
+        }
+
+        public static String formatDateTextString(int mDateDay, int mDateMonth, int mDateYear) {
+            String bulan;
+            switch(mDateMonth) {
+                case 1: bulan = "Januari"; break;
+                case 2: bulan = "Februari"; break;
+                case 3: bulan = "Maret"; break;
+                case 4: bulan = "April"; break;
+                case 5: bulan = "May"; break;
+                case 6: bulan = "Juni"; break;
+                case 7: bulan = "Juli"; break;
+                case 8: bulan = "Agustus"; break;
+                case 9: bulan = "September"; break;
+                case 10: bulan = "Oktober"; break;
+                case 11: bulan = "November"; break;
+                case 12: bulan = "Desember"; break;
+                default: bulan = "inputan salah"; break;
+            }
+            return String.format("%d %s %d", mDateDay, bulan, mDateYear);
         }
     }
 
     @Override
-    public void validateEmail(final Context context, final String email, final String password) {
+    public void validateEmail(final Context context, final String name, final String email, final String password) {
         Map<String, String> params = new HashMap<>();
         params.put("email",email);
         facade.validateEmail(context, params , new RegisterInteractor.ValidateEmailListener() {
@@ -95,7 +116,7 @@ public class RegisterNewImpl extends RegisterNew implements TextWatcher{
                     view.showErrorValidateEmail();
                 }else{
                     view.enableDisableAllFieldsForEmailValidationForm(true);
-                    view.moveToRegisterNext(email,password);
+                    view.moveToRegisterNext(name, email,password);
                     sendGTMClick();
                 }
             }
@@ -142,180 +163,6 @@ public class RegisterNewImpl extends RegisterNew implements TextWatcher{
         }
     }
 
-    @Override
-    public void startLoginWithGoogle(Context context,String type, LoginGoogleModel loginGoogleModel) {
-        if(type != null && type.equals(LoginModel.GoogleType) && loginGoogleModel != null){
-            // dismiss progress
-            view.showProgress(false);
-            RegisterViewModel registerViewModel = new RegisterViewModel();
-
-            // update data and UI
-//            if(registerViewModel!=null){
-                if(loginGoogleModel.getFullName()!=null){
-//                    registerView.updateData(RegisterView.NAME, loginGoogleModel.getFullName());
-                    registerViewModel.setmName(loginGoogleModel.getFullName());
-                }
-                if(loginGoogleModel.getGender().contains("male")){
-//                    registerView.updateData(RegisterView.GENDER, RegisterViewModel.GENDER_MALE);
-                    registerViewModel.setmGender(RegisterViewModel.GENDER_MALE);
-                }else{
-//                    registerView.updateData(RegisterView.GENDER, RegisterViewModel.GENDER_FEMALE);
-                    registerViewModel.setmGender(RegisterViewModel.GENDER_FEMALE);
-                }
-                if(loginGoogleModel.getBirthday()!=null){
-                    Log.d(TAG, getMessageTAG()+" need to verify birthday : "+loginGoogleModel.getBirthday());
-                    registerViewModel.setDateText(loginGoogleModel.getBirthday());
-                }
-                if(loginGoogleModel.getEmail()!=null){
-                    registerViewModel.setmEmail(loginGoogleModel.getEmail());
-                }
-            loginGoogleModel.setUuid(getUUID());
-
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(DownloadService.LOGIN_GOOGLE_MODEL_KEY, Parcels.wrap(loginGoogleModel));
-            bundle.putBoolean(DownloadService.IS_NEED_LOGIN, false);
-
-            ((SessionView)context).sendDataFromInternet(DownloadService.REGISTER_GOOGLE, bundle);
-        }
-    }
-
-    @Override
-    public void loginFacebook(final Context context) {
-        simpleFacebook = simpleFacebook.getInstance();
-        Log.d("steven isLogin?", String.valueOf(simpleFacebook.isLogin()));
-        if(simpleFacebook.isLogin()){
-            simpleFacebook.logout(new OnLogoutListener() {
-                @Override
-                public void onLogout() {
-                    Log.d("steven logout", "you are logged out");
-                }
-            });
-        }
-
-        Permission[] permissions = new Permission[] {
-                Permission.EMAIL,
-        };
-
-        OnNewPermissionsListener onNewPermissionsListener = new OnNewPermissionsListener() {
-            @Override
-            public void onSuccess(String accessToken, List<Permission> acceptedPermissions, List<Permission> declinedPermissions) {
-                Log.d("steven permissions succ", acceptedPermissions.toString());
-                askToLogin(context);
-            }
-
-            @Override
-            public void onCancel() {
-                Log.d("steven permissions canc", "you are out");
-                view.showProgress(false);
-            }
-
-            @Override
-            public void onException(Throwable throwable) {
-                Log.d("steven permissions excn", throwable.toString());
-                view.showError(context.getString(R.string.msg_network_error));
-                view.showProgress(false);
-            }
-
-            @Override
-            public void onFail(String reason) {
-                Log.d("steven permissions fail", reason);
-                view.showProgress(false);
-            }
-        };
-
-        simpleFacebook.requestNewPermissions(permissions, onNewPermissionsListener);
-    }
-
-    private void askToLogin(final Context context) {
-        simpleFacebook.login(new OnLoginListener() {
-            @Override
-            public void onLogin(String accessToken, List<Permission> acceptedPermissions, List<Permission> declinedPermissions) {
-                Profile.Properties properties = new Profile.Properties.Builder()
-                        .add(Profile.Properties.ID)
-                        .add(Profile.Properties.FIRST_NAME)
-                        .add(Profile.Properties.GENDER)
-                        .add(Profile.Properties.EMAIL)
-                        .add(Profile.Properties.WORK)
-                        .add(Profile.Properties.BIRTHDAY)
-                        .add(Profile.Properties.NAME)
-                        .build();
-                simpleFacebook.getProfile(properties, new OnProfileListener() {
-                    @Override
-                    public void onComplete(Profile response) {
-                        Log.e(TAG, getMessageTAG() + " start login to facebook !!");
-                        super.onComplete(response);
-                        LoginFacebookViewModel loginFacebookViewModel = new LoginFacebookViewModel();
-                        loginFacebookViewModel.setFullName(response.getName());// 10
-                        loginFacebookViewModel.setGender(response.getGender());// 7
-                        setBirthday(loginFacebookViewModel,response.getBirthday());// 2
-                        loginFacebookViewModel.setFbToken(simpleFacebook.getAccessToken().getToken());// 6
-                        loginFacebookViewModel.setFbId(response.getId());// 8
-                        loginFacebookViewModel.setEmail(response.getEmail());// 5
-                        loginFacebookViewModel.setEducation(response.getEducation() + "");// 4
-                        loginFacebookViewModel.setInterest(response.getRelationshipStatus());// 9
-                        loginFacebookViewModel.setWork(response.getWork() + "");
-                        Log.e(TAG, getMessageTAG() + " end login Facebook : " + loginFacebookViewModel);
-
-                        if(context!=null&&context instanceof SessionView){
-                            Bundle bundle = new Bundle();
-                            bundle.putParcelable(DownloadService.LOGIN_FACEBOOK_MODEL_KEY, Parcels.wrap(loginFacebookViewModel));
-                            bundle.putBoolean(DownloadService.IS_NEED_LOGIN, false);
-
-
-                            ((SessionView)context).sendDataFromInternet(DownloadService.REGISTER_FACEBOOK
-                                    , bundle);
-                        }
-
-                        view.showProgress(false);
-
-                    }
-
-                    @Override
-                    public void onException(Throwable throwable) {
-                        super.onException(throwable);
-                        Log.e(TAG, getMessageTAG()+" login facebook : "+throwable.getLocalizedMessage());
-                    }
-
-                    @Override
-                    public void onFail(String reason) {
-                        super.onFail(reason);
-                        Log.e(TAG, getMessageTAG() + " login facebook : " + reason);
-                    }
-                });
-            }
-
-            @Override
-            public void onCancel() {
-                view.showProgress(false);
-            }
-
-            @Override
-            public void onException(Throwable throwable) {
-                Log.e(TAG, getMessageTAG()+" login facebook "+ throwable.getLocalizedMessage());
-                view.showError(context.getString(R.string.msg_network_error));
-                view.showProgress(false);
-            }
-
-            @Override
-            public void onFail(String s) {
-                Log.e(TAG, getMessageTAG()+" login facebook "+ s);
-//                Toast.makeText(context, context.getString(R.string.message_verification_timeout), Toast.LENGTH_LONG).show();
-                view.showProgress(false);
-            }
-        });
-    }
-
-    private void setBirthday(LoginFacebookViewModel loginFacebookViewModel, String birthday) {
-        DateFormat inputFormat = new SimpleDateFormat("MM/dd/yyyy");
-        DateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy");
-        Date date = null;
-        try {
-            date = inputFormat.parse(birthday);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if(date!=null) loginFacebookViewModel.setBirthday(outputFormat.format(date));
-    }
 
     @Override
     public void setData(Context context, int type, Bundle data) {
@@ -341,11 +188,6 @@ public class RegisterNewImpl extends RegisterNew implements TextWatcher{
                 view.finishActivity();
                 break;
 
-            case DownloadServiceConstant.DISCOVER_LOGIN:
-                view.removeProgressBar();
-                LoginProviderModel loginProviderModel = data.getParcelable(DownloadServiceConstant.LOGIN_PROVIDER);
-                view.showProvider(loginProviderModel.getProviders());
-                break;
         }
     }
 
@@ -390,58 +232,6 @@ public class RegisterNewImpl extends RegisterNew implements TextWatcher{
     }
 
     @Override
-    public void downloadProviderLogin(Context context) {
-//        ((SessionView)context).sendDataFromInternet(DownloadService.DISCOVER_LOGIN, new Bundle());
-        facade.downloadProvider(context, new RegisterInteractor.DiscoverLoginListener() {
-            @Override
-            public void onSuccess(LoginProviderModel result) {
-                view.removeProgressBar();
-                view.showProvider(result.getProviders());
-            }
-
-            @Override
-            public void onError(String s) {
-                view.onMessageError(DownloadService.DISCOVER_LOGIN, s);
-            }
-
-            @Override
-            public void onTimeout() {
-                view.onMessageError(DownloadService.DISCOVER_LOGIN, "");
-            }
-
-            @Override
-            public void onThrowable(Throwable e) {
-                view.onMessageError(DownloadService.DISCOVER_LOGIN, "");
-            }
-        });
-    }
-
-    @Override
-    public void loginWebView(Context context, Bundle data) {
-        Bundle bundle = data;
-        bundle.putBoolean(DownloadService.IS_NEED_LOGIN, false);
-
-        ((SessionView)context).sendDataFromInternet(DownloadService.LOGIN_WEBVIEW, bundle);
-    }
-
-    @Override
-    public void saveProvider(List<LoginProviderModel.ProvidersBean> listProvider) {
-        String cache = new GsonBuilder().create().toJson(loadProvider());
-        String listProviderString = new GsonBuilder().create().toJson(listProvider);
-        if(!cache.equals(listProviderString)){
-            providerListCache.putString(PROVIDER_CACHE_KEY, listProviderString);
-            providerListCache.setExpire(3600);
-            providerListCache.applyEditor();
-        }
-    }
-
-    private List<LoginProviderModel.ProvidersBean> loadProvider(){
-        String cache = providerListCache.getString(PROVIDER_CACHE_KEY);
-        Type type = new TypeToken<List<LoginProviderModel.ProvidersBean>>(){}.getType();
-        return new GsonBuilder().create().fromJson(cache, type);
-    }
-
-    @Override
     public void initData(@NonNull Context context) {
         if(isAfterRotate){
             view.setData(convertToMap(EMAIL, registerViewModel.getmEmail()));// 1. email
@@ -450,22 +240,8 @@ public class RegisterNewImpl extends RegisterNew implements TextWatcher{
         }
         loginUuid = new LocalCacheHandler(context, LOGIN_UUID_KEY);
 
-        getProvider(context);
     }
 
-    @Override
-    public void getProvider(Context context) {
-        if(view.checkHasNoProvider()){
-            view.addProgressBar();
-            List<LoginProviderModel.ProvidersBean> providerList= loadProvider();
-            if(providerList == null || providerListCache.isExpired()){
-                downloadProviderLogin(context);
-            }else {
-                view.removeProgressBar();
-                view.showProvider(providerList);
-            }
-        }
-    }
 
     @Override
     public void sendGTMRegisterError(Context context, String label) {
@@ -520,7 +296,6 @@ public class RegisterNewImpl extends RegisterNew implements TextWatcher{
         if(!isAfterRotate){
             registerViewModel = new RegisterViewModel();
         }
-        providerListCache = new LocalCacheHandler(context,PROVIDER_LIST);
     }
 
     @Override

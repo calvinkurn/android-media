@@ -2,6 +2,7 @@ package com.tokopedia.core.session.presenter;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 
 import com.tokopedia.core.session.base.BaseImpl;
 import com.tokopedia.core.session.model.LoginGoogleModel;
@@ -42,24 +43,14 @@ public abstract class RegisterNew extends BaseImpl<RegisterNewView>{
         super(view);
     }
 
-    public abstract void validateEmail(Context context, String email, String password);
-    public abstract void saveData(HashMap<String, Object> data);
-    public abstract void startLoginWithGoogle(Context context,String type, LoginGoogleModel loginGoogleModel);
-    public abstract void loginFacebook(Context context);
+    public abstract void validateEmail(Context context, String name, String email, String password);
 
+    public abstract void saveData(HashMap<String, Object> data);
 
     public abstract void setData(Context baseContext, int type, Bundle data);
-
-    public abstract void downloadProviderLogin(Context context);
-
-    public abstract void loginWebView(Context context, Bundle code);
-
-    public abstract void saveProvider(List<LoginProviderModel.ProvidersBean> listProvider);
-
-    public abstract void getProvider(Context context);
-
 
     public abstract void unSubscribeFacade();
 
     public abstract void sendGTMRegisterError(Context context, String label);
+
 }

@@ -15,6 +15,8 @@ import android.widget.EditText;
 
 import com.tokopedia.core.R;
 
+import static android.graphics.Typeface.SANS_SERIF;
+
 
 /**
  * Custom version of EditText that shows and hides password onClick of the visibility icon
@@ -58,7 +60,7 @@ public class PasswordView extends EditText {
                     R.styleable.PasswordView,
                     0, 0);
             try {
-                useStrikeThrough = a.getBoolean(R.styleable.PasswordView_useStrikeThrough, false);
+                useStrikeThrough = a.getBoolean(R.styleable.PasswordView_useStrikeThrough, true);
             } finally {
                 a.recycle();
             }
@@ -67,8 +69,9 @@ public class PasswordView extends EditText {
         // Make sure to mutate so that if there are multiple password fields, they can have
         // different visibilities.
         eye = ContextCompat.getDrawable(getContext(), R.drawable.ic_remove_red_eye_24dp).mutate();
-        eyeWithStrike = ContextCompat.getDrawable(getContext(), R.drawable.ic_remove_red_eye_24dp).mutate();
-        eyeWithStrike.setAlpha(VISIBILITY_ENABLED);
+        eyeWithStrike = ContextCompat.getDrawable(getContext(), R.drawable.ic_visibility_off_black_24dp).mutate();
+        eyeWithStrike.setAlpha(VISIBLITY_DISABLED);
+        eye.setAlpha(VISIBLITY_DISABLED);
         setup();
     }
 
@@ -79,18 +82,11 @@ public class PasswordView extends EditText {
         Drawable drawable = useStrikeThrough && !visible ? eyeWithStrike : eye;
         Drawable[] drawables = getCompoundDrawables();
         setCompoundDrawablesWithIntrinsicBounds(drawables[0], drawables[1], drawable, drawables[3]);
-        eye.setAlpha(visible && !useStrikeThrough ? VISIBILITY_ENABLED : VISIBLITY_DISABLED);
+//        eye.setAlpha(visible && !useStrikeThrough ? VISIBILITY_ENABLED : VISIBLITY_DISABLED);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-//        if (event.getAction() == MotionEvent.ACTION_UP
-//                && event.getX() >= (getRight() - getCompoundDrawables()[2].getBounds().width())) {
-//            visible = !visible;
-//            setup();
-//            event.setAction(MotionEvent.ACTION_CANCEL);
-//            return true;
-//        }
         if (event.getAction() == MotionEvent.ACTION_UP) {
             final int x = (int) event.getX();
             if(getCompoundDrawables()[2] == null){
@@ -110,7 +106,7 @@ public class PasswordView extends EditText {
 
     @Override
     public void setInputType(int type) {
-        this.typeface = getTypeface();
+        this.typeface = Typeface.create(SANS_SERIF, Typeface.NORMAL);
         super.setInputType(type);
         setTypeface(typeface);
     }

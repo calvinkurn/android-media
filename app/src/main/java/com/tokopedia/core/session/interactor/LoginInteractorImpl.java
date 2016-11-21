@@ -12,6 +12,7 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.session.model.LoginProviderModel;
 import com.tokopedia.core.session.presenter.LoginImpl;
+import com.tokopedia.core.session.presenter.RegisterInitialPresenterImpl;
 
 import org.json.JSONObject;
 
@@ -28,6 +29,7 @@ import rx.subscriptions.CompositeSubscription;
 public class LoginInteractorImpl implements LoginInteractor {
 
     LoginImpl presenter;
+    RegisterInitialPresenterImpl presenterNew;
     CompositeSubscription compositeSubscription;
     AccountsService accountsService;
 
@@ -117,5 +119,17 @@ public class LoginInteractorImpl implements LoginInteractor {
     @Override
     public void unSubscribe() {
         compositeSubscription.unsubscribe();
+    }
+
+    public static LoginInteractor createInstance(RegisterInitialPresenterImpl presenter) {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(AccountsService.USING_HMAC, true);
+        bundle.putString(AccountsService.AUTH_KEY, AuthUtil.KEY.KEY_WSV4);
+
+        LoginInteractorImpl facade = new LoginInteractorImpl();
+        facade.presenterNew = presenter;
+        facade.compositeSubscription = new CompositeSubscription();
+        facade.accountsService = new AccountsService(bundle);
+        return facade;
     }
 }
