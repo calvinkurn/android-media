@@ -1,7 +1,6 @@
 package com.tokopedia.core.home.adapter;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,23 +21,20 @@ import java.util.ArrayList;
 public class SectionListCategoryAdapter extends RecyclerView.Adapter<SectionListCategoryAdapter.CategoryMenuRowHolder> {
 
     private ArrayList<CategoryItemModel> itemsList;
-    private Context mContext;
     private OnCategoryClickedListener categoryClickedListener;
     private OnGimmicClickedListener gimmicClickedListener;
     private final int homeMenuWidth;
 
-    SectionListCategoryAdapter(
-            Context context, ArrayList<CategoryItemModel> itemsList, int homeMenuWidth) {
+    SectionListCategoryAdapter(ArrayList<CategoryItemModel> itemsList, int homeMenuWidth) {
 
         this.itemsList = itemsList;
-        this.mContext = context;
         this.homeMenuWidth = homeMenuWidth;
     }
 
     @Override
     public CategoryMenuRowHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         @SuppressLint("InflateParams") View v = LayoutInflater.from(
-                viewGroup.getContext()).inflate(R.layout.list_single_card, null
+                viewGroup.getContext()).inflate(R.layout.item_home_category, null
         );
 //        int width = v.getMeasuredWidth() / 4;
         v.setMinimumWidth(homeMenuWidth);
