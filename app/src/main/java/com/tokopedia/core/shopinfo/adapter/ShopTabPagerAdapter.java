@@ -6,10 +6,10 @@ import android.content.Context;
 import android.support.v13.app.FragmentPagerAdapter;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.shopinfo.fragment.DiscussionList;
 import com.tokopedia.core.shopinfo.fragment.NotesList;
 import com.tokopedia.core.shopinfo.fragment.ProductList;
 import com.tokopedia.core.shopinfo.fragment.ShopReputationList;
+import com.tokopedia.core.shopinfo.fragment.ShopTalkFragment;
 import com.tokopedia.core.shopinfo.models.ShopModel;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class ShopTabPagerAdapter extends FragmentPagerAdapter {
     public ShopTabPagerAdapter(FragmentManager fm, ShopModel model) {
         super(fm);
         fragments.add(ProductList.create());
-        fragments.add(DiscussionList.create());
+        fragments.add(ShopTalkFragment.createInstance());
         fragments.add(ShopReputationList.create());
         fragments.add(new NotesList());
     }
