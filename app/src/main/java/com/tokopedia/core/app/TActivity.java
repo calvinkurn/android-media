@@ -58,6 +58,7 @@ import com.tokopedia.core.service.HadesService;
 import com.tokopedia.core.service.constant.HadesConstant;
 import com.tokopedia.core.session.Login;
 import com.tokopedia.core.session.presenter.Session;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.PhoneVerificationUtil;
 import com.tokopedia.core.util.RequestManager;
@@ -606,7 +607,7 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("mailto:" + "android.feedback@tokopedia.com"));
         intent.putExtra(Intent.EXTRA_SUBJECT, "Masalah Server Error");
-        intent.putExtra(Intent.EXTRA_TEXT, "Versi Aplikasi: "+ BuildConfig.VERSION_CODE);
+        intent.putExtra(Intent.EXTRA_TEXT, "Versi Aplikasi: "+ GlobalConfig.VERSION_CODE);
         startActivity(Intent.createChooser(intent, "Kirim Email"));
     }
 }
