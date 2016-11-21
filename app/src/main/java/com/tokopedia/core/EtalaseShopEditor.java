@@ -331,6 +331,7 @@ public class EtalaseShopEditor extends TActivity {
 
                             @Override
                             public void onError(Throwable e) {
+                                progressdialog.dismiss();
                                 Snackbar.make(mainView, getString(R.string.error_connection_problem), Snackbar.LENGTH_INDEFINITE)
                                         .setAction(R2.string.title_try_again, new OnClickListener() {
                                             @Override
@@ -348,6 +349,7 @@ public class EtalaseShopEditor extends TActivity {
                                     String messageError = "";
 
                                     if (response.isError()) {
+                                        progressdialog.dismiss();
                                         Snackbar.make(mainView, response.getErrorMessages().toString().replace("[", "").replace("]", ""), Snackbar.LENGTH_INDEFINITE)
                                                 .show();
                                     } else {
@@ -375,6 +377,7 @@ public class EtalaseShopEditor extends TActivity {
                                         }
                                     }
                                 } else {
+                                    progressdialog.dismiss();
                                     Snackbar.make(mainView, getString(R.string.error_connection_problem), Snackbar.LENGTH_INDEFINITE)
                                             .setAction(R2.string.title_try_again, new OnClickListener() {
                                                 @Override
