@@ -109,28 +109,6 @@ public final class AppScreen {
 
     }
 
-    public static String convertFragmentScreen(Fragment actClass) {
-        if (actClass instanceof AboutFragment) {
-            return SCREEN_SETTING_ABOUT_US;
-        } else if (actClass instanceof FragmentSettingPeople) {
-            return SCREEN_SETTING_MANAGE_PROFILE;
-        } else if (actClass instanceof SettingsFragment) {
-            return SCREEN_SETTING_MANAGE_APP;
-        } else if (actClass instanceof FragmentSettingShop) {
-            return SCREEN_SETTING_MANAGE_SHOP;
-        } else if (actClass instanceof FragmentCart) {
-            return SCREEN_CART_PAGE;
-        } else if (actClass instanceof FragmentCartSummary) {
-            return SCREEN_CART_SUMMARY;
-        } else if (actClass instanceof FragmentCartFinish) {
-            return SCREEN_CART_FINISH;
-        } else if (actClass instanceof ManagePeopleBankFormFragment) {
-            return SCREEN_PEOPLE_BANK_FORM;
-        } else {
-            return actClass.getClass().getSimpleName();
-        }
-    }
-
     public static String convertAFActivityEvent(Activity activity) {
         if (activity instanceof ParentIndexHome) {
             return AFInAppEventType.LOGIN;
