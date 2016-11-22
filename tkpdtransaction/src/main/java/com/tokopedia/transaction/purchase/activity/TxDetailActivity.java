@@ -200,11 +200,13 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
                 || statusOrder.equals(getString(R.string.ORDER_SHIPPING_TRACKER_INVALID))
                 ? View.VISIBLE : View.GONE);
 
-        btnTrackOrder.setVisibility(statusOrder.equals(getString(R.string.ORDER_WAITING_STATUS_FROM_SHIPPING_AGENCY))
-                || statusOrder.equals(getString(R.string.ORDER_SHIPPING))
-                || statusOrder.equals(getString(R.string.ORDER_SHIPPING_REF_NUM_EDITED))
-                || statusOrder.equals(getString(R.string.ORDER_SHIPPING_TRACKER_INVALID))
-                ? View.VISIBLE : View.GONE);
+        btnTrackOrder.setVisibility(
+                statusOrder.equals(getString(R.string.ORDER_WAITING_STATUS_FROM_SHIPPING_AGENCY))
+                        || statusOrder.equals(getString(R.string.ORDER_SHIPPING))
+                        || statusOrder.equals(getString(R.string.ORDER_SHIPPING_REF_NUM_EDITED))
+                        || statusOrder.equals(getString(R.string.ORDER_SHIPPING_TRACKER_INVALID))
+                        ? View.VISIBLE : View.GONE
+        );
 
         btnRejectOrder.setVisibility(orderData.getOrderButton().getButtonOpenDispute() != null &&
                 orderData.getOrderButton().getButtonOpenDispute().equals("1")
@@ -327,14 +329,20 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
     }
 
     private void alterHistoryComment(String comment, int historyIndex) {
-        if(orderData.getOrderDetail().getDetailPreorder() !=null
+        if (orderData.getOrderDetail().getDetailPreorder() != null
                 && orderData.getOrderDetail().getDetailPreorder().getPreorderStatus() == 1
-                && comment.equals("0") && Integer.parseInt(orderData.getOrderHistory().get(historyIndex).getHistoryOrderStatus()) == 400){
+                && comment.equals("0")
+                && Integer.parseInt(orderData.getOrderHistory().get(historyIndex)
+                .getHistoryOrderStatus()) == 400) {
             orderData.getOrderHistory().get(historyIndex)
-                    .setHistoryComments("Lama waktu proses produk : "
-                            + orderData.getOrderDetail().getDetailPreorder().getPreorderProcessTime()
-                            + " "
-                            + orderData.getOrderDetail().getDetailPreorder().getPreorderProcessTimeTypeString()) ;
+                    .setHistoryComments(
+                            "Lama waktu proses produk : "
+                                    + orderData.getOrderDetail().getDetailPreorder()
+                                    .getPreorderProcessTime()
+                                    + " "
+                                    + orderData.getOrderDetail().getDetailPreorder()
+                                    .getPreorderProcessTimeTypeString()
+                    );
         }
     }
 
