@@ -216,16 +216,17 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     public void onResume() {
         super.onResume();
         isAllowFetchDepartmentView = true;
-        sendNotifLocalyticsCallback();
+        sendNotifLocalyticsCallback(getIntent());
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        sendNotifLocalyticsCallback(intent);
     }
 
-    private void sendNotifLocalyticsCallback() {
-        Bundle bundle = getIntent().getExtras();
+    private void sendNotifLocalyticsCallback(Intent intent) {
+        Bundle bundle = intent.getExtras();
         if (bundle != null) {
             if (bundle.containsKey(AppEventTracking.LOCA.NOTIFICATION_BUNDLE)){
                 TrackingUtils.eventLocaNotificationCallback(getIntent());

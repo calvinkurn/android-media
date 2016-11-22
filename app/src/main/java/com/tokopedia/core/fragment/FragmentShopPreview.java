@@ -152,7 +152,6 @@ public class FragmentShopPreview extends Fragment {
         getShopInfoRetrofit.setGetShopInfoListener(new GetShopInfoRetrofit.OnGetShopInfoListener() {
             @Override
             public void onSuccess(String result) {
-                CommonUtils.dumper("Masuk on success");
                 progressDialog.dismiss();
                 MainView.setVisibility(View.VISIBLE);
                 try {

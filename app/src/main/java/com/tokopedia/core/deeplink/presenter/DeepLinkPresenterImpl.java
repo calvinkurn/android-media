@@ -50,8 +50,8 @@ import java.util.Map;
 import static com.tokopedia.core.recharge.fragment.RechargeCategoryFragment.EXTRA_ALLOW_ERROR;
 
 /**
- * @author  by Angga.Prasetiyo on 14/12/2015.
- * modified by Alvarisi
+ * @author by Angga.Prasetiyo on 14/12/2015.
+ *         modified by Alvarisi
  */
 public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String TAG = DeepLinkPresenterImpl.class.getSimpleName();
@@ -171,8 +171,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         return Uri.parse(newUri);
     }
 
-    private void sendCampaignGTM(String campaignUri, String screenName) {
-        if (!isValidCampaignUrl(Uri.parse(campaignUri))) return;
+    @Override
+    public void sendCampaignGTM(String campaignUri, String screenName) {
+        if (!isValidCampaignUrl(Uri.parse(campaignUri))) {
+            return;
+        }
         Campaign campaign = convertUrlCampaign(Uri.parse(campaignUri));
         campaign.setScreenName(screenName);
         UnifyTracking.eventCampaign(campaign);
@@ -180,21 +183,21 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private Map<String, String> splitQuery(Uri url) {
-        Map<String, String> query_pairs = new LinkedHashMap<>();
+        Map<String, String> queryPairs = new LinkedHashMap<>();
         String query = url.getQuery();
         if (!TextUtils.isEmpty(query)) {
             String[] pairs = query.split("&|\\?");
             for (String pair : pairs) {
                 int idx = pair.indexOf("=");
                 try {
-                    query_pairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"),
+                    queryPairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"),
                             URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
             }
         }
-        return query_pairs;
+        return queryPairs;
     }
 
     private boolean isValidCampaignUrl(Uri uri) {
@@ -226,6 +229,18 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             List<String> listExcludedString = Arrays.asList(TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_URL).split(","));
             for (String excludedString : listExcludedString) {
                 if (uriData.getPath().endsWith(excludedString)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isExcludedHostUrl(Uri uriData) {
+        if (!TextUtils.isEmpty(TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_HOST))) {
+            List<String> listExcludedString = Arrays.asList(TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_HOST).split(","));
+            for (String excludedString : listExcludedString) {
+                if (uriData.getPath().startsWith(excludedString)) {
                     return true;
                 }
             }
@@ -303,19 +318,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         context.finish();
     }
 
-
-    private boolean isHotLink(List<String> linkSegment) {
-        return (linkSegment.size() == 2);
-    }
-
-    private boolean isHotBrowse(List<String> linkSegment, Uri uriData) {
-        return (linkSegment.size() == 1 && !isHotAlias(uriData));
-    }
-
-    private boolean isHotAlias(Uri uri) {
-        return uri.getQueryParameter("alk") != null;
-    }
-
     private void openHomepage() {
         Intent intent = new Intent(context, ParentIndexHome.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -364,13 +366,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         context.finish();
     }
 
-    private boolean isCategory(List<String> linkSegment) {
-        return linkSegment.get(0).equals("p");
-    }
-
-    private boolean isSearch(List<String> linkSegment) {
-        return linkSegment.get(0).equals("search");
-    }
 
     private int getDeepLinkType(Uri uriData) {
         List<String> linkSegment = uriData.getPathSegments();
@@ -378,7 +373,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             return ACCOUNTS;
 
         try {
-            if (isExcludedUrl(uriData))
+            if (isExcludedHostUrl(uriData))
+                return OTHER;
+            else if (isExcludedUrl(uriData))
                 return OTHER;
             else if (isInvoice(linkSegment))
                 return INVOICE;
@@ -403,12 +400,32 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         }
     }
 
+    private boolean isHotLink(List<String> linkSegment) {
+        return (linkSegment.size() == 2);
+    }
+
+    private boolean isHotBrowse(List<String> linkSegment, Uri uriData) {
+        return (linkSegment.size() == 1 && !isHotAlias(uriData));
+    }
+
+    private boolean isHotAlias(Uri uri) {
+        return uri.getQueryParameter("alk") != null;
+    }
+
+    private boolean isCategory(List<String> linkSegment) {
+        return linkSegment.get(0).equals("p");
+    }
+
+    private boolean isSearch(List<String> linkSegment) {
+        return linkSegment.get(0).equals("search");
+    }
+
     private boolean isPulsa(List<String> linkSegment) {
-        return linkSegment.get(0).equals("pulsa");
+        return linkSegment.get(0).equals("pulsa") && linkSegment.size() == 1;
     }
 
     private boolean isInvoice(List<String> linkSegment) {
-        return linkSegment.get(0).startsWith("invoice.pl");
+        return linkSegment.get(0).startsWith("invoice.pl") && linkSegment.size() == 1;
     }
 
     private boolean isShop(List<String> linkSegment) {

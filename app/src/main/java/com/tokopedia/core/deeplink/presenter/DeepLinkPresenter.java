@@ -12,4 +12,6 @@ public interface DeepLinkPresenter {
     void processDeepLinkAction(Uri uri);
 
     void processAFlistener();
+
+    void sendCampaignGTM(String campaignUri, String screenName);
 }
