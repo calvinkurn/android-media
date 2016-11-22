@@ -8,6 +8,7 @@ import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.tokopedia.core.R;
 import com.tokopedia.core.manage.people.profile.datamanager.NetworkParam;
 import com.tokopedia.core.manage.people.profile.interactor.UploadImageProfile;
 import com.tokopedia.core.manage.people.profile.model.PeopleProfilePass;
@@ -21,6 +22,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.network.v4.NetworkConfig;
+import com.tokopedia.core.util.ImageUploadHandler;
 
 import java.io.File;
 import java.io.IOException;
@@ -262,7 +264,12 @@ public class ManagePeopleProfileIntentService extends IntentService {
                 .compileAllParam()
                 .finish();
 
-        File file = new File(peopleProfilePass.getImagePath());
+        File file = null;
+        try {
+            file = ImageUploadHandler.writeImageToTkpdPath(ImageUploadHandler.compressImage(peopleProfilePass.getImagePath()));
+        } catch (IOException e) {
+            throw new RuntimeException(getApplicationContext().getString(R.string.error_upload_image));
+        }
         RequestBody userId = RequestBody.create(MediaType.parse("text/plain"), networkCalculator.getContent().get(NetworkCalculator.USER_ID));
         RequestBody deviceId = RequestBody.create(MediaType.parse("text/plain"), networkCalculator.getContent().get(NetworkCalculator.DEVICE_ID));
         RequestBody hash = RequestBody.create(MediaType.parse("text/plain"), networkCalculator.getContent().get(NetworkCalculator.HASH));
