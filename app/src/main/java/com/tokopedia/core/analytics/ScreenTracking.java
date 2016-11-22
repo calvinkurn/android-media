@@ -35,7 +35,7 @@ public class ScreenTracking extends TrackingUtils {
                 throw new Exception("Fragment ScreenName cannot null");
             } catch (Exception e) {
                 e.printStackTrace();
-                screen = "Default Fragment";
+                screen = "Default Fragment Name";
             }
         }
 
