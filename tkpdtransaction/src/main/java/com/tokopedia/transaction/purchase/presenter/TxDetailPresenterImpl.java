@@ -17,6 +17,8 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.inboxmessage.activity.SendMessageActivity;
 import com.tokopedia.core.inboxmessage.fragment.SendMessageFragment;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.core.rescenter.detail.activity.ResCenterActivity;
 import com.tokopedia.core.rescenter.detail.model.passdata.ActivityParamenterPassData;
@@ -193,8 +195,40 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
     }
 
     @Override
-    public void processRequestCancelOrder(Activity activity, OrderData orderData) {
+    public void processRequestCancelOrder(final Activity activity, String reason, OrderData orderData) {
+        viewListener.showProgressLoading();
+        TKPDMapParam<String, String> params = new TKPDMapParam<>();
+        params.put("order_id", orderData.getOrderDetail().getDetailOrderId());
+        params.put("reason_cancel", reason);
+        netInteractor.requestCancelOrder(AuthUtil.generateParamsNetwork(activity, params),
+                new TxOrderNetInteractor.RequestCancelOrderListener() {
+                    @Override
+                    public void onSuccess(String message) {
+                        viewListener.hideProgressLoading();
+                        if (message == null || message.isEmpty()) message = activity.getString(
+                                com.tokopedia.transaction.R.string.default_success_message_request_cancel_order
+                        );
+                        viewListener.showToastMessage(message);
+                    }
 
+                    @Override
+                    public void onError(String message) {
+                        viewListener.hideProgressLoading();
+                        viewListener.showToastMessage(message);
+                    }
+
+                    @Override
+                    public void onTimeout(String message) {
+                        viewListener.hideProgressLoading();
+                        viewListener.showToastMessage(message);
+                    }
+
+                    @Override
+                    public void onNoConnection(String message) {
+                        viewListener.hideProgressLoading();
+                        viewListener.showToastMessage(message);
+                    }
+                });
     }
 
     private void processReview(final Context context, String message) {
@@ -335,14 +369,14 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
             netInteractor.confirmDeliver(context, params,
                     new TxOrderNetInteractor.OnConfirmFinishDeliver() {
 
-                                        @Override
-                                        public void onSuccess(String message, JSONObject lucky) {
-                                            TxListUIReceiver.sendBroadcastForceRefreshListData(context);
-                                            viewListener.hideProgressLoading();
-                                            TrackingUtils.eventLoca(context.getString(R.string.confirm_received));
-                                            processReview(context, message);
-                                            dialog.dismiss();
-                                        }
+                        @Override
+                        public void onSuccess(String message, JSONObject lucky) {
+                            TxListUIReceiver.sendBroadcastForceRefreshListData(context);
+                            viewListener.hideProgressLoading();
+                            TrackingUtils.eventLoca(context.getString(R.string.confirm_received));
+                            processReview(context, message);
+                            dialog.dismiss();
+                        }
 
                         @Override
                         public void onError(String message) {

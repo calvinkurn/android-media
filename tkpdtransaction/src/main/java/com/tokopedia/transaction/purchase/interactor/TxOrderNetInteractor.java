@@ -74,7 +74,7 @@ public interface TxOrderNetInteractor {
     void getEditPaymentForm(@NonNull Context context, @NonNull Map<String, String> params,
                             EditPaymentFormListener listener);
 
-    void getEditPaymentForm(@NonNull TKPDMapParam<String, String> params,
+    void requestCancelOrder(@NonNull TKPDMapParam<String, String> params,
                             RequestCancelOrderListener listener);
 
     void unSubscribeObservable();

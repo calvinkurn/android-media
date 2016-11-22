@@ -275,10 +275,53 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
     }
 
     @Override
-    public void getEditPaymentForm(@NonNull TKPDMapParam<String, String> params,
-                                   RequestCancelOrderListener listener) {
+    public void requestCancelOrder(@NonNull TKPDMapParam<String, String> params,
+                                   final RequestCancelOrderListener listener) {
+        Observable<Response<TkpdResponse>> observable = txOrderActService.getApi()
+                .requestCancelOrder(params);
 
+        Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                if (e instanceof UnknownHostException) {
+                    listener.onNoConnection(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
+                } else if (e instanceof SocketTimeoutException) {
+                    listener.onTimeout(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                } else {
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
+            }
+
+            @Override
+            public void onNext(Response<TkpdResponse> tkpdResponse) {
+                if (tkpdResponse.isSuccessful()) {
+                    try {
+                        if (tkpdResponse.body().getJsonData().getInt("is_success") == 1) {
+                            listener.onSuccess(tkpdResponse.body().getStatusMessages().get(0));
+                        } else {
+                            listener.onError(tkpdResponse.body().getErrorMessages().get(0));
+                        }
+                    } catch (Exception e) {
+                        onError(e);
+                    }
+                } else {
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
+            }
+        };
+
+        compositeSubscription.add(observable.subscribeOn(Schedulers.immediate())
+                .unsubscribeOn(Schedulers.immediate())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber));
     }
+
 
     @Override
     public void getCancelPaymentForm(final Context context, final Map<String, String> params,
