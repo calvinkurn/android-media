@@ -11,7 +11,5 @@ public interface DeepLinkPresenter {
 
     void processDeepLinkAction(Uri uri);
 
-    void processReceiveResult(int resultCode, Bundle resultData, FragmentManager fragmentManager);
-
     void processAFlistener();
 }

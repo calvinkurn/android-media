@@ -50,7 +50,8 @@ import java.util.Map;
 import static com.tokopedia.core.recharge.fragment.RechargeCategoryFragment.EXTRA_ALLOW_ERROR;
 
 /**
- * Created by Angga.Prasetiyo on 14/12/2015.
+ * @author  by Angga.Prasetiyo on 14/12/2015.
+ * modified by Alvarisi
  */
 public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String TAG = DeepLinkPresenterImpl.class.getSimpleName();
@@ -66,6 +67,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final int RECHARGE = 9;
     private static final String AF_ONELINK_HOST = "tokopedia.onelink.me";
     private static final String DL_TOKOPEDIA_HOST = "apps.tokopedia.com";
+    private static final String DF_TOKOPEDIA_HOST = "tokopedia.com";
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
     private final Activity context;
     private final DeepLinkView viewListener;
@@ -189,7 +191,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                             URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
-                    continue;
                 }
             }
         }
@@ -229,7 +230,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 }
             }
         }
-
         return false;
     }
 
@@ -239,7 +239,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openShopInfo(List<String> linkSegment, Uri uriData) {
-        Fragment fragment = FragmentShopPreview.createInstances(linkSegment.get(0), uriData.toString());
+        Fragment fragment = FragmentShopPreview.createInstanceForDeeplink(linkSegment.get(0), uriData.toString());
         viewListener.inflateFragment(fragment, "SHOP_INFO");
     }
 
@@ -253,8 +253,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openRecharge(List<String> linkSegment, Uri uriData) {
-        Log.d(TAG, "openRecharge() called with: "
-                + "linkSegment = [" + linkSegment + "], uriData = [" + uriData + "]");
         Bundle bundle = new Bundle();
         if (isValidCampaignUrl(uriData)) {
             Map<String, String> maps = splitQuery(uriData);
@@ -281,19 +279,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         viewListener.inflateFragment(DiscoveryRouter.getCatalogDetailListFragment(context, linkSegment.get(1)), "CATALOG_PRODUCT");
     }
 
-    /**
-     * TODO currenly this operation not supported yet
-     *
-     * @param linkSegment
-     * @param uriData
-     */
     private void openHotProduct(List<String> linkSegment, Uri uriData) {
         Bundle bundle = new Bundle();
         if (isHotBrowse(linkSegment, uriData)) {
-            //{START} because after login viewpager unable to reload the fragment so need to use v4 fragment
-//            fragment = new FragmentHotListV2();
-//            viewListener.inflateFragment(fragment, FragmentHotListV2.FRAGMENT_TAG);
-            //{END} because after login viewpager unable to reload the fragment so need to use v4 fragment
             return;
         } else if (isHotAlias(uriData)) {
             bundle.putString(DiscoveryActivityPresenter.ALIAS, uriData.getQueryParameter("alk"));
@@ -388,8 +376,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         List<String> linkSegment = uriData.getPathSegments();
         if (uriData.toString().contains("accounts.tokopedia.com"))
             return ACCOUNTS;
-        else if (uriData.toString().contains("pulsa.tokopedia.com"))
-            return RECHARGE;
 
         try {
             if (isExcludedUrl(uriData))
@@ -464,21 +450,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         return linkSegment.size() == 0;
     }
 
-    private Integer getStType(String st) {
-        try {
-            switch (st) {
-                case "shop":
-                    return 2;
-                case "product":
-                    return 1;
-                default:
-                    return 1;
-            }
-        } catch (NullPointerException e) {
-            return 1;
-        }
-    }
-
     @Override
     public void processAFlistener() {
         AppsFlyerLib.getInstance().registerConversionListener(context, new AppsFlyerConversionListener() {
@@ -507,54 +478,5 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
             }
         });
-    }
-
-    public void processReceiveResult(int resultCode, Bundle resultData, FragmentManager fragmentManager) {
-        int type = resultData.getInt(DownloadService.TYPE, DownloadService.INVALID_TYPE);
-        Fragment fragment;
-        switch (type) {
-            case DownloadService.HOTLIST:
-                fragment = fragmentManager.findFragmentByTag(FragmentHotListV2.FRAGMENT_TAG);
-                break;
-            default:
-                throw new UnsupportedOperationException("please pass type when want to process it !!!");
-
-        }
-        if (fragment != null && fragment instanceof BaseView) {
-            switch (resultCode) {
-                case DownloadService.STATUS_RUNNING:
-
-                    break;
-                case DownloadService.STATUS_FINISHED:
-                    if (resultData.getBoolean(DownloadService.RETRY_FLAG, false)) {
-                        boolean retry = resultData.getBoolean(DownloadService.RETRY_FLAG, false);
-                        ((BaseView) fragment).ariseRetry(type, retry);
-                    } else {
-                        ((BaseView) fragment).setData(type, resultData);
-                    }
-                    break;
-                case DownloadService.STATUS_ERROR:
-                    switch (resultData.getInt(DownloadService.NETWORK_ERROR_FLAG, DownloadService.INVALID_NETWORK_ERROR_FLAG)) {
-                        case NetworkConfig.BAD_REQUEST_NETWORK_ERROR:
-                            ((BaseView) fragment).onNetworkError(type, " BAD_REQUEST_NETWORK_ERROR !!!");
-                            break;
-                        case NetworkConfig.INTERNAL_SERVER_ERROR:
-                            ((BaseView) fragment).onNetworkError(type, " INTERNAL_SERVER_ERROR !!!");
-                            break;
-                        case NetworkConfig.FORBIDDEN_NETWORK_ERROR:
-                            ((BaseView) fragment).onNetworkError(type, " FORBIDDEN_NETWORK_ERROR !!!");
-                            break;
-                        case DownloadService.INVALID_NETWORK_ERROR_FLAG:
-                        default:
-                            String messageError = resultData.getString(DownloadService.MESSAGE_ERROR_FLAG, DownloadService.INVALID_MESSAGE_ERROR);
-                            if (!messageError.equals(DownloadService.INVALID_MESSAGE_ERROR)) {
-                                ((BaseView) fragment).onMessageError(type, messageError);
-                            }
-                    }
-                    break;
-                default:
-                    throw new UnsupportedOperationException("invalid result code !!!");
-            }
-        }
     }
 }

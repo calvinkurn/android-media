@@ -67,8 +67,10 @@ public class GetShopInfoRetrofit {
     //================================ Get shop info====================================================================
 
     public void getShopInfo() {
-        Observable<Response<TkpdResponse>> observable = shopService.getApi().getShopInfo(AuthUtil.generateParams(context, paramShopInfo()));
-        onGetShopInfoSubs = observable.subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(onGetShopInfoSubscriber());
+        Observable<Response<TkpdResponse>> observable = shopService.getApi()
+                .getShopInfo(AuthUtil.generateParams(context, paramShopInfo()));
+        onGetShopInfoSubs = observable.subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers
+                .mainThread()).subscribe(onGetShopInfoSubscriber());
     }
 
     public void cancelGetShopInfo() {
