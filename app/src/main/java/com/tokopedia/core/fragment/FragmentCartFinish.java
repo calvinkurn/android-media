@@ -25,11 +25,13 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.OneOnClick;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
+import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.core.payment.model.responsecartstep1.Cart;
 import com.tokopedia.core.payment.model.responsecartstep1.CartProduct;
 import com.tokopedia.core.payment.model.responsecartstep2.CartStep2Data;
@@ -49,7 +51,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class FragmentCartFinish extends Fragment {
+public class FragmentCartFinish extends TkpdFragment {
 
     private View view;
     private Activity context;
@@ -122,6 +124,11 @@ public class FragmentCartFinish extends Fragment {
 
         super.onAttach(activity);
 
+    }
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_CART_FINISH;
     }
 
     @Override
@@ -993,6 +1000,6 @@ public class FragmentCartFinish extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ScreenTracking.screen(this);
+        ScreenTracking.screen(getScreenName());
     }
 }
