@@ -75,6 +75,8 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
     TextView btnComplainOrder;
     @Bind(R2.id.upload_proof)
     TextView btnUploadProof;
+    @Bind(R2.id.btn_request_cancel_order)
+    TextView btnRequestCancelOrder;
     @Bind(R2.id.sender_name)
     TextView tvSenderName;
     @Bind(R2.id.sender_phone)
@@ -216,6 +218,10 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
                 orderData.getOrderButton().getButtonResCenterGoTo().equals("1")
                 ? View.VISIBLE : View.GONE);
 
+        btnRequestCancelOrder.setVisibility(orderData.getOrderButton().getButtonCancelRequest() != null &&
+                orderData.getOrderButton().getButtonCancelRequest().equals("1")
+                ? View.VISIBLE : View.GONE);
+
         btnUploadProof.setVisibility(View.GONE);
 
         btnAskSeller.setVisibility(orderData.getOrderButton().getButtonAskSeller() != null &&
@@ -297,6 +303,12 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
     @OnClick(R2.id.track_btn)
     void actionTracking() {
         presenter.processTrackOrder(this, orderData);
+        UnifyTracking.eventTrackOrder();
+    }
+
+    @OnClick(R2.id.btn_request_cancel_order)
+    void actionRequestCancelOrder() {
+        presenter.processRequestCancelOrder(this, orderData);
         UnifyTracking.eventTrackOrder();
     }
 
