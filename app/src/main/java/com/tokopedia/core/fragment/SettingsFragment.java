@@ -18,7 +18,9 @@ import android.text.TextUtils;
 
 import com.tkpd.library.ui.utilities.CustomCheckBoxPreference;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.app.TkpdBasePreferenceFragment;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -31,7 +33,7 @@ import com.tokopedia.core.analytics.ScreenTracking;
  * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
  * API Guide</a> for more information on developing a Settings UI.
  */
-public class SettingsFragment extends PreferenceFragment {
+public class SettingsFragment extends TkpdBasePreferenceFragment {
     /**
      * Determines whether to always show the simplified settings UI, where
      * settings are presented in a single list. When false, settings are shown
@@ -44,6 +46,11 @@ public class SettingsFragment extends PreferenceFragment {
 
     public static SettingsFragment newInstance() {
         return new SettingsFragment();
+    }
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_SETTING_MANAGE_APP;
     }
 
     @Override
@@ -196,7 +203,7 @@ public class SettingsFragment extends PreferenceFragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded() && getActivity() !=null) {
-            ScreenTracking.screen(this);
+            ScreenTracking.screen(getScreenName());
         }
         super.setUserVisibleHint(isVisibleToUser);
     }
