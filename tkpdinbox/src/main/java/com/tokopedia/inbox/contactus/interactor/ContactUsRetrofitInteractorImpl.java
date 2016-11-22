@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.inbox.contactus.UploadImageContactUsParam;
 import com.tokopedia.inbox.contactus.model.ContactUsPass;
 import com.tokopedia.inbox.contactus.model.CreateTicketResult;
@@ -28,6 +29,7 @@ import com.tokopedia.core.network.v4.NetworkConfig;
 import org.json.JSONException;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -401,8 +403,13 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
                                     .compileAllParam()
                                     .finish();
 
-                            File file = new File(imageUpload.getFileLoc());
-                            RequestBody userId = RequestBody.create(MediaType.parse("text/plain"),
+                        File file;
+                        try {
+                            file = ImageUploadHandler.writeImageToTkpdPath(ImageUploadHandler.compressImage(imageUpload.getFileLoc()));
+                        } catch (IOException e) {
+                            throw new RuntimeException(context.getString(R.string.error_upload_image));
+                        }
+                        RequestBody userId = RequestBody.create(MediaType.parse("text/plain"),
                                     networkCalculator.getContent().get(NetworkCalculator.USER_ID));
                             RequestBody deviceId = RequestBody.create(MediaType.parse("text/plain"),
                                     networkCalculator.getContent().get(NetworkCalculator.DEVICE_ID));

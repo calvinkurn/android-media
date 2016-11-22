@@ -105,6 +105,7 @@
         <item>@string/shipping_sicepat</item>
         <item>@string/shipping_ninja</item>
         <item>@string/shipping_grab</item>
+        <item>@string/shipping_jnt</item>
     </string-array>
 
     <string-array name="payment_method">
