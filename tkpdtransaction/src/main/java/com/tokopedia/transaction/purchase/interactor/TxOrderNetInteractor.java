@@ -3,6 +3,7 @@ package com.tokopedia.transaction.purchase.interactor;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.purchase.model.ConfirmationData;
 import com.tokopedia.transaction.purchase.model.response.cancelform.CancelFormData;
 import com.tokopedia.transaction.purchase.model.response.formconfirmpayment.FormConfPaymentData;
@@ -72,6 +73,9 @@ public interface TxOrderNetInteractor {
 
     void getEditPaymentForm(@NonNull Context context, @NonNull Map<String, String> params,
                             EditPaymentFormListener listener);
+
+    void getEditPaymentForm(@NonNull TKPDMapParam<String, String> params,
+                            RequestCancelOrderListener listener);
 
     void unSubscribeObservable();
 
@@ -192,6 +196,16 @@ public interface TxOrderNetInteractor {
 
     interface EditPaymentFormListener {
         void onSuccess(FormEditPaymentData data);
+
+        void onError(String message);
+
+        void onTimeout(String message);
+
+        void onNoConnection(String message);
+    }
+
+    interface RequestCancelOrderListener {
+        void onSuccess(String message);
 
         void onError(String message);
 

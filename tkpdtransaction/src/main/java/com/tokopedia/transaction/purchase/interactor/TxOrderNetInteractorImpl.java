@@ -8,6 +8,7 @@ import com.tokopedia.core.network.apiservices.transaction.TXOrderService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.purchase.model.ConfirmationData;
 import com.tokopedia.transaction.purchase.model.response.cancelform.CancelFormData;
 import com.tokopedia.transaction.purchase.model.response.formconfirmpayment.FormConfPaymentData;
@@ -271,6 +272,12 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber));
+    }
+
+    @Override
+    public void getEditPaymentForm(@NonNull TKPDMapParam<String, String> params,
+                                   RequestCancelOrderListener listener) {
+
     }
 
     @Override

@@ -192,6 +192,11 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
         netInteractor.unSubscribeObservable();
     }
 
+    @Override
+    public void processRequestCancelOrder(Activity activity, OrderData orderData) {
+
+    }
+
     private void processReview(final Context context, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         if (message == null || message.isEmpty())
