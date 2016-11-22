@@ -297,12 +297,8 @@
             android:label="@string/title_activity_payment_confirmation_success"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.inboxticket.activity.InboxTicketActivity"
-            android:label="@string/title_activity_inbox_ticket"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.inboxticket.activity.InboxTicketDetailActivity"
-            android:label="@string/title_activity_inbox_ticket_detail"
+            android:name="com.tokopedia.core.com.tokopedia.seller.OrderHistoryView"
+            android:label="@string/title_activity_order_history_view"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.core.PreviewProductImage"

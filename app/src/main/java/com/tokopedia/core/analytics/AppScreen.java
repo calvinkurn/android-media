@@ -50,8 +50,6 @@ import com.tokopedia.core.inboxmessage.activity.InboxMessageDetailActivity;
 import com.tokopedia.core.inboxmessage.activity.SendMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationDetailActivity;
-import com.tokopedia.core.inboxticket.activity.InboxTicketActivity;
-import com.tokopedia.core.inboxticket.activity.InboxTicketDetailActivity;
 import com.tokopedia.core.invoice.activity.InvoiceRendererActivity;
 import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
@@ -151,10 +149,6 @@ public final class AppScreen {
             gtmName = AppScreen.SCREEN_INBOX_TALK;
         } else if (actClass instanceof InboxReputationActivity) {
             gtmName = AppScreen.SCREEN_INBOX_REPUTATION;
-        } else if (actClass instanceof InboxTicketActivity) {
-            gtmName = AppScreen.SCREEN_INBOX_TICKET;
-//        } else if (actClass instanceof ContactUsActivity) {
-//            gtmName = AppScreen.SCREEN_CONTACT_US;
         } else if (actClass instanceof ResCenterActivity) {
             gtmName = AppScreen.SCREEN_INBOX_RESOLUTION_CENTER_DETAIL;
        /* } else if (actClass instanceof OrderHistoryView) {
@@ -265,8 +259,6 @@ public final class AppScreen {
 //            gtmName = AppScreen.SCREEN_ORDER_HISTORY_DETAIL;
         } else if (actClass instanceof InboxMessageDetailActivity) {
             gtmName = AppScreen.SCREEN_INBOX_MESSAGE_DETAIL_VIEW;
-        } else if (actClass instanceof InboxTicketDetailActivity) {
-            gtmName = AppScreen.SCREEN_INBOX_TICKET_DETAIL;
         } else if (actClass instanceof ShopFavoritedActivity) {
             gtmName = AppScreen.SCREEN_SHOP_FAVORITER;
         } else if (actClass instanceof EditResCenterActivity) {
