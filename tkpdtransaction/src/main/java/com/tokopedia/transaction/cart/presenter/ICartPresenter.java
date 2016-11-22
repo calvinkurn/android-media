@@ -24,4 +24,6 @@ public interface ICartPresenter {
 
     void processSubmitEditCart(Activity activity, TransactionList cartData,
                                List<ProductEditData> cartProductEditDataList);
+
+    void processUpdateInsurance(Activity activity, TransactionList cartData, boolean useInsurance);
 }

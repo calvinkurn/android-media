@@ -6,10 +6,13 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -24,6 +27,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.transaction.cart.model.CartInsurance;
 import com.tokopedia.transaction.cart.model.CartItemEditable;
+import com.tokopedia.transaction.cart.model.CartPartialDeliver;
 import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import com.tokopedia.transaction.cart.model.cartdata.TransactionList;
@@ -45,6 +49,25 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private List<Object> dataList = new ArrayList<>();
 
+    public List<CartItemEditable> getDataList() {
+        List<CartItemEditable> cartItemEditables = new ArrayList<>();
+        for (Object object : dataList) {
+            if (object instanceof CartItemEditable) {
+                cartItemEditables.add(((CartItemEditable) object).finalizeAllData());
+            }
+        }
+        return cartItemEditables;
+    }
+
+    public void renderErrorCart(CartItemEditable cartItemEditable) {
+        for (int i = 0; i < dataList.size(); i++) {
+            if (dataList.get(i) instanceof CartItemEditable
+                    && ((CartItemEditable) dataList.get(i)).getTransactionList().getCartString()
+                    .equals(cartItemEditable.getTransactionList().getCartString())) {
+                this.notifyItemChanged(i);
+            }
+        }
+    }
 
     public interface CartAction {
         void onCancelCart(TransactionList data);
@@ -54,6 +77,8 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void onChangeShipment(TransactionList data);
 
         void onSubmitEditCart(TransactionList cartData, List<ProductEditData> cartProductEditDataList);
+
+        void onUpdateInsuranceCart(TransactionList cartData, boolean useInsurance);
     }
 
     private void enableEditMode(TransactionList cartData) {
@@ -86,6 +111,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void fillDataList(List<TransactionList> dataList) {
+        //  dataList.clear();
         for (TransactionList data : dataList) {
             this.dataList.add(new CartItemEditable(data));
         }
@@ -116,6 +142,17 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         final TransactionList cartData = data.getTransactionList();
 
+        if ((cartData.getCartErrorMessage2() != null
+                && !cartData.getCartErrorMessage2().equals("0"))
+                || (cartData.getCartErrorMessage1() != null
+                && !cartData.getCartErrorMessage1().equals("0"))) {
+            holder.holderError.setVisibility(View.VISIBLE);
+            holder.tvError1.setText(cartData.getCartErrorMessage1() + "");
+            holder.tvError2.setText(cartData.getCartErrorMessage2() + "");
+        } else {
+            holder.holderError.setVisibility(View.GONE);
+        }
+
         final CartProductItemAdapter adapterProduct = new CartProductItemAdapter(hostFragment);
         adapterProduct.setCartProductAction(new CartProductItemAdapter.CartProductAction() {
             @Override
@@ -141,15 +178,10 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 cartData.getCartShipments().getShipmentPackageName()));
         holder.holderActionEditor.setVisibility(data.isEditMode() ? View.VISIBLE : View.GONE);
 
-        ArrayAdapter<CartInsurance> cartInsuranceAdapter
-                = new ArrayAdapter<>(
-                hostFragment.getActivity(), android.R.layout.simple_spinner_item,
-                CartInsurance.createListForAdapter()
-        );
-        cartInsuranceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        holder.spUseInsurance.setAdapter(cartInsuranceAdapter);
-
+        renderInsuranceOption(holder, cartData);
         renderEditableMode(holder, data, adapterProduct);
+        renderPartialDeliverOption(holder, cartData);
+        renderDropShipperOption(holder, data);
 
         holder.tvShippingAddress.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,14 +198,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 );
             }
         });
-        holder.cbDropshiper.setOnCheckedChangeListener(
-                new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        holder.holderDropshiperForm.setVisibility(
-                                isChecked ? View.VISIBLE : View.GONE);
-                    }
-                });
+
         holder.btnOverflow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -215,7 +240,263 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             }
         });
+        if (data.getErrorType() != CartItemEditable.ERROR_NON) {
+            holder.holderContainer.requestFocus();
+        }
+    }
 
+    private void renderDropShipperOption(final ViewHolder holder, final CartItemEditable data) {
+//        holder.etDropshiperPhone.addTextChangedListener(null);
+//        holder.etDropshiperName.addTextChangedListener(null);
+
+        holder.etDropshiperName.setText(data.getDropShipperName());
+        holder.etDropshiperPhone.setText(data.getDropShipperPhone());
+        switch (data.getErrorType()) {
+            case CartItemEditable.ERROR_DROPSHIPPER_NAME:
+                holder.tilEtDropshiperName.setErrorEnabled(true);
+                holder.tilEtDropshiperName.setError("Harus diisi");
+                break;
+            case CartItemEditable.ERROR_DROPSHIPPER_PHONE:
+                holder.tilEtDropshiperPhone.setErrorEnabled(true);
+                holder.tilEtDropshiperPhone.setError("Harus diisi");
+                break;
+        }
+        final TransactionList cartData = data.getTransactionList();
+        holder.cbDropshiper.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    holder.holderDropshiperForm.setVisibility(View.VISIBLE);
+                    insertDropShipperCartData(cartData);
+                    holder.etDropshiperName.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                            if (!s.toString().equalsIgnoreCase(data.getDropShipperName()))
+                                updateDropShipperCartName(cartData, s.toString());
+                            holder.tilEtDropshiperName.setError(null);
+                            holder.tilEtDropshiperName.setErrorEnabled(false);
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable s) {
+
+                        }
+                    });
+                    holder.etDropshiperPhone.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                            if (!s.toString().equalsIgnoreCase(data.getDropShipperPhone()))
+                                updateDropShipperCartPhone(cartData, s.toString());
+                            holder.tilEtDropshiperPhone.setError(null);
+                            holder.tilEtDropshiperPhone.setErrorEnabled(false);
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable s) {
+
+                        }
+                    });
+                } else {
+                    holder.holderDropshiperForm.setVisibility(View.GONE);
+                    holder.etDropshiperPhone.addTextChangedListener(null);
+                    holder.etDropshiperName.addTextChangedListener(null);
+                    deleteDropShipperCartData(cartData);
+                }
+            }
+        });
+        holder.cbDropshiper.setChecked(data.isDropShipper());
+    }
+
+    private void renderPartialDeliverOption(ViewHolder holder, final TransactionList cartData) {
+        ArrayAdapter<CartPartialDeliver> cartPartialDeliverAdapter
+                = new ArrayAdapter<>(
+                hostFragment.getActivity(), android.R.layout.simple_spinner_item,
+                CartPartialDeliver.createListForAdapter()
+        );
+        cartPartialDeliverAdapter.setDropDownViewResource(
+                android.R.layout.simple_spinner_dropdown_item
+        );
+        holder.spShipmentOptionChoosen.setAdapter(cartPartialDeliverAdapter);
+        holder.spShipmentOptionChoosen.setOnItemSelectedListener(
+                new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position,
+                                               long id) {
+                        boolean isPartial = ((CartPartialDeliver) parent.getAdapter()
+                                .getItem(position)).getCode().equals("1");
+                        if (isPartial) insertPartialDeliverCartData(cartData);
+                        else deletePartialDeliverCartData(cartData);
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
+    }
+
+    private void updateDropShipperCartName(TransactionList cartData, String dropShipperName) {
+        for (int i = 0; i < dataList.size(); i++) {
+            if (dataList.get(i) instanceof CartItemEditable
+                    && ((CartItemEditable) dataList.get(i)).getTransactionList().getCartString()
+                    .equals(cartData.getCartString())) {
+                ((CartItemEditable) dataList.get(i)).setDropShipperName(dropShipperName);
+                //  this.notifyItemChanged(i);
+                return;
+            }
+        }
+    }
+
+    private void updateDropShipperCartPhone(TransactionList cartData, String dropShipperPhone) {
+        for (int i = 0; i < dataList.size(); i++) {
+            if (dataList.get(i) instanceof CartItemEditable
+                    && ((CartItemEditable) dataList.get(i)).getTransactionList().getCartString()
+                    .equals(cartData.getCartString())) {
+                ((CartItemEditable) dataList.get(i)).setDropShipperName(dropShipperPhone);
+                //  this.notifyItemChanged(i);
+                return;
+            }
+        }
+    }
+
+    private void deletePartialDeliverCartData(TransactionList cartData) {
+        for (int i = 0; i < dataList.size(); i++) {
+            if (dataList.get(i) instanceof CartItemEditable
+                    && ((CartItemEditable) dataList.get(i)).getTransactionList().getCartString()
+                    .equals(cartData.getCartString())) {
+                ((CartItemEditable) dataList.get(i)).setPartialDeliver(false);
+                ((CartItemEditable) dataList.get(i)).setCartString(cartData.getCartString());
+                //  this.notifyItemChanged(i);
+                return;
+            }
+        }
+    }
+
+    private void insertPartialDeliverCartData(TransactionList cartData) {
+        for (int i = 0; i < dataList.size(); i++) {
+            if (dataList.get(i) instanceof CartItemEditable
+                    && ((CartItemEditable) dataList.get(i)).getTransactionList().getCartString()
+                    .equals(cartData.getCartString())) {
+                ((CartItemEditable) dataList.get(i)).setPartialDeliver(true);
+                ((CartItemEditable) dataList.get(i)).setCartString("");
+                // this.notifyItemChanged(i);
+                return;
+            }
+        }
+    }
+
+    private void deleteDropShipperCartData(TransactionList cartData) {
+        for (int i = 0; i < dataList.size(); i++) {
+            if (dataList.get(i) instanceof CartItemEditable
+                    && ((CartItemEditable) dataList.get(i)).getTransactionList().getCartString()
+                    .equals(cartData.getCartString())) {
+                ((CartItemEditable) dataList.get(i)).setDropShipper(false);
+                //  this.notifyItemChanged(i);
+                return;
+            }
+        }
+    }
+
+    private void insertDropShipperCartData(TransactionList cartData) {
+        for (int i = 0; i < dataList.size(); i++) {
+            if (dataList.get(i) instanceof CartItemEditable
+                    && ((CartItemEditable) dataList.get(i)).getTransactionList().getCartString()
+                    .equals(cartData.getCartString())) {
+                ((CartItemEditable) dataList.get(i)).setDropShipper(true);
+                // this.notifyItemChanged(i);
+                return;
+            }
+        }
+    }
+
+    private void renderInsuranceOption(ViewHolder holder, final TransactionList cartData) {
+        final boolean isUseInsurance = cartData.getCartForceInsurance() == 1
+                || cartData.getCartInsuranceProd() == 1
+                || isProductUseInsurance(cartData.getCartProducts());
+        List<CartInsurance> cartInsuranceList;
+        if (isUseInsurance) cartInsuranceList = CartInsurance.createListForAdapterUseInsurance();
+        else cartInsuranceList = CartInsurance.createListForAdapterNotUseInsurance();
+
+        ArrayAdapter<CartInsurance> cartInsuranceAdapter
+                = new ArrayAdapter<>(
+                hostFragment.getActivity(), android.R.layout.simple_spinner_item,
+                cartInsuranceList
+        );
+        int selectionIndexUseInsurance = 0;
+        for (int i = 0, cartInsuranceListSize = cartInsuranceList.size();
+             i < cartInsuranceListSize; i++) {
+            CartInsurance cartInsurance = cartInsuranceList.get(i);
+            if (cartInsurance.getCode().equals("1")) selectionIndexUseInsurance = i;
+        }
+        int selectionIndexNotUseInsurance = 0;
+        for (int i = 0, cartInsuranceListSize = cartInsuranceList.size();
+             i < cartInsuranceListSize; i++) {
+            CartInsurance cartInsurance = cartInsuranceList.get(i);
+            if (cartInsurance.getCode().equals("0")) selectionIndexNotUseInsurance = i;
+        }
+
+        if (isUseInsurance) holder.spUseInsurance.setSelection(selectionIndexUseInsurance);
+        else holder.spUseInsurance.setSelection(selectionIndexNotUseInsurance);
+
+        holder.spUseInsurance.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                boolean isUse = ((CartInsurance) parent.getAdapter()
+                        .getItem(position)).getCode().equals("1");
+                if (isUse != isUseInsurance) {
+                    cartAction.onUpdateInsuranceCart(cartData, isUse);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        if (cartData.getCartForceInsurance() == 1
+                || isProductMustInsurance(cartData.getCartProducts())) {
+            holder.spUseInsurance.setEnabled(false);
+        } else {
+            holder.spUseInsurance.setEnabled(true);
+        }
+
+        if (cartData.getCartCannotInsurance() == 1) {
+            holder.spUseInsurance.setEnabled(false);
+        } else {
+            holder.spUseInsurance.setEnabled(true);
+        }
+
+        cartInsuranceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        holder.spUseInsurance.setAdapter(cartInsuranceAdapter);
+    }
+
+    private boolean isProductMustInsurance(List<CartProduct> cartProducts) {
+        for (CartProduct cartProduct : cartProducts) {
+            if (cartProduct.getProductMustInsurance().equals("1")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isProductUseInsurance(List<CartProduct> cartProducts) {
+        for (CartProduct cartProduct : cartProducts) {
+            if (cartProduct.getProductMustInsurance().equals("1")
+                    || cartProduct.getProductUseInsurance() == 1) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void renderEditableMode(ViewHolder holder, CartItemEditable data,

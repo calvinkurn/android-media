@@ -25,4 +25,7 @@ public interface ICartDataInteractor {
 
     void updateCart(TKPDMapParam<String, String> paramUpdate,
                     TKPDMapParam<String, String> paramCart, Subscriber<CartModel> subscriber);
+
+    void updateInsuranceCart(TKPDMapParam<String, String> paramUpdate,
+                             TKPDMapParam<String, String> paramCart, Subscriber<CartModel> subscriber);
 }

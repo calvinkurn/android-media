@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="@dimen/padding_small"
-    android:paddingRight="@dimen/padding_small"
-    tools:context=".cart.activity.CartActivity">
+    android:paddingRight="@dimen/padding_small">
 
     <include
         layout="@layout/loader"
@@ -15,6 +14,7 @@
         android:visibility="gone" />
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nsv_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
