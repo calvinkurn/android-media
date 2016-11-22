@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">tkpdseller</string>
+
+    <string name="title_topads_dashboard">TopAds</string>
 </resources>
