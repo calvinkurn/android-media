@@ -115,27 +115,11 @@ public class PhotoAdapter  extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
             this.imageModel = imageModel;
             int imageWidth = (int) (getScreenWidth() - 4) / 3;
             mImageView.setLayoutParams(new FrameLayout.LayoutParams(imageWidth, imageWidth));
-            if(imageModel.getPath()==null)
+            if(imageModel.getPath()==null) {
                 mImageView.setImageResource(imageModel.getResId());
-            else if(!isValidURL(imageModel.getPath()))// assumed from file path
-                ImageHandler.loadImageFit2(itemView.getContext()
-                        , mImageView
-                        , Uri.fromFile(new File(imageModel.getPath())).toString()
-//                        ,new RequestListener<String, GlideDrawable>() {
-//                            @Override
-//                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-////                                ViewHolder.this.itemView.setOnClickListener(null);
-//                                return true;
-//                            }
-//
-//                            @Override
-//                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-////                                ViewHolder.this.itemView.setOnClickListener(ViewHolder.this);
-//                                return true;
-//                            }
-//                        }
-                );
-            else {// assumed from url
+            } else if (!isValidURL(imageModel.getPath())) {
+                ImageHandler.loadImageFromFile(itemView.getContext(), mImageView, new File(imageModel.getPath()));
+            } else {
                 ImageHandler.loadImageFit2(itemView.getContext(), mImageView, imageModel.getPath());
             }
 
