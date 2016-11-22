@@ -33,7 +33,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.database.model.RechargeOperatorModelDB;
+import com.tokopedia.core.database.model.RechargeOperatorModelDBAttrs;
 import com.tokopedia.core.home.fragment.FragmentIndexCategory;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.recharge.activity.RechargePaymentWebView;
@@ -398,7 +398,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     }
 
     @Override
-    public void setOperatorView(RechargeOperatorModelDB operator) {
+    public void setOperatorView(RechargeOperatorModelDBAttrs operator) {
         try {
             this.minLengthDefaultOperator = operator.minimumLength;
             this.rechargeEditText.getAutoCompleteTextView().setFilters(new InputFilter[]{new InputFilter.LengthFilter(operator.maximumLength)});

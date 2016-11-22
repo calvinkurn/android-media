@@ -567,7 +567,7 @@ public interface  TkpdBaseURL {
 
 
     interface Recharge {
-        String VERSION = "v1";
+        String VERSION = "v1.1";
         String RECHARGE = "recharge";
 
         String PATH_STATUS = VERSION + "/status";
