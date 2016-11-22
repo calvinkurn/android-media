@@ -28,11 +28,6 @@ public class ScreenTracking extends TrackingUtils {
 
     private static final String TAG = ScreenTracking.class.getSimpleName();
 
-    public static void screen(Fragment fragment){
-        getGTMEngine()
-                .sendScreen(AppScreen.convertFragmentScreen(fragment));
-    }
-
     public static void screen(String screen){
         getGTMEngine()
                 .sendScreen(screen);
