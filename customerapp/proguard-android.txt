@@ -186,3 +186,5 @@ public protected *;
 -keep class org.parceler.Parceler$$Parcels
 
 -keep class com.tokopedia.core.home.model.** { *; }
+
+-keep class com.tokopedia.core.util.GlobalConfig
