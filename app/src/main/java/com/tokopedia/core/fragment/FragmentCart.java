@@ -57,6 +57,7 @@ import com.tokopedia.core.EditAddressCart;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -66,6 +67,7 @@ import com.tokopedia.core.analytics.nishikino.model.Basket;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
+import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.core.cart.interactor.CartRetrofitInteractor;
 import com.tokopedia.core.cart.interactor.CartRetrofitInteractorImpl;
 import com.tokopedia.core.cart.model.CartDestination;
@@ -103,7 +105,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FragmentCart extends Fragment implements CartInterfaces.FragmentCartCommunicator, PaymentResultReceiver.Receiver {
+public class FragmentCart extends TkpdFragment implements CartInterfaces.FragmentCartCommunicator, PaymentResultReceiver.Receiver {
 
     private static final int PAYMENT_SALDO = 0;
     private static final int PAYMENT_TRANSFER = 1;
@@ -246,6 +248,11 @@ public class FragmentCart extends Fragment implements CartInterfaces.FragmentCar
     private PaymentResultReceiver atcReceiver;
     private PaymentNetInteractor interactor;
     private PopupMenu popupMenu;
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_CART_PAGE;
+    }
 
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
@@ -2758,6 +2765,6 @@ public class FragmentCart extends Fragment implements CartInterfaces.FragmentCar
     @Override
     public void onResume() {
         super.onResume();
-        ScreenTracking.screen(this);
+        ScreenTracking.screen(getScreenName());
     }
 }
