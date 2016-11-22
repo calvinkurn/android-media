@@ -2,6 +2,7 @@ package com.tokopedia.core.analytics;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.text.TextUtils;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
@@ -29,6 +30,14 @@ public class ScreenTracking extends TrackingUtils {
     private static final String TAG = ScreenTracking.class.getSimpleName();
 
     public static void screen(String screen){
+        if(TextUtils.isEmpty(screen)){
+            try {
+                throw new Exception("Fragment ScreenName cannot null");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        
         getGTMEngine()
                 .sendScreen(screen);
     }
