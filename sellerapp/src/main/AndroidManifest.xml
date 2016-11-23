@@ -18,6 +18,17 @@
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <intent-filter>
+                <!-- LOCALYTICS TEST MESSAGE KEY -->
+                <data android:scheme="amp463690f70572b471ff52632-9a506f10-588e-11e6-5bf2-0042876ec363" />
+
+                <!-- DEBUG KEY -->
+                <!-- <data android:scheme="ampa4c853a5c07b6acfeb61343-037f3b9e-6591-11e5-bdf6-0013a62af900" /> -->
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
         </activity>
         <activity
             android:name="com.tokopedia.seller.ShippingConfirmationDetail"
@@ -28,6 +39,10 @@
             android:label="@string/title_activity_shipping_confirmation_prod_conf"
             android:screenOrientation="portrait" />
 
+
+        <meta-data
+            android:name="LOCALYTICS_APP_KEY"
+            android:value="463690f70572b471ff52632-9a506f10-588e-11e6-5bf2-0042876ec363" />
         <meta-data
             android:name="GTM_RESOURCE"
             android:resource="@raw/gtm_seller" />
