@@ -78,15 +78,19 @@ public class TkpdAuthInterceptor implements Interceptor {
     Map<String, String> prepareHeader(Map<String, String> authHeaders, Request originRequest) {
         switch (originRequest.method()) {
             case "POST":
-                authHeaders = AuthUtil.generateHeaders(originRequest.url().uri().getPath(),
+                authHeaders = getHeaderMap(originRequest.url().uri().getPath(),
                         generateParamBodyString(originRequest), originRequest.method(), authKey);
                 break;
             case "GET":
-                authHeaders = AuthUtil.generateHeaders(originRequest.url().uri().getPath(),
+                authHeaders = getHeaderMap(originRequest.url().uri().getPath(),
                         generateQueryString(originRequest), originRequest.method(), authKey);
                 break;
         }
         return authHeaders;
+    }
+
+    protected Map<String, String> getHeaderMap(String path, String strParam, String method, String authKey) {
+        return AuthUtil.generateHeaders(path, strParam, method, authKey);
     }
 
     void generateHeader(Map<String, String> authHeaders, Request originRequest, Request.Builder newRequest){

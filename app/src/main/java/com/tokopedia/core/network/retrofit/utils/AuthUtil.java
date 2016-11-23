@@ -5,6 +5,7 @@ import android.support.v4.util.ArrayMap;
 import android.util.Base64;
 import android.util.Log;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -60,20 +61,21 @@ public class AuthUtil {
     }
 
     public static Map<String, String> generateHeaders(String path, String strParam, String method, String authKey) {
-        Map<String, String> finalHeader = getDefaultHeaderMap(path, strParam, method, CONTENT_TYPE, authKey);
+        Map<String, String> finalHeader = getDefaultHeaderMap(path, strParam, method, CONTENT_TYPE, authKey, DATE_FORMAT);
         finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(BuildConfig.VERSION_CODE));
         return finalHeader;
     }
 
     public static Map<String, String> generateHeaders(String path, String method, String authKey) {
-        Map<String, String> finalHeader = getDefaultHeaderMap(path, "", method, CONTENT_TYPE_JSON, authKey);
+        Map<String, String> finalHeader = getDefaultHeaderMap(path, "", method, CONTENT_TYPE_JSON, authKey, DATE_FORMAT);
         finalHeader.put(HEADER_USER_ID, SessionHandler.getLoginID(MainApplication.getAppContext()));
         finalHeader.put(HEADER_DEVICE, "android-" + BuildConfig.VERSION_NAME);
         return finalHeader;
     }
 
-    public static Map<String, String> getDefaultHeaderMap(String path, String strParam, String method, String contentType, String authKey) {
-        String date = generateDate();
+    public static Map<String, String> getDefaultHeaderMap(String path, String strParam, String method,
+                                                          String contentType, String authKey, String dateFormat) {
+        String date = generateDate(dateFormat);
         String contentMD5 = generateContentMd5(strParam);
 
         String authString = method + "\n" + contentMD5 + "\n" + contentType + "\n" + date + "\n" + path;
@@ -270,9 +272,9 @@ public class AuthUtil {
         return md5(s);
     }
 
-    private static String generateDate() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
-        return dateFormat.format(new Date());
+    private static String generateDate(String dateFormat) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.ENGLISH);
+        return simpleDateFormat.format(new Date());
     }
 
     public static String md5(String s) {
