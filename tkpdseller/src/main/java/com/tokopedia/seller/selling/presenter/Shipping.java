@@ -49,4 +49,5 @@ public abstract class Shipping extends BaseImpl<ShippingView> {
 
     public abstract void moveToDetail(int position);
 
+    public abstract void onFinishConnection();
 }

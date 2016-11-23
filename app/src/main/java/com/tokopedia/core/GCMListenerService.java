@@ -73,7 +73,6 @@ public class GCMListenerService extends GcmListenerService {
 
     public interface NotificationListener {
         void onGetNotif();
-
         void onRefreshCart(int status);
     }
 

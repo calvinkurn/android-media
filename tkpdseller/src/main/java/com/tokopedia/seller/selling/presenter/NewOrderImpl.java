@@ -169,7 +169,8 @@ public class NewOrderImpl extends NewOrder {
         view.notifyDataSetChanged(listDatas);
     }
 
-    private void finishConnection() {
+    @Override
+    public void finishConnection() {
         view.finishRefresh();
         view.removeRetry();
         isLoading = false;
