@@ -1774,6 +1774,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         dismissPriceError();
         dismissWeightError();
         ScreenTracking.screen(this);
+        addProduct.setupNameDebounceListener(getActivity());
     }
 
     public void initWeightUnit() {
@@ -2130,7 +2131,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int count, int after) {
                 if (addProductPRoductNameAlert.getError() == null)
-                    fetchCatalog(depId + "", addProductProductName.getText().toString());
+                    addProduct.onNameChange(depId + "", addProductProductName.getText().toString());
             }
 
             @Override

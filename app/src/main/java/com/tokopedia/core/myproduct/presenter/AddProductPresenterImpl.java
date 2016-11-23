@@ -53,8 +53,13 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Response;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
@@ -98,6 +103,7 @@ public class AddProductPresenterImpl implements AddProductPresenter
     private LocalCacheHandler fetchDepChildTimer;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
     private LocalCacheHandler fetchEtalaseTimer;
+    private ProductNameListener productNameListener;
 
 
     public AddProductPresenterImpl(AddProductView addProductView) {
@@ -491,6 +497,46 @@ public class AddProductPresenterImpl implements AddProductPresenter
         addProductView.dismissDialog();
 
 
+    }
+
+    @Override
+    public void setupNameDebounceListener(final Context context) {
+        compositeSubscription.add(Observable.create(new Observable.OnSubscribe<CatalogParams>() {
+            @Override
+            public void call(final Subscriber<? super CatalogParams> subscriber) {
+                productNameListener = new ProductNameListener() {
+                    @Override
+                    public void onNameChange(CatalogParams params) {
+                        subscriber.onNext(params);
+                    }
+                };
+            }
+        })
+        .debounce(500, TimeUnit.MILLISECONDS)
+        .subscribeOn(Schedulers.io())
+        .unsubscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Subscriber<CatalogParams>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(CatalogParams params) {
+                fetchCatalog(context, params.depId, params.productName);
+            }
+        }));
+    }
+
+    @Override
+    public void onNameChange(String depId, String productName) {
+        productNameListener.onNameChange(new CatalogParams(depId, productName));
     }
 
     @Override
@@ -1075,5 +1121,20 @@ public class AddProductPresenterImpl implements AddProductPresenter
         } else {
             return new Pair<> (lists, textDeleteModels);
         }
+    }
+
+    private class CatalogParams{
+        public String productName;
+        public String depId;
+
+        public CatalogParams(String depId, String productName) {
+            this.depId = depId;
+            this.productName = productName;
+        }
+    }
+
+
+    interface ProductNameListener{
+        void onNameChange(CatalogParams name);
     }
 }
