@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName;
 
 import org.parceler.Parcel;
 
+import java.util.List;
+
 /**
  * Created by sebastianuskh on 9/1/16.
  */
@@ -13,7 +15,7 @@ public class Breadcrumb {
     public String name_without_total;
 
     @SerializedName("child")
-    public Breadcrumb[] child;
+    public List<Breadcrumb> child;
 
     @SerializedName("id")
     public String id;

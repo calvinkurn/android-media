@@ -256,7 +256,7 @@ public interface ProductDetailView extends ViewListener {
 
     void showFaveShopRetry();
 
-    void showWishListRetry();
+    void showWishListRetry(String errorMessage);
 
     void showPromoteRetry();
 

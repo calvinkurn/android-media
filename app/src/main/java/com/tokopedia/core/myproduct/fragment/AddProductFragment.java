@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ScaleDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -37,6 +38,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -95,6 +97,7 @@ import com.tokopedia.core.myproduct.model.NoteDetailModel;
 import com.tokopedia.core.myproduct.model.SimpleTextModel;
 import com.tokopedia.core.myproduct.model.TextDeleteModel;
 import com.tokopedia.core.myproduct.model.WholeSaleAdapterModel;
+import com.tokopedia.core.myproduct.model.editProductForm.EditProductForm;
 import com.tokopedia.core.myproduct.presenter.AddProductPresenter;
 import com.tokopedia.core.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.core.myproduct.presenter.AddProductView;
@@ -163,12 +166,11 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
     public void removeImageSelected(int i) {
         ImageModel imageModel = photos.get(i);
-        if(imageModel.getPath()!=null)
-        {
+        if (imageModel.getPath() != null) {
             // if edit then dont delete the image product.
-            if(addProductType == AddProductType.EDIT){
+            if (addProductType == AddProductType.EDIT) {
                 producteditHelper.deleteImage(imageModel, i);
-            }else {
+            } else {
                 DbManagerImpl.getInstance().removePictureWithId(imageModel.getDbId());
             }
 
@@ -177,26 +179,25 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
             imageModel.setDbId(0);
             photos.set(i, imageModel);
 
-//            photoAdapter.notifyItemChanged(i);
             setSelectedImageAsPrimary(0);
-        }else{
+        } else {
             // do nothing
-            Log.e(TAG, messageTAG+"failed removing images :"+(i+1));
+            Log.e(TAG, messageTAG + "failed removing images :" + (i + 1));
         }
     }
     //[END] this is deletion of images
 
     public void setSelectedImageAsPrimary(int i) {
         ImageModel imageModel = photos.get(i);
-        if(getActivity() instanceof ProductSocMedActivity){
-            ((ProductSocMedActivity)getActivity()).changePicture(positionAtSocMed, imageModel);
+        if (getActivity() instanceof ProductSocMedActivity) {
+            ((ProductSocMedActivity) getActivity()).changePicture(positionAtSocMed, imageModel);
         }
         List<ImageModel> newPhotos = new ArrayList<>();
-        if(imageModel.getPath()!=null) newPhotos.add(imageModel);
-        for(int index=0;index<photos.size();index++){
+        if (imageModel.getPath() != null) newPhotos.add(imageModel);
+        for (int index = 0; index < photos.size(); index++) {
             imageModel = photos.get(index);
-            if(i==index) {
-                if(imageModel.getPath()!=null) {
+            if (i == index) {
+                if (imageModel.getPath() != null) {
                     PictureDB pictureDB = DbManagerImpl.getInstance().getGambarById(imageModel.getDbId());
                     Log.i(TAG, "Picture before (new primary): " + pictureDB.toString());
                     if (pictureDB != null) {
@@ -208,7 +209,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                 continue;
             }
 
-            if(imageModel.getPath()!=null) {
+            if (imageModel.getPath() != null) {
                 PictureDB pictureDB = new Select().from(PictureDB.class).where(
                         PictureDB_Table.Id.is(imageModel.getDbId()))
                         .querySingle();
@@ -222,7 +223,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
             }
 
         }
-        for (int j = newPhotos.size(); j < 5; j ++){
+        for (int j = newPhotos.size(); j < 5; j++) {
             imageModel = new ImageModel();
             imageModel.setPath(null);
             imageModel.setResId(R.drawable.addproduct);
@@ -251,17 +252,17 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     private AddProductPresenter addProduct;
     private ProductEditHelper producteditHelper = new ProductEditHelper();
 
-    public void showImageDescDialog(int pos){
+    public void showImageDescDialog(int pos) {
         ImageModel imageModel = photos.get(pos);
-        if(imageModel.getPath()!=null){
+        if (imageModel.getPath() != null) {
             // start dialog for description here
             PictureDB pictureDB = DbManagerImpl.getInstance().getGambarById(imageModel.getDbId());
-            if(checkNotNull(pictureDB)) {// &&gambar.getPicturePrimary()==Gambar.PRIMARY_IMAGE
+            if (checkNotNull(pictureDB)) {// &&gambar.getPicturePrimary()==Gambar.PRIMARY_IMAGE
                 ImageDescriptionDialog fragment = ImageDescriptionDialog.newInstance(imageModel.getDbId());
                 fragment.show(getActivity().getSupportFragmentManager(), ImageDescriptionDialog.FRAGMENT_TAG);
             }
-        }else{
-            Log.e(TAG, messageTAG+"failed adding description for image");
+        } else {
+            Log.e(TAG, messageTAG + "failed adding description for image");
         }
     }
 
@@ -269,14 +270,14 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     /**
      * upload to the ws just for this
      */
-    public void pushProduct(){
+    public void pushProduct() {
         saveProduct(true);
     }
 
     /**
      * upload to ws then create new fragment
      */
-    public void pushAndCreateNewProduct(){
+    public void pushAndCreateNewProduct() {
         isCreateNewActivity = true;
         saveProduct(true);
     }
@@ -295,7 +296,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     MyShopInfoModel.Info myShopInfoModel;
     NoteDetailModel.Detail detail;
 
-    //    @Bind(R2.id.add_product_add_to_new_etalase_layout)
+    @Bind(R2.id.add_product_add_to_new_etalase_layout)
     ExpandableRelativeLayout addProductAddToNewEtalaseLayout;
     @Bind(R2.id.add_product_add_to_new_etalase_alert)
     TextInputLayout addProductAddToNewEtalaseAlert;
@@ -343,7 +344,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     @Bind(R2.id.add_product_tittle_wholesale)
     RelativeLayout addProductTitleWholeSale;
 
-    //    @Bind(R2.id.add_product_wholesale_layout)
+    @Bind(R2.id.add_product_wholesale_layout)
     ExpandableRelativeLayout wholeSaleContainer;
 
     @Bind(R2.id.add_product_wholesale_item)
@@ -359,10 +360,10 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     TextDeleteAdapter etalaseAdapter;
 
     @Bind(R2.id.add_product_parent)
-    RelativeLayout addProductParent;
+    ScrollView addProductParent;
 
 
-    //    @Bind(R2.id.add_product_desc)
+    @Bind(R2.id.add_product_desc)
     LimitedEditText addProductDesc;
     EditText addProductDescNormal;
 
@@ -379,15 +380,13 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     RelativeLayout addProductTitlePreorder;
     @Bind(R2.id.chevron_preorder)
     ImageView addProductChevronPreorder;
-    //    @Bind(R2.id.preorder_content)
+    @Bind(R2.id.preorder_content)
     ExpandableRelativeLayout addProductPreOderContent;
     @Bind(R2.id.edittext_preorder)
     EditText addProductEdittextPreorder;
 
-//    @Bind(R2.id.add_product_catalog_layout)
+    @Bind(R2.id.add_product_catalog_layout)
     LinearLayout addProductCatalogLayout;
-//    @Bind(R2.id.add_product_catalog_frame)
-    TextView addProductCatalogFrame;
     @Bind(R2.id.add_product_prompt_catalog)
     TextView addProductPromptCatalog;
     @Bind(R2.id.add_product_catalog)
@@ -437,45 +436,43 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     private SimpleFacebook mSimpleFacebook;
     public TwitterHandler th;
     private ShareSocmedHandler shareSocmed;
-    TkpdProgressDialog editProgressDialog;
-
 
     @OnTextChanged(R2.id.add_product_add_to_new_etalase)
     public void onTextChangedEtalase(CharSequence s, int start, int before,
-                                     int count){
+                                     int count) {
         Pair<Boolean, String> validate = VerificationUtils.validateNewEtalaseName(getActivity(), s.toString());
-        if(validate.getModel1()){
+        if (validate.getModel1()) {
             addProductAddToNewEtalase.setError(null);
             addProductAddToNewEtalaseAlert.setError(null);
-        }else{
+        } else {
             addProductAddToNewEtalase.setError(validate.getModel2());
             addProductAddToNewEtalaseAlert.setError(validate.getModel2());
         }
     }
 
     @Deprecated
-    public static Fragment newInstance(){
+    public static Fragment newInstance() {
         return new AddProductFragment();
     }
 
     /**
-     *
      * @param type {@link AddProductType#ADD}, {@link AddProductType#EDIT}
      * @return fragment with certain type
      */
-    public static Fragment newInstance(int type){
+    public static Fragment newInstance(int type) {
         AddProductFragment adf = new AddProductFragment();
         Bundle bundle = new Bundle();
 
         // throw exception if you are not registered your type at AddProductType
         boolean isRegistered = false;
-        A : for(int i=0;i<AddProductType.values().length;i++){
-            if(type == AddProductType.values()[i].getType()){
+        A:
+        for (int i = 0; i < AddProductType.values().length; i++) {
+            if (type == AddProductType.values()[i].getType()) {
                 isRegistered = true;
                 break A;
             }
         }
-        if(!isRegistered)
+        if (!isRegistered)
             throw new RuntimeException("please update AddProductType to support your type");
 
         bundle.putInt(ADD_PRODUCT_TYPE, type);
@@ -484,23 +481,23 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     }
 
     /**
-     *
      * @param type {@link AddProductType#ADD}, {@link AddProductType#EDIT}
      * @return fragment with certain type
      */
-    public static Fragment newInstance(int type, String imagePathFromImport, int position){
+    public static Fragment newInstance(int type, String imagePathFromImport, int position) {
         AddProductFragment adf = new AddProductFragment();
         Bundle bundle = new Bundle();
 
         // throw exception if you are not registered your type at AddProductType
         boolean isRegistered = false;
-        A : for(int i=0;i<AddProductType.values().length;i++){
-            if(type == AddProductType.values()[i].getType()){
+        A:
+        for (int i = 0; i < AddProductType.values().length; i++) {
+            if (type == AddProductType.values()[i].getType()) {
                 isRegistered = true;
                 break A;
             }
         }
-        if(!isRegistered)
+        if (!isRegistered)
             throw new RuntimeException("please update AddProductType to support your type");
 
         bundle.putString(ADD_PRODUCT_IMAGE_PATH, imagePathFromImport);
@@ -512,23 +509,25 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
     /**
      * For multiple image
+     *
      * @param type
      * @param multiImagePathFromImport
      * @return
      */
-    public static Fragment newInstance(int type, String[] multiImagePathFromImport){
+    public static Fragment newInstance(int type, String[] multiImagePathFromImport) {
         AddProductFragment adf = new AddProductFragment();
         Bundle bundle = new Bundle();
 
         // throw exception if you are not registered your type at AddProductType
         boolean isRegistered = false;
-        A : for(int i=0;i<AddProductType.values().length;i++){
-            if(type == AddProductType.values()[i].getType()){
+        A:
+        for (int i = 0; i < AddProductType.values().length; i++) {
+            if (type == AddProductType.values()[i].getType()) {
                 isRegistered = true;
                 break A;
             }
         }
-        if(!isRegistered)
+        if (!isRegistered)
             throw new RuntimeException("please update AddProductType to support your type");
 
         bundle.putStringArray(ADD_PRODUCT_MULTIPLE_IMAGE_PATH, multiImagePathFromImport);
@@ -537,19 +536,20 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         return adf;
     }
 
-    public static Fragment newInstance(int type, String productId){
+    public static Fragment newInstance(int type, String productId) {
         AddProductFragment adf = new AddProductFragment();
         Bundle bundle = new Bundle();
 
         // throw exception if you are not registered your type at AddProductType
         boolean isRegistered = false;
-        A : for(int i=0;i<AddProductType.values().length;i++){
-            if(type == AddProductType.values()[i].getType()){
+        A:
+        for (int i = 0; i < AddProductType.values().length; i++) {
+            if (type == AddProductType.values()[i].getType()) {
                 isRegistered = true;
                 break A;
             }
         }
-        if(!isRegistered)
+        if (!isRegistered)
             throw new RuntimeException("please update AddProductType to support your type");
 
         bundle.putString(PRODUCT_ID, productId);
@@ -558,19 +558,20 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         return adf;
     }
 
-    public static Fragment newInstance(int type, long productDB){
+    public static Fragment newInstance(int type, long productDB) {
         AddProductFragment adf = new AddProductFragment();
         Bundle bundle = new Bundle();
 
         // throw exception if you are not registered your type at AddProductType
         boolean isRegistered = false;
-        A : for(int i=0;i<AddProductType.values().length;i++){
-            if(type == AddProductType.values()[i].getType()){
+        A:
+        for (int i = 0; i < AddProductType.values().length; i++) {
+            if (type == AddProductType.values()[i].getType()) {
                 isRegistered = true;
                 break A;
             }
         }
-        if(!isRegistered)
+        if (!isRegistered)
             throw new RuntimeException("please update AddProductType to support your type");
 
         bundle.putLong(PRODUCT_DB, productDB);
@@ -581,23 +582,25 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
     /**
      * created for socmed photos
+     *
      * @param {@link AddProductType#ADD_FROM_SOCIAL_MEDIA}
      * @return fragment with certain type
      */
     @Deprecated
-    public static Fragment newInstance(int type, List<String> socMedDatas, int position){
+    public static Fragment newInstance(int type, List<String> socMedDatas, int position) {
         AddProductFragment adf = new AddProductFragment();
         Bundle bundle = new Bundle();
 
         // throw exception if you are not registered your type at AddProductType
         boolean isRegistered = false;
-        A : for(int i=0;i<AddProductType.values().length;i++){
-            if(type == AddProductType.values()[i].getType()){
+        A:
+        for (int i = 0; i < AddProductType.values().length; i++) {
+            if (type == AddProductType.values()[i].getType()) {
                 isRegistered = true;
                 break A;
             }
         }
-        if(!isRegistered)
+        if (!isRegistered)
             throw new RuntimeException("please update AddProductType to support your type");
 
         bundle.putInt(ADD_PRODUCT_SOC_MED_POSITION, position);
@@ -607,9 +610,9 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         return adf;
     }
 
-    public static Fragment newInstance3(int type, final InstagramMediaModel socMedDatas, int position){
-        ArrayList<InstagramMediaModel> instagramMediaModels = new ArrayList<InstagramMediaModel>() ;
-        for(int i=0;i<position;i++){
+    public static Fragment newInstance3(int type, final InstagramMediaModel socMedDatas, int position) {
+        ArrayList<InstagramMediaModel> instagramMediaModels = new ArrayList<InstagramMediaModel>();
+        for (int i = 0; i < position; i++) {
             InstagramMediaModel inst = new InstagramMediaModel();
             instagramMediaModels.add(inst);
         }
@@ -621,23 +624,25 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
     /**
      * created for socmed photos
+     *
      * @param {@link AddProductType#ADD_FROM_SOCIAL_MEDIA}
      * @return fragment with certain type
      */
     @Deprecated
-    public static Fragment newInstance2(int type, List<InstagramMediaModel> socMedDatas, int position){
+    public static Fragment newInstance2(int type, List<InstagramMediaModel> socMedDatas, int position) {
         AddProductFragment adf = new AddProductFragment();
         Bundle bundle = new Bundle();
 
         // throw exception if you are not registered your type at AddProductType
         boolean isRegistered = false;
-        A : for(int i=0;i<AddProductType.values().length;i++){
-            if(type == AddProductType.values()[i].getType()){
+        A:
+        for (int i = 0; i < AddProductType.values().length; i++) {
+            if (type == AddProductType.values()[i].getType()) {
                 isRegistered = true;
                 break A;
             }
         }
-        if(!isRegistered)
+        if (!isRegistered)
             throw new RuntimeException("please update AddProductType to support your type");
 
         bundle.putInt(ADD_PRODUCT_SOC_MED_POSITION, position);
@@ -650,22 +655,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-//        if (multiSelector != null) {
-//            Bundle bundle = savedInstanceState;
-//            if (bundle != null) {
-//                multiSelector.restoreSelectionStates(bundle.getBundle(ImageGalleryFragment.SELECTABLE_TAG));
-//            }
-//
-//            if (multiSelector.isSelectable()) {
-//                if (mDeleteMode != null) {
-//                    mDeleteMode.setClearOnPrepare(false);
-//                    ((AppCompatActivity) getActivity()).startSupportActionMode(mDeleteMode);
-//                }
-//
-//            }
-//        }
-
-        if(checkNotNull(errorMessageTemp)){
+        if (checkNotNull(errorMessageTemp)) {
             Snackbar.make(parentView, errorMessageTemp, Snackbar.LENGTH_LONG).show();
             errorMessageTemp = null;
         }
@@ -697,20 +687,16 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         outState.putString(SAVED_WEIGHT_DESC, selectedWeightUnitDesc); // 9.b
         outState.putString(SAVED_MIN_ORDER, addProductMinimumOrder.getText().toString());// 10
         outState.putParcelable(SAVED_WHOLE_SALE, Parcels.wrap(new ArrayList<WholeSaleAdapterModel>(wholesaleAdapter.getDatas())));// 11
-        if(checkNotNull(displayEtalaseModels))
+        if (checkNotNull(displayEtalaseModels))
             outState.putParcelable(SAVED_ETALASES, Parcels.wrap(new ArrayList<TextDeleteModel>(displayEtalaseModels)));// 12
         outState.putString(SAVED_NEW_ETALASE, addProductAddToNewEtalase.getText().toString());// 13
         outState.putInt(SAVED_RETURN_POLICY, addProductReturnableSpinner.getSelectedItemPosition());// 14
         outState.putInt(SAVED_CONDITION, addProductCondition.getSelectedItemPosition());// 15
         outState.putInt(SAVED_INSURANCE, addProductInsurance.getSelectedItemPosition());// 16
-        if(addProductDesc != null) {
-            outState.putString(SAVED_DESCRIPTION, addProductDesc.getText().toString());// 17
-        } else {
-            outState.putString(SAVED_DESCRIPTION, addProductDescNormal.getText().toString());
-        }
+        outState.putString(SAVED_DESCRIPTION, addProductDesc.getText().toString());// 17
         outState.putParcelable(SAVED_CONDITIONS, Parcels.wrap(conditions));
         outState.putParcelable(SAVED_INSURANCES, Parcels.wrap(insurances));
-        if(checkNotNull(tkpdProgressDialog))
+        if (checkNotNull(tkpdProgressDialog))
             outState.putBoolean(SAVED_LOADING, tkpdProgressDialog.isProgress());// 18
 
         if (checkNotNull(textToDisplay)) {
@@ -720,14 +706,14 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
             }
             outState.putParcelable(SAVED_RETURN_POLICY_LIST, Parcels.wrap(new ArrayList<>(simpleTextModels)));
         }
-        if(checkNotNull(etalaseModels)){
+        if (checkNotNull(etalaseModels)) {
             outState.putParcelable(SAVED_ETALASE_MODELS, Parcels.wrap(new ArrayList<>(etalaseModels)));// 19
         }
-        if(checkNotNull(ProductDb))
+        if (checkNotNull(ProductDb))
             outState.putLong(SAVED_PRODUCT_DB_ID, ProductDb.getId());// 20
         outState.putParcelable(SAVED_NEXT_CATEGORY_CHOOSER, Parcels.wrap(categoryAdapter.getParcelFormat()));// 21
         outState.putParcelable(SAVED_NEXT_ETALASE_CHOOSER, Parcels.wrap(etalaseAdapter.getParcelFormat()));// 22
-        if(checkNotNull(catalogs))
+        if (checkNotNull(catalogs))
             outState.putParcelable(SAVED_CATALOGS, Parcels.wrap(catalogs));// 23
         outState.putBoolean(CREATE_NEW_AFTER_FINISH, isCreateNewActivity);// 24
         outState.putInt(PRODUCT_TYPE, addProductType.getType());
@@ -743,7 +729,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
         //[START] currently disable rotateion
-        if(checkNotNull(savedInstanceState)){
+        if (checkNotNull(savedInstanceState)) {
             alreadyLoad = savedInstanceState.getBoolean(SAVED_ALREADY_LOAD, false);// 1
             photos = Parcels.unwrap(savedInstanceState.getParcelable(SAVED_IMAGE_MODELS));// 2
             prodName = savedInstanceState.getString(SAVED_PRODUCT_NAME, "");// 3
@@ -768,9 +754,9 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
             isLoading = savedInstanceState.getBoolean(SAVED_LOADING, false);// 18
             List<SimpleTextModel> simpleTextModels = Parcels.unwrap(savedInstanceState.getParcelable(SAVED_RETURN_POLICY_LIST));// 19
             textToDisplay = new ArrayList<>();
-            if(checkNotNull(simpleTextModels))// 20
+            if (checkNotNull(simpleTextModels))// 20
             {
-                for(SimpleTextModel simpleTextModel : simpleTextModels){
+                for (SimpleTextModel simpleTextModel : simpleTextModels) {
                     textToDisplay.add(simpleTextModel.getText());
                 }
             }
@@ -779,23 +765,13 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
             insurances = Parcels.unwrap(savedInstanceState.getParcelable(SAVED_INSURANCES));// 22
             etalaseModels = Parcels.unwrap(savedInstanceState.getParcelable(SAVED_ETALASE_MODELS));// 23
             long dbId = savedInstanceState.getLong(SAVED_PRODUCT_DB_ID, DEFAULT_INVALID_VALUE);// 24
-            if(dbId != DEFAULT_INVALID_VALUE){
+            if (dbId != DEFAULT_INVALID_VALUE) {
                 ProductDb = DbManagerImpl.getInstance().getProductDb(dbId);
             }
             etalaseOwned = Parcels.unwrap(savedInstanceState.getParcelable(SAVED_NEXT_ETALASE_CHOOSER));
             categoryOwned = Parcels.unwrap(savedInstanceState.getParcelable(SAVED_NEXT_CATEGORY_CHOOSER));
             catalogs = Parcels.unwrap(savedInstanceState.getParcelable(SAVED_CATALOGS));
             isCreateNewActivity = savedInstanceState.getBoolean(CREATE_NEW_AFTER_FINISH, false);
-            int productType = savedInstanceState.getInt(PRODUCT_TYPE, -1);
-//            if(productType!= -1){
-//                if(productType == AddProductType.ADD.getType()){
-//                    addProductType = AddProductType.ADD;
-//                }else if(productType == AddProductType.EDIT.getType()){
-//                    addProductType = AddProductType.EDIT;
-//                }else if(productType == AddProductType.ADD_FROM_SOCIAL_MEDIA.getType()){
-//                    addProductType = AddProductType.ADD_FROM_SOCIAL_MEDIA;
-//                }
-//            }
         }
         //[END] currently disable rotateion
         th = new TwitterHandler(getActivity());
@@ -803,18 +779,19 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
     /**
      * hide keyboard if not edittext
+     *
      * @param view
      */
     public void setupUI(View view) {
 
         //Set up touch listener for non-text box views to hide keyboard.
-        if(!(view instanceof EditText)) {
+        if (!(view instanceof EditText)) {
 
             view.setOnTouchListener(new View.OnTouchListener() {
 
                 public boolean onTouch(View v, MotionEvent event) {
                     FragmentActivity activity = AddProductFragment.this.getActivity();
-                    if(keyboardHandler!= null && activity != null){
+                    if (keyboardHandler != null && activity != null) {
                         keyboardHandler.hideSoftKeyboard(activity);
                     }
                     return false;
@@ -841,11 +818,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         addProductProductName.clearFocus();
         addProductPrice.clearFocus();
         addProductWeight.clearFocus();
-        if(addProductDesc != null) {
-            addProductDesc.clearFocus();
-        } else {
-            addProductDescNormal.clearFocus();
-        }
+        addProductDesc.clearFocus();
         addProductEdittextPreorder.clearFocus();
     }
 
@@ -857,7 +830,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         addProduct.subscribe();
         Bundle bundle = getArguments();
         int type = -1;
-        if(checkNotNull(bundle) && (type = bundle.getInt(ADD_PRODUCT_TYPE, -1)) != -1) {
+        if (checkNotNull(bundle) && (type = bundle.getInt(ADD_PRODUCT_TYPE, -1)) != -1) {
             if (type == AddProductType.ADD.getType()) {
                 addProductType = AddProductType.ADD;
             } else if (type == AddProductType.ADD_FROM_SOCIAL_MEDIA.getType()) {
@@ -870,62 +843,31 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                 addProductType = AddProductType.ADD_FROM_GALLERY;
             } else if (type == AddProductType.ADD_MULTIPLE_FROM_GALERY.getType()) {
                 addProductType = AddProductType.ADD_MULTIPLE_FROM_GALERY;
-            } else if (type == AddProductType.MODIFY.getType()){
+            } else if (type == AddProductType.MODIFY.getType()) {
                 addProductType = AddProductType.MODIFY;
             }
-        }else{
+        } else {
             throw new RuntimeException("please register your type at AddProductType");
         }
 
         changeTitle(addProductType.getType());
 
-        if(addProductType == AddProductType.ADD_FROM_SOCIAL_MEDIA){
-            parentView = inflater.inflate(R.layout.fragment_add_product_unexpandable, container, false);
-        } else {
-            parentView = inflater.inflate(R.layout.fragment_add_product, container, false);
-        }
+        parentView = inflater.inflate(R.layout.fragment_add_product, container, false);
 
         ButterKnife.bind(this, parentView);
-        addProductAddToNewEtalaseLayout = (ExpandableRelativeLayout) parentView.findViewById(R.id.add_product_add_to_new_etalase_layout);
-        addProductPreOderContent = (ExpandableRelativeLayout) parentView.findViewById(R.id.preorder_content);
-        wholeSaleContainer = (ExpandableRelativeLayout) parentView.findViewById(R.id.add_product_wholesale_layout);
-        addProductDesc = (LimitedEditText) parentView.findViewById(R.id.add_product_desc);
-        addProductCatalogLayout = (LinearLayout) parentView.findViewById(R.id.add_product_catalog_layout);
-        addProductCatalogFrame = (TextView) parentView.findViewById(R.id.add_product_catalog_frame);
 
-        if (addProductAddToNewEtalaseLayout == null){
-            addProductAddToNewEtalase.setHint(R.string.prompt_etalase_hint);
-        }
-        if(addProductDesc == null){
-            addProductDescNormal = (EditText) parentView.findViewById(R.id.add_product_desc_normal);
-            addProductDescNormal.setOnTouchListener(new View.OnTouchListener() {
-                public boolean onTouch(View view, MotionEvent event) {
-                    // TODO Auto-generated method stub
-                    if (view.getId() ==R.id.add_product_desc_normal) {
-                        view.getParent().requestDisallowInterceptTouchEvent(true);
-                        switch (event.getAction()&MotionEvent.ACTION_MASK){
-                            case MotionEvent.ACTION_UP:
-                                view.getParent().requestDisallowInterceptTouchEvent(false);
-                                break;
-                        }
-                    }
-                    return false;
-                }
-            });
-        }
-
-        if(addProductType != null){
-            if(type == AddProductType.ADD.getType()){
+        if (addProductType != null) {
+            if (type == AddProductType.ADD.getType()) {
                 addProductShareContainer = new AddProductShare(addProductShare.inflate());
                 addProductShareContainer.setDelegateOnClick(this);
                 addProductSubmitContainer = new AddProductSubmit(addProductSubmit.inflate());
                 addProductSubmitContainer.setDelegateOnClick(this);
-            }else if(type == AddProductType.ADD_FROM_SOCIAL_MEDIA.getType()){
+            } else if (type == AddProductType.ADD_FROM_SOCIAL_MEDIA.getType()) {
                 addProductSocMedSubmitContainer
                         = new AddProductSocMedSubmit(addProductSocMedSubmit.inflate());
                 addProductSocMedSubmitContainer.setDelegateOnClick(this);
 
-                if(!alreadyLoad){
+                if (!alreadyLoad) {
                     List<InstagramMediaModel> temp2 = Parcels.unwrap(
                             bundle.getParcelable(ADD_PROUCT_SOC_MED_RAW_DATA));
                     int position = bundle.getInt(ADD_PRODUCT_SOC_MED_POSITION, 0);
@@ -944,7 +886,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                 }
                 // get the position for dismiss add product
                 positionAtSocMed = bundle.getInt(ADD_PRODUCT_SOC_MED_POSITION, 0);
-            }else if(type == AddProductType.EDIT.getType()) {
+            } else if (type == AddProductType.EDIT.getType()) {
                 if (!alreadyLoad) {
                     productId = bundle.getString(PRODUCT_ID, "XXX");
                 }
@@ -956,9 +898,9 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                 addProductProductName.setEnabled(false);
 
                 // show dialog for edit product.
-                editProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS, getResources().getString(R.string.edit_product));
-                editProgressDialog.showDialog();
-            }else if(type == AddProductType.COPY.getType()){
+                tkpdProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS, getResources().getString(R.string.edit_product));
+                tkpdProgressDialog.showDialog();
+            } else if (type == AddProductType.COPY.getType()) {
                 if (!alreadyLoad) {
                     productId = bundle.getString(PRODUCT_ID, "XXX");
                 }
@@ -969,21 +911,21 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                 addProductSubmitContainer.setDelegateOnClick(this);
 
                 // show dialog for copy product.
-                editProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS, getResources().getString(R.string.edit_product));
-                editProgressDialog.showDialog();
-            }else if(type == AddProductType.ADD_FROM_GALLERY.getType()){
+                tkpdProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS, getResources().getString(R.string.edit_product));
+                tkpdProgressDialog.showDialog();
+            } else if (type == AddProductType.ADD_FROM_GALLERY.getType()) {
                 addProductShareContainer = new AddProductShare(addProductShare.inflate());
                 addProductShareContainer.setDelegateOnClick(this);
                 addProductSubmitContainer = new AddProductSubmit(addProductSubmit.inflate());
                 addProductSubmitContainer.setDelegateOnClick(this);
 
-                if(!alreadyLoad){
+                if (!alreadyLoad) {
                     String imagePathFromImport = bundle.getString(ADD_PRODUCT_IMAGE_PATH);
                     int position = bundle.getInt(ADD_PRODUCT_IMAGE_LOCATION);
-                    Log.d(TAG, messageTAG+" imagePath ["+imagePathFromImport+"] position ["+position+"]");
+                    Log.d(TAG, messageTAG + " imagePath [" + imagePathFromImport + "] position [" + position + "]");
                     photos = new ArrayList<>();
                     File imagePath = new File(imagePathFromImport);
-                    if(checkFileSize(imagePath)) {
+                    if (checkFileSize(imagePath)) {
                         try {
                             ImageGalleryImpl.Pair<Boolean, String> checkImageResolution = VerificationUtils.checkImageResolution(getActivity(), imagePathFromImport);
                             if (imagePathFromImport != null && checkImageResolution.getModel1()) {
@@ -1001,25 +943,25 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                         CommonUtils.UniversalToast(getActivity(), "Gambar Terlalu Besar");
                     }
                 }
-            }else if(type == AddProductType.ADD_MULTIPLE_FROM_GALERY.getType()){
+            } else if (type == AddProductType.ADD_MULTIPLE_FROM_GALERY.getType()) {
                 addProductShareContainer = new AddProductShare(addProductShare.inflate());
                 addProductShareContainer.setDelegateOnClick(this);
                 addProductSubmitContainer = new AddProductSubmit(addProductSubmit.inflate());
                 addProductSubmitContainer.setDelegateOnClick(this);
 
-                if(!alreadyLoad){
+                if (!alreadyLoad) {
                     String[] multiImagePathFromImport = bundle.getStringArray(ADD_PRODUCT_MULTIPLE_IMAGE_PATH);
-                    Log.d(TAG, messageTAG+" imagePath ["+multiImagePathFromImport+"]");
+                    Log.d(TAG, messageTAG + " imagePath [" + multiImagePathFromImport + "]");
                     photos = new ArrayList<>();
                     boolean primaryCreated = false;
                     for (String imagePathFromImport :
                             multiImagePathFromImport) {
                         File imagePath = new File(imagePathFromImport);
-                        if(checkFileSize(imagePath)) {
+                        if (checkFileSize(imagePath)) {
                             try {
                                 ImageGalleryImpl.Pair<Boolean, String> checkImageResolution = VerificationUtils.checkImageResolution(getActivity(), imagePathFromImport);
                                 if (imagePathFromImport != null && checkImageResolution.getModel1()) {
-                                    if(!primaryCreated){
+                                    if (!primaryCreated) {
                                         photos.add(getImageModelPrimary(imagePathFromImport, imagePath));
                                         primaryCreated = true;
                                     } else {
@@ -1039,7 +981,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                         }
                     }
                 }
-            }else if(type == AddProductType.MODIFY.getType()){
+            } else if (type == AddProductType.MODIFY.getType()) {
                 addProductShareContainer = new AddProductShare(addProductShare.inflate());
                 addProductShareContainer.setDelegateOnClick(this);
                 addProductSubmitContainer = new AddProductSubmit(addProductSubmit.inflate());
@@ -1053,10 +995,8 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
             }
         }
 
-        if(addProductDesc != null) {
-            addProductDesc.setMaxLines(2000);
-            addProductDesc.setMaxCharacters(2000);
-        }
+        addProductDesc.setMaxLines(2000);
+        addProductDesc.setMaxCharacters(2000);
 
         initVar();
         setupUI(addProductParent);
@@ -1064,9 +1004,9 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     }
 
     private static boolean checkFileSize(File imagePath) {
-        int fileSize = Integer.parseInt(String.valueOf(imagePath.length()/1024));
-        Log.d(TAG,"File size" + fileSize);
-        if(fileSize < 10000) {
+        int fileSize = Integer.parseInt(String.valueOf(imagePath.length() / 1024));
+        Log.d(TAG, "File size" + fileSize);
+        if (fileSize < 10000) {
             return true;
         } else {
             return false;
@@ -1075,13 +1015,13 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
     @Override
     public void dismissDialog() {
-        if(checkNotNull(editProgressDialog)&&editProgressDialog.isProgress()){
-            editProgressDialog.dismiss();
+        if (checkNotNull(tkpdProgressDialog) && tkpdProgressDialog.isProgress()) {
+            tkpdProgressDialog.dismiss();
         }
     }
 
-    public void dismissReturnableDialog(){
-        ReturnPolicyDialog returnPolicyDialog = ((ReturnPolicyDialog)getActivity().getSupportFragmentManager().findFragmentByTag(ReturnPolicyDialog.FRAGMENT_TAG));
+    public void dismissReturnableDialog() {
+        ReturnPolicyDialog returnPolicyDialog = ((ReturnPolicyDialog) getActivity().getSupportFragmentManager().findFragmentByTag(ReturnPolicyDialog.FRAGMENT_TAG));
         if (returnPolicyDialog != null) {
             returnPolicyDialog.dismiss();
         }
@@ -1098,11 +1038,12 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
     /**
      * This method specific for socmed only
+     *
      * @param url
      */
-    private void downloadImage(final String url){
+    private void downloadImage(final String url) {
         // if not edit then do nothing
-        if(!addProductType.equals(AddProductType.ADD_FROM_SOCIAL_MEDIA))
+        if (!addProductType.equals(AddProductType.ADD_FROM_SOCIAL_MEDIA))
             return;
 
         Observable.just(true)
@@ -1116,7 +1057,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                         try {
                             File cacheFile = future.get();
                             photo = UploadPhotoTask.writeImageToTkpdPath(cacheFile);
-                            Log.d(TAG, messageTAG+"path -> " + (photo != null ? photo.getAbsolutePath() : "kosong"));
+                            Log.d(TAG, messageTAG + "path -> " + (photo != null ? photo.getAbsolutePath() : "kosong"));
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                             throw new RuntimeException(e.getMessage());
@@ -1138,7 +1079,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
                             @Override
                             public void onError(Throwable e) {
-                                Log.e(TAG, messageTAG+e.getMessage());
+                                Log.e(TAG, messageTAG + e.getMessage());
                             }
 
                             @Override
@@ -1199,38 +1140,29 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                 displayEtalaseModels.add(saveEtalase(model));// level 3
                 etalaseAdapter.notifyDataSetChanged();
 
-                if(model.getText().contains(TAMBAH_ETALASE_BARU)) {
+                if (model.getText().contains(TAMBAH_ETALASE_BARU)) {
                     addProductAddToNewEtalase.setEnabled(true);
-                    if (addProductAddToNewEtalaseLayout != null) {
-                        addProductAddToNewEtalaseLayout.expand();
-                    } else {
-                        addProductAddToNewEtalase.setHint(R.string.prompt_etalase_name);
-                    }
-                }
-                else {
+                    addProductAddToNewEtalaseLayout.expand();
+                } else {
                     addProductAddToNewEtalase.setEnabled(false);
-                    if (addProductAddToNewEtalaseLayout != null) {
-                        addProductAddToNewEtalaseLayout.collapse();
-                    } else {
-                        addProductAddToNewEtalase.setHint(R.string.prompt_etalase_hint);
-                    }
+                    addProductAddToNewEtalaseLayout.collapse();
                 }
                 break;
         }
     }
 
-    private TextDeleteModel saveEtalase(SimpleTextModel model){
+    private TextDeleteModel saveEtalase(SimpleTextModel model) {
         EtalaseDB etalaseDB = new Select().from(EtalaseDB.class).where(
                 EtalaseDB_Table.etalse_name.eq(model.getText())
         ).querySingle();
         TextDeleteModel textDeleteModel = new TextDeleteModel(model.getText());
         textDeleteModel.setDataPosition(model.getPosition());
-        if(etalaseDB !=null)
+        if (etalaseDB != null)
             textDeleteModel.setEtalaseId(etalaseDB.getId());
         return textDeleteModel;
     }
 
-    public void addCategoryAfterSelectV2(SimpleTextModel model){
+    public void addCategoryAfterSelectV2(SimpleTextModel model) {
         addProductCategorySpinner.requestFocus();
         int level = model.getLevel();
         fetchDepartmentChild(model.getPosition(), ++level);
@@ -1240,9 +1172,9 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         //[START] query based on name
         CategoryDB categoryDB = new Select().from(CategoryDB.class).where(
                 CategoryDB_Table.nameCategory.eq(model.getText())
-                ).querySingle();
-        String d_id = categoryDB.getDepartmentId()+"";
-        String parent = categoryDB.getParentId()+"";
+        ).querySingle();
+        String d_id = categoryDB.getDepartmentId() + "";
+        String parent = categoryDB.getParentId() + "";
         Log.d(TAG, messageTAG + "kategori : " + model.getText() + " d_id : " + d_id + " parent " + parent);
         //[END] query based on name
 
@@ -1251,7 +1183,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         CategoryDB existingCategoryDB = new Select().from(CategoryDB.class).where(
                 CategoryDB_Table.nameCategory.eq(model.getText())
         ).querySingle();
-        if(existingCategoryDB ==null) {
+        if (existingCategoryDB == null) {
             CategoryDB categoryDB1 = new CategoryDB(model.getText(), model.getLevel(), -1, Integer.parseInt(parent), Integer.parseInt(d_id), "");
             categoryDB1.save();
             long id = categoryDB1.Id;
@@ -1269,28 +1201,28 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     }
 
 
-    public void addImageAfterSelect(ArrayList<String> path){
+    public void addImageAfterSelect(ArrayList<String> path) {
         List<Pair<Integer, String>> result = new ArrayList<>();
         List<Integer> defaultPositions = ImageModel.determineDefault(photos);
-        int count =0;
+        int count = 0;
         int sizeToIterate = -1;
-        if(path.size()<=defaultPositions.size()){
+        if (path.size() <= defaultPositions.size()) {
             sizeToIterate = path.size();
-        }else{
+        } else {
             sizeToIterate = defaultPositions.size();
         }
-        for(int i=0;i<sizeToIterate;i++){
+        for (int i = 0; i < sizeToIterate; i++) {
             result.add(new Pair<Integer, String>(defaultPositions.get(i), path.get(i)));
             count++;
         }
 
         Observable.just(result)
                 .take(5)
-                .map(new Func1<List<Pair<Integer, String>> , Object>() {
+                .map(new Func1<List<Pair<Integer, String>>, Object>() {
                     @Override
-                    public Object call(List<Pair<Integer, String>>  pairList) {
-                        for (Pair<Integer, String> temp:
-                                pairList){
+                    public Object call(List<Pair<Integer, String>> pairList) {
+                        for (Pair<Integer, String> temp :
+                                pairList) {
                             addImageAfterSelect(temp.getModel2(), temp.getModel1());
                         }
                         return null;
@@ -1302,7 +1234,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     }
 
     @Override
-    public void addImageAfterSelect(String path, int position){
+    public void addImageAfterSelect(String path, int position) {
         try {
             Pair<Boolean, String> checkImageResolution = VerificationUtils.checkImageResolution(getActivity(), path);
 
@@ -1311,19 +1243,19 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                 if (position == 0) {
                     setSelectedImageAsPrimary(0);
                 }
-            }else{
+            } else {
                 Snackbar.make(parentView, checkImageResolution.getModel2(), Snackbar.LENGTH_LONG).show();
-                Log.e(TAG, messageTAG+checkImageResolution.getModel2());
+                Log.e(TAG, messageTAG + checkImageResolution.getModel2());
             }
-        }catch(MetadataUtil.UnSupportedimageFormatException  usie){
+        } catch (MetadataUtil.UnSupportedimageFormatException usie) {
             Snackbar.make(parentView, usie.getMessage(), Snackbar.LENGTH_LONG).show();
-            Log.e(TAG, messageTAG+usie.getMessage());
+            Log.e(TAG, messageTAG + usie.getMessage());
         }
     }
 
-    private void moveToTkpdPath(String path, final int position){
+    private void moveToTkpdPath(String path, final int position) {
         File photo = UploadPhotoTask.writeImageToTkpdPath(compressImage(path));
-        if(photo!=null){
+        if (photo != null) {
             try {
                 ImageGalleryImpl.Pair<Boolean, String> checkImageResolution = VerificationUtils.checkImageResolution(getActivity(), path);
                 if (path != null && checkImageResolution.getModel1()) {
@@ -1333,14 +1265,14 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                     ImageModel oldPhoto = photos.get(position);
                     photos.set(position, newPhoto);
 
-                        //[START] recreate the adapter
-                        photoAdapter = new PhotoAdapter(photos);
-                        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(), com.tkpd.library.ui.view.LinearLayoutManager.HORIZONTAL, false);
-                        addProductImages.setLayoutManager(layoutManager);
-                        addProductImages.setAdapter(photoAdapter);
-                        //[START] recreate the adapter
+                    //[START] recreate the adapter
+                    photoAdapter = new PhotoAdapter(photos);
+                    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(), com.tkpd.library.ui.view.LinearLayoutManager.HORIZONTAL, false);
+                    addProductImages.setLayoutManager(layoutManager);
+                    addProductImages.setAdapter(photoAdapter);
+                    //[START] recreate the adapter
 
-                    if(addProductType.equals(AddProductType.EDIT)){
+                    if (addProductType.equals(AddProductType.EDIT)) {
                         producteditHelper.deleteImage(oldPhoto, position);
                         producteditHelper.addImage(newPhoto, position);
                     }
@@ -1353,13 +1285,13 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                 Snackbar.make(parentView, e.getMessage(), Snackbar.LENGTH_LONG).show();
                 Log.e(ImageGalleryView.TAG, messageTAG + e.getMessage());
             }
-        }else{
-            Log.e(TAG, messageTAG+"unable to save to tkpd path !!!");
+        } else {
+            Log.e(TAG, messageTAG + "unable to save to tkpd path !!!");
         }
     }
 
     @NonNull
-    public static ImageModel getImageModel(String path, File photo) throws MetadataUtil.UnSupportedimageFormatException{
+    public static ImageModel getImageModel(String path, File photo) throws MetadataUtil.UnSupportedimageFormatException {
         Pair<Integer, Integer> resolution = null;
         resolution = MetadataUtil.getWidthFromImage(photo.getAbsolutePath());
         int width = resolution.getModel1();
@@ -1376,7 +1308,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     }
 
     @NonNull
-    public static ImageModel getImageModelPrimary(String path, File photo) throws MetadataUtil.UnSupportedimageFormatException{
+    public static ImageModel getImageModelPrimary(String path, File photo) throws MetadataUtil.UnSupportedimageFormatException {
         Pair<Integer, Integer> resolution = null;
         resolution = MetadataUtil.getWidthFromImage(photo.getAbsolutePath());
         int width = resolution.getModel1();
@@ -1394,14 +1326,15 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     }
 
     @NonNull
-    public static ImageModel getImageModel(String path, File photo, ProductImage productImage) {
+    public static ImageModel getImageModel(String path, File photo, EditProductForm.ProductImage productImage) {
         try {
             Pair<Integer, Integer> resolution = MetadataUtil.getWidthFromImage(photo.getAbsolutePath());
             int width = resolution.getModel1();
             int height = resolution.getModel2();
             PictureDB savePictureDB = new PictureDB(photo.getAbsolutePath(), width, height,
                     productImage.getImageId(), productImage.getImagePrimary(),
-                    productImage.getImageSrc(), productImage.getImageSrc300());
+                    productImage.getImageSrc(), productImage.getImageSrc300(),
+                    productImage.getImageDescription());
             savePictureDB.save();
             Long saveGambarLong = savePictureDB.getId();
             Log.d(TAG, messageTAG + " hasil save ke db : " + saveGambarLong);
@@ -1410,7 +1343,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
             imageModel.setPath(path);
             imageModel.setDbId(saveGambarLong);
             return imageModel;
-        }catch(MetadataUtil.UnSupportedimageFormatException e){
+        } catch (MetadataUtil.UnSupportedimageFormatException e) {
             return null;
         }
     }
@@ -1446,9 +1379,9 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     }
 
     @Override
-    public void initVar(){
+    public void initVar() {
         RecyclerView.LayoutManager layoutManager = null;
-        if(!alreadyLoad) {
+        if (!alreadyLoad) {
 
             // set minimum order to 1
             addProductMinimumOrder.setText("1");
@@ -1473,7 +1406,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
             addProductCondition.setAdapter(SimpleSpinnerAdapter.createAdapterAddProduct(getActivity(), conditions));
 
 
-            switch (addProductType){
+            switch (addProductType) {
                 case EDIT:
                 case ADD:
                 case COPY:
@@ -1487,9 +1420,9 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                     break;
                 case ADD_FROM_SOCIAL_MEDIA:
                 case ADD_FROM_GALLERY:
-                    Log.d(TAG, messageTAG+" already init from arguments : "+ photos);
+                    Log.d(TAG, messageTAG + " already init from arguments : " + photos);
                     ImageModel firstImage = null;
-                    if(photos.size()>0) {
+                    if (photos.size() > 0) {
                         firstImage = photos.get(0);
                     }
                     photos = new ArrayList<ImageModel>() {
@@ -1498,19 +1431,15 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                                 add(new ImageModel(R.drawable.addproduct));
                         }
                     };
-                    if(checkNotNull(firstImage))
+                    if (checkNotNull(firstImage))
                         photos.set(0, firstImage);
 
-                    if(instagramMediaModel != null){
-                        if(addProductDesc != null) {
-                            addProductDesc.setText(instagramMediaModel.captionText);
-                        } else {
-                            addProductDescNormal.setText(instagramMediaModel.captionText);
-                        }
+                    if (instagramMediaModel != null) {
+                        addProductDesc.setText(instagramMediaModel.captionText);
                     }
                     break;
                 case ADD_MULTIPLE_FROM_GALERY:
-                    Log.d(TAG, messageTAG+" already init from arguments : "+ photos);
+                    Log.d(TAG, messageTAG + " already init from arguments : " + photos);
 
                     photos = new ArrayList<ImageModel>() {
                         {
@@ -1520,8 +1449,8 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                             }
                         }
                     };
-                    int remainSize = 5-photos.size();
-                    for(int i=0;i<remainSize;i++){
+                    int remainSize = 5 - photos.size();
+                    for (int i = 0; i < remainSize; i++) {
                         photos.add(new ImageModel(R.drawable.addproduct));
                     }
                     break;
@@ -1549,7 +1478,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
             initCurrencyUnit();
 
             fetchDepartmentParent();
-        }else{
+        } else {
             photoAdapter = new PhotoAdapter(photos);
             layoutManager = new GridLayoutManager(getActivity(), 1, GridLayoutManager.HORIZONTAL, false);
             addProductImages.setLayoutManager(layoutManager);
@@ -1559,7 +1488,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
             initCategoryAdapter(categoryModels);
 
-            for(List<SimpleTextModel> a :categoryOwned){
+            for (List<SimpleTextModel> a : categoryOwned) {
                 categoryAdapter.setSimpleTextModels(a);
             }
 
@@ -1591,7 +1520,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
             etalaseAdapter = new TextDeleteAdapter(displayEtalaseModels, ProductActivity.ADD_PRODUCT_CHOOSE_ETALASE);
 //            etalaseAdapter.setSimpleTextModels(toSimpleTextEtalase(etalaseModels, 0));
-            for(List<SimpleTextModel> a : etalaseOwned){
+            for (List<SimpleTextModel> a : etalaseOwned) {
                 etalaseAdapter.setSimpleTextModels(a);
             }
             layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
@@ -1609,20 +1538,20 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
             addProductInsurance.setAdapter(SimpleSpinnerAdapter.createAdapterAddProduct(getActivity(), insurances));
             addProductInsurance.setSelection(insurance);
 
-            if(addProductDesc!= null) {
-                addProductDesc.setText(description);
-            } else {
-                addProductDescNormal.setText(description);
-            }
+            addProductDesc.setText(description);
             addProductProductDescLayout.setError(null);
             addProductProductDescLayout.setErrorEnabled(false);
 
-            if(ProductDb !=null && ProductDb.getProductId()!=0 && isLoading){
+            if (ProductDb != null && ProductDb.getProductId() != 0 && isLoading) {
                 showProgress(true);
+            } else {
+                showProgress(false);
+
             }
 
             setToCatalogView(catalogs);
         }
+
     }
 
     @Override
@@ -1648,7 +1577,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
     @Override
     public void initCategoryAdapter(@NonNull ArrayList<TextDeleteModel> categoryModels) {
-        if ( !checkNotNull(categoryModels) )
+        if (!checkNotNull(categoryModels))
             return;
 
         categoryAdapter = new TextDeleteAdapter(categoryModels);
@@ -1659,15 +1588,15 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
     @Override
     public void initCategoryAdapter(List<List<SimpleTextModel>> textDeleteModels, @NonNull ArrayList<TextDeleteModel> categoryModels) {
-        if ( !checkNotNull(categoryModels) )
+        if (!checkNotNull(categoryModels))
             return;
 
-        if ( !checkNotNull(textDeleteModels) )
+        if (!checkNotNull(textDeleteModels))
             return;
 
         this.categoryModels = categoryModels;
         categoryAdapter = new TextDeleteAdapter(categoryModels);
-        for(List<SimpleTextModel> temp : textDeleteModels){
+        for (List<SimpleTextModel> temp : textDeleteModels) {
             categoryAdapter.setSimpleTextModels(temp);
         }
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
@@ -1690,8 +1619,8 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     }
 
     @Override
-    public void disableProductNameEdit(){
-        if(addProductType != AddProductType.COPY) {
+    public void disableProductNameEdit() {
+        if (addProductType != AddProductType.COPY) {
             addProductProductName.setInputType(InputType.TYPE_NULL);
         }
     }
@@ -1704,7 +1633,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
     @Override
     public void setProductName(String productName) {
-        if(addProductType != AddProductType.COPY) {
+        if (addProductType != AddProductType.COPY) {
             addProductProductName.setText(productName);
         }
     }
@@ -1713,8 +1642,8 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     public void setWeightUnit(String weightUnit) {
         List<SimpleTextModel> weightUnits = addProductWeightUnit.getmItems();
         int count = 0;
-        for(SimpleTextModel stm : weightUnits){
-            if(stm.getLabel().toLowerCase().contains("("+weightUnit+")")){
+        for (SimpleTextModel stm : weightUnits) {
+            if (stm.getLabel().toLowerCase().contains("(" + weightUnit + ")")) {
                 selectedWeightUnit = count;
                 selectedWeightUnitDesc = stm.getLabel();
             }
@@ -1726,28 +1655,28 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
     @Override
     public void setProductReturnable(boolean returnable) {
-        int lastIndex = textToDisplay.size()-1;
-        if(returnable){
-            addProductReturnableSpinner.setSelection(lastIndex-1); // dapat dikembalikan
-        }else{
+        int lastIndex = textToDisplay.size() - 1;
+        if (returnable) {
+            addProductReturnableSpinner.setSelection(lastIndex - 1); // dapat dikembalikan
+        } else {
             addProductReturnableSpinner.setSelection(lastIndex);// tidak dapat dikembalikan
         }
     }
 
     @Override
     public void setProductInsurance(boolean isInsurance) {
-        if(isInsurance){
+        if (isInsurance) {
             addProductInsurance.setSelection(1);
-        }else{
+        } else {
             addProductInsurance.setSelection(0);
         }
     }
 
     @Override
     public void setProductCondition(boolean isNew) {
-        if(isNew){
+        if (isNew) {
             addProductCondition.setSelection(0);// baru
-        }else{
+        } else {
             addProductCondition.setSelection(1);// bekas
         }
     }
@@ -1755,7 +1684,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     @Override
     public void setProductEtalase(boolean isGudang, String productEtalaseId) {
         EtalaseDB etalaseDB = DbManagerImpl.getInstance().getEtalase(productEtalaseId);
-        if(etalaseDB == null)
+        if (etalaseDB == null)
             return;
 
         displayEtalaseModels.clear();
@@ -1764,12 +1693,12 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
         int modelPosition = -1;
         EtalaseDB etalaseDBId = DbManagerImpl.getInstance().getEtalase(productEtalaseId);
-        if(isGudang){
+        if (isGudang) {
             addLevel1 = new TextDeleteModel(ETALASE_GUDANG);
             addLevel2 = new TextDeleteModel(etalaseDB.getEtalaseName());
             addLevel2.setEtalaseId(etalaseDBId.getId());
             modelPosition = 0;
-        }else{
+        } else {
             addLevel1 = new TextDeleteModel(ETALASE_ETALASE);
             addLevel2 = new TextDeleteModel(etalaseDB.getEtalaseName());
             addLevel2.setEtalaseId(etalaseDBId.getId());
@@ -1804,22 +1733,16 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
     @Override
     public void setProductDesc(String productDescription) {
-        if(addProductDesc!= null) {
-            addProductDesc.setText(productDescription);
-            addProductDesc.requestFocus();
-        } else {
-            addProductDescNormal.setText(productDescription);
-            addProductDescNormal.requestFocus();
-        }
-
+        addProductDesc.setText(productDescription);
+        addProductDesc.requestFocus();
     }
 
     @Override
     public void setProductCurrencyUnit(String productCurrencyUnit) {
-        if(productCurrencyUnit.equals("Rp")){
+        if (productCurrencyUnit.equals("Rp")) {
             selectedCurrency = 0;
             selectedCurrencyDesc = "Rp";
-        }else{
+        } else {
             selectedCurrency = 1;
             selectedCurrencyDesc = "US$";
         }
@@ -1840,8 +1763,8 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     @Override
     public void onResume() {
         super.onResume();
-        if(alreadyLoad){
-            for(WholeSaleAdapterModel model : wholeSaleAdapterModels){
+        if (alreadyLoad) {
+            for (WholeSaleAdapterModel model : wholeSaleAdapterModels) {
                 wholesaleAdapter.add(model);
             }
         }
@@ -1852,15 +1775,15 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         ScreenTracking.screen(this);
     }
 
-    public void initWeightUnit(){
+    public void initWeightUnit() {
         String[] weightUnit = getResources().getStringArray(R.array.weight);
         int count = 1;
-        for(String weight : weightUnit ){
+        for (String weight : weightUnit) {
             WeightUnitDB weightSel = new Select().from(WeightUnitDB.class).where(
                     WeightUnitDB_Table.abrvWeight.eq(weight)
             )
                     .querySingle();
-            if(weightSel==null)
+            if (weightSel == null)
                 new WeightUnitDB(weight, weight, count++).save();
         }
         initWeightUnit(weightUnit);
@@ -1869,12 +1792,12 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     private void initWeightUnit(String[] weightUnit) {
 
         List<SimpleTextModel> textModels = new ArrayList<>();
-        for(String weight: weightUnit){
+        for (String weight : weightUnit) {
             textModels.add(new SimpleTextModel(weight));
         }
         Drawable drawable = getResources().getDrawable(R.drawable.arrow_drop_down_resize);
-        drawable.setBounds(0, 0, (int)(drawable.getIntrinsicWidth()*0.5),
-                (int)(drawable.getIntrinsicHeight()*0.5));
+        drawable.setBounds(0, 0, (int) (drawable.getIntrinsicWidth() * 0.5),
+                (int) (drawable.getIntrinsicHeight() * 0.5));
         ScaleDrawable sd = new ScaleDrawable(drawable, 0, 0.1f, 0.1f);
         addProductWeightUnit.setCompoundDrawablesWithIntrinsicBounds(null, null, sd.getDrawable(), null);
         addProductWeightUnit.setItems(textModels);
@@ -1893,15 +1816,15 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         addProductWeightUnit.setText(selectedWeightUnitDesc);
     }
 
-    public void initCurrencyUnit(){
+    public void initCurrencyUnit() {
         String[] currencyUnit = getResources().getStringArray(R.array.currency_type);
         int count = 1;
-        for(String currency : currencyUnit){
+        for (String currency : currencyUnit) {
             CurrencyDB mataUang = new Select().from(CurrencyDB.class).where(
                     CurrencyDB_Table.abrvCurr.eq(currency)
             )
                     .querySingle();
-            if(mataUang==null)
+            if (mataUang == null)
                 new CurrencyDB(currency, currency, count++).save();
         }
         initCurrencyUnit(currencyUnit);
@@ -1912,12 +1835,12 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     private void initCurrencyUnit(String[] currencyUnit) {
 
         List<SimpleTextModel> simpleTextModels = new ArrayList<>();
-        for(String currency : currencyUnit){
+        for (String currency : currencyUnit) {
             simpleTextModels.add(new SimpleTextModel(currency));
         }
         Drawable drawable = getResources().getDrawable(R.drawable.arrow_drop_down_resize);
-        drawable.setBounds(0, 0, (int)(drawable.getIntrinsicWidth()*0.5),
-                (int)(drawable.getIntrinsicHeight()*0.5));
+        drawable.setBounds(0, 0, (int) (drawable.getIntrinsicWidth() * 0.5),
+                (int) (drawable.getIntrinsicHeight() * 0.5));
         ScaleDrawable sd = new ScaleDrawable(drawable, 0, 0.1f, 0.1f);
         addProductCurrency.setCompoundDrawablesWithIntrinsicBounds(null, null, sd.getDrawable(), null);
         addProductCurrency.setItems(simpleTextModels);
@@ -1927,14 +1850,14 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
                 boolean goldMerchant = SessionHandler.isGoldMerchant(AddProductFragment.this.getActivity());
                 dollarCurrency = AddProductFragment.this.getActivity().getString(R.string.title_dollar);
-                if(!goldMerchant && item.getLabel().equals(dollarCurrency)){
+                if (!goldMerchant && item.getLabel().equals(dollarCurrency)) {
                     ArrayList<String> strings = new ArrayList<>();
                     strings.add("Anda Harus Berlangganan Gold Merchant");
                     showMessageError(strings);
                     addProductCurrency.setText(selectedCurrencyDesc);
                     return;
                 }
-                if(selectedCurrencyDesc!= null && !item.getLabel().equals(selectedCurrencyDesc)){
+                if (selectedCurrencyDesc != null && !item.getLabel().equals(selectedCurrencyDesc)) {
                     wholesaleAdapter.clearAll();
                 }
                 selectedCurrency = selectedIndex;
@@ -1955,7 +1878,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         priceTextFormatter(oldFormatPrice);
     }
 
-    public void getMyShopInfo(){
+    public void getMyShopInfo() {
         addProduct.getMyShopInfo(getActivity());
     }
 
@@ -1971,10 +1894,10 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
     @Override
     public void showMessageError(List<String> errorMessages) {
-        if(!checkCollectionNotNull(errorMessages))
+        if (!checkCollectionNotNull(errorMessages))
             return;
 
-        Snackbar.make(parentView, generateMessageError(getActivity(),errorMessages.toString()), Snackbar.LENGTH_LONG).show();
+        Snackbar.make(parentView, generateMessageError(getActivity(), errorMessages.toString()), Snackbar.LENGTH_LONG).show();
 //        Toast.makeText(AddProductFragment.this.getActivity(), errorMessages.toString(), Toast.LENGTH_LONG).show();
     }
 
@@ -2011,9 +1934,8 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     }
 
 
-
     @Override
-    public void getReturnPolicyDetail(MyShopInfoModel.Info info){
+    public void getReturnPolicyDetail(MyShopInfoModel.Info info) {
         myShopInfoModel = info;
         Log.d(TAG, messageTAG + " check return policy : " + returnPolicy);
         addProduct.getReturnPolicyDetail(getActivity(), myShopInfoModel, returnPolicy);
@@ -2049,11 +1971,11 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
     @OnTextChanged(R2.id.edittext_preorder)
     public void onTextChangedPreOrder(CharSequence s, int start, int before,
-                                      int count){
+                                      int count) {
         Pair<Boolean, String> validate = VerificationUtils.validatePreOrder(getActivity(), s.toString());
-        if(validate.getModel1()){
+        if (validate.getModel1()) {
             addProductEdittextPreorder.setError(null);
-        }else{
+        } else {
             addProductEdittextPreorder.setError(validate.getModel2());
         }
     }
@@ -2073,16 +1995,16 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
     @OnTextChanged(R2.id.add_product_minimum_order)
     public void onTextChangedMinOrder(CharSequence s, int start, int before,
-                                      int count){
+                                      int count) {
         validateMinOrder(s);
     }
 
     private void validateMinOrder(CharSequence s) {
         Pair<Boolean, String> validate = VerificationUtils.validateMininumOrder(getActivity(), s.toString());
-        if(validate.getModel1()) {
+        if (validate.getModel1()) {
             addProductMinimumOrderAlert.setErrorEnabled(false);
             addProductMinimumOrderAlert.setError(null);
-        }else {
+        } else {
             addProductMinimumOrderAlert.setErrorEnabled(true);
             addProductMinimumOrderAlert.setError(validate.getModel2());
         }
@@ -2090,7 +2012,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
     @OnTextChanged(R2.id.add_product_weight)
     public void onTextChangedMinWeight(CharSequence s, int start, int before,
-                                       int count){
+                                       int count) {
         validateProdWeight(s);
     }
 
@@ -2108,7 +2030,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                         s.toString());
         if (validate.getModel1()) {
             dismissWeightError();
-        }else{
+        } else {
             addProductWeightAlert.setErrorEnabled(true);
             addProductWeightAlert.setError(validate.getModel2());
         }
@@ -2121,15 +2043,15 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
     @OnTextChanged(R2.id.add_product_product_name)
     public void onTextChangedProdName(CharSequence s, int start, int before,
-                              int count){
-        if(addProductProductName.isEnabled()) {
+                                      int count) {
+        if (addProductProductName.isEnabled()) {
             validateProdName(s);
         }
     }
 
     private void validateProdName(CharSequence s) {
         Pair<Boolean, String> validate = VerificationUtils.validateProductName(getActivity(), s.toString());
-        if(!validate.getModel1()){
+        if (!validate.getModel1()) {
             addProductPRoductNameAlert.setErrorEnabled(true);
             addProductPRoductNameAlert.setError(validate.getModel2());
         } else {
@@ -2154,7 +2076,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     private void priceTextFormatter(String s) {
         validateProdPrice(s);
 
-        switch(selectedCurrencyDesc){
+        switch (selectedCurrencyDesc) {
             case "Rp":
                 CurrencyFormatHelper.SetToRupiah(addProductPrice);
                 break;
@@ -2167,11 +2089,11 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     private void validateProdPrice(CharSequence s) {
 //        Pair<Boolean, String> verif = VerificationUtils.validatePrice(getActivity(), addProductCurrency.getSelectedItem().toString(), s.toString());
         Pair<Boolean, String> verif = VerificationUtils.validatePrice(getActivity(), selectedCurrencyDesc, s.toString());
-        if(!verif.getModel1()) {
+        if (!verif.getModel1()) {
             addProductPriceAlert.setErrorEnabled(true);
             addProductPriceAlert.setError(verif.getModel2());
             wholesaleAdapter.clearAll();
-        }else {
+        } else {
             dismissPriceError();
             wholesaleAdapter.setCurrencyUnit(selectedCurrencyDesc);
 //            wholesaleAdapter.setCurrencyUnit(addProductCurrency.getSelectedItem().toString());
@@ -2185,24 +2107,14 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     }
 
     @OnClick(R2.id.add_product_add_whole_sale_item)
-    public void onWholeSaleAdd(){
-        if(wholeSaleContainer != null) {
-            wholesaleAdapter.add(new WholeSaleAdapterModel(0, 0, 0));
-            addProductWholeSaleItem.scrollToPosition(wholesaleAdapter.getDatas().size() - 1);
-        } else {
-            if (!VerificationUtils.validatePrice(selectedCurrencyDesc, addProductPrice.getText().toString())) {
-                addProductPriceAlert.setError(getString(R.string.error_field_required));
-                addProductPrice.requestFocus();
-            }else{
-                wholesaleAdapter.add(new WholeSaleAdapterModel(0, 0, 0));
-                addProductWholeSaleItem.scrollToPosition(wholesaleAdapter.getDatas().size() - 1);
-            }
-        }
+    public void onWholeSaleAdd() {
+        wholesaleAdapter.add(new WholeSaleAdapterModel(0, 0, 0));
+        addProductWholeSaleItem.scrollToPosition(wholesaleAdapter.getDatas().size() - 1);
     }
 
     @Override
-    public void fetchDepartmentChild(final int depId, final int level){
-        addProduct.fetchDepartmentChild(getActivity(),depId, level);
+    public void fetchDepartmentChild(final int depId, final int level) {
+        addProduct.fetchDepartmentChild(getActivity(), depId, level);
     }
 
     @Override
@@ -2216,8 +2128,8 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int count, int after) {
-                if(addProductPRoductNameAlert.getError()==null)
-                    fetchCatalog(depId+"", addProductProductName.getText().toString());
+                if (addProductPRoductNameAlert.getError() == null)
+                    fetchCatalog(depId + "", addProductProductName.getText().toString());
             }
 
             @Override
@@ -2227,13 +2139,13 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         });
 
         // save to db
-        if(departmentParentModel != null)
+        if (departmentParentModel != null)
             DbManagerImpl.getInstance().saveDepartment(departmentParentModel, depId);
 
         int levelTemp = -1;
         List<SimpleTextModel> simpleTextModels = toSimpleText(level, depId);
-        switch(level){
-            case 2 :// LEVEL 1
+        switch (level) {
+            case 2:// LEVEL 1
                 categoryModels.clear();
                 CategoryDB categoryDB = new Select().from(CategoryDB.class).where(
                         CategoryDB_Table.departmentId.is(depId)).querySingle();
@@ -2246,20 +2158,15 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                 categoryAdapter.setSimpleTextModels(lvl1List);
 
 
-                if(simpleTextModels!=null&&simpleTextModels.size()>0){
+                if (simpleTextModels != null && simpleTextModels.size() > 0) {
                     categoryModels.add(new TextDeleteModel(true));
                     categoryAdapter.setSimpleTextModels(simpleTextModels);
                 }
                 catalogs = new ArrayList<>();
-                if(addProductCatalogLayout!= null) {
-                    addProductCatalogLayout.setVisibility(View.GONE);
-                } else {
-                    addProductCatalog.setVisibility(View.INVISIBLE);
-                    addProductCatalogFrame.setVisibility(View.VISIBLE);
-                }
+                addProductCatalogLayout.setVisibility(View.GONE);
                 this.catalogs = null;
                 break;
-            case 3 :// LEVEl 2
+            case 3:// LEVEl 2
                 TextDeleteModel lvl1 = categoryModels.get(0);
                 categoryModels.clear();
                 categoryDB = new Select().from(CategoryDB.class).where(CategoryDB_Table.departmentId.is(depId)).querySingle();
@@ -2273,13 +2180,13 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                 categoryAdapter.clearSimpleTextModels();
                 categoryAdapter.setSimpleTextModels(lvl1List);
                 categoryAdapter.setSimpleTextModels(lvl2List);
-                if(simpleTextModels!=null&&simpleTextModels.size()>0){
+                if (simpleTextModels != null && simpleTextModels.size() > 0) {
                     categoryModels.add(new TextDeleteModel(true));
                     categoryAdapter.setSimpleTextModels(simpleTextModels);
                 }
 
-                if(addProductPRoductNameAlert.getError()==null)
-                    fetchCatalog(depId+"", addProductProductName.getText().toString());
+                if (addProductPRoductNameAlert.getError() == null)
+                    fetchCatalog(depId + "", addProductProductName.getText().toString());
                 break;
             case 4:// LEVEL 3
                 lvl1 = categoryModels.get(0);
@@ -2300,42 +2207,38 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                 categoryAdapter.setSimpleTextModels(lvl2List);
                 categoryAdapter.setSimpleTextModels(lvl3List);
 
-                if(addProductPRoductNameAlert.getError()==null)
-                    fetchCatalog(depId+"", addProductProductName.getText().toString());
+                if (addProductPRoductNameAlert.getError() == null)
+                    fetchCatalog(depId + "", addProductProductName.getText().toString());
                 break;
         }
         categoryAdapter.notifyDataSetChanged();
     }
 
-    public void fetchCatalog(String productDepId, String productName){
+    public void fetchCatalog(String productDepId, String productName) {
         addProduct.fetchCatalog(getActivity(), productDepId, productName);
     }
 
     @Override
     public void saveCatalogs(ArrayList<CatalogDataModel.Catalog> catalogs) {
-        Log.d(TAG, messageTAG+" : "+ catalogs);
+        Log.d(TAG, messageTAG + " : " + catalogs);
         this.catalogs = catalogs;
     }
 
     /**
      * set visibility of catalog to visible
+     *
      * @param catalogs
      */
     @Override
     public void setToCatalogView(final ArrayList<CatalogDataModel.Catalog> catalogs) {
         addProductCatalog.clearSelection();
-        if(catalogs !=null&&catalogs.size()>0){
+        if (catalogs != null && catalogs.size() > 0) {
             String[] temp = new String[catalogs.size() + 1];
             temp[0] = getActivity().getString(R.string.no_catalog_selected);
-            for(int i=0;i<catalogs.size();i++){
-                temp[i+1] = catalogs.get(i).getCatalogName();
+            for (int i = 0; i < catalogs.size(); i++) {
+                temp[i + 1] = catalogs.get(i).getCatalogName();
             }
-            if(addProductCatalogLayout != null) {
-                addProductCatalogLayout.setVisibility(View.VISIBLE);
-            } else {
-                addProductCatalog.setVisibility(View.VISIBLE);
-                addProductCatalogFrame.setVisibility(View.GONE);
-            }
+            addProductCatalogLayout.setVisibility(View.VISIBLE);
             addProductCatalog.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -2343,14 +2246,9 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                 }
             });
 
-        }else{
-             this.catalogs = new ArrayList<>();
-            if(addProductCatalogLayout != null) {
-                addProductCatalogLayout.setVisibility(View.GONE);
-            } else {
-                addProductCatalog.setVisibility(View.INVISIBLE);
-                addProductCatalogFrame.setVisibility(View.VISIBLE);
-            }
+        } else {
+            this.catalogs = new ArrayList<>();
+            addProductCatalogLayout.setVisibility(View.GONE);
 
             this.catalogs = null;
         }
@@ -2358,10 +2256,10 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
     @Override
     public void setProductCatalog(int selection) {
-        if(!checkNotNull(addProductCatalog))
+        if (!checkNotNull(addProductCatalog))
             return;
 
-        if(selection != 0 && selection != -1)
+        if (selection != 0 && selection != -1)
             addProductCatalog.setSelection(catalogs.get(selection));
         else
             addProductCatalog.clearSelection();
@@ -2380,16 +2278,16 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     @Override
     public void fetchProductData() {
         // for edit product
-        if(productId != null&&!productId.equals("XXX"))
+        if (productId != null && !productId.equals("XXX"))
             addProduct.fetchEditData(getActivity(), productId);
 
         // for modify data
-        if(productDb != -1){
+        if (productDb != -1) {
             addProduct.getProductDb(getActivity(), productDb);
         }
     }
 
-    public void fetchDepartmentParent(){
+    public void fetchDepartmentParent() {
         addProduct.fetchDepartmentParent(getActivity());
     }
 
@@ -2398,7 +2296,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         AddProductFragment.this.categoryModels.add(new TextDeleteModel(true));
         //[END] T2409 [BUG] [Add Product] Crash if choose category on Kitkat OS
 
-        categoryAdapter.setSimpleTextModels(toSimpleText(1,0));
+        categoryAdapter.setSimpleTextModels(toSimpleText(1, 0));
         categoryAdapter.notifyDataSetChanged();
     }
 
@@ -2458,19 +2356,19 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         return simpleTextModels;
     }
 
-    public static List<SimpleTextModel> toSimpleText(int level, int depId){
+    public static List<SimpleTextModel> toSimpleText(int level, int depId) {
         List<SimpleTextModel> simpleTextModels = new ArrayList<>();
         List<CategoryDB> categoryDBs = null;
-        if(level==1){
+        if (level == 1) {
             categoryDBs = new Select().from(CategoryDB.class).where(CategoryDB_Table.levelId.is(level)).queryList();
-        }else{
+        } else {
             categoryDBs = new Select().from(CategoryDB.class).where(CategoryDB_Table.levelId.is(level))
-                            .and(CategoryDB_Table.parentId.is(depId)).queryList();
+                    .and(CategoryDB_Table.parentId.is(depId)).queryList();
         }
-        if(categoryDBs ==null)
+        if (categoryDBs == null)
             return null;
 
-        for(int i = 0; i< categoryDBs.size(); i++){
+        for (int i = 0; i < categoryDBs.size(); i++) {
             CategoryDB categoryDB = categoryDBs.get(i);
             SimpleTextModel simpleTextModel = new SimpleTextModel(categoryDB.getNameCategory());
             //[START] set department id sebagai posisi karena ini berguna untuk query
@@ -2483,16 +2381,16 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     }
 
     @OnClick(R2.id.add_product_policy_layout)
-    public void onClick(){
-        if(addProductReturnableSpinner.getSelectedItem().toString().contains("Tambah")){
+    public void onClick() {
+        if (addProductReturnableSpinner.getSelectedItem().toString().contains("Tambah")) {
             DialogFragment fragment = ReturnPolicyDialog.newInstance();
             fragment.show(getActivity().getSupportFragmentManager(), ReturnPolicyDialog.FRAGMENT_TAG);
         }
-        if(addProductReturnableSpinner.getSelectedItem().toString().contains("Ya")){
-            if(detail!=null){
+        if (addProductReturnableSpinner.getSelectedItem().toString().contains("Ya")) {
+            if (detail != null) {
                 DialogFragment fragment = ReturnPolicyDialog.newInstance(detail);
                 fragment.show(getActivity().getSupportFragmentManager(), ReturnPolicyDialog.FRAGMENT_TAG);
-            }else{
+            } else {
                 Toast.makeText(getActivity(), "detail not ready yet", Toast.LENGTH_SHORT).show();
             }
         }
@@ -2531,9 +2429,9 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         producteditHelper.constructOriginalEditData(addProduct.getOriginalEditData());
     }
 
-    public void editProduct(boolean isPush){
+    public void editProduct(boolean isPush) {
         Pair<InputAddProductModel, TextDeleteModel> verif = verifProduct();
-        if(verif==null)
+        if (verif == null)
             return;
 
         TextDeleteModel stockStatus = verif.getModel2();
@@ -2541,22 +2439,22 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
         int compare = 0;
         Map<String, String> isCatalogAndWholeSaleChange = null;
-        if(checkNotNull(addProduct.getOriginalEditData())){
+        if (checkNotNull(addProduct.getOriginalEditData())) {
             producteditHelper.constructOriginalEditData(addProduct.getOriginalEditData());
             Pair<Integer, Map<String, String>> integerMapPair = producteditHelper.compareWithEdittedData(inputAddProductModel, stockStatus);
             compare = integerMapPair.getModel1();
             isCatalogAndWholeSaleChange = integerMapPair.getModel2();
-        }else{
+        } else {
             return;
         }
 
-        if(!producteditHelper.isEdit(compare)){
+        if (!producteditHelper.isEdit(compare)) {
             Snackbar.make(parentView, "tidak ada perubahan", Snackbar.LENGTH_LONG).show();
             return;
         }
 
-        if(isPush){
-            ProductDb = InputAddProductModel.compileAllForEdit(verif.getModel1(), ProductDb, producteditHelper.productDetailData);
+        if (isPush) {
+            ProductDb = InputAddProductModel.compileAllForEdit(verif.getModel1(), ProductDb, producteditHelper.editProductForm);
             Bundle bundle = new Bundle();
             bundle.putParcelable(ProductService.PRODUCT_EDIT_PHOTOS, Parcels.wrap(producteditHelper.toParcelFormatForPhotos()));
             bundle.putLong(ProductService.PRODUCT_DATABASE_ID, ProductDb.getId());
@@ -2567,8 +2465,8 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
             bundle.putString(ProductService.PRODUCT_NAME, verif.getModel1().getProductName());
 
             //[START] send data to internet
-            if(isPush && getActivity()!= null && getActivity() instanceof DownloadResultSender){
-                ((DownloadResultSender)getActivity()).sendDataToInternet(ProductService.EDIT_PRODUCT, bundle);
+            if (isPush && getActivity() != null && getActivity() instanceof DownloadResultSender) {
+                ((DownloadResultSender) getActivity()).sendDataToInternet(ProductService.EDIT_PRODUCT, bundle);
             }
             //[END] send data to internet
         }
@@ -2576,12 +2474,12 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
     boolean isWithoutImage = false;
 
-    public Pair<InputAddProductModel,TextDeleteModel>  verifProduct(){
+    public Pair<InputAddProductModel, TextDeleteModel> verifProduct() {
         InputAddProductModel inputAddProductModel = new InputAddProductModel();
 
         // T7247 [v2.1.4 (201040300)][Add Product]: App should not be crashed when the user tap on 'Save' button in offline mode.
-        if(!checkCollectionNotNull(displayEtalaseModels)){
-            showMessageError(new ArrayList<String>(){{
+        if (!checkCollectionNotNull(displayEtalaseModels)) {
+            showMessageError(new ArrayList<String>() {{
                 add(generateMessageError(AddProductFragment.this.getActivity(), "timeout this"));
             }});
             return null;
@@ -2594,18 +2492,17 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         inputAddProductModel.setStockStatus(stockStatus.getText());
         TextDeleteModel etalaseModel = displayEtalaseModels.get(displayEtalaseModels.size() - 1);
         long etalaseId = etalaseModel.getEtalaseId();
-        if((addProductAddToNewEtalaseLayout == null && addProductAddToNewEtalase.isEnabled()) ||
-                (addProductAddToNewEtalaseLayout != null && addProductAddToNewEtalaseLayout.isExpanded())){// jika tambah baru, override menjadi yang diketik
+        if (addProductAddToNewEtalaseLayout.isExpanded()) {// jika tambah baru, override menjadi yang diketik
             Pair<Boolean, String> validate = VerificationUtils.validateNewEtalaseName(getActivity(), addProductAddToNewEtalase.getText().toString());
-            if(validate.getModel1()){
+            if (validate.getModel1()) {
                 addProductAddToNewEtalase.setError(null);
                 addProductAddToNewEtalaseAlert.setError(null);
-            }else{
+            } else {
                 addProductAddToNewEtalase.setError(validate.getModel2());
                 addProductAddToNewEtalaseAlert.setError(validate.getModel2());
             }
-            if(addProductAddToNewEtalaseAlert.isErrorEnabled()){
-                Snackbar.make(parentView, addProductAddToNewEtalaseAlert.getError(),  Snackbar.LENGTH_LONG).show();
+            if (!validate.getModel1()) {
+                Snackbar.make(parentView, addProductAddToNewEtalaseAlert.getError(), Snackbar.LENGTH_LONG).show();
                 return null;
             }
             EtalaseDB etalaseDB = new EtalaseDB(-2, addProductAddToNewEtalase.getText().toString(), -2);
@@ -2618,10 +2515,10 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
             inputAddProductModel.setEtalaseId(etalaseDB.getId());
             inputAddProductModel.setEtalaseName(addProductAddToNewEtalase.getText().toString());
-        }else{
+        } else {
             Pair<Boolean, String> etalaseVerif = VerificationUtils.validateEtalase(getActivity(), displayEtalaseModels);
-            if(!etalaseVerif.getModel1()){
-                Snackbar.make(parentView, etalaseVerif.getModel2(),  Snackbar.LENGTH_LONG).show();
+            if (!etalaseVerif.getModel1()) {
+                Snackbar.make(parentView, etalaseVerif.getModel2(), Snackbar.LENGTH_LONG).show();
                 return null;
             }
             inputAddProductModel.setEtalaseId(etalaseId);
@@ -2630,10 +2527,10 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
         // 1. get images
         Pair<Boolean, String> validateImages = VerificationUtils.validateImages(getActivity(), photos);
-        if(stockStatus.getText().equals(AddProductView.ETALASE_GUDANG) && !validateImages.getModel1()){
+        if (stockStatus.getText().equals(AddProductView.ETALASE_GUDANG) && !validateImages.getModel1()) {
             // do not store photos in here
             isWithoutImage = true;
-        }else {
+        } else {
             if (!validateImages.getModel1()) {
                 Snackbar.make(parentView, validateImages.getModel2(), Snackbar.LENGTH_LONG).show();
                 return null;
@@ -2642,11 +2539,11 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         }
 
         // 2. get name product
-        if(addProductType != AddProductType.EDIT) {
+        if (addProductType != AddProductType.EDIT) {
             validateProdName(addProductProductName.getText().toString());
         }
 
-        if(addProductPRoductNameAlert.isErrorEnabled()){
+        if (addProductPRoductNameAlert.isErrorEnabled()) {
             Snackbar.make(parentView, addProductPRoductNameAlert.getError(), Snackbar.LENGTH_LONG).show();
             return null;
         }
@@ -2654,7 +2551,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
         // 3. get kategori - ambil kategori terakhir
         Pair<Boolean, String> validateCategories = VerificationUtils.validateCategories(getActivity(), categoryModels);
-        if(!validateCategories.getModel1()){
+        if (!validateCategories.getModel1()) {
             Snackbar.make(parentView, validateCategories.getModel2(), Snackbar.LENGTH_LONG).show();
             return null;
         }
@@ -2662,7 +2559,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
         // 4. get harga dan mata uang - anggapan sekarang pakai rupiah
         validateProdPrice(addProductPrice.getText().toString());
-        if(addProductPriceAlert.isErrorEnabled()){
+        if (addProductPriceAlert.isErrorEnabled()) {
             Snackbar.make(parentView, addProductPriceAlert.getError(), Snackbar.LENGTH_LONG).show();
             return null;
         }
@@ -2670,7 +2567,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
         inputAddProductModel.setCurrencyUnit(selectedCurrencyDesc);
         String price = addProductPrice.getText().toString().replace(",", "");
-        if(!inputAddProductModel.getCurrencyUnit().equals("US$")) {
+        if (!inputAddProductModel.getCurrencyUnit().equals("US$")) {
             // remove cent
             price = price.replace(".", "");
         }
@@ -2679,7 +2576,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
         // 5. get berat dan unit berat
         validateProdWeight(addProductWeight.getText().toString());
-        if(addProductWeightAlert.isErrorEnabled()){
+        if (addProductWeightAlert.isErrorEnabled()) {
             Snackbar.make(parentView, addProductWeightAlert.getError(), Snackbar.LENGTH_LONG).show();
             return null;
         }
@@ -2689,36 +2586,40 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
         // 6. get minimal order
         validateMinOrder(addProductMinimumOrder.getText().toString());
-        if(addProductMinimumOrderAlert.isErrorEnabled()){
+        if (addProductMinimumOrderAlert.isErrorEnabled()) {
             Snackbar.make(parentView, addProductMinimumOrderAlert.getError(), Snackbar.LENGTH_LONG).show();
             return null;
         }
         inputAddProductModel.setMinimumOrder(Integer.parseInt(addProductMinimumOrder.getText().toString()));
 
         // 7. get harga grosir - compile ketika disini doang - kosongkan terlebih dahulu,
-        Log.d(TAG, messageTAG+wholesaleAdapter.getDatas());
+        Log.d(TAG, messageTAG + wholesaleAdapter.getDatas());
+        if(!wholesaleAdapter.isNoError()){
+            Snackbar.make(parentView, "Terjadi kesalahan pada harga grosir", Snackbar.LENGTH_LONG).show();
+            return null;
+        }
         inputAddProductModel.setWholeSales(wholesaleAdapter.getDatas());
 
         // 9. get terima pengembalian
         String[] array2 = getResources().getStringArray(R.array.return_policy);
-        if(addProductReturnableSpinner.getSelectedItem().toString().contains(array2[1])){
+        if (addProductReturnableSpinner.getSelectedItem().toString().contains(array2[1])) {
             inputAddProductModel.setReturnable(RETURNABLE_YES);
-        }else{
+        } else {
             inputAddProductModel.setReturnable(RETURNABLE_NO);
         }
         // 10. get kondisi
         String[] array1 = getResources().getStringArray(R.array.condition);
-        if(addProductCondition.getSelectedItem().toString().contains(array1[0])){
+        if (addProductCondition.getSelectedItem().toString().contains(array1[0])) {
             inputAddProductModel.setCondition(CONDITION_NEW);
-        }else{
+        } else {
             inputAddProductModel.setCondition(CONDITION_OLD);
         }
 
         // 11. get asuransi
         String[] array = getResources().getStringArray(R.array.insurance);
-        if(addProductInsurance.getSelectedItem().toString().contains(array[0])){
+        if (addProductInsurance.getSelectedItem().toString().contains(array[0])) {
             inputAddProductModel.setMustAsurance(MUST_ASURANCE_OPTIONAL);
-        }else{
+        } else {
             inputAddProductModel.setMustAsurance(MUST_ASURANCE_YES);
         }
 
@@ -2728,38 +2629,28 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 //            return null;
 //        }
         String description;
-        if(addProductDesc != null) {
-            description = addProductDesc.getText().toString();
-        } else {
-            description = addProductDescNormal.getText().toString();
-        }
+        description = addProductDesc.getText().toString();
         inputAddProductModel.setDescription(description);
 
         // 13. preorder
         int preorder = 0;
-        if(addProductEdittextPreorder.getError()==null){
+        if (addProductEdittextPreorder.getError() == null) {
             preorder = Integer.parseInt(addProductEdittextPreorder.getText().toString());
         }
         inputAddProductModel.setPreOrder(preorder);
 
         // 14. catalog
-        if(
-                (addProductCatalogLayout != null && addProductCatalogLayout.getVisibility()==View.VISIBLE)
-                        || (addProductCatalogFrame != null && addProductCatalogFrame.getVisibility() == View.GONE)){
-            Long catalogId = -1L;
-            String selectedCatalog = addProductCatalog.getSelectedItem();
-            if(selectedCatalog.equals(getActivity().getString(R.string.no_catalog_selected))){
-                inputAddProductModel.setCatalog(-1);
-            } else {
-                for (CatalogDataModel.Catalog catalog : catalogs) {
-                    if (selectedCatalog.equals(catalog.getCatalogName())) {
-                        catalogId = Long.parseLong(catalog.getCatalogId());
-                    }
-                }
-                inputAddProductModel.setCatalog(catalogId);
-            }
-        }else{
+        Long catalogId = -1L;
+        String selectedCatalog = addProductCatalog.getSelectedItem();
+        if(selectedCatalog.equals(getActivity().getString(R.string.no_catalog_selected))||catalogs==null){
             inputAddProductModel.setCatalog(-1);
+        } else {
+            for (CatalogDataModel.Catalog catalog : catalogs) {
+                if (selectedCatalog.equals(catalog.getCatalogName())) {
+                    catalogId = Long.parseLong(catalog.getCatalogId());
+                }
+            }
+            inputAddProductModel.setCatalog(catalogId);
         }
 
         Log.d(TAG, messageTAG + inputAddProductModel);
@@ -2770,11 +2661,12 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
     /**
      * functional method for save or save with sending to the internet
+     *
      * @param isPush true means send data to the internet, false means not send data to the internet
      */
-    public void saveProduct(boolean isPush){
+    public void saveProduct(boolean isPush) {
         Pair<InputAddProductModel, TextDeleteModel> verif = verifProduct();
-        if(verif==null)
+        if (verif == null)
             return;
 
         if (!isCreateNewActivity) {
@@ -2788,7 +2680,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         ProductDb = InputAddProductModel.compileAll(verif.getModel1(), ProductDb, isWithoutImageAndStockEmpty);
         Bundle bundle = new Bundle();
         bundle.putLong(ProductService.PRODUCT_DATABASE_ID, ProductDb.getId());
-        if(getActivity() instanceof ProductSocMedActivity) {
+        if (getActivity() instanceof ProductSocMedActivity) {
             bundle.putInt(ProductService.PRODUCT_POSITION, ((ProductSocMedActivity) getActivity()).getCurrentFragmentPosition());
         }
         bundle.putString(ProductService.STOCK_STATUS, stockStatus);
@@ -2819,49 +2711,53 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     }
 
     @OnClick(R2.id.title_preorder)
-    public void togglePreOder(){
+    public void togglePreOder() {
         togglePreorder();
     }
 
     @OnClick(R2.id.add_product_tittle_wholesale)
     public void toggleWholeSale() {
 //        if (!VerificationUtils.validatePrice(addProductCurrency.getSelectedItem().toString(), addProductPrice.getText().toString())) {
-        Pair<Boolean, String> verif = VerificationUtils.validatePrice(getActivity(), selectedCurrencyDesc, addProductPrice.getText().toString(),"checkwholesale");
+        Pair<Boolean, String> verif = VerificationUtils.validatePrice(getActivity(), selectedCurrencyDesc, addProductPrice.getText().toString(), "checkwholesale");
         if (!verif.getModel1()) {
             addProductPriceAlert.setError(verif.getModel2());
             addProductPrice.requestFocus();
-        }else{
+        } else {
             toggleWholeSaleAfterVerify();
         }
     }
 
     private void togglePreorder(){
-        if(addProductPreOderContent != null) {
-            addProductPreOderContent.toggle();
-            addProductPreOderContent.getViewTreeObserver()
-                    .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        addProductPreOderContent.toggle();
+        addProductPreOderContent.getViewTreeObserver()
+                .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 
-                        @Override
-                        public void onGlobalLayout() {
-                            int w = addProductPreOderContent.getWidth();
-                            int h = addProductPreOderContent.getHeight();
-                            Log.v("W-H~WHOLESALE", w + "-" + h);
+                    @Override
+                    public void onGlobalLayout() {
+                        int w = addProductPreOderContent.getWidth();
+                        int h = addProductPreOderContent.getHeight();
+                        Log.v("W-H~WHOLESALE", w + "-" + h);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                             addProductPreOderContent.getViewTreeObserver()
                                     .removeOnGlobalLayoutListener(this);
+                        }else{
+                            addProductPreOderContent.getViewTreeObserver()
+                                    .removeGlobalOnLayoutListener(this);
                         }
-                    });
-            if (checkNotNull(getActivity()) && getActivity() instanceof ProductSocMedActivity) {
+                    }
+                });
+        if (checkNotNull(getActivity()) && getActivity() instanceof ProductSocMedActivity) {
 //            ((ProductSocMedActivity) getActivity()).recalculateView();
-            }
-            if (addProductPreOderContent.isExpanded())
-                addProductChevronPreorder.setImageResource(R.drawable.chevron_down);
-            else
-                addProductChevronPreorder.setImageResource(R.drawable.chevron_up);
         }
+        if (addProductPreOderContent.isExpanded())
+            addProductChevronPreorder.setImageResource(R.drawable.chevron_down);
+        else
+            addProductChevronPreorder.setImageResource(R.drawable.chevron_up);
+
     }
 
     private void toggleWholeSaleAfterVerify() {
-        if(wholeSaleContainer != null) {
+        if (wholeSaleContainer != null) {
             wholeSaleContainer.toggle();
             wholeSaleContainer.getViewTreeObserver()
                     .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -2871,8 +2767,13 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                             int w = wholeSaleContainer.getWidth();
                             int h = wholeSaleContainer.getHeight();
                             Log.v("W-H~WHOLESALE", w + "-" + h);
-                            wholeSaleContainer.getViewTreeObserver()
-                                    .removeOnGlobalLayoutListener(this);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                                wholeSaleContainer.getViewTreeObserver()
+                                        .removeOnGlobalLayoutListener(this);
+                            }else{
+                                wholeSaleContainer.getViewTreeObserver()
+                                        .removeGlobalOnLayoutListener(this);
+                            }
                         }
                     });
             if (checkNotNull(getActivity()) && getActivity() instanceof ProductSocMedActivity) {
@@ -2905,15 +2806,15 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
     @Override
     public void setData(final int type, Bundle data) {
-        switch(type){
+        switch (type) {
             case ProductService.EDIT_PRODUCT:
             case ProductService.ADD_PRODUCT:
             case ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
             case ProductService.DELETE_PRODUCT:
-                if(tkpdProgressDialog!=null&&tkpdProgressDialog.isProgress())
+                if (tkpdProgressDialog != null && tkpdProgressDialog.isProgress())
                     tkpdProgressDialog.dismiss();
 
-                switch(addProductType){
+                switch (addProductType) {
                     case ADD_FROM_GALLERY:
                     case ADD:
                     case ADD_MULTIPLE_FROM_GALERY:
@@ -2924,25 +2825,25 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                             @Override
                             public void run() {
                                 ProductDb = new Select().from(ProductDB.class).where(
-                                        ProductDB_Table.productId.is((int)productServerId)
+                                        ProductDB_Table.productId.is((int) productServerId)
                                 ).querySingle();
                                 ProductDb.setPictureDBs(ProductDb.getImages());
                                 ProductDb.setWholesalePriceDBs(ProductDb.getWholeSales());
 
                                 //[START] move to manage product
-                                if(getActivity()!=null){
+                                if (getActivity() != null) {
                                     if (addProductShareContainer != null && addProductShareContainer.isFacebookAuth) {
 
                                         //[START] move to ProductShareFragment
                                         ShareData shareData = new ShareData();
                                         shareData.setName(ProductDb.getNameProd());
 
-                                        if(CommonUtils.checkCollectionNotNull(ProductDb.getPictureDBs()))
+                                        if (CommonUtils.checkCollectionNotNull(ProductDb.getPictureDBs()))
                                             shareData.setImgUri(ProductDb.getPictureDBs().get(0).getPath());
 
                                         shareData.setUri(ProductDb.getProductUrl());
                                         shareData.setDescription(ProductDb.getDescProd());
-                                        shareData.setPrice(ProductDb.getPriceProd()+"");
+                                        shareData.setPrice(ProductDb.getPriceProd() + "");
                                         ProductActivity.moveToProductShare(shareData, getActivity());
 
                                         //[END] move to ProductShareFragment
@@ -2955,17 +2856,17 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                                         //[END] push to twitter
                                     }
 
-                                    if(addProductShareContainer != null && addProductShareContainer.isFacebookAuth){
+                                    if (addProductShareContainer != null && addProductShareContainer.isFacebookAuth) {
                                         return;
                                     }
                                     Intent intent;
-                                    if(isCreateNewActivity){
+                                    if (isCreateNewActivity) {
                                         intent = new Intent(getActivity(), ProductActivity.class);
                                         Bundle bundle = new Bundle();
                                         bundle.putString(ProductActivity.FRAGMENT_TO_SHOW, AddProductFragment.FRAGMENT_TAG);
                                         intent.putExtras(bundle);
                                         getActivity().startActivity(intent);
-                                    }else{
+                                    } else {
                                         CommonUtils.UniversalToast(getActivity(), getString(R.string.upload_product_waiting));
                                         getActivity().startActivity(new Intent(getActivity(), ManageProduct.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                                     }
@@ -2976,8 +2877,8 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                         }, 100);//[END] move to manage product
                         break;
                     case ADD_FROM_SOCIAL_MEDIA:
-                        int fragmentPosition = ((ProductSocMedActivity)getActivity()).getCurrentFragmentPosition();
-                        if (addProductSocMedSubmitContainer != null){
+                        int fragmentPosition = ((ProductSocMedActivity) getActivity()).getCurrentFragmentPosition();
+                        if (addProductSocMedSubmitContainer != null) {
                             addProductSocMedSubmitContainer.turnOffButton();
 
                         }
@@ -2988,7 +2889,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
                         break;
                     case EDIT:
-                        Log.d(TAG, messageTAG+"berhasil masuk sini ");
+                        Log.d(TAG, messageTAG + "berhasil masuk sini ");
                         getActivity().startActivity(new Intent(getActivity(), ManageProduct.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                         break;
                     default:
@@ -3000,25 +2901,25 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     }
 
     public void noitfyCompleted(int fragmentPosition) {
-        if (getActivity() != null && getActivity() instanceof ProductSocMedPresenter){
-            ((ProductSocMedPresenter)getActivity()).noitfyCompleted(fragmentPosition);
+        if (getActivity() != null && getActivity() instanceof ProductSocMedPresenter) {
+            ((ProductSocMedPresenter) getActivity()).noitfyCompleted(fragmentPosition);
         }
     }
 
     public void removeFragment(int fragmentPosition) {
-        if (getActivity() != null && getActivity() instanceof ProductSocMedPresenter){
-            ((ProductSocMedPresenter)getActivity()).removeFragment(fragmentPosition);
+        if (getActivity() != null && getActivity() instanceof ProductSocMedPresenter) {
+            ((ProductSocMedPresenter) getActivity()).removeFragment(fragmentPosition);
         }
     }
 
     public void removeFragment() {
         Bundle bundle = new Bundle();
         bundle.putString(ProductService.PRODUCT_ID, productId);
-        ((DownloadResultSender)getActivity()).sendDataToInternet(ProductService.DELETE_PRODUCT, bundle);
+        ((DownloadResultSender) getActivity()).sendDataToInternet(ProductService.DELETE_PRODUCT, bundle);
     }
 
     public void deleteProductDialog() {
-        if(productId != null&&!productId.equals("XXX")) {
+        if (productId != null && !productId.equals("XXX")) {
             AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
             myAlertDialog.setMessage(getString(R.string.dialog_delete_product));
 
@@ -3047,19 +2948,23 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
     @Override
     public void onMessageError(int type, Object... data) {
-        if(tkpdProgressDialog!=null&&tkpdProgressDialog.isProgress()){
+        if (tkpdProgressDialog != null && tkpdProgressDialog.isProgress()) {
             tkpdProgressDialog.dismiss();
         }
         dismissReturnableDialog();
-        Snackbar.make(parentView, (String)data[0], Snackbar.LENGTH_LONG).show();
+        Snackbar.make(parentView, (String) data[0], Snackbar.LENGTH_LONG).show();
     }
 
 
     @Override
     public void showProgress(boolean isShow) {
-        if(isShow){
+        if (isShow) {
             tkpdProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
             tkpdProgressDialog.showDialog();
+        } else {
+            if (tkpdProgressDialog != null) {
+                tkpdProgressDialog.dismiss();
+            }
         }
     }
 
@@ -3093,29 +2998,29 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         Permission[] permissions = new Permission[]{
                 Permission.PUBLISH_ACTION
         };
-        mSimpleFacebook.requestNewPermissions(permissions,onNewPermissionsListener);
+        mSimpleFacebook.requestNewPermissions(permissions, onNewPermissionsListener);
     }
 
     public void showDialog() {
-        if(getActivity() != null && getActivity() instanceof AddProductView){
-            ((ProductView)getActivity()).showTwitterDialog();
+        if (getActivity() != null && getActivity() instanceof AddProductView) {
+            ((ProductView) getActivity()).showTwitterDialog();
         }
     }
 
-    public void onLoginTwitter(){
-        if(addProductShareContainer != null) {
+    public void onLoginTwitter() {
+        if (addProductShareContainer != null) {
             addProductShareContainer.butTwitterToggle(true);
         }
     }
 
     public int countPicture() {
         int count = 0;
-        for (ImageModel photo : photos){
-            if (photo.getPath() != null){
+        for (ImageModel photo : photos) {
+            if (photo.getPath() != null) {
                 count++;
             }
         }
-        Log.i(TAG,messageTAG + "number of active image : " + count);
+        Log.i(TAG, messageTAG + "number of active image : " + count);
         return count;
     }
 }

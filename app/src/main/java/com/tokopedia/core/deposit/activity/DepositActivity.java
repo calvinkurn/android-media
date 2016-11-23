@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.deposit.fragment.DepositFragment;
 import com.tokopedia.core.deposit.presenter.DepositFragmentPresenterImpl;
@@ -25,6 +26,11 @@ public class DepositActivity extends BasePresenterActivity<DepositPresenter> {
 
     public static Intent createInstance(Context context) {
         return new Intent(context, DepositActivity.class);
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_DEPOSIT;
     }
 
     @Override

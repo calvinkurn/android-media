@@ -46,6 +46,7 @@ import com.tokopedia.core.addtocart.presenter.AddToCartPresenter;
 import com.tokopedia.core.addtocart.presenter.AddToCartPresenterImpl;
 import com.tokopedia.core.addtocart.receiver.ATCResultReceiver;
 import com.tokopedia.core.addtocart.services.ATCIntentService;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
@@ -168,6 +169,10 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     private ATCResultReceiver atcReceiver;
     private Subscription subscription;
 
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_ADD_TO_CART;
+    }
 
     public static Intent createInstance(Context context, ProductCartPass data) {
         return new Intent(context, AddToCartActivity.class).putExtra(EXTRA_PRODUCT_CART, data);
@@ -519,10 +524,10 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         if (parent.getAdapter().getItem(position) instanceof Attribute) {
             List<Product> list = ((Attribute) parent.getAdapter()
                     .getItem(position)).getProducts();
-            if (((Attribute)parent.getAdapter().getItem(position)).getProducts().size() != 1
-                    && (list.size()<1
+            if (((Attribute) parent.getAdapter().getItem(position)).getProducts().size() != 1
+                    && (list.size() < 1
                     || !((Attribute) parent.getAdapter()
-                    .getItem(position)).getProducts().get(0).getShipperProductId().equals("0"))){
+                    .getItem(position)).getProducts().get(0).getShipperProductId().equals("0"))) {
                 list.add(0, Product.createSelectionInfo(
                         getString(R.string.atc_selection_shipment_package_info)));
             }
@@ -542,9 +547,9 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             orderData.setShipmentPackage(((Product) parent.getAdapter()
                     .getItem(position)).getShipperProductId());
             tvShippingPrice.setText(((Product)
-                    parent.getAdapter().getItem(position)).getFormattedPrice()+"");
+                    parent.getAdapter().getItem(position)).getFormattedPrice() + "");
             tvErrorShipping.setVisibility(View.GONE);
-            if(((Product) parent.getAdapter().getItem(position)).getIsShowMap() == 1){
+            if (((Product) parent.getAdapter().getItem(position)).getIsShowMap() == 1) {
                 viewFieldLocation.setVisibility(View.VISIBLE);
                 if (!(etValueLocation.getText().length() > 0)) {
                     Snackbar.make(cartCoordinatLayout, getString(R.string.message_gojek_shipping_package), Snackbar.LENGTH_LONG).show();
@@ -672,7 +677,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
 
     @Override
     public void afterTextChanged(Editable s) {
-        if(subscription == null || subscription.isUnsubscribed()) quantityChangedEvent(s);
+        if (subscription == null || subscription.isUnsubscribed()) quantityChangedEvent(s);
     }
 
     private void quantityChangedEvent(Editable s) {
@@ -685,9 +690,9 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         } else if (orderData.getAddress() == null) {
             showErrorMessage(getString(R.string.error_no_address));
-        } else if(getCurrentFocus() == etQuantity) {
+        } else if (getCurrentFocus() == etQuantity) {
             CommonUtils.dumper("rates/v1 kerorates called aftertextchanged");
-            orderData.setWeight(CommonUtils.round((Double.parseDouble(orderData.getInitWeight())*Double.parseDouble(s.toString())),2 )+"");
+            orderData.setWeight(CommonUtils.round((Double.parseDouble(orderData.getInitWeight()) * Double.parseDouble(s.toString())), 2) + "");
             tilAmount.setError(null);
             tilAmount.setErrorEnabled(false);
             presenter.calculateAllPrices(AddToCartActivity.this, orderData);
@@ -795,7 +800,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
 
             @Override
             public void onNext(Long timeCounter) {
-                if(timeCounter > .8) actionIncreaseQuantity();
+                if (timeCounter > .8) actionIncreaseQuantity();
             }
         };
     }
@@ -814,7 +819,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
 
             @Override
             public void onNext(Long timerCounter) {
-                if(timerCounter > .8) actionDecreaseQuantity();
+                if (timerCounter > .8) actionDecreaseQuantity();
             }
         };
     }
@@ -829,13 +834,13 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         return new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                if(motionEvent.getAction() == MotionEvent.ACTION_DOWN
-                        || motionEvent.getAction() == MotionEvent.ACTION_HOVER_ENTER){
-                    if(subscription != null) subscription.unsubscribe();
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    if (subscription != null) subscription.unsubscribe();
                     subscription = incrementCounterSubscription().subscribe(increaseQuantitySubscriber());
                     CommonUtils.dumper("SUBSCRIBE");
-                } else {
-                    if(subscription != null) {
+                } else if (motionEvent.getAction() == MotionEvent.ACTION_CANCEL ||
+                        motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    if (subscription != null) {
                         subscription.unsubscribe();
                     }
                 }
@@ -848,12 +853,12 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         return new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                if(motionEvent.getAction() == MotionEvent.ACTION_DOWN
-                        || motionEvent.getAction() == MotionEvent.ACTION_HOVER_ENTER){
-                    if(subscription != null) subscription.unsubscribe();
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    if (subscription != null) subscription.unsubscribe();
                     subscription = incrementCounterSubscription().subscribe(decreaseQuantitySubscriber());
-                } else {
-                    if(subscription != null) {
+                } else if (motionEvent.getAction() == MotionEvent.ACTION_CANCEL ||
+                        motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    if (subscription != null) {
                         subscription.unsubscribe();
                     }
                 }

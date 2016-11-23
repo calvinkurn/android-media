@@ -165,5 +165,5 @@
     <dimen name="add_to_cart_qty">72dp</dimen>
 
     <dimen name="padding_left_schedule_shop_close">5dp</dimen>
-
+    <dimen name="bottom_navigation_elevation">20dp</dimen>
 </resources>

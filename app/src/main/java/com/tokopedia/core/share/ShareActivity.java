@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
@@ -19,6 +20,11 @@ public class ShareActivity extends TActivity implements ShareView {
         Intent intent = new Intent(context, ShareActivity.class);
         intent.putExtra(ShareData.TAG, shareData);
         return intent;
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_SHARE;
     }
 
     @Override

@@ -35,6 +35,7 @@ import com.tokopedia.core.myproduct.model.SimpleTextModel;
 import com.tokopedia.core.myproduct.model.TextDeleteModel;
 import com.tokopedia.core.myproduct.model.WholeSaleAdapterModel;
 import com.tokopedia.core.myproduct.model.editProductForm.EditProductForm;
+import com.tokopedia.core.myproduct.utils.ProductEditHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -120,7 +121,8 @@ public class AddProductPresenterImpl implements AddProductPresenter
     @Override
     public void fetchDepartmentParent(Context context) {
         fetchDepParentTimer = initCacheIfNotNull(context, FETCH_DEP_PARENT);
-        if (fetchDepParentTimer.isExpired()) {
+        List<CategoryDB> categoryDBs = new Select().from(CategoryDB.class).where(CategoryDB_Table.levelId.is(0)).queryList();
+        if (fetchDepParentTimer.isExpired() || checkCollectionNotNull(categoryDBs)) {
             ((NetworkInteractorImpl) networkInteractorImpl).setFetchDepartment(this);
             ((NetworkInteractorImpl) networkInteractorImpl).setCompositeSubscription(compositeSubscription);
             networkInteractorImpl.fetchDepartment(context);
@@ -816,203 +818,187 @@ public class AddProductPresenterImpl implements AddProductPresenter
             addProductView.initPhotoAdapter(imageModelList);
         }
 
-        object = map.get(NetworkInteractor.PRODUCT_DETAIL_DATA);
-        if (object != null && object instanceof ProductDetailData) {
-            ProductDetailData productDetailData = (ProductDetailData) object;
+        object = map.get(NetworkInteractor.EDIT_PRODUCT_FORM);
+        if (object != null && object instanceof EditProductForm) {
+            EditProductForm editProductForm = (EditProductForm) object;
+            EditProductForm.Data data = editProductForm.getData();
+            if (checkNotNull(data)) {
+                // set preorder 5 - SKIPPED need to asked tom team
+                ProductPreOrder preOrder = data.getPreorder();
+                preOrder.convertToDay();
+                if (checkNotNull(preOrder.getPreorderProcessTime()) && !preOrder.getPreorderProcessTime().equals("0"))
+                    addProductView.setProductPreOrder(preOrder.getPreorderProcessTime());
 
-            // set preorder 5 - SKIPPED need to asked tom team
-            ProductPreOrder preOrder = productDetailData.getPreOrder();
-            preOrder.convertToDay();
-            if (checkNotNull(preOrder.getPreorderProcessTime()) && !preOrder.getPreorderProcessTime().equals("0"))
-                addProductView.setProductPreOrder(preOrder.getPreorderProcessTime());
-
-            String deleteThis = "[Preorder %s Hari]";
-            String productName = Html.fromHtml(productDetailData.getInfo().getProductName()).toString();
-            String deleteThisWithText = String.format(deleteThis, preOrder.getPreorderProcessTime());
-            if (productName.contains(deleteThisWithText)) {
-                productName = productName.replace(deleteThisWithText, "");
-            }
-            // set Product Name 2
-            addProductView.setProductName(productName);
-            addProductView.disableProductNameEdit();
-
-            // set deskripsi 4
-            String deleteThis2 = "Produk ini adalah produk preorder dan membutuhkan waktu proses %s Hari";
-            String deleteThis2WithText = String.format(deleteThis2, preOrder.getPreorderProcessTime());
-            String productDescription = productDetailData.getInfo().getProductDescription();
-            if (productDescription.toLowerCase().contains(deleteThis2WithText.toLowerCase())) {
-                productDescription = productDescription.replace(deleteThis2WithText, "").trim();
-            }
-
-            if (productDescription.equals("0")) {
-                productDescription = "";
-            }
-            // [https://phab.tokopedia.com/T6924 BUG] Edit Product - Display Tag HTML
-            addProductView.setProductDesc(Html.fromHtml(productDescription).toString());
-            // [BUG] Edit Product - Display Tag HTML
-
-            // set kategori 3
-            List<ProductBreadcrumb> breadcrumb = productDetailData.getBreadcrumb();
-            List<List<SimpleTextModel>> lists = new ArrayList<>();
-            ArrayList<TextDeleteModel> textDeleteModels = new ArrayList<>();
-            for (int i = 1, j = 0; i <= breadcrumb.size(); i++, j++) {
-                String departmentId = breadcrumb.get(j).getDepartmentId();
-
-                List<SimpleTextModel> levelSelection = AddProductFragment.toSimpleText(i, Integer.parseInt(departmentId));
-                lists.add(levelSelection);
-
-                TextDeleteModel textToDisplay = new TextDeleteModel(breadcrumb.get(j).getDepartmentName());
-                textToDisplay.setDepartmentId(Integer.parseInt(breadcrumb.get(j).getDepartmentId()));
-                textDeleteModels.add(textToDisplay);
-            }
-            addProductView.initCategoryAdapter(lists, textDeleteModels);
-
-            Object o = map.get(NetworkInteractor.EDIT_PRODUCT_FORM);
-            if (checkNotNull(o) && o instanceof EditProductForm) {
-                EditProductForm.Data data = ((EditProductForm) o).getData();
-                if (checkNotNull(data)) {
-                    EditProductForm.Product product = data.getProduct();
-                    String productCurrencyId = product.getProductCurrencyId();
-                    String productPrice = product.getProductPrice();
-                    String isEditableName = product.getProductNameEditable();
-
-                    if (isEditableName != null && isEditableName.equals("1")) {
-                        addProductView.enableProductNameEdit();
-                    }
-
-                    // set currency unit 6
-                    // just for rupiah
-                    String singkatan = "";
-                    if (productCurrencyId.equals("1")) {// Rupiah
-                        singkatan = "Rp";
-                    } else {// Dollar
-                        singkatan = "US$";
-                    }
-                    List<CurrencyDB> currencyDBs = new Select().from(CurrencyDB.class)
-                            .queryList();
-                    for (int i=0;i<currencyDBs.size();i++){
-                        if(currencyDBs.get(i).getAbrvCurr().toLowerCase().contains(singkatan.toLowerCase())){
-                            addProductView.setProductCurrencyUnit(currencyDBs.get(i).getAbrvCurr());
-                        }
-                    }
-
-                    // set currency  7
-                    addProductView.setProductPrice(productPrice);
-
-
-                    // set whole grosir 10
-                    List<ProductWholesalePrice> wholesalePrice = new ArrayList<>();
-                    for (EditProductForm.WholesalePrice wholesale : data.getWholesalePrice()) {
-                        ProductWholesalePrice productWholesalePrice = new ProductWholesalePrice();
-                        productWholesalePrice.setWholesaleMax(wholesale.getWholesaleMax());
-                        productWholesalePrice.setWholesaleMin(wholesale.getWholesaleMin());
-                        productWholesalePrice.setWholesalePrice(wholesale.getWholesalePrice());
-                        wholesalePrice.add(productWholesalePrice);
-                    }
-
-                    ArrayList<WholeSaleAdapterModel> wholeSaleAdapterModels = convertToWholeSaleAdapterModel(wholesalePrice, addProductView.getProductCurrencyUnit());
-
-                    if (checkCollectionNotNull(wholeSaleAdapterModels)) {
-                        addProductView.initWholeSaleAdapter(wholeSaleAdapterModels);
-                    } else {
-                        addProductView.initWholeSaleAdapter();
-                    }
-
+                String deleteThis = "[Preorder %s Hari]";
+                String productName = Html.fromHtml(data.getProduct().getProductName()).toString();
+                String deleteThisWithText = String.format(deleteThis, preOrder.getPreorderProcessTime());
+                if (productName.contains(deleteThisWithText)) {
+                    productName = productName.replace(deleteThisWithText, "");
                 }
-            }
+                // set Product Name 2
+                addProductView.setProductName(productName);
+                addProductView.disableProductNameEdit();
 
-            // set currency unit 6
-            // just for rupiah
-//            String productPrice = productDetailData.getInfo().getProductPrice().replace(".","");
-//            String[] hargaDanUnitHarga = productPrice.split(" ");
-//            List<MataUang> mataUangs = new Select().from(MataUang.class)
-//                    .execute();
-//            for(MataUang mataUang : mataUangs){
-//                if(hargaDanUnitHarga[0].contains(mataUang.getAbrvCurr())){
-//                    addProductView.setProductCurrencyUnit(mataUang.getAbrvCurr());
-//                }
-//            }
-//            // set currency  7
-//            addProductView.setProductPrice(hargaDanUnitHarga[1]);
+                // set deskripsi 4
+                String deleteThis2 = "Produk ini adalah produk preorder dan membutuhkan waktu proses %s Hari";
+                String deleteThis2WithText = String.format(deleteThis2, preOrder.getPreorderProcessTime());
+                String productDescription = data.getProduct().getProductShortDesc();
+                if (productDescription.toLowerCase().contains(deleteThis2WithText.toLowerCase())) {
+                    productDescription = productDescription.replace(deleteThis2WithText, "").trim();
+                }
 
-            // set weight unit 8
-            String productWeightUnit = productDetailData.getInfo().getProductWeightUnit();
-            addProductView.setWeightUnit(productWeightUnit);
+                if (productDescription.equals("0")) {
+                    productDescription = "";
+                }
+                // [https://phab.tokopedia.com/T6924 BUG] Edit Product - Display Tag HTML
+                addProductView.setProductDesc(Html.fromHtml(productDescription).toString());
+                // [BUG] Edit Product - Display Tag HTML
 
-            // set weight 9
-            String productWeight = productDetailData.getInfo().getProductWeight();
-            addProductView.setProductWeight(productWeight.replace(".", ""));
+                // set kategori 3
+                List<EditProductForm.Breadcrumb> breadcrumb = data.getBreadcrumb();
+                List<List<SimpleTextModel>> lists = new ArrayList<>();
+                ArrayList<TextDeleteModel> textDeleteModels = new ArrayList<>();
+                for (int i = 1, j = 0; i <= breadcrumb.size(); i++, j++) {
+                    String departmentId = breadcrumb.get(j).getDepartmentId();
 
-            // set minimum order 15
-            String productMinOrder = productDetailData.getInfo().getProductMinOrder().replace(".", "");
-            addProductView.setProductMinOrder(productMinOrder);
+                    List<SimpleTextModel> levelSelection = AddProductFragment.toSimpleText(i, Integer.parseInt(departmentId));
+                    lists.add(levelSelection);
+
+                    TextDeleteModel textToDisplay = new TextDeleteModel(breadcrumb.get(j).getDepartmentName());
+                    textToDisplay.setDepartmentId(Integer.parseInt(breadcrumb.get(j).getDepartmentId()));
+                    textDeleteModels.add(textToDisplay);
+                }
+                addProductView.initCategoryAdapter(lists, textDeleteModels);
+
+                EditProductForm.Product product = data.getProduct();
+                String productCurrencyId = product.getProductCurrencyId();
+                String productPrice = product.getProductPrice();
+                String isEditableName = product.getProductNameEditable();
+
+                if (isEditableName != null && isEditableName.equals("1")) {
+                    addProductView.enableProductNameEdit();
+                }
+
+                // set currency unit 6
+                // just for rupiah
+                String singkatan = "";
+                if (productCurrencyId.equals("1")) {// Rupiah
+                    singkatan = "Rp";
+                } else {// Dollar
+                    singkatan = "US$";
+                }
+                List<CurrencyDB> currencyDBs = new Select().from(CurrencyDB.class)
+                        .queryList();
+                for (int i = 0; i < currencyDBs.size(); i++) {
+                    if (currencyDBs.get(i).getAbrvCurr().toLowerCase().contains(singkatan.toLowerCase())) {
+                        addProductView.setProductCurrencyUnit(currencyDBs.get(i).getAbrvCurr());
+                    }
+                }
+
+                // set currency  7
+                addProductView.setProductPrice(productPrice);
 
 
-            // set etalase 11
-            int productStatus = Integer.parseInt(productDetailData.getInfo().getProductStatus());
-            String productEtalaseId = productDetailData.getInfo().getProductEtalaseId();
-            switch (productStatus) {
-                case NetworkInteractor.PRD_STATE_ACTIVE:
-                    addProductView.setProductEtalase(false, productEtalaseId);
-                    break;
-                case NetworkInteractor.PRD_STATE_WAREHOUSE:
-                    addProductView.setProductEtalase(true, productEtalaseId);
-                    break;
-            }
+                // set whole grosir 10
+                List<ProductWholesalePrice> wholesalePrice = new ArrayList<>();
+                for (EditProductForm.WholesalePrice wholesale : data.getWholesalePrice()) {
+                    ProductWholesalePrice productWholesalePrice = new ProductWholesalePrice();
+                    productWholesalePrice.setWholesaleMax(wholesale.getWholesaleMax());
+                    productWholesalePrice.setWholesaleMin(wholesale.getWholesaleMin());
+                    productWholesalePrice.setWholesalePrice(wholesale.getWholesalePrice());
+                    wholesalePrice.add(productWholesalePrice);
+                }
 
-            // set returnable 12
-            Integer productReturnable = productDetailData.getInfo().getProductReturnable();
-            addProductView.setProductReturnable(productReturnable == 1 ? true : false);
+                ArrayList<WholeSaleAdapterModel> wholeSaleAdapterModels = convertToWholeSaleAdapterModel(wholesalePrice, addProductView.getProductCurrencyUnit());
 
-            // set bekas/baru 13
-            switch (productDetailData.getInfo().getProductCondition().toLowerCase()) {
-                case "bekas":
-                    addProductView.setProductCondition(false);
-                    break;
-                case "baru":
-                    addProductView.setProductCondition(true);
-                    break;
-            }
-
-            // set asuransi 14
-            if (productDetailData.getInfo().getProductInsurance().toLowerCase().equals("ya")) {
-                addProductView.setProductInsurance(true);
-            } else {
-                addProductView.setProductInsurance(false);
-            }
-
-            // set catalog 15 in here
-            object = map.get(NetworkInteractor.CATALOG_MODEL_EDIT);
-            if (object != null && object instanceof CatalogDataModel) {
-                CatalogDataModel catalogDataModel = (CatalogDataModel) object;
-
-                onSuccessFetchCatalog(catalogDataModel);
-                int selection = 0;
-                if (productDetailData.getInfo().getProductCatalogId().equals("0")) {
-                    addProductView.setProductCatalog(-1);
+                if (checkCollectionNotNull(wholeSaleAdapterModels)) {
+                    addProductView.initWholeSaleAdapter(wholeSaleAdapterModels);
                 } else {
-                    ArrayList<CatalogDataModel.Catalog> list = catalogDataModel.getList();
-                    if (checkCollectionNotNull(list)) {
-                        int x = -1;
-                        A:
-                        for (CatalogDataModel.Catalog t : list) {
-                            if (t.getCatalogName().equals(productDetailData.getInfo().getProductCatalogName())) {
-                                x = selection;
-                                break A;
+                    addProductView.initWholeSaleAdapter();
+                }
+
+                // set weight unit 8
+                String productWeightUnit = ProductEditHelper.convertProductWeight(data.getProduct().getProductWeightUnit());
+                addProductView.setWeightUnit(productWeightUnit);
+
+                // set weight 9
+                String productWeight = data.getProduct().getProductWeight();
+                addProductView.setProductWeight(productWeight.replace(".", ""));
+
+                // set minimum order 15
+                String productMinOrder = data.getProduct().getProductMinOrder().replace(".", "");
+                addProductView.setProductMinOrder(productMinOrder);
+
+                // set etalase 11
+                int productStatus = Integer.parseInt(data.getProduct().getProductStatus());
+                String productEtalaseId = data.getProduct().getProductEtalaseId();
+                switch (productStatus) {
+                    case NetworkInteractor.PRD_STATE_ACTIVE:
+                        addProductView.setProductEtalase(false, productEtalaseId);
+                        break;
+                    case NetworkInteractor.PRD_STATE_WAREHOUSE:
+                        addProductView.setProductEtalase(true, productEtalaseId);
+                        break;
+                }
+
+                // set returnable 12
+                Integer productReturnable = data.getInfo().getProductReturnable();
+                addProductView.setProductReturnable(productReturnable == 1 ? true : false);
+
+                // set bekas/baru 13
+                switch (data.getProduct().getProductConditionName().toLowerCase()) {
+                    case "bekas":
+                        addProductView.setProductCondition(false);
+                        break;
+                    case "baru":
+                        addProductView.setProductCondition(true);
+                        break;
+                }
+
+                // set asuransi 14
+                if (data.getProduct().getProductInsurance().toLowerCase().equals("ya")) {
+                    addProductView.setProductInsurance(true);
+                } else {
+                    addProductView.setProductInsurance(false);
+                }
+
+                // set catalog 15 in here
+                object = map.get(NetworkInteractor.CATALOG_MODEL_EDIT);
+                if (object != null && object instanceof CatalogDataModel) {
+                    CatalogDataModel catalogDataModel = (CatalogDataModel) object;
+
+                    onSuccessFetchCatalog(catalogDataModel);
+                    int selection = 0;
+                    if (data.getCatalog().getCatalogId().equals("0")) {
+                        addProductView.setProductCatalog(-1);
+                    } else {
+                        ArrayList<CatalogDataModel.Catalog> list = catalogDataModel.getList();
+                        if (checkCollectionNotNull(list)) {
+                            int x = -1;
+                            A:
+                            for (CatalogDataModel.Catalog t : list) {
+                                if (t.getCatalogName().equals(data.getCatalog().getCatalogName())) {
+                                    x = selection;
+                                    break A;
+                                }
+                                selection++;
                             }
-                            selection++;
+                            addProductView.setProductCatalog(x);
                         }
-                        addProductView.setProductCatalog(x);
                     }
                 }
-            }
 
-            addProductView.constructOriginalEditData();
-            addProductView.dismissDialog();
+                addProductView.constructOriginalEditData();
+                addProductView.showProgress(false);
+            }else {
+                throw new RuntimeException("edit is null");
+            }
+        } else {
+            throw new RuntimeException("edit form is null");
         }
 
-
     }
+
 
     public static int findPrimaryImage(List<ImageModel> imageModelList, DbManager dbManager) {
         //[START] set primary image position

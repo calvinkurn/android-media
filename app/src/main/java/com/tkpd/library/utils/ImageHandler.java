@@ -24,10 +24,12 @@ import android.widget.LinearLayout;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.tokopedia.core.GCMListenerService;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
 
@@ -259,6 +261,22 @@ public class ImageHandler {
                 .error(R.drawable.error_drawable)
                 .centerCrop()
                 .into(target);
+
+    }
+
+    public static void loadImageBitmapNotification(Context context, String url, GCMListenerService.OnGetFileListener listener) {
+        FutureTarget<File> futureTarget = Glide.with(context)
+                .load(url)
+                .downloadOnly(210, 100);
+
+        try {
+            File file = futureTarget.get();
+            if(file.exists()){
+                listener.onFileReady(file);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 

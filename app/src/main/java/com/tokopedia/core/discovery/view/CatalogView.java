@@ -2,6 +2,7 @@ package com.tokopedia.core.discovery.view;
 
 import com.tokopedia.core.discovery.adapter.browseparent.BrowseCatalogAdapter;
 import com.tokopedia.core.discovery.model.BrowseCatalogModel;
+import com.tokopedia.core.dynamicfilter.model.DynamicFilterModel;
 import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.util.PagingHandler;
 
@@ -20,4 +21,5 @@ public interface CatalogView extends BaseView {
     int getDataSize();
     void onCallNetwork();
     BrowseCatalogModel getDataModel();
+    void setDynamicFilterAtrribute(DynamicFilterModel.Data filterAtrribute, int activeTab);
 }

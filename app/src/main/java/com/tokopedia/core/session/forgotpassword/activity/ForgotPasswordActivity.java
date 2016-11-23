@@ -11,6 +11,7 @@ import android.os.PersistableBundle;
 import android.view.MenuItem;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.session.forgotpassword.fragment.ForgotPasswordFragment;
 import com.tokopedia.core.session.forgotpassword.presenter.ForgotPasswordFragmentPresenterImpl;
@@ -73,6 +74,11 @@ public class ForgotPasswordActivity extends BasePresenterActivity {
     @Override
     protected void setActionVar() {
 
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_FORGOT_PASSWORD;
     }
 
     @Override

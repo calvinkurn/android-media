@@ -92,6 +92,8 @@ public interface TxOrderNetInteractor {
 
         void onError(String message);
 
+        void onNoConnection(String message);
+
         void onEmptyData();
     }
 
@@ -100,6 +102,8 @@ public interface TxOrderNetInteractor {
 
         void onError(String message);
 
+        void onNoConnection(String message);
+
         void onEmptyData();
     }
 
@@ -107,6 +111,8 @@ public interface TxOrderNetInteractor {
         void onSuccess(JSONObject data, OrderListData dataObj);
 
         void onError(String message);
+
+        void onNoConnection(String message);
 
         void onEmptyData();
     }
@@ -118,13 +124,13 @@ public interface TxOrderNetInteractor {
     }
 
     interface OnGetPaymentConfirmationList {
-        void onSuccess(JSONObject data, TxConfListData dataObj);
+        void onSuccess(TxConfListData dataObj);
 
         void onError(String message);
 
         void onEmptyData();
 
-        void onTimeout(String message);
+        void onNoConnection(String message);
     }
 
 
@@ -155,6 +161,8 @@ public interface TxOrderNetInteractor {
         void onSuccess(TxVerListData data);
 
         void onError(String message);
+
+        void onNoConnection(String message);
 
         void onEmptyData();
     }

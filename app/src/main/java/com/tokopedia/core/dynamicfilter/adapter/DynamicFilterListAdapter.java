@@ -34,13 +34,11 @@ import butterknife.OnClick;
  * Created by noiz354 on 7/11/16.
  */
 public class DynamicFilterListAdapter extends ProductAdapter {
-    public static final int DYNAMIC_FILTER_TYPE = 1_912_281;
-    public static final int DYNAMIC_FILTER_TYPE_ACTIVE = 1_912_282;
-    public static final int DYNAMIC_FILTER_MODEL = 912_282;
     private static final String TAG = DynamicFilterListAdapter.class.getSimpleName();
-    int activeLocation = -1;
+    private static final int DYNAMIC_FILTER_MODEL = 912_282;
+    private int activeLocation = -1;
     private Context context;
-    NotifyActive notifyActive = new NotifyActive() {
+    private NotifyActive notifyActive = new NotifyActive() {
         @Override
         public void notify(boolean status, int position) {
             //[START] reset old active position
@@ -52,7 +50,7 @@ public class DynamicFilterListAdapter extends ProductAdapter {
             activeLocation = position;
 
             //[START] reset old active position
-            activatedPositon();
+            activatePosition(activeLocation);
             //[END] reset old active position
 
             notifyDataSetChanged();
@@ -69,30 +67,33 @@ public class DynamicFilterListAdapter extends ProductAdapter {
 
             }
         }
-
-        private void activatedPositon() {
-            RecyclerViewItem recyclerViewItem = getData().get(activeLocation);
-            if (recyclerViewItem != null && recyclerViewItem instanceof DynamicListModel) {
-                DynamicListModel dynamicListModel = (DynamicListModel) recyclerViewItem;
-                dynamicListModel.active = true;
-
-                // set data again
-                data.set(activeLocation, dynamicListModel);
-
-            }
-        }
     };
+
+    public void activatePosition(int location) {
+        RecyclerViewItem recyclerViewItem = getData().get(location);
+        if (recyclerViewItem != null && recyclerViewItem instanceof DynamicListModel) {
+            DynamicListModel dynamicListModel = (DynamicListModel) recyclerViewItem;
+            dynamicListModel.active = true;
+            // set data again
+            data.set(location, dynamicListModel);
+        }
+        if (activeLocation != location) {
+            // Update active location if not same
+            activeLocation = location;
+        }
+    }
+
 
     public void setActiveIndicator(String key, boolean active) {
         for (RecyclerViewItem item : getData()) {
             DynamicListModel model = (DynamicListModel) item;
             for (DynamicFilterModel.Option o : model.filter.getOptions()) {
-                if(o.getKey().equals(key)){
+                if (o.getKey().equals(key)) {
                     model.setHasFilter(active);
                 }
             }
         }
-        if(key.equals("sc")){
+        if (key.equals("sc")) {
             DynamicListModel model = (DynamicListModel) getData().get(0);
             model.setHasFilter(active);
         }

@@ -34,20 +34,23 @@ import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.ManageShop;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.inboxmessage.activity.SendMessageActivity;
 import com.tokopedia.core.inboxmessage.fragment.SendMessageFragment;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.session.Login;
 import com.tokopedia.core.session.presenter.Session;
+import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.shopinfo.adapter.ShopTabPagerAdapter;
 import com.tokopedia.core.shopinfo.facades.ActionShopInfoRetrofit;
 import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.TkpdState;
@@ -110,6 +113,11 @@ public class ShopInfoActivity extends TActivity {
             });
         }
     };
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_SHOP;
+    }
 
     public static Bundle createBundle(String id, String domain) {
         Bundle bundle = new Bundle();
@@ -223,8 +231,9 @@ public class ShopInfoActivity extends TActivity {
             }
 
             @Override
-            public void onFailure() {
+            public void onFailure(String error) {
                 holder.favorite.clearAnimation();
+                NetworkErrorHelper.showSnackbar(ShopInfoActivity.this, error);
             }
         };
     }
@@ -380,6 +389,11 @@ public class ShopInfoActivity extends TActivity {
             ImageHandler.loadImageCircle2(this, holder.shopAvatar, shopModel.info.shopAvatar);
             if (!shopModel.info.shopCover.isEmpty()) {
                 holder.goldShop.setVisibility(View.VISIBLE);
+                if(shopModel.info.shopIsOfficial == 1){
+                    holder.goldShop.setImageResource(R.drawable.ic_badge_official);
+                } else {
+                    holder.goldShop.setImageResource(R.drawable.ic_shop_gold);
+                }
                 ImageHandler.loadImageCover2(holder.banner, shopModel.info.shopCover);
             } else
                 holder.infoShop.setBackgroundResource(0);
@@ -403,6 +417,7 @@ public class ShopInfoActivity extends TActivity {
     }
 
     private void updateView() {
+        facadeAction.setShopModel(shopModel);
         shopModel.info.shopName = Html.fromHtml(shopModel.info.shopName).toString();
         setListener();
         holder.collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
@@ -416,7 +431,11 @@ public class ShopInfoActivity extends TActivity {
         holder.location.setText(shopModel.info.shopLocation);
         holder.location.setVisibility(View.VISIBLE);
         holder.collapsingToolbarLayout.setTitle(" ");
-        showGoldCover();
+        if(shopModel.info.shopIsOfficial==1){
+            showOfficialCover();
+        } else {
+            showGoldCover();
+        }
         showShopAction();
         setShopAlreadyFavorite();
         showNotice();
@@ -465,6 +484,18 @@ public class ShopInfoActivity extends TActivity {
             holder.infoShop.setBackgroundResource(0);
         } else {
             holder.goldShop.setVisibility(View.VISIBLE);
+            ImageHandler.loadImageCover2(holder.banner, shopModel.info.shopCover);
+            holder.infoShop.setBackgroundResource(R.drawable.cover_shader);
+        }
+    }
+
+    private void showOfficialCover() {
+        if (shopModel.info.shopIsOfficial == 0) {
+            holder.goldShop.setVisibility(View.INVISIBLE);
+            holder.infoShop.setBackgroundResource(0);
+        } else {
+            holder.goldShop.setVisibility(View.VISIBLE);
+            holder.goldShop.setImageResource(R.drawable.ic_badge_official);
             ImageHandler.loadImageCover2(holder.banner, shopModel.info.shopCover);
             holder.infoShop.setBackgroundResource(R.drawable.cover_shader);
         }
@@ -525,14 +556,22 @@ public class ShopInfoActivity extends TActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShareSocmedHandler.ShareIntent(ShopInfoActivity.this, compileShare(), shopModel.info.shopUrl);
+                Intent shareIntent = new Intent(ShopInfoActivity.this, ShareActivity.class);
+                ShareData shareData = ShareData.Builder.aShareData()
+                        .setType(ShareData.SHOP_TYPE)
+                        .setName(getString(R.string.message_share_shop))
+                        .setTextContent(compileShare())
+                        .setUri(shopModel.info.shopUrl)
+                        .build();
+                shareIntent.putExtra(ShareData.TAG, shareData);
+                startActivity(shareIntent);
             }
         };
     }
 
     private String compileShare() {
         String share = "";
-        share = shopModel.info.shopName + " - " + shopModel.info.shopLocation + " | Tokopedia ";
+        share = shopModel.info.shopName + " - " + shopModel.info.shopLocation + " | Tokopedia \n";
         return share;
     }
 

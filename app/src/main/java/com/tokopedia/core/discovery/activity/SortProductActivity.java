@@ -3,7 +3,6 @@ package com.tokopedia.core.discovery.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -18,6 +17,8 @@ import android.widget.TextView;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.discovery.fragment.browseparent.BrowseParentFragment;
 import com.tokopedia.core.dynamicfilter.model.DynamicFilterModel;
 import com.tokopedia.core.widgets.DividerItemDecoration;
@@ -33,7 +34,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Erry on 7/12/2016.
  */
-public class SortProductActivity extends AppCompatActivity {
+public class SortProductActivity extends TActivity {
 
     @Bind(R2.id.toolbar)
     Toolbar toolbar;
@@ -44,6 +45,11 @@ public class SortProductActivity extends AppCompatActivity {
     private static final String TAG = SortProductActivity.class.getSimpleName();
     private DynamicFilterModel.Data data;
     private String source;
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_SORT_PRODUCT;
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

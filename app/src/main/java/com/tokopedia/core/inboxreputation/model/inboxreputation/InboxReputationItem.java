@@ -1,13 +1,14 @@
 
 package com.tokopedia.core.inboxreputation.model.inboxreputation;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.Html;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-@org.parceler.Parcel
-public class InboxReputationItem {
+public class InboxReputationItem implements Parcelable{
 
     @SerializedName("reviewee_name")
     @Expose
@@ -96,6 +97,50 @@ public class InboxReputationItem {
     @SerializedName("show_bookmark")
     @Expose
     int isShowBookmark;
+
+    protected InboxReputationItem(Parcel in) {
+        revieweeName = in.readString();
+        revieweeImageUrl = in.readString();
+        revieweeRole = in.readInt();
+        userReputation = in.readParcelable(UserReputation.class.getClassLoader());
+        reputationScore = in.readString();
+        shopBadgeLevel = in.readParcelable(ShopBadgeLevel.class.getClassLoader());
+        isRead = in.readInt();
+        reviewStatusDescription = in.readString();
+        isEdited = in.readInt();
+        createTime = in.readString();
+        reputationDaysLeft = in.readString();
+        shopId = in.readString();
+        updatedReputationReview = in.readInt();
+        orderId = in.readInt();
+        buyerId = in.readString();
+        role = in.readInt();
+        reputationInboxId = in.readString();
+        reputationId = in.readString();
+        invoiceUri = in.readString();
+        invoiceRefNum = in.readString();
+        reviewerScore = in.readString();
+        revieweeScore = in.readString();
+        isRevieweeScoreEdited = in.readInt();
+        isRevieweeScoreRead = in.readInt();
+        isReviewerScoreEdited = in.readInt();
+        canShowReputationDay = in.readInt();
+        isReviewerSmileyRead = in.readInt();
+        reputationProgress = in.readString();
+        isShowBookmark = in.readInt();
+    }
+
+    public static final Creator<InboxReputationItem> CREATOR = new Creator<InboxReputationItem>() {
+        @Override
+        public InboxReputationItem createFromParcel(Parcel in) {
+            return new InboxReputationItem(in);
+        }
+
+        @Override
+        public InboxReputationItem[] newArray(int size) {
+            return new InboxReputationItem[size];
+        }
+    };
 
     /**
      * @return The revieweeName
@@ -505,5 +550,43 @@ public class InboxReputationItem {
 
     public boolean isShowBookmark() {
         return isShowBookmark == 1;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(revieweeName);
+        dest.writeString(revieweeImageUrl);
+        dest.writeInt(revieweeRole);
+        dest.writeParcelable(userReputation, flags);
+        dest.writeString(reputationScore);
+        dest.writeParcelable(shopBadgeLevel, flags);
+        dest.writeInt(isRead);
+        dest.writeString(reviewStatusDescription);
+        dest.writeInt(isEdited);
+        dest.writeString(createTime);
+        dest.writeString(reputationDaysLeft);
+        dest.writeString(shopId);
+        dest.writeInt(updatedReputationReview);
+        dest.writeInt(orderId);
+        dest.writeString(buyerId);
+        dest.writeInt(role);
+        dest.writeString(reputationInboxId);
+        dest.writeString(reputationId);
+        dest.writeString(invoiceUri);
+        dest.writeString(invoiceRefNum);
+        dest.writeString(reviewerScore);
+        dest.writeString(revieweeScore);
+        dest.writeInt(isRevieweeScoreEdited);
+        dest.writeInt(isRevieweeScoreRead);
+        dest.writeInt(isReviewerScoreEdited);
+        dest.writeInt(canShowReputationDay);
+        dest.writeInt(isReviewerSmileyRead);
+        dest.writeString(reputationProgress);
+        dest.writeInt(isShowBookmark);
     }
 }

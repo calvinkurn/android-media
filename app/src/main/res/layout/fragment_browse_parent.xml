@@ -16,9 +16,9 @@
         android:visibility="gone" />
 
     <LinearLayout
+        android:id="@+id/tab_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
         android:orientation="vertical">
 
         <android.support.design.widget.TabLayout
@@ -29,6 +29,7 @@
             app:tabGravity="fill"
             app:tabIndicatorColor="@color/deep_orange_500"
             app:tabMode="fixed"
+            app:tabMaxWidth="0dp"
             app:tabSelectedTextColor="@color/black"
             app:tabTextColor="@color/grey_800" />
     </LinearLayout>

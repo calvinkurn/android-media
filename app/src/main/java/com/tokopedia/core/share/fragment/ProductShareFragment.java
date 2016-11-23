@@ -80,6 +80,9 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
     @Bind(R2.id.more_share)
     TextView moreShare;
 
+    @Bind(R2.id.text_subtitle)
+    TextView subtitle;
+
     public static ProductShareFragment newInstance(@NonNull ShareData shareData) {
         ProductShareFragment fragment = new ProductShareFragment();
         Bundle args = new Bundle();
@@ -163,6 +166,27 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
         getActivity().invalidateOptionsMenu();
         progressBar.setVisibility(View.GONE);
         loadingAddProduct.setVisibility(View.GONE);
+        if (this.shareData != null){
+            if (shareData.getType() != null){
+                switch (shareData.getType()){
+                    case ShareData.CATALOG_TYPE:
+                        tvTitle.setText("Bagikan Katalog Ini!");
+                        break;
+                    case ShareData.SHOP_TYPE:
+                        tvTitle.setText("Bagikan Toko Ini!");
+                        break;
+                    case ShareData.HOTLIST_TYPE:
+                        tvTitle.setText("Bagikan Hotlist Ini!");
+                        break;
+                    case ShareData.DISCOVERY_TYPE:
+                        tvTitle.setText("Bagikan Pencarian Ini!");
+                        break;
+                    case ShareData.PRODUCT_TYPE:
+                        tvTitle.setText("Bagikan Produk Ini!");
+                        break;
+                }
+            }
+        }
     }
 
     public void onError(int type, Bundle resultData) {
@@ -174,10 +198,30 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
                     progressBar.setVisibility(View.GONE);
                     errorImage.setVisibility(View.VISIBLE);
                     loadingAddProduct.setText(R.string.error_failed_add_product);
+                    loadingAddProduct.setVisibility(View.VISIBLE);
+                    setIconShareVisibility(View.GONE);
+                    setVisibilityTitle(View.GONE);
                 }
                 break;
         }
 
+    }
+    private void setIconShareVisibility(int visibility) {
+        bbmShare.setVisibility(visibility);
+        whatsappShare.setVisibility(visibility);
+        lineShare.setVisibility(visibility);
+        instagramShare.setVisibility(visibility);
+        facebookShare.setVisibility(visibility);
+        twitterShare.setVisibility(visibility);
+        pinterestShare.setVisibility(visibility);
+        gplusShare.setVisibility(visibility);
+        copyUrl.setVisibility(visibility);
+        moreShare.setVisibility(visibility);
+    }
+
+    private void setVisibilityTitle(int visibility){
+        tvTitle.setVisibility(visibility);
+        subtitle.setVisibility(visibility);
     }
 
     public void setData(int type, Bundle data){
@@ -220,16 +264,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
             loadingAddProduct.setVisibility(View.GONE);
             visibility = View.VISIBLE;
         }
-        bbmShare.setVisibility(visibility);
-        whatsappShare.setVisibility(visibility);
-        lineShare.setVisibility(visibility);
-        instagramShare.setVisibility(visibility);
-        facebookShare.setVisibility(visibility);
-        twitterShare.setVisibility(visibility);
-        pinterestShare.setVisibility(visibility);
-        gplusShare.setVisibility(visibility);
-        copyUrl.setVisibility(visibility);
-        moreShare.setVisibility(visibility);
+        setIconShareVisibility(visibility);
     }
 
     @Override

@@ -16,6 +16,7 @@ import java.util.Map;
 
 import com.tkpd.library.kirisame.network.entity.NetError;
 import com.tkpd.library.kirisame.network.entity.VolleyNetwork;
+import com.tokopedia.core.util.GlobalConfig;
 
 /**
  * Created by ricoharisin on 8/25/15.
@@ -68,7 +69,7 @@ public class NetworkHandler extends VolleyNetwork {
 
     public void commit() {
         AddParam("device", "android");
-        AddParam("app_version", BuildConfig.VERSION_CODE);
+        AddParam("app_version", GlobalConfig.VERSION_CODE);
         AddParam("os_type", "1");
 //        if (Method == VolleyNetwork.METHOD_GET) url = generateUrlWithQuery(url);
         NetworkLog();

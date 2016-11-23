@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd;
 
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.InstabugHelper;
 
@@ -12,9 +13,11 @@ public class ConsumerMainApplication extends MainApplication {
 
     @Override
     public void onCreate() {
-        super.onCreate();
         HockeyAppHelper.setEnableDistribution(BuildConfig.ENABLE_DISTRIBUTION);
         InstabugHelper.setEnableDistribution(BuildConfig.ENABLE_DISTRIBUTION);
         InstabugHelper.setDebug(BuildConfig.DEBUG);
+        GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
+        GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
+        super.onCreate();
     }
 }

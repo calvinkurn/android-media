@@ -7,8 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.raizlabs.android.dbflow.sql.language.Select;
 import com.tokopedia.core.R;
 import com.tokopedia.core.database.model.Bank;
+import com.tokopedia.core.database.model.Bank_Table;
 
 import java.util.List;
 
@@ -101,8 +103,12 @@ public class BankDialogAdapter extends RecyclerView.Adapter<BankDialogAdapter.Vi
         this.selectedBankId = listBank.get(position).getBankId();
     }
 
-    public String getSelectedBankId(){
+    public String getSelectedBankId() {
         return this.selectedBankId != null ? this.selectedBankId : "";
     }
 
+    public String getSelectedBankId(String query) {
+        Bank bank = new Select().from(Bank.class).where(Bank_Table.bank_name.like("%" + query + "%")).querySingle();
+        return bank.getBankId();
+    }
 }

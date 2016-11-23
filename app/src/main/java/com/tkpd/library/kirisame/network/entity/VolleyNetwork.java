@@ -191,8 +191,12 @@ public abstract class VolleyNetwork {
         return new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-                onRequestError(onResponseRequestError(volleyError)
-                        , volleyError.networkResponse.statusCode);
+                try {
+                    onRequestError(onResponseRequestError(volleyError), volleyError.networkResponse.statusCode);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    onRequestError(onResponseRequestError(volleyError), 0);
+                }
             }
         };
     }

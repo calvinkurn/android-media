@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.fragment.FragmentShopPreview;
 import com.tokopedia.core.home.fragment.FragmentBannerWebView;
@@ -21,6 +22,11 @@ public class BannerWebView extends TActivity implements FragmentGeneralWebView.O
 
     private static final int IS_WEBVIEW = 1;
     private FragmentBannerWebView fragment;
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_WEBVIEW_BANNER;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

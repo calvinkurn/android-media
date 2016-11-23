@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.tokopedia.core.discovery.fragment.browseparent.ShopFragment;
 import com.tokopedia.core.discovery.interactor.DiscoveryInteractorImpl;
 import com.tokopedia.core.discovery.interfaces.DiscoveryListener;
 import com.tokopedia.core.discovery.model.NetworkParam;
@@ -16,6 +17,8 @@ import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.discovery.presenter.DiscoveryActivityPresenter;
 import com.tokopedia.core.discovery.adapter.browseparent.BrowseShopAdapter;
 import com.tokopedia.core.discovery.view.ShopView;
+import com.tokopedia.core.dynamicfilter.model.DynamicFilterModel;
+import com.tokopedia.core.dynamicfilter.presenter.DynamicFilterPresenter;
 import com.tokopedia.core.myproduct.presenter.ImageGalleryImpl.Pair;
 import com.tokopedia.core.util.PagingHandler;
 
@@ -31,6 +34,9 @@ public class ShopImpl extends Shop implements DiscoveryListener {
     WeakReference<Context> context;
     NetworkParam.Shop shop;
 
+    private int index;
+    private DiscoveryActivityPresenter activityPresenter;
+
     public ShopImpl(ShopView view) {
         super(view);
     }
@@ -38,8 +44,8 @@ public class ShopImpl extends Shop implements DiscoveryListener {
     @Override
     public void callNetwork(DiscoveryActivityPresenter discoveryActivityPresenter) {
         // jika datanya kosong, maka itu dianggap first time.
-        Log.d(TAG, "callNetwork "+view.getDataSize());
-        if(view.getDataSize()<=0) {
+        this.activityPresenter = discoveryActivityPresenter;
+        if (view.getDataSize() <= 0) {
             shop = new NetworkParam.Shop();
             shop.floc = discoveryActivityPresenter.getProductParam().floc;
             shop.q = discoveryActivityPresenter.getProductParam().q;
@@ -54,7 +60,7 @@ public class ShopImpl extends Shop implements DiscoveryListener {
     @Override
     public void loadMore(Context context) {
         int startIndexForQuery = view.getStartIndexForQuery(TAG);
-        if(shop == null)
+        if (shop == null)
             return;
 
         shop.start = startIndexForQuery;
@@ -63,7 +69,7 @@ public class ShopImpl extends Shop implements DiscoveryListener {
 
     @Override
     public void initData(@NonNull Context context) {
-        if(!isAfterRotate) {
+        if (!isAfterRotate) {
             view.setupRecyclerView();
         }
         ((DiscoveryInteractorImpl) discoveryInteractor).setCompositeSubscription(compositeSubscription);
@@ -71,6 +77,7 @@ public class ShopImpl extends Shop implements DiscoveryListener {
 
     @Override
     public void fetchArguments(Bundle argument) {
+        index = argument.getInt(ShopFragment.INDEX, 0);
 
     }
 
@@ -91,7 +98,7 @@ public class ShopImpl extends Shop implements DiscoveryListener {
 
     @Override
     public void initDataInstance(Context context) {
-        if(!isAfterRotate) {
+        if (!isAfterRotate) {
             view.initAdapter();
         }
         discoveryInteractor = new DiscoveryInteractorImpl();
@@ -105,7 +112,7 @@ public class ShopImpl extends Shop implements DiscoveryListener {
 
     @Override
     public void onFailed(int type, Pair<String, ? extends ObjContainer> data) {
-        view.ariseRetry(type, ((ErrorContainer)data.getModel2()).body().getMessage());
+        view.ariseRetry(type, ((ErrorContainer) data.getModel2()).body().getMessage());
     }
 
     private Pair<List<BrowseShopAdapter.ShopModel>, PagingHandler.PagingHandlerModel> parseBrowseShopModel(BrowseShopModel browseShopModel) {
@@ -121,24 +128,35 @@ public class ShopImpl extends Shop implements DiscoveryListener {
 
     @Override
     public void onSuccess(int type, Pair<String, ? extends ObjContainer> data) {
-        switch(type){
+        switch (type) {
             case DiscoveryListener.BROWSE_SHOP:
-                Log.i(TAG, getMessageTAG()+" fetch browse shop "+ data.getModel1());
+                Log.i(TAG, getMessageTAG() + " fetch browse shop " + data.getModel1());
                 BrowseShopModel.BrowseShopContainer browseShopContainer
-                        = (BrowseShopModel.BrowseShopContainer)data.getModel2();
+                        = (BrowseShopModel.BrowseShopContainer) data.getModel2();
                 BrowseShopModel browseShopModel = browseShopContainer.body();
 
-                Log.d(TAG, getMessageTAG()+browseShopModel);
-                if(browseShopModel==null)
+                Log.d(TAG, getMessageTAG() + browseShopModel);
+                if (browseShopModel == null)
                     return;
 
                 Pair<List<BrowseShopAdapter.ShopModel>, PagingHandler.PagingHandlerModel> listPagingHandlerModelPair = parseBrowseShopModel(browseShopModel);
                 view.setLoading(false);
                 view.onCallProductServiceLoadMore(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
+                fetchDynamicAttribut();
                 break;
+            case DiscoveryListener.DYNAMIC_ATTRIBUTE:
+                DynamicFilterModel.DynamicFilterContainer dynamicFilterContainer = (DynamicFilterModel.DynamicFilterContainer) data.getModel2();
+                view.setDynamicFilterAtrribute(dynamicFilterContainer.body().getData(), index);
             default:
 
                 break;
+        }
+    }
+
+    @Override
+    public void fetchDynamicAttribut() {
+        if (activityPresenter.checkHasFilterAttrIsNull(index)) {
+            discoveryInteractor.getDynamicAttribute(view.getContext(), DynamicFilterPresenter.SEARCH_SHOP, activityPresenter.getBrowseProductActivityModel().getDepartmentId());
         }
     }
 }

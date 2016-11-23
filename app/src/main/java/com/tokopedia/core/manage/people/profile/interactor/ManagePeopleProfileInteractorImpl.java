@@ -51,7 +51,6 @@ public class ManagePeopleProfileInteractorImpl implements ManagePeopleProfileInt
     @Override
     public void getProfile(final Context context, final Map<String, String> param, final GetProfileListener listener) {
         listener.onStart();
-
         Observable<Response<TkpdResponse>> observable = peopleService.getApi()
                 .getProfile(AuthUtil.generateParams(context, param));
 
@@ -82,7 +81,7 @@ public class ManagePeopleProfileInteractorImpl implements ManagePeopleProfileInt
                         listener.onSuccess(response.body().convertDataObj(Profile.class));
                     } else {
                         if (response.body().isNullData()) listener.onNullData();
-                        else listener.onError(response.body().getErrorMessages().get(0));
+                        else listener.onError(response.body().getErrorMessages().toString().replace("[", "").replace("]", ""));
                     }
                 } else {
                     new ErrorHandler(new ErrorListener() {
@@ -152,7 +151,7 @@ public class ManagePeopleProfileInteractorImpl implements ManagePeopleProfileInt
                         JSONObject result = tkpdResponse.getJsonData();
                         listener.onSuccess(result);
                     } else {
-                        listener.onError(response.body().getErrorMessages().get(0));
+                        listener.onError(response.body().getErrorMessages().toString().replace("[", "").replace("]", ""));
                     }
                 } else {
                     new ErrorHandler(new ErrorListener() {
@@ -186,7 +185,136 @@ public class ManagePeopleProfileInteractorImpl implements ManagePeopleProfileInt
             }
         };
 
-        compositeSubscription.add(observable.subscribeOn(Schedulers.immediate())
+        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber));
+    }
+
+    @Override
+    public void editEmail(Context context, Map<String, String> param, final EditEmailListener listener) {
+        Observable<Response<TkpdResponse>> observable = peopleActService.getApi()
+                .editEmail(AuthUtil.generateParams(context, param));
+
+        Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (e == null) return;
+                Log.e("ASDASDM", e.toString());
+                listener.onThrowable(e);
+            }
+
+            @Override
+            public void onNext(Response<TkpdResponse> response) {
+                if (response.isSuccessful()) {
+                    final TkpdResponse tkpdResponse = response.body();
+                    if (!tkpdResponse.isError()) {
+                        listener.onSuccess();
+                    } else {
+                        listener.onError(response.body().getErrorMessages().toString().replace("[", "").replace("]", ""));
+                    }
+                } else {
+                    new ErrorHandler(new ErrorListener() {
+                        @Override
+                        public void onUnknown() {
+                            listener.onError("Network Unknown Error!");
+                        }
+
+                        @Override
+                        public void onTimeout() {
+                            listener.onError("Network Timeout Error!");
+                            listener.onTimeout();
+                        }
+
+                        @Override
+                        public void onServerError() {
+                            listener.onError("Network Internal Server Error!");
+                        }
+
+                        @Override
+                        public void onBadRequest() {
+                            listener.onError("Network Bad Request Error!");
+                        }
+
+                        @Override
+                        public void onForbidden() {
+
+                        }
+                    }, response.code());
+                }
+            }
+        };
+
+        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber));
+    }
+
+    @Override
+    public void sendOTPEditEmail(Context context, Map<String, String> param, final RequestOTPListener listener) {
+        Observable<Response<TkpdResponse>> observable = peopleActService.getApi()
+                .sendOTPEditEmail(AuthUtil.generateParams(context, param));
+
+        Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (e == null) return;
+                listener.onThrowable(e);
+            }
+
+            @Override
+            public void onNext(Response<TkpdResponse> response) {
+                if (response.isSuccessful()) {
+                    final TkpdResponse tkpdResponse = response.body();
+                    if (!tkpdResponse.isError()) {
+                        listener.onSuccess();
+                    } else {
+                        listener.onError(response.body().getErrorMessages().toString().replace("[", "").replace("]", ""));
+                    }
+                } else {
+                    new ErrorHandler(new ErrorListener() {
+                        @Override
+                        public void onUnknown() {
+                            listener.onError("Network Unknown Error!");
+                        }
+
+                        @Override
+                        public void onTimeout() {
+                            listener.onError("Network Timeout Error!");
+                            listener.onTimeout();
+                        }
+
+                        @Override
+                        public void onServerError() {
+                            listener.onError("Network Internal Server Error!");
+                        }
+
+                        @Override
+                        public void onBadRequest() {
+                            listener.onError("Network Bad Request Error!");
+                        }
+
+                        @Override
+                        public void onForbidden() {
+
+                        }
+                    }, response.code());
+                }
+            }
+        };
+
+        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber));

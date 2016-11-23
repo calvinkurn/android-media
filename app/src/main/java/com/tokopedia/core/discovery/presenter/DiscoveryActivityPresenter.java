@@ -16,6 +16,7 @@ public interface DiscoveryActivityPresenter {
     BrowseProductActivityModel getBrowseProductActivityModel();
     boolean isFragmentCreated(String TAG);
     void fetchIntent();
+    boolean checkHasFilterAttrIsNull(int activeTab);
 
     /**
      * get firsttime data from activity for browse products

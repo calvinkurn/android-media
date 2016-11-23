@@ -28,6 +28,8 @@ public interface  TkpdBaseURL {
     String JS_ALPHA_DOMAIN = "https://js-alpha.tokopedia.com/";
     String KERO_DOMAIN = "https://kero.tokopedia.com/";
     String JAHE_DOMAIN = "https://jahe.tokopedia.com";
+    String PULSA_WEB_DOMAIN = "https://pulsa.tokopedia.com";
+    String PULSA_WEB_STAGING_DOMAIN = "https://pulsa-staging.tokopedia.com";
 
     interface Product {
         String URL_PRODUCT = BASE_DOMAIN + "v4/product/";
@@ -546,13 +548,14 @@ public interface  TkpdBaseURL {
     }
 
     interface TopAds {
-        String URL_TOPADS = TOPADS_DOMAIN + "promo/v1/";
+        String URL_TOPADS = TOPADS_DOMAIN + "promo/v1.1/display/";
+        String URL_TOPADS_SHOP = TOPADS_DOMAIN + "promo/v1/display/";
 
-        String PATH_DISPLAY_SHOP = "display/shops";
+        String PATH_DISPLAY_SHOP = "shops";
     }
 
     interface Mojito {
-        String PATH_USER = "v1/users/";
+        String PATH_USER = "v1.0.2/users/";
         String PATH_PRODUCT = "v1/products/";
         String PATH_CATALOG = "v1/catalogs/";
 
@@ -565,7 +568,7 @@ public interface  TkpdBaseURL {
 
 
     interface Recharge {
-        String VERSION = "v1";
+        String VERSION = "v1.1";
         String RECHARGE = "recharge";
 
         String PATH_STATUS = VERSION + "/status";

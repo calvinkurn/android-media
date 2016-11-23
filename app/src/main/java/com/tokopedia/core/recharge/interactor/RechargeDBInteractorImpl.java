@@ -6,7 +6,7 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.database.manager.RechargeOperatorManager;
 import com.tokopedia.core.database.manager.RechargeProductManager;
 import com.tokopedia.core.database.manager.RechargeRecentDataManager;
-import com.tokopedia.core.database.model.RechargeOperatorModelDB;
+import com.tokopedia.core.database.model.RechargeOperatorModelDBAttrs;
 import com.tokopedia.core.recharge.model.category.Category;
 import com.tokopedia.core.recharge.model.category.CategoryData;
 import com.tokopedia.core.recharge.model.operator.OperatorData;
@@ -39,20 +39,53 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<String, RechargeOperatorModelDB>() {
+                .map(new Func1<String, RechargeOperatorModelDBAttrs>() {
                     @Override
-                    public RechargeOperatorModelDB call(String s) {
+                    public RechargeOperatorModelDBAttrs call(String s) {
                         return new RechargeOperatorManager().getData(s);
                     }
                 })
-                .map(new Func1<RechargeOperatorModelDB, List<Product>>() {
+                .map(new Func1<RechargeOperatorModelDBAttrs, List<Product>>() {
                     @Override
-                    public List<Product> call(RechargeOperatorModelDB rechargeOperatorModelDB) {
+                    public List<Product> call(RechargeOperatorModelDBAttrs rechargeOperatorModelDBAttrs) {
                         if (validatePrefix)
                             return new RechargeProductManager().getListData(categoryId,
-                                    rechargeOperatorModelDB.operatorId);
+                                    rechargeOperatorModelDBAttrs.operatorId);
 
                         return new RechargeProductManager().getListDataByCategory(categoryId);
+                    }
+                })
+                .subscribe(new Subscriber<List<Product>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        onGetListProduct.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(List<Product> products) {
+                        onGetListProduct.onSuccess(products);
+                    }
+                });
+    }
+
+    @Override
+    public void getListProductDefaultOperator(
+            final OnGetListProduct onGetListProduct,final int categoryId, final String operatorId) {
+
+        Observable.just(true)
+                .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<Boolean, List<Product>>() {
+                    @Override
+                    public List<Product> call(Boolean rechargeOperatorModelDB) {
+                        return new RechargeProductManager().getListData(categoryId,
+                                    Integer.parseInt(operatorId));
                     }
                 })
                 .subscribe(new Subscriber<List<Product>>() {
@@ -291,13 +324,13 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<String, RechargeOperatorModelDB>() {
+                .map(new Func1<String, RechargeOperatorModelDBAttrs>() {
                     @Override
-                    public RechargeOperatorModelDB call(String operatorId) {
+                    public RechargeOperatorModelDBAttrs call(String operatorId) {
                         return new RechargeOperatorManager().getDataOperator(Integer.valueOf(operatorId));
 
                     }
-                }).subscribe(new Subscriber<RechargeOperatorModelDB>() {
+                }).subscribe(new Subscriber<RechargeOperatorModelDBAttrs>() {
             @Override
             public void onCompleted() {
             }
@@ -308,9 +341,9 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
             }
 
             @Override
-            public void onNext(RechargeOperatorModelDB rechargeOperatorModelDB) {
-                if (rechargeOperatorModelDB != null) {
-                    listener.onSuccess(rechargeOperatorModelDB);
+            public void onNext(RechargeOperatorModelDBAttrs rechargeOperatorModelDBAttrs) {
+                if (rechargeOperatorModelDBAttrs != null) {
+                    listener.onSuccess(rechargeOperatorModelDBAttrs);
                 } else {
                     listener.onEmpty();
                 }

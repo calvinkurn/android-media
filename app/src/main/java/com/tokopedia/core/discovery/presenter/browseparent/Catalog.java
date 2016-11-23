@@ -28,4 +28,6 @@ public abstract class Catalog extends BaseImpl<CatalogView> {
     public abstract void callNetwork(DiscoveryActivityPresenter discoveryActivityPresenter);
 
     public abstract void loadMore(Context context);
+
+    public abstract void fetchDynamicAttribut();
 }

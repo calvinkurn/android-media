@@ -6,8 +6,8 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.tokopedia.core.database.DbFlowDatabase;
 import com.tokopedia.core.database.DbFlowOperation;
-import com.tokopedia.core.database.model.RechargeOperatorModelDB;
-import com.tokopedia.core.database.model.RechargeOperatorModelDB_Table;
+import com.tokopedia.core.database.model.RechargeOperatorModelDBAttrs;
+import com.tokopedia.core.database.model.RechargeOperatorModelDBAttrs_Table;
 import com.tokopedia.core.recharge.model.operator.Operator;
 
 import java.util.List;
@@ -15,24 +15,29 @@ import java.util.List;
 /**
  * @author ricoharisin on 7/15/16.
  */
-public class RechargeOperatorManager implements DbFlowOperation<RechargeOperatorModelDB> {
+public class RechargeOperatorManager implements DbFlowOperation<RechargeOperatorModelDBAttrs> {
     @Override
     public void store() {
 
     }
 
     @Override
-    public void store(RechargeOperatorModelDB data) {
+    public void store(RechargeOperatorModelDBAttrs data) {
 
     }
 
-    public void store(String prefix, String name, int operatorId, int status, String image) {
-        RechargeOperatorModelDB db = new RechargeOperatorModelDB();
+    public void store(String prefix, String name, int operatorId, int status, String image, int minLength, int maxLength, String nominalText, Boolean showProduct, Boolean showPrice) {
+        RechargeOperatorModelDBAttrs db = new RechargeOperatorModelDBAttrs();
         db.operatorId = operatorId;
         db.image = image;
         db.name = name;
         db.status = status;
         db.prefix = prefix;
+        db.minimumLength = minLength;
+        db.maximumLength = maxLength;
+        db.nominalText =  nominalText;
+        db.showPrice =  showPrice;
+        db.showProduct = showProduct;
         db.save();
     }
 
@@ -43,7 +48,7 @@ public class RechargeOperatorManager implements DbFlowOperation<RechargeOperator
 
     @Override
     public void deleteAll(){
-        new Delete().from(RechargeOperatorModelDB.class).execute();
+        new Delete().from(RechargeOperatorModelDBAttrs.class).execute();
     }
 
     @Override
@@ -52,27 +57,28 @@ public class RechargeOperatorManager implements DbFlowOperation<RechargeOperator
     }
 
     @Override
-    public RechargeOperatorModelDB getData(String prefix) {
-        RechargeOperatorModelDB result =  new Select().from(RechargeOperatorModelDB.class)
-                .where(RechargeOperatorModelDB_Table.prefix.is(prefix))
+    public RechargeOperatorModelDBAttrs getData(String prefix) {
+        RechargeOperatorModelDBAttrs result =  new Select().from(RechargeOperatorModelDBAttrs.class)
+                .where(RechargeOperatorModelDBAttrs_Table.prefix.is(prefix))
                 .querySingle();
+
         if (result == null && prefix.length() == 4){
-            result = new Select().from(RechargeOperatorModelDB.class)
-                    .where(RechargeOperatorModelDB_Table.prefix.is(prefix.substring(0, 3)))
+            result = new Select().from(RechargeOperatorModelDBAttrs.class)
+                    .where(RechargeOperatorModelDBAttrs_Table.prefix.is(prefix.substring(0, 3)))
                     .querySingle();
         }
         return result;
     }
 
-    public RechargeOperatorModelDB getDataOperator(int operatorId) {
-        RechargeOperatorModelDB modelDB = new Select().from(RechargeOperatorModelDB.class)
-                .where(RechargeOperatorModelDB_Table.operatorId.is(operatorId))
+    public RechargeOperatorModelDBAttrs getDataOperator(int operatorId) {
+        RechargeOperatorModelDBAttrs modelDB = new Select().from(RechargeOperatorModelDBAttrs.class)
+                .where(RechargeOperatorModelDBAttrs_Table.operatorId.is(operatorId))
                 .querySingle();
         return modelDB;
     }
 
     @Override
-    public List<RechargeOperatorModelDB> getDataList(String key) {
+    public List<RechargeOperatorModelDBAttrs> getDataList(String key) {
         return null;
     }
 
@@ -99,7 +105,13 @@ public class RechargeOperatorManager implements DbFlowOperation<RechargeOperator
                                 operator.getAttributes().getName(),
                                 operator.getId(),
                                 operator.getAttributes().getStatus(),
-                                operator.getAttributes().getImage());
+                                operator.getAttributes().getImage(),
+                                operator.getAttributes().getMinimumLength(),
+                                operator.getAttributes().getMaximumLength(),
+                                operator.getAttributes().getRule().getProductText(),
+                                operator.getAttributes().getRule().getShowProduct(),
+                                operator.getAttributes().getRule().getShowPrice()
+                        );
                     }
                 } else {
                     store(
@@ -107,7 +119,12 @@ public class RechargeOperatorManager implements DbFlowOperation<RechargeOperator
                             operator.getAttributes().getName(),
                             operator.getId(),
                             operator.getAttributes().getStatus(),
-                            operator.getAttributes().getImage()
+                            operator.getAttributes().getImage(),
+                            operator.getAttributes().getMinimumLength(),
+                            operator.getAttributes().getMaximumLength(),
+                            operator.getAttributes().getRule().getProductText(),
+                            operator.getAttributes().getRule().getShowProduct(),
+                            operator.getAttributes().getRule().getShowPrice()
                     );
                 }
             }

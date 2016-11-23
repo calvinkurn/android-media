@@ -30,24 +30,16 @@ import butterknife.ButterKnife;
  * Created by noiz354 on 7/13/16.
  */
 public class DynamicFilterOtherAdapter extends ProductAdapter {
-
-    interface CONSTANT {
-        String CHECKBOX = "checkbox";
-        String TEXTBOX = "textbox";
-
-        int TEXT_BOX_MODEL_TYPE = 129_648;
-        int CHECK_BOX_MODEL_TYPE = 743_271;
-    }
-
+    private static final String TAG = "DynamicFilterOtherAdapt";
+    private static final String MSG_INVALID_AMOUNT = "Invalid Amount";
     private Filter filter;
-    private static final String TAG = DynamicFilterOtherAdapter.class.getSimpleName();
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
-            case CONSTANT.TEXT_BOX_MODEL_TYPE:
+            case Constant.TEXT_BOX_MODEL_TYPE:
                 return createViewTextBox(parent);
-            case CONSTANT.CHECK_BOX_MODEL_TYPE:
+            case Constant.CHECK_BOX_MODEL_TYPE:
                 return createViewCheckBox(parent);
             default:
                 return super.onCreateViewHolder(parent, viewType);
@@ -57,10 +49,10 @@ public class DynamicFilterOtherAdapter extends ProductAdapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)) {
-            case CONSTANT.TEXT_BOX_MODEL_TYPE:
+            case Constant.TEXT_BOX_MODEL_TYPE:
                 ((TextBoxViewHolder) holder).bindData(getData().get(position), position);
                 break;
-            case CONSTANT.CHECK_BOX_MODEL_TYPE:
+            case Constant.CHECK_BOX_MODEL_TYPE:
                 ((CheckBoxViewHolder) holder).bindData(getData().get(position), position);
                 break;
             default:
@@ -69,7 +61,9 @@ public class DynamicFilterOtherAdapter extends ProductAdapter {
     }
 
     public static TextBoxViewHolder createViewTextBox(ViewGroup parent) {
-        View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.text_box_layout, parent, false);
+        View itemLayoutView = LayoutInflater.from(
+                parent.getContext()).inflate(R.layout.text_box_layout, parent, false);
+
         return new TextBoxViewHolder(itemLayoutView);
     }
 
@@ -81,8 +75,8 @@ public class DynamicFilterOtherAdapter extends ProductAdapter {
     @Override
     protected int isInType(RecyclerViewItem recyclerViewItem) {
         switch (recyclerViewItem.getType()) {
-            case CONSTANT.TEXT_BOX_MODEL_TYPE:
-            case CONSTANT.CHECK_BOX_MODEL_TYPE:
+            case Constant.TEXT_BOX_MODEL_TYPE:
+            case Constant.CHECK_BOX_MODEL_TYPE:
                 return recyclerViewItem.getType();
         }
 
@@ -93,17 +87,8 @@ public class DynamicFilterOtherAdapter extends ProductAdapter {
         super(context, data);
     }
 
-    public static abstract class BaseRecylerViewHolder extends RecyclerView.ViewHolder {
-
-        public BaseRecylerViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-
-        public abstract void bindData(RecyclerViewItem recyclerViewItem, int position);
-    }
-
     public static class TextBoxViewHolder extends RecyclerView.ViewHolder {
+
 
         @Bind(R2.id.text_box_container)
         TextInputLayout TextBoxContainer;
@@ -118,7 +103,6 @@ public class DynamicFilterOtherAdapter extends ProductAdapter {
             ButterKnife.bind(this, itemView);
         }
 
-        //        @Override
         public void bindData(RecyclerViewItem recyclerViewItem, int position) {
             if (recyclerViewItem != null && recyclerViewItem instanceof TextBoxModel) {
                 bindData2((TextBoxModel) recyclerViewItem, position);
@@ -151,10 +135,15 @@ public class DynamicFilterOtherAdapter extends ProductAdapter {
                     Context context = itemView.getContext();
                     if (context != null && context instanceof DynamicFilterView) {
                         if (!s.toString().equals("")) {
-                            ((DynamicFilterView) context).putSelectedFilter(TextBoxViewHolder.this.textBoxModel.option.getKey(), s.toString());
+                            ((DynamicFilterView) context).putSelectedFilter(
+                                    TextBoxViewHolder.this.textBoxModel.option.getKey(),
+                                    s.toString()
+                            );
+
                             ((DynamicFilterView) context).saveTextInput(textBoxModel.key, s.toString());
                         } else {
-                            ((DynamicFilterView) context).removeSelecfedFilter(TextBoxViewHolder.this.textBoxModel.option.getKey());
+                            String key = TextBoxViewHolder.this.textBoxModel.option.getKey();
+                            ((DynamicFilterView) context).removeSelecfedFilter(key);
                             ((DynamicFilterView) context).removeTextInput(textBoxModel.key);
                         }
                     }
@@ -163,6 +152,13 @@ public class DynamicFilterOtherAdapter extends ProductAdapter {
                 @Override
                 public void afterTextChanged(Editable s) {
 
+                    if (s.toString().startsWith(".")) {
+                        Log.e(TAG, "afterTextChanged:  prefix not valid");
+                        textBox.setError(MSG_INVALID_AMOUNT);
+                    } else {
+                        textBox.setError(null);
+
+                    }
                 }
             });
         }
@@ -222,7 +218,7 @@ public class DynamicFilterOtherAdapter extends ProductAdapter {
                             ((DynamicFilterView) context).saveCheckedPosition(checkBoxModel.key, isChecked);
                         } else {
                             ((DynamicFilterView) context).removeCheckedPosition(checkBoxModel.key);
-                            if(getSelectedIds().isEmpty()) {
+                            if (getSelectedIds().isEmpty()) {
                                 ((DynamicFilterView) context).removeSelecfedFilter(key);
                             } else {
                                 ((DynamicFilterView) context).putSelectedFilter(key, getSelectedIds());
@@ -255,7 +251,7 @@ public class DynamicFilterOtherAdapter extends ProductAdapter {
                 }
             }
         }
-        if(buffer.length()>0) {
+        if (buffer.length() > 0) {
             return buffer.substring(0, buffer.length() - 1);
         } else {
             return buffer.toString();
@@ -269,12 +265,12 @@ public class DynamicFilterOtherAdapter extends ProductAdapter {
         public boolean isFirstTime = true;
 
         public TextBoxModel() {
-            setType(CONSTANT.TEXT_BOX_MODEL_TYPE);
+            setType(Constant.TEXT_BOX_MODEL_TYPE);
         }
 
         public TextBoxModel(DynamicFilterModel.Option option) {
             this();
-            if(option.getName().contains("Harga Maximum")){
+            if (option.getName().contains("Harga Maximum")) {
                 option.setName("Harga Maksimum");
             }
             String formatText = "%s_%s_%s";
@@ -292,7 +288,7 @@ public class DynamicFilterOtherAdapter extends ProductAdapter {
         public boolean isFirstTime = true;
 
         public CheckBoxModel() {
-            setType(CONSTANT.CHECK_BOX_MODEL_TYPE);
+            setType(Constant.CHECK_BOX_MODEL_TYPE);
         }
 
         public CheckBoxModel(DynamicFilterModel.Option option) {
@@ -305,11 +301,11 @@ public class DynamicFilterOtherAdapter extends ProductAdapter {
     }
 
     public static boolean isCheckbox(String inputType) {
-        return inputType.equals(CONSTANT.CHECKBOX);
+        return inputType.equals(Constant.CHECK_BOX);
     }
 
     public static boolean isTextBox(String inputType) {
-        return inputType.equals(CONSTANT.TEXTBOX);
+        return inputType.equals(Constant.TEXT_BOX);
     }
 
     public static RecyclerViewItem convertTo(DynamicFilterModel.Option option) {
@@ -321,5 +317,14 @@ public class DynamicFilterOtherAdapter extends ProductAdapter {
             return null;
         }
     }
+
+    interface Constant {
+        String CHECK_BOX = "checkbox";
+        String TEXT_BOX = "textbox";
+
+        int TEXT_BOX_MODEL_TYPE = 129_648;
+        int CHECK_BOX_MODEL_TYPE = 743_271;
+    }
+
 
 }

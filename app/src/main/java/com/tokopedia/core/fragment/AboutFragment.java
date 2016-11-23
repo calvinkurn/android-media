@@ -12,6 +12,7 @@ import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RouterUtils;
 
 /**
@@ -51,7 +52,7 @@ public class AboutFragment extends PreferenceFragment {
     }
 
     private void setListener() {
-        prefVersion.setSummary(BuildConfig.VERSION_NAME);
+        prefVersion.setSummary(GlobalConfig.VERSION_NAME);
         prefTerm.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {

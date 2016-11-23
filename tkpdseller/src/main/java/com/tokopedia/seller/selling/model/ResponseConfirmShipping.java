@@ -11,8 +11,8 @@ public class ResponseConfirmShipping {
      * config : null
      * status : OK
      * data : {"is_success":0}
-     * server_process_time : 0.032727
-     * message_error : ["Nomor Resi harus diisi."]
+     * serverProcessTime : 0.032727
+     * messageError : ["Nomor Resi harus diisi."]
      */
 
     private String config;
@@ -22,16 +22,16 @@ public class ResponseConfirmShipping {
      */
 
     private DataBean data;
-    private String server_process_time;
-    private List<String> message_error;
-    private List<String> message_status;
+    private String serverProcessTime;
+    private List<String> messageError;
+    private List<String> messageStatus  ;
 
-    public List<String> getMessage_status() {
-        return message_status;
+    public List<String> getMessageStatus() {
+        return messageStatus;
     }
 
-    public void setMessage_status(List<String> message_status) {
-        this.message_status = message_status;
+    public void setMessageStatus(List<String> messageStatus) {
+        this.messageStatus = messageStatus;
     }
 
     public String getConfig() {
@@ -58,20 +58,20 @@ public class ResponseConfirmShipping {
         this.data = data;
     }
 
-    public String getServer_process_time() {
-        return server_process_time;
+    public String getServerProcessTime() {
+        return serverProcessTime;
     }
 
-    public void setServer_process_time(String server_process_time) {
-        this.server_process_time = server_process_time;
+    public void setServerProcessTime(String serverProcessTime) {
+        this.serverProcessTime = serverProcessTime;
     }
 
-    public List<String> getMessage_error() {
-        return message_error;
+    public List<String> getMessageError() {
+        return messageError;
     }
 
-    public void setMessage_error(List<String> message_error) {
-        this.message_error = message_error;
+    public void setMessageError(List<String> messageError) {
+        this.messageError = messageError;
     }
 
     public static class DataBean {

@@ -259,7 +259,7 @@ public class ShareSocmedHandler {
             share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(f));
         }
         share.putExtra(Intent.EXTRA_REFERRER, ProductUri);
-        share.putExtra(Intent.EXTRA_HTML_TEXT, ProductUri);
+//        share.putExtra(Intent.EXTRA_HTML_TEXT, ProductUri);
 //		 share.putExtra(Intent.EXTRA_TEXT, "Jual " + pName + " hanya " + pPrice + ", lihat gambar klik " + ProductUri);
         share.putExtra(Intent.EXTRA_TEXT, shareTxt);
 

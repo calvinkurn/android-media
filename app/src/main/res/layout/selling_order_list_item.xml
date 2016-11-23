@@ -25,7 +25,7 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/padding_small"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
@@ -78,13 +78,13 @@
             android:paddingLeft="8dp"
             android:layout_marginTop="2dp"
             android:layout_marginBottom="2dp"
-            android:layout_marginLeft="8dp"
+            android:layout_marginLeft="@dimen/padding_vs"
             android:orientation="vertical"
             android:background="@drawable/border_left_2dp_blue">
 
             <TextView
                 android:singleLine="true"
-                android:paddingLeft="@dimen/padding_small"
+                android:paddingLeft="@dimen/padding_vs"
                 android:id="@+id/text__response"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -92,7 +92,7 @@
 
             <TextView
                 android:id="@+id/deadline"
-                android:paddingLeft="@dimen/padding_small"
+                android:paddingLeft="@dimen/padding_vs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/text_bold"
