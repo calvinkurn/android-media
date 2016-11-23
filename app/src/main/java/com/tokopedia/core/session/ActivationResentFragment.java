@@ -22,8 +22,10 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
@@ -57,7 +59,7 @@ import rx.subscriptions.CompositeSubscription;
  *          migrate retrofit 2 by Angga.Prasetiyo
  * @since 16/11/2015.
  */
-public class ActivationResentFragment extends Fragment implements BaseView {
+public class ActivationResentFragment extends TkpdBaseV4Fragment implements BaseView {
 
     String format = "Petunjuk aktivasi akun Tokopedia telah kami kirimkan\n" +
             "ke email %s. Silahkan periksa email Anda.\n" +
@@ -139,6 +141,11 @@ public class ActivationResentFragment extends Fragment implements BaseView {
 
     }
 
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_REGISTER_ACTIVATION;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container
@@ -160,7 +167,7 @@ public class ActivationResentFragment extends Fragment implements BaseView {
         KeyboardHandler.DropKeyboard(getActivity(), view);
         email.setText(emailText);
         setListener();
-        ScreenTracking.screen(this);
+        ScreenTracking.screen(getScreenName());
     }
 
     private void setListener() {
