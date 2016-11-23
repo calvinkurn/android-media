@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.presenter.BaseView;
 
 import butterknife.ButterKnife;
@@ -15,7 +16,7 @@ import butterknife.ButterKnife;
 /**
  * Created by m.normansyah on 1/27/16.
  */
-public abstract  class BaseFragment<T extends Base> extends Fragment implements BaseView{
+public abstract  class BaseFragment<T extends Base> extends TkpdBaseV4Fragment implements BaseView{
     protected T presenter;
     protected View parentView;
 

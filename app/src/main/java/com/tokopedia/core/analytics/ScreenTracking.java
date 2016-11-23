@@ -43,11 +43,6 @@ public class ScreenTracking extends TrackingUtils {
                 .sendScreen(screen);
     }
 
-    public static void screen(android.support.v4.app.Fragment fragment){
-        getGTMEngine()
-                .sendScreen(AppScreen.convertFragmentScreen(fragment));
-    }
-
     public static void screenLoca(String screenName){
         getLocaEngine().tagScreen(screenName);
     }

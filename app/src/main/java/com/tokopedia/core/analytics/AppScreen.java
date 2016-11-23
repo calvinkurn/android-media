@@ -125,34 +125,6 @@ public final class AppScreen {
         }
     }
 
-    public static String convertFragmentScreen(android.support.v4.app.Fragment actClass) {
-        if (actClass instanceof FragmentHotListV2) {
-            return SCREEN_HOME_HOTLIST;
-        } else if (actClass instanceof FragmentIndexFavoriteV2) {
-            return SCREEN_HOME_FAVORITE_SHOP;
-        } else if (actClass instanceof FragmentIndexCategory) {
-            return SCREEN_HOME_PRODUCT_CATEGORY;
-        } else if (actClass instanceof FragmentProductFeed) {
-            return SCREEN_HOME_PRODUCT_FEED;
-        } else if (actClass instanceof RegisterNewViewFragment) {
-            return SCREEN_REGISTER;
-        } else if (actClass instanceof RegisterPassPhoneFragment) {
-            return SCREEN_REGISTER_THIRD;
-        } else if (actClass instanceof WishListFragment) {
-            return SCREEN_FRAGMENT_WISHLIST;
-        } else if (actClass instanceof ForgotPasswordFragment) {
-            return SCREEN_FORGOT_PASSWORD;
-        } else if (actClass instanceof ActivationResentFragment) {
-            return SCREEN_REGISTER_ACTIVATION;
-        } else if (actClass instanceof AddProductFragment) {
-            return SCREEN_ADD_PRODUCT;
-            //} else if (actClass instanceof FragmentShopTxStatusDetailV2){
-            //  return SCREEN_TX_PEOPLE_DETAIL;
-        } else {
-            return actClass.getClass().getSimpleName();
-        }
-    }
-
     private static Fragment getFragment(Activity actClass) {
         return actClass.getFragmentManager().findFragmentById(R.id.container);
     }
