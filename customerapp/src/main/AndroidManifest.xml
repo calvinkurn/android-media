@@ -50,6 +50,10 @@
         <meta-data
             android:name="GTM_ID"
             android:value="GTM-P32KTB" />
+
+        <meta-data
+            android:name="APPSFLYER_KEY"
+            android:value="SdSopxGtYr9yK8QEjFVHXL" />
     </application>
 
 </manifest>

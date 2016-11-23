@@ -293,4 +293,8 @@ public interface AppEventTracking {
     interface LOCA {
         String NOTIFICATION_BUNDLE = "ll";
     }
+
+    interface AF {
+        String APPSFLYER_KEY = "APPSFLYER_KEY";
+    }
 }

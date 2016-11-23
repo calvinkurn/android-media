@@ -49,5 +49,8 @@
         <meta-data
             android:name="GTM_ID"
             android:value="GTM-PHC2L9" />
+        <meta-data
+            android:name="APPSFLYER_KEY"
+            android:value="SdSopxGtYr9yK8QEjFVHXL" />
     </application>
 </manifest>
