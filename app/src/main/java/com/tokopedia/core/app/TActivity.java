@@ -44,6 +44,7 @@ import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.database.manager.CategoryDatabaseManager;
 import com.tokopedia.core.discovery.activity.BrowseProductActivity;
 import com.tokopedia.core.drawer.DrawerVariable;
+import com.tokopedia.core.drawer.DrawerVariableSeller;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.home.ParentIndexHome;
 import com.tokopedia.core.home.interactor.CacheHomeInteractorImpl;
@@ -149,13 +150,23 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
         if (!SessionHandler.isV4Login(this)){
             CacheHomeInteractorImpl.deleteAllCache();
         }
-        drawer = new DrawerVariable(this);
+
+        if(isSellerApp()){
+            drawer = new DrawerVariableSeller(this);
+        }else{
+            drawer = new DrawerVariable(this);
+        }
+
         drawer.setToolbar(toolbar);
         drawer.createDrawer();
         drawer.setEnabled(false);
 
         HockeyAppHelper.handleLogin(this);
         HockeyAppHelper.checkForUpdate(this);
+    }
+
+    private boolean isSellerApp() {
+        return getApplication().getClass().getSimpleName().equals("SellerMainApplication");
     }
 
     @Override

@@ -71,7 +71,8 @@ public class TkpdState {
         public static final int CONTACT_US = 41;
         public static final int REPORT = 42;
         public static final int LOGOUT = 43;
-	}
+        public static final int SELLER_INDEX_HOME = 44;
+    }
 
     public class Application {
         public static final int ACTIVITY = 1;
