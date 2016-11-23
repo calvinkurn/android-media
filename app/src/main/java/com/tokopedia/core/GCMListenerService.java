@@ -505,7 +505,7 @@ public class GCMListenerService extends GcmListenerService {
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         if (componentName != null) {
             stackBuilder.addParentStack(componentName);
-        } else {
+        } else if(resultclass != null){
             stackBuilder.addParentStack(resultclass);
         }
         stackBuilder.addNextIntent(intent);

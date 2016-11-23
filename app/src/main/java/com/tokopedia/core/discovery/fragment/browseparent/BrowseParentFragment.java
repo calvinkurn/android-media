@@ -226,8 +226,6 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
                 @Override
                 public void onRetryClicked() {
                     presenter.subscribe();
-                    presenter.fetchRotationData(null);
-                    presenter.initData(getActivity());
                     presenter.fetchFromNetwork(getActivity());
                 }
             });
