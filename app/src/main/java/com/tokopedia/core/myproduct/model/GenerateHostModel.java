@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by m.normansyah on 18/12/2015.
  */
-@Parcel
+@Parcel(parcelsIndex = false)
 public class GenerateHostModel {
 
     /**
@@ -46,7 +46,7 @@ public class GenerateHostModel {
         this.data = data;
     }
 
-    @Parcel
+    @Parcel(parcelsIndex = false)
     public static class Data{
 
         /**
@@ -67,7 +67,7 @@ public class GenerateHostModel {
         }
     }
 
-    @Parcel
+    @Parcel(parcelsIndex = false)
     public static class GenerateHost{
 
         /**

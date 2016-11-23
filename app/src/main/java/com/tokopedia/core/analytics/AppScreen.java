@@ -12,7 +12,6 @@ import com.tokopedia.core.EditAddressCart;
 import com.tokopedia.core.EtalaseShopEditor;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.ManagePeople;
-import com.tokopedia.core.ManagePeoplePassword;
 import com.tokopedia.core.ManageShop;
 import com.tokopedia.core.ManageShopAddress;
 import com.tokopedia.core.PaymentConfirmationSuccess;
@@ -24,7 +23,6 @@ import com.tokopedia.core.ShopAddressForm;
 import com.tokopedia.core.ShopEditor;
 import com.tokopedia.core.ShopStatisticDetail;
 import com.tokopedia.core.SplashScreen;
-import com.tokopedia.core.addtocart.activity.AddToCartActivity;
 import com.tokopedia.core.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.deposit.activity.WithdrawActivity;
@@ -58,6 +56,7 @@ import com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActi
 import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
 import com.tokopedia.core.manage.people.bank.fragment.ManagePeopleBankFormFragment;
 import com.tokopedia.core.manage.people.notification.activity.ManageNotificationActivity;
+import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity;
 import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.manage.shop.notes.activity.ManageShopNotesActivity;
 import com.tokopedia.core.manage.shop.notes.fragment.ManageShopNotesFormFragment;
@@ -115,8 +114,8 @@ public final class AppScreen {
             gtmName = AppScreen.SCREEN_INDEX_HOME;
         } else if (actClass instanceof BrowseProductActivity) {
             gtmName = AppScreen.SCREEN_BROWSE_PRODUCT_FROM_SEARCH;
-        } else if (actClass instanceof AddToCartActivity) {
-            gtmName = AppScreen.SCREEN_ADD_TO_CART;
+//        } else if (actClass instanceof AddToCartActivity) {
+//            gtmName = AppScreen.SCREEN_ADD_TO_CART;
         } else if (actClass instanceof TalkViewActivity && !(getFragment(actClass) instanceof ShopTalkViewFragment)) {
             gtmName = AppScreen.SCREEN_PRODUCT_TALK_VIEW;
         } else if (actClass instanceof TalkViewActivity && getFragment(actClass) instanceof ShopTalkViewFragment) {
@@ -172,7 +171,7 @@ public final class AppScreen {
             gtmName = AppScreen.SCREEN_PEOPLE_BANK;
         } else if (actClass instanceof ManageNotificationActivity) {
             gtmName = AppScreen.SCREEN_CONFIG_P_NOTIF;
-        } else if (actClass instanceof ManagePeoplePassword) {
+        } else if (actClass instanceof ManagePasswordActivity) {
             gtmName = AppScreen.SCREEN_CONFIG_P_PASSWORD;
         } else if (actClass instanceof ShopEditor) {
             gtmName = AppScreen.SCREEN_SHOP_EDITOR;

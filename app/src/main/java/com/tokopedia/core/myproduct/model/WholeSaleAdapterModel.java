@@ -7,7 +7,7 @@ import org.parceler.Parcel;
 /**
  * Created by m.normansyah on 23/12/2015.
  */
-@Parcel
+@Parcel(parcelsIndex = false)
 public class WholeSaleAdapterModel {
     double quantityOne;
     double quantityTwo;

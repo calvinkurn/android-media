@@ -122,7 +122,7 @@ public class AddProductPresenterImpl implements AddProductPresenter
     public void fetchDepartmentParent(Context context) {
         fetchDepParentTimer = initCacheIfNotNull(context, FETCH_DEP_PARENT);
         List<CategoryDB> categoryDBs = new Select().from(CategoryDB.class).where(CategoryDB_Table.levelId.is(0)).queryList();
-        if (fetchDepParentTimer.isExpired() || categoryDBs == null) {
+        if (fetchDepParentTimer.isExpired() || checkCollectionNotNull(categoryDBs)) {
             ((NetworkInteractorImpl) networkInteractorImpl).setFetchDepartment(this);
             ((NetworkInteractorImpl) networkInteractorImpl).setCompositeSubscription(compositeSubscription);
             networkInteractorImpl.fetchDepartment(context);

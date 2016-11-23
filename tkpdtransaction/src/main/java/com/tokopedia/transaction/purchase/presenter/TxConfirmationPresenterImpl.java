@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.transaction.purchase.activity.ConfirmPaymentActivity;
 import com.tokopedia.transaction.purchase.activity.TxConfirmationDetailActivity;
 import com.tokopedia.transaction.purchase.fragment.TxConfirmationFragment;
@@ -22,9 +23,6 @@ import com.tokopedia.transaction.purchase.listener.TxConfViewListener;
 import com.tokopedia.transaction.purchase.model.response.cancelform.CancelFormData;
 import com.tokopedia.transaction.purchase.model.response.txconfirmation.TxConfData;
 import com.tokopedia.transaction.purchase.model.response.txconfirmation.TxConfListData;
-import com.tokopedia.core.util.PagingHandler;
-
-import org.json.JSONObject;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -53,7 +51,7 @@ public class TxConfirmationPresenterImpl implements TxConfirmationPresenter {
         netInteractor.getPaymentConfirmationList(context, params,
                 new TxOrderNetInteractor.OnGetPaymentConfirmationList() {
                     @Override
-                    public void onSuccess(JSONObject data, TxConfListData dataObj) {
+                    public void onSuccess(TxConfListData dataObj) {
                         viewListener.renderDataList(dataObj.getTxConfDataList(),
                                 PagingHandler.CheckHasNext(dataObj.getPaging()), typeRequest);
                     }
@@ -79,8 +77,18 @@ public class TxConfirmationPresenterImpl implements TxConfirmationPresenter {
                     }
 
                     @Override
-                    public void onTimeout(String message) {
-
+                    public void onNoConnection(String message) {
+                        switch (typeRequest) {
+                            case TxOrderNetInteractor.TypeRequest.INITIAL:
+                                viewListener.showNoConnectionResetData(message);
+                                break;
+                            case TxOrderNetInteractor.TypeRequest.PULL_REFRESH:
+                                viewListener.showNoConnectionPullRefresh(message);
+                                break;
+                            case TxOrderNetInteractor.TypeRequest.LOAD_MORE:
+                                viewListener.showNoConnectionLoadMoreData(message);
+                                break;
+                        }
                     }
                 });
     }

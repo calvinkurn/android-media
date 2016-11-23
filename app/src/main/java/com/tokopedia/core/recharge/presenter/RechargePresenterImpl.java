@@ -62,6 +62,16 @@ public class RechargePresenterImpl implements RechargePresenter,
     }
 
     @Override
+    public void updateMinLenghAndOperator(String operatorId) {
+        dbInteractor.getOperatorById(operatorId, this);
+    }
+
+    @Override
+    public void validateWithDefaultOperator( int categoryId, String operatorId) {
+        dbInteractor.getListProductDefaultOperator(this, categoryId, operatorId);
+    }
+
+    @Override
     public boolean isAlreadyHavePhonebookDataOnCache(String key) {
         return null != cacheHandlerPhoneBook.getString(key);
     }
@@ -139,6 +149,7 @@ public class RechargePresenterImpl implements RechargePresenter,
     @Override
     public void onSuccess(RechargeOperatorModelDB operator) {
         view.showImageOperator(operator.image);
+        view.setOperatorView(operator);
     }
 
     @Override

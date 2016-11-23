@@ -26,7 +26,7 @@ import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.rescenter.inbox.fragment.InboxResCenterFragment;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.TransactionRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.session.Login;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.talk.inboxtalk.fragment.InboxTalkFragment;
@@ -148,31 +148,31 @@ public class NotificationCenter extends MultiPaneActivity implements Notificatio
                     break;
                 case 301:
                     if (!isAlreadyExist(getString(R.string.title_notifcenter_purchase_verified))) {
-                        FragmentList.add(TransactionRouter.instanceTxListFromNotification(this, TransactionRouter.PAYMENT_VERIFICATION_FILTER_ID));
+                        FragmentList.add(TransactionPurchaseRouter.instanceTxListFromNotification(this, TransactionPurchaseRouter.PAYMENT_VERIFICATION_FILTER_ID));
                         CONTENT.add(getString(R.string.title_notifcenter_purchase_verified));
                     }
                     break;
                 case 302:
                     if (!isAlreadyExist(getString(R.string.title_notifcenter_purchase_processed))) {
-                        FragmentList.add(TransactionRouter.instanceTxListFromNotification(this, TransactionRouter.PROCESSING_TRANSACTION_FILTER_ID));
+                        FragmentList.add(TransactionPurchaseRouter.instanceTxListFromNotification(this, TransactionPurchaseRouter.PROCESSING_TRANSACTION_FILTER_ID));
                         CONTENT.add(getString(R.string.title_notifcenter_purchase_processed));
                     }
                     break;
                 case 303:
                     if (!isAlreadyExist(getString(R.string.title_notifcenter_purchase_processed))) {
-                        FragmentList.add(TransactionRouter.instanceTxListFromNotification(this, TransactionRouter.ONGOING_DELIVERY_FILTER_ID));
+                        FragmentList.add(TransactionPurchaseRouter.instanceTxListFromNotification(this, TransactionPurchaseRouter.ONGOING_DELIVERY_FILTER_ID));
                         CONTENT.add(getString(R.string.title_notifcenter_purchase_processed));
                     }
                     break;
                 case 304:
                     if (!isAlreadyExist(getString(R.string.title_notifcenter_purchase_reject))) {
-                        FragmentList.add(TransactionRouter.instanceTxListFromNotification(this, TransactionRouter.TRANSACTION_CANCELED_FILTER_ID));
+                        FragmentList.add(TransactionPurchaseRouter.instanceTxListFromNotification(this, TransactionPurchaseRouter.TRANSACTION_CANCELED_FILTER_ID));
                         CONTENT.add(getString(R.string.title_notifcenter_purchase_reject));
                     }
                     break;
                 case 305:
                     if (!isAlreadyExist(getString(R.string.title_notifcenter_purchase_delivered))) {
-                        FragmentList.add(TransactionRouter.instanceTxListFromNotification(this, TransactionRouter.TRANSACTION_DELIVERED_FILTER_ID));
+                        FragmentList.add(TransactionPurchaseRouter.instanceTxListFromNotification(this, TransactionPurchaseRouter.TRANSACTION_DELIVERED_FILTER_ID));
                         CONTENT.add(getString(R.string.title_notifcenter_purchase_delivered));
                     }
                     break;

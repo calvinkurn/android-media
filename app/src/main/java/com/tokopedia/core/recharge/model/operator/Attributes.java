@@ -36,6 +36,9 @@ public class Attributes {
     @SerializedName("weight")
     @Expose
     private Integer weight;
+    @SerializedName("rule")
+    @Expose
+    private Rule rule;
 
     /**
      * 
@@ -199,4 +202,11 @@ public class Attributes {
         this.weight = weight;
     }
 
+    public Rule getRule() {
+        return rule;
+    }
+
+    public void setRule(Rule rule) {
+        this.rule = rule;
+    }
 }

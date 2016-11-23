@@ -31,7 +31,7 @@ public class NewOrderImpl extends NewOrder {
     private boolean isRefresh;
 
     private Model modelNewOrder = new Model();
-    public List<OrderShippingList> ListDatas = new ArrayList<>();
+    public List<OrderShippingList> listDatas = new ArrayList<>();
 
     private FacadeShopTransaction facade;
 
@@ -51,12 +51,13 @@ public class NewOrderImpl extends NewOrder {
 
     @Override
     public void initData(@NonNull Context context) {
-        view.initView();
-        if (isAllowLoading()) {
-            addLoading();
-        }
         view.initListener();
-        initData();
+        if(!isAfterRotate) {
+            if (isAllowLoading()) {
+                addLoading();
+            }
+            initData();
+        }
     }
 
     @Override
@@ -151,7 +152,7 @@ public class NewOrderImpl extends NewOrder {
     @Override
     public void moveToDetail(int position) {
         Intent intent = new Intent(context, SellingDetailActivity.class);
-        intent.putExtra(SellingDetailActivity.DATA_EXTRA, Parcels.wrap(ListDatas.get(position)));
+        intent.putExtra(SellingDetailActivity.DATA_EXTRA, Parcels.wrap(listDatas.get(position)));
         intent.putExtra(SellingDetailActivity.DATA_EXTRA2, modelNewOrder.Permission);
         intent.putExtra(SellingDetailActivity.TYPE_EXTRA, SellingDetailActivity.Type.NEW_ORDER);
 //        context.startActivity(intent);
@@ -164,8 +165,8 @@ public class NewOrderImpl extends NewOrder {
     }
 
     private void clearData() {
-        ListDatas.clear();
-        view.notifyDataSetChanged(ListDatas);
+        listDatas.clear();
+        view.notifyDataSetChanged(listDatas);
     }
 
     private void finishConnection() {
@@ -173,12 +174,13 @@ public class NewOrderImpl extends NewOrder {
         view.removeRetry();
         isLoading = false;
         view.removeLoading();
+        view.removeEmpty();
         view.enableFilter();
     }
 
     private boolean isDataEmpty() {
         try {
-            return (view.getPaging().getPage() == 1 && !isLoading && ListDatas.size() == 0);
+            return (view.getPaging().getPage() == 1 && !isLoading && listDatas.size() == 0);
         } catch (Exception e) {
             return false;
         }
@@ -230,19 +232,21 @@ public class NewOrderImpl extends NewOrder {
             public void OnSuccess(Model model, OrderShippingData Result) {
                 if (view.getPaging().getPage() == 1)
                     clearData();
-                //view.getPaging().setNewParameter(Result);
+                view.getPaging().setNewParameter(Result.getPaging());
                 finishConnection();
                 modelNewOrder = model;
-                ListDatas.addAll(modelNewOrder.DataList);
-                view.notifyDataSetChanged(ListDatas);
+                listDatas.addAll(modelNewOrder.DataList);
+                view.notifyDataSetChanged(listDatas);
                 view.setRefreshPullEnable(true);
             }
 
             @Override
             public void OnNoResult() {
                 finishConnection();
-                if (view.getPaging().getPage() == 1)
+                if (view.getPaging().getPage() == 1) {
                     clearData();
+                    view.addEmptyView();
+                }
                 view.getPaging().setHasNext(false);
                 view.setRefreshPullEnable(true);
                 view.removeRetry();
@@ -256,7 +260,7 @@ public class NewOrderImpl extends NewOrder {
             @Override
             public void OnError() {
                 finishConnection();
-                if (ListDatas.size() == 0) {
+                if (listDatas.size() == 0) {
                     view.addRetry();
                 } else {
                     NetworkErrorHelper.showSnackbar((Activity) context);

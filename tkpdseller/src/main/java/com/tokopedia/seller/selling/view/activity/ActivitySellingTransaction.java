@@ -2,16 +2,27 @@ package com.tokopedia.seller.selling.view.activity;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.os.Bundle;
+import android.text.Html;
+import android.text.method.ScrollingMovementMethod;
+import android.text.util.Linkify;
 import android.view.Menu;
+import android.view.View;
+import android.widget.TextView;
+import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
+import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -38,6 +49,7 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
     SectionsPagerAdapter mSectionsPagerAdapter;
     ViewPager mViewPager;
     private TabLayout indicator;
+    private TextView sellerTickerView;
 
     private String[] CONTENT;
     private List<Fragment> fragmentList;
@@ -67,10 +79,37 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
     }
 
     private void initView() {
+        sellerTickerView = (TextView) findViewById(R.id.seller_ticker);
+        sellerTickerView.setMovementMethod(new ScrollingMovementMethod());
+        initSellerTicker();
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setOffscreenPageLimit(4);
         indicator = (TabLayout) findViewById(R.id.indicator);
     }
+
+    private void initSellerTicker() {
+        GTMContainer gtmContainer = GTMContainer.newInstance(this);
+
+        if (gtmContainer.getString("is_show_ticker_sales").equalsIgnoreCase("true")) {
+            String message = gtmContainer.getString("ticker_text_sales");
+            showTickerGTM(message);
+        } else {
+            showTickerGTM(null);
+        }
+
+    }
+
+    private void showTickerGTM(String message) {
+        if (message != null) {
+            sellerTickerView.setText(Html.fromHtml(message));
+            sellerTickerView.setVisibility(View.VISIBLE);
+            sellerTickerView.setAutoLinkMask(0);
+            Linkify.addLinks(sellerTickerView, Linkify.WEB_URLS);
+        } else {
+            sellerTickerView.setVisibility(View.GONE);
+        }
+    }
+
 
     private void initVariable() {
         CONTENT = new String[]{getString(R.string.title_dashboard_sell),
@@ -163,12 +202,13 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
 
     /**
      * receive result when hit to ws
+     *
      * @param resultCode code of result (running, finish, error)
      * @param resultData bundle of data which send by sender (service)
      */
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
-        int type = resultData.getInt(DownloadService.TYPE, DownloadService.INVALID_TYPE);
+        int type = resultData.getInt(SellingService.TYPE, SellingService.INVALID_TYPE);
         int position = resultData.getInt(ShopShippingDetailView.POSITION);
         Fragment fragment = null;
         switch (type) {
@@ -187,7 +227,7 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
         }
 
         //check if Fragment implement necessary interface
-        if (fragment != null && type != DownloadService.INVALID_TYPE) {
+        if (fragment != null && type != SellingService.INVALID_TYPE) {
             switch (resultCode) {
                 case SellingService.STATUS_RUNNING:
                     switch (type) {
@@ -216,8 +256,8 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
                             break;
                     }
                     break;
-                case DownloadService.STATUS_ERROR:
-                    switch (resultData.getInt(DownloadService.NETWORK_ERROR_FLAG, DownloadService.INVALID_NETWORK_ERROR_FLAG)) {
+                case SellingService.STATUS_ERROR:
+                    switch (resultData.getInt(SellingService.NETWORK_ERROR_FLAG, SellingService.INVALID_NETWORK_ERROR_FLAG)) {
                         case NetworkConfig.BAD_REQUEST_NETWORK_ERROR:
                             ((BaseView) fragment).onNetworkError(type, " BAD_REQUEST_NETWORK_ERROR !!!");
                             break;
@@ -227,10 +267,10 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
                         case NetworkConfig.FORBIDDEN_NETWORK_ERROR:
                             ((BaseView) fragment).onNetworkError(type, " FORBIDDEN_NETWORK_ERROR !!!");
                             break;
-                        case DownloadService.INVALID_NETWORK_ERROR_FLAG:
+                        case SellingService.INVALID_NETWORK_ERROR_FLAG:
                         default:
-                            String messageError = resultData.getString(DownloadService.MESSAGE_ERROR_FLAG, DownloadService.INVALID_MESSAGE_ERROR);
-                            if (!messageError.equals(DownloadService.INVALID_MESSAGE_ERROR)) {
+                            String messageError = resultData.getString(SellingService.MESSAGE_ERROR_FLAG, SellingService.INVALID_MESSAGE_ERROR);
+                            if (!messageError.equals(SellingService.INVALID_MESSAGE_ERROR)) {
                                 ((BaseView) fragment).onMessageError(type, messageError);
                             }
                     }

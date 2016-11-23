@@ -26,13 +26,18 @@ public class RechargeOperatorManager implements DbFlowOperation<RechargeOperator
 
     }
 
-    public void store(String prefix, String name, int operatorId, int status, String image) {
+    public void store(String prefix, String name, int operatorId, int status, String image, int minLength, int maxLength, String nominalText, Boolean showProduct, Boolean showPrice) {
         RechargeOperatorModelDB db = new RechargeOperatorModelDB();
         db.operatorId = operatorId;
         db.image = image;
         db.name = name;
         db.status = status;
         db.prefix = prefix;
+        db.minimumLength = minLength;
+        db.maximumLength = maxLength;
+        db.nominalText =  nominalText;
+        db.showPrice =  showPrice;
+        db.showProduct = showProduct;
         db.save();
     }
 
@@ -56,6 +61,7 @@ public class RechargeOperatorManager implements DbFlowOperation<RechargeOperator
         RechargeOperatorModelDB result =  new Select().from(RechargeOperatorModelDB.class)
                 .where(RechargeOperatorModelDB_Table.prefix.is(prefix))
                 .querySingle();
+
         if (result == null && prefix.length() == 4){
             result = new Select().from(RechargeOperatorModelDB.class)
                     .where(RechargeOperatorModelDB_Table.prefix.is(prefix.substring(0, 3)))
@@ -99,7 +105,13 @@ public class RechargeOperatorManager implements DbFlowOperation<RechargeOperator
                                 operator.getAttributes().getName(),
                                 operator.getId(),
                                 operator.getAttributes().getStatus(),
-                                operator.getAttributes().getImage());
+                                operator.getAttributes().getImage(),
+                                operator.getAttributes().getMinimumLength(),
+                                operator.getAttributes().getMaximumLength(),
+                                operator.getAttributes().getRule().getProductText(),
+                                operator.getAttributes().getRule().getShowProduct(),
+                                operator.getAttributes().getRule().getShowPrice()
+                        );
                     }
                 } else {
                     store(
@@ -107,7 +119,12 @@ public class RechargeOperatorManager implements DbFlowOperation<RechargeOperator
                             operator.getAttributes().getName(),
                             operator.getId(),
                             operator.getAttributes().getStatus(),
-                            operator.getAttributes().getImage()
+                            operator.getAttributes().getImage(),
+                            operator.getAttributes().getMinimumLength(),
+                            operator.getAttributes().getMaximumLength(),
+                            operator.getAttributes().getRule().getProductText(),
+                            operator.getAttributes().getRule().getShowProduct(),
+                            operator.getAttributes().getRule().getShowPrice()
                     );
                 }
             }
