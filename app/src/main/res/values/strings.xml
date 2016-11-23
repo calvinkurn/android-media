@@ -1071,6 +1071,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="shipping_sicepat">SiCepat</string>
     <string name="shipping_ninja">Ninja Xpress</string>
     <string name="shipping_grab">Grab</string>
+    <string name="shipping_jnt">J&amp;T</string>
     <string name="msg_remove_wishlist">Sukses menghapus wishlist</string>
     <string name="msg_add_wishlist">Sukses menambah wishlist</string>
     <string name="go_to_wishlist">Lihat Wishlist</string>
@@ -1772,4 +1773,5 @@ di Tokopedia Sekarang!</string>
     <string name="success_delete_shop_note">Anda berhasil menghapus catatan.</string>
     <string name="error_max_shop_notes_content_length">Maksimal panjang catatan adalah 6000 karakter</string>
     <string name="error_max_shop_notes_title_length">Maksimal panjang judul catatan adalah 128 karakter</string>
+    <string name="error_upload_image">Gagal mengunggah gambar</string>
 </resources>

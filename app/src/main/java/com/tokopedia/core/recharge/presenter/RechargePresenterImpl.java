@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.database.CacheUtil;
-import com.tokopedia.core.database.model.RechargeOperatorModelDB;
+import com.tokopedia.core.database.model.RechargeOperatorModelDBAttrs;
 import com.tokopedia.core.recharge.interactor.RechargeDBInteractor;
 import com.tokopedia.core.recharge.interactor.RechargeDBInteractorImpl;
 import com.tokopedia.core.recharge.interactor.RechargeNetworkInteractor;
@@ -147,7 +147,7 @@ public class RechargePresenterImpl implements RechargePresenter,
     }
 
     @Override
-    public void onSuccess(RechargeOperatorModelDB operator) {
+    public void onSuccess(RechargeOperatorModelDBAttrs operator) {
         view.showImageOperator(operator.image);
         view.setOperatorView(operator);
     }
