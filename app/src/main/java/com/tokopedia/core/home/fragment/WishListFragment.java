@@ -21,8 +21,10 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.customadapter.GridLayoutProductAdapter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.home.presenter.WishList;
@@ -41,7 +43,7 @@ import butterknife.ButterKnife;
 /**
  * Created by m.normansyah on 01/12/2015.
  */
-public class WishListFragment extends Fragment implements WishListView{
+public class WishListFragment extends TkpdBaseV4Fragment implements WishListView{
 
     public static final String FRAGMENT_TAG = "WishListFragment";
 
@@ -80,6 +82,11 @@ public class WishListFragment extends Fragment implements WishListView{
         isDeleteDialogShown = false;
     }
 
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_FRAGMENT_WISHLIST;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -87,7 +94,7 @@ public class WishListFragment extends Fragment implements WishListView{
         ButterKnife.bind(this, parentView);
         wishList.subscribe();
         wishList.initAnalyticsHandler(getActivity());
-        ScreenTracking.screen(this);
+        ScreenTracking.screen(getScreenName());
         prepareView();
         setListener();
         return parentView;
