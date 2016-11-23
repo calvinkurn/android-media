@@ -8,13 +8,13 @@ import android.util.Log;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.home.ParentIndexHome;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.RegisterSuccessModel;
 import com.tokopedia.core.session.model.RegisterViewModel;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.analytics.TrackingUtils;
 
 import org.json.JSONObject;
 import org.parceler.Parcels;
@@ -175,7 +175,7 @@ public class RegisterNextImpl implements RegisterNext {
                         sessionHandler.SetLoginSession(true, registerSuccessModel.getUserId()+"","","", true);
                         TrackingUtils.eventLoca(context.getString(R.string.event_register) + " with e-mail");
                         CommonUtils.dumper("LocalTag : DEFAULT REGISTER");
-                        context.startActivity(new Intent(context, ParentIndexHome.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                        context.startActivity(new Intent(context, HomeRouter.getHomeActivityClass()).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                         ((AppCompatActivity) context).finish();
                         break;
                 }

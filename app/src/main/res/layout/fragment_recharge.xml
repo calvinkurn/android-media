@@ -21,7 +21,7 @@
         android:text="@string/prompt_phone"
         android:visibility="gone" />
 
-    <com.tokopedia.core.recharge.view.widget.RechargeEditText
+    <com.tokopedia.home.recharge.view.widget.RechargeEditText
         android:id="@+id/pulsa_edittext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

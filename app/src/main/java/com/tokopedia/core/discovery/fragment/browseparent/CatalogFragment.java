@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -18,16 +19,15 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
+import com.tokopedia.core.discovery.activity.BrowseProductActivity;
+import com.tokopedia.core.discovery.adapter.browseparent.BrowseCatalogAdapter;
 import com.tokopedia.core.discovery.interfaces.FetchNetwork;
 import com.tokopedia.core.discovery.model.BrowseCatalogModel;
 import com.tokopedia.core.discovery.presenter.DiscoveryActivityPresenter;
-import com.tokopedia.core.dynamicfilter.model.DynamicFilterModel;
-import com.tokopedia.core.home.fragment.FragmentProductFeed;
-import com.tokopedia.core.discovery.activity.BrowseProductActivity;
-import com.tokopedia.core.discovery.adapter.browseparent.BrowseCatalogAdapter;
 import com.tokopedia.core.discovery.presenter.browseparent.Catalog;
 import com.tokopedia.core.discovery.presenter.browseparent.CatalogImpl;
 import com.tokopedia.core.discovery.view.CatalogView;
+import com.tokopedia.core.dynamicfilter.model.DynamicFilterModel;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
@@ -45,6 +45,13 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
     public static final int IDFRAGMENT = 123_348;
     public static final String INDEX = "FRAGMENT_INDEX";
 
+    private static final int LANDSCAPE_COLUMN_MAIN = 3;
+    private static final int PORTRAIT_COLUMN_MAIN = 2;
+
+    private static final int PORTRAIT_COLUMN_HEADER = 2;
+    private static final int PORTRAIT_COLUMN_FOOTER = 2;
+    private static final int PORTRAIT_COLUMN = 1;
+
     @Bind(R2.id.list_catalog)
     RecyclerView list_catalog;
 
@@ -54,6 +61,7 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
     private LinearLayoutManager linearLayoutManager;
     private BrowseProductActivity.GridType gridType;
     private int spanCount = 2;
+
 
     private BroadcastReceiver changeGridReceiver = new BroadcastReceiver() {
         @Override
@@ -204,7 +212,7 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
     public void initAdapter() {
         browseCatalogAdapter = new BrowseCatalogAdapter(getActivity().getApplicationContext(), browseCatalogModelList);
         browseCatalogAdapter.setIsLoading(true);
-        spanCount = FragmentProductFeed.calcColumnSize(getResources().getConfiguration().orientation);
+        spanCount = calcColumnSize(getResources().getConfiguration().orientation);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         gridLayoutManager = new GridLayoutManager(getActivity(), spanCount);
         gridLayoutManager.setSpanSizeLookup(onSpanSizeLookup());
@@ -221,9 +229,9 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
                         footerColumnSize = 1,
                         regularColumnSize = 1;
 
-                headerColumnSize = FragmentProductFeed.PORTRAIT_COLUMN_HEADER;
-                regularColumnSize = FragmentProductFeed.PORTRAIT_COLUMN;
-                footerColumnSize = FragmentProductFeed.PORTRAIT_COLUMN_FOOTER;
+                headerColumnSize = PORTRAIT_COLUMN_HEADER;
+                regularColumnSize = PORTRAIT_COLUMN;
+                footerColumnSize = PORTRAIT_COLUMN_FOOTER;
 
                 // set the value of footer, regular and header
                 if (position == browseCatalogAdapter.getData().size()) {
@@ -312,5 +320,18 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
             filterAtrribute.setSelected(filterAtrribute.getSort().get(0).getName());
         }
         ((BrowseProductActivity) getActivity()).setFilterAttribute(filterAtrribute, activeTab);
+    }
+
+    private int calcColumnSize(int orientation) {
+        int defaultColumnNumber = 1;
+        switch (orientation) {
+            case Configuration.ORIENTATION_PORTRAIT:
+                defaultColumnNumber = PORTRAIT_COLUMN_MAIN;
+                break;
+            case Configuration.ORIENTATION_LANDSCAPE:
+                defaultColumnNumber = LANDSCAPE_COLUMN_MAIN;
+                break;
+        }
+        return defaultColumnNumber;
     }
 }

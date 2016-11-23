@@ -1,6 +1,7 @@
 package com.tokopedia.core.analytics;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -11,8 +12,8 @@ import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.home.ParentIndexHome;
-import com.tokopedia.core.home.fragment.FragmentIndexCategory;
+import com.tokopedia.core.router.home.HomeFragmentRouter;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.session.RegisterNewNextFragment;
 import com.tokopedia.core.session.RegisterThirdFragment;
 import com.tokopedia.core.util.SessionHandler;
@@ -23,12 +24,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.tokopedia.core.analytics.AppScreen.SCREEN_HOME_PRODUCT_CATEGORY;
+
 /**
  * @author  by alvarisi on 9/27/16.
  * Modified by Hafizh Herdi
  */
 
 public class TrackingUtils extends TrackingConfig {
+
+    public static int PARENT_HOME_ACTIVITY = 101;
+    public static int TYPE_FRAGMENT_INDEX_CATEGORY = 203;
 
     public static void eventCampaign(Campaign campaign){
         getGTMEngine()
@@ -37,23 +43,50 @@ public class TrackingUtils extends TrackingConfig {
     }
 
 
-    public static void activityBasedAFEvent(Activity activity){
+//    public static void activityBasedAFEvent(Activity activity){
+//        Map<String, Object> afValue = new HashMap<>();
+//
+//        getAFEngine().sendTrackEvent(AppScreen.convertAFActivityEvent(activity), afValue);
+//    }
+
+    //TODO please implement another best practice to do this
+    public static void activityBasedAFEvent(int typeActivity) {
         Map<String, Object> afValue = new HashMap<>();
-        if (activity instanceof ParentIndexHome){
-            afValue.put(AFInAppEventParameterName.PARAM_1, CommonUtils.getUniqueDeviceID(MainApplication.getAppContext()));
+        String eventName = null;
+        Activity activity = null;
+        if (typeActivity == PARENT_HOME_ACTIVITY) {
+            afValue.put(AFInAppEventParameterName.PARAM_1,
+                    CommonUtils.getUniqueDeviceID(MainApplication.getAppContext()));
+            activity = HomeRouter.getHomeActivity();
+            eventName = AFInAppEventType.LOGIN;
         }
-        getAFEngine().sendTrackEvent(AppScreen.convertAFActivityEvent(activity), afValue);
+
+        if (activity != null) {
+            getAFEngine().sendTrackEvent(eventName, afValue);
+        }
     }
+
 
     public static void fragmentBasedAFEvent(android.support.v4.app.Fragment fragment){
         Map<String, Object> afValue = new HashMap<>();
         if (fragment instanceof RegisterNewNextFragment || fragment instanceof RegisterThirdFragment){
             afValue.put(AFInAppEventParameterName.REGSITRATION_METHOD,"register_normal");
-        } else if (fragment instanceof FragmentIndexCategory){
-            afValue.put(AFInAppEventParameterName.DESCRIPTION, Jordan.AF_SCREEN_HOME_MAIN);
         }
-
         getAFEngine().sendTrackEvent(AppScreen.convertAFFragmentEvent(fragment), afValue);
+    }
+
+    public static void fragmentBasedAFEvent(Context context, int fragmentType) {
+        Map<String, Object> afValue = new HashMap<>();
+        android.support.v4.app.Fragment fragment = null;
+        String eventname;
+        if (fragmentType == TYPE_FRAGMENT_INDEX_CATEGORY) {
+            afValue.put(AFInAppEventParameterName.DESCRIPTION, Jordan.AF_SCREEN_HOME_MAIN);
+            fragment = HomeFragmentRouter.getHomeFragment(context);
+            eventname = SCREEN_HOME_PRODUCT_CATEGORY;
+        }
+        if (fragment != null) {
+            getAFEngine().sendTrackEvent(AppScreen.convertAFFragmentEvent(fragment), afValue);
+        }
     }
 
     public static String eventHTTP(){

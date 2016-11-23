@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -28,7 +29,6 @@ import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.discovery.presenter.FragmentDiscoveryPresenter;
 import com.tokopedia.core.discovery.presenter.FragmentDiscoveryPresenterImpl;
 import com.tokopedia.core.discovery.view.FragmentBrowseProductView;
-import com.tokopedia.core.home.fragment.FragmentProductFeed;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.var.ProductItem;
@@ -48,6 +48,13 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     public static final String TAG = "BrowseProductFragment";
     public static final String INDEX = "FRAGMENT_INDEX";
+    // this value for main colum recyclerview
+    private static final int LANDSCAPE_COLUMN_MAIN = 3;
+    private static final int PORTRAIT_COLUMN_MAIN = 2;
+
+    private static final int PORTRAIT_COLUMN_HEADER = 2;
+    private static final int PORTRAIT_COLUMN_FOOTER = 2;
+    private static final int PORTRAIT_COLUMN = 1;
 
     @Bind(R2.id.fragmentv2list)
     RecyclerView mRecyclerView;
@@ -207,7 +214,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     @Override
     public void setupAdapter() {
         productAdapter = new ProductAdapter(getActivity(), new ArrayList<RecyclerViewItem>());
-        spanCount = FragmentProductFeed.calcColumnSize(getResources().getConfiguration().orientation);
+        spanCount = calcColumnSize(getResources().getConfiguration().orientation);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         gridLayoutManager = new GridLayoutManager(getActivity(), spanCount);
         gridLayoutManager.setSpanSizeLookup(onSpanSizeLookup());
@@ -222,9 +229,9 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
                 // column size default is one
                 int headerColumnSize = 1, footerColumnSize = 1, regularColumnSize = 1;
 
-                headerColumnSize = FragmentProductFeed.PORTRAIT_COLUMN_HEADER;
-                regularColumnSize = FragmentProductFeed.PORTRAIT_COLUMN;
-                footerColumnSize = FragmentProductFeed.PORTRAIT_COLUMN_FOOTER;
+                headerColumnSize = PORTRAIT_COLUMN_HEADER;
+                regularColumnSize = PORTRAIT_COLUMN;
+                footerColumnSize = PORTRAIT_COLUMN_FOOTER;
 
                 // set the value of footer, regular and header
                 if (position == productAdapter.getData().size()) {
@@ -396,5 +403,18 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     @Override
     public void addHotListHeader(ProductAdapter.HotListBannerModel hotListBannerModel) {
         productAdapter.addHotListHeader(hotListBannerModel);
+    }
+
+    private int calcColumnSize(int orientation) {
+        int defaultColumnNumber = 1;
+        switch (orientation) {
+            case Configuration.ORIENTATION_PORTRAIT:
+                defaultColumnNumber = PORTRAIT_COLUMN_MAIN;
+                break;
+            case Configuration.ORIENTATION_LANDSCAPE:
+                defaultColumnNumber = LANDSCAPE_COLUMN_MAIN;
+                break;
+        }
+        return defaultColumnNumber;
     }
 }

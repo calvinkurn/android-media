@@ -11,8 +11,8 @@ import android.util.Log;
 
 import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
@@ -25,18 +25,16 @@ import com.tokopedia.core.discovery.fragment.browseparent.ProductFragment;
 import com.tokopedia.core.discovery.presenter.DiscoveryActivityPresenter;
 import com.tokopedia.core.dynamicfilter.presenter.DynamicFilterPresenter;
 import com.tokopedia.core.fragment.FragmentShopPreview;
-import com.tokopedia.core.home.ParentIndexHome;
-import com.tokopedia.core.home.fragment.FragmentHotListV2;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.product.fragment.ProductDetailFragment;
 import com.tokopedia.core.product.model.passdata.ProductPass;
-import com.tokopedia.core.recharge.fragment.RechargeCategoryFragment;
-import com.tokopedia.core.recharge.fragment.RechargeFragment;
 import com.tokopedia.core.router.DiscoveryRouter;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.home.HotListRouter;
+import com.tokopedia.core.router.home.RechargeRouter;
 import com.tokopedia.core.service.DownloadService;
-import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 
@@ -47,7 +45,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.tokopedia.core.recharge.fragment.RechargeCategoryFragment.EXTRA_ALLOW_ERROR;
 
 /**
  * Created by Angga.Prasetiyo on 14/12/2015.
@@ -259,21 +256,22 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         if (isValidCampaignUrl(uriData)) {
             Map<String, String> maps = splitQuery(uriData);
             if (maps.get("utm_source") != null) {
-                bundle.putString(RechargeFragment.ARG_UTM_SOURCE, maps.get("utm_source"));
+                bundle.putString(RechargeRouter.ARG_UTM_SOURCE, maps.get("utm_source"));
             }
             if (maps.get("utm_medium") != null) {
-                bundle.putString(RechargeFragment.ARG_UTM_MEDIUM, maps.get("utm_medium"));
+                bundle.putString(RechargeRouter.ARG_UTM_MEDIUM, maps.get("utm_medium"));
             }
             if (maps.get("utm_campaign") != null) {
-                bundle.putString(RechargeFragment.ARG_UTM_CAMPAIGN, maps.get("utm_campaign"));
+                bundle.putString(RechargeRouter.ARG_UTM_CAMPAIGN, maps.get("utm_campaign"));
             }
             if (maps.get("utm_content") != null) {
-                bundle.putString(RechargeFragment.ARG_UTM_CONTENT, maps.get("utm_content"));
+                bundle.putString(RechargeRouter.ARG_UTM_CONTENT, maps.get("utm_content"));
             }
         }
-        bundle.putBoolean(EXTRA_ALLOW_ERROR, true);
-        RechargeCategoryFragment fragment = RechargeCategoryFragment.newInstance(bundle);
-        viewListener.inflateFragmentV4(fragment, "RECHARGE");
+        bundle.putBoolean(RechargeRouter.EXTRA_ALLOW_ERROR, true);
+//        RechargeCategoryFragment fragment = RechargeCategoryFragment.newInstance(bundle);
+
+        viewListener.inflateFragmentV4(RechargeRouter.getRechargeCategoryFragment(context), "RECHARGE");
     }
 
 
@@ -329,7 +327,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openHomepage() {
-        Intent intent = new Intent(context, ParentIndexHome.class);
+        Intent intent = new Intent(context, HomeRouter.getHomeActivityClass());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -514,7 +512,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         Fragment fragment;
         switch (type) {
             case DownloadService.HOTLIST:
-                fragment = fragmentManager.findFragmentByTag(FragmentHotListV2.FRAGMENT_TAG);
+                fragment = fragmentManager.findFragmentByTag(HotListRouter.TAG_HOTLIST_FRAGMENT);
                 break;
             default:
                 throw new UnsupportedOperationException("please pass type when want to process it !!!");

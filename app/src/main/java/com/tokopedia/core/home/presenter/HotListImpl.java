@@ -59,7 +59,7 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class HotListImpl implements HotList {
     private HotListView hotListView;
-    HotListViewModel hotListViewModel;
+    private HotListViewModel hotListViewModel;
 
     private List<RecyclerViewItem> data;
     private PagingHandler mPaging;
@@ -177,7 +177,7 @@ public class HotListImpl implements HotList {
                         List<RecyclerViewItem> items = null;
                         try {
                             assert jsonObject != null;
-                            JSONArray listHot = new JSONArray(jsonObject.getString(HotList.LIST_KEY));
+                            JSONArray listHot = new JSONArray(jsonObject.getString(LIST_KEY));
                             java.lang.reflect.Type listType = new TypeToken<List<HotListModel>>() {
                             }.getType();
                             items = new GsonBuilder().create().fromJson(listHot.toString(), listType);
@@ -220,9 +220,9 @@ public class HotListImpl implements HotList {
     public void fetchHotListData() {
 
         Map<String, String> params = new HashMap<String, String>();
-        params.put(HotList.QUERY_KEY, "");
-        params.put(HotList.PAGE_KEY, mPaging.getPage() + "");
-        params.put(HotList.PER_PAGE_KEY, PER_PAGE_VALUE + "");
+        params.put(QUERY_KEY, "");
+        params.put(PAGE_KEY, mPaging.getPage() + "");
+        params.put(PER_PAGE_KEY, PER_PAGE_VALUE + "");
         AuthService service = new HotListService();
         subscription.add(
                 ((HotListService) service).getApi().getHotList(AuthUtil.generateParams(mContext, params))
@@ -580,7 +580,7 @@ public class HotListImpl implements HotList {
                 case DownloadServiceConstant.HOTLIST:
                     List<RecyclerViewItem> temps = new ArrayList<>();
                     try {
-                        JSONArray listHot = new JSONArray(response.getString(HotList.LIST_KEY));
+                        JSONArray listHot = new JSONArray(response.getString(LIST_KEY));
                         java.lang.reflect.Type listType = new TypeToken<List<HotListModel>>() {
                         }.getType();
                         temps = new GsonBuilder().create().fromJson(listHot.toString(), listType);
@@ -598,9 +598,9 @@ public class HotListImpl implements HotList {
                     // only cache first page
                     int page = (int) data[0];
                     if (page == 1) {
-                        LocalCacheHandler cache = new LocalCacheHandler(mContext, HotList.CACHE_KEY);
-                        cache.putString(HotList.HOT_LIST_PAGE_1, jsonObject.toString());
-                        cache.putLong(HotList.EXPIRY, System.currentTimeMillis() / 1000);
+                        LocalCacheHandler cache = new LocalCacheHandler(mContext, CACHE_KEY);
+                        cache.putString(HOT_LIST_PAGE_1, jsonObject.toString());
+                        cache.putLong(EXPIRY, System.currentTimeMillis() / 1000);
                         cache.applyEditor();
                     }
                     break;

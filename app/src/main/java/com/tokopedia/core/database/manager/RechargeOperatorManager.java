@@ -8,7 +8,7 @@ import com.tokopedia.core.database.DbFlowDatabase;
 import com.tokopedia.core.database.DbFlowOperation;
 import com.tokopedia.core.database.model.RechargeOperatorModelDB;
 import com.tokopedia.core.database.model.RechargeOperatorModelDB_Table;
-import com.tokopedia.core.recharge.model.operator.Operator;
+import com.tokopedia.core.database.recharge.operator.Operator;
 
 import java.util.List;
 

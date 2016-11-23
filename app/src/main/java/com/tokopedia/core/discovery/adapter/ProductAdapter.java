@@ -38,7 +38,6 @@ import com.tokopedia.core.customadapter.TopAdsListRecyclerViewAdapter;
 import com.tokopedia.core.customadapter.TopAdsRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.discovery.activity.BrowseProductActivity;
-import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.discovery.model.BrowseProductModel;
 import com.tokopedia.core.discovery.old.BucketListImageScroll;
 import com.tokopedia.core.discovery.old.HeaderHotAdapter;
@@ -46,7 +45,9 @@ import com.tokopedia.core.discovery.presenter.DiscoveryActivityPresenter;
 import com.tokopedia.core.dynamicfilter.presenter.DynamicFilterPresenter;
 import com.tokopedia.core.home.adapter.ProductFeedAdapter;
 import com.tokopedia.core.home.model.HorizontalProductList;
+import com.tokopedia.core.home.model.ViewHolderProductTopAds;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
+import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.var.ProductItem;
@@ -61,7 +62,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.tokopedia.core.home.adapter.ProductFeedAdapter.ViewHolderProductTopAds;
 
 /**
  * Created by m.normansyah on 6/27/16.
@@ -136,10 +136,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                 itemHolder.bindData((ProductItem) data.get(position), itemHolder);
                 break;
             case TkpdState.RecyclerView.VIEW_TOP_ADS_LIST:
-                bindTopAdsListViewHolder((ProductFeedAdapter.ViewHolderProductTopAds) holder, position);
+                bindTopAdsListViewHolder((ViewHolderProductTopAds) holder, position);
                 break;
             case TkpdState.RecyclerView.VIEW_TOP_ADS:
-                bindTopAdsViewHolder((ProductFeedAdapter.ViewHolderProductTopAds) holder, position);
+                bindTopAdsViewHolder((ViewHolderProductTopAds) holder, position);
                 break;
             case TkpdState.RecyclerView.VIEW_TOP_ADS_4:
                 ((TopAds4ViewHolder) holder).bind((HorizontalProductList) data.get(position));
