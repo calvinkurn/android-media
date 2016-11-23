@@ -3,6 +3,7 @@ package com.tokopedia.core.database.recharge.operator;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.recharge.model.operator.Rule;
 
 import java.util.ArrayList;
 import java.util.List;
