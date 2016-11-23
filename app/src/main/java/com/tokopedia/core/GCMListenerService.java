@@ -236,6 +236,7 @@ public class GCMListenerService extends GcmListenerService {
                 break;
             case TkpdState.GCMServiceState.GCM_NEWORDER:
 //                resultclass = ShopTransactionV2.class;
+                componentName = SellerRouter.getActivitySellingTransactionName(this);
                 intent = SellerRouter.getActivitySellingTransaction(this);
                 //bundle.putInt("notif_call", NotificationCode);
                 title = data.getString("counter") + " " + this.getString(R.string.title_new_order);

@@ -1,9 +1,11 @@
 package com.tokopedia.core.router;
 
 import android.app.Fragment;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 
+import com.tokopedia.core.GCMListenerService;
 import com.tokopedia.core.util.RouterUtils;
 
 /**
@@ -22,5 +24,9 @@ public class SellerRouter {
 
     public static Fragment getFragmentSellingNewOrder(Context context) {
         return Fragment.instantiate(context, FRAGMENT_SELLING_NEW_ORDER);
+    }
+
+    public static ComponentName getActivitySellingTransactionName(Context context) {
+        return RouterUtils.getActivityComponentName(context, ACTIVITY_SELLING_TRANSACTION);
     }
 }
