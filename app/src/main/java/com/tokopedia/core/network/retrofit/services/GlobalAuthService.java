@@ -12,6 +12,9 @@ import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
 import com.tokopedia.core.network.retrofit.interceptors.GlobalTkpdAuthInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
+
+import net.hockeyapp.android.metrics.model.Base;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -24,27 +27,17 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * @author Angga.Prasetiyo on 27/11/2015.
  */
-public abstract class GlobalAuthService<T> {
-    private static final String TAG = GlobalAuthService.class.getSimpleName();
-    protected T api;
+public abstract class GlobalAuthService<T> extends BaseService<T> {
 
-    public GlobalAuthService() {
-        OkHttpClient.Builder client = new OkHttpClient.Builder();
+    protected abstract String getKeyAuth();
 
-        Interceptor authInterceptor = new GlobalTkpdAuthInterceptor(getKeyAuth());
-        client.interceptors().add(authInterceptor);
+    @Override
+    public Interceptor getAuthInterceptor() {
+        return new GlobalTkpdAuthInterceptor(getKeyAuth());
+    }
 
-        HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
-        logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        client.interceptors().add(logInterceptor);
-
-        Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
-                .setPrettyPrinting()
-                .serializeNulls()
-                .create();
-
-        Retrofit.Builder retrofit = new Retrofit.Builder();
+    @Override
+    public String getProcessedBaseUrl() {
         String baseUrl = getBaseUrl();
         if (baseUrl.startsWith("https://ws") & BuildConfig.DEBUG) {
             String path = baseUrl.substring(baseUrl.indexOf("v4"));
@@ -52,21 +45,6 @@ public abstract class GlobalAuthService<T> {
                     .getSharedPreferences("DOMAIN_WS_4", Context.MODE_PRIVATE);
             baseUrl = pref.getString("DOMAIN_WS4", TkpdBaseURL.BASE_DOMAIN) + path;
         }
-        retrofit.baseUrl(baseUrl);
-        retrofit.addConverterFactory(new GeneratedHostConverter());
-        retrofit.addConverterFactory(new TkpdResponseConverter());
-        retrofit.addConverterFactory(new StringResponseConverter());
-        retrofit.addConverterFactory(GsonConverterFactory.create(gson));
-        retrofit.addCallAdapterFactory(RxJavaCallAdapterFactory.create());
-        retrofit.client(client.build());
-        initApiService(retrofit.build());
+        return baseUrl;
     }
-
-    protected abstract void initApiService(Retrofit retrofit);
-
-    protected abstract String getBaseUrl();
-
-    public abstract T getApi();
-
-    protected abstract String getKeyAuth();
 }
