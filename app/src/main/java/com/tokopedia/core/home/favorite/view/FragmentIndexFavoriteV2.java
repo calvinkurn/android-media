@@ -19,7 +19,9 @@ import android.widget.RelativeLayout;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.home.ParentIndexHome;
@@ -39,7 +41,7 @@ import butterknife.ButterKnife;
 /**
  * Created by m.normansyah on 30/10/2015.
  */
-public class FragmentIndexFavoriteV2 extends Fragment implements FavoriteView, DefaultRetryListener.OnClickRetry {
+public class FragmentIndexFavoriteV2 extends TkpdBaseV4Fragment implements FavoriteView, DefaultRetryListener.OnClickRetry {
     Favorite favorite;
     BaseRecyclerViewAdapter adapter;// FavoriteRecyclerViewAdapter
     @Bind(R2.id.index_favorite_recycler_view)
@@ -59,6 +61,11 @@ public class FragmentIndexFavoriteV2 extends Fragment implements FavoriteView, D
     @Override
     public void initHolder() {
 
+    }
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_HOME_FAVORITE_SHOP;
     }
 
     @Override
@@ -296,7 +303,7 @@ public class FragmentIndexFavoriteV2 extends Fragment implements FavoriteView, D
             if (isVisibleToUser && isAdded() && getActivity() != null) {
                 favorite.setLocalyticFlow(getActivity());
                 favorite.sendAppsFlyerData(getActivity());
-                ScreenTracking.screen(this);
+                ScreenTracking.screen(getScreenName());
                 if (!isDataExist()) {
                     favorite.initData();
                     Log.d("NISNISNIS", "IMPRESSION USER VISIBLE HINT");
