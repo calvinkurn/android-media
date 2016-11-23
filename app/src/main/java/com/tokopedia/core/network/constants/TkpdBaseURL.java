@@ -489,6 +489,7 @@ public interface  TkpdBaseURL {
         String PATH_DELIVERY_FINISH_ORDER = "delivery_finish_order.pl";
         String PATH_DELIVERY_REJECT = "delivery_reject.pl";
         String PATH_EDIT_PAYMENT = "edit_payment.pl";
+        String PATH_REQUEST_CANCEL_ORDER = "request_cancel_order.pl";
         String PATH_REORDER = "reorder.pl";
         String PATH_UPLOAD_VALID_PROOF_BY_PAYMENT = "upload_valid_proof_by_payment.pl";
 

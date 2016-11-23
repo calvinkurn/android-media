@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.purchase.presenter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
@@ -34,4 +35,5 @@ public interface TxDetailPresenter {
 
     void onDestroyView();
 
+    void processRequestCancelOrder(Activity activity, String reason, OrderData orderData);
 }

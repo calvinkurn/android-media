@@ -33,6 +33,9 @@ public class OrderButton implements Parcelable {
     @SerializedName("button_open_complaint_received")
     @Expose
     private String buttonComplaintReceived;
+    @SerializedName("button_cancel_request")
+    @Expose
+    private String buttonCancelRequest;
 
     public String getButtonOpenDispute() {
         return buttonOpenDispute;
@@ -90,6 +93,17 @@ public class OrderButton implements Parcelable {
         this.buttonComplaintReceived = buttonComplaintReceived;
     }
 
+    public String getButtonCancelRequest() {
+        return buttonCancelRequest;
+    }
+
+    public void setButtonCancelRequest(String buttonCancelRequest) {
+        this.buttonCancelRequest = buttonCancelRequest;
+    }
+
+    public OrderButton() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -104,9 +118,7 @@ public class OrderButton implements Parcelable {
         dest.writeString(this.buttonResCenterGoTo);
         dest.writeString(this.buttonUploadProof);
         dest.writeString(this.buttonComplaintReceived);
-    }
-
-    public OrderButton() {
+        dest.writeString(this.buttonCancelRequest);
     }
 
     protected OrderButton(Parcel in) {
@@ -117,6 +129,7 @@ public class OrderButton implements Parcelable {
         this.buttonResCenterGoTo = in.readString();
         this.buttonUploadProof = in.readString();
         this.buttonComplaintReceived = in.readString();
+        this.buttonCancelRequest = in.readString();
     }
 
     public static final Creator<OrderButton> CREATOR = new Creator<OrderButton>() {
