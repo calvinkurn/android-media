@@ -1,7 +1,7 @@
 package com.tokopedia.core.network.apiservices.user.apis;
 
-import com.tokopedia.core.home.model.network.FavoriteSendData;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.entity.home.FavoriteSendData;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 
 import java.util.Map;

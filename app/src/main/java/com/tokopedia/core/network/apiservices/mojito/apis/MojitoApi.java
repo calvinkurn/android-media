@@ -1,8 +1,9 @@
 package com.tokopedia.core.network.apiservices.mojito.apis;
 
-import com.tokopedia.core.home.model.homeMenu.HomeCategoryMenuItem;
-import com.tokopedia.core.home.model.wishlist.WishlistData;
+
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.entity.homeMenu.HomeCategoryMenuItem;
+import com.tokopedia.core.network.entity.wishlist.WishlistData;
 
 import retrofit2.Response;
 import retrofit2.http.GET;

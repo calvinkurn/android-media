@@ -555,7 +555,7 @@
             android:label="@string/title_activity_inbox_talk"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.recharge.activity.RechargePaymentWebView"
+            android:name="com.tokopedia.home.recharge.activity.RechargePaymentWebView"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
         <activity

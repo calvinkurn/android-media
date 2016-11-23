@@ -24,6 +24,26 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.tokopedia.home.ParentIndexHome"
+            android:exported="true"
+            android:label="Tokopedia"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
+            <intent-filter>
+
+                <!-- LOCALYTICS TEST MESSAGE KEY -->
+                <data android:scheme="ampe5ce78bb486192da7790186-01e0f208-0058-11e5-9b02-00739d24cb30"/>
+
+                <!-- DEBUG KEY -->
+                <!-- <data android:scheme="ampa4c853a5c07b6acfeb61343-037f3b9e-6591-11e5-bdf6-0013a62af900" /> -->
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

@@ -8,7 +8,7 @@ import com.tokopedia.core.database.DbFlowDatabase;
 import com.tokopedia.core.database.DbFlowOperation;
 import com.tokopedia.core.database.model.RechargeProductModelDB;
 import com.tokopedia.core.database.model.RechargeProductModelDB_Table;
-import com.tokopedia.core.recharge.model.product.Product;
+import com.tokopedia.core.database.recharge.product.Product;
 
 import java.util.ArrayList;
 import java.util.List;

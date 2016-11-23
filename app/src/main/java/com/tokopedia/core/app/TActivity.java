@@ -40,16 +40,17 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.database.manager.CategoryDatabaseManager;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.discovery.activity.BrowseProductActivity;
 import com.tokopedia.core.drawer.DrawerVariable;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.home.ParentIndexHome;
-import com.tokopedia.core.home.interactor.CacheHomeInteractorImpl;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.retrofit.utils.DialogForceLogout;
 import com.tokopedia.core.network.retrofit.utils.DialogNoConnection;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.ErrorNetworkReceiver;
 import com.tokopedia.core.service.HUDIntent;
@@ -62,7 +63,6 @@ import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.PhoneVerificationUtil;
 import com.tokopedia.core.util.RequestManager;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.util.VersionInfo;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
@@ -147,7 +147,8 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
 
         /* clear cache if not login */
         if (!SessionHandler.isV4Login(this)){
-            CacheHomeInteractorImpl.deleteAllCache();
+//            CacheHomeInteractorImpl.deleteAllCache();
+            new GlobalCacheManager().deleteAll();
         }
         drawer = new DrawerVariable(this);
         drawer.setToolbar(toolbar);
@@ -447,7 +448,7 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
     public void onLogout(Boolean success) {
         if (success) {
             finish();
-            Intent intent = new Intent(this, ParentIndexHome.class);
+            Intent intent = HomeRouter.getHomeActivity(this);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         }

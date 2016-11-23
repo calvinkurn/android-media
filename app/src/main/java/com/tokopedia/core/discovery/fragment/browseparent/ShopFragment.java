@@ -15,14 +15,14 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.discovery.activity.BrowseProductActivity;
+import com.tokopedia.core.discovery.adapter.browseparent.BrowseShopAdapter;
 import com.tokopedia.core.discovery.interfaces.FetchNetwork;
 import com.tokopedia.core.discovery.presenter.DiscoveryActivityPresenter;
-import com.tokopedia.core.dynamicfilter.model.DynamicFilterModel;
-import com.tokopedia.core.home.fragment.FragmentProductFeed;
-import com.tokopedia.core.discovery.adapter.browseparent.BrowseShopAdapter;
 import com.tokopedia.core.discovery.presenter.browseparent.Shop;
 import com.tokopedia.core.discovery.presenter.browseparent.ShopImpl;
 import com.tokopedia.core.discovery.view.ShopView;
+import com.tokopedia.core.dynamicfilter.model.DynamicFilterModel;
+import com.tokopedia.core.home.helper.ProductFeedHelper;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
@@ -140,7 +140,9 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
     public void initAdapter() {
         browseShopAdapter = new BrowseShopAdapter(getActivity().getApplicationContext(), browseShopModelList);
         browseShopAdapter.setIsLoading(true);
-        gridLayoutManager = new GridLayoutManager(getActivity(), FragmentProductFeed.calcColumnSize(getResources().getConfiguration().orientation));
+        gridLayoutManager = new GridLayoutManager(getActivity(),
+                ProductFeedHelper.calcColumnSize(getResources().getConfiguration().orientation));
+
         gridLayoutManager.setSpanSizeLookup(onSpanSizeLookup());
     }
 
@@ -155,9 +157,9 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
                         footerColumnSize = 1,
                         regularColumnSize = 1;
 
-                headerColumnSize = FragmentProductFeed.PORTRAIT_COLUMN_HEADER;
-                regularColumnSize = FragmentProductFeed.PORTRAIT_COLUMN;
-                footerColumnSize = FragmentProductFeed.PORTRAIT_COLUMN_FOOTER;
+                headerColumnSize = ProductFeedHelper.PORTRAIT_COLUMN_HEADER;
+                regularColumnSize = ProductFeedHelper.PORTRAIT_COLUMN;
+                footerColumnSize = ProductFeedHelper.PORTRAIT_COLUMN_FOOTER;
 
                 // set the value of footer, regular and header
                 if (position == browseShopAdapter.getData().size()) {

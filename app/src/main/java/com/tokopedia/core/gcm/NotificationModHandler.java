@@ -10,11 +10,11 @@ import android.support.v4.app.TaskStackBuilder;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.home.ParentIndexHome;
 import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.inboxticket.activity.InboxTicketActivity;
 import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity;
 import com.tokopedia.core.var.TkpdCache;
 
@@ -105,8 +105,8 @@ public class NotificationModHandler {
 	            	break;
 	            }
 	        } else {
-	        	resultclass = ParentIndexHome.class;
-	        	inboxStyle = new NotificationCompat.InboxStyle();
+				resultclass = HomeRouter.getHomeActivityClass();
+				inboxStyle = new NotificationCompat.InboxStyle();
 	        	inboxStyle.setBigContentTitle(context.getString(R.string.title_new_notif_general));
 	        	for (int i = 0; i < Content.size(); i++) {
 	        		inboxStyle.addLine(Content.get(i));
@@ -117,8 +117,8 @@ public class NotificationModHandler {
 	        	//mBuilder.setTicker(Desc.get(0)); 
 	        }
 	        intent = new Intent (context, resultclass);
-	        if(resultclass.getName() == ParentIndexHome.class.getName())
-	        	intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			if (resultclass.getName() == HomeRouter.getHomeActivityClass().getName())
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 	        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
 	        // Adds the back stack
 	        stackBuilder.addParentStack(resultclass);

@@ -20,8 +20,6 @@ import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.gcm.GcmListenerService;
 import com.tkpd.library.utils.CommonUtils;
@@ -34,8 +32,6 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.deeplink.activity.DeepLinkActivity;
-import com.tokopedia.core.home.ParentIndexHome;
-import com.tokopedia.core.home.SimpleHomeActivity;
 import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.inboxticket.activity.InboxTicketActivity;
@@ -44,6 +40,8 @@ import com.tokopedia.core.prototype.ShopSettingCache;
 import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TransactionRouter;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.session.Login;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -126,7 +124,8 @@ public class GCMListenerService extends GcmListenerService {
                 break;
             case TkpdState.GCMServiceState.GCM_WISHLIST:
                 if (SessionHandler.isV4Login(this))
-                    createNotification(data, SimpleHomeActivity.class);
+//                    createNotification(data, SimpleHomeActivity.class);
+                    createNotification(data, SimpleHomeRouter.getSimpleHomeActivityClass());
                 break;
             case TkpdState.GCMServiceState.GCM_VERIFICATION:
                 if (SessionHandler.isV4Login(this)) {
@@ -246,13 +245,15 @@ public class GCMListenerService extends GcmListenerService {
                 title = data.getString("title");
                 desc = data.getString("desc");
                 ticker = data.getString("desc");
-                resultclass = ParentIndexHome.class;
+//                resultclass = ParentIndexHome.class;
+                resultclass = HomeRouter.getHomeActivityClass();
                 break;
             case TkpdState.GCMServiceState.GCM_GENERAL:
                 title = data.getString("title");
                 desc = data.getString("desc");
                 ticker = data.getString("desc");
-                resultclass = ParentIndexHome.class;
+//                resultclass = ParentIndexHome.class;
+                resultclass = HomeRouter.getHomeActivityClass();
                 break;
             case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY:
                 resultclass = InboxReputationActivity.class;
@@ -600,7 +601,7 @@ public class GCMListenerService extends GcmListenerService {
                     intent = new Intent(Intent.ACTION_VIEW, Uri.parse(data.getString("url"))).putExtras(data);
                 } catch (NullPointerException e) {
                     CommonUtils.dumper("NotifTag : No Deeplink : " + e.toString());
-                    intent = new Intent(this, ParentIndexHome.class);
+                    intent = HomeRouter.getHomeActivity(this);
                 }
                 break;
             }
@@ -626,7 +627,7 @@ public class GCMListenerService extends GcmListenerService {
                 break;
             }
             case TkpdState.GCMServiceState.GCM_WISHLIST: {
-                data.putInt(SimpleHomeActivity.FRAGMENT_TYPE, SimpleHomeActivity.WISHLIST_FRAGMENT);
+                data.putInt(SimpleHomeRouter.FRAGMENT_TYPE, SimpleHomeRouter.WISHLIST_FRAGMENT);
                 break;
             }
             default:

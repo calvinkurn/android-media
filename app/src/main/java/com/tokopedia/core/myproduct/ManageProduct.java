@@ -78,7 +78,6 @@ import com.tokopedia.core.database.model.CategoryDB_Table;
 import com.tokopedia.core.database.model.EtalaseDB;
 import com.tokopedia.core.database.model.ReturnableDB;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
-import com.tokopedia.core.home.ParentIndexHome;
 import com.tokopedia.core.instoped.InstagramAuth;
 import com.tokopedia.core.myproduct.fragment.AddProductFragment;
 import com.tokopedia.core.myproduct.fragment.ReturnPolicyDialog;
@@ -99,14 +98,15 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.prototype.ProductCache;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.session.Login;
-import com.tokopedia.core.util.RequestPermissionUtil;
-import com.tokopedia.core.util.RetryHandler;
-import com.tokopedia.core.util.RetryHandler.OnConnectionTimeout;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.RefreshHandler.OnRefreshHandlerListener;
+import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.core.util.RetryHandler;
+import com.tokopedia.core.util.RetryHandler.OnConnectionTimeout;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
@@ -124,13 +124,13 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import retrofit2.Response;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
+import retrofit2.Response;
 import rx.subscriptions.CompositeSubscription;
 
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
@@ -407,9 +407,9 @@ public class ManageProduct extends TkpdActivity implements
             // check if id has a shop
             String shopID = SessionHandler.getShopID(this);
             if (shopID == null || shopID.equals("0")) {
-                intent1 = new Intent(this, ParentIndexHome.class);
-                intent1.putExtra(ParentIndexHome.EXTRA_INIT_FRAGMENT,
-                        ParentIndexHome.INIT_STATE_FRAGMENT_HOME);
+                intent1 = new Intent(this, HomeRouter.getHomeActivityClass());
+                intent1.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
+                        HomeRouter.INIT_STATE_FRAGMENT_HOME);
                 SnackbarManager.make(this, "Anda belum memiliki toko", Snackbar.LENGTH_SHORT).show();
                 startActivity(intent1);
                 finish();

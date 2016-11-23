@@ -30,13 +30,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dip"
                 android:background="@color/grey_100"/>
-            <com.tokopedia.core.recharge.view.widget.WrapContentViewPager
+
+            <com.tokopedia.home.recharge.view.widget.WrapContentViewPager
                 android:id="@+id/viewpager_pulsa"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white">
 
-            </com.tokopedia.core.recharge.view.widget.WrapContentViewPager>
+            </com.tokopedia.home.recharge.view.widget.WrapContentViewPager>
 
         </LinearLayout>
     </LinearLayout>

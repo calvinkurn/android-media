@@ -4,31 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 
 import com.appsflyer.AFInAppEventType;
-import com.tokopedia.core.BuyCreditCart;
-import com.tokopedia.core.Cart;
-import com.tokopedia.core.CreditCardActivity;
-import com.tokopedia.core.DeveloperOptions;
-import com.tokopedia.core.EditAddressCart;
-import com.tokopedia.core.EtalaseShopEditor;
-import com.tokopedia.core.ManageGeneral;
-import com.tokopedia.core.ManagePeople;
-import com.tokopedia.core.ManagePeoplePassword;
-import com.tokopedia.core.ManageShop;
-import com.tokopedia.core.ManageShopAddress;
-import com.tokopedia.core.PaymentConfirmationSuccess;
-import com.tokopedia.core.PaymentEditor;
-import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.R;
-import com.tokopedia.core.ServerErrorPage;
-import com.tokopedia.core.ShopAddressForm;
-import com.tokopedia.core.ShopEditor;
-import com.tokopedia.core.ShopStatisticDetail;
-import com.tokopedia.core.SplashScreen;
-import com.tokopedia.core.addtocart.activity.AddToCartActivity;
-import com.tokopedia.core.deeplink.activity.DeepLinkActivity;
-import com.tokopedia.core.deposit.activity.DepositActivity;
-import com.tokopedia.core.deposit.activity.WithdrawActivity;
-import com.tokopedia.core.discovery.activity.BrowseProductActivity;
 import com.tokopedia.core.fragment.AboutFragment;
 import com.tokopedia.core.fragment.FragmentCart;
 import com.tokopedia.core.fragment.FragmentCartFinish;
@@ -36,66 +12,10 @@ import com.tokopedia.core.fragment.FragmentCartSummary;
 import com.tokopedia.core.fragment.FragmentSettingPeople;
 import com.tokopedia.core.fragment.FragmentSettingShop;
 import com.tokopedia.core.fragment.SettingsFragment;
-import com.tokopedia.core.geolocation.activity.GeolocationActivity;
-import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.home.ParentIndexHome;
-import com.tokopedia.core.home.SimpleHomeActivity;
-import com.tokopedia.core.home.favorite.view.FragmentIndexFavoriteV2;
-import com.tokopedia.core.home.fragment.FragmentHotListV2;
-import com.tokopedia.core.home.fragment.FragmentIndexCategory;
-import com.tokopedia.core.home.fragment.FragmentProductFeed;
-import com.tokopedia.core.home.fragment.WishListFragment;
-import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
-import com.tokopedia.core.inboxmessage.activity.InboxMessageDetailActivity;
-import com.tokopedia.core.inboxmessage.activity.SendMessageActivity;
-import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
-import com.tokopedia.core.inboxreputation.activity.InboxReputationDetailActivity;
-import com.tokopedia.core.inboxticket.activity.InboxTicketActivity;
-import com.tokopedia.core.inboxticket.activity.InboxTicketDetailActivity;
-import com.tokopedia.core.invoice.activity.InvoiceRendererActivity;
-import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
-import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
-import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
-import com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActivity;
-import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
 import com.tokopedia.core.manage.people.bank.fragment.ManagePeopleBankFormFragment;
-import com.tokopedia.core.manage.people.notification.activity.ManageNotificationActivity;
-import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
-import com.tokopedia.core.manage.shop.notes.activity.ManageShopNotesActivity;
-import com.tokopedia.core.manage.shop.notes.fragment.ManageShopNotesFormFragment;
-import com.tokopedia.core.myproduct.ManageProduct;
-import com.tokopedia.core.myproduct.ProductActivity;
-import com.tokopedia.core.myproduct.fragment.AddProductFragment;
-import com.tokopedia.core.people.activity.PeopleInfoDrawerActivity;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
-import com.tokopedia.core.peoplefave.activity.PeopleFavoritedShop;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
-import com.tokopedia.core.reputationproduct.ReputationProduct;
-import com.tokopedia.core.reputationproduct.ReputationProductView;
-import com.tokopedia.core.rescenter.create.activity.CreateResCenterActivity;
-import com.tokopedia.core.rescenter.detail.activity.ResCenterActivity;
-import com.tokopedia.core.rescenter.edit.activity.EditResCenterActivity;
-import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
-import com.tokopedia.core.session.ActivationResentFragment;
-import com.tokopedia.core.session.ForgotPasswordFragment;
 import com.tokopedia.core.session.RegisterNewNextFragment;
-import com.tokopedia.core.session.RegisterNewViewFragment;
-import com.tokopedia.core.session.RegisterPassPhoneFragment;
 import com.tokopedia.core.session.RegisterThirdFragment;
-import com.tokopedia.core.shipping.EditShippingActivity;
-import com.tokopedia.core.shop.ShopEditorActivity;
-import com.tokopedia.core.shopinfo.ReputationViewShop;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.shopinfo.ShopInfoMore;
-import com.tokopedia.core.shopinfo.ShopNotesDetail;
-import com.tokopedia.core.shopinfo.activity.ShopFavoritedActivity;
-import com.tokopedia.core.shopinfo.fragment.ShopTalkViewFragment;
-import com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity;
-import com.tokopedia.core.talk.talkproduct.activity.TalkAddNew;
-import com.tokopedia.core.talk.talkproduct.activity.TalkProductActivity;
-import com.tokopedia.core.talkview.activity.TalkViewActivity;
 
-//import com.tokopedia.discovery.catalog.activity.CatalogDetailActivity;
 
 
 /**
@@ -106,179 +26,6 @@ public final class AppScreen {
 
     private AppScreen() {
 
-    }
-
-    public static String convertAppScreen(Activity actClass) {
-        String gtmName;
-
-        if (actClass instanceof ShopStatisticDetail) {
-            gtmName = AppScreen.SCREEN_SHOP_DETAIL_STATS;
-        } else if (actClass instanceof ParentIndexHome) {
-            gtmName = AppScreen.SCREEN_INDEX_HOME;
-        } else if (actClass instanceof BrowseProductActivity) {
-            gtmName = AppScreen.SCREEN_BROWSE_PRODUCT_FROM_SEARCH;
-        } else if (actClass instanceof AddToCartActivity) {
-            gtmName = AppScreen.SCREEN_ADD_TO_CART;
-        } else if (actClass instanceof TalkViewActivity && !(getFragment(actClass) instanceof ShopTalkViewFragment)) {
-            gtmName = AppScreen.SCREEN_PRODUCT_TALK_VIEW;
-        } else if (actClass instanceof TalkViewActivity && getFragment(actClass) instanceof ShopTalkViewFragment) {
-            gtmName = AppScreen.SCREEN_SHOP_TALK_VIEW;
-        } else if (actClass instanceof TalkAddNew) {
-            gtmName = AppScreen.SCREEN_PRODUCT_TALK_ADD;
-        } else if (actClass instanceof ReputationProduct) {
-            gtmName = AppScreen.SCREEN_PRODUCT_REPUTATION_VIEW;
-        } else if (actClass instanceof ChooseAddressActivity) {
-            gtmName = AppScreen.SCREEN_CHOOSE_ADDR;
-        } else if (actClass instanceof AddAddressActivity) {
-            gtmName = AppScreen.SCREEN_ADD_ADDRESS_FORM;
-        } else if (actClass instanceof GeolocationActivity) {
-            gtmName = AppScreen.SCREEN_ADDRESS_GEOLOCATION;
-        } else if (actClass instanceof Cart) {
-            gtmName = AppScreen.SCREEN_CART;
-//        }else if (actClass instanceof PurchaseActivity){
-//            gtmName = AppScreen.SCREEN_TX_PEOPLE_TRANSACTION_BUYING_LIST;
-//        } else if (actClass instanceof TxConfirmationDetailActivity) {
-//            gtmName = AppScreen.SCREEN_TX_P_CONFIRM_DETAIL;
-//        } else if (actClass instanceof ConfirmPaymentActivity) {
-//            gtmName = AppScreen.SCREEN_TX_P_CONFIRM;
-        } else if (actClass instanceof SendMessageActivity) {
-            gtmName = AppScreen.SCREEN_PEOPLE_SEND_MESSAGE;
-        } else if (actClass instanceof SimpleHomeActivity) {
-            gtmName = AppScreen.SCREEN_HOME_WISHLIST;
-        } else if (actClass instanceof InboxMessageActivity) {
-            gtmName = AppScreen.SCREEN_INBOX_MESSAGE;
-        } else if (actClass instanceof InboxTalkActivity) {
-            gtmName = AppScreen.SCREEN_INBOX_TALK;
-        } else if (actClass instanceof InboxReputationActivity) {
-            gtmName = AppScreen.SCREEN_INBOX_REPUTATION;
-        } else if (actClass instanceof InboxTicketActivity) {
-            gtmName = AppScreen.SCREEN_INBOX_TICKET;
-//        } else if (actClass instanceof ContactUsActivity) {
-//            gtmName = AppScreen.SCREEN_CONTACT_US;
-        } else if (actClass instanceof ResCenterActivity) {
-            gtmName = AppScreen.SCREEN_INBOX_RESOLUTION_CENTER_DETAIL;
-       /* } else if (actClass instanceof OrderHistoryView) {
-            gtmName = AppScreen.SCREEN_ORDER_HISTORY;
-//        }else if (actClass instanceof ShopTransactionV2){
-        }else if (actClass instanceof ActivitySellingTransaction){
-            gtmName = AppScreen.SCREEN_TX_SHOP_TRANSACTION_SELLING_LIST;*/
-        } else if (actClass instanceof ManageProduct) {
-            gtmName = AppScreen.SCREEN_MANAGE_PROD;
-        } else if (actClass instanceof ProductActivity) {
-            gtmName = AppScreen.SCREEN_ADD_PRODUCT;
-        } else if (actClass instanceof EtalaseShopEditor) {
-            gtmName = AppScreen.SCREEN_SHOP_ETALASE_LIST;
-        } else if (actClass instanceof ManageGeneral) {
-            gtmName = AppScreen.SCREEN_MANAGE_GENERAL;
-        } else if (actClass instanceof ManagePeopleProfileActivity) {
-            gtmName = AppScreen.SCREEN_CONFIG_P_PROFILE;
-        } else if (actClass instanceof ManagePeopleAddressActivity) {
-            gtmName = AppScreen.SCREEN_CONFIG_P_ADDRESS;
-        } else if (actClass instanceof ManagePeopleBankActivity) {
-            gtmName = AppScreen.SCREEN_PEOPLE_BANK;
-        } else if (actClass instanceof ManageNotificationActivity) {
-            gtmName = AppScreen.SCREEN_CONFIG_P_NOTIF;
-        } else if (actClass instanceof ManagePeoplePassword) {
-            gtmName = AppScreen.SCREEN_CONFIG_P_PASSWORD;
-        } else if (actClass instanceof ShopEditor) {
-            gtmName = AppScreen.SCREEN_SHOP_EDITOR;
-        } else if (actClass instanceof ShopEditorActivity) {
-            gtmName = AppScreen.SCREEN_SHOP_EDITOR;
-        } else if (actClass instanceof EditShippingActivity) {
-            gtmName = AppScreen.SCREEN_CONFIG_S_SHIPPING;
-        } else if (actClass instanceof PaymentEditor) {
-            gtmName = AppScreen.SCREEN_CONFIG_S_PAYMENT;
-        } else if (actClass instanceof ManageShopAddress) {
-            gtmName = AppScreen.SCREEN_SHOP_ADDRESS_EDITOR;
-        } else if (actClass instanceof ShopAddressForm) {
-            gtmName = AppScreen.SCREEN_SHOP_ADDRESS_FORM;
-        } else if (actClass instanceof DeveloperOptions) {
-            gtmName = AppScreen.SCREEN_DEVELOPER;
-        } else if (actClass instanceof CreateResCenterActivity) {
-            gtmName = AppScreen.SCREEN_RESOLUTION_CENTER_ADD;
-        } else if (actClass instanceof CreditCardActivity) {
-            gtmName = AppScreen.SCREEN_CREDIT_CARD;
-            //  } else if (actClass instanceof TrackingActivity) {
-            //     gtmName = AppScreen.SCREEN_TRACKING_DETAIL;
-        } else if (actClass instanceof EditAddressCart) {
-            gtmName = AppScreen.SCREEN_CART_EDIT_ADDRESS;
-        } else if (actClass instanceof ManageShopNotesActivity) {
-            gtmName = AppScreen.SCREEN_CONFIG_S_INFO;
-        } else if (actClass instanceof ReputationViewShop) {
-            gtmName = AppScreen.SCREEN_SHOP_REPUTATION;
-            //  } else if (actClass instanceof ShippingConfirmationDetail) {
-            //     gtmName = AppScreen.SCREEN_TX_S_CONFIRM_SHIPPING;
-        } else if (actClass instanceof ManageShopNotesActivity
-                && !(getFragment(actClass) instanceof ManageShopNotesFormFragment)) {
-            gtmName = AppScreen.SCREEN_SGOP_NOTE_FORM;
-        } else if (actClass instanceof ProductInfoActivity) {
-            gtmName = AppScreen.SCREEN_PRODUCT_INFO;
-        } else if (actClass instanceof TalkProductActivity) {
-            gtmName = AppScreen.SCREEN_PRODUCT_TALK;
-        } else if (actClass instanceof ShopInfoActivity) {
-            gtmName = AppScreen.SCREEN_SHOP;
-        } else if (actClass instanceof BannerWebView) {
-            gtmName = AppScreen.SCREEN_WEBVIEW_BANNER;
-        } else if (actClass instanceof InboxReputationDetailActivity) {
-            gtmName = AppScreen.SCREEN_INBOX_REPUTATION_DETAIL;
-        } else if (actClass instanceof InboxResCenterActivity) {
-            gtmName = AppScreen.SCREEN_INBOX_RESOLUTION_CENTER;
-//        } else if (actClass instanceof TxDetailActivity) {
-//            gtmName = AppScreen.SCREEN_TX_PEOPLE_DETAIL;
-        } else if (actClass instanceof ManageShop) {
-            gtmName = AppScreen.SCREEN_SETTING_MANAGE_SHOP;
-        } else if (actClass instanceof ShopInfoMore) {
-            gtmName = AppScreen.SCREEN_SHOP_INFO;
-        } else if (actClass instanceof PeopleInfoDrawerActivity) {
-            gtmName = AppScreen.SCREEN_PEOPLE;
-        } else if (actClass instanceof PeopleInfoNoDrawerActivity) {
-            gtmName = AppScreen.SCREEN_PEOPLE;
-            // } else if (actClass instanceof CatalogDetailActivity) {
-            //   gtmName = AppScreen.SCREEN_CATALOG;
-        } else if (actClass instanceof ShopNotesDetail) {
-            gtmName = AppScreen.SCREEN_SHOP_NOTE;
-        } else if (actClass instanceof PreviewProductImage) {
-            gtmName = AppScreen.SCREEN_PRODUCT_IMAGE_PREVIEW;
-        } else if (actClass instanceof DepositActivity) {
-            gtmName = AppScreen.SCREEN_DEPOSIT;
-        } else if (actClass instanceof LoyaltyDetail) {
-            gtmName = AppScreen.SCREEN_LOYALTY;
-        } else if (actClass instanceof WithdrawActivity) {
-            gtmName = AppScreen.SCREEN_DEPOSIT_WITHDRAW;
-        } else if (actClass instanceof BuyCreditCart) {
-            gtmName = AppScreen.SCREEN_CREDIT_CARD_CART_BUY;
-        } else if (actClass instanceof InvoiceRendererActivity) {
-            gtmName = AppScreen.SCREEN_DOWNLOAD_INVOICE;
-        } else if (actClass instanceof PaymentConfirmationSuccess) {
-            gtmName = AppScreen.SCREEN_CONFIRMATION_SUCCESS;
-//        } else if (actClass instanceof TxVerDetailActivity) {
-//            gtmName = AppScreen.SCREEN_PAYMENT_VERIFICATION_DETAIL;
-        } else if (actClass instanceof ServerErrorPage) {
-            gtmName = AppScreen.SCREEN_SERVER_ERROR;
-        } else if (actClass instanceof SplashScreen) {
-            gtmName = AppScreen.SCREEN_SPLASH_SCREEN;
-        } else if (actClass instanceof ReputationProductView) {
-            gtmName = AppScreen.SCREEN_PRODUCT_REPUTATION_VIEW_DETAIL;
-        } else if (actClass instanceof DeepLinkActivity) {
-            gtmName = AppScreen.SCREEN_DEEP_LINK;
-//        } else if (actClass instanceof TxHistoryActivity){
-//            gtmName = AppScreen.SCREEN_ORDER_HISTORY_DETAIL;
-        } else if (actClass instanceof InboxMessageDetailActivity) {
-            gtmName = AppScreen.SCREEN_INBOX_MESSAGE_DETAIL_VIEW;
-        } else if (actClass instanceof InboxTicketDetailActivity) {
-            gtmName = AppScreen.SCREEN_INBOX_TICKET_DETAIL;
-        } else if (actClass instanceof ShopFavoritedActivity) {
-            gtmName = AppScreen.SCREEN_SHOP_FAVORITER;
-        } else if (actClass instanceof EditResCenterActivity) {
-            gtmName = AppScreen.SCREEN_RESOLUTION_CENTER_EDIT;
-        } else if (actClass instanceof PeopleFavoritedShop) {
-            gtmName = AppScreen.SCREEN_PEOPLE_FAV;
-        } else if (actClass instanceof ManagePeople) {
-            gtmName = AppScreen.SCREEN_MANAGE_PEOPLE;
-        } else {
-            gtmName = actClass.getClass().getSimpleName();
-        }
-        return gtmName;
     }
 
     public static String convertFragmentScreen(Fragment actClass) {
@@ -303,13 +50,6 @@ public final class AppScreen {
         }
     }
 
-    public static String convertAFActivityEvent(Activity activity) {
-        if (activity instanceof ParentIndexHome) {
-            return AFInAppEventType.LOGIN;
-        } else {
-            return AFInAppEventType.CONTENT_VIEW;
-        }
-    }
 
     public static String convertAFFragmentEvent(android.support.v4.app.Fragment fragment) {
         if (fragment instanceof RegisterNewNextFragment || fragment instanceof RegisterThirdFragment) {
@@ -320,31 +60,61 @@ public final class AppScreen {
     }
 
     public static String convertFragmentScreen(android.support.v4.app.Fragment actClass) {
-        if (actClass instanceof FragmentHotListV2) {
-            return SCREEN_HOME_HOTLIST;
-        } else if (actClass instanceof FragmentIndexFavoriteV2) {
-            return SCREEN_HOME_FAVORITE_SHOP;
-        } else if (actClass instanceof FragmentIndexCategory) {
-            return SCREEN_HOME_PRODUCT_CATEGORY;
-        } else if (actClass instanceof FragmentProductFeed) {
-            return SCREEN_HOME_PRODUCT_FEED;
-        } else if (actClass instanceof RegisterNewViewFragment) {
-            return SCREEN_REGISTER;
-        } else if (actClass instanceof RegisterPassPhoneFragment) {
-            return SCREEN_REGISTER_THIRD;
-        } else if (actClass instanceof WishListFragment) {
-            return SCREEN_FRAGMENT_WISHLIST;
-        } else if (actClass instanceof ForgotPasswordFragment) {
-            return SCREEN_FORGOT_PASSWORD;
-        } else if (actClass instanceof ActivationResentFragment) {
-            return SCREEN_REGISTER_ACTIVATION;
-        } else if (actClass instanceof AddProductFragment) {
-            return SCREEN_ADD_PRODUCT;
-            //} else if (actClass instanceof FragmentShopTxStatusDetailV2){
-            //  return SCREEN_TX_PEOPLE_DETAIL;
-        } else {
-            return actClass.getClass().getSimpleName();
-        }
+//        if (actClass instanceof FragmentHotListV2) {
+//            return SCREEN_HOME_HOTLIST;
+//        } else if (actClass instanceof FragmentIndexFavoriteV2) {
+//            public static String convertFragmentScreen(android.support.v4.app.Fragment actClass) {
+//                if (actClass instanceof FragmentHotListV2) {
+//                    return SCREEN_HOME_HOTLIST;
+//                } else if (actClass instanceof FragmentIndexFavoriteV2) {
+//                    return SCREEN_HOME_FAVORITE_SHOP;
+//                } else if (actClass instanceof FragmentIndexCategory) {
+//                    return SCREEN_HOME_PRODUCT_CATEGORY;
+//                } else if (actClass instanceof FragmentProductFeed) {
+//                    return SCREEN_HOME_PRODUCT_FEED;
+//                } else if (actClass instanceof RegisterNewViewFragment) {
+//                    return SCREEN_REGISTER;
+//                } else if (actClass instanceof RegisterPassPhoneFragment) {
+//                    return SCREEN_REGISTER_THIRD;
+//                } else if (actClass instanceof WishListFragment) {
+//                    return SCREEN_FRAGMENT_WISHLIST;
+//                } else if (actClass instanceof ForgotPasswordFragment) {
+//                    return SCREEN_FORGOT_PASSWORD;
+//                } else if (actClass instanceof ActivationResentFragment) {
+//                    return SCREEN_REGISTER_ACTIVATION;
+//                } else if (actClass instanceof AddProductFragment) {
+//                    return SCREEN_ADD_PRODUCT;
+//                    //} else if (actClass instanceof FragmentShopTxStatusDetailV2){
+//                    //  return SCREEN_TX_PEOPLE_DETAIL;
+//                } else {
+//                    return actClass.getClass().getSimpleName();
+//                }
+//            }
+//            return SCREEN_HOME_FAVORITE_SHOP;
+//        } else if (actClass instanceof FragmentIndexCategory) {
+//            return SCREEN_HOME_PRODUCT_CATEGORY;
+//        } else if (actClass instanceof FragmentProductFeed) {
+//            return SCREEN_HOME_PRODUCT_FEED;
+//        } else if (actClass instanceof RegisterNewViewFragment) {
+//            return SCREEN_REGISTER;
+//        } else if (actClass instanceof RegisterPassPhoneFragment) {
+//            return SCREEN_REGISTER_THIRD;
+//        } else if (actClass instanceof WishListFragment) {
+//            return SCREEN_FRAGMENT_WISHLIST;
+//        } else if (actClass instanceof ForgotPasswordFragment) {
+//            return SCREEN_FORGOT_PASSWORD;
+//        } else if (actClass instanceof ActivationResentFragment) {
+//            return SCREEN_REGISTER_ACTIVATION;
+//        } else if (actClass instanceof AddProductFragment) {
+//            return SCREEN_ADD_PRODUCT;
+//            //} else if (actClass instanceof FragmentShopTxStatusDetailV2){
+//            //  return SCREEN_TX_PEOPLE_DETAIL;
+//        } else {
+//            return actClass.getClass().getSimpleName();
+//        }
+        //TODO fix tracking
+        // udah persetujuan dari hafiz suruh comment
+        return actClass.getClass().getSimpleName();
     }
 
     private static Fragment getFragment(Activity actClass) {

@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -18,8 +17,8 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.database.manager.DbManagerImpl;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.NotificationModHandler;
-import com.tokopedia.core.home.interactor.CacheHomeInteractorImpl;
 import com.tokopedia.core.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.core.network.apiservices.user.SessionService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
@@ -99,8 +98,8 @@ public class DialogLogoutFragment extends DialogFragment {
                                 if (responseData.isSuccessful()) {
                                     TkpdResponse response = responseData.body();
                                     if (!response.isError() || sessionIsNotExist(response)) {
-                                        CacheHomeInteractorImpl.deleteAllCache();
-
+//                                        CacheHomeInteractorImpl.deleteAllCache();
+                                        new GlobalCacheManager().deleteAll();
                                         // clear etalase
                                         LocalCacheHandler fetchEtalaseTimer = AddProductPresenterImpl.initCacheIfNotNull(activity,
                                                 AddProductPresenterImpl.FETCH_ETALASE);

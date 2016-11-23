@@ -6,24 +6,23 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.discovery.fragment.browseparent.ProductFragment;
-import com.tokopedia.core.discovery.model.TopAdsResponse;
 import com.tokopedia.core.discovery.adapter.ProductAdapter;
-import com.tokopedia.core.discovery.interfaces.DiscoveryListener;
-import com.tokopedia.core.discovery.model.NetworkParam;
-import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
+import com.tokopedia.core.discovery.fragment.browseparent.ProductFragment;
 import com.tokopedia.core.discovery.interactor.DiscoveryInteractor;
 import com.tokopedia.core.discovery.interactor.DiscoveryInteractorImpl;
+import com.tokopedia.core.discovery.interfaces.DiscoveryListener;
 import com.tokopedia.core.discovery.model.BrowseProductModel;
 import com.tokopedia.core.discovery.model.BrowseShopModel;
 import com.tokopedia.core.discovery.model.ErrorContainer;
 import com.tokopedia.core.discovery.model.HotListBannerModel;
+import com.tokopedia.core.discovery.model.NetworkParam;
 import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.discovery.model.ProductModel;
+import com.tokopedia.core.discovery.model.TopAdsResponse;
 import com.tokopedia.core.discovery.util.PagingHandlerUtil;
 import com.tokopedia.core.discovery.view.FragmentBrowseProductView;
-import com.tokopedia.core.home.presenter.ProductFeed2Impl;
 import com.tokopedia.core.myproduct.presenter.ImageGalleryImpl.Pair;
+import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.TopAds;
@@ -354,7 +353,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
                         List<TopAdsResponse.Data> topAdsData = topAdsResponse.data;
                         for (int i = 0; i < topAdsData.size(); i++) {
                             TopAdsResponse.Data dataTopAds = topAdsData.get(i);
-                            ProductItem topads = ProductFeed2Impl.convertToProductItem(dataTopAds);
+                            ProductItem topads = convertToProductItem(dataTopAds);
                             topads.setTopAds(TopAds.from(dataTopAds));
                             currTopAdsItem.add(topads);
                         }
@@ -375,7 +374,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
                         for (TopAdsResponse.Data topAdsData :
                                 topAdsResponse.data) {
                             if (count < max) {
-                                ProductItem topads = ProductFeed2Impl.convertToProductItem(topAdsData);
+                                ProductItem topads = convertToProductItem(topAdsData);
                                 topads.setTopAds(TopAds.from(topAdsData));
                                 topAds.add(topads);
                             } else {
@@ -392,5 +391,33 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
 
                 break;
         }
+    }
+
+    private ProductItem convertToProductItem(TopAdsResponse.Data data) {
+        ProductItem product = new ProductItem();
+        product.setId(data.product.id);
+        product.setPrice(data.product.priceFormat);
+        product.setName(data.product.name);
+        product.setShopId(Integer.parseInt(data.shop.id));
+        product.setImgUri(data.product.image.mUrl);
+        product.setShop(data.shop.name);
+        product.setIsGold(data.shop.goldShop ? "1" : "0");
+        product.setLuckyShop(data.shop.luckyShop);
+        product.setWholesale(data.product.wholesalePrice.size() > 0 ? "1" : "0");
+        product.setPreorder((data.product.preorder) ? "1" : "0");
+        product.setIsTopAds(true);
+        product.setShop_location(data.shop.location);
+        product.setBadges(data.shop.badges);
+        product.setLabels(data.product.labels);
+        TopAds ads = new TopAds();
+        ads.setId(data.id);
+        ads.setAdRefKey(data.adRefKey);
+        ads.setProductClickUrl(data.productClickUrl);
+        ads.setRedirect(data.redirect);
+        ads.setShopClickUrl(data.shopClickUrl);
+        ads.setStickerId(data.stickerId);
+        ads.setStickerImage(data.stickerId);
+        product.setTopAds(ads);
+        return product;
     }
 }

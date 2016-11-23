@@ -30,7 +30,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.discovery.activity.BrowseProductActivity;
-import com.tokopedia.core.home.SimpleHomeActivity;
 import com.tokopedia.core.inboxmessage.activity.SendMessageActivity;
 import com.tokopedia.core.myproduct.ProductActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -50,6 +49,7 @@ import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.reputationproduct.ReputationProduct;
 import com.tokopedia.core.router.DiscoveryRouter;
+import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.session.Login;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.shop.ShopEditorActivity;
@@ -658,10 +658,10 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 //                                ParentIndexHome.INIT_STATE_FRAGMENT_FAVORITE);
 //                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-                        Intent intent = new Intent(context, SimpleHomeActivity.class);
+                        Intent intent = new Intent(context, SimpleHomeRouter.getSimpleHomeActivityClass());
                         intent.putExtra(
-                                SimpleHomeActivity.FRAGMENT_TYPE,
-                                SimpleHomeActivity.WISHLIST_FRAGMENT);
+                                SimpleHomeRouter.FRAGMENT_TYPE,
+                                SimpleHomeRouter.WISHLIST_FRAGMENT);
 
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
