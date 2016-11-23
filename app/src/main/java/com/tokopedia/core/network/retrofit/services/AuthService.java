@@ -12,6 +12,7 @@ import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
 
 import java.util.concurrent.TimeUnit;
 
@@ -26,34 +27,40 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * @author Angga.Prasetiyo on 27/11/2015.
  */
-public abstract class AuthService<T> {
-    private static final String TAG = AuthService.class.getSimpleName();
+public abstract class AuthService<T> extends BaseService<T> {
+
     public static final String DEFAULT_URL = "default url";
-    protected T api;
+
+    private String baseUrl;
+    boolean overrideBaseUrl;
+
+    public AuthService() {
+        this(DEFAULT_URL, false);
+    }
 
     public AuthService(String baseUrl, boolean overrideBaseUrl) {
-        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
-        clientBuilder.connectTimeout(45, TimeUnit.SECONDS);
-        clientBuilder.readTimeout(45, TimeUnit.SECONDS);
-        clientBuilder.writeTimeout(45, TimeUnit.SECONDS);
+        super();
+        this.baseUrl = baseUrl;
+        this.overrideBaseUrl = overrideBaseUrl;
+    }
 
-        Interceptor authInterceptor = new TkpdAuthInterceptor();
-        clientBuilder.interceptors().add(authInterceptor);
+    @Override
+    public OkHttpClient.Builder getOkHttpClientBuilder() {
+        OkHttpClient.Builder okHttpClient = new OkHttpClient.Builder();
+        okHttpClient.connectTimeout(45, TimeUnit.SECONDS);
+        okHttpClient.readTimeout(45, TimeUnit.SECONDS);
+        okHttpClient.writeTimeout(45, TimeUnit.SECONDS);
+        return okHttpClient;
+    }
 
-        HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
-        logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        clientBuilder.interceptors().add(logInterceptor);
+    @Override
+    public Interceptor getAuthInterceptor() {
+        return new TkpdAuthInterceptor();
+    }
 
-        Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
-                .setPrettyPrinting()
-                .serializeNulls()
-                .create();
-
-        Retrofit.Builder retrofit = new Retrofit.Builder();
-        if (overrideBaseUrl) {
-            retrofit.baseUrl(baseUrl);
-        } else {
+    @Override
+    public String getProcessedBaseUrl() {
+        if (!overrideBaseUrl) {
             baseUrl = getBaseUrl();
             if (baseUrl.startsWith("https://ws") & BuildConfig.DEBUG) {
                 String path = baseUrl.substring(baseUrl.indexOf("v4"));
@@ -61,24 +68,7 @@ public abstract class AuthService<T> {
                         .getSharedPreferences("DOMAIN_WS_4", Context.MODE_PRIVATE);
                 baseUrl = pref.getString("DOMAIN_WS4", TkpdBaseURL.BASE_DOMAIN) + path;
             }
-            retrofit.baseUrl(baseUrl);
         }
-        retrofit.addConverterFactory(new GeneratedHostConverter());
-        retrofit.addConverterFactory(new TkpdResponseConverter());
-        retrofit.addConverterFactory(new StringResponseConverter());
-        retrofit.addConverterFactory(GsonConverterFactory.create(gson));
-        retrofit.addCallAdapterFactory(RxJavaCallAdapterFactory.create());
-        retrofit.client(clientBuilder.build());
-        initApiService(retrofit.build());
+        return baseUrl;
     }
-
-    public AuthService() {
-        this(DEFAULT_URL, false);
-    }
-
-    protected abstract void initApiService(Retrofit retrofit);
-
-    protected abstract String getBaseUrl();
-
-    public abstract T getApi();
 }
