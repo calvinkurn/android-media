@@ -48,6 +48,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.home.ParentIndexHome;
@@ -132,6 +133,11 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
 //        showProgress(false);
         showErrorValidateEmail(getString(R.string.alert_email_address_is_already_registered));
         sendGTMRegisterError(AppEventTracking.EventLabel.EMAIL);
+    }
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_REGISTER;
     }
 
     @Override
@@ -761,7 +767,7 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
     @Override
     public void onStart() {
         super.onStart();
-        ScreenTracking.screen(this);
+        ScreenTracking.screen(getScreenName());
         presenter.initCacheGTM(getActivity());
     }
 
