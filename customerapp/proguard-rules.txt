@@ -270,14 +270,14 @@
 
 -keep public class * implements com.bumptech.glide.module.GlideModule
 
--keep class com.tokopedia.tkpd.recharge.**{ *; }
+-keep class com.tokopedia.core.recharge.**{ *; }
 
--keep class com.tokopedia.tkpd.discovery.model.**{ *; }
--keep class com.tokopedia.tkpd.dynamicfilter.model.** { *; }
--keep class com.tokopedia.tkpd.dynamicfilter.adapter.** { *; }
+-keep class com.tokopedia.core.discovery.model.**{ *; }
+-keep class com.tokopedia.core.dynamicfilter.model.** { *; }
+-keep class com.tokopedia.core.dynamicfilter.adapter.** { *; }
 
 # add exception for dbflow
 -keep class * extends com.raizlabs.android.dbflow.config.DatabaseHolder { *; }
--keep class com.tokopedia.tkpd.database.model.** { *; }
+-keep class com.tokopedia.core.database.model.** { *; }
 
 
