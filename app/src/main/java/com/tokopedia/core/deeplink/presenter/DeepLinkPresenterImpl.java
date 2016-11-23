@@ -85,6 +85,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             List<String> linkSegment = uriData.getPathSegments();
             String screenName = "";
             int type = getDeepLinkType(uriData);
+            CommonUtils.dumper("intent loca type" + type);
             switch (type) {
                 case HOMEPAGE:
                     screenName = AppScreen.SCREEN_INDEX_HOME;
