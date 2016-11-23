@@ -1774,4 +1774,7 @@ di Tokopedia Sekarang!</string>
     <string name="success_delete_shop_note">Anda berhasil menghapus catatan.</string>
     <string name="error_max_shop_notes_content_length">Maksimal panjang catatan adalah 6000 karakter</string>
     <string name="error_max_shop_notes_title_length">Maksimal panjang judul catatan adalah 128 karakter</string>
+    <string name="prompt_delete_talk">Apakah anda  yakin ingin menghapus diskusi ini?</string>
+    <string name="product_image">Product Image</string>
+    <string name="title_delete_discussion">Hapus diskusi</string>
 </resources>
