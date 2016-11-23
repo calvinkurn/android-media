@@ -46,6 +46,11 @@ public class ShopFavoritedFragment extends BasePresenterFragment<ShopFavoritedFr
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }

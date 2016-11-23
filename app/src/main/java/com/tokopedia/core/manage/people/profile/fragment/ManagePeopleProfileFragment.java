@@ -113,6 +113,11 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     protected boolean getOptionsMenuEnable() {
         return false;
     }

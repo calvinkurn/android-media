@@ -140,6 +140,11 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     protected boolean isRetainInstance() {
         return false;
     }

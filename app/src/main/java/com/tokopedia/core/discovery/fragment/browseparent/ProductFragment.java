@@ -105,6 +105,11 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         getActivity().registerReceiver(changeGridReceiver, new IntentFilter(BrowseProductActivity.CHANGE_GRID_ACTION_INTENT));

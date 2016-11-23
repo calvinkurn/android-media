@@ -121,6 +121,11 @@ public class SellerEditResCenterFormFragment extends BasePresenterFragment<Selle
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     protected void initialPresenter() {
         presenter = new SellerEditResCenterImpl(this);
     }

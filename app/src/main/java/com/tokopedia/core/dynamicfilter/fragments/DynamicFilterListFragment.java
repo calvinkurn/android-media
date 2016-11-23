@@ -44,6 +44,11 @@ public class DynamicFilterListFragment extends BaseFragment<DynamicFilterList> i
         return bundleWithFragment(argument);
     }
 
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
+
     public static Fragment newInstance2(List<DynamicFilterModel.Filter> data) {
         Bundle argument = new Bundle();
         argument.putParcelable(DynamicFilterList.DATA_LIST, Parcels.wrap(data));

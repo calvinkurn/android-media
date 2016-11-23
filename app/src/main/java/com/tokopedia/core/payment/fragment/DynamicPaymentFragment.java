@@ -78,6 +78,11 @@ public class DynamicPaymentFragment extends BasePresenterFragment
     }
 
     @Override
+    protected String getScreenName() {
+        return DynamicPaymentFragment.class.getSimpleName();
+    }
+
+    @Override
     public void onSaveState(Bundle state) {
 
     }

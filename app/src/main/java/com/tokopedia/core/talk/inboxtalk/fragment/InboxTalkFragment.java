@@ -60,6 +60,10 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
     @Bind(R2.id.fab) FloatingActionButton floatingActionButton;
     SnackbarRetry snackbarRetry;
 
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
 
     public void onErrorAction(Bundle resultData, int resultCode) {
         adapter.onErrorAction(resultData, resultCode);

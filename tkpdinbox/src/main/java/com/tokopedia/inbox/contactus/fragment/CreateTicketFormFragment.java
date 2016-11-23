@@ -142,6 +142,11 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     protected void initialPresenter() {
         presenter = new CreateTicketFormFragmentPresenterImpl(this);
     }

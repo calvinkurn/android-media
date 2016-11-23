@@ -26,6 +26,10 @@ public class ShopTalkViewFragment extends TalkViewFragment {
         return fragment;
     }
 
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
 
     @Override
     protected TalkViewAdapter getAdapter() {

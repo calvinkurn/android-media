@@ -100,6 +100,10 @@ public class TrackingFragment  extends BasePresenterFragment<TrackingFragmentPre
         super.onCreate(savedInstanceState);
     }
 
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
 
     @Override
     protected boolean isRetainInstance() {

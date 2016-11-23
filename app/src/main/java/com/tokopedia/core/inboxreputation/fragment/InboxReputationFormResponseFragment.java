@@ -126,6 +126,11 @@ public class InboxReputationFormResponseFragment
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     public void onSaveState(Bundle state) {
 
     }

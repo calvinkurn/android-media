@@ -104,6 +104,11 @@ public class InboxReputationFragment extends BasePresenterFragment<InboxReputati
         cancelButton.setOnClickListener(onCancelFilter());
     }
 
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
+
     private View.OnClickListener onCancelFilter() {
         return new View.OnClickListener() {
             @Override

@@ -73,6 +73,10 @@ public class TalkProductFragment extends BasePresenterFragment<TalkProductPresen
     ProgressBar progressBar;
     SnackbarRetry snackbarRetry;
 
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
 
     public static TalkProductFragment createInstance(Bundle bundle) {
         TalkProductFragment fragment = new TalkProductFragment();

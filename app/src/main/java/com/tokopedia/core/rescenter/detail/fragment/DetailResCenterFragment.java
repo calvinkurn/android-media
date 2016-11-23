@@ -110,6 +110,11 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     public void onSaveState(Bundle state) {
         presenter.saveState(state, passData, apiModelData);
     }

@@ -101,6 +101,11 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     public void setShopAvatar(String imagePath) {
         if(imagePath != ""){
             imageText.setVisibility(View.GONE);

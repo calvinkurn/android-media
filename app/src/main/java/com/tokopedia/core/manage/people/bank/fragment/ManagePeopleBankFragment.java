@@ -69,6 +69,11 @@ public class ManagePeopleBankFragment extends BasePresenterFragment<ManagePeople
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.manage_people_bank, menu);
     }

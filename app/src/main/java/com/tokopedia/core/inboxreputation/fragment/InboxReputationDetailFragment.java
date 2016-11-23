@@ -87,6 +87,11 @@ public class
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     protected void setViewListener() {
     }
 

@@ -94,6 +94,11 @@ public class InboxTicketFragment extends BasePresenterFragment<InboxTicketFragme
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     protected boolean getOptionsMenuEnable() {
         return true;
     }

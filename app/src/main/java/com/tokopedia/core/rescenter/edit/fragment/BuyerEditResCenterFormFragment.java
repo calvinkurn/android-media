@@ -84,6 +84,11 @@ public class BuyerEditResCenterFormFragment extends BasePresenterFragment<BuyerE
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     public void onSaveState(Bundle state) {
         state.putParcelable(ARGS_PARAM_PASS_DATA, passData);
     }

@@ -64,6 +64,11 @@ public class SendMessageFragment extends BasePresenterFragment<SendMessagePresen
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     protected boolean isRetainInstance() {
         return true;
     }

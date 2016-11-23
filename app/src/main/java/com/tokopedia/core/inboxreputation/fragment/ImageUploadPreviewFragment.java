@@ -108,6 +108,11 @@ public class ImageUploadPreviewFragment extends
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     public void onRestoreState(Bundle savedState) {
 
     }

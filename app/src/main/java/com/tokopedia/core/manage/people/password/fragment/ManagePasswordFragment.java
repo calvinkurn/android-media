@@ -68,6 +68,11 @@ public class ManagePasswordFragment extends BasePresenterFragment<ManagePassword
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     public void onRestoreState(Bundle savedState) {
 
     }

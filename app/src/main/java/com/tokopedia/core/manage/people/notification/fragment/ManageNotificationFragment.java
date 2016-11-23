@@ -76,6 +76,11 @@ public class ManageNotificationFragment extends BasePresenterFragment<ManageNoti
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     public void onRestoreState(Bundle savedState) {
 
     }

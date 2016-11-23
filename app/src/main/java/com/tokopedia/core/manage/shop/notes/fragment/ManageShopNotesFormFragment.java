@@ -74,6 +74,11 @@ public class ManageShopNotesFormFragment extends BasePresenterFragment<ManageSho
         }
     }
 
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
+
     private void setNoteName() {
         if (getArguments().getBoolean(ManageShopNotesActivity.PARAM_IS_RETURNABLE_POLICY)) {
             noteName.setEnabled(false);

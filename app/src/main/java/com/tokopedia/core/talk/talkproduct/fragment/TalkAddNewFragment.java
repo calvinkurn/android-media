@@ -51,6 +51,11 @@ public class TalkAddNewFragment extends BasePresenterFragment<TalkAddNewPresente
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     protected boolean isRetainInstance() {
         return false;
     }

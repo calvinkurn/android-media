@@ -68,6 +68,11 @@ public class PeopleInfoFragment extends BasePresenterFragment<PeopleInfoFragment
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     protected boolean isRetainInstance() {
         return true;
     }

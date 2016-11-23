@@ -239,6 +239,11 @@ public class ContactUsCategoryFragment extends
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     protected void setViewListener() {
         solution.setWebViewClient(new BrowseSolutionWebView());
         pleaseContactUs.setOnClickListener(onCreateTicket());

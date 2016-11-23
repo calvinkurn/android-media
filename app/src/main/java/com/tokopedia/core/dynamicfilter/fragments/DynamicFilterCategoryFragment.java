@@ -72,6 +72,11 @@ public class DynamicFilterCategoryFragment extends BaseFragment<CategoryPresente
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         getActivity().registerReceiver(resetFilterReceiver, new IntentFilter(DynamicFilterActivity.ACTION_RESET_FILTER));

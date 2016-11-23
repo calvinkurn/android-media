@@ -123,6 +123,11 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     public void onSaveState(Bundle state) {
         state.putParcelable(FILTER_BUNDLE, presenter.getFilterParam());
     }

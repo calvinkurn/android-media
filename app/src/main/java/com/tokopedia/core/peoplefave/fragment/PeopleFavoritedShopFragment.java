@@ -103,6 +103,10 @@ public class PeopleFavoritedShopFragment extends BasePresenterFragment<PeopleFav
         userID = arguments.getString(ARGS_PARAM_KEY_USER_ID);
     }
 
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
 
     @Override
     protected int getFragmentLayout() {

@@ -119,6 +119,11 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     public void onSaveState(Bundle state) {
         if (shareData != null) state.putParcelable(ARGS_SHARE_DATA, shareData);
     }

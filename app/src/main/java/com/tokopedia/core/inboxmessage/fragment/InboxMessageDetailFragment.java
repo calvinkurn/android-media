@@ -102,6 +102,11 @@ public class InboxMessageDetailFragment extends BasePresenterFragment<InboxMessa
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     protected void onFirstTimeLaunched() {
         presenter.initData();
         presenter.setResultBundle();

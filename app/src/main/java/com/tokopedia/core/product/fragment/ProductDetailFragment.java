@@ -130,6 +130,11 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     Bundle recentBundle;
 
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
+
     public static ProductDetailFragment newInstance(@NonNull ProductPass productPass) {
         ProductDetailFragment fragment = new ProductDetailFragment();
         Bundle args = new Bundle();

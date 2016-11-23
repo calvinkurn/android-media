@@ -75,6 +75,11 @@ public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implem
     private TkpdProgressDialog mProgressDialog;
     private UploadImageReVamp uploadimage2;
 
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
+
     @OnClick(R2.id.shop_ava)
     public void uploadImage(View vuew) {
         ImageGalleryEntry.moveToImageGallery((AppCompatActivity)getActivity(), 0, 1);

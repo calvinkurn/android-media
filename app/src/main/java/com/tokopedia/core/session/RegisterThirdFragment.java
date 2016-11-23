@@ -132,6 +132,11 @@ public class RegisterThirdFragment extends BaseFragment<RegisterThird> implement
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     public void showErrorValidateEmail() {
         CommonUtils.ShowError(getActivity(), new ArrayList<String>(){{add(getString(R.string.alert_email_address_is_already_registered));}});
         enView(false);

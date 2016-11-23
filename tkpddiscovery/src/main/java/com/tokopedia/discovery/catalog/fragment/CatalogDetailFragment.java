@@ -114,6 +114,11 @@ public class CatalogDetailFragment extends BasePresenterFragment<ICatalogDetailP
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     protected boolean isRetainInstance() {
         return false;
     }

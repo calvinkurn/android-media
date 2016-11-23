@@ -71,6 +71,11 @@ public class ChooseTroubleFragment extends BasePresenterFragment<ChooseTroublePr
         return fragment;
     }
 
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
+
     public ChooseTroubleFragment() {
     }
 

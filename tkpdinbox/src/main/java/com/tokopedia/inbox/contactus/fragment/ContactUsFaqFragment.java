@@ -66,6 +66,11 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     protected void onFirstTimeLaunched() {
         String url;
         if (getArguments().getString(PARAM_URL, "").equals("")) {

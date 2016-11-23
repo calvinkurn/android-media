@@ -99,6 +99,11 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     public void onSaveState(Bundle state) {
         presenter.saveStateCurrentLocation(state);
     }

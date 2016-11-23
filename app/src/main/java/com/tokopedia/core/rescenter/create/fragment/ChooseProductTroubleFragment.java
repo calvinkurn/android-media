@@ -96,6 +96,11 @@ public class ChooseProductTroubleFragment extends BasePresenterFragment<ChoooseP
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     protected boolean getOptionsMenuEnable() {
         return false;
     }

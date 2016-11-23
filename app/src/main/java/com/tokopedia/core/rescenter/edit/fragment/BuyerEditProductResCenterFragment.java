@@ -73,6 +73,11 @@ public class BuyerEditProductResCenterFragment
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     protected void onFirstTimeLaunched() {
         loading.setVisibility(View.GONE);
     }

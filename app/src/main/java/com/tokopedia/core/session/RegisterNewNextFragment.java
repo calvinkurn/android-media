@@ -127,6 +127,11 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
         presenter.saveBeforeDestroy(getActivity(), registerNextFullName.getText().toString(), registerNextPhoneNumber.getText().toString());
