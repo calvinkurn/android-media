@@ -36,10 +36,10 @@ import com.tokopedia.core.home.ParentIndexHome;
 import com.tokopedia.core.home.SimpleHomeActivity;
 import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
-import com.tokopedia.core.inboxticket.activity.InboxTicketActivity;
 import com.tokopedia.core.prototype.ManageProductCache;
 import com.tokopedia.core.prototype.ShopSettingCache;
 import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.session.Login;
@@ -220,7 +220,8 @@ public class GCMListenerService extends GcmListenerService {
                 desc = data.getString("desc");
                 break;
             case TkpdState.GCMServiceState.GCM_TICKET:
-                resultclass = InboxTicketActivity.class;
+                componentName = InboxRouter.getInboxticketActivityComponentName(this);
+                intent = InboxRouter.getInboxTicketActivityIntent(this);
                 //bundle.putInt("notif_call", NotificationCode);
                 title = this.getString(R.string.title_new_ticket);
                 ticker = data.getString("desc");
