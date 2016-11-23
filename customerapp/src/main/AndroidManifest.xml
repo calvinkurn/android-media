@@ -27,6 +27,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="GTM_RESOURCE"
+            android:resource="@raw/gtm_consumer" />
+        <meta-data
+            android:name="GTM_ID"
+            android:value="GTM-P32KTB" />
     </application>
 
 </manifest>

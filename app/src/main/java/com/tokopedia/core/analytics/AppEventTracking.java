@@ -264,6 +264,9 @@ public interface AppEventTracking {
     }
 
     interface GTM {
+        String GTM_ID = "GTM_ID";
+        String GTM_RESOURCE = "GTM_RESOURCE";
+
         String LUCKY_BUYER = "msg_lucky_buyer";
         String LUCKY_BUYER_DETAIL = "msg_lucky_buyer_detail";
         String LUCKY_BUYER_VALID = "msg_lucky_valid";

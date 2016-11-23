@@ -27,5 +27,12 @@
             android:name="com.tokopedia.seller.ShippingConfirmationProdConf"
             android:label="@string/title_activity_shipping_confirmation_prod_conf"
             android:screenOrientation="portrait" />
+
+        <meta-data
+            android:name="GTM_RESOURCE"
+            android:resource="@raw/gtm_seller" />
+        <meta-data
+            android:name="GTM_ID"
+            android:value="GTM-PHC2L9" />
     </application>
 </manifest>
