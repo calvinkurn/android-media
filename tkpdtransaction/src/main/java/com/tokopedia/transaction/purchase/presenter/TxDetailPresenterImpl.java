@@ -22,7 +22,7 @@ import com.tokopedia.core.rescenter.detail.activity.ResCenterActivity;
 import com.tokopedia.core.rescenter.detail.model.passdata.ActivityParamenterPassData;
 import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.core.rescenter.onboarding.FreeReturnOnboardingActivity;
-import com.tokopedia.core.router.TransactionRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.AppUtils;
@@ -101,7 +101,7 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
                         viewListener.navigateToActivityRequest(
                                 CreateResCenterActivity.newInstancePackageNotReceived(context,
                                         orderData.getOrderDetail().getDetailOrderId(), 5, 6),
-                                TransactionRouter.CREATE_RESCENTER_REQUEST_CODE);
+                                TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE);
                     }
                 });
         builder.setNegativeButton(context.getString(R.string.action_refund),
@@ -115,7 +115,7 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
                         viewListener.navigateToActivityRequest(
                                 CreateResCenterActivity.newInstancePackageNotReceived(context,
                                         orderData.getOrderDetail().getDetailOrderId(), 5, 1),
-                                TransactionRouter.CREATE_RESCENTER_REQUEST_CODE);
+                                TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE);
                     }
                 });
         Dialog alertDialog = builder.create();
@@ -265,7 +265,7 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
                     viewListener.navigateToActivityRequest(
                             CreateResCenterActivity.newInstance(context,
                                     orderData.getOrderDetail().getDetailOrderId()),
-                            TransactionRouter.CREATE_RESCENTER_REQUEST_CODE
+                            TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE
                     );
                 }
 
@@ -289,13 +289,13 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
                             viewListener.navigateToActivityRequest(
                                     CreateResCenterActivity.newInstance(context,
                                             orderData.getOrderDetail().getDetailOrderId()),
-                                    TransactionRouter.CREATE_RESCENTER_REQUEST_CODE
+                                    TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE
                             );
                         else
                             viewListener.navigateToActivityRequest(
                                     FreeReturnOnboardingActivity.newInstance(context,
                                             orderData.getOrderDetail().getDetailOrderId()),
-                                    TransactionRouter.CREATE_RESCENTER_REQUEST_CODE
+                                    TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE
                             );
                     }
                 });
@@ -374,7 +374,7 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
     @Override
     public void onActivityResult(Context context, int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case TransactionRouter.CREATE_RESCENTER_REQUEST_CODE:
+            case TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
                     processResolution(context, null);
                 }

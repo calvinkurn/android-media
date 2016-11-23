@@ -12,7 +12,6 @@ import com.tokopedia.core.EditAddressCart;
 import com.tokopedia.core.EtalaseShopEditor;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.ManagePeople;
-import com.tokopedia.core.ManagePeoplePassword;
 import com.tokopedia.core.ManageShop;
 import com.tokopedia.core.ManageShopAddress;
 import com.tokopedia.core.PaymentConfirmationSuccess;
@@ -24,7 +23,6 @@ import com.tokopedia.core.ShopAddressForm;
 import com.tokopedia.core.ShopEditor;
 import com.tokopedia.core.ShopStatisticDetail;
 import com.tokopedia.core.SplashScreen;
-import com.tokopedia.core.addtocart.activity.AddToCartActivity;
 import com.tokopedia.core.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.deposit.activity.WithdrawActivity;
@@ -50,8 +48,6 @@ import com.tokopedia.core.inboxmessage.activity.InboxMessageDetailActivity;
 import com.tokopedia.core.inboxmessage.activity.SendMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationDetailActivity;
-import com.tokopedia.core.inboxticket.activity.InboxTicketActivity;
-import com.tokopedia.core.inboxticket.activity.InboxTicketDetailActivity;
 import com.tokopedia.core.invoice.activity.InvoiceRendererActivity;
 import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
@@ -117,8 +113,8 @@ public final class AppScreen {
             gtmName = AppScreen.SCREEN_INDEX_HOME;
         } else if (actClass instanceof BrowseProductActivity) {
             gtmName = AppScreen.SCREEN_BROWSE_PRODUCT_FROM_SEARCH;
-        } else if (actClass instanceof AddToCartActivity) {
-            gtmName = AppScreen.SCREEN_ADD_TO_CART;
+//        } else if (actClass instanceof AddToCartActivity) {
+//            gtmName = AppScreen.SCREEN_ADD_TO_CART;
         } else if (actClass instanceof TalkViewActivity && !(getFragment(actClass) instanceof ShopTalkViewFragment)) {
             gtmName = AppScreen.SCREEN_PRODUCT_TALK_VIEW;
         } else if (actClass instanceof TalkViewActivity && getFragment(actClass) instanceof ShopTalkViewFragment) {
@@ -151,10 +147,6 @@ public final class AppScreen {
             gtmName = AppScreen.SCREEN_INBOX_TALK;
         } else if (actClass instanceof InboxReputationActivity) {
             gtmName = AppScreen.SCREEN_INBOX_REPUTATION;
-        } else if (actClass instanceof InboxTicketActivity) {
-            gtmName = AppScreen.SCREEN_INBOX_TICKET;
-//        } else if (actClass instanceof ContactUsActivity) {
-//            gtmName = AppScreen.SCREEN_CONTACT_US;
         } else if (actClass instanceof ResCenterActivity) {
             gtmName = AppScreen.SCREEN_INBOX_RESOLUTION_CENTER_DETAIL;
        /* } else if (actClass instanceof OrderHistoryView) {
@@ -265,8 +257,6 @@ public final class AppScreen {
 //            gtmName = AppScreen.SCREEN_ORDER_HISTORY_DETAIL;
         } else if (actClass instanceof InboxMessageDetailActivity) {
             gtmName = AppScreen.SCREEN_INBOX_MESSAGE_DETAIL_VIEW;
-        } else if (actClass instanceof InboxTicketDetailActivity) {
-            gtmName = AppScreen.SCREEN_INBOX_TICKET_DETAIL;
         } else if (actClass instanceof ShopFavoritedActivity) {
             gtmName = AppScreen.SCREEN_SHOP_FAVORITER;
         } else if (actClass instanceof EditResCenterActivity) {

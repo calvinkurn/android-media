@@ -40,19 +40,17 @@ import com.tokopedia.core.home.ParentIndexHome;
 import com.tokopedia.core.home.SimpleHomeActivity;
 import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
-import com.tokopedia.core.inboxticket.activity.InboxTicketActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.myproduct.ManageProduct;
 import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.TransactionRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.session.Login;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shop.ShopEditorActivity;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity;
-import com.tokopedia.core.util.RouterUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
@@ -498,7 +496,8 @@ public class DrawerVariable {
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.REVIEW);
                 break;
             case TkpdState.DrawerPosition.INBOX_TICKET:
-                startIntent(InboxTicketActivity.class);
+                intent = InboxRouter.getInboxTicketActivityIntent(context);
+                context.startActivity(intent);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.HELP);
                 break;
             case TkpdState.DrawerPosition.RESOLUTION_CENTER:
@@ -579,23 +578,23 @@ public class DrawerVariable {
     }
 
     private void goToPeopleTransactionCanceled() {
-        context.startActivity(TransactionRouter.createIntentTxCanceled(context));
+        context.startActivity(TransactionPurchaseRouter.createIntentTxCanceled(context));
     }
 
     private void goToPeopleTransactionList() {
-        context.startActivity(TransactionRouter.createIntentTxAll(context));
+        context.startActivity(TransactionPurchaseRouter.createIntentTxAll(context));
     }
 
     private void goToPeopleConfirmShipping() {
-        context.startActivity(TransactionRouter.createIntentConfirmShipping(context));
+        context.startActivity(TransactionPurchaseRouter.createIntentConfirmShipping(context));
     }
 
     private void goToPeopleOrderStatus() {
-        context.startActivity(TransactionRouter.createIntentTxStatus(context));
+        context.startActivity(TransactionPurchaseRouter.createIntentTxStatus(context));
     }
 
     private void goToPeopleConfirmPayment() {
-        context.startActivity(TransactionRouter.createIntentConfirmPayment(context));
+        context.startActivity(TransactionPurchaseRouter.createIntentConfirmPayment(context));
     }
 
     private void goToManageProduct() {

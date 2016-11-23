@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.tokopedia.transaction">
+    package="com.tokopedia.transaction">
 
     <application
         android:allowBackup="true"
@@ -30,9 +30,17 @@
             android:name="com.tokopedia.transaction.purchase.activity.PurchaseActivity"
             android:label="@string/title_purchase"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.tokopedia.transaction.addtocart.activity.AddToCartActivity"
+            android:label="@string/title_activity_add_to_cart_v2"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
 
         <service
             android:name="com.tokopedia.transaction.purchase.services.TxActionIntentService"
+            android:exported="false" />
+        <service
+            android:name="com.tokopedia.transaction.addtocart.services.ATCIntentService"
             android:exported="false" />
     </application>
 

@@ -198,11 +198,6 @@
             android:label="@string/title_activity_add_address"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.addtocart.activity.AddToCartActivity"
-            android:label="@string/title_activity_add_to_cart_v2"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
             android:name="com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity"
             android:label="@string/title_activity_choose_address"
             android:screenOrientation="portrait" />
@@ -301,12 +296,8 @@
             android:label="@string/title_activity_payment_confirmation_success"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.inboxticket.activity.InboxTicketActivity"
-            android:label="@string/title_activity_inbox_ticket"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.inboxticket.activity.InboxTicketDetailActivity"
-            android:label="@string/title_activity_inbox_ticket_detail"
+            android:name="com.tokopedia.core.com.tokopedia.seller.OrderHistoryView"
+            android:label="@string/title_activity_order_history_view"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.core.PreviewProductImage"
@@ -700,9 +691,6 @@
         <service android:name="com.google.android.gms.analytics.CampaignTrackingService" />
         <service
             android:name="com.tokopedia.core.service.DownloadService"
-            android:exported="false" />
-        <service
-            android:name="com.tokopedia.core.addtocart.services.ATCIntentService"
             android:exported="false" />
         <service
             android:name="com.tokopedia.core.talkview.intentservice.TalkViewIntentService"
