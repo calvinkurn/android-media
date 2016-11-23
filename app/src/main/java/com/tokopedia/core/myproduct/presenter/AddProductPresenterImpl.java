@@ -859,8 +859,10 @@ public class AddProductPresenterImpl implements AddProductPresenter
                 List<List<SimpleTextModel>> lists = new ArrayList<>();
                 ArrayList<TextDeleteModel> textDeleteModels = new ArrayList<>();
                 for (int i = 1, j = 0; i <= breadcrumb.size(); i++, j++) {
-                    String departmentId = breadcrumb.get(j).getDepartmentId();
-
+                    String departmentId = "0";
+                    if(j != 0) {
+                        departmentId = breadcrumb.get(j-1).getDepartmentId();
+                    }
                     List<SimpleTextModel> levelSelection = AddProductFragment.toSimpleText(i, Integer.parseInt(departmentId));
                     lists.add(levelSelection);
 
@@ -968,6 +970,7 @@ public class AddProductPresenterImpl implements AddProductPresenter
                     CatalogDataModel catalogDataModel = (CatalogDataModel) object;
 
                     onSuccessFetchCatalog(catalogDataModel);
+
                     int selection = 0;
                     if (data.getCatalog().getCatalogId().equals("0")) {
                         addProductView.setProductCatalog(-1);

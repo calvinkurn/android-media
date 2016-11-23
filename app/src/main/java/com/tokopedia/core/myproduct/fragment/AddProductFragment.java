@@ -2222,7 +2222,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     @Override
     public void saveCatalogs(ArrayList<CatalogDataModel.Catalog> catalogs) {
         Log.d(TAG, messageTAG + " : " + catalogs);
-        if(!catalogs.get(0).getCatalogName().equals(NO_CATALOG_OPTION)) {
+        if(!catalogs.isEmpty() && !catalogs.get(0).getCatalogName().equals(NO_CATALOG_OPTION)) {
             CatalogDataModel.Catalog noCatalogOption = new CatalogDataModel.Catalog();
             noCatalogOption.setCatalogName(NO_CATALOG_OPTION);
             catalogs.add(0, noCatalogOption);
