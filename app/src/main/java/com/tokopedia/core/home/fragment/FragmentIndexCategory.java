@@ -35,10 +35,12 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.discovery.activity.BrowseProductActivity;
 import com.tokopedia.core.dynamicfilter.presenter.DynamicFilterPresenter;
 import com.tokopedia.core.home.BannerWebView;
@@ -79,7 +81,7 @@ import java.util.Map;
  * Created by Nisie on 1/07/15.
  * modified by mady add feature Recharge and change home menu
  */
-public class FragmentIndexCategory extends Fragment implements
+public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         CategoryView,
         RechargeCategoryView,
         SectionListCategoryAdapter.OnCategoryClickedListener,
@@ -137,6 +139,11 @@ public class FragmentIndexCategory extends Fragment implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_HOME_PRODUCT_CATEGORY;
     }
 
     @Override
@@ -486,7 +493,7 @@ public class FragmentIndexCategory extends Fragment implements
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser && getActivity() != null && isAdded()) {
             setLocalyticFlow();
-            ScreenTracking.screen(this);
+            ScreenTracking.screen(getScreenName());
             sendAppsFlyerData();
             holder.wrapperScrollview.smoothScrollTo(0, 0);
         } else {
