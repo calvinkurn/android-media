@@ -23,6 +23,7 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.TermPrivacy;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.home.ParentIndexHome;
@@ -120,6 +121,11 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
     @Override
     public void onResume() {
         super.onResume();
+    }
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_REGISTER_THIRD;
     }
 
     @Override
@@ -451,7 +457,7 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
     @Override
     public void onStart() {
         super.onStart();
-        ScreenTracking.screen(this);
+        ScreenTracking.screen(getScreenName());
     }
 
     private void sendGTMRegisterError(String label){
