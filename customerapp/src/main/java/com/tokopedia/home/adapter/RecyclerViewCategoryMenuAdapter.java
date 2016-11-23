@@ -14,23 +14,30 @@ import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
 import com.tokopedia.tkpd.R;
 
 import java.util.ArrayList;
-
+import java.util.Collections;
+import java.util.List;
 /**
  * @author by mady on 9/23/16.
  */
 public class RecyclerViewCategoryMenuAdapter extends
         RecyclerView.Adapter<RecyclerViewCategoryMenuAdapter.ItemRowHolder> {
 
-    private ArrayList<CategoryMenuModel> dataList;
-    private Context mContext;
+    private final Context mContext;
+    private List<CategoryMenuModel> dataList;
     private int homeMenuWidth;
+
 
     private SectionListCategoryAdapter.OnCategoryClickedListener onCategoryClickedListener;
     private SectionListCategoryAdapter.OnGimmicClickedListener onGimmicClickedListener;
 
+    public RecyclerViewCategoryMenuAdapter(Context context) {
+        this.mContext = context;
+        this.dataList = Collections.emptyList();
+    }
+
+    @SuppressWarnings("unused")
     public RecyclerViewCategoryMenuAdapter(
             Context context, ArrayList<CategoryMenuModel> dataList, int homeMenuWidth) {
-
         this.dataList = dataList;
         this.mContext = context;
         this.homeMenuWidth = homeMenuWidth;
@@ -39,7 +46,7 @@ public class RecyclerViewCategoryMenuAdapter extends
     @Override
     public ItemRowHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         @SuppressLint("InflateParams") View v = LayoutInflater.from(
-                viewGroup.getContext()).inflate(R.layout.list_item, null
+                viewGroup.getContext()).inflate(R.layout.item_section_home_category, null
         );
         return new ItemRowHolder(v);
     }
@@ -50,7 +57,7 @@ public class RecyclerViewCategoryMenuAdapter extends
         ArrayList<CategoryItemModel> singleSectionItems = dataList.get(i).getAllItemsInSection();
         itemRowHolder.itemTitle.setText(sectionName);
         SectionListCategoryAdapter itemListDataAdapter = new SectionListCategoryAdapter(
-                mContext, singleSectionItems,
+                singleSectionItems,
                 homeMenuWidth);
         itemListDataAdapter.setCategoryClickedListener(onCategoryClickedListener);
         itemListDataAdapter.setGimmicClickedListener(onGimmicClickedListener);
@@ -65,7 +72,7 @@ public class RecyclerViewCategoryMenuAdapter extends
 
     @Override
     public int getItemCount() {
-        return (null != dataList ? dataList.size() : 0);
+        return dataList.size();
     }
 
     public void setOnGimmicClickedListener(
@@ -80,6 +87,13 @@ public class RecyclerViewCategoryMenuAdapter extends
         this.onCategoryClickedListener = onCategoryClickedListener;
     }
 
+    public void setDataList(List<CategoryMenuModel> dataList) {
+        this.dataList = dataList;
+    }
+
+    public void setHomeMenuWidth(int homeMenuWidth) {
+        this.homeMenuWidth = homeMenuWidth;
+    }
 
     class ItemRowHolder extends RecyclerView.ViewHolder {
 

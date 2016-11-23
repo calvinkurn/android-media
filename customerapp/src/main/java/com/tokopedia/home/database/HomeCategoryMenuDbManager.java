@@ -86,18 +86,22 @@ public class HomeCategoryMenuDbManager implements DbFlowOperation<CategoryMenuMo
     @Override
     public boolean isExpired(final long currentTime) {
         try {
-            CategoryMenuModelDb categoryMenuModelDb = SQLite.select().from(CategoryMenuModelDb.class).querySingle();
+            CategoryMenuModelDb categoryMenuModelDb = SQLite.select()
+                    .from(CategoryMenuModelDb.class)
+                    .querySingle();
+
             if (categoryMenuModelDb == null) {
                 return true;
             } else {
-//            long oneDay = 1000 * 60 * 60 ; // one minute
-                long oneDay = 1000 * 60 * 60 * 24;
+
                 long oldTime = categoryMenuModelDb.getLastUpdated();
-                Log.d("TAG", "isHomeCategoryMenuStillValid: oneDay : " + oneDay + " oldtime : " + oldTime
+                long oneHour = 1000 * 60 * 60;
+                Log.d("TAG", "isHomeCategoryMenuStillValid: oneHour : "
+                        + oneHour + " oldtime : " + oldTime
                         + " System.currentTimeMillis() "
                         + String.valueOf(System.currentTimeMillis()));
 
-                if (currentTime - oldTime < oneDay) {
+                if (currentTime - oldTime < oneHour) {
                     return false;
                 } else {
                     return true;

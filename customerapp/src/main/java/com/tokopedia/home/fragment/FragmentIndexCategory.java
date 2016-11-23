@@ -13,6 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -26,9 +27,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -96,6 +97,7 @@ public class FragmentIndexCategory extends Fragment implements
 
 
     private HomeCatMenuPresenter homeCatMenuPresenter;
+    private RecyclerViewCategoryMenuAdapter recyclerViewCategoryMenuAdapter;
 
 
     private class ViewHolder {
@@ -107,7 +109,7 @@ public class FragmentIndexCategory extends Fragment implements
         TabLayout tabLayoutRecharge;
         WrapContentViewPager viewpagerRecharge;
         RecyclerView announcementContainer;
-        ScrollView wrapperScrollview;
+        NestedScrollView wrapperScrollview;
         RecyclerView categoriesRecylerview;
         public LinearLayout wrapperLinearLayout;
 
@@ -329,11 +331,36 @@ public class FragmentIndexCategory extends Fragment implements
         holder.viewpagerRecharge = (WrapContentViewPager) holder.MainView.findViewById(R.id.viewpager_pulsa);
         ((LinearLayout) holder.tabLayoutRecharge.getParent()).setVisibility(View.GONE);
         holder.announcementContainer = (RecyclerView) holder.MainView.findViewById(R.id.announcement_ticker);
-        holder.wrapperScrollview = (ScrollView) holder.MainView.findViewById(R.id.category_scrollview);
+        holder.wrapperScrollview = (NestedScrollView) holder.MainView.findViewById(R.id.category_scrollview);
+        initCategoryRecyclerView();
+
+    }
+
+    private void initCategoryRecyclerView() {
         holder.categoriesRecylerview = (RecyclerView) holder.MainView.findViewById(R.id.my_recycler_view);
 
         holder.categoriesRecylerview.setHasFixedSize(true);
+        holder.categoriesRecylerview.setNestedScrollingEnabled(false);
 
+        recyclerViewCategoryMenuAdapter =
+                new RecyclerViewCategoryMenuAdapter(getContext());
+
+        recyclerViewCategoryMenuAdapter.setHomeMenuWidth(getHomeMenuWidth());
+
+        recyclerViewCategoryMenuAdapter.setOnCategoryClickedListener(this);
+        recyclerViewCategoryMenuAdapter.setOnGimmicClickedListener(this);
+
+
+        holder.categoriesRecylerview.setLayoutManager(
+                new NonScrollLayoutManager(getActivity(),
+                        LinearLayoutManager.VERTICAL,
+                        false)
+        );
+        holder.categoriesRecylerview.addItemDecoration(
+                new DividerItemDecoration(getActivity(),
+                        LinearLayoutManager.VERTICAL)
+        );
+        holder.categoriesRecylerview.setAdapter(recyclerViewCategoryMenuAdapter);
     }
 
     private void initHomeCatMenuAdapter(ArrayList<CategoryMenuModel> menuModelArrayList) {
@@ -461,7 +488,10 @@ public class FragmentIndexCategory extends Fragment implements
 
     @Override
     public void renderHomeCatMenu(ArrayList<CategoryMenuModel> menuModelArrayList) {
-        initHomeCatMenuAdapter(menuModelArrayList);
+        Log.d(TAG, "renderHomeCatMenu() called with: menuModelArrayList = ["
+                + new Gson().toJson(menuModelArrayList) + "]");
+        recyclerViewCategoryMenuAdapter.setDataList(menuModelArrayList);
+        recyclerViewCategoryMenuAdapter.notifyDataSetChanged();
 
     }
 
