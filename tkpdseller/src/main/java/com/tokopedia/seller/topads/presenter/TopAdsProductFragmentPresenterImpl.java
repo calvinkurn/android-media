@@ -53,7 +53,7 @@ public class TopAdsProductFragmentPresenterImpl implements TopAdsProductFragment
             populateSummaryFromCache(startDate, endDate);
             return;
         }
-        populateStatisticFromApi(startDate, endDate, new DashboardTopadsInteractor.ListenerGetDashboardStatistic() {
+        populateStatisticFromApi(startDate, endDate, new DashboardTopadsInteractor.Listener<StatisticResponse>() {
             @Override
             public void onSuccess(StatisticResponse response) {
                 insertSummaryToCache(startDate, endDate, response.getData().getSummary());
@@ -62,21 +62,21 @@ public class TopAdsProductFragmentPresenterImpl implements TopAdsProductFragment
             }
 
             @Override
-            public void onError(String message) {
+            public void onError(Throwable throwable) {
                 if (topAdsProductFragmentListener != null) {
-                    topAdsProductFragmentListener.onLoadSummaryError(null);
+                    topAdsProductFragmentListener.onLoadSummaryError(throwable);
                 }
             }
         });
     }
 
-    private void populateStatisticFromApi(Date startDate, Date endDate, DashboardTopadsInteractor.ListenerGetDashboardStatistic callback) {
+    private void populateStatisticFromApi(Date startDate, Date endDate, DashboardTopadsInteractor.Listener<StatisticResponse> listener) {
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put(TopAdsNetworkConstant.PARAM_SHOP_ID, getShopId());
         hashMap.put(TopAdsNetworkConstant.PARAM_TYPE, String.valueOf(getType()));
         hashMap.put(TopAdsNetworkConstant.PARAM_START_DATE, new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH).format(startDate));
         hashMap.put(TopAdsNetworkConstant.PARAM_END_DATE, new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH).format(endDate));
-        dashboardTopadsInteractor.getDashboardStatistic(context, hashMap, callback);
+        dashboardTopadsInteractor.getDashboardStatistic(hashMap, listener);
     }
 
     private void insertSummaryToCache(Date startDate, Date endDate, Summary summary){

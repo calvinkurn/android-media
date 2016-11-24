@@ -1,8 +1,7 @@
 package com.tokopedia.seller.topads.interactor;
 
-import android.content.Context;
-
 import com.tokopedia.seller.topads.model.exchange.CreditResponse;
+import com.tokopedia.seller.topads.model.exchange.DepositResponse;
 import com.tokopedia.seller.topads.model.exchange.ProductResponse;
 import com.tokopedia.seller.topads.model.exchange.ShopResponse;
 import com.tokopedia.seller.topads.model.exchange.StatisticResponse;
@@ -15,40 +14,20 @@ import java.util.HashMap;
 
 public interface DashboardTopadsInteractor {
 
-    interface ListenerGetDashboardProduct{
-        void onSuccess(ProductResponse response);
-        void onError(String message);
-    }
-
-    interface ListenerGetDashboardShop{
-        void onSuccess(ShopResponse response);
-        void onError(String message);
-    }
-
-    interface ListenerGetDashboardStatistic{
-        void onSuccess(StatisticResponse response);
-        void onError(String message);
-    }
-
-    interface ListenerGetDashboardDeposit{
-        void onSuccess(StatisticResponse response);
-        void onError(String message);
-    }
-
-    interface ListenerGetDashboardCredit{
-        void onSuccess(CreditResponse response);
-        void onError(String message);
+    interface Listener<T> {
+        void onSuccess(T t);
+        void onError(Throwable throwable);
     }
 
     void unSubscribe();
 
-    void getDashboardProduct(Context context, HashMap<String, String> params, ListenerGetDashboardProduct listenerGetDashboardProduct);
+    void getDashboardProduct(HashMap<String, String> params, Listener<ProductResponse> listener);
 
-    void getDashboardShop(Context context, HashMap<String, String> params, ListenerGetDashboardShop listenerGetDashboardShop);
+    void getDashboardShop(HashMap<String, String> params, Listener<ShopResponse> listener);
 
-    void getDashboardStatistic(Context context, HashMap<String, String> params, ListenerGetDashboardStatistic listenerGetDashboardStatistic);
+    void getDashboardStatistic(HashMap<String, String> params, Listener<StatisticResponse> listener);
 
-    void getDashboardResponse(Context context, HashMap<String, String> params, ListenerGetDashboardDeposit listenerGetDashboardDeposit);
+    void getDashboardResponse(HashMap<String, String> params, Listener<DepositResponse> listener);
 
-    void getDashboardCredit(Context context, HashMap<String, String> params, ListenerGetDashboardCredit listenerGetDashboardCredit);
+    void getDashboardCredit(HashMap<String, String> params, Listener<CreditResponse> listener);
 }

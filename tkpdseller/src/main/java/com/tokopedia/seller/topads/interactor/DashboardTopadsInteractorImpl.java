@@ -26,8 +26,9 @@ import rx.subscriptions.CompositeSubscription;
  */
 
 public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor {
-    CompositeSubscription compositeSubscription;
-    TopAdsManagementService topAdsManagementService;
+
+    private CompositeSubscription compositeSubscription;
+    private TopAdsManagementService topAdsManagementService;
 
     public DashboardTopadsInteractorImpl() {
         compositeSubscription = new CompositeSubscription();
@@ -35,7 +36,7 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
     }
 
     @Override
-    public void getDashboardProduct(final Context context, HashMap<String, String> params, final ListenerGetDashboardProduct listenerGetDashboardProduct) {
+    public void getDashboardProduct(HashMap<String, String> params, final Listener<ProductResponse> listener) {
         Observable<Response<ProductResponse>> observable = topAdsManagementService.getApi()
                 .getDashboardProduct(params);
         compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
@@ -49,28 +50,22 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
 
                     @Override
                     public void onError(Throwable e) {
-                        if (e instanceof UnknownHostException) {
-                            listenerGetDashboardProduct.onError(context.getString(R.string.msg_no_connection));
-                        } else if (e instanceof SocketTimeoutException) {
-                            listenerGetDashboardProduct.onError(context.getString(R.string.default_request_error_timeout));
-                        } else {
-                            listenerGetDashboardProduct.onError(context.getString(R.string.default_request_error_unknown));
-                        }
+                        listener.onError(e);
                     }
 
                     @Override
                     public void onNext(Response<ProductResponse> response) {
                         if (response.isSuccessful()) {
-                            // do something
+                            listener.onSuccess(response.body());
                         } else {
-                            listenerGetDashboardProduct.onError(context.getString(R.string.default_request_error_unknown));
+                            // TODO Define error
                         }
                     }
                 }));
     }
 
     @Override
-    public void getDashboardShop(final Context context, HashMap<String, String> params, final ListenerGetDashboardShop listenerGetDashboardShop) {
+    public void getDashboardShop(HashMap<String, String> params, final Listener<ShopResponse> listener) {
         Observable<Response<ShopResponse>> observable = topAdsManagementService.getApi().getDashboardShop(params);
         compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
@@ -83,28 +78,22 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
 
                     @Override
                     public void onError(Throwable e) {
-                        if (e instanceof UnknownHostException) {
-                            listenerGetDashboardShop.onError(context.getString(R.string.msg_no_connection));
-                        } else if (e instanceof SocketTimeoutException) {
-                            listenerGetDashboardShop.onError(context.getString(R.string.default_request_error_timeout));
-                        } else {
-                            listenerGetDashboardShop.onError(context.getString(R.string.default_request_error_unknown));
-                        }
+                        listener.onError(e);
                     }
 
                     @Override
                     public void onNext(Response<ShopResponse> response) {
                         if (response.isSuccessful()) {
-                            // do something
+                            listener.onSuccess(response.body());
                         } else {
-                            listenerGetDashboardShop.onError(context.getString(R.string.default_request_error_unknown));
+                            // TODO Define error
                         }
                     }
                 }));
     }
 
     @Override
-    public void getDashboardStatistic(final Context context, HashMap<String, String> params, final ListenerGetDashboardStatistic listenerGetDashboardStatistic) {
+    public void getDashboardStatistic(HashMap<String, String> params, final Listener<StatisticResponse> listener) {
         Observable<Response<StatisticResponse>> observable = topAdsManagementService.getApi().getDashboardStatistic(params);
         compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
@@ -117,28 +106,22 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
 
                     @Override
                     public void onError(Throwable e) {
-                        if (e instanceof UnknownHostException) {
-                            listenerGetDashboardStatistic.onError(context.getString(R.string.msg_no_connection));
-                        } else if (e instanceof SocketTimeoutException) {
-                            listenerGetDashboardStatistic.onError(context.getString(R.string.default_request_error_timeout));
-                        } else {
-                            listenerGetDashboardStatistic.onError(context.getString(R.string.default_request_error_unknown));
-                        }
+                        listener.onError(e);
                     }
 
                     @Override
                     public void onNext(Response<StatisticResponse> response) {
                         if (response.isSuccessful()) {
-                            // do something
+                            listener.onSuccess(response.body());
                         } else {
-                            listenerGetDashboardStatistic.onError(context.getString(R.string.default_request_error_unknown));
+                            // TODO Define error
                         }
                     }
                 }));
     }
 
     @Override
-    public void getDashboardResponse(final Context context, HashMap<String, String> params, final ListenerGetDashboardDeposit listenerGetDashboardDeposit) {
+    public void getDashboardResponse(HashMap<String, String> params, final Listener<DepositResponse> listener) {
         Observable<Response<DepositResponse>> observable = topAdsManagementService.getApi().getDashboardDeposit(params);
         compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
@@ -151,28 +134,22 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
 
                     @Override
                     public void onError(Throwable e) {
-                        if (e instanceof UnknownHostException) {
-                            listenerGetDashboardDeposit.onError(context.getString(R.string.msg_no_connection));
-                        } else if (e instanceof SocketTimeoutException) {
-                            listenerGetDashboardDeposit.onError(context.getString(R.string.default_request_error_timeout));
-                        } else {
-                            listenerGetDashboardDeposit.onError(context.getString(R.string.default_request_error_unknown));
-                        }
+                        listener.onError(e);
                     }
 
                     @Override
                     public void onNext(Response<DepositResponse> response) {
                         if (response.isSuccessful()) {
-                            // do something
+                            listener.onSuccess(response.body());
                         } else {
-                            listenerGetDashboardDeposit.onError(context.getString(R.string.default_request_error_unknown));
+                            // TODO Define error
                         }
                     }
                 }));
     }
 
     @Override
-    public void getDashboardCredit(final Context context, HashMap<String, String> params, final ListenerGetDashboardCredit listenerGetDashboardCredit) {
+    public void getDashboardCredit(HashMap<String, String> params, final Listener<CreditResponse> listener) {
         Observable<Response<CreditResponse>> observable = topAdsManagementService.getApi().getDashboardCredit(params);
         compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
@@ -185,22 +162,15 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
 
                     @Override
                     public void onError(Throwable e) {
-                        if (e instanceof UnknownHostException) {
-                            listenerGetDashboardCredit.onError(context.getString(R.string.msg_no_connection));
-                        } else if (e instanceof SocketTimeoutException) {
-                            listenerGetDashboardCredit.onError(context.getString(R.string.default_request_error_timeout));
-                        } else {
-                            listenerGetDashboardCredit.onError(context.getString(R.string.default_request_error_unknown));
-                        }
+                        listener.onError(e);
                     }
 
                     @Override
                     public void onNext(Response<CreditResponse> response) {
                         if (response.isSuccessful()) {
-                            // do something
-                            listenerGetDashboardCredit.onSuccess(response.body());
+                            listener.onSuccess(response.body());
                         } else {
-                            listenerGetDashboardCredit.onError(context.getString(R.string.default_request_error_unknown));
+                            // TODO Define error
                         }
                     }
                 }));
