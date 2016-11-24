@@ -602,6 +602,12 @@
             android:name="com.tokopedia.core.topads.WebViewTopAdsActivity"
             android:theme="@style/Theme.BrowseProduct" />
 
+        <activity
+            android:name=".msisdn.activity.MsisdnActivity"
+            android:label="@string/title_msisdn"
+            android:parentActivityName=".session.Login"
+            android:screenOrientation="portrait" />
+
         <!--=======================================================-->
         <!--RECEIVERS REGISTRY-->
         <!--=======================================================-->

@@ -33,6 +33,7 @@ import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.fragment.FragmentSecurityQuestion;
 import com.tokopedia.core.home.ParentIndexHome;
+import com.tokopedia.core.msisdn.activity.MsisdnActivity;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.session.model.CreatePasswordModel;
@@ -159,15 +160,16 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     public void moveToRegisterPassPhone(CreatePasswordModel model) {
         Log.d(TAG, messageTAG + " moveToRegisterThird : " + model);
         if (isFragmentCreated(REGISTER_THIRD)) {
-            Fragment fragment = RegisterPassPhoneFragment.newInstance(model,null);
+            Fragment fragment = RegisterPassPhoneFragment.newInstance(model, null);
             moveToFragment(fragment, false, REGISTER_THIRD, TkpdState.DrawerPosition.REGISTER_THIRD);
         }
     }
+
     @Override
     public void moveToRegisterPassPhone(CreatePasswordModel model, List<String> createPasswordList) {
         Log.d(TAG, messageTAG + " moveToRegisterThird : " + model);
         if (isFragmentCreated(REGISTER_THIRD)) {
-            Fragment fragment = RegisterPassPhoneFragment.newInstance(model,createPasswordList);
+            Fragment fragment = RegisterPassPhoneFragment.newInstance(model, createPasswordList);
             moveToFragment(fragment, false, REGISTER_THIRD, TkpdState.DrawerPosition.REGISTER_THIRD);
         }
     }
@@ -198,28 +200,44 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         Log.d(getClass().getSimpleName(), "moveTo " + type);
         switch (type) {
             case MOVE_TO_CART_TYPE:
-                if (SessionHandler.isV4Login(this)) {
-                    startActivity(new Intent(this, Cart.class));
-                } else {
-                    Intent intent = new Intent(this, ParentIndexHome.class);
-                    intent.putExtra(ParentIndexHome.EXTRA_INIT_FRAGMENT, ParentIndexHome.INIT_STATE_FRAGMENT_HOME);
+                if (isSellerApp() && !SessionHandler.isMsisdnVerified()) {
+                    Intent intent = new Intent(this, MsisdnActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
+                } else {
+                    if (SessionHandler.isV4Login(this)) {
+                        startActivity(new Intent(this, Cart.class));
+                    } else {
+                        Intent intent = new Intent(this, ParentIndexHome.class);
+                        intent.putExtra(ParentIndexHome.EXTRA_INIT_FRAGMENT, ParentIndexHome.INIT_STATE_FRAGMENT_HOME);
+                        startActivity(intent);
+                    }
                 }
                 break;
             case HOME:
-                if (SessionHandler.isV4Login(this)) {
-                    Intent intent = new Intent(this, ParentIndexHome.class);
-                    intent.putExtra(ParentIndexHome.EXTRA_INIT_FRAGMENT,
-                            ParentIndexHome.INIT_STATE_FRAGMENT_FEED);
+                if (isSellerApp() && !SessionHandler.isMsisdnVerified()) {
+                    Intent intent = new Intent(this, MsisdnActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                 } else {
-                    Intent intent = new Intent(this, ParentIndexHome.class);
-                    intent.putExtra(ParentIndexHome.EXTRA_INIT_FRAGMENT,
-                            ParentIndexHome.INIT_STATE_FRAGMENT_HOME);
-                    startActivity(intent);
+                    if (SessionHandler.isV4Login(this)) {
+                        Intent intent = new Intent(this, ParentIndexHome.class);
+                        intent.putExtra(ParentIndexHome.EXTRA_INIT_FRAGMENT,
+                                ParentIndexHome.INIT_STATE_FRAGMENT_FEED);
+                        startActivity(intent);
+                    } else {
+                        Intent intent = new Intent(this, ParentIndexHome.class);
+                        intent.putExtra(ParentIndexHome.EXTRA_INIT_FRAGMENT,
+                                ParentIndexHome.INIT_STATE_FRAGMENT_HOME);
+                        startActivity(intent);
+                    }
                 }
                 break;
         }
+    }
+
+    private boolean isSellerApp() {
+        return getApplication().getClass().getSimpleName().equals("SellerMainApplication");
     }
 
     @Override
@@ -301,7 +319,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         super.onActivityResult(requestCode, resultCode, data);
         try {
             simplefacebook.onActivityResult(requestCode, resultCode, data);
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             e.printStackTrace();
             CommonUtils.UniversalToast(MainApplication.getAppContext(), MainApplication.getAppContext().getString(R.string.try_again));
         }
@@ -623,11 +641,11 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                                 boolean showDialog = resultData.getBoolean(DownloadService.LOGIN_SHOW_DIALOG, false);
                                 ((LoginFragment) fragment).showProgress(showDialog);
                             }
-                            if(fragment instanceof RegisterNewViewFragment){
+                            if (fragment instanceof RegisterNewViewFragment) {
                                 boolean showDialog = resultData.getBoolean(DownloadService.LOGIN_SHOW_DIALOG, false);
                                 ((RegisterNewViewFragment) fragment).showProgress(showDialog);
                             }
-                            if(fragment instanceof RegisterPassPhoneFragment){
+                            if (fragment instanceof RegisterPassPhoneFragment) {
                                 boolean showDialog = resultData.getBoolean(DownloadService.LOGIN_SHOW_DIALOG, false);
                                 ((RegisterPassPhoneFragment) fragment).showProgress(showDialog);
                             }
@@ -691,7 +709,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                             }
                             break;
                         case DownloadService.DISCOVER_LOGIN:
-                            if(fragment instanceof LoginFragment || fragment instanceof RegisterNewViewFragment)
+                            if (fragment instanceof LoginFragment || fragment instanceof RegisterNewViewFragment)
                                 ((BaseView) fragment).setData(type, resultData);
                             break;
 
@@ -700,11 +718,11 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                         case DownloadService.LOGIN_FACEBOOK:
                         case DownloadService.LOGIN_WEBVIEW:
                         case DownloadService.REGISTER_FACEBOOK:
-                            Log.d("steven","berhasil minta token");
-                            sendDataFromInternet(DownloadService.LOGIN_ACCOUNTS_INFO,resultData);
+                            Log.d("steven", "berhasil minta token");
+                            sendDataFromInternet(DownloadService.LOGIN_ACCOUNTS_INFO, resultData);
                             break;
                         case DownloadService.RESET_PASSWORD:
-                            ((BaseView) fragment).setData(type,resultData);
+                            ((BaseView) fragment).setData(type, resultData);
                             break;
 //                        case DownloadService.LOGIN_ACCOUNTS_INFO:
 //                            Log.d("steven", "berhasil minta info");
@@ -784,7 +802,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     private void sendNotifLocalyticsCallback() {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            if (bundle.containsKey(AppEventTracking.LOCA.NOTIFICATION_BUNDLE)){
+            if (bundle.containsKey(AppEventTracking.LOCA.NOTIFICATION_BUNDLE)) {
                 TrackingUtils.eventLocaNotificationCallback(getIntent());
             }
         }
@@ -792,8 +810,8 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
 
     @Override
     public void showError(String text) {
-        if(text!=null){
-            SnackbarManager.make(this,text, Snackbar.LENGTH_LONG).show();
+        if (text != null) {
+            SnackbarManager.make(this, text, Snackbar.LENGTH_LONG).show();
         }
     }
 

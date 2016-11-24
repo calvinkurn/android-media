@@ -35,6 +35,20 @@ public class PhoneVerificationUtil implements MSISDNConstant {
 
     public interface MSISDNListener {
         void onMSISDNVerified();
+
+        void onMSISDNNotVerified();
+
+        void onNoConnection();
+
+        void onTimeout();
+
+        void onFailAuth();
+
+        void onNullData();
+
+        void onThrowable(Throwable e);
+
+        void onError(String error);
     }
 
     public PhoneVerificationUtil(Context context) {

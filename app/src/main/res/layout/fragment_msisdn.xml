@@ -1,0 +1,188 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".msisdn.activity.MsisdnActivity">
+
+    <TextView
+        android:id="@+id/save_but"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:background="@drawable/btn_buy"
+        android:gravity="center"
+        android:text="@string/title_confirm_otp"
+        android:textAllCaps="true"
+        android:textColor="@color/white"
+        android:textSize="@dimen/fontvs"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginBottom="@dimen/margin_med"
+        android:layout_marginRight="@dimen/margin_small"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:visibility="gone"
+        android:textStyle="bold" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_above="@id/save_but"
+        android:layout_alignParentStart="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_med" >
+
+            <ProgressBar
+                android:id="@+id/progress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+
+            <LinearLayout
+                android:id="@+id/view_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_small"
+                android:layout_marginBottom="@dimen/margin_med"
+                android:visibility="gone"
+                android:background="@color/red_200">
+
+                <TextView
+                    android:id="@+id/error_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="@string/title_error_security"
+                    android:gravity="center" />
+
+                <TextView
+                    android:id="@+id/error_msg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/msg_error_security" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/view_otp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:visibility="visible"
+                android:visibility="visible"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/title_verify_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_small"
+                    android:text="@string/title_security_question"
+                    android:textSize="@dimen/fontvl"
+                    android:textStyle="bold"
+                    android:textColor="@color/body_text_5_inverse"/>
+
+                <TextView
+                    android:id="@+id/title_security"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/verify_phone_now"
+                    android:layout_marginBottom="@dimen/margin_small" />
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:orientation="horizontal"
+                    android:layout_weight="100"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/phone_number_wrapper"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:layout_marginBottom="@dimen/margin_med"
+                        android:hint="@string/phone_number_otp">
+
+                        <EditText
+                            android:id="@+id/phone_number"
+                            android:inputType="phone"
+                            android:enabled="false"
+                            android:gravity="center"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </android.support.design.widget.TextInputLayout>
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_otp"
+                    android:id="@+id/title_otp"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/margin_med"
+                    android:layout_marginBottom="@dimen/margin_med" />
+
+
+                <com.tkpd.library.ui.widget.PinEntryEditText
+                    android:background="@null"
+                    android:id="@+id/input_otp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:cursorVisible="false"
+                    android:digits="1234567890"
+                    android:inputType="number"
+                    android:maxLength="6"
+                    android:textIsSelectable="false"
+                    android:imeOptions="actionDone"
+                    android:textSize="20sp"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    app:pinLineColors="@color/pin_line_colors"
+                    android:layout_marginLeft="@dimen/margin_vl"
+                    android:layout_marginRight="@dimen/margin_vl"
+                    android:layout_marginBottom="@dimen/margin_large"
+                    android:paddingBottom="@dimen/margin_small"/>
+
+                <TextView
+                    android:id="@+id/title_send_otp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_large"
+                    android:gravity="center"
+                    android:text="@string/title_try_again_in"
+                    android:textStyle="italic"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    android:layout_marginBottom="@dimen/margin_vs"
+                    android:layout_gravity="center_horizontal" />
+
+                <TextView
+                    android:id="@+id/send_otp"
+                    android:layout_width="@dimen/button_otp"
+                    android:layout_height="@dimen/margin_vl"
+                    android:layout_weight="0.3"
+                    android:gravity="center"
+                    android:text="@string/send_otp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/btn_share_transaparent"
+                    android:textColor="@color/tkpd_green_onboarding" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+
+</RelativeLayout>

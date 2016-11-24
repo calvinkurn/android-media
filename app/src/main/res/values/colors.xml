@@ -71,4 +71,5 @@
     <color name="colorAccent">#2BAF2B</color>
     <color name="text_error">#FFFF6E6E</color>
 
+    <color name="pin_normal">#6B767E</color>
 </resources>

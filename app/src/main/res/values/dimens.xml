@@ -163,4 +163,6 @@
 
     <dimen name="padding_left_schedule_shop_close">5dp</dimen>
     <dimen name="bottom_navigation_elevation">20dp</dimen>
+    <dimen name="margin_vl">40dp</dimen>
+    <dimen name="button_otp">175dp</dimen>
 </resources>

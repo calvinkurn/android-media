@@ -102,6 +102,7 @@ import com.tokopedia.core.talkview.activity.TalkViewActivity;
  */
 public final class AppScreen {
 
+
     private AppScreen() {
 
     }
@@ -520,4 +521,5 @@ public final class AppScreen {
     public static final String SCREEN_RECHARGE_PAYMENT = "Recharge Payment WebView";
     public static final String SCREEN_SHARE = "Share Screen";
     public static final String SCREEN_GALLERY_BROWSE = "Browse Gallery Screen";
+    public static final String SCREEN_PHONE_VERIFICATION = "Phone Verification Screen";
 }
