@@ -29,6 +29,8 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.drawer.interactor.NetworkInteractor;
 import com.tokopedia.core.drawer.interactor.NetworkInteractorImpl;
 import com.tokopedia.core.drawer.model.DrawerHeader;
@@ -62,7 +64,7 @@ import java.util.List;
  * Created by Nisie on 5/08/15.
  */
 
-public class DrawerVariableSeller extends DrawerVariable{
+public class DrawerVariableSeller extends DrawerVariable {
     private static final String IS_INBOX_OPENED = "IS_INBOX_OPENED";
     private static final String IS_SHOP_OPENED = "IS_SHOP_OPENED";
     private static final String IS_GM_SUBSCRIBE_OPENED = "IS_GM_SUBSCRIBE_OPENED";
@@ -99,7 +101,7 @@ public class DrawerVariableSeller extends DrawerVariable{
         private DrawerItem sellerHome;
         private DrawerItemList shopMenu;
         private DrawerItemList inboxMenu;
-//        private DrawerItemList gmSubscribeMenu;
+        //        private DrawerItemList gmSubscribeMenu;
         private List<RecyclerViewItem> data;
 
         public Model() {
@@ -152,7 +154,10 @@ public class DrawerVariableSeller extends DrawerVariable{
         adapter = new DrawerSellerAdapter(context, model.data);
         layoutManager = new LinearLayoutManager(context);
         animator = new DefaultItemAnimator();
-        toolbar.createToolbarWithDrawer();
+        if (context instanceof DrawerPresenterActivity || context instanceof TkpdActivity)
+            toolbar.createToolbarWithDrawer();
+        else
+            toolbar.createToolbarWithoutDrawer();
         initFacade();
         createShopMenu();
         createInboxMenu();
@@ -503,7 +508,7 @@ public class DrawerVariableSeller extends DrawerVariable{
         adapter.setItemSelected(drawerPosition);
     }
 
-
+    @Override
     public void updateData() {
         clearData();
 
@@ -529,7 +534,7 @@ public class DrawerVariableSeller extends DrawerVariable{
             holder.shopLayout.setVisibility(View.VISIBLE);
             holder.footerShadow.setVisibility(View.VISIBLE);
             setShop();
-        }else {
+        } else {
             createDataGuest();
             holder.shopLayout.setVisibility(View.GONE);
             holder.footerShadow.setVisibility(View.GONE);
@@ -718,6 +723,7 @@ public class DrawerVariableSeller extends DrawerVariable{
         });
     }
 
+    @Override
     public void getDeposit() {
         networkInteractor.getDeposit(context, new NetworkInteractor.DepositListener() {
             @Override
@@ -750,6 +756,7 @@ public class DrawerVariableSeller extends DrawerVariable{
         adapter.notifyDataSetChanged();
     }
 
+    @Override
     public void getNotification() {
         if (!isLogin()) {
             return;
@@ -828,6 +835,7 @@ public class DrawerVariableSeller extends DrawerVariable{
             }
         };
     }
+
     @Override
     public void closeDrawer() {
         if (holder != null && holder.drawerLayout != null)
@@ -844,6 +852,7 @@ public class DrawerVariableSeller extends DrawerVariable{
         this.toolbar = toolbar;
     }
 
+    @Override
     public void setEnabled(Boolean isEnabled) {
         if (isEnabled) {
             holder.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
@@ -871,6 +880,7 @@ public class DrawerVariableSeller extends DrawerVariable{
     }
 
 
+    @Override
     public void unsubscribe() {
         networkInteractor.unsubscribe();
     }
