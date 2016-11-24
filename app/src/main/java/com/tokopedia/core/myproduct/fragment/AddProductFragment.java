@@ -2512,8 +2512,16 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                 Snackbar.make(parentView, addProductAddToNewEtalaseAlert.getError(), Snackbar.LENGTH_LONG).show();
                 return null;
             }
-            EtalaseDB etalaseDB = new EtalaseDB(-2, addProductAddToNewEtalase.getText().toString(), -2);
-            etalaseDB.save();
+
+            EtalaseDB etalaseDB = DbManagerImpl.getInstance().getEtalase("-2");
+            if(etalaseDB == null){
+                etalaseDB = new EtalaseDB(-2, addProductAddToNewEtalase.getText().toString(), -2);
+                etalaseDB.save();
+            } else {
+                etalaseDB.setEtalaseName(addProductAddToNewEtalase.getText().toString());
+                etalaseDB.update();
+            }
+
 
             addProduct.clearEtalaseCache(getActivity());
 
@@ -2601,10 +2609,11 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
         // 7. get harga grosir - compile ketika disini doang - kosongkan terlebih dahulu,
         Log.d(TAG, messageTAG + wholesaleAdapter.getDatas());
-        if(!wholesaleAdapter.isNoError()){
-            Snackbar.make(parentView, "Terjadi kesalahan pada harga grosir", Snackbar.LENGTH_LONG).show();
-            return null;
-        }
+        // TODO : SOMETHING WRONG WITH WHOLESALE LOGIC, IT WILL BYPASS THE WHOLESALE CHECK
+//        if(!wholesaleAdapter.isNoError()){
+//            Snackbar.make(parentView, "Terjadi kesalahan pada harga grosir", Snackbar.LENGTH_LONG).show();
+//            return null;
+//        }
         inputAddProductModel.setWholeSales(wholesaleAdapter.getDatas());
 
         // 9. get terima pengembalian

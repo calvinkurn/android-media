@@ -403,8 +403,11 @@ public class InputAddProductModel {
         // 6
         StockStatusDB stockStatusDB = getStockStatusDB(inputAddProductModel);
 
-        if(produk==null)
+        boolean isnew = false;
+        if(produk==null) {
             produk = new ProductDB();
+            isnew = true;
+        }
         produk.setWeightUnitDB(weightUnitDB);
         produk.setWeightProd(Integer.parseInt(inputAddProductModel.getWeight()));
         produk.setDescProd(inputAddProductModel.getDescription());
@@ -423,7 +426,11 @@ public class InputAddProductModel {
         produk.setProductId(Integer.parseInt(editProductForm.getProduct().getProductId()));// product id
         produk.setProductUrl(editProductForm.getProduct().getProductUrl());// product url
         produk.setStockStatusDB(stockStatusDB);
-        produk.save();
+        if (isnew) {
+            produk.save();
+        } else {
+            produk.update();
+        }
 
         if(checkCollectionNotNull(inputAddProductModel.getImageModels())){
             for (ImageModel imageModel : inputAddProductModel.getImageModels()) {
