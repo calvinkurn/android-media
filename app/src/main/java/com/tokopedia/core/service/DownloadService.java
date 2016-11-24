@@ -19,6 +19,8 @@ import com.tkpd.library.utils.data.DataManagerImpl;
 import com.tkpd.library.utils.data.DataReceiver;
 import com.tokopedia.core.R;
 import com.tokopedia.core.SplashScreen;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.database.model.Bank;
 import com.tokopedia.core.database.model.CategoryDB;
@@ -75,11 +77,9 @@ import com.tokopedia.core.session.presenter.RegisterNext;
 import com.tokopedia.core.session.presenter.RegisterPassPhone;
 import com.tokopedia.core.session.presenter.SecurityQuestion;
 import com.tokopedia.core.session.subscriber.AccountSubscriber;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.var.RecyclerViewItem;
 
 import org.json.JSONArray;
@@ -196,7 +196,6 @@ public class DownloadService extends IntentService implements DownloadServiceCon
             case HOTLIST:
                 int page = bundle.getInt(PAGE_KEY);
                 int perpage = bundle.getInt(PER_PAGE_KEY);
-                Log.d(TAG, HotList.class.getSimpleName() + "get Hot List page " + page + " perpage " + perpage + " !!!");
                 intent.putExtra(PAGE_KEY, page);
                 intent.putExtra(PER_PAGE_KEY, perpage);
                 break;
@@ -906,7 +905,6 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                             receiver.send(STATUS_FINISHED, result);
                             break;
                         case HOTLIST:
-                            Log.d(TAG, HotListImpl.class.getSimpleName() + " " + jsonObject.toString());
                             // set paging
                             PagingHandler mPaging = new PagingHandler();
                             mPaging.setNewParameter(jsonObject);

@@ -1,12 +1,12 @@
 package com.tokopedia.core.network.apiservices.recharge.apis;
 
+import com.tokopedia.core.database.model.category.CategoryData;
+import com.tokopedia.core.database.recharge.operator.OperatorData;
+import com.tokopedia.core.database.recharge.product.ProductData;
+import com.tokopedia.core.database.recharge.recentNumber.RecentData;
+import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
+import com.tokopedia.core.database.recharge.status.Status;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.recharge.model.category.CategoryData;
-import com.tokopedia.core.recharge.model.operator.OperatorData;
-import com.tokopedia.core.recharge.model.product.ProductData;
-import com.tokopedia.core.recharge.model.recentNumber.RecentData;
-import com.tokopedia.core.recharge.model.recentOrder.LastOrder;
-import com.tokopedia.core.recharge.model.status.Status;
 
 import java.util.Map;
 

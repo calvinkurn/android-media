@@ -6,8 +6,8 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.home.ParentIndexHome;
 import com.tokopedia.core.onboarding.fragment.OnBoardingFragment;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.SessionHandler;
 
 /**
@@ -84,7 +84,7 @@ public class OnboardingActivity extends BaseOnboardingActivity {
     @Override
     public void onDonePressed() {
         SessionHandler.setFirstTimeUser(this, false);
-        Intent intent = new Intent(this, ParentIndexHome.class);
+        Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
         startActivity(intent);
         finish();
     }

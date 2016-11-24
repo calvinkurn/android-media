@@ -10,11 +10,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.home.ParentIndexHome;
 import com.tokopedia.core.network.NetworkHandler;
 import com.tokopedia.core.network.apiservices.search.HotListService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.var.TkpdCache;
 
 import org.json.JSONObject;
@@ -165,7 +165,7 @@ public class MaintenancePage extends Activity {
     }
 
     private void goToIndexHome() {
-        startActivity(new Intent(this, ParentIndexHome.class));
+        startActivity(new Intent(this, HomeRouter.getHomeActivityClass()));
         finish();
     }
 

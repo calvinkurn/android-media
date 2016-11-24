@@ -18,10 +18,10 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.product.listener.ProductDetailView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ReturnInfo;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 
 import butterknife.Bind;
@@ -85,8 +85,10 @@ public class FreeReturnView extends BaseView<ProductDetailData, ProductDetailVie
                 style.setSpan(new ClickableSpan() {
                     @Override
                     public void onClick(View widget) {
-                        Intent intent = new Intent(getContext(), BannerWebView.class);
-                        intent.putExtra("url", url.getURL());
+                        Intent intent = HomeRouter.getBannerWebviewActivity(
+                                getContext(), url.getURL()
+                        );
+
                         getContext().startActivity(intent);
                     }
                 }, sp.getSpanStart(url), sp.getSpanEnd(url), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

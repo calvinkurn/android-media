@@ -25,7 +25,7 @@ import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.database.model.City;
 import com.tokopedia.core.database.model.District;
 import com.tokopedia.core.database.model.Province;
-import com.tokopedia.core.home.ParentIndexHome;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.transaction.purchase.activity.ConfirmPaymentActivity;
 import com.tokopedia.transaction.purchase.adapter.TxConfBankListAdapter;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
@@ -105,7 +105,7 @@ public class ConfirmPaymentPresenterImpl implements ConfirmPaymentPresenter {
 
     @Override
     public void processGetEditPaymentForm(final Context context, final String confirmationId) {
-        LocalCacheHandler bankCache = new LocalCacheHandler(context, ParentIndexHome.FETCH_BANK);
+        LocalCacheHandler bankCache = new LocalCacheHandler(context, HomeRouter.TAG_FETCH_BANK);
         if (bankCache.isExpired() || getBankListFromDB("").size() == 0) {
             requestBankList(context, new OnFinishBankList() {
                 @Override
@@ -120,7 +120,7 @@ public class ConfirmPaymentPresenterImpl implements ConfirmPaymentPresenter {
 
     @Override
     public void processGetConfirmPaymentForm(final Context context, final String confirmationId) {
-        LocalCacheHandler bankCache = new LocalCacheHandler(context, ParentIndexHome.FETCH_BANK);
+        LocalCacheHandler bankCache = new LocalCacheHandler(context, HomeRouter.TAG_FETCH_BANK);
         if (bankCache.isExpired() || getBankListFromDB("").size() == 0) {
             requestBankList(context, new OnFinishBankList() {
                 @Override
@@ -414,7 +414,7 @@ public class ConfirmPaymentPresenterImpl implements ConfirmPaymentPresenter {
 
             @Override
             public void setBank(List<Bank> banks) {
-                LocalCacheHandler cache = new LocalCacheHandler(context, ParentIndexHome.FETCH_BANK);
+                LocalCacheHandler cache = new LocalCacheHandler(context, HomeRouter.TAG_FETCH_BANK);
                 cache.setExpire(86400);
                 cache.applyEditor();
                 action.actionOnSuccess();

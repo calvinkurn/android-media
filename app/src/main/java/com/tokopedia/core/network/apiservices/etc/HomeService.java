@@ -1,6 +1,6 @@
 package com.tokopedia.core.network.apiservices.etc;
 
-import com.tokopedia.core.network.apiservices.etc.apis.HomeApi;
+import com.tokopedia.core.network.apiservices.etc.apis.home.HomeApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.services.AuthService;
 

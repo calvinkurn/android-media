@@ -36,8 +36,6 @@ import com.tokopedia.core.drawer.interactor.NetworkInteractorImpl;
 import com.tokopedia.core.drawer.model.LoyaltyItem.LoyaltyItem;
 import com.tokopedia.core.drawer.var.NotificationItem;
 import com.tokopedia.core.drawer.var.UserType;
-import com.tokopedia.core.home.ParentIndexHome;
-import com.tokopedia.core.home.SimpleHomeActivity;
 import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
@@ -45,6 +43,8 @@ import com.tokopedia.core.myproduct.ManageProduct;
 import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.session.Login;
 import com.tokopedia.core.session.presenter.SessionView;
@@ -427,7 +427,7 @@ public class DrawerVariable {
         Boolean isFinish = true;
         switch (((DrawerItem) model.data.get(position)).id) {
             case TkpdState.DrawerPosition.INDEX_HOME:
-                Intent intent = new Intent(context, ParentIndexHome.class);
+                Intent intent = HomeRouter.getHomeActivity(context);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 context.startActivity(intent);
                 break;
@@ -508,10 +508,14 @@ public class DrawerVariable {
                 startIntent(DeveloperOptions.class);
                 break;
             case TkpdState.DrawerPosition.WISHLIST:
-                Bundle bundle = new Bundle();
-                bundle.putInt(SimpleHomeActivity.FRAGMENT_TYPE, SimpleHomeActivity.WISHLIST_FRAGMENT);
-                Intent wishList = new Intent(context, SimpleHomeActivity.class);
-                wishList.putExtras(bundle);
+//                Bundle bundle = new Bundle();
+//                bundle.putInt(SimpleHomeActivity.FRAGMENT_TYPE, SimpleHomeActivity.WISHLIST_FRAGMENT);
+//                Intent wishList = new Intent(context, SimpleHomeActivity.class);
+//                wishList.putExtras(bundle);
+
+                Intent wishList = SimpleHomeRouter
+                        .getSimpleHomeActivityIntent(context, SimpleHomeRouter.WISHLIST_FRAGMENT);
+
                 context.startActivity(wishList);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.WISHLIST);
                 break;
