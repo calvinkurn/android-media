@@ -83,7 +83,7 @@ public class MsisdnFragment extends BasePresenterFragment<MsisdnVerificationFrag
     private PhoneVerificationUtil.MSISDNListener listener;
     CountDownTimer countDownTimer;
     PhoneVerificationUtil phoneVerificationUtil;
-    
+
     public static MsisdnFragment createInstance() {
         MsisdnFragment fragment = new MsisdnFragment();
         fragment.setArguments(new Bundle());
@@ -156,7 +156,7 @@ public class MsisdnFragment extends BasePresenterFragment<MsisdnVerificationFrag
     }
 
     private void showEmptyState(String error) {
-        KeyboardHandler.DropKeyboard(getActivity(),getView());
+        KeyboardHandler.DropKeyboard(getActivity(), getView());
         if (error.equals(""))
             NetworkErrorHelper.showEmptyState(getActivity(), getView(), new NetworkErrorHelper.RetryClickedListener() {
                 @Override
@@ -234,7 +234,7 @@ public class MsisdnFragment extends BasePresenterFragment<MsisdnVerificationFrag
             @Override
             public void afterTextChanged(Editable s) {
                 String phone = CustomPhoneNumberUtil.transform(s.toString());
-                if(s.toString().length() != phone.length()) {
+                if (s.toString().length() != phone.length()) {
                     editText.removeTextChangedListener(this);
                     editText.setText(phone);
                     editText.setSelection(phone.length());
@@ -251,7 +251,7 @@ public class MsisdnFragment extends BasePresenterFragment<MsisdnVerificationFrag
             @Override
             public void onClick(View v) {
                 KeyboardHandler.DropKeyboard(getActivity(), getView());
-                presenter.requestOTP(phoneNumber.getText().toString().trim());
+                presenter.requestOTP(getPhoneNumber().trim());
             }
         });
 
@@ -259,7 +259,7 @@ public class MsisdnFragment extends BasePresenterFragment<MsisdnVerificationFrag
             @Override
             public void onClick(View v) {
                 KeyboardHandler.DropKeyboard(getActivity(), getView());
-                presenter.verifyOTP(vInputOtp.getText().toString().trim());
+                presenter.verifyOTP(getVerificationCode().trim());
             }
         });
 
@@ -323,7 +323,7 @@ public class MsisdnFragment extends BasePresenterFragment<MsisdnVerificationFrag
 
     @Override
     public String getPhoneNumber() {
-        return phoneNumber.getText().toString();
+        return phoneNumber.getText().toString().replace("-", "");
     }
 
     @Override
@@ -411,6 +411,7 @@ public class MsisdnFragment extends BasePresenterFragment<MsisdnVerificationFrag
 
             Pattern pattern = Pattern.compile(regexString);
             Matcher matcher = pattern.matcher(message);
+
 
             while (matcher.find()) {
                 String otpCode = matcher.group(1).trim();

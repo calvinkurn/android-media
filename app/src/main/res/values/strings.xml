@@ -1764,4 +1764,6 @@ di Tokopedia Sekarang!</string>
     <string name="title_msisdn">Verifikasi Nomor HP</string>
     <string name="title_confirm_otp">Verifikasi</string>
     <string name="title_try_again_in">Coba lagi dalam :</string>
+    <string name="phone_number_otp">Nomor Ponsel</string>
+
 </resources>

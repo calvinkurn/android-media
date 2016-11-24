@@ -14,6 +14,8 @@ import com.tokopedia.core.msisdn.model.VerificationForm;
 
 import java.util.HashMap;
 
+import static com.google.ads.conversiontracking.l.f;
+
 /**
  * Created by Kris on 4/20/2015.
  * modified by m.normansyah on 29/11/2015
@@ -71,7 +73,10 @@ public class PhoneVerificationUtil implements MSISDNConstant {
                             SessionHandler.setIsMSISDNVerified(result.getMsisdn().isVerified());
                             SessionHandler.setPhoneNumber(result.getMsisdn().getUserPhone());
                             if (!result.getMsisdn().isVerified()) {
-                                showVerificationDialog();
+                                if (!isSellerApp())
+                                    showVerificationDialog();
+                                else
+                                    msisdnListener.onMSISDNNotVerified();
                             } else if (msisdnListener != null) {
                                 msisdnListener.onMSISDNVerified();
                             }
@@ -110,6 +115,10 @@ public class PhoneVerificationUtil implements MSISDNConstant {
                     });
 
         }
+    }
+
+    private boolean isSellerApp() {
+        return ((Activity) context).getApplication().getClass().getSimpleName().equals("SellerMainApplication");
     }
 
     public void showVerificationDialog() {
