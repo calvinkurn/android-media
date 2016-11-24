@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.home.model.HotListModel;
@@ -33,13 +32,13 @@ public class HotListAdapter extends BaseRecyclerViewAdapter {
     HotList hotList;
 
     public final class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R2.id.hotprod_img)
+        @Bind(R.id.hotprod_img)
         ImageView mImageofProduct;
-        @Bind(R2.id.hotprod_name)
+        @Bind(R.id.hotprod_name)
         TextView mNameOfProduct;
-        @Bind(R2.id.hotprod_price)
+        @Bind(R.id.hotprod_price)
         TextView mPrice;
-        @Bind(R2.id.hot_list_cardview)
+        @Bind(R.id.hot_list_cardview)
         CardView cardView;
 
         public ViewHolder(View itemView) {
@@ -51,7 +50,7 @@ public class HotListAdapter extends BaseRecyclerViewAdapter {
             }
         }
 
-        @OnClick(R2.id.hot_list_cardview_listproduct)
+        @OnClick(R.id.hot_list_cardview_listproduct)
         public void hotListClick(View v) {
             if (itemView.getContext() != null) {
                 RecyclerViewItem temp = data.get(getAdapterPosition());
