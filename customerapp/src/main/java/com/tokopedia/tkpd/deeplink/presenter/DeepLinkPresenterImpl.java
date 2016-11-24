@@ -1,4 +1,4 @@
-package com.tokopedia.core.deeplink.presenter;
+package com.tokopedia.tkpd.deeplink.presenter;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -11,15 +11,14 @@ import android.util.Log;
 
 import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
-import com.tokopedia.core.deeplink.activity.DeepLinkActivity;
-import com.tokopedia.core.deeplink.listener.DeepLinkView;
+import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
+import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.core.discovery.activity.BrowseProductActivity;
 import com.tokopedia.core.discovery.fragment.browseparent.ProductFragment;
 import com.tokopedia.core.discovery.presenter.DiscoveryActivityPresenter;
@@ -48,6 +47,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.tokopedia.core.recharge.fragment.RechargeCategoryFragment.EXTRA_ALLOW_ERROR;
+import static com.tokopedia.core.router.CustomerRouter.IS_DEEP_LINK_SEARCH;
 
 /**
  * Created by Angga.Prasetiyo on 14/12/2015.
@@ -66,7 +66,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final int RECHARGE = 9;
     private static final String AF_ONELINK_HOST = "tokopedia.onelink.me";
     private static final String DL_TOKOPEDIA_HOST = "apps.tokopedia.com";
-    public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
     private final Activity context;
     private final DeepLinkView viewListener;
 
@@ -137,7 +136,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
 
     private void openInvoice(List<String> linkSegment, Uri uriData) {
-        AppUtils.InvoiceDialog(context, uriData.toString(), uriData.getQueryParameter("pdf"));
+        AppUtils.InvoiceDialogDeeplink(context, uriData.toString(), uriData.getQueryParameter("pdf"));
     }
 
     private Uri simplifyUrl(String url) {
@@ -244,7 +243,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openDetailProduct(List<String> linkSegment, Uri uriData) {
-        Fragment fragment = ProductDetailFragment.newInstance(ProductPass.Builder.aProductPass()
+        Fragment fragment = ProductDetailFragment.newInstanceForDeeplink(ProductPass.Builder.aProductPass()
                 .setProductKey(linkSegment.get(1))
                 .setShopDomain(linkSegment.get(0))
                 .setProductUri(uriData.toString())

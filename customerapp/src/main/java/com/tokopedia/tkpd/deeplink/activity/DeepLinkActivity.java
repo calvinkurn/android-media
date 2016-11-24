@@ -1,4 +1,4 @@
-package com.tokopedia.core.deeplink.activity;
+package com.tokopedia.tkpd.deeplink.activity;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -10,16 +10,16 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import com.tkpd.library.utils.DownloadResultReceiver;
-import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.router.DiscoveryRouter;
 import com.tokopedia.discovery.catalog.listener.ICatalogActionFragment;
-import com.tokopedia.core.deeplink.listener.DeepLinkView;
-import com.tokopedia.core.deeplink.presenter.DeepLinkPresenter;
-import com.tokopedia.core.deeplink.presenter.DeepLinkPresenterImpl;
+import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
+import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenter;
+import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenterImpl;
 import com.tokopedia.core.home.ParentIndexHome;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.product.fragment.ProductDetailFragment;
@@ -34,7 +34,7 @@ import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
 
 /**
- * Created by Angga.Prasetiyo on 14/12/2015.
+ * @autho by Angga.Prasetiyo on 14/12/2015.
  */
 public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> implements
         DeepLinkView, DeepLinkWebViewHandleListener,

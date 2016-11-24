@@ -1,4 +1,4 @@
-package com.tokopedia.core.deeplink.presenter;
+package com.tokopedia.tkpd.deeplink.presenter;
 
 import android.app.FragmentManager;
 import android.net.Uri;

@@ -38,6 +38,63 @@
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity"
+            android:hardwareAccelerated="true"
+            android:label="@string/title_activity_deep_link"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="www.tokopedia.com"
+                    android:pathPattern=".*"
+                    android:scheme="https" />
+                <data
+                    android:host="www.tokopedia.com"
+                    android:pathPattern=".*"
+                    android:scheme="tkpd" />
+                <data
+                    android:host="tokopedia.com"
+                    android:pathPattern=".*"
+                    android:scheme="https" />
+                <data
+                    android:host="m.tokopedia.com"
+                    android:pathPattern=".*"
+                    android:scheme="https" />
+                <data
+                    android:host="www.tokopedia.com"
+                    android:pathPrefix="/reset.pl"
+                    android:scheme="https" />
+                <data
+                    android:host="m.tokopedia.com"
+                    android:pathPrefix="/reset.pl"
+                    android:scheme="https" />
+                <data
+                    android:host="www.tokopedia.com"
+                    android:pathPrefix="/activation.pl"
+                    android:scheme="https" />
+                <data
+                    android:host="m.tokopedia.com"
+                    android:pathPrefix="/activation.pl"
+                    android:scheme="https" />
+                <data
+                    android:host="tokopedia.onelink.me"
+                    android:scheme="https" />
+                <data
+                    android:host="accounts.tokopedia.com"
+                    android:scheme="https" />
+                <data
+                    android:host="apps.tokopedia.com"
+                    android:scheme="http" />
+                <data
+                    android:host="apps.tokopedia.com"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
 
         <meta-data
             android:name="LOCALYTICS_APP_KEY"
