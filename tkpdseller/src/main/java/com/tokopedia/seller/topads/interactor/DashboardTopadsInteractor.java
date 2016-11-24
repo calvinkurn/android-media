@@ -16,6 +16,7 @@ public interface DashboardTopadsInteractor {
 
     interface Listener<T> {
         void onSuccess(T t);
+
         void onError(Throwable throwable);
     }
 

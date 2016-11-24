@@ -7,17 +7,12 @@ import android.view.View;
 
 import com.tkpd.library.utils.Logger;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.discovery.model.NetworkParam;
-import com.tokopedia.core.inboxmessage.presenter.InboxMessageFragmentPresenterImpl;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.model.data.Summary;
-import com.tokopedia.seller.topads.presenter.PresenterCallback;
-import com.tokopedia.seller.topads.presenter.TopAdsProductFragmentPresenter;
 import com.tokopedia.seller.topads.presenter.TopAdsProductFragmentPresenterImpl;
 import com.tokopedia.seller.topads.view.listener.TopAdsProductFragmentListener;
 
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Created by Nisie on 5/9/16.
