@@ -46,6 +46,7 @@ import com.tokopedia.core.product.model.productdetail.ProductImage;
 import com.tokopedia.core.util.SessionHandler;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -569,6 +570,12 @@ public class NetworkInteractorImpl implements NetworkInteractor {
                     public Observable<Map<String, Object>> call(Map<String, Object> stringObjectMap) {
                         EditProductForm editProductForm1 = (EditProductForm) stringObjectMap.get(EDIT_PRODUCT_FORM);
                         Observable<List<ImageModel>> imageDownload = Observable.from(editProductForm1.getData().getProductImages())
+                                .filter(new Func1<EditProductForm.ProductImage, Boolean>() {
+                                    @Override
+                                    public Boolean call(EditProductForm.ProductImage productImage) {
+                                        return !productImage.getImageSrc().isEmpty() && !productImage.getImageSrc().equals("0");
+                                    }
+                                })
                                 .flatMap(new Func1<EditProductForm.ProductImage, Observable<ImageModel>>() {
                                     @Override
                                     public Observable<ImageModel> call(EditProductForm.ProductImage productImage) {
