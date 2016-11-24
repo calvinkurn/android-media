@@ -25,6 +25,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ListViewHelper;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
+import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.seller.OrderHistoryView;
 import com.tokopedia.core.R;
@@ -37,7 +38,6 @@ import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.seller.selling.model.orderShipping.OrderCustomer;
 import com.tokopedia.seller.selling.model.orderShipping.OrderDestination;
 import com.tokopedia.seller.selling.model.orderShipping.OrderDetail;
-import com.tokopedia.seller.selling.model.orderShipping.OrderHistory;
 import com.tokopedia.seller.selling.model.orderShipping.OrderPayment;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShipment;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
@@ -265,7 +265,7 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment {
     private void setOrderStatus() {
         holder.OrderStatusLayout.removeAllViews();
         for (int i = 0; (i < model.statusList.size() && i < 2); i++) {
-            //holder.OrderStatusLayout.addView(OrderStatusView.createInstance(getActivity(), model.statusList.get(i)).getView());
+            holder.OrderStatusLayout.addView(OrderStatusView.createInstance(getActivity(), model.statusList.get(i)).getView());
         }
     }
 

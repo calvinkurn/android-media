@@ -125,6 +125,7 @@ public class SearchHistoryModel {
     public static class Data {
         String title;
         int type;
+        String keyword;
         String url;
         int pos;
 
@@ -135,11 +136,20 @@ public class SearchHistoryModel {
             this.pos = pos;
         }
 
-        public Data(String title, int type, String url, int pos) {
+        public Data(String title, String keyword, int type, String url, int pos) {
             this.title = title;
+            this.keyword = keyword;
             this.type = type;
             this.url = url;
             this.pos = pos;
+        }
+
+        public String getKeyword() {
+            return keyword;
+        }
+
+        public void setKeyword(String keyword) {
+            this.keyword = keyword;
         }
 
         public int getPos() {

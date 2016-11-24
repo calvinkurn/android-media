@@ -50,7 +50,7 @@ public class OrderShippingList {
     OrderLast orderLast;
     @SerializedName("order_history")
     @Expose
-    java.util.List<OrderHistory> orderHistory = new ArrayList<OrderHistory>();
+    java.util.List<com.tokopedia.core.purchase.model.response.txlist.OrderHistory> orderHistory = new ArrayList<com.tokopedia.core.purchase.model.response.txlist.OrderHistory>();
 //    @SerializedName("order_JOB_detail")
 //    @Expose
 //    String orderJOBDetail;
@@ -261,7 +261,7 @@ public class OrderShippingList {
      * @return
      *     The orderHistory
      */
-    public java.util.List<OrderHistory> getOrderHistory() {
+    public java.util.List<com.tokopedia.core.purchase.model.response.txlist.OrderHistory> getOrderHistory() {
         return orderHistory;
     }
 
@@ -270,7 +270,7 @@ public class OrderShippingList {
      * @param orderHistory
      *     The order_history
      */
-    public void setOrderHistory(java.util.List<OrderHistory> orderHistory) {
+    public void setOrderHistory(java.util.List<com.tokopedia.core.purchase.model.response.txlist.OrderHistory> orderHistory) {
         this.orderHistory = orderHistory;
     }
 

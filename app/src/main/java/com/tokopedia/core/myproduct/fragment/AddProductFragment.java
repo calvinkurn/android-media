@@ -164,6 +164,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
     public static final String PRODUCT_ID = "product_id";
     public static final String PRODUCT_DB = "product_db";
     public static final String ADD_PRODUCT_MULTIPLE_IMAGE_PATH = "ADD_PRODUCT_MULTIPLE_IMAGE_PATH";
+    public static final String NO_CATALOG_OPTION = "Tidak menggunakan katalog";
 
     @Override
     protected String getScreenName() {
@@ -2227,6 +2228,11 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
     @Override
     public void saveCatalogs(ArrayList<CatalogDataModel.Catalog> catalogs) {
         Log.d(TAG, messageTAG + " : " + catalogs);
+        if(!catalogs.get(0).getCatalogName().equals(NO_CATALOG_OPTION)) {
+            CatalogDataModel.Catalog noCatalogOption = new CatalogDataModel.Catalog();
+            noCatalogOption.setCatalogName(NO_CATALOG_OPTION);
+            catalogs.add(0, noCatalogOption);
+        }
         this.catalogs = catalogs;
     }
 
