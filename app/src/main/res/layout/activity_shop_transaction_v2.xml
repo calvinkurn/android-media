@@ -18,6 +18,7 @@
             android:maxLines="3"
             android:padding="@dimen/padding_small"
             android:scrollbars = "vertical"
+            android:fadeScrollbars="false"
             android:visibility="gone" />
 
 

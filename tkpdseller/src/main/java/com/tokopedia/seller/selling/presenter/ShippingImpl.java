@@ -211,7 +211,6 @@ public class ShippingImpl extends Shipping {
     @Override
     public void doRefresh() {
         if (!isLoading && view.getUserVisible()) {
-            view.hideFilter();
             view.getPaging().resetPage();
             if (!view.isRefreshing()) {
                 clearData();
@@ -229,7 +228,8 @@ public class ShippingImpl extends Shipping {
     @Override
     public void onQueryTextSubmit(String query) {
         if (ValidationTextUtil.isValidSalesQuery(query)) {
-            doRefresh();
+            view.hideFilter();
+            onRefreshHandler();
         } else {
             showToastMessage(context.getString(R2.string.keyword_min_3_char));
         }
@@ -363,8 +363,8 @@ public class ShippingImpl extends Shipping {
         view.setRefreshing(false);
     }
 
-
-    private void onFinishConnection() {
+    @Override
+    public void onFinishConnection() {
         view.enableFilter();
         view.removeRetry();
         view.removeLoading();

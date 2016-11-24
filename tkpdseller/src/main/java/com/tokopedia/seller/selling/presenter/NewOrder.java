@@ -29,4 +29,5 @@ public abstract class NewOrder extends BaseImpl<NewOrderView> {
 
     public abstract void moveToDetail(int position);
 
+    public abstract void finishConnection();
 }

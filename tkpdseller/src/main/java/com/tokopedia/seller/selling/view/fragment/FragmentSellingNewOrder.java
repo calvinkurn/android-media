@@ -106,6 +106,10 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
                 viewHolder.setOnItemClickListener(new BaseSellingViewHolder.OnItemClickListener() {
                     @Override
                     public void onItemClicked(int position) {
+                        if(adapter.isLoading()) {
+                            getPaging().setPage(getPaging().getPage() - 1);
+                            presenter.finishConnection();
+                        }
                         presenter.moveToDetail(position);
                     }
 
@@ -122,6 +126,12 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
                 return new OrderViewHolder(view);
             }
         };
+    }
+
+    @Override
+    public void onPause() {
+        presenter.finishConnection();
+        super.onPause();
     }
 
     @Override
