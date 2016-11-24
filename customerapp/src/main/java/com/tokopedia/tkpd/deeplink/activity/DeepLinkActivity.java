@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -34,21 +35,16 @@ import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
 
 /**
- * @autho by Angga.Prasetiyo on 14/12/2015.
+ * @author  by Angga.Prasetiyo on 14/12/2015.
+ * modified Alvarisi
  */
 public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> implements
         DeepLinkView, DeepLinkWebViewHandleListener,
         ProductDetailFragment.OnFragmentInteractionListener,
         FragmentGeneralWebView.OnFragmentInteractionListener, ICatalogActionFragment {
-    /**
-     * [START] This constant for downloading department id
-     * {@link TActivity#verifyFetchDepartment()}
-     */
-    public static final int STD_DEEP_LINK = 28_172_182;
 
     private static final String TAG = DeepLinkActivity.class.getSimpleName();
     private Uri uriData;
-    private DownloadResultReceiver mReceiver;
 
     @Override
     public String getScreenName() {
@@ -60,7 +56,6 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         super.onCreate(savedInstanceState);
         initDeepLink();
         isAllowFetchDepartmentView = true;
-        //AppsFlyerLib.getInstance().sendDeepLinkData(this);
     }
 
     @Override
@@ -172,13 +167,6 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
                 .commit();
     }
 
-    public void getHotList(int page, int perpage) {
-        Bundle bundle = new Bundle();
-        bundle.putInt(DownloadService.PAGE_KEY, page);
-        bundle.putInt(DownloadService.PER_PAGE_KEY, perpage);
-        DownloadService.startDownload(this, mReceiver, bundle, DownloadService.HOTLIST);
-    }
-
     @Override
     public void onBackPressed() {
         if (getFragmentManager().getBackStackEntryCount() > 0) {
@@ -209,25 +197,29 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        //No call for super(). Bug on API Level > 11.
     }
 
     @Override
     public void onResume() {
         super.onResume();
         isAllowFetchDepartmentView = true;
-        sendNotifLocalyticsCallback();
+        sendNotifLocalyticsCallback(getIntent());
+        CommonUtils.dumper("intent Loca on Resume");
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        sendNotifLocalyticsCallback(intent);
+        CommonUtils.dumper("intent Loca on new intent");
     }
 
-    private void sendNotifLocalyticsCallback() {
-        Bundle bundle = getIntent().getExtras();
+    private void sendNotifLocalyticsCallback(Intent intent) {
+        Bundle bundle = intent.getExtras();
         if (bundle != null) {
+            CommonUtils.dumper("intent Loca bundle" + bundle.toString());
             if (bundle.containsKey(AppEventTracking.LOCA.NOTIFICATION_BUNDLE)){
+                CommonUtils.dumper("intent Loca open" + bundle.toString());
                 TrackingUtils.eventLocaNotificationCallback(getIntent());
             }
         }

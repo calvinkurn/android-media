@@ -281,6 +281,7 @@ public interface AppEventTracking {
         String TICKER_SEARCH_TEXT = "ticker_text_search";
         String FILTER_SORT = "sort_filter_data";
         String EXCLUDED_URL = "excluded-url";
+        String EXCLUDED_HOST = "excluded-host";
 
         String TICKER_PDP = "is_show_ticker_pdp";
         String TICKER_PDP_TEXT = "ticker_text_pdp";
