@@ -10,7 +10,7 @@ import android.support.v4.app.Fragment;
 
 public class HotListRouter {
 
-    private static final String FRAGMENT_HOTLIST = "com.tokopedia.home.fragment.FragmentHotListV2";
+    private static final String FRAGMENT_HOTLIST = "com.tokopedia.core.home.fragment.FragmentHotListV2";
 
     public static String TAG_HOTLIST_FRAGMENT = "FragmentHotListV2";
 

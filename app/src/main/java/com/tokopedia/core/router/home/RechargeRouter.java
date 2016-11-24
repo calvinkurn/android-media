@@ -12,7 +12,7 @@ public class RechargeRouter {
 
 
     private static final java.lang.String FRAGMENT_RECHARGE
-            = "com.tokopedia.home.recharge.fragment.RechargeFragment";
+            = "com.tokopedia.core.home.recharge.fragment.RechargeFragment";
 
     private static final java.lang.String FRAGMENT_RECHARGE_CATEGORY =
             "com.tokopedia.home.recharge.fragment.RechargeCategoryFragment";

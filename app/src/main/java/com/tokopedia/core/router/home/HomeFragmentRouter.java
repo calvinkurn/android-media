@@ -11,7 +11,7 @@ import android.support.v4.app.Fragment;
 public class HomeFragmentRouter {
 
     private static final java.lang.String FRAGMENT_HOME
-            = "com.tokopedia.home.fragment.FragmentIndexCategory";
+            = "com.tokopedia.tkpd.home.fragment.FragmentIndexCategory";
 
 
     public static Fragment getHomeFragment(Context context) {

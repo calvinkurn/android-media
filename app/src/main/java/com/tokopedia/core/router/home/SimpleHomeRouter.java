@@ -17,7 +17,7 @@ public class SimpleHomeRouter {
     public static final int WISHLIST_FRAGMENT = 1;
     public static final int PRODUCT_HISTORY_FRAGMENT = 2;
 
-    private static final String ACTIVITY_SIMPLE_HOME = "com.tokopedia.home.SimpleHomeActivity";
+    private static final String ACTIVITY_SIMPLE_HOME = "com.tokopedia.core.home.SimpleHomeActivity";
 
 
     public static Intent getSimpleHomeActivityIntent(Context context, int wishlistFragment) {
