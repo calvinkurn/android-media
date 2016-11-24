@@ -569,13 +569,19 @@ public class NetworkInteractorImpl implements NetworkInteractor {
                     @Override
                     public Observable<Map<String, Object>> call(Map<String, Object> stringObjectMap) {
                         EditProductForm editProductForm1 = (EditProductForm) stringObjectMap.get(EDIT_PRODUCT_FORM);
-                        Observable<List<ImageModel>> imageDownload = Observable.from(editProductForm1.getData().getProductImages())
-                                .filter(new Func1<EditProductForm.ProductImage, Boolean>() {
-                                    @Override
-                                    public Boolean call(EditProductForm.ProductImage productImage) {
-                                        return !productImage.getImageSrc().isEmpty() && !productImage.getImageSrc().equals("0");
-                                    }
-                                })
+                        List<EditProductForm.ProductImage> images = new ArrayList<EditProductForm.ProductImage>();
+                        for (EditProductForm.ProductImage image : editProductForm1.getData().getProductImages()){
+                            if (!image.getImageSrc().isEmpty() && !image.getImageSrc().equals("0")){
+                                images.add(image);
+                            }
+                        }
+                        Observable<List<ImageModel>> imageDownload = Observable.from(images)
+//                                .filter(new Func1<EditProductForm.ProductImage, Boolean>() {
+//                                    @Override
+//                                    public Boolean call(EditProductForm.ProductImage productImage) {
+//                                        return !productImage.getImageSrc().isEmpty() && !productImage.getImageSrc().equals("0");
+//                                    }
+//                                })
                                 .flatMap(new Func1<EditProductForm.ProductImage, Observable<ImageModel>>() {
                                     @Override
                                     public Observable<ImageModel> call(EditProductForm.ProductImage productImage) {
