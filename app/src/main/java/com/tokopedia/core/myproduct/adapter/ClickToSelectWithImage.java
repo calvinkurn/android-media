@@ -26,7 +26,6 @@ import butterknife.ButterKnife;
  */
 
 public class ClickToSelectWithImage extends FrameLayout {
-    private static final String NO_CATALOG_OPTION = "Tidak menggunakan katalog";
     Context context;
 
     @Bind(R2.id.image_selected)
@@ -90,11 +89,6 @@ public class ClickToSelectWithImage extends FrameLayout {
         ft.addToBackStack(null);
         ft.commit();
 
-        if(!catalogs.get(0).getCatalogName().equals(NO_CATALOG_OPTION)) {
-            CatalogDataModel.Catalog noCatalogOption = new CatalogDataModel.Catalog();
-            noCatalogOption.setCatalogName(NO_CATALOG_OPTION);
-            catalogs.add(0, noCatalogOption);
-        }
         imageChooserDialog = ImageChooserDialog.newInstance(catalogs);
         imageChooserDialog.setTitle(context.getString(R.string.choose_catalog));
         imageChooserDialog.setSelected(descSelected.getText().toString());

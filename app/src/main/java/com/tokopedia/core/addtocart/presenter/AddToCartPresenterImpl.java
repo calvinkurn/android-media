@@ -96,11 +96,13 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
 
     @Override
     public void calculateKeroRates(@NonNull Context context, @NonNull final AtcFormData atcFormData) {
+        viewListener.disableBuyButton();
         CommonUtils.dumper("rates/v1 kerorates called calculateKeroRates");
         keroNetInteractor.calculateShipping(context, KeroppiParam.paramsKero(atcFormData.getShop(), atcFormData.getForm().getDestination(), atcFormData.getForm().getProductDetail()), new KeroNetInteractor.CalculationListener() {
             @Override
             public void onSuccess(Data rates) {
                 viewListener.renderFormShipmentRates(filterAvailableKeroShipment(rates.getAttributes(), atcFormData.getForm().getShipment() ));
+                viewListener.enableBuyButton();
             }
 
             @Override

@@ -53,8 +53,13 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Response;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
@@ -98,6 +103,7 @@ public class AddProductPresenterImpl implements AddProductPresenter
     private LocalCacheHandler fetchDepChildTimer;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
     private LocalCacheHandler fetchEtalaseTimer;
+    private ProductNameListener productNameListener;
 
 
     public AddProductPresenterImpl(AddProductView addProductView) {
@@ -122,7 +128,7 @@ public class AddProductPresenterImpl implements AddProductPresenter
     public void fetchDepartmentParent(Context context) {
         fetchDepParentTimer = initCacheIfNotNull(context, FETCH_DEP_PARENT);
         List<CategoryDB> categoryDBs = new Select().from(CategoryDB.class).where(CategoryDB_Table.levelId.is(0)).queryList();
-        if (fetchDepParentTimer.isExpired() || categoryDBs == null) {
+        if (fetchDepParentTimer.isExpired() || checkCollectionNotNull(categoryDBs)) {
             ((NetworkInteractorImpl) networkInteractorImpl).setFetchDepartment(this);
             ((NetworkInteractorImpl) networkInteractorImpl).setCompositeSubscription(compositeSubscription);
             networkInteractorImpl.fetchDepartment(context);
@@ -494,6 +500,46 @@ public class AddProductPresenterImpl implements AddProductPresenter
     }
 
     @Override
+    public void setupNameDebounceListener(final Context context) {
+        compositeSubscription.add(Observable.create(new Observable.OnSubscribe<CatalogParams>() {
+            @Override
+            public void call(final Subscriber<? super CatalogParams> subscriber) {
+                productNameListener = new ProductNameListener() {
+                    @Override
+                    public void onNameChange(CatalogParams params) {
+                        subscriber.onNext(params);
+                    }
+                };
+            }
+        })
+        .debounce(500, TimeUnit.MILLISECONDS)
+        .subscribeOn(Schedulers.io())
+        .unsubscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Subscriber<CatalogParams>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(CatalogParams params) {
+                fetchCatalog(context, params.depId, params.productName);
+            }
+        }));
+    }
+
+    @Override
+    public void onNameChange(String depId, String productName) {
+        productNameListener.onNameChange(new CatalogParams(depId, productName));
+    }
+
+    @Override
     public void onFailureFetchDepartment(Throwable e) {
         defaultMessageError(e);
     }
@@ -859,8 +905,10 @@ public class AddProductPresenterImpl implements AddProductPresenter
                 List<List<SimpleTextModel>> lists = new ArrayList<>();
                 ArrayList<TextDeleteModel> textDeleteModels = new ArrayList<>();
                 for (int i = 1, j = 0; i <= breadcrumb.size(); i++, j++) {
-                    String departmentId = breadcrumb.get(j).getDepartmentId();
-
+                    String departmentId = "0";
+                    if(j != 0) {
+                        departmentId = breadcrumb.get(j-1).getDepartmentId();
+                    }
                     List<SimpleTextModel> levelSelection = AddProductFragment.toSimpleText(i, Integer.parseInt(departmentId));
                     lists.add(levelSelection);
 
@@ -968,6 +1016,7 @@ public class AddProductPresenterImpl implements AddProductPresenter
                     CatalogDataModel catalogDataModel = (CatalogDataModel) object;
 
                     onSuccessFetchCatalog(catalogDataModel);
+
                     int selection = 0;
                     if (data.getCatalog().getCatalogId().equals("0")) {
                         addProductView.setProductCatalog(-1);
@@ -1072,5 +1121,20 @@ public class AddProductPresenterImpl implements AddProductPresenter
         } else {
             return new Pair<> (lists, textDeleteModels);
         }
+    }
+
+    private class CatalogParams{
+        public String productName;
+        public String depId;
+
+        public CatalogParams(String depId, String productName) {
+            this.depId = depId;
+            this.productName = productName;
+        }
+    }
+
+
+    interface ProductNameListener{
+        void onNameChange(CatalogParams name);
     }
 }

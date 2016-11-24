@@ -1,6 +1,6 @@
 package com.tokopedia.core.recharge.interactor;
 
-import com.tokopedia.core.database.model.RechargeOperatorModelDB;
+import com.tokopedia.core.database.model.RechargeOperatorModelDBAttrs;
 import com.tokopedia.core.recharge.model.category.Category;
 import com.tokopedia.core.recharge.model.category.CategoryData;
 import com.tokopedia.core.recharge.model.operator.OperatorData;
@@ -17,6 +17,8 @@ import java.util.List;
 public interface RechargeDBInteractor {
 
     void getListProduct(OnGetListProduct onGetListProduct, String prefix, int categoryId, Boolean validatePrefix);
+
+    void getListProductDefaultOperator(OnGetListProduct onGetListProduct, int categoryId, String operatorId);
 
     void getCategory(OnGetCategory onGetCategory);
 
@@ -59,7 +61,7 @@ public interface RechargeDBInteractor {
     }
 
     interface OnGetOperatorByIdListener {
-        void onSuccess(RechargeOperatorModelDB operator);
+        void onSuccess(RechargeOperatorModelDBAttrs operator);
 
         void onError(Throwable e);
 

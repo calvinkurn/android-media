@@ -24,6 +24,10 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customadapter.LazyListView;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.ImageUploadHandler;
+import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.transaction.purchase.activity.ConfirmPaymentActivity;
 import com.tokopedia.transaction.purchase.activity.TxVerDetailActivity;
 import com.tokopedia.transaction.purchase.adapter.TxVerAdapter;
@@ -33,10 +37,6 @@ import com.tokopedia.transaction.purchase.model.response.txverification.TxVerDat
 import com.tokopedia.transaction.purchase.presenter.TxVerificationPresenter;
 import com.tokopedia.transaction.purchase.presenter.TxVerificationPresenterImpl;
 import com.tokopedia.transaction.purchase.receiver.TxListUIReceiver;
-import com.tokopedia.core.util.ImageUploadHandler;
-import com.tokopedia.core.util.PagingHandler;
-import com.tokopedia.core.util.RefreshHandler;
-import com.tokopedia.core.util.RequestPermissionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -214,7 +214,46 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
         lvTXVerification.removeFooterView(loadMoreView);
         refreshHandler.finishRefresh();
         refreshHandler.setPullEnabled(true);
-        Log.d(TAG, "showFailedResetData() called with: " + "message = [" + message + "]");
+        if (getView() != null)
+            NetworkErrorHelper.showEmptyState(getActivity(),
+                    getView(),
+                    new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            refreshHandler.startRefresh();
+                        }
+                    });
+    }
+
+    @Override
+    public void showNoConnectionLoadMoreData(String message) {
+        isLoading = false;
+        lvTXVerification.removeFooterView(loadMoreView);
+        isLoadMoreTerminated = true;
+        if (getView() != null) NetworkErrorHelper.createSnackbarWithAction(getActivity(), message,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        getData(TxOrderNetInteractor.TypeRequest.LOAD_MORE);
+
+                    }
+                }).showRetrySnackbar();
+    }
+
+    @Override
+    public void showNoConnectionPullRefresh(String message) {
+        isLoading = false;
+        refreshHandler.finishRefresh();
+        refreshHandler.setPullEnabled(true);
+        if (getView() != null) NetworkErrorHelper.showSnackbar(getActivity(), message);
+    }
+
+    @Override
+    public void showNoConnectionResetData(String message) {
+        isLoading = false;
+        lvTXVerification.removeFooterView(loadMoreView);
+        refreshHandler.finishRefresh();
+        refreshHandler.setPullEnabled(true);
         if (getView() != null)
             NetworkErrorHelper.showEmptyState(getActivity(),
                     getView(),

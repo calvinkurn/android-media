@@ -1,6 +1,9 @@
 package com.tokopedia.core.product.customview;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
@@ -8,7 +11,6 @@ import android.text.Html;
 import android.util.AttributeSet;
 
 import com.tkpd.library.viewpagerindicator.LinePageIndicator;
-import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.product.adapter.ImagePagerAdapter;
@@ -70,10 +72,14 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
     public void renderData(@NonNull final ProductDetailData data) {
         List<ProductImage> productImageList = data.getProductImages();
         if (productImageList.isEmpty()) {
+            int resId = R.drawable.product_no_photo_default;
+            Resources res = getContext().getResources();
+            Uri resUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
+                    + "://" + res.getResourcePackageName(resId)
+                    + '/' + res.getResourceTypeName(resId)
+                    + '/' + res.getResourceEntryName(resId));
             productImageList.add(ProductImage.Builder.aProductImage()
-                    .setImageSrc300("android.resource://" +
-                            BuildConfig.APPLICATION_ID +
-                            "/drawable/product_no_photo_default")
+                    .setImageSrc300(resUri.toString())
                     .setImageDescription("").build());
             imagePagerAdapter.addAll(productImageList);
             indicator.notifyDataSetChanged();

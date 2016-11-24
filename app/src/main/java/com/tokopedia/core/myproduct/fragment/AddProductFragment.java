@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ScaleDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -161,6 +162,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     public static final String PRODUCT_ID = "product_id";
     public static final String PRODUCT_DB = "product_db";
     public static final String ADD_PRODUCT_MULTIPLE_IMAGE_PATH = "ADD_PRODUCT_MULTIPLE_IMAGE_PATH";
+    public static final String NO_CATALOG_OPTION = "Tidak menggunakan katalog";
 
 
     public void removeImageSelected(int i) {
@@ -1772,6 +1774,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         dismissPriceError();
         dismissWeightError();
         ScreenTracking.screen(this);
+        addProduct.setupNameDebounceListener(getActivity());
     }
 
     public void initWeightUnit() {
@@ -2128,7 +2131,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int count, int after) {
                 if (addProductPRoductNameAlert.getError() == null)
-                    fetchCatalog(depId + "", addProductProductName.getText().toString());
+                    addProduct.onNameChange(depId + "", addProductProductName.getText().toString());
             }
 
             @Override
@@ -2220,6 +2223,11 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     @Override
     public void saveCatalogs(ArrayList<CatalogDataModel.Catalog> catalogs) {
         Log.d(TAG, messageTAG + " : " + catalogs);
+        if(!catalogs.isEmpty() && !catalogs.get(0).getCatalogName().equals(NO_CATALOG_OPTION)) {
+            CatalogDataModel.Catalog noCatalogOption = new CatalogDataModel.Catalog();
+            noCatalogOption.setCatalogName(NO_CATALOG_OPTION);
+            catalogs.add(0, noCatalogOption);
+        }
         this.catalogs = catalogs;
     }
 
@@ -2500,12 +2508,20 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                 addProductAddToNewEtalase.setError(validate.getModel2());
                 addProductAddToNewEtalaseAlert.setError(validate.getModel2());
             }
-            if (validate.getModel1()) {
+            if (!validate.getModel1()) {
                 Snackbar.make(parentView, addProductAddToNewEtalaseAlert.getError(), Snackbar.LENGTH_LONG).show();
                 return null;
             }
-            EtalaseDB etalaseDB = new EtalaseDB(-2, addProductAddToNewEtalase.getText().toString(), -2);
-            etalaseDB.save();
+
+            EtalaseDB etalaseDB = DbManagerImpl.getInstance().getEtalase("-2");
+            if(etalaseDB == null){
+                etalaseDB = new EtalaseDB(-2, addProductAddToNewEtalase.getText().toString(), -2);
+                etalaseDB.save();
+            } else {
+                etalaseDB.setEtalaseName(addProductAddToNewEtalase.getText().toString());
+                etalaseDB.update();
+            }
+
 
             addProduct.clearEtalaseCache(getActivity());
 
@@ -2593,10 +2609,11 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
         // 7. get harga grosir - compile ketika disini doang - kosongkan terlebih dahulu,
         Log.d(TAG, messageTAG + wholesaleAdapter.getDatas());
-        if(!wholesaleAdapter.isNoError()){
-            Snackbar.make(parentView, "Terjadi kesalahan pada harga grosir", Snackbar.LENGTH_LONG).show();
-            return null;
-        }
+        // TODO : SOMETHING WRONG WITH WHOLESALE LOGIC, IT WILL BYPASS THE WHOLESALE CHECK
+//        if(!wholesaleAdapter.isNoError()){
+//            Snackbar.make(parentView, "Terjadi kesalahan pada harga grosir", Snackbar.LENGTH_LONG).show();
+//            return null;
+//        }
         inputAddProductModel.setWholeSales(wholesaleAdapter.getDatas());
 
         // 9. get terima pengembalian
@@ -2641,7 +2658,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         // 14. catalog
         Long catalogId = -1L;
         String selectedCatalog = addProductCatalog.getSelectedItem();
-        if(selectedCatalog.equals(getActivity().getString(R.string.no_catalog_selected))){
+        if(selectedCatalog.equals(getActivity().getString(R.string.no_catalog_selected))||catalogs==null){
             inputAddProductModel.setCatalog(-1);
         } else {
             for (CatalogDataModel.Catalog catalog : catalogs) {
@@ -2736,8 +2753,13 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                         int w = addProductPreOderContent.getWidth();
                         int h = addProductPreOderContent.getHeight();
                         Log.v("W-H~WHOLESALE", w + "-" + h);
-                        addProductPreOderContent.getViewTreeObserver()
-                                .removeOnGlobalLayoutListener(this);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                            addProductPreOderContent.getViewTreeObserver()
+                                    .removeOnGlobalLayoutListener(this);
+                        }else{
+                            addProductPreOderContent.getViewTreeObserver()
+                                    .removeGlobalOnLayoutListener(this);
+                        }
                     }
                 });
         if (checkNotNull(getActivity()) && getActivity() instanceof ProductSocMedActivity) {
@@ -2761,8 +2783,13 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
                             int w = wholeSaleContainer.getWidth();
                             int h = wholeSaleContainer.getHeight();
                             Log.v("W-H~WHOLESALE", w + "-" + h);
-                            wholeSaleContainer.getViewTreeObserver()
-                                    .removeOnGlobalLayoutListener(this);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                                wholeSaleContainer.getViewTreeObserver()
+                                        .removeOnGlobalLayoutListener(this);
+                            }else{
+                                wholeSaleContainer.getViewTreeObserver()
+                                        .removeGlobalOnLayoutListener(this);
+                            }
                         }
                     });
             if (checkNotNull(getActivity()) && getActivity() instanceof ProductSocMedActivity) {

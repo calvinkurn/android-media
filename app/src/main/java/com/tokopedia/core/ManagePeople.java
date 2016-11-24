@@ -14,6 +14,7 @@ import com.tokopedia.core.customadapter.SimpleListTabViewAdapter;
 import com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActivity;
 import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
 import com.tokopedia.core.manage.people.notification.activity.ManageNotificationActivity;
+import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity;
 import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 
@@ -82,7 +83,7 @@ public class ManagePeople extends TkpdActivity {
                         startActivity(intent);
                         break;
                     case 4:
-                        intent = new Intent(ManagePeople.this, ManagePeoplePassword.class);
+                        intent = new Intent(ManagePeople.this, ManagePasswordActivity.class);
                         startActivity(intent);
                         break;
                 }

@@ -68,6 +68,7 @@ import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.shopinfo.models.shopnotes.GetShopNotes;
+import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdUrl;
@@ -75,6 +76,7 @@ import com.tokopedia.core.var.TkpdUrl;
 import org.parceler.Parcels;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -613,7 +615,11 @@ public class ProductService extends IntentService implements ProductServiceConst
                                                                 }
 
                                                                 String path = productEditImage.updateImageModel.getPath();
-                                                                edit = uploadEditProduct(new File(path), productId + "", userId, deviceId).toBlocking().first();// upload picture
+                                                                try {
+                                                                    edit = uploadEditProduct(ImageUploadHandler.writeImageToTkpdPath(ImageUploadHandler.compressImage(path)), productId + "", userId, deviceId).toBlocking().first();// upload picture
+                                                                } catch (IOException e) {
+                                                                    throw new RuntimeException(getApplicationContext().getString(R.string.error_upload_image));
+                                                                }
                                                                 inputModelPair.setModel2(edit);// set result here
 
                                                                 result.setModel2(inputModelPair);// save to the data
@@ -640,7 +646,11 @@ public class ProductService extends IntentService implements ProductServiceConst
 
                                                                 inputModelPair.setModel1(null);// there is no delete in here
                                                                 String path = productEditImage.updateImageModel.getPath();
-                                                                edit = uploadEditProduct(new File(path), productId + "", userId, deviceId).toBlocking().first();// upload picture
+                                                                try {
+                                                                    edit = uploadEditProduct(ImageUploadHandler.writeImageToTkpdPath(ImageUploadHandler.compressImage(path)), productId + "", userId, deviceId).toBlocking().first();// upload picture
+                                                                } catch (IOException e) {
+                                                                    throw new RuntimeException(getApplicationContext().getString(R.string.error_upload_image));
+                                                                }
                                                                 inputModelPair.setModel2(edit);// set result here
 
                                                                 result.setModel2(inputModelPair);// save to the data
@@ -1353,7 +1363,12 @@ public class ProductService extends IntentService implements ProductServiceConst
                             @Override
                             public Observable<Pair<PictureDB, UploadProductImageData>> call(PictureDB gambar) {
                                 //[START] Somehow file couldn't be load for server
-                                File file = new File(gambar.getPath());
+                                File file = null;
+                                try {
+                                    file = ImageUploadHandler.writeImageToTkpdPath(ImageUploadHandler.compressImage(gambar.getPath()));
+                                } catch (IOException e) {
+                                    throw new RuntimeException(getApplicationContext().getString(R.string.error_upload_image));
+                                }
                                 //[END] Somehow file couldn't be load for server
 
                                 RequestBody userId = RequestBody.create(MediaType.parse("text/plain"), networkCalculator.getContent().get(NetworkCalculator.USER_ID));

@@ -68,7 +68,7 @@ public class ProductDetailCacheManager implements DbFlowOperation<ProductDetailM
     }
 
     public void delete(String key) {
-        new Delete().from(ProductDetailModelDB.class).where(ProductDetailModelDB_Table.productID.is(productID)).execute();
+        new Delete().from(ProductDetailModelDB.class).where(ProductDetailModelDB_Table.productID.is(key)).execute();
     }
 
     @Override

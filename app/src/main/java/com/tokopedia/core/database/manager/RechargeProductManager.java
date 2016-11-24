@@ -103,7 +103,7 @@ public class RechargeProductManager implements DbFlowOperation<RechargeProductMo
     public List<Product> getListDataByCategory(int categoryId) {
         List<RechargeProductModelDB> db = new Select().from(RechargeProductModelDB.class)
                 .where(RechargeProductModelDB_Table.categoryId.is(categoryId))
-                .and(RechargeProductModelDB_Table.status.is(2))
+                .and(RechargeProductModelDB_Table.status.isNot(2))
                 .queryList();
 
         List<Product> productList = new ArrayList<>();

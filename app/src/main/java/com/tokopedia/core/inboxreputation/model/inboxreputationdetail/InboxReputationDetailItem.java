@@ -1,6 +1,8 @@
 
 package com.tokopedia.core.inboxreputation.model.inboxreputationdetail;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.Html;
 import android.text.Spanned;
 
@@ -10,8 +12,7 @@ import com.tokopedia.core.inboxreputation.model.ImageUpload;
 
 import java.util.ArrayList;
 
-@org.parceler.Parcel
-public class InboxReputationDetailItem {
+public class InboxReputationDetailItem implements Parcelable {
 
     @SerializedName("product_id")
     @Expose
@@ -89,6 +90,43 @@ public class InboxReputationDetailItem {
     @Expose
     int productIsBanned;
 
+
+    protected InboxReputationDetailItem(Parcel in) {
+        productId = in.readString();
+        productImageUrl = in.readString();
+        productName = in.readString();
+        productUri = in.readString();
+        reviewPostTime = in.readString();
+        isSkipped = in.readInt();
+        isSkippable = in.readInt();
+        isRead = in.readInt();
+        isEditable = in.readInt();
+        reviewMessage = in.readString();
+        reviewImageList = in.createTypedArrayList(ReviewImageList.CREATOR);
+        productQualityRating = in.readInt();
+        productAccuracyRating = in.readInt();
+        reviewStatus = in.readInt();
+        reviewUpdateTime = in.readString();
+        shopName = in.readString();
+        shopId = in.readString();
+        shopDomain = in.readString();
+        reputationInboxId = in.readInt();
+        userUrl = in.readString();
+        reviewId = in.readString();
+        productIsBanned = in.readInt();
+    }
+
+    public static final Creator<InboxReputationDetailItem> CREATOR = new Creator<InboxReputationDetailItem>() {
+        @Override
+        public InboxReputationDetailItem createFromParcel(Parcel in) {
+            return new InboxReputationDetailItem(in);
+        }
+
+        @Override
+        public InboxReputationDetailItem[] newArray(int size) {
+            return new InboxReputationDetailItem[size];
+        }
+    };
 
     /**
      * @return The productId
@@ -445,10 +483,40 @@ public class InboxReputationDetailItem {
     public ArrayList<ImageUpload> getImages() {
         ArrayList<ImageUpload> list = new ArrayList<>();
         for (ReviewImageList reviewImage : reviewImageList) {
-            list.add(new ImageUpload(reviewImage.getImageUrl(),reviewImage.getImageUrlLarge(), reviewImage.getImageCaption(), reviewImage.getAttachmentId()));
+            list.add(new ImageUpload(reviewImage.getImageUrl(), reviewImage.getImageUrlLarge(), reviewImage.getImageCaption(), reviewImage.getAttachmentId()));
         }
         return list;
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(productId);
+        dest.writeString(productImageUrl);
+        dest.writeString(productName);
+        dest.writeString(productUri);
+        dest.writeString(reviewPostTime);
+        dest.writeInt(isSkipped);
+        dest.writeInt(isSkippable);
+        dest.writeInt(isRead);
+        dest.writeInt(isEditable);
+        dest.writeString(reviewMessage);
+        dest.writeTypedList(reviewImageList);
+        dest.writeInt(productQualityRating);
+        dest.writeInt(productAccuracyRating);
+        dest.writeInt(reviewStatus);
+        dest.writeString(reviewUpdateTime);
+        dest.writeString(shopName);
+        dest.writeString(shopId);
+        dest.writeString(shopDomain);
+        dest.writeInt(reputationInboxId);
+        dest.writeString(userUrl);
+        dest.writeString(reviewId);
+        dest.writeInt(productIsBanned);
+    }
 }

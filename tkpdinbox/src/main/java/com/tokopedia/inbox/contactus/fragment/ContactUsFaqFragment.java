@@ -19,6 +19,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity.BackButtonListener;
 import com.tokopedia.core.var.TkpdUrl;
@@ -69,9 +70,9 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
         String url;
         if (getArguments().getString(PARAM_URL, "").equals("")) {
             if (!GTMContainer.getContainer().getString(GTM_CONTACTUS_URL).equals(""))
-                url = GTMContainer.getContainer().getString(GTM_CONTACTUS_URL) + "&app_version=" + BuildConfig.VERSION_CODE;
+                url = GTMContainer.getContainer().getString(GTM_CONTACTUS_URL) + "&app_version=" + GlobalConfig.VERSION_CODE;
             else
-                url = TkpdUrl.CONTACT_US_FAQ + "&app_version=" + BuildConfig.VERSION_CODE;
+                url = TkpdUrl.CONTACT_US_FAQ + "&app_version=" + GlobalConfig.VERSION_CODE;
         } else
             url = getArguments().getString(PARAM_URL);
 

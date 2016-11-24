@@ -122,7 +122,7 @@ public class SearchHistoryImpl extends SearchHistory {
                         view.sendSearchResult(selected.getTitle().toLowerCase());
                         break;
                     case SearchHistoryAdapter.HOTLIST:
-                        view.sendHotlistResult(new URLParser(selected.getUrl()).getHotAlias());
+                        view.sendHotlistResult(new URLParser(selected.getUrl()).getHotAlias(), selected.getKeyword());
                         break;
                     case SearchHistoryAdapter.DELETE_ITEM:
                         String unique_id = AuthUtil.md5(GCMHandler.getRegistrationId(context));

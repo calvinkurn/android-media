@@ -13,6 +13,8 @@ import java.util.List;
  * Created by Toped10 on 7/28/2016.
  */
 public abstract class Shipping extends BaseImpl<ShippingView> {
+
+
     public Shipping(ShippingView view) {
         super(view);
     }
@@ -47,4 +49,5 @@ public abstract class Shipping extends BaseImpl<ShippingView> {
 
     public abstract void moveToDetail(int position);
 
+    public abstract void onFinishConnection();
 }

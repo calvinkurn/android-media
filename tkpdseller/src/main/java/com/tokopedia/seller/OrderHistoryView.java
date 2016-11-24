@@ -11,9 +11,9 @@ import android.widget.ListView;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
 import com.tokopedia.seller.customadapter.ListViewOrderStatus;
 import com.tokopedia.seller.selling.model.shopconfirmationdetail.*;
-import com.tokopedia.seller.selling.model.orderShipping.OrderHistory;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -241,8 +241,8 @@ public class OrderHistoryView extends TActivity {
                 }
                 state = Html.fromHtml(state).toString();
                 StateList.add(state);
-                CommentList.add(Status.getHistoryComments().equals("0") ? ""
-                        : Html.fromHtml(Status.getHistoryComments()).toString());
+//                CommentList.add(Status.getHistoryComments().equals("0") ? ""
+//                        : Html.fromHtml(Status.getHistoryComments()).toString());
                 try {
                     if (preOrder != null) {
                         if (preOrder.getInt("preorder_status") == 1 && Integer.parseInt(Status.getHistoryOrderStatus()) == 400) {

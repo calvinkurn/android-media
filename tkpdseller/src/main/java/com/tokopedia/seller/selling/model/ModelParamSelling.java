@@ -5,7 +5,7 @@ import org.parceler.Parcel;
 /**
  * Created by Toped10 on 5/11/2016.
  */
-@Parcel(parcelsIndex = false)
+@Parcel
 public class ModelParamSelling {
     public static final String ORDER_ID = "order_id";
     public static final String ACTION_TYPE = "action_type";

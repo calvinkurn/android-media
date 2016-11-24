@@ -27,11 +27,11 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.inboxreputation.InboxReputationConstant;
-import com.tokopedia.core.inboxreputation.model.ImageUpload;
-import com.tokopedia.core.inboxreputation.adapter.ImageUploadAdapter;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationDetailActivity;
+import com.tokopedia.core.inboxreputation.adapter.ImageUploadAdapter;
 import com.tokopedia.core.inboxreputation.intentservice.InboxReviewIntentService;
 import com.tokopedia.core.inboxreputation.listener.InboxReputationFormView;
+import com.tokopedia.core.inboxreputation.model.ImageUpload;
 import com.tokopedia.core.inboxreputation.model.inboxreputation.InboxReputationItem;
 import com.tokopedia.core.inboxreputation.model.inboxreputationdetail.InboxReputationDetailItem;
 import com.tokopedia.core.inboxreputation.model.param.ActReviewPass;
@@ -41,8 +41,6 @@ import com.tokopedia.core.inboxreputation.presenter.InboxReputationFormFragmentP
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.util.RequestPermissionUtil;
-
-import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -186,7 +184,7 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
                     @Override
                     public void onClick(View v) {
                         editTextReview.clearFocus();
-                        KeyboardHandler.DropKeyboard(getActivity(),editTextReview);
+                        KeyboardHandler.DropKeyboard(getActivity(), editTextReview);
                         presenter.onImageUploadClicked(position);
                         AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
                         myAlertDialog.setMessage(getActivity().getString(R.string.dialog_upload_option));
@@ -216,7 +214,7 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
                     public void onClick(View v) {
                         editTextReview.clearFocus();
                         KeyboardHandler.DropKeyboard(getActivity(), editTextReview);
-                        presenter.onImageClicked(position,imageUpload);
+                        presenter.onImageClicked(position, imageUpload);
                     }
                 };
             }
@@ -289,7 +287,7 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
 
     @Override
     public void showLoading() {
-        if(progressDialog.isProgress())
+        if (progressDialog.isProgress())
             progressDialog.dismiss();
         progressDialog.showDialog();
     }
@@ -408,8 +406,8 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
 
     @Override
     protected void setupArguments(Bundle arguments) {
-        inboxReputation = Parcels.unwrap(getArguments().getParcelable(PARAM_INBOX_REPUTATION));
-        inboxReputationDetail = Parcels.unwrap(getArguments().getParcelable(PARAM_INBOX_REPUTATION_DETAIL));
+        inboxReputation = getArguments().getParcelable(PARAM_INBOX_REPUTATION);
+        inboxReputationDetail = getArguments().getParcelable(PARAM_INBOX_REPUTATION_DETAIL);
     }
 
     @Override
@@ -423,12 +421,12 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
     }
 
     public InboxReputationDetailItem getInboxReputationDetail() {
-        inboxReputationDetail = Parcels.unwrap(getArguments().getParcelable(PARAM_INBOX_REPUTATION_DETAIL));
+        inboxReputationDetail = getArguments().getParcelable(PARAM_INBOX_REPUTATION_DETAIL);
         return inboxReputationDetail;
     }
 
     public InboxReputationItem getInboxReputation() {
-        inboxReputation = Parcels.unwrap(getArguments().getParcelable(PARAM_INBOX_REPUTATION));
+        inboxReputation = getArguments().getParcelable(PARAM_INBOX_REPUTATION);
         return inboxReputation;
     }
 
@@ -436,10 +434,10 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
     public void onFailedPostReview(final Bundle resultData) {
         if (!resultData.getString(InboxReviewIntentService.EXTRA_ERROR, "").equals("")) {
             String errorMessage = resultData.getString(InboxReviewIntentService.EXTRA_ERROR, "");
-            if(errorMessage.equals("")){
+            if (errorMessage.equals("")) {
                 NetworkErrorHelper.showSnackbar(getActivity());
-            }else{
-                SnackbarManager.make(getActivity(),errorMessage,Snackbar.LENGTH_LONG).show();
+            } else {
+                SnackbarManager.make(getActivity(), errorMessage, Snackbar.LENGTH_LONG).show();
             }
         }
         dismissProgressDialog();
@@ -450,9 +448,9 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
     public void onFailedEditReview(final Bundle resultData) {
         if (!resultData.getString(InboxReviewIntentService.EXTRA_ERROR, "").equals("")) {
             String errorMessage = resultData.getString(InboxReviewIntentService.EXTRA_ERROR, "");
-            if(errorMessage.equals("")){
+            if (errorMessage.equals("")) {
                 NetworkErrorHelper.showSnackbar(getActivity());
-            }else{
+            } else {
                 SnackbarManager.make(getActivity(), errorMessage, Snackbar.LENGTH_LONG).show();
             }
         }
@@ -470,7 +468,7 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         InboxReputationFormFragmentPermissionsDispatcher.onRequestPermissionsResult(
-                InboxReputationFormFragment.this,requestCode,grantResults);
+                InboxReputationFormFragment.this, requestCode, grantResults);
     }
 
     @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
@@ -489,31 +487,31 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
 
     @OnPermissionDenied(Manifest.permission.CAMERA)
     void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(),Manifest.permission.CAMERA);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CAMERA);
     }
 
     @OnNeverAskAgain(Manifest.permission.CAMERA)
     void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.CAMERA);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CAMERA);
     }
 
     @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
     @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
-    @OnPermissionDenied({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     void showDeniedForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
 
-        RequestPermissionUtil.onPermissionDenied(getActivity(),listPermission);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
     }
 
     @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
@@ -522,6 +520,6 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
 
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),listPermission);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
     }
 }

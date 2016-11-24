@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Html;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +30,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ListViewHelper;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.R;
+import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MultiPaneActivity;
 import com.tokopedia.seller.customadapter.ListViewShopTxDetailProdListV2;
@@ -179,11 +181,7 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
     public void onMessageError(int type, Object... data) {
         String error = (String) data[0];
         if (error != null) {
-            if (type != SellingService.PARTIAL_NEW_ORDER) {
-                onProceedFailed(error, false);
-            } else {
-                onProceedFailed(error, true);
-            }
+            onProceedFailed(error);
         }
     }
 
@@ -403,7 +401,7 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         holder.ProductListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startActivity(ProductInfoActivity.createInstance(getActivity(),  order.getOrderProducts().get(position).getProductId().toString()));
+                startActivity(ProductInfoActivity.createInstance(getActivity(), order.getOrderProducts().get(position).getProductId().toString()));
             }
         });
         ListViewHelper.getListViewSize(holder.ProductListView);
@@ -588,7 +586,7 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
 
     private void onProceedComplete(boolean isAfterSaveInstance) {
         isProcessed = true;
-        if(progressDialog!=null) {
+        if (progressDialog != null) {
             progressDialog.dismiss();
         }
         holder.AcceptButton.setOnClickListener(null);
@@ -597,15 +595,15 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         holder.AcceptButton.setText(getString(R.string.title_order_processed));
         holder.AcceptButton.setOnClickListener(null);
         isConfirmDone = true;
-        if(!isAfterSaveInstance) {
+        if (!isAfterSaveInstance) {
             getActivity().setResult(getActivity().RESULT_OK);
 //            ((SellingDetailActivity) getActivity()).notifyChangeListNewOrder();
         }
     }
 
-    private void onProceedFailed(String messageError, boolean isPartialConfirm) {
-        Log.e(TAG, "onProceedFailed "+messageError);
-        if (!isPartialConfirm) {
+    private void onProceedFailed(String messageError) {
+        Log.e(TAG, "onProceedFailed " + messageError);
+        if (messageError.toLowerCase().contains("pesanan tidak valid")) {
             holder.AcceptButton.setEnabled(false);
             holder.AcceptButton.setBackgroundResource(R.drawable.btn_shop);
             holder.AcceptButton.setTextColor(activity.getResources().getColorStateList(R.color.label_color));
@@ -615,10 +613,8 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
             holder.RejectButton.setEnabled(false);
         }
         progressDialog.dismiss();
-        if(!((MultiPaneActivity)activity).getIsDialogShow()) {
-            showDialogError(activity, messageError, isPartialConfirm);
-            ((MultiPaneActivity)activity).setIsDialogShow(true);
-        }
+
+        showDialogError(activity, messageError);
         //CommonUtils.UniversalToast(getActivity(),"Terjadi masalah koneksi, mohon coba lagi");
         getActivity().setResult(getActivity().RESULT_OK);
 //        ((SellingDetailActivity) getActivity()).notifyChangeListNewOrder();
@@ -638,37 +634,30 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         }
     }
 
-    private void showDialogError(final Context context, final String error, final boolean isPartialConfirm) {
+    private void showDialogError(final Context context, final String error) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(context);
         LayoutInflater li = LayoutInflater.from(context);
         @SuppressLint("InflateParams")
         View promptsView = li.inflate(R.layout.error_network_dialog, null);
-        TextView msg = (TextView) promptsView.findViewById(R.id.msg);
-        msg.setText(error);
+        TextView msg = (TextView) promptsView.findViewById(R2.id.msg);
+        Spanned textError;
+        //if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+          //  textError = Html.fromHtml(error, Html.FROM_HTML_MODE_LEGACY);
+        //} else {
+        textError = Html.fromHtml(error);
+        //}
+        msg.setText(textError);
         dialog.setView(promptsView);
         dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                ((MultiPaneActivity)activity).setIsDialogShow(false);
-                if (!isPartialConfirm) {
+                if (error.toLowerCase().contains("pesanan tidak valid")) {
                     activity.onBackPressed();
                 }
             }
         });
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                ((MultiPaneActivity)activity).setIsDialogShow(false);
-            }
-        });
-        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                ((MultiPaneActivity)activity).setIsDialogShow(false);
-            }
-        });
-        if(!activity.isFinishing()) {
+        if (!activity.isFinishing()) {
             dialog.create().show();
         }
     }
@@ -683,6 +672,9 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
 
     @Override
     public void onResume() {
+        if (activity == null) {
+            activity = getActivity();
+        }
         if (shouldBroadcast) {
             sendBroadcastTrigerOrder();
             shouldBroadcast = false;
@@ -767,7 +759,7 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         }
     };
 
-    private static List<ListViewShopTxDetailProdListV2.TxProdModel> getModelListV4(List<OrderProduct> productList){
+    private static List<ListViewShopTxDetailProdListV2.TxProdModel> getModelListV4(List<OrderProduct> productList) {
         List<ListViewShopTxDetailProdListV2.TxProdModel> list = new ArrayList<>();
         try {
             for (int i = 0; i < productList.size(); i++) {
