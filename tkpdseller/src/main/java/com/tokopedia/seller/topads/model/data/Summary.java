@@ -6,28 +6,68 @@ package com.tokopedia.seller.topads.model.data;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ConflictAction;
+import com.raizlabs.android.dbflow.annotation.ContainerKey;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
+import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.annotation.Unique;
+import com.raizlabs.android.dbflow.structure.BaseModel;
+import com.tokopedia.seller.database.TkpdSellerDatabase;
 
-public class Summary {
+@Table(database = TkpdSellerDatabase.class)
+public class Summary extends BaseModel {
+
+    @ContainerKey("id")
+    @Column
+    @PrimaryKey(autoincrement = true)
+    public long Id;
 
     @SerializedName("click_sum")
     @Expose
-    private Integer clickSum;
+    @Column
+    public int clickSum;
+
     @SerializedName("cost_sum")
     @Expose
-    private Double costSum;
+    @Column
+    public double costSum;
+
     @SerializedName("impression_sum")
     @Expose
-    private Integer impressionSum;
+    @Column
+    public int impressionSum;
+
     @SerializedName("ctr_percentage")
     @Expose
-    private Double ctrPercentage;
+    @Column
+    public double ctrPercentage;
+
     @SerializedName("conversion_sum")
     @Expose
-    private Integer conversionSum;
+    @Column
+    public int conversionSum;
+
     @SerializedName("cost_avg")
     @Expose
-    private Double costAvg;
+    @Column
+    public double costAvg;
 
+    @Unique(onUniqueConflict = ConflictAction.REPLACE)
+    @Column
+    public String shopId;
+
+    @Unique(onUniqueConflict = ConflictAction.REPLACE)
+    @Column
+    public int type;
+
+    @Unique(onUniqueConflict = ConflictAction.REPLACE)
+    @Column
+    public String startDate;
+
+    @Unique(onUniqueConflict = ConflictAction.REPLACE)
+    @Column
+    public String endDate;
     /**
      *
      * @return

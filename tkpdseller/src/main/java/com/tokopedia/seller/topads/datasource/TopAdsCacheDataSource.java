@@ -1,11 +1,9 @@
 package com.tokopedia.seller.topads.datasource;
 
 import com.tokopedia.seller.topads.model.data.Summary;
-import com.tokopedia.seller.topads.model.exchange.ProductResponse;
 
 import java.util.Date;
 
-import retrofit2.Response;
 import rx.Observable;
 
 /**
