@@ -89,7 +89,6 @@ public class MainApplication extends TkpdMultiDexApplication {
         Localytics.autoIntegrate(this);
 
         InstabugHelper.initInstabug(this);
-        MultiDex.install(this);
     }
 
 
