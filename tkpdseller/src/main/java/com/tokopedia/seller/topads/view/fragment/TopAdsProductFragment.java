@@ -2,16 +2,29 @@ package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.View;
 
+import com.tkpd.library.utils.Logger;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.discovery.model.NetworkParam;
+import com.tokopedia.core.inboxmessage.presenter.InboxMessageFragmentPresenterImpl;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.model.data.Summary;
+import com.tokopedia.seller.topads.presenter.PresenterCallback;
 import com.tokopedia.seller.topads.presenter.TopAdsProductFragmentPresenter;
+import com.tokopedia.seller.topads.presenter.TopAdsProductFragmentPresenterImpl;
+import com.tokopedia.seller.topads.view.listener.TopAdsProductFragmentListener;
+
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by Nisie on 5/9/16.
  */
-public class TopAdsProductFragment extends BasePresenterFragment<TopAdsProductFragmentPresenter> {
+public class TopAdsProductFragment extends BasePresenterFragment<TopAdsProductFragmentPresenterImpl> implements TopAdsProductFragmentListener {
+
+    private static String TAG = TopAdsProductFragment.class.getSimpleName();
 
     public static TopAdsProductFragment createInstance() {
         TopAdsProductFragment fragment = new TopAdsProductFragment();
@@ -45,7 +58,8 @@ public class TopAdsProductFragment extends BasePresenterFragment<TopAdsProductFr
 
     @Override
     protected void initialPresenter() {
-
+        presenter = new TopAdsProductFragmentPresenterImpl(getActivity());
+        presenter.setTopAdsProductFragmentListener(this);
     }
 
     @Override
@@ -65,6 +79,19 @@ public class TopAdsProductFragment extends BasePresenterFragment<TopAdsProductFr
 
     @Override
     protected void initView(View view) {
+        Calendar startCalendar = Calendar.getInstance();
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.add(Calendar.DAY_OF_YEAR, 3);
+        presenter.populateSummary(startCalendar.getTime(), endCalendar.getTime());
+    }
+
+    @Override
+    public void onSummaryLoaded(@NonNull Summary summary) {
+        Logger.i(TAG, "Cost Summary: " + summary.getCostSum());
+    }
+
+    @Override
+    public void onLoadSummaryError(@NonNull Throwable throwable) {
 
     }
 

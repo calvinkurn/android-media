@@ -11,4 +11,10 @@ public class TopAdsNetworkConstant {
     public static final String PATH_DASHBOARD_STATISTIC = "/v1.1/dashboard/statistics";
     public static final String PATH_DASHBOARD_DEPOSIT = "/v1/dashboard/deposit";
     public static final String PATH_DASHBOARD_CREDIT = "/v1/tkpd_products";
+
+    public static final String PARAM_SHOP_ID = "shop_id";
+    public static final String PARAM_TYPE = "type";
+    public static final String PARAM_START_DATE = "start_date";
+    public static final String PARAM_END_DATE = "end_date";
+
 }
