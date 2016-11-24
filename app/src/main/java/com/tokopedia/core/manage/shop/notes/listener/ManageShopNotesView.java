@@ -1,12 +1,10 @@
 package com.tokopedia.core.manage.shop.notes.listener;
 
 import android.app.Activity;
-import android.os.Bundle;
 
 import com.tokopedia.core.manage.shop.notes.adapter.ShopNotesAdapter;
 import com.tokopedia.core.manage.shop.notes.fragment.ManageShopNotesFragment;
 import com.tokopedia.core.manage.shop.notes.model.ShopNotesResult;
-import com.tokopedia.core.shopinfo.facades.ActionShopTalkRetrofit;
 
 /**
  * Created by nisie on 10/26/16.

@@ -2,7 +2,7 @@ package com.tokopedia.core.manage.people.address.model.ChooseAddress;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.addtocart.model.responseatcform.Destination;
+import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.util.PagingHandler;
 
 import java.util.ArrayList;

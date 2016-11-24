@@ -1,5 +1,4 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="@dimen/padding_small">
@@ -398,6 +397,19 @@
             android:background="@drawable/btn_shop"
             android:gravity="center"
             android:text="@string/title_ask_seller"
+            android:textColor="@color/label_color"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/btn_request_cancel_order"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/btn_height"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginRight="@dimen/margin_small"
+            android:background="@drawable/btn_shop"
+            android:gravity="center"
+            android:text="@string/title_request_cancel_order"
             android:textColor="@color/label_color"
             android:textStyle="bold" />
 

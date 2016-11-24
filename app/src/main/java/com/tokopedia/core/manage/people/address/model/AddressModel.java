@@ -6,7 +6,6 @@ import android.text.Html;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.addtocart.model.responseatcform.Destination;
 
 public class AddressModel implements Parcelable {
 

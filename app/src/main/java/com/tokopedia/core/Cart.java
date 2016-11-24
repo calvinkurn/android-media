@@ -45,7 +45,7 @@ import com.tokopedia.core.payment.model.responsecartstep2.CartStep2Data;
 import com.tokopedia.core.payment.model.responsecartstep2.Transaction;
 import com.tokopedia.core.payment.model.responsedynamicpayment.DynamicPaymentData;
 import com.tokopedia.core.payment.model.responsethankspayment.ThanksPaymentData;
-import com.tokopedia.core.router.TransactionRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.var.TkpdCache;
 
 import org.json.JSONArray;
@@ -423,7 +423,7 @@ public class Cart extends TActivity implements ActivityCartCommunicator,
                         }
 
                         if (data.getIsSuccess() != null && data.getIsSuccess() == 1) {
-                            startActivity(TransactionRouter.createIntentTxSummary(Cart.this));
+                            startActivity(TransactionPurchaseRouter.createIntentTxSummary(Cart.this));
                             finish();
                         } else {
                             CommonUtils.UniversalToast(Cart.this,

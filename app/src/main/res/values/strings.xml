@@ -1334,6 +1334,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_notifcenter_purchase_reject">Pesanan Dibatalkan</string>
     <string name="title_notifcenter_purchase_delivered">Pesanan Terkirim</string>
 
+
     <string name="title_notif_purchase_confirmed">Pembayaran sudah terverifikasi</string>
     <string name="title_notif_purchase_accepted">Pesanan kamu sedang diproses </string>
     <string name="title_notif_purchase_partial_accepted">Pesanan kamu diproses sebagian</string>
@@ -1580,6 +1581,7 @@ di Tokopedia Sekarang!</string>
     <string name="end_date_button">End Date</string>
     <string name="start_date_button">Start Date</string>
     <string name="title_ask_seller">Tanya Penjual</string>
+    <string name="title_request_cancel_order">Ajukan Pembatalan</string>
     <string name="custom_content_message_ask_seller"><![CDATA[<br/><br/>Invoice:<br/>XXX]]></string>
     <string name="error_number">Mohon masukan format angka dengan benar</string>
     <string name="return_modify_product">Silahkan tekan untuk ubah produk</string>
@@ -1772,4 +1774,7 @@ di Tokopedia Sekarang!</string>
     <string name="success_delete_shop_note">Anda berhasil menghapus catatan.</string>
     <string name="error_max_shop_notes_content_length">Maksimal panjang catatan adalah 6000 karakter</string>
     <string name="error_max_shop_notes_title_length">Maksimal panjang judul catatan adalah 128 karakter</string>
+    <string name="prompt_delete_talk">Apakah anda  yakin ingin menghapus diskusi ini?</string>
+    <string name="product_image">Product Image</string>
+    <string name="title_delete_discussion">Hapus diskusi</string>
 </resources>

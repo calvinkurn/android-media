@@ -20,8 +20,6 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.R;
-import com.tokopedia.core.addtocart.activity.AddToCartActivity;
-import com.tokopedia.core.addtocart.model.ProductCartPass;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -50,6 +48,8 @@ import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.reputationproduct.ReputationProduct;
 import com.tokopedia.core.router.DiscoveryRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
+import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.session.Login;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.shop.ShopEditorActivity;
@@ -111,9 +111,10 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void processToCart(@NonNull Context context, @NonNull ProductCartPass data) {
-        Intent intent = AddToCartActivity.createInstance(context, data);
         sendAppsFlyerCheckout(context, data);
-        viewListener.navigateToActivity(intent);
+        viewListener.navigateToActivity(
+                TransactionAddToCartRouter.createInstanceAddToCartActivity(context, data)
+        );
         UnifyTracking.eventPDPCart();
     }
 
