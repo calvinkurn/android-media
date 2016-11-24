@@ -248,6 +248,10 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
                 viewHolder.setOnItemClickListener(new BaseSellingViewHolder.OnItemClickListener() {
                     @Override
                     public void onItemClicked(int position) {
+                        if(adapter.isLoading()) {
+                            getPaging().setPage(getPaging().getPage() - 1);
+                            presenter.finishConnection();
+                        }
                         Intent intent = new Intent(getActivity(), SellingDetailActivity.class);
                         intent.putExtra(SellingDetailActivity.DATA_EXTRA, Parcels.wrap(model));
                         intent.putExtra(SellingDetailActivity.TYPE_EXTRA, SellingDetailActivity.Type.TRANSACTION);
@@ -441,6 +445,12 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
     @Override
     public void onMessageError(int type, Object... data) {
 
+    }
+
+    @Override
+    public void onPause() {
+        presenter.finishConnection();
+        super.onPause();
     }
 
     private void createEditRefDialog(final SellingStatusTxModel model) {

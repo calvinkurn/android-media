@@ -265,7 +265,8 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
         view.setRefreshPullEnable(true);
     }
 
-    private void finishConnection() {
+    @Override
+    public void finishConnection() {
         view.finishRefresh();
         view.removeRetry();
         isLoading = false;

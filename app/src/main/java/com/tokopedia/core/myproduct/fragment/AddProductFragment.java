@@ -1779,6 +1779,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         dismissErrorProductName();
         dismissPriceError();
         dismissWeightError();
+        addProduct.setupNameDebounceListener(getActivity());
         ScreenTracking.screen(getScreenName());
     }
 
@@ -2136,7 +2137,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int count, int after) {
                 if (addProductPRoductNameAlert.getError() == null)
-                    fetchCatalog(depId + "", addProductProductName.getText().toString());
+                    addProduct.onNameChange(depId + "", addProductProductName.getText().toString());
             }
 
             @Override
@@ -2228,7 +2229,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
     @Override
     public void saveCatalogs(ArrayList<CatalogDataModel.Catalog> catalogs) {
         Log.d(TAG, messageTAG + " : " + catalogs);
-        if(!catalogs.get(0).getCatalogName().equals(NO_CATALOG_OPTION)) {
+        if(!catalogs.isEmpty() && !catalogs.get(0).getCatalogName().equals(NO_CATALOG_OPTION)) {
             CatalogDataModel.Catalog noCatalogOption = new CatalogDataModel.Catalog();
             noCatalogOption.setCatalogName(NO_CATALOG_OPTION);
             catalogs.add(0, noCatalogOption);
@@ -2517,8 +2518,16 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
                 Snackbar.make(parentView, addProductAddToNewEtalaseAlert.getError(), Snackbar.LENGTH_LONG).show();
                 return null;
             }
-            EtalaseDB etalaseDB = new EtalaseDB(-2, addProductAddToNewEtalase.getText().toString(), -2);
-            etalaseDB.save();
+
+            EtalaseDB etalaseDB = DbManagerImpl.getInstance().getEtalase("-2");
+            if(etalaseDB == null){
+                etalaseDB = new EtalaseDB(-2, addProductAddToNewEtalase.getText().toString(), -2);
+                etalaseDB.save();
+            } else {
+                etalaseDB.setEtalaseName(addProductAddToNewEtalase.getText().toString());
+                etalaseDB.update();
+            }
+
 
             addProduct.clearEtalaseCache(getActivity());
 
@@ -2606,10 +2615,11 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
 
         // 7. get harga grosir - compile ketika disini doang - kosongkan terlebih dahulu,
         Log.d(TAG, messageTAG + wholesaleAdapter.getDatas());
-        if(!wholesaleAdapter.isNoError()){
-            Snackbar.make(parentView, "Terjadi kesalahan pada harga grosir", Snackbar.LENGTH_LONG).show();
-            return null;
-        }
+        // TODO : SOMETHING WRONG WITH WHOLESALE LOGIC, IT WILL BYPASS THE WHOLESALE CHECK
+//        if(!wholesaleAdapter.isNoError()){
+//            Snackbar.make(parentView, "Terjadi kesalahan pada harga grosir", Snackbar.LENGTH_LONG).show();
+//            return null;
+//        }
         inputAddProductModel.setWholeSales(wholesaleAdapter.getDatas());
 
         // 9. get terima pengembalian
