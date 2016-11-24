@@ -204,22 +204,18 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         super.onResume();
         isAllowFetchDepartmentView = true;
         sendNotifLocalyticsCallback(getIntent());
-        CommonUtils.dumper("intent Loca on Resume");
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         sendNotifLocalyticsCallback(intent);
-        CommonUtils.dumper("intent Loca on new intent");
     }
 
     private void sendNotifLocalyticsCallback(Intent intent) {
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
-            CommonUtils.dumper("intent Loca bundle" + bundle.toString());
             if (bundle.containsKey(AppEventTracking.LOCA.NOTIFICATION_BUNDLE)){
-                CommonUtils.dumper("intent Loca open" + bundle.toString());
                 TrackingUtils.eventLocaNotificationCallback(getIntent());
             }
         }
