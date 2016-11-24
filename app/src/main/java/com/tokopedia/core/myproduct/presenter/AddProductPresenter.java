@@ -29,4 +29,6 @@ public interface AddProductPresenter {
     void subscribe();
     void unsubscribe();
     void getProductDb(Context activity, long productDb);
+    void setupNameDebounceListener(Context context);
+    void onNameChange(String depId, String productName);
 }

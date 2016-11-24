@@ -27,4 +27,6 @@ public abstract class SellingStatusTransaction extends BaseImpl<SellingStatusTra
     public abstract void onScrollList(boolean isLastItemVisible);
 
     public abstract void refreshOnFilter();
+
+    public abstract void finishConnection();
 }

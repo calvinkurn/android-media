@@ -71,7 +71,6 @@ public class GCMListenerService extends GcmListenerService {
 
     public interface NotificationListener {
         void onGetNotif();
-
         void onRefreshCart(int status);
     }
 
@@ -237,6 +236,7 @@ public class GCMListenerService extends GcmListenerService {
                 break;
             case TkpdState.GCMServiceState.GCM_NEWORDER:
 //                resultclass = ShopTransactionV2.class;
+                componentName = SellerRouter.getActivitySellingTransactionName(this);
                 intent = SellerRouter.getActivitySellingTransaction(this);
                 //bundle.putInt("notif_call", NotificationCode);
                 title = data.getString("counter") + " " + this.getString(R.string.title_new_order);
@@ -506,7 +506,7 @@ public class GCMListenerService extends GcmListenerService {
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         if (componentName != null) {
             stackBuilder.addParentStack(componentName);
-        } else {
+        } else if(resultclass != null){
             stackBuilder.addParentStack(resultclass);
         }
         stackBuilder.addNextIntent(intent);
