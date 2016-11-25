@@ -104,19 +104,18 @@ public class BrowseShopAdapter extends ProductAdapter {
             itemShopBought.setText(shopModel.totalTransaction + " " + context.getString(R.string.title_total_tx));
             itemShopCountFav.setText(shopModel.numberOfFavorite + " " + context.getString(R.string.title_favorite));
             itemShopName.setText(shopModel.shopName);
-            if (shopModel.isGold.equals("1")) {
-                itemShopBadge.setImageResource(R.drawable.ic_shop_gold);
-                itemShopBadge.setVisibility(View.VISIBLE);
-            } else {
-                itemShopBadge.setVisibility(View.GONE);
-            }
             if (shopModel.luckyImage != null){
                 LuckyShopImage.loadImage(itemShopLucky, shopModel.luckyImage);
             }
-            if(shopModel.isOfficial){
-                itemShopBought.setVisibility(View.GONE);
+            if(shopModel.isOfficial || shopModel.isGold.equals("1")){
                 itemShopBadge.setVisibility(View.VISIBLE);
-                itemShopBadge.setImageResource(R.drawable.ic_badge_official);
+                if(shopModel.isOfficial) {
+                    itemShopBought.setVisibility(View.GONE);
+                    itemShopBadge.setImageResource(R.drawable.ic_badge_official);
+                }
+                if(shopModel.isGold.equals("1")){
+                    itemShopBadge.setImageResource(R.drawable.ic_shop_gold);
+                }
             } else {
                 itemShopBought.setVisibility(View.VISIBLE);
                 itemShopBadge.setVisibility(View.GONE);
