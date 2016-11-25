@@ -25,7 +25,7 @@ public class SaveLocationWrapper {
         map.put("longitude", this.longitude);
         map.put("act", "edit_address");
         map.put("is_from_cart", "1");
-        return AuthUtil.generateParamsNetwork(MainApplication.getAppContext(), map);
+        return map;
     }
 
     public SaveLocationData getData() {

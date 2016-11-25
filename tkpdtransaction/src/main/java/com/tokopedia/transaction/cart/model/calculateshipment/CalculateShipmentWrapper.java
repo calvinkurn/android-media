@@ -25,7 +25,7 @@ public class CalculateShipmentWrapper {
         map.put("do", this.mDo);
         map.put("recalculate", this.mRecalculate);
 
-        return AuthUtil.generateParamsNetwork(MainApplication.getAppContext(), map);
+        return map;
     }
 
     public CalculateShipmentData getData() {

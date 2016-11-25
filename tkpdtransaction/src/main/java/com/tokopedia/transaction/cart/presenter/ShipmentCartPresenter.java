@@ -27,7 +27,7 @@ import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author anggaprasetiyo on 11/2/16.
- * modified by alvarisi
+ *         modified by alvarisi
  */
 
 public class ShipmentCartPresenter implements IShipmentCartPresenter {
@@ -55,21 +55,7 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<String>() {
-                    @Override
-                    public void onCompleted() {
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(String location) {
-                        view.renderGeocodeLocation(location);
-                    }
-                }));
+                .subscribe(new GeocodeLocationSubscriber()));
     }
 
     @Override
@@ -78,64 +64,44 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
             if (!this.view.isLoading()) {
                 this.view.showLoading();
             }
-            this.interactor.calculateShipment(wrapper.getParams(), new Subscriber<CalculateShipmentData>() {
-                @Override
-                public void onCompleted() {
-                    view.dismisLoading();
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                    view.dismisLoading();
-                    e.printStackTrace();
-                    if (e instanceof UnknownHostException) {
-                        view.renderErrorCalculateShipment(
-                                ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                        );
-                    } else if (e instanceof SocketTimeoutException) {
-                        view.renderErrorCalculateShipment(
-                                ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                        );
-                    } else {
-                        view.renderErrorCalculateShipment(
-                                ErrorNetMessage.MESSAGE_ERROR_DEFAULT
-                        );
-                    }
-                }
-
-                @Override
-                public void onNext(CalculateShipmentData data) {
-                    view.renderCalculateShipment(data);
-                }
-            });
+            this.interactor.calculateShipment(
+                    AuthUtil.generateParamsNetwork(MainApplication.getAppContext(), wrapper.getParams()),
+                    new CalculateShipmentSubscriber()
+            );
         }
     }
+
 
     @Override
     public void processEditShipmentCart(ShipmentCartWrapper wrapper) {
         if (this.view != null) {
             this.view.showLoading();
-            this.interactor.editShipmentCart(AuthUtil.generateParamsNetwork(view.getActivity(), wrapper.getParams()), new Subscriber<ShipmentCartData>() {
-                @Override
-                public void onCompleted() {
-                    view.dismisLoading();
-                }
+            this.interactor.editShipmentCart(AuthUtil.generateParamsNetwork(view.getActivity(),
+                    wrapper.getParams()),
+                    new EditShipmentCartSubscriber()
+            );
+        }
+    }
 
-                @Override
-                public void onError(Throwable e) {
-                    view.dismisLoading();
-                    view.renderErrorEditShipment(e.getMessage());
-                }
+    private final class EditShipmentCartSubscriber extends Subscriber<ShipmentCartData> {
+        @Override
+        public void onCompleted() {
+            view.dismisLoading();
+        }
 
-                @Override
-                public void onNext(ShipmentCartData shipmentCartData) {
-                    if (shipmentCartData.getStatus().equalsIgnoreCase("1")) {
-                        view.navigateToCart(shipmentCartData.getMessage());
-                    } else {
-                        view.renderErrorEditShipment(shipmentCartData.getMessage());
-                    }
-                }
-            });
+        @Override
+        public void onError(Throwable e) {
+            view.dismisLoading();
+            view.renderErrorEditShipment(e.getMessage());
+        }
+
+        @Override
+        public void onNext(ShipmentCartData shipmentCartData) {
+            if (shipmentCartData.getStatus().equalsIgnoreCase("1")) {
+                view.navigateToCart(shipmentCartData.getMessage());
+            } else {
+                view.renderErrorEditShipment(shipmentCartData.getMessage());
+            }
         }
     }
 
@@ -143,26 +109,77 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
     public void processSaveLocationShipment(SaveLocationWrapper wrapper) {
         if (this.view != null) {
             this.view.showLoading();
-            this.interactor.editLocationShipment(wrapper.getParams(), new Subscriber<SaveLocationData>() {
-                @Override
-                public void onCompleted() {
-                }
+            this.interactor.editLocationShipment(
+                    AuthUtil.generateParamsNetwork(MainApplication.getAppContext(), wrapper.getParams()),
+                    new SaveLocationShipmentSubscriber()
+            );
+        }
+    }
 
-                @Override
-                public void onError(Throwable e) {
-                    view.dismisLoading();
-                    view.renderErrorEditLocationShipment(e.getMessage());
-                }
+    private final class GeocodeLocationSubscriber extends Subscriber<String> {
+        public void onCompleted() {
+        }
 
-                @Override
-                public void onNext(SaveLocationData saveLocationData) {
-                    if (saveLocationData.getStatus().equalsIgnoreCase("1")) {
-                        view.renderEditLocationShipment(saveLocationData.getMessage());
-                    } else {
-                        view.renderErrorEditLocationShipment(saveLocationData.getMessage());
-                    }
-                }
-            });
+        @Override
+        public void onError(Throwable e) {
+
+        }
+
+        @Override
+        public void onNext(String location) {
+            view.renderGeocodeLocation(location);
+        }
+    }
+
+    private final class CalculateShipmentSubscriber extends Subscriber<CalculateShipmentData> {
+        @Override
+        public void onCompleted() {
+            view.dismisLoading();
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            view.dismisLoading();
+            e.printStackTrace();
+            if (e instanceof UnknownHostException) {
+                view.renderErrorCalculateShipment(
+                        ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                );
+            } else if (e instanceof SocketTimeoutException) {
+                view.renderErrorCalculateShipment(
+                        ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                );
+            } else {
+                view.renderErrorCalculateShipment(
+                        ErrorNetMessage.MESSAGE_ERROR_DEFAULT
+                );
+            }
+        }
+
+        @Override
+        public void onNext(CalculateShipmentData data) {
+            view.renderCalculateShipment(data);
+        }
+    }
+
+    private final class SaveLocationShipmentSubscriber extends Subscriber<SaveLocationData> {
+        @Override
+        public void onCompleted() {
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            view.dismisLoading();
+            view.renderErrorEditLocationShipment(e.getMessage());
+        }
+
+        @Override
+        public void onNext(SaveLocationData saveLocationData) {
+            if (saveLocationData.getStatus().equalsIgnoreCase("1")) {
+                view.renderEditLocationShipment(saveLocationData.getMessage());
+            } else {
+                view.renderErrorEditLocationShipment(saveLocationData.getMessage());
+            }
         }
     }
 }
