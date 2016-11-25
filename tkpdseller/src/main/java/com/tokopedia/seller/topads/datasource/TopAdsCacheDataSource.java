@@ -1,8 +1,11 @@
 package com.tokopedia.seller.topads.datasource;
 
+import com.tokopedia.seller.topads.model.data.Cell;
 import com.tokopedia.seller.topads.model.data.Summary;
+import com.tokopedia.seller.topads.model.exchange.StatisticRequest;
 
 import java.util.Date;
+import java.util.List;
 
 import rx.Observable;
 
@@ -12,7 +15,9 @@ import rx.Observable;
 
 public interface TopAdsCacheDataSource {
 
-    Observable<Void> insertSummary(String shopId, int type, Date startDate, Date endDate, Summary summary);
+    Observable<Summary> insertSummary(StatisticRequest statisticRequest, Summary summary);
 
-    Observable<Summary> getSummary(String shopId, int type, Date startDate, Date endDate);
+    Observable<Summary> getSummary(StatisticRequest statisticRequest);
+
+    Observable<List<Cell>> insertCellList(StatisticRequest statisticRequest, List<Cell> cellList);
 }

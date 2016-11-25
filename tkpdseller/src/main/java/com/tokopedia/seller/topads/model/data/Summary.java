@@ -12,14 +12,17 @@ import com.raizlabs.android.dbflow.annotation.ContainerKey;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
+import com.raizlabs.android.dbflow.annotation.UniqueGroup;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 import com.tokopedia.seller.database.TkpdSellerDatabase;
 
-@Table(database = TkpdSellerDatabase.class)
+@Table(database = TkpdSellerDatabase.class,
+        uniqueColumnGroups = {@UniqueGroup(groupNumber = 1, uniqueConflict = ConflictAction.REPLACE)})
 public class Summary extends BaseModel {
 
     @ContainerKey("id")
     @Column
+    @Unique(unique = false)
     @PrimaryKey(autoincrement = true)
     public long Id;
 
@@ -53,127 +56,107 @@ public class Summary extends BaseModel {
     @Column
     public double costAvg;
 
-    @Unique(onUniqueConflict = ConflictAction.REPLACE)
+    @Unique(unique = false, uniqueGroups = 1)
     @Column
     public String shopId;
 
-    @Unique(onUniqueConflict = ConflictAction.REPLACE)
+    @Unique(unique = false, uniqueGroups = 1)
     @Column
     public int type;
 
-    @Unique(onUniqueConflict = ConflictAction.REPLACE)
+    @Unique(unique = false, uniqueGroups = 1)
     @Column
     public String startDate;
 
-    @Unique(onUniqueConflict = ConflictAction.REPLACE)
+    @Unique(unique = false, uniqueGroups = 1)
     @Column
     public String endDate;
-    /**
-     *
-     * @return
-     * The clickSum
-     */
-    public Integer getClickSum() {
+
+    public long getId() {
+        return Id;
+    }
+
+    public void setId(long id) {
+        Id = id;
+    }
+
+    public int getClickSum() {
         return clickSum;
     }
 
-    /**
-     *
-     * @param clickSum
-     * The click_sum
-     */
-    public void setClickSum(Integer clickSum) {
+    public void setClickSum(int clickSum) {
         this.clickSum = clickSum;
     }
 
-    /**
-     *
-     * @return
-     * The costSum
-     */
-    public Double getCostSum() {
+    public double getCostSum() {
         return costSum;
     }
 
-    /**
-     *
-     * @param costSum
-     * The cost_sum
-     */
-    public void setCostSum(Double costSum) {
+    public void setCostSum(double costSum) {
         this.costSum = costSum;
     }
 
-    /**
-     *
-     * @return
-     * The impressionSum
-     */
-    public Integer getImpressionSum() {
+    public int getImpressionSum() {
         return impressionSum;
     }
 
-    /**
-     *
-     * @param impressionSum
-     * The impression_sum
-     */
-    public void setImpressionSum(Integer impressionSum) {
+    public void setImpressionSum(int impressionSum) {
         this.impressionSum = impressionSum;
     }
 
-    /**
-     *
-     * @return
-     * The ctrPercentage
-     */
-    public Double getCtrPercentage() {
+    public double getCtrPercentage() {
         return ctrPercentage;
     }
 
-    /**
-     *
-     * @param ctrPercentage
-     * The ctr_percentage
-     */
-    public void setCtrPercentage(Double ctrPercentage) {
+    public void setCtrPercentage(double ctrPercentage) {
         this.ctrPercentage = ctrPercentage;
     }
 
-    /**
-     *
-     * @return
-     * The conversionSum
-     */
-    public Integer getConversionSum() {
+    public int getConversionSum() {
         return conversionSum;
     }
 
-    /**
-     *
-     * @param conversionSum
-     * The conversion_sum
-     */
-    public void setConversionSum(Integer conversionSum) {
+    public void setConversionSum(int conversionSum) {
         this.conversionSum = conversionSum;
     }
 
-    /**
-     *
-     * @return
-     * The costAvg
-     */
-    public Double getCostAvg() {
+    public double getCostAvg() {
         return costAvg;
     }
 
-    /**
-     *
-     * @param costAvg
-     * The cost_avg
-     */
-    public void setCostAvg(Double costAvg) {
+    public void setCostAvg(double costAvg) {
         this.costAvg = costAvg;
     }
 
+    public String getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(String shopId) {
+        this.shopId = shopId;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
 }

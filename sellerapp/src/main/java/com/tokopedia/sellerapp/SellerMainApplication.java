@@ -1,5 +1,8 @@
 package com.tokopedia.sellerapp;
 
+import com.raizlabs.android.dbflow.config.FlowConfig;
+import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.InstabugHelper;
@@ -16,5 +19,12 @@ public class SellerMainApplication extends MainApplication {
         HockeyAppHelper.setEnableDistribution(BuildConfig.ENABLE_DISTRIBUTION);
         InstabugHelper.setEnableDistribution(BuildConfig.ENABLE_DISTRIBUTION);
         InstabugHelper.setDebug(BuildConfig.DEBUG);
+        initializeDatabase();
+    }
+
+    public void initializeDatabase() {
+        FlowManager.init(new FlowConfig.Builder(this)
+                .addDatabaseHolder(TkpdSellerGeneratedDatabaseHolder.class)
+                .build());
     }
 }

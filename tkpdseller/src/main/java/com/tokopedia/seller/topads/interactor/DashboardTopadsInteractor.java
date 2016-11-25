@@ -1,11 +1,14 @@
 package com.tokopedia.seller.topads.interactor;
 
+import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.model.exchange.CreditResponse;
 import com.tokopedia.seller.topads.model.exchange.DepositResponse;
 import com.tokopedia.seller.topads.model.exchange.ProductResponse;
 import com.tokopedia.seller.topads.model.exchange.ShopResponse;
+import com.tokopedia.seller.topads.model.exchange.StatisticRequest;
 import com.tokopedia.seller.topads.model.exchange.StatisticResponse;
 
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -26,7 +29,7 @@ public interface DashboardTopadsInteractor {
 
     void getDashboardShop(HashMap<String, String> params, Listener<ShopResponse> listener);
 
-    void getDashboardStatistic(HashMap<String, String> params, Listener<StatisticResponse> listener);
+    void getDashboardSummary(StatisticRequest statisticRequest, final Listener<Summary> listener);
 
     void getDashboardResponse(HashMap<String, String> params, Listener<DepositResponse> listener);
 

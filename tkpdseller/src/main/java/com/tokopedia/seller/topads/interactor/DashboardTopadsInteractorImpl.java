@@ -1,23 +1,34 @@
 package com.tokopedia.seller.topads.interactor;
 
-import android.content.Context;
+import android.support.v4.util.ArrayMap;
 
-import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.constant.TopAdsConstant;
+import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
+import com.tokopedia.seller.topads.datasource.TopAdsCacheDataSource;
+import com.tokopedia.seller.topads.datasource.TopAdsCacheDataSourceImpl;
+import com.tokopedia.seller.topads.model.data.Cell;
+import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.model.exchange.CreditResponse;
 import com.tokopedia.seller.topads.model.exchange.DepositResponse;
 import com.tokopedia.seller.topads.model.exchange.ProductResponse;
 import com.tokopedia.seller.topads.model.exchange.ShopResponse;
+import com.tokopedia.seller.topads.model.exchange.StatisticRequest;
 import com.tokopedia.seller.topads.model.exchange.StatisticResponse;
 import com.tokopedia.seller.topads.network.apiservice.TopAdsManagementService;
 
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -29,10 +40,12 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
 
     private CompositeSubscription compositeSubscription;
     private TopAdsManagementService topAdsManagementService;
+    private TopAdsCacheDataSource topAdsCacheDataSource;
 
     public DashboardTopadsInteractorImpl() {
         compositeSubscription = new CompositeSubscription();
         topAdsManagementService = new TopAdsManagementService();
+        topAdsCacheDataSource = new TopAdsCacheDataSourceImpl();
     }
 
     @Override
@@ -93,12 +106,26 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
     }
 
     @Override
-    public void getDashboardStatistic(HashMap<String, String> params, final Listener<StatisticResponse> listener) {
-        Observable<Response<StatisticResponse>> observable = topAdsManagementService.getApi().getDashboardStatistic(params);
-        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
+    public void getDashboardSummary(final StatisticRequest statisticRequest, final Listener<Summary> listener) {
+        Observable<Summary> summaryCacheObservable = topAdsCacheDataSource.getSummary(statisticRequest);
+        Observable<Response<StatisticResponse>> statisticApiObservable = topAdsManagementService.getApi().getDashboardStatistic(statisticRequest.getParams());
+        compositeSubscription.add(statisticApiObservable
+                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Response<StatisticResponse>>() {
+                .unsubscribeOn(Schedulers.newThread())
+                .flatMap(new Func1<Response<StatisticResponse>, Observable<Summary>>() {
+                    @Override
+                    public Observable<Summary> call(Response<StatisticResponse> statisticResponseResponse) {
+                        Observable<Summary> insertSummaryObservable = topAdsCacheDataSource.insertSummary(statisticRequest, statisticResponseResponse.body().getData().getSummary());
+                        Observable<List<Cell>> insertCellListObservable = topAdsCacheDataSource.insertCellList(statisticRequest, statisticResponseResponse.body().getData().getCells());
+                        return Observable.zip(insertSummaryObservable, insertCellListObservable, new Func2<Summary, List<Cell>, Summary>() {
+                            @Override
+                            public Summary call(Summary summary, List<Cell> cellList) {
+                                return summary;
+                            }
+                        });
+                    }
+                }).subscribe(new Subscriber<Summary>() {
                     @Override
                     public void onCompleted() {
 
@@ -110,12 +137,8 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
                     }
 
                     @Override
-                    public void onNext(Response<StatisticResponse> response) {
-                        if (response.isSuccessful()) {
-                            listener.onSuccess(response.body());
-                        } else {
-                            // TODO Define error
-                        }
+                    public void onNext(Summary summary) {
+                        listener.onSuccess(summary);
                     }
                 }));
     }
