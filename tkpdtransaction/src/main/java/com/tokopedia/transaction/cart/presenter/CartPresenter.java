@@ -24,7 +24,8 @@ import rx.Subscriber;
  * @author anggaprasetiyo on 11/3/16.
  */
 
-public class CartPresenter implements ICartPresenter {
+public class
+CartPresenter implements ICartPresenter {
     private final ICartView view;
     private final ICartDataInteractor cartDataInteractor;
     private final PaymentNetInteractor paymentNetInteractor;
@@ -143,6 +144,41 @@ public class CartPresenter implements ICartPresenter {
         maps.put("lp_flag", "1");
         maps.put("cart_string", cartData.getCartString());
         cartDataInteractor.updateCart(AuthUtil.generateParamsNetwork(activity, maps),
+                AuthUtil.generateParamsNetwork(activity),
+                new Subscriber<CartModel>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        view.hideProgressLoading();
+                    }
+
+                    @Override
+                    public void onNext(CartModel data) {
+                        view.renderDepositInfo(data.getDepositIdr());
+                        view.renderTotalPayment(data.getGrandTotalWithoutLPIDR());
+                        view.renderPaymentGatewayOption(data.getGatewayList());
+                        view.renderLoyaltyBalance(data.getLpAmountIdr(), data.getLpAmount() != 0);
+                        view.renderCartListData(data.getTransactionLists());
+                        view.hideProgressLoading();
+                    }
+                });
+    }
+
+    @Override
+    public void processUpdateInsurance(Activity activity, TransactionList cartData, boolean useInsurance) {
+        view.showProgressLoading();
+        TKPDMapParam<String, String> maps = new TKPDMapParam<>();
+        maps.put("address_id", cartData.getCartDestination().getAddressId());
+        maps.put("product_insurance", useInsurance ? "1" : "0");
+        maps.put("shipment_id", cartData.getCartShipments().getShipmentId());
+        maps.put("shipment_package_id", cartData.getCartShipments().getShipmentPackageId());
+        maps.put("shop_id", cartData.getCartShop().getShopId());
+        cartDataInteractor.updateInsuranceCart(AuthUtil.generateParamsNetwork(activity, maps),
                 AuthUtil.generateParamsNetwork(activity),
                 new Subscriber<CartModel>() {
                     @Override

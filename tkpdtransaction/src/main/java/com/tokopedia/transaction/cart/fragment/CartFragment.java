@@ -10,9 +10,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -29,10 +30,12 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.util.NonScrollLayoutManager;
 import com.tokopedia.transaction.cart.activity.ShipmentCartActivity;
 import com.tokopedia.transaction.cart.adapter.CartItemAdapter;
 import com.tokopedia.transaction.cart.listener.ICartActionFragment;
 import com.tokopedia.transaction.cart.listener.ICartView;
+import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.CheckoutData;
 import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
@@ -60,6 +63,8 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     TextView tvErrorPayment;
     @Bind(R2.id.tv_total_payment)
     TextView tvTotalPayment;
+    @Bind(R2.id.nsv_container)
+    NestedScrollView nsvContainer;
     @Bind(R2.id.tv_deposit_tokopedia)
     TextView tvDepositTokopedia;
     @Bind(R2.id.iv_logo_btn_payment_method)
@@ -255,10 +260,43 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void renderCartListData(List<TransactionList> transactionLists) {
-        rvCart.setLayoutManager(new LinearLayoutManager(getActivity()));
-        CartItemAdapter adapter = new CartItemAdapter(this, this);
+        rvCart.setLayoutManager(new NonScrollLayoutManager(getActivity()));
+        final CartItemAdapter adapter = new CartItemAdapter(this, this);
         adapter.fillDataList(transactionLists);
         rvCart.setAdapter(adapter);
+        btnCheckout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<CartItemEditable> cartItemEditables = adapter.getDataList();
+                boolean canBeCheckout = true;
+                int positionError = cartItemEditables.size() - 1;
+
+                for (int i = 0, cartItemEditablesSize = cartItemEditables.size();
+                     i < cartItemEditablesSize; i++) {
+                    CartItemEditable cartItemEditable = cartItemEditables.get(i);
+                    adapter.renderErrorCart(cartItemEditable);
+                    Log.d("CartFragment", cartItemEditable.getCartString()
+                            + " | dropship = " + cartItemEditable.isDropShipper()
+                            + " | dropshipper name = " + cartItemEditable.getDropShipperName()
+                            + " | dropshipper phone = " + cartItemEditable.getDropShipperPhone()
+                            + " | partial = " + cartItemEditable.isPartialDeliver());
+                    if (cartItemEditable.finalizeAllData().getErrorType() != CartItemEditable.ERROR_NON) {
+                        canBeCheckout = false;
+                    }
+                    //   rvCart.smoothScrollToPosition(i);
+
+                }
+                if (!canBeCheckout) {
+                    int heightScroll = nsvContainer.computeVerticalScrollRange();
+                    int heightRv = rvCart.computeVerticalScrollOffset();
+                    nsvContainer.smoothScrollTo(0, heightScroll
+                            - (heightRv - (heightRv / cartItemEditables.size() * positionError)));
+                    showToastMessage("Keranjang tidak dapat diproses, mohon periksa kembali keranjang Anda.");
+                } else {
+                    showToastMessage("Keranjang siap untuk diproses");
+                }
+            }
+        });
     }
 
     @Override
@@ -291,6 +329,11 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void onSubmitEditCart(TransactionList cartData, List<ProductEditData> cartProductEditDataList) {
         presenter.processSubmitEditCart(getActivity(), cartData, cartProductEditDataList);
+    }
+
+    @Override
+    public void onUpdateInsuranceCart(TransactionList cartData, boolean useInsurance) {
+        presenter.processUpdateInsurance(getActivity(), cartData, useInsurance);
     }
 
     @NonNull

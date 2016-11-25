@@ -37,7 +37,14 @@ public class CartInsurance {
         return info;
     }
 
-    public static List<CartInsurance> createListForAdapter() {
+    public static List<CartInsurance> createListForAdapterUseInsurance() {
+        List<CartInsurance> list = new ArrayList<>();
+        list.add(0, new CartInsurance("1", "Ya"));
+        list.add(1, new CartInsurance("0", "Tidak"));
+        return list;
+    }
+
+    public static List<CartInsurance> createListForAdapterNotUseInsurance() {
         List<CartInsurance> list = new ArrayList<>();
         list.add(0, new CartInsurance("0", "Tidak"));
         list.add(1, new CartInsurance("1", "Ya"));
