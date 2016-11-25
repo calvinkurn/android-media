@@ -542,7 +542,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
     }
 
     private void TrackFirstTime() {
-        TrackingUtils.activityBasedAFEvent(this);
+        TrackingUtils.activityBasedAFEvent(TAG);
 
         LocalCacheHandler cache = new LocalCacheHandler(this, TkpdCache.FIRST_TIME);
         cache.putBoolean(TkpdCache.Key.IS_FIRST_TIME, true);

@@ -88,7 +88,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         SectionListCategoryAdapter.OnGimmicClickedListener, HomeCatMenuView {
 
     private static final long SLIDE_DELAY = 8000;
-    private static final String TAG = FragmentIndexCategory.class.getSimpleName();
+    public static final String TAG = FragmentIndexCategory.class.getSimpleName();
     private ViewHolder holder;
     private Model model;
     private PromoImagePagerAdapter pagerAdapter;
@@ -505,7 +505,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
 
     public void sendAppsFlyerData() {
-        TrackingUtils.fragmentBasedAFEvent(this);
+        TrackingUtils.fragmentBasedAFEvent(TAG);
     }
 
     @Override
