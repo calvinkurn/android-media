@@ -1,5 +1,6 @@
 package com.tokopedia.seller.topads.datasource;
 
+import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.tokopedia.seller.topads.model.data.Cell;
 import com.tokopedia.seller.topads.model.data.Summary;
@@ -15,7 +16,7 @@ import rx.Subscriber;
  * Created by Nathaniel on 11/24/2016.
  */
 
-public class TopAdsCacheDataSourceImpl implements TopAdsCacheDataSource {
+public class TopAdsDbDataSourceImpl implements TopAdsDbDataSource {
 
     @Override
     public Observable<Summary> insertSummary(final StatisticRequest statisticRequest, final Summary summary) {
@@ -62,6 +63,19 @@ public class TopAdsCacheDataSourceImpl implements TopAdsCacheDataSource {
 
                         }
                         subscriber.onNext(cellList);
+                    }
+                }
+        );
+    }
+
+    @Override
+    public Observable<Void> deleteStatisticData() {
+        return Observable.create(
+                new Observable.OnSubscribe<Void>() {
+                    @Override
+                    public void call(Subscriber<? super Void> subscriber) {
+                        new Delete().from(Summary.class).execute();
+                        subscriber.onNext(null);
                     }
                 }
         );

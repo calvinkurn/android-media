@@ -1,7 +1,7 @@
 package com.tokopedia.seller.topads.interactor;
 
-import com.tokopedia.seller.topads.datasource.TopAdsCacheDataSource;
-import com.tokopedia.seller.topads.datasource.TopAdsCacheDataSourceImpl;
+import com.tokopedia.seller.topads.datasource.TopAdsDbDataSource;
+import com.tokopedia.seller.topads.datasource.TopAdsDbDataSourceImpl;
 import com.tokopedia.seller.topads.model.data.Cell;
 import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.model.exchange.CreditResponse;
@@ -32,12 +32,12 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
 
     private CompositeSubscription compositeSubscription;
     private TopAdsManagementService topAdsManagementService;
-    private TopAdsCacheDataSource topAdsCacheDataSource;
+    private TopAdsDbDataSource mTopAdsDbDataSource;
 
     public DashboardTopadsInteractorImpl() {
         compositeSubscription = new CompositeSubscription();
         topAdsManagementService = new TopAdsManagementService();
-        topAdsCacheDataSource = new TopAdsCacheDataSourceImpl();
+        mTopAdsDbDataSource = new TopAdsDbDataSourceImpl();
     }
 
     @Override
@@ -99,7 +99,7 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
 
     @Override
     public void getDashboardSummary(final StatisticRequest statisticRequest, final Listener<Summary> listener) {
-        Observable<Summary> getSummaryCacheObservable = topAdsCacheDataSource.getSummary(statisticRequest);
+        Observable<Summary> getSummaryCacheObservable = mTopAdsDbDataSource.getSummary(statisticRequest);
         compositeSubscription.add(getSummaryCacheObservable
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -118,8 +118,8 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
                                 .flatMap(new Func1<Response<StatisticResponse>, Observable<Summary>>() {
                             @Override
                             public Observable<Summary> call(Response<StatisticResponse> statisticResponse) {
-                                Observable<Summary> insertSummaryObservable = topAdsCacheDataSource.insertSummary(statisticRequest, statisticResponse.body().getData().getSummary());
-                                Observable<List<Cell>> insertCellListObservable = topAdsCacheDataSource.insertCellList(statisticRequest, statisticResponse.body().getData().getCells());
+                                Observable<Summary> insertSummaryObservable = mTopAdsDbDataSource.insertSummary(statisticRequest, statisticResponse.body().getData().getSummary());
+                                Observable<List<Cell>> insertCellListObservable = mTopAdsDbDataSource.insertCellList(statisticRequest, statisticResponse.body().getData().getCells());
                                 return Observable.zip(insertSummaryObservable, insertCellListObservable, new Func2<Summary, List<Cell>, Summary>() {
                                     @Override
                                     public Summary call(Summary summary, List<Cell> cellList) {
