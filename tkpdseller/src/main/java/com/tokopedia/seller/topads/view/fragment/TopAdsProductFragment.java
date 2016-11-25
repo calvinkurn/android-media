@@ -69,7 +69,7 @@ public class TopAdsProductFragment extends BasePresenterFragment<TopAdsProductFr
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_topads_product;
+        return R.layout.fragment_top_ads_product;
     }
 
     @Override

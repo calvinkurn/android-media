@@ -34,7 +34,7 @@
 
         <activity
             android:name=".topads.view.activity.TopAdsDashboardActivity"
-            android:label="@string/title_topads_dashboard"/>
+            android:label="@string/title_top_ads_dashboard"/>
 
         <service
             android:name=".selling.SellingService"

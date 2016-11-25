@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">tkpdseller</string>
 
-    <string name="title_topads_dashboard">TopAds</string>
-    <string name="title_topads_product">Produk</string>
-    <string name="title_topads_store">Toko</string>
+    <string name="title_top_ads_dashboard">TopAds</string>
+    <string name="title_top_ads_product">Produk</string>
+    <string name="title_top_ads_store">Toko</string>
 </resources>
