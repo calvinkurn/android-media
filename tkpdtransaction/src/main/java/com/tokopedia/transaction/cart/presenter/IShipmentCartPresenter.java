@@ -21,4 +21,6 @@ public interface IShipmentCartPresenter {
     void processEditShipmentCart(ShipmentCartWrapper wrapper);
 
     void processSaveLocationShipment(SaveLocationWrapper wrapper);
+
+    void destroy();
 }

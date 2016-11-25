@@ -115,7 +115,6 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
     private ShipmentCartWrapper wrapper;
     private LocationPass locationPass;
 
-
     public static ShipmentCartFragment newInstance(TransactionList passData) {
         ShipmentCartFragment fragment = new ShipmentCartFragment();
         Bundle bundle = new Bundle();
@@ -124,7 +123,6 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
         return fragment;
     }
 
-
     @Override
     protected boolean isRetainInstance() {
         return false;
@@ -132,7 +130,7 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
 
     @Override
     protected void onFirstTimeLaunched() {
-        calculateShipment();
+        actionCalculateShipment();
     }
 
     @Override
@@ -300,7 +298,7 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
         presenter.processGeoCodeLocation(locationPass);
     }
 
-    private void calculateShipment() {
+    private void actionCalculateShipment() {
         CalculateShipmentWrapper calculateShipmentWrapper = new CalculateShipmentWrapper();
         calculateShipmentWrapper.setShopId(wrapper.getShopId());
         calculateShipmentWrapper.setAddressId(wrapper.getAddressId());
@@ -347,25 +345,21 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
 
     @Override
     public void renderErrorCalculateShipment(String error) {
-        NetworkErrorHelper.showEmptyState(getActivity(), getActivity().getWindow().getDecorView().getRootView()
-                , error, getCalculateShipmentRetryListener());
+        showRetry(getCalculateShipmentRetryListener(), error);
     }
 
     private NetworkErrorHelper.RetryClickedListener getCalculateShipmentRetryListener() {
         return new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                calculateShipment();
+                actionCalculateShipment();
             }
         };
     }
 
     @Override
     public void renderErrorEditShipment(String error) {
-        NetworkErrorHelper.showEmptyState(getActivity(),
-                getActivity().getWindow().getDecorView().getRootView(),
-                error,
-                getEditShipmentRetryListener());
+        showRetry(getEditShipmentRetryListener(), error);
     }
 
     private NetworkErrorHelper.RetryClickedListener getEditShipmentRetryListener() {
@@ -377,9 +371,25 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
         };
     }
 
+    private void showRetry(NetworkErrorHelper.RetryClickedListener listener, String error) {
+        NetworkErrorHelper.showEmptyState(getActivity(),
+                getActivity().getWindow().getDecorView().getRootView(),
+                error,
+                listener);
+    }
+
     @Override
     public void renderErrorEditLocationShipment(String error) {
+        showRetry(getErrorEditLocationShipmentRetryListener(), error);
+    }
 
+    private NetworkErrorHelper.RetryClickedListener getErrorEditLocationShipmentRetryListener() {
+        return new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                actionSaveLocationShipment();
+            }
+        };
     }
 
     @Override
@@ -448,7 +458,7 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
 
         if (ConnectionResult.SUCCESS == resultCode) {
             LocationPass locationArg = null;
-            if (!(TextUtils.isEmpty(locationPass.getLongitude()) || TextUtils.isEmpty(locationPass.getLatitude()))){
+            if (!(TextUtils.isEmpty(locationPass.getLongitude()) || TextUtils.isEmpty(locationPass.getLatitude()))) {
                 locationArg = locationPass;
             }
             Intent intent = GeolocationActivity.createInstance(getActivity(), locationArg);
@@ -493,12 +503,11 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
         ShipmentPackage shipmentPackage = (ShipmentPackage) spShipmentPackage.getSelectedItem();
         if (shipmentPackage.getShowMap() == 1 && (
                 locationPass.getLatitude().equalsIgnoreCase("") ||
-                        locationPass.getLongitude().equalsIgnoreCase("")
-                )) {
+                        locationPass.getLongitude().equalsIgnoreCase(""))) {
             tvErrorGeoLocation.setVisibility(View.VISIBLE);
             showSnackbar(getString(com.tokopedia.transaction.R.string.shipment_data_not_complete));
             return true;
-        }else if (shipmentData.getShipment() == null || shipmentData.getShipment().size() == 0){
+        } else if (shipmentData.getShipment() == null || shipmentData.getShipment().size() == 0) {
             showSnackbar(getString(com.tokopedia.transaction.R.string.courier_not_available));
             return true;
         }
@@ -540,7 +549,7 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
         tvTitleAddress.setText(Html.fromHtml(temp.getAddressName()));
         tvDetailAddress.setText(Html.fromHtml(temp.getAddressDetail()));
         wrapper.setAddressId(temp.getAddressId());
-        calculateShipment();
+        actionCalculateShipment();
         fetchGeocodeLocation();
     }
 
@@ -558,6 +567,10 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
             }
             tvValueLocation.setText(this.locationPass.getGeneratedAddress());
         }
+        actionSaveLocationShipment();
+    }
+
+    private void actionSaveLocationShipment() {
         SaveLocationWrapper location = new SaveLocationWrapper();
         location.setLatitude(locationPass.getLatitude());
         location.setLongitude(locationPass.getLongitude());
@@ -587,6 +600,12 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
 
     @Override
     public void renderEditLocationShipment(@NonNull String message) {
-        calculateShipment();
+        actionCalculateShipment();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.destroy();
     }
 }

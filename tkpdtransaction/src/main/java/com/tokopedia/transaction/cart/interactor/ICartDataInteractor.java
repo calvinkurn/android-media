@@ -14,6 +14,7 @@ import rx.Subscriber;
 
 /**
  * @author anggaprasetiyo on 11/2/16.
+ * collabs with alvarisi
  */
 
 public interface ICartDataInteractor {
@@ -36,4 +37,6 @@ public interface ICartDataInteractor {
 
     void updateInsuranceCart(TKPDMapParam<String, String> paramUpdate,
                              TKPDMapParam<String, String> paramCart, Subscriber<CartModel> subscriber);
+
+    void unSubscribeObservable();
 }

@@ -33,6 +33,7 @@ import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author anggaprasetiyo on 11/2/16.
+ * collabs with alvarisi
  */
 
 public class CartDataInteractor implements ICartDataInteractor {
@@ -357,7 +358,7 @@ public class CartDataInteractor implements ICartDataInteractor {
                         case 1:
                             return txService.getApi().doPayment(paramCart);
                         default:
-                            throw new RuntimeException("Gagal");
+                            throw new RuntimeException(message);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -511,5 +512,10 @@ public class CartDataInteractor implements ICartDataInteractor {
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .subscribe(subscriber);
+    }
+
+    @Override
+    public void unSubscribeObservable() {
+        if (compositeSubscription.hasSubscriptions()) compositeSubscription.unsubscribe();
     }
 }

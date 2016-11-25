@@ -71,7 +71,6 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
         }
     }
 
-
     @Override
     public void processEditShipmentCart(ShipmentCartWrapper wrapper) {
         if (this.view != null) {
@@ -79,6 +78,17 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
             this.interactor.editShipmentCart(AuthUtil.generateParamsNetwork(view.getActivity(),
                     wrapper.getParams()),
                     new EditShipmentCartSubscriber()
+            );
+        }
+    }
+
+    @Override
+    public void processSaveLocationShipment(SaveLocationWrapper wrapper) {
+        if (this.view != null) {
+            this.view.showLoading();
+            this.interactor.editLocationShipment(
+                    AuthUtil.generateParamsNetwork(MainApplication.getAppContext(), wrapper.getParams()),
+                    new SaveLocationShipmentSubscriber()
             );
         }
     }
@@ -102,17 +112,6 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
             } else {
                 view.renderErrorEditShipment(shipmentCartData.getMessage());
             }
-        }
-    }
-
-    @Override
-    public void processSaveLocationShipment(SaveLocationWrapper wrapper) {
-        if (this.view != null) {
-            this.view.showLoading();
-            this.interactor.editLocationShipment(
-                    AuthUtil.generateParamsNetwork(MainApplication.getAppContext(), wrapper.getParams()),
-                    new SaveLocationShipmentSubscriber()
-            );
         }
     }
 
@@ -181,5 +180,10 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
                 view.renderErrorEditLocationShipment(saveLocationData.getMessage());
             }
         }
+    }
+
+    @Override
+    public void destroy() {
+        this.interactor.unSubscribeObservable();
     }
 }
