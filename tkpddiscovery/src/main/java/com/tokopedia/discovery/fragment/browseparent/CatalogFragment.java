@@ -19,15 +19,17 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
+import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
+import com.tokopedia.core.network.entity.discovery.CatalogModel;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.browseparent.BrowseCatalogAdapter;
-import com.tokopedia.discovery.dynamicfilter.model.DynamicFilterModel;
 import com.tokopedia.discovery.interfaces.FetchNetwork;
-import com.tokopedia.discovery.model.BrowseCatalogModel;
 import com.tokopedia.discovery.presenter.DiscoveryActivityPresenter;
 import com.tokopedia.discovery.presenter.browseparent.Catalog;
 import com.tokopedia.discovery.presenter.browseparent.CatalogImpl;
@@ -59,14 +61,14 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
     private BrowseCatalogAdapter browseCatalogAdapter;
     private GridLayoutManager gridLayoutManager;
     private LinearLayoutManager linearLayoutManager;
-    private BrowseProductActivity.GridType gridType;
+    private BrowseProductRouter.GridType gridType;
     private int spanCount = 2;
 
 
     private BroadcastReceiver changeGridReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            BrowseProductActivity.GridType gridType = (BrowseProductActivity.GridType) intent.getSerializableExtra(BrowseProductActivity.GRID_TYPE_EXTRA);
+            BrowseProductRouter.GridType gridType = (BrowseProductRouter.GridType) intent.getSerializableExtra(BrowseProductActivity.GRID_TYPE_EXTRA);
             changeLayoutType(gridType);
             int lastItemPosition = getLastItemPosition();
             browseCatalogAdapter.notifyItemChanged(browseCatalogAdapter.getItemCount());
@@ -74,7 +76,7 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
         }
     };
 
-    private void changeLayoutType(BrowseProductActivity.GridType gridType) {
+    private void changeLayoutType(BrowseProductRouter.GridType gridType) {
         this.gridType = gridType;
         switch (gridType) {
             case GRID_1:
@@ -247,7 +249,7 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
     }
 
     @Override
-    public void notifyChangeData(List<BrowseCatalogAdapter.CatalogModel> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
+    public void notifyChangeData(List<CatalogModel> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
         browseCatalogAdapter.addAll(false, new ArrayList<RecyclerViewItem>(model));
         browseCatalogAdapter.setPagingHandlerModel(pagingHandlerModel);
         browseCatalogAdapter.setGridView(((BrowseProductActivity) getActivity()).getGridType());

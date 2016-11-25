@@ -15,9 +15,9 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.discovery.adapter.ProductAdapter;
+import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.var.RecyclerViewItem;
-import com.tokopedia.discovery.dynamicfilter.model.DynamicFilterModel;
+import com.tokopedia.discovery.adapter.ProductAdapter;
 import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterView;
 
 import org.parceler.Parcel;

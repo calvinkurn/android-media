@@ -10,8 +10,9 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.discovery.dynamicfilter.adapter.MultiLevelExpIndListAdapter;
+import com.tokopedia.core.discovery.model.DynamicObject;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
-import com.tokopedia.discovery.dynamicfilter.model.DynamicObject;
 import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterView;
 
 import java.util.HashSet;

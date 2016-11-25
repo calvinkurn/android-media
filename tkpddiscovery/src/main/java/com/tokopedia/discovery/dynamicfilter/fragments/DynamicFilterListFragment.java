@@ -15,11 +15,11 @@ import android.widget.Button;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.discovery.dynamicfilter.DynamicFilterActivity;
 import com.tokopedia.discovery.dynamicfilter.adapter.DynamicFilterListAdapter;
-import com.tokopedia.discovery.dynamicfilter.model.DynamicFilterModel;
 import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterList;
 import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterListImpl;
 import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterListView;

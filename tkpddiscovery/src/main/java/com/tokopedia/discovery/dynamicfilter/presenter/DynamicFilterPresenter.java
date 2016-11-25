@@ -2,8 +2,8 @@ package com.tokopedia.discovery.dynamicfilter.presenter;
 
 import android.content.Intent;
 
-import com.tokopedia.discovery.dynamicfilter.model.DynamicFilterModel;
-import com.tokopedia.discovery.model.Breadcrumb;
+import com.tokopedia.core.discovery.model.Breadcrumb;
+import com.tokopedia.core.discovery.model.DynamicFilterModel;
 
 import java.util.List;
 

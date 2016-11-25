@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.discovery.model.history.searchSuggestion.SearchDataModel;
+import com.tokopedia.core.discovery.model.searchSuggestion.SearchDataModel;
 import com.tokopedia.discovery.presenter.history.SearchHistoryImpl;
 import com.tokopedia.discovery.view.history.SearchHistoryViewHolder;
 

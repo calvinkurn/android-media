@@ -2,9 +2,9 @@ package com.tokopedia.discovery.presenter.browseparent;
 
 import android.content.Context;
 
+import com.tokopedia.core.discovery.model.Breadcrumb;
+import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.session.base.BaseImpl;
-import com.tokopedia.discovery.model.Breadcrumb;
-import com.tokopedia.discovery.model.BrowseProductModel;
 import com.tokopedia.discovery.model.NetworkParam;
 import com.tokopedia.discovery.view.BrowseProductParentView;
 

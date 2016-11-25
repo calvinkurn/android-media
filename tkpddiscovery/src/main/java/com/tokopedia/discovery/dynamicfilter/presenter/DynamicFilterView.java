@@ -2,7 +2,7 @@ package com.tokopedia.discovery.dynamicfilter.presenter;
 
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.discovery.dynamicfilter.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.DynamicFilterModel;
 
 import java.util.List;
 import java.util.Map;

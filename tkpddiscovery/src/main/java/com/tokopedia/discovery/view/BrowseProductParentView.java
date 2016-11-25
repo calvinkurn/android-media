@@ -2,9 +2,9 @@ package com.tokopedia.discovery.view;
 
 import android.support.v4.util.ArrayMap;
 
+import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.presenter.BaseView;
-import com.tokopedia.discovery.dynamicfilter.model.DynamicFilterModel;
-import com.tokopedia.discovery.model.BrowseProductModel;
 import com.tokopedia.discovery.presenter.DiscoveryActivityPresenter;
 
 /**

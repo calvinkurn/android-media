@@ -1,10 +1,10 @@
 package com.tokopedia.discovery.view;
 
+import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
+import com.tokopedia.core.network.entity.discovery.CatalogModel;
 import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.util.PagingHandler;
-import com.tokopedia.discovery.adapter.browseparent.BrowseCatalogAdapter;
-import com.tokopedia.discovery.dynamicfilter.model.DynamicFilterModel;
-import com.tokopedia.discovery.model.BrowseCatalogModel;
 
 import java.util.List;
 
@@ -14,7 +14,8 @@ import java.util.List;
 public interface CatalogView extends BaseView {
     void setupRecyclerView();
     void initAdapter();
-    void notifyChangeData(List<BrowseCatalogAdapter.CatalogModel> model, PagingHandler.PagingHandlerModel pagingHandlerModel);
+
+    void notifyChangeData(List<CatalogModel> model, PagingHandler.PagingHandlerModel pagingHandlerModel);
     boolean isLoading();
     int getStartIndexForQuery(String TAG);
     int getPage(String TAG);

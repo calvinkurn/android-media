@@ -11,9 +11,12 @@ import android.util.Log;
 import android.view.View;
 
 import com.tkpd.library.utils.URLParser;
+import com.tokopedia.core.discovery.model.ObjContainer;
+import com.tokopedia.core.discovery.model.searchSuggestion.SearchDataModel;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.myproduct.presenter.ImageGalleryImpl.Pair;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.fragment.history.SearchHistoryFragment;
@@ -21,10 +24,8 @@ import com.tokopedia.discovery.interactor.DiscoveryInteractor;
 import com.tokopedia.discovery.interactor.DiscoveryInteractorImpl;
 import com.tokopedia.discovery.interactor.SearchInteractor;
 import com.tokopedia.discovery.interfaces.DiscoveryListener;
-import com.tokopedia.discovery.model.ObjContainer;
 import com.tokopedia.discovery.model.history.SearchHistoryAdapter;
 import com.tokopedia.discovery.model.history.SearchHistoryModel;
-import com.tokopedia.discovery.model.history.searchSuggestion.SearchDataModel;
 import com.tokopedia.discovery.view.history.SearchHistoryView;
 
 import java.util.HashMap;
@@ -96,7 +97,7 @@ public class SearchHistoryImpl extends SearchHistory {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                query = intent.getStringExtra(BrowseProductActivity.EXTRAS_SEARCH_TERM);
+                query = intent.getStringExtra(BrowseProductRouter.EXTRAS_SEARCH_TERM);
                 getSearchData(context);
                 Log.d(TAG, "Search get data form cache");
             }

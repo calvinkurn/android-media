@@ -2,9 +2,9 @@ package com.tokopedia.discovery.facade;
 
 import android.content.Context;
 
+import com.tokopedia.core.network.entity.topads.TopAdsResponse;
 import com.tokopedia.core.network.v4.OnNetworkTimeout;
 import com.tokopedia.core.var.TkpdUrl;
-import com.tokopedia.discovery.model.TopAdsResponse;
 
 import org.json.JSONObject;
 

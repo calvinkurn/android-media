@@ -3,10 +3,10 @@ package com.tokopedia.discovery.dynamicfilter;
 import android.content.Context;
 import android.util.Log;
 
+import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.network.apiservices.product.apis.DynamicFilter;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
-import com.tokopedia.discovery.dynamicfilter.model.DynamicFilterModel;
 
 import java.util.HashMap;
 import java.util.Map;

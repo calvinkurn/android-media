@@ -2,12 +2,12 @@ package com.tokopedia.discovery.view;
 
 import android.os.Bundle;
 
+import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.discovery.adapter.ProductAdapter;
 import com.tokopedia.discovery.fragment.browseparent.ProductFragment;
-import com.tokopedia.discovery.model.BrowseProductModel;
 
 import java.util.List;
 

@@ -5,19 +5,19 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.myproduct.presenter.ImageGalleryImpl.Pair;
+import com.tokopedia.core.network.entity.discovery.BrowseShopModel;
+import com.tokopedia.core.network.entity.discovery.ShopModel;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.util.PagingHandler;
-import com.tokopedia.discovery.adapter.browseparent.BrowseShopAdapter;
-import com.tokopedia.discovery.dynamicfilter.model.DynamicFilterModel;
-import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterPresenter;
 import com.tokopedia.discovery.fragment.browseparent.ShopFragment;
 import com.tokopedia.discovery.interactor.DiscoveryInteractor;
 import com.tokopedia.discovery.interactor.DiscoveryInteractorImpl;
 import com.tokopedia.discovery.interfaces.DiscoveryListener;
-import com.tokopedia.discovery.model.BrowseShopModel;
 import com.tokopedia.discovery.model.ErrorContainer;
 import com.tokopedia.discovery.model.NetworkParam;
-import com.tokopedia.discovery.model.ObjContainer;
 import com.tokopedia.discovery.presenter.DiscoveryActivityPresenter;
 import com.tokopedia.discovery.presenter.FragmentDiscoveryPresenterImpl;
 import com.tokopedia.discovery.view.ShopView;
@@ -115,8 +115,8 @@ public class ShopImpl extends Shop implements DiscoveryListener {
         view.ariseRetry(type, ((ErrorContainer) data.getModel2()).body().getMessage());
     }
 
-    private Pair<List<BrowseShopAdapter.ShopModel>, PagingHandler.PagingHandlerModel> parseBrowseShopModel(BrowseShopModel browseShopModel) {
-        List<BrowseShopAdapter.ShopModel> shopItems = BrowseShopModel.Shops.toShopItemList(browseShopModel.result.shops);
+    private Pair<List<ShopModel>, PagingHandler.PagingHandlerModel> parseBrowseShopModel(BrowseShopModel browseShopModel) {
+        List<ShopModel> shopItems = BrowseShopModel.Shops.toShopItemList(browseShopModel.result.shops);
 
         String uriNext = browseShopModel.result.paging.getUriNext();
         String uriPrevious = browseShopModel.result.paging.getUriPrevious();
@@ -139,7 +139,7 @@ public class ShopImpl extends Shop implements DiscoveryListener {
                 if (browseShopModel == null)
                     return;
 
-                Pair<List<BrowseShopAdapter.ShopModel>, PagingHandler.PagingHandlerModel> listPagingHandlerModelPair = parseBrowseShopModel(browseShopModel);
+                Pair<List<ShopModel>, PagingHandler.PagingHandlerModel> listPagingHandlerModelPair = parseBrowseShopModel(browseShopModel);
                 view.setLoading(false);
                 view.onCallProductServiceLoadMore(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
                 fetchDynamicAttribut();
@@ -156,7 +156,7 @@ public class ShopImpl extends Shop implements DiscoveryListener {
     @Override
     public void fetchDynamicAttribut() {
         if (activityPresenter.checkHasFilterAttrIsNull(index)) {
-            discoveryInteractor.getDynamicAttribute(view.getContext(), DynamicFilterPresenter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP, activityPresenter.getBrowseProductActivityModel().getDepartmentId());
+            discoveryInteractor.getDynamicAttribute(view.getContext(), BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP, activityPresenter.getBrowseProductActivityModel().getDepartmentId());
         }
     }
 }

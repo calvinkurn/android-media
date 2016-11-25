@@ -1,3 +1,10 @@
+/*
+ * Created By Kulomady on 11/26/16 1:02 AM
+ * Copyright (c) 2016. All rights reserved
+ *
+ * Last Modified 11/26/16 1:02 AM
+ */
+
 package com.tokopedia.discovery.adapter;
 
 import android.app.Activity;
@@ -35,12 +42,16 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.FlowLayout;
+import com.tokopedia.core.discovery.old.BucketListImageScroll;
+import com.tokopedia.core.discovery.old.HeaderHotAdapter;
 import com.tokopedia.core.home.adapter.ProductFeedAdapter;
 import com.tokopedia.core.home.model.HorizontalProductList;
 import com.tokopedia.core.home.model.ViewHolderProductTopAds;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
+import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
@@ -48,10 +59,6 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.custom.TopAdsListRecyclerViewAdapter;
 import com.tokopedia.discovery.adapter.custom.TopAdsRecyclerViewAdapter;
-import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterPresenter;
-import com.tokopedia.discovery.model.BrowseProductModel;
-import com.tokopedia.discovery.old.BucketListImageScroll;
-import com.tokopedia.discovery.old.HeaderHotAdapter;
 import com.tokopedia.discovery.presenter.DiscoveryActivityPresenter;
 
 import org.parceler.Parcels;
@@ -61,6 +68,8 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.tokopedia.core.router.discovery.BrowseProductRouter.GridType.GRID_1;
 
 
 /**
@@ -88,10 +97,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         if (context instanceof BrowseProductActivity) {
             BrowseProductActivity activity = (BrowseProductActivity) context;
             switch (activity.getBrowseProductActivityModel().getSource()) {
-                case DynamicFilterPresenter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT:
+                case BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT:
                     source = "hotlist";
                     break;
-                case DynamicFilterPresenter.VALUES_DYNAMIC_FILTER_DIRECTORY:
+                case BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY:
                     source = "directory";
                     break;
                 default:
@@ -152,16 +161,16 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         }
     }
 
-    public void setgridView(BrowseProductActivity.GridType gridType) {
+    public void setgridView(BrowseProductRouter.GridType gridType) {
         Log.d(TAG, "GridType " + gridType.name());
         for (RecyclerViewItem item : data) {
             if (item.getType() == TkpdState.RecyclerView.VIEW_PRODUCT
                     || item.getType() == TkpdState.RecyclerView.VIEW_PRODUCT_GRID_1
                     || item.getType() == TkpdState.RecyclerView.VIEW_PRODUCT_GRID_2) {
 
-                if (gridType.equals(BrowseProductActivity.GridType.GRID_1)) {
+                if (gridType.equals(GRID_1)) {
                     item.setType(TkpdState.RecyclerView.VIEW_PRODUCT);
-                } else if (gridType.equals(BrowseProductActivity.GridType.GRID_2)) {
+                } else if (gridType.equals(BrowseProductRouter.GridType.GRID_2)) {
                     item.setType(TkpdState.RecyclerView.VIEW_PRODUCT_GRID_2);
                 } else {
                     item.setType(TkpdState.RecyclerView.VIEW_PRODUCT_GRID_1);
@@ -170,7 +179,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
             if (item.getType() == TkpdState.RecyclerView.VIEW_TOP_ADS_LIST
                     || item.getType() == TkpdState.RecyclerView.VIEW_TOP_ADS) {
-                if (gridType.equals(BrowseProductActivity.GridType.GRID_1)) {
+                if (gridType.equals(GRID_1)) {
                     item.setType(TkpdState.RecyclerView.VIEW_TOP_ADS_LIST);
                 } else {
                     item.setType(TkpdState.RecyclerView.VIEW_TOP_ADS);
@@ -288,7 +297,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                     @Override
                     public void onClick(View v) {
                         URLParser urlp = new URLParser(hashtags.get(pos).getUrl());
-                        BrowseProductActivity.moveTo(itemView.getContext(), urlp.getDepIDfromURI(itemView.getContext()), TopAdsApi.SRC_DIRECTORY, DynamicFilterPresenter.VALUES_DYNAMIC_FILTER_DIRECTORY, hastagName);
+                        BrowseProductActivity.moveTo(itemView.getContext(), urlp.getDepIDfromURI(itemView.getContext()), TopAdsApi.SRC_DIRECTORY, BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY, hastagName);
                     }
                 });
                 hotListBannerHashTags.addView(view);
@@ -510,7 +519,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             Log.d(TAG, "ukuran data : " + data.size() + " : posTop " + posTop);
             HorizontalProductList horizontalProductListTop = new HorizontalProductList(listProduct);
             if (context != null && context instanceof BrowseProductActivity) {
-                BrowseProductActivity.GridType gridType = ((BrowseProductActivity) context).getGridType();
+                BrowseProductRouter.GridType gridType = ((BrowseProductActivity) context).getGridType();
                 switch (gridType) {
                     case GRID_1:
                         horizontalProductListTop.setType(TkpdState.RecyclerView.VIEW_TOP_ADS_LIST);
@@ -562,14 +571,14 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
     public static class HotListBannerModel extends RecyclerViewItem {
 
-        private com.tokopedia.discovery.model.HotListBannerModel hotList;
+        private com.tokopedia.core.discovery.model.HotListBannerModel hotList;
         List<BrowseProductModel.Hashtag> hashtags;
 
         private HotListBannerModel() {
             setType(TkpdState.RecyclerView.VIEW_BANNER_HOT_LIST);
         }
 
-        public HotListBannerModel(com.tokopedia.discovery.model.HotListBannerModel hotList, List<BrowseProductModel.Hashtag> hashtags) {
+        public HotListBannerModel(com.tokopedia.core.discovery.model.HotListBannerModel hotList, List<BrowseProductModel.Hashtag> hashtags) {
             this();
             this.hotList = hotList;
             this.hashtags = hashtags;

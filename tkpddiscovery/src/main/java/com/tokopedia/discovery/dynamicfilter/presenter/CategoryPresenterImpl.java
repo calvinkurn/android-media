@@ -8,10 +8,10 @@ import android.util.Log;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.database.manager.CategoryDatabaseManager;
 import com.tokopedia.core.database.model.CategoryDB;
+import com.tokopedia.core.discovery.dynamicfilter.facade.HadesNetwork;
+import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
 import com.tokopedia.core.discovery.model.Breadcrumb;
-import com.tokopedia.discovery.dynamicfilter.facade.HadesNetwork;
-import com.tokopedia.discovery.dynamicfilter.facade.models.HadesV1Model;
-import com.tokopedia.discovery.dynamicfilter.model.DynamicObject;
+import com.tokopedia.core.discovery.model.DynamicObject;
 
 import org.parceler.Parcels;
 

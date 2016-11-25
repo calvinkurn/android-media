@@ -14,14 +14,15 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
+import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
+import com.tokopedia.core.network.entity.discovery.ShopModel;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.browseparent.BrowseShopAdapter;
-import com.tokopedia.discovery.dynamicfilter.model.DynamicFilterModel;
 import com.tokopedia.discovery.interfaces.FetchNetwork;
 import com.tokopedia.discovery.presenter.DiscoveryActivityPresenter;
 import com.tokopedia.discovery.presenter.browseparent.Shop;
@@ -186,7 +187,7 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
     }
 
     @Override
-    public void onCallProductServiceLoadMore(List<BrowseShopAdapter.ShopModel> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
+    public void onCallProductServiceLoadMore(List<ShopModel> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
         browseShopAdapter.addAll(true, new ArrayList<RecyclerViewItem>(model));
         browseShopAdapter.setPagingHandlerModel(pagingHandlerModel);
         if (browseShopAdapter.checkHasNext()) {

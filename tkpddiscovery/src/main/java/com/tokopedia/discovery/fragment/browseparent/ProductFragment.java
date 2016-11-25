@@ -20,6 +20,10 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.discovery.model.HotListBannerModel;
+import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
+import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.var.ProductItem;
@@ -28,9 +32,6 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.ProductAdapter;
 import com.tokopedia.discovery.interfaces.FetchNetwork;
-import com.tokopedia.discovery.model.BrowseProductActivityModel;
-import com.tokopedia.discovery.model.BrowseProductModel;
-import com.tokopedia.discovery.model.HotListBannerModel;
 import com.tokopedia.discovery.presenter.FragmentDiscoveryPresenter;
 import com.tokopedia.discovery.presenter.FragmentDiscoveryPresenterImpl;
 import com.tokopedia.discovery.view.FragmentBrowseProductView;
@@ -67,13 +68,13 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     private ProductAdapter productAdapter;
     private GridLayoutManager gridLayoutManager;
     private LinearLayoutManager linearLayoutManager;
-    private BrowseProductActivity.GridType gridType;
+    private BrowseProductRouter.GridType gridType;
     int spanCount = 2;
 
     private BroadcastReceiver changeGridReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            BrowseProductActivity.GridType gridType = (BrowseProductActivity.GridType) intent.getSerializableExtra(BrowseProductActivity.GRID_TYPE_EXTRA);
+            BrowseProductRouter.GridType gridType = (BrowseProductRouter.GridType) intent.getSerializableExtra(BrowseProductActivity.GRID_TYPE_EXTRA);
             int lastItemPosition = getLastItemPosition();
             changeLayoutType(gridType);
             productAdapter.notifyItemChanged(productAdapter.getItemCount());
@@ -81,7 +82,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         }
     };
 
-    private void changeLayoutType(BrowseProductActivity.GridType gridType) {
+    private void changeLayoutType(BrowseProductRouter.GridType gridType) {
         this.gridType = gridType;
         switch (gridType){
             case GRID_1: //List

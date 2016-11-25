@@ -7,7 +7,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.R2;
-import com.tokopedia.discovery.dynamicfilter.model.DynamicObject;
+import com.tokopedia.core.discovery.model.DynamicObject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

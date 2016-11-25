@@ -48,10 +48,10 @@ import com.tokopedia.core.network.entity.home.Banner;
 import com.tokopedia.core.network.entity.home.Ticker;
 import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.util.NonScrollLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
-import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterPresenter;
 import com.tokopedia.tkpd.home.BannerWebView;
 import com.tokopedia.tkpd.home.HomeCatMenuView;
 import com.tokopedia.tkpd.home.adapter.RecyclerViewCategoryMenuAdapter;
@@ -427,7 +427,7 @@ public class FragmentIndexCategory extends Fragment implements
                 getActivity(),
                 depID,
                 TopAdsApi.SRC_DIRECTORY,
-                DynamicFilterPresenter.VALUES_DYNAMIC_FILTER_DIRECTORY,
+                BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY,
                 title
         );
 

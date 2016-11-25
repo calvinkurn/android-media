@@ -5,19 +5,19 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.myproduct.presenter.ImageGalleryImpl.Pair;
+import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
+import com.tokopedia.core.network.entity.discovery.CatalogModel;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.util.PagingHandler;
-import com.tokopedia.discovery.adapter.browseparent.BrowseCatalogAdapter;
-import com.tokopedia.discovery.dynamicfilter.model.DynamicFilterModel;
-import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterPresenter;
 import com.tokopedia.discovery.fragment.browseparent.CatalogFragment;
 import com.tokopedia.discovery.interactor.DiscoveryInteractor;
 import com.tokopedia.discovery.interactor.DiscoveryInteractorImpl;
 import com.tokopedia.discovery.interfaces.DiscoveryListener;
-import com.tokopedia.discovery.model.BrowseCatalogModel;
 import com.tokopedia.discovery.model.ErrorContainer;
 import com.tokopedia.discovery.model.NetworkParam;
-import com.tokopedia.discovery.model.ObjContainer;
 import com.tokopedia.discovery.presenter.DiscoveryActivityPresenter;
 import com.tokopedia.discovery.presenter.FragmentDiscoveryPresenterImpl;
 import com.tokopedia.discovery.view.CatalogView;
@@ -120,8 +120,8 @@ public class CatalogImpl extends Catalog implements DiscoveryListener {
 
     }
 
-    private Pair<List<BrowseCatalogAdapter.CatalogModel>, PagingHandler.PagingHandlerModel> parseBrowseCategoryModel(BrowseCatalogModel browseCatalogModel) {
-        List<BrowseCatalogAdapter.CatalogModel> catalogItems = BrowseCatalogModel.Catalogs.toCatalogItemList(browseCatalogModel.result.catalogs);
+    private Pair<List<CatalogModel>, PagingHandler.PagingHandlerModel> parseBrowseCategoryModel(BrowseCatalogModel browseCatalogModel) {
+        List<CatalogModel> catalogItems = BrowseCatalogModel.Catalogs.toCatalogItemList(browseCatalogModel.result.catalogs);
 
         String uriNext = browseCatalogModel.result.paging.getUriNext();
         String uriPrevious = browseCatalogModel.result.paging.getUriPrevious();
@@ -143,7 +143,7 @@ public class CatalogImpl extends Catalog implements DiscoveryListener {
                 if (catalogModel == null)
                     return;
 
-                Pair<List<BrowseCatalogAdapter.CatalogModel>, PagingHandler.PagingHandlerModel> listPagingHandlerModelPair = parseBrowseCategoryModel(catalogModel);
+                Pair<List<CatalogModel>, PagingHandler.PagingHandlerModel> listPagingHandlerModelPair = parseBrowseCategoryModel(catalogModel);
                 view.notifyChangeData(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
                 fetchDynamicAttribut();
                 break;
@@ -164,7 +164,7 @@ public class CatalogImpl extends Catalog implements DiscoveryListener {
     @Override
     public void fetchDynamicAttribut() {
         if (activityPresenter.checkHasFilterAttrIsNull(index)) {
-            discoveryInteractor.getDynamicAttribute(view.getContext(), DynamicFilterPresenter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG, activityPresenter.getBrowseProductActivityModel().getDepartmentId());
+            discoveryInteractor.getDynamicAttribute(view.getContext(), BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG, activityPresenter.getBrowseProductActivityModel().getDepartmentId());
         }
     }
 }

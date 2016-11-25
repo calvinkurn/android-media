@@ -1,3 +1,10 @@
+/*
+ * Created By Kulomady on 11/26/16 1:07 AM
+ * Copyright (c) 2016. All rights reserved
+ *
+ * Last Modified 11/26/16 1:07 AM
+ */
+
 package com.tokopedia.discovery.adapter.browseparent;
 
 import android.content.Context;
@@ -14,14 +21,12 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.customwidget.SquareImageView;
+import com.tokopedia.core.network.entity.discovery.CatalogModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.ProductAdapter;
-import com.tokopedia.discovery.model.BrowseCatalogModel;
-
-import org.parceler.Parcel;
 
 import java.util.List;
 
@@ -29,11 +34,12 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.tokopedia.core.network.entity.discovery.CatalogModel.CATALOG_MODEL_TYPE;
+
 /**
  * Created by Toped10 on 7/4/2016.
  */
 public class BrowseCatalogAdapter extends ProductAdapter {
-    public static final int CATALOG_MODEL_TYPE = 1_234_15;
     private static final String TAG = BrowseCatalogAdapter.class.getSimpleName();
 
     public BrowseCatalogAdapter(Context context, List<RecyclerViewItem> data) {
@@ -67,13 +73,13 @@ public class BrowseCatalogAdapter extends ProductAdapter {
         }
     }
 
-    public void setGridView(BrowseProductActivity.GridType gridType) {
+    public void setGridView(BrowseProductRouter.GridType gridType) {
         Log.d(TAG, "GridType " + gridType.name());
         for (RecyclerViewItem item : data) {
             if (item.getType() == CATALOG_MODEL_TYPE || item.getType() == TkpdState.RecyclerView.VIEW_PRODUCT_GRID_1 || item.getType() == TkpdState.RecyclerView.VIEW_PRODUCT_GRID_2) {
-                if (gridType.equals(BrowseProductActivity.GridType.GRID_1)) {
+                if (gridType.equals(BrowseProductRouter.GridType.GRID_1)) {
                     item.setType(CATALOG_MODEL_TYPE);
-                } else if (gridType.equals(BrowseProductActivity.GridType.GRID_2)) {
+                } else if (gridType.equals(BrowseProductRouter.GridType.GRID_2)) {
                     item.setType(TkpdState.RecyclerView.VIEW_PRODUCT_GRID_2);
                 } else {
                     item.setType(TkpdState.RecyclerView.VIEW_PRODUCT_GRID_1);
@@ -106,10 +112,10 @@ public class BrowseCatalogAdapter extends ProductAdapter {
 
         public void bindData(Context context, CatalogViewHolder holder, CatalogModel data) {
             this.catalogModel = data;
-            ImageHandler.loadImageThumbs(context, holder.productImage, catalogModel.catalogImage);
-            holder.seller.setText(catalogModel.catalogCountProduct + " " + context.getString(R.string.title_total_prods));
-            holder.title.setText(Html.fromHtml(catalogModel.catalogName));
-            holder.price.setText(catalogModel.catalogPrice);
+            ImageHandler.loadImageThumbs(context, holder.productImage, catalogModel.getCatalogImage());
+            holder.seller.setText(catalogModel.getCatalogCountProduct() + " " + context.getString(R.string.title_total_prods));
+            holder.title.setText(Html.fromHtml(catalogModel.getCatalogName()));
+            holder.price.setText(catalogModel.getCatalogPrice());
         }
 
         @OnClick(R2.id.container)
@@ -119,7 +125,7 @@ public class BrowseCatalogAdapter extends ProductAdapter {
 //            bundle.putString("ctg_id", catalogModel.catalogId);
 //            intent.putExtras(bundle);
 //            context.startActivity(intent);
-            context.startActivity(BrowseProductRouter.getCatalogDetailActivity(context, catalogModel.catalogId));
+            context.startActivity(DetailProductRouter.getCatalogDetailActivity(context, catalogModel.getCatalogId()));
         }
     }
 
@@ -134,31 +140,4 @@ public class BrowseCatalogAdapter extends ProductAdapter {
         return super.isInType(recyclerViewItem);
     }
 
-    @Parcel
-    public static class CatalogModel extends RecyclerViewItem {
-        String catalogName;
-        String catalogDescription;
-        String catalogImage;
-        String catalogCountProduct;
-        String catalogImage300;
-        String catalogPrice;
-        String catalogUri;
-        String catalogId;
-
-        public CatalogModel() {
-            setType(CATALOG_MODEL_TYPE);
-        }
-
-        public CatalogModel(BrowseCatalogModel.Catalogs catalogs) {
-            this();
-            catalogName = catalogs.catalogName;
-            catalogDescription = catalogs.catalogDescription;
-            catalogImage = catalogs.catalogImage;
-            catalogCountProduct = catalogs.catalogCountProduct;
-            catalogImage300 = catalogs.catalogImage300;
-            catalogPrice = catalogs.catalogPrice;
-            catalogUri = catalogs.catalogUri;
-            catalogId = catalogs.catalogId;
-        }
-    }
 }

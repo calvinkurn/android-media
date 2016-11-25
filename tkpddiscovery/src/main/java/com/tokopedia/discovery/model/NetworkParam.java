@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import com.google.gson.Gson;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
-import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterPresenter;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -76,7 +76,7 @@ public class NetworkParam {
         data.put(BrowseApi.START, product.start);
         data.put(BrowseApi.ROWS, product.rows);
         data.put(BrowseApi.SC, product.sc);
-        if (product.source.equals(DynamicFilterPresenter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT)) {
+        if (product.source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT)) {
             data.put(BrowseApi.DEFAULT_SC, product.sc);
             data.remove(BrowseApi.SC);
         }

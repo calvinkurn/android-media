@@ -1,3 +1,10 @@
+/*
+ * Created By Kulomady on 11/26/16 1:08 AM
+ * Copyright (c) 2016. All rights reserved
+ *
+ * Last Modified 11/26/16 1:08 AM
+ */
+
 package com.tokopedia.discovery.adapter.custom;
 
 import android.app.Activity;

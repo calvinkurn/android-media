@@ -6,25 +6,25 @@ import android.support.annotation.NonNull;
 import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
+import com.tokopedia.core.discovery.model.Breadcrumb;
+import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.HotListBannerModel;
+import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.myproduct.presenter.ImageGalleryImpl.Pair;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
+import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
+import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.adapter.browseparent.BrowserSectionsPagerAdapter;
-import com.tokopedia.discovery.dynamicfilter.model.DynamicFilterModel;
-import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterPresenter;
 import com.tokopedia.discovery.fragment.browseparent.BrowseParentFragment;
 import com.tokopedia.discovery.fragment.browseparent.ProductFragment;
 import com.tokopedia.discovery.interactor.DiscoveryInteractor;
 import com.tokopedia.discovery.interactor.DiscoveryInteractorImpl;
 import com.tokopedia.discovery.interfaces.DiscoveryListener;
-import com.tokopedia.discovery.model.Breadcrumb;
-import com.tokopedia.discovery.model.BrowseProductActivityModel;
-import com.tokopedia.discovery.model.BrowseProductModel;
-import com.tokopedia.discovery.model.HotListBannerModel;
 import com.tokopedia.discovery.model.NetworkParam;
-import com.tokopedia.discovery.model.ObjContainer;
 import com.tokopedia.discovery.view.BrowseProductParentView;
 
 import org.parceler.Parcels;
@@ -90,9 +90,9 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
         p.userId = SessionHandler.getLoginID(context);
         view.setLoadingProgress(true);
         switch (browseProductActivityModel.getSource()) {
-            case DynamicFilterPresenter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG:
-            case DynamicFilterPresenter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT:
-            case DynamicFilterPresenter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP:
+            case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG:
+            case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT:
+            case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP:
                 p.source = browseProductActivityModel.getSource();
                 if (SessionHandler.isV4Login(context)) {
                     p.unique_id = AuthUtil.md5(p.userId);
@@ -101,11 +101,11 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                 }
                 discoveryInteractor.getProducts(NetworkParam.generateNetworkParamProduct(p));
                 break;
-            case DynamicFilterPresenter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT:
+            case BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT:
                 p.unique_id = null;
                 discoveryInteractor.getProducts(NetworkParam.generateNetworkParamProduct(p));
                 break;
-            case DynamicFilterPresenter.VALUES_DYNAMIC_FILTER_DIRECTORY:
+            case BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY:
                 p.unique_id = null;
                 discoveryInteractor.getProducts(NetworkParam.generateNetworkParamProduct(p));
                 break;
@@ -121,14 +121,14 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
             Log.d(TAG, "BROWSE_PRODUCT_ACTIVITY_MODEL " + browseProductActivityModel.toString());
             p = new NetworkParam.Product();
             switch (browseProductActivityModel.getSource()) {
-                case DynamicFilterPresenter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG:
-                case DynamicFilterPresenter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT:
-                case DynamicFilterPresenter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP:
+                case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG:
+                case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT:
+                case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP:
                     break;
-                case DynamicFilterPresenter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT:
+                case BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT:
                     p.source = "hot_product";
                     break;
-                case DynamicFilterPresenter.VALUES_DYNAMIC_FILTER_DIRECTORY:
+                case BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY:
                     p.source = "directory";
                     break;
                 default:
@@ -222,24 +222,24 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                     // if has catalog, show three tabs
                     String source = browseProductActivityModel.getSource();
                     Log.d(TAG, "source "+source);
-                    if (browseProductModel.result.hasCatalog != null && Integer.parseInt(browseProductModel.result.hasCatalog) == 1 && !source.equals(DynamicFilterPresenter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT)) {
+                    if (browseProductModel.result.hasCatalog != null && Integer.parseInt(browseProductModel.result.hasCatalog) == 1 && !source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT)) {
                         visibleTab.put(BrowserSectionsPagerAdapter.PRODUK, view.VISIBLE_ON);
                         visibleTab.put(BrowserSectionsPagerAdapter.KATALOG, view.VISIBLE_ON);
                         if(browseProductActivityModel.getSource().startsWith("search")){
                             visibleTab.put(BrowserSectionsPagerAdapter.TOKO, view.VISIBLE_ON);
                         }
                         view.initSectionAdapter(visibleTab);
-                        if (source.equals(DynamicFilterPresenter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT)) {
+                        if (source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT)) {
                             view.setupWithViewPager();
                         } else {
                             view.setupWithTabViewPager();
                         }
                         view.setCurrentTabs(browseProductActivityModel.getActiveTab());
-                    } else if (source.equals(DynamicFilterPresenter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT)) {
+                    } else if (source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT)) {
                         visibleTab.put(BrowserSectionsPagerAdapter.PRODUK, view.VISIBLE_ON);
                         view.initSectionAdapter(visibleTab);
                         view.setupWithViewPager();
-                    } else if (source.equals(DynamicFilterPresenter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
+                    } else if (source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
                         visibleTab.put(BrowserSectionsPagerAdapter.PRODUK, view.VISIBLE_ON);
                         view.initSectionAdapter(visibleTab);
                         view.setupWithTabViewPager();
@@ -248,14 +248,14 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                         visibleTab.put(BrowserSectionsPagerAdapter.TOKO, view.VISIBLE_ON);
                         view.initSectionAdapter(visibleTab);
                         view.setupWithTabViewPager();
-                        if (source.equals(DynamicFilterPresenter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP)) {
+                        if (source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP)) {
                             view.setCurrentTabs(1);
                         } else {
                             view.setCurrentTabs(0);
                         }
                     }
                     if(view.getActivityPresenter().checkHasFilterAttrIsNull(index)) {
-                        discoveryInteractor.getDynamicAttribute(view.getContext(), DynamicFilterPresenter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT, browseProductActivityModel.getDepartmentId());
+                        discoveryInteractor.getDynamicAttribute(view.getContext(), BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT, browseProductActivityModel.getDepartmentId());
                     }
                     view.setLoadingProgress(false);
                 } else {

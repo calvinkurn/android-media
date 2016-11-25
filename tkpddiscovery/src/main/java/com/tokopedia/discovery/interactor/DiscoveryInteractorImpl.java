@@ -5,26 +5,26 @@ import android.util.Log;
 
 import com.google.gson.GsonBuilder;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.HotListBannerModel;
+import com.tokopedia.core.discovery.model.ObjContainer;
+import com.tokopedia.core.discovery.model.searchSuggestion.SearchDataModel;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.ace.DiscoveryService;
 import com.tokopedia.core.network.apiservices.search.HotListService;
 import com.tokopedia.core.network.apiservices.search.SearchSuggestionService;
 import com.tokopedia.core.network.apiservices.topads.TopAdsService;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
+import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
+import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
+import com.tokopedia.core.network.entity.discovery.BrowseShopModel;
+import com.tokopedia.core.network.entity.topads.TopAdsResponse;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.MapNulRemover;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.dynamicfilter.DynamicFilterFactory;
-import com.tokopedia.discovery.dynamicfilter.model.DynamicFilterModel;
 import com.tokopedia.discovery.interfaces.DiscoveryListener;
-import com.tokopedia.discovery.model.BrowseCatalogModel;
-import com.tokopedia.discovery.model.BrowseProductModel;
-import com.tokopedia.discovery.model.BrowseShopModel;
 import com.tokopedia.discovery.model.ErrorContainer;
-import com.tokopedia.discovery.model.HotListBannerModel;
-import com.tokopedia.discovery.model.ObjContainer;
-import com.tokopedia.discovery.model.TopAdsResponse;
-import com.tokopedia.discovery.model.history.searchSuggestion.SearchDataModel;
 
 import java.util.HashMap;
 

@@ -1,5 +1,7 @@
 package com.tokopedia.discovery.model;
 
+import com.tokopedia.core.discovery.model.ObjContainer;
+
 /**
  * Created by noiz354 on 3/23/16.
  */

@@ -19,8 +19,9 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.widgets.DividerItemDecoration;
-import com.tokopedia.discovery.dynamicfilter.model.DynamicFilterModel;
 import com.tokopedia.discovery.fragment.browseparent.BrowseParentFragment;
 
 import org.parceler.Parcels;
@@ -58,7 +59,7 @@ public class SortProductActivity extends TActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         data = Parcels.unwrap(getIntent().getParcelableExtra(BrowseProductActivity.EXTRA_DATA));
-        source = getIntent().getStringExtra(BrowseProductActivity.EXTRA_SOURCE);
+        source = getIntent().getStringExtra(BrowseProductRouter.EXTRA_SOURCE);
         adapter = new ListAdapter(data.getSort(), new OnItemClickListener() {
             @Override
             public void onItemClicked(String sort, String ob) {

@@ -20,15 +20,15 @@ import android.widget.FrameLayout;
 import com.google.gson.Gson;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.discovery.model.Breadcrumb;
+import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.discovery.dynamicfilter.fragments.DynamicFilterCategoryFragment;
 import com.tokopedia.discovery.dynamicfilter.fragments.DynamicFilterListFragment;
 import com.tokopedia.discovery.dynamicfilter.fragments.DynamicFilterOtherFragment;
-import com.tokopedia.discovery.dynamicfilter.model.DynamicFilterModel;
 import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterListView;
 import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterPresenter;
 import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterPresenterImpl;
 import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterView;
-import com.tokopedia.discovery.model.Breadcrumb;
 
 import org.parceler.Parcels;
 

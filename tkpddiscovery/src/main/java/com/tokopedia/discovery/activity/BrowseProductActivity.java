@@ -39,10 +39,16 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.deeplink.presenter.DeepLinkPresenterImpl;
+import com.tokopedia.core.discovery.model.Breadcrumb;
+import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.HotListBannerModel;
+import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.myproduct.presenter.ImageGalleryImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
+import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
+import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
@@ -50,7 +56,6 @@ import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.dynamicfilter.DynamicFilterActivity;
-import com.tokopedia.discovery.dynamicfilter.model.DynamicFilterModel;
 import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterView;
 import com.tokopedia.discovery.fragment.browseparent.BrowseParentFragment;
 import com.tokopedia.discovery.fragment.browseparent.ShopFragment;
@@ -60,12 +65,7 @@ import com.tokopedia.discovery.interactor.DiscoveryInteractorImpl;
 import com.tokopedia.discovery.interactor.SearchInteractor;
 import com.tokopedia.discovery.interactor.SearchInteractorImpl;
 import com.tokopedia.discovery.interfaces.DiscoveryListener;
-import com.tokopedia.discovery.model.Breadcrumb;
-import com.tokopedia.discovery.model.BrowseProductActivityModel;
-import com.tokopedia.discovery.model.BrowseProductModel;
-import com.tokopedia.discovery.model.HotListBannerModel;
 import com.tokopedia.discovery.model.NetworkParam;
-import com.tokopedia.discovery.model.ObjContainer;
 import com.tokopedia.discovery.presenter.DiscoveryActivityPresenter;
 
 import org.json.JSONArray;
@@ -93,6 +93,7 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_DIS
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEARCH_TERM;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRA_SOURCE;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.FRAGMENT_ID;
+import static com.tokopedia.core.router.discovery.BrowseProductRouter.VALUES_INVALID_FRAGMENT_ID;
 
 /**
  * Created by Erry on 6/30/2016.
@@ -130,9 +131,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         browseProductActivityModel.alias = selected;
     }
 
-    public enum GridType {
-        GRID_1, GRID_2, GRID_3
-    }
+
 
     public enum FDest {
         SORT, FILTER;
@@ -147,7 +146,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     public static final String EXTRA_FILTER_MAP_ATTR = "EXTRA_FILTER_MAP_ATTR";
     public static String browseType;
     private int gridIcon = R.drawable.ic_grid_default;
-    private GridType gridType = GridType.GRID_2;
+    private BrowseProductRouter.GridType gridType = BrowseProductRouter.GridType.GRID_2;
     private Fragment mLastFragment;
     private int keepActivitySettings;
     private boolean firstTime = true;
@@ -533,7 +532,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
             if (browseProductActivityModel.alias == null) {
                 // get department and fragment id that would be shown.
                 String departmentId = intent.getStringExtra(BrowseProductRouter.DEPARTMENT_ID);
-                int fragmentId = intent.getIntExtra(FRAGMENT_ID, INVALID_FRAGMENT_ID);
+                int fragmentId = intent.getIntExtra(FRAGMENT_ID, VALUES_INVALID_FRAGMENT_ID);
                 String adSrc = intent.getStringExtra(AD_SRC);
 
                 this.searchQuery = intent.getStringExtra(EXTRAS_SEARCH_TERM);
@@ -628,17 +627,17 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                         intent = new Intent(CHANGE_GRID_ACTION_INTENT);
                         switch (gridType) {
                             case GRID_1:
-                                gridType = GridType.GRID_2;
+                                gridType = BrowseProductRouter.GridType.GRID_2;
                                 gridIcon = R.drawable.ic_grid_default;
                                 bottomNavigation.getItem(2).setTitle(getString(R.string.grid));
                                 break;
                             case GRID_2:
-                                gridType = GridType.GRID_3;
+                                gridType = BrowseProductRouter.GridType.GRID_3;
                                 gridIcon = R.drawable.ic_grid_box;
                                 bottomNavigation.getItem(2).setTitle(getString(R.string.grid));
                                 break;
                             case GRID_3:
-                                gridType = GridType.GRID_1;
+                                gridType = BrowseProductRouter.GridType.GRID_1;
                                 gridIcon = R.drawable.ic_list;
                                 bottomNavigation.getItem(2).setTitle(getString(R.string.list));
                                 break;
@@ -1055,7 +1054,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         bottomNavigation.restoreBottomNavigation(true);
     }
 
-    public GridType getGridType() {
+    public BrowseProductRouter.GridType getGridType() {
         return gridType;
     }
 

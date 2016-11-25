@@ -7,9 +7,9 @@ import android.support.v4.app.FragmentActivity;
 import android.widget.Filter;
 import android.widget.Filterable;
 
+import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.discovery.dynamicfilter.adapter.DynamicFilterOtherAdapter;
-import com.tokopedia.discovery.dynamicfilter.model.DynamicFilterModel;
 
 import org.parceler.Parcels;
 

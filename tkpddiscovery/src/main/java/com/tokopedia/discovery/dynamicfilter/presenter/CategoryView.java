@@ -1,7 +1,7 @@
 package com.tokopedia.discovery.dynamicfilter.presenter;
 
+import com.tokopedia.core.discovery.model.DynamicObject;
 import com.tokopedia.core.presenter.BaseView;
-import com.tokopedia.discovery.dynamicfilter.model.DynamicObject;
 
 import java.util.List;
 

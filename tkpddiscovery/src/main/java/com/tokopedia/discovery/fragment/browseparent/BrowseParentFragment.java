@@ -27,16 +27,16 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.discovery.model.Breadcrumb;
+import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
+import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.browseparent.BrowserSectionsPagerAdapter;
-import com.tokopedia.discovery.dynamicfilter.model.DynamicFilterModel;
-import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterPresenter;
-import com.tokopedia.discovery.model.Breadcrumb;
-import com.tokopedia.discovery.model.BrowseProductActivityModel;
-import com.tokopedia.discovery.model.BrowseProductModel;
 import com.tokopedia.discovery.model.NetworkParam;
 import com.tokopedia.discovery.presenter.DiscoveryActivityPresenter;
 import com.tokopedia.discovery.presenter.browseparent.BrowseProductParent;
@@ -250,7 +250,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
         if (uri.contains("/p/")) {
             BrowseProductActivity browseProductActivity = (BrowseProductActivity) getActivity();
             BrowseProductActivityModel model = browseProductActivity.getBrowseProductActivityModel();
-            model.setSource(DynamicFilterPresenter.VALUES_DYNAMIC_FILTER_DIRECTORY);
+            model.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY);
             model.setDepartmentId(productModel.result.departmentId);
             ((BrowseProductActivity) getActivity()).setFragment(BrowseParentFragment.newInstance(model), BrowseParentFragment.FRAGMENT_TAG);
         }
@@ -259,7 +259,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
 //            Intent intent = new Intent(getActivity(), Catalog.class);
 //            intent.putExtra(HotList.CATALOG_ID_KEY, urlParser.getHotAlias());
 //            getActivity().startActivity(intent);
-            getActivity().startActivity(BrowseProductRouter.getCatalogDetailActivity(getActivity(),
+            getActivity().startActivity(DetailProductRouter.getCatalogDetailActivity(getActivity(),
                     urlParser.getHotAlias()));
             getActivity().finish();
         }
@@ -322,7 +322,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
         if (fragment != null && fragment instanceof ShopFragment) {
             ((ShopFragment) fragment).onCallNetwork();
             if (source.startsWith("search")) {
-                source = DynamicFilterPresenter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP;
+                source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP;
             }
         }
 
@@ -332,13 +332,13 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
         if (fragment != null && fragment instanceof CatalogFragment) {
             ((CatalogFragment) fragment).onCallNetwork();
             if (source.startsWith("search")) {
-                source = DynamicFilterPresenter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG;
+                source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG;
             }
         }
 
         if (fragment != null && fragment instanceof ProductFragment) {
             if (source.startsWith("search")) {
-                source = DynamicFilterPresenter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
+                source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
             }
         }
         Log.d(TAG, "source " + source);
@@ -406,10 +406,10 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
 
     private void sendTabClickGTM() {
         switch (source) {
-            case DynamicFilterPresenter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP:
+            case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP:
                 UnifyTracking.eventDiscoverySearchShop();
                 break;
-            case DynamicFilterPresenter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG:
+            case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG:
                 UnifyTracking.eventDiscoverySearchCatalog();
                 break;
         }

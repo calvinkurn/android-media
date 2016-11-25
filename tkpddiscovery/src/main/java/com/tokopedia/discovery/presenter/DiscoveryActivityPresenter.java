@@ -2,9 +2,9 @@ package com.tokopedia.discovery.presenter;
 
 import com.drew.lang.annotations.Nullable;
 import com.tokopedia.core.BuildConfig;
-import com.tokopedia.discovery.model.Breadcrumb;
-import com.tokopedia.discovery.model.BrowseProductActivityModel;
-import com.tokopedia.discovery.model.BrowseProductModel;
+import com.tokopedia.core.discovery.model.Breadcrumb;
+import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
+import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.discovery.model.NetworkParam;
 
 import java.util.List;
@@ -40,7 +40,7 @@ public interface DiscoveryActivityPresenter {
 
     //    String DEPARTMENT_ID = "DEPARTMENT_ID";
 //    String VALUES_HISTORY_FRAGMENT_ID = "VALUES_HISTORY_FRAGMENT_ID";
-    int INVALID_FRAGMENT_ID = -1;
+//    int VALUES_INVALID_FRAGMENT_ID = -1;
 //    String AD_SRC = "AD_SRC";
 //    String EXTRAS_DISCOVERY_ALIAS = "EXTRAS_DISCOVERY_ALIAS";
 

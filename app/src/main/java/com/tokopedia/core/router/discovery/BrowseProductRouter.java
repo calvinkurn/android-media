@@ -28,6 +28,7 @@ public class BrowseProductRouter {
     public static final String VALUES_DYNAMIC_FILTER_SEARCH_CATALOG = "search_catalog";
     public static final String VALUES_DYNAMIC_FILTER_SEARCH_SHOP = "search_shop";
     public static final String VALUES_DYNAMIC_FILTER_DIRECTORY = "directory";
+    public static final int VALUES_INVALID_FRAGMENT_ID = -1;
 
 
     public static final String VALUES_DYNAMIC_FILTER_HOT_PRODUCT = "hot_product";
@@ -35,8 +36,12 @@ public class BrowseProductRouter {
     private final static String VALUES_DEFAULT_DEPARTMENT_ID = "0";
 
     private static final String BROWSE_PRODUCT_ACTIVITY
-            = "com.tokopedia.discovery.discovery.activity.BrowseProductActivity";
+            = "com.tokopedia.discovery.activity.BrowseProductActivity";
     public static final int VALUES_PRODUCT_FRAGMENT_ID = 812_192;
+
+    public enum GridType {
+        GRID_1, GRID_2, GRID_3
+    }
 
 
     public static Intent getDefaultBrowseIntent(Context context) {
