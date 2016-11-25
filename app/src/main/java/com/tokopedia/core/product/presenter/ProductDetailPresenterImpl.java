@@ -46,10 +46,10 @@ import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.reputationproduct.ReputationProduct;
-import com.tokopedia.core.router.DiscoveryRouter;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
-import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.session.Login;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.shop.ShopEditorActivity;
@@ -527,7 +527,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void processToCatalog(Context context, String catalogId) {
-        viewListener.navigateToActivity(DiscoveryRouter.getCatalogDetailActivity(context, catalogId));
+        viewListener.navigateToActivity(BrowseProductRouter.getCatalogDetailActivity(context, catalogId));
     }
 
     private static int getWishListIcon(int status) {

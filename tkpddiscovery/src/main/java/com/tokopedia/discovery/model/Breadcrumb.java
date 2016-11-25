@@ -1,0 +1,37 @@
+package com.tokopedia.discovery.model;
+
+import com.google.gson.annotations.SerializedName;
+
+import org.parceler.Parcel;
+
+import java.util.List;
+
+/**
+ * Created by sebastianuskh on 9/1/16.
+ */
+@Parcel
+public class Breadcrumb {
+    @SerializedName("name_without_total")
+    public String name_without_total;
+
+    @SerializedName("child")
+    public List<Breadcrumb> child;
+
+    @SerializedName("id")
+    public String id;
+
+    @SerializedName("name")
+    public String name;
+
+    @SerializedName("tree")
+    public String tree;
+
+    @SerializedName("href")
+    public String href;
+
+    @SerializedName("parent_id")
+    public String parentId;
+
+    @SerializedName("identifier")
+    public String identifier;
+}

@@ -16,11 +16,11 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.database.model.CategoryDB;
-import com.tokopedia.core.discovery.activity.BrowseProductActivity;
-import com.tokopedia.core.discovery.adapter.ProductAdapter;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.discovery.activity.BrowseProductActivity;
+import com.tokopedia.discovery.adapter.ProductAdapter;
 
 import org.parceler.Parcel;
 

@@ -24,7 +24,7 @@ import com.tokopedia.core.product.fragment.ProductDetailFragment;
 import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.router.DiscoveryRouter;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.HadesService;
@@ -236,7 +236,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     @Override
     public void navigateToCatalogProductList(String catalogId) {
         getFragmentManager().beginTransaction().replace(R.id.main_view,
-                DiscoveryRouter.getCatalogDetailListFragment(this, catalogId))
+                BrowseProductRouter.getCatalogDetailListFragment(this, catalogId))
                 .addToBackStack(null).commit();
     }
 

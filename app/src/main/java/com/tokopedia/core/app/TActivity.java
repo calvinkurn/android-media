@@ -44,12 +44,12 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.database.manager.CategoryDatabaseManager;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.discovery.activity.BrowseProductActivity;
 import com.tokopedia.core.drawer.DrawerVariable;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.retrofit.utils.DialogForceLogout;
 import com.tokopedia.core.network.retrofit.utils.DialogNoConnection;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.ErrorNetworkReceiver;
@@ -365,7 +365,10 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
     }
 
     protected boolean onSearchOptionSelected() {
-        BrowseProductActivity.moveTo(this, "0", TopAdsApi.SRC_BROWSE_PRODUCT);
+        Intent intent = BrowseProductRouter
+                .getBrowseProductIntent(this, "0", TopAdsApi.SRC_BROWSE_PRODUCT);
+
+        startActivity(intent);
         return true;
     }
 

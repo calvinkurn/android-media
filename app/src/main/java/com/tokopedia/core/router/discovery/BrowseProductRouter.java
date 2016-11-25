@@ -1,0 +1,80 @@
+package com.tokopedia.core.router.discovery;
+
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+
+import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
+import com.tokopedia.core.util.RouterUtils;
+
+/**
+ * Created by ricoharisin on 11/9/16.
+ * Modified by mady on 11/24/16
+ */
+
+public class BrowseProductRouter {
+
+
+    public static final String EXTRA_CATALOG_ID = "EXTRA_CATALOG_ID";
+    public static final String EXTRAS_SEARCH_TERM = "EXTRAS_SEARCH_TERM";
+    public static final String FRAGMENT_ID = "FRAGMENT_ID";
+    public static final String DEPARTMENT_ID = "DEPARTMENT_ID";
+    public static final String AD_SRC = "AD_SRC";
+    public static final int VALUES_HISTORY_FRAGMENT_ID = 192_471;
+    public static final String EXTRA_SOURCE = "EXTRA_SOURCE";
+    public static final String EXTRAS_DISCOVERY_ALIAS = "EXTRAS_DISCOVERY_ALIAS";
+
+    public static final String VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT = "search_product";
+    public static final String VALUES_DYNAMIC_FILTER_SEARCH_CATALOG = "search_catalog";
+    public static final String VALUES_DYNAMIC_FILTER_SEARCH_SHOP = "search_shop";
+    public static final String VALUES_DYNAMIC_FILTER_DIRECTORY = "directory";
+
+
+    public static final String VALUES_DYNAMIC_FILTER_HOT_PRODUCT = "hot_product";
+
+    private final static String VALUES_DEFAULT_DEPARTMENT_ID = "0";
+
+    private static final String BROWSE_PRODUCT_ACTIVITY
+            = "com.tokopedia.discovery.discovery.activity.BrowseProductActivity";
+    public static final int VALUES_PRODUCT_FRAGMENT_ID = 812_192;
+
+
+    public static Intent getDefaultBrowseIntent(Context context) {
+        Intent intent = RouterUtils.getActivityIntent(context, BROWSE_PRODUCT_ACTIVITY);
+        Bundle bundle = new Bundle();
+        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, VALUES_DEFAULT_DEPARTMENT_ID);
+        bundle.putInt(FRAGMENT_ID, BrowseProductRouter.VALUES_HISTORY_FRAGMENT_ID);
+        bundle.putString(AD_SRC, TopAdsApi.SRC_BROWSE_PRODUCT);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+
+    public static Intent getBrowseProductIntent(Context context, String depId, String ad_src) {
+
+        Intent intent = RouterUtils.getActivityIntent(context, BROWSE_PRODUCT_ACTIVITY);
+        Bundle bundle = new Bundle();
+        bundle.putString(DEPARTMENT_ID, depId);
+        bundle.putInt(FRAGMENT_ID, VALUES_HISTORY_FRAGMENT_ID);
+        bundle.putString(AD_SRC, ad_src);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent getBrowseProductIntent(Context context, String alias) {
+        Intent intent = RouterUtils.getActivityIntent(context, BROWSE_PRODUCT_ACTIVITY);
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRAS_DISCOVERY_ALIAS, alias);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+//    public static Fragment getCatalogDetailListFragment(Context context) {
+//        Fragment fragment = Fragment.instantiate(context, CATALOG_DETAIL_LIST_FRAGMENT);
+//        Bundle bundle = new Bundle();
+//        bundle.putString("catalog_id", catalogId);
+//        fragment.setArguments(bundle);
+//        return fragment;
+//    }
+
+}
