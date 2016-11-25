@@ -1,102 +1,10 @@
 package com.tokopedia.core.analytics;
 
-import android.app.Activity;
-import android.app.Fragment;
-
 import com.appsflyer.AFInAppEventType;
-import com.tokopedia.core.BuyCreditCart;
-import com.tokopedia.core.Cart;
-import com.tokopedia.core.CreditCardActivity;
-import com.tokopedia.core.DeveloperOptions;
-import com.tokopedia.core.EditAddressCart;
-import com.tokopedia.core.EtalaseShopEditor;
-import com.tokopedia.core.ManageGeneral;
-import com.tokopedia.core.ManagePeople;
-import com.tokopedia.core.ManagePeoplePassword;
-import com.tokopedia.core.ManageShop;
-import com.tokopedia.core.ManageShopAddress;
-import com.tokopedia.core.PaymentConfirmationSuccess;
-import com.tokopedia.core.PaymentEditor;
-import com.tokopedia.core.PreviewProductImage;
-import com.tokopedia.core.R;
-import com.tokopedia.core.ServerErrorPage;
-import com.tokopedia.core.ShopAddressForm;
-import com.tokopedia.core.ShopEditor;
-import com.tokopedia.core.ShopStatisticDetail;
-import com.tokopedia.core.SplashScreen;
-import com.tokopedia.core.addtocart.activity.AddToCartActivity;
-import com.tokopedia.core.deeplink.activity.DeepLinkActivity;
-import com.tokopedia.core.deposit.activity.DepositActivity;
-import com.tokopedia.core.deposit.activity.WithdrawActivity;
-import com.tokopedia.core.discovery.activity.BrowseProductActivity;
-import com.tokopedia.core.fragment.AboutFragment;
-import com.tokopedia.core.fragment.FragmentCart;
-import com.tokopedia.core.fragment.FragmentCartFinish;
-import com.tokopedia.core.fragment.FragmentCartSummary;
-import com.tokopedia.core.fragment.FragmentSettingPeople;
-import com.tokopedia.core.fragment.FragmentSettingShop;
-import com.tokopedia.core.fragment.SettingsFragment;
-import com.tokopedia.core.geolocation.activity.GeolocationActivity;
-import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.ParentIndexHome;
-import com.tokopedia.core.home.SimpleHomeActivity;
-import com.tokopedia.core.home.favorite.view.FragmentIndexFavoriteV2;
-import com.tokopedia.core.home.fragment.FragmentHotListV2;
-import com.tokopedia.core.home.fragment.FragmentIndexCategory;
-import com.tokopedia.core.home.fragment.FragmentProductFeed;
-import com.tokopedia.core.home.fragment.WishListFragment;
-import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
-import com.tokopedia.core.inboxmessage.activity.InboxMessageDetailActivity;
-import com.tokopedia.core.inboxmessage.activity.SendMessageActivity;
-import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
-import com.tokopedia.core.inboxreputation.activity.InboxReputationDetailActivity;
-import com.tokopedia.core.inboxticket.activity.InboxTicketActivity;
-import com.tokopedia.core.inboxticket.activity.InboxTicketDetailActivity;
-import com.tokopedia.core.invoice.activity.InvoiceRendererActivity;
-import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
-import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
-import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
-import com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActivity;
-import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
-import com.tokopedia.core.manage.people.bank.fragment.ManagePeopleBankFormFragment;
-import com.tokopedia.core.manage.people.notification.activity.ManageNotificationActivity;
-import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity;
-import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
-import com.tokopedia.core.manage.shop.notes.activity.ManageShopNotesActivity;
-import com.tokopedia.core.manage.shop.notes.fragment.ManageShopNotesFormFragment;
-import com.tokopedia.core.myproduct.ManageProduct;
-import com.tokopedia.core.myproduct.ProductActivity;
-import com.tokopedia.core.myproduct.fragment.AddProductFragment;
-import com.tokopedia.core.people.activity.PeopleInfoDrawerActivity;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
-import com.tokopedia.core.peoplefave.activity.PeopleFavoritedShop;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
-import com.tokopedia.core.reputationproduct.ReputationProduct;
-import com.tokopedia.core.reputationproduct.ReputationProductView;
-import com.tokopedia.core.rescenter.create.activity.CreateResCenterActivity;
-import com.tokopedia.core.rescenter.detail.activity.ResCenterActivity;
-import com.tokopedia.core.rescenter.edit.activity.EditResCenterActivity;
-import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
-import com.tokopedia.core.session.ActivationResentFragment;
-import com.tokopedia.core.session.ForgotPasswordFragment;
 import com.tokopedia.core.session.RegisterNewNextFragment;
-import com.tokopedia.core.session.RegisterNewViewFragment;
-import com.tokopedia.core.session.RegisterPassPhoneFragment;
 import com.tokopedia.core.session.RegisterThirdFragment;
-import com.tokopedia.core.shipping.EditShippingActivity;
-import com.tokopedia.core.shop.ShopEditorActivity;
-import com.tokopedia.core.shopinfo.ReputationViewShop;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.shopinfo.ShopInfoMore;
-import com.tokopedia.core.shopinfo.ShopNotesDetail;
-import com.tokopedia.core.shopinfo.activity.ShopFavoritedActivity;
-import com.tokopedia.core.shopinfo.fragment.ShopTalkViewFragment;
-import com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity;
-import com.tokopedia.core.talk.talkproduct.activity.TalkAddNew;
-import com.tokopedia.core.talk.talkproduct.activity.TalkProductActivity;
-import com.tokopedia.core.talkview.activity.TalkViewActivity;
 
-//import com.tokopedia.discovery.catalog.activity.CatalogDetailActivity;
 
 
 /**
@@ -109,24 +17,20 @@ public final class AppScreen {
 
     }
 
-    public static String convertAFActivityEvent(Activity activity) {
-        if (activity instanceof ParentIndexHome) {
+    public static String convertAFActivityEvent(String tag) {
+        if (tag.equals(ParentIndexHome.TAG)) {
             return AFInAppEventType.LOGIN;
         } else {
             return AFInAppEventType.CONTENT_VIEW;
         }
     }
 
-    public static String convertAFFragmentEvent(android.support.v4.app.Fragment fragment) {
-        if (fragment instanceof RegisterNewNextFragment || fragment instanceof RegisterThirdFragment) {
+    public static String convertAFFragmentEvent(String tag) {
+        if (tag.equals(RegisterNewNextFragment.TAG) || tag.equals(RegisterThirdFragment.TAG)) {
             return AFInAppEventType.COMPLETE_REGISTRATION;
         } else {
             return AFInAppEventType.CONTENT_VIEW;
         }
-    }
-
-    private static Fragment getFragment(Activity actClass) {
-        return actClass.getFragmentManager().findFragmentById(R.id.container);
     }
 
     public static final String SCREEN_INDEX_HOME = "Index Main";

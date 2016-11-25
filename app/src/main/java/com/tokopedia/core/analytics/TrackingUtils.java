@@ -1,6 +1,5 @@
 package com.tokopedia.core.analytics;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -37,23 +36,23 @@ public class TrackingUtils extends TrackingConfig {
     }
 
 
-    public static void activityBasedAFEvent(Activity activity){
+    public static void activityBasedAFEvent(String tag){
         Map<String, Object> afValue = new HashMap<>();
-        if (activity instanceof ParentIndexHome){
+        if (tag.equals(ParentIndexHome.TAG)){
             afValue.put(AFInAppEventParameterName.PARAM_1, CommonUtils.getUniqueDeviceID(MainApplication.getAppContext()));
         }
-        getAFEngine().sendTrackEvent(AppScreen.convertAFActivityEvent(activity), afValue);
+        getAFEngine().sendTrackEvent(AppScreen.convertAFActivityEvent(tag), afValue);
     }
 
-    public static void fragmentBasedAFEvent(android.support.v4.app.Fragment fragment){
+    public static void fragmentBasedAFEvent(String tag){
         Map<String, Object> afValue = new HashMap<>();
-        if (fragment instanceof RegisterNewNextFragment || fragment instanceof RegisterThirdFragment){
+        if (tag.equals(RegisterNewNextFragment.TAG) || tag.equals(RegisterThirdFragment.TAG)){
             afValue.put(AFInAppEventParameterName.REGSITRATION_METHOD,"register_normal");
-        } else if (fragment instanceof FragmentIndexCategory){
+        } else if (tag.equals(FragmentIndexCategory.TAG)){
             afValue.put(AFInAppEventParameterName.DESCRIPTION, Jordan.AF_SCREEN_HOME_MAIN);
         }
 
-        getAFEngine().sendTrackEvent(AppScreen.convertAFFragmentEvent(fragment), afValue);
+        getAFEngine().sendTrackEvent(AppScreen.convertAFFragmentEvent(tag), afValue);
     }
 
     public static String eventHTTP(){
