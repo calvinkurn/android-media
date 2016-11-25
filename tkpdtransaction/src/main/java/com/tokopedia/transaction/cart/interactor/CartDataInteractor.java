@@ -411,7 +411,7 @@ public class CartDataInteractor implements ICartDataInteractor {
                                     throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_NULL_DATA);
                                 }
                             } else  {
-                                throw new RuntimeException();
+                                throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                             }
                         } else {
                             new ErrorHandler(new ErrorListener() {

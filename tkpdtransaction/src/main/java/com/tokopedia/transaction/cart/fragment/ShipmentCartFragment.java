@@ -5,10 +5,12 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.CardView;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -86,6 +88,8 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
     ImageView btnChangeValueLocation;
     @Bind(R2.id.tv_value_location)
     AppCompatTextView tvValueLocation;
+    @Bind(R2.id.tv_error_geo_location)
+    AppCompatTextView tvErrorGeoLocation;
     @Bind(R2.id.layout_value_location)
     RelativeLayout layoutValueLocation;
     @Bind(R2.id.cv_geo_location)
@@ -343,22 +347,34 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
 
     @Override
     public void renderErrorCalculateShipment(String error) {
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), error, new NetworkErrorHelper.RetryClickedListener() {
+        NetworkErrorHelper.showEmptyState(getActivity(), getActivity().getWindow().getDecorView().getRootView()
+                , error, getCalculateShipmentRetryListener());
+    }
+
+    private NetworkErrorHelper.RetryClickedListener getCalculateShipmentRetryListener() {
+        return new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 calculateShipment();
             }
-        });
+        };
     }
 
     @Override
     public void renderErrorEditShipment(String error) {
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), error,
-                new NetworkErrorHelper.RetryClickedListener() {
+        NetworkErrorHelper.showEmptyState(getActivity(),
+                getActivity().getWindow().getDecorView().getRootView(),
+                error,
+                getEditShipmentRetryListener());
+    }
+
+    private NetworkErrorHelper.RetryClickedListener getEditShipmentRetryListener() {
+        return new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
+                presenter.processEditShipmentCart(wrapper);
             }
-        });
+        };
     }
 
     @Override
@@ -385,6 +401,8 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
     public void showGeolocationMap(ShipmentPackage shipmentPackage) {
         if (shipmentPackage.getShowMap() == 1) {
             cvGeoLocation.setVisibility(View.VISIBLE);
+        } else {
+            cvGeoLocation.setVisibility(View.GONE);
         }
     }
 
@@ -429,7 +447,11 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
         int resultCode = availability.isGooglePlayServicesAvailable(getActivity());
 
         if (ConnectionResult.SUCCESS == resultCode) {
-            Intent intent = GeolocationActivity.createInstance(getActivity(), locationPass);
+            LocationPass locationArg = null;
+            if (!(TextUtils.isEmpty(locationPass.getLongitude()) || TextUtils.isEmpty(locationPass.getLatitude()))){
+                locationArg = locationPass;
+            }
+            Intent intent = GeolocationActivity.createInstance(getActivity(), locationArg);
             startActivityForResult(intent, CHOOSE_LOCATION);
         } else {
             Toast.makeText(getActivity(), "Google Play Service Unavailable", Toast.LENGTH_LONG).show();
@@ -462,7 +484,33 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
 
     @OnClick(R2.id.btn_save)
     public void actionSaveShipment() {
+        if (validateSaveForm()) return;
         presenter.processEditShipmentCart(wrapper);
+    }
+
+    private boolean validateSaveForm() {
+        tvErrorGeoLocation.setVisibility(View.GONE);
+        ShipmentPackage shipmentPackage = (ShipmentPackage) spShipmentPackage.getSelectedItem();
+        if (shipmentPackage.getShowMap() == 1 && (
+                locationPass.getLatitude().equalsIgnoreCase("") ||
+                        locationPass.getLongitude().equalsIgnoreCase("")
+                )) {
+            tvErrorGeoLocation.setVisibility(View.VISIBLE);
+            showSnackbar(getString(com.tokopedia.transaction.R.string.shipment_data_not_complete));
+            return true;
+        }else if (shipmentData.getShipment() == null || shipmentData.getShipment().size() == 0){
+            showSnackbar(getString(com.tokopedia.transaction.R.string.courier_not_available));
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void showSnackbar(String message) {
+        Snackbar.make(getActivity().getWindow().getDecorView().getRootView(),
+                message,
+                Snackbar.LENGTH_LONG)
+                .show();
     }
 
     @Override

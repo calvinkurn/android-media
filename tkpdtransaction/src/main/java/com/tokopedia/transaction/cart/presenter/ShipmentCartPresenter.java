@@ -86,6 +86,7 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
 
                 @Override
                 public void onError(Throwable e) {
+                    view.dismisLoading();
                     e.printStackTrace();
                     if (e instanceof UnknownHostException) {
                         view.renderErrorCalculateShipment(
@@ -122,6 +123,7 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
 
                 @Override
                 public void onError(Throwable e) {
+                    view.dismisLoading();
                     view.renderErrorEditShipment(e.getMessage());
                 }
 

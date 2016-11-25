@@ -65,4 +65,6 @@ public interface IShipmentCartView {
     void renderEmptyShipment();
 
     void renderEmptyShipmentPackageSpinner();
+
+    void showSnackbar(String message);
 }
