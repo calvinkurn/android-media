@@ -1,7 +1,5 @@
 package com.tokopedia.seller.topads.model.exchange;
 
-import android.support.v4.util.ArrayMap;
-
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
 
@@ -54,19 +52,19 @@ public class StatisticRequest {
     }
 
     public String getFormattedStartDate() {
-        return new SimpleDateFormat(TopAdsConstant.DATE_FORMAT, Locale.ENGLISH).format(startDate);
+        return new SimpleDateFormat(TopAdsConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(startDate);
     }
 
     public String getFormattedEndDate() {
-        return new SimpleDateFormat(TopAdsConstant.DATE_FORMAT, Locale.ENGLISH).format(endDate);
+        return new SimpleDateFormat(TopAdsConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(endDate);
     }
 
     public HashMap<String, String> getParams() {
         HashMap<String, String> params = new HashMap<>();
         params.put(TopAdsNetworkConstant.PARAM_SHOP_ID, shopId);
         params.put(TopAdsNetworkConstant.PARAM_TYPE, String.valueOf(type));
-        params.put(TopAdsNetworkConstant.PARAM_START_DATE, new SimpleDateFormat(TopAdsConstant.DATE_FORMAT, Locale.ENGLISH).format(startDate));
-        params.put(TopAdsNetworkConstant.PARAM_END_DATE, new SimpleDateFormat(TopAdsConstant.DATE_FORMAT, Locale.ENGLISH).format(endDate));
+        params.put(TopAdsNetworkConstant.PARAM_START_DATE, new SimpleDateFormat(TopAdsConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(startDate));
+        params.put(TopAdsNetworkConstant.PARAM_END_DATE, new SimpleDateFormat(TopAdsConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(endDate));
         return params;
     }
 }

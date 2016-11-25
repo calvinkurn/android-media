@@ -8,5 +8,5 @@ public class TopAdsConstant {
 
     public static final int OFFSCREEN_PAGE_LIMIT = 3;
 
-    public static final String DATE_FORMAT = "dd MMM yy HH:mm ZZZ";
+    public static final String REQUEST_DATE_FORMAT = "yyyy-MM-dd";
 }

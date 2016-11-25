@@ -23,7 +23,7 @@ import java.util.Locale;
  */
 public class TopAdsProductFragmentPresenterImpl implements TopAdsProductFragmentPresenter {
 
-    private static final int TYPE_PRODUCT = 0;
+    private static final int TYPE_PRODUCT = 1;
 
     private DashboardTopadsInteractor dashboardTopadsInteractor;
     private Context context;
