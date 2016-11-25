@@ -31,7 +31,6 @@ import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.Cart;
 import com.tokopedia.core.ForceUpdate;
 import com.tokopedia.core.MaintenancePage;
@@ -50,13 +49,14 @@ import com.tokopedia.core.home.interactor.CacheHomeInteractorImpl;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.retrofit.utils.DialogForceLogout;
 import com.tokopedia.core.network.retrofit.utils.DialogNoConnection;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.ErrorNetworkReceiver;
 import com.tokopedia.core.service.HUDIntent;
 import com.tokopedia.core.service.HadesBroadcastReceiver;
 import com.tokopedia.core.service.HadesService;
 import com.tokopedia.core.service.constant.HadesConstant;
-import com.tokopedia.core.session.Login;
+
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
@@ -371,7 +371,7 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
 
     public static boolean onCartOptionSelected(Context context) {
         if (!SessionHandler.isV4Login(context)) {
-            Intent intent = new Intent(context, Login.class);
+            Intent intent = SessionRouter.getLoginActivityIntent(context);
             intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
             context.startActivity(intent);
         } else {
@@ -383,7 +383,7 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
     private Boolean onCartOptionSelected() {
 
         if (!SessionHandler.isV4Login(getBaseContext())) {
-            Intent intent = new Intent(this, Login.class);
+            Intent intent = SessionRouter.getLoginActivityIntent(getBaseContext());
             intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
             startActivity(intent);
         } else {
@@ -448,10 +448,19 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
     public void onLogout(Boolean success) {
         if (success) {
             finish();
-            Intent intent = new Intent(this, ParentIndexHome.class);
+            Intent intent;
+            if(isSeller()){
+                intent = SessionRouter.getLoginActivityIntent(this);
+            }else {
+                intent = new Intent(this, ParentIndexHome.class);
+            }
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         }
+    }
+
+    private boolean isSeller(){
+        return getApplication().getClass().getSimpleName().equals("SellerMainApplication");
     }
 
 

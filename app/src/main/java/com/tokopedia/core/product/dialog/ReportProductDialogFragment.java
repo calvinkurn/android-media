@@ -38,7 +38,6 @@ import com.tokopedia.core.product.model.report.ReportProductPass;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.session.model.network.ReportType;
 import com.tokopedia.core.session.model.network.ReportTypeModel;
-import com.tokopedia.core.util.RouterUtils;
 
 import java.util.ArrayList;
 import java.util.List;

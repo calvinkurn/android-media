@@ -8,6 +8,9 @@ import android.util.Log;
 import com.tokopedia.core.R;
 import com.tokopedia.core.network.v4.NetworkHandler;
 import com.tokopedia.core.service.DownloadService;
+import com.tokopedia.core.session.presenter.SecurityQuestion;
+import com.tokopedia.core.session.presenter.SecurityQuestionView;
+import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.session.model.LoginInterruptModel;
 import com.tokopedia.core.session.model.OTPModel;
 import com.tokopedia.core.session.model.QuestionFormModel;
@@ -21,7 +24,7 @@ import org.parceler.Parcels;
  * Created by m.normansyah on 05/11/2015.
  * modified by m.normansyah on 21/11/2015 - move download or upload to DownloadService
  */
-public class SecurityQuestionImpl implements SecurityQuestion{
+public class SecurityQuestionImpl implements SecurityQuestion {
     public static final int SWITCH_REQUEST_OTP = 2;
     SecurityQuestionView view;
     Context mContext;

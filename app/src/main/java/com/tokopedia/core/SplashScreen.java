@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
@@ -19,11 +20,13 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandler.GCMHandlerListener;
 import com.tokopedia.core.home.ParentIndexHome;
 import com.tokopedia.core.myproduct.presenter.AddProductPresenterImpl;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.LoginBypassModel;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.PasswordGenerator.PGListener;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.welcome.WelcomeActivity;
 
 import org.parceler.Parcels;
 
@@ -45,6 +48,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     private PasswordGenerator Pgenerator;
     DownloadResultReceiver mReceiver;
 	String id = null;
+    private SessionHandler sessionHandler;
 
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,7 +64,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         setContentView(R.layout.activity_splash_screen);
         mReceiver = new DownloadResultReceiver(new Handler());
         mReceiver.setReceiver(this);
-
+        sessionHandler = new SessionHandler(this);
         resetAllDatabaseFlag();
     }
 
@@ -115,8 +119,32 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     }
 
     private void finishSplashScreen() {
-        startActivity(new Intent(SplashScreen.this, ParentIndexHome.class));
+        Intent intent;
+        if(isSeller()){
+//            if(!sessionHandler.getShopID().isEmpty() && !sessionHandler.getShopID().equals("0")) {
+//                // Means it is a Seller
+//                startActivity(new Intent(SplashScreen.this, SellerHomeActivity.class));
+//            } else {
+//                // Means it is buyer
+//                if(!TextUtils.isEmpty(sessionHandler.getLoginID())) {
+//                    intent = moveToCreateShop(this);
+//                    startActivity(intent);
+//                } else {
+//                    intent = new Intent(SplashScreen.this, WelcomeActivity.class);
+//                    startActivity(intent);
+//                }
+//            }
+            intent = new Intent(SplashScreen.this, WelcomeActivity.class);
+            startActivity(intent);
+        }else {
+            intent = new Intent(this, ParentIndexHome.class);
+        }
+        startActivity(intent);
         finish();
+    }
+
+    private boolean isSeller(){
+        return getApplication().getClass().getSimpleName().equals("SellerMainApplication");
     }
 
     private void bypassV2Login() {

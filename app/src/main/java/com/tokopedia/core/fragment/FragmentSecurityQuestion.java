@@ -5,22 +5,15 @@ import android.os.CountDownTimer;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.telephony.PhoneNumberFormattingTextWatcher;
-import android.telephony.PhoneNumberUtils;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
@@ -32,7 +25,6 @@ import com.tokopedia.core.session.model.SecurityQuestionViewModel;
 import com.tokopedia.core.session.presenter.SecurityQuestion;
 import com.tokopedia.core.session.presenter.SecurityQuestionImpl;
 import com.tokopedia.core.session.presenter.SecurityQuestionView;
-import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
@@ -40,9 +32,6 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-
-import static java.lang.Character.COMBINING_SPACING_MARK;
-import static java.lang.Character.FORMAT;
 
 /**
  * modify by m.normansyah 9-11-2015,

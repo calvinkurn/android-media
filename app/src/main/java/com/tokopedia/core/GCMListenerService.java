@@ -41,8 +41,8 @@ import com.tokopedia.core.prototype.ShopSettingCache;
 import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
-import com.tokopedia.core.session.Login;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity;
@@ -132,7 +132,8 @@ public class GCMListenerService extends GcmListenerService {
                 } else {
                     data.putInt("keylogin1", TkpdState.DrawerPosition.LOGIN);
                     data.putInt("keylogin2", SessionView.HOME);
-                    createNotification(data, Login.class);
+                    Intent intent = SessionRouter.getLoginActivityIntent(getApplicationContext());
+                    createNotification(data, intent.getClass());
                 }
                 break;
             default:

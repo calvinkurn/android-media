@@ -50,7 +50,6 @@ import com.tokopedia.core.session.model.QuestionFormModel;
 import com.tokopedia.core.session.model.SecurityQuestionViewModel;
 import com.tokopedia.core.session.model.TokenModel;
 import com.tokopedia.core.session.presenter.Login;
-import com.tokopedia.core.session.presenter.LoginImpl;
 import com.tokopedia.core.session.presenter.SecurityQuestion;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.PasswordGenerator;
@@ -155,7 +154,7 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                 break;
             case LOGIN_BYPASS:
                 LoginBypassModel loginBypassModel = Parcels.unwrap(bundle.getParcelable(LOGIN_BYPASS_MODEL_KEY));
-                Log.d(TAG, LoginImpl.class.getSimpleName() + " try to bypass : " + loginBypassModel);
+                Log.d(TAG, "LoginImpl try to bypass : " + loginBypassModel);
                 intent.putExtra(LOGIN_BYPASS_MODEL_KEY, Parcels.wrap(loginBypassModel));
                 break;
             default:

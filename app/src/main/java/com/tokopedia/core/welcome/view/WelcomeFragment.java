@@ -22,9 +22,9 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.customView.LoginTextView;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.service.DownloadService;
-import com.tokopedia.core.session.Login;
-import com.tokopedia.core.session.LoginTextView;
 import com.tokopedia.core.session.model.LoginProviderModel;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
@@ -144,7 +144,7 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), Login.class);
+                Intent intent = SessionRouter.getLoginActivityIntent(context);
                 intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
                 intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
                 startActivity(intent);
@@ -155,7 +155,7 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), Login.class);
+                Intent intent = SessionRouter.getLoginActivityIntent(context);
                 intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.REGISTER);
                 intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
                 startActivity(intent);

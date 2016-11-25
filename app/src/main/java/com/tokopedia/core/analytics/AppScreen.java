@@ -73,11 +73,6 @@ import com.tokopedia.core.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.core.rescenter.detail.activity.ResCenterActivity;
 import com.tokopedia.core.rescenter.edit.activity.EditResCenterActivity;
 import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
-import com.tokopedia.core.session.ActivationResentFragment;
-import com.tokopedia.core.session.ForgotPasswordFragment;
-import com.tokopedia.core.session.RegisterNewNextFragment;
-import com.tokopedia.core.session.RegisterNewViewFragment;
-import com.tokopedia.core.session.RegisterPassPhoneFragment;
 import com.tokopedia.core.shipping.EditShippingActivity;
 import com.tokopedia.core.shop.ShopEditorActivity;
 import com.tokopedia.core.shopinfo.ReputationViewShop;
@@ -302,11 +297,12 @@ public final class AppScreen {
     }
 
     public static String convertAFFragmentEvent(android.support.v4.app.Fragment fragment){
-        if (fragment instanceof RegisterNewNextFragment || fragment instanceof RegisterPassPhoneFragment){
-            return AFInAppEventType.COMPLETE_REGISTRATION;
-        } else {
-            return AFInAppEventType.CONTENT_VIEW;
-        }
+//        if (fragment instanceof RegisterNewNextFragment || fragment instanceof RegisterPassPhoneFragment){
+//            return AFInAppEventType.COMPLETE_REGISTRATION;
+//        } else {
+//            return AFInAppEventType.CONTENT_VIEW;
+//        }
+        return null;
     }
 
     public static String convertFragmentScreen(android.support.v4.app.Fragment actClass) {
@@ -318,16 +314,16 @@ public final class AppScreen {
             return SCREEN_HOME_PRODUCT_CATEGORY;
         } else if (actClass instanceof FragmentProductFeed) {
             return SCREEN_HOME_PRODUCT_FEED;
-        } else if (actClass instanceof RegisterNewViewFragment) {
-            return SCREEN_REGISTER;
-        } else if (actClass instanceof RegisterPassPhoneFragment) {
-            return SCREEN_REGISTER_THIRD;
+//        } else if (actClass instanceof RegisterNewViewFragment) {
+//            return SCREEN_REGISTER;
+//        } else if (actClass instanceof RegisterPassPhoneFragment) {
+//            return SCREEN_REGISTER_THIRD;
         } else if (actClass instanceof WishListFragment) {
             return SCREEN_FRAGMENT_WISHLIST;
-        } else if (actClass instanceof ForgotPasswordFragment) {
-            return SCREEN_FORGOT_PASSWORD;
-        } else if (actClass instanceof ActivationResentFragment) {
-            return SCREEN_REGISTER_ACTIVATION;
+//        } else if (actClass instanceof ForgotPasswordFragment) {
+//            return SCREEN_FORGOT_PASSWORD;
+//        } else if (actClass instanceof ActivationResentFragment) {
+//            return SCREEN_REGISTER_ACTIVATION;
         } else if (actClass instanceof AddProductFragment) {
             return SCREEN_ADD_PRODUCT;
             //} else if (actClass instanceof FragmentShopTxStatusDetailV2){

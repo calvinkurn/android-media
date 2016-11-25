@@ -87,7 +87,7 @@
             android:id="@+id/progress_login"
             android:layout_gravity="center" />
 
-        <com.tokopedia.tkpd.session.LoginTextView
+        <com.tokopedia.core.customView.LoginTextView
             android:id="@+id/login"
             android:layout_width="match_parent"
             android:layout_height="0dp"

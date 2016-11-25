@@ -7,7 +7,7 @@
     android:background="@drawable/cards_ui_2"
     android:orientation="vertical"
     tools:showIn="layout/activity_login2"
-    tools:context="com.tokopedia.core.session.LoginFragment">
+    tools:context="com.tokopedia.core.com.tokopedia.session.session.fragment.LoginFragment">
     <ScrollView
         android:id="@+id/login_form"
         android:layout_width="match_parent"
@@ -44,7 +44,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp">
-                <com.tokopedia.core.session.PasswordView
+                <com.tokopedia.core.customView.PasswordView
                     android:id="@+id/password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

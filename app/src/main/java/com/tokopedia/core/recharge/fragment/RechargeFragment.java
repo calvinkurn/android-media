@@ -47,7 +47,7 @@ import com.tokopedia.core.recharge.presenter.RechargePresenter;
 import com.tokopedia.core.recharge.presenter.RechargePresenterImpl;
 import com.tokopedia.core.recharge.view.RechargeView;
 import com.tokopedia.core.recharge.view.widget.RechargeEditText;
-import com.tokopedia.core.session.Login;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -681,7 +681,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     //endregion
 
     private void gotoLogin() {
-        Intent intent = new Intent(getActivity(), Login.class);
+        Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
         intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
         rechargePresenter.saveLastInputToCache(
                 LAST_INPUT_KEY + category.getId(),

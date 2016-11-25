@@ -5,13 +5,12 @@ import android.support.v4.app.Fragment;
 
 import com.google.android.gms.plus.model.people.Person;
 import com.tokopedia.core.session.model.CreatePasswordModel;
-import com.tokopedia.core.session.model.RegisterViewModel;
 
 import java.util.List;
 
 /**
  * Created by m.normansyah on 04/11/2015.
- * {@link com.tokopedia.core.session.Login} presenter
+ * presenter
  */
 public interface SessionView {
     String TAG = "MNORMANSYAH";

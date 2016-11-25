@@ -43,7 +43,7 @@ import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
-import com.tokopedia.core.session.Login;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.shopinfo.adapter.ShopTabPagerAdapter;
@@ -657,7 +657,7 @@ public class ShopInfoActivity extends TActivity {
             startActivity(intent);
         } else {
             bundle.putBoolean("login", true);
-            intent = new Intent(this, Login.class);
+            intent = SessionRouter.getLoginActivityIntent(this);
             intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
             bundle.putString(SendMessageFragment.PARAM_SHOP_ID, shopModel.info.shopId);
             bundle.putString(SendMessageFragment.PARAM_OWNER_FULLNAME, shopModel.info.shopName);
