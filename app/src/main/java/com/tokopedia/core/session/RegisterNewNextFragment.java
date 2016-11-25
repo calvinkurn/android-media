@@ -76,6 +76,8 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
         }
     };
 
+    public static final String TAG = RegisterNewNextFragment.class.getSimpleName();
+
     DatePickerDialog datePicker;
     DatePicker dp;
 
@@ -338,7 +340,7 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
         switch (type){
             case DownloadService.REGISTER:
 
-                TrackingUtils.fragmentBasedAFEvent(this);
+                TrackingUtils.fragmentBasedAFEvent(TAG);
 
                 RegisterSuccessModel registerSuccessModel = Parcels.unwrap(data.getParcelable(DownloadService.REGISTER_MODEL_KEY));
                 switch (registerSuccessModel.getIsActive()){

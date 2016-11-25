@@ -186,7 +186,7 @@ public class RegisterThirdFragment extends BaseFragment<RegisterThird> implement
 //                AnalyticsHandler.init(getActivity())
 //                        .type(com.tokopedia.tkpd.analytics.Type.APPSFLYER).send("registration", "");
 
-                TrackingUtils.fragmentBasedAFEvent(this);
+                TrackingUtils.fragmentBasedAFEvent(TAG);
 
                 RegisterSuccessModel registerSuccessModel = Parcels.unwrap(data.getParcelable(DownloadService.REGISTER_MODEL_KEY));
                 int tipe = data.getInt(DownloadServiceConstant.TYPE);
