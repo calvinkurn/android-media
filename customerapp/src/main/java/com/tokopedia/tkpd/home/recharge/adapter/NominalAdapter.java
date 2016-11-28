@@ -144,31 +144,31 @@ public class NominalAdapter extends ArrayAdapter<Product> {
     }
 
     static class NormalViewHolder {
-        @Bind(R2.id.nominal_description_textview)
+        @Bind(R.id.nominal_description_textview)
         TextView nominalDescriptionTextview;
-        @Bind(R2.id.nominal_tag_textview)
+        @Bind(R.id.nominal_tag_textview)
         TextView nominalTagTextview;
-        @Bind(R2.id.nominal_detail_textview)
+        @Bind(R.id.nominal_detail_textview)
         TextView nominalDetailTextView;
-        @Bind(R2.id.real_price_textview)
+        @Bind(R.id.real_price_textview)
         TextView nominalPriceTextView;
-        @Bind(R2.id.nominal_diskon_textview)
+        @Bind(R.id.nominal_diskon_textview)
         TextView nominalDiskonTextView;
-        @Bind(R2.id.lin_normal_view)
+        @Bind(R.id.lin_normal_view)
         RelativeLayout linNormalView;
-        @Bind(R2.id.lin_promo)
+        @Bind(R.id.lin_promo)
         LinearLayout linPromoView;
-        @Bind(R2.id.tv_promo_terms)
+        @Bind(R.id.tv_promo_terms)
         TextView promoTermTextView;
-        @Bind(R2.id.tv_promo_value_text)
+        @Bind(R.id.tv_promo_value_text)
         TextView promoValueTextView;
-        @Bind(R2.id.tv_promo_tag)
+        @Bind(R.id.tv_promo_tag)
         TextView promoTagTextView;
-        @Bind(R2.id.tv_promo_bonus_text)
+        @Bind(R.id.tv_promo_bonus_text)
         TextView promoBonusTextView;
-        @Bind(R2.id.tv_promo_new_price)
+        @Bind(R.id.tv_promo_new_price)
         TextView promoNewPriceTextView;
-        @Bind(R2.id.empty_stock)
+        @Bind(R.id.empty_stock)
         TextView emptyStockTextView;
 
         public NormalViewHolder(View view) {

@@ -197,12 +197,11 @@ public class RechargeFragment  extends Fragment implements RechargeEditText.Rech
         View view = inflater.inflate(R.layout.fragment_recharge, container, false);
         ButterKnife.bind(this, view);
         initListener();
-        CategoryAttributes categoryAttributes = category.getAttributes();
         rechargePresenter.fetchRecentNumbers(category.getId());
         hideProgressFetchData();
         setRechargeEditTextCallback();
         setRechargeEditTextTouchCallback();
-        renderDefaultView(categoryAttributes);
+        renderDefaultView();
         return view;
     }
 
@@ -501,13 +500,13 @@ public class RechargeFragment  extends Fragment implements RechargeEditText.Rech
         buyWithCreditCheckbox.setOnCheckedChangeListener(this);
     }
 
-    private void renderDefaultView(CategoryAttributes categoryAttributes) {
+    private void renderDefaultView() {
 
-        ClientNumber clientNumber = categoryAttributes.getClientNumber();
+        ClientNumber clientNumber = category.getAttributes().getClientNumber();
         tlpLabelTextView.setText(clientNumber.getText());
         tlpLabelTextView.setHint(clientNumber.getPlaceholder());
         buyWithCreditCheckbox.setVisibility(
-                categoryAttributes.getInstantCheckoutAvailable() ? View.VISIBLE : View.INVISIBLE
+                category.getAttributes().getInstantCheckoutAvailable() ? View.VISIBLE : View.INVISIBLE
         );
 
         setTextToEditTextOrSetVisibilityForm();
@@ -515,7 +514,7 @@ public class RechargeFragment  extends Fragment implements RechargeEditText.Rech
 
 
         if (!category.getAttributes().getValidatePrefix()) {
-            if (!categoryAttributes.getShowOperator()) {
+            if (!category.getAttributes().getShowOperator()) {
                 selectedOperatorId = category.getAttributes().getDefaultOperatorId();
                 this.rechargePresenter.updateMinLenghAndOperator(selectedOperatorId);
             } else {
