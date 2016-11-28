@@ -2,6 +2,7 @@ package com.tokopedia.seller.topads.interactor;
 
 import android.content.Context;
 
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.model.exchange.CreditResponse;
 import com.tokopedia.seller.topads.model.exchange.DepositResponse;
