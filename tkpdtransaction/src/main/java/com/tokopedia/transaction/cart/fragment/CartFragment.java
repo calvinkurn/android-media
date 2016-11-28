@@ -293,7 +293,8 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                             - (heightRv - (heightRv / cartItemEditables.size() * positionError)));
                     showToastMessage("Keranjang tidak dapat diproses, mohon periksa kembali keranjang Anda.");
                 } else {
-                    showToastMessage("Keranjang siap untuk diproses");
+                    //   showToastMessage("Keranjang siap untuk diproses");
+                    
                 }
             }
         });

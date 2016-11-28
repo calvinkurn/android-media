@@ -2,10 +2,13 @@ package com.tokopedia.transaction.cart.interactor;
 
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.payment.interactor.PaymentNetInteractor;
 import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentData;
 import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentWrapper;
 import com.tokopedia.transaction.cart.model.cartdata.CartModel;
+import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 
+import rx.Scheduler;
 import rx.Subscriber;
 
 /**
@@ -14,18 +17,25 @@ import rx.Subscriber;
 
 public interface ICartDataInteractor {
 
-    void getCartData(TKPDMapParam<String, String> param, Subscriber<CartModel> subscriber);
+    void getCartData(TKPDMapParam<String, String> param,
+                     Subscriber<CartModel> subscriber);
 
     void cancelCart(TKPDMapParam<String, String> paramCancelCart,
-                    TKPDMapParam<String, String> paramCartInfo, Subscriber<CartModel> subscriber);
+                    TKPDMapParam<String, String> paramCartInfo,
+                    Subscriber<CartModel> subscriber);
 
     void calculateCart(TKPDMapParam<String, String> param, Subscriber<Object> subscriber);
 
-    void calculateShipment(CalculateShipmentWrapper wrapper, Subscriber<CalculateShipmentData> subscriber);
+    void calculateShipment(CalculateShipmentWrapper wrapper,
+                           Subscriber<CalculateShipmentData> subscriber);
 
     void updateCart(TKPDMapParam<String, String> paramUpdate,
                     TKPDMapParam<String, String> paramCart, Subscriber<CartModel> subscriber);
 
     void updateInsuranceCart(TKPDMapParam<String, String> paramUpdate,
-                             TKPDMapParam<String, String> paramCart, Subscriber<CartModel> subscriber);
+                             TKPDMapParam<String, String> paramCart,
+                             Subscriber<CartModel> subscriber);
+
+    void getParameterTopPay(TKPDMapParam<String, String> params, Scheduler scheduler,
+                            Subscriber<TopPayParameterData> subscriber);
 }

@@ -2,6 +2,7 @@ package com.tokopedia.transaction.cart.interactor;
 
 import android.support.annotation.NonNull;
 
+import com.tokopedia.core.network.apiservices.transaction.TXActService;
 import com.tokopedia.core.network.apiservices.transaction.TXCartActService;
 import com.tokopedia.core.network.apiservices.transaction.TXCartService;
 import com.tokopedia.core.network.apiservices.transaction.TXService;
@@ -13,11 +14,13 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentData;
 import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentWrapper;
 import com.tokopedia.transaction.cart.model.cartdata.CartModel;
+import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 
 import org.json.JSONException;
 
 import retrofit2.Response;
 import rx.Observable;
+import rx.Scheduler;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -33,6 +36,7 @@ public class CartDataInteractor implements ICartDataInteractor {
     private static final String KEY_FLAG_IS_SUCCESS = "is_success";
 
     private final TXService txService;
+    private final TXActService txActService;
     private final TXCartActService txCartActService;
     private final CompositeSubscription compositeSubscription;
 
@@ -40,6 +44,7 @@ public class CartDataInteractor implements ICartDataInteractor {
         this.compositeSubscription = new CompositeSubscription();
         this.txService = new TXService();
         this.txCartActService = new TXCartActService();
+        this.txActService = new TXActService();
     }
 
     @Override
@@ -335,6 +340,27 @@ public class CartDataInteractor implements ICartDataInteractor {
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .subscribe(subscriber));
+    }
+
+    @Override
+    public void getParameterTopPay(TKPDMapParam<String, String> params, Scheduler scheduler,
+                                   Subscriber<TopPayParameterData> subscriber) {
+        Observable<Response<TkpdResponse>> observable
+                = txActService.getApi().getParameterDynamicPayment(params);
+        compositeSubscription.add(observable
+                .flatMap(new Func1<Response<TkpdResponse>, Observable<TopPayParameterData>>() {
+                    @Override
+                    public Observable<TopPayParameterData> call(Response<TkpdResponse> response) {
+                        return Observable.just(response.body().convertDataObj(
+                                TopPayParameterData.class)
+                        );
+                    }
+                })
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribe(subscriber)
+        );
     }
 
     @NonNull
