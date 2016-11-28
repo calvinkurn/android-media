@@ -44,7 +44,9 @@ public class TopAdsListPresenterImpl implements TopAdsListPresenter {
 
             @Override
             public void onSuccess(ProductResponse productResponse) {
-
+                if(productResponse != null) {
+                    topAdsListItem.addAll(productResponse.getData());
+                }
             }
 
             @Override
