@@ -6,8 +6,10 @@ import com.tokopedia.seller.topads.datasource.TopAdsCacheDataSourceImpl;
 import com.tokopedia.seller.topads.datasource.TopAdsDbDataSource;
 import com.tokopedia.seller.topads.datasource.TopAdsDbDataSourceImpl;
 import com.tokopedia.seller.topads.model.data.Cell;
+import com.tokopedia.seller.topads.model.data.DataDeposit;
 import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.model.exchange.CreditResponse;
+import com.tokopedia.seller.topads.model.exchange.DepositRequest;
 import com.tokopedia.seller.topads.model.exchange.DepositResponse;
 import com.tokopedia.seller.topads.model.exchange.ProductResponse;
 import com.tokopedia.seller.topads.model.exchange.ShopResponse;
@@ -43,6 +45,58 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
         topAdsManagementService = new TopAdsManagementService();
         topAdsDbDataSource = new TopAdsDbDataSourceImpl();
         topAdsCacheDataSource = new TopAdsCacheDataSourceImpl(context);
+    }
+
+    @Override
+    public void getDashboardSummary(final StatisticRequest statisticRequest, final Listener<Summary> listener) {
+        Observable<Summary> getSummaryCacheObservable = topAdsDbDataSource.getSummary(statisticRequest);
+        compositeSubscription.add(getSummaryCacheObservable
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .flatMap(new Func1<Summary, Observable<Summary>>() {
+                    @Override
+                    public Observable<Summary> call(Summary summary) {
+                        if (!topAdsCacheDataSource.isStatisticDataExpired() || summary != null) {
+                            return Observable.just(summary);
+                        }
+                        Observable<Response<StatisticResponse>> statisticApiObservable = topAdsManagementService.getApi().getDashboardStatistic(statisticRequest.getParams());
+                        return statisticApiObservable
+                                .subscribeOn(Schedulers.newThread())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .unsubscribeOn(Schedulers.newThread())
+                                .flatMap(new Func1<Response<StatisticResponse>, Observable<Summary>>() {
+                                    @Override
+                                    public Observable<Summary> call(Response<StatisticResponse> statisticResponse) {
+                                        Observable<Summary> insertSummaryObservable = topAdsDbDataSource.insertSummary(statisticRequest, statisticResponse.body().getData().getSummary());
+                                        Observable<List<Cell>> insertCellListObservable = topAdsDbDataSource.insertCellList(statisticRequest, statisticResponse.body().getData().getCells());
+                                        return Observable.zip(insertSummaryObservable, insertCellListObservable, new Func2<Summary, List<Cell>, Summary>() {
+                                            @Override
+                                            public Summary call(Summary summary, List<Cell> cellList) {
+                                                topAdsCacheDataSource.updateLastInsertStatistic();
+                                                return summary;
+                                            }
+                                        });
+                                    }
+                                });
+                    }
+                }).subscribe(new SubscribeOnNext<Summary>(listener), new SubscribeOnError(listener)));
+    }
+
+    @Override
+    public void getDeposit(DepositRequest depositRequest, Listener<DataDeposit> listener) {
+        Observable<Response<DepositResponse>> depositObservable = topAdsManagementService.getApi().getDashboardDeposit(depositRequest.getParams());
+        compositeSubscription.add(depositObservable
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .flatMap(new Func1<Response<DepositResponse>, Observable<DataDeposit>>() {
+                    @Override
+                    public Observable<DataDeposit> call(Response<DepositResponse> depositResponseResponse) {
+                        return Observable.just(depositResponseResponse.body().getData());
+                    }
+                })
+                .subscribe(new SubscribeOnNext<DataDeposit>(listener), new SubscribeOnError(listener)));
     }
 
     @Override
@@ -100,42 +154,6 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
                         }
                     }
                 }));
-    }
-
-    @Override
-    public void getDashboardSummary(final StatisticRequest statisticRequest, final Listener<Summary> listener) {
-        Observable<Summary> getSummaryCacheObservable = topAdsDbDataSource.getSummary(statisticRequest);
-        compositeSubscription.add(getSummaryCacheObservable
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .flatMap(new Func1<Summary, Observable<Summary>>() {
-                    @Override
-                    public Observable<Summary> call(Summary summary) {
-                        if (!topAdsCacheDataSource.isStatisticDataExpired() || summary != null) {
-                            return Observable.just(summary);
-                        }
-                        Observable<Response<StatisticResponse>> statisticApiObservable = topAdsManagementService.getApi().getDashboardStatistic(statisticRequest.getParams());
-                        return statisticApiObservable
-                                .subscribeOn(Schedulers.newThread())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .unsubscribeOn(Schedulers.newThread())
-                                .flatMap(new Func1<Response<StatisticResponse>, Observable<Summary>>() {
-                            @Override
-                            public Observable<Summary> call(Response<StatisticResponse> statisticResponse) {
-                                Observable<Summary> insertSummaryObservable = topAdsDbDataSource.insertSummary(statisticRequest, statisticResponse.body().getData().getSummary());
-                                Observable<List<Cell>> insertCellListObservable = topAdsDbDataSource.insertCellList(statisticRequest, statisticResponse.body().getData().getCells());
-                                return Observable.zip(insertSummaryObservable, insertCellListObservable, new Func2<Summary, List<Cell>, Summary>() {
-                                    @Override
-                                    public Summary call(Summary summary, List<Cell> cellList) {
-                                        topAdsCacheDataSource.updateLastInsertStatistic();
-                                        return summary;
-                                    }
-                                });
-                            }
-                        });
-                    }
-                }).subscribe(new SubscribeOnNext<Summary>(listener), new SubscribeOnError(listener)));
     }
 
     @Override
