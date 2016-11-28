@@ -76,7 +76,7 @@ import permissions.dispatcher.RuntimePermissions;
  * @author kulomady 05 on 7/11/2016.
  */
 @RuntimePermissions
-public class RechargeFragment  extends Fragment implements RechargeEditText.RechargeEditTextListener,
+public class RechargeFragment extends Fragment implements RechargeEditText.RechargeEditTextListener,
         RechargeEditText.OnButtonPickerListener,
         RechargeView, AdapterView.OnItemSelectedListener,
         CompoundButton.OnCheckedChangeListener, View.OnFocusChangeListener, View.OnTouchListener {
@@ -97,25 +97,25 @@ public class RechargeFragment  extends Fragment implements RechargeEditText.Rech
     //endregion
 
     //region widget variable
-    @Bind(R.id.pulsa_edittext)
+    @Bind(R2.id.pulsa_edittext)
     RechargeEditText rechargeEditText;
-    @Bind(R.id.buy_with_credit_checkbox)
+    @Bind(R2.id.buy_with_credit_checkbox)
     CheckBox buyWithCreditCheckbox;
-    @Bind(R.id.buy_wrapper_linearlayout)
+    @Bind(R2.id.buy_wrapper_linearlayout)
     LinearLayout wrapperLinearLayout;
-    @Bind(R.id.nominalTextview)
+    @Bind(R2.id.nominalTextview)
     TextView nominalTextview;
-    @Bind(R.id.telp_textview)
+    @Bind(R2.id.telp_textview)
     TextView tlpLabelTextView;
-    @Bind(R.id.recharge_progressbar)
+    @Bind(R2.id.recharge_progressbar)
     ProgressBar rechargeProgressbar;
-    @Bind(R.id.spnNominal)
+    @Bind(R2.id.spnNominal)
     Spinner spnNominal;
-    @Bind(R.id.spnOperator)
+    @Bind(R2.id.spnOperator)
     Spinner spnOperator;
-    @Bind(R.id.errorNominal)
+    @Bind(R2.id.errorNominal)
     TextView errorNominal;
-    @Bind(R.id.btn_buy)
+    @Bind(R2.id.btn_buy)
     Button buyButton;
 
     //endregion
@@ -133,13 +133,15 @@ public class RechargeFragment  extends Fragment implements RechargeEditText.Rech
     private int minLengthDefaultOperator = -1;
     private Bundle bundle;
     private Boolean showPrice = true;
+    private int currentPosition;
     //endregion
 
-    public static RechargeFragment newInstance(Category category) {
+    public static RechargeFragment newInstance(Category category, int position) {
         RechargeFragment rechargeFragment = new RechargeFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_PARAM_CATEGORY, category);
         rechargeFragment.setArguments(bundle);
+        rechargeFragment.currentPosition = position;
         return rechargeFragment;
     }
 
@@ -197,11 +199,12 @@ public class RechargeFragment  extends Fragment implements RechargeEditText.Rech
         View view = inflater.inflate(R.layout.fragment_recharge, container, false);
         ButterKnife.bind(this, view);
         initListener();
+        CategoryAttributes categoryAttributes = category.getAttributes();
         rechargePresenter.fetchRecentNumbers(category.getId());
         hideProgressFetchData();
         setRechargeEditTextCallback();
         setRechargeEditTextTouchCallback();
-        renderDefaultView();
+        renderDefaultView(categoryAttributes);
         return view;
     }
 
@@ -315,6 +318,9 @@ public class RechargeFragment  extends Fragment implements RechargeEditText.Rech
 
     @Override
     public void onButtonContactClicked() {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(getActivity(), "tabSelection");
+        localCacheHandler.putInt("rechargeSelectedPosition", currentPosition);
+        localCacheHandler.applyEditor();
         RechargeFragmentPermissionsDispatcher.doLaunchContactPickerWithCheck(RechargeFragment.this);
     }
 
@@ -500,13 +506,13 @@ public class RechargeFragment  extends Fragment implements RechargeEditText.Rech
         buyWithCreditCheckbox.setOnCheckedChangeListener(this);
     }
 
-    private void renderDefaultView() {
+    private void renderDefaultView(CategoryAttributes categoryAttributes) {
 
-        ClientNumber clientNumber = category.getAttributes().getClientNumber();
+        ClientNumber clientNumber = categoryAttributes.getClientNumber();
         tlpLabelTextView.setText(clientNumber.getText());
         tlpLabelTextView.setHint(clientNumber.getPlaceholder());
         buyWithCreditCheckbox.setVisibility(
-                category.getAttributes().getInstantCheckoutAvailable() ? View.VISIBLE : View.INVISIBLE
+                categoryAttributes.getInstantCheckoutAvailable() ? View.VISIBLE : View.INVISIBLE
         );
 
         setTextToEditTextOrSetVisibilityForm();
@@ -514,7 +520,7 @@ public class RechargeFragment  extends Fragment implements RechargeEditText.Rech
 
 
         if (!category.getAttributes().getValidatePrefix()) {
-            if (!category.getAttributes().getShowOperator()) {
+            if (!categoryAttributes.getShowOperator()) {
                 selectedOperatorId = category.getAttributes().getDefaultOperatorId();
                 this.rechargePresenter.updateMinLenghAndOperator(selectedOperatorId);
             } else {
@@ -655,7 +661,7 @@ public class RechargeFragment  extends Fragment implements RechargeEditText.Rech
     @NeedsPermission(Manifest.permission.READ_CONTACTS)
     public void doLaunchContactPicker() {
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(getActivity(), "tabSelection");
-        localCacheHandler.putInt("rechargeSelectedPosition", category.getId());
+        localCacheHandler.putInt("rechargeSelectedPosition", currentPosition);
         localCacheHandler.applyEditor();
         Intent contactPickerIntent = new Intent(
                 Intent.ACTION_PICK,
