@@ -33,7 +33,7 @@ public class DashboardTopAdsInteractorTest extends BaseAndroidJUnitTest {
 
     @Before
     public void initialSystem() {
-        dashboardTopadsInteractor = new DashboardTopadsInteractorImpl();
+        dashboardTopadsInteractor = new DashboardTopadsInteractorImpl(getContext());
     }
 
     @Test

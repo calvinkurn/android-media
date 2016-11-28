@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.Logger;
@@ -26,21 +27,23 @@ public class TopAdsProductFragment extends BasePresenterFragment<TopAdsProductFr
 
     private static String TAG = TopAdsProductFragment.class.getSimpleName();
 
+    @Bind(R2.id.image_view_shop_icon)
+    ImageView shopIconImageView;
+    @Bind(R2.id.text_view_shop_title)
+    TextView shopTitleTextView;
+    @Bind(R2.id.text_view_deposit_desc)
+    TextView depositDescTextView;
+
     @Bind(R2.id.layout_top_ads_info_text_impression)
     View impressionInfoLayout;
-
     @Bind(R2.id.layout_top_ads_info_text_click)
     View clickInfoLayout;
-
     @Bind(R2.id.layout_top_ads_info_text_ctr)
     View ctrInfoLayout;
-
     @Bind(R2.id.layout_top_ads_info_text_conversion)
     View conversionInfoLayout;
-
     @Bind(R2.id.layout_top_ads_info_text_average)
     View averageMainInfoLayout;
-
     @Bind(R2.id.layout_top_ads_info_text_cost)
     View costInfoLayout;
 
@@ -97,6 +100,7 @@ public class TopAdsProductFragment extends BasePresenterFragment<TopAdsProductFr
 
     @Override
     protected void initView(View view) {
+        initialLayout();
         Calendar startCalendar = Calendar.getInstance();
         Calendar endCalendar = Calendar.getInstance();
         endCalendar.add(Calendar.DAY_OF_YEAR, 3);
@@ -117,7 +121,7 @@ public class TopAdsProductFragment extends BasePresenterFragment<TopAdsProductFr
 
     @Override
     public void onDepositTopAdsLoaded(@NonNull DataDeposit dataDeposit) {
-
+        depositDescTextView.setText(getString(R.string.label_top_ads_deposit_desc, dataDeposit.getAmountFmt()));
     }
 
     @Override
@@ -140,16 +144,25 @@ public class TopAdsProductFragment extends BasePresenterFragment<TopAdsProductFr
 
     }
 
-    private void updateSummaryLayout(Summary summary) {
-        updateInfoValue(impressionInfoLayout, String.valueOf(summary.getImpressionSum()));
-        updateInfoValue(clickInfoLayout, String.valueOf(summary.getClickSum()));
-        updateInfoValue(ctrInfoLayout, String.valueOf(summary.getCtrPercentage()));
-        updateInfoValue(conversionInfoLayout, String.valueOf(summary.getConversionSum()));
-        updateInfoValue(averageMainInfoLayout, String.valueOf(summary.getCostAvg()));
-        updateInfoValue(costInfoLayout, String.valueOf(summary.getCostSum()));
+    private void initialLayout() {
+        updateInfoText(impressionInfoLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_impression)));
+        updateInfoText(clickInfoLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_click)));
+        updateInfoText(ctrInfoLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_ctr)));
+        updateInfoText(conversionInfoLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_conversion)));
+        updateInfoText(averageMainInfoLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_average)));
+        updateInfoText(costInfoLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_cost)));
     }
 
-    private void updateInfoValue(View layout, String value) {
-        ((TextView) layout.findViewById(R.id.text_view_content)).setText(value);
+    private void updateSummaryLayout(Summary summary) {
+        updateInfoText(impressionInfoLayout, R.id.text_view_content, String.valueOf(summary.getImpressionSum()));
+        updateInfoText(clickInfoLayout, R.id.text_view_content, String.valueOf(summary.getClickSum()));
+        updateInfoText(ctrInfoLayout, R.id.text_view_content, String.valueOf(summary.getCtrPercentage()));
+        updateInfoText(conversionInfoLayout, R.id.text_view_content, String.valueOf(summary.getConversionSum()));
+        updateInfoText(averageMainInfoLayout, R.id.text_view_content, String.valueOf(summary.getCostAvg()));
+        updateInfoText(costInfoLayout, R.id.text_view_content, String.valueOf(summary.getCostSum()));
+    }
+
+    private void updateInfoText(View layout, int resourceId, String value) {
+        ((TextView) layout.findViewById(resourceId)).setText(value);
     }
 }
