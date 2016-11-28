@@ -142,7 +142,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
 
     private void resetAllDatabaseFlag(){
         LocalCacheHandler flagDB = new LocalCacheHandler(this, "DATABASE_VERSION" + MainApplication.DATABASE_VERSION);
-        if(BuildConfig.VERSION_NAME.equals("2.2.1") && !flagDB.getBoolean("reset_db_flag", false)){
+        if(!flagDB.getBoolean("reset_db_flag", false)){
             Log.i("DATABASE DATABSE UWOOO", "clearing the database flag");
             LocalCacheHandler.clearCache(this, CategoryDatabaseManager.KEY_STORAGE_NAME);
             LocalCacheHandler.clearCache(this, DataManagerImpl.SHIPPING_CITY_DURATION_STORAGE);
