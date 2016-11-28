@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">tkpdtransaction</string>
+    <string name="message_failed_pick_image">Gambar gagal diambil</string>
 </resources>
