@@ -1,6 +1,8 @@
 package com.tokopedia.transaction.cart.model.shipmentcart;
 
 
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 /**
@@ -15,6 +17,8 @@ public class ShipmentCartWrapper {
     private String oldAddressId;
     private String oldShipmentId;
     private String oldShipmentPackageId;
+    private boolean isValidShipment = true;
+    private boolean isValidShipmentPackage = true;
     private ShipmentCartData shipmentCartData;
 
     public ShipmentCartWrapper() {

@@ -34,10 +34,28 @@ public class Shipment implements Parcelable {
     @Expose
     private String shipmentName;
 
+
+
+    public Shipment() {
+
+    }
+
     protected Shipment(Parcel in) {
         shipmentId = in.readString();
         shipmentImage = in.readString();
         shipmentName = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(shipmentId);
+        dest.writeString(shipmentImage);
+        dest.writeString(shipmentName);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<Shipment> CREATOR = new Creator<Shipment>() {
@@ -51,10 +69,6 @@ public class Shipment implements Parcelable {
             return new Shipment[size];
         }
     };
-
-    public Shipment() {
-
-    }
 
     /**
      * @return The shippingMaxAddFee
@@ -149,19 +163,8 @@ public class Shipment implements Parcelable {
         Shipment shipment = new Shipment();
         shipment.setShipmentName(info);
         shipment.setShipmentId("0");
+        shipment.setShipmentAvailable(0);
         shipment.setShipmentPackage(new ArrayList<ShipmentPackage>());
         return shipment;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(shipmentId);
-        dest.writeString(shipmentImage);
-        dest.writeString(shipmentName);
     }
 }

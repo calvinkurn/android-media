@@ -6,6 +6,7 @@ import com.tokopedia.core.network.apiservices.transaction.TXActService;
 import com.tokopedia.core.network.apiservices.transaction.TXCartActService;
 import com.tokopedia.core.network.apiservices.transaction.TXCartService;
 import com.tokopedia.core.network.apiservices.transaction.TXService;
+import com.tokopedia.core.network.apiservices.user.PeopleActService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -14,6 +15,10 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentData;
 import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentWrapper;
 import com.tokopedia.transaction.cart.model.cartdata.CartModel;
+import com.tokopedia.transaction.cart.model.savelocation.SaveLocationData;
+import com.tokopedia.transaction.cart.model.savelocation.SaveLocationWrapper;
+import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartData;
+import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartWrapper;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 
 import org.json.JSONException;
@@ -23,6 +28,7 @@ import rx.Observable;
 import rx.Scheduler;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
@@ -30,6 +36,7 @@ import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author anggaprasetiyo on 11/2/16.
+ * collabs with alvarisi
  */
 
 public class CartDataInteractor implements ICartDataInteractor {
@@ -165,17 +172,15 @@ public class CartDataInteractor implements ICartDataInteractor {
     }
 
     @Override
-    public void calculateShipment(CalculateShipmentWrapper wrapper, Subscriber<CalculateShipmentData> subscriber) {
-        Observable.just(wrapper)
-                .flatMap(new Func1<CalculateShipmentWrapper, Observable<Response<TkpdResponse>>>() {
+    public void calculateShipment(TKPDMapParam<String, String> param, Subscriber<CalculateShipmentData> subscriber) {
+        Observable.just(param)
+                .flatMap(new Func1<TKPDMapParam<String, String>, Observable<Response<TkpdResponse>>>() {
                     @Override
-                    public Observable<Response<TkpdResponse>> call(CalculateShipmentWrapper wrapper) {
+                    public Observable<Response<TkpdResponse>> call(TKPDMapParam<String, String> stringStringTKPDMapParam) {
                         TXCartService service = new TXCartService();
-                        Observable<Response<TkpdResponse>> observableNetwork = service
+                        return service
                                 .getApi()
-                                .calculateCart(wrapper.getParams());
-
-                        return observableNetwork;
+                                .calculateCart(stringStringTKPDMapParam);
                     }
                 })
                 .map(new Func1<Response<TkpdResponse>, CalculateShipmentData>() {
@@ -379,7 +384,7 @@ public class CartDataInteractor implements ICartDataInteractor {
                         case 1:
                             return txService.getApi().doPayment(paramCart);
                         default:
-                            throw new RuntimeException("Gagal");
+                            throw new RuntimeException(message);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -391,14 +396,152 @@ public class CartDataInteractor implements ICartDataInteractor {
         throw new RuntimeException("");
     }
 
-    @NonNull
-    private Func2<CalculateShipmentWrapper, Response<TkpdResponse>, CalculateShipmentWrapper> transformShipmentData() {
-        return new Func2<CalculateShipmentWrapper, Response<TkpdResponse>, CalculateShipmentWrapper>() {
-            @Override
-            public CalculateShipmentWrapper call(CalculateShipmentWrapper wrapper, Response<TkpdResponse> response) {
-                wrapper.setData(response.body().convertDataObj(CalculateShipmentData.class));
-                return wrapper;
-            }
-        };
+    @Override
+    public void editShipmentCart(TKPDMapParam<String, String> param, Subscriber<ShipmentCartData> subscriber) {
+        Observable.just(param)
+                .flatMap(new Func1<TKPDMapParam<String, String>, Observable<Response<TkpdResponse>>>() {
+                    @Override
+                    public Observable<Response<TkpdResponse>> call(TKPDMapParam<String, String> params) {
+                        TXCartActService service = new TXCartActService();
+                        return service
+                                .getApi()
+                                .editAddress(params);
+                    }
+                })
+                .map(new Func1<Response<TkpdResponse>, ShipmentCartData>() {
+                    @Override
+                    public ShipmentCartData call(Response<TkpdResponse> response) {
+                        if (response.isSuccessful()) {
+                            if (!response.body().isError()) {
+                                if (!response.body().isNullData() &&
+                                        !response.body().getJsonData().isNull(KEY_FLAG_IS_SUCCESS)){
+                                    int status = 0;
+                                    try {
+                                        status = response.body().getJsonData()
+                                                .getInt(KEY_FLAG_IS_SUCCESS);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                    String message;
+                                    if (status == 1) {
+                                        message = response.body()
+                                                .getStatusMessages().get(0);
+                                    }
+                                    else {
+                                        message = response.body().getErrorMessages().get(0);
+                                    }
+                                    ShipmentCartData shipmentCartData = new ShipmentCartData();
+                                    shipmentCartData.setStatus(String.valueOf(status));
+                                    shipmentCartData.setMessage(message);
+                                    return shipmentCartData;
+                                }else {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_NULL_DATA);
+                                }
+                            } else  {
+                                throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                            }
+                        } else {
+                            new ErrorHandler(new ErrorListener() {
+                                @Override
+                                public void onUnknown() {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                                }
+
+                                @Override
+                                public void onTimeout() {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                                }
+
+                                @Override
+                                public void onServerError() {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                                }
+
+                                @Override
+                                public void onBadRequest() {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                                }
+
+                                @Override
+                                public void onForbidden() {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                                }
+                            }, response.code());
+                        }
+                        throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                    }
+                })
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribe(subscriber);
+    }
+
+    @Override
+    public void editLocationShipment(TKPDMapParam<String, String> param, Subscriber<SaveLocationData> subscriber) {
+        Observable.just(param)
+                .flatMap(new Func1<TKPDMapParam<String, String>, Observable<Response<TkpdResponse>>>() {
+                    @Override
+                    public Observable<Response<TkpdResponse>> call(TKPDMapParam<String, String> params) {
+                        PeopleActService service = new PeopleActService();
+                        return service
+                                .getApi()
+                                .editAddress(params);
+                    }
+                })
+                .map(new Func1<Response<TkpdResponse>, SaveLocationData>() {
+                    @Override
+                    public SaveLocationData call(Response<TkpdResponse> response) {
+                        if (response.isSuccessful()) {
+                            if (!response.body().isError()) {
+                                if (!response.body().isNullData() &&
+                                        !response.body().getJsonData().isNull(KEY_FLAG_IS_SUCCESS)){
+                                    return response.body().convertDataObj(SaveLocationData.class);
+                                }else {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_NULL_DATA);
+                                }
+                            } else  {
+                                throw new RuntimeException(response.body().getErrorMessages().get(0));
+                            }
+                        } else {
+                            new ErrorHandler(new ErrorListener() {
+                                @Override
+                                public void onUnknown() {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                                }
+
+                                @Override
+                                public void onTimeout() {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                                }
+
+                                @Override
+                                public void onServerError() {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                                }
+
+                                @Override
+                                public void onBadRequest() {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                                }
+
+                                @Override
+                                public void onForbidden() {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                                }
+                            }, response.code());
+                        }
+                        throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                    }
+                })
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribe(subscriber);
+    }
+
+    @Override
+    public void unSubscribeObservable() {
+        if (compositeSubscription.hasSubscriptions()) compositeSubscription.unsubscribe();
     }
 }
