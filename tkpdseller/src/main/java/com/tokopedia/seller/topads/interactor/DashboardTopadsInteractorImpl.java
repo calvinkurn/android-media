@@ -1,7 +1,13 @@
 package com.tokopedia.seller.topads.interactor;
 
 import android.content.Context;
+import android.support.v4.util.ArrayMap;
 
+import com.google.gson.Gson;
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.shopinfo.facades.authservices.ShopService;
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.topads.datasource.TopAdsCacheDataSourceImpl;
 import com.tokopedia.seller.topads.datasource.TopAdsDbDataSource;
 import com.tokopedia.seller.topads.datasource.TopAdsDbDataSourceImpl;
@@ -19,6 +25,7 @@ import com.tokopedia.seller.topads.network.apiservice.TopAdsManagementService;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -39,8 +46,10 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
     private TopAdsManagementService topAdsManagementService;
     private TopAdsDbDataSource topAdsDbDataSource;
     private TopAdsCacheDataSourceImpl topAdsCacheDataSource;
+    private Context context;
 
     public DashboardTopadsInteractorImpl(Context context) {
+        this.context = context;
         compositeSubscription = new CompositeSubscription();
         topAdsManagementService = new TopAdsManagementService();
         topAdsDbDataSource = new TopAdsDbDataSourceImpl();
@@ -97,6 +106,26 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
                     }
                 })
                 .subscribe(new SubscribeOnNext<DataDeposit>(listener), new SubscribeOnError(listener)));
+    }
+
+    @Override
+    public void getShopInfo(String shopId, Listener<ShopModel> listener) {
+        ShopService shopService = new ShopService();
+        Map<String, String> shopParamMap = new ArrayMap<>();
+        shopParamMap.put("shop_id", shopId);
+        Observable<Response<TkpdResponse>> observable = shopService.getApi().getShopInfo(AuthUtil.generateParams(context, shopParamMap));
+        compositeSubscription.add(observable
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .flatMap(new Func1<Response<TkpdResponse>, Observable<ShopModel>>() {
+                    @Override
+                    public Observable<ShopModel> call(Response<TkpdResponse> tkpdResponse) {
+                        ShopModel shopModel = new Gson().fromJson(tkpdResponse.body().getStringData(), ShopModel.class);
+                        return Observable.just(shopModel);
+                    }
+                })
+                .subscribe(new SubscribeOnNext<ShopModel>(listener), new SubscribeOnError(listener)));
     }
 
     @Override

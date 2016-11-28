@@ -2,6 +2,7 @@ package com.tokopedia.seller.topads.presenter;
 
 import android.content.Context;
 
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.topads.interactor.DashboardTopadsInteractor;
 import com.tokopedia.seller.topads.interactor.DashboardTopadsInteractorImpl;
@@ -82,6 +83,25 @@ public class TopAdsProductFragmentPresenterImpl implements TopAdsProductFragment
             public void onError(Throwable throwable) {
                 if (topAdsProductFragmentListener != null) {
                     topAdsProductFragmentListener.onLoadDepositTopAdsError(throwable);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void populateShopInfo() {
+        dashboardTopadsInteractor.getShopInfo(getShopId(), new DashboardTopadsInteractor.Listener<ShopModel>() {
+            @Override
+            public void onSuccess(ShopModel shopModel) {
+                if (topAdsProductFragmentListener != null) {
+                    topAdsProductFragmentListener.onShopDetailLoaded(shopModel);
+                }
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                if (topAdsProductFragmentListener != null) {
+                    topAdsProductFragmentListener.onLoadShopDetailError(throwable);
                 }
             }
         });

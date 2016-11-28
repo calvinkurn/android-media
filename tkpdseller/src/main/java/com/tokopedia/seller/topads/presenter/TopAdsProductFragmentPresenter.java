@@ -19,6 +19,7 @@ public interface TopAdsProductFragmentPresenter {
 
     /**
      * Populate summary based on date range
+     *
      * @param startDate
      * @param endDate
      */
@@ -28,4 +29,9 @@ public interface TopAdsProductFragmentPresenter {
      * Populate top ads deposit
      */
     void populateDeposit();
+
+    /**
+     * Populate shop name and icon
+     */
+    void populateShopInfo();
 }

@@ -7,8 +7,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.Logger;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.model.data.DataDeposit;
@@ -106,6 +108,7 @@ public class TopAdsProductFragment extends BasePresenterFragment<TopAdsProductFr
         endCalendar.add(Calendar.DAY_OF_YEAR, 3);
         presenter.populateSummary(startCalendar.getTime(), endCalendar.getTime());
         presenter.populateDeposit();
+        presenter.populateShopInfo();
     }
 
     @Override
@@ -126,6 +129,17 @@ public class TopAdsProductFragment extends BasePresenterFragment<TopAdsProductFr
 
     @Override
     public void onLoadDepositTopAdsError(@NonNull Throwable throwable) {
+
+    }
+
+    @Override
+    public void onShopDetailLoaded(@NonNull ShopModel shopModel) {
+        ImageHandler.loadImageCircle2(getActivity(), shopIconImageView, shopModel.info.shopAvatar);
+        shopTitleTextView.setText(shopModel.info.shopName);
+    }
+
+    @Override
+    public void onLoadShopDetailError(@NonNull Throwable throwable) {
 
     }
 
