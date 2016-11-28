@@ -7,7 +7,7 @@ import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.tokopedia.core.database.DbFlowDatabase;
 import com.tokopedia.core.database.DbFlowOperation;
 import com.tokopedia.core.database.model.RechargeOperatorModelDBAttrs;
-import com.tokopedia.core.database.model.RechargeOperatorModelDB_Table;
+import com.tokopedia.core.database.model.RechargeOperatorModelDBAttrs_Table;
 import com.tokopedia.core.database.recharge.operator.Operator;
 
 import java.util.ArrayList;

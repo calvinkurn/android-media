@@ -43,24 +43,27 @@ public class CategoryAttributes implements Parcelable {
     @SerializedName("weight")
     @Expose
     private Integer weight;
+    @SerializedName("show_operator")
+    @Expose
+    private Boolean showOperator;
 
-protected CategoryAttributes(Parcel in) {
-    clientNumber = (ClientNumber) in.readValue(ClientNumber.class.getClassLoader());
-    defaultOperatorId = in.readString();
-    icon = in.readString();
-    byte instantCheckoutAvailableVal = in.readByte();
-    instantCheckoutAvailable = instantCheckoutAvailableVal == 0x02 ? null : instantCheckoutAvailableVal != 0x00;
-    byte isNewVal = in.readByte();
-    isNew = isNewVal == 0x02 ? null : isNewVal != 0x00;
-    byte validatePrefixVal = in.readByte();
-    validatePrefix = validatePrefixVal == 0x02 ? null : validatePrefixVal != 0x00;
-    name = in.readString();
-    slug = in.readString();
-    status = in.readByte() == 0x00 ? null : in.readInt();
-    byte usePhonebookVal = in.readByte();
-    usePhonebook = usePhonebookVal == 0x02 ? null : usePhonebookVal != 0x00;
-    weight = in.readByte() == 0x00 ? null : in.readInt();
-}
+    protected CategoryAttributes(Parcel in) {
+        clientNumber = (ClientNumber) in.readValue(ClientNumber.class.getClassLoader());
+        defaultOperatorId = in.readString();
+        icon = in.readString();
+        byte instantCheckoutAvailableVal = in.readByte();
+        instantCheckoutAvailable = instantCheckoutAvailableVal == 0x02 ? null : instantCheckoutAvailableVal != 0x00;
+        byte isNewVal = in.readByte();
+        isNew = isNewVal == 0x02 ? null : isNewVal != 0x00;
+        byte validatePrefixVal = in.readByte();
+        validatePrefix = validatePrefixVal == 0x02 ? null : validatePrefixVal != 0x00;
+        name = in.readString();
+        slug = in.readString();
+        status = in.readByte() == 0x00 ? null : in.readInt();
+        byte usePhonebookVal = in.readByte();
+        usePhonebook = usePhonebookVal == 0x02 ? null : usePhonebookVal != 0x00;
+        weight = in.readByte() == 0x00 ? null : in.readInt();
+    }
 
     @Override
     public int describeContents() {
@@ -122,7 +125,7 @@ protected CategoryAttributes(Parcel in) {
         }
     };
     /**
-     * 
+     *
      * @return
      *     The clientNumber
      */
@@ -131,7 +134,7 @@ protected CategoryAttributes(Parcel in) {
     }
 
     /**
-     * 
+     *
      * @param clientNumber
      *     The client_number
      */
@@ -140,7 +143,7 @@ protected CategoryAttributes(Parcel in) {
     }
 
     /**
-     * 
+     *
      * @return
      *     The defaultOperatorId
      */
@@ -149,7 +152,7 @@ protected CategoryAttributes(Parcel in) {
     }
 
     /**
-     * 
+     *
      * @param defaultOperatorId
      *     The default_operator_id
      */
@@ -158,7 +161,7 @@ protected CategoryAttributes(Parcel in) {
     }
 
     /**
-     * 
+     *
      * @return
      *     The icon
      */
@@ -167,7 +170,7 @@ protected CategoryAttributes(Parcel in) {
     }
 
     /**
-     * 
+     *
      * @param icon
      *     The icon
      */
@@ -176,7 +179,7 @@ protected CategoryAttributes(Parcel in) {
     }
 
     /**
-     * 
+     *
      * @return
      *     The instantCheckoutAvailable
      */
@@ -185,7 +188,7 @@ protected CategoryAttributes(Parcel in) {
     }
 
     /**
-     * 
+     *
      * @param instantCheckoutAvailable
      *     The instant_checkout_available
      */
@@ -194,7 +197,7 @@ protected CategoryAttributes(Parcel in) {
     }
 
     /**
-     * 
+     *
      * @return
      *     The isNew
      */
@@ -203,7 +206,7 @@ protected CategoryAttributes(Parcel in) {
     }
 
     /**
-     * 
+     *
      * @param isNew
      *     The is_new
      */
@@ -212,7 +215,7 @@ protected CategoryAttributes(Parcel in) {
     }
 
     /**
-     * 
+     *
      * @return
      *     The name
      */
@@ -221,7 +224,7 @@ protected CategoryAttributes(Parcel in) {
     }
 
     /**
-     * 
+     *
      * @param name
      *     The name
      */
@@ -230,7 +233,7 @@ protected CategoryAttributes(Parcel in) {
     }
 
     /**
-     * 
+     *
      * @return
      *     The slug
      */
@@ -239,7 +242,7 @@ protected CategoryAttributes(Parcel in) {
     }
 
     /**
-     * 
+     *
      * @param slug
      *     The slug
      */
@@ -248,7 +251,7 @@ protected CategoryAttributes(Parcel in) {
     }
 
     /**
-     * 
+     *
      * @return
      *     The status
      */
@@ -257,7 +260,7 @@ protected CategoryAttributes(Parcel in) {
     }
 
     /**
-     * 
+     *
      * @param status
      *     The status
      */
@@ -284,7 +287,7 @@ protected CategoryAttributes(Parcel in) {
 //    }
 
     /**
-     * 
+     *
      * @return
      *     The usePhonebook
      */
@@ -293,7 +296,7 @@ protected CategoryAttributes(Parcel in) {
     }
 
     /**
-     * 
+     *
      * @param usePhonebook
      *     The use_phonebook
      */
@@ -302,7 +305,7 @@ protected CategoryAttributes(Parcel in) {
     }
 
     /**
-     * 
+     *
      * @return
      *     The weight
      */
@@ -311,7 +314,7 @@ protected CategoryAttributes(Parcel in) {
     }
 
     /**
-     * 
+     *
      * @param weight
      *     The weight
      */
@@ -325,5 +328,13 @@ protected CategoryAttributes(Parcel in) {
 
     public void setValidatePrefix(Boolean validatePrefix) {
         this.validatePrefix = validatePrefix;
+    }
+
+    public Boolean getShowOperator() {
+        return showOperator;
+    }
+
+    public void setShowOperator(Boolean showOperator) {
+        this.showOperator = showOperator;
     }
 }

@@ -51,10 +51,14 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.tkpd.home.fragment.FragmentIndexCategory;
 import com.tokopedia.tkpd.home.recharge.activity.RechargePaymentWebView;
 import com.tokopedia.tkpd.home.recharge.adapter.NominalAdapter;
+import com.tokopedia.tkpd.home.recharge.adapter.OperatorAdapter;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargePresenter;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargePresenterImpl;
+import com.tokopedia.tkpd.home.recharge.util.OperatorComparator;
+import com.tokopedia.tkpd.home.recharge.util.ProductComparator;
 import com.tokopedia.tkpd.home.recharge.view.RechargeView;
 
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.Bind;
