@@ -1,5 +1,8 @@
 package com.tokopedia.seller.topads.interactor;
 
+import android.content.Context;
+
+import com.tokopedia.seller.topads.datasource.TopAdsCacheDataSourceImpl;
 import com.tokopedia.seller.topads.datasource.TopAdsDbDataSource;
 import com.tokopedia.seller.topads.datasource.TopAdsDbDataSourceImpl;
 import com.tokopedia.seller.topads.model.data.Cell;
@@ -32,12 +35,14 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
 
     private CompositeSubscription compositeSubscription;
     private TopAdsManagementService topAdsManagementService;
-    private TopAdsDbDataSource mTopAdsDbDataSource;
+    private TopAdsDbDataSource topAdsDbDataSource;
+    private TopAdsCacheDataSourceImpl topAdsCacheDataSource;
 
-    public DashboardTopadsInteractorImpl() {
+    public DashboardTopadsInteractorImpl(Context context) {
         compositeSubscription = new CompositeSubscription();
         topAdsManagementService = new TopAdsManagementService();
-        mTopAdsDbDataSource = new TopAdsDbDataSourceImpl();
+        topAdsDbDataSource = new TopAdsDbDataSourceImpl();
+        topAdsCacheDataSource = new TopAdsCacheDataSourceImpl(context);
     }
 
     @Override
@@ -99,7 +104,7 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
 
     @Override
     public void getDashboardSummary(final StatisticRequest statisticRequest, final Listener<Summary> listener) {
-        Observable<Summary> getSummaryCacheObservable = mTopAdsDbDataSource.getSummary(statisticRequest);
+        Observable<Summary> getSummaryCacheObservable = topAdsDbDataSource.getSummary(statisticRequest);
         compositeSubscription.add(getSummaryCacheObservable
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -107,7 +112,7 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
                 .flatMap(new Func1<Summary, Observable<Summary>>() {
                     @Override
                     public Observable<Summary> call(Summary summary) {
-                        if (summary != null) {
+                        if (!topAdsCacheDataSource.isStatisticDataExpired() || summary != null) {
                             return Observable.just(summary);
                         }
                         Observable<Response<StatisticResponse>> statisticApiObservable = topAdsManagementService.getApi().getDashboardStatistic(statisticRequest.getParams());
@@ -118,11 +123,12 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
                                 .flatMap(new Func1<Response<StatisticResponse>, Observable<Summary>>() {
                             @Override
                             public Observable<Summary> call(Response<StatisticResponse> statisticResponse) {
-                                Observable<Summary> insertSummaryObservable = mTopAdsDbDataSource.insertSummary(statisticRequest, statisticResponse.body().getData().getSummary());
-                                Observable<List<Cell>> insertCellListObservable = mTopAdsDbDataSource.insertCellList(statisticRequest, statisticResponse.body().getData().getCells());
+                                Observable<Summary> insertSummaryObservable = topAdsDbDataSource.insertSummary(statisticRequest, statisticResponse.body().getData().getSummary());
+                                Observable<List<Cell>> insertCellListObservable = topAdsDbDataSource.insertCellList(statisticRequest, statisticResponse.body().getData().getCells());
                                 return Observable.zip(insertSummaryObservable, insertCellListObservable, new Func2<Summary, List<Cell>, Summary>() {
                                     @Override
                                     public Summary call(Summary summary, List<Cell> cellList) {
+                                        topAdsCacheDataSource.updateLastInsertStatistic();
                                         return summary;
                                     }
                                 });

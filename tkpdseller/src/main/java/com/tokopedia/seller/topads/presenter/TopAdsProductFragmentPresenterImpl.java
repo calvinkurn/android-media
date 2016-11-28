@@ -36,7 +36,7 @@ public class TopAdsProductFragmentPresenterImpl implements TopAdsProductFragment
 
     public TopAdsProductFragmentPresenterImpl(Context context) {
         this.context = context;
-        dashboardTopadsInteractor = new DashboardTopadsInteractorImpl();
+        dashboardTopadsInteractor = new DashboardTopadsInteractorImpl(context);
     }
 
     public int getType() {
