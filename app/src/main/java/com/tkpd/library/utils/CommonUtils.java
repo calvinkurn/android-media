@@ -65,7 +65,7 @@ public class CommonUtils {
 	}
 
 	public static boolean isFinishActivitiesOptionEnabled(Context context) {
-		int result;
+		int result = 0;
 		try {
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
 				result = Settings.System.getInt(context.getContentResolver(), Settings.Global.ALWAYS_FINISH_ACTIVITIES, 0);
