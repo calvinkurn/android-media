@@ -568,11 +568,11 @@ public interface  TkpdBaseURL {
 
 
     interface Recharge {
-        String VERSION = "v1";
+        String VERSION = "v1.1";
         String RECHARGE = "recharge";
 
         String PATH_STATUS = VERSION + "/status";
-        String PATH_CATEGORY = VERSION + "/category/list";
+        String PATH_CATEGORY = VERSION + "/category/list?device_id=4";
         String PATH_OPERATOR = VERSION + "/operator/list";
         String PATH_PRODUCT = VERSION + "/product/list";
         String PATH_RECENT_NUMBER =  VERSION + "/recent-number";

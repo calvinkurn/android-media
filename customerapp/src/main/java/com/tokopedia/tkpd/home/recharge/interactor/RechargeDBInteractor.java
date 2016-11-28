@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.home.recharge.interactor;
 
-import com.tokopedia.core.database.model.RechargeOperatorModelDB;
+import com.tokopedia.core.database.model.RechargeOperatorModelDBAttrs;
 import com.tokopedia.core.database.model.category.CategoryData;
 import com.tokopedia.core.database.recharge.operator.OperatorData;
 import com.tokopedia.core.database.recharge.product.Category;
@@ -17,6 +17,8 @@ import java.util.List;
 public interface RechargeDBInteractor {
 
     void getListProduct(OnGetListProduct onGetListProduct, String prefix, int categoryId, Boolean validatePrefix);
+
+    void getListProductForOperator(OnGetListProductForOperator onGetListProductForOperator, int categoryId);
 
     void getListProductDefaultOperator(OnGetListProduct onGetListProduct, int categoryId, String operatorId);
 
@@ -38,10 +40,18 @@ public interface RechargeDBInteractor {
 
     void getOperatorById(String operatorId,OnGetOperatorByIdListener listener);
 
+    void getOperatorListByIds(List<Integer> operatorId,OnGetListOperatorByIdsListener listener);
+
     interface OnGetListProduct {
         void onSuccess(List<Product> listProduct);
 
         void onError(Throwable e);
+    }
+
+    interface OnGetListProductForOperator {
+        void onSuccessFetchProducts(List<Product> listProduct);
+
+        void onErrorFetchProdcuts(Throwable e);
     }
 
     interface OnGetCategory {
@@ -61,7 +71,15 @@ public interface RechargeDBInteractor {
     }
 
     interface OnGetOperatorByIdListener {
-        void onSuccess(RechargeOperatorModelDB operator);
+        void onSuccess(RechargeOperatorModelDBAttrs operator);
+
+        void onError(Throwable e);
+
+        void onEmpty();
+    }
+
+    interface OnGetListOperatorByIdsListener {
+        void onSuccessFetchOperators(List<RechargeOperatorModelDBAttrs> operators);
 
         void onError(Throwable e);
 

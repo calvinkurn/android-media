@@ -108,7 +108,7 @@ public class NominalAdapter extends ArrayAdapter<Product> {
                 Paint.STRIKE_THRU_TEXT_FLAG);
         holder.nominalTagTextview.setTextColor(ContextCompat.getColor(getContext(),R.color.red_300));
         holder.nominalPriceTextView.setTextColor(ContextCompat.getColor(getContext(),R.color.red_300));
-        if (isShowPrice) {
+        if (!isShowPrice) {
             holder.nominalPriceTextView.setVisibility(View.GONE);
             holder.nominalTagTextview.setVisibility(View.GONE);
             holder.nominalDiskonTextView.setVisibility(View.GONE);

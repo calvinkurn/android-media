@@ -13,6 +13,17 @@
         android:visibility="gone"
         android:layout_gravity="center" />
 
+    <Spinner
+        android:id="@+id/spnOperator"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_gravity="bottom"
+        android:spinnerMode="dropdown"
+        android:visibility="gone"
+        style="@style/Base.Widget.AppCompat.Spinner.Underlined"
+        >
+    </Spinner>
+
     <TextView
         android:id="@+id/telp_textview"
         android:layout_width="match_parent"
@@ -21,7 +32,7 @@
         android:text="@string/prompt_phone"
         android:visibility="gone" />
 
-    <com.tokopedia.core.customView.RechargeEditText
+    <com.tokopedia.core.recharge.view.widget.RechargeEditText
         android:id="@+id/pulsa_edittext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
