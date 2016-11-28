@@ -1253,8 +1253,8 @@ public class FragmentCart extends Fragment implements CartInterfaces.FragmentCar
         ItemContent.get(pos).vShopName.setText(ShopName.get(pos));
         setLuckyEmblem(luckyMerchantBadge.get(pos), ItemContent.get(pos).vShopName);
         ItemContent.get(pos).vTotalPrice.setText(TotalPrice.get(pos));
-        ItemContent.get(pos).vShippingAddress.setText(ShippingAddress.get(pos));
-        ItemContent.get(pos).vShippingAgency.setText(ShippingAgency.get(pos));
+        ItemContent.get(pos).vShippingAddress.setText(MessageFormat.format("{0} (Ubah) ", ShippingAddress.get(pos)));
+        ItemContent.get(pos).vShippingAgency.setText(MessageFormat.format("{0} (Ubah) ", ShippingAgency.get(pos)));
         ItemContent.get(pos).vTotalWeight.setText(TotalWeight.get(pos));
         ItemContent.get(pos).vSubTotal.setText(SubTotal.get(pos));
         ItemContent.get(pos).vShippingCost.setText(ShippingCost.get(pos));
@@ -1272,8 +1272,8 @@ public class FragmentCart extends Fragment implements CartInterfaces.FragmentCar
         ItemContent.get(pos).vShopName.setText(ShopName.get(pos));
         setLuckyEmblem(luckyMerchantBadge.get(pos), ItemContent.get(pos).vShopName);
         ItemContent.get(pos).vTotalPrice.setText(TotalPrice.get(pos));
-        ItemContent.get(pos).vShippingAddress.setText(ShippingAddress.get(pos));
-        ItemContent.get(pos).vShippingAgency.setText(ShippingAgency.get(pos));
+        ItemContent.get(pos).vShippingAddress.setText(MessageFormat.format("{0} (Ubah) ", ShippingAddress.get(pos)));
+        ItemContent.get(pos).vShippingAgency.setText(MessageFormat.format("{0} (Ubah) ", ShippingAgency.get(pos)));
         ItemContent.get(pos).vTotalWeight.setText(TotalWeight.get(pos));
         ItemContent.get(pos).vSubTotal.setText(SubTotal.get(pos));
         ItemContent.get(pos).vShippingCost.setText(ShippingCost.get(pos));
