@@ -107,20 +107,20 @@ public class BrowseShopAdapter extends ProductAdapter {
 
         public void bindData(final ShopModel shopModel, int position){
             final Context context = itemView.getContext();
-            ImageHandler.loadImageThumbs(context, itemShopImage, shopModel.shopImage);
-            itemShopBought.setText(shopModel.totalTransaction + " " + context.getString(R.string.title_total_tx));
-            itemShopCountFav.setText(shopModel.numberOfFavorite + " " + context.getString(R.string.title_favorite));
-            itemShopName.setText(shopModel.shopName);
-            if (shopModel.luckyImage != null){
-                LuckyShopImage.loadImage(itemShopLucky, shopModel.luckyImage);
+            ImageHandler.loadImageThumbs(context, itemShopImage, shopModel.getShopImage());
+            itemShopBought.setText(shopModel.getTotalTransaction() + " " + context.getString(R.string.title_total_tx));
+            itemShopCountFav.setText(shopModel.getNumberOfFavorite() + " " + context.getString(R.string.title_favorite));
+            itemShopName.setText(shopModel.getShopName());
+            if (shopModel.getLuckyImage() != null){
+                LuckyShopImage.loadImage(itemShopLucky, shopModel.getLuckyImage());
             }
-            if(shopModel.isOfficial || shopModel.isGold.equals("1")){
+            if(shopModel.isOfficial() || shopModel.getIsGold().equals("1")){
                 itemShopBadge.setVisibility(View.VISIBLE);
-                if(shopModel.isOfficial) {
+                if(shopModel.isOfficial()) {
                     itemShopBought.setVisibility(View.GONE);
                     itemShopBadge.setImageResource(R.drawable.ic_badge_official);
                 }
-                if(shopModel.isGold.equals("1")){
+                if(shopModel.getIsGold().equals("1")){
                     itemShopBadge.setImageResource(R.drawable.ic_shop_gold);
                 }
             } else {
