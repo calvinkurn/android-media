@@ -38,7 +38,6 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.deeplink.presenter.DeepLinkPresenterImpl;
 import com.tokopedia.core.discovery.fragment.browseparent.BrowseParentFragment;
 import com.tokopedia.core.discovery.fragment.browseparent.ProductFragment;
 import com.tokopedia.core.discovery.fragment.browseparent.ShopFragment;
@@ -88,6 +87,8 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+
+import static com.tokopedia.core.router.CustomerRouter.IS_DEEP_LINK_SEARCH;
 
 /**
  * Created by Erry on 6/30/2016.
@@ -538,7 +539,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                 browseProductActivityModel.setParentDepartement(departmentId);
                 browseProductActivityModel.setFragmentId(fragmentId);
             }
-            browseProductActivityModel.setSearchDeeplink(intent.getBooleanExtra(DeepLinkPresenterImpl.IS_DEEP_LINK_SEARCH, false));
+            browseProductActivityModel.setSearchDeeplink(intent.getBooleanExtra(IS_DEEP_LINK_SEARCH, false));
         }
     }
 

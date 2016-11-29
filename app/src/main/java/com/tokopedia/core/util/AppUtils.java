@@ -15,7 +15,6 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
-import com.tokopedia.core.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.core.deposit.interactor.WithdrawRetrofitInteractor;
 import com.tokopedia.core.deposit.interactor.WithdrawRetrofitInteractorImpl;
 import com.tokopedia.core.invoice.activity.InvoiceRendererActivity;
@@ -31,7 +30,7 @@ public class AppUtils {
         builder.setPositiveButton(context.getString(R.string.title_yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                downloadInvoiceWSV4(context, InvoiceRenderParam.instanceFromUrl(PDFUri, null, null));
+                downloadInvoiceWSV4(context, InvoiceRenderParam.instanceFromUrl(PDFUri, null, null), false);
             }
         });
         builder.setNegativeButton(context.getString(R.string.title_no), null);
@@ -42,6 +41,15 @@ public class AppUtils {
     }
 
     public static void InvoiceDialog(final Context context, final String url, final String invoiceNum) {
+        showInvoiceDialog(context, url, invoiceNum, false);
+    }
+
+    public static void InvoiceDialogDeeplink(final Context context, final String url, final String invoiceNum) {
+        showInvoiceDialog(context, url, invoiceNum, true);
+    }
+
+    private static void showInvoiceDialog(final Context context, final String url, final String invoiceNum,
+                                          final boolean callback) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(invoiceNum);
         builder.setPositiveButton(context.getString(R.string.dialog_ask_download_inv),
@@ -49,7 +57,10 @@ public class AppUtils {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        downloadInvoiceWSV4(context, InvoiceRenderParam.instanceFromUrl(url, null, null));
+                        downloadInvoiceWSV4(context,
+                                InvoiceRenderParam.instanceFromUrl(url, null, null),
+                                callback
+                        );
                     }
                 });
 
@@ -62,8 +73,8 @@ public class AppUtils {
                                 context.getSystemService(context.CLIPBOARD_SERVICE);
                         ClipData clip = ClipData.newPlainText("simple text", invoiceNum);
                         clipBoard.setPrimaryClip(clip);
-                        if(context instanceof DeepLinkActivity){
-                            ((DeepLinkActivity) context).finish();
+                        if(callback){
+                            ((Activity) context).finish();
                         }
                     }
                 });
@@ -79,11 +90,11 @@ public class AppUtils {
         InvoiceDialog(context, PDFUri, Invoice);
     }
 
-    private static void downloadInvoiceWSV4(Context context, InvoiceRenderParam param) {
+    private static void downloadInvoiceWSV4(Context context, InvoiceRenderParam param, Boolean callback) {
         Intent intent = InvoiceRendererActivity.newInstance(context, param);
         context.startActivity(intent);
-        if(context instanceof DeepLinkActivity){
-            ((DeepLinkActivity) context).finish();
+        if(callback){
+            ((Activity) context).finish();
         }
     }
 

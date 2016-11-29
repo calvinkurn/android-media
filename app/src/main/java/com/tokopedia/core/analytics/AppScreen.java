@@ -12,7 +12,6 @@ import com.tokopedia.core.EditAddressCart;
 import com.tokopedia.core.EtalaseShopEditor;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.ManagePeople;
-import com.tokopedia.core.ManagePeoplePassword;
 import com.tokopedia.core.ManageShop;
 import com.tokopedia.core.ManageShopAddress;
 import com.tokopedia.core.PaymentConfirmationSuccess;
@@ -25,7 +24,6 @@ import com.tokopedia.core.ShopEditor;
 import com.tokopedia.core.ShopStatisticDetail;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.addtocart.activity.AddToCartActivity;
-import com.tokopedia.core.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.deposit.activity.WithdrawActivity;
 import com.tokopedia.core.discovery.activity.BrowseProductActivity;
@@ -260,8 +258,6 @@ public final class AppScreen {
             gtmName = AppScreen.SCREEN_SPLASH_SCREEN;
         } else if (actClass instanceof ReputationProductView) {
             gtmName = AppScreen.SCREEN_PRODUCT_REPUTATION_VIEW_DETAIL;
-        } else if (actClass instanceof DeepLinkActivity) {
-            gtmName = AppScreen.SCREEN_DEEP_LINK;
 //        } else if (actClass instanceof TxHistoryActivity){
 //            gtmName = AppScreen.SCREEN_ORDER_HISTORY_DETAIL;
         } else if (actClass instanceof InboxMessageDetailActivity) {

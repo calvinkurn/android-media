@@ -1,4 +1,4 @@
-package com.tokopedia.core.deeplink.presenter;
+package com.tokopedia.tkpd.deeplink.presenter;
 
 import android.app.FragmentManager;
 import android.net.Uri;
@@ -11,7 +11,7 @@ public interface DeepLinkPresenter {
 
     void processDeepLinkAction(Uri uri);
 
-    void processReceiveResult(int resultCode, Bundle resultData, FragmentManager fragmentManager);
-
     void processAFlistener();
+
+    void sendCampaignGTM(String campaignUri, String screenName);
 }
