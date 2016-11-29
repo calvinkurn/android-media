@@ -5,7 +5,7 @@ import org.parceler.Parcel;
 /**
  * Created by m.normansyah on 08/12/2015.
  */
-@Parcel(parcelsIndex = false)
+@Parcel
 public class TextDeleteModel {
     String customText;
     String text;

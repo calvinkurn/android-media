@@ -1,7 +1,7 @@
 package com.tokopedia.core.fragment;
 
-
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
@@ -25,9 +25,10 @@ import com.tokopedia.core.session.model.SecurityQuestionViewModel;
 import com.tokopedia.core.session.presenter.SecurityQuestion;
 import com.tokopedia.core.session.presenter.SecurityQuestionImpl;
 import com.tokopedia.core.session.presenter.SecurityQuestionView;
-import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+
+import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -40,15 +41,22 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
     private TkpdProgressDialog Progress;
     SecurityQuestion securityQuestion;
+    private static final String FORMAT = "%02d:%02d";
+
+
 
     @Bind(R2.id.input_text)
     EditText vAnswer;
     @Bind(R2.id.input_otp)
     EditText vInputOtp;
+    @Bind(R2.id.title_otp)
+    TextView titleOTP;
+    @Bind(R2.id.phone_number)
+    EditText phoneNumber;
+    @Bind(R2.id.title_security)
+    TextView titleSecurity;
     @Bind(R2.id.wrapper_input_text)
     TextInputLayout wrapperAnswer;
-    @Bind(R2.id.wrapper_input_otp)
-    TextInputLayout wrapperInputOtp;
     @Bind(R2.id.title)
     TextView vQuestion;
     @Bind(R2.id.view_security)
@@ -61,14 +69,14 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     TextView vSendOtp;
     @Bind(R2.id.save_but)
     TextView vSaveBut;
-    @Bind(R2.id.exit_but)
-    TextView vCancelBut;
     @Bind(R2.id.error_title)
     TextView vErrorTitle;
     @Bind(R2.id.error_msg)
     TextView vErrorMessage;
     @Bind(R2.id.progress)
     ProgressBar vProgress;
+
+    CountDownTimer countDownTimer;
 
     public interface SecurityQuestionListener {
         public void onSuccess();
@@ -123,7 +131,6 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
         View rootView = inflater.inflate(R.layout.fragment_security_question, container, false);
         ButterKnife.bind(this, rootView);
         wrapperAnswer.setHintEnabled(false);
-        wrapperInputOtp.setHintEnabled(false);
         Progress = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         initListener();
         showViewOtp();
@@ -153,6 +160,51 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     @Override
     public void setAnswerSecurity(String text) {
         vAnswer.setText(text);
+        vAnswer.setText("081910355420");
+    }
+
+    @Override
+    public void disableButton() {
+        vSendOtp.setBackground(getResources().getDrawable(R.drawable.btn_transparent_disable));
+        vSendOtp.setEnabled(false);
+        vSendOtp.setTextColor(getResources().getColor(R.color.grey_600));
+        countDownTimer = new CountDownTimer(90000, 1000) {
+            public void onTick(long millisUntilFinished) {
+                try{
+                    vSendOtp.setBackground(getResources().getDrawable(R.drawable.btn_transparent_disable));
+                    vSendOtp.setEnabled(false);
+                    vSendOtp.setText(""+String.format(FORMAT,
+                            TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(
+                                    TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),
+                            TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
+                                    TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
+
+                } catch (Exception e) {
+                    cancel();
+                }
+            }
+
+            public void onFinish() {
+                try{
+                    vSendOtp.setTextColor(getResources().getColor(R.color.tkpd_green_onboarding));
+                    vSendOtp.setBackground(getResources().getDrawable(R.drawable.btn_share_transaparent));
+                    vSendOtp.setText("Kirim ulang OTP");
+                    vSendOtp.setEnabled(true);
+                } catch (Exception e) {
+
+                }
+            }
+
+        }.start();
+        vInputOtp.requestFocus();
+    }
+
+    @Override
+    public void destroyTimer() {
+        if (countDownTimer!=null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
+        }
     }
 
     @Override
@@ -164,7 +216,6 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
                 if (otpIsValid()) {
                     KeyboardHandler.DropKeyboard(getActivity(), view);
-                    wrapperInputOtp.setError(null);
                     securityQuestion.saveOTPAnswer(vInputOtp.getText().toString());// this is for rotation
                     securityQuestion.doAnswerQuestion(vInputOtp.getText().toString());
                 }
@@ -175,34 +226,17 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
             public void onClick(View v) {
 
                 securityQuestion.doRequestOtp();
-            }
-        });
-        vCancelBut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // destroy
-                SessionHandler.clearUserData(getActivity());// delete every thing that saved during login
-                if (getActivity() != null && getActivity() instanceof SessionView) {
-                    ((SessionView) getActivity()).destroy();
-                }
+
             }
         });
     }
 
     private boolean otpIsValid() {
         boolean isValid = true;
-        if(vInputOtp.getText().length() == 0){
+        //TODO: OTP validation
+        if(vInputOtp.getText().length() == 0 || vInputOtp.getText().length() > 6 || vInputOtp.getText().length() < 6 ){
             isValid = false;
-            wrapperInputOtp.setError(getString(R.string.error_field_required));
-            vInputOtp.requestFocus();
-        }
-        else if (vInputOtp.getText().length() > 6) {
-            isValid = false;
-            wrapperInputOtp.setError(getString(R.string.error_max_otp));
-            vInputOtp.requestFocus();
-        } else if (vInputOtp.getText().length() < 6) {
-            isValid = false;
-            wrapperInputOtp.setError(getString(R.string.error_min_otp));
+            displayError(true);
             vInputOtp.requestFocus();
         }
         return isValid;
@@ -218,7 +252,46 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     public void showViewOtp() {
         vOtp.setVisibility(View.VISIBLE);
         vSecurity.setVisibility(View.GONE);
+        titleOTP.setText("Halo, "+SessionHandler.getTempLoginName(getActivity()));
+        String phone = SessionHandler.getTempPhoneNumber(getActivity()).toString();
+        phone = phone.substring(phone.length() - 4);
+        phoneNumber.setText("XXXX-XXXX-"+phone);
+        securityQuestion.doRequestOtp();
+        //TODO: add textwathcer with auto added dash 081X-XXXX-XXXX
+        /*phoneNumber.addTextChangedListener(new PhoneNumberFormattingTextWatcher());*/
+        /*phoneNumber.addTextChangedListener(new TextWatcher() {
+            int keyDel = 0;
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                phoneNumber.setOnKeyListener(new View.OnKeyListener() {
+                    @Override
+                    public boolean onKey(View v, int keyCode, KeyEvent event) {
+                        if (keyCode == KeyEvent.KEYCODE_DEL)
+                            keyDel = 1;
+                        return false;
+                    }
+                });
+                if (keyDel == 0) {
+                    int len = phoneNumber.getText().length();
+                    if(len == 3) {
+                        phoneNumber.setText(phoneNumber.getText() + "-");
+                        phoneNumber.setSelection(phoneNumber.getText().length());
+                    }
+                } else {
+                    keyDel = 0;
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable arg0) {
+                // TODO Auto-generated method stub
+            }
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+                // TODO Auto-generated method stub
+            }
+        });*/
     }
+
 
 
     @Override
@@ -227,14 +300,14 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
         switch (securityQuestion.determineQuestionType(data.getQuestion(), data.getTitle())) {
             case QuestionFormModel.OTP_No_HP_TYPE:
-                showViewOtp();
                 vSendOtp.setText(securityQuestion.getOtpSendString());
                 vInputOtp.setEnabled(true);
+                titleSecurity.setText(getResources().getString(R.string.content_security_question_phone));
                 break;
             case QuestionFormModel.OTP_Email_TYPE:
-                showViewOtp();
                 vSendOtp.setText(securityQuestion.getOtpSendString());
                 vInputOtp.setEnabled(true);
+                titleSecurity.setText(getResources().getString(R.string.content_security_question_email));
                 break;
         }
         ;

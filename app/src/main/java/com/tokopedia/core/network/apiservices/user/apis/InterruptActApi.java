@@ -23,4 +23,9 @@ public interface InterruptActApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.User.PATH_REQUEST_OTP)
     Observable<Response<TkpdResponse>> requestOTP(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.User.PATH_REQUEST_OTP_PHONE)
+    Observable<Response<TkpdResponse>> requestOTPPhone(@FieldMap Map<String, String> params);
+
 }

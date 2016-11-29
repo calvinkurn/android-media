@@ -139,6 +139,7 @@ public class HomeCategoryMenuDbManager implements DbFlowOperation<CategoryMenuMo
 
         List<CategoryMenuModelDb> categoryMenuModelDbList = SQLite.select().
                 from(CategoryMenuModelDb.class).queryList();
+
         for (CategoryMenuModelDb categoryMenuModelDb : categoryMenuModelDbList) {
             List<CategoryItemModel> categoryItemModels = new ArrayList<>();
             for (CategoryItemModelDb categoryItemModelDb : categoryMenuModelDb.getAllItemsInSection()) {

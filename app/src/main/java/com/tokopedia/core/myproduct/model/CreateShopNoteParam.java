@@ -6,7 +6,7 @@ import org.parceler.Parcel;
  * Created by Toped18 on 6/8/2016.
  */
 
-@Parcel(parcelsIndex = false)
+@Parcel
 public class CreateShopNoteParam {
     String noteContent;
     String noteId;

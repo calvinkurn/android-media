@@ -35,8 +35,8 @@ import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.myproduct.ProductActivity;
 import com.tokopedia.core.myproduct.fragment.AddProductFragment;
 import com.tokopedia.core.onboarding.OnboardingActivity;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.rxjava.RxUtils;
-import com.tokopedia.core.session.Login;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.SessionHandler;
@@ -394,7 +394,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
 //                return onSearchOptionSelected();
             case R2.id.action_cart:
                 if (!SessionHandler.isV4Login(getBaseContext())) {
-                    Intent intent = new Intent(getBaseContext(), Login.class);
+                    Intent intent = SessionRouter.getLoginActivityIntent(getApplicationContext());
                     intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.MOVE_TO_CART_TYPE);
                     intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
                     startActivity(intent);
@@ -520,7 +520,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
         }, requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ONBOARDING_REQUEST && resultCode == Activity.RESULT_OK) {
-            Intent intent = new Intent(this, Login.class);
+            Intent intent = SessionRouter.getLoginActivityIntent(this);
             intent.putExtras(data.getExtras());
             startActivity(intent);
             finish();

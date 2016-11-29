@@ -10,7 +10,7 @@ import java.util.ArrayList;
 /**
  * Created by admin on 18/12/2015.
  */
-@Parcel(parcelsIndex = false)
+@Parcel
 public class ImageUploadModel {
 
     /**
@@ -39,7 +39,7 @@ public class ImageUploadModel {
     ArrayList<String> messageError;
 
 
-    @Parcel(parcelsIndex = false)
+    @Parcel
     public static class ImageUpload{
 
         /**

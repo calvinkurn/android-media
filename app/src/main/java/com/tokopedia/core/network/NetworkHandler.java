@@ -39,6 +39,7 @@ import com.tkpd.library.utils.Logger;
 import com.tkpd.library.utils.ToastNetworkHandler;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RetryHandler;
 import com.tokopedia.core.util.RetryHandler.OnRetryListener;
 import com.tokopedia.core.MaintenancePage;
@@ -240,7 +241,7 @@ public final class NetworkHandler {
 		//CommonUtils.dumper(PasswordGenerator.getUniquePsuedoID());
 		if (status == 2) {
 			AddParam("app_id", Password.getAppId());
-            AddParam("app_version", BuildConfig.VERSION_CODE);
+            AddParam("app_version", GlobalConfig.VERSION_CODE);
 //			String Lang = Locale.getDefault().getLanguage();
 //			if (!Lang.equals("en")) {
 				String Lang = "id";
@@ -455,7 +456,7 @@ public final class NetworkHandler {
                         headers = new HashMap<String, String>();
                     }
 
-                    headers.put("X-APP-VERSION", Integer.toString(BuildConfig.VERSION_CODE));
+                    headers.put("X-APP-VERSION", Integer.toString(GlobalConfig.VERSION_CODE));
 					for (String key : headerMap.keySet()) {
 						headers.put(key, headerMap.get(key));
 					}

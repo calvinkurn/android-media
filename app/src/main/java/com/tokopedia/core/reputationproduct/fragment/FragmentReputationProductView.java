@@ -47,7 +47,7 @@ import com.tokopedia.core.reputationproduct.model.LikeDislike;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.review.model.product_review.ReviewProductDetailModel;
 import com.tokopedia.core.review.model.product_review.ReviewProductModel;
-import com.tokopedia.core.session.Login;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.LabelUtils;
@@ -597,7 +597,7 @@ public class FragmentReputationProductView extends Fragment {
         return new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(getActivity(), Login.class);
+                Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
                 intent.putExtra("product_id", productID);
                 intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
                 intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);

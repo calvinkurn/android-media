@@ -16,6 +16,7 @@ import com.tokopedia.tkpd.R;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 /**
  * @author by mady on 9/23/16.
  */
@@ -25,7 +26,6 @@ public class RecyclerViewCategoryMenuAdapter extends
     private final Context mContext;
     private List<CategoryMenuModel> dataList;
     private int homeMenuWidth;
-
 
     private SectionListCategoryAdapter.OnCategoryClickedListener onCategoryClickedListener;
     private SectionListCategoryAdapter.OnGimmicClickedListener onGimmicClickedListener;

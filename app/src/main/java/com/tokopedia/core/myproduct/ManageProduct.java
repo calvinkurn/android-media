@@ -99,8 +99,8 @@ import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.prototype.ProductCache;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.rxjava.RxUtils;
-import com.tokopedia.core.session.Login;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.RefreshHandler.OnRefreshHandlerListener;
@@ -399,7 +399,7 @@ public class ManageProduct extends TkpdActivity implements
         Intent intent1;
         // check if not login, go to parent index home
         if (!SessionHandler.isV4Login(this)) {
-            intent1 = new Intent(this, Login.class);
+            intent1 = SessionRouter.getLoginActivityIntent(this);
             intent1.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
             startActivity(intent1);
             finish();
