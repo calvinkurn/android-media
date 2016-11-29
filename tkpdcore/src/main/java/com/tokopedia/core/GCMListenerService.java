@@ -175,8 +175,40 @@ public class GCMListenerService extends GcmListenerService {
         return code;
     }
 
+    private boolean isExcludeFromSellerApp(int tkpCode) {
+        switch (tkpCode) {
+            case TkpdState.GCMServiceState.GCM_REVIEW:
+                return true;
+            case TkpdState.GCMServiceState.GCM_REVIEW_REPLY:
+                return true;
+            case TkpdState.GCMServiceState.GCM_PURCHASE_ACCEPTED:
+                return true;
+            case TkpdState.GCMServiceState.GCM_PURCHASE_DELIVERED:
+                return true;
+            case TkpdState.GCMServiceState.GCM_PURCHASE_PARTIAL_PROCESSED:
+                return true;
+            case TkpdState.GCMServiceState.GCM_PURCHASE_REJECTED:
+                return true;
+            case TkpdState.GCMServiceState.GCM_PURCHASE_VERIFIED:
+                return true;
+            case TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_REPLY:
+                return true;
+            case TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_AGREE:
+                return true;
+            case TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_BUYER_REPLY:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public boolean isValidForSellerApp(int tkpCode) {
+        return !getApplication().getClass().getSimpleName().equals("SellerMainApplication") && isExcludeFromSellerApp(tkpCode);
+    }
+
     private void sendNotification(Bundle data) {
-        if (!CheckSettings(Integer.parseInt(data.getString("tkp_code")))) {
+        int tkpCode = Integer.parseInt(data.getString("tkp_code"));
+        if (!CheckSettings(tkpCode) && isValidForSellerApp(tkpCode)) {
             return;
         }
 
