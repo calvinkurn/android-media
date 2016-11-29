@@ -3,7 +3,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.tokopedia.tkpd.gmsubscribe.view.GMSubscribeWebView
+    <com.tokopedia.sellerapp.gmsubscribe.view.GMSubscribeWebView
         android:id="@+id/webview"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

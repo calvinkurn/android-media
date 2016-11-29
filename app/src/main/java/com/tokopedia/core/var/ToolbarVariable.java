@@ -48,7 +48,7 @@ public class ToolbarVariable {
     }
 
     public void setTitleText(String text){
-        if(text != null && !text.isEmpty()) {
+        if(text != null && !text.isEmpty() && holder != null && holder.titleTextView != null) {
             holder.titleTextView.setText(text);
         }
     }
