@@ -81,7 +81,7 @@ public class ToolbarVariable {
         setAsActionBar();
     }
 
-    private void initListener() {
+    public void initListener() {
         holder.drawerToggle.setOnClickListener(onDrawerToggleClicked());
     }
 

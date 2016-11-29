@@ -1046,4 +1046,8 @@ public class DrawerVariable {
     private void sendGTMNavigationEvent(String label) {
         UnifyTracking.eventDrawerClick(label);
     }
+
+    public static void startIntent(Context context, Class<?> cls) {
+        context.startActivity(new Intent(context, cls));
+    }
 }
