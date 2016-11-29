@@ -342,8 +342,7 @@ public class FragmentIndexCategory extends Fragment implements
         holder.categoriesRecylerview.setHasFixedSize(true);
         holder.categoriesRecylerview.setNestedScrollingEnabled(false);
 
-        recyclerViewCategoryMenuAdapter =
-                new RecyclerViewCategoryMenuAdapter(getContext());
+        recyclerViewCategoryMenuAdapter = new RecyclerViewCategoryMenuAdapter(getContext());
 
         recyclerViewCategoryMenuAdapter.setHomeMenuWidth(getHomeMenuWidth());
 
@@ -355,10 +354,6 @@ public class FragmentIndexCategory extends Fragment implements
                 new NonScrollLayoutManager(getActivity(),
                         LinearLayoutManager.VERTICAL,
                         false)
-        );
-        holder.categoriesRecylerview.addItemDecoration(
-                new DividerItemDecoration(getActivity(),
-                        LinearLayoutManager.VERTICAL)
         );
         holder.categoriesRecylerview.setAdapter(recyclerViewCategoryMenuAdapter);
     }
@@ -712,7 +707,7 @@ public class FragmentIndexCategory extends Fragment implements
         Point size = new Point();
         display.getSize(size);
         int width = size.x;
-        int widthOfHomeMenuView = (int) (width / 5);
+        int widthOfHomeMenuView = (int) (width / 2);
         return widthOfHomeMenuView;
     }
 

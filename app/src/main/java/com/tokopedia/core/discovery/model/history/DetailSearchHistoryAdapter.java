@@ -42,18 +42,22 @@ public class DetailSearchHistoryAdapter extends RecyclerView.Adapter {
             switch (data.getType()){
                 case SearchHistoryAdapter.HISTORY:
                     ((DetailSearchHistoryViewHolder) holder).setIconLeft(R.drawable.ic_history_black_24dp);
+                    ((DetailSearchHistoryViewHolder) holder).setIconLeftId(R.id.icon_search_history);
                     ((DetailSearchHistoryViewHolder) holder).setIconRight(R.drawable.ic_close_black_24dp);
                     break;
                 case SearchHistoryAdapter.HOTLIST:
                     ((DetailSearchHistoryViewHolder) holder).setIconLeft(R.drawable.ic_whatshot_black_24dp);
+                    ((DetailSearchHistoryViewHolder) holder).setIconLeftId(R.id.icon_search_hotlist);
                     ((DetailSearchHistoryViewHolder) holder).hideIconRight();
                     break;
                 case SearchHistoryAdapter.SUGGESTION:
                     ((DetailSearchHistoryViewHolder) holder).setIconLeft(R.drawable.ic_search_black_24dp);
+                    ((DetailSearchHistoryViewHolder) holder).setIconLeftId(R.id.icon_search_sugestion);
                     ((DetailSearchHistoryViewHolder) holder).hideIconRight();
                     break;
                 case SearchHistoryAdapter.POPULAR:
                     ((DetailSearchHistoryViewHolder) holder).setIconLeft(R.drawable.ic_call_made);
+                    ((DetailSearchHistoryViewHolder) holder).setIconLeftId(R.id.icon_search_popular);
                     ((DetailSearchHistoryViewHolder) holder).hideIconRight();
                     break;
             }

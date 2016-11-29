@@ -63,8 +63,7 @@ public class TickerAnnouncementAdapter extends RecyclerView.Adapter<TickerAnnoun
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View parentView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.layout_ticker_announcement, parent, false);
+        View parentView = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_ticker_announcement, parent, false);
         return new ViewHolder(parentView);
     }
 

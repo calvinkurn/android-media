@@ -79,6 +79,10 @@ public class DetailSearchHistoryViewHolder extends RecyclerView.ViewHolder {
         return -1;
     }
 
+    public void setIconLeftId(int id){
+        this.iconLeft.setId(id);
+    }
+
     public void setIconLeft(int iconLeft) {
         this.iconLeft.setImageResource(iconLeft);
         this.iconLeft.setVisibility(View.VISIBLE);
