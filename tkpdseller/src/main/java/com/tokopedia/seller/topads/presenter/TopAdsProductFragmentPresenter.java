@@ -17,5 +17,21 @@ import java.util.List;
  */
 public interface TopAdsProductFragmentPresenter {
 
+    /**
+     * Populate summary based on date range
+     *
+     * @param startDate
+     * @param endDate
+     */
     void populateSummary(final Date startDate, final Date endDate);
+
+    /**
+     * Populate top ads deposit
+     */
+    void populateDeposit();
+
+    /**
+     * Populate shop name and icon
+     */
+    void populateShopInfo();
 }

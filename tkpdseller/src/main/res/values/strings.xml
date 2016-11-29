@@ -4,4 +4,13 @@
     <string name="title_top_ads_dashboard">TopAds</string>
     <string name="title_top_ads_product">Produk</string>
     <string name="title_top_ads_store">Toko</string>
+
+    <string name="label_top_ads_impression">Tampil</string>
+    <string name="label_top_ads_click">Klik</string>
+    <string name="label_top_ads_ctr">CTR</string>
+    <string name="label_top_ads_conversion">Conversion</string>
+    <string name="label_top_ads_average">Rata - Rata</string>
+    <string name="label_top_ads_cost">Terpakai</string>
+
+    <string name="label_top_ads_deposit_desc">Saldo TopAds - %s</string>
 </resources>

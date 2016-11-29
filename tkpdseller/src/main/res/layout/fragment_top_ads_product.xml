@@ -5,6 +5,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <include layout="@layout/include_top_ads_shop_info"/>
+
     <include layout="@layout/include_top_ads_statistic_summary"/>
 
 </LinearLayout>
