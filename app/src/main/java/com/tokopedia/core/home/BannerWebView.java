@@ -10,10 +10,10 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.fragment.FragmentShopPreview;
+import com.tokopedia.core.home.fragment.FragmentBannerWebView;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
-import com.tokopedia.tkpd.home.fragment.FragmentBannerWebView;
 
 /**
  * Created by Nisie on 22/10/15.
