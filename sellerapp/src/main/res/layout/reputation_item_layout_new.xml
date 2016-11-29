@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="105dp">
+
+    <RelativeLayout
+        android:id="@+id/reputation_header"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/card_header_container"
+        android:layout_alignParentTop="true"
+        android:background="@android:color/white"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Transaksi"
+            android:textSize="@dimen/card_header_title"
+            android:textColor="#a1a1a1"
+            android:textStyle="bold"
+            android:layout_marginLeft="9dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/message_complain"
+            android:layout_toEndOf="@+id/message_complain" />
+
+        <ImageView
+            android:layout_width="@dimen/card_header_img_width"
+            android:layout_height="@dimen/card_header_img_height"
+            android:src="@drawable/transaction_icon_40_x_40_px"
+            android:id="@+id/message_complain"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="9dp"
+            />
+
+        <TextView
+            android:id="@+id/transaction_view_see_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/card_header_see_detail"
+            android:textColor="#fe5722"
+            android:text="LIHAT DETAIL"
+            android:visibility="gone"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_below="@+id/reputation_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp">
+
+        <com.daimajia.numberprogressbar.NumberProgressBar
+            android:id="@+id/reputation_progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:progress_unreached_color="#CCCCCC"
+            app:progress_reached_color="#2196f3"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            app:progress_unreached_bar_height="0.75dp"
+            app:progress_reached_bar_height="1.5dp"
+            app:progress_text_size="10sp"
+            app:progress_text_color="#3498DB"
+            app:progress_text_offset="1dp"
+            app:progress_text_visibility="invisible"
+            app:progress="0"
+            app:max="100"
+            android:layout_alignParentBottom="true"
+            />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_above="@+id/reputation_progress_bar">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0%"
+                android:ems="10"
+                android:textColor="#3498DB"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:id="@+id/reputation_percentage"
+                android:textStyle="bold"
+                android:textSize="@dimen/card_text_size" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/success_transaction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Transaksi Sukses"
+                    android:textSize="@dimen/transaction_success_text_size"
+                    android:textColor="#999999"
+                    />
+
+                <TextView
+                    android:id="@+id/from_transaction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/transaction_from_transaction_text_size"
+                    android:text="Dari 0 Transaksi"
+                    android:textColor="#999999"
+
+                    android:layout_gravity="right" />
+            </LinearLayout>
+        </RelativeLayout>
+
+    </RelativeLayout>
+</RelativeLayout>
