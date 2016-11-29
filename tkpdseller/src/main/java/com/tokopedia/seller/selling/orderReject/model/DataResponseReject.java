@@ -8,7 +8,7 @@ import org.parceler.Parcel;
 /**
  * Created by Toped10 on 6/9/2016.
  */
-@Parcel(parcelsIndex = false)
+@Parcel
 public class DataResponseReject {
     public static final String MODEL_DATA_REJECT_RESPONSE_KEY = "model_reject_response_key";
 

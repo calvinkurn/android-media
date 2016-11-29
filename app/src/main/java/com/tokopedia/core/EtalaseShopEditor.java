@@ -49,6 +49,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import retrofit2.Response;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -62,11 +64,19 @@ public class EtalaseShopEditor extends TActivity {
     private ArrayList<String> EtalaseName = new ArrayList<String>();
     private ArrayList<String> EtalaseID = new ArrayList<String>();
     private ArrayList<Integer> TotalProd = new ArrayList<Integer>();
-    private LazyListView lvEtalase;
+
+    @Bind(R2.id.listview_etalase)
+    LazyListView lvEtalase;
+
+    @Bind(R2.id.mainView)
+    View mainView;
+
+
     private ListViewEtalaseEditor lvEtalaseAdapter;
     private TkpdProgressDialog progressdialog;
     private NoResultHandler noResult;
     private String IsAllowShop = "0";
+    public String etalaseName = "";
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     @Override
@@ -82,22 +92,12 @@ public class EtalaseShopEditor extends TActivity {
         this.getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         inflateView(R.layout.activity_etalase_shop_editor);
-        lvEtalase = (LazyListView) findViewById(R.id.listview_etalase);
+        ButterKnife.bind(this);
+
         noResult = new NoResultHandler(getWindow().getDecorView().getRootView());
         lvEtalaseAdapter = new ListViewEtalaseEditor(EtalaseShopEditor.this,
                 EtalaseName, TotalProd, EtalaseID, IsAllowShop);
         lvEtalase.AddLoadingView();
-        // lvEtalase.setOnLazyLoadListener(new LazyLoadListener(){
-        //
-        // @Override
-        // public void onLazyLoad(View view) {
-        // if(!IsLoading && Page < TotalPage){
-        // Page++;
-        // GetEtalase();
-        // }
-        // }
-        //
-        // });
         lvEtalase.setAdapter(lvEtalaseAdapter);
         lvEtalase.RemoveLoadingView();
 
@@ -263,6 +263,7 @@ public class EtalaseShopEditor extends TActivity {
                 final Button b = alertDialog
                         .getButton(AlertDialog.BUTTON_POSITIVE);
                 b.setOnClickListener(new OnClickListener() {
+
                     @Override
                     public void onClick(View arg0) {
                         if (userInput.getText().toString().trim().length() == 0) {
@@ -274,9 +275,10 @@ public class EtalaseShopEditor extends TActivity {
                                         EtalaseShopEditor.this,
                                         TkpdProgressDialog.NORMAL_PROGRESS);
                                 progressdialog.showDialog();
-                                AddEtalase(userInput.getText().toString().trim());
+                                etalaseName = userInput.getText().toString().trim();
+                                AddEtalase(etalaseName);
                                 alertDialog.dismiss();
-								UnifyTracking.eventEtalaseAdd();
+                                UnifyTracking.eventEtalaseAdd();
                             } else
                                 userInput
                                         .setError(getString(R.string.error_etalase_exist));
@@ -329,40 +331,61 @@ public class EtalaseShopEditor extends TActivity {
 
                             @Override
                             public void onError(Throwable e) {
-
+                                progressdialog.dismiss();
+                                Snackbar.make(mainView, getString(R.string.error_connection_problem), Snackbar.LENGTH_INDEFINITE)
+                                        .setAction(R2.string.title_try_again, new OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                AddEtalase(etalaseName);
+                                            }
+                                        })
+                                        .show();
                             }
 
                             @Override
                             public void onNext(Response<TkpdResponse> responseData) {
-                                TkpdResponse response = responseData.body();
-                                String messageError = "";
+                                if (responseData.isSuccessful()) {
+                                    TkpdResponse response = responseData.body();
+                                    String messageError = "";
 
-                                if(response.getStringData() == null){
-                                    return;
-                                }
-
-                                JSONObject jsonObject = null;
-                                try {
-                                    jsonObject = new JSONObject(response.getStringData());
-
-                                    Gson gson = new GsonBuilder().create();
-                                    AddEtalase.Data data = gson.fromJson(jsonObject.toString(), AddEtalase.Data.class);
-                                    if (data.getIsSuccess() != 1 && response.getErrorMessages().size()>0) {
+                                    if (response.isError()) {
                                         progressdialog.dismiss();
-                                        for (int i=0; i<response.getErrorMessages().size(); i++) {
-                                            messageError += response.getErrorMessages().get(i) + " ";
+                                        Snackbar.make(mainView, response.getErrorMessages().toString().replace("[", "").replace("]", ""), Snackbar.LENGTH_INDEFINITE)
+                                                .show();
+                                    } else {
+                                        JSONObject jsonObject = null;
+                                        try {
+                                            jsonObject = new JSONObject(response.getStringData());
+
+                                            Gson gson = new GsonBuilder().create();
+                                            AddEtalase.Data data = gson.fromJson(jsonObject.toString(), AddEtalase.Data.class);
+                                            if (data.getIsSuccess() != 1 && response.getErrorMessages().size() > 0) {
+                                                progressdialog.dismiss();
+                                                for (int i = 0; i < response.getErrorMessages().size(); i++) {
+                                                    messageError += response.getErrorMessages().get(i) + " ";
+                                                }
+                                                Snackbar snackbarError = SnackbarManager.make(EtalaseShopEditor.this,
+                                                        messageError,
+                                                        Snackbar.LENGTH_LONG);
+                                                snackbarError.show();
+                                                return;
+                                            } else if (data.getIsSuccess() == 1) {
+                                                processSuccessAddEtalase(data, eName);
+                                            }
+                                        } catch (JSONException je) {
+                                            Log.e(STUART, EtalaseShopEditor.class.getSimpleName() + je.getLocalizedMessage());
                                         }
-                                        Snackbar snackbarError = SnackbarManager.make(EtalaseShopEditor.this,
-                                                messageError,
-                                                Snackbar.LENGTH_LONG)
-                                                ;
-                                        snackbarError.show();
-                                        return;
-                                    } else if (data.getIsSuccess() == 1) {
-                                        processSuccessAddEtalase(data,  eName);
                                     }
-                                } catch (JSONException je) {
-                                    Log.e(STUART, EtalaseShopEditor.class.getSimpleName() + je.getLocalizedMessage());
+                                } else {
+                                    progressdialog.dismiss();
+                                    Snackbar.make(mainView, getString(R.string.error_connection_problem), Snackbar.LENGTH_INDEFINITE)
+                                            .setAction(R2.string.title_try_again, new OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    AddEtalase(etalaseName);
+                                                }
+                                            })
+                                            .show();
                                 }
                             }
                         }

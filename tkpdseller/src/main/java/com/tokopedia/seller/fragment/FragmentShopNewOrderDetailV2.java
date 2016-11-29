@@ -641,11 +641,11 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         View promptsView = li.inflate(R.layout.error_network_dialog, null);
         TextView msg = (TextView) promptsView.findViewById(R2.id.msg);
         Spanned textError;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            textError = Html.fromHtml(error, Html.FROM_HTML_MODE_LEGACY);
-        } else {
-            textError = Html.fromHtml(error);
-        }
+        //if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+          //  textError = Html.fromHtml(error, Html.FROM_HTML_MODE_LEGACY);
+        //} else {
+        textError = Html.fromHtml(error);
+        //}
         msg.setText(textError);
         dialog.setView(promptsView);
         dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {

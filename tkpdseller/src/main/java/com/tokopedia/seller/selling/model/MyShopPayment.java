@@ -9,7 +9,7 @@ import org.parceler.Parcel;
 import java.util.ArrayList;
 import java.util.List;
 
-@Parcel(parcelsIndex = false)
+@Parcel
 public class MyShopPayment {
 
     @SerializedName("status")
@@ -97,7 +97,7 @@ public class MyShopPayment {
         this.serverProcessTime = serverProcessTime;
     }
 
-    @Parcel(parcelsIndex = false)
+    @Parcel
     public static class Data {
 
         @SerializedName("loc")
@@ -208,7 +208,7 @@ public class MyShopPayment {
 
     }
 
-    @Parcel(parcelsIndex = false)
+    @Parcel
     public static class Loc {
 
         @SerializedName("6")
@@ -467,7 +467,7 @@ public class MyShopPayment {
 
     }
     
-    @Parcel(parcelsIndex = false)
+    @Parcel
     public static class PaymentOption {
 
         @SerializedName("payment_image")
@@ -578,7 +578,7 @@ public class MyShopPayment {
 
     }
 
-    @Parcel(parcelsIndex = false)
+    @Parcel
     public static class ShopPayment {
 
         @SerializedName("payment_image")

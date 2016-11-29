@@ -148,11 +148,15 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
 
     @Override
     public void initDiscoveryTicker() {
-        if (TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_SEARCH).equalsIgnoreCase("true")) {
-            String message = TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_SEARCH_TEXT);
-            showTickerGTM(message);
-        } else {
-            showTickerGTM(null);
+        try {
+            if (TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_SEARCH).equalsIgnoreCase("true")) {
+                String message = TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_SEARCH_TEXT);
+                showTickerGTM(message);
+            } else {
+                showTickerGTM(null);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -245,7 +249,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
         if (uri.contains("/hot/")) {
             Uri myurl = Uri.parse(uri);
             uri = myurl.getPathSegments().get(1);
-            ((BrowseProductActivity) getActivity()).sendHotlist(uri);
+            ((BrowseProductActivity) getActivity()).sendHotlist(uri, "");
         }
         if (uri.contains("/p/")) {
             BrowseProductActivity browseProductActivity = (BrowseProductActivity) getActivity();

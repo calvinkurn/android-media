@@ -203,10 +203,7 @@ public class HomeCatMenuPresenterImpl implements HomeCatMenuPresenter,
 
     private void renderHomeCategoryMenu(List<CategoryMenuModel> menuModels) {
         if (isViewNotNull()) {
-            view.renderHomeCatMenu(
-                    (ArrayList<CategoryMenuModel>)
-                            menuModels
-            );
+            view.renderHomeCatMenu((ArrayList<CategoryMenuModel>) menuModels);
         }
     }
 

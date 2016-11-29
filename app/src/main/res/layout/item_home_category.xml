@@ -10,6 +10,7 @@
     android:layout_gravity="center"
     android:orientation="vertical">
 
+
         <LinearLayout
             android:id="@+id/linWrapper"
             android:layout_width="72dp"

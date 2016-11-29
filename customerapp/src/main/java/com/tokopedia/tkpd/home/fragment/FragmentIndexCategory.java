@@ -362,26 +362,6 @@ public class FragmentIndexCategory extends Fragment implements
         );
         holder.categoriesRecylerview.setAdapter(recyclerViewCategoryMenuAdapter);
     }
-
-    private void initHomeCatMenuAdapter(ArrayList<CategoryMenuModel> menuModelArrayList) {
-        RecyclerViewCategoryMenuAdapter adapter =
-                new RecyclerViewCategoryMenuAdapter(getContext(), menuModelArrayList,getHomeMenuWidth());
-
-        adapter.setOnCategoryClickedListener(this);
-        adapter.setOnGimmicClickedListener(this);
-
-        holder.categoriesRecylerview.setLayoutManager(
-                new NonScrollLayoutManager(getActivity(),
-                        LinearLayoutManager.VERTICAL,
-                        false)
-        );
-        holder.categoriesRecylerview.addItemDecoration(
-                new DividerItemDecoration(getActivity(),
-                        LinearLayoutManager.VERTICAL)
-        );
-        holder.categoriesRecylerview.setAdapter(adapter);
-    }
-
     private View.OnClickListener onPromoClicked(final String url) {
         return new View.OnClickListener() {
             @Override

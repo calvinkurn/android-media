@@ -18,7 +18,6 @@ public class AccountsParameter implements Parcelable {
     private String redirectUri;
     private TokenModel tokenModel;
     private Parcelable parcelable;
-    private int userID;
     private InfoModel infoModel;
     private String UUID;
     private SecurityModel securityModel;
@@ -76,15 +75,6 @@ public class AccountsParameter implements Parcelable {
         this.activationResent = activationResent;
     }
 
-    public boolean isCreated_password() {
-        return isCreated_password;
-    }
-
-    public void setIsCreated_password(boolean isCreated_password) {
-        this.isCreated_password = isCreated_password;
-    }
-
-
     public String getCode() {
         return code;
     }
@@ -101,22 +91,12 @@ public class AccountsParameter implements Parcelable {
         this.redirectUri = redirectUri;
     }
 
-    private boolean isCreated_password;
-
     public String getUUID() {
         return UUID;
     }
 
     public void setUUID(String UUID) {
         this.UUID = UUID;
-    }
-
-    public int getUserID() {
-        return userID;
-    }
-
-    public void setUserID(int userID) {
-        this.userID = userID;
     }
 
     public int getSocialType() {
@@ -196,7 +176,6 @@ public class AccountsParameter implements Parcelable {
         dest.writeString(this.redirectUri);
         dest.writeParcelable(this.tokenModel,flags);
         dest.writeParcelable(this.parcelable, flags);
-        dest.writeInt(this.userID);
         dest.writeParcelable(this.infoModel, flags);
         dest.writeString(this.UUID);
         dest.writeParcelable(this.securityModel, flags);
@@ -204,7 +183,6 @@ public class AccountsParameter implements Parcelable {
         dest.writeByte(this.activationResent ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.accountsModel, flags);
         dest.writeParcelable(this.errorModel, flags);
-        dest.writeByte(this.isCreated_password ? (byte) 1 : (byte) 0);
     }
 
     protected AccountsParameter(Parcel in) {
@@ -217,7 +195,6 @@ public class AccountsParameter implements Parcelable {
         this.redirectUri = in.readString();
         this.tokenModel = in.readParcelable(TokenModel.class.getClassLoader());
         this.parcelable = in.readParcelable(Parcelable.class.getClassLoader());
-        this.userID = in.readInt();
         this.infoModel = in.readParcelable(InfoModel.class.getClassLoader());
         this.UUID = in.readString();
         this.securityModel = in.readParcelable(SecurityModel.class.getClassLoader());
@@ -225,7 +202,6 @@ public class AccountsParameter implements Parcelable {
         this.activationResent = in.readByte() != 0;
         this.accountsModel = in.readParcelable(AccountsModel.class.getClassLoader());
         this.errorModel = in.readParcelable(ErrorModel.class.getClassLoader());
-        this.isCreated_password = in.readByte() != 0;
     }
 
     public static final Creator<AccountsParameter> CREATOR = new Creator<AccountsParameter>() {

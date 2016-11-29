@@ -5,7 +5,9 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.TextView;
 
@@ -19,7 +21,7 @@ import com.tokopedia.core.manage.people.password.intentservice.ManagePasswordInt
 import com.tokopedia.core.manage.people.password.model.ChangePasswordParam;
 import com.tokopedia.core.manage.people.password.presenter.ManagePasswordFragmentPresenter;
 import com.tokopedia.core.manage.people.password.presenter.ManagePasswordFragmentPresenterImpl;
-import com.tokopedia.core.session.PasswordView;
+import com.tokopedia.core.customView.PasswordView;
 
 import butterknife.Bind;
 
@@ -38,7 +40,6 @@ public class ManagePasswordFragment extends BasePresenterFragment<ManagePassword
     TextInputLayout wrapperNew;
     @Bind(R2.id.wrapper_conf)
     TextInputLayout wrapperConf;
-
     @Bind(R2.id.save_button)
     TextView saveButton;
 
@@ -98,6 +99,9 @@ public class ManagePasswordFragment extends BasePresenterFragment<ManagePassword
     @Override
     protected void initView(View view) {
         progress = new TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS);
+        oldPassword.addTextChangedListener(watcher(wrapperOld));
+        newPassword.addTextChangedListener(watcher(wrapperNew));
+        confPassword.addTextChangedListener(watcher(wrapperConf));
     }
 
     @Override
@@ -198,5 +202,28 @@ public class ManagePasswordFragment extends BasePresenterFragment<ManagePassword
     public void onErrorAction(Bundle resultData) {
         dismissProgress();
         showSnackbar(resultData.getString(ManagePasswordIntentService.EXTRA_RESULT));
+    }
+
+    private TextWatcher watcher(final TextInputLayout wrapper) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0) {
+                    setWrapperError(wrapper, null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() == 0){
+                    setWrapperError(wrapper, getString(R.string.error_field_required));
+                }
+            }
+        };
     }
 }

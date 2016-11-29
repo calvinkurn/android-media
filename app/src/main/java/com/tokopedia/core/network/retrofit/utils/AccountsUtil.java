@@ -6,6 +6,7 @@ import android.util.Base64;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 
 import java.security.InvalidKeyException;
@@ -121,7 +122,7 @@ public class AccountsUtil extends AuthUtil{
         finalHeader.put(HEADER_CONTENT_MD5, contentMD5);
         finalHeader.put(HEADER_AUTHORIZATION, "TKPD Tokopedia:" + signature.trim());
         finalHeader.put(HEADER_USER_ID, SessionHandler.getLoginID(MainApplication.getAppContext()));
-        finalHeader.put(HEADER_DEVICE, "android-"+BuildConfig.VERSION_NAME);
+        finalHeader.put(HEADER_DEVICE, "android-"+ GlobalConfig.VERSION_NAME);
 
         return finalHeader;
     }

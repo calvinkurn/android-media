@@ -3,11 +3,13 @@ package com.tokopedia.core.shopinfo.facades;
 import android.content.Context;
 import android.support.v4.util.ArrayMap;
 
+import com.tokopedia.core.R;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.shopinfo.facades.authservices.ActionService;
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 
 import java.util.Map;
 
@@ -28,7 +30,7 @@ public class ActionShopInfoRetrofit {
     public interface OnActionToggleFavListener {
         void onSuccess();
 
-        void onFailure();
+        void onFailure(String string);
     }
 
     public static String SOURCE_SHOP = "shop_detail";
@@ -78,9 +80,14 @@ public class ActionShopInfoRetrofit {
             public void onNext(Response<TkpdResponse> tkpdResponseResponse) {
                 tkpdResponseResponse.body().getStringData();
                 if (tkpdResponseResponse.isSuccessful())
-                    onActionToggleFavListener.onSuccess();
+                    if (!tkpdResponseResponse.body().isError()) {
+                        onActionToggleFavListener.onSuccess();
+                    } else {
+                        if (tkpdResponseResponse.body().isNullData())
+                            onActionToggleFavListener.onFailure(context.getString(R.string.default_request_error_null_data));
+                        else onActionToggleFavListener.onFailure(tkpdResponseResponse.body().getErrorMessages().toString());
+                    }
                 else {
-                    onActionToggleFavListener.onFailure();
                     onResponseError(tkpdResponseResponse.code());
                 }
             }
@@ -91,26 +98,30 @@ public class ActionShopInfoRetrofit {
         new ErrorHandler(new ErrorListener() {
             @Override
             public void onUnknown() {
-
+                onActionToggleFavListener.onFailure(context.getString(R.string.default_request_error_unknown));
             }
 
             @Override
             public void onTimeout() {
+                onActionToggleFavListener.onFailure(context.getString(R.string.default_request_error_timeout));
 
             }
 
             @Override
             public void onServerError() {
+                onActionToggleFavListener.onFailure(context.getString(R.string.default_request_error_unknown));
 
             }
 
             @Override
             public void onBadRequest() {
+                onActionToggleFavListener.onFailure(context.getString(R.string.default_request_error_unknown));
 
             }
 
             @Override
             public void onForbidden() {
+                onActionToggleFavListener.onFailure(context.getString(R.string.default_request_error_forbidden_auth));
 
             }
         }, code);
@@ -123,6 +134,11 @@ public class ActionShopInfoRetrofit {
         params.put("src", SOURCE_SHOP);
         params.put("ad_key", adKey);
         return params;
+    }
+
+    public void setShopModel(ShopModel shopModel) {
+        this.shopId = shopModel.info.shopId;
+        this.shopDomain = shopModel.info.shopDomain;
     }
 
 }
