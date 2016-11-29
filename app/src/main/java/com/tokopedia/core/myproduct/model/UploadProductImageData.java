@@ -10,7 +10,7 @@ import java.util.ArrayList;
 /**
  * Created by m.normansyah on 04/12/2015.
  */
-@Parcel(parcelsIndex = false)
+@Parcel
 public class UploadProductImageData {
 
     /**
@@ -77,7 +77,7 @@ public class UploadProductImageData {
                 '}';
     }
 
-    @Parcel(parcelsIndex = false)
+    @Parcel
     public static class Result{
 
         @SerializedName("file_path")

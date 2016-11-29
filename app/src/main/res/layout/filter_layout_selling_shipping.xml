@@ -31,6 +31,7 @@
                 android:orientation="horizontal">
 
                 <Spinner
+                    android:dropDownVerticalOffset="30dp"
                     android:id="@+id/due_date"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -38,6 +39,7 @@
                     android:entries="@array/response_deadline_7" />
 
                 <Spinner
+                    android:dropDownVerticalOffset="30dp"
                     android:id="@+id/shipping"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

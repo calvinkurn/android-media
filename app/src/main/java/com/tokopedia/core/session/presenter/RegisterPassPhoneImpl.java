@@ -53,7 +53,8 @@ public class RegisterPassPhoneImpl extends RegisterThird implements DatePickerUt
             String name = (String) data.get(RegisterThird.FULLNAME);
             createPassModel.setFullName(name);
         } else if (data.containsKey(RegisterThird.GENDER)) {
-            Log.d(TAG, getMessageTAG() + " gender : " + (int) data.get(RegisterThird.GENDER));
+            String gender = (String) data.get(RegisterThird.GENDER);
+            createPassModel.setGender(gender);
         } else if (data.containsKey(RegisterThird.EMAIL)) {
             String email = (String) data.get(RegisterThird.EMAIL);
             Log.d(TAG, getMessageTAG() + " email : " + email);

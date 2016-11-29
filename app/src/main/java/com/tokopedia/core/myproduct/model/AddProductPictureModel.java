@@ -9,7 +9,7 @@ import org.parceler.Transient;
 /**
  * Created by m.normansyah on 29/12/2015.
  */
-@Parcel(parcelsIndex = false)
+@Parcel
 public class AddProductPictureModel {
 
     /**
@@ -37,7 +37,7 @@ public class AddProductPictureModel {
     @Expose
     String server_process_time;
 
-    @Parcel(parcelsIndex = false)
+    @Parcel
     public static class Data{
 
         /**

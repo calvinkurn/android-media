@@ -8,7 +8,7 @@ import org.parceler.Parcel;
 /**
  * Created by admin on 23/12/2015.
  */
-@Parcel(parcelsIndex = false)
+@Parcel
 public class NoteDetailModel {
 
     /**
@@ -36,7 +36,7 @@ public class NoteDetailModel {
     @Expose
     String server_process_time;
 
-    @Parcel(parcelsIndex = false)
+    @Parcel
     public static class Data{
         /**
          * this is for parcelable
@@ -55,7 +55,7 @@ public class NoteDetailModel {
             this.detail = detail;
         }
     }
-    @Parcel(parcelsIndex = false)
+    @Parcel
     public static class Detail{
         /**
          * this is for parcelable

@@ -38,7 +38,6 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.deeplink.presenter.DeepLinkPresenterImpl;
 import com.tokopedia.core.discovery.model.Breadcrumb;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.discovery.model.HotListBannerModel;
@@ -95,6 +94,8 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRA_SOUR
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.FRAGMENT_ID;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.VALUES_INVALID_FRAGMENT_ID;
 
+import static com.tokopedia.core.router.CustomerRouter.IS_DEEP_LINK_SEARCH;
+
 /**
  * Created by Erry on 6/30/2016.
  */
@@ -125,7 +126,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         return AppScreen.SCREEN_BROWSE_PRODUCT_FROM_SEARCH;
     }
 
-    public void sendHotlist(String selected) {
+    public void sendHotlist(String selected, String keyword) {
         fetchHotListHeader(selected);
         browseProductActivityModel.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT);
         browseProductActivityModel.alias = selected;
@@ -544,7 +545,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                 browseProductActivityModel.setParentDepartement(departmentId);
                 browseProductActivityModel.setFragmentId(fragmentId);
             }
-            browseProductActivityModel.setSearchDeeplink(intent.getBooleanExtra(DeepLinkPresenterImpl.IS_DEEP_LINK_SEARCH, false));
+            browseProductActivityModel.setSearchDeeplink(intent.getBooleanExtra(IS_DEEP_LINK_SEARCH, false));
         }
     }
 

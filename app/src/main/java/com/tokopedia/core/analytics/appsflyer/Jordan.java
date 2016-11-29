@@ -2,8 +2,11 @@ package com.tokopedia.core.analytics.appsflyer;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.container.AppsflyerContainer;
 import com.tokopedia.core.analytics.container.IAppsflyerContainer;
 import com.tokopedia.core.analytics.container.ILocalyticsContainer;
@@ -36,7 +39,15 @@ public class Jordan {
     public AppsflyerContainer runFirstTimeAppsFlyer(String userID){
         AppsflyerContainer appsflyerContainer = AppsflyerContainer.newInstance(context);
         CommonUtils.dumper("Appsflyer login userid " + userID);
-        appsflyerContainer.initAppsFlyer(AppsflyerContainer.APPSFLYER_KEY, userID);
+        try {
+            Bundle bundle = context.getPackageManager().getApplicationInfo(context.getPackageName(),
+                    PackageManager.GET_META_DATA).metaData;
+            appsflyerContainer.initAppsFlyer(bundle.getString(AppEventTracking.AF.APPSFLYER_KEY), userID);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            CommonUtils.dumper("Error key Appsflyer");
+            appsflyerContainer.initAppsFlyer(AppsflyerContainer.APPSFLYER_KEY, userID);
+        }
         return appsflyerContainer;
     }
 

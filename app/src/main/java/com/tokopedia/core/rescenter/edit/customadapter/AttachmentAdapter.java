@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.database.model.AttachmentResCenterDB;
 import com.tokopedia.core.rescenter.utils.ResCenterUtils;
@@ -91,16 +92,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
 
     private void loadImage(ViewHolder holder, int position) {
         File imgFile = new  File(dataSet.get(position).imagePath);
-        if(imgFile.exists()){
-            Bitmap bitmapFile;
-            try {
-                bitmapFile = ResCenterUtils.getBitmapFromFile(imgFile.getAbsolutePath());
-                holder.attachment.setImageBitmap(bitmapFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-                holder.attachment.setImageResource(R.drawable.remove_thin);
-            }
-        }
+        ImageHandler.loadImageFromFile(holder.itemView.getContext(), holder.attachment, imgFile);
     }
 
     @Override

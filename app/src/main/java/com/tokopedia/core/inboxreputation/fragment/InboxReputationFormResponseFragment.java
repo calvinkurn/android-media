@@ -37,8 +37,6 @@ import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.util.LabelUtils;
 import com.tokopedia.core.util.ToolTipUtils;
 
-import org.parceler.Parcels;
-
 import butterknife.Bind;
 
 /**
@@ -154,8 +152,8 @@ public class InboxReputationFormResponseFragment
 
     @Override
     protected void setupArguments(Bundle arguments) {
-        inboxReputation = Parcels.unwrap(getArguments().getParcelable("inbox_reputation"));
-        inboxReputationDetail = Parcels.unwrap(getArguments().getParcelable("inbox_reputation_detail"));
+        inboxReputation = getArguments().getParcelable("inbox_reputation");
+        inboxReputationDetail = getArguments().getParcelable("inbox_reputation_detail");
     }
 
     @Override
@@ -357,7 +355,7 @@ public class InboxReputationFormResponseFragment
     }
 
     public void showLoading() {
-        if(progressDialog.isProgress())
+        if (progressDialog.isProgress())
             progressDialog.dismiss();
         progressDialog.showDialog();
     }
@@ -391,9 +389,9 @@ public class InboxReputationFormResponseFragment
     public void onFailedPostResponse(final Bundle resultData) {
         if (!resultData.getString(InboxReviewIntentService.EXTRA_ERROR, "").equals("")) {
             String errorMessage = resultData.getString(InboxReviewIntentService.EXTRA_ERROR, "");
-            if(errorMessage.equals("")){
+            if (errorMessage.equals("")) {
                 NetworkErrorHelper.showSnackbar(getActivity());
-            }else{
+            } else {
                 SnackbarManager.make(getActivity(), errorMessage, Snackbar.LENGTH_LONG).show();
             }
         }

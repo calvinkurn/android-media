@@ -35,7 +35,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customView.RechargeEditText;
-import com.tokopedia.core.database.model.RechargeOperatorModelDB;
+import com.tokopedia.core.database.model.RechargeOperatorModelDBAttrs;
 import com.tokopedia.core.database.model.category.Category;
 import com.tokopedia.core.database.model.category.CategoryAttributes;
 import com.tokopedia.core.database.model.category.ClientNumber;
@@ -402,7 +402,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     }
 
     @Override
-    public void setOperatorView(RechargeOperatorModelDB operator) {
+    public void setOperatorView(RechargeOperatorModelDBAttrs operator) {
         try {
             this.minLengthDefaultOperator = operator.minimumLength;
             this.rechargeEditText.getAutoCompleteTextView().setFilters(new InputFilter[]{new InputFilter.LengthFilter(operator.maximumLength)});

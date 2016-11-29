@@ -10,7 +10,7 @@ import java.util.Arrays;
 /**
  * Created by m.normansyah on 29/12/2015.
  */
-@Parcel(parcelsIndex = false)
+@Parcel
 public class ProductValidationModel {
 
     /**
@@ -78,7 +78,7 @@ public class ProductValidationModel {
         this.server_process_time = server_process_time;
     }
 
-    @Parcel(parcelsIndex = false)
+    @Parcel
     public static class Data{
 
         /**
