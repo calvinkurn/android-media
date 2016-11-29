@@ -27,5 +27,8 @@
             android:name="com.tokopedia.seller.ShippingConfirmationProdConf"
             android:label="@string/title_activity_shipping_confirmation_prod_conf"
             android:screenOrientation="portrait" />
+        <activity android:name=".gmsubscribe.GMSubscribeActivity"
+            android:label="Berlangganan Gold Merchant"
+            android:screenOrientation="portrait" />
     </application>
 </manifest>
