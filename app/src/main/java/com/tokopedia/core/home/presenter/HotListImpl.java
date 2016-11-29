@@ -13,9 +13,6 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.discovery.activity.BrowseProductActivity;
-import com.tokopedia.core.discovery.fragment.browseparent.ProductFragment;
-import com.tokopedia.core.dynamicfilter.presenter.DynamicFilterPresenter;
 import com.tokopedia.core.home.model.HotListModel;
 import com.tokopedia.core.home.model.HotListViewModel;
 import com.tokopedia.core.network.apiservices.search.HotListService;
@@ -26,7 +23,8 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.services.AuthService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.v4.NetworkConfig;
-import com.tokopedia.core.router.DiscoveryRouter;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.constant.DownloadServiceConstant;
@@ -347,20 +345,25 @@ public class HotListImpl implements HotList {
         switch (urlParser.getType()) {
             case HOT_KEY:
                 Bundle bundle = new Bundle();
-                bundle.putString(BrowseProductActivity.ALIAS, urlParser.getHotAlias());
-                bundle.putString(BrowseProductActivity.EXTRA_SOURCE, DynamicFilterPresenter.HOT_PRODUCT);
-                hotListView.moveToOtherActivity(bundle, BrowseProductActivity.class);
+                bundle.putString(BrowseProductRouter.EXTRAS_DISCOVERY_ALIAS, urlParser.getHotAlias());
+                bundle.putString(BrowseProductRouter.EXTRA_SOURCE, BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT);
+                hotListView.moveToOtherActivity(bundle);
                 break;
             case CATALOG_KEY:
-                hotListView.moveToOtherActivity(DiscoveryRouter.getCatalogDetailActivity(mContext, urlParser.getHotAlias()));
+                hotListView.moveToOtherActivity(
+                        DetailProductRouter.getCatalogDetailActivity(mContext, urlParser.getHotAlias()));
                 break;
             default:
                 bundle = new Bundle();
-                bundle.putString(BrowseProductActivity.DEPARTMENT_ID, urlParser.getDepIDfromURI(mContext));
-                bundle.putInt(BrowseProductActivity.FRAGMENT_ID, ProductFragment.FRAGMENT_ID);
-                bundle.putString(BrowseProductActivity.AD_SRC, TopAdsApi.SRC_HOTLIST);
-                bundle.putString(BrowseProductActivity.EXTRA_SOURCE, DynamicFilterPresenter.DIRECTORY);
-                hotListView.moveToOtherActivity(bundle, BrowseProductActivity.class);
+                bundle.putString(BrowseProductRouter.DEPARTMENT_ID,
+                        urlParser.getDepIDfromURI(mContext));
+
+                bundle.putInt(BrowseProductRouter.FRAGMENT_ID,
+                        BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
+
+                bundle.putString(BrowseProductRouter.AD_SRC, TopAdsApi.SRC_HOTLIST);
+                bundle.putString(BrowseProductRouter.EXTRA_SOURCE, BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY);
+                hotListView.moveToOtherActivity(bundle);
 
                 break;
         }

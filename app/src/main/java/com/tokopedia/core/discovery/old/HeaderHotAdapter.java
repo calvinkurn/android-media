@@ -1,3 +1,10 @@
+/*
+ * Created By Kulomady on 11/26/16 12:47 AM
+ * Copyright (c) 2016. All rights reserved
+ *
+ * Last Modified 11/26/16 12:47 AM
+ */
+
 package com.tokopedia.core.discovery.old;
 
 import android.content.Context;

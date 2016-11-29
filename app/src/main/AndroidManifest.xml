@@ -571,25 +571,7 @@
             android:label="@string/shop_setting"
             android:theme="@style/ShopAppTheme" />
 
-        <activity
-            android:name="com.tokopedia.core.discovery.activity.BrowseProductActivity"
-            android:label="Pencarian"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.BrowseProduct"
-            android:windowSoftInputMode="stateAlwaysHidden" />
 
-        <activity
-            android:name="com.tokopedia.core.dynamicfilter.DynamicFilterActivity"
-            android:label="Filter"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3"
-            android:windowSoftInputMode="adjustPan|adjustResize" />
-
-        <activity
-            android:name="com.tokopedia.core.discovery.activity.SortProductActivity"
-            android:label="Urutkan"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3" />
 
         <activity
             android:name="com.tokopedia.core.topads.WebViewTopAdsActivity"

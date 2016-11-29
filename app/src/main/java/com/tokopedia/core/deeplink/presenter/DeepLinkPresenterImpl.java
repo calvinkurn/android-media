@@ -20,17 +20,14 @@ import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.core.deeplink.listener.DeepLinkView;
-import com.tokopedia.core.discovery.activity.BrowseProductActivity;
-import com.tokopedia.core.discovery.fragment.browseparent.ProductFragment;
-import com.tokopedia.core.discovery.presenter.DiscoveryActivityPresenter;
-import com.tokopedia.core.dynamicfilter.presenter.DynamicFilterPresenter;
 import com.tokopedia.core.fragment.FragmentShopPreview;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.product.fragment.ProductDetailFragment;
 import com.tokopedia.core.product.model.passdata.ProductPass;
-import com.tokopedia.core.router.DiscoveryRouter;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.home.HotListRouter;
 import com.tokopedia.core.router.home.RechargeRouter;
@@ -276,7 +273,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
 
     private void openCatalogProduct(List<String> linkSegment, Uri uriData) {
-        viewListener.inflateFragment(DiscoveryRouter.getCatalogDetailListFragment(context, linkSegment.get(1)), "CATALOG_PRODUCT");
+        viewListener.inflateFragment(DetailProductRouter
+                .getCatalogDetailListFragment(context, linkSegment.get(1)), "CATALOG_PRODUCT");
     }
 
     /**
@@ -294,17 +292,18 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             //{END} because after login viewpager unable to reload the fragment so need to use v4 fragment
             return;
         } else if (isHotAlias(uriData)) {
-            bundle.putString(DiscoveryActivityPresenter.ALIAS, uriData.getQueryParameter("alk"));
+            bundle.putString(BrowseProductRouter.EXTRAS_DISCOVERY_ALIAS, uriData.getQueryParameter("alk"));
         } else if (isHotLink(linkSegment)) {
-            bundle.putString(DiscoveryActivityPresenter.ALIAS, linkSegment.get(1));
+            bundle.putString(BrowseProductRouter.EXTRAS_DISCOVERY_ALIAS, linkSegment.get(1));
         } else return;
 
-        bundle.putString(BrowseProductActivity.DEPARTMENT_ID, "0");
-        bundle.putInt(BrowseProductActivity.FRAGMENT_ID, ProductFragment.FRAGMENT_ID);
-        bundle.putString(BrowseProductActivity.AD_SRC, TopAdsApi.SRC_HOTLIST);
-        bundle.putString(BrowseProductActivity.EXTRA_SOURCE, DynamicFilterPresenter.HOT_PRODUCT);
+        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, "0");
+        bundle.putInt(BrowseProductRouter.FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
+        bundle.putString(BrowseProductRouter.AD_SRC, TopAdsApi.SRC_HOTLIST);
+        bundle.putString(BrowseProductRouter.EXTRA_SOURCE,
+                BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT);
 
-        Intent intent = new Intent(context, BrowseProductActivity.class);
+        Intent intent = BrowseProductRouter.getDefaultBrowseIntent(context);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -339,12 +338,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         Bundle bundle = new Bundle();
         String departmentId = "0";
         String searchQuery = "";
-        String source = DynamicFilterPresenter.SEARCH_PRODUCT;
+        String source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
         if (isSearch(linkSegment)) {
             departmentId = uriData.getQueryParameter("sc");
             searchQuery = uriData.getQueryParameter("q");
-            source = DynamicFilterPresenter.SEARCH_PRODUCT;
-            bundle.putInt(BrowseProductActivity.FRAGMENT_ID, ProductFragment.FRAGMENT_ID);
+            source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
+            bundle.putInt(BrowseProductRouter.FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
             bundle.putBoolean(IS_DEEP_LINK_SEARCH, true);
         } else if (isCategory(linkSegment)) {
             String iden = linkSegment.get(1);
@@ -355,17 +354,17 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     DbManagerImpl.getInstance().getCategoryDb(iden);
             if (dep != null) {
                 departmentId = dep.getDepartmentId() + "";
-                bundle.putString(DiscoveryActivityPresenter.DEPARTMENT_ID, departmentId);
+                bundle.putString(BrowseProductRouter.DEPARTMENT_ID, departmentId);
             }
-            bundle.putInt(BrowseProductActivity.FRAGMENT_ID, ProductFragment.FRAGMENT_ID);
-            source = DynamicFilterPresenter.DIRECTORY;
+            bundle.putInt(BrowseProductRouter.FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
+            source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY;
         }
 
-        bundle.putString(BrowseProductActivity.DEPARTMENT_ID, departmentId);
-        bundle.putString(BrowseProductActivity.AD_SRC, TopAdsApi.SRC_HOTLIST);
-        bundle.putString(DiscoveryActivityPresenter.SEARCH_TERM, searchQuery);
-        bundle.putString(BrowseProductActivity.EXTRA_SOURCE, source);
-        Intent intent = new Intent(context, BrowseProductActivity.class);
+        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, departmentId);
+        bundle.putString(BrowseProductRouter.AD_SRC, TopAdsApi.SRC_HOTLIST);
+        bundle.putString(BrowseProductRouter.EXTRAS_SEARCH_TERM, searchQuery);
+        bundle.putString(BrowseProductRouter.EXTRA_SOURCE, source);
+        Intent intent = BrowseProductRouter.getDefaultBrowseIntent(context);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
