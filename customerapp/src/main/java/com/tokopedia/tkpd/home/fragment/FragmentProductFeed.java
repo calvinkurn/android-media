@@ -182,8 +182,10 @@ public class FragmentProductFeed extends Fragment implements ProductFeedView, De
         //[START] AN-1173
         // [Product Feed v2] Add product button still shown when user don't have shop
         String shopID = SessionHandler.getShopID(getActivity());
-        if(shopID ==null||shopID.equals("0")|| shopID.length()==0){
+        if (shopID == null || shopID.equals("0") || shopID.length() == 0) {
             fabAddProduct.setVisibility(View.GONE);
+        } else {
+            fabAddProduct.setVisibility(View.VISIBLE);
         }
         //[END] AN-1173
 
