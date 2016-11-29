@@ -9,6 +9,7 @@ import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
+import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
@@ -208,6 +209,17 @@ public class TrackingUtils extends TrackingConfig {
 
     public static double getDouble(String key) {
         return getGTMEngine().getDouble(key);
+    }
+
+    // TODO alvarisi true caller
+    public static void eventTrueCaller(String userId) {
+        /*Nishikino.init(MainApplication.getAppContext()).startAnalytics()
+                .sendButtonClick(
+                        AppEventTracking.Event.TRUECALLER,
+                        AppEventTracking.Category.TRUECALLER,
+                        AppEventTracking.Action.INSTALLED,
+                        userId
+                );*/
     }
 }
 

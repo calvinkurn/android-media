@@ -11,39 +11,44 @@ import android.widget.TextView;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.drawer.var.NotificationItem;
+import com.tokopedia.core.util.SessionHandler;
 
 /**
  * Created by Nisie on 12/08/15.
- * Modified by Erry
  */
 public class ToolbarVariable {
+
 
     public interface OnDrawerToggleClickListener {
         void onDrawerToggleClick();
     }
 
-    private static final int TYPE_MAIN = 0;
+    protected static final int TYPE_MAIN = 0;
     private static final int TYPE_DETAIL = 1;
-    private static final int TYPE_SEARCH = 2;
 
-    private ViewHolder holder;
-    private Model model;
+    protected ViewHolder holder;
+    protected Model model;
     private AppCompatActivity context;
-    private int type;
+    protected int type;
     private OnDrawerToggleClickListener listener;
 
     public class Model {
         NotificationItem notification = new NotificationItem(context);
     }
 
-    private class ViewHolder {
+    public class ViewHolder {
         Toolbar toolbar;
         View notif;
         View title;
-        View searchView;
         ImageView drawerToggle;
         TextView notifRed;
         TextView titleTextView;
+    }
+
+    public void setTitleText(String text){
+        if(text != null && !text.isEmpty()) {
+            holder.titleTextView.setText(text);
+        }
     }
 
     public ToolbarVariable(AppCompatActivity context) {
@@ -66,15 +71,7 @@ public class ToolbarVariable {
         setAsActionBar();
     }
 
-    public void createToolbarWithSearchBox() {
-        holder = new ViewHolder();
-        this.type = TYPE_SEARCH;
-        initView();
-        initListener();
-        setAsActionBar();
-    }
-
-    private void initListener() {
+    protected void initListener() {
         holder.drawerToggle.setOnClickListener(onDrawerToggleClicked());
     }
 
@@ -87,28 +84,26 @@ public class ToolbarVariable {
         };
     }
 
-    public void setSearchViewClickListener(View.OnClickListener clickListener) {
-        holder.searchView.setOnClickListener(clickListener);
+
+    protected void initView() {
+        initView((Toolbar) context.findViewById(R.id.app_bar));
     }
 
-    private void initView() {
-        holder.toolbar = (Toolbar) context.findViewById(R.id.app_bar);
+    protected void initView(Toolbar toolbar){
+        holder.toolbar = toolbar;
         holder.toolbar.removeAllViews();
         switch (type) {
             case TYPE_MAIN: {
                 initViewMain();
                 break;
             }
-            case TYPE_SEARCH: {
-                initSearchView();
-            }
             default: {
-                initViewTitle();
+                initViewDetail();
             }
         }
     }
 
-    private void initViewTitle() {
+    private void initViewDetail() {
         initTitle();
     }
 
@@ -117,7 +112,7 @@ public class ToolbarVariable {
         initTitle();
     }
 
-    private void setAsActionBar() {
+    protected void setAsActionBar() {
         switch (type) {
             case TYPE_DETAIL: {
                 context.setSupportActionBar(holder.toolbar);
@@ -133,17 +128,6 @@ public class ToolbarVariable {
         context.getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
-    private void initSearchView() {
-        View view = context.getLayoutInflater().inflate(R.layout.custom_action_bar_searchview, null);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        view.setLayoutParams(params);
-        holder.searchView = view.findViewById(R.id.search_container);
-        holder.notif = view.findViewById(R.id.burger_menu);
-        holder.drawerToggle = (ImageView) holder.notif.findViewById(R.id.toggle_but_ab);
-        holder.notifRed = (TextView) holder.notif.findViewById(R.id.toggle_count_notif);
-        holder.toolbar.addView(view);
-    }
-
     private void initTitle() {
         holder.title = context.getLayoutInflater().inflate(R.layout.custom_action_bar_title, null);
         holder.titleTextView = (TextView) holder.title.findViewById(R.id.actionbar_title);
@@ -152,7 +136,8 @@ public class ToolbarVariable {
     }
 
     private void initNotif() {
-        holder.notif = context.getLayoutInflater().inflate(R.layout.custom_actionbar_drawer_notification, null);
+        holder.notif = context.getLayoutInflater().inflate(
+                R.layout.custom_actionbar_drawer_notification, null);
         holder.drawerToggle = (ImageView) holder.notif.findViewById(R.id.toggle_but_ab);
         holder.notifRed = (TextView) holder.notif.findViewById(R.id.toggle_count_notif);
         holder.toolbar.addView(holder.notif);
@@ -164,7 +149,14 @@ public class ToolbarVariable {
 
     public void updateToolbar(NotificationItem notificationItem) {
         model.notification = notificationItem;
-        if (model.notification.getTotalNotif() <= 0) {
+        int notificationCount;
+        if(SessionHandler.isUserSeller(context)) {
+            notificationCount = model.notification.getNotifShop() + model.notification.getNotifMessageSellerSpecific();
+        } else {
+            notificationCount = model.notification.getTotalNotif();
+        }
+
+        if (notificationCount <= 0) {
             holder.notifRed.setVisibility(View.GONE);
         } else {
             holder.notifRed.setVisibility(View.VISIBLE);
@@ -186,15 +178,4 @@ public class ToolbarVariable {
             }
         }
     }
-
-    public void setTitle(int res_id) {
-        if (holder.titleTextView != null)
-            holder.titleTextView.setText(context.getString(res_id));
-    }
-
-    public void setTitle(String title) {
-        if (holder.titleTextView != null)
-            holder.titleTextView.setText(title);
-    }
-
 }

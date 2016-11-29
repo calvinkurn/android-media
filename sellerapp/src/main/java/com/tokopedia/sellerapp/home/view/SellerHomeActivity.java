@@ -44,8 +44,23 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.sellerapp.EtalaseShopEditor;
-import com.tokopedia.sellerapp.ManageGeneral;
+import com.tokopedia.core.EtalaseShopEditor;
+import com.tokopedia.core.ManageGeneral;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
+import com.tokopedia.core.myproduct.ManageProduct;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.network.apiservices.shop.MyShopOrderService;
+import com.tokopedia.core.network.apiservices.shop.ShopService;
+import com.tokopedia.core.network.apiservices.transaction.DepositService;
+import com.tokopedia.core.network.apiservices.user.InboxResCenterService;
+import com.tokopedia.core.network.apiservices.user.NotificationService;
+import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.util.SelectableSpannedMovementMethod;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
@@ -78,25 +93,6 @@ import com.tokopedia.sellerapp.home.utils.NotifNetworkController;
 import com.tokopedia.sellerapp.home.utils.ShopController;
 import com.tokopedia.sellerapp.home.utils.ShopNetworkController;
 import com.tokopedia.sellerapp.home.utils.ShopTransactionController;
-import com.tokopedia.sellerapp.inboxmessage.activity.InboxMessageActivity;
-import com.tokopedia.sellerapp.inboxreputation.activity.InboxReputationActivity;
-import com.tokopedia.sellerapp.myproduct.ManageProduct;
-import com.tokopedia.sellerapp.network.NetworkErrorHelper;
-import com.tokopedia.sellerapp.network.SnackbarRetry;
-import com.tokopedia.sellerapp.network.apiservices.shop.MyShopOrderService;
-import com.tokopedia.sellerapp.network.apiservices.shop.ShopService;
-import com.tokopedia.sellerapp.network.apiservices.transaction.DepositService;
-import com.tokopedia.sellerapp.network.apiservices.user.InboxResCenterService;
-import com.tokopedia.sellerapp.network.apiservices.user.NotificationService;
-import com.tokopedia.sellerapp.rescenter.inbox.activity.InboxResCenterActivity;
-import com.tokopedia.sellerapp.session.presenter.SessionView;
-import com.tokopedia.sellerapp.shopinfo.ShopInfoActivity;
-import com.tokopedia.sellerapp.talk.inboxtalk.activity.InboxTalkActivity;
-import com.tokopedia.sellerapp.util.AppScreen;
-import com.tokopedia.sellerapp.util.SelectableSpannedMovementMethod;
-import com.tokopedia.sellerapp.util.SessionHandler;
-import com.tokopedia.sellerapp.var.TkpdState;
-import com.tokopedia.sellerapp.welcome.WelcomeActivity;
 
 import org.json.JSONObject;
 
@@ -109,9 +105,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-
-import static com.tokopedia.sellerapp.drawer.DrawerVariable.goToShopNewOrder;
-import static com.tokopedia.sellerapp.drawer.DrawerVariable.startIntent;
 
 public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.GCMHandlerListener,
         SessionHandler.onLogoutListener {
@@ -1038,12 +1031,12 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
 
         Nishikino.init(this).startAnalytics()
                 .eventAuthenticate(authEvent)
-                .sendScreen(AppScreen.convertAppScreen(this));
+                .sendScreen(AppScreen.SCREEN_SELLER_HOME);
     }
 
     private void sendToLocalytics() {
         Jordan.init(this).getLocalyticsContainer()
-                .tagScreen(AppScreen.convertAppScreen(this));
+                .tagScreen(AppScreen.SCREEN_SELLER_HOME);
     }
 
     @Override
