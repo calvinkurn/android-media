@@ -3,8 +3,7 @@ package com.tokopedia.sellerapp.home.model.network;
 import android.net.Uri;
 
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.tkpd.shopinfo.models.productmodel.Badge;
-import com.tokopedia.tkpd.var.ProductItem;
+import com.tokopedia.core.var.ProductItem;
 
 import java.util.ArrayList;
 import java.util.List;

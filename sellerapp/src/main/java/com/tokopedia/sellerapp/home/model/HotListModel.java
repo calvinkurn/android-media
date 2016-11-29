@@ -1,8 +1,8 @@
 package com.tokopedia.sellerapp.home.model;
 
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.tkpd.var.RecyclerViewItem;
-import com.tokopedia.tkpd.var.TkpdState;
+import com.tokopedia.core.var.RecyclerViewItem;
+import com.tokopedia.core.var.TkpdState;
 
 import org.parceler.Parcel;
 
@@ -10,7 +10,7 @@ import org.parceler.Parcel;
  * Created by m.normansyah on 28/10/2015.
  */
 @Parcel
-public class HotListModel extends RecyclerViewItem{
+public class HotListModel extends RecyclerViewItem {
     @SerializedName("title")
     String hotListName;
     @SerializedName("price_start")

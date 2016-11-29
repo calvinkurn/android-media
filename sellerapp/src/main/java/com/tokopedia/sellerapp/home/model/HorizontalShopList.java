@@ -1,9 +1,9 @@
 package com.tokopedia.sellerapp.home.model;
 
-import com.tokopedia.tkpd.home.presenter.Favorite;
-import com.tokopedia.tkpd.var.RecyclerViewItem;
-import com.tokopedia.tkpd.var.ShopItem;
-import com.tokopedia.tkpd.var.TkpdState;
+
+import com.tokopedia.core.var.RecyclerViewItem;
+import com.tokopedia.core.var.ShopItem;
+import com.tokopedia.core.var.TkpdState;
 
 import org.parceler.Parcel;
 
@@ -14,7 +14,7 @@ import java.util.List;
  * Created by m.normansyah on 31/10/2015.
  */
 @Parcel
-public class HorizontalShopList extends RecyclerViewItem{
+public class HorizontalShopList extends RecyclerViewItem {
     List<ShopItem> shopItemList;
 
     public HorizontalShopList(){
@@ -48,7 +48,7 @@ public class HorizontalShopList extends RecyclerViewItem{
         shopItem.iconUri = data.shop.imageShop.xsUrl;// 2
         shopItem.coverUri = data.shop.imageShop.cover;// 3
         shopItem.location = data.shop.location;// 4
-        shopItem.isFav = Favorite.TOP_ADS_AD_SHOP_VALUE;// 5
+        shopItem.isFav = "0";// 5
         shopItem.id = data.shop.id;// 6
         shopItem.adKey = data.adRefKey;
         shopItem.shopClickUrl = data.shopClickUrl;

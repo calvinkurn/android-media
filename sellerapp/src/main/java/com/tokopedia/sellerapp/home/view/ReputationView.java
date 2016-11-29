@@ -7,9 +7,9 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.home.model.shopmodel.Stats;
-import com.tokopedia.tkpd.home.utils.ReputationLevelUtils;
+import com.tokopedia.sellerapp.R;
+import com.tokopedia.sellerapp.home.model.shopmodel.Stats;
+import com.tokopedia.sellerapp.home.utils.ReputationLevelUtils;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

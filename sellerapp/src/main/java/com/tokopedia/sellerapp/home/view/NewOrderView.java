@@ -7,8 +7,8 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.home.model.notification.Notification;
+import com.tokopedia.sellerapp.R;
+import com.tokopedia.sellerapp.home.model.notification.Notification;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

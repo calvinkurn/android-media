@@ -1,6 +1,6 @@
 package com.tokopedia.sellerapp.home.utils;
 
-import com.tokopedia.tkpd.rxjava.RxUtils;
+import com.tokopedia.core.rxjava.RxUtils;
 
 import rx.subscriptions.CompositeSubscription;
 

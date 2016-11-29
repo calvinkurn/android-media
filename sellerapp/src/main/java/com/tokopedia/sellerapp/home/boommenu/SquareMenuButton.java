@@ -23,15 +23,15 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.home.boommenu.Eases.EaseType;
-import com.tokopedia.tkpd.home.boommenu.Types.BoomType;
-import com.tokopedia.tkpd.home.boommenu.Types.ButtonType;
-import com.tokopedia.tkpd.home.boommenu.Types.ClickEffectType;
-import com.tokopedia.tkpd.home.boommenu.Types.DimType;
-import com.tokopedia.tkpd.home.boommenu.Types.OrderType;
-import com.tokopedia.tkpd.home.boommenu.Types.PlaceType;
-import com.tokopedia.tkpd.home.boommenu.Types.StateType;
+import com.tokopedia.sellerapp.R;
+import com.tokopedia.sellerapp.home.boommenu.Eases.EaseType;
+import com.tokopedia.sellerapp.home.boommenu.Types.BoomType;
+import com.tokopedia.sellerapp.home.boommenu.Types.ButtonType;
+import com.tokopedia.sellerapp.home.boommenu.Types.ClickEffectType;
+import com.tokopedia.sellerapp.home.boommenu.Types.DimType;
+import com.tokopedia.sellerapp.home.boommenu.Types.OrderType;
+import com.tokopedia.sellerapp.home.boommenu.Types.PlaceType;
+import com.tokopedia.sellerapp.home.boommenu.Types.StateType;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
-import com.tokopedia.tkpd.R;
+import com.tokopedia.sellerapp.R;
 
 /**
  * Created by normansyahputa on 10/21/16.

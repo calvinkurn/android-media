@@ -3,7 +3,7 @@ package com.tokopedia.sellerapp.home.boommenu;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 
-import com.tokopedia.tkpd.home.boommenu.Types.PlaceType;
+import com.tokopedia.sellerapp.home.boommenu.Types.PlaceType;
 
 
 /**

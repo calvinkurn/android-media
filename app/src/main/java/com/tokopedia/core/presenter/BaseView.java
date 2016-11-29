@@ -2,6 +2,7 @@ package com.tokopedia.core.presenter;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 
 /**
  * Created by m.normansyah on 06/11/2015.
@@ -23,7 +24,7 @@ public interface BaseView {
      * @param type please see DownloadServiceConstant
      * @param data non null data
      */
-    void ariseRetry(int type, Object... data);
+    void ariseRetry(int type, @Nullable Object... data);
 
     /**
      * set data to the presenter to view for user

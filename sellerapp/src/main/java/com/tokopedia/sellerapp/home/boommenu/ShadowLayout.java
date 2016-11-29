@@ -13,7 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
-import com.tokopedia.tkpd.R;
+import com.tokopedia.sellerapp.R;
 
 public class ShadowLayout extends FrameLayout {
 

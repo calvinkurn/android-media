@@ -11,8 +11,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.home.boommenu.Types.ClickEffectType;
+import com.tokopedia.sellerapp.R;
+import com.tokopedia.sellerapp.home.boommenu.Types.ClickEffectType;
 
 
 /**

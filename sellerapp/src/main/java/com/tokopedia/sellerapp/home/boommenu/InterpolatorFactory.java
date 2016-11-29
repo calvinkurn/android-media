@@ -2,7 +2,7 @@ package com.tokopedia.sellerapp.home.boommenu;
 
 import android.view.animation.Interpolator;
 
-import com.tokopedia.tkpd.home.boommenu.Eases.EaseType;
+import com.tokopedia.sellerapp.home.boommenu.Eases.EaseType;
 
 
 /**

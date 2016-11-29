@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.tkpd.R;
+import com.tokopedia.sellerapp.R;
 
 /**
  * Created by normansyahputa on 9/9/16.

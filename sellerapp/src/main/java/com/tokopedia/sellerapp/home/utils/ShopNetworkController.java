@@ -4,16 +4,16 @@ import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.tokopedia.tkpd.home.model.shopmodel.ShopModel;
-import com.tokopedia.tkpd.network.apiservices.shop.ShopService;
-import com.tokopedia.tkpd.network.retrofit.response.ErrorHandler;
-import com.tokopedia.tkpd.network.retrofit.response.ErrorListener;
-import com.tokopedia.tkpd.network.retrofit.response.TkpdResponse;
-import com.tokopedia.tkpd.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.apiservices.shop.ShopService;
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.core.network.retrofit.response.ErrorListener;
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.sellerapp.home.model.shopmodel.ShopModel;
 
 import java.util.Map;
 
-import retrofit.Response;
+import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -49,7 +49,7 @@ public class ShopNetworkController extends BaseNetworkController {
 
             @Override
             public void onNext(Response<TkpdResponse> response) {
-                if (response.isSuccess()) {
+                if (response.isSuccessful()) {
                     if(!response.body().isError()) {
                         String stringData = response.body().getStringData();
                         Log.d("STUART", "getShopInfo : onNext : "+stringData);

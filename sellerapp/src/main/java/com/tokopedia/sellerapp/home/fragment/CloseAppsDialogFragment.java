@@ -10,7 +10,7 @@ import android.view.Window;
 import android.widget.CheckBox;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.tkpd.R;
+import com.tokopedia.sellerapp.R;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

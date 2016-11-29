@@ -1,12 +1,12 @@
 package com.tokopedia.sellerapp.home.api;
 
-import com.tokopedia.tkpd.home.model.Ticker;
-import com.tokopedia.tkpd.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.sellerapp.home.model.Ticker;
 
-import retrofit.Response;
-import retrofit.http.GET;
-import retrofit.http.Header;
-import retrofit.http.Query;
+import retrofit2.Response;
+import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Query;
 import rx.Observable;
 
 /**

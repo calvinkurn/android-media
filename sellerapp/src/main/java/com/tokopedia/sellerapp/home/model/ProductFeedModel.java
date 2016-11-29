@@ -1,6 +1,6 @@
 package com.tokopedia.sellerapp.home.model;
 
-import com.tokopedia.tkpd.var.ProductItem;
+import com.tokopedia.core.var.ProductItem;
 
 import org.parceler.Parcel;
 

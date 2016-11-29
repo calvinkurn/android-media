@@ -619,4 +619,8 @@ public interface  TkpdBaseURL {
         String VALIDATE_EMAIL = "/api/register/validate-email";
         String RESENT_ACTIVATION = "/api/resend";
     }
+
+    interface Home{
+        String PATH_API_V1_ANNOUNCEMENT_TICKER = "/api/v1/tickers";
+    }
 }

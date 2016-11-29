@@ -5,7 +5,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.tokopedia.tkpd.R;
+import com.tokopedia.sellerapp.R;
 
 /**
  * Created by Weiping on 2016/3/19.

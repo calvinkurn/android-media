@@ -15,11 +15,11 @@ public class WishlistData {
     @SerializedName("pagination")
     Pagination Paging;
 
-    public List<com.tokopedia.tkpd.home.model.wishlist.Wishlist> getWishlist() {
+    public List<com.tokopedia.sellerapp.home.model.wishlist.Wishlist> getWishlist() {
         return Wishlist;
     }
 
-    public void setWishlist(List<com.tokopedia.tkpd.home.model.wishlist.Wishlist> wishlist) {
+    public void setWishlist(List<com.tokopedia.sellerapp.home.model.wishlist.Wishlist> wishlist) {
         Wishlist = wishlist;
     }
 

@@ -2,7 +2,7 @@ package com.tokopedia.sellerapp.home.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.tkpd.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.sellerapp.home.model.shopmodel.ShopModel;
 
 /**
  * Created by m.normansyah on 05/01/2016.

@@ -5,23 +5,23 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.tokopedia.tkpd.home.model.rescenter.ResCenterInboxData;
-import com.tokopedia.tkpd.home.model.rescenter.ResCenterInboxDataPass;
-import com.tokopedia.tkpd.home.model.rescenter.ResCenterInboxDataPassFactory;
-import com.tokopedia.tkpd.network.apiservices.user.InboxResCenterService;
-import com.tokopedia.tkpd.network.retrofit.response.TkpdResponse;
-import com.tokopedia.tkpd.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.apiservices.user.InboxResCenterService;
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.sellerapp.home.model.rescenter.ResCenterInboxData;
+import com.tokopedia.sellerapp.home.model.rescenter.ResCenterInboxDataPass;
+import com.tokopedia.sellerapp.home.model.rescenter.ResCenterInboxDataPassFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import retrofit.Response;
+import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.tokopedia.tkpd.home.utils.ShopNetworkController.onResponseError;
+import static com.tokopedia.sellerapp.home.utils.ShopNetworkController.onResponseError;
 
 /**
  * Created by normansyahputa on 8/31/16.
@@ -54,7 +54,7 @@ public class InboxResCenterNetworkController extends BaseNetworkController {
 
                             @Override
                             public void onNext(Response<TkpdResponse> response) {
-                                if (response.isSuccess()) {
+                                if (response.isSuccessful()) {
                                     if(!response.body().isError()) {
                                         String stringData = response.body().getStringData();
                                         Log.d("STUART", "getResCenterList : onNext : "+stringData);

@@ -5,28 +5,28 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.tokopedia.tkpd.app.MainApplication;
-import com.tokopedia.tkpd.gcm.GCMHandler;
-import com.tokopedia.tkpd.home.api.TickerApiSeller;
-import com.tokopedia.tkpd.home.model.Ticker;
-import com.tokopedia.tkpd.home.model.deposit.DepositModel;
-import com.tokopedia.tkpd.home.model.notification.Notification;
-import com.tokopedia.tkpd.home.model.rescenter.ResCenterInboxData;
-import com.tokopedia.tkpd.home.model.shopmodel.ShopModel;
-import com.tokopedia.tkpd.network.constants.TkpdBaseURL;
-import com.tokopedia.tkpd.network.retrofit.response.TkpdResponse;
-import com.tokopedia.tkpd.network.retrofit.utils.RetrofitUtils;
-import com.tokopedia.tkpd.util.SessionHandler;
+import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.sellerapp.SellerMainApplication;
+import com.tokopedia.sellerapp.home.api.TickerApiSeller;
+import com.tokopedia.sellerapp.home.model.Ticker;
+import com.tokopedia.sellerapp.home.model.deposit.DepositModel;
+import com.tokopedia.sellerapp.home.model.notification.Notification;
+import com.tokopedia.sellerapp.home.model.rescenter.ResCenterInboxData;
+import com.tokopedia.sellerapp.home.model.shopmodel.ShopModel;
 
 import java.util.List;
 
-import retrofit.Response;
+import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.tokopedia.tkpd.home.utils.ShopNetworkController.onResponseError;
+import static com.tokopedia.sellerapp.home.utils.ShopNetworkController.onResponseError;
 
 /**
  * Created by normansyahputa on 8/30/16.
@@ -181,7 +181,7 @@ public class ShopController extends BaseController{
 
                                     @Override
                                     public void onNext(Response<Ticker> responses) {
-                                        if(responses.isSuccess()) {
+                                        if(responses.isSuccessful()) {
                                             Ticker ticker = responses.body();
                                             Ticker.Data data = null;
                                             if(ticker != null){
@@ -214,7 +214,7 @@ public class ShopController extends BaseController{
             case 0:
                 ShopNetworkController.GetShopInfo getShopInfo =
                         (ShopNetworkController.GetShopInfo) commonListener;
-                if (response.isSuccess()) {
+                if (response.isSuccessful()) {
                     if(response.body().isError()){
                         if(response.body().getStatus()!= null && response.body().getStatus().equalsIgnoreCase("TOO_MANY_REQUEST")){
                             throw new ShopNetworkController.ManyRequestErrorException(response.body().getErrorMessages().get(0));
@@ -234,7 +234,7 @@ public class ShopController extends BaseController{
             case 1:
                 NotifNetworkController.GetNotif getNotif
                         = (NotifNetworkController.GetNotif) commonListener;
-                if (response.isSuccess()) {
+                if (response.isSuccessful()) {
                     if(response.body().isError()){
                         throw new ShopNetworkController.MessageErrorException(response.body().getErrorMessages().get(0));
                     }else{
@@ -250,7 +250,7 @@ public class ShopController extends BaseController{
             case 2:
                 InboxResCenterNetworkController.InboxResCenterListener inboxResCenterListener =
                         (InboxResCenterNetworkController.InboxResCenterListener) commonListener;
-                if (response.isSuccess()) {
+                if (response.isSuccessful()) {
                     if(response.body().isError()){
                         throw new ShopNetworkController.MessageErrorException(response.body().getErrorMessages().get(0));
                     }else{
@@ -266,7 +266,7 @@ public class ShopController extends BaseController{
             case 3:
                 DepositNetworkController.DepositListener depositListener =
                         (DepositNetworkController.DepositListener) commonListener;
-                if (response.isSuccess()) {
+                if (response.isSuccessful()) {
                     if(response.body().isError()){
                         throw new ShopNetworkController.MessageErrorException(response.body().getErrorMessages().get(0));
                     }else {
@@ -291,7 +291,7 @@ public class ShopController extends BaseController{
         TickerApiSeller tickerApiSeller = RetrofitUtils.createRetrofit(TkpdBaseURL.MOJITO_DOMAIN).create(TickerApiSeller.class);
 
         return tickerApiSeller.getTickers(
-                SessionHandler.getLoginID(MainApplication.getAppContext()),
+                SessionHandler.getLoginID(SellerMainApplication.getAppContext()),
                 TickerApiSeller.size,
                 TickerApiSeller.FILTER_SELLERAPP_ANDROID_DEVICE);
     };

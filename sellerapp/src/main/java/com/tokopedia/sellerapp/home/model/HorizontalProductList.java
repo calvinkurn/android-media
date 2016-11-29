@@ -2,9 +2,9 @@ package com.tokopedia.sellerapp.home.model;
 
 import android.text.Html;
 
-import com.tokopedia.tkpd.var.ProductItem;
-import com.tokopedia.tkpd.var.RecyclerViewItem;
-import com.tokopedia.tkpd.var.TkpdState;
+import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.core.var.RecyclerViewItem;
+import com.tokopedia.core.var.TkpdState;
 
 import org.parceler.Parcel;
 
@@ -15,7 +15,7 @@ import java.util.List;
  * Created by m.normansyah on 27/10/2015.
  */
 @Parcel
-public class HorizontalProductList extends RecyclerViewItem{
+public class HorizontalProductList extends RecyclerViewItem {
     List<ProductItem> listProduct;
 
     public HorizontalProductList(){

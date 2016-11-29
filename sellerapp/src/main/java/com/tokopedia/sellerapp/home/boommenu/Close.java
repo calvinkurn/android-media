@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.tokopedia.tkpd.R;
+import com.tokopedia.sellerapp.R;
 
 /**
  * Created by sebastianuskh on 10/18/16.

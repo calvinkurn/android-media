@@ -5,8 +5,8 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 
-import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.home.model.shopmodel.ShopModel;
+import com.tokopedia.sellerapp.R;
+import com.tokopedia.sellerapp.home.model.shopmodel.ShopModel;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

@@ -42,13 +42,6 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     private PasswordGenerator Pgenerator;
     DownloadResultReceiver mReceiver;
 	String id = null;
-    private SplashScreenRouter splashScreenRouter =
-            new SplashScreenRouter() {
-                @Override
-                public void moveToHome() {
-
-                }
-            };
 
 	@Override
     public void onCreate(Bundle savedInstanceState) {

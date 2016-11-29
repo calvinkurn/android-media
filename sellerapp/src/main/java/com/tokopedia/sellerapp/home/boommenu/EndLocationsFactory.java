@@ -1,7 +1,7 @@
 package com.tokopedia.sellerapp.home.boommenu;
 
 
-import com.tokopedia.tkpd.home.boommenu.Types.PlaceType;
+import com.tokopedia.sellerapp.home.boommenu.Types.PlaceType;
 
 /**
  * Created by Weiping on 2016/4/1.

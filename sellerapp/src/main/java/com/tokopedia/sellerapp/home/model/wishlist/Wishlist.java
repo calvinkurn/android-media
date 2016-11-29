@@ -2,7 +2,7 @@ package com.tokopedia.sellerapp.home.model.wishlist;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.tkpd.var.ProductItem;
+import com.tokopedia.core.var.ProductItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,11 +125,11 @@ public class Wishlist {
         Wholesale = wholesale;
     }
 
-    public com.tokopedia.tkpd.home.model.wishlist.Shop getShop() {
+    public com.tokopedia.sellerapp.home.model.wishlist.Shop getShop() {
         return Shop;
     }
 
-    public void setShop(com.tokopedia.tkpd.home.model.wishlist.Shop shop) {
+    public void setShop(com.tokopedia.sellerapp.home.model.wishlist.Shop shop) {
         Shop = shop;
     }
 

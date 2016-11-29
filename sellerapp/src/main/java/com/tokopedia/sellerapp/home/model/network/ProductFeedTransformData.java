@@ -1,8 +1,8 @@
 package com.tokopedia.sellerapp.home.model.network;
 
-import com.tokopedia.tkpd.home.model.HorizontalProductList;
-import com.tokopedia.tkpd.util.PagingHandler;
-import com.tokopedia.tkpd.var.ProductItem;
+import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.sellerapp.home.model.HorizontalProductList;
 
 import java.util.List;
 import java.util.Map;
