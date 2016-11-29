@@ -299,5 +299,6 @@ public final class AppScreen {
     public static final String SCREEN_RECHARGE_PAYMENT = "Recharge Payment WebView";
     public static final String SCREEN_SHARE = "Share Screen";
     public static final String SCREEN_GALLERY_BROWSE = "Browse Gallery Screen";
+    public static final String SCREEN_GM_SUBSCRIBE = "Subscribe to the GM";
     public static final String SCREEN_SELLER_HOME = "Seller Home";
 }

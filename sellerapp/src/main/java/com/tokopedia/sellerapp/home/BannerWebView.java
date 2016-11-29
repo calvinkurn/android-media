@@ -6,13 +6,13 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.app.TActivity;
-import com.tokopedia.tkpd.fragment.FragmentShopPreview;
-import com.tokopedia.tkpd.home.fragment.FragmentBannerWebView;
-import com.tokopedia.tkpd.util.DeepLinkChecker;
-import com.tokopedia.tkpd.webview.fragment.FragmentGeneralWebView;
-import com.tokopedia.tkpd.webview.listener.DeepLinkWebViewHandleListener;
+import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.fragment.FragmentShopPreview;
+import com.tokopedia.core.util.DeepLinkChecker;
+import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
+import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
+import com.tokopedia.sellerapp.R;
+
 
 /**
  * Created by Nisie on 22/10/15.
