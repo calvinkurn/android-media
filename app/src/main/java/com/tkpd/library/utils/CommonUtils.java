@@ -156,17 +156,18 @@ public class CommonUtils {
 		return UniqueDeviceID;
 	}
 
-	public static void SaveImageFromBitmap(Activity context, Bitmap bitmap, String PicName){
+	public static String SaveImageFromBitmap(Activity context, Bitmap bitmap, String PicName){
 		File pictureFile = getOutputMediaFile(context, PicName);
-
+		String path = "";
 		if (pictureFile == null) {
 			System.out.println("Magic null");
-			return;
+			return null;
 		}
 		try {
 			FileOutputStream fos = new FileOutputStream(pictureFile);
 			bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fos);
 			addImageToGallery(pictureFile.getPath(), context);
+			path = pictureFile.getPath();
 			fos.close();
 			System.out.println("Magic close");
 		} catch (FileNotFoundException e) {
@@ -176,6 +177,7 @@ public class CommonUtils {
 			System.out.println("Magic IOE");
 			e.printStackTrace();
 		}
+		return path;
 	}
 
 	public static void addImageToGallery(final String filePath, final Context context) {

@@ -1777,4 +1777,14 @@ di Tokopedia Sekarang!</string>
     <string name="prompt_delete_talk">Apakah anda  yakin ingin menghapus diskusi ini?</string>
     <string name="product_image">Product Image</string>
     <string name="title_delete_discussion">Hapus diskusi</string>
+
+
+    <!--START : string related to Product Picture Download -->
+    <string name="download_picture">Mengunduh gambar</string>
+    <string name="download_in_process">Unduh gambar dalam proses</string>
+    <string name="download_failed">Gambar gagal diunduh</string>
+    <string name="download_success">Gambar berhasil diunduh</string>
+    <string name="preview_picture_open_action">BUKA</string>
+    <string name="preview_picture_download_action">Download Gambar</string>
+    <!--END : string related to Product Picture Download -->
 </resources>

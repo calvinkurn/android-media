@@ -2,9 +2,18 @@ package com.tokopedia.core;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.Html;
 import android.util.Log;
@@ -15,21 +24,23 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.ui.widget.TouchViewPager;
 import com.tkpd.library.utils.ImageHandler;
+import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.customadapter.TouchImageAdapter;
 import com.tokopedia.core.customadapter.TouchImageAdapter.OnImageStateChange;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Random;
 
 public class PreviewProductImage extends TActivity {
 
@@ -38,7 +49,6 @@ public class PreviewProductImage extends TActivity {
     private TouchImageAdapter adapter;
     private ArrayList<String> fileLoc;
     private ArrayList<String> imgDesc;
-    private int pos;
     private int lastPos = 0;
 
     @Override
@@ -46,21 +56,15 @@ public class PreviewProductImage extends TActivity {
         return AppScreen.SCREEN_PRODUCT_IMAGE_PREVIEW;
     }
 
-    private SimpleTarget<Bitmap> target2 = new SimpleTarget<Bitmap>() {
-        @Override
-        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-            CommonUtils.SaveImageFromBitmap(PreviewProductImage.this, resource, processPicName(vp.getCurrentItem()));
-            Toast.makeText(PreviewProductImage.this, R.string.download_complete, Toast.LENGTH_SHORT).show();
-        }
-    };
 
     private String processPicName(int index) {
-        String picName = new String();
+        String picName = "";
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyyhhmmss");
         String dateString = sdf.format(date);
         try {
-            picName = getIntent().getExtras().getString("product_name", dateString).replaceAll("[^a-zA-Z0-9]", "") + "_" + Integer.toString(index + 1);
+            picName = getIntent().getExtras().getString("product_name", dateString)
+                    .replaceAll("[^a-zA-Z0-9]", "") + "_" + Integer.toString(index + 1);
         } catch (NullPointerException e) {
             finish();
         }
@@ -78,29 +82,23 @@ public class PreviewProductImage extends TActivity {
 
         fileLoc = getIntent().getExtras().getStringArrayList("fileloc");
         imgDesc = getIntent().getExtras().getStringArrayList("image_desc");
-        pos = getIntent().getExtras().getInt("img_pos");
+        int pos = getIntent().getExtras().getInt("img_pos");
         vp = (TouchViewPager) findViewById(R.id.view_pager);
         Desc = (TextView) findViewById(R.id.desc);
-        Log.i("file_loc", fileLoc.toString());
         if (imgDesc == null) {
             Desc.setVisibility(View.GONE);
         } else {
             Desc.setText(Html.fromHtml(imgDesc.get(0)));
         }
-
-        findViewById(R.id.download_image).setOnClickListener(
+        TextView tvDownload = (TextView) findViewById(R.id.download_image);
+        tvDownload.setOnClickListener(
                 new OnClickListener() {
 
                     @Override
                     public void onClick(View v) {
-                        // CommonUtils.SaveImages(PreviewProductImage.this,
-                        // fileLoc.get(vp.getCurrentItem()));
-
                         AlertDialog.Builder builder = new AlertDialog.Builder(
                                 PreviewProductImage.this,
                                 AlertDialog.THEME_HOLO_LIGHT);
-                        // builder.onSuccessGetInboxTicketDetail(getLayoutInflater().inflate(R.layout.your_layout,
-                        // null));
                         builder.setMessage(getString(R.string.dialog_save_preview_product_image));
                         builder.setPositiveButton(
                                 getString(R.string.title_yes),
@@ -108,14 +106,109 @@ public class PreviewProductImage extends TActivity {
                                     @Override
                                     public void onClick(DialogInterface dialog,
                                                         int which) {
-                                        if (fileLoc.size() > 0)
-                                            ImageHandler.loadImageBitmap2(getApplicationContext(), fileLoc.get(vp.getCurrentItem()), target2);
-//										PicassoHelper.getPicasso().load(fileLoc.get(vp.getCurrentItem())).into(target);
+                                        String filename = processPicName(vp.getCurrentItem()) + ".jpg";
+                                        Random random = new Random();
+                                        final int randomNotificationId = generateRandomInteger(random);
+                                        final NotificationManager notificationManager =
+                                                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                                        final NotificationCompat.Builder notificationBuilder =
+                                                new NotificationCompat.Builder(PreviewProductImage.this);
+                                        notificationBuilder.setContentTitle(filename)
+                                                .setContentText(getString(R.string.download_in_process))
+                                                .setSmallIcon(R.drawable.qc_launcher)
+                                                .setAutoCancel(true)
+                                        ;
+                                        notificationBuilder.setProgress(0, 0, true);
+                                        notificationManager.notify(randomNotificationId, notificationBuilder.build());
+
+                                        SimpleTarget<Bitmap> target2 = new SimpleTarget<Bitmap>() {
+                                            @Override
+                                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                                                final String path = CommonUtils.SaveImageFromBitmap(PreviewProductImage.this,
+                                                        resource, processPicName(vp.getCurrentItem()));
+                                                if (path == null) {
+                                                    notificationBuilder.setContentText(getString(R.string.download_failed))
+                                                            .setProgress(0, 0, false);
+                                                    notificationBuilder.getNotification().flags |= Notification.FLAG_AUTO_CANCEL;
+                                                    notificationManager.notify(randomNotificationId, notificationBuilder.build());
+                                                    SnackbarManager.make(PreviewProductImage.this,
+                                                            getString(R.string.download_failed),
+                                                            Snackbar.LENGTH_SHORT)
+                                                            .setCallback(new Snackbar.Callback() {
+                                                                @Override
+                                                                public void onDismissed(Snackbar snackbar, int event) {
+                                                                    super.onDismissed(snackbar, event);
+                                                                    PreviewProductImage.this.getWindow()
+                                                                            .setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                                                                                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                                                                }
+                                                            })
+                                                            .show();
+                                                } else {
+                                                    Intent intent = new Intent();
+                                                    intent.setAction(android.content.Intent.ACTION_VIEW);
+                                                    File file = new File(path);
+                                                    intent.setDataAndType(Uri.fromFile(file), "image/*");
+                                                    PendingIntent pIntent = PendingIntent.getActivity(PreviewProductImage.this, 0, intent, 0);
+
+                                                    notificationBuilder.setContentText(getString(R.string.download_success))
+                                                            .setProgress(0, 0, false)
+                                                            .setContentIntent(pIntent);
+
+                                                    notificationBuilder.getNotification().flags |= Notification.FLAG_AUTO_CANCEL;
+                                                    notificationManager.notify(randomNotificationId, notificationBuilder.build());
+
+                                                    PreviewProductImage.this.getWindow().setFlags(~WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                                                            WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+                                                    SnackbarManager.make(PreviewProductImage.this,
+                                                            getString(R.string.download_success),
+                                                            Snackbar.LENGTH_SHORT).setAction(R.string.preview_picture_open_action,
+                                                            new OnClickListener() {
+                                                                @Override
+                                                                public void onClick(View v) {
+                                                                    openImageDownloaded(path);
+                                                                }
+                                                            }).setCallback(new Snackbar.Callback() {
+                                                        @Override
+                                                        public void onDismissed(Snackbar snackbar, int event) {
+                                                            super.onDismissed(snackbar, event);
+                                                            PreviewProductImage.this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                                                                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                                                        }
+                                                    }).show();
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                                                super.onLoadFailed(e, errorDrawable);
+                                                notificationBuilder.setContentText(getString(R.string.download_failed))
+                                                        .setProgress(0, 0, false);
+                                                notificationBuilder.getNotification().flags |= Notification.FLAG_AUTO_CANCEL;
+                                                notificationManager.notify(randomNotificationId, notificationBuilder.build());
+                                                PreviewProductImage.this.getWindow().setFlags(~WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                                                        WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+                                                SnackbarManager.make(PreviewProductImage.this,
+                                                        getString(R.string.download_failed),
+                                                        Snackbar.LENGTH_SHORT)
+                                                        .setCallback(new Snackbar.Callback() {
+                                                            @Override
+                                                            public void onDismissed(Snackbar snackbar, int event) {
+                                                                super.onDismissed(snackbar, event);
+                                                                PreviewProductImage.this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                                                                        WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                                                            }
+                                                        })
+                                                        .show();
+                                            }
+                                        };
+                                        ImageHandler.loadImageBitmap2(getApplicationContext(), fileLoc.get(vp.getCurrentItem()), target2);
                                     }
                                 });
                         builder.setNegativeButton(getString(R.string.title_no),
                                 null);
-                        // Dialog dialog = new Dialog(context);
                         Dialog dialog = builder.create();
                         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                         dialog.setCancelable(false);
@@ -188,6 +281,22 @@ public class PreviewProductImage extends TActivity {
     @Override
     public void onBackPressed() {
         finish();
+    }
+
+    private int generateRandomInteger(Random aRandom) {
+        long range = (long) 1001 - (long) 100 + 1;
+        long fraction = (long) (range * aRandom.nextDouble());
+        return (int) (fraction + 1);
+    }
+
+    private void openImageDownloaded(String path) {
+        File file = new File(path);
+        Intent sintent = new Intent();
+        sintent.setAction(Intent.ACTION_VIEW);
+        sintent.setDataAndType(Uri.fromFile(file), "image/*");
+        startActivity(sintent);
+        PreviewProductImage.this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
 }
