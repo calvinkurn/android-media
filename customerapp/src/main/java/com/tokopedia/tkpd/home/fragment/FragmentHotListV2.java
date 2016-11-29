@@ -26,6 +26,7 @@ import com.tokopedia.core.home.model.HotListViewModel;
 import com.tokopedia.core.home.presenter.HotList;
 import com.tokopedia.core.home.presenter.HotListImpl;
 import com.tokopedia.core.home.presenter.HotListView;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
@@ -260,8 +261,8 @@ public class FragmentHotListV2 extends Fragment implements HotListView {
     }
 
     @Override
-    public void moveToOtherActivity(Bundle bundle, Class<?> clazz) {
-        Intent intent = new Intent(getActivity(), clazz);
+    public void moveToOtherActivity(Bundle bundle) {
+        Intent intent = BrowseProductRouter.getDefaultBrowseIntent(getContext());
         intent.putExtras(bundle);
         getActivity().startActivity(intent);
     }

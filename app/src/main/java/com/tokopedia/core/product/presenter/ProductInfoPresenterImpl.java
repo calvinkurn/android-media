@@ -13,13 +13,13 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.database.model.CategoryDB_Table;
-import com.tokopedia.core.discovery.activity.BrowseProductActivity;
 import com.tokopedia.core.myproduct.service.ProductService;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.product.fragment.ProductDetailFragment;
 import com.tokopedia.core.product.listener.ProductInfoView;
 import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
 
 import java.util.List;
@@ -67,7 +67,7 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
                             .where(CategoryDB_Table.categoryIdentifier.eq(iden))
                             .querySingle();
             String dep_id = dep.getDepartmentId()+"";
-            Intent moveIntent = new Intent(context, BrowseProductActivity.class);
+            Intent moveIntent = BrowseProductRouter.getDefaultBrowseIntent(context);
             moveIntent.putExtra("d_id", dep_id);
             viewListener.navigateToActivity(moveIntent);
         }

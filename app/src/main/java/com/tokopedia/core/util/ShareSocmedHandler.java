@@ -24,10 +24,10 @@ import com.sromku.simple.fb.listeners.OnPublishListener;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.discovery.activity.BrowseProductActivity;
 import com.tokopedia.core.myproduct.fragment.AddProductFragment;
 import com.tokopedia.core.myproduct.utils.UploadPhotoTask;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.var.TkpdCache;
 
@@ -184,7 +184,7 @@ public class ShareSocmedHandler {
             link = link.replace("http://m.tokopedia.com/hot/", "");
             link = link.replace("www.tokopedia.com/hot/", "");
             link = link.replace("m.tokopedia.com/hot/", "");
-            BrowseProductActivity.moveTo(context, link);
+            context.startActivity(BrowseProductRouter.getBrowseProductIntent(context, link));
             return 1; // 1 untuk pindah ke activity lain 2 untuk buka home
         } else if (link.contains("/search?")) {
             System.out.println("Magic is a search/cat");
