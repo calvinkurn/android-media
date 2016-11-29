@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.home;
+package com.tokopedia.core.home;
 
 import android.app.Fragment;
 import android.app.FragmentManager;

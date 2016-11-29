@@ -52,7 +52,7 @@ import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
 import com.tokopedia.core.util.NonScrollLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.tkpd.home.BannerWebView;
+import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.tkpd.home.HomeCatMenuView;
 import com.tokopedia.tkpd.home.adapter.RecyclerViewCategoryMenuAdapter;
 import com.tokopedia.tkpd.home.adapter.SectionListCategoryAdapter;

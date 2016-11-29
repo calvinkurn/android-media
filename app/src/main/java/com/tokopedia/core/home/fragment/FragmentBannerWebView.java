@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.home.fragment;
+package com.tokopedia.core.home.fragment;
 
 import android.app.Fragment;
 import android.graphics.Bitmap;
@@ -23,7 +23,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.home.BannerWebView;
+import com.tokopedia.core.home.BannerWebView;
 
 /**
  * Created by Nisie on 8/25/2015.
