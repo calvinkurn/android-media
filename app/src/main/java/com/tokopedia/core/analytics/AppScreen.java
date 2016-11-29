@@ -21,7 +21,6 @@ import com.tokopedia.core.manage.shop.notes.fragment.ManageShopNotesFormFragment
 import com.tokopedia.core.myproduct.ManageProduct;
 import com.tokopedia.core.myproduct.ProductActivity;
 import com.tokopedia.core.myproduct.fragment.AddProductFragment;
-import com.tokopedia.core.session.RegisterThirdFragment;
 
 //import com.tokopedia.discovery.catalog.activity.CatalogDetailActivity;
 

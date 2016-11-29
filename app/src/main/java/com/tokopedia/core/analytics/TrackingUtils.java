@@ -14,12 +14,8 @@ import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.home.ParentIndexHome;
-import com.tokopedia.core.home.fragment.FragmentIndexCategory;
 import com.tokopedia.core.router.home.HomeFragmentRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.session.RegisterNewNextFragment;
-import com.tokopedia.core.session.RegisterThirdFragment;
 import com.tokopedia.core.util.SessionHandler;
 
 import org.json.JSONArray;

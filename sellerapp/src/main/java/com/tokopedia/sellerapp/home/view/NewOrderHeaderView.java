@@ -5,6 +5,8 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 
+import com.tokopedia.sellerapp.R;
+
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
