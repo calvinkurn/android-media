@@ -28,8 +28,8 @@ import com.tokopedia.core.deposit.interactor.WithdrawRetrofitInteractorImpl;
 import com.tokopedia.core.deposit.listener.WithdrawFragmentView;
 import com.tokopedia.core.deposit.model.DoWithdrawParam;
 import com.tokopedia.core.deposit.model.WithdrawForm;
-import com.tokopedia.core.home.ParentIndexHome;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.AppUtils;
 
 import java.util.HashMap;
@@ -60,9 +60,11 @@ public class WithdrawFragmentPresenterImpl implements WithdrawFragmentPresenter 
         this.viewListener = viewListener;
         this.networkInteractor = new WithdrawRetrofitInteractorImpl();
         this.cacheInteractor = new WithdrawCacheInteractorImpl();
-        this.handler = new LocalCacheHandler(viewListener.getActivity(), SEND_OTP_WITHDRAWAL_CACHE_KEY);
+        this.handler = new LocalCacheHandler(viewListener.getActivity(),
+                SEND_OTP_WITHDRAWAL_CACHE_KEY);
         this.dataManager = DataManagerImpl.getDataManager();
-        this.bankCache = new LocalCacheHandler(viewListener.getActivity(), ParentIndexHome.FETCH_BANK);
+        this.bankCache = new LocalCacheHandler(viewListener.getActivity(),
+                HomeRouter.TAG_FETCH_BANK);
     }
 
     @Override
@@ -94,7 +96,10 @@ public class WithdrawFragmentPresenterImpl implements WithdrawFragmentPresenter 
 
                 @Override
                 public void setBank(List<Bank> banks) {
-                    LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), ParentIndexHome.FETCH_BANK);
+                    LocalCacheHandler cache = new LocalCacheHandler(
+                            MainApplication.getAppContext(), HomeRouter.TAG_FETCH_BANK
+                    );
+
                     cache.setExpire(86400);
                     cache.applyEditor();
                     getWithdrawForm();

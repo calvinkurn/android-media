@@ -47,7 +47,7 @@ import com.tokopedia.core.notification.model.Notification;
 import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.TransactionRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity;
 import com.tokopedia.core.util.FullListViewHandler;
 import com.tokopedia.core.util.SessionHandler;
@@ -608,19 +608,19 @@ public class NotificationVariable {
                             intent.putExtras(bundle);
                             break;
                         case 5:
-                            intent = TransactionRouter.createIntentConfirmPayment(context);
+                            intent = TransactionPurchaseRouter.createIntentConfirmPayment(context);
                             break;
                         case 6:
-                            intent = TransactionRouter.createIntentTxVerification(context);
+                            intent = TransactionPurchaseRouter.createIntentTxVerification(context);
                             break;
                         case 7:
-                            intent = TransactionRouter.createIntentTxStatus(context);
+                            intent = TransactionPurchaseRouter.createIntentTxStatus(context);
                             break;
                         case 8:
-                            intent = TransactionRouter.createIntentConfirmShipping(context);
+                            intent = TransactionPurchaseRouter.createIntentConfirmShipping(context);
                             break;
                         case 9:
-                            intent = TransactionRouter.createIntentTxAll(context);
+                            intent = TransactionPurchaseRouter.createIntentTxAll(context);
                             break;
                         default:
                             break;

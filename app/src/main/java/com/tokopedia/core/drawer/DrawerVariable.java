@@ -40,8 +40,6 @@ import com.tokopedia.core.drawer.model.DrawerSeparator;
 import com.tokopedia.core.drawer.model.LoyaltyItem.LoyaltyItem;
 import com.tokopedia.core.drawer.var.NotificationItem;
 import com.tokopedia.core.drawer.var.UserType;
-import com.tokopedia.core.home.ParentIndexHome;
-import com.tokopedia.core.home.SimpleHomeActivity;
 import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
@@ -49,7 +47,9 @@ import com.tokopedia.core.myproduct.ManageProduct;
 import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.TransactionRouter;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.home.SimpleHomeRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.session.Login;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shop.ShopEditorActivity;
@@ -344,7 +344,7 @@ public class DrawerVariable {
         Boolean isFinish = true;
         switch (((DrawerItem) model.data.get(position)).id) {
             case TkpdState.DrawerPosition.INDEX_HOME:
-                Intent intent = new Intent(context, ParentIndexHome.class);
+                Intent intent = HomeRouter.getHomeActivity(context);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 context.startActivity(intent);
                 break;
@@ -425,10 +425,14 @@ public class DrawerVariable {
                 startIntent(DeveloperOptions.class);
                 break;
             case TkpdState.DrawerPosition.WISHLIST:
-                Bundle bundle = new Bundle();
-                bundle.putInt(SimpleHomeActivity.FRAGMENT_TYPE, SimpleHomeActivity.WISHLIST_FRAGMENT);
-                Intent wishList = new Intent(context, SimpleHomeActivity.class);
-                wishList.putExtras(bundle);
+//                Bundle bundle = new Bundle();
+//                bundle.putInt(SimpleHomeActivity.FRAGMENT_TYPE, SimpleHomeActivity.WISHLIST_FRAGMENT);
+//                Intent wishList = new Intent(context, SimpleHomeActivity.class);
+//                wishList.putExtras(bundle);
+
+                Intent wishList = SimpleHomeRouter
+                        .getSimpleHomeActivityIntent(context, SimpleHomeRouter.WISHLIST_FRAGMENT);
+
                 context.startActivity(wishList);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.WISHLIST);
                 break;
@@ -491,23 +495,23 @@ public class DrawerVariable {
     }
 
     private void goToPeopleTransactionCanceled() {
-        context.startActivity(TransactionRouter.createIntentTxCanceled(context));
+        context.startActivity(TransactionPurchaseRouter.createIntentTxCanceled(context));
     }
 
     private void goToPeopleTransactionList() {
-        context.startActivity(TransactionRouter.createIntentTxAll(context));
+        context.startActivity(TransactionPurchaseRouter.createIntentTxAll(context));
     }
 
     private void goToPeopleConfirmShipping() {
-        context.startActivity(TransactionRouter.createIntentConfirmShipping(context));
+        context.startActivity(TransactionPurchaseRouter.createIntentConfirmShipping(context));
     }
 
     private void goToPeopleOrderStatus() {
-        context.startActivity(TransactionRouter.createIntentTxStatus(context));
+        context.startActivity(TransactionPurchaseRouter.createIntentTxStatus(context));
     }
 
     private void goToPeopleConfirmPayment() {
-        context.startActivity(TransactionRouter.createIntentConfirmPayment(context));
+        context.startActivity(TransactionPurchaseRouter.createIntentConfirmPayment(context));
     }
 
     private void goToManageProduct() {

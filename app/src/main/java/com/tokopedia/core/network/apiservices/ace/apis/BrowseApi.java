@@ -1,8 +1,9 @@
 package com.tokopedia.core.network.apiservices.ace.apis;
 
-import com.tokopedia.core.discovery.model.BrowseCatalogModel;
-import com.tokopedia.core.discovery.model.BrowseProductModel;
-import com.tokopedia.core.discovery.model.BrowseShopModel;
+
+import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
+import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
+import com.tokopedia.core.network.entity.discovery.BrowseShopModel;
 
 import java.util.Map;
 

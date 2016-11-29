@@ -20,8 +20,6 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.R;
-import com.tokopedia.core.addtocart.activity.AddToCartActivity;
-import com.tokopedia.core.addtocart.model.ProductCartPass;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -29,8 +27,6 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
-import com.tokopedia.core.discovery.activity.BrowseProductActivity;
-import com.tokopedia.core.home.SimpleHomeActivity;
 import com.tokopedia.core.inboxmessage.activity.SendMessageActivity;
 import com.tokopedia.core.myproduct.ProductActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -49,7 +45,11 @@ import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.reputationproduct.ReputationProduct;
-import com.tokopedia.core.router.DiscoveryRouter;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.router.discovery.DetailProductRouter;
+import com.tokopedia.core.router.home.SimpleHomeRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
+import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.session.Login;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.shop.ShopEditorActivity;
@@ -111,9 +111,10 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void processToCart(@NonNull Context context, @NonNull ProductCartPass data) {
-        Intent intent = AddToCartActivity.createInstance(context, data);
         sendAppsFlyerCheckout(context, data);
-        viewListener.navigateToActivity(intent);
+        viewListener.navigateToActivity(
+                TransactionAddToCartRouter.createInstanceAddToCartActivity(context, data)
+        );
         UnifyTracking.eventPDPCart();
     }
 
@@ -151,7 +152,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void processToBrowseProduct(@NonNull Context context, @NonNull Bundle bundle) {
-        Intent intent = new Intent(context, BrowseProductActivity.class);
+        Intent intent = BrowseProductRouter.getDefaultBrowseIntent(context);
         intent.putExtras(bundle);
         viewListener.navigateToActivity(intent);
     }
@@ -526,7 +527,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void processToCatalog(Context context, String catalogId) {
-        viewListener.navigateToActivity(DiscoveryRouter.getCatalogDetailActivity(context, catalogId));
+        viewListener.navigateToActivity(DetailProductRouter.getCatalogDetailActivity(context, catalogId));
     }
 
     private static int getWishListIcon(int status) {
@@ -648,10 +649,10 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 //                                ParentIndexHome.INIT_STATE_FRAGMENT_FAVORITE);
 //                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-                        Intent intent = new Intent(context, SimpleHomeActivity.class);
+                        Intent intent = new Intent(context, SimpleHomeRouter.getSimpleHomeActivityClass());
                         intent.putExtra(
-                                SimpleHomeActivity.FRAGMENT_TYPE,
-                                SimpleHomeActivity.WISHLIST_FRAGMENT);
+                                SimpleHomeRouter.FRAGMENT_TYPE,
+                                SimpleHomeRouter.WISHLIST_FRAGMENT);
 
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 

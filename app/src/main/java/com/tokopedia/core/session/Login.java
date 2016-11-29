@@ -28,27 +28,27 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.Cart;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.fragment.FragmentSecurityQuestion;
-import com.tokopedia.core.home.ParentIndexHome;
-import com.tokopedia.core.msisdn.activity.MsisdnActivity;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
-import com.tokopedia.core.session.model.CreatePasswordModel;
-import com.tokopedia.core.session.presenter.Session;
-import com.tokopedia.core.session.presenter.SessionImpl;
-import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.service.DownloadService;
+import com.tokopedia.core.msisdn.activity.MsisdnActivity;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.session.google.GoogleActivity;
+import com.tokopedia.core.session.model.CreatePasswordModel;
 import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.core.session.model.LoginModel;
 import com.tokopedia.core.session.model.RegisterViewModel;
+import com.tokopedia.core.session.presenter.Session;
+import com.tokopedia.core.session.presenter.SessionImpl;
+import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.var.TkpdState;
 
 import org.parceler.Parcels;
@@ -208,8 +208,8 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                     if (SessionHandler.isV4Login(this)) {
                         startActivity(new Intent(this, Cart.class));
                     } else {
-                        Intent intent = new Intent(this, ParentIndexHome.class);
-                        intent.putExtra(ParentIndexHome.EXTRA_INIT_FRAGMENT, ParentIndexHome.INIT_STATE_FRAGMENT_HOME);
+                        Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
+                        intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOME);
                         startActivity(intent);
                     }
                 }
@@ -219,19 +219,18 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                     Intent intent = new Intent(this, MsisdnActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
+                } else{
+                if (SessionHandler.isV4Login(this)) {
+                    Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
+                    intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
+                            HomeRouter.INIT_STATE_FRAGMENT_FEED);
+                    startActivity(intent);
                 } else {
-                    if (SessionHandler.isV4Login(this)) {
-                        Intent intent = new Intent(this, ParentIndexHome.class);
-                        intent.putExtra(ParentIndexHome.EXTRA_INIT_FRAGMENT,
-                                ParentIndexHome.INIT_STATE_FRAGMENT_FEED);
-                        startActivity(intent);
-                    } else {
-                        Intent intent = new Intent(this, ParentIndexHome.class);
-                        intent.putExtra(ParentIndexHome.EXTRA_INIT_FRAGMENT,
-                                ParentIndexHome.INIT_STATE_FRAGMENT_HOME);
-                        startActivity(intent);
-                    }
-                }
+                    Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
+                    intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
+                            HomeRouter.INIT_STATE_FRAGMENT_HOME);
+                    startActivity(intent);
+                }}
                 break;
         }
     }

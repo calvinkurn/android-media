@@ -14,7 +14,6 @@ import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.database.model.City;
 import com.tokopedia.core.database.model.District;
 import com.tokopedia.core.database.model.Province;
-import com.tokopedia.core.home.ParentIndexHome;
 import com.tokopedia.core.manage.people.bank.ManagePeopleBankConstant;
 import com.tokopedia.core.manage.people.bank.fragment.ManagePeopleBankFragment;
 import com.tokopedia.core.manage.people.bank.interactor.ManageBankRetrofitInteractor;
@@ -24,6 +23,7 @@ import com.tokopedia.core.manage.people.bank.model.ActSettingBankPass;
 import com.tokopedia.core.manage.people.bank.model.BankAccountPass;
 import com.tokopedia.core.manage.people.bank.model.ManagePeopleBankResult;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 
@@ -48,7 +48,7 @@ public class ManagePeopleBankFragmentPresenterImpl implements ManagePeopleBankFr
     public ManagePeopleBankFragmentPresenterImpl(ManagePeopleBankFragment viewListener) {
         this.viewListener = viewListener;
         this.networkInteractor = new ManageBankRetrofitInteractorImpl();
-        this.bankCache = new LocalCacheHandler(viewListener.getActivity(), ParentIndexHome.FETCH_BANK);
+        this.bankCache = new LocalCacheHandler(viewListener.getActivity(), HomeRouter.TAG_FETCH_BANK);
         this.dataManager = DataManagerImpl.getDataManager();
         this.pagingHandler = new PagingHandler();
         this.listener = (ManagePeopleBankFragment.DoActionListener) viewListener.getActivity();
@@ -93,7 +93,7 @@ public class ManagePeopleBankFragmentPresenterImpl implements ManagePeopleBankFr
 
             @Override
             public void setBank(List<Bank> banks) {
-                LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), ParentIndexHome.FETCH_BANK);
+                LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), HomeRouter.TAG_FETCH_BANK);
                 cache.setExpire(86400);
                 cache.applyEditor();
                 getBankAccount();

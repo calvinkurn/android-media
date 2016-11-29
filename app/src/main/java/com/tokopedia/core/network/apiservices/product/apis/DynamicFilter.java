@@ -1,6 +1,6 @@
 package com.tokopedia.core.network.apiservices.product.apis;
 
-import com.tokopedia.core.dynamicfilter.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.DynamicFilterModel;
 
 import java.util.Map;
 
