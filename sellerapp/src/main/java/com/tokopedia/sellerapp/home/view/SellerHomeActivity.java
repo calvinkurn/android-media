@@ -111,6 +111,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
 import static com.tokopedia.core.drawer.DrawerVariable.goToShopNewOrder;
+import static com.tokopedia.core.drawer.DrawerVariable.startIntent;
 
 public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.GCMHandlerListener,
         SessionHandler.onLogoutListener {
@@ -742,12 +743,12 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
     public void onLogout(Boolean success) {
         finish();
 
-        Intent intent = new Intent(this, WelcomeActivity.class);
+        /*Intent intent = new Intent(this, WelcomeActivity.class);
         intent.putExtra(com.tokopedia.session.session.presenter.Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
         intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-        startActivity(intent);
+        startActivity(intent);*/
     }
 
     public static class SellerHomeNewOrderView {

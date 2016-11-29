@@ -88,6 +88,7 @@ public interface AppEventTracking {
         String LOGIN_ERROR = "loginError";
         String REGISTER_LOGIN = "registerLogin";
         String LOGIN_CLICK = "clickLogin";
+        String GMSUBSCRIBE = "subscribeGoldMerchant";
     }
 
     interface Category {
@@ -130,6 +131,7 @@ public interface AppEventTracking {
         String ADD_PRODUCT = "Add Product";
         String HAMBURGER = "Hamburger Icon";
         String SALES = "Sales";
+        String GOLD_MERCHANT = "Gold Merchant";
     }
 
     interface Action {
@@ -155,6 +157,7 @@ public interface AppEventTracking {
         String LOGIN = "Login Success";
         String LOGIN_ERROR = "Login Error";
         String REGISTER = "Register";
+        String SUBSCRIBE = "Subscribe";
     }
 
     interface EventLabel {
@@ -260,6 +263,7 @@ public interface AppEventTracking {
 
         String REGISTER = "Register";
         String CTA = "CTA";
+        String SUBSCRIBE_SUCCESS = "Subscribe Success";
     }
 
     interface SOCIAL_MEDIA {
