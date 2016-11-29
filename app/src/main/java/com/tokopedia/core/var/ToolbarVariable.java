@@ -25,6 +25,7 @@ public class ToolbarVariable {
 
     protected static final int TYPE_MAIN = 0;
     private static final int TYPE_DETAIL = 1;
+    private static final int TYPE_SEARCH = 2;
 
     protected ViewHolder holder;
     protected Model model;
@@ -40,6 +41,7 @@ public class ToolbarVariable {
         Toolbar toolbar;
         View notif;
         View title;
+        View searchView;
         ImageView drawerToggle;
         TextView notifRed;
         TextView titleTextView;
@@ -71,7 +73,15 @@ public class ToolbarVariable {
         setAsActionBar();
     }
 
-    protected void initListener() {
+    public void createToolbarWithSearchBox() {
+        holder = new ViewHolder();
+        this.type = TYPE_SEARCH;
+        initView();
+        initListener();
+        setAsActionBar();
+    }
+
+    private void initListener() {
         holder.drawerToggle.setOnClickListener(onDrawerToggleClicked());
     }
 
@@ -82,6 +92,10 @@ public class ToolbarVariable {
                 listener.onDrawerToggleClick();
             }
         };
+    }
+
+    public void setSearchViewClickListener(View.OnClickListener clickListener) {
+        holder.searchView.setOnClickListener(clickListener);
     }
 
 
@@ -96,6 +110,9 @@ public class ToolbarVariable {
             case TYPE_MAIN: {
                 initViewMain();
                 break;
+            }
+            case TYPE_SEARCH: {
+                initSearchView();
             }
             default: {
                 initViewDetail();
@@ -126,6 +143,17 @@ public class ToolbarVariable {
         }
         context.setSupportActionBar(holder.toolbar);
         context.getSupportActionBar().setDisplayShowTitleEnabled(false);
+    }
+
+    private void initSearchView() {
+        View view = context.getLayoutInflater().inflate(R.layout.custom_action_bar_searchview, null);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        view.setLayoutParams(params);
+        holder.searchView = view.findViewById(R.id.search_container);
+        holder.notif = view.findViewById(R.id.burger_menu);
+        holder.drawerToggle = (ImageView) holder.notif.findViewById(R.id.toggle_but_ab);
+        holder.notifRed = (TextView) holder.notif.findViewById(R.id.toggle_count_notif);
+        holder.toolbar.addView(view);
     }
 
     private void initTitle() {
@@ -178,4 +206,15 @@ public class ToolbarVariable {
             }
         }
     }
+
+    public void setTitle(int res_id) {
+        if (holder.titleTextView != null)
+            holder.titleTextView.setText(context.getString(res_id));
+    }
+
+    public void setTitle(String title) {
+        if (holder.titleTextView != null)
+            holder.titleTextView.setText(title);
+    }
+
 }

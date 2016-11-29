@@ -10,9 +10,9 @@ import android.widget.TextView;
 
 import com.daimajia.numberprogressbar.NumberProgressBar;
 import com.google.gson.reflect.TypeToken;
+import com.tokopedia.core.ShopStatisticDetail;
+import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.sellerapp.R;
-import com.tokopedia.sellerapp.ShopStatisticDetail;
-import com.tokopedia.sellerapp.database.CacheUtil;
 import com.tokopedia.sellerapp.home.model.shopmodel.ShopModel;
 import com.tokopedia.sellerapp.home.model.shopmodel.ShopTxStats;
 

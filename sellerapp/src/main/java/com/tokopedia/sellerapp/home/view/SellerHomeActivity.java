@@ -69,7 +69,6 @@ import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.drawer.DrawerVariable;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.sellerapp.gmsubscribe.GMSubscribeActivity;
 import com.tokopedia.sellerapp.home.BannerWebView;
 import com.tokopedia.sellerapp.home.boommenu.BoomMenuButton;
 import com.tokopedia.sellerapp.home.boommenu.SquareMenuButton;
