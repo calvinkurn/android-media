@@ -3,6 +3,7 @@
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/cards_ui_2"
+    android:id="@+id/main"
     android:orientation="horizontal"
     android:paddingTop="@dimen/padding_small"
     android:paddingBottom="@dimen/padding_small"

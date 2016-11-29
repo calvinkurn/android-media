@@ -20,8 +20,6 @@ import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.gcm.GcmListenerService;
 import com.tkpd.library.utils.CommonUtils;
@@ -33,7 +31,6 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
-import com.tokopedia.core.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.core.home.ParentIndexHome;
 import com.tokopedia.core.home.SimpleHomeActivity;
 import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
@@ -41,6 +38,7 @@ import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.prototype.ManageProductCache;
 import com.tokopedia.core.prototype.ShopSettingCache;
 import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
+import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TransactionRouter;
@@ -117,8 +115,11 @@ public class GCMListenerService extends GcmListenerService {
                 createNotification(data, ShopInfoActivity.class);
                 break;
             case TkpdState.GCMServiceState.GCM_DEEPLINK:
-                if (SessionHandler.isV4Login(this))
-                    createNotification(data, DeepLinkActivity.class);
+                if (SessionHandler.isV4Login(this)) {
+                    if(CustomerRouter.getDeeplinkClass() != null) {
+                        createNotification(data, CustomerRouter.getDeeplinkClass());
+                    }
+                }
                 break;
             case TkpdState.GCMServiceState.GCM_CART:
                 if (SessionHandler.isV4Login(this)) createNotification(data, Cart.class);
@@ -597,12 +598,7 @@ public class GCMListenerService extends GcmListenerService {
                 break;
             }
             case TkpdState.GCMServiceState.GCM_DEEPLINK: {
-                try {
-                    intent = new Intent(Intent.ACTION_VIEW, Uri.parse(data.getString("url"))).putExtras(data);
-                } catch (NullPointerException e) {
-                    CommonUtils.dumper("NotifTag : No Deeplink : " + e.toString());
-                    intent = new Intent(this, ParentIndexHome.class);
-                }
+                intent.setData(Uri.parse(data.getString("url")));
                 break;
             }
             case TkpdState.GCMServiceState.GCM_CATEGORY: {
