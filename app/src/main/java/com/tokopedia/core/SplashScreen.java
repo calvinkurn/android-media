@@ -45,7 +45,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     private PasswordGenerator Pgenerator;
     DownloadResultReceiver mReceiver;
 	String id = null;
-    private SessionHandler sessionHandler;
+    protected SessionHandler sessionHandler;
 
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -115,7 +115,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         gcm.commitGCMProcess(getGCMHandlerListener());
     }
 
-    private void finishSplashScreen() {
+    public void finishSplashScreen() {
         Intent intent;
         if(isSeller()){
 //            if(!sessionHandler.getShopID().isEmpty() && !sessionHandler.getShopID().equals("0")) {
