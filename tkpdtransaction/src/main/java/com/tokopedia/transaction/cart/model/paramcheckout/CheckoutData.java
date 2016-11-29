@@ -1,10 +1,15 @@
-package com.tokopedia.transaction.cart.model;
+package com.tokopedia.transaction.cart.model.paramcheckout;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.List;
 
 /**
  * @author anggaprasetiyo on 11/4/16.
  */
 
-public class CheckoutData {
+public class CheckoutData implements Parcelable {
 
     private String lpFlag = "1";
     private String depositAmount;
@@ -14,6 +19,8 @@ public class CheckoutData {
     private String token;
     private String partialString;
     private String usedDeposit;
+    private List<CheckoutDropShipperData> dropShipperDataList;
+    private String voucherCode;
 
     private CheckoutData(Builder builder) {
         setLpFlag(builder.lpFlag);
@@ -24,6 +31,27 @@ public class CheckoutData {
         setToken(builder.token);
         setPartialString(builder.partialString);
         setUsedDeposit(builder.usedDeposit);
+        setDropShipperDataList(builder.dropShipperDataList);
+        setVoucherCode(builder.voucherCode);
+    }
+
+    public List<CheckoutDropShipperData> getDropShipperDataList() {
+        return dropShipperDataList;
+    }
+
+    public CheckoutData() {
+    }
+
+    public String getVoucherCode() {
+        return voucherCode;
+    }
+
+    public void setVoucherCode(String voucherCode) {
+        this.voucherCode = voucherCode;
+    }
+
+    public void setDropShipperDataList(List<CheckoutDropShipperData> dropShipperDataList) {
+        this.dropShipperDataList = dropShipperDataList;
     }
 
     public String getLpFlag() {
@@ -100,6 +128,8 @@ public class CheckoutData {
         private String token;
         private String partialString;
         private String usedDeposit;
+        private List<CheckoutDropShipperData> dropShipperDataList;
+        private String voucherCode;
 
         public Builder() {
         }
@@ -144,8 +174,64 @@ public class CheckoutData {
             return this;
         }
 
+        public Builder dropShipperDataList(List<CheckoutDropShipperData> val) {
+            dropShipperDataList = val;
+            return this;
+        }
+
+        public Builder voucherCode(String val) {
+            voucherCode = val;
+            return this;
+        }
+
         public CheckoutData build() {
             return new CheckoutData(this);
         }
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.lpFlag);
+        dest.writeString(this.depositAmount);
+        dest.writeString(this.dropShipString);
+        dest.writeString(this.step);
+        dest.writeString(this.gateway);
+        dest.writeString(this.token);
+        dest.writeString(this.partialString);
+        dest.writeString(this.usedDeposit);
+        dest.writeTypedList(this.dropShipperDataList);
+        dest.writeString(this.voucherCode);
+    }
+
+    protected CheckoutData(Parcel in) {
+        this.lpFlag = in.readString();
+        this.depositAmount = in.readString();
+        this.dropShipString = in.readString();
+        this.step = in.readString();
+        this.gateway = in.readString();
+        this.token = in.readString();
+        this.partialString = in.readString();
+        this.usedDeposit = in.readString();
+        this.dropShipperDataList = in.createTypedArrayList(CheckoutDropShipperData.CREATOR);
+        this.voucherCode = in.readString();
+    }
+
+    public static final Parcelable.Creator<CheckoutData> CREATOR
+            = new Parcelable.Creator<CheckoutData>() {
+        @Override
+        public CheckoutData createFromParcel(Parcel source) {
+            return new CheckoutData(source);
+        }
+
+        @Override
+        public CheckoutData[] newArray(int size) {
+            return new CheckoutData[size];
+        }
+    };
 }

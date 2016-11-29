@@ -249,8 +249,10 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 //        holder.etDropshiperPhone.addTextChangedListener(null);
 //        holder.etDropshiperName.addTextChangedListener(null);
 
-        holder.etDropshiperName.setText(data.getDropShipperName());
-        holder.etDropshiperPhone.setText(data.getDropShipperPhone());
+        holder.etDropshiperName.setText(data.getDropShipperName() != null
+                ? data.getDropShipperName() : "");
+        holder.etDropshiperPhone.setText(data.getDropShipperPhone() != null
+                ? data.getDropShipperPhone() : "");
         switch (data.getErrorType()) {
             case CartItemEditable.ERROR_DROPSHIPPER_NAME:
                 holder.tilEtDropshiperName.setErrorEnabled(true);

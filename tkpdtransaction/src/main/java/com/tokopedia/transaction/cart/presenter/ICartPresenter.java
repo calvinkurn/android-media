@@ -3,9 +3,12 @@ package com.tokopedia.transaction.cart.presenter;
 import android.app.Activity;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import com.tokopedia.transaction.cart.model.cartdata.TransactionList;
+import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
+import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 
 import java.util.List;
 
@@ -26,4 +29,9 @@ public interface ICartPresenter {
                                List<ProductEditData> cartProductEditDataList);
 
     void processUpdateInsurance(Activity activity, TransactionList cartData, boolean useInsurance);
+
+    void processCheckoutCart(Activity activity, CheckoutData.Builder checkoutDataBuilder,
+                             List<CartItemEditable> cartItemEditables);
+
+    void processStep2PaymentCart(Activity activity, TopPayParameterData data);
 }

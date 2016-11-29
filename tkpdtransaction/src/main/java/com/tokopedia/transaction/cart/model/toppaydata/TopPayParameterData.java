@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.cart.model.toppaydata;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -7,7 +8,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by anggaprasetiyo on 11/23/16.
+ * @author anggaprasetiyo on 11/23/16.
  */
 
 public class TopPayParameterData implements Parcelable {
@@ -56,6 +57,14 @@ public class TopPayParameterData implements Parcelable {
         this.callbackUrl = callbackUrl;
     }
 
+    public String getCallbackUrlPath() {
+        try {
+            Uri uri = Uri.parse(callbackUrl);
+            return uri.getPath();
+        } catch (Exception e) {
+            return "wrong";
+        }
+    }
 
     @Override
     public int describeContents() {

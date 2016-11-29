@@ -62,7 +62,7 @@ public class AppsflyerContainer implements IAppsflyerContainer {
     }
 
     private void setUseHTTPFalback(boolean state) {
-        AppsFlyerLib.getInstance().setUseHTTPFalback(state);
+        //   AppsFlyerLib.getInstance().setUseHTTPFalback(state);
     }
 
     @Override

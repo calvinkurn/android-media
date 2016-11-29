@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.cart.activity;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -72,5 +73,9 @@ public class CartActivity extends BasePresenterActivity implements ICartActionFr
         }
     }
 
-
+    @Override
+    public void replaceFragmentWithBackStack(Fragment fragment) {
+        getFragmentManager().beginTransaction().replace(R.id.container,
+                fragment).addToBackStack(null).commit();
+    }
 }

@@ -19,5 +19,9 @@ public interface ICartView extends ViewListener {
 
     void renderLoyaltyBalance(String lpAmountIdr, boolean visibleHolder);
 
-    void renderCartListData(List<TransactionList> transactionLists);
+    void renderCartListData(List<TransactionList> cartList);
+
+    void renderCheckoutCartToken(String token);
+
+    void renderCheckoutCartDepositAmount(String depositAmount);
 }

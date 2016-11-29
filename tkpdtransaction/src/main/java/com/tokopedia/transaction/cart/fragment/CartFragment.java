@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -13,9 +14,9 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -36,13 +37,15 @@ import com.tokopedia.transaction.cart.adapter.CartItemAdapter;
 import com.tokopedia.transaction.cart.listener.ICartActionFragment;
 import com.tokopedia.transaction.cart.listener.ICartView;
 import com.tokopedia.transaction.cart.model.CartItemEditable;
-import com.tokopedia.transaction.cart.model.CheckoutData;
 import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import com.tokopedia.transaction.cart.model.cartdata.GatewayList;
 import com.tokopedia.transaction.cart.model.cartdata.TransactionList;
+import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
+import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 import com.tokopedia.transaction.cart.presenter.CartPresenter;
 import com.tokopedia.transaction.cart.presenter.ICartPresenter;
+import com.tokopedia.transaction.cart.receivers.CartBroadcastReceiver;
 
 import java.util.List;
 
@@ -53,7 +56,8 @@ import butterknife.Bind;
  */
 
 public class CartFragment extends BasePresenterFragment<ICartPresenter> implements ICartView,
-        PaymentGatewayFragment.ActionListener, CartItemAdapter.CartAction {
+        PaymentGatewayFragment.ActionListener, CartItemAdapter.CartAction,
+        CartBroadcastReceiver.ActionTopPayListener {
 
     @Bind(R2.id.logo)
     ProgressBar logo;
@@ -117,6 +121,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     private ICartActionFragment actionListener;
     private CheckoutData.Builder checkoutDataBuilder;
     private TkpdProgressDialog progressDialogNormal;
+    private CartBroadcastReceiver cartBroadcastReceiver;
 
     public static Fragment newInstance() {
         return new CartFragment();
@@ -156,6 +161,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     protected void initialListener(Activity activity) {
         actionListener = (ICartActionFragment) activity;
+
     }
 
     @Override
@@ -175,12 +181,22 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     protected void setViewListener() {
-
+        cbUseVoucher.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) holderUseVoucher.setVisibility(View.VISIBLE);
+                else holderUseVoucher.setVisibility(View.GONE);
+            }
+        });
+        cbUseVoucher.setChecked(false);
     }
 
     @Override
     protected void initialVar() {
-
+        cartBroadcastReceiver = new CartBroadcastReceiver(this);
+        getActivity().registerReceiver(
+                cartBroadcastReceiver, new IntentFilter(CartBroadcastReceiver.ACTION_TOP_PAY)
+        );
     }
 
     @Override
@@ -259,10 +275,10 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderCartListData(List<TransactionList> transactionLists) {
+    public void renderCartListData(final List<TransactionList> cartList) {
         rvCart.setLayoutManager(new NonScrollLayoutManager(getActivity()));
         final CartItemAdapter adapter = new CartItemAdapter(this, this);
-        adapter.fillDataList(transactionLists);
+        adapter.fillDataList(cartList);
         rvCart.setAdapter(adapter);
         btnCheckout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -271,33 +287,48 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                 boolean canBeCheckout = true;
                 int positionError = cartItemEditables.size() - 1;
 
+                if (cbUseVoucher.isChecked() && etVoucherCode.getText().toString().isEmpty()) {
+                    tilEtVoucherCode.setErrorEnabled(true);
+                    tilEtVoucherCode.setError("Voucher Kosong");
+                    return;
+                } else if (cbUseVoucher.isChecked() && !etVoucherCode.getText().toString().isEmpty()) {
+                    tilEtVoucherCode.setError(null);
+                    tilEtVoucherCode.setErrorEnabled(false);
+                    checkoutDataBuilder.voucherCode(etVoucherCode.getText().toString());
+                }
+
                 for (int i = 0, cartItemEditablesSize = cartItemEditables.size();
                      i < cartItemEditablesSize; i++) {
                     CartItemEditable cartItemEditable = cartItemEditables.get(i);
                     adapter.renderErrorCart(cartItemEditable);
-                    Log.d("CartFragment", cartItemEditable.getCartString()
-                            + " | dropship = " + cartItemEditable.isDropShipper()
-                            + " | dropshipper name = " + cartItemEditable.getDropShipperName()
-                            + " | dropshipper phone = " + cartItemEditable.getDropShipperPhone()
-                            + " | partial = " + cartItemEditable.isPartialDeliver());
-                    if (cartItemEditable.finalizeAllData().getErrorType() != CartItemEditable.ERROR_NON) {
+                    if (cartItemEditable.finalizeAllData().getErrorType()
+                            != CartItemEditable.ERROR_NON) {
                         canBeCheckout = false;
                     }
-                    //   rvCart.smoothScrollToPosition(i);
-
                 }
                 if (!canBeCheckout) {
                     int heightScroll = nsvContainer.computeVerticalScrollRange();
                     int heightRv = rvCart.computeVerticalScrollOffset();
                     nsvContainer.smoothScrollTo(0, heightScroll
                             - (heightRv - (heightRv / cartItemEditables.size() * positionError)));
-                    showToastMessage("Keranjang tidak dapat diproses, mohon periksa kembali keranjang Anda.");
+                    showToastMessage("Keranjang tidak dapat diproses," +
+                            " mohon periksa kembali keranjang Anda.");
                 } else {
-                    //   showToastMessage("Keranjang siap untuk diproses");
-                    
+                    presenter.processCheckoutCart(getActivity(), checkoutDataBuilder,
+                            cartItemEditables);
                 }
             }
         });
+    }
+
+    @Override
+    public void renderCheckoutCartToken(String token) {
+        checkoutDataBuilder.token(token);
+    }
+
+    @Override
+    public void renderCheckoutCartDepositAmount(String depositAmount) {
+        checkoutDataBuilder.depositAmount(depositAmount);
     }
 
     @Override
@@ -387,4 +418,33 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         return alertDialog;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getActivity().unregisterReceiver(cartBroadcastReceiver);
+    }
+
+    @Override
+    public void onGetParameterTopPaySuccess(TopPayParameterData data) {
+        hideProgressLoading();
+        showToastMessage("berhasil!!!!");
+        actionListener.replaceFragmentWithBackStack(TopPayFragment.newInstance(data));
+    }
+
+    @Override
+    public void onGetParameterTopPayFailed(String message) {
+        hideProgressLoading();
+        showToastMessage(message);
+    }
+
+    @Override
+    public void onGetParameterTopPayNoConnection(String message) {
+        hideProgressLoading();
+        showToastMessage(message);
+    }
+
+    @Override
+    public void onGetParameterTopPayOngoing(String message) {
+        showProgressLoading();
+    }
 }

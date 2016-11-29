@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.tokopedia.transaction">
+    package="com.tokopedia.transaction">
 
     <application
         android:allowBackup="true"
@@ -41,6 +41,9 @@
 
         <service
             android:name="com.tokopedia.transaction.purchase.services.TxActionIntentService"
+            android:exported="false" />
+        <service
+            android:name="com.tokopedia.transaction.cart.services.CartIntentService"
             android:exported="false" />
     </application>
 

@@ -2,14 +2,10 @@ package com.tokopedia.transaction.cart.interactor;
 
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.payment.interactor.PaymentNetInteractor;
 import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentData;
-import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentWrapper;
 import com.tokopedia.transaction.cart.model.cartdata.CartModel;
 import com.tokopedia.transaction.cart.model.savelocation.SaveLocationData;
-import com.tokopedia.transaction.cart.model.savelocation.SaveLocationWrapper;
 import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartData;
-import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartWrapper;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 
 import rx.Scheduler;
@@ -17,7 +13,7 @@ import rx.Subscriber;
 
 /**
  * @author anggaprasetiyo on 11/2/16.
- * collabs with alvarisi
+ *         collabs with alvarisi
  */
 
 public interface ICartDataInteractor {
@@ -44,7 +40,7 @@ public interface ICartDataInteractor {
                              TKPDMapParam<String, String> paramCart,
                              Subscriber<CartModel> subscriber);
 
-    void getParameterTopPay(TKPDMapParam<String, String> params, Scheduler scheduler,
+    void getParameterTopPay(TKPDMapParam<String, String> params, Scheduler schedulers,
                             Subscriber<TopPayParameterData> subscriber);
 
     void unSubscribeObservable();

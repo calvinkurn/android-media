@@ -16,19 +16,19 @@ public class CartBroadcastReceiver extends BroadcastReceiver {
     public static final int RESULT_CODE_TOP_PAY_SUCCESS = 1;
     public static final int RESULT_CODE_TOP_PAY_ERROR = 0;
     public static final int RESULT_CODE_TOP_PAY_NO_CONNECTION = 2;
+    public static final int RESULT_CODE_TOP_PAY_PROCESS_ONGOING = 3;
 
 
-    private static final String EXTRA_RESULT_CODE_TOP_PAY_ACTION
+    public static final String EXTRA_RESULT_CODE_TOP_PAY_ACTION
             = "EXTRA_RESULT_CODE_TOP_PAY_ACTION";
-    private static final String EXTRA_TOP_PAY_PARAMETER_DATA_TOP_PAY_ACTION
+    public static final String EXTRA_TOP_PAY_PARAMETER_DATA_TOP_PAY_ACTION
             = "EXTRA_TOP_PAY_PARAMETER_DATA_TOP_PAY_ACTION";
-    private static final String EXTRA_MESSAGE_TOP_PAY_ACTION = "EXTRA_MESSAGE_TOP_PAY_ACTION";
+    public static final String EXTRA_MESSAGE_TOP_PAY_ACTION = "EXTRA_MESSAGE_TOP_PAY_ACTION";
 
     public CartBroadcastReceiver(Object listener) {
         if (listener instanceof ActionTopPayListener) {
             this.topPayListener = (ActionTopPayListener) listener;
         }
-
     }
 
     private ActionTopPayListener topPayListener;
@@ -39,18 +39,23 @@ public class CartBroadcastReceiver extends BroadcastReceiver {
             int resultCode = intent.getExtras().getInt(EXTRA_RESULT_CODE_TOP_PAY_ACTION, 1);
             switch (resultCode) {
                 case RESULT_CODE_TOP_PAY_SUCCESS:
-                    topPayListener.onSuccessGetParameterTopPay(
+                    topPayListener.onGetParameterTopPaySuccess(
                             (TopPayParameterData) intent.getExtras().getParcelable(
                                     EXTRA_TOP_PAY_PARAMETER_DATA_TOP_PAY_ACTION)
                     );
                     break;
                 case RESULT_CODE_TOP_PAY_ERROR:
-                    topPayListener.onFailedGetParameterTopPay(
+                    topPayListener.onGetParameterTopPayFailed(
                             intent.getExtras().getString(EXTRA_MESSAGE_TOP_PAY_ACTION)
                     );
                     break;
                 case RESULT_CODE_TOP_PAY_NO_CONNECTION:
-                    topPayListener.onNoConnectionGetParameterTopPay(
+                    topPayListener.onGetParameterTopPayNoConnection(
+                            intent.getExtras().getString(EXTRA_MESSAGE_TOP_PAY_ACTION)
+                    );
+                    break;
+                case RESULT_CODE_TOP_PAY_PROCESS_ONGOING:
+                    topPayListener.onGetParameterTopPayOngoing(
                             intent.getExtras().getString(EXTRA_MESSAGE_TOP_PAY_ACTION)
                     );
                     break;
@@ -59,10 +64,12 @@ public class CartBroadcastReceiver extends BroadcastReceiver {
     }
 
     public interface ActionTopPayListener {
-        void onSuccessGetParameterTopPay(TopPayParameterData data);
+        void onGetParameterTopPaySuccess(TopPayParameterData data);
 
-        void onFailedGetParameterTopPay(String message);
+        void onGetParameterTopPayFailed(String message);
 
-        void onNoConnectionGetParameterTopPay(String message);
+        void onGetParameterTopPayNoConnection(String message);
+
+        void onGetParameterTopPayOngoing(String message);
     }
 }

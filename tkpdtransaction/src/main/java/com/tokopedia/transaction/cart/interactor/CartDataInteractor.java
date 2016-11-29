@@ -13,13 +13,12 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentData;
-import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentWrapper;
 import com.tokopedia.transaction.cart.model.cartdata.CartModel;
 import com.tokopedia.transaction.cart.model.savelocation.SaveLocationData;
-import com.tokopedia.transaction.cart.model.savelocation.SaveLocationWrapper;
 import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartData;
-import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartWrapper;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
+import com.tokopedia.transaction.exception.HttpErrorException;
+import com.tokopedia.transaction.exception.ResponseErrorException;
 
 import org.json.JSONException;
 
@@ -28,15 +27,13 @@ import rx.Observable;
 import rx.Scheduler;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author anggaprasetiyo on 11/2/16.
- * collabs with alvarisi
+ *         collabs with alvarisi
  */
 
 public class CartDataInteractor implements ICartDataInteractor {
@@ -356,14 +353,26 @@ public class CartDataInteractor implements ICartDataInteractor {
                 .flatMap(new Func1<Response<TkpdResponse>, Observable<TopPayParameterData>>() {
                     @Override
                     public Observable<TopPayParameterData> call(Response<TkpdResponse> response) {
-                        return Observable.just(response.body().convertDataObj(
-                                TopPayParameterData.class)
-                        );
+                        if (response.isSuccessful()) {
+                            if (!response.body().isError()) {
+                                return Observable.just(response.body().convertDataObj(
+                                        TopPayParameterData.class)
+                                );
+                            } else {
+                                throw new RuntimeException(
+                                        new ResponseErrorException(
+                                                response.body().getErrorMessages().get(0)
+                                        )
+                                );
+                            }
+                        } else {
+                            throw new RuntimeException(new HttpErrorException(response.code()));
+                        }
                     }
                 })
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.newThread())
+                .subscribeOn(scheduler)
+                .observeOn(scheduler)
+                .unsubscribeOn(scheduler)
                 .subscribe(subscriber)
         );
     }
@@ -414,7 +423,7 @@ public class CartDataInteractor implements ICartDataInteractor {
                         if (response.isSuccessful()) {
                             if (!response.body().isError()) {
                                 if (!response.body().isNullData() &&
-                                        !response.body().getJsonData().isNull(KEY_FLAG_IS_SUCCESS)){
+                                        !response.body().getJsonData().isNull(KEY_FLAG_IS_SUCCESS)) {
                                     int status = 0;
                                     try {
                                         status = response.body().getJsonData()
@@ -426,18 +435,17 @@ public class CartDataInteractor implements ICartDataInteractor {
                                     if (status == 1) {
                                         message = response.body()
                                                 .getStatusMessages().get(0);
-                                    }
-                                    else {
+                                    } else {
                                         message = response.body().getErrorMessages().get(0);
                                     }
                                     ShipmentCartData shipmentCartData = new ShipmentCartData();
                                     shipmentCartData.setStatus(String.valueOf(status));
                                     shipmentCartData.setMessage(message);
                                     return shipmentCartData;
-                                }else {
+                                } else {
                                     throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_NULL_DATA);
                                 }
-                            } else  {
+                            } else {
                                 throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                             }
                         } else {
@@ -495,12 +503,12 @@ public class CartDataInteractor implements ICartDataInteractor {
                         if (response.isSuccessful()) {
                             if (!response.body().isError()) {
                                 if (!response.body().isNullData() &&
-                                        !response.body().getJsonData().isNull(KEY_FLAG_IS_SUCCESS)){
+                                        !response.body().getJsonData().isNull(KEY_FLAG_IS_SUCCESS)) {
                                     return response.body().convertDataObj(SaveLocationData.class);
-                                }else {
+                                } else {
                                     throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_NULL_DATA);
                                 }
-                            } else  {
+                            } else {
                                 throw new RuntimeException(response.body().getErrorMessages().get(0));
                             }
                         } else {

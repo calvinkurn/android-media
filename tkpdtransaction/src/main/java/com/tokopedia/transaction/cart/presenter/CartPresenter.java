@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.cart.presenter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
@@ -11,12 +12,20 @@ import com.tokopedia.core.payment.interactor.PaymentNetInteractorImpl;
 import com.tokopedia.transaction.cart.interactor.CartDataInteractor;
 import com.tokopedia.transaction.cart.interactor.ICartDataInteractor;
 import com.tokopedia.transaction.cart.listener.ICartView;
+import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
 import com.tokopedia.transaction.cart.model.cartdata.CartModel;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import com.tokopedia.transaction.cart.model.cartdata.TransactionList;
+import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
+import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutDropShipperData;
+import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
+import com.tokopedia.transaction.cart.services.CartIntentService;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import rx.Subscriber;
 
@@ -24,8 +33,7 @@ import rx.Subscriber;
  * @author anggaprasetiyo on 11/3/16.
  */
 
-public class
-CartPresenter implements ICartPresenter {
+public class CartPresenter implements ICartPresenter {
     private final ICartView view;
     private final ICartDataInteractor cartDataInteractor;
     private final PaymentNetInteractor paymentNetInteractor;
@@ -57,6 +65,8 @@ CartPresenter implements ICartPresenter {
                 view.renderPaymentGatewayOption(data.getGatewayList());
                 view.renderLoyaltyBalance(data.getLpAmountIdr(), data.getLpAmount() != 0);
                 view.renderCartListData(data.getTransactionLists());
+                view.renderCheckoutCartDepositAmount(data.getDeposit() + "");
+                view.renderCheckoutCartToken(data.getToken());
             }
         });
     }
@@ -90,6 +100,8 @@ CartPresenter implements ICartPresenter {
                         view.renderPaymentGatewayOption(data.getGatewayList());
                         view.renderLoyaltyBalance(data.getLpAmountIdr(), data.getLpAmount() != 0);
                         view.renderCartListData(data.getTransactionLists());
+                        view.renderCheckoutCartDepositAmount(data.getDeposit() + "");
+                        view.renderCheckoutCartToken(data.getToken());
                         view.hideProgressLoading();
                     }
                 });
@@ -126,6 +138,8 @@ CartPresenter implements ICartPresenter {
                         view.renderPaymentGatewayOption(data.getGatewayList());
                         view.renderLoyaltyBalance(data.getLpAmountIdr(), data.getLpAmount() != 0);
                         view.renderCartListData(data.getTransactionLists());
+                        view.renderCheckoutCartDepositAmount(data.getDeposit() + "");
+                        view.renderCheckoutCartToken(data.getToken());
                         view.hideProgressLoading();
                     }
                 });
@@ -164,6 +178,8 @@ CartPresenter implements ICartPresenter {
                         view.renderPaymentGatewayOption(data.getGatewayList());
                         view.renderLoyaltyBalance(data.getLpAmountIdr(), data.getLpAmount() != 0);
                         view.renderCartListData(data.getTransactionLists());
+                        view.renderCheckoutCartDepositAmount(data.getDeposit() + "");
+                        view.renderCheckoutCartToken(data.getToken());
                         view.hideProgressLoading();
                     }
                 });
@@ -199,8 +215,91 @@ CartPresenter implements ICartPresenter {
                         view.renderPaymentGatewayOption(data.getGatewayList());
                         view.renderLoyaltyBalance(data.getLpAmountIdr(), data.getLpAmount() != 0);
                         view.renderCartListData(data.getTransactionLists());
+                        view.renderCheckoutCartDepositAmount(data.getDeposit() + "");
+                        view.renderCheckoutCartToken(data.getToken());
                         view.hideProgressLoading();
                     }
                 });
+    }
+
+    @Override
+    public void processCheckoutCart(Activity activity, CheckoutData.Builder checkoutDataBuilder,
+                                    List<CartItemEditable> cartItemEditables) {
+        List<String> dropShipperNameList = new ArrayList<>();
+        List<String> dropShipperPhoneList = new ArrayList<>();
+        List<String> dropShipperString = new ArrayList<>();
+        StringBuilder partialDeliverParamBuilder = new StringBuilder();
+        for (CartItemEditable data : cartItemEditables) {
+            if (data.isDropShipper()) {
+                dropShipperNameList.add(data.getDropShipperName());
+                dropShipperPhoneList.add(data.getDropShipperPhone());
+                dropShipperString.add(data.getCartString());
+            }
+            if (data.isPartialDeliver()) {
+                partialDeliverParamBuilder.append(data.getCartString()).append("*~*");
+            }
+        }
+        String partialDeliverParamString = partialDeliverParamBuilder.toString();
+
+        StringBuilder dropShipperParamStringBuilder = new StringBuilder();
+        for (String stringCart : dropShipperString) {
+            dropShipperParamStringBuilder.append(stringCart).append("*~*");
+        }
+        String dropShipperParamString = dropShipperParamStringBuilder.toString();
+        if (dropShipperParamString.endsWith("*~*")) {
+            dropShipperParamString = dropShipperParamString.substring(0,
+                    dropShipperParamString.lastIndexOf("*~*"));
+        }
+        if (partialDeliverParamString.endsWith("*~*")) {
+            partialDeliverParamString = partialDeliverParamString.substring(0,
+                    partialDeliverParamString.lastIndexOf("*~*"));
+        }
+
+        List<CheckoutDropShipperData> checkoutDropShipperDataList = new ArrayList<>();
+
+        Map<String, String> dropShipperDataParam = generateDropShipperParam(dropShipperNameList,
+                dropShipperPhoneList, dropShipperString);
+
+
+        for (Map.Entry<String, String> entry : dropShipperDataParam.entrySet()) {
+            System.out.println(entry.getKey() + "/" + entry.getValue());
+            checkoutDropShipperDataList.add(new CheckoutDropShipperData.Builder()
+                    .key(entry.getKey())
+                    .value(entry.getValue())
+                    .build());
+        }
+        CheckoutData checkoutData = checkoutDataBuilder
+                .dropShipperDataList(checkoutDropShipperDataList)
+                .dropShipString(dropShipperParamString)
+                .partialString(partialDeliverParamString)
+                .lpFlag("1")
+                .step("1")
+                .build();
+
+        Intent intent = new Intent(Intent.ACTION_SYNC, null, activity,
+                CartIntentService.class);
+        intent.putExtra(CartIntentService.EXTRA_ACTION,
+                CartIntentService.SERVICE_ACTION_GET_PARAMETER_DATA);
+        intent.putExtra(CartIntentService.EXTRA_CHECKOUT_DATA, checkoutData);
+        activity.startService(intent);
+    }
+
+    @Override
+    public void processStep2PaymentCart(Activity activity, TopPayParameterData data) {
+
+    }
+
+    private Map<String, String> generateDropShipperParam(List<String> dropShipperNameList,
+                                                         List<String> dropShipperPhoneList,
+                                                         List<String> dropShipperStringList) {
+        Map<String, String> params = new HashMap<>();
+        for (int i = 0, dropShipperNameListSize = dropShipperNameList.size();
+             i < dropShipperNameListSize; i++) {
+            params.put("dropship_name~" + dropShipperStringList.get(i).replace("~", "-"),
+                    dropShipperNameList.get(i));
+            params.put("dropship_telp~" + dropShipperStringList.get(i).replace("~", "-"),
+                    dropShipperPhoneList.get(i));
+        }
+        return params;
     }
 }
