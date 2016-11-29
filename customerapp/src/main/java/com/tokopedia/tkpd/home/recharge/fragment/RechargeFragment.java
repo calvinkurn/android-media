@@ -31,7 +31,6 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customView.RechargeEditText;
@@ -97,25 +96,25 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     //endregion
 
     //region widget variable
-    @Bind(R2.id.pulsa_edittext)
+    @Bind(R.id.pulsa_edittext)
     RechargeEditText rechargeEditText;
-    @Bind(R2.id.buy_with_credit_checkbox)
+    @Bind(R.id.buy_with_credit_checkbox)
     CheckBox buyWithCreditCheckbox;
-    @Bind(R2.id.buy_wrapper_linearlayout)
+    @Bind(R.id.buy_wrapper_linearlayout)
     LinearLayout wrapperLinearLayout;
-    @Bind(R2.id.nominalTextview)
+    @Bind(R.id.nominalTextview)
     TextView nominalTextview;
-    @Bind(R2.id.telp_textview)
+    @Bind(R.id.telp_textview)
     TextView tlpLabelTextView;
-    @Bind(R2.id.recharge_progressbar)
+    @Bind(R.id.recharge_progressbar)
     ProgressBar rechargeProgressbar;
-    @Bind(R2.id.spnNominal)
+    @Bind(R.id.spnNominal)
     Spinner spnNominal;
-    @Bind(R2.id.spnOperator)
+    @Bind(R.id.spnOperator)
     Spinner spnOperator;
-    @Bind(R2.id.errorNominal)
+    @Bind(R.id.errorNominal)
     TextView errorNominal;
-    @Bind(R2.id.btn_buy)
+    @Bind(R.id.btn_buy)
     Button buyButton;
 
     //endregion
@@ -198,6 +197,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
         View view = inflater.inflate(R.layout.fragment_recharge, container, false);
         ButterKnife.bind(this, view);
+        ButterKnife.setDebug(true);
         initListener();
         CategoryAttributes categoryAttributes = category.getAttributes();
         rechargePresenter.fetchRecentNumbers(category.getId());
@@ -324,7 +324,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         RechargeFragmentPermissionsDispatcher.doLaunchContactPickerWithCheck(RechargeFragment.this);
     }
 
-    @OnClick(R2.id.btn_buy)
+    @OnClick(R.id.btn_buy)
     void buttonBuyClicked() {
         buyButton.setEnabled(false);
         if (SessionHandler.isV4Login(getActivity())) {
