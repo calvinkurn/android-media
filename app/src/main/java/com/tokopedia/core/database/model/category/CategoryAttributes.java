@@ -63,6 +63,8 @@ public class CategoryAttributes implements Parcelable {
         byte usePhonebookVal = in.readByte();
         usePhonebook = usePhonebookVal == 0x02 ? null : usePhonebookVal != 0x00;
         weight = in.readByte() == 0x00 ? null : in.readInt();
+        byte showOperatorVal = in.readByte();
+        showOperator = showOperatorVal == 0x02 ? null : showOperatorVal != 0x00;
     }
 
     @Override
@@ -109,11 +111,15 @@ public class CategoryAttributes implements Parcelable {
             dest.writeByte((byte) (0x01));
             dest.writeInt(weight);
         }
+        if (showOperator == null) {
+            dest.writeByte((byte) (0x02));
+        } else {
+            dest.writeByte((byte) (showOperator ? 0x01 : 0x00));
+        }
     }
 
-
     @SuppressWarnings("unused")
-    public static final Creator<CategoryAttributes> CREATOR = new Creator<CategoryAttributes>() {
+    public static final Parcelable.Creator<CategoryAttributes> CREATOR = new Parcelable.Creator<CategoryAttributes>() {
         @Override
         public CategoryAttributes createFromParcel(Parcel in) {
             return new CategoryAttributes(in);
