@@ -571,8 +571,11 @@ public class DrawerVariable {
         context.startActivity(intent);
     }
 
-    private void goToShopNewOrder() {
-//        Intent intent = new Intent(context, ShopTransactionV2.class);
+    private void goToShopNewOrder(){
+        goToShopNewOrder(context);
+    }
+
+    public static void goToShopNewOrder(Context context) {
         Intent intent = SellerRouter.getActivitySellingTransaction(context);
         Bundle bundle = new Bundle();
         bundle.putInt("tab", 1);

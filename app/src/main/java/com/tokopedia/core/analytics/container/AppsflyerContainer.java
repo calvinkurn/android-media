@@ -24,6 +24,8 @@ import rx.schedulers.Schedulers;
 /**
  * @author by Nanda J.A on 6/25/2015.
  *         Modified by Alvarisi
+ *         Modified by Alvarisi 29/11/2016
+ *         appsflyer get commented.
  */
 public class AppsflyerContainer implements IAppsflyerContainer {
 
@@ -65,7 +67,8 @@ public class AppsflyerContainer implements IAppsflyerContainer {
     }
 
     private void setUseHTTPFalback(boolean state) {
-        AppsFlyerLib.getInstance().setUseHTTPFalback(state);
+
+//        AppsFlyerLib.getInstance().setUseHTTPFalback(state);
     }
 
     @Override

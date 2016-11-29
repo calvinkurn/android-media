@@ -503,4 +503,10 @@ public class SessionHandler {
         boolean isFirst = sharedPrefs.getBoolean(IS_FIRST_TIME_STORAGE, true);
         return isFirst;
     }
+
+    public static boolean isUserSeller(Context context) {
+        if(!SessionHandler.getShopID(context).isEmpty() && !SessionHandler.getShopID(context).equals("0"))
+            return true;
+        return false;
+    }
 }
