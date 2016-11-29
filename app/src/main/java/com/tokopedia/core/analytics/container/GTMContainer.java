@@ -1,6 +1,10 @@
 package com.tokopedia.core.analytics.container;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.google.android.gms.common.api.PendingResult;
@@ -12,6 +16,7 @@ import com.google.android.gms.tagmanager.TagManager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
@@ -106,8 +111,10 @@ public class GTMContainer implements IGTMContainer {
     @Override
     public void loadContainer() {
         try {
+            Bundle bundle = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA).metaData;
             TagManager tagManager = getTagManager();
-            PendingResult<ContainerHolder> pResult = tagManager.loadContainerPreferFresh(DEFAULT_CONTAINERID, R.raw.gtm_default);
+            PendingResult<ContainerHolder> pResult = tagManager.loadContainerPreferFresh(bundle.getString(AppEventTracking.GTM.GTM_ID),
+                    bundle.getInt(AppEventTracking.GTM.GTM_RESOURCE));
 
             pResult.setResultCallback(new ResultCallback<ContainerHolder>() {
                 @Override

@@ -1,4 +1,4 @@
-package com.tokopedia.core.deeplink.listener;
+package com.tokopedia.tkpd.deeplink.listener;
 
 import android.app.Fragment;
 
