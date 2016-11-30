@@ -11,11 +11,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.tokopedia.core.database.DbFlowOperation;
 import com.tokopedia.core.database.model.CategoryItemModelDb;
 import com.tokopedia.core.database.model.CategoryMenuModelDb;
+import com.tokopedia.core.database.model.HomeCategoryMenuModelDb;
 import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
 import com.tokopedia.core.network.entity.homeMenu.HomeCategoryMenuItem;
@@ -29,7 +31,7 @@ import java.util.List;
 /**
  * @author kulomady on 11/12/16
  */
-public class HomeCategoryMenuDbManager implements DbFlowOperation<CategoryMenuModelDb> {
+public class HomeCategoryMenuDbManager implements DbFlowOperation<HomeCategoryMenuModelDb> {
 
     private static final String TAG = HomeCategoryMenuDbManager.class.getSimpleName();
 
@@ -39,7 +41,7 @@ public class HomeCategoryMenuDbManager implements DbFlowOperation<CategoryMenuMo
     }
 
     @Override
-    public void store(CategoryMenuModelDb data) {
+    public void store(HomeCategoryMenuModelDb data) {
 
     }
 
@@ -73,6 +75,14 @@ public class HomeCategoryMenuDbManager implements DbFlowOperation<CategoryMenuMo
         }
     }
 
+    public void store(String content) {
+        HomeCategoryMenuModelDb homeCategoryMenuModelDb = new HomeCategoryMenuModelDb();
+        homeCategoryMenuModelDb.setId(1);
+        homeCategoryMenuModelDb.setContentHomeCategory(content);
+        homeCategoryMenuModelDb.setLastUpdated(System.currentTimeMillis());
+        homeCategoryMenuModelDb.save();
+    }
+
     @Override
     public void delete(String key) {
 
@@ -80,8 +90,12 @@ public class HomeCategoryMenuDbManager implements DbFlowOperation<CategoryMenuMo
 
     @Override
     public void deleteAll() {
-        Delete.tables(CategoryMenuModelDb.class, CategoryItemModelDb.class);
+        Delete.tables(HomeCategoryMenuModelDb.class);
+//        Delete.tables(CategoryMenuModelDb.class, CategoryItemModelDb.class);
+//        new Delete().from(CategoryMenuModelDb.class).query()
+
     }
+
 
     @Override
     public boolean isExpired(final long currentTime) {
@@ -93,6 +107,7 @@ public class HomeCategoryMenuDbManager implements DbFlowOperation<CategoryMenuMo
             if (categoryMenuModelDb == null) {
                 return true;
             } else {
+
                 long oldTime = categoryMenuModelDb.getLastUpdated();
                 long oneHour = 1000 * 60 * 60;
                 Log.d("TAG", "isHomeCategoryMenuStillValid: oneHour : "
@@ -100,11 +115,33 @@ public class HomeCategoryMenuDbManager implements DbFlowOperation<CategoryMenuMo
                         + " System.currentTimeMillis() "
                         + String.valueOf(System.currentTimeMillis()));
 
-                if (currentTime - oldTime < oneHour) {
-                    return false;
-                } else {
-                    return true;
-                }
+                return currentTime - oldTime >= oneHour;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "isExpired: ", e);
+            return true;
+        }
+    }
+
+    public boolean isAlreadyExpired(final long currentTime) {
+        try {
+            HomeCategoryMenuModelDb categoryMenuModelDb = SQLite.select()
+                    .from(HomeCategoryMenuModelDb.class)
+                    .querySingle();
+
+            if (categoryMenuModelDb == null) {
+                return true;
+            } else {
+
+                long oldTime = categoryMenuModelDb.getLastUpdated();
+//                long oneHour = 1000 * 60 * 60;
+                long oneHour = 1000 * 60;
+                Log.d("TAG", "isHomeCategoryMenuStillValid: oneHour : "
+                        + oneHour + " oldtime : " + oldTime
+                        + " System.currentTimeMillis() "
+                        + String.valueOf(System.currentTimeMillis()));
+
+                return currentTime - oldTime >= oneHour;
             }
         } catch (Exception e) {
             Log.e(TAG, "isExpired: ", e);
@@ -114,12 +151,12 @@ public class HomeCategoryMenuDbManager implements DbFlowOperation<CategoryMenuMo
 
     @Nullable
     @Override
-    public CategoryMenuModelDb getData(String key) {
+    public HomeCategoryMenuModelDb getData(String key) {
         return null;
     }
 
     @Override
-    public List<CategoryMenuModelDb> getDataList(String key) {
+    public List<HomeCategoryMenuModelDb> getDataList(String key) {
         return null;
     }
 
@@ -135,10 +172,8 @@ public class HomeCategoryMenuDbManager implements DbFlowOperation<CategoryMenuMo
 
     public List<CategoryMenuModel> getDataCategoryMenu() {
         List<CategoryMenuModel> categoryMenuModels = new ArrayList<>();
-
         List<CategoryMenuModelDb> categoryMenuModelDbList = SQLite.select().
                 from(CategoryMenuModelDb.class).queryList();
-
         for (CategoryMenuModelDb categoryMenuModelDb : categoryMenuModelDbList) {
             List<CategoryItemModel> categoryItemModels = new ArrayList<>();
             for (CategoryItemModelDb categoryItemModelDb : categoryMenuModelDb.getAllItemsInSection()) {
@@ -154,6 +189,45 @@ public class HomeCategoryMenuDbManager implements DbFlowOperation<CategoryMenuMo
 
     }
 
+    public List<CategoryMenuModel> getDataHomeCategoryMenu() {
+        List<CategoryMenuModel> categoryMenuModels = new ArrayList<>();
+
+        HomeCategoryMenuModelDb homeCategoryMenuModelDb = SQLite.select().
+                from(HomeCategoryMenuModelDb.class).querySingle();
+
+
+        if (homeCategoryMenuModelDb != null) {
+            HomeCategoryMenuItem homeCategoryMenuItem = new Gson().fromJson(
+                    homeCategoryMenuModelDb.getContentHomeCategory(), HomeCategoryMenuItem.class);
+
+            for (LayoutSection layoutSection : homeCategoryMenuItem.getData().getLayoutSections()) {
+                List<CategoryItemModel> categoryItemModels = new ArrayList<>();
+                for (LayoutRow layoutRow : layoutSection.getLayoutRows()) {
+                    CategoryItemModel categoryItemModel = new CategoryItemModel();
+                    categoryItemModel.setName(layoutRow.getName());
+                    categoryItemModel.setImageUrl(layoutRow.getImageUrl());
+
+                    if ("Marketplace".equalsIgnoreCase(layoutRow.getType())) {
+                        categoryItemModel.setRedirectValue(String.valueOf(layoutRow.getCategoryId()));
+                        categoryItemModel.setType(CategoryItemModel.TYPE.CATEGORY);
+                    } else if ("Digital".equalsIgnoreCase(layoutRow.getType())) {
+                        categoryItemModel.setRedirectValue(layoutRow.getUrl());
+                        categoryItemModel.setType(CategoryItemModel.TYPE.GIMMIC);
+                    }
+                    categoryItemModels.add(categoryItemModel);
+
+                }
+                categoryMenuModels.add(new CategoryMenuModel(
+                        layoutSection.getTitle(),
+                        (ArrayList<CategoryItemModel>) categoryItemModels
+
+                ));
+
+            }
+        }
+        return categoryMenuModels;
+
+    }
 
     @NonNull
     private CategoryItemModel convertDbValueToModelView(CategoryItemModelDb categoryItemModelDb) {

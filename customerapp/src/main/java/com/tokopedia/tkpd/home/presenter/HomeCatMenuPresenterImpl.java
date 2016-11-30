@@ -1,18 +1,9 @@
-/*
- * Created By Kulomady on 10/4/16 11:00 AM
- * Copyright (c) 2016. All Rights Reserved
- *
- * Last Modified 10/4/16 10:59 AM
- */
-
 package com.tokopedia.tkpd.home.presenter;
 
 import android.util.Log;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
-import com.tokopedia.core.network.entity.homeMenu.HomeCategoryMenuItem;
-import com.tokopedia.core.network.entity.homeMenu.LayoutSection;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.tkpd.home.HomeCatMenuView;
@@ -27,7 +18,6 @@ import java.util.List;
 
 import retrofit2.Response;
 import rx.Subscriber;
-
 /**
  * @author Kulomady on 10/4/16.
  */
@@ -52,10 +42,11 @@ public class HomeCatMenuPresenterImpl implements HomeCatMenuPresenter,
 
     @Override
     public void fetchHomeCategoryMenu(boolean isFromRetry) {
-        Subscriber<Response<HomeCategoryMenuItem>> subscriber = getSubcribption();
-        homeMenuInteractor.fetchHomeCategoryMenuFromDb(this);
-        if (dbManager.isExpired(System.currentTimeMillis())) {
+        Subscriber<Response<String>> subscriber = getSubcribption();
+        if (dbManager.isAlreadyExpired(System.currentTimeMillis())) {
             homeMenuInteractor.fetchHomeCategoryMenuFromNetwork(subscriber);
+        } else {
+            homeMenuInteractor.fetchHomeCategoryMenuFromDb(this);
         }
     }
 
@@ -124,8 +115,8 @@ public class HomeCatMenuPresenterImpl implements HomeCatMenuPresenter,
         }
     }
 
-    private Subscriber<Response<HomeCategoryMenuItem>> getSubcribption() {
-        return new Subscriber<Response<HomeCategoryMenuItem>>() {
+    private Subscriber<Response<String>> getSubcribption() {
+        return new Subscriber<Response<String>>() {
 
             @Override
             public void onCompleted() {
@@ -139,10 +130,9 @@ public class HomeCatMenuPresenterImpl implements HomeCatMenuPresenter,
             }
 
             @Override
-            public void onNext(Response<HomeCategoryMenuItem> response) {
-                HomeCategoryMenuItem homeCategoryResponse = response.body();
-                if (homeCategoryResponse != null && homeCategoryResponse.getData() != null) {
-                    saveToCacheAndDisplayApiResponse(response, homeCategoryResponse);
+            public void onNext(Response<String> response) {
+                if (response != null && response.body() != null) {
+                    saveToCacheAndDisplayApiResponse(response);
                 } else {
                     new ErrorHandler(HomeCatMenuPresenterImpl.this, response.code());
 
@@ -152,17 +142,14 @@ public class HomeCatMenuPresenterImpl implements HomeCatMenuPresenter,
         };
     }
 
-    private void saveToCacheAndDisplayApiResponse(Response<HomeCategoryMenuItem> response,
-                                                  HomeCategoryMenuItem homeCategoryResponse) {
+    private void saveToCacheAndDisplayApiResponse(Response<String> response) {
 
-        List<LayoutSection> categoryMenuItemsList =
-                homeCategoryResponse.getData().getLayoutSections();
-
-        if (response.isSuccessful() && categoryMenuItemsList.size() > 0) {
-            //only for testing
+        if (response.isSuccessful() && response.body().length() > 0) {
             HomeCategoryMenuDbManager homeCategoryMenuDbManager = new HomeCategoryMenuDbManager();
+            //clear data dulu sebelum di insert
+            homeCategoryMenuDbManager.deleteAll();
             homeCategoryMenuDbManager.store(response.body());
-            renderHomeCategoryMenu(homeCategoryMenuDbManager.getDataCategoryMenu());
+            renderHomeCategoryMenu(homeCategoryMenuDbManager.getDataHomeCategoryMenu());
         } else {
             if (isViewNotNull())
                 view.showGetCatMenuEmptyMessage(R.string.error_empty_home_menu);
@@ -193,17 +180,21 @@ public class HomeCatMenuPresenterImpl implements HomeCatMenuPresenter,
 
 
     private boolean isAlreadyHaveDataOnCache() {
-        return dbManager.getDataCategoryMenu() != null && dbManager.getDataCategoryMenu().size() > 0;
+        return dbManager.getDataHomeCategoryMenu() != null
+                && dbManager.getDataHomeCategoryMenu().size() > 0;
     }
 
     private void getDataFromCacheAndDisplaIt() {
-        List<CategoryMenuModel> dataFromCache = dbManager.getDataCategoryMenu();
+        List<CategoryMenuModel> dataFromCache = dbManager.getDataHomeCategoryMenu();
         renderHomeCategoryMenu(dataFromCache);
     }
 
     private void renderHomeCategoryMenu(List<CategoryMenuModel> menuModels) {
         if (isViewNotNull()) {
-            view.renderHomeCatMenu((ArrayList<CategoryMenuModel>) menuModels);
+            view.renderHomeCatMenu(
+                    (ArrayList<CategoryMenuModel>)
+                            menuModels
+            );
         }
     }
 
