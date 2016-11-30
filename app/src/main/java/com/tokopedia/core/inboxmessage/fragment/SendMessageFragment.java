@@ -22,7 +22,7 @@ import com.tokopedia.core.inboxmessage.presenter.SendMessagePresenter;
 import com.tokopedia.core.inboxmessage.presenter.SendMessagePresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Nisie on 5/26/16.
@@ -37,19 +37,19 @@ public class SendMessageFragment extends BasePresenterFragment<SendMessagePresen
     public static final java.lang.String PARAM_USER_ID = "to_user_id";
 
 
-    @Bind(R2.id.send_msg_to)
+    @BindView(R2.id.send_msg_to)
     EditText sendTo;
 
-    @Bind(R2.id.send_msg_content)
+    @BindView(R2.id.send_msg_content)
     EditText sendContent;
 
-    @Bind(R2.id.send_msg_subject)
+    @BindView(R2.id.send_msg_subject)
     EditText sendSubject;
 
-    @Bind(R2.id.send_msg_content_layout)
+    @BindView(R2.id.send_msg_content_layout)
     TextInputLayout sendContentLayout;
 
-    @Bind(R2.id.send_msg_subject_layout)
+    @BindView(R2.id.send_msg_subject_layout)
     TextInputLayout sendSubjectLayout;
 
     TkpdProgressDialog mProgressDialog;

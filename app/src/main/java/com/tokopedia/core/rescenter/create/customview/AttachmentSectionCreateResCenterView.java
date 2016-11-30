@@ -13,16 +13,16 @@ import com.tokopedia.core.rescenter.create.customadapter.AttachmentAdapter;
 import com.tokopedia.core.rescenter.create.listener.ChooseSolutionListener;
 import com.tokopedia.core.rescenter.create.model.passdata.ActionParameterPassData;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created on 7/5/16.
  */
 public class AttachmentSectionCreateResCenterView extends BaseView<ActionParameterPassData, ChooseSolutionListener>{
 
-    @Bind(R2.id.view_upload_proof)
+    @BindView(R2.id.view_upload_proof)
     View viewUploadProof;
-    @Bind(R2.id.list_upload_proof)
+    @BindView(R2.id.list_upload_proof)
     RecyclerView attachmentRecyclerView;
 
     public AttachmentSectionCreateResCenterView(Context context) {

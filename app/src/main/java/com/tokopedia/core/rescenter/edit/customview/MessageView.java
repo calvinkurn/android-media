@@ -10,7 +10,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.rescenter.edit.listener.BuyerEditSolutionListener;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created on 8/29/16.
@@ -18,7 +18,7 @@ import butterknife.Bind;
 public class MessageView extends BaseView<Object, BuyerEditSolutionListener> {
 
 
-    @Bind(R2.id.message_box)
+    @BindView(R2.id.message_box)
     EditText messageBox;
 
     public MessageView(Context context) {

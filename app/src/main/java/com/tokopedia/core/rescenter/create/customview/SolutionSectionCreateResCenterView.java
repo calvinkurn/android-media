@@ -15,7 +15,7 @@ import com.tokopedia.core.rescenter.create.listener.ChooseSolutionListener;
 import com.tokopedia.core.rescenter.create.model.passdata.ActionParameterPassData;
 import com.tokopedia.core.rescenter.create.model.responsedata.CreateResCenterFormData;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnItemSelected;
 
 /**
@@ -23,13 +23,13 @@ import butterknife.OnItemSelected;
  */
 public class SolutionSectionCreateResCenterView extends BaseView<ActionParameterPassData, ChooseSolutionListener> {
 
-    @Bind(R2.id.view_refund)
+    @BindView(R2.id.view_refund)
     View viewRefund;
-    @Bind(R2.id.refund_box_prompt)
+    @BindView(R2.id.refund_box_prompt)
     TextInputLayout refundPrompt;
-    @Bind(R2.id.spinner_solution)
+    @BindView(R2.id.spinner_solution)
     Spinner solutionSpinner;
-    @Bind(R2.id.refund_box)
+    @BindView(R2.id.refund_box)
     EditText refundBox;
 
     public SolutionSectionCreateResCenterView(Context context) {

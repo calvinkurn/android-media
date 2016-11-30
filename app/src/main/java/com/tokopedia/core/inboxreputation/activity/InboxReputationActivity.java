@@ -21,7 +21,7 @@ import com.tokopedia.core.var.TkpdState;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Nisie on 20/01/16.
@@ -34,9 +34,9 @@ public class InboxReputationActivity extends DrawerPresenterActivity
     public static final String REVIEW_PRODUCT = "inbox-reputation-my-product";
     public static final String REVIEW_USER = "inbox-reputation-my-review";
 
-    @Bind(R2.id.pager)
+    @BindView(R2.id.pager)
     ViewPager viewPager;
-    @Bind(R2.id.indicator)
+    @BindView(R2.id.indicator)
     TabLayout indicator;
 
     @Override

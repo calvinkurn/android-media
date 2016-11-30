@@ -17,7 +17,7 @@ import com.tokopedia.core.shipping.fragment.ShippingLocationDialog;
 import com.tokopedia.core.shipping.model.editshipping.ShopShipping;
 import com.tokopedia.core.shipping.presenter.EditShippingPresenter;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 
@@ -33,19 +33,19 @@ public class ShippingHeaderLayout extends EditShippingCustomView<ShopShipping,
 
     EditShippingViewListener mainView;
 
-    @Bind(R2.id.postal_code) EditText zipCode;
+    @BindView(R2.id.postal_code) EditText zipCode;
 
-    @Bind(R2.id.title_edit_shipping_change_location)
+    @BindView(R2.id.title_edit_shipping_change_location)
     TextView editShippingProvinceCitiesDistrict;
 
-    @Bind(R2.id.text_edit_shipping_province)
+    @BindView(R2.id.text_edit_shipping_province)
     EditText shopProvince;
 
-    @Bind(R2.id.text_edit_shipping_city) EditText shopCity;
+    @BindView(R2.id.text_edit_shipping_city) EditText shopCity;
 
-    @Bind(R2.id.text_edit_shipping_district) EditText shopDistrict;
+    @BindView(R2.id.text_edit_shipping_district) EditText shopDistrict;
 
-    @Bind(R2.id.text_input_layout_postal_code)
+    @BindView(R2.id.text_input_layout_postal_code)
     TextInputLayout postalTextInputLayout;
 
     @OnTextChanged(R2.id.postal_code)

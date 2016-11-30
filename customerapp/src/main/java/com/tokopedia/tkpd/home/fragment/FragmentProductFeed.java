@@ -20,8 +20,8 @@ import android.widget.ProgressBar;
 import com.tkpd.library.ui.floatbutton.FabSpeedDial;
 import com.tkpd.library.ui.floatbutton.ListenerFabClick;
 import com.tkpd.library.ui.floatbutton.SimpleMenuListenerAdapter;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.tkpd.R;
+
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
@@ -42,9 +42,10 @@ import com.tokopedia.tkpd.home.util.ItemDecorator;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 
 import static com.tokopedia.tkpd.home.presenter.ProductFeed.messageTag;
 
@@ -55,19 +56,19 @@ import static com.tokopedia.tkpd.home.presenter.ProductFeed.messageTag;
  */
 public class FragmentProductFeed extends Fragment implements ProductFeedView, DefaultRetryListener.OnClickRetry{
 
-    @Bind(R2.id.index_main_recycler_view)
+    @BindView(R.id.index_main_recycler_view)
     RecyclerView indexRecyclerView;
 
-    @Bind(R2.id.include_loading)
+    @BindView(R.id.include_loading)
     ProgressBar progressBar;
 
-    @Bind(R2.id.main_content)
+    @BindView(R.id.main_content)
     LinearLayout mainContent;
 
-    @Bind(R2.id.swipe_refresh_layout)
+    @BindView(R.id.swipe_refresh_layout)
     SwipeToRefresh swipeRefreshLayout;
 
-    @Bind(R2.id.fab_speed_dial)
+    @BindView(R.id.fab_speed_dial)
     FabSpeedDial fabAddProduct;
 
     RetryHandler retryHandlerFull;
@@ -76,6 +77,7 @@ public class FragmentProductFeed extends Fragment implements ProductFeedView, De
     private ItemDecorator itemDecoration;
     private GridLayoutManager gridLayoutManager;
     private DataFeedAdapter adapter;
+    private Unbinder unbinder;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -93,7 +95,7 @@ public class FragmentProductFeed extends Fragment implements ProductFeedView, De
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_index_main_v2, container, false);
 
-        ButterKnife.bind(this, parentView);
+        unbinder = ButterKnife.bind(this, parentView);
         productFeedPresenter.initAnalyticsHandler(getActivity());
 
         //[START] display loading and hide main content
@@ -126,13 +128,13 @@ public class FragmentProductFeed extends Fragment implements ProductFeedView, De
                 int id = menuItem.getItemId();
 
                 switch (id) {
-                    case R2.id.action_instagram:
+                    case R.id.action_instagram:
                         onAddInstagram();
                         break;
-                    case R2.id.action_gallery:
+                    case R.id.action_gallery:
                         ProductActivity.moveToImageGalleryCamera(getActivity(), 0, false, 5);
                         break;
-                    case R2.id.action_camera:
+                    case R.id.action_camera:
                         onAddGallery();
                         break;
                 }
@@ -170,7 +172,7 @@ public class FragmentProductFeed extends Fragment implements ProductFeedView, De
         });
     }
 
-    @OnClick(R2.id.fab_speed_dial)
+    @OnClick(R.id.fab_speed_dial)
     public void onFabClick(){
         productFeedPresenter.moveToAddProduct(getActivity());
     }
@@ -224,7 +226,7 @@ public class FragmentProductFeed extends Fragment implements ProductFeedView, De
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         productFeedPresenter.unsubscribe();
     }
 

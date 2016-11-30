@@ -39,7 +39,7 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.tkpd.library.utils.CommonUtils.checkNotNull;
@@ -53,13 +53,13 @@ public class InstagramMediaFragment extends Fragment implements InstagramMediaFr
     InstagramMedia instagramMedia;
     int LANDSCAPE = Configuration.ORIENTATION_LANDSCAPE;
 
-    @Bind(R2.id.list)
+    @BindView(R2.id.list)
     public RecyclerView mediaRV;
 
-    @Bind(R2.id.no_result)
+    @BindView(R2.id.no_result)
     public LinearLayout noResult;
 
-    @Bind(R2.id.no_result_image)
+    @BindView(R2.id.no_result_image)
     public ImageView emptyImage;
 
     public Toolbar toolbar;

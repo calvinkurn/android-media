@@ -26,8 +26,8 @@ import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.rescenter.inbox.fragment.InboxResCenterFragment;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
-import com.tokopedia.core.session.Login;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.talk.inboxtalk.fragment.InboxTalkFragment;
 import com.tokopedia.core.util.SessionHandler;
@@ -330,7 +330,7 @@ public class NotificationCenter extends MultiPaneActivity implements Notificatio
                 return onSearchOptionSelected();
             case R2.id.action_cart:
                 if (!SessionHandler.isV4Login(getBaseContext())) {
-                    Intent intent = new Intent(this, Login.class);
+                    Intent intent = SessionRouter.getLoginActivityIntent(this);
                     intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
                     startActivity(intent);
                 } else {

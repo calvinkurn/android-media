@@ -39,9 +39,10 @@ import com.tokopedia.core.shipping.model.openshopshipping.OpenShopData;
 import com.tokopedia.core.shipping.presenter.EditShippingPresenter;
 import com.tokopedia.core.shipping.presenter.EditShippingPresenterImpl;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 
 /**
  * Created by Kris on 2/19/2016.
@@ -49,13 +50,13 @@ import butterknife.OnClick;
  */
 public class FragmentEditShipping extends Fragment implements EditShippingViewListener{
 
-    @Bind(R2.id.fragment_shipping_main_layout) LinearLayout fragmentShipingMainLayout;
+    @BindView(R2.id.fragment_shipping_main_layout) LinearLayout fragmentShipingMainLayout;
 
-    @Bind(R2.id.fragment_shipping_header) ShippingHeaderLayout fragmentShippingHeader;
+    @BindView(R2.id.fragment_shipping_header) ShippingHeaderLayout fragmentShippingHeader;
 
-    @Bind(R2.id.shipping_address_layout) ShippingAddressLayout addressLayout;
+    @BindView(R2.id.shipping_address_layout) ShippingAddressLayout addressLayout;
 
-    @Bind(R2.id.submit_button_create_shop) TextView submitButtonCreateShop;
+    @BindView(R2.id.submit_button_create_shop) TextView submitButtonCreateShop;
 
     private ShippingLocationDialog shippingLocationDialog;
     private EditShippingPresenter editShippingPresenter;
@@ -63,6 +64,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     private TkpdProgressDialog progressDialog;
     private InputMethodManager inputMethodManager;
     private int mapMode;
+    private Unbinder unbinder;
 
     public static FragmentEditShipping createInstance(){
         FragmentEditShipping fragment = new FragmentEditShipping();
@@ -149,7 +151,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         editShippingPresenter = new EditShippingPresenterImpl(this);
         inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        ButterKnife.bind(this, mainView);
+        unbinder = ButterKnife.bind(this, mainView);
     }
 
     private boolean isEditShipping(){
@@ -172,7 +174,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     public void onDestroyView() {
         super.onDestroyView();
         editShippingPresenter.onViewDestroyed();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     @Override

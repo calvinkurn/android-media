@@ -13,7 +13,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -27,7 +27,7 @@ public class NoResultDataBinder extends DataBinder<NoResultDataBinder.ViewHolder
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R2.id.no_result_image)
+        @BindView(R2.id.no_result_image)
         ImageView emptyImage;
 
         public ViewHolder(View itemView) {

@@ -18,7 +18,7 @@ import com.tokopedia.core.var.TkpdState;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -40,7 +40,7 @@ public class BaseRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     public static class ViewHolderRetry extends RecyclerView.ViewHolder {
-        @Bind(R2.id.main_retry)
+        @BindView(R2.id.main_retry)
         TextView retry;
 
         public ViewHolderRetry(View itemView) {
@@ -50,7 +50,7 @@ public class BaseRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     public static class ViewHolderErrorNetworkState extends RecyclerView.ViewHolder {
-        @Bind(R2.id.button_retry)
+        @BindView(R2.id.button_retry)
         TextView retry;
 
         public ViewHolderErrorNetworkState(View itemView) {
@@ -60,7 +60,7 @@ public class BaseRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     public static class ViewHolderEmpty extends RecyclerView.ViewHolder {
-        @Bind(R2.id.no_result_image)
+        @BindView(R2.id.no_result_image)
         ImageView emptyImage;
 
         public ViewHolderEmpty(View itemView) {

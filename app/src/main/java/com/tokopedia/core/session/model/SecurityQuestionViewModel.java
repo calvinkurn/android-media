@@ -13,6 +13,7 @@ public class SecurityQuestionViewModel {
     String question;
     String vAnswer;
     String vInputOtp;
+    String phone;
     boolean isErrorDisplay;
     boolean isLoading;
     public static final int IS_SECURITY_LOADING_TYPE = 0;
@@ -81,6 +82,14 @@ public class SecurityQuestionViewModel {
 
     public void setIsErrorDisplay(boolean isErrorDisplay) {
         this.isErrorDisplay = isErrorDisplay;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     @Override

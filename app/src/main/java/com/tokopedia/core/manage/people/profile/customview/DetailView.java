@@ -16,20 +16,20 @@ import com.tokopedia.core.manage.people.profile.model.Profile;
 import com.tokopedia.core.manage.people.profile.presenter.ManagePeopleProfileFragmentPresenter;
 import com.tokopedia.core.var.TkpdState;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created on 6/9/16.
  */
 public class DetailView extends BaseView<Profile, ManagePeopleProfileFragmentPresenter> {
 
-    @Bind(R2.id.user_name)
+    @BindView(R2.id.user_name)
     public EditText userName;
-    @Bind(R2.id.birth_date)
+    @BindView(R2.id.birth_date)
     public EditText birthDate;
-    @Bind(R2.id.gender)
+    @BindView(R2.id.gender)
     public RadioGroup genderRadioGroup;
-    @Bind(R2.id.hobbies)
+    @BindView(R2.id.hobbies)
     public EditText hobby;
 
     public DetailView(Context context) {

@@ -15,18 +15,18 @@ import com.tokopedia.core.rescenter.create.model.responsedata.CreateResCenterFor
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created on 8/3/16.
  */
 public class ChooseTroubleSectionCreateResCenterView extends BaseView<CreateResCenterFormData, ChooseTroubleListener> {
 
-    @Bind(R2.id.spinner_trouble)
+    @BindView(R2.id.spinner_trouble)
     public Spinner troubleSpinner;
-    @Bind(R2.id.view_desc)
+    @BindView(R2.id.view_desc)
     public View descBoxView;
-    @Bind(R2.id.box_desc)
+    @BindView(R2.id.box_desc)
     public EditText descEditText;
 
 

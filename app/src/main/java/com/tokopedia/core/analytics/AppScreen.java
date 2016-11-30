@@ -13,8 +13,14 @@ import com.tokopedia.core.fragment.FragmentSettingPeople;
 import com.tokopedia.core.fragment.FragmentSettingShop;
 import com.tokopedia.core.fragment.SettingsFragment;
 import com.tokopedia.core.manage.people.bank.fragment.ManagePeopleBankFormFragment;
-import com.tokopedia.core.session.RegisterNewNextFragment;
-import com.tokopedia.core.session.RegisterThirdFragment;
+import com.tokopedia.core.manage.people.notification.activity.ManageNotificationActivity;
+import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity;
+import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
+import com.tokopedia.core.manage.shop.notes.activity.ManageShopNotesActivity;
+import com.tokopedia.core.manage.shop.notes.fragment.ManageShopNotesFormFragment;
+import com.tokopedia.core.myproduct.ManageProduct;
+import com.tokopedia.core.myproduct.ProductActivity;
+import com.tokopedia.core.myproduct.fragment.AddProductFragment;
 
 //import com.tokopedia.discovery.catalog.activity.CatalogDetailActivity;
 
@@ -52,12 +58,13 @@ public final class AppScreen {
     }
 
 
-    public static String convertAFFragmentEvent(android.support.v4.app.Fragment fragment) {
-        if (fragment instanceof RegisterNewNextFragment || fragment instanceof RegisterThirdFragment) {
-            return AFInAppEventType.COMPLETE_REGISTRATION;
-        } else {
-            return AFInAppEventType.CONTENT_VIEW;
-        }
+    public static String convertAFFragmentEvent(android.support.v4.app.Fragment fragment){
+//        if (fragment instanceof RegisterNewNextFragment || fragment instanceof RegisterPassPhoneFragment){
+//            return AFInAppEventType.COMPLETE_REGISTRATION;
+//        } else {
+//            return AFInAppEventType.CONTENT_VIEW;
+//        }
+        return null;
     }
 
     public static String convertFragmentScreen(android.support.v4.app.Fragment actClass) {
@@ -299,4 +306,6 @@ public final class AppScreen {
     public static final String SCREEN_RECHARGE_PAYMENT = "Recharge Payment WebView";
     public static final String SCREEN_SHARE = "Share Screen";
     public static final String SCREEN_GALLERY_BROWSE = "Browse Gallery Screen";
+    public static final String SCREEN_GM_SUBSCRIBE = "Subscribe to the GM";
+    public static final String SCREEN_SELLER_HOME = "Seller Home";
 }

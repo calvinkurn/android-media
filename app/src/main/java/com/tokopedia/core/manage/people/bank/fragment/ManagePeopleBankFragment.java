@@ -26,7 +26,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.SessionHandler;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Nisie on 6/10/16.
@@ -47,7 +47,7 @@ public class ManagePeopleBankFragment extends BasePresenterFragment<ManagePeople
         void onEditBank(ActSettingBankPass pass);
     }
 
-    @Bind(R2.id.bank_list)
+    @BindView(R2.id.bank_list)
     RecyclerView bankList;
 
     BankAdapter adapter;

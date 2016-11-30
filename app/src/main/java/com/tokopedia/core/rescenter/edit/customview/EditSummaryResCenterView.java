@@ -15,7 +15,7 @@ import com.tokopedia.core.rescenter.edit.customadapter.LastProductTroubleAdapter
 import com.tokopedia.core.rescenter.edit.listener.SellerEditResCenterListener;
 import com.tokopedia.core.rescenter.edit.model.passdata.EditResCenterFormData;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -23,13 +23,13 @@ import butterknife.OnClick;
  */
 public class EditSummaryResCenterView extends BaseView<EditResCenterFormData, SellerEditResCenterListener> {
 
-    @Bind(R2.id.solution_text)
+    @BindView(R2.id.solution_text)
     TextView solutionText;
-    @Bind(R2.id.remark)
+    @BindView(R2.id.remark)
     TextView remark;
-    @Bind(R2.id.product_recyclerview)
+    @BindView(R2.id.product_recyclerview)
     RecyclerView productRecyclerView;
-    @Bind(R2.id.chevron_up)
+    @BindView(R2.id.chevron_up)
     ImageView flagCollapse;
 
     private EditResCenterFormData data;

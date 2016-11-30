@@ -64,7 +64,7 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
@@ -131,61 +131,61 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     private CompositeSubscription _subscriptions = new CompositeSubscription();
 
 
-    @Bind(R2.id.buyer_name)
+    @BindView(R2.id.buyer_name)
     TextView BuyerName;
-    @Bind(R2.id.invoice_text)
+    @BindView(R2.id.invoice_text)
     TextView Invoice;
-    @Bind(R2.id.courier)
+    @BindView(R2.id.courier)
     TextView Courier;
-    @Bind(R2.id.total_item)
+    @BindView(R2.id.total_item)
     TextView TotalItem;
-    @Bind(R2.id.value)
+    @BindView(R2.id.value)
     TextView Value;
-    @Bind(R2.id.receiver_name)
+    @BindView(R2.id.receiver_name)
     TextView ReceiverName;
-    @Bind(R2.id.destination)
+    @BindView(R2.id.destination)
     TextView Destination;
-    @Bind(R2.id.error_message)
+    @BindView(R2.id.error_message)
     TextView ErrorMessage;
-    @Bind(R2.id.scan)
+    @BindView(R2.id.scan)
     ImageView ScanBarcode;
-    @Bind(R2.id.confirm_button)
+    @BindView(R2.id.confirm_button)
     TextView ConfirmButton;
-    @Bind(R2.id.detail_button)
+    @BindView(R2.id.detail_button)
     TextView DetailButton;
-    @Bind(R2.id.ship_ref_number)
+    @BindView(R2.id.ship_ref_number)
     EditText ReferenceNumber;
-    @Bind(R2.id.cancel_button)
+    @BindView(R2.id.cancel_button)
     TextView CancelButton;
-    @Bind(R2.id.sender_name)
+    @BindView(R2.id.sender_name)
     TextView SenderName;
-    @Bind(R2.id.sender_phone)
+    @BindView(R2.id.sender_phone)
     TextView SenderPhone;
-    @Bind(R2.id.error_spinner)
+    @BindView(R2.id.error_spinner)
     TextView errorSpinner;
-    @Bind(R2.id.checkBoxSwitchCourier)
+    @BindView(R2.id.checkBoxSwitchCourier)
     CheckBox SwitchCourier;
-    @Bind(R2.id.spinner_kurir)
+    @BindView(R2.id.spinner_kurir)
     Spinner SpinnerAgency;
-    @Bind(R2.id.spinner_type)
+    @BindView(R2.id.spinner_type)
     Spinner SpinnerService;
-    @Bind(R2.id.sender_form)
+    @BindView(R2.id.sender_form)
     View SenderForm;
-    @Bind(R2.id.product_list)
+    @BindView(R2.id.product_list)
     ListView ProductListView;
-    @Bind(R2.id.layout)
+    @BindView(R2.id.layout)
     LinearLayout ShippingLayout;
-    @Bind(R2.id.scroll_view)
+    @BindView(R2.id.scroll_view)
     ScrollView mainScroll;
-    @Bind(R2.id.loadingSpinner)
+    @BindView(R2.id.loadingSpinner)
     ProgressBar editFormProgress;
-    @Bind(R2.id.layout_destination_default)
+    @BindView(R2.id.layout_destination_default)
     public View viewDefaultDestination;
-    @Bind(R2.id.layout_pickup_instant_shipping_courier)
+    @BindView(R2.id.layout_pickup_instant_shipping_courier)
     public View viewPickupLocationCourier;
-    @Bind(R2.id.pickup_detail_location)
+    @BindView(R2.id.pickup_detail_location)
     public TextView pickupLocationDetail;
-    @Bind(R2.id.destination_detail_location)
+    @BindView(R2.id.destination_detail_location)
     public TextView deliveryLocationDetail;
 
     public static class ShippingServices {

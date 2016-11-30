@@ -11,14 +11,14 @@ import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.rescenter.detail.model.detailresponsedata.DetailResCenterData;
 import com.tokopedia.core.rescenter.edit.listener.BuyerEditResCenterListener;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created on 8/25/16.
  */
 public class EditPackageStatusView extends BaseView<DetailResCenterData, BuyerEditResCenterListener> {
 
-    @Bind(R2.id.radioGroup)
+    @BindView(R2.id.radioGroup)
     RadioGroup radioGroup;
 
     public EditPackageStatusView(Context context) {

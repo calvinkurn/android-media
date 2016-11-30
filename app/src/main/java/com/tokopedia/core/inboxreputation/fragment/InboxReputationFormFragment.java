@@ -45,7 +45,7 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -71,37 +71,37 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
         void editReview(Bundle param);
     }
 
-    @Bind(R2.id.product_name)
+    @BindView(R2.id.product_name)
     TextView productName;
 
-    @Bind(R2.id.product_avatar)
+    @BindView(R2.id.product_avatar)
     ImageView productAvatar;
 
-    @Bind(R2.id.edittext_review)
+    @BindView(R2.id.edittext_review)
     EditText editTextReview;
 
-    @Bind(R2.id.image_holder)
+    @BindView(R2.id.image_holder)
     RecyclerView imageHolder;
 
-    @Bind(R2.id.ratingBarQuality)
+    @BindView(R2.id.ratingBarQuality)
     RatingBar starQuality;
 
-    @Bind(R2.id.ratingBarAccuracy)
+    @BindView(R2.id.ratingBarAccuracy)
     RatingBar starAccuracy;
 
-    @Bind(R2.id.prod_quality_desc)
+    @BindView(R2.id.prod_quality_desc)
     TextView starQualityDescription;
 
-    @Bind(R2.id.prod_accuracy_desc)
+    @BindView(R2.id.prod_accuracy_desc)
     TextView starAccuracyDescription;
 
-    @Bind(R2.id.submit)
+    @BindView(R2.id.submit)
     TextView submitButton;
 
-    @Bind(R2.id.accuracy_error_message)
+    @BindView(R2.id.accuracy_error_message)
     TextView accuracyError;
 
-    @Bind(R2.id.quality_error_message)
+    @BindView(R2.id.quality_error_message)
     TextView qualityError;
 
 

@@ -16,7 +16,7 @@ import com.tokopedia.core.rescenter.edit.listener.BuyerEditSolutionListener;
 import com.tokopedia.core.rescenter.edit.model.responsedata.ActionParameterPassData;
 import com.tokopedia.core.rescenter.edit.model.passdata.EditResCenterFormData;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnItemSelected;
 
 /**
@@ -24,13 +24,13 @@ import butterknife.OnItemSelected;
  */
 public class EditSolutionView extends BaseView<ActionParameterPassData, BuyerEditSolutionListener> {
 
-    @Bind(R2.id.view_refund)
+    @BindView(R2.id.view_refund)
     View viewRefund;
-    @Bind(R2.id.refund_box_prompt)
+    @BindView(R2.id.refund_box_prompt)
     TextInputLayout refundPrompt;
-    @Bind(R2.id.spinner_solution)
+    @BindView(R2.id.spinner_solution)
     Spinner solutionSpinner;
-    @Bind(R2.id.refund_box)
+    @BindView(R2.id.refund_box)
     EditText refundBox;
 
     private SolutionSpinnerAdapter solutionAdapter;

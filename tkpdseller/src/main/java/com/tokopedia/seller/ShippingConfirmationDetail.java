@@ -45,7 +45,7 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.subscriptions.CompositeSubscription;
@@ -79,51 +79,51 @@ ShippingConfirmationDetail extends TActivity {
 
     private static final String PHONE_TOKOPEDIA = "021-53691015";
 
-    @Bind(R2.id.payment_method)
+    @BindView(R2.id.payment_method)
     TextView PaymentMethod;
-    @Bind(R2.id.invoice_text)
+    @BindView(R2.id.invoice_text)
     TextView Invoice;
-    @Bind(R2.id.buyer_name)
+    @BindView(R2.id.buyer_name)
     TextView BuyerName;
-    @Bind(R2.id.product_list)
+    @BindView(R2.id.product_list)
     ListView ProductListView;
-    @Bind(R2.id.order_status)
+    @BindView(R2.id.order_status)
     ListView OrderStatus;
-    @Bind(R2.id.deadline)
+    @BindView(R2.id.deadline)
     TextView Deadline;
-    @Bind(R2.id.shipping_cost)
+    @BindView(R2.id.shipping_cost)
     TextView ShippingCost;
-    @Bind(R2.id.additional_cost)
+    @BindView(R2.id.additional_cost)
     TextView AdditionalCost;
-    @Bind(R2.id.destination)
+    @BindView(R2.id.destination)
     TextView Destination;
-    //	@Bind(R2.id.last_status)
+    //	@BindView(R2.id.last_status)
 //	TextView LastStatus;
-    @Bind(R2.id.destination_detail)
+    @BindView(R2.id.destination_detail)
     TextView DestinationDetail;
-    @Bind(R2.id.quantity)
+    @BindView(R2.id.quantity)
     TextView Quantity;
-    @Bind(R2.id.grand_total)
+    @BindView(R2.id.grand_total)
     TextView GrandTotal;
-    @Bind(R2.id.error_message)
+    @BindView(R2.id.error_message)
     TextView ErrorMessage;
-    @Bind(R2.id.confirm_button)
+    @BindView(R2.id.confirm_button)
     TextView ConfirmButton;
-    @Bind(R2.id.cancel_button)
+    @BindView(R2.id.cancel_button)
     TextView CancelButton;
-    @Bind(R2.id.sender_name)
+    @BindView(R2.id.sender_name)
     TextView SenderName;
-    @Bind(R2.id.sender_phone)
+    @BindView(R2.id.sender_phone)
     TextView SenderPhone;
-    @Bind(R2.id.sender_form)
+    @BindView(R2.id.sender_form)
     View SenderForm;
-    @Bind(R2.id.layout_destination_default)
+    @BindView(R2.id.layout_destination_default)
     View viewDefaultDestination;
-    @Bind(R2.id.layout_pickup_instant_shipping_courier)
+    @BindView(R2.id.layout_pickup_instant_shipping_courier)
     View viewPickupLocationCourier;
-    @Bind(R2.id.pickup_detail_location)
+    @BindView(R2.id.pickup_detail_location)
     TextView pickupLocationDetail;
-    @Bind(R2.id.destination_detail_location)
+    @BindView(R2.id.destination_detail_location)
     TextView deliveryLocationDetail;
 
     ListViewOrderStatus OrderAdapter;

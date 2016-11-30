@@ -25,6 +25,7 @@ public interface SecurityQuestion {
     int ANSWER_SECURITY_QUESTION_TYPE = 1;
     int REQUEST_OTP_TYPE =2;
     int ANSWER_SECURITY_QUESTION_FALSE_TYPE =3;
+    int REQUEST_OTP_PHONE_TYPE =4;
 
     int networkHandlerSize = 3;
 
@@ -49,6 +50,8 @@ public interface SecurityQuestion {
     void doAnswerQuestion(String answer);
 
     void doRequestOtp();
+
+    void doRequestOtpWithPhone(String phoneNumber);
 
     void getDataFromArgument(Bundle savedInstanceState);
 

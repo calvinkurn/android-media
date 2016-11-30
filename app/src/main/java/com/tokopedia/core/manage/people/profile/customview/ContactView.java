@@ -13,32 +13,32 @@ import com.tokopedia.core.manage.people.profile.model.Profile;
 import com.tokopedia.core.manage.people.profile.presenter.ManagePeopleProfileFragmentPresenter;
 import com.tokopedia.core.util.SessionHandler;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created on 6/9/16.
  */
 public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPresenter> {
 
-    @Bind(R2.id.messenger)
+    @BindView(R2.id.messenger)
     public EditText messenger;
-    @Bind(R2.id.change_email_button)
+    @BindView(R2.id.change_email_button)
     public View changeEmailBtn;
-    @Bind(R2.id.email)
+    @BindView(R2.id.email)
     public EditText email;
-    @Bind(R2.id.phone_section)
+    @BindView(R2.id.phone_section)
     public View phoneSection;
-    @Bind(R2.id.change_hp_button)
+    @BindView(R2.id.change_hp_button)
     public View changeHpBtn;
-    @Bind(R2.id.phone)
+    @BindView(R2.id.phone)
     public EditText phone;
-    @Bind(R2.id.phone_verification_section)
+    @BindView(R2.id.phone_verification_section)
     public View phoneVerificationSection;
-    @Bind(R2.id.verification)
+    @BindView(R2.id.verification)
     public EditText verification;
-    @Bind(R2.id.verify_phone_button)
+    @BindView(R2.id.verify_phone_button)
     public View verificationBtn;
-    @Bind(R2.id.password)
+    @BindView(R2.id.password)
     public EditText password;
 
     public ContactView(Context context) {

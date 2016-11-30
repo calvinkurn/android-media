@@ -14,7 +14,7 @@ import com.tokopedia.discovery.presenter.history.SearchHistory;
 import com.tokopedia.discovery.presenter.history.SearchHistoryImpl;
 import com.tokopedia.discovery.view.history.SearchHistoryView;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Erry on 6/30/2016.
@@ -38,7 +38,7 @@ public class SearchHistoryFragment extends BaseFragment<SearchHistory> implement
         return instance;
     }
 
-    @Bind(R2.id.list)
+    @BindView(R2.id.list)
     RecyclerView recyclerView;
 
     LinearLayoutManager linearLayoutManager;

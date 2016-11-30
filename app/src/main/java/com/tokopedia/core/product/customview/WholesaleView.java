@@ -15,7 +15,8 @@ import com.tokopedia.core.product.model.productdetail.ProductWholesalePrice;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
+import butterknife.BindViews;
 
 /**
  * Created by Angga.Prasetiyo on 26/10/2015.
@@ -23,11 +24,11 @@ import butterknife.Bind;
 public class WholesaleView extends BaseView<ProductDetailData, ProductDetailView> {
     private static final String TAG = WholesaleView.class.getSimpleName();
 
-    @Bind({R2.id.wholesale_1, R2.id.wholesale_2, R2.id.wholesale_3, R2.id.wholesale_4, R2.id.wholesale_5})
+    @BindViews({R2.id.wholesale_1, R2.id.wholesale_2, R2.id.wholesale_3, R2.id.wholesale_4, R2.id.wholesale_5})
     List<TableRow> rowWholesale;
-    @Bind({R2.id.qty_ws_1, R2.id.qty_ws_2, R2.id.qty_ws_3, R2.id.qty_ws_4, R2.id.qty_ws_5})
+    @BindViews({R2.id.qty_ws_1, R2.id.qty_ws_2, R2.id.qty_ws_3, R2.id.qty_ws_4, R2.id.qty_ws_5})
     List<TextView> wholesaleQty;
-    @Bind({R2.id.price_ws_1, R2.id.price_ws_2, R2.id.price_ws_3, R2.id.price_ws_4, R2.id.price_ws_5})
+    @BindViews({R2.id.price_ws_1, R2.id.price_ws_2, R2.id.price_ws_3, R2.id.price_ws_4, R2.id.price_ws_5})
     List<TextView> wholesalePrice;
 
     public WholesaleView(Context context) {

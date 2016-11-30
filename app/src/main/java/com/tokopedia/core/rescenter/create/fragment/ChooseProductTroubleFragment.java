@@ -34,7 +34,7 @@ import com.tokopedia.core.util.AppUtils;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created on 8/2/16.
@@ -45,19 +45,19 @@ public class ChooseProductTroubleFragment extends BasePresenterFragment<ChoooseP
     private static final String KEY_PARAM_PASS_DATA = "pass_data";
     private static final String TAG = ChooseProductTroubleFragment.class.getSimpleName();
 
-    @Bind(R2.id.invoice)
+    @BindView(R2.id.invoice)
     TextView invoice;
-    @Bind(R2.id.shop_name)
+    @BindView(R2.id.shop_name)
     TextView shopName;
-    @Bind(R2.id.recycler_view)
+    @BindView(R2.id.recycler_view)
     RecyclerView productRecyclerView;
-    @Bind(R2.id.action_submit)
+    @BindView(R2.id.action_submit)
     View submitButton;
-    @Bind(R2.id.action_abort)
+    @BindView(R2.id.action_abort)
     View actionAbort;
-    @Bind(R2.id.main_view)
+    @BindView(R2.id.main_view)
     View mainView;
-    @Bind(R2.id.include_loading)
+    @BindView(R2.id.include_loading)
     View loading;
 
     private ActionParameterPassData passData;

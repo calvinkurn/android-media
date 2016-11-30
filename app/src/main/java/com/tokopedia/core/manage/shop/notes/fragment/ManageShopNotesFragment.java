@@ -29,7 +29,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.shopinfo.ShopNotesDetail;
 import com.tokopedia.core.util.RefreshHandler;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by nisie on 10/26/16.
@@ -38,10 +38,10 @@ import butterknife.Bind;
 public class ManageShopNotesFragment extends BasePresenterFragment<ManageShopNotesPresenter>
         implements ManageShopNotesView {
 
-    @Bind(R2.id.shop_notes)
+    @BindView(R2.id.shop_notes)
     RecyclerView shopNotes;
 
-    @Bind(R2.id.swipe_refresh_layout)
+    @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
 
     ShopNotesAdapter adapter;

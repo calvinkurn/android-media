@@ -3,25 +3,25 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
-    android:padding="15dp">
+    android:padding="@dimen/padding_med">
 
     <TextView
         android:id="@+id/head"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Kirim Ulang Email Aktivasi"
-        android:textSize="@dimen/text_size_large"
-        android:layout_marginBottom="@dimen/margin_small"
-        android:gravity="center"
-        android:textStyle="bold" />
+        android:text="@string/title_security_question"
+        android:textSize="@dimen/fontxl"
+        android:textStyle="bold"
+        android:textColor="@color/body_text_5_inverse"
+        android:layout_marginBottom="@dimen/margin_small" />
 
     <TextView
         android:id="@+id/body"
         android:layout_below="@+id/head"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Belum menerima kode aktivasi?\n Pastikan memeriksa bulk email / spam."
-        android:gravity="center"
+        android:text="@string/warning_check_activation_resent_1"
+        android:layout_marginTop="@dimen/margin_vs"
         android:layout_marginBottom="@dimen/margin_vs"
         android:textSize="@dimen/text_size_medium" />
 
@@ -30,10 +30,11 @@
         android:layout_below="@id/body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Email">
+        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginBottom="@dimen/margin_small">
         <EditText
             android:id="@+id/email"
-            android:paddingLeft="@dimen/padding_small"
+            android:hint="Email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
@@ -48,13 +49,24 @@
         android:layout_below="@id/wrapper"
         android:id="@+id/resend_button"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/btn_height"
         android:layout_marginTop="10dp"
-        android:background="@drawable/s_btn_bg"
+        android:background="@color/deep_orange_500"
         android:gravity="center"
         android:padding="10dp"
-        android:text="Kirim"
+        android:text="@string/title_activation_resent"
         android:textColor="@color/white"
         android:textStyle="bold"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/resend_button"
+        android:layout_marginTop="@dimen/margin_med"
+        android:layout_marginRight="@dimen/margin_small"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:gravity="center"
+        android:textSize="@dimen/text_size_small"
+        android:text="@string/warning_check_activation_resent_2"/>
 
 </RelativeLayout>

@@ -21,27 +21,26 @@ import com.tokopedia.core.manage.people.password.intentservice.ManagePasswordInt
 import com.tokopedia.core.manage.people.password.model.ChangePasswordParam;
 import com.tokopedia.core.manage.people.password.presenter.ManagePasswordFragmentPresenter;
 import com.tokopedia.core.manage.people.password.presenter.ManagePasswordFragmentPresenterImpl;
-import com.tokopedia.core.session.PasswordView;
+import com.tokopedia.core.customView.PasswordView;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 public class ManagePasswordFragment extends BasePresenterFragment<ManagePasswordFragmentPresenter>
                                         implements ManagePasswordFragmentView{
 
-    @Bind(R2.id.old_password)
+    @BindView(R2.id.old_password)
     PasswordView oldPassword;
-    @Bind(R2.id.new_password)
+    @BindView(R2.id.new_password)
     PasswordView newPassword;
-    @Bind(R2.id.new_password_confirmation)
+    @BindView(R2.id.new_password_confirmation)
     PasswordView confPassword;
-    @Bind(R2.id.wrapper_old)
+    @BindView(R2.id.wrapper_old)
     TextInputLayout wrapperOld;
-    @Bind(R2.id.wrapper_new)
+    @BindView(R2.id.wrapper_new)
     TextInputLayout wrapperNew;
-    @Bind(R2.id.wrapper_conf)
+    @BindView(R2.id.wrapper_conf)
     TextInputLayout wrapperConf;
-
-    @Bind(R2.id.save_button)
+    @BindView(R2.id.save_button)
     TextView saveButton;
 
     private TkpdProgressDialog progress;

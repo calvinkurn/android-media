@@ -30,7 +30,7 @@ import com.tokopedia.core.shopinfo.presenter.ShopTalkPresenterImpl;
 import com.tokopedia.core.talk.inboxtalk.fragment.InboxTalkFragment;
 import com.tokopedia.core.talkview.activity.TalkViewActivity;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by nisie on 11/18/16.
@@ -47,7 +47,7 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
         return new ShopTalkFragment();
     }
 
-    @Bind(R2.id.list)
+    @BindView(R2.id.list)
     RecyclerView list;
 
     ShopTalkAdapter adapter;

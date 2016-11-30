@@ -37,7 +37,7 @@ import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.util.LabelUtils;
 import com.tokopedia.core.util.ToolTipUtils;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Nisie on 2/29/16.
@@ -52,46 +52,46 @@ public class InboxReputationFormResponseFragment
         void postResponse(Bundle param);
     }
 
-    @Bind(R2.id.username)
+    @BindView(R2.id.username)
     TextView revieweeName;
 
-    @Bind(R2.id.avatar)
+    @BindView(R2.id.avatar)
     ImageView revieweeAvatar;
 
-    @Bind(R2.id.rep_icon)
+    @BindView(R2.id.rep_icon)
     ImageView iconPercentage;
 
-    @Bind(R2.id.rep_rating)
+    @BindView(R2.id.rep_rating)
     TextView textPercentage;
 
-    @Bind(R2.id.product_avatar)
+    @BindView(R2.id.product_avatar)
     ImageView productAvatar;
 
-    @Bind(R2.id.product_title)
+    @BindView(R2.id.product_title)
     TextView productName;
 
-    @Bind(R2.id.product_review_date)
+    @BindView(R2.id.product_review_date)
     TextView productReviewDate;
 
-    @Bind(R2.id.product_review)
+    @BindView(R2.id.product_review)
     TextView productReview;
 
-    @Bind(R2.id.star_quality)
+    @BindView(R2.id.star_quality)
     ImageView quality;
 
-    @Bind(R2.id.star_accuracy)
+    @BindView(R2.id.star_accuracy)
     ImageView accuracy;
 
-    @Bind(R2.id.btn_overflow)
+    @BindView(R2.id.btn_overflow)
     ImageView overflow;
 
-    @Bind(R2.id.image_holder)
+    @BindView(R2.id.image_holder)
     RecyclerView imageHolder;
 
-    @Bind(R2.id.send_button)
+    @BindView(R2.id.send_button)
     ImageButton sendButton;
 
-    @Bind(R2.id.reply_box)
+    @BindView(R2.id.reply_box)
     EditText responseBox;
 
     private LabelUtils label;

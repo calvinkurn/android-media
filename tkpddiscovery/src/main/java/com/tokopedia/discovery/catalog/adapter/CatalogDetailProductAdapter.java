@@ -19,7 +19,7 @@ import com.tokopedia.discovery.catalog.presenter.ICatalogDetailListPresenter;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -88,15 +88,15 @@ class CatalogDetailProductAdapter extends
     }
 
     class ProductItemHolder extends RecyclerView.ViewHolder {
-        @Bind(R2.id.product_name)
+        @BindView(R2.id.product_name)
         TextView productName;
-        @Bind(R2.id.prod_price)
+        @BindView(R2.id.prod_price)
         TextView productPrice;
-        @Bind(R2.id.prod_condition)
+        @BindView(R2.id.prod_condition)
         TextView productCondition;
-        @Bind(R2.id.product_id)
+        @BindView(R2.id.product_id)
         TextView productId;
-        @Bind(R2.id.main_view)
+        @BindView(R2.id.main_view)
         RelativeLayout productContainer;
 
         ProductItemHolder(View view) {

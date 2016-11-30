@@ -38,12 +38,11 @@ import com.tokopedia.core.product.model.report.ReportProductPass;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.session.model.network.ReportType;
 import com.tokopedia.core.session.model.network.ReportTypeModel;
-import com.tokopedia.core.util.RouterUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
@@ -55,29 +54,29 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
 
     ProductDetailData productDetailData;
 
-    @Bind(R2.id.cancel_but)
+    @BindView(R2.id.cancel_but)
     TextView cancelButton;
-    @Bind(R2.id.report)
+    @BindView(R2.id.report)
     TextView reportButton;
-    @Bind(R2.id.report_desc)
+    @BindView(R2.id.report_desc)
     EditText reportDesc;
-    @Bind(R2.id.wrapper)
+    @BindView(R2.id.wrapper)
     TextInputLayout wrapper;
-    @Bind(R2.id.report_type)
+    @BindView(R2.id.report_type)
     Spinner reportTypeSpinner;
-    @Bind(R2.id.line_spinner)
+    @BindView(R2.id.line_spinner)
     View lineSpinner;
-    @Bind(R2.id.error_spinner)
+    @BindView(R2.id.error_spinner)
     TextView errorSpinner;
-    @Bind(R2.id.dummy_spinner)
+    @BindView(R2.id.dummy_spinner)
     TextView dummySpinner;
-    @Bind(R2.id.redirect_text)
+    @BindView(R2.id.redirect_text)
     TextView redirectText;
-    @Bind(R2.id.scrollView)
+    @BindView(R2.id.scrollView)
     View mainLayout;
-    @Bind(R2.id.action_layout)
+    @BindView(R2.id.action_layout)
     View actionLayout;
-    @Bind(R2.id.progressBar)
+    @BindView(R2.id.progressBar)
     ProgressBar progressBar;
 
     List<ReportType> reportTypeList;

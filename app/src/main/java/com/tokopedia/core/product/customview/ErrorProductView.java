@@ -11,7 +11,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.product.listener.ProductDetailView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Angga.Prasetiyo on 26/10/2015.
@@ -19,9 +19,9 @@ import butterknife.Bind;
 public class ErrorProductView extends BaseView<ProductDetailData, ProductDetailView> {
     private static final String TAG = ErrorProductView.class.getSimpleName();
 
-    @Bind(R2.id.tv_title)
+    @BindView(R2.id.tv_title)
     TextView tvTitle;
-    @Bind(R2.id.tv_sub_title)
+    @BindView(R2.id.tv_sub_title)
     TextView tvSubTitle;
 
     public ErrorProductView(Context context) {

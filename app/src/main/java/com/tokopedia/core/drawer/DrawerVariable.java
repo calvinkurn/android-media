@@ -45,8 +45,8 @@ import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
-import com.tokopedia.core.session.Login;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shop.ShopEditorActivity;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -433,7 +433,7 @@ public class DrawerVariable {
                 break;
             case TkpdState.DrawerPosition.LOGIN:
             case TkpdState.DrawerPosition.REGISTER:
-                intent = new Intent(context, Login.class);
+                intent = SessionRouter.getLoginActivityIntent(context);
                 intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, ((DrawerItem) model.data.get(position)).id);
                 intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
                 context.startActivity(intent);
@@ -571,8 +571,11 @@ public class DrawerVariable {
         context.startActivity(intent);
     }
 
-    private void goToShopNewOrder() {
-//        Intent intent = new Intent(context, ShopTransactionV2.class);
+    private void goToShopNewOrder(){
+        goToShopNewOrder(context);
+    }
+
+    public static void goToShopNewOrder(Context context) {
         Intent intent = SellerRouter.getActivitySellingTransaction(context);
         Bundle bundle = new Bundle();
         bundle.putInt("tab", 1);
@@ -1042,5 +1045,9 @@ public class DrawerVariable {
 
     private void sendGTMNavigationEvent(String label) {
         UnifyTracking.eventDrawerClick(label);
+    }
+
+    public static void startIntent(Context context, Class<?> cls) {
+        context.startActivity(new Intent(context, cls));
     }
 }

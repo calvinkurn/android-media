@@ -20,7 +20,7 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -33,16 +33,16 @@ public class ImageChooserDialog extends DialogFragment {
     public static final String LISTENER = "LISTENER";
 
 
-    @Bind(R2.id.title_dialog)
+    @BindView(R2.id.title_dialog)
     TextView titleDialog;
 
-    @Bind(R2.id.recycler_view_item_image)
+    @BindView(R2.id.recycler_view_item_image)
     RecyclerView itemImage;
 
-    @Bind(R2.id.title_cancel)
+    @BindView(R2.id.title_cancel)
     TextView cancelDialog;
 
-    @Bind(R2.id.title_confirm)
+    @BindView(R2.id.title_confirm)
     TextView confirmDialog;
 
     private List<? extends ItemImageAndText> items;

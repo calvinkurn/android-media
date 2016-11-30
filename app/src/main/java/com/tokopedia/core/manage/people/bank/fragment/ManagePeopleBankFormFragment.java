@@ -37,7 +37,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Nisie on 6/13/16.
@@ -54,43 +54,43 @@ public class ManagePeopleBankFormFragment extends BasePresenterFragment<ManagePe
         void finishAction();
     }
 
-    @Bind(R2.id.account_name_wrapper)
+    @BindView(R2.id.account_name_wrapper)
     TextInputLayout wrapperAccountName;
 
-    @Bind(R2.id.bank_branch_wrapper)
+    @BindView(R2.id.bank_branch_wrapper)
     TextInputLayout wrapperBankBranch;
 
-    @Bind(R2.id.account_number_wrapper)
+    @BindView(R2.id.account_number_wrapper)
     TextInputLayout wrapperAccountNumber;
 
-    @Bind(R2.id.password_wrapper)
+    @BindView(R2.id.password_wrapper)
     TextInputLayout wrapperPassword;
 
-    @Bind(R2.id.otp_wrapper)
+    @BindView(R2.id.otp_wrapper)
     TextInputLayout wrapperCodeOTP;
 
-    @Bind(R2.id.send_otp)
+    @BindView(R2.id.send_otp)
     TextView sendOTP;
 
-    @Bind(R2.id.otp)
+    @BindView(R2.id.otp)
     EditText codeOTP;
 
-    @Bind(R2.id.password)
+    @BindView(R2.id.password)
     EditText password;
 
-    @Bind(R2.id.bank_name)
+    @BindView(R2.id.bank_name)
     TextView bankNameView;
 
-    @Bind(R2.id.account_name)
+    @BindView(R2.id.account_name)
     EditText accountName;
 
-    @Bind(R2.id.account_number)
+    @BindView(R2.id.account_number)
     EditText accountNumber;
 
-    @Bind(R2.id.bank_branch)
+    @BindView(R2.id.bank_branch)
     EditText branchName;
 
-    @Bind(R2.id.save_button)
+    @BindView(R2.id.save_button)
     TextView saveButton;
 
     TkpdProgressDialog progressDialog;

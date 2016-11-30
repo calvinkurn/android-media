@@ -31,4 +31,10 @@ public interface Session {
     int getWhichFragment();
 
     void setWhichFragment(int whichFragmentKey);
+
+    void sendGTMEvent(Bundle bundle, int type);
+
+    void sendLocalyticsEvent(Bundle bundle, int type);
+
+    void sendNotifLocalyticsCallback(Intent intent);
 }

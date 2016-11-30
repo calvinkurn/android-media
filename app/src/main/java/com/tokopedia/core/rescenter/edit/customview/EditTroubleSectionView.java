@@ -15,16 +15,16 @@ import com.tokopedia.core.rescenter.edit.model.passdata.EditResCenterFormData;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created on 8/24/16.
  */
 public class EditTroubleSectionView extends BaseView<EditResCenterFormData, BuyerEditResCenterListener> {
 
-    @Bind(R2.id.spinner_trouble)
+    @BindView(R2.id.spinner_trouble)
     public Spinner troubleSpinner;
-    @Bind(R2.id.box_desc)
+    @BindView(R2.id.box_desc)
     public EditText descEditText;
 
     private EditResCenterFormData data;

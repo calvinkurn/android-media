@@ -34,7 +34,7 @@ import com.tokopedia.core.rescenter.edit.presenter.BuyerEditResCenterImpl;
 import com.tokopedia.core.rescenter.edit.presenter.BuyerEditResCenterPresenter;
 import com.tokopedia.core.util.AppUtils;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -48,21 +48,21 @@ public class BuyerEditResCenterFormFragment extends BasePresenterFragment<BuyerE
 
     private ActionParameterPassData passData;
 
-    @Bind(R2.id.invoice)
+    @BindView(R2.id.invoice)
     TextView invoice;
-    @Bind(R2.id.shop_name)
+    @BindView(R2.id.shop_name)
     TextView shopName;
-    @Bind(R2.id.include_loading)
+    @BindView(R2.id.include_loading)
     ProgressBar loading;
-    @Bind(R2.id.main_view)
+    @BindView(R2.id.main_view)
     View mainView;
-    @Bind(R2.id.view_edit_package_status)
+    @BindView(R2.id.view_edit_package_status)
     EditPackageStatusView editPackageStatusView;
-    @Bind(R2.id.view_edit_category_section)
+    @BindView(R2.id.view_edit_category_section)
     EditCategorySectionView editCategorySectionView;
-    @Bind(R2.id.view_edit_product_trouble_section)
+    @BindView(R2.id.view_edit_product_trouble_section)
     EditProductTroubleView editProductTroubleView;
-    @Bind(R2.id.view_edit_trouble_section)
+    @BindView(R2.id.view_edit_trouble_section)
     EditTroubleSectionView editTroubleView;
 
     public static Fragment newInstance(ActionParameterPassData passData) {

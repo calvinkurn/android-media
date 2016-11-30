@@ -7,13 +7,12 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.tokopedia.core.R2;
 import com.tokopedia.core.database.model.RechargeOperatorModelDBAttrs;
 import com.tokopedia.tkpd.R;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -73,7 +72,7 @@ public class OperatorAdapter extends ArrayAdapter<RechargeOperatorModelDBAttrs> 
     }
 
     static class NormalViewHolder {
-        @Bind(R.id.operator_title_textview)
+        @BindView(R.id.operator_title_textview)
         TextView operatorTextView;
 
 

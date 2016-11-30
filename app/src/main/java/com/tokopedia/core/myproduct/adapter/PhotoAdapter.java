@@ -31,7 +31,7 @@ import java.io.File;
 import java.net.URI;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -81,9 +81,9 @@ public class PhotoAdapter  extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
 //            , View.OnLongClickListener
     {
 
-        @Bind(R2.id.picture_gallery_imageview)
+        @BindView(R2.id.picture_gallery_imageview)
         ImageView mImageView;
-        @Bind(R2.id.main_picture_info)
+        @BindView(R2.id.main_picture_info)
         TextView mainPicInfo;
 
         // helper variable

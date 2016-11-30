@@ -22,7 +22,7 @@ import com.tokopedia.core.util.ToolTipUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -36,45 +36,45 @@ public class InboxReputationAdapter extends BaseLinearRecyclerViewAdapter {
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R2.id.username)
+        @BindView(R2.id.username)
         TextView title;
 
-        @Bind(R2.id.date)
+        @BindView(R2.id.date)
         TextView date;
 
-        @Bind(R2.id.avatar)
+        @BindView(R2.id.avatar)
         ImageView avatar;
 
-        @Bind(R2.id.recap_text)
+        @BindView(R2.id.recap_text)
         TextView recapText;
 
-        @Bind(R2.id.view_summary_review)
+        @BindView(R2.id.view_summary_review)
         View viewFooter;
 
-        @Bind(R2.id.main_view)
+        @BindView(R2.id.main_view)
         View viewMain;
 
-        @Bind(R2.id.reputation_holder)
+        @BindView(R2.id.reputation_holder)
         LinearLayout reputation;
 
         LabelUtils label;
 
-        @Bind(R2.id.reputation_holder_user)
+        @BindView(R2.id.reputation_holder_user)
         View viewPercentage;
 
-        @Bind(R2.id.rep_rating)
+        @BindView(R2.id.rep_rating)
         TextView textPercentage;
 
-        @Bind(R2.id.rep_icon)
+        @BindView(R2.id.rep_icon)
         ImageView iconPercentage;
 
-        @Bind(R2.id.deadline_icon)
+        @BindView(R2.id.deadline_icon)
         ImageView iconDeadline;
 
-        @Bind(R2.id.deadline)
+        @BindView(R2.id.deadline)
         TextView deadline;
 
-        @Bind(R2.id.notification)
+        @BindView(R2.id.notification)
         View notification;
 
         public ViewHolder(View itemView) {

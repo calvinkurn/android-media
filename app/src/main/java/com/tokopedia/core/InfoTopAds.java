@@ -13,9 +13,10 @@ import android.widget.TextView;
 import com.tokopedia.core.topads.WebViewTopAdsActivity;
 import com.tokopedia.core.topads.WebViewTopAdsFragment;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 
 /**
  * Created by Steven on 24/11/2015.
@@ -24,6 +25,7 @@ import butterknife.OnClick;
 public class InfoTopAds extends DialogFragment{
 
     public static final String TAG = "DialogTopAds";
+    private Unbinder unbinder;
 
     public static InfoTopAds newInstance(String source) {
 
@@ -33,7 +35,7 @@ public class InfoTopAds extends DialogFragment{
         fragment.setArguments(args);
         return fragment;
     }
-    @Bind(R2.id.readMore) TextView readMore;
+    @BindView(R2.id.readMore) TextView readMore;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,14 +48,14 @@ public class InfoTopAds extends DialogFragment{
         super.onCreateView(inflater, container, savedInstanceState);
         View rootView = inflater.inflate(R.layout.dialog_info_topads, container, false);
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        ButterKnife.bind(this, rootView);
+        unbinder = ButterKnife.bind(this, rootView);
         return rootView;
     }
 
     @Override
      public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     @OnClick(R2.id.readMore)

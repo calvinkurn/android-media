@@ -25,7 +25,7 @@ import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.share.presenter.ProductSharePresenter;
 import com.tokopedia.core.share.presenter.ProductSharePresenterImpl;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -38,49 +38,49 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
 
     private ShareData shareData;
     private SimpleFacebook simpleFacebook;
-    @Bind(R2.id.text_line)
+    @BindView(R2.id.text_line)
     TextView tvTitle;
 
-    @Bind(R2.id.image_error)
+    @BindView(R2.id.image_error)
     ImageView errorImage;
 
-    @Bind(R2.id.progress_bar)
+    @BindView(R2.id.progress_bar)
     ProgressBar progressBar;
 
-    @Bind(R2.id.loading_add_product)
+    @BindView(R2.id.loading_add_product)
     TextView loadingAddProduct;
 
-    @Bind(R2.id.bbm_share)
+    @BindView(R2.id.bbm_share)
     TextView bbmShare;
 
-    @Bind(R2.id.whatsapp_share)
+    @BindView(R2.id.whatsapp_share)
     TextView whatsappShare;
 
-    @Bind(R2.id.line_share)
+    @BindView(R2.id.line_share)
     TextView lineShare;
 
-    @Bind(R2.id.instagram_share)
+    @BindView(R2.id.instagram_share)
     TextView instagramShare;
 
-    @Bind(R2.id.facebook_share)
+    @BindView(R2.id.facebook_share)
     TextView facebookShare;
 
-    @Bind(R2.id.twitter_share)
+    @BindView(R2.id.twitter_share)
     TextView twitterShare;
 
-    @Bind(R2.id.pinterest_share)
+    @BindView(R2.id.pinterest_share)
     TextView pinterestShare;
 
-    @Bind(R2.id.google_plus_share)
+    @BindView(R2.id.google_plus_share)
     TextView gplusShare;
 
-    @Bind(R2.id.copy_url)
+    @BindView(R2.id.copy_url)
     TextView copyUrl;
 
-    @Bind(R2.id.more_share)
+    @BindView(R2.id.more_share)
     TextView moreShare;
 
-    @Bind(R2.id.text_subtitle)
+    @BindView(R2.id.text_subtitle)
     TextView subtitle;
 
     public static ProductShareFragment newInstance(@NonNull ShareData shareData) {

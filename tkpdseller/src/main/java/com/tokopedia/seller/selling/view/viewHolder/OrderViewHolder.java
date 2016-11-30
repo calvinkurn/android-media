@@ -10,28 +10,28 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R2;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
  * Created by Toped10 on 8/5/2016.
  */
 public class OrderViewHolder extends BaseSellingViewHolder<OrderShippingList> {
-    @Bind(R2.id.user_name)
+    @BindView(R2.id.user_name)
     TextView UserName;
-    @Bind(R2.id.user_avatar)
+    @BindView(R2.id.user_avatar)
     ImageView UserAvatar;
-    @Bind(R2.id.deadline)
+    @BindView(R2.id.deadline)
     TextView Deadline;
-    @Bind(R2.id.deadline_view)
+    @BindView(R2.id.deadline_view)
     View DeadlineView;
-    @Bind(R2.id.invoice)
+    @BindView(R2.id.invoice)
     TextView Invoice;
-    @Bind(R2.id.bounty)
+    @BindView(R2.id.bounty)
     TextView TotalTransaksi;
-    @Bind(R2.id.main_view)
+    @BindView(R2.id.main_view)
     View MainView;
-    @Bind(R2.id.order_date)
+    @BindView(R2.id.order_date)
     TextView vOrderDate;
 
     public OrderViewHolder(View itemView) {

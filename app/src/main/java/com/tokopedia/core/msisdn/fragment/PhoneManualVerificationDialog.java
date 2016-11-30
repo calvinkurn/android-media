@@ -21,9 +21,10 @@ import com.tokopedia.core.facade.FacadePhoneVerification;
 import com.tokopedia.core.fragment.VerificationDialog;
 import com.tokopedia.core.interfaces.PhoneVerificationInterfaces;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 
 /**
  * Created by m.normansyah on 23/11/2015.
@@ -32,31 +33,32 @@ public class PhoneManualVerificationDialog extends DialogFragment{
     public static final String FRAGMENT_TAG = "PhoneManualVerificationDialog";
     public static final String VERIFICATION_NUMBER = "VERIFICATION_NUMBER";
 
-    @Bind(R2.id.normal_verification_procedure)
+    @BindView(R2.id.normal_verification_procedure)
     LinearLayout VerificationFromSettingsLayout;
-    @Bind(R2.id.phone_number_manual_form)
+    @BindView(R2.id.phone_number_manual_form)
     TextView PhoneNumberManualVerify;
-    @Bind(R2.id.loading_manual_form)
+    @BindView(R2.id.loading_manual_form)
     ProgressBar circleManualForm;
-    @Bind(R2.id.verify_from_android)
+    @BindView(R2.id.verify_from_android)
     LinearLayout VerifyFromAndroid;
-    @Bind(R2.id.new_number)
+    @BindView(R2.id.new_number)
     EditText newPhoneNumber;
-    @Bind(R2.id.phone_otp_layout)
+    @BindView(R2.id.phone_otp_layout)
     LinearLayout phoneOtpLayout;
-    @Bind(R2.id.confirmation_number)
+    @BindView(R2.id.confirmation_number)
     EditText confirmationCode;
-    @Bind(R2.id.verify_sms_text)
+    @BindView(R2.id.verify_sms_text)
     TextView sendSmsVerificationLink;
-    @Bind(R2.id.sending_sms_info)
+    @BindView(R2.id.sending_sms_info)
     LinearLayout SendingSMSNotificationLayout ;
-    @Bind(R2.id.manual_abort_button)
+    @BindView(R2.id.manual_abort_button)
     TextView abortManualButton;
-    @Bind(R2.id.code_confirm_button_manual)
+    @BindView(R2.id.code_confirm_button_manual)
     TextView manualVerifyCodeButton;
-    @Bind(R2.id.close_button) View closeButton;
+    @BindView(R2.id.close_button) View closeButton;
 
     FacadePhoneVerification facadePhoneVerification;
+    private Unbinder unbinder;
 
     public static Fragment newInstance(int type, String phoneNumber){
         Bundle bundle = new Bundle();
@@ -83,7 +85,7 @@ public class PhoneManualVerificationDialog extends DialogFragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.phone_manual_verification_form_layout, container, false);
-        ButterKnife.bind(this, parentView);
+        unbinder = ButterKnife.bind(this, parentView);
         return parentView;
     }
 
@@ -103,7 +105,7 @@ public class PhoneManualVerificationDialog extends DialogFragment{
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     @OnClick(R2.id.manual_abort_button)

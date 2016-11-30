@@ -14,7 +14,7 @@ import com.tokopedia.core.rescenter.create.customadapter.TroubleCategorySpinnerA
 import com.tokopedia.core.rescenter.create.listener.ChooseTroubleListener;
 import com.tokopedia.core.rescenter.create.model.responsedata.CreateResCenterFormData;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created on 6/16/16.
@@ -23,7 +23,7 @@ public class ChooseCategorySectionCreateResCenterView extends BaseView<CreateRes
 
     public static final String TAG = ChooseCategorySectionCreateResCenterView.class.getSimpleName();
 
-    @Bind(R2.id.spinner_trouble_category)
+    @BindView(R2.id.spinner_trouble_category)
     Spinner categoryTroubleSpinner;
 
     private ChooseTroubleListener listener;

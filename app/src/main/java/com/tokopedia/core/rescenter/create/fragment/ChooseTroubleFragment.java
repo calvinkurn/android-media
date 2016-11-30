@@ -31,7 +31,7 @@ import com.tokopedia.core.rescenter.create.presenter.ChooseTroubleImpl;
 import com.tokopedia.core.rescenter.create.presenter.ChooseTroublePresenter;
 import com.tokopedia.core.util.AppUtils;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -42,23 +42,23 @@ public class ChooseTroubleFragment extends BasePresenterFragment<ChooseTroublePr
     private static final String KEY_PARAM_PASS_DATA = "pass_data";
     private CreateResCenterListener listener;
 
-    @Bind(R2.id.invoice)
+    @BindView(R2.id.invoice)
     TextView invoice;
-    @Bind(R2.id.shop_name)
+    @BindView(R2.id.shop_name)
     TextView shopName;
-    @Bind(R2.id.view_category_section)
+    @BindView(R2.id.view_category_section)
     ChooseCategorySectionCreateResCenterView categorySection;
-    @Bind(R2.id.view_trouble_section)
+    @BindView(R2.id.view_trouble_section)
     ChooseTroubleSectionCreateResCenterView troubleSectionView;
-    @Bind(R2.id.view_product_section)
+    @BindView(R2.id.view_product_section)
     ChooseProductSectionCreateResCenterView productSection;
-    @Bind(R2.id.action_choose_solution)
+    @BindView(R2.id.action_choose_solution)
     View chooseSolution;
-    @Bind(R2.id.action_abort)
+    @BindView(R2.id.action_abort)
     View actionAbort;
-    @Bind(R2.id.main_view)
+    @BindView(R2.id.main_view)
     View mainView;
-    @Bind(R2.id.include_loading)
+    @BindView(R2.id.include_loading)
     View loading;
 
     private ActionParameterPassData passData;

@@ -24,7 +24,7 @@ import com.tokopedia.core.manage.shop.notes.presenter.ManageShopNotesFormPresent
 import com.tokopedia.core.manage.shop.notes.presenter.ManageShopNotesFormPresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by nisie on 10/26/16.
@@ -32,19 +32,19 @@ import butterknife.Bind;
 public class ManageShopNotesFormFragment extends BasePresenterFragment<ManageShopNotesFormPresenter>
         implements ManageShopNoteFormView {
 
-    @Bind(R2.id.layout_note_name)
+    @BindView(R2.id.layout_note_name)
     TextInputLayout layoutNoteName;
 
-    @Bind(R2.id.layout_note_content)
+    @BindView(R2.id.layout_note_content)
     TextInputLayout layoutNoteContent;
 
-    @Bind(R2.id.note_name)
+    @BindView(R2.id.note_name)
     EditText noteName;
 
-    @Bind(R2.id.note_content)
+    @BindView(R2.id.note_content)
     EditText noteContent;
 
-    @Bind(R2.id.save_button)
+    @BindView(R2.id.save_button)
     Button saveButton;
 
     TkpdProgressDialog progressDialog;
