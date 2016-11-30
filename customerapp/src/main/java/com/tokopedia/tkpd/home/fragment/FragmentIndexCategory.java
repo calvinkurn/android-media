@@ -106,6 +106,7 @@ public class FragmentIndexCategory extends Fragment implements
         private ViewPager bannerViewPager;
         private CirclePageIndicator bannerIndicator;
         private RelativeLayout bannerContainer;
+        private TextView promoLink;
         TabLayout tabLayoutRecharge;
         WrapContentViewPager viewpagerRecharge;
         RecyclerView announcementContainer;
@@ -205,7 +206,7 @@ public class FragmentIndexCategory extends Fragment implements
             holder.banner = getActivity().getLayoutInflater().inflate(R.layout.banner, holder.bannerContainer);
             holder.bannerViewPager = (ViewPager) holder.banner.findViewById(R.id.view_pager);
             holder.bannerIndicator = (CirclePageIndicator) holder.banner.findViewById(R.id.indicator);
-
+            holder.promoLink = (TextView) holder.banner.findViewById(R.id.promo_link);
             holder.bannerViewPager.setAdapter(pagerAdapter);
             holder.bannerViewPager.addOnPageChangeListener(onPromoChanged());
             holder.bannerIndicator.setFillColor(ContextCompat.getColor(getContext(), R.color.green_400));
@@ -222,6 +223,12 @@ public class FragmentIndexCategory extends Fragment implements
             param.height = metrics.widthPixels / 2;
             holder.bannerViewPager.setLayoutParams(param);
             holder.wrapperScrollview.smoothScrollTo(0, 0);
+            holder.promoLink.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.d("KLIK", "KLIK");
+                }
+            });
             startSlide();
         } else {
             ((ViewGroup) holder.bannerContainer.getParent()).removeView(holder.banner);
@@ -386,6 +393,17 @@ public class FragmentIndexCategory extends Fragment implements
                     intent.putExtra("url", url);
                     startActivity(intent);
                 }
+            }
+        };
+    }
+
+    private View.OnClickListener onPromoLinkClicked(){
+        return new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), BannerWebView.class);
+                intent.putExtra("url", "https://www.tokopedia.com/promo/?flag_app=1");
+                startActivity(intent);
             }
         };
     }
@@ -659,12 +677,10 @@ public class FragmentIndexCategory extends Fragment implements
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            LayoutInflater inflater = (LayoutInflater) getActivity()
-                    .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
             View view = inflater.inflate(R.layout.image_slider, container, false);
 
-            ImageView promoImage = (ImageView) view
-                    .findViewById(R.id.image);
+            ImageView promoImage = (ImageView) view.findViewById(R.id.image);
             promoImage.setOnClickListener(onPromoClicked(promoList.get(position).promoUrl));
             loadImageTemp(promoImage, promoList.get(position).imgUrl);
             container.addView(view);
