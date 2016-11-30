@@ -103,7 +103,7 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
     }
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return null;
     }
 

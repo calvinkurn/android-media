@@ -44,7 +44,7 @@ public class SearchHistoryFragment extends BaseFragment<SearchHistory> implement
     LinearLayoutManager linearLayoutManager;
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return null;
     }
 

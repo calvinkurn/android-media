@@ -5,4 +5,5 @@ package com.tokopedia.core.app;
  */
 
 public interface IAnalyticsFragment {
+    String getScreenName();
 }

@@ -45,7 +45,7 @@ public class DynamicFilterListFragment extends BaseFragment<DynamicFilterList> i
     }
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return null;
     }
 

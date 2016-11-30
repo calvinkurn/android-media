@@ -115,7 +115,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     }
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return null;
     }
 

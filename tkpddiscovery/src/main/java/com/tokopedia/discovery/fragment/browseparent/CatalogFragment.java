@@ -77,7 +77,7 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
     };
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return null;
     }
 

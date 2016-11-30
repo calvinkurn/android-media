@@ -74,7 +74,7 @@ public class DynamicFilterOtherFragment extends BaseFragment<DynamicFilterOtherP
     };
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return null;
     }
 

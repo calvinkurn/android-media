@@ -74,7 +74,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     private String formatKey = "%d_%s";
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return null;
     }
 

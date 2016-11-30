@@ -72,7 +72,7 @@ public class DynamicFilterCategoryFragment extends BaseFragment<CategoryPresente
     }
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return null;
     }
 
