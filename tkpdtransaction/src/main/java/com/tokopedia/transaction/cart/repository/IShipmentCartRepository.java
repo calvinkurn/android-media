@@ -2,6 +2,7 @@ package com.tokopedia.transaction.cart.repository;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.cart.model.calculateshipment.Shipment;
+import com.tokopedia.transaction.cart.model.shipmentcart.EditShipmentCart;
 
 import java.util.List;
 
@@ -13,4 +14,6 @@ import rx.Observable;
 
 public interface IShipmentCartRepository {
     Observable<List<Shipment>> shipments(TKPDMapParam<String, String> param);
+
+    Observable<EditShipmentCart> editShipment(TKPDMapParam<String, String> param);
 }

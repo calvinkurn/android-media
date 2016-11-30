@@ -12,7 +12,7 @@ import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentW
 import com.tokopedia.transaction.cart.model.calculateshipment.Shipment;
 import com.tokopedia.transaction.cart.model.savelocation.SaveLocationData;
 import com.tokopedia.transaction.cart.model.savelocation.SaveLocationWrapper;
-import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartData;
+import com.tokopedia.transaction.cart.model.shipmentcart.EditShipmentCart;
 import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartWrapper;
 
 import java.net.SocketTimeoutException;
@@ -94,7 +94,7 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
         }
     }
 
-    private final class EditShipmentCartSubscriber extends Subscriber<ShipmentCartData> {
+    private final class EditShipmentCartSubscriber extends Subscriber<EditShipmentCart> {
         @Override
         public void onCompleted() {
             view.dismisLoading();
@@ -107,11 +107,11 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
         }
 
         @Override
-        public void onNext(ShipmentCartData shipmentCartData) {
-            if (shipmentCartData.getStatus().equalsIgnoreCase("1")) {
-                view.navigateToCart(shipmentCartData.getMessage());
+        public void onNext(EditShipmentCart editShipmentCart) {
+            if (editShipmentCart.getStatus().equalsIgnoreCase("1")) {
+                view.navigateToCart(editShipmentCart.getMessage());
             } else {
-                view.renderErrorEditShipment(shipmentCartData.getMessage());
+                view.renderErrorEditShipment(editShipmentCart.getMessage());
             }
         }
     }

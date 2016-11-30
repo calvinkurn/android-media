@@ -2,6 +2,8 @@ package com.tokopedia.transaction.cart.repository.entity.mapper;
 
 import com.tokopedia.transaction.cart.model.calculateshipment.Shipment;
 import com.tokopedia.transaction.cart.model.calculateshipment.ShipmentPackage;
+import com.tokopedia.transaction.cart.model.shipmentcart.EditShipmentCart;
+import com.tokopedia.transaction.cart.repository.entity.EditShipmentEntity;
 import com.tokopedia.transaction.cart.repository.entity.ShipmentEntity;
 import com.tokopedia.transaction.cart.repository.entity.ShipmentPackageEntity;
 
@@ -59,5 +61,14 @@ public class ShipmentEntityDataMapper {
             shipmentPackage.setShipmentPackageId(shipmentPackageEntity.getShipmentPackageId());
         }
         return shipmentPackage;
+    }
+
+    public EditShipmentCart transform(EditShipmentEntity editShipmentEntity) {
+        EditShipmentCart editShipmentCart = new EditShipmentCart();
+        if (editShipmentEntity != null){
+            editShipmentCart.setMessage(editShipmentEntity.getMessage());
+            editShipmentCart.setStatus(editShipmentEntity.getStatus());
+        }
+        return null;
     }
 }

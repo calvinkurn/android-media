@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.cart.model.shipmentcart;
+package com.tokopedia.transaction.cart.repository.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,10 +7,10 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * @author by alvarisi on 11/3/16.
+ * Created by alvarisi on 11/30/16.
  */
 
-public class ShipmentCartData implements Parcelable {
+public class EditShipmentEntity implements Parcelable {
     @SerializedName("message_status")
     @Expose
     private String message;
@@ -18,23 +18,23 @@ public class ShipmentCartData implements Parcelable {
     @Expose
     private String status;
 
-    public ShipmentCartData() {
+    public EditShipmentEntity() {
     }
 
-    protected ShipmentCartData(Parcel in) {
+    protected EditShipmentEntity(Parcel in) {
         message = in.readString();
         status = in.readString();
     }
 
-    public static final Creator<ShipmentCartData> CREATOR = new Creator<ShipmentCartData>() {
+    public static final Creator<EditShipmentEntity> CREATOR = new Creator<EditShipmentEntity>() {
         @Override
-        public ShipmentCartData createFromParcel(Parcel in) {
-            return new ShipmentCartData(in);
+        public EditShipmentEntity createFromParcel(Parcel in) {
+            return new EditShipmentEntity(in);
         }
 
         @Override
-        public ShipmentCartData[] newArray(int size) {
-            return new ShipmentCartData[size];
+        public EditShipmentEntity[] newArray(int size) {
+            return new EditShipmentEntity[size];
         }
     };
 

@@ -14,7 +14,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.cart.model.calculateshipment.Shipment;
 import com.tokopedia.transaction.cart.model.cartdata.CartModel;
 import com.tokopedia.transaction.cart.model.savelocation.SaveLocationData;
-import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartData;
+import com.tokopedia.transaction.cart.model.shipmentcart.EditShipmentCart;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 import com.tokopedia.transaction.cart.repository.ShipmentCartRepository;
 import com.tokopedia.transaction.exception.HttpErrorException;
@@ -168,16 +168,6 @@ public class CartDataInteractor implements ICartDataInteractor {
                 .unsubscribeOn(Schedulers.newThread())
                 .subscribe(subscriber)
         );
-    }
-
-    @Override
-    public void calculateShipment(TKPDMapParam<String, String> param, Subscriber<List<Shipment>> subscriber) {
-        ShipmentCartRepository shipmentCartRepository = new ShipmentCartRepository();
-        shipmentCartRepository.shipments(param)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .subscribe(subscriber);
     }
 
     @Override
@@ -360,79 +350,19 @@ public class CartDataInteractor implements ICartDataInteractor {
     }
 
     @Override
-    public void editShipmentCart(TKPDMapParam<String, String> param, Subscriber<ShipmentCartData> subscriber) {
-        Observable.just(param)
-                .flatMap(new Func1<TKPDMapParam<String, String>, Observable<Response<TkpdResponse>>>() {
-                    @Override
-                    public Observable<Response<TkpdResponse>> call(TKPDMapParam<String, String> params) {
-                        TXCartActService service = new TXCartActService();
-                        return service
-                                .getApi()
-                                .editAddress(params);
-                    }
-                })
-                .map(new Func1<Response<TkpdResponse>, ShipmentCartData>() {
-                    @Override
-                    public ShipmentCartData call(Response<TkpdResponse> response) {
-                        if (response.isSuccessful()) {
-                            if (!response.body().isError()) {
-                                if (!response.body().isNullData() &&
-                                        !response.body().getJsonData().isNull(KEY_FLAG_IS_SUCCESS)) {
-                                    int status = 0;
-                                    try {
-                                        status = response.body().getJsonData()
-                                                .getInt(KEY_FLAG_IS_SUCCESS);
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                    String message;
-                                    if (status == 1) {
-                                        message = response.body()
-                                                .getStatusMessages().get(0);
-                                    } else {
-                                        message = response.body().getErrorMessages().get(0);
-                                    }
-                                    ShipmentCartData shipmentCartData = new ShipmentCartData();
-                                    shipmentCartData.setStatus(String.valueOf(status));
-                                    shipmentCartData.setMessage(message);
-                                    return shipmentCartData;
-                                } else {
-                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_NULL_DATA);
-                                }
-                            } else {
-                                throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                            }
-                        } else {
-                            new ErrorHandler(new ErrorListener() {
-                                @Override
-                                public void onUnknown() {
-                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                                }
+    public void calculateShipment(TKPDMapParam<String, String> param, Subscriber<List<Shipment>> subscriber) {
+        ShipmentCartRepository shipmentCartRepository = new ShipmentCartRepository();
+        shipmentCartRepository.shipments(param)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribe(subscriber);
+    }
 
-                                @Override
-                                public void onTimeout() {
-                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
-                                }
-
-                                @Override
-                                public void onServerError() {
-                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                                }
-
-                                @Override
-                                public void onBadRequest() {
-                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                                }
-
-                                @Override
-                                public void onForbidden() {
-                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                                }
-                            }, response.code());
-                        }
-                        throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                    }
-                })
+    @Override
+    public void editShipmentCart(TKPDMapParam<String, String> param, Subscriber<EditShipmentCart> subscriber) {
+        ShipmentCartRepository shipmentCartRepository = new ShipmentCartRepository();
+        shipmentCartRepository.editShipment(param)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())

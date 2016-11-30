@@ -1,13 +1,17 @@
 package com.tokopedia.transaction.cart.repository.source;
 
+import com.tokopedia.core.network.apiservices.transaction.TXCartActService;
 import com.tokopedia.core.network.apiservices.transaction.TXCartService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.transaction.cart.model.shipmentcart.EditShipmentCart;
 import com.tokopedia.transaction.cart.repository.entity.CalculateShipmentEntity;
+import com.tokopedia.transaction.cart.repository.entity.EditShipmentEntity;
 import com.tokopedia.transaction.cart.repository.entity.ShipmentEntity;
+
+import org.json.JSONException;
 
 import java.util.List;
 import java.util.Map;
@@ -21,6 +25,8 @@ import rx.functions.Func1;
  */
 
 public class CloudShipmentCartSource {
+    private static final String KEY_FLAG_IS_SUCCESS = "is_success";
+
     public Observable<List<ShipmentEntity>> shipments(Map<String, String> param){
         return Observable.just(param)
                 .flatMap(new Func1<Map<String, String>, Observable<Response<TkpdResponse>>>() {
@@ -40,6 +46,81 @@ public class CloudShipmentCartSource {
                                 return calculateShipmentData.getShipment();
                             } else {
                                 throw new RuntimeException(response.body().getErrorMessages().get(0));
+                            }
+                        } else {
+                            new ErrorHandler(new ErrorListener() {
+                                @Override
+                                public void onUnknown() {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                                }
+
+                                @Override
+                                public void onTimeout() {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                                }
+
+                                @Override
+                                public void onServerError() {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                                }
+
+                                @Override
+                                public void onBadRequest() {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                                }
+
+                                @Override
+                                public void onForbidden() {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                                }
+                            }, response.code());
+                        }
+                        throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                    }
+                });
+    }
+
+    public Observable<EditShipmentEntity> editShipment(Map<String, String> param) {
+        return Observable.just(param)
+                .flatMap(new Func1<Map<String, String>, Observable<Response<TkpdResponse>>>() {
+                    @Override
+                    public Observable<Response<TkpdResponse>> call(Map<String, String> params) {
+                        TXCartActService service = new TXCartActService();
+                        return service
+                                .getApi()
+                                .editAddress(params);
+                    }
+                })
+                .map(new Func1<Response<TkpdResponse>, EditShipmentEntity>() {
+                    @Override
+                    public EditShipmentEntity call(Response<TkpdResponse> response) {
+                        if (response.isSuccessful()) {
+                            if (!response.body().isError()) {
+                                if (!response.body().isNullData() &&
+                                        !response.body().getJsonData().isNull(KEY_FLAG_IS_SUCCESS)) {
+                                    int status = 0;
+                                    try {
+                                        status = response.body().getJsonData()
+                                                .getInt(KEY_FLAG_IS_SUCCESS);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                    String message;
+                                    if (status == 1) {
+                                        message = response.body()
+                                                .getStatusMessages().get(0);
+                                    } else {
+                                        message = response.body().getErrorMessages().get(0);
+                                    }
+                                    EditShipmentEntity editShipmentCart = new EditShipmentEntity();
+                                    editShipmentCart.setStatus(String.valueOf(status));
+                                    editShipmentCart.setMessage(message);
+                                    return editShipmentCart;
+                                } else {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_NULL_DATA);
+                                }
+                            } else {
+                                throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                             }
                         } else {
                             new ErrorHandler(new ErrorListener() {
