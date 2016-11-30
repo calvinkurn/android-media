@@ -1,4 +1,4 @@
-package com.tokopedia.core.shop;
+package com.tokopedia.seller.shop;
 
 import android.app.IntentService;
 import android.content.Context;
@@ -27,7 +27,7 @@ import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.prototype.ShopSettingCache;
-import com.tokopedia.core.shop.constant.ShopEditServiceConstant;
+import com.tokopedia.seller.shop.constant.ShopEditServiceConstant;
 import com.tokopedia.core.shop.model.OpenShopPictureModel;
 import com.tokopedia.core.shop.model.ShopEditorModel;
 import com.tokopedia.core.shop.model.ShopScheduleModel;
@@ -37,7 +37,7 @@ import com.tokopedia.core.shop.model.openShopValidationData.OpenShopValidationDa
 import com.tokopedia.core.shop.model.responseEdit.ResponseEdit;
 import com.tokopedia.core.shop.model.shopData.Data;
 import com.tokopedia.core.shop.model.uploadShopLogoData.UploadShopLogoData;
-import com.tokopedia.core.shop.utils.UploadPhotoShopTask;
+import com.tokopedia.seller.shop.utils.UploadPhotoShopTask;
 import com.tokopedia.core.util.SessionHandler;
 
 import org.json.JSONException;

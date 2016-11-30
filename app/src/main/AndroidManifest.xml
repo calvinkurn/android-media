@@ -664,9 +664,7 @@
         <!-- ======================================================= -->
         <!-- PROVIDERS REGISTRY -->
         <!-- ======================================================= -->
-        <service
-            android:name="com.tokopedia.core.shop.ShopEditService"
-            android:exported="false" />
+
     </application>
 
 </manifest>

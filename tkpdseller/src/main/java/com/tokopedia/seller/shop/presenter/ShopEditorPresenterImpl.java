@@ -1,4 +1,4 @@
-package com.tokopedia.core.shop.presenter;
+package com.tokopedia.seller.shop.presenter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -18,9 +18,9 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.prototype.ShopCache;
 import com.tokopedia.core.prototype.ShopSettingCache;
-import com.tokopedia.core.shop.ShopEditService;
-import com.tokopedia.core.shop.constant.ShopEditServiceConstant;
-import com.tokopedia.core.shop.fragment.ShopScheduleDialog;
+import com.tokopedia.seller.shop.ShopEditService;
+import com.tokopedia.seller.shop.constant.ShopEditServiceConstant;
+import com.tokopedia.seller.shop.fragment.ShopScheduleDialog;
 import com.tokopedia.core.shop.model.ShopEditorModel;
 import com.tokopedia.core.shop.model.ShopScheduleModel;
 import com.tokopedia.core.shop.model.UpdateShopImageModel;

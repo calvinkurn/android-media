@@ -1,4 +1,4 @@
-package com.tokopedia.core.shop.fragment;
+package com.tokopedia.seller.shop.fragment;
 
 import android.app.Activity;
 import android.content.Context;
@@ -29,10 +29,10 @@ import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.shipping.model.openshopshipping.OpenShopData;
-import com.tokopedia.core.shop.ShopEditorActivity;
-import com.tokopedia.core.shop.presenter.ShopCreatePresenter;
-import com.tokopedia.core.shop.presenter.ShopCreatePresenterImpl;
-import com.tokopedia.core.shop.presenter.ShopCreateView;
+import com.tokopedia.seller.shop.ShopEditorActivity;
+import com.tokopedia.seller.shop.presenter.ShopCreatePresenter;
+import com.tokopedia.seller.shop.presenter.ShopCreatePresenterImpl;
+import com.tokopedia.seller.shop.presenter.ShopCreateView;
 import com.tokopedia.core.util.PhoneVerificationUtil;
 import com.tokopedia.core.util.UploadImageReVamp;
 
@@ -43,10 +43,10 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 
-import static com.tokopedia.core.shop.presenter.ShopCreatePresenter.DESC_ERROR;
-import static com.tokopedia.core.shop.presenter.ShopCreatePresenter.DOMAIN_ERROR;
-import static com.tokopedia.core.shop.presenter.ShopCreatePresenter.NAME_ERROR;
-import static com.tokopedia.core.shop.presenter.ShopCreatePresenter.TAG_ERROR;
+import static com.tokopedia.seller.shop.presenter.ShopCreatePresenter.DESC_ERROR;
+import static com.tokopedia.seller.shop.presenter.ShopCreatePresenter.DOMAIN_ERROR;
+import static com.tokopedia.seller.shop.presenter.ShopCreatePresenter.NAME_ERROR;
+import static com.tokopedia.seller.shop.presenter.ShopCreatePresenter.TAG_ERROR;
 
 /**
  * Created by Toped18 on 5/19/2016.

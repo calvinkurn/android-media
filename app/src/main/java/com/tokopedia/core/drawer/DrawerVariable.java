@@ -48,7 +48,6 @@ import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.session.presenter.SessionView;
-import com.tokopedia.core.shop.ShopEditorActivity;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity;
 import com.tokopedia.core.util.SessionHandler;
@@ -333,8 +332,9 @@ public class DrawerVariable {
             @Override
             public void onClick(View v) {
                 if (Session.getShopID().equals("0") || Session.getShopID().equals("")) {
-                    Intent intent = new Intent(context, ShopEditorActivity.class);
-                    intent.putExtra(ShopEditorActivity.FRAGMENT_TO_SHOW, ShopEditorActivity.CREATE_SHOP_FRAGMENT_TAG);
+                    Intent intent = SellerRouter.getAcitivityShopCreateEdit(context);
+                    intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
+                            SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
                     context.startActivity(intent);
                 } else {
                     Intent intent = new Intent(context, ShopInfoActivity.class);

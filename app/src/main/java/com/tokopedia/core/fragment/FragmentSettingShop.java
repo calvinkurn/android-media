@@ -17,9 +17,9 @@ import com.tokopedia.core.PaymentEditor;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.customadapter.SimpleListTabViewAdapter;
+import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.manage.shop.notes.activity.ManageShopNotesActivity;
 import com.tokopedia.core.shipping.EditShippingActivity;
-import com.tokopedia.core.shop.ShopEditorActivity;
 
 import java.util.ArrayList;
 
@@ -66,8 +66,10 @@ public class FragmentSettingShop extends Fragment{
 				Intent intent = null;
 				switch(pos) {
 				case 0:
-					intent = new Intent(getActivity(), ShopEditorActivity.class);
-					intent.putExtra(ShopEditorActivity.FRAGMENT_TO_SHOW, ShopEditorActivity.EDIT_SHOP_FRAGMENT_TAG);
+
+					intent = SellerRouter.getAcitivityShopCreateEdit(getActivity());
+					intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
+							SellerRouter.ShopSettingConstant.EDIT_SHOP_FRAGMENT_TAG);
 					startActivityForResult(intent, 0);
 					break;
 				case 1:
