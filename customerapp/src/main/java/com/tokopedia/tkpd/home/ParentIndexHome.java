@@ -20,8 +20,8 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.Cart;
 import com.tokopedia.core.GCMListenerService.NotificationListener;
 import com.tokopedia.core.GalleryBrowser;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.tkpd.R;
+
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -390,9 +390,9 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-//            case R2.id.action_search:
+//            case R.id.action_search:
 //                return onSearchOptionSelected();
-            case R2.id.action_cart:
+            case R.id.action_cart:
                 if (!SessionHandler.isV4Login(getBaseContext())) {
                     Intent intent = SessionRouter.getLoginActivityIntent(getApplicationContext());
                     intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.MOVE_TO_CART_TYPE);

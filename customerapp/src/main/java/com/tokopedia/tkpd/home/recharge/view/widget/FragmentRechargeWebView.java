@@ -21,7 +21,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
-import com.tokopedia.core.R;
+import com.tokopedia.tkpd.R;
 
 /**
  * @author by kulomady on 7/22/2016.

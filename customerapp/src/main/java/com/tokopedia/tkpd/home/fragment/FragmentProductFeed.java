@@ -20,8 +20,8 @@ import android.widget.ProgressBar;
 import com.tkpd.library.ui.floatbutton.FabSpeedDial;
 import com.tkpd.library.ui.floatbutton.ListenerFabClick;
 import com.tkpd.library.ui.floatbutton.SimpleMenuListenerAdapter;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.tkpd.R;
+
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
@@ -56,19 +56,19 @@ import static com.tokopedia.tkpd.home.presenter.ProductFeed.messageTag;
  */
 public class FragmentProductFeed extends Fragment implements ProductFeedView, DefaultRetryListener.OnClickRetry{
 
-    @BindView(R2.id.index_main_recycler_view)
+    @BindView(R.id.index_main_recycler_view)
     RecyclerView indexRecyclerView;
 
-    @BindView(R2.id.include_loading)
+    @BindView(R.id.include_loading)
     ProgressBar progressBar;
 
-    @BindView(R2.id.main_content)
+    @BindView(R.id.main_content)
     LinearLayout mainContent;
 
-    @BindView(R2.id.swipe_refresh_layout)
+    @BindView(R.id.swipe_refresh_layout)
     SwipeToRefresh swipeRefreshLayout;
 
-    @BindView(R2.id.fab_speed_dial)
+    @BindView(R.id.fab_speed_dial)
     FabSpeedDial fabAddProduct;
 
     RetryHandler retryHandlerFull;
@@ -128,13 +128,13 @@ public class FragmentProductFeed extends Fragment implements ProductFeedView, De
                 int id = menuItem.getItemId();
 
                 switch (id) {
-                    case R2.id.action_instagram:
+                    case R.id.action_instagram:
                         onAddInstagram();
                         break;
-                    case R2.id.action_gallery:
+                    case R.id.action_gallery:
                         ProductActivity.moveToImageGalleryCamera(getActivity(), 0, false, 5);
                         break;
-                    case R2.id.action_camera:
+                    case R.id.action_camera:
                         onAddGallery();
                         break;
                 }
@@ -172,7 +172,7 @@ public class FragmentProductFeed extends Fragment implements ProductFeedView, De
         });
     }
 
-    @OnClick(R2.id.fab_speed_dial)
+    @OnClick(R.id.fab_speed_dial)
     public void onFabClick(){
         productFeedPresenter.moveToAddProduct(getActivity());
     }

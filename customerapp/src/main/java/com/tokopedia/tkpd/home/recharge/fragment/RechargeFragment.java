@@ -30,8 +30,8 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.tkpd.R;
+
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customView.RechargeEditText;
@@ -320,7 +320,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         RechargeFragmentPermissionsDispatcher.doLaunchContactPickerWithCheck(RechargeFragment.this);
     }
 
-    @OnClick(R2.id.btn_buy)
+    @OnClick(R.id.btn_buy)
     void buttonBuyClicked() {
         buyButton.setEnabled(false);
         if (SessionHandler.isV4Login(getActivity())) {

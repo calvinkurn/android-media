@@ -14,8 +14,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.tkpd.R;
+
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
@@ -38,14 +38,14 @@ public class ProductHistoryFragment extends Fragment implements ProductHistoryVi
 
     public static final String FRAGMENT_TAG = "WishListFragment";
 
-    @BindView(R2.id.swipe_refresh_layout)
+    @BindView(R.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
 
-    @BindView(R2.id.recycler_view)
+    @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
-    @BindView(R2.id.progress_bar)
+    @BindView(R.id.progress_bar)
     ProgressBar progressBar;
-    @BindView(R2.id.main_content)
+    @BindView(R.id.main_content)
     LinearLayout mainContent;
 
     GridLayoutManager layoutManager;
