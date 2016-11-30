@@ -198,7 +198,7 @@ public class SquareMenuButton
                 });
             } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    LayoutInflater.from(context).inflate(R.layout.boom_menu_button, this, true);
+                     LayoutInflater.from(context).inflate(R.layout.boom_menu_button, this, true);
                 } else {
                     LayoutInflater.from(context).inflate(R.layout.boom_menu_button_below_lollipop, this, true);
                 }

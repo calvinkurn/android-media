@@ -22,4 +22,17 @@
 
     <!-- Discussion -->
     <dimen name="margin_title_with_icon">9dp</dimen>
+
+    <!-- boom menu -->
+    <!-- Boom menu dimens -->
+    <dimen name="default_corner_radius">4dp</dimen>
+    <dimen name="default_shadow_radius">4dp</dimen>
+
+    <dimen name="default_boom_button_corner_radius">28dp</dimen>
+
+    <dimen name="default_circle_button_corner_2radius">80dp</dimen>
+    <dimen name="default_circle_button_corner_radius">40dp</dimen>
+    <dimen name="default_circle_button_text_size">10sp</dimen>
+
+    <dimen name="default_ham_button_corner_radius">3dp</dimen>
 </resources>

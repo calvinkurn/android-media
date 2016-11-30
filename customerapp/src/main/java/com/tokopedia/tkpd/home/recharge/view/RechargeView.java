@@ -18,7 +18,7 @@ public interface RechargeView {
 
     void showImageOperator(String image);
 
-    void setOperatorView(RechargeOperatorModelDBAttrs operator);
+    void setOperatorView(RechargeOperatorModelDB operator);
 
     void hideProgressFetchData();
 

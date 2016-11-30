@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">tkpdsession</string>
+    <string name="bar_security_question" />
 </resources>

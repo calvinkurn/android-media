@@ -21,7 +21,7 @@ import com.tokopedia.core.manage.people.password.intentservice.ManagePasswordInt
 import com.tokopedia.core.manage.people.password.model.ChangePasswordParam;
 import com.tokopedia.core.manage.people.password.presenter.ManagePasswordFragmentPresenter;
 import com.tokopedia.core.manage.people.password.presenter.ManagePasswordFragmentPresenterImpl;
-import com.tokopedia.core.session.PasswordView;
+import com.tokopedia.core.customView.PasswordView;
 
 import butterknife.Bind;
 
@@ -40,7 +40,6 @@ public class ManagePasswordFragment extends BasePresenterFragment<ManagePassword
     TextInputLayout wrapperNew;
     @Bind(R2.id.wrapper_conf)
     TextInputLayout wrapperConf;
-
     @Bind(R2.id.save_button)
     TextView saveButton;
 

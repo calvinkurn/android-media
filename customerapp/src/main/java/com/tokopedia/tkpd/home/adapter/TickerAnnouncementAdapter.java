@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.tokopedia.core.network.entity.home.Ticker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.home.BannerWebView;
+import com.tokopedia.core.home.BannerWebView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

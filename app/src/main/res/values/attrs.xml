@@ -93,4 +93,14 @@
             <enum name="right" value="1" />
         </attr>
     </declare-styleable>
+
+    <declare-styleable name="LoginTextView">
+        <attr name="customText" format="string"/>
+        <attr name="textColor" format="color|reference"/>
+        <attr name="borderColor" format="color"/>
+        <attr name="borderSize" format="integer"/>
+        <attr name="cornerSize" format="integer"/>
+        <attr name="iconButton" format="integer"/>
+        <attr name="imageEnabled" format="boolean"/>
+    </declare-styleable>
 </resources>

@@ -56,6 +56,8 @@ public class SessionHandler {
     public static final String IS_MSISDN_VERIFIED = "IS_MSISDN_VERIFIED";
     public static final String DONT_REMIND_LATER = "DONT_REMIND_LATER";
     public static final String PHONE_NUMBER = "PHONE_NUMBER";
+    public static final String TEMP_PHONE_NUMBER = "TEMP_PHONE_NUMBER";
+    public static final String TEMP_NAME = "TEMP_NAME";
     private static final String MSISDN_SESSION = "MSISDN_SESSION";
 
     private static final String ACCESS_TOKEN = "ACCESS_TOKEN";
@@ -465,6 +467,30 @@ public class SessionHandler {
     public static String getPhoneNumber() {
         LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), LOGIN_SESSION);
         return cache.getString(PHONE_NUMBER, "");
+    }
+
+    public void setTempPhoneNumber(String userPhone) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        Editor editor = sharedPrefs.edit();
+        editor.putString(TEMP_PHONE_NUMBER, userPhone);
+        editor.apply();
+    }
+
+    public static String getTempPhoneNumber(Context context) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(TEMP_PHONE_NUMBER, "");
+    }
+
+    public void setTempLoginName (String userPhone) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        Editor editor = sharedPrefs.edit();
+        editor.putString(TEMP_NAME, userPhone);
+        editor.apply();
+    }
+
+    public static String getTempLoginName(Context context) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(TEMP_NAME, "");
     }
 
 

@@ -73,7 +73,7 @@ import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.product.interactor.CacheInteractor;
 import com.tokopedia.core.product.interactor.CacheInteractorImpl;
 import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.session.Login;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
@@ -284,7 +284,7 @@ public class ProductActivity extends BaseProductActivity implements
                     finish();
                 }
             } else {
-                Intent intentLogin = new Intent(this, Login.class);
+                Intent intentLogin = SessionRouter.getLoginActivityIntent(this);
                 intentLogin.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
                 startActivity(intentLogin);
                 finish();
@@ -309,7 +309,7 @@ public class ProductActivity extends BaseProductActivity implements
                 }
 
             } else {
-                Intent intentLogin = new Intent(this, Login.class);
+                Intent intentLogin = SessionRouter.getLoginActivityIntent(this);
                 intentLogin.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
                 startActivity(intentLogin);
                 finish();

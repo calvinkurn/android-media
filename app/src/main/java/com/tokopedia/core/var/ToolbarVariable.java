@@ -48,7 +48,7 @@ public class ToolbarVariable {
     }
 
     public void setTitleText(String text){
-        if(text != null && !text.isEmpty()) {
+        if(text != null && !text.isEmpty() && holder != null && holder.titleTextView != null) {
             holder.titleTextView.setText(text);
         }
     }
@@ -81,7 +81,7 @@ public class ToolbarVariable {
         setAsActionBar();
     }
 
-    private void initListener() {
+    public void initListener() {
         holder.drawerToggle.setOnClickListener(onDrawerToggleClicked());
     }
 

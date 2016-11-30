@@ -163,7 +163,7 @@
                         android:layout_centerInParent="true"
                         android:background="@color/colorLineSellerHome"/>
 
-                    <com.tokopedia.tkpd.home.view.ReputationView
+                    <com.tokopedia.sellerapp.home.view.ReputationView
                         android:layout_centerVertical="true"
                         android:id="@+id/seller_home_reputation_view"
                         android:layout_width="match_parent"
