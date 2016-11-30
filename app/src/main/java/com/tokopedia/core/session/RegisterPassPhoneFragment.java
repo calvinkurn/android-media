@@ -56,6 +56,7 @@ import butterknife.OnClick;
  */
 public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> implements RegisterThirdView {
     public static final String messageTAG = "RegisterPassPhoneFragment : ";
+    public static final String DEFAULT_GENDER = "1";
     private List<String> allowedFieldList;
 
     public static Fragment newInstance(CreatePasswordModel createPasswordModel, List<String> createPasswordList) {
@@ -238,6 +239,7 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
         if (vTos != null) {
             presenter.setData(RegisterNewImpl.convertToMap(RegisterThird.IS_CHECKED, vTos.isChecked()));
         }
+        presenter.setData(RegisterNewImpl.convertToMap(RegisterThird.GENDER, DEFAULT_GENDER));
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 
+import com.tokopedia.core.R;
 import com.tokopedia.core.customadapter.ImageUpload;
 import com.tokopedia.core.inboxreputation.model.actresult.ImageUploadResult;
 import com.tokopedia.core.inboxreputation.model.param.GenerateHostPass;
@@ -25,10 +26,12 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.network.v4.NetworkConfig;
+import com.tokopedia.core.util.ImageUploadHandler;
 
 import org.json.JSONException;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.List;
@@ -493,7 +496,12 @@ public class InboxTicketRetrofitInteractorImpl implements InboxTicketRetrofitInt
                                 .compileAllParam()
                                 .finish();
 
-                        File file = new File(imageUpload.getFileLoc());
+                        File file;
+                        try {
+                            file = ImageUploadHandler.writeImageToTkpdPath(ImageUploadHandler.compressImage(imageUpload.getFileLoc()));
+                        } catch (IOException e) {
+                            throw new RuntimeException(context.getString(R.string.error_upload_image));
+                        }
                         RequestBody userId = RequestBody.create(MediaType.parse("text/plain"),
                                 networkCalculator.getContent().get(NetworkCalculator.USER_ID));
                         RequestBody deviceId = RequestBody.create(MediaType.parse("text/plain"),

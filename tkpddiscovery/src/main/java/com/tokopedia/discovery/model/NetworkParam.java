@@ -129,14 +129,14 @@ public class NetworkParam {
 
     public static HashMap<String, String> generateShopQuery(Shop shop) {
         HashMap<String, String> data = new HashMap<>();
-        if (shop.extraFilter != null)
-            data.putAll(shop.extraFilter);
         data.put(BrowseApi.FLOC, shop.floc);
         data.put(BrowseApi.Q, shop.q);
         data.put(BrowseApi.FSHOP, shop.fshop);
         data.put(BrowseApi.ROWS, Integer.toString(shop.rows));
         data.put(BrowseApi.START, Integer.toString(shop.start));
         data.put(BrowseApi.DEVICE, shop.device);
+        if (shop.extraFilter != null)
+            data.putAll(shop.extraFilter);
         return data;
     }
 

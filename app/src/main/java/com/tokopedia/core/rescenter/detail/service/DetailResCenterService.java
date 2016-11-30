@@ -8,6 +8,7 @@ import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.tokopedia.core.R;
 import com.tokopedia.core.database.model.AttachmentResCenterDB;
 import com.tokopedia.core.network.apiservices.rescenter.ResCenterActService;
 import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
@@ -25,6 +26,7 @@ import com.tokopedia.core.rescenter.detail.model.actionresponsedata.UploadResCen
 import com.tokopedia.core.rescenter.detail.model.passdata.ActionParameterPassData;
 import com.tokopedia.core.rescenter.utils.LocalCacheManager;
 import com.tokopedia.core.rescenter.utils.UploadImageResCenter;
+import com.tokopedia.core.util.ImageUploadHandler;
 
 import java.io.File;
 import java.io.IOException;
@@ -670,7 +672,12 @@ public class DetailResCenterService extends IntentService implements DetailResCe
                                 .compileAllParam()
                                 .finish();
 
-                        File file = new File(attachmentResCenterDB.imagePath);
+                        File file;
+                        try {
+                            file = ImageUploadHandler.writeImageToTkpdPath(ImageUploadHandler.compressImage(attachmentResCenterDB.imagePath));
+                        } catch (IOException e) {
+                            throw new RuntimeException(getApplicationContext().getString(R.string.error_upload_image));
+                        }
                         RequestBody userId = RequestBody.create(MediaType.parse("text/plain"), networkCalculator.getContent().get(NetworkCalculator.USER_ID));
                         RequestBody deviceId = RequestBody.create(MediaType.parse("text/plain"), networkCalculator.getContent().get(NetworkCalculator.DEVICE_ID));
                         RequestBody hash = RequestBody.create(MediaType.parse("text/plain"), networkCalculator.getContent().get(NetworkCalculator.HASH));

@@ -11,7 +11,7 @@ import com.tokopedia.core.database.DbFlowDatabase;
  * @author ricoharisin on 7/14/16.
  */
 @Table(database = DbFlowDatabase.class, insertConflict = ConflictAction.REPLACE, updateConflict = ConflictAction.REPLACE)
-public class RechargeOperatorModelDB extends BaseModel {
+public class RechargeOperatorModelDBAttrs extends BaseModel {
 
     @PrimaryKey
     @Column
@@ -43,4 +43,5 @@ public class RechargeOperatorModelDB extends BaseModel {
 
     @Column
     public Boolean showProduct;
+
 }

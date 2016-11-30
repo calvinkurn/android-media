@@ -60,9 +60,6 @@
             android:name="android.app.default_searchable"
             android:value=".BrowseCategory" />
         <meta-data
-            android:name="LOCALYTICS_APP_KEY"
-            android:value="e5ce78bb486192da7790186-01e0f208-0058-11e5-9b02-00739d24cb30" />
-        <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/GOOGLE_API_KEY" />
         <meta-data
@@ -161,17 +158,7 @@
             android:label="Tokopedia"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <!-- LOCALYTICS TEST MESSAGE KEY -->
-                <data android:scheme="ampe5ce78bb486192da7790186-01e0f208-0058-11e5-9b02-00739d24cb30" />
 
-                <!-- DEBUG KEY -->
-                <!-- <data android:scheme="ampa4c853a5c07b6acfeb61343-037f3b9e-6591-11e5-bdf6-0013a62af900" /> -->
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-            </intent-filter>
         </activity>
         <activity
             android:name="com.tokopedia.core.ShopStatistic"
@@ -399,63 +386,6 @@
             android:label="@string/title_activity_buy_credit_cart"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.deeplink.activity.DeepLinkActivity"
-            android:hardwareAccelerated="true"
-            android:label="@string/title_activity_deep_link"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="www.tokopedia.com"
-                    android:pathPattern=".*"
-                    android:scheme="https" />
-                <data
-                    android:host="www.tokopedia.com"
-                    android:pathPattern=".*"
-                    android:scheme="tkpd" />
-                <data
-                    android:host="tokopedia.com"
-                    android:pathPattern=".*"
-                    android:scheme="https" />
-                <data
-                    android:host="m.tokopedia.com"
-                    android:pathPattern=".*"
-                    android:scheme="https" />
-                <data
-                    android:host="www.tokopedia.com"
-                    android:pathPrefix="/reset.pl"
-                    android:scheme="https" />
-                <data
-                    android:host="m.tokopedia.com"
-                    android:pathPrefix="/reset.pl"
-                    android:scheme="https" />
-                <data
-                    android:host="www.tokopedia.com"
-                    android:pathPrefix="/activation.pl"
-                    android:scheme="https" />
-                <data
-                    android:host="m.tokopedia.com"
-                    android:pathPrefix="/activation.pl"
-                    android:scheme="https" />
-                <data
-                    android:host="tokopedia.onelink.me"
-                    android:scheme="https" />
-                <data
-                    android:host="accounts.tokopedia.com"
-                    android:scheme="https" />
-                <data
-                    android:host="apps.tokopedia.com"
-                    android:scheme="http" />
-                <data
-                    android:host="apps.tokopedia.com"
-                    android:scheme="https" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name="com.tokopedia.core.CreditCardActivity"
             android:label="@string/title_activity_credit_card"
             android:screenOrientation="portrait" />
@@ -608,13 +538,6 @@
         <!--=======================================================-->
         <!--RECEIVERS REGISTRY-->
         <!--=======================================================-->
-        <receiver
-            android:name="com.localytics.android.ReferralReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.android.vending.INSTALL_REFERRER" />
-            </intent-filter>
-        </receiver>
         <receiver
             android:name="com.tokopedia.core.InstallReceiver"
             android:exported="true">

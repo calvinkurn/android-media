@@ -141,7 +141,11 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                 p.fshop = hotListBannerModel.query.fshop;
                 p.ob = hotListBannerModel.query.ob;
                 p.h = hotListBannerModel.query.hot_id;
-                p.q = hotListBannerModel.query.q;
+                if(hotListBannerModel.query.q.equals("()")){
+                    p.q = browseProductActivityModel.getQ();
+                } else {
+                    p.q = hotListBannerModel.query.q;
+                }
                 p.terms = hotListBannerModel.query.terms;
                 p.negative = hotListBannerModel.query.negative_keyword;
                 p.pmin = hotListBannerModel.query.pmin;

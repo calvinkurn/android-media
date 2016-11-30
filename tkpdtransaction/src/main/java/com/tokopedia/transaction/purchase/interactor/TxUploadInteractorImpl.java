@@ -8,12 +8,15 @@ import com.tokopedia.core.network.apiservices.upload.UploadImageService;
 import com.tokopedia.core.network.retrofit.response.GeneratedHost;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.util.ImageUploadHandler;
+import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.purchase.model.response.txverification.TxVerData;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -67,7 +70,12 @@ public class TxUploadInteractorImpl implements TxUploadInteractor {
 
                         Map<String, String> paramsMap = AuthUtil.generateParams(context,
                                 new HashMap<String, String>());
-                        File file = new File(imagePath);
+                        File file = null;
+                        try {
+                            file = ImageUploadHandler.writeImageToTkpdPath(ImageUploadHandler.compressImage(imagePath));
+                        } catch (IOException e) {
+                            throw new RuntimeException(context.getString(R.string.error_upload_image));
+                        }
                         RequestBody userId = RequestBody.create(MediaType.parse("text/plain"),
                                 paramsMap.get(PARAM_USER_ID));
                         RequestBody deviceId = RequestBody.create(MediaType.parse("text/plain"),
