@@ -37,7 +37,6 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.transaction.cart.adapter.ShipmentCartAdapter;
 import com.tokopedia.transaction.cart.adapter.ShipmentPackageCartAdapter;
 import com.tokopedia.transaction.cart.listener.IShipmentCartView;
-import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentData;
 import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentWrapper;
 import com.tokopedia.transaction.cart.model.calculateshipment.Shipment;
 import com.tokopedia.transaction.cart.model.calculateshipment.ShipmentPackage;
@@ -109,7 +108,7 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
 
     private TkpdProgressDialog progressdialog;
     private TransactionList transactionPassData;
-    private CalculateShipmentData shipmentData;
+    private List<Shipment> shipmentData;
     private ShipmentCartAdapter adapterShipment;
     private ShipmentPackageCartAdapter adapterShipmentPackage;
     private ShipmentCartWrapper wrapper;
@@ -275,7 +274,7 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
         locationPass = new LocationPass();
         locationPass.setLatitude(transactionPassData.getCartDestination().getLatitude());
         locationPass.setLongitude(transactionPassData.getCartDestination().getLongitude());
-        shipmentData = new CalculateShipmentData();
+        shipmentData = new ArrayList<>();
         adapterShipment = ShipmentCartAdapter.newInstance(getActivity());
         adapterShipmentPackage = ShipmentPackageCartAdapter.newInstance(getActivity());
         wrapper = new ShipmentCartWrapper();
@@ -307,7 +306,7 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
     }
 
     @Override
-    public void renderCalculateShipment(@NonNull CalculateShipmentData data) {
+    public void renderCalculateShipment(@NonNull List<Shipment> data) {
         shipmentData = data;
         renderSpinnerShipment();
     }
@@ -315,7 +314,7 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
     @Override
     public void renderSpinnerShipment() {
         ArrayList<Shipment> shipments = new ArrayList<>();
-        for (Shipment shipment : shipmentData.getShipment()) {
+        for (Shipment shipment : shipmentData) {
             if (shipment.getShipmentAvailable() != 0) {
                 shipments.add(shipment);
             }
@@ -507,7 +506,7 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
             tvErrorGeoLocation.setVisibility(View.VISIBLE);
             showSnackbar(getString(com.tokopedia.transaction.R.string.shipment_data_not_complete));
             return true;
-        } else if (shipmentData.getShipment() == null || shipmentData.getShipment().size() == 0) {
+        } else if (shipmentData == null || shipmentData.size() == 0) {
             showSnackbar(getString(com.tokopedia.transaction.R.string.courier_not_available));
             return true;
         }

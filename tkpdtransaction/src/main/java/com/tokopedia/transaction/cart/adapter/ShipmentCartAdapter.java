@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-
 import com.tokopedia.transaction.cart.model.calculateshipment.Shipment;
 
 import java.util.ArrayList;

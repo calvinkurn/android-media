@@ -1,8 +1,6 @@
 package com.tokopedia.transaction.cart.model.shipmentcart;
 
 
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 /**

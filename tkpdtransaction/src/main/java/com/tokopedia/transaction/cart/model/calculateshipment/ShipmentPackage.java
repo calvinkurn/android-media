@@ -189,4 +189,12 @@ public class ShipmentPackage implements Parcelable {
         parcel.writeInt(isShowMap);
         parcel.writeString(price);
     }
+
+    public int getIsShowMap() {
+        return isShowMap;
+    }
+
+    public void setIsShowMap(int isShowMap) {
+        this.isShowMap = isShowMap;
+    }
 }

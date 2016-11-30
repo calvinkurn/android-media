@@ -7,9 +7,10 @@ import android.support.annotation.NonNull;
 import com.tokopedia.core.geolocation.model.LocationPass;
 import com.tokopedia.transaction.cart.adapter.ShipmentCartAdapter;
 import com.tokopedia.transaction.cart.adapter.ShipmentPackageCartAdapter;
-import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentData;
+import com.tokopedia.transaction.cart.model.calculateshipment.Shipment;
 import com.tokopedia.transaction.cart.model.calculateshipment.ShipmentPackage;
-import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartData;
+
+import java.util.List;
 
 
 /**
@@ -22,7 +23,7 @@ public interface IShipmentCartView {
      *
      * @param data hasil dari network
      */
-    void renderCalculateShipment(@NonNull CalculateShipmentData data);
+    void renderCalculateShipment(@NonNull List<Shipment> data);
 
     void renderSpinnerShipment();
 

@@ -8,7 +8,6 @@ import android.os.Bundle;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.cart.fragment.ShipmentCartFragment;
-import com.tokopedia.transaction.cart.model.ShipmentCartPassData;
 import com.tokopedia.transaction.cart.model.cartdata.TransactionList;
 
 
