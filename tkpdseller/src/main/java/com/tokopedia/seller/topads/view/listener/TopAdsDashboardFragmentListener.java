@@ -10,7 +10,7 @@ import com.tokopedia.seller.topads.model.data.Summary;
  * Created by Nathaniel on 11/24/2016.
  */
 
-public interface TopAdsProductFragmentListener {
+public interface TopAdsDashboardFragmentListener {
 
     void onSummaryLoaded(@NonNull Summary summary);
 

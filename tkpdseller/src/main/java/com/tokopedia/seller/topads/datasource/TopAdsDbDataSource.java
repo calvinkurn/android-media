@@ -20,6 +20,4 @@ public interface TopAdsDbDataSource {
     Observable<Summary> getSummary(StatisticRequest statisticRequest);
 
     Observable<List<Cell>> insertCellList(StatisticRequest statisticRequest, List<Cell> cellList);
-
-    Observable<Void> deleteStatisticData();
 }

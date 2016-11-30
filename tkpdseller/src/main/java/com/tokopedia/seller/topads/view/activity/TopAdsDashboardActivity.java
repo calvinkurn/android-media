@@ -13,7 +13,8 @@ import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.view.adapter.TopAdsDashboardPagerAdapter;
-import com.tokopedia.seller.topads.view.fragment.TopAdsProductFragment;
+import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardProductFragment;
+import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardShopFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,10 +74,8 @@ public class TopAdsDashboardActivity extends BasePresenterActivity {
 
     public List<Fragment> getFragmentList() {
         List<Fragment> fragmentList = new ArrayList<>();
-        fragmentList.add(TopAdsProductFragment.createInstance());
-//        fragmentList.add(InboxMessageFragment.createInstance(MESSAGE_SENT));
-//        fragmentList.add(InboxMessageFragment.createInstance(MESSAGE_ARCHIVE));
-//        fragmentList.add(InboxMessageFragment.createInstance(MESSAGE_TRASH));
+        fragmentList.add(TopAdsDashboardProductFragment.createInstance());
+        fragmentList.add(TopAdsDashboardShopFragment.createInstance());
         return fragmentList;
     }
 

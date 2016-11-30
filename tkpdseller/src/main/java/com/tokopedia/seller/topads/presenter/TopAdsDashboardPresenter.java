@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Created by Nisie on 5/9/16.
  */
-public interface TopAdsProductFragmentPresenter {
+public interface TopAdsDashboardPresenter {
 
     /**
      * Populate summary based on date range

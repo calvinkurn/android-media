@@ -15,19 +15,13 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.model.data.DataDeposit;
 import com.tokopedia.seller.topads.model.data.Summary;
-import com.tokopedia.seller.topads.presenter.TopAdsProductFragmentPresenterImpl;
-import com.tokopedia.seller.topads.view.listener.TopAdsProductFragmentListener;
-
-import java.util.Calendar;
+import com.tokopedia.seller.topads.view.listener.TopAdsDashboardFragmentListener;
 
 import butterknife.Bind;
 
-/**
- * Created by Nisie on 5/9/16.
- */
-public class TopAdsProductFragment extends BasePresenterFragment<TopAdsProductFragmentPresenterImpl> implements TopAdsProductFragmentListener {
+public class TopAdsDashboardFragment<T> extends BasePresenterFragment<T> implements TopAdsDashboardFragmentListener {
 
-    private static String TAG = TopAdsProductFragment.class.getSimpleName();
+    private static String TAG = TopAdsDashboardFragment.class.getSimpleName();
 
     @Bind(R2.id.image_view_shop_icon)
     ImageView shopIconImageView;
@@ -49,8 +43,8 @@ public class TopAdsProductFragment extends BasePresenterFragment<TopAdsProductFr
     @Bind(R2.id.layout_top_ads_info_text_cost)
     View costInfoLayout;
 
-    public static TopAdsProductFragment createInstance() {
-        TopAdsProductFragment fragment = new TopAdsProductFragment();
+    public static TopAdsDashboardFragment createInstance() {
+        TopAdsDashboardFragment fragment = new TopAdsDashboardFragment();
         return fragment;
     }
 
@@ -81,8 +75,7 @@ public class TopAdsProductFragment extends BasePresenterFragment<TopAdsProductFr
 
     @Override
     protected void initialPresenter() {
-        presenter = new TopAdsProductFragmentPresenterImpl(getActivity());
-        presenter.setTopAdsProductFragmentListener(this);
+
     }
 
     @Override
@@ -103,12 +96,6 @@ public class TopAdsProductFragment extends BasePresenterFragment<TopAdsProductFr
     @Override
     protected void initView(View view) {
         initialLayout();
-        Calendar startCalendar = Calendar.getInstance();
-        Calendar endCalendar = Calendar.getInstance();
-        endCalendar.add(Calendar.DAY_OF_YEAR, 3);
-        presenter.populateSummary(startCalendar.getTime(), endCalendar.getTime());
-        presenter.populateDeposit();
-        presenter.populateShopInfo();
     }
 
     @Override

@@ -10,33 +10,29 @@ import com.tokopedia.seller.topads.model.data.DataDeposit;
 import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.model.exchange.DepositRequest;
 import com.tokopedia.seller.topads.model.exchange.StatisticRequest;
-import com.tokopedia.seller.topads.view.listener.TopAdsProductFragmentListener;
+import com.tokopedia.seller.topads.view.listener.TopAdsDashboardFragmentListener;
 
 import java.util.Date;
 
 /**
  * Created by Nisie on 5/9/16.
  */
-public class TopAdsProductFragmentPresenterImpl implements TopAdsProductFragmentPresenter {
-
-    private static final int TYPE_PRODUCT = 1;
+public abstract class TopAdsDashboardPresenterImpl implements TopAdsDashboardPresenter {
 
     private DashboardTopadsInteractor dashboardTopadsInteractor;
     private Context context;
 
-    private TopAdsProductFragmentListener topAdsProductFragmentListener;
+    private TopAdsDashboardFragmentListener mTopAdsDashboardFragmentListener;
 
-    public void setTopAdsProductFragmentListener(TopAdsProductFragmentListener topAdsProductFragmentListener) {
-        this.topAdsProductFragmentListener = topAdsProductFragmentListener;
+    public void setTopAdsDashboardFragmentListener(TopAdsDashboardFragmentListener topAdsDashboardFragmentListener) {
+        this.mTopAdsDashboardFragmentListener = topAdsDashboardFragmentListener;
     }
 
-    public TopAdsProductFragmentPresenterImpl(Context context) {
+    public abstract int getType();
+
+    public TopAdsDashboardPresenterImpl(Context context) {
         this.context = context;
         dashboardTopadsInteractor = new DashboardTopadsInteractorImpl(context);
-    }
-
-    public int getType() {
-        return TYPE_PRODUCT;
     }
 
     private String getShopId() {
@@ -53,15 +49,15 @@ public class TopAdsProductFragmentPresenterImpl implements TopAdsProductFragment
         dashboardTopadsInteractor.getDashboardSummary(statisticRequest, new DashboardTopadsInteractor.Listener<Summary>() {
             @Override
             public void onSuccess(Summary summary) {
-                if (topAdsProductFragmentListener != null) {
-                    topAdsProductFragmentListener.onSummaryLoaded(summary);
+                if (mTopAdsDashboardFragmentListener != null) {
+                    mTopAdsDashboardFragmentListener.onSummaryLoaded(summary);
                 }
             }
 
             @Override
             public void onError(Throwable throwable) {
-                if (topAdsProductFragmentListener != null) {
-                    topAdsProductFragmentListener.onLoadSummaryError(throwable);
+                if (mTopAdsDashboardFragmentListener != null) {
+                    mTopAdsDashboardFragmentListener.onLoadSummaryError(throwable);
                 }
             }
         });
@@ -74,15 +70,15 @@ public class TopAdsProductFragmentPresenterImpl implements TopAdsProductFragment
         dashboardTopadsInteractor.getDeposit(depositRequest, new DashboardTopadsInteractor.Listener<DataDeposit>() {
             @Override
             public void onSuccess(DataDeposit dataDeposit) {
-                if (topAdsProductFragmentListener != null) {
-                    topAdsProductFragmentListener.onDepositTopAdsLoaded(dataDeposit);
+                if (mTopAdsDashboardFragmentListener != null) {
+                    mTopAdsDashboardFragmentListener.onDepositTopAdsLoaded(dataDeposit);
                 }
             }
 
             @Override
             public void onError(Throwable throwable) {
-                if (topAdsProductFragmentListener != null) {
-                    topAdsProductFragmentListener.onLoadDepositTopAdsError(throwable);
+                if (mTopAdsDashboardFragmentListener != null) {
+                    mTopAdsDashboardFragmentListener.onLoadDepositTopAdsError(throwable);
                 }
             }
         });
@@ -93,15 +89,15 @@ public class TopAdsProductFragmentPresenterImpl implements TopAdsProductFragment
         dashboardTopadsInteractor.getShopInfo(getShopId(), new DashboardTopadsInteractor.Listener<ShopModel>() {
             @Override
             public void onSuccess(ShopModel shopModel) {
-                if (topAdsProductFragmentListener != null) {
-                    topAdsProductFragmentListener.onShopDetailLoaded(shopModel);
+                if (mTopAdsDashboardFragmentListener != null) {
+                    mTopAdsDashboardFragmentListener.onShopDetailLoaded(shopModel);
                 }
             }
 
             @Override
             public void onError(Throwable throwable) {
-                if (topAdsProductFragmentListener != null) {
-                    topAdsProductFragmentListener.onLoadShopDetailError(throwable);
+                if (mTopAdsDashboardFragmentListener != null) {
+                    mTopAdsDashboardFragmentListener.onLoadShopDetailError(throwable);
                 }
             }
         });
