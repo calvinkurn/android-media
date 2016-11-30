@@ -29,7 +29,7 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -37,9 +37,9 @@ import butterknife.ButterKnife;
  */
 public class SortProductActivity extends TActivity {
 
-    @Bind(R2.id.toolbar)
+    @BindView(R2.id.toolbar)
     Toolbar toolbar;
-    @Bind(R2.id.list)
+    @BindView(R2.id.list)
     RecyclerView recyclerView;
     private ListAdapter adapter;
     public static final String SORT_ACTION_INTENT = BuildConfig.APPLICATION_ID + ".SORT";

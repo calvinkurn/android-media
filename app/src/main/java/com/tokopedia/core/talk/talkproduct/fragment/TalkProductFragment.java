@@ -36,7 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -65,11 +65,11 @@ public class TalkProductFragment extends BasePresenterFragment<TalkProductPresen
     TalkProductAdapter adapter;
     GridLayoutManager layoutManager;
 
-    @Bind(R2.id.swipe_refresh_layout)
+    @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
-    @Bind(R2.id.recycler_view)
+    @BindView(R2.id.recycler_view)
     RecyclerView recyclerView;
-    @Bind(R2.id.include_loading)
+    @BindView(R2.id.include_loading)
     ProgressBar progressBar;
     SnackbarRetry snackbarRetry;
 
@@ -404,7 +404,7 @@ public class TalkProductFragment extends BasePresenterFragment<TalkProductPresen
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     @Override

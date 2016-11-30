@@ -20,7 +20,7 @@ import com.tokopedia.core.manage.people.profile.listener.EmailVerificationView;
 import com.tokopedia.core.manage.people.profile.presenter.EmailVerificationPresenter;
 import com.tokopedia.core.manage.people.profile.presenter.EmailVerificationPresenterImpl;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -30,34 +30,34 @@ import butterknife.ButterKnife;
 public class EmailVerificationDialogFragment extends DialogFragment implements EmailVerificationView {
 
     private static final String PARAM_USER_EMAIL = "user_email";
-    @Bind(R2.id.current_email)
+    @BindView(R2.id.current_email)
     TextView currentEmail;
 
-    @Bind(R2.id.email_input)
+    @BindView(R2.id.email_input)
     EditText emailInput;
 
-    @Bind(R2.id.password)
+    @BindView(R2.id.password)
     EditText userPassword;
 
-    @Bind(R2.id.input_otp_code)
+    @BindView(R2.id.input_otp_code)
     EditText inputOtpCodeField;
 
-    @Bind(R2.id.code_confirm_button)
+    @BindView(R2.id.code_confirm_button)
     TextView confirmButton;
 
-    @Bind(R2.id.abort_button)
+    @BindView(R2.id.abort_button)
     TextView cancelButton;
 
-    @Bind(R2.id.close_button)
+    @BindView(R2.id.close_button)
     TextView closeButton;
 
-    @Bind(R2.id.request_otp_code)
+    @BindView(R2.id.request_otp_code)
     TextView requestOTPButton;
 
-    @Bind(R2.id.instruction_check_new_email)
+    @BindView(R2.id.instruction_check_new_email)
     View checkEmailInstruction;
 
-    @Bind(R2.id.change_email_layout)
+    @BindView(R2.id.change_email_layout)
     View changeEmailLayout;
 
     public interface EmailChangeConfirmationListener {

@@ -24,7 +24,7 @@ import com.tokopedia.core.tracking.model.tracking.TrackingResponse;
 import com.tokopedia.core.tracking.presenter.TrackingFragmentPresenter;
 import com.tokopedia.core.tracking.presenter.TrackingFragmentPresenterImpl;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Alifa on 10/12/2016.
@@ -32,46 +32,46 @@ import butterknife.Bind;
 
 public class TrackingFragment  extends BasePresenterFragment<TrackingFragmentPresenter> implements TrackingFragmentView {
 
-    @Bind(R2.id.mainView)
+    @BindView(R2.id.mainView)
     View mainView;
 
-    @Bind(R2.id.loadingStatus)
+    @BindView(R2.id.loadingStatus)
     ProgressBar loadingStatus;
 
     //HEADER
-    @Bind(R2.id.tracking_status)
+    @BindView(R2.id.tracking_status)
     TextView sendingStatus;
-    @Bind(R2.id.view_status)
+    @BindView(R2.id.view_status)
     View statusView;
 
     //VIEW1
-    @Bind(R2.id.ref_num)
+    @BindView(R2.id.ref_num)
     TextView refNumber;
-    @Bind(R2.id.receiver_name_non_jne)
+    @BindView(R2.id.receiver_name_non_jne)
     TextView receiverName;
-    @Bind(R2.id.date)
+    @BindView(R2.id.date)
     TextView sendingDate;
-    @Bind(R2.id.tracking_code)
+    @BindView(R2.id.tracking_code)
     TextView serviceCode;
-    @Bind(R2.id.view_receiver_non_jne)
+    @BindView(R2.id.view_receiver_non_jne)
     View viewReceiver;
-    @Bind(R2.id.view_receiver_jne)
+    @BindView(R2.id.view_receiver_jne)
     View viewReceiverJNE;
 
     //VIEW DETAIL
-    @Bind(R2.id.view_footer_tracking)
+    @BindView(R2.id.view_footer_tracking)
     View footerTracking;
-    @Bind(R2.id.view_detail_shipping)
+    @BindView(R2.id.view_detail_shipping)
     View detailShipping;
-    @Bind(R2.id.sender_name)
+    @BindView(R2.id.sender_name)
     TextView sellerName;
-    @Bind(R2.id.sender_city)
+    @BindView(R2.id.sender_city)
     TextView sellerCity;
-    @Bind(R2.id.receiver_name)
+    @BindView(R2.id.receiver_name)
     TextView buyerName;
-    @Bind(R2.id.receiver_city)
+    @BindView(R2.id.receiver_city)
     TextView buyerCity;
-    @Bind(R2.id.tracking_result)
+    @BindView(R2.id.tracking_result)
     RecyclerView addressRV;
 
 

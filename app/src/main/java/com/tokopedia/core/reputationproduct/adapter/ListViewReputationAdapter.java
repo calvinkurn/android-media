@@ -27,7 +27,7 @@ import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.R;
 import com.tokopedia.core.reputationproduct.facade.FacadeReputation;
 import com.tokopedia.core.inboxreputation.model.ImageUpload;
-import com.tokopedia.core.session.Login;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.LabelUtils;
 import com.tokopedia.core.util.ReportTalkReview;
@@ -460,7 +460,7 @@ public class ListViewReputationAdapter extends BaseAdapter {
         return new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(context, Login.class);
+                Intent intent = SessionRouter.getLoginActivityIntent(context);
                 intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
                 intent.putExtra("product_id", getProductID(pos));
                 context.startActivity(intent);

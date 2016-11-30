@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.discovery.model.DynamicObject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -17,11 +17,11 @@ import butterknife.ButterKnife;
  */
 public class DynamicViewHolder extends RecyclerView.ViewHolder {
 
-    @Bind(R2.id.dynamic_parent_view_holder_text)
+    @BindView(R2.id.dynamic_parent_view_holder_text)
     TextView dynamicParentViewHolderText;
-    @Bind(R2.id.dynamic_parent_view_holder_checkbox)
+    @BindView(R2.id.dynamic_parent_view_holder_checkbox)
     CheckBox dynamicParentViewHolder;
-    @Bind(R2.id.container)
+    @BindView(R2.id.container)
     LinearLayout containerLayout;
     DynamicObject dynamicObject;
 

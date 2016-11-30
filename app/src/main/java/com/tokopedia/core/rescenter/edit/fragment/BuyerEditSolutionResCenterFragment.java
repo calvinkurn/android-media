@@ -42,7 +42,7 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -61,19 +61,19 @@ public class BuyerEditSolutionResCenterFragment
 
     private static final String ARGS_PARAM_PASS_DATA = "pass_data";
 
-    @Bind(R2.id.invoice)
+    @BindView(R2.id.invoice)
     TextView invoice;
-    @Bind(R2.id.shop_name)
+    @BindView(R2.id.shop_name)
     TextView shopName;
-    @Bind(R2.id.view_solution_section)
+    @BindView(R2.id.view_solution_section)
     EditSolutionView solutionSectionView;
-    @Bind(R2.id.view_attachment_section)
+    @BindView(R2.id.view_attachment_section)
     EditAttachmentView attachmenSectionView;
-    @Bind(R2.id.view_message_section)
+    @BindView(R2.id.view_message_section)
     MessageView messageView;
-    @Bind(R2.id.main_view)
+    @BindView(R2.id.main_view)
     View mainView;
-    @Bind(R2.id.include_loading)
+    @BindView(R2.id.include_loading)
     View loading;
 
     private ActionParameterPassData passData;

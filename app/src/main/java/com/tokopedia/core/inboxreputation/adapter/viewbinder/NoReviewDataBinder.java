@@ -31,7 +31,7 @@ import com.tokopedia.core.inboxreputation.presenter.InboxReputationDetailFragmen
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -48,25 +48,25 @@ public class NoReviewDataBinder extends DataBinder<NoReviewDataBinder.ViewHolder
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R2.id.product_avatar)
+        @BindView(R2.id.product_avatar)
         ImageView productAvatar;
 
-        @Bind(R2.id.product_title)
+        @BindView(R2.id.product_title)
         TextView productName;
 
-        @Bind(R2.id.product_review_date)
+        @BindView(R2.id.product_review_date)
         TextView productReviewDate;
 
-        @Bind(R2.id.btn_overflow)
+        @BindView(R2.id.btn_overflow)
         ImageView overflow;
 
-        @Bind(R2.id.review_info)
+        @BindView(R2.id.review_info)
         TextView reviewInfo;
 
-        @Bind(R2.id.give_review)
+        @BindView(R2.id.give_review)
         View viewGiveReview;
 
-        @Bind(R2.id.btn_give_review)
+        @BindView(R2.id.btn_give_review)
         TextView btnGiveReview;
 
         public ViewHolder(View itemView) {

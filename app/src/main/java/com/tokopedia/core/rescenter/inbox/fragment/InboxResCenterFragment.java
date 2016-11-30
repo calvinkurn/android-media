@@ -30,7 +30,7 @@ import com.tokopedia.core.var.TkpdState;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created on 3/23/16.
@@ -42,9 +42,9 @@ public class InboxResCenterFragment extends BasePresenterFragment<InboxResCenter
     private static final String ARG_PARAM_INBOX_TAB = "ARG_PARAM_INBOX_TAB";
     private static final String ARG_PARAM_INBOX_LIST = "ARG_PARAM_INBOX_LIST";
 
-    @Bind(R2.id.recycler_view)
+    @BindView(R2.id.recycler_view)
     RecyclerView recyclerView;
-    @Bind(R2.id.fab)
+    @BindView(R2.id.fab)
     FloatingActionButton fab;
 
     private View rootView;

@@ -23,7 +23,7 @@ import com.tokopedia.core.util.LabelUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -36,16 +36,16 @@ public class InboxTicketAdapter extends BaseLinearRecyclerViewAdapter implements
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R2.id.title)
+        @BindView(R2.id.title)
         TextView title;
 
-        @Bind(R2.id.status)
+        @BindView(R2.id.status)
         TextView status;
 
-        @Bind(R2.id.create_time)
+        @BindView(R2.id.create_time)
         TextView createTime;
 
-        @Bind(R2.id.main)
+        @BindView(R2.id.main)
         View main;
 
         LabelUtils label;

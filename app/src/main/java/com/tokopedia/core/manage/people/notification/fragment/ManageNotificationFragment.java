@@ -16,7 +16,7 @@ import com.tokopedia.core.manage.people.notification.presenter.ManageNotificatio
 import com.tokopedia.core.manage.people.notification.presenter.ManageNotificationPresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Nisie on 6/22/16.
@@ -24,28 +24,28 @@ import butterknife.Bind;
 public class ManageNotificationFragment extends BasePresenterFragment<ManageNotificationPresenter>
         implements ManageNotificationFragmentView {
 
-    @Bind(R2.id.newsletter)
+    @BindView(R2.id.newsletter)
     CheckBox newsletterCheckBox;
 
-    @Bind(R2.id.reviews)
+    @BindView(R2.id.reviews)
     CheckBox reviewsCheckBox;
 
-    @Bind(R2.id.talkabout)
+    @BindView(R2.id.talkabout)
     CheckBox talkCheckBox;
 
-    @Bind(R2.id.message)
+    @BindView(R2.id.message)
     CheckBox messageCheckBox;
 
-    @Bind(R2.id.admin_message)
+    @BindView(R2.id.admin_message)
     CheckBox adminCheckBox;
 
-    @Bind(R2.id.save_but)
+    @BindView(R2.id.save_but)
     TextView saveButton;
 
-    @Bind(R2.id.main_view)
+    @BindView(R2.id.main_view)
     View mainView;
 
-    @Bind(R2.id.set_ring)
+    @BindView(R2.id.set_ring)
     TextView setRingButton;
 
     TkpdProgressDialog mProgressDialog;

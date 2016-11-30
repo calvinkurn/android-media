@@ -14,7 +14,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.myproduct.fragment.AddProductFragment;
 import com.tokopedia.core.myproduct.utils.DelegateOnClick;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
@@ -29,28 +29,28 @@ public class AddProductShare {
     ConnectionDetector cd;
     DelegateOnClick delegateOnClick;
 
-    @Bind(R2.id.add_product_facebook_but)
+    @BindView(R2.id.add_product_facebook_but)
     RelativeLayout facebookShareBut;
 
-    @Bind(R2.id.twitter_but)
+    @BindView(R2.id.twitter_but)
     RelativeLayout twitterShareBut;
 
-    @Bind(R2.id.add_product_facebook)
+    @BindView(R2.id.add_product_facebook)
     ImageView facebookShare;
 
-    @Bind(R2.id.add_product_twitter)
+    @BindView(R2.id.add_product_twitter)
     ImageView addProductTwitter;
 
-    @Bind(R2.id.facebook_checkbut)
+    @BindView(R2.id.facebook_checkbut)
     CheckBox facebookCheckBut;
 
-    @Bind(R2.id.twitter_checkbut)
+    @BindView(R2.id.twitter_checkbut)
     CheckBox twitterCheckBut;
 
-    @Bind(R2.id.add_product_facebook_text)
+    @BindView(R2.id.add_product_facebook_text)
     TextView facebookTextView;
 
-    @Bind(R2.id.berbagi_title)
+    @BindView(R2.id.berbagi_title)
     TextView berbagiTitleTextView;
 
     public AddProductShare(View view){

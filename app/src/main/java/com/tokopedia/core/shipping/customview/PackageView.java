@@ -10,7 +10,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.shipping.fragment.EditShippingViewListener;
 import com.tokopedia.core.shipping.model.editshipping.Courier;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Kris on 6/6/2016.
@@ -19,7 +19,7 @@ import butterknife.Bind;
 public class PackageView extends EditShippingCourierView<Courier,
         EditShippingViewListener>{
 
-    @Bind(R2.id.checkbox_holder) LinearLayout checkBoxHolder;
+    @BindView(R2.id.checkbox_holder) LinearLayout checkBoxHolder;
 
     private EditShippingViewListener mainView;
 

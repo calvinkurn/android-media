@@ -27,7 +27,7 @@ import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RefreshHandler;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Nisie on 3/30/16.
@@ -35,37 +35,37 @@ import butterknife.Bind;
 public class DepositFragment extends BasePresenterFragment<DepositFragmentPresenter>
         implements DepositFragmentView {
 
-    @Bind(R2.id.total_balance)
+    @BindView(R2.id.total_balance)
     TextView totalBalance;
 
-    @Bind(R2.id.start_date)
+    @BindView(R2.id.start_date)
     EditText startDate;
 
-    @Bind(R2.id.end_date)
+    @BindView(R2.id.end_date)
     EditText endDate;
 
-    @Bind(R2.id.search_button)
+    @BindView(R2.id.search_button)
     TextView searchButton;
 
-    @Bind(R2.id.withdraw_button)
+    @BindView(R2.id.withdraw_button)
     TextView drawButton;
 
-    @Bind(R2.id.balance_list)
+    @BindView(R2.id.balance_list)
     RecyclerView listViewBalance;
 
-    @Bind(R2.id.main_view)
+    @BindView(R2.id.main_view)
     View mainView;
 
-    @Bind(R2.id.deposit_header)
+    @BindView(R2.id.deposit_header)
     RelativeLayout topSlideOffBar;
 
-    @Bind(R2.id.review_warning_layout)
+    @BindView(R2.id.review_warning_layout)
     RelativeLayout reviewWarning;
 
-    @Bind(R2.id.amount_review)
+    @BindView(R2.id.amount_review)
     TextView amountBeingReviewed;
 
-    @Bind(R2.id.topup_button)
+    @BindView(R2.id.topup_button)
     TextView topupButton;
 
     DatePickerUtil datePicker;

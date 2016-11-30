@@ -10,13 +10,11 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.msisdn.fragment.MsisdnFragment;
-import com.tokopedia.core.session.Login;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
-
-import static com.facebook.internal.CallbackManagerImpl.RequestCodeOffset.Login;
 
 /**
  * Created by nisie on 11/7/16.
@@ -88,7 +86,7 @@ public class MsisdnActivity extends BasePresenterActivity {
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(this, Login.class);
+        Intent intent = SessionRouter.getLoginActivityIntent(this);
         intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
         intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
         startActivity(intent);

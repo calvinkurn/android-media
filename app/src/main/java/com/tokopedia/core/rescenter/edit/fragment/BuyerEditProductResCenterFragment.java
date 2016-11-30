@@ -30,7 +30,7 @@ import com.tokopedia.core.rescenter.edit.presenter.BuyerEditProductImpl;
 import com.tokopedia.core.rescenter.edit.presenter.BuyerEditProductPresenter;
 import com.tokopedia.core.util.AppUtils;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -45,15 +45,15 @@ public class BuyerEditProductResCenterFragment
     private ActionParameterPassData passData;
     private ProductAdapter adapter;
 
-    @Bind(R2.id.invoice)
+    @BindView(R2.id.invoice)
     TextView invoice;
-    @Bind(R2.id.shop_name)
+    @BindView(R2.id.shop_name)
     TextView shopName;
-    @Bind(R2.id.recycler_view)
+    @BindView(R2.id.recycler_view)
     RecyclerView productRecyclerView;
-    @Bind(R2.id.main_view)
+    @BindView(R2.id.main_view)
     View mainView;
-    @Bind(R2.id.include_loading)
+    @BindView(R2.id.include_loading)
     View loading;
 
     public static Fragment newInstane(ActionParameterPassData passData) {

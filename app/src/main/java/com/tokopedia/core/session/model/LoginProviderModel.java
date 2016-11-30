@@ -25,12 +25,24 @@ public class LoginProviderModel implements Parcelable {
     @Expose
     private List<ProvidersBean> providers;
 
+    @SerializedName("url_background_seller")
+    @Expose
+    private String urlBackground;
+
     public List<ProvidersBean> getProviders() {
         return providers;
     }
 
     public void setProviders(List<ProvidersBean> providers) {
         this.providers = providers;
+    }
+
+    public String getUrlBackground() {
+        return urlBackground;
+    }
+
+    public void setUrlBackground(String urlBackground) {
+        this.urlBackground = urlBackground;
     }
 
     public static class ProvidersBean {
@@ -91,6 +103,9 @@ public class LoginProviderModel implements Parcelable {
         }
     }
 
+    public LoginProviderModel() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -99,14 +114,13 @@ public class LoginProviderModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeList(this.providers);
-    }
-
-    public LoginProviderModel() {
+        dest.writeString(this.urlBackground);
     }
 
     protected LoginProviderModel(Parcel in) {
         this.providers = new ArrayList<ProvidersBean>();
         in.readList(this.providers, ProvidersBean.class.getClassLoader());
+        this.urlBackground = in.readString();
     }
 
     public static final Creator<LoginProviderModel> CREATOR = new Creator<LoginProviderModel>() {

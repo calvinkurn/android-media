@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.localytics.android.Customer;
 import com.localytics.android.Localytics;
 import com.localytics.android.MessagingListener;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
@@ -91,4 +92,8 @@ public interface ILocalyticsContainer {
                               Map<String, String> attributes);
 
     void sendLoginSuccessfull(CustomerWrapper customerWrapper);
+
+    void sendEventRegister(Customer build, String label, Map<String, String> attributesLogin);
+
+    void sendEventLogin(Customer build, String label, Map<String, String> attributesLogin);
 }

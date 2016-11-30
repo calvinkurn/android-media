@@ -50,13 +50,14 @@ import com.tokopedia.core.network.retrofit.utils.DialogForceLogout;
 import com.tokopedia.core.network.retrofit.utils.DialogNoConnection;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.ErrorNetworkReceiver;
 import com.tokopedia.core.service.HUDIntent;
 import com.tokopedia.core.service.HadesBroadcastReceiver;
 import com.tokopedia.core.service.HadesService;
 import com.tokopedia.core.service.constant.HadesConstant;
-import com.tokopedia.core.session.Login;
+
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
@@ -143,7 +144,7 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
         mReceiverLogout = new ErrorNetworkReceiver();
 
         /* clear cache if not login */
-        if (!SessionHandler.isV4Login(this)){
+        if (!SessionHandler.isV4Login(this)) {
 //            CacheHomeInteractorImpl.deleteAllCache();
             new GlobalCacheManager().deleteAll();
         }
@@ -163,7 +164,7 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
     }
 
     private boolean isSellerApp() {
-        return getApplication().getClass().getSimpleName().equals("SellerMainApplication");
+        return ((MainApplication) getApplication()).getApplicationType() == 2;
     }
 
     @Override
@@ -362,7 +363,7 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
 
     public static boolean onCartOptionSelected(Context context) {
         if (!SessionHandler.isV4Login(context)) {
-            Intent intent = new Intent(context, Login.class);
+            Intent intent = SessionRouter.getLoginActivityIntent(context);
             intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
             context.startActivity(intent);
         } else {
@@ -374,7 +375,7 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
     private Boolean onCartOptionSelected() {
 
         if (!SessionHandler.isV4Login(getBaseContext())) {
-            Intent intent = new Intent(this, Login.class);
+            Intent intent = SessionRouter.getLoginActivityIntent(getBaseContext());
             intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
             startActivity(intent);
         } else {
@@ -439,10 +440,19 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
     public void onLogout(Boolean success) {
         if (success) {
             finish();
-            Intent intent = HomeRouter.getHomeActivity(this);
+            Intent intent;
+            if (isSeller()) {
+                intent = SessionRouter.getLoginActivityIntent(this);
+            } else {
+                intent = HomeRouter.getHomeActivity(this);
+            }
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         }
+    }
+
+    private boolean isSeller() {
+        return getApplication().getClass().getSimpleName().equals("SellerMainApplication");
     }
 
 
@@ -598,7 +608,7 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("mailto:" + "android.feedback@tokopedia.com"));
         intent.putExtra(Intent.EXTRA_SUBJECT, "Masalah Server Error");
-        intent.putExtra(Intent.EXTRA_TEXT, "Versi Aplikasi: "+ GlobalConfig.VERSION_CODE);
+        intent.putExtra(Intent.EXTRA_TEXT, "Versi Aplikasi: " + GlobalConfig.VERSION_CODE);
         startActivity(Intent.createChooser(intent, "Kirim Email"));
     }
 }

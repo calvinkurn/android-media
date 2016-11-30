@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -32,11 +32,11 @@ public class DialogToEtalase extends Dialog {
     private final Context context;
     private final int productId;
 
-    @Bind(R2.id.ok_button)
+    @BindView(R2.id.ok_button)
     TextView tvYes;
-    @Bind(R2.id.spinner_etalase)
+    @BindView(R2.id.spinner_etalase)
     Spinner spinner;
-    @Bind(R2.id.etalase_name)
+    @BindView(R2.id.etalase_name)
     EditText etNew;
 
     private final Listener listener;

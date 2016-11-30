@@ -56,6 +56,8 @@ public class SessionHandler {
     public static final String IS_MSISDN_VERIFIED = "IS_MSISDN_VERIFIED";
     public static final String DONT_REMIND_LATER = "DONT_REMIND_LATER";
     public static final String PHONE_NUMBER = "PHONE_NUMBER";
+    public static final String TEMP_PHONE_NUMBER = "TEMP_PHONE_NUMBER";
+    public static final String TEMP_NAME = "TEMP_NAME";
     private static final String MSISDN_SESSION = "MSISDN_SESSION";
 
     private static final String ACCESS_TOKEN = "ACCESS_TOKEN";
@@ -467,6 +469,30 @@ public class SessionHandler {
         return cache.getString(PHONE_NUMBER, "");
     }
 
+    public void setTempPhoneNumber(String userPhone) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        Editor editor = sharedPrefs.edit();
+        editor.putString(TEMP_PHONE_NUMBER, userPhone);
+        editor.apply();
+    }
+
+    public static String getTempPhoneNumber(Context context) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(TEMP_PHONE_NUMBER, "");
+    }
+
+    public void setTempLoginName (String userPhone) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        Editor editor = sharedPrefs.edit();
+        editor.putString(TEMP_NAME, userPhone);
+        editor.apply();
+    }
+
+    public static String getTempLoginName(Context context) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(TEMP_NAME, "");
+    }
+
 
     public void setToken(String accessToken, String tokenType, String refreshToken) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
@@ -502,5 +528,11 @@ public class SessionHandler {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         boolean isFirst = sharedPrefs.getBoolean(IS_FIRST_TIME_STORAGE, true);
         return isFirst;
+    }
+
+    public static boolean isUserSeller(Context context) {
+        if(!SessionHandler.getShopID(context).isEmpty() && !SessionHandler.getShopID(context).equals("0"))
+            return true;
+        return false;
     }
 }

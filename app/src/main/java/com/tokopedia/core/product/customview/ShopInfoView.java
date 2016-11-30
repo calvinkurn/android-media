@@ -28,7 +28,7 @@ import com.tokopedia.core.util.SessionHandler;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Angga.Prasetiyo on 27/10/2015.
@@ -36,27 +36,27 @@ import butterknife.Bind;
 public class ShopInfoView extends BaseView<ProductDetailData, ProductDetailView> {
     private static final String TAG = ShopInfoView.class.getSimpleName();
 
-    @Bind(R2.id.iv_ava)
+    @BindView(R2.id.iv_ava)
     ImageView ivShopAva;
-    @Bind(R2.id.iv_gold)
+    @BindView(R2.id.iv_gold)
     ImageView ivGoldShop;
-    @Bind(R2.id.iv_lucky)
+    @BindView(R2.id.iv_lucky)
     ImageView ivLuckyShop;
-    @Bind(R2.id.tv_name)
+    @BindView(R2.id.tv_name)
     TextView tvShopName;
-    @Bind(R2.id.tv_location)
+    @BindView(R2.id.tv_location)
     TextView tvShopLoc;
-    @Bind(R2.id.iv_fav)
+    @BindView(R2.id.iv_fav)
     ImageView ivBtnFav;
-    @Bind(R2.id.iv_message)
+    @BindView(R2.id.iv_message)
     ImageView ivShopMessage;
-    @Bind(R2.id.l_rating)
+    @BindView(R2.id.l_rating)
     LinearLayout llRating;
-    @Bind(R2.id.l_medal)
+    @BindView(R2.id.l_medal)
     LinearLayout llReputationMedal;
-    @Bind(R2.id.tv_reputation)
+    @BindView(R2.id.tv_reputation)
     TextView tvReputationPoint;
-    @Bind(R2.id.l_other)
+    @BindView(R2.id.l_other)
     LinearLayout layoutOther;
     private boolean isShopFavorite = false;
 

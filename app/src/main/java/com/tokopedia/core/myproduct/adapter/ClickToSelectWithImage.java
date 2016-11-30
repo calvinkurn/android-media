@@ -18,7 +18,7 @@ import com.tokopedia.core.myproduct.model.CatalogDataModel;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -28,10 +28,10 @@ import butterknife.ButterKnife;
 public class ClickToSelectWithImage extends FrameLayout {
     Context context;
 
-    @Bind(R2.id.image_selected)
+    @BindView(R2.id.image_selected)
     ImageView imageSelected;
 
-    @Bind(R2.id.desc_selected)
+    @BindView(R2.id.desc_selected)
     TextView descSelected;
 
     ImageChooserDialog imageChooserDialog;

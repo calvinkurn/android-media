@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.tokopedia.core.presenter.BaseView;
 
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * Created by m.normansyah on 1/27/16.
@@ -18,6 +19,7 @@ import butterknife.ButterKnife;
 public abstract  class BaseFragment<T extends Base> extends Fragment implements BaseView{
     protected T presenter;
     protected View parentView;
+    protected Unbinder unbinder;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,7 +37,7 @@ public abstract  class BaseFragment<T extends Base> extends Fragment implements 
         // Inflate the layout for this fragment
         View parentView = inflater.inflate(getLayoutId(), container, false);
         inflateOtherView(parentView);
-        ButterKnife.bind(this, parentView);
+        unbinder = ButterKnife.bind(this, parentView);
         customView();
         return this.parentView = onCreateView(parentView, savedInstanceState);
     }
@@ -67,7 +69,7 @@ public abstract  class BaseFragment<T extends Base> extends Fragment implements 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     @Override

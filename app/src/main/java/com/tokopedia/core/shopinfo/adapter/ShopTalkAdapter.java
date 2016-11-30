@@ -25,7 +25,7 @@ import com.tokopedia.core.util.ToolTipUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -62,37 +62,37 @@ public class ShopTalkAdapter extends BaseLinearRecyclerViewAdapter {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R2.id.but_overflow)
+        @BindView(R2.id.but_overflow)
         View overflowButton;
 
-        @Bind(R2.id.prod_image)
+        @BindView(R2.id.prod_image)
         ImageView productImage;
 
-        @Bind(R2.id.user_name)
+        @BindView(R2.id.user_name)
         TextView userName;
 
-        @Bind(R2.id.reputation_view)
+        @BindView(R2.id.reputation_view)
         View reputationView;
 
-        @Bind(R2.id.rep_icon)
+        @BindView(R2.id.rep_icon)
         ImageView reputationIcon;
 
-        @Bind(R2.id.rep_rating)
+        @BindView(R2.id.rep_rating)
         TextView reputationRating;
 
-        @Bind(R2.id.product_name)
+        @BindView(R2.id.product_name)
         TextView productName;
 
-        @Bind(R2.id.message)
+        @BindView(R2.id.message)
         TextView message;
 
-        @Bind(R2.id.create_time)
+        @BindView(R2.id.create_time)
         TextView createTime;
 
-        @Bind(R2.id.total_comment)
+        @BindView(R2.id.total_comment)
         TextView totalComment;
 
-        @Bind(R2.id.main_view)
+        @BindView(R2.id.main_view)
         View mainView;
 
         public ViewHolder(View itemView) {

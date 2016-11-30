@@ -13,7 +13,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.shipping.fragment.EditShippingViewListener;
 import com.tokopedia.core.shipping.model.editshipping.Courier;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Kris on 6/6/2016.
@@ -22,19 +22,19 @@ import butterknife.Bind;
 public class CourierView extends EditShippingCourierView<Courier,
         EditShippingViewListener>{
 
-    @Bind(R2.id.courier_name_placeholder) LinearLayout courierNamePlaceHolder;
+    @BindView(R2.id.courier_name_placeholder) LinearLayout courierNamePlaceHolder;
 
-    @Bind(R2.id.name) TextView courierNameText;
+    @BindView(R2.id.name) TextView courierNameText;
 
-    @Bind(R2.id.img_courier) ImageView courierImageHolder;
+    @BindView(R2.id.img_courier) ImageView courierImageHolder;
 
-    @Bind(R2.id.shipping_settings) LinearLayout shipmentSettings;
+    @BindView(R2.id.shipping_settings) LinearLayout shipmentSettings;
 
-    @Bind(R2.id.children_layout) PackageView packageView;
+    @BindView(R2.id.children_layout) PackageView packageView;
 
-    @Bind(R2.id.package_view_holder) LinearLayout packageViewHolder;
+    @BindView(R2.id.package_view_holder) LinearLayout packageViewHolder;
 
-    @Bind(R2.id.courier_unavailable_warning)
+    @BindView(R2.id.courier_unavailable_warning)
     TextView courierUnavailableWarning;
 
     private EditShippingViewListener mainView;

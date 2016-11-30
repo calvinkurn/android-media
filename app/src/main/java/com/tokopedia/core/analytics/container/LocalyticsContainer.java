@@ -537,4 +537,30 @@ public class LocalyticsContainer implements ILocalyticsContainer {
                 });
         executeTagEvent(observable, null);
     }
+
+    @Override
+    public void sendEventRegister(final Customer customer, final String methodName, final Map<String, String> attributes) {
+        Observable<Boolean> observable = Observable.just(true)
+                .map(new Func1<Boolean, Boolean>() {
+                    @Override
+                    public Boolean call(Boolean aBoolean) {
+                        Localytics.tagCustomerRegistered(customer, methodName, attributes);
+                        return null;
+                    }
+                });
+        executeTagEvent(observable, null);
+    }
+
+    @Override
+    public void sendEventLogin(final Customer customer, final String methodName, final Map<String, String> attributes) {
+        Observable<Boolean> observable = Observable.just(true)
+                .map(new Func1<Boolean, Boolean>() {
+                    @Override
+                    public Boolean call(Boolean aBoolean) {
+                        Localytics.tagCustomerLoggedIn(customer, methodName, attributes);
+                        return null;
+                    }
+                });
+        executeTagEvent(observable, null);
+    }
 }

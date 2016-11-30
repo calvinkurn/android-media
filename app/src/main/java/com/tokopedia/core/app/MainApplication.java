@@ -46,7 +46,8 @@ public class MainApplication extends TkpdMultiDexApplication {
 
 
 	public static final int DATABASE_VERSION = 7;
-	private static Context context;
+    public static final int DEFAULT_APPLICATION_TYPE = -1;
+    private static Context context;
 	private static Activity activity;
 	private static Boolean isResetNotification = false;
 	private static Boolean isResetDrawer = false;
@@ -60,6 +61,10 @@ public class MainApplication extends TkpdMultiDexApplication {
     public static String PACKAGE_NAME;
     public static MainApplication instance;
     private static GlobalConfig GlobalConfig;
+
+    protected int getApplicationType(){
+        return DEFAULT_APPLICATION_TYPE;
+    }
 
     public static MainApplication getInstance() {
         return instance;

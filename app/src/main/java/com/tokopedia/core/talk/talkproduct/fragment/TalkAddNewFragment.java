@@ -23,7 +23,7 @@ import com.tokopedia.core.talk.talkproduct.model.AddNewTalkPass;
 import com.tokopedia.core.talk.talkproduct.presenter.TalkAddNewPresenter;
 import com.tokopedia.core.talk.talkproduct.presenter.TalkAddNewPresenterImpl;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -33,13 +33,13 @@ public class TalkAddNewFragment extends BasePresenterFragment<TalkAddNewPresente
                                 implements TalkAddNewView{
 
 
-    @Bind(R2.id.message)
+    @BindView(R2.id.message)
     EditText mMessage;
-    @Bind(R2.id.product)
+    @BindView(R2.id.product)
     TextView mProdName;
-    @Bind(R2.id.card_view) View cardView;
-    @Bind(R2.id.send) View send;
-    @Bind(R2.id.container) View container;
+    @BindView(R2.id.card_view) View cardView;
+    @BindView(R2.id.send) View send;
+    @BindView(R2.id.container) View container;
 
     TkpdProgressDialog mProgressDialog;
     String mMessageText;

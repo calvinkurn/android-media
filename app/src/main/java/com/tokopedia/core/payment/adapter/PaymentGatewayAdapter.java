@@ -17,7 +17,7 @@ import com.tokopedia.core.cart.model.GatewayList;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -54,11 +54,11 @@ public class PaymentGatewayAdapter extends ArrayAdapter<GatewayList> {
 
     static class ViewHolder {
 
-        @Bind(R2.id.img)
+        @BindView(R2.id.img)
         ImageView ivLogo;
-        @Bind(R2.id.name)
+        @BindView(R2.id.name)
         TextView tvName;
-        @Bind(R2.id.payment_fee)
+        @BindView(R2.id.payment_fee)
         TextView tvFee;
 
         public ViewHolder(View view) {

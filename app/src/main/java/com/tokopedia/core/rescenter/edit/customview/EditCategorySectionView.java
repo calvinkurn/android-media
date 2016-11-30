@@ -14,7 +14,7 @@ import com.tokopedia.core.rescenter.edit.listener.BuyerEditResCenterListener;
 import com.tokopedia.core.rescenter.edit.model.passdata.EditResCenterFormData;
 import com.tokopedia.core.rescenter.edit.model.passdata.EditResCenterFormData.TroubleCategoryData;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnItemSelected;
 
 /**
@@ -24,7 +24,7 @@ public class EditCategorySectionView extends BaseView<EditResCenterFormData, Buy
 
     private static final String TAG = EditCategorySectionView.class.getSimpleName();
 
-    @Bind(R2.id.spinner_trouble_category)
+    @BindView(R2.id.spinner_trouble_category)
     Spinner categoryTroubleSpinner;
 
     private TroubleCategorySpinnerAdapter adapter;

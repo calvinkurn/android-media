@@ -29,8 +29,6 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.DrawerPresenterActivity;
-import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.drawer.interactor.NetworkInteractor;
 import com.tokopedia.core.drawer.interactor.NetworkInteractorImpl;
 import com.tokopedia.core.drawer.model.DrawerHeader;
@@ -47,7 +45,7 @@ import com.tokopedia.core.myproduct.ManageProduct;
 import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.session.Login;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shop.ShopEditorActivity;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -154,10 +152,7 @@ public class DrawerVariableSeller extends DrawerVariable {
         adapter = new DrawerSellerAdapter(context, model.data);
         layoutManager = new LinearLayoutManager(context);
         animator = new DefaultItemAnimator();
-        if (context instanceof DrawerPresenterActivity || context instanceof TkpdActivity)
-            toolbar.createToolbarWithDrawer();
-        else
-            toolbar.createToolbarWithoutDrawer();
+        toolbar.createToolbarWithDrawer();
         initFacade();
         createShopMenu();
         createInboxMenu();
@@ -358,7 +353,7 @@ public class DrawerVariableSeller extends DrawerVariable {
 //                break;
             case TkpdState.DrawerPosition.LOGIN:
             case TkpdState.DrawerPosition.REGISTER:
-                intent = new Intent(context, Login.class);
+                intent = SessionRouter.getLoginActivityIntent(context);
                 intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, ((DrawerItem) model.data.get(position)).id);
                 intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
                 context.startActivity(intent);
@@ -462,6 +457,10 @@ public class DrawerVariableSeller extends DrawerVariable {
     }
 
     private void goToShopNewOrder() {
+        goToShopNewOrder(context);
+    }
+
+    public static void goToShopNewOrder(Context context) {
         Intent intent = SellerRouter.getActivitySellingTransaction(context);
         Bundle bundle = new Bundle();
         bundle.putInt("tab", 1);

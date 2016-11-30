@@ -88,6 +88,10 @@ public class NotificationItem {
         CacheNotif.applyEditor();
     }
 
+    public int getNotifMessageSellerSpecific() {
+        return CacheNotif.getInt("message") + CacheNotif.getInt("talk");
+    }
+
     public int getTotalNotif() {
         return CacheNotif.getInt("total_notif");
     }

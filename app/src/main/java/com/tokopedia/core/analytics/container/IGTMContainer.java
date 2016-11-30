@@ -93,4 +93,6 @@ public interface IGTMContainer {
     TagManager getTagManager();
 
     void pushUserId(String userId);
+
+    void sendButtonClick(String loginError, String login, String loginError1, String label);
 }

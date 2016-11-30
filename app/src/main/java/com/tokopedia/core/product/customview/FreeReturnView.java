@@ -24,18 +24,18 @@ import com.tokopedia.core.product.model.productdetail.ReturnInfo;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by stevenfredian on 7/18/16.
  */
 public class FreeReturnView extends BaseView<ProductDetailData, ProductDetailView> {
 
-    @Bind(R2.id.layout_free_return)
+    @BindView(R2.id.layout_free_return)
     LinearLayout layoutFreeReturn;
-    @Bind(R2.id.image_free_return)
+    @BindView(R2.id.image_free_return)
     ImageView imageFreeReturn;
-    @Bind(R2.id.text_free_return)
+    @BindView(R2.id.text_free_return)
     TextView textFreeReturn;
 
     public FreeReturnView(Context context) {

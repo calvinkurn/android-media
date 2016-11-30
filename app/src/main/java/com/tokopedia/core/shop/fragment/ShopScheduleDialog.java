@@ -31,7 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -59,13 +59,13 @@ public class ShopScheduleDialog extends DialogFragment {
         return fragment;
     }
 
-    @Bind(R2.id.start_date)
+    @BindView(R2.id.start_date)
     EditText startDate;
-    @Bind(R2.id.end_date)
+    @BindView(R2.id.end_date)
     EditText endDate;
-    @Bind(R2.id.close_checkbox)
+    @BindView(R2.id.close_checkbox)
     CheckBox closeCheckbox;
-    @Bind(R2.id.note_text)
+    @BindView(R2.id.note_text)
     EditText noteText;
 
     private DatePickerUtil datePicker;

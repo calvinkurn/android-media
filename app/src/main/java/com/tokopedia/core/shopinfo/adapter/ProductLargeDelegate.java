@@ -27,7 +27,7 @@ import com.tokopedia.core.var.ProductItem;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.R.attr.tint;
@@ -39,21 +39,21 @@ public class ProductLargeDelegate {
 
     public class VHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R2.id.product_image)
+        @BindView(R2.id.product_image)
         public SquareImageView img;
-        @Bind(R2.id.title)
+        @BindView(R2.id.title)
         public TextView name;
-        @Bind(R2.id.price)
+        @BindView(R2.id.price)
         public TextView price;
-        @Bind(R2.id.container)
+        @BindView(R2.id.container)
         public View mainView;
-        @Bind(R2.id.badges_container)
+        @BindView(R2.id.badges_container)
         public LinearLayout containerBadge;
-        @Bind(R2.id.label_container)
+        @BindView(R2.id.label_container)
         public FlowLayout containerLabel;
-        @Bind(R2.id.shop_name)
+        @BindView(R2.id.shop_name)
         public View shopName;
-        @Bind(R2.id.location)
+        @BindView(R2.id.location)
         public View location;
 
         public VHolder(View itemView) {

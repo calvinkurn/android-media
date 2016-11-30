@@ -11,8 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.tkpd.R;
+
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.database.model.CategoryDB;
@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -89,11 +89,11 @@ public class CategoryAdapter extends ProductAdapter{
 
     public class ViewHolder extends BaseRecyclerViewAdapter.ViewHolder{
 
-        @Bind(R2.id.category_cardview)
+        @BindView(R.id.category_cardview)
         CardView categoryCardView;
-        @Bind(R2.id.image_cat)
+        @BindView(R.id.image_cat)
         ImageView pImageView;
-        @Bind(R2.id.title_cat)
+        @BindView(R.id.title_cat)
         TextView pNameView;
         Model data;
 
@@ -108,7 +108,7 @@ public class CategoryAdapter extends ProductAdapter{
             pNameView.setText(itemView.getContext().getString(data.textRes));
         }
 
-        @OnClick(R2.id.category_cardview)
+        @OnClick(R.id.category_cardview)
         public void onClick(View view){
             BrowseProductActivity.moveTo(itemView.getContext(), data.depId + "", TopAdsApi.SRC_DIRECTORY);
 

@@ -26,7 +26,7 @@ import com.tokopedia.core.var.TkpdState;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 public class InboxResCenterActivity extends DrawerPresenterActivity<ResCenterPresenter>
         implements ResCenterView {
@@ -34,9 +34,9 @@ public class InboxResCenterActivity extends DrawerPresenterActivity<ResCenterPre
     public static final String TAG = InboxResCenterActivity.class.getSimpleName();
     public static final String EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION";
 
-    @Bind(R2.id.pager)
+    @BindView(R2.id.pager)
     public ViewPager viewPager;
-    @Bind(R2.id.indicator)
+    @BindView(R2.id.indicator)
     public TabLayout tabLayout;
 
     private SectionsPagerAdapter pagerAdapter;

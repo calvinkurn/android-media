@@ -7,7 +7,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.myproduct.fragment.AddProductFragment;
 import com.tokopedia.core.myproduct.utils.DelegateOnClick;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -17,9 +17,9 @@ import butterknife.OnClick;
 public class AddProductSubmit {
     DelegateOnClick delegateOnClick;
 
-    @Bind(R2.id.add_product_submit)
+    @BindView(R2.id.add_product_submit)
     TextView submit;
-    @Bind(R2.id.add_product_submit_and_push)
+    @BindView(R2.id.add_product_submit_and_push)
     TextView submitAndAdd;
 
     public AddProductSubmit(View view){

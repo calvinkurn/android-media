@@ -41,7 +41,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by nisie on 9/6/16.
@@ -49,79 +49,79 @@ import butterknife.Bind;
 public class AddAddressFragment extends BasePresenterFragment<AddAddressPresenter>
         implements AddAddressFragmentView, ManageAddressConstant {
 
-    @Bind(R2.id.receiver_name_layout)
+    @BindView(R2.id.receiver_name_layout)
     TextInputLayout receiverNameLayout;
 
-    @Bind(R2.id.receiver_name)
+    @BindView(R2.id.receiver_name)
     EditText receiverNameEditText;
 
-    @Bind(R2.id.address_type_layout)
+    @BindView(R2.id.address_type_layout)
     TextInputLayout addressTypeLayout;
 
-    @Bind(R2.id.address_type)
+    @BindView(R2.id.address_type)
     EditText addressTypeEditText;
 
-    @Bind(R2.id.address_layout)
+    @BindView(R2.id.address_layout)
     TextInputLayout addressLayout;
 
-    @Bind(R2.id.address)
+    @BindView(R2.id.address)
     EditText addressEditText;
 
-    @Bind(R2.id.post_code_layout)
+    @BindView(R2.id.post_code_layout)
     TextInputLayout postCodeLayout;
 
-    @Bind(R2.id.post_code)
+    @BindView(R2.id.post_code)
     EditText postcodeEditText;
 
-    @Bind(R2.id.receiver_phone_layout)
+    @BindView(R2.id.receiver_phone_layout)
     TextInputLayout receiverPhoneLayout;
 
-    @Bind(R2.id.receiver_phone)
+    @BindView(R2.id.receiver_phone)
     EditText receiverPhoneEditText;
 
-    @Bind(R2.id.province_error)
+    @BindView(R2.id.province_error)
     TextView provinceError;
 
-    @Bind(R2.id.regency_error)
+    @BindView(R2.id.regency_error)
     TextView regencyError;
 
-    @Bind(R2.id.sub_district_error)
+    @BindView(R2.id.sub_district_error)
     TextView subDistrictError;
 
-    @Bind(R2.id.regency)
+    @BindView(R2.id.regency)
     Spinner spinnerRegency;
 
-    @Bind(R2.id.sub_district)
+    @BindView(R2.id.sub_district)
     Spinner spinnerSubDistrict;
 
-    @Bind(R2.id.provinsi)
+    @BindView(R2.id.provinsi)
     Spinner spinnerProvince;
 
-    @Bind(R2.id.regency_progress)
+    @BindView(R2.id.regency_progress)
     ProgressBar progressRegency;
 
-    @Bind(R2.id.district_progress)
+    @BindView(R2.id.district_progress)
     ProgressBar progressDistrict;
 
-    @Bind(R2.id.regency_title)
+    @BindView(R2.id.regency_title)
     TextView regencyTitle;
 
-    @Bind(R2.id.district_title)
+    @BindView(R2.id.district_title)
     TextView districtTitle;
 
-    @Bind(R2.id.layout_value_location)
+    @BindView(R2.id.layout_value_location)
     View chooseLocation;
 
-    @Bind(R2.id.value_location)
+    @BindView(R2.id.value_location)
     EditText locationEditText;
 
-    @Bind(R2.id.password_layout)
+    @BindView(R2.id.password_layout)
     TextInputLayout passwordLayout;
 
-    @Bind(R2.id.password)
+    @BindView(R2.id.password)
     EditText password;
 
-    @Bind(R2.id.save_button)
+    @BindView(R2.id.save_button)
     TextView saveButton;
 
     ProvinceAdapter provinceAdapter;

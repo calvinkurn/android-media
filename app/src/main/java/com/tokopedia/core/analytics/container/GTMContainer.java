@@ -19,6 +19,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
+import com.tokopedia.core.analytics.nishikino.model.ButtonClickEvent;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
@@ -321,6 +322,26 @@ public class GTMContainer implements IGTMContainer {
 
     public static ContainerHolder getContainerHolder() {
         return ContainerHolderSingleton.getContainerHolder();
+    }
+
+    @Override
+    public void sendButtonClick(String event,
+                                String category,
+                                String action,
+                                String label) {
+        ButtonClickEvent clickEvent = new ButtonClickEvent(
+                event,
+                category,
+                action,
+                label
+        );
+        sendButtonEvent(clickEvent);
+    }
+
+    public GTMContainer sendButtonEvent(ButtonClickEvent buttonClickEvent) {
+        Log.i("Tag Manager", "UA-9801603-15: Send Button Click Event");
+        GTMDataLayer.pushGeneral(context, buttonClickEvent.getEvent());
+        return this;
     }
 
     public static Container getContainer() {

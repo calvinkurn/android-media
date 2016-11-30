@@ -43,7 +43,7 @@ import com.tokopedia.core.geolocation.presenter.GoogleMapPresenter;
 import com.tokopedia.core.geolocation.presenter.GoogleMapPresenterImpl;
 import com.tokopedia.core.util.RequestPermissionUtil;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created on 1/29/16.
@@ -59,17 +59,17 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
     private static final String ARG_PARAM_GEOLOCATION_PASS_DATA = "ARG_PARAM_GEOLOCATION_PASS_DATA";
     private static final String STATE_MAPVIEW_SAVE_STATE = "STATE_MAPVIEW_SAVE_STATE";
 
-    @Bind(R2.id.mapview)
+    @BindView(R2.id.mapview)
     MapView mapView;
-    @Bind(R2.id.app_bar)
+    @BindView(R2.id.app_bar)
     Toolbar toolbar;
-    @Bind(R2.id.autocomplete)
+    @BindView(R2.id.autocomplete)
     AutoCompleteTextView autoComplete;
-    @Bind(R2.id.pointer_text)
+    @BindView(R2.id.pointer_text)
     TextView textPointer;
-    @Bind(R2.id.pointer_submit)
+    @BindView(R2.id.pointer_submit)
     View submitPointer;
-    @Bind(R2.id.fab)
+    @BindView(R2.id.fab)
     FloatingActionButton fab;
 
     private LocationPass locationPass;

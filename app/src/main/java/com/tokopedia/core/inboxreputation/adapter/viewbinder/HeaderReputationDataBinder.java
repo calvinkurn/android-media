@@ -28,7 +28,7 @@ import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.LabelUtils;
 import com.tokopedia.core.util.ToolTipUtils;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -49,67 +49,67 @@ public class HeaderReputationDataBinder extends DataBinder<HeaderReputationDataB
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R2.id.username)
+        @BindView(R2.id.username)
         TextView username;
 
-        @Bind(R2.id.invoice)
+        @BindView(R2.id.invoice)
         TextView headerInvoice;
 
-        @Bind(R2.id.avatar)
+        @BindView(R2.id.avatar)
         ImageView avatar;
 
-        @Bind(R2.id.smiley_bad)
+        @BindView(R2.id.smiley_bad)
         ImageView smileyBad;
 
-        @Bind(R2.id.view_smiley_bad)
+        @BindView(R2.id.view_smiley_bad)
         View viewBad;
 
-        @Bind(R2.id.smiley_neutral)
+        @BindView(R2.id.smiley_neutral)
         ImageView smileyNeutral;
 
-        @Bind(R2.id.view_smiley_neutral)
+        @BindView(R2.id.view_smiley_neutral)
         View viewNeutral;
 
-        @Bind(R2.id.smiley_good)
+        @BindView(R2.id.smiley_good)
         ImageView smileyGood;
 
-        @Bind(R2.id.smiley_good_title)
+        @BindView(R2.id.smiley_good_title)
         TextView smileyGoodTitle;
 
-        @Bind(R2.id.reviewee_reputation_smiley)
+        @BindView(R2.id.reviewee_reputation_smiley)
         ImageView smileyReviewee;
 
-        @Bind(R2.id.rep_rating)
+        @BindView(R2.id.rep_rating)
         TextView textPercentage;
 
-        @Bind(R2.id.rep_icon)
+        @BindView(R2.id.rep_icon)
         ImageView iconPercentage;
 
-        @Bind(R2.id.reputation_holder)
+        @BindView(R2.id.reputation_holder)
         LinearLayout reputationLabel;
 
-        @Bind(R2.id.reputation_holder_user)
+        @BindView(R2.id.reputation_holder_user)
         View viewPercentage;
 
-        @Bind(R2.id.reviewer_reputation_title)
+        @BindView(R2.id.reviewer_reputation_title)
         TextView reviewerTitle;
 
-        @Bind(R2.id.reviewee_reputation_title_edited)
+        @BindView(R2.id.reviewee_reputation_title_edited)
         TextView revieweeTitleEdited;
 
-        @Bind(R2.id.reviewer_reputation_title_edited)
+        @BindView(R2.id.reviewer_reputation_title_edited)
         TextView reviewerTitleEdited;
 
-        @Bind(R2.id.give_reputation_container)
+        @BindView(R2.id.give_reputation_container)
         RelativeLayout viewRevieweeReputation;
 
-        @Bind(R2.id.reviewer_reputation_container)
+        @BindView(R2.id.reviewer_reputation_container)
         RelativeLayout viewReviewerReputation;
 
-        @Bind(R2.id.deadline_view)
+        @BindView(R2.id.deadline_view)
         View viewDeadline;
 
-        @Bind(R2.id.deadline)
+        @BindView(R2.id.deadline)
         TextView deadline;
 
         LabelUtils label;

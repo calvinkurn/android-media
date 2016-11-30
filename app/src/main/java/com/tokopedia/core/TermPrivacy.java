@@ -17,8 +17,9 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.fragment.FragmentTermPrivacy;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * Created by hangnadi on 6/5/15.
@@ -28,9 +29,10 @@ public class TermPrivacy extends TActivity {
 
     private Fragment fragment;
     private Uri data;
-    @Bind(R2.id.toolbar)
+    @BindView(R2.id.toolbar)
     Toolbar toolbar;
     FragmentManager supportFragmentManager;
+    private Unbinder unbinder;
 
     @Override
     public String getScreenName() {
@@ -45,7 +47,7 @@ public class TermPrivacy extends TActivity {
             getWindow().setStatusBarColor(getResources().getColor(R.color.green_600));
         }
         setContentView(R.layout.activity_term_privacy);
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
 
         supportFragmentManager = getSupportFragmentManager();
         supportFragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
@@ -124,7 +126,7 @@ public class TermPrivacy extends TActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     @Override

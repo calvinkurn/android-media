@@ -37,9 +37,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import butterknife.Bind;
-
-import static java.lang.Character.FORMAT;
+import butterknife.BindView;
 
 /**
  * Created by nisie on 11/7/16.
@@ -52,31 +50,31 @@ public class MsisdnFragment extends BasePresenterFragment<MsisdnVerificationFrag
     private static final long COUNTDOWN_INTERVAL = 1000;
     private static final long COUNTDOWN_TIME = 90000;
 
-    @Bind(R2.id.input_otp)
+    @BindView(R2.id.input_otp)
     EditText vInputOtp;
-    @Bind(R2.id.title_verify_phone)
+    @BindView(R2.id.title_verify_phone)
     TextView titleVerifyPhone;
-    @Bind(R2.id.phone_number)
+    @BindView(R2.id.phone_number)
     EditText phoneNumber;
-    @Bind(R2.id.title_security)
+    @BindView(R2.id.title_security)
     TextView titleSecurity;
-    @Bind(R2.id.view_otp)
+    @BindView(R2.id.view_otp)
     View vOtp;
-    @Bind(R2.id.view_error)
+    @BindView(R2.id.view_error)
     View vError;
-    @Bind(R2.id.send_otp)
+    @BindView(R2.id.send_otp)
     TextView vSendOtp;
-    @Bind(R2.id.save_but)
+    @BindView(R2.id.save_but)
     TextView vSaveBut;
-    @Bind(R2.id.error_title)
+    @BindView(R2.id.error_title)
     TextView vErrorTitle;
-    @Bind(R2.id.error_msg)
+    @BindView(R2.id.error_msg)
     TextView vErrorMessage;
-    @Bind(R2.id.progress)
+    @BindView(R2.id.progress)
     ProgressBar vProgress;
-    @Bind(R2.id.title_send_otp)
+    @BindView(R2.id.title_send_otp)
     TextView titleSendOtp;
-    @Bind(R2.id.title_otp)
+    @BindView(R2.id.title_otp)
     TextView titleOtp;
 
     TkpdProgressDialog progressDialog;

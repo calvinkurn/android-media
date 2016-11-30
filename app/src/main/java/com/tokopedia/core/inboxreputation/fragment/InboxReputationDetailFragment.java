@@ -27,7 +27,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.var.TkpdState;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Nisie on 1/25/16.
@@ -47,7 +47,7 @@ public class
         void postReport(Bundle param);
     }
 
-    @Bind(R2.id.product_list)
+    @BindView(R2.id.product_list)
     RecyclerView listProduct;
 
     InboxReputationDetailFragmentPresenter presenter;

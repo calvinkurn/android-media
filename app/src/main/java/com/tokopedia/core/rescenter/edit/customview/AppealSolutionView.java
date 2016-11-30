@@ -16,7 +16,7 @@ import com.tokopedia.core.rescenter.edit.listener.AppealResCenterListener;
 import com.tokopedia.core.rescenter.edit.model.passdata.AppealResCenterFormData;
 import com.tokopedia.core.rescenter.edit.model.passdata.EditResCenterFormData;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnItemSelected;
 
 /**
@@ -24,17 +24,17 @@ import butterknife.OnItemSelected;
  */
 public class AppealSolutionView extends BaseView<AppealResCenterFormData, AppealResCenterListener> {
 
-    @Bind(R2.id.view_refund)
+    @BindView(R2.id.view_refund)
     View viewRefund;
-    @Bind(R2.id.refund_box_prompt)
+    @BindView(R2.id.refund_box_prompt)
     TextInputLayout refundPrompt;
-    @Bind(R2.id.spinner_solution)
+    @BindView(R2.id.spinner_solution)
     Spinner solutionSpinner;
-    @Bind(R2.id.refund_box)
+    @BindView(R2.id.refund_box)
     EditText refundBox;
-    @Bind(R2.id.view_message)
+    @BindView(R2.id.view_message)
     View viewMessage;
-    @Bind(R2.id.message_box)
+    @BindView(R2.id.message_box)
     EditText messageBox;
 
     public AppealSolutionView(Context context) {

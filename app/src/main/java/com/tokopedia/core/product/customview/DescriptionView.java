@@ -14,7 +14,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.product.listener.ProductDetailView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Angga.Prasetiyo on 26/10/2015.
@@ -23,9 +23,9 @@ public class DescriptionView extends BaseView<ProductDetailData, ProductDetailVi
     private static final String TAG = DescriptionView.class.getSimpleName();
 
     private boolean isExpand = false;
-    @Bind(R2.id.tv_desc)
+    @BindView(R2.id.tv_desc)
     DescriptionTextView tvDesc;
-    @Bind(R2.id.iv_toggle)
+    @BindView(R2.id.iv_toggle)
     ImageView ivToggle;
 
     public DescriptionView(Context context, AttributeSet attrs) {

@@ -16,24 +16,26 @@ import com.tokopedia.core.database.model.PictureDB;
 import com.tokopedia.core.myproduct.presenter.ImageGalleryImpl;
 import com.tokopedia.core.myproduct.utils.VerificationUtils;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * Created by m.normansyah on 18/01/2016.
  */
 public class ImageDescriptionDialog  extends DialogFragment {
-    @Bind(R2.id.add_prod_img_desc_deskripsi)
+    @BindView(R2.id.add_prod_img_desc_deskripsi)
     EditText addProdDesc;
-    @Bind(R2.id.add_prod_img_desc_cancel)
+    @BindView(R2.id.add_prod_img_desc_cancel)
     Button addProdCancel;
-    @Bind(R2.id.add_prod_img_desc_ok)
+    @BindView(R2.id.add_prod_img_desc_ok)
     Button addProdOk;
 
     public static final String FRAGMENT_TAG = ImageDescriptionDialog.class.getSimpleName();
     private static final String IMAGE_ID = "IMAGE_ID";
     long imageId = -1;
     PictureDB pictureDB;
+    private Unbinder unbinder;
 
     public static ImageDescriptionDialog newInstance(long imageId){
         ImageDescriptionDialog imageDescriptionDialog = new ImageDescriptionDialog();
@@ -53,7 +55,7 @@ public class ImageDescriptionDialog  extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.add_product_image_description, container, false);
-        ButterKnife.bind(this, parentView);
+        unbinder = ButterKnife.bind(this, parentView);
         fetchArgument(getArguments());
         return parentView;
     }
@@ -109,6 +111,6 @@ public class ImageDescriptionDialog  extends DialogFragment {
     @Override
     public void onPause() {
         super.onPause();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 }

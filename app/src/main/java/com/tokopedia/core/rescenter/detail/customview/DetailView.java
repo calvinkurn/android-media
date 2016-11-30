@@ -22,7 +22,7 @@ import com.tokopedia.core.rescenter.detail.dialog.ConfirmationDialog;
 import com.tokopedia.core.rescenter.detail.listener.DetailResCenterView;
 import com.tokopedia.core.rescenter.detail.model.detailresponsedata.DetailResCenterData.Detail;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created on 8/16/16.
@@ -31,7 +31,7 @@ public class DetailView extends BaseView<Detail, DetailResCenterView> {
 
     public static final String TAG = DetailView.class.getSimpleName();
 
-    @Bind(R2.id.webview)
+    @BindView(R2.id.webview)
     WebView webView;
 
     public DetailView(Context context) {

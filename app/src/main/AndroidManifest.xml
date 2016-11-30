@@ -137,12 +137,6 @@
             android:label="@string/title_activity_main"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.session.Login"
-            android:label="@string/title_activity_login"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateVisible|adjustResize" />
-        <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
@@ -507,6 +501,10 @@
             android:name="com.tokopedia.core.topads.WebViewTopAdsActivity"
             android:theme="@style/Theme.BrowseProduct" />
 
+        <activity android:name="com.tokopedia.core.welcome.WelcomeActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
         <activity
             android:name=".msisdn.activity.MsisdnActivity"
             android:label="@string/title_msisdn"
@@ -666,6 +664,8 @@
         <service
             android:name=".manage.people.password.intentservice.ManagePasswordIntentService"
             android:exported="false" />
+
+
 
         <!-- ======================================================= -->
         <!-- PROVIDERS REGISTRY -->

@@ -24,7 +24,7 @@ import com.tokopedia.core.var.TkpdState;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Nisie on 5/9/16.
@@ -33,9 +33,9 @@ public class InboxMessageActivity extends DrawerPresenterActivity
         implements InboxMessageFragment.DoActionInboxMessageListener,
         InboxMessageConstant, InboxMessageResultReceiver.Receiver {
 
-    @Bind(R2.id.pager)
+    @BindView(R2.id.pager)
     ViewPager viewPager;
-    @Bind(R2.id.indicator)
+    @BindView(R2.id.indicator)
     TabLayout indicator;
 
     InboxMessageResultReceiver mReceiver;

@@ -6,6 +6,7 @@
     <dimen name="fonts">14sp</dimen>
     <dimen name="fontm">16sp</dimen>
     <dimen name="fontl">18sp</dimen>
+    <dimen name="fontxl">22sp</dimen>
     <dimen name="fontvl">25sp</dimen>
     <dimen name="font_large">18sp</dimen>
     <dimen name="font_medium">16sp</dimen>
@@ -20,6 +21,7 @@
     <dimen name="margin_small">10dp</dimen>
     <dimen name="margin_med">20dp</dimen>
     <dimen name="margin_large">30dp</dimen>
+    <dimen name="margin_vl">40dp</dimen>
     <dimen name="padding_vs">5dp</dimen>
     <dimen name="padding_small">10dp</dimen>
     <dimen name="med_dp">20dp</dimen>
@@ -43,6 +45,7 @@
 
     <!-- Tokopedia Login Page -->
     <dimen name="btn_height">44dp</dimen>
+    <dimen name="button_otp">175dp</dimen>
     <!-- Shop Editor Page Dimens -->
     <dimen name="se_img_size">200dp</dimen>
     <dimen name="se_img_pad">10dp</dimen>
@@ -163,6 +166,4 @@
 
     <dimen name="padding_left_schedule_shop_close">5dp</dimen>
     <dimen name="bottom_navigation_elevation">20dp</dimen>
-    <dimen name="margin_vl">40dp</dimen>
-    <dimen name="button_otp">175dp</dimen>
 </resources>

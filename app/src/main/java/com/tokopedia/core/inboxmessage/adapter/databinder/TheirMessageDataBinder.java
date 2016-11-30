@@ -32,7 +32,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -44,16 +44,16 @@ public class TheirMessageDataBinder extends DataBinder<TheirMessageDataBinder.Vi
     public class ViewHolder extends RecyclerView.ViewHolder
             implements View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
 
-        @Bind(R2.id.user_ava)
+        @BindView(R2.id.user_ava)
         ImageView avatar;
 
-        @Bind(R2.id.message)
+        @BindView(R2.id.message)
         TextView message;
 
-        @Bind(R2.id.hour)
+        @BindView(R2.id.hour)
         TextView hour;
 
-        @Bind(R2.id.date)
+        @BindView(R2.id.date)
         TextView date;
 
         public ViewHolder(View itemView) {

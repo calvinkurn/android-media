@@ -21,7 +21,7 @@ import com.tokopedia.core.shopinfo.models.shopfavoritedmodel.ShopFavoritee;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -36,13 +36,13 @@ public class ShopFavoritedAdapter extends BaseLinearRecyclerViewAdapter {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R2.id.user_name)
+        @BindView(R2.id.user_name)
         TextView userName;
 
-        @Bind(R2.id.user_avatar)
+        @BindView(R2.id.user_avatar)
         ImageView userAvatar;
 
-        @Bind(R2.id.user_layout)
+        @BindView(R2.id.user_layout)
         LinearLayout userLayout;
 
         public ViewHolder(View itemView) {

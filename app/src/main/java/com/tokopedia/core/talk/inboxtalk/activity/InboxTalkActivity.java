@@ -34,7 +34,7 @@ import com.tokopedia.core.var.TkpdState;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class InboxTalkActivity extends DrawerPresenterActivity implements
@@ -44,9 +44,9 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
     private static final String BUNDLE_POSITION = "INBOX_TALK_POSITION";
     PagerAdapter adapter;
 
-    @Bind(R2.id.pager)
+    @BindView(R2.id.pager)
     ViewPager mViewPager;
-    @Bind(R2.id.indicator)
+    @BindView(R2.id.indicator)
     TabLayout indicator;
 
 

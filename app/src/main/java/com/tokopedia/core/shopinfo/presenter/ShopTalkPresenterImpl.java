@@ -13,8 +13,6 @@ import com.tokopedia.core.shopinfo.models.talkmodel.ShopTalkResult;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.tokopedia.core.session.presenter.RegisterNewNext.message;
-
 /**
  * Created by nisie on 11/18/16.
  */
