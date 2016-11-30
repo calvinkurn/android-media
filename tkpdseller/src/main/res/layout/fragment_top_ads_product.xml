@@ -7,6 +7,10 @@
 
     <include layout="@layout/include_top_ads_shop_info"/>
 
-    <include layout="@layout/include_top_ads_statistic_summary"/>
+    <include
+        android:layout_marginTop="@dimen/top_ads_dashboard_margin_cards"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/include_top_ads_statistic_summary"/>
 
 </LinearLayout>

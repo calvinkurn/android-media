@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+
+    <!-- General Dimens -->
+    <dimen name="top_ads_dashboard_margin_cards">30dp</dimen>
+    <dimen name="top_ads_dashboard_padding_cards">10dp</dimen>
+</resources>

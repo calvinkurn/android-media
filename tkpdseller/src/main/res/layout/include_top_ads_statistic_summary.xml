@@ -1,67 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/CardView.TopAds"
+    app:contentPaddingBottom="0dp"
+    app:contentPaddingLeft="0dp"
+    app:contentPaddingRight="0dp"
+    app:contentPaddingTop="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
 
-        <include
-            android:id="@+id/layout_top_ads_info_text_impression"
-            layout="@layout/include_top_ads_main_info_text"
-            android:layout_width="0dp"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"/>
+            android:padding="@dimen/top_ads_dashboard_padding_cards">
 
-        <include
-            android:id="@+id/layout_top_ads_info_text_click"
-            layout="@layout/include_top_ads_main_info_text"
-            android:layout_width="0dp"
+            <TextView
+                android:id="@+id/text_view_range_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="@string/app_name"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_calendar"/>
+        </RelativeLayout>
+
+        <include layout="@layout/include_separator_horizontal"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"/>
+            android:orientation="horizontal">
+
+            <include
+                android:id="@+id/layout_top_ads_info_text_impression"
+                layout="@layout/include_top_ads_main_info_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+
+            <include layout="@layout/include_separator_vertical"/>
+
+            <include
+                android:id="@+id/layout_top_ads_info_text_click"
+                layout="@layout/include_top_ads_main_info_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+        <include layout="@layout/include_separator_horizontal"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <include
+                android:id="@+id/layout_top_ads_info_text_ctr"
+                layout="@layout/include_top_ads_main_info_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+
+            <include layout="@layout/include_separator_vertical"/>
+
+            <include
+                android:id="@+id/layout_top_ads_info_text_conversion"
+                layout="@layout/include_top_ads_main_info_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+        <include layout="@layout/include_separator_horizontal"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <include
+                android:id="@+id/layout_top_ads_info_text_average"
+                layout="@layout/include_top_ads_main_info_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+
+            <include layout="@layout/include_separator_vertical"/>
+
+            <include
+                android:id="@+id/layout_top_ads_info_text_cost"
+                layout="@layout/include_top_ads_main_info_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+        </LinearLayout>
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <include
-            android:id="@+id/layout_top_ads_info_text_ctr"
-            layout="@layout/include_top_ads_main_info_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
-
-        <include
-            android:id="@+id/layout_top_ads_info_text_conversion"
-            layout="@layout/include_top_ads_main_info_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <include
-            android:id="@+id/layout_top_ads_info_text_average"
-            layout="@layout/include_top_ads_main_info_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
-
-        <include
-            android:id="@+id/layout_top_ads_info_text_cost"
-            layout="@layout/include_top_ads_main_info_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
-    </LinearLayout>
-</LinearLayout>
+</android.support.v7.widget.CardView>

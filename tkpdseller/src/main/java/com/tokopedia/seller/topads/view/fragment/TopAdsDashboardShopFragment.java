@@ -23,7 +23,7 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_top_ads_product;
+        return R.layout.fragment_top_ads_store;
     }
 
     @Override
