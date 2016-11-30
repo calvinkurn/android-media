@@ -20,9 +20,10 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.TermPrivacy;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
-import com.tokopedia.core.home.ParentIndexHome;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.constant.DownloadServiceConstant;
 import com.tokopedia.core.session.base.BaseFragment;
@@ -41,7 +42,6 @@ import com.tokopedia.core.session.presenter.RegisterThirdImpl;
 import com.tokopedia.core.session.presenter.RegisterThirdView;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.var.TkpdState;
 
 import org.parceler.Parcels;
@@ -223,7 +223,7 @@ public class RegisterThirdFragment extends BaseFragment<RegisterThird> implement
                 if(new SessionHandler(getActivity()).isV4Login()) {// go back to home
                     TrackingUtils.eventLoca(getString(R.string.event_register) + " with e-mail");
                     CommonUtils.dumper("LocalTag : DEFAULT REGISTER");
-                    getActivity().startActivity(new Intent(getActivity(), ParentIndexHome.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                    getActivity().startActivity(new Intent(getActivity(), HomeRouter.getHomeActivityClass()).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                     getActivity().finish();
                 }
                 break;

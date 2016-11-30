@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
 
-import com.tokopedia.transaction.purchase.fragment.TxConfirmationFragment;
 import com.tokopedia.transaction.purchase.fragment.TxListFragment;
 import com.tokopedia.transaction.purchase.fragment.TxSummaryFragment;
 import com.tokopedia.transaction.purchase.fragment.TxVerificationFragment;
@@ -14,26 +13,33 @@ import com.tokopedia.transaction.purchase.fragment.TxVerificationFragment;
  * Created by anggaprasetiyo on 8/26/16.
  */
 public class PurchaseTabAdapter extends FragmentStatePagerAdapter {
-    private final static int TAB_COUNT = 6;
+    public final static int TAB_POSITION_PURCHASE_SUMMARY = 0;
+    public final static int TAB_POSITION_PURCHASE_VERIFICATION = 1;
+    public final static int TAB_POSITION_PURCHASE_STATUS_ORDER = 2;
+    public final static int TAB_POSITION_PURCHASE_DELIVER_ORDER = 3;
+    public final static int TAB_POSITION_PURCHASE_ALL_ORDER = 4;
+
+    private final int tabCount;
     private final Listener listener;
 
-    public PurchaseTabAdapter(FragmentManager fm, Listener listener) {
+    public PurchaseTabAdapter(FragmentManager fm, int tabCount, Listener listener) {
         super(fm);
         this.listener = listener;
+        this.tabCount = tabCount;
     }
 
     @Override
     public Fragment getItem(int position) {
         switch (position) {
-            case 1:
-                return TxConfirmationFragment.createInstance();
-            case 2:
+            case TAB_POSITION_PURCHASE_SUMMARY:
+                return TxSummaryFragment.createInstancePurchase();
+            case TAB_POSITION_PURCHASE_VERIFICATION:
                 return TxVerificationFragment.createInstance();
-            case 3:
+            case TAB_POSITION_PURCHASE_STATUS_ORDER:
                 return TxListFragment.instanceStatusOrder();
-            case 4:
+            case TAB_POSITION_PURCHASE_DELIVER_ORDER:
                 return TxListFragment.instanceDeliverOrder();
-            case 5:
+            case TAB_POSITION_PURCHASE_ALL_ORDER:
                 return TxListFragment.instanceAllOrder(listener.getFilterCaseAllTransaction());
             default:
                 return TxSummaryFragment.createInstancePurchase();
@@ -42,7 +48,7 @@ public class PurchaseTabAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return TAB_COUNT;
+        return tabCount;
     }
 
     public interface Listener {

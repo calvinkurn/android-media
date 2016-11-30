@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.core.R;
 import com.tokopedia.core.shopinfo.adapter.ShopTalkViewAdapter;
-import com.tokopedia.core.shopinfo.models.talkmodel.List;
+import com.tokopedia.core.shopinfo.models.talkmodel.ShopTalk;
 import com.tokopedia.core.talkview.adapter.TalkViewAdapter;
 import com.tokopedia.core.talkview.fragment.TalkViewFragment;
 import com.tokopedia.core.talkview.product.model.CommentTalk;
@@ -52,7 +52,7 @@ public class ShopTalkViewFragment extends TalkViewFragment {
 
     @Override
     protected void getFromBundle(Parcelable parcelable) {
-        List bundle = (List) parcelable;
+        ShopTalk bundle = (ShopTalk) parcelable;
         talkID = bundle.getTalkId();
         message = bundle.getTalkMessageSpanned();
         productName = String.valueOf(bundle.getTalkProductName());

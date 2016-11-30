@@ -2,7 +2,6 @@ package com.tokopedia.core.payment.model.responsecalculateshipping;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.addtocart.model.responseatcform.Shipment;
 
 import java.util.ArrayList;
 import java.util.List;

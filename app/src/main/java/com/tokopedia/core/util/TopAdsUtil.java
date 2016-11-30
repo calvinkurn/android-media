@@ -5,7 +5,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.discovery.model.TopAdsResponse;
+import com.tokopedia.core.network.entity.topads.TopAdsResponse;
 import com.tokopedia.core.network.v4.NetworkHandler;
 import com.tokopedia.core.var.ContainerAds;
 import com.tokopedia.core.var.TkpdState;

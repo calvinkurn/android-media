@@ -1,5 +1,6 @@
 package com.tokopedia.core.analytics;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -10,8 +11,8 @@ import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.home.ParentIndexHome;
-import com.tokopedia.core.home.fragment.FragmentIndexCategory;
+import com.tokopedia.core.router.home.HomeFragmentRouter;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.session.RegisterNewNextFragment;
 import com.tokopedia.core.session.RegisterThirdFragment;
 import com.tokopedia.core.util.SessionHandler;
@@ -22,12 +23,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.tokopedia.core.analytics.AppScreen.SCREEN_HOME_PRODUCT_CATEGORY;
+
 /**
  * @author  by alvarisi on 9/27/16.
  * Modified by Hafizh Herdi
  */
 
 public class TrackingUtils extends TrackingConfig {
+
+    public static int PARENT_HOME_ACTIVITY = 101;
+    public static int TYPE_FRAGMENT_INDEX_CATEGORY = 203;
 
     public static void eventCampaign(Campaign campaign){
         getGTMEngine()
@@ -43,6 +49,7 @@ public class TrackingUtils extends TrackingConfig {
         }
         getAFEngine().sendTrackEvent(AppScreen.convertAFActivityEvent(tag), afValue);
     }
+
 
     public static void fragmentBasedAFEvent(String tag){
         Map<String, Object> afValue = new HashMap<>();

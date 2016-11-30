@@ -1,6 +1,6 @@
 package com.tokopedia.core.network.apiservices.search.apis;
 
-import com.tokopedia.core.discovery.model.history.searchSuggestion.SearchDataModel;
+import com.tokopedia.core.discovery.model.searchSuggestion.SearchDataModel;
 
 import retrofit2.Response;
 import retrofit2.http.DELETE;

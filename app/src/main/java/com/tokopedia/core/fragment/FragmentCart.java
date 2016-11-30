@@ -77,7 +77,6 @@ import com.tokopedia.core.cart.model.CartShipments;
 import com.tokopedia.core.cart.model.CartShop;
 import com.tokopedia.core.cart.model.GatewayList;
 import com.tokopedia.core.customadapter.ListProductCart;
-import com.tokopedia.core.discovery.activity.BrowseProductActivity;
 import com.tokopedia.core.interfaces.CartInterfaces;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.NetworkHandler;
@@ -91,6 +90,7 @@ import com.tokopedia.core.payment.model.responsedynamicpayment.DynamicPaymentDat
 import com.tokopedia.core.payment.model.responsevoucher.VoucherCodeData;
 import com.tokopedia.core.payment.receiver.PaymentResultReceiver;
 import com.tokopedia.core.payment.services.PaymentIntentService;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdUrl;
@@ -400,10 +400,15 @@ public class FragmentCart extends TkpdFragment implements CartInterfaces.Fragmen
         BalanceView.setVisibility(View.GONE);
         MainView.setVisibility(View.GONE);
         // Untuk redirect ke index home
-        noResult = new NoResultHandler(context, view, R.string.error_no_cart_1, R.string.error_no_cart_2, BrowseProductActivity.getDefaultMoveToIntent(getActivity()));
+        noResult = new NoResultHandler(
+                context, view, R.string.error_no_cart_1,
+                R.string.error_no_cart_2,
+                BrowseProductRouter.getDefaultBrowseIntent(getActivity()));
 
         try {
-            noResult.setResultImage(context, context.getResources().getDrawable(R.drawable.status_no_result));
+            noResult.setResultImage(context,
+                    context.getResources().getDrawable(R.drawable.status_no_result));
+
         } catch (OutOfMemoryError e) {
             e.printStackTrace();
         }
@@ -626,7 +631,7 @@ public class FragmentCart extends TkpdFragment implements CartInterfaces.Fragmen
         tvCariSekarang.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(BrowseProductActivity.getDefaultMoveToIntent(getActivity()));
+                startActivity(BrowseProductRouter.getDefaultBrowseIntent(getActivity()));
             }
         });
         GetCartInfoRetrofit();

@@ -9,7 +9,7 @@ import com.tokopedia.core.database.DbFlowDatabase;
 import com.tokopedia.core.database.DbFlowOperation;
 import com.tokopedia.core.database.model.RechargeRecentDataModelDB;
 import com.tokopedia.core.database.model.RechargeRecentDataModelDB_Table;
-import com.tokopedia.core.recharge.model.recentNumber.RecentDataBean;
+import com.tokopedia.core.database.recharge.recentNumber.RecentDataBean;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -14,11 +14,12 @@ import android.widget.FrameLayout;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
-import com.tokopedia.core.home.ParentIndexHome;
 import com.tokopedia.core.myproduct.fragment.AddProductFragment;
 import com.tokopedia.core.myproduct.utils.UploadPhotoTask;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.shipping.OpenShopEditShipping;
 import com.tokopedia.core.shipping.fragment.EditShippingViewListener;
 import com.tokopedia.core.shipping.model.openshopshipping.OpenShopData;
@@ -28,7 +29,6 @@ import com.tokopedia.core.shop.presenter.ShopCreateView;
 import com.tokopedia.core.shop.presenter.ShopEditorView;
 import com.tokopedia.core.shop.presenter.ShopSettingView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.analytics.TrackingUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -151,7 +151,7 @@ public class ShopEditorActivity extends TkpdActivity implements
 
     public static void finishActivity(Bundle bundle, Context context) {
         Intent intent2 = new Intent(context,
-                ParentIndexHome.class);
+                HomeRouter.getHomeActivityClass());
         intent2.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent2);
         Intent intent = new Intent(context, ShopInfoActivity.class);

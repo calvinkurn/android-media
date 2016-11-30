@@ -7,7 +7,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.tkpd.library.utils.data.DataManagerImpl;
 import com.tkpd.library.utils.data.DataReceiver;
 import com.tokopedia.core.R;
-import com.tokopedia.core.addtocart.model.responseatcform.Destination;
 import com.tokopedia.core.database.model.Bank;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.database.model.City;
@@ -20,6 +19,7 @@ import com.tokopedia.core.manage.people.address.fragment.adapter.SubDistrictAdap
 import com.tokopedia.core.manage.people.address.interactor.AddAddressRetrofitInteractor;
 import com.tokopedia.core.manage.people.address.interactor.AddAddressRetrofitInteractorImpl;
 import com.tokopedia.core.manage.people.address.listener.AddAddressFragmentView;
+import com.tokopedia.core.manage.people.address.model.Destination;
 
 import java.util.List;
 import java.util.Map;

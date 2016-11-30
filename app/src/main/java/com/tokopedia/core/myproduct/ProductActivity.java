@@ -42,7 +42,6 @@ import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.fragment.TwitterDialogV4;
-import com.tokopedia.core.home.ParentIndexHome;
 import com.tokopedia.core.instoped.InstagramAuth;
 import com.tokopedia.core.instoped.fragment.InstagramMediaFragment;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;

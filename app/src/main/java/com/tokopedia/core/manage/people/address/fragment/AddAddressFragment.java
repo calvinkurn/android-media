@@ -23,7 +23,6 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.addtocart.model.responseatcform.Destination;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.database.model.City;
 import com.tokopedia.core.database.model.District;
@@ -35,6 +34,7 @@ import com.tokopedia.core.manage.people.address.fragment.adapter.ProvinceAdapter
 import com.tokopedia.core.manage.people.address.fragment.adapter.RegencyAdapter;
 import com.tokopedia.core.manage.people.address.fragment.adapter.SubDistrictAdapter;
 import com.tokopedia.core.manage.people.address.listener.AddAddressFragmentView;
+import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.manage.people.address.presenter.AddAddressPresenter;
 import com.tokopedia.core.manage.people.address.presenter.AddAddressPresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;

@@ -13,12 +13,15 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
-import com.tokopedia.core.router.TransactionRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.transaction.purchase.adapter.PurchaseTabAdapter;
 import com.tokopedia.transaction.purchase.fragment.TxListFragment;
 import com.tokopedia.transaction.purchase.fragment.TxSummaryFragment;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdState;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 
@@ -35,7 +38,7 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
     @Bind(R2.id.indicator)
     TabLayout indicator;
 
-    public String[] tabContents;
+    public List<String> tabContents;
 
     private int drawerPosition;
     private String stateTxFilterID;
@@ -57,8 +60,10 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-        drawerPosition = extras.getInt(TransactionRouter.EXTRA_STATE_TAB_POSITION, 0);
-        stateTxFilterID = extras.getString(TransactionRouter.EXTRA_STATE_TX_FILTER, TransactionRouter.ALL_STATUS_FILTER_ID);
+        drawerPosition = extras.getInt(TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION,
+                PurchaseTabAdapter.TAB_POSITION_PURCHASE_SUMMARY);
+        stateTxFilterID = extras.getString(TransactionPurchaseRouter.EXTRA_STATE_TX_FILTER,
+                TransactionPurchaseRouter.ALL_STATUS_FILTER_ID);
     }
 
     @Override
@@ -75,8 +80,10 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
     protected void setViewListener() {
         for (String tabContent : tabContents)
             indicator.addTab(indicator.newTab().setText(tabContent));
-        PurchaseTabAdapter adapter = new PurchaseTabAdapter(getFragmentManager(), this);
-        viewPager.setOffscreenPageLimit(tabContents.length);
+        PurchaseTabAdapter adapter = new PurchaseTabAdapter(
+                getFragmentManager(), tabContents.size(), this
+        );
+        viewPager.setOffscreenPageLimit(tabContents.size());
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new OnTabPageChangeListener(indicator));
         indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
@@ -85,12 +92,17 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
 
     @Override
     protected void initVar() {
-        tabContents = new String[]{getString(R.string.title_dashboard_purchase),
-                getString(R.string.title_payment_confirmation),
-                getString(R.string.title_payment_verification),
-                getString(R.string.title_order_status),
-                getString(R.string.title_receive_confirmation),
-                getString(R.string.title_transaction_list)};
+        tabContents = new ArrayList<>();
+        tabContents.add(PurchaseTabAdapter.TAB_POSITION_PURCHASE_SUMMARY,
+                getString(R.string.title_dashboard_purchase));
+        tabContents.add(PurchaseTabAdapter.TAB_POSITION_PURCHASE_VERIFICATION,
+                getString(R.string.title_payment_verification));
+        tabContents.add(PurchaseTabAdapter.TAB_POSITION_PURCHASE_STATUS_ORDER,
+                getString(R.string.title_order_status));
+        tabContents.add(PurchaseTabAdapter.TAB_POSITION_PURCHASE_DELIVER_ORDER,
+                getString(R.string.title_receive_confirmation));
+        tabContents.add(PurchaseTabAdapter.TAB_POSITION_PURCHASE_ALL_ORDER,
+                getString(R.string.title_transaction_list));
     }
 
     @Override
@@ -119,34 +131,36 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
         ScreenTracking.screenLoca(screenName);
     }
 
-    private void setDrawerPosition(int position) {
+    private void setDrawerSidePosition(int position) {
         switch (position) {
-            case 0:
+            case PurchaseTabAdapter.TAB_POSITION_PURCHASE_SUMMARY:
                 drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_TRANSACTION);
                 break;
-            case 1:
+            case PurchaseTabAdapter.TAB_POSITION_PURCHASE_VERIFICATION:
                 drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_CONFIRM_PAYMENT);
                 break;
-            case 2:
-                drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_CONFIRM_PAYMENT);
-                break;
-            case 3:
+            case PurchaseTabAdapter.TAB_POSITION_PURCHASE_STATUS_ORDER:
                 drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_ORDER_STATUS);
                 break;
-            case 4:
+            case PurchaseTabAdapter.TAB_POSITION_PURCHASE_DELIVER_ORDER:
                 drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_CONFIRM_SHIPPING);
                 break;
-            case 5:
+            case PurchaseTabAdapter.TAB_POSITION_PURCHASE_ALL_ORDER:
                 switch (stateTxFilterID) {
-                    case TransactionRouter.TRANSACTION_CANCELED_FILTER_ID:
-                        drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_TRANSACTION_CANCELED);
+                    case TransactionPurchaseRouter.TRANSACTION_CANCELED_FILTER_ID:
+                        drawer.setDrawerPosition(
+                                TkpdState.DrawerPosition.PEOPLE_TRANSACTION_CANCELED
+                        );
                         break;
                     default:
-                        drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_TRANSACTION_LIST);
+                        drawer.setDrawerPosition(
+                                TkpdState.DrawerPosition.PEOPLE_TRANSACTION_LIST
+                        );
                         break;
                 }
                 break;
             default:
+                drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_TRANSACTION);
                 break;
         }
     }
@@ -167,14 +181,17 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
         return stateTxFilterID;
     }
 
+    @Override
+    protected void initView() {
+        super.initView();
+        if (getIntent().getExtras() != null && getIntent().getExtras()
+                .getBoolean(TransactionPurchaseRouter.EXTRA_UPDATE_BALANCE, false))
+            drawer.updateBalance();
+    }
+
     private class OnTabPageChangeListener extends TabLayout.TabLayoutOnPageChangeListener {
-        private static final int DRAWER_POSITION_PAYMENT_CONFIRM = 1;
-        private static final int DRAWER_POSITION_BUY = 0;
 
-        private static final int VIEW_PAGER_POSITION_BUY = 0;
-        private static final int VIEW_PAGER_POSITION_CHANGE_PAYMENT = 2;
-
-        public OnTabPageChangeListener(TabLayout tabLayout) {
+        OnTabPageChangeListener(TabLayout tabLayout) {
             super(tabLayout);
         }
 
@@ -182,13 +199,7 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
         public void onPageSelected(int position) {
             super.onPageSelected(position);
             hideKeyboard();
-            if (position == VIEW_PAGER_POSITION_BUY) {
-                setDrawerPosition(DRAWER_POSITION_BUY);
-            } else if (position == VIEW_PAGER_POSITION_CHANGE_PAYMENT) {
-                setDrawerPosition(DRAWER_POSITION_PAYMENT_CONFIRM);
-            } else {
-                setDrawerPosition(position);
-            }
+            setDrawerSidePosition(position);
         }
 
         private void hideKeyboard() {
@@ -197,11 +208,4 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
         }
     }
 
-    @Override
-        protected void initView() {
-                super.initView();
-                if (getIntent().getExtras() != null &&
-                                getIntent().getExtras().getBoolean(TransactionRouter.EXTRA_UPDATE_BALANCE, false))
-                        drawer.updateBalance();
-            }
 }

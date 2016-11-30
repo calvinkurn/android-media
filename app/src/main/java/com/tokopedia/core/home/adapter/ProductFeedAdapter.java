@@ -11,11 +11,12 @@ import android.widget.TextView;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.customwidget.FlowLayout;
-import com.tokopedia.core.fragment.FragmentIndexMainHeader;
+import com.tokopedia.core.home.fragment.FragmentIndexMainHeader;
+import com.tokopedia.core.home.model.HistoryProductListItem;
 import com.tokopedia.core.home.model.HorizontalProductList;
+import com.tokopedia.core.home.model.ViewHolderProductTopAds;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
-
 
 import java.util.List;
 
@@ -60,40 +61,6 @@ public class ProductFeedAdapter {
         }
     }
 
-    public static class ViewHolderProductTopAds extends RecyclerView.ViewHolder {
-
-        public RecyclerView listTopAdProduct;
-
-        public ViewHolderProductTopAds(View itemLayoutView) {
-            super(itemLayoutView);
-            listTopAdProduct = (RecyclerView) itemLayoutView.findViewById(R.id.top_ads_recycler_view);
-        }
-    }
-
-    protected static class ViewHolderHistoryProduct extends RecyclerView.ViewHolder {
-
-        HistoryProductRecyclerViewAdapter historyAdapter;
-        TextView title;
-        TextView seeAll;
-        TextView findNow;
-        RecyclerView recyclerView;
-        RelativeLayout emptyLayout;
-        RelativeLayout emptyHistory;
-        TextView findFavoriteShop;
-
-        public ViewHolderHistoryProduct(FragmentIndexMainHeader header) {
-            super(header.getParentView());
-            title = header.getTitle();
-            seeAll = header.getSeeAll();
-            findNow = header.getFindNow();
-            recyclerView = header.getRecyclerView();
-            emptyLayout = header.getEmptyLayout();
-            emptyHistory = header.getEmptyHistory();
-            historyAdapter = header.getAdapter();
-            findFavoriteShop = header.getFindFavoriteShop();
-        }
-    }
-
     public static class ViewHolderEmpty extends RecyclerView.ViewHolder {
 
         LinearLayout emptyIndexMain;
@@ -125,7 +92,7 @@ public class ProductFeedAdapter {
 
     public static ViewHolderHistoryProduct
                 createViewHistoryProduct(ViewGroup parent,
-                DataFeedAdapter.HistoryProductListItem historyProductListItem) {
+                                         HistoryProductListItem historyProductListItem) {
         return new ViewHolderHistoryProduct(new FragmentIndexMainHeader()
                 .addParentView(LayoutInflater.from(parent.getContext()), parent)
                 .initView(R.id.history_product_recycler_view)
@@ -135,7 +102,7 @@ public class ProductFeedAdapter {
 
     public static ViewHolderHistoryProduct
     createViewHistoryProduct(ViewGroup parent,
-                             DataFeedAdapter.HistoryProductListItem historyProductListItem,
+                             HistoryProductListItem historyProductListItem,
                              HistoryProductRecyclerViewAdapter historyProductRecyclerViewAdapter) {
         return new ViewHolderHistoryProduct(new FragmentIndexMainHeader()
                 .addParentView(LayoutInflater.from(parent.getContext()), parent)
