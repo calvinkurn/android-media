@@ -13,7 +13,7 @@ import com.tokopedia.core.inboxmessage.presenter.InboxMessageDetailFragmentPrese
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -24,10 +24,10 @@ public class LoadMoreDataBinder extends DataBinder<LoadMoreDataBinder.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R2.id.btn_load_more)
+        @BindView(R2.id.btn_load_more)
         Button loadMore;
 
-        @Bind(R2.id.progressBar)
+        @BindView(R2.id.progressBar)
         ProgressBar progressBar;
 
         public ViewHolder(View itemView) {

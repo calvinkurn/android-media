@@ -49,7 +49,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -68,25 +68,25 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
         return registerPassPhoneFragment;
     }
 
-    @Bind(R2.id.user_name)
+    @BindView(R2.id.user_name)
     EditText vName;
-    @Bind(R2.id.date)
+    @BindView(R2.id.date)
     TextView vBDay;
-    @Bind(R2.id.password)
+    @BindView(R2.id.password)
     PasswordView vPassword;
-    @Bind(R2.id.password_retype)
+    @BindView(R2.id.password_retype)
     PasswordView vPasswordRetype;
-    @Bind(R2.id.phone_number)
+    @BindView(R2.id.phone_number)
     EditText vPhoneNumber;
-    @Bind(R2.id.send_button)
+    @BindView(R2.id.send_button)
     View vSendButton;
-    @Bind(R2.id.tos_check)
+    @BindView(R2.id.tos_check)
     CheckBox vTos;
-    @Bind(R2.id.error)
+    @BindView(R2.id.error)
     View vError;
-    @Bind(R2.id.tos_tos)
+    @BindView(R2.id.tos_tos)
     TextView termAndCond;
-    @Bind(R2.id.tos_privacy)
+    @BindView(R2.id.tos_privacy)
     TextView privacy;
 
     TkpdProgressDialog mProgressDialog;

@@ -30,8 +30,9 @@ import com.tokopedia.core.var.TkpdState;
 
 import java.util.concurrent.TimeUnit;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * modify by m.normansyah 9-11-2015,
@@ -45,38 +46,39 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
 
 
-    @Bind(R2.id.input_text)
+    @BindView(R2.id.input_text)
     EditText vAnswer;
-    @Bind(R2.id.input_otp)
+    @BindView(R2.id.input_otp)
     EditText vInputOtp;
-    @Bind(R2.id.title_otp)
+    @BindView(R2.id.title_otp)
     TextView titleOTP;
-    @Bind(R2.id.phone_number)
+    @BindView(R2.id.phone_number)
     EditText phoneNumber;
-    @Bind(R2.id.title_security)
+    @BindView(R2.id.title_security)
     TextView titleSecurity;
-    @Bind(R2.id.wrapper_input_text)
+    @BindView(R2.id.wrapper_input_text)
     TextInputLayout wrapperAnswer;
-    @Bind(R2.id.title)
+    @BindView(R2.id.title)
     TextView vQuestion;
-    @Bind(R2.id.view_security)
+    @BindView(R2.id.view_security)
     View vSecurity;
-    @Bind(R2.id.view_otp)
+    @BindView(R2.id.view_otp)
     View vOtp;
-    @Bind(R2.id.view_error)
+    @BindView(R2.id.view_error)
     View vError;
-    @Bind(R2.id.send_otp)
+    @BindView(R2.id.send_otp)
     TextView vSendOtp;
-    @Bind(R2.id.save_but)
+    @BindView(R2.id.save_but)
     TextView vSaveBut;
-    @Bind(R2.id.error_title)
+    @BindView(R2.id.error_title)
     TextView vErrorTitle;
-    @Bind(R2.id.error_msg)
+    @BindView(R2.id.error_msg)
     TextView vErrorMessage;
-    @Bind(R2.id.progress)
+    @BindView(R2.id.progress)
     ProgressBar vProgress;
 
     CountDownTimer countDownTimer;
+    private Unbinder unbinder;
 
     public interface SecurityQuestionListener {
         public void onSuccess();
@@ -129,7 +131,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_security_question, container, false);
-        ButterKnife.bind(this, rootView);
+        unbinder = ButterKnife.bind(this, rootView);
         wrapperAnswer.setHintEnabled(false);
         Progress = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         initListener();
@@ -149,7 +151,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     @Override

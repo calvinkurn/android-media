@@ -26,15 +26,15 @@ import com.tokopedia.core.var.TkpdState;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 @SuppressLint("ValidFragment")
 public class ManageGeneral extends TkpdActivity implements NotificationListener{
 
-    @Bind(R2.id.pager)
+    @BindView(R2.id.pager)
     ViewPager mViewPager;
-    @Bind(R2.id.indicator)
+    @BindView(R2.id.indicator)
     TabLayout indicator;
 
     @Override

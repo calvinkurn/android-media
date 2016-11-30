@@ -7,7 +7,7 @@ import android.widget.TextView;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -15,10 +15,10 @@ import butterknife.ButterKnife;
  */
 public class ShippingInfoBottomSheet {
 
-    @Bind(R2.id.courier_information)
+    @BindView(R2.id.courier_information)
     TextView courierInformation;
 
-    @Bind(R2.id.courier_name_service)
+    @BindView(R2.id.courier_name_service)
     TextView serviceNameTextView;
 
     public ShippingInfoBottomSheet(String information, String serviceName, Context activity) {

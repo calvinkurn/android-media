@@ -29,9 +29,10 @@ import com.tokopedia.session.session.presenter.ForgotPasswordView;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.var.TkpdState;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 
 /**
  * @author m.normansyah
@@ -40,24 +41,25 @@ import butterknife.OnClick;
  */
 public class ForgotPasswordFragment extends Fragment implements ForgotPasswordView{
 
-    @Bind(R2.id.front_view)
+    @BindView(R2.id.front_view)
      View FrontView;
-    @Bind(R2.id.success_view)
+    @BindView(R2.id.success_view)
      View SuccessView;
-    @Bind(R2.id.email_send)
+    @BindView(R2.id.email_send)
     TextView EmailSend;
-    @Bind(R2.id.send_button)
+    @BindView(R2.id.send_button)
      TextView SendButton;
-    @Bind(R2.id.email)
+    @BindView(R2.id.email)
     EditText Email;
-    @Bind(R2.id.til_email)
+    @BindView(R2.id.til_email)
     TextInputLayout tilEmail;
-    @Bind(R2.id.register_button)
+    @BindView(R2.id.register_button)
     TextView registerButton;
 
     ForgotPassword forgotPassword;
     TkpdProgressDialog progressDialog;
     boolean isProgressDialog;
+    private Unbinder unbinder;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,7 +82,7 @@ public class ForgotPasswordFragment extends Fragment implements ForgotPasswordVi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_forgot_password, container, false);
-        ButterKnife.bind(this,rootView);
+        unbinder = ButterKnife.bind(this,rootView);
 
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -219,7 +221,7 @@ public class ForgotPasswordFragment extends Fragment implements ForgotPasswordVi
     public void onDestroyView() {
         super.onDestroyView();
         KeyboardHandler.DropKeyboard(getActivity(), Email);
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     @Override

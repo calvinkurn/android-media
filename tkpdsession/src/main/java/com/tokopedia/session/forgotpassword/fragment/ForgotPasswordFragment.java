@@ -16,7 +16,7 @@ import com.tokopedia.session.forgotpassword.listener.ForgotPasswordFragmentView;
 import com.tokopedia.session.forgotpassword.presenter.ForgotPasswordFragmentPresenter;
 import com.tokopedia.session.forgotpassword.presenter.ForgotPasswordFragmentPresenterImpl;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Alifa on 10/17/2016.
@@ -24,21 +24,21 @@ import butterknife.Bind;
 
 public class ForgotPasswordFragment extends BasePresenterFragment<ForgotPasswordFragmentPresenter> implements ForgotPasswordFragmentView {
 
-    @Bind(R2.id.front_view)
+    @BindView(R2.id.front_view)
     View mainView;
-    @Bind(R2.id.success_view)
+    @BindView(R2.id.success_view)
     View successView;
-    @Bind(R2.id.email_send)
+    @BindView(R2.id.email_send)
     TextView emailSend;
-    @Bind(R2.id.send_button)
+    @BindView(R2.id.send_button)
     TextView sendButton;
-    @Bind(R2.id.email)
+    @BindView(R2.id.email)
     EditText email;
-    @Bind(R2.id.til_email)
+    @BindView(R2.id.til_email)
     TextInputLayout tilEmail;
-    @Bind(R2.id.register_button1)
+    @BindView(R2.id.register_button1)
     TextView registerButton1;
-    @Bind(R2.id.register_button2)
+    @BindView(R2.id.register_button2)
     TextView registerButton2;
 
     public static ForgotPasswordFragment createInstance() {

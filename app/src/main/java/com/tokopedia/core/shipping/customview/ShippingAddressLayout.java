@@ -16,7 +16,7 @@ import com.tokopedia.core.shipping.fragment.EditShippingViewListener;
 import com.tokopedia.core.shipping.model.editshipping.ShopShipping;
 import com.tokopedia.core.shipping.presenter.EditShippingPresenter;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 
@@ -28,17 +28,17 @@ public class ShippingAddressLayout extends EditShippingCustomView<ShopShipping,
         EditShippingPresenter,
         EditShippingViewListener>{
 
-    @Bind(R2.id.address_text_field)
+    @BindView(R2.id.address_text_field)
     EditText addressArea;
 
-    @Bind(R2.id.value_location) EditText chooseLocation;
+    @BindView(R2.id.value_location) EditText chooseLocation;
 
-    @Bind(R2.id.shop_phone_number)
+    @BindView(R2.id.shop_phone_number)
     TextView phoneNumber;
 
-    @Bind(R2.id.shop_phone_number_title) TextView phoneNumberTitle;
+    @BindView(R2.id.shop_phone_number_title) TextView phoneNumberTitle;
 
-    @Bind(R2.id.change_phone_number_button) TextView phoneNumberButton;
+    @BindView(R2.id.change_phone_number_button) TextView phoneNumberButton;
 
     @OnClick(R2.id.value_location)
     void openGeoLocationMap(){

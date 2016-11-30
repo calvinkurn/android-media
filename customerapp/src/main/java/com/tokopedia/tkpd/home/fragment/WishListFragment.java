@@ -34,7 +34,7 @@ import com.tokopedia.tkpd.home.presenter.WishListView;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -49,14 +49,14 @@ public class WishListFragment extends Fragment implements WishListView {
     public static final Fragment newInstance(){
         return new WishListFragment();
     }
-    @Bind(R2.id.swipe_refresh_layout)
+    @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
 
-    @Bind(R2.id.recycler_view)
+    @BindView(R2.id.recycler_view)
     RecyclerView recyclerView;
-    @Bind(R2.id.progress_bar)
+    @BindView(R2.id.progress_bar)
     ProgressBar progressBar;
-    @Bind(R2.id.main_content)
+    @BindView(R2.id.main_content)
     LinearLayout mainContent;
 
     GridLayoutManager layoutManager;
@@ -101,7 +101,7 @@ public class WishListFragment extends Fragment implements WishListView {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         wishList.unSubscribe();
     }
 

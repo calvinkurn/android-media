@@ -17,7 +17,7 @@ import com.tokopedia.core.product.listener.ProductDetailView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.prototype.ProductCache;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Angga.Prasetiyo on 26/10/2015.
@@ -25,13 +25,13 @@ import butterknife.Bind;
 public class ManageView extends BaseView<ProductDetailData, ProductDetailView> {
     private static final String TAG = ManageView.class.getSimpleName();
 
-    @Bind(R2.id.tv_promote)
+    @BindView(R2.id.tv_promote)
     TextView tvPromote;
-    @Bind(R2.id.tv_edit)
+    @BindView(R2.id.tv_edit)
     TextView tvEdit;
-    @Bind(R2.id.tv_sold_out)
+    @BindView(R2.id.tv_sold_out)
     TextView tvSoldOut;
-    @Bind(R2.id.tv_to_etalase)
+    @BindView(R2.id.tv_to_etalase)
     TextView tvToEtalase;
     private ProductDetailData data;
 

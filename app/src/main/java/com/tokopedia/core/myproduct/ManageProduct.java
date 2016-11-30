@@ -122,8 +122,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -184,7 +185,7 @@ public class ManageProduct extends TkpdActivity implements
     private String IsAllowShop = "0";
     private ArrayList<String> SortValue;
     private ListViewManageProdAdapter lvadapter;
-    @Bind(R2.id.prod_list)
+    @BindView(R2.id.prod_list)
     SimpleListView lvListProd;
     private Boolean loading = false;
     private AlertDialog.Builder SortMenu;
@@ -230,13 +231,13 @@ public class ManageProduct extends TkpdActivity implements
     private boolean isMultiSelect = false;
     private TkpdProgressDialog progress;
 
-    @Bind(R2.id.blur_image)
+    @BindView(R2.id.blur_image)
     ImageView blurImage;
     private PagingHandler mPaging = new PagingHandler();
     private RetryHandler retryHandler;
     private SimpleSpinnerAdapter simpleSpinnerAdapter;
 
-    @Bind(R2.id.fab_speed_dial)
+    @BindView(R2.id.fab_speed_dial)
     FabSpeedDial fabAddProduct;
 
 
@@ -264,6 +265,7 @@ public class ManageProduct extends TkpdActivity implements
     };
     GetShopNoteModel.ShopNoteModel returnPolicy = null;
     private DownloadResultReceiver mReceiver;
+    private Unbinder unbinder;
 
     @Override
     public String getScreenName() {
@@ -275,7 +277,7 @@ public class ManageProduct extends TkpdActivity implements
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_manage_product);
         compositeSubscription = RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
 
         checkLogin();
         if (this.isFinishing()) {
@@ -660,7 +662,7 @@ public class ManageProduct extends TkpdActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         RxUtils.unsubscribeIfNotNull(compositeSubscription);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(onCompletedAddReceiver);
         if (addProductReceiver.isOrderedBroadcast()) unregisterReceiver(addProductReceiver);

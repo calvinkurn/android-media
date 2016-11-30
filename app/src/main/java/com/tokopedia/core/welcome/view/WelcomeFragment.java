@@ -35,7 +35,7 @@ import com.tokopedia.core.welcome.presenter.WelcomeFragmentPresenterImpl;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by stevenfredian on 10/5/16.
@@ -43,21 +43,21 @@ import butterknife.Bind;
 
 public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresenter> implements WelcomeFragmentView{
 
-    @Bind(R2.id.background)
+    @BindView(R2.id.background)
     ImageView background;
-    @Bind(R2.id.login)
+    @BindView(R2.id.login)
     LoginTextView login;
-    @Bind(R2.id.register)
+    @BindView(R2.id.register)
     TextView register;
-    @Bind(R2.id.linearLayout)
+    @BindView(R2.id.linearLayout)
     LinearLayout linearLayout;
-    @Bind(R2.id.progress_login)
+    @BindView(R2.id.progress_login)
     ProgressBar progressBar;
-    @Bind(R2.id.title_view)
+    @BindView(R2.id.title_view)
     View titleView;
-    @Bind(R2.id.container_provider)
+    @BindView(R2.id.container_provider)
     LinearLayout containerProvider;
-    @Bind(R2.id.splash)
+    @BindView(R2.id.splash)
     View splash;
 
     private View decorView;

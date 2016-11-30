@@ -31,7 +31,7 @@ import org.apache.http.util.EncodingUtils;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * @author by Angga.Prasetiyo on 19/05/2016.
@@ -50,9 +50,9 @@ public class DynamicPaymentFragment extends BasePresenterFragment
     private static final String CONTAINS_LOGIN_URL = "login.pl";
     private static final long FORCE_TIMEOUT = 60000L;
 
-    @Bind(R2.id.webview)
+    @BindView(R2.id.webview)
     WebView webView;
-    @Bind(R2.id.progressbar)
+    @BindView(R2.id.progressbar)
     ProgressBar progressBar;
 
     private DynamicPaymentData dynamicPaymentData;

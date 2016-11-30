@@ -25,7 +25,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Nisie on 21/01/16.
@@ -35,14 +35,14 @@ public class InboxReputationFragment extends BasePresenterFragment<InboxReputati
 
     private static final String TAG = InboxReputationFragment.class.getSimpleName();
 
-    @Bind(R2.id.review_list)
+    @BindView(R2.id.review_list)
     RecyclerView mainList;
 
-    @Bind(R2.id.swipe_refresh_layout)
+    @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
 
 
-    @Bind(R2.id.fab)
+    @BindView(R2.id.fab)
     FloatingActionButton fab;
 
     private RefreshHandler refreshHandler;

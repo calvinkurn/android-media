@@ -59,7 +59,7 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -97,29 +97,29 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
         return fragment;
     }
 
-    @Bind(R2.id.register_next_status)
+    @BindView(R2.id.register_next_status)
     LinearLayout registerNextStatus;
-    @Bind(R2.id.register_next_status_message)
+    @BindView(R2.id.register_next_status_message)
     TextView registerNextStatusMessage;
-    @Bind(R2.id.register_next_step_2)
+    @BindView(R2.id.register_next_step_2)
     LinearLayout registerNextStep2;
-    @Bind(R2.id.register_next_full_name)
+    @BindView(R2.id.register_next_full_name)
     TextView registerNextFullName;
-    @Bind(R2.id.register_next_phone_number)
+    @BindView(R2.id.register_next_phone_number)
     EditText registerNextPhoneNumber;
-    @Bind(R2.id.register_finish_button)
+    @BindView(R2.id.register_finish_button)
     TextView registerFinish;
-    @Bind(R2.id.register_next_detail_t_and_p)
+    @BindView(R2.id.register_next_detail_t_and_p)
     TextView registerNextTAndC;
-    @Bind(R2.id.wrapper_phone)
+    @BindView(R2.id.wrapper_phone)
     TextInputLayout wrapperPhone;
-    @Bind(R2.id.wrapper_gender)
+    @BindView(R2.id.wrapper_gender)
     TextInputLayout wrapperGender;
-    @Bind(R2.id.spinner)
+    @BindView(R2.id.spinner)
     MaterialSpinner spinner;
-    @Bind(R2.id.wrapper_date)
+    @BindView(R2.id.wrapper_date)
     TextInputLayout wrapperDate;
-    @Bind(R2.id.date)
+    @BindView(R2.id.date)
     MaterialSpinner dateText;
 
 
@@ -474,7 +474,7 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
         super.onDestroyView();
         presenter.unSubscribe();
         KeyboardHandler.DropKeyboard(getActivity(),getView());
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     private void sendLocalyticsRegisterEvent(int userId){

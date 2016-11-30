@@ -36,7 +36,7 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -53,9 +53,9 @@ public class FragmentHotListV2 extends Fragment implements HotListView {
     
     private HotListAdapter adapter;
     private HotList hotList;
-    @Bind(R2.id.hot_product)
+    @BindView(R2.id.hot_product)
     RecyclerView recyclerView;
-    @Bind(R2.id.swipe_refresh_layout)
+    @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
     private RecyclerView.LayoutManager layoutManager;
     
@@ -98,7 +98,7 @@ public class FragmentHotListV2 extends Fragment implements HotListView {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         hotList.unSubscribe();
     }
 

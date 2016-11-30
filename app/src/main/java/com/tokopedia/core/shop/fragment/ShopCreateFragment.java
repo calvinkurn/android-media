@@ -39,7 +39,7 @@ import com.tokopedia.core.util.UploadImageReVamp;
 
 import java.io.File;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 
@@ -56,43 +56,43 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     private TkpdProgressDialog progressDialog;
 
     // SUBMIT BUTTON
-    @Bind(R2.id.submit_button)
+    @BindView(R2.id.submit_button)
     TextView submitButton;
 
     // VERIFY PHONE
-    @Bind(R2.id.verify_button)
+    @BindView(R2.id.verify_button)
     TextView verifyButton;
-    @Bind(R2.id.verify_instruction)
+    @BindView(R2.id.verify_instruction)
     TextView verifyInstruction;
 
     // SHOP AVATAR
-    @Bind(R2.id.shop_avatar)
+    @BindView(R2.id.shop_avatar)
     ImageView shopAvatar;
-    @Bind(R2.id.myImageViewText)
+    @BindView(R2.id.myImageViewText)
     TextView imageText;
 
     // DOMAIN CHECKER
-    @Bind(R2.id.domain)
+    @BindView(R2.id.domain)
     EditText shopDomain;
-    @Bind(R2.id.domain_input_layout)
+    @BindView(R2.id.domain_input_layout)
     TextInputLayout domainInput;
 
     // NAME CHECKER
-    @Bind(R2.id.shop_name)
+    @BindView(R2.id.shop_name)
     EditText shopName;
-    @Bind(R2.id.name_input_layout)
+    @BindView(R2.id.name_input_layout)
     TextInputLayout nameInput;
 
     // TAG CHECKER
-    @Bind(R2.id.tag_input_layout)
+    @BindView(R2.id.tag_input_layout)
     TextInputLayout tagInput;
-    @Bind(R2.id.shop_tag)
+    @BindView(R2.id.shop_tag)
     EditText shopTag;
 
     // DESC CHECKER
-    @Bind(R2.id.desc_input_layout)
+    @BindView(R2.id.desc_input_layout)
     TextInputLayout descInput;
-    @Bind(R2.id.shop_desc)
+    @BindView(R2.id.shop_desc)
     EditText shopDesc;
 
     @OnClick(R2.id.verify_button)

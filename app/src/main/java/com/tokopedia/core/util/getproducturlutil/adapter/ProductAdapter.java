@@ -18,7 +18,7 @@ import com.tokopedia.core.util.getproducturlutil.GetProductUrlUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -33,13 +33,13 @@ public class ProductAdapter extends BaseLinearRecyclerViewAdapter {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R2.id.image)
+        @BindView(R2.id.image)
         ImageView image;
 
-        @Bind(R2.id.name)
+        @BindView(R2.id.name)
         TextView name;
 
-        @Bind(R2.id.main)
+        @BindView(R2.id.main)
         View main;
 
         public ViewHolder(View itemView) {

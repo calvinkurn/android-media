@@ -20,20 +20,20 @@ import com.tokopedia.core.rescenter.utils.LocalCacheManager;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created on 8/13/16.
  */
 public class ReplyEditorView extends BaseView<DetailResCenterData.Detail, DetailResCenterView> {
 
-    @Bind(R2.id.listview_attachment)
+    @BindView(R2.id.listview_attachment)
     RecyclerView attachmentRecyclerView;
-    @Bind(R2.id.attach_but)
+    @BindView(R2.id.attach_but)
     View actionAttachment;
-    @Bind(R2.id.send_but)
+    @BindView(R2.id.send_but)
     View actionSend;
-    @Bind(R2.id.new_comment)
+    @BindView(R2.id.new_comment)
     EditText boxComment;
 
     private List<AttachmentResCenterDB> attachmentData;

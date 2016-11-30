@@ -42,7 +42,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -61,16 +61,16 @@ public class ImageUploadPreviewFragment extends
     public static final String NAV_UPLOAD_IMAGE = "nav_upload_image";
     private static final int MAX_CHAR = 128;
 
-    @Bind(R2.id.preview_image)
+    @BindView(R2.id.preview_image)
     ViewPager previewImage;
 
-    @Bind(R2.id.submit)
+    @BindView(R2.id.submit)
     TextView submitButton;
 
-    @Bind(R2.id.image_upload_list)
+    @BindView(R2.id.image_upload_list)
     RecyclerView imageRecyclerView;
 
-    @Bind(R2.id.image_description)
+    @BindView(R2.id.image_description)
     EditText description;
 
     ImageUploadFragmentPresenter presenter;

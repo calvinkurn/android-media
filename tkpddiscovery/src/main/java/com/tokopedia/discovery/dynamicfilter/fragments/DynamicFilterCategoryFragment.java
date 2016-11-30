@@ -31,7 +31,7 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -41,10 +41,10 @@ public class DynamicFilterCategoryFragment extends BaseFragment<CategoryPresente
 
     private static final String GROUPS_KEY = "groups_key";
 
-    @Bind(R2.id.dynamic_filter_category_recyclerview)
+    @BindView(R2.id.dynamic_filter_category_recyclerview)
     RecyclerView dynamicFilterCategory;
 
-    @Bind(R2.id.dynamic_filter_category_finish)
+    @BindView(R2.id.dynamic_filter_category_finish)
     Button dynamicFilterCategoryFinish;
 
     private DynamicCategoryAdapter dynamicCategoryAdapter;

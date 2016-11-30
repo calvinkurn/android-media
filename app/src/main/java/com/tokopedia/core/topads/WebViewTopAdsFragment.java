@@ -20,16 +20,16 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.app.V2BaseFragment;
 import com.tokopedia.core.var.TkpdUrl;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
 public class WebViewTopAdsFragment extends V2BaseFragment {
 
-    @Bind(R2.id.scroll_view)
+    @BindView(R2.id.scroll_view)
     ScrollView mainView;
 
-    @Bind(R2.id.webview)
+    @BindView(R2.id.webview)
     WebView webView;
 
     public static final String SOURCE_EXTRA = "SOURCE";

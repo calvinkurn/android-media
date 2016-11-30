@@ -27,7 +27,7 @@ import com.tokopedia.seller.selling.orderReject.model.ModelEditPrice;
 
 import org.parceler.Parcels;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -36,17 +36,17 @@ import butterknife.ButterKnife;
 public class EditPriceDialog extends DialogFragment {
 
 
-    @Bind(R2.id.title)
+    @BindView(R2.id.title)
     TextView titleTxt;
-    @Bind(R2.id.checkbox)
+    @BindView(R2.id.checkbox)
     CheckBox checkBox;
-    @Bind(R2.id.priceSpiner)
+    @BindView(R2.id.priceSpiner)
     Spinner priceSpiner;
-    @Bind(R2.id.weightSpiner)
+    @BindView(R2.id.weightSpiner)
     Spinner weightSpiner;
-    @Bind(R2.id.price)
+    @BindView(R2.id.price)
     EditText price;
-    @Bind(R2.id.weight)
+    @BindView(R2.id.weight)
     EditText weight;
 
     public static final String TITLE = "title";

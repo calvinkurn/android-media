@@ -19,7 +19,7 @@ import com.tokopedia.sellerapp.home.model.shopmodel.ShopTxStats;
 
 import java.util.HashMap;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -29,12 +29,12 @@ import butterknife.OnClick;
 
 public class TransactionView3 extends FrameLayout implements BaseView<ShopModel> {
 
-    @Bind(R.id.from_transaction)
+    @BindView(R.id.from_transaction)
     TextView fromTransaction;
 
     ArcView transactionArcView;
 
-    @Bind(R.id.arc_view_container)
+    @BindView(R.id.arc_view_container)
     LinearLayout arcViewContainer;
     private ShopModel shopModel;
 

@@ -48,7 +48,7 @@ import com.tokopedia.core.util.RefreshHandler;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -57,11 +57,11 @@ import butterknife.OnClick;
  */
 public class FragmentSellingShipping extends BaseFragment<Shipping> implements ShippingView {
 
-    @Bind(R2.id.order_list)
+    @BindView(R2.id.order_list)
     RecyclerView recyclerView;
-    @Bind(R2.id.fab)
+    @BindView(R2.id.fab)
     FloatingActionButton fab;
-    @Bind(R2.id.root)
+    @BindView(R2.id.root)
     View rootView;
     private View filterView;
     SearchView search;

@@ -12,7 +12,7 @@ import android.widget.CheckBox;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.sellerapp.R;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -20,7 +20,7 @@ public class CloseAppsDialogFragment extends DialogFragment {
     public static final String CLOSE_APPS_CACHE = "CLOSE_APPS_CACHE";
     public static final String DONT_SHOW_FLAG = "DONT_SHOW_FLAG";
     private LocalCacheHandler mHandler;
-    @Bind(R.id.dont_show)
+    @BindView(R.id.dont_show)
     CheckBox mDontShowAgain;
 
     public CloseAppsDialogFragment() {

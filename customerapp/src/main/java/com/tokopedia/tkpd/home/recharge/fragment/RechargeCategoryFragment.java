@@ -30,7 +30,7 @@ import com.tokopedia.tkpd.home.recharge.view.RechargeCategoryView;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
@@ -42,11 +42,11 @@ public class RechargeCategoryFragment extends
         Fragment implements RechargeCategoryView {
     public static final String EXTRA_ALLOW_ERROR = "extra_allow_error";
 
-    @Bind(R2.id.tablayout_recharge)
+    @BindView(R2.id.tablayout_recharge)
     TabLayout tabLayoutRecharge;
-    @Bind(R2.id.viewpager_pulsa)
+    @BindView(R2.id.viewpager_pulsa)
     WrapContentViewPager viewpagerRecharge;
-    @Bind(R2.id.rechargeWrapperLayout)
+    @BindView(R2.id.rechargeWrapperLayout)
     LinearLayout wrapperLayout;
 
     private TkpdProgressDialog mainprogress;

@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -89,11 +89,11 @@ public class CategoryAdapter extends ProductAdapter{
 
     public class ViewHolder extends BaseRecyclerViewAdapter.ViewHolder{
 
-        @Bind(R2.id.category_cardview)
+        @BindView(R2.id.category_cardview)
         CardView categoryCardView;
-        @Bind(R2.id.image_cat)
+        @BindView(R2.id.image_cat)
         ImageView pImageView;
-        @Bind(R2.id.title_cat)
+        @BindView(R2.id.title_cat)
         TextView pNameView;
         Model data;
 

@@ -16,7 +16,7 @@ import com.tokopedia.core.tracking.model.tracking.TrackHistory;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -31,13 +31,13 @@ public class TrackingHistoryAdapter extends BaseLinearRecyclerViewAdapter {
 
     public class ViewHolder extends RecyclerView.ViewHolder  {
 
-        @Bind(R2.id.status)
+        @BindView(R2.id.status)
         TextView status;
 
-        @Bind(R2.id.city)
+        @BindView(R2.id.city)
         TextView city;
 
-        @Bind(R2.id.time)
+        @BindView(R2.id.time)
         TextView time;
 
         public ViewHolder(View itemView) {

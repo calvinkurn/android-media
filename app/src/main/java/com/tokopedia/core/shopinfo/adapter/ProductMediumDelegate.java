@@ -18,7 +18,7 @@ import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.shopinfo.models.productmodel.List;
 import com.tokopedia.core.var.ProductItem;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -27,18 +27,18 @@ import butterknife.ButterKnife;
 public class ProductMediumDelegate {
 
     public class VHolder extends RecyclerView.ViewHolder {
-        @Bind(R2.id.img)
+        @BindView(R2.id.img)
         public SquareImageView img;
-        @Bind(R2.id.product_name)
+        @BindView(R2.id.product_name)
         public TextView name;
-        @Bind(R2.id.product_price)
+        @BindView(R2.id.product_price)
         public TextView price;
-        @Bind(R2.id.preorder)
+        @BindView(R2.id.preorder)
         public View preorder;
-        @Bind(R2.id.grosir)
+        @BindView(R2.id.grosir)
         public View wholesale;
         public View mainView;
-        @Bind(R2.id.container_badge)
+        @BindView(R2.id.container_badge)
         public LinearLayout containerBadge;
 
         public VHolder(View itemView) {

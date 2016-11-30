@@ -20,7 +20,7 @@ import com.tokopedia.core.util.SessionHandler;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -42,16 +42,16 @@ public class ShopNotesAdapter extends BaseLinearRecyclerViewAdapter {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R2.id.notes_name)
+        @BindView(R2.id.notes_name)
         TextView title;
 
-        @Bind(R2.id.delete_notes)
+        @BindView(R2.id.delete_notes)
         ImageView deleteButton;
 
-        @Bind(R2.id.edit_notes)
+        @BindView(R2.id.edit_notes)
         ImageView editButton;
 
-        @Bind(R2.id.main)
+        @BindView(R2.id.main)
         View mainView;
 
         public ViewHolder(View itemView) {

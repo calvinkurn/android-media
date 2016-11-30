@@ -14,7 +14,7 @@ import com.tokopedia.sellerapp.home.model.shopmodel.ShopTxStats;
 import java.util.HashMap;
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -23,16 +23,16 @@ import butterknife.ButterKnife;
 
 public class ShopStatisticTransactionView extends FrameLayout implements BaseView<ShopTxStats> {
 
-    @Bind(R.id.pie)
+    @BindView(R.id.pie)
     SimplePieChart simplePieChart;
 
-    @Bind(R.id.percentage_success)
+    @BindView(R.id.percentage_success)
     TextView percentageSuccess;
 
-    @Bind(R.id.view_message_transaction)
+    @BindView(R.id.view_message_transaction)
     LinearLayout viewMessageTransaction;
 
-    @Bind(R.id.total_transaction)
+    @BindView(R.id.total_transaction)
     TextView totalTransaction;
 
     Map<Integer, TypeTransaction> typeTransactions;

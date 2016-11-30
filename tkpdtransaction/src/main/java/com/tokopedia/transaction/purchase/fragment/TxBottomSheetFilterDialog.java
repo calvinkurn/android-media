@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -41,15 +41,15 @@ public class TxBottomSheetFilterDialog implements AdapterView.OnItemSelectedList
     private List<TxFilterItem> txFilterItemList = new ArrayList<>();
     private ArrayAdapter<TxFilterItem> adapter;
 
-    @Bind(R2.id.filter)
+    @BindView(R2.id.filter)
     Spinner spnFilter;
-    @Bind(R2.id.search)
+    @BindView(R2.id.search)
     EditText searchField;
-    @Bind(R2.id.start_date)
+    @BindView(R2.id.start_date)
     TextView tvStartDate;
-    @Bind(R2.id.end_date)
+    @BindView(R2.id.end_date)
     TextView tvEndDate;
-    @Bind(R2.id.search_button)
+    @BindView(R2.id.search_button)
     TextView tvSearchSubmit;
 
 

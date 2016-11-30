@@ -15,7 +15,7 @@ import com.tokopedia.sellerapp.gmsubscribe.presenter.GMSubscribePresenter;
 import com.tokopedia.sellerapp.gmsubscribe.presenter.GMSubscribePresenterImpl;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.subscriptions.CompositeSubscription;
 
@@ -29,10 +29,10 @@ public class GMSubscribeFragment extends Fragment implements
 
     private static final String TAG = "GMSubscribeFragment";
 
-    @Bind(R.id.webview)
+    @BindView(R.id.webview)
     GMSubscribeWebView webView;
 
-    @Bind(R.id.progressbar)
+    @BindView(R.id.progressbar)
     ProgressBar progressBar;
 
     private GMSubscribePresenter presenter;

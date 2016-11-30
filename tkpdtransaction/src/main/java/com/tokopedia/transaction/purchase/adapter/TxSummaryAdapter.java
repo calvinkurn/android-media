@@ -15,7 +15,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -65,11 +65,11 @@ public class TxSummaryAdapter extends ArrayAdapter<TxSummaryItem> {
 
 
     class ViewHolder {
-        @Bind(R2.id.menu_title)
+        @BindView(R2.id.menu_title)
         TextView tvName;
-        @Bind(R2.id.menu_count)
+        @BindView(R2.id.menu_count)
         TextView tvCount;
-        @Bind(R2.id.menu_desc)
+        @BindView(R2.id.menu_desc)
         TextView tvDesc;
 
         public ViewHolder(View view) {

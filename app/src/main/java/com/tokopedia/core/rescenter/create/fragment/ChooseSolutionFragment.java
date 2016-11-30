@@ -41,7 +41,7 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -55,21 +55,21 @@ public class ChooseSolutionFragment extends BasePresenterFragment<ChooseSolution
 
     private static final String KEY_PARAM_PASS_DATA = "pass_data";
 
-    @Bind(R2.id.invoice)
+    @BindView(R2.id.invoice)
     TextView invoice;
-    @Bind(R2.id.shop_name)
+    @BindView(R2.id.shop_name)
     TextView shopName;
-    @Bind(R2.id.view_solution_section)
+    @BindView(R2.id.view_solution_section)
     SolutionSectionCreateResCenterView solutionSectionView;
-    @Bind(R2.id.view_attachment_section)
+    @BindView(R2.id.view_attachment_section)
     AttachmentSectionCreateResCenterView attachmenSectionView;
-    @Bind(R2.id.action_submit)
+    @BindView(R2.id.action_submit)
     View submitButton;
-    @Bind(R2.id.action_abort)
+    @BindView(R2.id.action_abort)
     View actionAbort;
-    @Bind(R2.id.main_view)
+    @BindView(R2.id.main_view)
     View mainView;
-    @Bind(R2.id.include_loading)
+    @BindView(R2.id.include_loading)
     View loading;
 
     private ActionParameterPassData passData;

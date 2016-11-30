@@ -11,7 +11,7 @@ import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.home.model.shopmodel.Stats;
 import com.tokopedia.sellerapp.home.utils.ReputationLevelUtils;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -20,10 +20,10 @@ import butterknife.ButterKnife;
 
 public class ReputationView extends FrameLayout implements BaseView<ReputationView.ReputationViewModel> {
 
-    @Bind(R.id.reputation_badge_listener)
+    @BindView(R.id.reputation_badge_listener)
     LinearLayout reputationBadgeListener;
 
-    @Bind(R.id.reputation_points)
+    @BindView(R.id.reputation_points)
     TextView reputationPoints;
 
     public ReputationView(Context context, AttributeSet attrs) {

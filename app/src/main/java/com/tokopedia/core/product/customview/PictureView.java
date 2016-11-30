@@ -22,7 +22,7 @@ import com.tokopedia.core.product.model.productdetail.ProductImage;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Angga.Prasetiyo on 29/10/2015.
@@ -30,9 +30,9 @@ import butterknife.Bind;
 public class PictureView extends BaseView<ProductDetailData, ProductDetailView> {
     private static final String TAG = PictureView.class.getSimpleName();
 
-    @Bind(R2.id.view_pager)
+    @BindView(R2.id.view_pager)
     ViewPager vpImage;
-    @Bind(R2.id.indicator)
+    @BindView(R2.id.indicator)
     LinePageIndicator indicator;
 
     private ImagePagerAdapter imagePagerAdapter;

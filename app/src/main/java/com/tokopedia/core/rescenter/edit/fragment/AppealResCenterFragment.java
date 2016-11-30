@@ -44,7 +44,7 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -64,17 +64,17 @@ public class AppealResCenterFragment extends BasePresenterFragment<AppealResCent
 
     private ActionParameterPassData passData;
 
-    @Bind(R2.id.invoice)
+    @BindView(R2.id.invoice)
     TextView invoice;
-    @Bind(R2.id.shop_name)
+    @BindView(R2.id.shop_name)
     TextView shopName;
-    @Bind(R2.id.include_loading)
+    @BindView(R2.id.include_loading)
     ProgressBar loading;
-    @Bind(R2.id.main_view)
+    @BindView(R2.id.main_view)
     View mainView;
-    @Bind(R2.id.view_edit_solution_section)
+    @BindView(R2.id.view_edit_solution_section)
     AppealSolutionView solutionView;
-    @Bind(R2.id.view_attachment_section)
+    @BindView(R2.id.view_attachment_section)
     AppealAttachmentView attachmenSectionView;
 
     private List<AttachmentResCenterDB> attachmentData;

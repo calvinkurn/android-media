@@ -21,7 +21,7 @@ import com.tokopedia.core.manage.people.address.model.Destination;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.app.Activity.RESULT_OK;
@@ -38,13 +38,13 @@ public class ChooseAddressAdapter extends BaseLinearRecyclerViewAdapter {
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        @Bind(R2.id.title_address)
+        @BindView(R2.id.title_address)
         TextView titleAddress;
 
-        @Bind(R2.id.address_detail)
+        @BindView(R2.id.address_detail)
         TextView addressDetail;
 
-        @Bind(R2.id.edit_address)
+        @BindView(R2.id.edit_address)
         View btnEdit;
 
         public ViewHolder(View itemView) {

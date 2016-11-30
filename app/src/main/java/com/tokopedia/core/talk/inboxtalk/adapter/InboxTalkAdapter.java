@@ -45,7 +45,8 @@ import com.tokopedia.core.var.RecyclerViewItem;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
+import butterknife.BindViews;
 import butterknife.ButterKnife;
 
 /**
@@ -89,21 +90,21 @@ public class InboxTalkAdapter extends BaseRecyclerViewAdapter{
 
 
     public static class TalkProductViewHolder extends RecyclerView.ViewHolder{
-//        @Bind(R2.id.user_ava) ImageView pImageView;
+//        @BindView(R2.id.user_ava) ImageView pImageView;
 
-        @Bind(R2.id.user_ava)ImageView UserImageView;
-        @Bind(R2.id.rep_icon)ImageView RepIcon;
-        @Bind(R2.id.but_overflow)View ButtonOverflow;
-        @Bind(R2.id.product_name)TextView pProdName;
-        @Bind(R2.id.user_name)   TextView UserView;
-        @Bind(R2.id.create_time)TextView TimeView;
-        @Bind(R2.id.message)TextView MessageView;
-        @Bind(R2.id.total_comment)TextView TotalCommentView;
-        @Bind(R2.id.rep_rating)TextView RepRate;
-        @Bind(R2.id.main_view)View CommentBut;
-        //        @Bind(R2.id.)View ProdView;
-        @Bind(R2.id.reputation_view)View viewReputation;
-        @Bind({R2.id.user_name, R2.id.product_name})
+        @BindView(R2.id.user_ava)ImageView UserImageView;
+        @BindView(R2.id.rep_icon)ImageView RepIcon;
+        @BindView(R2.id.but_overflow)View ButtonOverflow;
+        @BindView(R2.id.product_name)TextView pProdName;
+        @BindView(R2.id.user_name)   TextView UserView;
+        @BindView(R2.id.create_time)TextView TimeView;
+        @BindView(R2.id.message)TextView MessageView;
+        @BindView(R2.id.total_comment)TextView TotalCommentView;
+        @BindView(R2.id.rep_rating)TextView RepRate;
+        @BindView(R2.id.main_view)View CommentBut;
+        //        @BindView(R2.id.)View ProdView;
+        @BindView(R2.id.reputation_view)View viewReputation;
+        @BindViews({R2.id.user_name, R2.id.product_name})
         List<TextView> textViews;
 
         TalkProductViewHolder(View view){
@@ -148,7 +149,7 @@ public class InboxTalkAdapter extends BaseRecyclerViewAdapter{
         }
     }
 
-//    @Bind({R.id.user_name, R.id.product_name})
+//    @BindView({R.id.user_name, R.id.product_name})
 //    List<TextView> textViews;
 //    ButterKnife.Action<TextView> CHANGE_COLOR = new ButterKnife.Action<TextView>() {
 //        @Override

@@ -11,14 +11,14 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.product.listener.ProductDetailView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by alvarisi on 9/8/16.
  */
 public class TransactionSuccessView extends BaseView<ProductDetailData, ProductDetailView> {
 
-    @Bind(R2.id.tv_success)
+    @BindView(R2.id.tv_success)
     TextView tvSuccessRate;
 
     public TransactionSuccessView(Context context) {

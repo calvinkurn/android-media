@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.home.model.notification.Notification;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -19,10 +19,10 @@ import butterknife.ButterKnife;
 
 public class NewOrderView extends FrameLayout implements BaseView<Notification.Sales>{
 
-    @Bind(R.id.seller_home_new_order_number)
+    @BindView(R.id.seller_home_new_order_number)
     TextView sellerHomeNewOrderNumber;
 
-    @Bind(R.id.line_break)
+    @BindView(R.id.line_break)
     View lineBreak;
 
     public NewOrderView(Context context){

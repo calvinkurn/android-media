@@ -40,7 +40,7 @@ import com.tokopedia.core.var.TkpdState;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -51,11 +51,11 @@ import butterknife.OnClick;
 public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresenter>
                                         implements RegisterInitialView{
 
-    @Bind(R2.id.linearLayout)
+    @BindView(R2.id.linearLayout)
     LinearLayout linearLayout;
-    @Bind(R2.id.register)
+    @BindView(R2.id.register)
     LoginTextView registerButton;
-    @Bind(R2.id.login_button)
+    @BindView(R2.id.login_button)
     TextView loginButton;
 
     List<LoginProviderModel.ProvidersBean> listProvider;
@@ -342,7 +342,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
         super.onDestroyView();
         presenter.unSubscribeFacade();
         KeyboardHandler.DropKeyboard(getActivity(),getView());
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     private void storeCacheGTM(String key, String value) {

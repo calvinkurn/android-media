@@ -34,7 +34,7 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.ToolTipUtils;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Nisie on 5/19/16.
@@ -50,40 +50,40 @@ public class InboxMessageDetailFragment extends BasePresenterFragment<InboxMessa
         void undoFlagSpam(Bundle param);
     }
 
-    @Bind(R2.id.message_list)
+    @BindView(R2.id.message_list)
     RecyclerView mainList;
 
-    @Bind(R2.id.swipe_refresh_layout)
+    @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
 
-    @Bind(R2.id.msg_title)
+    @BindView(R2.id.msg_title)
     TextView title;
 
-    @Bind(R2.id.add_comment_area)
+    @BindView(R2.id.add_comment_area)
     View replyView;
 
-    @Bind(R2.id.add_url)
+    @BindView(R2.id.add_url)
     ImageView attachmentButton;
 
-    @Bind(R2.id.new_comment)
+    @BindView(R2.id.new_comment)
     EditText replyEditText;
 
-    @Bind(R2.id.send_but)
+    @BindView(R2.id.send_but)
     ImageView sendButton;
 
-    @Bind(R2.id.header_date)
+    @BindView(R2.id.header_date)
     TextView headerDate;
 
-    @Bind(R2.id.reputation_view)
+    @BindView(R2.id.reputation_view)
     View viewReputation;
 
-    @Bind(R2.id.rep_rating)
+    @BindView(R2.id.rep_rating)
     TextView reputationPercentage;
 
-    @Bind(R2.id.rep_icon)
+    @BindView(R2.id.rep_icon)
     ImageView reputationIcon;
 
-    @Bind(R2.id.header)
+    @BindView(R2.id.header)
     View header;
 
     LinearLayoutManager layoutManager;

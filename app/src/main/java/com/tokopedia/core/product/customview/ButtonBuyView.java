@@ -14,7 +14,7 @@ import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.util.SessionHandler;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Angga.Prasetiyo on 02/11/2015.
@@ -22,7 +22,7 @@ import butterknife.Bind;
 public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView> {
     private static final String TAG = ButtonBuyView.class.getSimpleName();
 
-    @Bind(R2.id.tv_buy)
+    @BindView(R2.id.tv_buy)
     TextView tvBuy;
 
     public ButtonBuyView(Context context) {

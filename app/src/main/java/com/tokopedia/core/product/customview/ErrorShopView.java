@@ -11,16 +11,16 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.product.listener.ProductDetailView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by ANGGA on 10/29/2015.
  */
 public class ErrorShopView extends BaseView<ProductDetailData, ProductDetailView> {
 
-    @Bind(R2.id.tv_title)
+    @BindView(R2.id.tv_title)
     TextView tvTitle;
-    @Bind(R2.id.tv_sub_title)
+    @BindView(R2.id.tv_sub_title)
     TextView tvSubTitle;
 
     public ErrorShopView(Context context) {

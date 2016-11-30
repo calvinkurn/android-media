@@ -8,7 +8,7 @@ import android.widget.FrameLayout;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.home.model.shopmodel.ShopModel;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -17,10 +17,10 @@ import butterknife.ButterKnife;
 
 public class TransactionView extends FrameLayout implements BaseView<ShopModel> {
 
-    @Bind(R.id.reputation_view)
+    @BindView(R.id.reputation_view)
     ReputationView reputationView;
 
-    @Bind(R.id.shop_statistic_transaction_view)
+    @BindView(R.id.shop_statistic_transaction_view)
     ShopStatisticTransactionView shopStatisticTransactionView;
     private ShopModel shopModel;
 

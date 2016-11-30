@@ -59,8 +59,9 @@ import com.tokopedia.core.var.TkpdState;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -85,32 +86,33 @@ public class LoginFragment extends Fragment implements LoginView {
     Context mContext;
 
     View rootView;
-    @Bind(R2.id.email_auto)
+    @BindView(R2.id.email_auto)
     AutoCompleteTextView mEmailView;
-    @Bind(R2.id.password)
+    @BindView(R2.id.password)
     PasswordView mPasswordView;
-    @Bind(R2.id.login_form)
+    @BindView(R2.id.login_form)
     ScrollView mLoginFormView;
-    @Bind(R2.id.login_status)
+    @BindView(R2.id.login_status)
     RelativeLayout mLoginStatusView;
-    @Bind(R2.id.login_status_message)
+    @BindView(R2.id.login_status_message)
     TextView mLoginStatusMessageView;
-    @Bind(R2.id.register_button)
+    @BindView(R2.id.register_button)
     TextView registerButton;
-    @Bind(R2.id.forgot_pass)
+    @BindView(R2.id.forgot_pass)
     TextView forgotPass;
-    @Bind(R2.id.linearLayout)
+    @BindView(R2.id.linearLayout)
     LinearLayout linearLayout;
-    @Bind(R2.id.accounts_sign_in)
+    @BindView(R2.id.accounts_sign_in)
     TextView accountSignIn;
-    @Bind(R2.id.wrapper_email)
+    @BindView(R2.id.wrapper_email)
     TextInputLayout wrapperEmail;
-    @Bind(R2.id.wrapper_password)
+    @BindView(R2.id.wrapper_password)
     TextInputLayout wrapperPassword;
 
     ArrayAdapter<String> autoCompleteAdapter;
     List<LoginProviderModel.ProvidersBean> listProvider;
     Snackbar snackbar;
+    private Unbinder unbinder;
 
     public static LoginFragment newInstance(String mEmail, boolean goToIndex, String login, String name, String url) {
         Bundle extras = new Bundle();
@@ -151,7 +153,7 @@ public class LoginFragment extends Fragment implements LoginView {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_login_reborn, container, false);
-        ButterKnife.bind(this, rootView);
+        unbinder = ButterKnife.bind(this, rootView);
         forgotPass.setPaintFlags(forgotPass.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         setListener();
 
@@ -185,7 +187,7 @@ public class LoginFragment extends Fragment implements LoginView {
     public void onDestroyView() {
         super.onDestroyView();
         login.unSubscribe();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         KeyboardHandler.DropKeyboard(getActivity(),getView());
         dismissSnackbar();
     }

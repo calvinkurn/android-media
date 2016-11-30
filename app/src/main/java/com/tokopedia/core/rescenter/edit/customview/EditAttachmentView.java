@@ -13,16 +13,16 @@ import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.rescenter.edit.customadapter.AttachmentAdapter;
 import com.tokopedia.core.rescenter.edit.listener.BuyerEditSolutionListener;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created on 8/26/16.
  */
 public class EditAttachmentView extends BaseView<Object, BuyerEditSolutionListener> {
 
-    @Bind(R2.id.view_upload_proof)
+    @BindView(R2.id.view_upload_proof)
     View viewUploadProof;
-    @Bind(R2.id.list_upload_proof)
+    @BindView(R2.id.list_upload_proof)
     RecyclerView attachmentRecyclerView;
 
     public EditAttachmentView(Context context) {

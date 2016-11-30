@@ -25,9 +25,10 @@ import com.tokopedia.core.network.retrofit.services.AuthService;
 
 import org.parceler.Parcels;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 
 /**
  * Created by m.normansyah on 17/12/2015.
@@ -52,16 +53,17 @@ public class ReturnPolicyDialog extends DialogFragment {
 
     AuthService service;
 
-    @Bind(R2.id.return_policy_content)
+    @BindView(R2.id.return_policy_content)
     EditText returnPolicyContent;
-    @Bind(R2.id.return_policy_cancel)
+    @BindView(R2.id.return_policy_cancel)
     Button returnPolicyCancel;
-    @Bind(R2.id.return_policy_add)
+    @BindView(R2.id.return_policy_add)
     Button returnPolicyAdd;
-    @Bind(R2.id.return_policy_progress_bar)
+    @BindView(R2.id.return_policy_progress_bar)
     ProgressBar returnPolicyProgressBar;
-    @Bind(R2.id.return_policy_content_title)
+    @BindView(R2.id.return_policy_content_title)
     EditText returnPolicyContentTitle;
+    private Unbinder unbinder;
 
     public static DialogFragment newInstance(NoteDetailModel.Detail detail) {
         Bundle arg = new Bundle();
@@ -111,7 +113,7 @@ public class ReturnPolicyDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.dialog_return_policy_new, container, false);
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        ButterKnife.bind(this, rootView);
+        unbinder = ButterKnife.bind(this, rootView);
         return rootView;
     }
 
@@ -206,7 +208,7 @@ public class ReturnPolicyDialog extends DialogFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     public static interface ReturnPolicyListener {

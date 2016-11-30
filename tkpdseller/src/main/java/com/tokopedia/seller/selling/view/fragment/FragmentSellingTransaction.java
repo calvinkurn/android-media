@@ -53,7 +53,7 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.subscriptions.CompositeSubscription;
@@ -63,13 +63,13 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransaction> implements SellingStatusTransactionView, View.OnClickListener {
 
-    @Bind(R2.id.order_list)
+    @BindView(R2.id.order_list)
     RecyclerView recyclerView;
-    @Bind(R2.id.swipe_refresh_layout)
+    @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
-    @Bind(R2.id.fab)
+    @BindView(R2.id.fab)
     FloatingActionButton fab;
-    @Bind(R2.id.root)
+    @BindView(R2.id.root)
     CoordinatorLayout rootView;
 
     private static final String ORDER_ID = "OrderID";

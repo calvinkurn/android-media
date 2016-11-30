@@ -15,7 +15,7 @@ import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -32,7 +32,7 @@ public class TxHistoryActivity extends TActivity {
         return intent;
     }
 
-    @Bind(R2.id.order_status)
+    @BindView(R2.id.order_status)
     ListView listView;
 
     @Override

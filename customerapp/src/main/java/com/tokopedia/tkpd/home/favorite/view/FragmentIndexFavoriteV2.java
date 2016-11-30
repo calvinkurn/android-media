@@ -33,7 +33,7 @@ import com.tokopedia.tkpd.home.util.DefaultRetryListener;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -42,13 +42,13 @@ import butterknife.ButterKnife;
 public class FragmentIndexFavoriteV2 extends Fragment implements FavoriteView, DefaultRetryListener.OnClickRetry {
     Favorite favorite;
     BaseRecyclerViewAdapter adapter;// FavoriteRecyclerViewAdapter
-    @Bind(R2.id.index_favorite_recycler_view)
+    @BindView(R2.id.index_favorite_recycler_view)
     RecyclerView recyclerView;
-    @Bind(R2.id.swipe_refresh_layout)
+    @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
-    @Bind(R2.id.include_loading)
+    @BindView(R2.id.include_loading)
     ProgressBar progressBar;
-    @Bind(R2.id.main_content)
+    @BindView(R2.id.main_content)
     RelativeLayout mainContent;
     RecyclerView.LayoutManager layoutManager;
     DefaultItemAnimator animator;
@@ -240,7 +240,7 @@ public class FragmentIndexFavoriteV2 extends Fragment implements FavoriteView, D
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     @Override

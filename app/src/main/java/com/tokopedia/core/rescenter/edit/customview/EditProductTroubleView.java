@@ -17,14 +17,14 @@ import com.tokopedia.core.rescenter.edit.model.responsedata.PassProductTrouble;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created on 8/24/16.
  */
 public class EditProductTroubleView extends BaseView<EditResCenterFormData, BuyerEditResCenterListener> {
 
-    @Bind(R2.id.product_recyclerview)
+    @BindView(R2.id.product_recyclerview)
     RecyclerView productRecyclerView;
 
     private ProductAdapter adapter;

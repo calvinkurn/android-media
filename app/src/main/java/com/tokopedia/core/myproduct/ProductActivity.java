@@ -85,8 +85,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -117,13 +118,13 @@ public class ProductActivity extends BaseProductActivity implements
     public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
     SimpleFacebook simplefacebook;
 
-    @Bind(R2.id.toolbar)
+    @BindView(R2.id.toolbar)
     Toolbar toolbar;
 
-//    @Bind(R2.id.app_bar_layout)
+//    @BindView(R2.id.app_bar_layout)
 //    AppBarLayout appBarLayout;
 
-    @Bind(R2.id.add_product_container)
+    @BindView(R2.id.add_product_container)
     FrameLayout container;
 
     FloatingActionButton fab;
@@ -161,6 +162,7 @@ public class ProductActivity extends BaseProductActivity implements
 
     // fragment productActifity, moved there because it is needed for twitter dialog
     Fragment productActifityFragment = null;
+    private Unbinder unbinder;
 
     public static File getOutputMediaFile(){
         File mediaStorageDir = new File(
@@ -205,7 +207,7 @@ public class ProductActivity extends BaseProductActivity implements
                 setContentView(R.layout.activity_product);
                 break;
         }
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -648,7 +650,7 @@ public class ProductActivity extends BaseProductActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     @Override

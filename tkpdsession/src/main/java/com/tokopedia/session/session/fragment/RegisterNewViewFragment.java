@@ -68,7 +68,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -84,35 +84,35 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
     public static final int PASSWORD_MINIMUM_LENGTH = 6;
     public static final String VALIDATE_EMAIL = "validate_email";
 
-    @Bind(R2.id.register_name)
+    @BindView(R2.id.register_name)
     AutoCompleteTextView registerName;
-    @Bind(R2.id.register_password)
+    @BindView(R2.id.register_password)
     PasswordView registerPassword;
-    @Bind(R2.id.register_next_progress)
+    @BindView(R2.id.register_next_progress)
     ProgressBar registerNextProgress;
-    @Bind(R2.id.register_next)
+    @BindView(R2.id.register_next)
     RelativeLayout registerNext;
-    @Bind(R2.id.register_next_button)
+    @BindView(R2.id.register_next_button)
     TextView registerNextButton;
-    @Bind(R2.id.register_status)
+    @BindView(R2.id.register_status)
     LinearLayout registerStatus;
-    @Bind(R2.id.register_status_message)
+    @BindView(R2.id.register_status_message)
     TextView registerStatusMessage;
-    @Bind(R2.id.wrapper_name)
+    @BindView(R2.id.wrapper_name)
     TextInputLayout wrapperName;
-    @Bind(R2.id.wrapper_email)
+    @BindView(R2.id.wrapper_email)
     TextInputLayout wrapperEmail;
-    @Bind(R2.id.wrapper_password)
+    @BindView(R2.id.wrapper_password)
     TextInputLayout wrapperPassword;
 
-    @Bind(R2.id.login_button)
+    @BindView(R2.id.login_button)
     TextView loginButton;
 
 
-    @Bind(R2.id.name)
+    @BindView(R2.id.name)
     EditText name;
 
-    @Bind(R2.id.linearLayout) LinearLayout linearLayout;
+    @BindView(R2.id.linearLayout) LinearLayout linearLayout;
     Context mContext;
 
     Snackbar snackbar;
@@ -450,7 +450,7 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
         super.onDestroyView();
         presenter.unSubscribeFacade();
         KeyboardHandler.DropKeyboard(getActivity(),getView());
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         dismissSnackbar();
     }
 

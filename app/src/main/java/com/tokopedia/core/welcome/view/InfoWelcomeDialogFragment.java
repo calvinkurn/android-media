@@ -18,9 +18,10 @@ import android.widget.TextView;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 
 /**
  * Created by stevenfredian on 11/11/16.
@@ -30,8 +31,9 @@ public class InfoWelcomeDialogFragment extends DialogFragment {
 
     public static final String TAG = "DialogWelcome";
 
-    @Bind(R2.id.buyer_button)
+    @BindView(R2.id.buyer_button)
     TextView buyerButton;
+    private Unbinder unbinder;
 
     public static InfoWelcomeDialogFragment newInstance() {
         InfoWelcomeDialogFragment fragment = new InfoWelcomeDialogFragment();
@@ -50,7 +52,7 @@ public class InfoWelcomeDialogFragment extends DialogFragment {
         getDialog().setCanceledOnTouchOutside(false);
         super.onCreateView(inflater, container, savedInstanceState);
         View rootView = inflater.inflate(R.layout.dialog_info_welcome, container, false);
-        ButterKnife.bind(this, rootView);
+        unbinder = ButterKnife.bind(this, rootView);
         initView(rootView);
         return rootView;
     }
@@ -89,7 +91,7 @@ public class InfoWelcomeDialogFragment extends DialogFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     @OnClick(R2.id.buyer_button)

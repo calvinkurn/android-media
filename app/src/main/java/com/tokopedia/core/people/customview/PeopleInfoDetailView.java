@@ -14,24 +14,24 @@ import com.tokopedia.core.people.model.PeoplePrivacyData;
 import com.tokopedia.core.people.presenter.PeopleInfoFragmentPresenter;
 import com.tokopedia.core.util.SessionHandler;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created on 6/2/16.
  */
 public class PeopleInfoDetailView extends BaseView<InputOutputData, PeopleInfoFragmentPresenter> {
 
-    @Bind(R2.id.user_email)
+    @BindView(R2.id.user_email)
     TextView email;
-    @Bind(R2.id.user_yahoo)
+    @BindView(R2.id.user_yahoo)
     TextView yahoo;
-    @Bind(R2.id.user_phone)
+    @BindView(R2.id.user_phone)
     TextView phone;
-    @Bind(R2.id.user_address)
+    @BindView(R2.id.user_address)
     TextView address;
-    @Bind(R2.id.user_hobby)
+    @BindView(R2.id.user_hobby)
     TextView hobby;
-    @Bind(R2.id.user_birth)
+    @BindView(R2.id.user_birth)
     TextView birth;
 
     public PeopleInfoDetailView(Context context) {

@@ -50,7 +50,7 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import permissions.dispatcher.NeedsPermission;
@@ -67,14 +67,14 @@ import rx.subscriptions.CompositeSubscription;
 @RuntimePermissions
 public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction> implements SellingStatusTransactionView, SearchView.OnQueryTextListener {
 
-    @Bind(R2.id.order_list)
+    @BindView(R2.id.order_list)
     RecyclerView recyclerView;
-    @Bind(R2.id.swipe_refresh_layout)
+    @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
-    @Bind(R2.id.root)
+    @BindView(R2.id.root)
     CoordinatorLayout rootView;
     SearchView searchTxt;
-    @Bind(R2.id.fab)
+    @BindView(R2.id.fab)
     FloatingActionButton fab;
 
     private PagingHandler mPaging;

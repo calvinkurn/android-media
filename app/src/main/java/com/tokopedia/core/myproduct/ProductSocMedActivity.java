@@ -48,8 +48,9 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
 import static com.tokopedia.core.instoped.InstagramMediaModelUtil.convertTo;
@@ -64,13 +65,13 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
         ,ImageChooserDialog.SelectWithImage
 {
     public static final String DEFAULT_HTTP = "http://www.glamour.com/images/fashion/2016/03/Iskra-02-main.jpg";
-    @Bind(R2.id.toolbar)
+    @BindView(R2.id.toolbar)
     Toolbar toolbar;
 
-    @Bind(R2.id.products_soc_med_thumbnail)
+    @BindView(R2.id.products_soc_med_thumbnail)
     RecyclerView productsSocMedThumnNail;
 
-    @Bind(R2.id.product_soc_med_viewpager)
+    @BindView(R2.id.product_soc_med_viewpager)
     ViewPager productSocMedViewPager;
 
     PagerAdapter2 pagerAdapter;
@@ -155,12 +156,13 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
     private List<InstagramMediaModel> images = new ArrayList<>();
 
     TkpdProgressDialog tkpdProgressDialog;
+    private Unbinder unbinder;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_products_socmed);
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
 
         toolbar.setTitle(R.string.title_activity_add_product);
         setSupportActionBar(toolbar);
@@ -253,7 +255,7 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     @Override

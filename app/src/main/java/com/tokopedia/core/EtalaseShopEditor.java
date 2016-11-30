@@ -49,7 +49,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Response;
 import rx.Subscriber;
@@ -65,10 +65,10 @@ public class EtalaseShopEditor extends TActivity {
     private ArrayList<String> EtalaseID = new ArrayList<String>();
     private ArrayList<Integer> TotalProd = new ArrayList<Integer>();
 
-    @Bind(R2.id.listview_etalase)
+    @BindView(R2.id.listview_etalase)
     LazyListView lvEtalase;
 
-    @Bind(R2.id.mainView)
+    @BindView(R2.id.mainView)
     View mainView;
 
 

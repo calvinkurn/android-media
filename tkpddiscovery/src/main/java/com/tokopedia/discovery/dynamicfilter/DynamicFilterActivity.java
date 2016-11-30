@@ -36,7 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -47,11 +47,11 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
     private static final String FILTER_SELECTED_PRICE_MIN = "pmin";
     private static final String FILTER_SELECTED_PRICE_MAX = "pmax";
 
-    @Bind(R2.id.dynamic_filter_list)
+    @BindView(R2.id.dynamic_filter_list)
     FrameLayout dynamicFilterList;
-    @Bind(R2.id.toolbar)
+    @BindView(R2.id.toolbar)
     Toolbar toolbar;
-    @Bind(R2.id.dynamic_filter_detail)
+    @BindView(R2.id.dynamic_filter_detail)
     FrameLayout dynamicFilterDetail;
     private static final String TAG = DynamicFilterActivity.class.getSimpleName();
     DynamicFilterPresenter dynamicFilterPresenter;
@@ -66,7 +66,7 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
     public static final String ACTION_SELECT_FILTER = "ACTION_SELECT_FILTER";
     public static final String EXTRA_FILTER_KEY = "EXTRA_FILTER_KEY";
     public static final String EXTRA_FILTER_VALUE = "EXTRA_FILTER_VALUE";
-    @Bind(R2.id.root)
+    @BindView(R2.id.root)
     CoordinatorLayout root;
     private SharedPreferences preferences;
     private FragmentManager fragmentManager;
@@ -242,7 +242,7 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
 //        saveFilterSelectionPosition();
 //        saveFilterSelection();
 //        saveFilterText();

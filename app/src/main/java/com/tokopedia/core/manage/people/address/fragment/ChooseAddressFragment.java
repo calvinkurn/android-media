@@ -21,7 +21,7 @@ import com.tokopedia.core.manage.people.address.presenter.ChooseAddressFragmentP
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RefreshHandler;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Alifa on 10/11/2016.
@@ -29,16 +29,16 @@ import butterknife.Bind;
 
 public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFragmentPresenter> implements ChooseAddressFragmentView {
 
-    @Bind(R2.id.main_view)
+    @BindView(R2.id.main_view)
     View mainView;
 
-    @Bind(R2.id.address_list)
+    @BindView(R2.id.address_list)
     RecyclerView addressRV;
 
-    @Bind(R2.id.search)
+    @BindView(R2.id.search)
     EditText search;
 
-    @Bind(R2.id.search_but)
+    @BindView(R2.id.search_but)
     ImageView searchBut;
 
     ChooseAddressAdapter adapter;

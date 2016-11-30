@@ -39,9 +39,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;
@@ -64,10 +65,10 @@ public class ActivationResentFragment extends Fragment implements BaseView {
             "\n" +
             "Jika email tidak ditemukan atau belum menerima email aktivasi silakan klik tombol di bawah ini:";
 
-    @Bind(R2.id.head) TextView nameEditText;
-    @Bind(R2.id.email)
+    @BindView(R2.id.head) TextView nameEditText;
+    @BindView(R2.id.email)
     TextView email;
-    @Bind(R2.id.resend_button)
+    @BindView(R2.id.resend_button)
     TextView resendButton;
 
     CompositeSubscription compositeSubscription;
@@ -78,6 +79,7 @@ public class ActivationResentFragment extends Fragment implements BaseView {
 
     public static final String EMAIL_KEY = "EMAIL_KEY";
     TkpdProgressDialog mProgressDialog;
+    private Unbinder unbinder;
 
     interface ResentActivationListener {
         void onSuccess(JSONObject result, List<String> statusMessages, List<String> errorMessages);
@@ -145,7 +147,7 @@ public class ActivationResentFragment extends Fragment implements BaseView {
     public View onCreateView(LayoutInflater inflater, ViewGroup container
             , Bundle savedInstanceState) {
         View parent = inflater.inflate(R.layout.activity_activation_resent, container, false);
-        ButterKnife.bind(this, parent);
+        unbinder = ButterKnife.bind(this, parent);
         resendButton.setBackgroundResource(R.drawable.bg_rounded_corners);
         nameEditText.setText("Halo, ");
         SnackbarManager.make(getActivity(),"Akun anda belum diaktivasi. Cek email anda untuk mengaktivasi akun.",Snackbar.LENGTH_LONG).show();
@@ -305,7 +307,7 @@ public class ActivationResentFragment extends Fragment implements BaseView {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         compositeSubscription.unsubscribe();
     }
 

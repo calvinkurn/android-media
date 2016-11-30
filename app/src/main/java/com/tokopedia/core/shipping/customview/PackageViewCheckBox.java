@@ -13,7 +13,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.shipping.fragment.EditShippingViewListener;
 import com.tokopedia.core.shipping.model.editshipping.Service;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by kris on 8/23/16. Tokopedia
@@ -21,7 +21,7 @@ import butterknife.Bind;
 public class PackageViewCheckBox extends EditShippingCourierView<Service,
         EditShippingViewListener>{
 
-    @Bind(R2.id.service_checkbox)
+    @BindView(R2.id.service_checkbox)
     CheckBox serviceCheckbox;
 
     EditShippingViewListener mainView;

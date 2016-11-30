@@ -42,7 +42,7 @@ import com.tokopedia.tkpd.home.util.ItemDecorator;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -55,19 +55,19 @@ import static com.tokopedia.tkpd.home.presenter.ProductFeed.messageTag;
  */
 public class FragmentProductFeed extends Fragment implements ProductFeedView, DefaultRetryListener.OnClickRetry{
 
-    @Bind(R2.id.index_main_recycler_view)
+    @BindView(R2.id.index_main_recycler_view)
     RecyclerView indexRecyclerView;
 
-    @Bind(R2.id.include_loading)
+    @BindView(R2.id.include_loading)
     ProgressBar progressBar;
 
-    @Bind(R2.id.main_content)
+    @BindView(R2.id.main_content)
     LinearLayout mainContent;
 
-    @Bind(R2.id.swipe_refresh_layout)
+    @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeRefreshLayout;
 
-    @Bind(R2.id.fab_speed_dial)
+    @BindView(R2.id.fab_speed_dial)
     FabSpeedDial fabAddProduct;
 
     RetryHandler retryHandlerFull;
@@ -224,7 +224,7 @@ public class FragmentProductFeed extends Fragment implements ProductFeedView, De
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         productFeedPresenter.unsubscribe();
     }
 

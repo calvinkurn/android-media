@@ -21,7 +21,7 @@ import com.tokopedia.core.util.SessionHandler;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -33,28 +33,28 @@ public class BankAdapter extends BaseLinearRecyclerViewAdapter {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R2.id.account_name)
+        @BindView(R2.id.account_name)
         TextView accountName;
 
-        @Bind(R2.id.account_number)
+        @BindView(R2.id.account_number)
         TextView accountNumber;
 
-        @Bind(R2.id.bank_name)
+        @BindView(R2.id.bank_name)
         TextView bankName;
 
-        @Bind(R2.id.bank_branch)
+        @BindView(R2.id.bank_branch)
         TextView bankBranch;
 
-        @Bind(R2.id.bank_icon)
+        @BindView(R2.id.bank_icon)
         ImageView bankIcon;
 
-        @Bind(R2.id.delete_bank)
+        @BindView(R2.id.delete_bank)
         ImageView deleteBank;
 
-        @Bind(R2.id.default_bank)
+        @BindView(R2.id.default_bank)
         ImageView defaultBank;
 
-        @Bind(R2.id.edit_bank)
+        @BindView(R2.id.edit_bank)
         ImageView editBank;
 
         public ViewHolder(View itemView) {

@@ -15,7 +15,7 @@ import com.tokopedia.core.var.RecyclerViewItem;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.tkpd.library.utils.CommonUtils.checkNotNull;
@@ -58,9 +58,9 @@ public class MediaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     public class VHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R2.id.img)
+        @BindView(R2.id.img)
         public SquareImageView img;
-        @Bind(R2.id.overlay)
+        @BindView(R2.id.overlay)
         public View overlay;
 
         OnImageClickedListener listener;

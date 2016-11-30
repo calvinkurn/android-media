@@ -27,7 +27,7 @@ import com.tokopedia.tkpd.home.presenter.ProductHistoryView;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -37,14 +37,14 @@ public class ProductHistoryFragment extends Fragment implements ProductHistoryVi
 
     public static final String FRAGMENT_TAG = "WishListFragment";
 
-    @Bind(R2.id.swipe_refresh_layout)
+    @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
 
-    @Bind(R2.id.recycler_view)
+    @BindView(R2.id.recycler_view)
     RecyclerView recyclerView;
-    @Bind(R2.id.progress_bar)
+    @BindView(R2.id.progress_bar)
     ProgressBar progressBar;
-    @Bind(R2.id.main_content)
+    @BindView(R2.id.main_content)
     LinearLayout mainContent;
 
     GridLayoutManager layoutManager;
@@ -88,7 +88,7 @@ public class ProductHistoryFragment extends Fragment implements ProductHistoryVi
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         productHistory.unSubscribe();
     }
 

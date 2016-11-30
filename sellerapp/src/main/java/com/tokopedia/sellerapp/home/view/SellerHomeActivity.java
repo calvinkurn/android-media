@@ -102,7 +102,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -121,73 +121,73 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
     ImageHandler imageHandler;
     ShopController shopController;
 
-    @Bind(R.id.announcement_ticker)
+    @BindView(R.id.announcement_ticker)
     LinearLayout announcementTicker;
 
-    @Bind(R.id.seller_home_transaction_view)
+    @BindView(R.id.seller_home_transaction_view)
     TransactionView3 sellerHomeTransactionView;
 
-    @Bind(R.id.activity_seller_home)
+    @BindView(R.id.activity_seller_home)
     CoordinatorLayout activitySellerHome;
 
-    @Bind(R.id.seller_home_product_discussion)
+    @BindView(R.id.seller_home_product_discussion)
     TextView sellerProductDiscussion;
 
-    @Bind(R.id.seller_home_new_messages)
+    @BindView(R.id.seller_home_new_messages)
     TextView sellerHomeNewMessages;
 
-    @Bind(R.id.seller_home_buyer_complain)
+    @BindView(R.id.seller_home_buyer_complain)
     TextView sellerHomeBuyerComplain;
 
-    @Bind(R.id.seller_home_shop_cover)
+    @BindView(R.id.seller_home_shop_cover)
     ImageView sellerHomeShopCover;
 
-    @Bind(R.id.seller_home_shop_icon)
+    @BindView(R.id.seller_home_shop_icon)
     CircleImageView sellerHomeShopIcon;
 
-    @Bind(R.id.seller_home_shop_name)
+    @BindView(R.id.seller_home_shop_name)
     TextView sellerHomeShopname;
 
-    @Bind(R.id.seller_home_shop_place)
+    @BindView(R.id.seller_home_shop_place)
     TextView sellerHomeShopPlace;
 
-    @Bind(R.id.seller_home_badge_container)
+    @BindView(R.id.seller_home_badge_container)
     BadgeContainer sellerHomeBadgeContainer;
 
-    @Bind(R.id.seller_home_deposit)
+    @BindView(R.id.seller_home_deposit)
     TextView sellerHomeDeposit;
 
-    @Bind(R.id.seller_home_reputation_view)
+    @BindView(R.id.seller_home_reputation_view)
     ReputationView sellerHomeReputationView;
 
     SellerHomeNewOrderAdapter sellerHomeNewOrderAdapter;
 
-    @Bind(R.id.seller_home_toolbar)
+    @BindView(R.id.seller_home_toolbar)
     Toolbar sellerHomeToolbar;
 
-    @Bind(R.id.collapsing_toolbar_layout)
+    @BindView(R.id.collapsing_toolbar_layout)
     CollapsingToolbarLayoutCust collapsingToolbar;
 
-    @Bind(R.id.smooth_app_bar_layout)
+    @BindView(R.id.smooth_app_bar_layout)
     AppBarLayout smoothAppBarLayout;
 
-    @Bind(R.id.nested_scroll_view)
+    @BindView(R.id.nested_scroll_view)
     NestedScrollView nestedScrollView;
 
     private boolean isInit = false;
 
-    @Bind(R.id.seller_home_boom)
+    @BindView(R.id.seller_home_boom)
     SquareMenuButton sellerHomeBoom;
 
-    @Bind(R.id.hide_layout)
+    @BindView(R.id.hide_layout)
     View hideLayout;
 
-    @Bind(R.id.card_new_order_container)
+    @BindView(R.id.card_new_order_container)
     RelativeLayout cardNewOrderContainer;
 
     boolean isBoomMenuShown = false;
 
-    @Bind(R.id.seller_home_blank_space)
+    @BindView(R.id.seller_home_blank_space)
     LinearLayout sellerHomeBlankSpace;
 
     @OnClick({R.id.discussion_see_more, R.id.discussion_container})
@@ -224,7 +224,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
         startActivity(intent);
     }
 
-    @Bind(R.id.seller_home_linlay_container)
+    @BindView(R.id.seller_home_linlay_container)
     LinearLayout sellerHomeLinLayContainer;
 
     String userId;
@@ -236,7 +236,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
     @Nullable
     ShopModel shopModel;
 
-    @Bind(R.id.drawer_layout_nav)
+    @BindView(R.id.drawer_layout_nav)
     DrawerLayout drawerLayoutNav;
 
     FckToolbarVariable toolbar;
@@ -244,10 +244,10 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
     SnackbarRetry snackbarRetry;
     SnackbarRetry snackbarRetryUndefinite;
 
-    @Bind(R.id.gold_merchant_announcement_image)
+    @BindView(R.id.gold_merchant_announcement_image)
     ImageView goldMerchantAnnouncementImage;
 
-    @Bind(R.id.gold_merchant_announcement_text)
+    @BindView(R.id.gold_merchant_announcement_text)
     TextView goldMerchantAnnouncementText;
 
     @OnClick(R.id.gold_merchant_announcement)
@@ -752,13 +752,13 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
     }
 
     public static class SellerHomeNewOrderView {
-        @Bind(R.id.new_order_name)
+        @BindView(R.id.new_order_name)
         TextView newOrderName;
 
-        @Bind(R.id.new_order_date)
+        @BindView(R.id.new_order_date)
         TextView newOrderDate;
 
-        @Bind(R.id.new_order_remaining_days)
+        @BindView(R.id.new_order_remaining_days)
         TextView newOrderRemainingDays;
         private OrderShippingList orderShippingList;
         private View itemView;
@@ -793,13 +793,13 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
 
     public static class SellerHomeNewOrderViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.new_order_name)
+        @BindView(R.id.new_order_name)
         TextView newOrderName;
 
-        @Bind(R.id.new_order_date)
+        @BindView(R.id.new_order_date)
         TextView newOrderDate;
 
-        @Bind(R.id.new_order_remaining_days)
+        @BindView(R.id.new_order_remaining_days)
         TextView newOrderRemainingDays;
         private OrderShippingList orderShippingList;
 

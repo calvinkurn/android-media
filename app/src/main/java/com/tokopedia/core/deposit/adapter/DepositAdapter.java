@@ -21,7 +21,7 @@ import com.tokopedia.core.deposit.model.Deposit;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -33,16 +33,16 @@ public class DepositAdapter extends BaseLinearRecyclerViewAdapter {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R2.id.date)
+        @BindView(R2.id.date)
         TextView date;
 
-        @Bind(R2.id.note)
+        @BindView(R2.id.note)
         TextView note;
 
-        @Bind(R2.id.nominal)
+        @BindView(R2.id.nominal)
         TextView nominal;
 
-        @Bind(R2.id.balance)
+        @BindView(R2.id.balance)
         TextView balance;
 
         public ViewHolder(View itemView) {

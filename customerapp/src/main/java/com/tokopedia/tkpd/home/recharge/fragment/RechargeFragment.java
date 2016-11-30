@@ -57,7 +57,7 @@ import com.tokopedia.tkpd.home.recharge.view.RechargeView;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import permissions.dispatcher.NeedsPermission;
@@ -93,23 +93,23 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     //endregion
 
     //region widget variable
-    @Bind(R.id.pulsa_edittext)
+    @BindView(R.id.pulsa_edittext)
     RechargeEditText rechargeEditText;
-    @Bind(R.id.buy_with_credit_checkbox)
+    @BindView(R.id.buy_with_credit_checkbox)
     CheckBox buyWithCreditCheckbox;
-    @Bind(R.id.buy_wrapper_linearlayout)
+    @BindView(R.id.buy_wrapper_linearlayout)
     LinearLayout wrapperLinearLayout;
-    @Bind(R.id.nominalTextview)
+    @BindView(R.id.nominalTextview)
     TextView nominalTextview;
-    @Bind(R.id.telp_textview)
+    @BindView(R.id.telp_textview)
     TextView tlpLabelTextView;
-    @Bind(R.id.recharge_progressbar)
+    @BindView(R.id.recharge_progressbar)
     ProgressBar rechargeProgressbar;
-    @Bind(R.id.spnNominal)
+    @BindView(R.id.spnNominal)
     Spinner spnNominal;
-    @Bind(R.id.errorNominal)
+    @BindView(R.id.errorNominal)
     TextView errorNominal;
-    @Bind(R.id.btn_buy)
+    @BindView(R.id.btn_buy)
     Button buyButton;
 
     //endregion
@@ -251,7 +251,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     public void onDestroy() {
         rechargePresenter.clearRechargePhonebookCache();
         removeRechargeEditTextCallback();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroy();
     }
 

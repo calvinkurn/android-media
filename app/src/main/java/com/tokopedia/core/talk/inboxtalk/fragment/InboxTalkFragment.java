@@ -34,7 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -54,10 +54,10 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
     InboxTalkAdapter adapter;
     private InboxTalkFilterDialog dialog;
 
-    @Bind(R2.id.coordinator) CoordinatorLayout coordinatorLayout;
-    @Bind(R2.id.talk_list) RecyclerView recyclerView;
-    @Bind(R2.id.include_loading) ProgressBar progressBar;
-    @Bind(R2.id.fab) FloatingActionButton floatingActionButton;
+    @BindView(R2.id.coordinator) CoordinatorLayout coordinatorLayout;
+    @BindView(R2.id.talk_list) RecyclerView recyclerView;
+    @BindView(R2.id.include_loading) ProgressBar progressBar;
+    @BindView(R2.id.fab) FloatingActionButton floatingActionButton;
     SnackbarRetry snackbarRetry;
 
 
@@ -438,7 +438,7 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     @Override

@@ -45,7 +45,8 @@ import com.tokopedia.core.var.RecyclerViewItem;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
+import butterknife.BindViews;
 import butterknife.ButterKnife;
 
 /**
@@ -78,23 +79,23 @@ public class ProductReviewAdapter extends BaseRecyclerViewAdapter {
     }
 
     public static class ReviewViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R2.id.container)
+        @BindView(R2.id.container)
         LinearLayout container;
-        @Bind(R2.id.user_avatar)
+        @BindView(R2.id.user_avatar)
         ImageView avatar;
-        @Bind(R2.id.star_quality)
+        @BindView(R2.id.star_quality)
         LinearLayout starQuality;
-        @Bind(R2.id.star_accuracy)
+        @BindView(R2.id.star_accuracy)
         LinearLayout starAccuracy;
-        @Bind(R2.id.username)
+        @BindView(R2.id.username)
         TextView username;
-        @Bind(R2.id.comment)
+        @BindView(R2.id.comment)
         TextView comment;
-        @Bind(R2.id.date)
+        @BindView(R2.id.date)
         TextView date;
-        @Bind(R2.id.btn_overflow)
+        @BindView(R2.id.btn_overflow)
         ImageView overFlow;
-        @Bind(R2.id.image_holder)
+        @BindView(R2.id.image_holder)
         RecyclerView imageHolder;
 
         ImageUploadAdapter adapter;
@@ -106,27 +107,27 @@ public class ProductReviewAdapter extends BaseRecyclerViewAdapter {
     }
 
     public static class MostHelpfulViewHolder extends RecyclerView.ViewHolder {
-        @Bind({R2.id.container1, R2.id.container2, R2.id.container3})
+        @BindViews({R2.id.container1, R2.id.container2, R2.id.container3})
         LinearLayout[] container;
-        @Bind({R2.id.user_avatar1, R2.id.user_avatar2, R2.id.user_avatar3})
+        @BindViews({R2.id.user_avatar1, R2.id.user_avatar2, R2.id.user_avatar3})
         ImageView[] avatar;
-        @Bind({R2.id.star_quality1, R2.id.star_quality2, R2.id.star_quality3})
+        @BindViews({R2.id.star_quality1, R2.id.star_quality2, R2.id.star_quality3})
         LinearLayout[] starQuality;
-        @Bind({R2.id.star_accuracy1, R2.id.star_accuracy2, R2.id.star_accuracy3})
+        @BindViews({R2.id.star_accuracy1, R2.id.star_accuracy2, R2.id.star_accuracy3})
         LinearLayout[] starAccuracy;
-        @Bind({R2.id.username1, R2.id.username2, R2.id.username3})
+        @BindViews({R2.id.username1, R2.id.username2, R2.id.username3})
         TextView[] username;
-        @Bind({R2.id.comment1, R2.id.comment2, R2.id.comment3})
+        @BindViews({R2.id.comment1, R2.id.comment2, R2.id.comment3})
         TextView[] comment;
-        @Bind({R2.id.date1, R2.id.date2, R2.id.date3})
+        @BindViews({R2.id.date1, R2.id.date2, R2.id.date3})
         TextView[] date;
-        @Bind({R2.id.btn_overflow1, R2.id.btn_overflow2, R2.id.btn_overflow3})
+        @BindViews({R2.id.btn_overflow1, R2.id.btn_overflow2, R2.id.btn_overflow3})
         ImageView[] overFlow;
-        @Bind(R2.id.expand)
+        @BindView(R2.id.expand)
         TextView expand;
-        @Bind(R2.id.collapse)
+        @BindView(R2.id.collapse)
         TextView collapse;
-        @Bind(R2.id.image_holder)
+        @BindView(R2.id.image_holder)
         RecyclerView imageHolder;
 
         ImageUploadAdapter adapter;

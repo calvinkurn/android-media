@@ -26,7 +26,7 @@ import com.tokopedia.tkpd.home.presenter.SimpleHome;
 import com.tokopedia.tkpd.home.presenter.SimpleHomeImpl;
 import com.tokopedia.tkpd.home.presenter.SimpleHomeView;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SimpleHomeActivity extends TActivity
@@ -37,7 +37,7 @@ public class SimpleHomeActivity extends TActivity
     public static final int WISHLIST_FRAGMENT = 1;
     public static final int PRODUCT_HISTORY_FRAGMENT = 2;
 
-    @Bind(R2.id.simple_home_toolbar)
+    @BindView(R2.id.simple_home_toolbar)
     Toolbar toolbar;
 
     SimpleHome simpleHome;
@@ -140,7 +140,7 @@ public class SimpleHomeActivity extends TActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     @Override

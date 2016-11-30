@@ -20,7 +20,7 @@ import com.tokopedia.transaction.purchase.model.response.txlist.OrderProduct;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -78,17 +78,17 @@ public class TxProductListAdapter extends ArrayAdapter<OrderProduct> {
     }
 
     class ViewHolder {
-        @Bind(R2.id.product_image)
+        @BindView(R2.id.product_image)
         ImageView ivProductPic;
-        @Bind(R2.id.product_name)
+        @BindView(R2.id.product_name)
         TextView tvProductName;
-        @Bind(R2.id.product_price)
+        @BindView(R2.id.product_price)
         TextView tvProductPrice;
-        @Bind(R2.id.total_order)
+        @BindView(R2.id.total_order)
         TextView tvDeliverQty;
-        @Bind(R2.id.total_price)
+        @BindView(R2.id.total_price)
         TextView tvTotalPrice;
-        @Bind(R2.id.message)
+        @BindView(R2.id.message)
         TextView tvNotes;
 
         public ViewHolder(View view) {

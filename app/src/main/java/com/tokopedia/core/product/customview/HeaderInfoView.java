@@ -13,7 +13,7 @@ import com.tokopedia.core.product.listener.ProductDetailView;
 import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 
 /**
@@ -22,17 +22,17 @@ import butterknife.Bind;
 public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailView> {
     private static final String TAG = HeaderInfoView.class.getSimpleName();
 
-    @Bind(R2.id.tv_name)
+    @BindView(R2.id.tv_name)
     TextView tvName;
-    @Bind(R2.id.tv_price)
+    @BindView(R2.id.tv_price)
     TextView tvPrice;
-    @Bind(R2.id.tv_viewed)
+    @BindView(R2.id.tv_viewed)
     TextView tvViewed;
-    @Bind(R2.id.tv_brought)
+    @BindView(R2.id.tv_brought)
     TextView tvBrought;
-    @Bind(R2.id.label_cashback)
+    @BindView(R2.id.label_cashback)
     TextView cashbackTextView;
-    @Bind(R2.id.cashback_holder)
+    @BindView(R2.id.cashback_holder)
     LinearLayout cashbackHolder;
 
     public HeaderInfoView(Context context) {

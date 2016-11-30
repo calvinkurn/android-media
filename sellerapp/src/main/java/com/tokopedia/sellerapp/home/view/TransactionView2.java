@@ -18,7 +18,7 @@ import com.tokopedia.sellerapp.home.model.shopmodel.ShopTxStats;
 
 import java.util.HashMap;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -26,13 +26,13 @@ import butterknife.ButterKnife;
  */
 
 public class TransactionView2 extends FrameLayout implements BaseView<ShopModel>{
-    @Bind(R.id.reputation_progress_bar)
+    @BindView(R.id.reputation_progress_bar)
     NumberProgressBar numberProgressBar;
 
-    @Bind(R.id.reputation_percentage)
+    @BindView(R.id.reputation_percentage)
     TextView reputationPercentage;
 
-    @Bind(R.id.from_transaction)
+    @BindView(R.id.from_transaction)
     TextView fromTransaction;
 
     private HashMap<Integer, ShopStatisticTransactionView.TypeTransaction> typeTransactions;
