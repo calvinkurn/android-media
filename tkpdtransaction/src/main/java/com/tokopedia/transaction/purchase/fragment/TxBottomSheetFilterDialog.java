@@ -27,6 +27,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 
 /**
  * Custom dialog for filter
@@ -37,6 +38,7 @@ public class TxBottomSheetFilterDialog implements AdapterView.OnItemSelectedList
 
     private final Activity activity;
     private final BottomSheetDialog dialog;
+    private final Unbinder unbinder;
     private AllTxFilter allTxFilter;
     private List<TxFilterItem> txFilterItemList = new ArrayList<>();
     private ArrayAdapter<TxFilterItem> adapter;
@@ -70,7 +72,7 @@ public class TxBottomSheetFilterDialog implements AdapterView.OnItemSelectedList
         this.onFilterListener = onFilterListener;
         this.dialog = new BottomSheetDialog(activity);
         this.dialog.setContentView(R.layout.layout_filter_payment_transaction);
-        ButterKnife.bind(this, this.dialog);
+        unbinder = ButterKnife.bind(this, this.dialog);
         initViewContent(allTxFilter);
         this.dialog.setOnDismissListener(this);
         this.dialog.setOnCancelListener(this);
@@ -173,7 +175,7 @@ public class TxBottomSheetFilterDialog implements AdapterView.OnItemSelectedList
 
     public void dismiss() {
         dialog.dismiss();
-        ButterKnife.unbind(dialog);
+        unbinder.unbind();
     }
 
     public void setStateFilterSelection(String txFilterID) {

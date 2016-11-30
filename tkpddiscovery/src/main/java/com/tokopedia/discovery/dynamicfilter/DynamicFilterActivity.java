@@ -38,6 +38,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * Created by noiz354 on 7/11/16.
@@ -70,13 +71,14 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
     CoordinatorLayout root;
     private SharedPreferences preferences;
     private FragmentManager fragmentManager;
+    private Unbinder unbinder;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dynamic_filter_activity);
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
