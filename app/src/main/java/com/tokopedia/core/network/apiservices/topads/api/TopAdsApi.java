@@ -1,6 +1,6 @@
 package com.tokopedia.core.network.apiservices.topads.api;
 
-import com.tokopedia.core.discovery.model.TopAdsResponse;
+import com.tokopedia.core.network.entity.topads.TopAdsResponse;
 
 import java.util.Map;
 

@@ -12,12 +12,12 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.discovery.catalog.fragment.CatalogDetailFragment;
-import com.tokopedia.discovery.catalog.fragment.CatalogDetailListFragment;
-import com.tokopedia.discovery.catalog.listener.ICatalogActionFragment;
+import com.tokopedia.core.discovery.catalog.listener.ICatalogActionFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.share.ShareActivity;
+import com.tokopedia.discovery.catalog.fragment.CatalogDetailFragment;
+import com.tokopedia.discovery.catalog.fragment.CatalogDetailListFragment;
 
 /**
  * @author anggaprasetiyo on 10/17/16.

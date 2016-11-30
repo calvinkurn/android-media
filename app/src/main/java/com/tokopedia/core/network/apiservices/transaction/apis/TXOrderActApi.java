@@ -2,6 +2,7 @@ package com.tokopedia.core.network.apiservices.transaction.apis;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import java.util.Map;
 
@@ -47,4 +48,8 @@ public interface TXOrderActApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.Transaction.PATH_UPLOAD_VALID_PROOF_BY_PAYMENT)
     Observable<Response<TkpdResponse>> uploadValidProofByPayment(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Transaction.PATH_REQUEST_CANCEL_ORDER)
+    Observable<Response<TkpdResponse>> requestCancelOrder(@FieldMap TKPDMapParam<String, String> params);
 }

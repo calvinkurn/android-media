@@ -23,9 +23,10 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.TermPrivacy;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.home.ParentIndexHome;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.session.model.CreatePasswordModel;
@@ -38,7 +39,6 @@ import com.tokopedia.core.session.presenter.RegisterNextImpl;
 import com.tokopedia.core.session.presenter.RegisterPassPhoneImpl;
 import com.tokopedia.core.session.presenter.RegisterThird;
 import com.tokopedia.core.session.presenter.RegisterThirdView;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
@@ -192,7 +192,7 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
             case DownloadService.REGISTER_THIRD_LOGIN:
                 showProgress(false);
                 if (new SessionHandler(getActivity()).isV4Login()) {// go back to home
-                    getActivity().startActivity(new Intent(getActivity(), ParentIndexHome.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                    getActivity().startActivity(new Intent(getActivity(), HomeRouter.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                     getActivity().finish();
                 }
                 break;

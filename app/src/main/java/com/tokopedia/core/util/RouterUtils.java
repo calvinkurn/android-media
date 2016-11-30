@@ -25,4 +25,8 @@ public class RouterUtils {
         ComponentName componentName = new ComponentName(context.getPackageName(), activityFullPath);
         return componentName;
     }
+
+    public static Class<?> getActivityClass(String activityFullPath) throws ClassNotFoundException {
+        return Class.forName(activityFullPath);
+    }
 }

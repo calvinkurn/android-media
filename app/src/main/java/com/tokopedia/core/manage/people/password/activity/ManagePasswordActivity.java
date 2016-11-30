@@ -9,13 +9,13 @@ import android.os.Handler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.home.ParentIndexHome;
-import com.tokopedia.core.home.interactor.CacheHomeInteractorImpl;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.manage.people.password.fragment.ManagePasswordFragment;
 import com.tokopedia.core.manage.people.password.intentservice.ManagePasswordIntentService;
 import com.tokopedia.core.manage.people.password.intentservice.ManagePasswordResultReceiver;
 import com.tokopedia.core.manage.people.password.presenter.ManagePasswordActivityPresenter;
 import com.tokopedia.core.manage.people.password.presenter.ManagePasswordActivityPresenterImpl;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.SessionHandler;
 
 public class ManagePasswordActivity extends BasePresenterActivity<ManagePasswordActivityPresenter>
@@ -125,9 +125,9 @@ public class ManagePasswordActivity extends BasePresenterActivity<ManagePassword
     }
 
     private void exit() {
-        CacheHomeInteractorImpl.deleteAllCache();
+        new GlobalCacheManager().deleteAll();
         SessionHandler.clearUserData(this);
-        Intent intent = new Intent(this, ParentIndexHome.class);
+        Intent intent = HomeRouter.getHomeActivity(this);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }

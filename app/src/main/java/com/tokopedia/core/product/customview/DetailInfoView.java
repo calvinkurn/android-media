@@ -11,12 +11,11 @@ import android.widget.TextView;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.discovery.activity.BrowseProductActivity;
-import com.tokopedia.core.discovery.fragment.browseparent.ProductFragment;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.product.listener.ProductDetailView;
 import com.tokopedia.core.product.model.productdetail.ProductBreadcrumb;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 
 import java.util.List;
 
@@ -177,10 +176,10 @@ public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailVie
         @Override
         public void onClick(View v) {
             Bundle bundle = new Bundle();
-            bundle.putString(BrowseProductActivity.DEPARTMENT_ID, data.getDepartmentId());
-            bundle.putInt(BrowseProductActivity.FRAGMENT_ID, ProductFragment.FRAGMENT_ID);
-            bundle.putString(BrowseProductActivity.AD_SRC, TopAdsApi.SRC_DIRECTORY);
-            bundle.putString(BrowseProductActivity.EXTRA_SOURCE, TopAdsApi.SRC_DIRECTORY);
+            bundle.putString(BrowseProductRouter.DEPARTMENT_ID, data.getDepartmentId());
+            bundle.putInt(BrowseProductRouter.FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
+            bundle.putString(BrowseProductRouter.AD_SRC, TopAdsApi.SRC_DIRECTORY);
+            bundle.putString(BrowseProductRouter.EXTRA_SOURCE, TopAdsApi.SRC_DIRECTORY);
             listener.onProductDepartmentClicked(bundle);
         }
     }

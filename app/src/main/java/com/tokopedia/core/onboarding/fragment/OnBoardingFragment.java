@@ -22,7 +22,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.home.ParentIndexHome;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
@@ -172,7 +172,7 @@ public class OnBoardingFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 SessionHandler.setFirstTimeUser(getActivity(), false);
-                Intent intent = new Intent(getActivity(), ParentIndexHome.class);
+                Intent intent = new Intent(getActivity(), HomeRouter.getHomeActivityClass());
                 getActivity().startActivity(intent);
                 getActivity().finish();
             }

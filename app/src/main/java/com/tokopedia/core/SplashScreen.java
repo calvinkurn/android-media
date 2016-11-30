@@ -17,8 +17,8 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.manager.CategoryDatabaseManager;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandler.GCMHandlerListener;
-import com.tokopedia.core.home.ParentIndexHome;
 import com.tokopedia.core.myproduct.presenter.AddProductPresenterImpl;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.LoginBypassModel;
 import com.tokopedia.core.util.PasswordGenerator;
@@ -26,9 +26,6 @@ import com.tokopedia.core.util.PasswordGenerator.PGListener;
 import com.tokopedia.core.util.SessionHandler;
 
 import org.parceler.Parcels;
-
-;
-;
 
 /**
  * modified by m.normansyah
@@ -115,12 +112,14 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     }
 
     private void finishSplashScreen() {
-        startActivity(new Intent(SplashScreen.this, ParentIndexHome.class));
+        startActivity(HomeRouter.getHomeActivity(this));
         finish();
     }
 
     private void bypassV2Login() {
-        if (SessionHandler.isV2Login(MainApplication.getAppContext()) && !SessionHandler.isV4Login(MainApplication.getAppContext())) {
+        if (SessionHandler.isV2Login(MainApplication.getAppContext())
+                && !SessionHandler.isV4Login(MainApplication.getAppContext())) {
+
             LoginBypassModel loginBypassModel = new LoginBypassModel();
             loginBypassModel.setUserID(SessionHandler.getLoginID(MainApplication.getAppContext()));
             loginBypassModel.setDeviceID(GCMHandler.getRegistrationId(MainApplication.getAppContext()));

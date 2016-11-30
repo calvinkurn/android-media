@@ -179,11 +179,6 @@
             android:label="@string/title_activity_add_address"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.addtocart.activity.AddToCartActivity"
-            android:label="@string/title_activity_add_to_cart_v2"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
             android:name="com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity"
             android:label="@string/title_activity_choose_address"
             android:screenOrientation="portrait" />
@@ -282,12 +277,8 @@
             android:label="@string/title_activity_payment_confirmation_success"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.inboxticket.activity.InboxTicketActivity"
-            android:label="@string/title_activity_inbox_ticket"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.inboxticket.activity.InboxTicketDetailActivity"
-            android:label="@string/title_activity_inbox_ticket_detail"
+            android:name="com.tokopedia.core.com.tokopedia.seller.OrderHistoryView"
+            android:label="@string/title_activity_order_history_view"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.core.PreviewProductImage"
@@ -483,7 +474,7 @@
             android:label="@string/title_activity_inbox_talk"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.recharge.activity.RechargePaymentWebView"
+            android:name="RechargePaymentWebView"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
         <activity
@@ -510,25 +501,7 @@
             android:label="@string/shop_setting"
             android:theme="@style/ShopAppTheme" />
 
-        <activity
-            android:name="com.tokopedia.core.discovery.activity.BrowseProductActivity"
-            android:label="Pencarian"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.BrowseProduct"
-            android:windowSoftInputMode="stateAlwaysHidden" />
 
-        <activity
-            android:name="com.tokopedia.core.dynamicfilter.DynamicFilterActivity"
-            android:label="Filter"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3"
-            android:windowSoftInputMode="adjustPan|adjustResize" />
-
-        <activity
-            android:name="com.tokopedia.core.discovery.activity.SortProductActivity"
-            android:label="Urutkan"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3" />
 
         <activity
             android:name="com.tokopedia.core.topads.WebViewTopAdsActivity"
@@ -624,9 +597,6 @@
         <service android:name="com.google.android.gms.analytics.CampaignTrackingService" />
         <service
             android:name="com.tokopedia.core.service.DownloadService"
-            android:exported="false" />
-        <service
-            android:name="com.tokopedia.core.addtocart.services.ATCIntentService"
             android:exported="false" />
         <service
             android:name="com.tokopedia.core.talkview.intentservice.TalkViewIntentService"

@@ -22,7 +22,6 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.addtocart.model.ProductCartPass;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.customview.ButtonBuyView;
@@ -51,6 +50,7 @@ import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.product.presenter.ProductDetailPresenter;
 import com.tokopedia.core.product.presenter.ProductDetailPresenterImpl;
+import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.util.AppIndexHandler;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
 
