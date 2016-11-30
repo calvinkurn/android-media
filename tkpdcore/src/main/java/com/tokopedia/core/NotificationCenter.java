@@ -23,7 +23,6 @@ import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.inboxmessage.fragment.InboxMessageFragment;
 import com.tokopedia.core.inboxreputation.fragment.InboxReputationFragment;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
-import com.tokopedia.core.rescenter.inbox.fragment.InboxResCenterFragment;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
@@ -178,43 +177,43 @@ public class NotificationCenter extends MultiPaneActivity implements Notificatio
                     break;
                 case 306:
                     if (!isAlreadyExist(getString(R.string.title_buyer_dispute))) {
-                        FragmentList.add(InboxResCenterFragment.createInstance(this, TkpdState.InboxResCenter.RESO_BUYER));
+                        FragmentList.add(InboxRouter.instanceInboxResCenterFromNotification(this, InboxRouter.RESO_BUYER));
                         CONTENT.add(getString(R.string.title_buyer_dispute));
                     }
                     break;
                 case 115:
                     if (!isAlreadyExist(getString(R.string.title_my_dispute))) {
-                        FragmentList.add(InboxResCenterFragment.createInstance(this, TkpdState.InboxResCenter.RESO_MINE));
+                        FragmentList.add(InboxRouter.instanceInboxResCenterFromNotification(this, InboxRouter.RESO_MINE));
                         CONTENT.add(getString(R.string.title_my_dispute));
                     }
                     break;
                 case 125:
                     if (!isAlreadyExist(getString(R.string.title_buyer_dispute))) {
-                        FragmentList.add(InboxResCenterFragment.createInstance(this, TkpdState.InboxResCenter.RESO_BUYER));
+                        FragmentList.add(InboxRouter.instanceInboxResCenterFromNotification(this, InboxRouter.RESO_BUYER));
                         CONTENT.add(getString(R.string.title_buyer_dispute));
                     }
                     break;
                 case 135:
                     if (!isAlreadyExist(getString(R.string.title_my_dispute))) {
-                        FragmentList.add(InboxResCenterFragment.createInstance(this, TkpdState.InboxResCenter.RESO_MINE));
+                        FragmentList.add(InboxRouter.instanceInboxResCenterFromNotification(this, InboxRouter.RESO_MINE));
                         CONTENT.add(getString(R.string.title_my_dispute));
                     }
                     break;
                 case 145:
                     if (!isAlreadyExist(getString(R.string.title_buyer_dispute))) {
-                        FragmentList.add(InboxResCenterFragment.createInstance(this, TkpdState.InboxResCenter.RESO_BUYER));
+                        FragmentList.add(InboxRouter.instanceInboxResCenterFromNotification(this, InboxRouter.RESO_BUYER));
                         CONTENT.add(getString(R.string.title_buyer_dispute));
                     }
                     break;
                 case 155:
                     if (!isAlreadyExist(getString(R.string.title_buyer_dispute))) {
-                        FragmentList.add(InboxResCenterFragment.createInstance(this, TkpdState.InboxResCenter.RESO_BUYER));
+                        FragmentList.add(InboxRouter.instanceInboxResCenterFromNotification(this, InboxRouter.RESO_BUYER));
                         CONTENT.add(getString(R.string.title_buyer_dispute));
                     }
                     break;
                 case 165:
                     if (!isAlreadyExist(getString(R.string.title_my_dispute))) {
-                        FragmentList.add(InboxResCenterFragment.createInstance(this, TkpdState.InboxResCenter.RESO_MINE));
+                        FragmentList.add(InboxRouter.instanceInboxResCenterFromNotification(this, InboxRouter.RESO_MINE));
                         CONTENT.add(getString(R.string.title_my_dispute));
                     }
                     break;
