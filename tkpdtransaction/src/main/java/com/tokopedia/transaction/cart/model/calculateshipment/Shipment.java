@@ -14,27 +14,10 @@ import java.util.List;
  */
 
 public class Shipment implements Parcelable {
-
-    @SerializedName("shipping_max_add_fee")
-    @Expose
-    private Integer shippingMaxAddFee;
-    @SerializedName("shipment_id")
-    @Expose
     private String shipmentId;
-    @SerializedName("shipment_package")
-    @Expose
     private List<ShipmentPackage> shipmentPackage = new ArrayList<ShipmentPackage>();
-    @SerializedName("shipment_available")
-    @Expose
     private Integer shipmentAvailable;
-    @SerializedName("shipment_image")
-    @Expose
-    private String shipmentImage;
-    @SerializedName("shipment_name")
-    @Expose
     private String shipmentName;
-
-
 
     public Shipment() {
 
@@ -42,20 +25,8 @@ public class Shipment implements Parcelable {
 
     protected Shipment(Parcel in) {
         shipmentId = in.readString();
-        shipmentImage = in.readString();
+        shipmentPackage = in.createTypedArrayList(ShipmentPackage.CREATOR);
         shipmentName = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(shipmentId);
-        dest.writeString(shipmentImage);
-        dest.writeString(shipmentName);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
     }
 
     public static final Creator<Shipment> CREATOR = new Creator<Shipment>() {
@@ -69,20 +40,6 @@ public class Shipment implements Parcelable {
             return new Shipment[size];
         }
     };
-
-    /**
-     * @return The shippingMaxAddFee
-     */
-    public Integer getShippingMaxAddFee() {
-        return shippingMaxAddFee;
-    }
-
-    /**
-     * @param shippingMaxAddFee The shipping_max_add_fee
-     */
-    public void setShippingMaxAddFee(Integer shippingMaxAddFee) {
-        this.shippingMaxAddFee = shippingMaxAddFee;
-    }
 
     /**
      * @return The shipmentId
@@ -127,20 +84,6 @@ public class Shipment implements Parcelable {
     }
 
     /**
-     * @return The shipmentImage
-     */
-    public String getShipmentImage() {
-        return shipmentImage;
-    }
-
-    /**
-     * @param shipmentImage The shipment_image
-     */
-    public void setShipmentImage(String shipmentImage) {
-        this.shipmentImage = shipmentImage;
-    }
-
-    /**
      * @return The shipmentName
      */
     public String getShipmentName() {
@@ -166,5 +109,17 @@ public class Shipment implements Parcelable {
         shipment.setShipmentAvailable(0);
         shipment.setShipmentPackage(new ArrayList<ShipmentPackage>());
         return shipment;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(shipmentId);
+        parcel.writeTypedList(shipmentPackage);
+        parcel.writeString(shipmentName);
     }
 }

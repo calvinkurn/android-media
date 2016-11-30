@@ -11,36 +11,18 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class ShipmentPackage implements Parcelable {
-
-    @SerializedName("price_total")
-    @Expose
-    private String priceTotal;
-    @SerializedName("shipment_id")
-    @Expose
     private String shipmentId;
-    @SerializedName("desc")
-    @Expose
-    private String desc;
-    @SerializedName("name")
-    @Expose
     private String name;
-    @SerializedName("sp_id")
-    @Expose
     private String shipmentPackageId;
-    @SerializedName("is_show_map")
-    @Expose
     private int isShowMap;
-    @SerializedName("price")
-    @Expose
     private String price;
-    @SerializedName("package_available")
-    @Expose
     private Integer packageAvailable;
 
+    public ShipmentPackage() {
+    }
+
     protected ShipmentPackage(Parcel in) {
-        priceTotal = in.readString();
         shipmentId = in.readString();
-        desc = in.readString();
         name = in.readString();
         shipmentPackageId = in.readString();
         isShowMap = in.readInt();
@@ -59,23 +41,6 @@ public class ShipmentPackage implements Parcelable {
         }
     };
 
-    public ShipmentPackage() {
-    }
-
-    /**
-     * @return The priceTotal
-     */
-    public String getPriceTotal() {
-        return priceTotal;
-    }
-
-    /**
-     * @param priceTotal The price_total
-     */
-    public void setPriceTotal(String priceTotal) {
-        this.priceTotal = priceTotal;
-    }
-
     /**
      * @return The shipmentId
      */
@@ -88,20 +53,6 @@ public class ShipmentPackage implements Parcelable {
      */
     public void setShipmentId(String shipmentId) {
         this.shipmentId = shipmentId;
-    }
-
-    /**
-     * @return The desc
-     */
-    public String getDesc() {
-        return desc;
-    }
-
-    /**
-     * @param desc The desc
-     */
-    public void setDesc(String desc) {
-        this.desc = desc;
     }
 
     /**
@@ -174,6 +125,10 @@ public class ShipmentPackage implements Parcelable {
         return shipment;
     }
 
+    public void setIsShowMap(int isShowMap) {
+        this.isShowMap = isShowMap;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -181,20 +136,10 @@ public class ShipmentPackage implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(priceTotal);
         parcel.writeString(shipmentId);
-        parcel.writeString(desc);
         parcel.writeString(name);
         parcel.writeString(shipmentPackageId);
         parcel.writeInt(isShowMap);
         parcel.writeString(price);
-    }
-
-    public int getIsShowMap() {
-        return isShowMap;
-    }
-
-    public void setIsShowMap(int isShowMap) {
-        this.isShowMap = isShowMap;
     }
 }

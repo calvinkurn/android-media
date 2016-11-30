@@ -34,8 +34,6 @@ public class ShipmentEntityDataMapper {
             shipment.setShipmentId(shipmentEntity.getShipmentId());
             shipment.setShipmentName(shipmentEntity.getShipmentName());
             shipment.setShipmentAvailable(shipmentEntity.getShipmentAvailable());
-            shipment.setShippingMaxAddFee(shipmentEntity.getShippingMaxAddFee());
-            shipment.setShipmentImage(shipmentEntity.getShipmentImage());
             List<ShipmentPackage> shipmentPackages = new ArrayList<>();
             ShipmentPackage shipmentPackage;
             for (ShipmentPackageEntity shipmentPackageEntity : shipmentEntity.getShipmentPackageEntity()) {
