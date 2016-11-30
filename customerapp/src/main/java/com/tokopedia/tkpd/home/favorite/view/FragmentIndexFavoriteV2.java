@@ -35,6 +35,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * Created by m.normansyah on 30/10/2015.
@@ -55,6 +56,7 @@ public class FragmentIndexFavoriteV2 extends Fragment implements FavoriteView, D
     RetryHandler retryHandlerFull;
 
     public static final String WISHLISH_EXTRA_KEY = "Wishlist";
+    private Unbinder unbinder;
 
     @Override
     public void initHolder() {
@@ -226,7 +228,7 @@ public class FragmentIndexFavoriteV2 extends Fragment implements FavoriteView, D
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_index_favorite_v2, container, false);
-        ButterKnife.bind(this, parentView);
+        unbinder = ButterKnife.bind(this, parentView);
         prepareView();
         displayProgressBar(true);
         displayMainContent(false);

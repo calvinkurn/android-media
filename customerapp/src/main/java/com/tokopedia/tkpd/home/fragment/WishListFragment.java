@@ -36,6 +36,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * Created by m.normansyah on 01/12/2015.
@@ -43,6 +44,7 @@ import butterknife.ButterKnife;
 public class WishListFragment extends Fragment implements WishListView {
 
     public static final String FRAGMENT_TAG = "WishListFragment";
+    private Unbinder unbinder;
 
     public WishListFragment(){}
 
@@ -83,7 +85,7 @@ public class WishListFragment extends Fragment implements WishListView {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.activity_recyclerview, container, false);
-        ButterKnife.bind(this, parentView);
+        unbinder = ButterKnife.bind(this, parentView);
         wishList.subscribe();
         wishList.initAnalyticsHandler(getActivity());
         ScreenTracking.screen(this);

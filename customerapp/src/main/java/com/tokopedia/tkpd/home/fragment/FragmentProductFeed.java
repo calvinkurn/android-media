@@ -45,6 +45,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 
 import static com.tokopedia.tkpd.home.presenter.ProductFeed.messageTag;
 
@@ -76,6 +77,7 @@ public class FragmentProductFeed extends Fragment implements ProductFeedView, De
     private ItemDecorator itemDecoration;
     private GridLayoutManager gridLayoutManager;
     private DataFeedAdapter adapter;
+    private Unbinder unbinder;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -93,7 +95,7 @@ public class FragmentProductFeed extends Fragment implements ProductFeedView, De
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_index_main_v2, container, false);
 
-        ButterKnife.bind(this, parentView);
+        unbinder = ButterKnife.bind(this, parentView);
         productFeedPresenter.initAnalyticsHandler(getActivity());
 
         //[START] display loading and hide main content

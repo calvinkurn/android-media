@@ -28,6 +28,7 @@ import com.tokopedia.tkpd.home.presenter.SimpleHomeView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public class SimpleHomeActivity extends TActivity
         implements SimpleHomeView {
@@ -43,6 +44,7 @@ public class SimpleHomeActivity extends TActivity
     SimpleHome simpleHome;
 
     FragmentManager supportFragmentManager;
+    private Unbinder unbinder;
 
     @Override
     public String getScreenName() {
@@ -57,7 +59,7 @@ public class SimpleHomeActivity extends TActivity
             getWindow().setStatusBarColor(getResources().getColor(R.color.green_600));
         }
         setContentView(R.layout.activity_simple_home);
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
 
         supportFragmentManager = getSupportFragmentManager();
         supportFragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {

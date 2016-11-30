@@ -29,6 +29,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * Created by m.normansyah on 01/12/2015.
@@ -52,6 +53,7 @@ public class ProductHistoryFragment extends Fragment implements ProductHistoryVi
 //    ItemDecorator itemDecorator;
 
     ProductHistory productHistory;
+    private Unbinder unbinder;
 
     public ProductHistoryFragment(){}
 
@@ -71,7 +73,7 @@ public class ProductHistoryFragment extends Fragment implements ProductHistoryVi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.activity_recyclerview, container, false);
-        ButterKnife.bind(this, parentView);
+        unbinder = ButterKnife.bind(this, parentView);
         productHistory.initAnalyticsHandler(getActivity());
         prepareView();
         setListener();
