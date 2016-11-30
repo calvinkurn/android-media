@@ -53,7 +53,7 @@ public class TopAdsDashboardActivity extends BasePresenterActivity {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_topads_dashboard;
+        return R.layout.activity_top_ads_dashboard;
     }
 
     @Override
@@ -62,8 +62,8 @@ public class TopAdsDashboardActivity extends BasePresenterActivity {
         viewPager.setOffscreenPageLimit(TopAdsConstant.OFFSCREEN_PAGE_LIMIT);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator));
         indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
-        indicator.addTab(indicator.newTab().setText(R.string.title_topads_product));
-        indicator.addTab(indicator.newTab().setText(R.string.title_topads_store));
+        indicator.addTab(indicator.newTab().setText(R.string.title_top_ads_product));
+        indicator.addTab(indicator.newTab().setText(R.string.title_top_ads_store));
 
     }
 

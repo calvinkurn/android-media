@@ -1,12 +1,19 @@
 package com.tokopedia.seller.topads.interactor;
 
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.seller.topads.model.data.DataDeposit;
+import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.model.exchange.CreditResponse;
+import com.tokopedia.seller.topads.model.exchange.DepositRequest;
 import com.tokopedia.seller.topads.model.exchange.DepositResponse;
 import com.tokopedia.seller.topads.model.exchange.ProductResponse;
 import com.tokopedia.seller.topads.model.exchange.ShopResponse;
+import com.tokopedia.seller.topads.model.exchange.StatisticRequest;
 import com.tokopedia.seller.topads.model.exchange.StatisticResponse;
 
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by zulfikarrahman on 11/4/16.
@@ -20,13 +27,17 @@ public interface DashboardTopadsInteractor {
         void onError(Throwable throwable);
     }
 
+    void getDashboardSummary(StatisticRequest statisticRequest, final Listener<Summary> listener);
+
+    void getDeposit(DepositRequest depositRequest, final Listener<DataDeposit> listener);
+
+    void getShopInfo(String shopId, final Listener<ShopModel> listener);
+
     void unSubscribe();
 
     void getDashboardProduct(HashMap<String, String> params, Listener<ProductResponse> listener);
 
     void getDashboardShop(HashMap<String, String> params, Listener<ShopResponse> listener);
-
-    void getDashboardStatistic(HashMap<String, String> params, Listener<StatisticResponse> listener);
 
     void getDashboardResponse(HashMap<String, String> params, Listener<DepositResponse> listener);
 

@@ -33,27 +33,12 @@ public class DashboardTopAdsInteractorTest extends BaseAndroidJUnitTest {
 
     @Before
     public void initialSystem() {
-        dashboardTopadsInteractor = new DashboardTopadsInteractorImpl();
+        dashboardTopadsInteractor = new DashboardTopadsInteractorImpl(getContext());
     }
 
     @Test
     public void testGetDashboardProduct() throws Exception {
         mCountDownLatch = new CountDownLatch(1);
-        dashboardTopadsInteractor.getDashboardCredit(getContext(), new HashMap<String, String>(), new DashboardTopadsInteractor.ListenerGetDashboardCredit() {
-            @Override
-            public void onSuccess(CreditResponse response) {
-                List<DataCredit> dataCreditList = response.getData();
-                Assert.assertNotNull(dataCreditList);
-                mCountDownLatch.countDown();
-            }
-
-            @Override
-            public void onError(String message) {
-                Assert.assertNotNull(message);
-                Logger.dump(TAG, message);
-                mCountDownLatch.countDown();
-            }
-        });
         mCountDownLatch.await(10, TimeUnit.SECONDS);
     }
 }
