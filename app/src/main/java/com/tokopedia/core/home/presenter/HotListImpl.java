@@ -530,11 +530,12 @@ public class HotListImpl implements HotList {
                 }
             }
 
+
             public void onResponse() {
                 if (error != null) {
                     Bundle resultData = new Bundle();
                     HotListImpl.this.hotListView.onNetworkError(DownloadServiceConstant.HOTLIST, error);
-                    hotListView.ariseRetry(DownloadServiceConstant.HOTLIST, null);
+                    hotListView.ariseRetry(DownloadServiceConstant.HOTLIST, (Object[]) null);
                 }
             }
 

@@ -14,9 +14,9 @@ public class WholeSaleAdapterModel {
     double wholeSalePrice;
     long bDid;
 
-    private boolean isNoErrorQOne = true;
-    private boolean isNoErrorQTwo = true;
-    private boolean isNoErrorPrice = true;
+    boolean isNoErrorQOne = true;
+    boolean isNoErrorQTwo = true;
+    boolean isNoErrorPrice = true;
 
     /**
      * this is for parcelable

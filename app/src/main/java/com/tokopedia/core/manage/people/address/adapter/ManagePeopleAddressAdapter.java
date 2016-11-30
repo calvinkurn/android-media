@@ -22,7 +22,7 @@ import com.tokopedia.core.var.TkpdState;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -38,28 +38,28 @@ public class ManagePeopleAddressAdapter extends BaseLinearRecyclerViewAdapter {
     public class MPAddressViewHolder extends RecyclerView.ViewHolder
             implements OnMapReadyCallback {
 
-        @Bind(R2.id.address_name)
+        @BindView(R2.id.address_name)
         TextView addressName;
 
-        @Bind(R2.id.address_detail)
+        @BindView(R2.id.address_detail)
         TextView addressDetail;
 
-        @Bind(R2.id.mapview)
+        @BindView(R2.id.mapview)
         MapView mapView;
 
-        @Bind(R2.id.action_edit)
+        @BindView(R2.id.action_edit)
         View editBtn;
 
-        @Bind(R2.id.action_delete)
+        @BindView(R2.id.action_delete)
         View deleteBtn;
 
-        @Bind(R2.id.action_default)
+        @BindView(R2.id.action_default)
         View defaultBtn;
 
-        @Bind(R2.id.layout)
+        @BindView(R2.id.layout)
         View layoutMap;
 
-        @Bind(R2.id.label_no_location)
+        @BindView(R2.id.label_no_location)
         View noLocationLabel;
 
         GoogleMap googleMap;

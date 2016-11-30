@@ -45,7 +45,7 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -69,13 +69,13 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     private ResCenterView mListener;
     private TkpdProgressDialog normalLoading;
 
-    @Bind(R2.id.main_view)
+    @BindView(R2.id.main_view)
     View mainView;
-    @Bind(R2.id.loading)
+    @BindView(R2.id.loading)
     View loadingView;
-    @Bind(R2.id.custom_view_reply_editor)
+    @BindView(R2.id.custom_view_reply_editor)
     ReplyEditorView replyEditorView;
-    @Bind(R2.id.custom_view_detail_rescenter)
+    @BindView(R2.id.custom_view_detail_rescenter)
     DetailView detailView;
 
     private String ahrefEditAddressURL;

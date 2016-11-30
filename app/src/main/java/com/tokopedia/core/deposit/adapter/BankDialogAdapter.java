@@ -14,7 +14,7 @@ import com.tokopedia.core.database.model.Bank_Table;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -57,7 +57,7 @@ public class BankDialogAdapter extends RecyclerView.Adapter<BankDialogAdapter.Vi
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(android.R.id.text1)
+        @BindView(android.R.id.text1)
         TextView title;
 
         public ViewHolder(View itemView) {

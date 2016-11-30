@@ -30,8 +30,9 @@ import com.tokopedia.core.util.SessionHandler;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * Created by Nisie on 7/13/16.
@@ -39,43 +40,44 @@ import butterknife.ButterKnife;
 public class MsisdnVerificationFragment extends DialogFragment
         implements MsisdnVerificationFragmentView, IncomingSms.ReceiveSMSListener, MSISDNConstant {
 
-    @Bind(R2.id.view_verification)
+    @BindView(R2.id.view_verification)
     View verificationView;
 
-    @Bind(R2.id.view_phone_number)
+    @BindView(R2.id.view_phone_number)
     View phoneNumberView;
 
-    @Bind(R2.id.send_otp)
+    @BindView(R2.id.send_otp)
     Button sendOtp;
 
-    @Bind(R2.id.verify_otp)
+    @BindView(R2.id.verify_otp)
     Button verifyOtp;
 
-    @Bind(R2.id.close_button)
+    @BindView(R2.id.close_button)
     Button closeButton;
 
-    @Bind(R2.id.input_phone)
+    @BindView(R2.id.input_phone)
     EditText phoneNumberEditText;
 
-    @Bind(R2.id.input_otp)
+    @BindView(R2.id.input_otp)
     EditText otpEditText;
 
-    @Bind(R2.id.logo)
+    @BindView(R2.id.logo)
     ImageView logo;
 
-    @Bind(R2.id.btn_no_thanks)
+    @BindView(R2.id.btn_no_thanks)
     TextView noThanksButton;
 
-    @Bind(R2.id.username)
+    @BindView(R2.id.username)
     TextView username;
 
-    @Bind(R2.id.verification_instruction)
+    @BindView(R2.id.verification_instruction)
     TextView instruction;
 
     MsisdnVerificationFragmentPresenter presenter;
     TkpdProgressDialog progressDialog;
     private PhoneVerificationUtil.MSISDNListener listener;
     LocalCacheHandler cacheHandler;
+    private Unbinder unbinder;
 
     public static MsisdnVerificationFragment createInstance() {
         MsisdnVerificationFragment fragment = new MsisdnVerificationFragment();
@@ -116,7 +118,7 @@ public class MsisdnVerificationFragment extends DialogFragment
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         initView(view);
         setViewListener();
         initialVar();
@@ -294,7 +296,7 @@ public class MsisdnVerificationFragment extends DialogFragment
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         presenter.onDestroyView();
     }
 

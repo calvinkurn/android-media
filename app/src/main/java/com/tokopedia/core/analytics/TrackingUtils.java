@@ -4,18 +4,18 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
+import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.router.home.HomeFragmentRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.session.RegisterNewNextFragment;
-import com.tokopedia.core.session.RegisterThirdFragment;
 import com.tokopedia.core.util.SessionHandler;
 
 import org.json.JSONArray;
@@ -32,6 +32,15 @@ import static com.tokopedia.core.analytics.AppScreen.SCREEN_HOME_PRODUCT_CATEGOR
  */
 
 public class TrackingUtils extends TrackingConfig {
+
+    public static void screen(Fragment fragment){
+        Nishikino.init(MainApplication.getAppContext()).startAnalytics().
+                sendScreen(AppScreen.convertFragmentScreen(fragment));
+    }
+    public static void screen(android.app.Fragment fragment){
+        Nishikino.init(MainApplication.getAppContext()).startAnalytics().
+                sendScreen(AppScreen.convertFragmentScreen(fragment));
+    }
 
     public static int PARENT_HOME_ACTIVITY = 101;
     public static int TYPE_FRAGMENT_INDEX_CATEGORY = 203;
@@ -68,11 +77,11 @@ public class TrackingUtils extends TrackingConfig {
 
 
     public static void fragmentBasedAFEvent(android.support.v4.app.Fragment fragment){
-        Map<String, Object> afValue = new HashMap<>();
-        if (fragment instanceof RegisterNewNextFragment || fragment instanceof RegisterThirdFragment){
-            afValue.put(AFInAppEventParameterName.REGSITRATION_METHOD,"register_normal");
-        }
-        getAFEngine().sendTrackEvent(AppScreen.convertAFFragmentEvent(fragment), afValue);
+//        Map<String, Object> afValue = new HashMap<>();
+//        if (fragment instanceof RegisterNewNextFragment || fragment instanceof RegisterThirdFragment){
+//            afValue.put(AFInAppEventParameterName.REGSITRATION_METHOD,"register_normal");
+//        }
+//        getAFEngine().sendTrackEvent(AppScreen.convertAFFragmentEvent(fragment), afValue);
     }
 
     public static void fragmentBasedAFEvent(Context context, int fragmentType) {
@@ -208,6 +217,27 @@ public class TrackingUtils extends TrackingConfig {
 
     public static double getDouble(String key) {
         return getGTMEngine().getDouble(key);
+    }
+
+    // TODO alvarisi true caller
+    public static void eventTrueCaller(String userId) {
+        /*Nishikino.init(MainApplication.getAppContext()).startAnalytics()
+                .sendButtonClick(
+                        AppEventTracking.Event.TRUECALLER,
+                        AppEventTracking.Category.TRUECALLER,
+                        AppEventTracking.Action.INSTALLED,
+                        userId
+                );*/
+    }
+
+    public static void eventGoldMerchantSuccess() {
+        Nishikino.init(MainApplication.getAppContext()).startAnalytics()
+                .sendButtonClick(
+                        AppEventTracking.Event.GMSUBSCRIBE,
+                        AppEventTracking.Category.GOLD_MERCHANT,
+                        AppEventTracking.Action.SUBSCRIBE,
+                        AppEventTracking.EventLabel.SUBSCRIBE_SUCCESS
+                );
     }
 }
 

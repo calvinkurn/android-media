@@ -65,7 +65,7 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -197,7 +197,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     //[START] This is banner HotList
 
     public static class ViewHolderSearchEmpty extends RecyclerView.ViewHolder {
-        @Bind(R2.id.text)
+        @BindView(R2.id.text)
         TextView textView;
 
         public ViewHolderSearchEmpty(View itemView) {
@@ -218,13 +218,13 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     }
 
     public static class BannerHotListViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R2.id.hot_list_banner_indicator)
+        @BindView(R2.id.hot_list_banner_indicator)
         CirclePageIndicator hotListBannerIndicator;
 
-        @Bind(R2.id.hot_list_banner_view_pager)
+        @BindView(R2.id.hot_list_banner_view_pager)
         ViewPager hotListBannerViewPager;
 
-        @Bind(R2.id.hot_list_banner_hashtags)
+        @BindView(R2.id.hot_list_banner_hashtags)
         LinearLayout hotListBannerHashTags;
 
         HeaderHotAdapter headerHotAdapter;
@@ -344,16 +344,16 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
     public static class TopAds4ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R2.id.main_content)
+        @BindView(R2.id.main_content)
         LinearLayout mainContent;
 
-        @Bind(R2.id.titlePromote)
+        @BindView(R2.id.titlePromote)
         TextView titlePromote;
 
-        @Bind(R2.id.info_topads)
+        @BindView(R2.id.info_topads)
         ImageView infoTopAds;
 
-        @Bind(R2.id.top_ads_linearlayout)
+        @BindView(R2.id.top_ads_linearlayout)
         LinearLayout topAdsRecyclerView;
 
         public TopAds4ViewHolder(View itemView) {
@@ -608,19 +608,19 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     }
 
     public static class ViewHolderProductitem extends RecyclerView.ViewHolder {
-        @Bind(R2.id.product_image)
+        @BindView(R2.id.product_image)
         ImageView productImage;
-        @Bind(R2.id.title)
+        @BindView(R2.id.title)
         TextView title;
-        @Bind(R2.id.price)
+        @BindView(R2.id.price)
         TextView price;
-        @Bind(R2.id.label_container)
+        @BindView(R2.id.label_container)
         FlowLayout labelContainer;
-        @Bind(R2.id.shop_name)
+        @BindView(R2.id.shop_name)
         TextView shopName;
-        @Bind(R2.id.location)
+        @BindView(R2.id.location)
         TextView location;
-        @Bind(R2.id.badges_container)
+        @BindView(R2.id.badges_container)
         LinearLayout badgesContainer;
 
         private Context context;

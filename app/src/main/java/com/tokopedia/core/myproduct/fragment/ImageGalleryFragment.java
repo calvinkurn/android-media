@@ -28,8 +28,9 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * Created by m.normansyah on 03/12/2015.
@@ -42,7 +43,7 @@ public class ImageGalleryFragment extends Fragment implements ImageGalleryAdapte
 
     List<ImageModel> datas;
 
-    @Bind(R2.id.gallery_gridview)
+    @BindView(R2.id.gallery_gridview)
     RecyclerView recyclerView;
 
     RecyclerView.Adapter adapter;
@@ -95,6 +96,7 @@ public class ImageGalleryFragment extends Fragment implements ImageGalleryAdapte
             return false;
         }
     };
+    private Unbinder unbinder;
 
 
     @Deprecated
@@ -168,7 +170,7 @@ public class ImageGalleryFragment extends Fragment implements ImageGalleryAdapte
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_gallery_browser, container, false);
-        ButterKnife.bind(this, parentView);
+        unbinder = ButterKnife.bind(this, parentView);
         return parentView;
     }
 
@@ -186,7 +188,7 @@ public class ImageGalleryFragment extends Fragment implements ImageGalleryAdapte
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         ((ImageGalleryAdapter)adapter).setCountTitle(null);
     }
 

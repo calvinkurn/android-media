@@ -15,7 +15,7 @@ import com.tokopedia.core.manage.people.profile.presenter.ManagePeopleProfileFra
 
 import java.io.File;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created on 6/9/16.
@@ -24,9 +24,9 @@ public class AvatarView extends BaseView<Profile, ManagePeopleProfileFragmentPre
 
     private static final String TAG = AvatarView.class.getSimpleName();
 
-    @Bind(R2.id.loading)
+    @BindView(R2.id.loading)
     View loading;
-    @Bind(R2.id.avatar)
+    @BindView(R2.id.avatar)
     ImageView avatar;
 
 

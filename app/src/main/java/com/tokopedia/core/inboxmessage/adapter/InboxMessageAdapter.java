@@ -24,7 +24,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -42,37 +42,37 @@ public class InboxMessageAdapter extends BaseLinearRecyclerViewAdapter
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R2.id.user_name)
+        @BindView(R2.id.user_name)
         TextView userName;
 
-        @Bind(R2.id.date)
+        @BindView(R2.id.date)
         TextView date;
 
-        @Bind(R2.id.user_ava)
+        @BindView(R2.id.user_ava)
         ImageView avatar;
 
-        @Bind(R2.id.message)
+        @BindView(R2.id.message)
         TextView message;
 
-        @Bind(R2.id.main)
+        @BindView(R2.id.main)
         View mainView;
 
-        @Bind(R2.id.hour)
+        @BindView(R2.id.hour)
         TextView hour;
 
-        @Bind(R2.id.label)
+        @BindView(R2.id.label)
         TextView label;
 
-        @Bind(R2.id.reputation_view)
+        @BindView(R2.id.reputation_view)
         View viewReputation;
 
-        @Bind(R2.id.rep_rating)
+        @BindView(R2.id.rep_rating)
         TextView textPercentage;
 
-        @Bind(R2.id.rep_icon)
+        @BindView(R2.id.rep_icon)
         ImageView iconPercentage;
 
-        @Bind(R2.id.title)
+        @BindView(R2.id.title)
         TextView title;
 
 

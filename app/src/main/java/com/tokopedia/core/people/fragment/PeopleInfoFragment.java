@@ -28,7 +28,7 @@ import com.tokopedia.core.people.presenter.PeopleInfoFragmentPresenter;
 import com.tokopedia.core.peoplefave.activity.PeopleFavoritedShop;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -39,13 +39,13 @@ public class PeopleInfoFragment extends BasePresenterFragment<PeopleInfoFragment
     public static final String TAG = PeopleInfoFragment.class.getSimpleName();
     public static final String EXTRA_PARAM_USER_ID = "EXTRA_PARAM_USER_ID";
 
-    @Bind(R2.id.layout_people_info_header_view)
+    @BindView(R2.id.layout_people_info_header_view)
     PeopleInfoHeaderView peopleInfoHeaderView;
-    @Bind(R2.id.layout_people_info_detail_view)
+    @BindView(R2.id.layout_people_info_detail_view)
     PeopleInfoDetailView peopleInfoDetailView;
-    @Bind(R2.id.layout_people_info_reputation_view)
+    @BindView(R2.id.layout_people_info_reputation_view)
     PeopleInfoReputationView peopleInfoReputationView;
-    @Bind(R2.id.layout_people_info_shop_owner_view)
+    @BindView(R2.id.layout_people_info_shop_owner_view)
     PeopleInfoShopOwnerView peopleInfoShopOwnerView;
 
 

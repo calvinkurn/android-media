@@ -35,8 +35,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * Created by Steven on 15/12/16.
@@ -61,14 +62,15 @@ public class ProductReviewFragment extends Fragment implements ProductReviewView
     private boolean isFirstTime;
     private TkpdProgressDialog progressDialog;
 
-    @Bind(R2.id.include_loading)
+    @BindView(R2.id.include_loading)
     ProgressBar progressBar;
-    @Bind(R2.id.recycler_view)
+    @BindView(R2.id.recycler_view)
     RecyclerView recyclerView;
-    @Bind(R2.id.view_rating_stats)
+    @BindView(R2.id.view_rating_stats)
     View statsView;
 
     SnackbarRetry snackbarRetry;
+    private Unbinder unbinder;
 
     public static ProductReviewFragment createInstance(String NAV, String productID, String shopID) {
         ProductReviewFragment fragment = new ProductReviewFragment();
@@ -117,7 +119,7 @@ public class ProductReviewFragment extends Fragment implements ProductReviewView
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_fragment_reputation_product, container, false);
-        ButterKnife.bind(this, rootView);
+        unbinder = ButterKnife.bind(this, rootView);
         initView();
         setAdapter();
         setListener();
@@ -163,7 +165,7 @@ public class ProductReviewFragment extends Fragment implements ProductReviewView
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         presenter.onDestroyView();
     }
 

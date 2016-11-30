@@ -13,7 +13,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.product.listener.ProductDetailView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Angga.Prasetiyo on 23/10/2015.
@@ -21,13 +21,13 @@ import butterknife.Bind;
 public class RatingView extends BaseView<ProductDetailData, ProductDetailView> {
     private static final String TAG = RatingView.class.getSimpleName();
 
-    @Bind(R2.id.tv_quality)
+    @BindView(R2.id.tv_quality)
     TextView tvQualityRate;
-    @Bind(R2.id.tv_accuracy)
+    @BindView(R2.id.tv_accuracy)
     TextView tvAccuracyRate;
-    @Bind(R2.id.iv_quality)
+    @BindView(R2.id.iv_quality)
     ImageView ivQualityRate;
-    @Bind(R2.id.iv_accuracy)
+    @BindView(R2.id.iv_accuracy)
     ImageView ivAccuracyRate;
 
     public RatingView(Context context) {

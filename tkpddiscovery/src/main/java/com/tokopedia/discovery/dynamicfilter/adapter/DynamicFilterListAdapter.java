@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -146,7 +146,7 @@ public class DynamicFilterListAdapter extends ProductAdapter {
 
     public static class DynamicViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R2.id.dynamic_filter_list_text)
+        @BindView(R2.id.dynamic_filter_list_text)
         TextView dynamicFilterListText;
 
         DynamicListModel dynamicListModel;

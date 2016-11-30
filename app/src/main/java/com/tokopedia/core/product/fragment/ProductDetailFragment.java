@@ -56,7 +56,7 @@ import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * ProductDetailFragment
@@ -78,43 +78,43 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public static final String STATE_OTHER_PRODUCTS = "STATE_OTHER_PRODUCTS";
     private static final String TAG = ProductDetailFragment.class.getSimpleName();
 
-    @Bind(R2.id.tv_ticker_gtm)
+    @BindView(R2.id.tv_ticker_gtm)
     TextView tvTickerGTM;
-    @Bind(R2.id.view_header)
+    @BindView(R2.id.view_header)
     HeaderInfoView headerInfoView;
-    @Bind(R2.id.view_detail)
+    @BindView(R2.id.view_detail)
     DetailInfoView detailInfoView;
-    @Bind(R2.id.view_picture)
+    @BindView(R2.id.view_picture)
     PictureView pictureView;
-    @Bind(R2.id.view_desc)
+    @BindView(R2.id.view_desc)
     DescriptionView descriptionView;
-    @Bind(R2.id.view_talk_review)
+    @BindView(R2.id.view_talk_review)
     TalkReviewView talkReviewView;
-    @Bind(R2.id.view_manage)
+    @BindView(R2.id.view_manage)
     ManageView manageView;
-    @Bind(R2.id.view_shop_info)
+    @BindView(R2.id.view_shop_info)
     ShopInfoView shopInfoView;
-    @Bind(R2.id.view_wholesale)
+    @BindView(R2.id.view_wholesale)
     WholesaleView wholesaleView;
-    @Bind(R2.id.view_share)
+    @BindView(R2.id.view_share)
     ButtonShareView buttonShareView;
-    @Bind(R2.id.view_rating)
+    @BindView(R2.id.view_rating)
     RatingView ratingView;
-    @Bind(R2.id.view_error_product)
+    @BindView(R2.id.view_error_product)
     ErrorProductView errorProductView;
-    @Bind(R2.id.view_error_shop)
+    @BindView(R2.id.view_error_shop)
     ErrorShopView errorShopView;
-    @Bind(R2.id.view_new_shop)
+    @BindView(R2.id.view_new_shop)
     NewShopView newShopView;
-    @Bind(R2.id.view_buy)
+    @BindView(R2.id.view_buy)
     ButtonBuyView buttonBuyView;
-    @Bind(R2.id.view_last_update)
+    @BindView(R2.id.view_last_update)
     LastUpdateView lastUpdateView;
-    @Bind(R2.id.view_progress)
+    @BindView(R2.id.view_progress)
     ProgressBar progressBar;
-    @Bind(R2.id.view_free_return)
+    @BindView(R2.id.view_free_return)
     FreeReturnView freeReturnView;
-    @Bind(R2.id.view_transaction_success)
+    @BindView(R2.id.view_transaction_success)
     TransactionSuccessView transactionSuccess;
 
     private ProductPass productPass;

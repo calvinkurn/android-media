@@ -13,7 +13,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.product.listener.ProductDetailView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Angga.Prasetiyo on 29/10/2015.
@@ -21,13 +21,13 @@ import butterknife.Bind;
 public class TalkReviewView extends BaseView<ProductDetailData, ProductDetailView> {
     private static final String TAG = TalkReviewView.class.getSimpleName();
 
-    @Bind(R2.id.l_talk)
+    @BindView(R2.id.l_talk)
     LinearLayout llTalk;
-    @Bind(R2.id.tv_talk)
+    @BindView(R2.id.tv_talk)
     TextView tvTalk;
-    @Bind(R2.id.l_review)
+    @BindView(R2.id.l_review)
     LinearLayout llReview;
-    @Bind(R2.id.tv_review)
+    @BindView(R2.id.tv_review)
     TextView tvReview;
 
     public TalkReviewView(Context context) {

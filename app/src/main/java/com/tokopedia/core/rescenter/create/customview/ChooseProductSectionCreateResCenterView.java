@@ -16,14 +16,14 @@ import com.tokopedia.core.rescenter.create.model.responsedata.CreateResCenterFor
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created on 8/3/16.
  */
 public class ChooseProductSectionCreateResCenterView extends BaseView<CreateResCenterFormData, ChooseTroubleListener> {
 
-    @Bind(R2.id.product_recyclerview)
+    @BindView(R2.id.product_recyclerview)
     RecyclerView productRecyclerView;
 
     private ProductAdapter adapter;

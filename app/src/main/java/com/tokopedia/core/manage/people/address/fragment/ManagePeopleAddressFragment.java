@@ -34,7 +34,7 @@ import com.tokopedia.core.util.RefreshHandler;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -44,7 +44,7 @@ public class ManagePeopleAddressFragment extends BasePresenterFragment<ManagePeo
 
     private static final String EXTRA_PARAM_ARRAY_LIST = "EXTRA_PARAM_ARRAY_LIST";
 
-    @Bind(R2.id.recycler_view)
+    @BindView(R2.id.recycler_view)
     RecyclerView recyclerView;
 
     private String querySearch;

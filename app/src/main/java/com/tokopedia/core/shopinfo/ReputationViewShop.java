@@ -44,7 +44,7 @@ import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.reputationproduct.adapter.ListViewReputationAdapter;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
-import com.tokopedia.core.session.Login;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.LabelUtils;
 import com.tokopedia.core.util.SessionHandler;
@@ -512,7 +512,7 @@ public class ReputationViewShop extends TActivity {
         return new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(ReputationViewShop.this, Login.class);
+                Intent intent = SessionRouter.getLoginActivityIntent(ReputationViewShop.this);
                 intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
                 intent.putExtra("product_id", model.productId);
                 startActivity(intent);

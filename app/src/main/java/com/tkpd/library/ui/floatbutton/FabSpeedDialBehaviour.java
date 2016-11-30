@@ -193,7 +193,7 @@ public class FabSpeedDialBehaviour extends CoordinatorLayout.Behavior<FabSpeedDi
         try {
             Method method = appBarLayout.getClass().getDeclaredMethod("getMinimumHeightForVisibleOverlappingContent");
             method.setAccessible(true);
-            Object value = method.invoke(appBarLayout, null);
+            Object value = method.invoke(appBarLayout, (Object[]) null);
             return (int) value;
         } catch (NoSuchMethodException e) {
             e.printStackTrace();

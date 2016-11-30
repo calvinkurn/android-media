@@ -14,7 +14,7 @@ import com.tokopedia.core.myproduct.fragment.ImageChooserDialog;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -61,10 +61,10 @@ public class ItemImageAdapter extends RecyclerView.Adapter<ItemImageAdapter.Imag
 
     public class ImageViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R2.id.image_selected)
+        @BindView(R2.id.image_selected)
         ImageView imageSelected;
 
-        @Bind(R2.id.desc_selected)
+        @BindView(R2.id.desc_selected)
         TextView descSelected;
 
         public ImageViewHolder(View itemView) {

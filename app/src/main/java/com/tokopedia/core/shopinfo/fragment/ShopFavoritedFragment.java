@@ -19,17 +19,17 @@ import com.tokopedia.core.shopinfo.presenter.ShopFavoritedFragmentPresenter;
 import com.tokopedia.core.shopinfo.presenter.ShopFavoritedFragmentPresenterImpl;
 import com.tokopedia.core.util.RefreshHandler;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Alifa on 10/5/2016.
  */
 public class ShopFavoritedFragment extends BasePresenterFragment<ShopFavoritedFragmentPresenter> implements ShopFavoritedFragmentView {
 
-    @Bind(R2.id.main_view)
+    @BindView(R2.id.main_view)
     View mainView;
 
-    @Bind(R2.id.favoritee_list)
+    @BindView(R2.id.favoritee_list)
     RecyclerView favoriteeRV;
 
     ShopFavoritedAdapter adapter;

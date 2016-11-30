@@ -33,7 +33,7 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import java.io.File;
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 import static com.tokopedia.core.shipping.OpenShopEditShipping.RESUME_OPEN_SHOP_KEY;
 
@@ -46,7 +46,7 @@ public class ShopEditorActivity extends TkpdActivity implements
     FragmentManager supportFragmentManager;
     String FRAGMENT;
 
-    @Bind(R2.id.container)
+    @BindView(R2.id.container)
     FrameLayout container;
 
     @Override

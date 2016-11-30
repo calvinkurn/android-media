@@ -37,7 +37,7 @@ import com.tokopedia.core.network.NetworkErrorHelper.RetryClickedListener;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import com.tokopedia.core.util.RequestPermissionUtil;
 
 import java.util.ArrayList;
@@ -62,15 +62,15 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
     private static final String IMAGE_PATH_DATA = "IMAGE_PATH_DATA";
     private static final String PROFILE_DATA = "PROFILE_DATA";
 
-    @Bind(R2.id.layout_main)
+    @BindView(R2.id.layout_main)
     View layoutMain;
-    @Bind(R2.id.layout_manage_people_profile_avatar_view)
+    @BindView(R2.id.layout_manage_people_profile_avatar_view)
     AvatarView avatarSection;
-    @Bind(R2.id.layout_manage_people_profile_detail_view)
+    @BindView(R2.id.layout_manage_people_profile_detail_view)
     DetailView detailSection;
-    @Bind(R2.id.layout_manage_people_profile_contact_view)
+    @BindView(R2.id.layout_manage_people_profile_contact_view)
     ContactView contactSection;
-    @Bind(R2.id.save_button)
+    @BindView(R2.id.save_button)
     View saveButton;
 
     private ManagePeopleProfileView listener;

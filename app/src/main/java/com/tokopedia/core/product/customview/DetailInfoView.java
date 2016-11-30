@@ -19,7 +19,8 @@ import com.tokopedia.core.router.discovery.BrowseProductRouter;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
+import butterknife.BindViews;
 
 /**
  * Created by Angga.Prasetiyo on 26/10/2015.
@@ -27,29 +28,29 @@ import butterknife.Bind;
 public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailView> {
     private static final String TAG = DetailInfoView.class.getSimpleName();
 
-    @Bind({R2.id.tv_category_1, R2.id.tv_category_2, R2.id.tv_category_3})
+    @BindViews({R2.id.tv_category_1, R2.id.tv_category_2, R2.id.tv_category_3})
     List<TextView> tvCategories;
-    @Bind(R2.id.tv_weight)
+    @BindView(R2.id.tv_weight)
     TextView tvWeight;
-    @Bind(R2.id.tv_minimum)
+    @BindView(R2.id.tv_minimum)
     TextView tvMinOrder;
-    @Bind(R2.id.tv_insurance)
+    @BindView(R2.id.tv_insurance)
     TextView tvInsurance;
-    @Bind(R2.id.tv_catalog)
+    @BindView(R2.id.tv_catalog)
     TextView tvCatalog;
-    @Bind(R2.id.tv_etalase)
+    @BindView(R2.id.tv_etalase)
     TextView tvEtalase;
-    @Bind(R2.id.tv_condition)
+    @BindView(R2.id.tv_condition)
     TextView tvCondition;
-    @Bind(R2.id.tv_returnable)
+    @BindView(R2.id.tv_returnable)
     TextView tvReturnable;
-    @Bind(R2.id.tr_catalog)
+    @BindView(R2.id.tr_catalog)
     TableRow catalogView;
-    @Bind(R2.id.tv_preorder)
+    @BindView(R2.id.tv_preorder)
     TextView tvPreOrder;
-    @Bind(R2.id.tr_returnable)
+    @BindView(R2.id.tr_returnable)
     TableRow returnableView;
-    @Bind(R2.id.tr_preorder)
+    @BindView(R2.id.tr_preorder)
     TableRow preOrderView;
 
     public DetailInfoView(Context context) {

@@ -44,7 +44,7 @@ import com.tokopedia.core.util.RefreshHandler;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Nisie on 5/9/16.
@@ -78,13 +78,13 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
         return fragment;
     }
 
-    @Bind(R2.id.message_list)
+    @BindView(R2.id.message_list)
     RecyclerView mainList;
 
-    @Bind(R2.id.swipe_refresh_layout)
+    @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
 
-    @Bind(R2.id.fab)
+    @BindView(R2.id.fab)
     FloatingActionButton fab;
 
     View filterLayout;

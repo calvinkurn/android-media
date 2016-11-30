@@ -26,10 +26,11 @@ import com.tokopedia.core.shipping.presenter.EditShippingLocationDialogPresenter
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
+import butterknife.Unbinder;
 
 /**
  * Created by Kris on 5/3/2016.
@@ -37,29 +38,30 @@ import butterknife.OnItemSelected;
  */
 public class ShippingLocationDialog extends DialogFragment implements EditShippingLocationDialogPresenter {
 
-    @Bind(R2.id.edit_shipping_province_spinner)
+    @BindView(R2.id.edit_shipping_province_spinner)
     Spinner provinceSpinner;
 
-    @Bind(R2.id.edit_shipping_city_spinner)
+    @BindView(R2.id.edit_shipping_city_spinner)
     Spinner citySpinner;
 
-    @Bind(R2.id.edit_shipping_district_spinner)
+    @BindView(R2.id.edit_shipping_district_spinner)
     Spinner districtSpinner;
 
-    @Bind(R2.id.edit_shipping_confirm_button)
+    @BindView(R2.id.edit_shipping_confirm_button)
     TextView confirmEditButton;
 
-    @Bind(R2.id.edit_shipping_cancel_button)
+    @BindView(R2.id.edit_shipping_cancel_button)
     TextView cancelButton;
 
-    @Bind(R2.id.edit_shipping_select_province_text)
+    @BindView(R2.id.edit_shipping_select_province_text)
     TextView selectProvinceText;
 
-    @Bind(R2.id.edit_shipping_select_city_text)
+    @BindView(R2.id.edit_shipping_select_city_text)
     TextView selectCityText;
 
-    @Bind(R2.id.edit_shipping_select_district_text)
+    @BindView(R2.id.edit_shipping_select_district_text)
     TextView selectDistrictText;
+    private Unbinder unbinder;
 
     @OnItemSelected(R2.id.edit_shipping_province_spinner)
     void onProvinceSpinnerChanged(int selectedProvince){
@@ -117,7 +119,7 @@ public class ShippingLocationDialog extends DialogFragment implements EditShippi
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setDataFromBundle(getArguments());
         View view = inflater.inflate(R.layout.edit_shipping_location_dialog, container, false);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         populateSpinner();
         return view;
     }
@@ -130,7 +132,7 @@ public class ShippingLocationDialog extends DialogFragment implements EditShippi
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     private void populateSpinner(){

@@ -23,7 +23,7 @@ import static com.tokopedia.core.myproduct.model.constant.ImageModelType.INACTIV
 import java.io.File;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -101,9 +101,9 @@ public class SmallPhotoAdapter extends RecyclerView.Adapter<SmallPhotoAdapter.Vi
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
-        @Bind(R2.id.border_small_imageview_layout)
+        @BindView(R2.id.border_small_imageview_layout)
         FrameLayout borderSmallImageViewLayout;
-        @Bind(R2.id.picture_small_gallery_imageview)
+        @BindView(R2.id.picture_small_gallery_imageview)
         ImageView pictureSmallGalleryImageView;
 
         SmallPhotoAdapterTouch smallPhotoAdapterTouch;

@@ -46,7 +46,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.TimeZone;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -55,25 +55,25 @@ import butterknife.OnClick;
  */
 public class ShopClosedReasonFragment extends Fragment implements SellingView {
 
-    @Bind(R2.id.reason)
+    @BindView(R2.id.reason)
     TextView reasonText;
-    @Bind(R2.id.list)
+    @BindView(R2.id.list)
     RecyclerView recyclerView;
-    @Bind(R2.id.start_date)
+    @BindView(R2.id.start_date)
     TextView startDate;
-    @Bind(R2.id.end_date)
+    @BindView(R2.id.end_date)
     TextView endDate;
-    @Bind(R2.id.note)
+    @BindView(R2.id.note)
     EditText noteTxt;
-    @Bind(R2.id.confirm_button)
+    @BindView(R2.id.confirm_button)
     TextView confirmButton;
-    @Bind(R2.id.arrow_display)
+    @BindView(R2.id.arrow_display)
     ImageView arrowDisplay;
-    @Bind(R2.id.add_stock_empty)
+    @BindView(R2.id.add_stock_empty)
     ExpandableRelativeLayout expandableRelativeLayout;
-    @Bind(R2.id.set_stock_empty)
+    @BindView(R2.id.set_stock_empty)
     LinearLayout setStockEmpty;
-    @Bind(R2.id.pBar)
+    @BindView(R2.id.pBar)
     ProgressBar progressBar;
 
     private ProductListAdapter listAdapter;

@@ -13,7 +13,7 @@ import com.tokopedia.core.rescenter.edit.model.passdata.EditResCenterFormData;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -31,11 +31,11 @@ public class LastProductTroubleAdapter extends RecyclerView.Adapter<LastProductT
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R2.id.title_product)
+        @BindView(R2.id.title_product)
         public TextView productView;
-        @Bind(R2.id.title_trouble)
+        @BindView(R2.id.title_trouble)
         public TextView troubleView;
-        @Bind(R2.id.title_remark)
+        @BindView(R2.id.title_remark)
         public TextView remarkView;
 
         public ViewHolder(View itemView) {

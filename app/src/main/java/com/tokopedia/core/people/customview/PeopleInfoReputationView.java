@@ -13,22 +13,22 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.people.model.PeopleInfoData;
 import com.tokopedia.core.people.presenter.PeopleInfoFragmentPresenter;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created on 6/2/16.
  */
 public class PeopleInfoReputationView extends BaseView<PeopleInfoData, PeopleInfoFragmentPresenter> {
 
-    @Bind(R2.id.icon_reputation)
+    @BindView(R2.id.icon_reputation)
     ImageView mainReputationIcon;
-    @Bind(R2.id.user_reputation)
+    @BindView(R2.id.user_reputation)
     TextView mainReputationText;
-    @Bind(R2.id.counter_positive)
+    @BindView(R2.id.counter_positive)
     TextView counterPositive;
-    @Bind(R2.id.counter_neutral)
+    @BindView(R2.id.counter_neutral)
     TextView counterNeutral;
-    @Bind(R2.id.counter_negative)
+    @BindView(R2.id.counter_negative)
     TextView counterNegative;
 
     public PeopleInfoReputationView(Context context) {

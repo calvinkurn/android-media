@@ -10,7 +10,7 @@ import com.tokopedia.core.myproduct.fragment.AddProductFragment;
 import com.tokopedia.core.myproduct.utils.AddProductType;
 import com.tokopedia.core.myproduct.utils.DelegateOnClick;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -20,9 +20,9 @@ import butterknife.OnClick;
 public class AddProductSocMedSubmit {
     DelegateOnClick delegateOnClick;
 
-    @Bind(R2.id.add_product_soc_med_submit)
+    @BindView(R2.id.add_product_soc_med_submit)
     TextView add;
-    @Bind(R2.id.add_product_soc_med_delete)
+    @BindView(R2.id.add_product_soc_med_delete)
     TextView delete;
 
     public AddProductSocMedSubmit(View view){

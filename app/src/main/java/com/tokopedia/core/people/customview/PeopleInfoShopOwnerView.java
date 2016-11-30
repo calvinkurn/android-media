@@ -17,25 +17,25 @@ import com.tokopedia.core.people.model.PeopleInfoData;
 import com.tokopedia.core.people.presenter.PeopleInfoFragmentPresenter;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created on 6/2/16.
  */
 public class PeopleInfoShopOwnerView extends BaseView<PeopleInfoData, PeopleInfoFragmentPresenter> {
 
-    @Bind(R2.id.shop_avatar)
+    @BindView(R2.id.shop_avatar)
     ImageView shopAvatar;
-    @Bind(R2.id.shop_name)
+    @BindView(R2.id.shop_name)
     TextView shopName;
-    @Bind(R2.id.shop_loc)
+    @BindView(R2.id.shop_loc)
     TextView shopLocation;
 
     @SuppressWarnings("unused")
-    @Bind(R2.id.reputation_medal)
+    @BindView(R2.id.reputation_medal)
     LinearLayout reputationMedal;
     @SuppressWarnings("unused")
-    @Bind(R2.id.reputation_point)
+    @BindView(R2.id.reputation_point)
     TextView reputationPoint;
 
     public PeopleInfoShopOwnerView(Context context) {

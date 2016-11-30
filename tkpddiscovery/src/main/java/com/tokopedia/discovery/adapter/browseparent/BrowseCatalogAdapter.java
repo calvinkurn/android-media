@@ -30,7 +30,7 @@ import com.tokopedia.discovery.adapter.ProductAdapter;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -90,15 +90,15 @@ public class BrowseCatalogAdapter extends ProductAdapter {
 
     public static class CatalogViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R2.id.product_image)
+        @BindView(R2.id.product_image)
         SquareImageView productImage;
-        @Bind(R2.id.title)
+        @BindView(R2.id.title)
         TextView title;
-        @Bind(R2.id.price)
+        @BindView(R2.id.price)
         TextView price;
-        @Bind(R2.id.seller)
+        @BindView(R2.id.seller)
         TextView seller;
-        @Bind(R2.id.badges_container)
+        @BindView(R2.id.badges_container)
         LinearLayout badgesContainer;
 
         private Context context;

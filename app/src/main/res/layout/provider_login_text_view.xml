@@ -20,8 +20,13 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:adjustViewBounds="true"
-        android:layout_marginRight="16dp"
         tools:src="@drawable/notif_red"
+        />
+
+    <Space
+        android:id="@+id/space"
+        android:layout_width="16dp"
+        android:layout_height="wrap_content"
         />
 
     <TextView

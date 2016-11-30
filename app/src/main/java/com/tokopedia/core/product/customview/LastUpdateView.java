@@ -11,7 +11,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.product.listener.ProductDetailView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Angga.Prasetiyo on 02/11/2015.
@@ -19,7 +19,7 @@ import butterknife.Bind;
 public class LastUpdateView extends BaseView<ProductDetailData, ProductDetailView> {
     private static final String TAG = LastUpdateView.class.getSimpleName();
 
-    @Bind(R2.id.tv_last_update)
+    @BindView(R2.id.tv_last_update)
     TextView tvLastUpdate;
 
     public LastUpdateView(Context context) {

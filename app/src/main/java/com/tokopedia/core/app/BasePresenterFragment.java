@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  *
@@ -19,6 +20,7 @@ public abstract class BasePresenterFragment<P> extends TkpdFragment {
     protected P presenter;
 
     protected Bundle savedState;
+    protected Unbinder unbinder;
 
     @Override
     public void onAttach(Activity activity) {
@@ -111,11 +113,11 @@ public abstract class BasePresenterFragment<P> extends TkpdFragment {
         super.onDestroyView();
         saveStateToArguments();
         Log.d(TAG, "ON DESTROY VIEW");
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     private void injectView(View view) {
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
     }
 
     @Override

@@ -175,6 +175,7 @@ public interface  TkpdBaseURL {
 
         String PATH_ANSWER_QUESTION = "answer_question.pl";
         String PATH_REQUEST_OTP = "request_otp.pl";
+        String PATH_REQUEST_OTP_PHONE = "msisdn/send_verification_otp.pl";
 
         String PATH_GET_QUESTION_FORM = "get_question_form.pl";
 
@@ -618,5 +619,9 @@ public interface  TkpdBaseURL {
         String RESET_PASSWORD = "api/reset";
         String VALIDATE_EMAIL = "/api/register/validate-email";
         String RESENT_ACTIVATION = "/api/resend";
+    }
+
+    interface Home{
+        String PATH_API_V1_ANNOUNCEMENT_TICKER = "/api/v1/tickers";
     }
 }

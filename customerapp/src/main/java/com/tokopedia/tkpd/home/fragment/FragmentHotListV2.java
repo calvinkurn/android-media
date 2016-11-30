@@ -16,8 +16,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.tkpd.R;
+
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
@@ -36,8 +36,9 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * Created by m.normansyah on 28/10/2015.
@@ -53,12 +54,13 @@ public class FragmentHotListV2 extends Fragment implements HotListView {
     
     private HotListAdapter adapter;
     private HotList hotList;
-    @Bind(R2.id.hot_product)
+    @BindView(R.id.hot_product)
     RecyclerView recyclerView;
-    @Bind(R2.id.swipe_refresh_layout)
+    @BindView(R.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
     private RecyclerView.LayoutManager layoutManager;
-    
+    private Unbinder unbinder;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +80,7 @@ public class FragmentHotListV2 extends Fragment implements HotListView {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_index_main, container, false);
         hotList.subscribe();
-        ButterKnife.bind(this, parentView);
+        unbinder = ButterKnife.bind(this, parentView);
         prepareView();
         setListener();
         return parentView;
@@ -98,7 +100,7 @@ public class FragmentHotListV2 extends Fragment implements HotListView {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         hotList.unSubscribe();
     }
 

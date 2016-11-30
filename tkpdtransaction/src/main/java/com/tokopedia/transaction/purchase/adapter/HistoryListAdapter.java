@@ -15,7 +15,7 @@ import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -63,13 +63,13 @@ public class HistoryListAdapter extends ArrayAdapter<OrderHistory> {
     }
 
     class ViewHolder {
-        @Bind(R2.id.actor)
+        @BindView(R2.id.actor)
         TextView tvActor;
-        @Bind(R2.id.date)
+        @BindView(R2.id.date)
         TextView tvDate;
-        @Bind(R2.id.state)
+        @BindView(R2.id.state)
         TextView tvStatus;
-        @Bind(R2.id.comment)
+        @BindView(R2.id.comment)
         TextView tvComment;
 
         public ViewHolder(View view) {

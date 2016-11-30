@@ -16,22 +16,22 @@ import com.tokopedia.core.people.model.PeopleInfoData;
 import com.tokopedia.core.people.presenter.PeopleInfoFragmentPresenter;
 import com.tokopedia.core.util.SessionHandler;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Createdon 5/31/16.
  */
 public class PeopleInfoHeaderView extends BaseView<InputOutputData, PeopleInfoFragmentPresenter> {
 
-    @Bind(R2.id.user_avatar)
+    @BindView(R2.id.user_avatar)
     ImageView avatar;
-    @Bind(R2.id.user_name)
+    @BindView(R2.id.user_name)
     TextView username;
-    @Bind(R2.id.user_favorite)
+    @BindView(R2.id.user_favorite)
     TextView textFavorite;
-    @Bind(R2.id.message_user)
+    @BindView(R2.id.message_user)
     View actionMessage;
-    @Bind(R2.id.manage_user)
+    @BindView(R2.id.manage_user)
     View actionManage;
 
     public PeopleInfoHeaderView(Context context) {

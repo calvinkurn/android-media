@@ -28,7 +28,7 @@ import com.tokopedia.core.util.SessionHandler;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by hangnadi on 10/11/16.
@@ -43,7 +43,7 @@ public class PeopleFavoritedShopFragment extends BasePresenterFragment<PeopleFav
     private static final String ARGS_PARAM_KEY_STORED_DATA = "param_key_stored_data";
     private String userID;
 
-    @Bind(R2.id.listview_favoritee)
+    @BindView(R2.id.listview_favoritee)
     RecyclerView recyclerView;
 
     private boolean connectionStatus;

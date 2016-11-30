@@ -18,12 +18,12 @@ import com.tokopedia.core.manage.people.address.presenter.ManagePeopleAddressPre
 import com.tokopedia.core.manage.people.address.service.ManagePeopleAddressReceiver;
 import com.tokopedia.core.manage.people.address.service.ManagePeopleAddressService;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 public class ManagePeopleAddressActivity extends BasePresenterActivity<ManagePeopleAddressPresenter>
         implements MPAddressActivityListener, ManagePeopleAddressReceiver.Receiver {
 
-    @Bind(R2.id.fab)
+    @BindView(R2.id.fab)
     FloatingActionButton fab;
 
     private Uri uriData;

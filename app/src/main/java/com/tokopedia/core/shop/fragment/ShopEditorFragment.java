@@ -30,7 +30,7 @@ import com.tokopedia.core.shop.presenter.ShopEditorView;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.UploadImageReVamp;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -38,39 +38,39 @@ import butterknife.OnClick;
  */
 public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implements ShopEditorView {
 
-    @Bind(R2.id.shop_name)
+    @BindView(R2.id.shop_name)
     EditText mShopNameText;
-    @Bind(R2.id.shop_slogan)
+    @BindView(R2.id.shop_slogan)
     EditText mShopSloganText;
-    @Bind(R2.id.shop_desc)
+    @BindView(R2.id.shop_desc)
     EditText mShopDescText;
-    @Bind(R2.id.button_send)
+    @BindView(R2.id.button_send)
     TextView mBtnSend;
-    @Bind(R2.id.progress_bar)
+    @BindView(R2.id.progress_bar)
     ProgressBar progressBar;
-    @Bind(R2.id.shop_ava)
+    @BindView(R2.id.shop_ava)
     ImageView mShopAva;
-    @Bind(R2.id.shop_editor_scrollview)
+    @BindView(R2.id.shop_editor_scrollview)
     ScrollView mShopEditor;
-    @Bind(R2.id.edit_shop_schedule)
+    @BindView(R2.id.edit_shop_schedule)
     ImageButton editShopSchedule;
-    @Bind(R2.id.close_image)
+    @BindView(R2.id.close_image)
     ImageView closeImage;
-    @Bind(R2.id.shop_status)
+    @BindView(R2.id.shop_status)
     TextView shopStatus;
-    @Bind(R2.id.schedule_info)
+    @BindView(R2.id.schedule_info)
     TextView scheduleInfo;
-    @Bind(R2.id.schedule_date)
+    @BindView(R2.id.schedule_date)
     TextView scheduleDate;
-    @Bind(R2.id.time_icon)
+    @BindView(R2.id.time_icon)
     ImageView timeIcon;
-    @Bind(R2.id.icon_gold_merchant)
+    @BindView(R2.id.icon_gold_merchant)
     ImageView icon_gold_merchant;
-    @Bind(R2.id.status_gold)
+    @BindView(R2.id.status_gold)
     TextView status_gold;
-    @Bind(R2.id.desc_status_gold)
+    @BindView(R2.id.desc_status_gold)
     TextView desc_status;
-    @Bind(R2.id.about_gm)
+    @BindView(R2.id.about_gm)
     TextView about_gm;
     private TkpdProgressDialog mProgressDialog;
     private UploadImageReVamp uploadimage2;

@@ -19,7 +19,7 @@ import com.tokopedia.core.var.TkpdState;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -35,25 +35,25 @@ public abstract class TalkViewAdapter extends RecyclerView.Adapter<RecyclerView.
     protected TokenHandler token;
 
     public static class TalkViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R2.id.user_ava)
+        @BindView(R2.id.user_ava)
         public ImageView userImageView;
-        @Bind(R2.id.user_name)
+        @BindView(R2.id.user_name)
         public TextView userView;
-        @Bind(R2.id.create_time)
+        @BindView(R2.id.create_time)
         public TextView timeView;
-        @Bind(R2.id.message)
+        @BindView(R2.id.message)
         public TextView messageView;
-        @Bind(R2.id.rank)
+        @BindView(R2.id.rank)
         public TextView rank;
-        @Bind(R2.id.but_overflow_comment)
+        @BindView(R2.id.but_overflow_comment)
         public View buttonOverflow;
-        @Bind(R2.id.reputation)
+        @BindView(R2.id.reputation)
         public LinearLayout reputation;
-        @Bind(R2.id.reputation_user)
+        @BindView(R2.id.reputation_user)
         public View reputationUser;
-        @Bind(R2.id.rep_icon)
+        @BindView(R2.id.rep_icon)
         public ImageView iconReputation;
-        @Bind(R2.id.rep_rating)
+        @BindView(R2.id.rep_rating)
         public TextView textReputation;
 
 

@@ -29,7 +29,7 @@ import com.tokopedia.discovery.adapter.ProductAdapter;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.tokopedia.core.network.entity.discovery.ShopModel.SHOP_MODEL_TYPE;
@@ -73,25 +73,25 @@ public class BrowseShopAdapter extends ProductAdapter {
 
     public static class ShopViewHolder extends RecyclerView.ViewHolder{
 
-        @Bind(R2.id.shop_1)
+        @BindView(R2.id.shop_1)
         LinearLayout mainContent;
 
-        @Bind(R2.id.item_shop_image)
+        @BindView(R2.id.item_shop_image)
         SquareImageView itemShopImage;
 
-        @Bind(R2.id.item_shop_gold)
+        @BindView(R2.id.item_shop_gold)
         ImageView itemShopBadge;
 
-        @Bind(R2.id.item_shop_lucky)
+        @BindView(R2.id.item_shop_lucky)
         ImageView itemShopLucky;
 
-        @Bind(R2.id.item_shop_name)
+        @BindView(R2.id.item_shop_name)
         TextView itemShopName;
 
-        @Bind(R2.id.item_shop_bought)
+        @BindView(R2.id.item_shop_bought)
         TextView itemShopBought;
 
-        @Bind(R2.id.item_shop_count_fav)
+        @BindView(R2.id.item_shop_count_fav)
         TextView itemShopCountFav;
 
         public ShopViewHolder(View itemView) {

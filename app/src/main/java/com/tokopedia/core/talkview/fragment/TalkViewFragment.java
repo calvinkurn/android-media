@@ -59,7 +59,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by stevenfredian on 5/10/16.
@@ -109,26 +109,26 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
 
     int paramMaster=0;
 
-    @Bind(R2.id.new_comment) EditText comment;
-    @Bind(R2.id.send_but) ImageView sendBut;
-    @Bind(R2.id.comment_list) RecyclerView recyclerView;
-    @Bind(R2.id.prod_img) ImageView pImageView;
-    @Bind(R2.id.prod_name) TextView pNameView;
-    @Bind(R2.id.add_comment_area) View addCommentArea;
-    @Bind(R2.id.add_url) View addUrlView;
-    @Bind(R2.id.user_ava) ImageView userTalkImageView;
-    @Bind(R2.id.user_name) TextView userView;
-    @Bind(R2.id.create_time) TextView timeView;
-    @Bind(R2.id.message) TextView messageView;
-    @Bind(R2.id.rank) TextView rank;
-    @Bind(R2.id.but_overflow) View buttonOverflow;
-    @Bind(R2.id.reputation) LinearLayout reputation;
-    @Bind(R2.id.reputation_user) View reputationUser;
-    @Bind(R2.id.rep_icon) ImageView iconReputation;
-    @Bind(R2.id.rep_rating) TextView textReputation;
-    @Bind(R2.id.swipe_refresh_layout) SwipeRefreshLayout swipe;
-    @Bind(R2.id.header) View header;
-    @Bind(R2.id.main) View mainLayout;
+    @BindView(R2.id.new_comment) EditText comment;
+    @BindView(R2.id.send_but) ImageView sendBut;
+    @BindView(R2.id.comment_list) RecyclerView recyclerView;
+    @BindView(R2.id.prod_img) ImageView pImageView;
+    @BindView(R2.id.prod_name) TextView pNameView;
+    @BindView(R2.id.add_comment_area) View addCommentArea;
+    @BindView(R2.id.add_url) View addUrlView;
+    @BindView(R2.id.user_ava) ImageView userTalkImageView;
+    @BindView(R2.id.user_name) TextView userView;
+    @BindView(R2.id.create_time) TextView timeView;
+    @BindView(R2.id.message) TextView messageView;
+    @BindView(R2.id.rank) TextView rank;
+    @BindView(R2.id.but_overflow) View buttonOverflow;
+    @BindView(R2.id.reputation) LinearLayout reputation;
+    @BindView(R2.id.reputation_user) View reputationUser;
+    @BindView(R2.id.rep_icon) ImageView iconReputation;
+    @BindView(R2.id.rep_rating) TextView textReputation;
+    @BindView(R2.id.swipe_refresh_layout) SwipeRefreshLayout swipe;
+    @BindView(R2.id.header) View header;
+    @BindView(R2.id.main) View mainLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

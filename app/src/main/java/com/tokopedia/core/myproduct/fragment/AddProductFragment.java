@@ -130,12 +130,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnFocusChange;
 import butterknife.OnItemSelected;
 import butterknife.OnTextChanged;
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -163,6 +164,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     public static final String PRODUCT_DB = "product_db";
     public static final String ADD_PRODUCT_MULTIPLE_IMAGE_PATH = "ADD_PRODUCT_MULTIPLE_IMAGE_PATH";
     public static final String NO_CATALOG_OPTION = "Tidak menggunakan katalog";
+    private Unbinder unbinder;
 
 
     public void removeImageSelected(int i) {
@@ -236,18 +238,18 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         initPhotoAdapter(newPhotos);
     }
 
-    @Bind(R2.id.add_product_copy)
+    @BindView(R2.id.add_product_copy)
     ViewStub addProductCopy;
 
-    @Bind(R2.id.add_product_submit_ll)
+    @BindView(R2.id.add_product_submit_ll)
     ViewStub addProductSubmit;
     AddProductSubmit addProductSubmitContainer;
 
-    @Bind(R2.id.add_product_soc_med_submit_ll)
+    @BindView(R2.id.add_product_soc_med_submit_ll)
     ViewStub addProductSocMedSubmit;
     AddProductSocMedSubmit addProductSocMedSubmitContainer;
 
-    @Bind(R2.id.add_product_share)
+    @BindView(R2.id.add_product_share)
     ViewStub addProductShare;
     AddProductShare addProductShareContainer;
     private AddProductPresenter addProduct;
@@ -289,108 +291,108 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
      */
     public int positionAtSocMed;
 
-    @Bind(R2.id.add_product_returnable_spinner)
+    @BindView(R2.id.add_product_returnable_spinner)
     Spinner addProductReturnableSpinner;
-    @Bind(R2.id.add_product_policy_layout)
+    @BindView(R2.id.add_product_policy_layout)
     LinearLayout addProductPolicyLayout;
     GetShopNoteModel.ShopNoteModel returnPolicy = null;
     MyShopInfoModel.Info myShopInfoModel;
     NoteDetailModel.Detail detail;
 
-    @Bind(R2.id.add_product_add_to_new_etalase_layout)
+    @BindView(R2.id.add_product_add_to_new_etalase_layout)
     ExpandableRelativeLayout addProductAddToNewEtalaseLayout;
-    @Bind(R2.id.add_product_add_to_new_etalase_alert)
+    @BindView(R2.id.add_product_add_to_new_etalase_alert)
     TextInputLayout addProductAddToNewEtalaseAlert;
-    @Bind(R2.id.add_product_add_to_new_etalase)
+    @BindView(R2.id.add_product_add_to_new_etalase)
     EditText addProductAddToNewEtalase;
 
-    @Bind(R2.id.add_product_imagechveron)
+    @BindView(R2.id.add_product_imagechveron)
     ImageView chevron;
 
-    @Bind(R2.id.add_product_minimum_order_alert)
+    @BindView(R2.id.add_product_minimum_order_alert)
     TextInputLayout addProductMinimumOrderAlert;
-    @Bind(R2.id.add_product_minimum_order)
+    @BindView(R2.id.add_product_minimum_order)
     EditText addProductMinimumOrder;
 
-    @Bind(R2.id.add_product_product_name_alert)
+    @BindView(R2.id.add_product_product_name_alert)
     TextInputLayout addProductPRoductNameAlert;
-    @Bind(R2.id.add_product_product_name)
+    @BindView(R2.id.add_product_product_name)
     EditText addProductProductName;
 
     String selectedCurrencyDesc;
-    @Bind(R2.id.add_product_currency)
+    @BindView(R2.id.add_product_currency)
     ClickToSelectEditText<SimpleTextModel> addProductCurrency;
-    @Bind(R2.id.add_product_price)
+    @BindView(R2.id.add_product_price)
     EditText addProductPrice;
-    @Bind(R2.id.add_product_price_alert)
+    @BindView(R2.id.add_product_price_alert)
     TextInputLayout addProductPriceAlert;
 
     RecyclerView.Adapter photoAdapter;
-    @Bind(R2.id.add_product_images)
+    @BindView(R2.id.add_product_images)
     RecyclerView addProductImages;
     ArrayList<ImageModel> photos;
 
     TextDeleteAdapter categoryAdapter;
-    @Bind(R2.id.add_product_category_spinner)
+    @BindView(R2.id.add_product_category_spinner)
     RecyclerView addProductCategorySpinner;
     ArrayList<TextDeleteModel> categoryModels;
 
-    @Bind(R2.id.add_product_weight_unit)
+    @BindView(R2.id.add_product_weight_unit)
     ClickToSelectEditText addProductWeightUnit;
-    @Bind(R2.id.add_product_weight)
+    @BindView(R2.id.add_product_weight)
     EditText addProductWeight;
-    @Bind(R2.id.add_product_weight_alert)
+    @BindView(R2.id.add_product_weight_alert)
     TextInputLayout addProductWeightAlert;
 
-    @Bind(R2.id.add_product_tittle_wholesale)
+    @BindView(R2.id.add_product_tittle_wholesale)
     RelativeLayout addProductTitleWholeSale;
 
-    @Bind(R2.id.add_product_wholesale_layout)
+    @BindView(R2.id.add_product_wholesale_layout)
     ExpandableRelativeLayout wholeSaleContainer;
 
-    @Bind(R2.id.add_product_wholesale_item)
+    @BindView(R2.id.add_product_wholesale_item)
     RecyclerView addProductWholeSaleItem;
-    @Bind(R2.id.add_product_add_whole_sale_item)
+    @BindView(R2.id.add_product_add_whole_sale_item)
     TextView addProductAddWholeSaleItem;
     WholesaleAdapter wholesaleAdapter;
 
-    @Bind(R2.id.add_product_add_to)
+    @BindView(R2.id.add_product_add_to)
     RecyclerView addProductAddTo;
     ArrayList<EtalaseModel> etalaseModels;
     ArrayList<TextDeleteModel> displayEtalaseModels;
     TextDeleteAdapter etalaseAdapter;
 
-    @Bind(R2.id.add_product_parent)
+    @BindView(R2.id.add_product_parent)
     ScrollView addProductParent;
 
 
-    @Bind(R2.id.add_product_desc)
+    @BindView(R2.id.add_product_desc)
     LimitedEditText addProductDesc;
     EditText addProductDescNormal;
 
-    @Bind(R2.id.add_product_product_desc_layout)
+    @BindView(R2.id.add_product_product_desc_layout)
     TextInputLayout addProductProductDescLayout;
 
-    @Bind(R2.id.add_product_condition)
+    @BindView(R2.id.add_product_condition)
     Spinner addProductCondition;
 
-    @Bind(R2.id.add_product_insurance)
+    @BindView(R2.id.add_product_insurance)
     Spinner addProductInsurance;
 
-    @Bind(R2.id.title_preorder)
+    @BindView(R2.id.title_preorder)
     RelativeLayout addProductTitlePreorder;
-    @Bind(R2.id.chevron_preorder)
+    @BindView(R2.id.chevron_preorder)
     ImageView addProductChevronPreorder;
-    @Bind(R2.id.preorder_content)
+    @BindView(R2.id.preorder_content)
     ExpandableRelativeLayout addProductPreOderContent;
-    @Bind(R2.id.edittext_preorder)
+    @BindView(R2.id.edittext_preorder)
     EditText addProductEdittextPreorder;
 
-    @Bind(R2.id.add_product_catalog_layout)
+    @BindView(R2.id.add_product_catalog_layout)
     LinearLayout addProductCatalogLayout;
-    @Bind(R2.id.add_product_prompt_catalog)
+    @BindView(R2.id.add_product_prompt_catalog)
     TextView addProductPromptCatalog;
-    @Bind(R2.id.add_product_catalog)
+    @BindView(R2.id.add_product_catalog)
     ClickToSelectWithImage addProductCatalog;
     ArrayList<CatalogDataModel.Catalog> catalogs;
 
@@ -855,7 +857,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
 
         parentView = inflater.inflate(R.layout.fragment_add_product, container, false);
 
-        ButterKnife.bind(this, parentView);
+        unbinder = ButterKnife.bind(this, parentView);
 
         if (addProductType != null) {
             if (type == AddProductType.ADD.getType()) {
@@ -2805,7 +2807,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
 //        addProduct.onSuccessGetInboxTicketDetail(null);
         addProduct.unsubscribe();
     }
