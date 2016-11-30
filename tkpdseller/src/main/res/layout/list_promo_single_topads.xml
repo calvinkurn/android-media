@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <CheckBox
+        android:layout_centerVertical="true"
+        android:id="@+id/check_promo"
+        android:layout_margin="@dimen/margin_med"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:padding="@dimen/padding_small"
+        android:layout_toRightOf="@id/check_promo"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_marginBottom="@dimen/margin_vs"
+            android:id="@+id/title_product"
+            android:textColor="@color/black"
+            android:maxLines="1"
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <RelativeLayout
+            android:layout_marginBottom="@dimen/margin_vs"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <View
+                android:layout_centerVertical="true"
+                android:id="@+id/status_active_dot"
+                android:background="@drawable/green_circle"
+                android:layout_width="10dp"
+                android:layout_height="10dp"/>
+
+            <TextView
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/status_active_dot"
+                android:id="@+id/status_active"
+                android:maxLines="1"
+                android:textSize="14sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+
+        <TextView
+            android:textSize="14sp"
+            android:layout_marginBottom="@dimen/margin_vs"
+            android:id="@+id/price_promo_per_klik"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <ProgressBar
+            android:layout_marginBottom="@dimen/margin_vs"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/progressBarPromo" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_alignParentLeft="true"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:id="@+id/promo_price_used"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:textSize="16sp"
+                android:layout_alignParentRight="true"
+                android:id="@+id/total_price_promo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

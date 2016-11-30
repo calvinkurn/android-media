@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.var.RecyclerViewItem;
+import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.model.data.Ad;
 import com.tokopedia.seller.topads.view.viewholder.PromoSingleViewHolder;
 
@@ -24,9 +26,9 @@ public class TopAdsListAdapter extends BaseRecyclerViewAdapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        switch (viewType){
-            case Ad.AD_TYPE:
-                return new PromoSingleViewHolder(LayoutInflater.from(context).inflate(com.tokopedia.core.R.layout.listview_product_item_list, parent, false));
+        switch (viewType) {
+            case TkpdState.RecyclerViewItemAd.AD_TYPE:
+                return new PromoSingleViewHolder(LayoutInflater.from(context).inflate(R.layout.list_promo_single_topads, parent, false));
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }
@@ -34,11 +36,49 @@ public class TopAdsListAdapter extends BaseRecyclerViewAdapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
+        switch (getItemViewType(position)) {
+            case TkpdState.RecyclerViewItemAd.AD_TYPE:
+                PromoSingleViewHolder itemHolder = (PromoSingleViewHolder) holder;
+                itemHolder.bindData((Ad) data.get(position));
+                break;
+            default:
+                super.onBindViewHolder(holder, position);
+                break;
+        }
     }
 
     @Override
-    public int getItemCount() {
-        return 0;
+    public int getItemViewType(int position) {
+        if (checkDataSize(position)) {
+            RecyclerViewItem recyclerViewItem = data.get(position);
+            return isInType(recyclerViewItem);
+        } else {
+            return super.getItemViewType(position);
+        }
+    }
+
+    /**
+     * check if position is in range with data size
+     *
+     * @param position
+     * @return true whether is in range of data
+     */
+    private boolean checkDataSize(int position) {
+        return data != null && data.size() > 0 && position > -1 && position < data.size();
+    }
+
+    /**
+     * this is for registered type
+     *
+     * @param recyclerViewItem
+     * @return
+     */
+    protected int isInType(RecyclerViewItem recyclerViewItem) {
+        switch (recyclerViewItem.getType()) {
+            case TkpdState.RecyclerViewItemAd.AD_TYPE:
+                return recyclerViewItem.getType();
+            default:
+                return -1;
+        }
     }
 }

@@ -432,4 +432,8 @@ public class TkpdState {
         public static final String defaultLatitude = "-6.1753924";
         public static final String defaultLongitude = "106.8249641";
     }
+
+    public class RecyclerViewItemAd{
+        public static final int AD_TYPE = 1;
+    }
 }
