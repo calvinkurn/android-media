@@ -51,6 +51,7 @@ import com.tokopedia.core.network.entity.home.Ticker;
 import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.NonScrollLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
@@ -505,7 +506,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
 
     public void sendAppsFlyerData() {
-        TrackingUtils.fragmentBasedAFEvent(TAG);
+        TrackingUtils.fragmentBasedAFEvent(HomeRouter.IDENTIFIER_CATEGORY_FRAGMENT);
     }
 
     @Override

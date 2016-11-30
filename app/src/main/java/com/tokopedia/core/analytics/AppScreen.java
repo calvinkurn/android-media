@@ -1,7 +1,7 @@
 package com.tokopedia.core.analytics;
 
 import com.appsflyer.AFInAppEventType;
-import com.tokopedia.core.home.ParentIndexHome;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.session.RegisterNewNextFragment;
 import com.tokopedia.core.session.RegisterThirdFragment;
 
@@ -18,7 +18,7 @@ public final class AppScreen {
     }
 
     public static String convertAFActivityEvent(String tag) {
-        if (tag.equals(ParentIndexHome.TAG)) {
+        if (tag.equals(HomeRouter.IDENTIFIER_HOME_ACTIVITY)) {
             return AFInAppEventType.LOGIN;
         } else {
             return AFInAppEventType.CONTENT_VIEW;

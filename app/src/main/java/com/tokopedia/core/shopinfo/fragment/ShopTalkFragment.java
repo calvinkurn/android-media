@@ -55,6 +55,11 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
     LinearLayoutManager layoutManager;
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     protected boolean isRetainInstance() {
         return true;
     }

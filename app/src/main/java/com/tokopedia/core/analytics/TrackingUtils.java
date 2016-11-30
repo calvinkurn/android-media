@@ -32,9 +32,6 @@ import static com.tokopedia.core.analytics.AppScreen.SCREEN_HOME_PRODUCT_CATEGOR
 
 public class TrackingUtils extends TrackingConfig {
 
-    public static int PARENT_HOME_ACTIVITY = 101;
-    public static int TYPE_FRAGMENT_INDEX_CATEGORY = 203;
-
     public static void eventCampaign(Campaign campaign){
         getGTMEngine()
                 .sendCampaign(campaign)
@@ -44,7 +41,7 @@ public class TrackingUtils extends TrackingConfig {
 
     public static void activityBasedAFEvent(String tag){
         Map<String, Object> afValue = new HashMap<>();
-        if (tag.equals(ParentIndexHome.TAG)){
+        if (tag.equals(HomeRouter.IDENTIFIER_HOME_ACTIVITY)){
             afValue.put(AFInAppEventParameterName.PARAM_1, CommonUtils.getUniqueDeviceID(MainApplication.getAppContext()));
         }
         getAFEngine().sendTrackEvent(AppScreen.convertAFActivityEvent(tag), afValue);
@@ -55,7 +52,7 @@ public class TrackingUtils extends TrackingConfig {
         Map<String, Object> afValue = new HashMap<>();
         if (tag.equals(RegisterNewNextFragment.TAG) || tag.equals(RegisterThirdFragment.TAG)){
             afValue.put(AFInAppEventParameterName.REGSITRATION_METHOD,"register_normal");
-        } else if (tag.equals(FragmentIndexCategory.TAG)){
+        } else if (tag.equals(HomeRouter.IDENTIFIER_CATEGORY_FRAGMENT)){
             afValue.put(AFInAppEventParameterName.DESCRIPTION, Jordan.AF_SCREEN_HOME_MAIN);
         }
 

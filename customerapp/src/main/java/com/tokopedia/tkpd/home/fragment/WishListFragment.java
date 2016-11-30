@@ -25,7 +25,6 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
-import com.tokopedia.core.customadapter.GridLayoutProductAdapter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.var.RecyclerViewItem;
