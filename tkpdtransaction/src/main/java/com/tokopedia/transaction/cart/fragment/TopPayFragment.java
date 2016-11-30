@@ -24,7 +24,7 @@ import android.widget.ProgressBar;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
-import com.tokopedia.core.payment.fragment.DynamicPaymentFragment;
+import com.tokopedia.transaction.cart.listener.ICartActionFragment;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 
 import java.io.UnsupportedEncodingException;
@@ -36,9 +36,8 @@ import butterknife.Bind;
  * @author anggaprasetiyo on 11/29/16.
  */
 
-public class TopPayFragment extends BasePresenterFragment
-        implements View.OnKeyListener {
-    private static final String TAG = DynamicPaymentFragment.class.getSimpleName();
+public class TopPayFragment extends BasePresenterFragment implements View.OnKeyListener {
+    private static final String TAG = TopPayFragment.class.getSimpleName();
     private static final String EXTRA_ARGS_DYNAMIC_PAYMENT_DATA = "EXTRA_ARGS_DYNAMIC_PAYMENT_DATA";
     private static final String MESSAGE_PAYMENT_SUCCESS = "Pembayaran Berhasil";
     private static final String MESSAGE_PAYMENT_CANCELED = "Proses pembayaran dibatalkan";
@@ -56,7 +55,7 @@ public class TopPayFragment extends BasePresenterFragment
     ProgressBar progressBar;
 
     private TopPayParameterData topPayParameterData;
-    private ActionListener actionListener;
+    private ICartActionFragment actionListener;
     private String paymentId;
 
     public static TopPayFragment newInstance(TopPayParameterData data) {
@@ -99,7 +98,7 @@ public class TopPayFragment extends BasePresenterFragment
 
     @Override
     protected void initialListener(Activity activity) {
-        actionListener = (ActionListener) activity;
+        actionListener = (ICartActionFragment) activity;
     }
 
     @Override
@@ -125,8 +124,8 @@ public class TopPayFragment extends BasePresenterFragment
         webView.getSettings().setDomStorageEnabled(true);
         webView.getSettings().setBuiltInZoomControls(false);
         webView.getSettings().setDisplayZoomControls(true);
-        webView.setWebViewClient(new DynamicPaymentWebViewClient());
-        webView.setWebChromeClient(new DynamicPaymentWebViewChromeClient());
+        webView.setWebViewClient(new TopPayWebViewClient());
+        webView.setWebChromeClient(new TopPayWebViewChromeClient());
         webView.setOnKeyListener(this);
     }
 
@@ -158,9 +157,9 @@ public class TopPayFragment extends BasePresenterFragment
             switch (keyCode) {
                 case KeyEvent.KEYCODE_BACK:
                     if (paymentId != null && !paymentId.isEmpty()) {
-                        actionListener.onDynamicPaymentSuccess(paymentId, MESSAGE_PAYMENT_SUCCESS);
+                        actionListener.onTopPaySuccess(paymentId, MESSAGE_PAYMENT_SUCCESS);
                     } else {
-                        actionListener.onDynamicPaymentCanceled(MESSAGE_PAYMENT_CANCELED);
+                        actionListener.onTopPayCanceled(MESSAGE_PAYMENT_CANCELED);
                     }
                     return true;
             }
@@ -173,26 +172,19 @@ public class TopPayFragment extends BasePresenterFragment
         switch (item.getItemId()) {
             case android.R.id.home:
                 if (paymentId != null && !paymentId.isEmpty()) {
-                    actionListener.onDynamicPaymentSuccess(paymentId, MESSAGE_PAYMENT_SUCCESS);
+                    actionListener.onTopPaySuccess(paymentId, MESSAGE_PAYMENT_SUCCESS);
                 } else {
-                    actionListener.onDynamicPaymentCanceled(MESSAGE_PAYMENT_CANCELED);
+                    actionListener.onTopPayCanceled(MESSAGE_PAYMENT_CANCELED);
                 }
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public interface ActionListener {
-        void onDynamicPaymentSuccess(String paymentId, String message);
-
-        void onDynamicPaymentFailed(String message);
-
-        void onDynamicPaymentCanceled(String message);
-    }
-
-    private class DynamicPaymentWebViewClient extends WebViewClient {
+    private class TopPayWebViewClient extends WebViewClient {
         private boolean timeout = true;
 
+        @SuppressWarnings("deprecation")
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             view.invalidate();
@@ -202,7 +194,7 @@ public class TopPayFragment extends BasePresenterFragment
                 String id = uri.getQueryParameter(KEY_QUERY_PAYMENT_ID);
                 view.stopLoading();
                 paymentId = id;
-                actionListener.onDynamicPaymentSuccess(id, MESSAGE_PAYMENT_SUCCESS);
+                actionListener.onTopPaySuccess(id, MESSAGE_PAYMENT_SUCCESS);
                 return true;
             } else if (url.contains(CONTAINS_ACCOUNT_URL)) {
                 Uri uriMain = Uri.parse(url);
@@ -218,11 +210,11 @@ public class TopPayFragment extends BasePresenterFragment
                 String id = uri.getQueryParameter(KEY_QUERY_PAYMENT_ID);
                 view.stopLoading();
                 paymentId = id;
-                actionListener.onDynamicPaymentSuccess(id, MESSAGE_PAYMENT_SUCCESS);
+                actionListener.onTopPaySuccess(id, MESSAGE_PAYMENT_SUCCESS);
                 return true;
             } else if (url.contains(CONTAINS_LOGIN_URL)) {
                 view.stopLoading();
-                actionListener.onDynamicPaymentFailed(MESSAGE_PAYMENT_FAILED);
+                actionListener.onTopPayFailed(MESSAGE_PAYMENT_FAILED);
                 return true;
             } else {
                 return super.shouldOverrideUrlLoading(view, url);
@@ -290,11 +282,11 @@ public class TopPayFragment extends BasePresenterFragment
                     break;
             }
             view.stopLoading();
-            if (actionListener != null) actionListener.onDynamicPaymentFailed(message);
+            if (actionListener != null) actionListener.onTopPayFailed(message);
         }
     }
 
-    private class DynamicPaymentWebViewChromeClient extends WebChromeClient {
+    private class TopPayWebViewChromeClient extends WebChromeClient {
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             if (newProgress == 100) {

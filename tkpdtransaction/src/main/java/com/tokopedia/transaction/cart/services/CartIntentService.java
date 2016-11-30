@@ -2,6 +2,7 @@ package com.tokopedia.transaction.cart.services;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.util.Log;
 
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
@@ -16,6 +17,7 @@ import com.tokopedia.transaction.exception.ResponseErrorException;
 
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.util.Map;
 
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
@@ -59,7 +61,7 @@ public class CartIntentService extends IntentService {
         params.put("use_deposit", "0");
         params.put("deposit_amt", checkoutData.getDepositAmount());
         params.put("partial_str", checkoutData.getPartialString());
-        params.put("dropship_str", checkoutData.getDropShipString().replace("-", "~"));
+        params.put("dropship_str", checkoutData.getDropShipString());
         if (checkoutData.getVoucherCode() != null) {
             params.put("voucher_code", checkoutData.getVoucherCode());
         }
@@ -74,6 +76,10 @@ public class CartIntentService extends IntentService {
         intent.putExtra(CartBroadcastReceiver.EXTRA_MESSAGE_TOP_PAY_ACTION,
                 "Melakukan proses checkout");
         sendBroadcast(intent);
+
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            Log.d("PARAM CART", entry.getKey() + " = " + entry.getValue());
+        }
         cartDataInteractor.getParameterTopPay(
                 AuthUtil.generateParamsNetwork(this, params), Schedulers.immediate(),
                 new Subscriber<TopPayParameterData>() {

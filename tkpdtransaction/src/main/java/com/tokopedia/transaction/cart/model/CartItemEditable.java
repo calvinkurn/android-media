@@ -21,7 +21,8 @@ public class CartItemEditable {
 
     private String dropShipperName;
     private String dropShipperPhone;
-    private String cartString;
+    private String cartStringForDeliverOption;
+    private String cartStringForDropShipperOption;
     private int errorType;
 
     public CartItemEditable(TransactionList data) {
@@ -31,7 +32,8 @@ public class CartItemEditable {
         this.isPartialDeliver = false;
         this.dropShipperName = "";
         this.dropShipperPhone = "";
-        this.cartString = "";
+        this.cartStringForDeliverOption = "";
+        this.cartStringForDropShipperOption = "";
         this.errorType = data.getCartCanProcess() == 0 ? ERROR_CART_CANNOT_PROCESS : ERROR_NON;
     }
 
@@ -107,11 +109,19 @@ public class CartItemEditable {
         this.dropShipperPhone = dropShipperPhone;
     }
 
-    public String getCartString() {
-        return cartString;
+    public String getCartStringForDeliverOption() {
+        return cartStringForDeliverOption;
     }
 
-    public void setCartString(String cartString) {
-        this.cartString = cartString;
+    public void setCartStringForDeliverOption(String cartStringForDeliverOption) {
+        this.cartStringForDeliverOption = cartStringForDeliverOption;
+    }
+
+    public String getCartStringForDropShipperOption() {
+        return cartStringForDropShipperOption;
+    }
+
+    public void setCartStringForDropShipperOption(String cartStringForDropShipperOption) {
+        this.cartStringForDropShipperOption = cartStringForDropShipperOption;
     }
 }

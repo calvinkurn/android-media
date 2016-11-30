@@ -9,4 +9,10 @@ import android.app.Fragment;
 public interface ICartActionFragment {
 
     void replaceFragmentWithBackStack(Fragment fragment);
+
+    void onTopPaySuccess(String paymentId, String message);
+
+    void onTopPayFailed(String message);
+
+    void onTopPayCanceled(String message);
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.cart.adapter;
 
 import android.app.Fragment;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,6 +9,7 @@ import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -249,10 +251,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 //        holder.etDropshiperPhone.addTextChangedListener(null);
 //        holder.etDropshiperName.addTextChangedListener(null);
 
-        holder.etDropshiperName.setText(data.getDropShipperName() != null
-                ? data.getDropShipperName() : "");
-        holder.etDropshiperPhone.setText(data.getDropShipperPhone() != null
-                ? data.getDropShipperPhone() : "");
+
         switch (data.getErrorType()) {
             case CartItemEditable.ERROR_DROPSHIPPER_NAME:
                 holder.tilEtDropshiperName.setErrorEnabled(true);
@@ -264,59 +263,86 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 break;
         }
         final TransactionList cartData = data.getTransactionList();
+
+
+        holder.etDropshiperName.setText(data.getDropShipperName() != null
+                ? data.getDropShipperName() : "");
+        holder.etDropshiperPhone.setText(data.getDropShipperPhone() != null
+                ? data.getDropShipperPhone() : "");
+
+        final TextWatcher textWatcherDropShipperName = getWatcherEtDropShipperName(data, cartData, holder);
+        final TextWatcher textWatcherDropShipperPhone = getWatcherEtDropShipperPhone(data, cartData, holder);
+
         holder.cbDropshiper.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
+                    updateDropShipperCartName(cartData, holder.etDropshiperName.getText().toString());
+                    updateDropShipperCartPhone(cartData, holder.etDropshiperPhone.getText().toString());
                     holder.holderDropshiperForm.setVisibility(View.VISIBLE);
                     insertDropShipperCartData(cartData);
-                    holder.etDropshiperName.addTextChangedListener(new TextWatcher() {
-                        @Override
-                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                            if (!s.toString().equalsIgnoreCase(data.getDropShipperName()))
-                                updateDropShipperCartName(cartData, s.toString());
-                            holder.tilEtDropshiperName.setError(null);
-                            holder.tilEtDropshiperName.setErrorEnabled(false);
-                        }
-
-                        @Override
-                        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                        }
-
-                        @Override
-                        public void afterTextChanged(Editable s) {
-
-                        }
-                    });
-                    holder.etDropshiperPhone.addTextChangedListener(new TextWatcher() {
-                        @Override
-                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                            if (!s.toString().equalsIgnoreCase(data.getDropShipperPhone()))
-                                updateDropShipperCartPhone(cartData, s.toString());
-                            holder.tilEtDropshiperPhone.setError(null);
-                            holder.tilEtDropshiperPhone.setErrorEnabled(false);
-                        }
-
-                        @Override
-                        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                        }
-
-                        @Override
-                        public void afterTextChanged(Editable s) {
-
-                        }
-                    });
+                    holder.etDropshiperName.addTextChangedListener(textWatcherDropShipperName);
+                    holder.etDropshiperPhone.addTextChangedListener(textWatcherDropShipperPhone);
                 } else {
                     holder.holderDropshiperForm.setVisibility(View.GONE);
-                    holder.etDropshiperPhone.addTextChangedListener(null);
-                    holder.etDropshiperName.addTextChangedListener(null);
+                    holder.etDropshiperPhone.removeTextChangedListener(textWatcherDropShipperPhone);
+                    holder.etDropshiperName.removeTextChangedListener(textWatcherDropShipperName);
                     deleteDropShipperCartData(cartData);
                 }
             }
         });
         holder.cbDropshiper.setChecked(data.isDropShipper());
+
+    }
+
+    @NonNull
+    private TextWatcher getWatcherEtDropShipperPhone(final CartItemEditable data,
+                                                     final TransactionList cartData,
+                                                     final ViewHolder holder) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                holder.tilEtDropshiperPhone.setError(null);
+                holder.tilEtDropshiperPhone.setErrorEnabled(false);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                Log.d("aftertextchanged phone", s.toString());
+                if (!s.toString().equalsIgnoreCase(data.getDropShipperPhone()))
+                    updateDropShipperCartPhone(cartData, s.toString());
+            }
+        };
+    }
+
+    @NonNull
+    private TextWatcher getWatcherEtDropShipperName(final CartItemEditable data,
+                                                    final TransactionList cartData,
+                                                    final ViewHolder holder) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                holder.tilEtDropshiperName.setError(null);
+                holder.tilEtDropshiperName.setErrorEnabled(false);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                Log.d("aftertextchanged name", s.toString());
+                if (!s.toString().equalsIgnoreCase(data.getDropShipperName()))
+                    updateDropShipperCartName(cartData, s.toString());
+            }
+        };
     }
 
     private void renderPartialDeliverOption(ViewHolder holder, final TransactionList cartData) {
@@ -364,7 +390,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (dataList.get(i) instanceof CartItemEditable
                     && ((CartItemEditable) dataList.get(i)).getTransactionList().getCartString()
                     .equals(cartData.getCartString())) {
-                ((CartItemEditable) dataList.get(i)).setDropShipperName(dropShipperPhone);
+                ((CartItemEditable) dataList.get(i)).setDropShipperPhone(dropShipperPhone);
                 //  this.notifyItemChanged(i);
                 return;
             }
@@ -377,7 +403,9 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     && ((CartItemEditable) dataList.get(i)).getTransactionList().getCartString()
                     .equals(cartData.getCartString())) {
                 ((CartItemEditable) dataList.get(i)).setPartialDeliver(false);
-                ((CartItemEditable) dataList.get(i)).setCartString(cartData.getCartString());
+                ((CartItemEditable) dataList.get(i)).setCartStringForDeliverOption(
+                        cartData.getCartString()
+                );
                 //  this.notifyItemChanged(i);
                 return;
             }
@@ -390,7 +418,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     && ((CartItemEditable) dataList.get(i)).getTransactionList().getCartString()
                     .equals(cartData.getCartString())) {
                 ((CartItemEditable) dataList.get(i)).setPartialDeliver(true);
-                ((CartItemEditable) dataList.get(i)).setCartString("");
+                ((CartItemEditable) dataList.get(i)).setCartStringForDeliverOption("");
                 // this.notifyItemChanged(i);
                 return;
             }
@@ -403,6 +431,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     && ((CartItemEditable) dataList.get(i)).getTransactionList().getCartString()
                     .equals(cartData.getCartString())) {
                 ((CartItemEditable) dataList.get(i)).setDropShipper(false);
+                ((CartItemEditable) dataList.get(i)).setCartStringForDropShipperOption("");
                 //  this.notifyItemChanged(i);
                 return;
             }
@@ -415,6 +444,9 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     && ((CartItemEditable) dataList.get(i)).getTransactionList().getCartString()
                     .equals(cartData.getCartString())) {
                 ((CartItemEditable) dataList.get(i)).setDropShipper(true);
+                ((CartItemEditable) dataList.get(i)).setCartStringForDropShipperOption(
+                        cartData.getCartString()
+                );
                 // this.notifyItemChanged(i);
                 return;
             }

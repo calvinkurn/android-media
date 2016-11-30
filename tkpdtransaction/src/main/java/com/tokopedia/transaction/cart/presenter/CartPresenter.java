@@ -227,22 +227,25 @@ public class CartPresenter implements ICartPresenter {
                                     List<CartItemEditable> cartItemEditables) {
         List<String> dropShipperNameList = new ArrayList<>();
         List<String> dropShipperPhoneList = new ArrayList<>();
-        List<String> dropShipperString = new ArrayList<>();
-        StringBuilder partialDeliverParamBuilder = new StringBuilder();
+
+        List<String> dropShipperStringList = new ArrayList<>();
+        List<String> partialDeliverStringList = new ArrayList<>();
+
+
+        //  StringBuilder partialDeliverParamBuilder = new StringBuilder();
         for (CartItemEditable data : cartItemEditables) {
             if (data.isDropShipper()) {
                 dropShipperNameList.add(data.getDropShipperName());
                 dropShipperPhoneList.add(data.getDropShipperPhone());
-                dropShipperString.add(data.getCartString());
+                dropShipperStringList.add(data.getCartStringForDropShipperOption());
             }
             if (data.isPartialDeliver()) {
-                partialDeliverParamBuilder.append(data.getCartString()).append("*~*");
+                partialDeliverStringList.add(data.getCartStringForDeliverOption());
             }
         }
-        String partialDeliverParamString = partialDeliverParamBuilder.toString();
 
         StringBuilder dropShipperParamStringBuilder = new StringBuilder();
-        for (String stringCart : dropShipperString) {
+        for (String stringCart : dropShipperStringList) {
             dropShipperParamStringBuilder.append(stringCart).append("*~*");
         }
         String dropShipperParamString = dropShipperParamStringBuilder.toString();
@@ -250,6 +253,12 @@ public class CartPresenter implements ICartPresenter {
             dropShipperParamString = dropShipperParamString.substring(0,
                     dropShipperParamString.lastIndexOf("*~*"));
         }
+
+        StringBuilder partialDeliverParamBuilder = new StringBuilder();
+        for (String stringCart : partialDeliverStringList) {
+            partialDeliverParamBuilder.append(stringCart).append("*~*");
+        }
+        String partialDeliverParamString = partialDeliverParamBuilder.toString();
         if (partialDeliverParamString.endsWith("*~*")) {
             partialDeliverParamString = partialDeliverParamString.substring(0,
                     partialDeliverParamString.lastIndexOf("*~*"));
@@ -258,11 +267,10 @@ public class CartPresenter implements ICartPresenter {
         List<CheckoutDropShipperData> checkoutDropShipperDataList = new ArrayList<>();
 
         Map<String, String> dropShipperDataParam = generateDropShipperParam(dropShipperNameList,
-                dropShipperPhoneList, dropShipperString);
+                dropShipperPhoneList, dropShipperStringList);
 
 
         for (Map.Entry<String, String> entry : dropShipperDataParam.entrySet()) {
-            System.out.println(entry.getKey() + "/" + entry.getValue());
             checkoutDropShipperDataList.add(new CheckoutDropShipperData.Builder()
                     .key(entry.getKey())
                     .value(entry.getValue())
@@ -295,10 +303,12 @@ public class CartPresenter implements ICartPresenter {
         Map<String, String> params = new HashMap<>();
         for (int i = 0, dropShipperNameListSize = dropShipperNameList.size();
              i < dropShipperNameListSize; i++) {
-            params.put("dropship_name~" + dropShipperStringList.get(i).replace("~", "-"),
-                    dropShipperNameList.get(i));
-            params.put("dropship_telp~" + dropShipperStringList.get(i).replace("~", "-"),
-                    dropShipperPhoneList.get(i));
+            params.put(
+                    "dropship_name-" + dropShipperStringList.get(i), dropShipperNameList.get(i)
+            );
+            params.put(
+                    "dropship_telp-" + dropShipperStringList.get(i), dropShipperPhoneList.get(i)
+            );
         }
         return params;
     }

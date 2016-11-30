@@ -78,4 +78,19 @@ public class CartActivity extends BasePresenterActivity implements ICartActionFr
         getFragmentManager().beginTransaction().replace(R.id.container,
                 fragment).addToBackStack(null).commit();
     }
+
+    @Override
+    public void onTopPaySuccess(String paymentId, String message) {
+
+    }
+
+    @Override
+    public void onTopPayFailed(String message) {
+
+    }
+
+    @Override
+    public void onTopPayCanceled(String message) {
+
+    }
 }
