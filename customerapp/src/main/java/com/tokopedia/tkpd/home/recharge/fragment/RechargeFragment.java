@@ -42,12 +42,12 @@ import com.tokopedia.core.database.model.category.ClientNumber;
 import com.tokopedia.core.database.recharge.product.Product;
 import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.core.session.Login;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.VersionInfo;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpd.home.fragment.FragmentIndexCategory;
 import com.tokopedia.tkpd.home.recharge.activity.RechargePaymentWebView;
 import com.tokopedia.tkpd.home.recharge.adapter.NominalAdapter;
@@ -60,6 +60,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -125,6 +126,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     private int minLengthDefaultOperator = -1;
     private Bundle bundle;
     private Boolean showPrice = true;
+    private Unbinder unbinder;
     //endregion
 
     public static RechargeFragment newInstance(Category category) {
@@ -188,7 +190,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
         View view = inflater.inflate(R.layout.fragment_recharge, container, false);
         try {
-            ButterKnife.bind(this, view);
+            unbinder = ButterKnife.bind(this, view);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -402,7 +404,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     }
 
     @Override
-    public void setOperatorView(RechargeOperatorModelDB operator) {
+    public void setOperatorView(RechargeOperatorModelDBAttrs operator) {
         try {
             this.minLengthDefaultOperator = operator.minimumLength;
             this.rechargeEditText.getAutoCompleteTextView().setFilters(new InputFilter[]{new InputFilter.LengthFilter(operator.maximumLength)});
