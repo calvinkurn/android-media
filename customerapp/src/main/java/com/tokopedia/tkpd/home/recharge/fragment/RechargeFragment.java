@@ -271,15 +271,9 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         temp = validateTextPrefix(temp);
         if (!category.getAttributes().getValidatePrefix()) {
             if (s.length()>=minLengthDefaultOperator) {
-                if (!category.getAttributes().getShowOperator()) {
-                    this.rechargePresenter.validateWithOperator(
-                            category.getId(),
-                            category.getAttributes().getDefaultOperatorId());
-                } else {
-                    this.rechargePresenter.validateWithOperator(
-                            category.getId(),
-                            selectedOperatorId);
-                }
+                this.rechargePresenter.validateWithOperator(
+                        category.getId(),
+                        category.getAttributes().getDefaultOperatorId());
             } else {
                 isAlreadyHavePhonePrefixInView = false;
                 hideFormAndImageOperator();
@@ -520,12 +514,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
 
         if (!category.getAttributes().getValidatePrefix()) {
-            if (!categoryAttributes.getShowOperator()) {
-                selectedOperatorId = category.getAttributes().getDefaultOperatorId();
-                this.rechargePresenter.updateMinLenghAndOperator(selectedOperatorId);
-            } else {
-                this.rechargePresenter.getListOperatorFromCategory(category.getId());
-            }
+            selectedOperatorId = category.getAttributes().getDefaultOperatorId();
+            this.rechargePresenter.updateMinLenghAndOperator(selectedOperatorId);
             if (!category.getAttributes().getClientNumber().getIsShown()) {
                 setUpForNotUsingTextEdit();
             }
