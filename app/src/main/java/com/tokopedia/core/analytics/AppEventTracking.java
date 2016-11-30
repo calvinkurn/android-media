@@ -264,6 +264,9 @@ public interface AppEventTracking {
     }
 
     interface GTM {
+        String GTM_ID = "GTM_ID";
+        String GTM_RESOURCE = "GTM_RESOURCE";
+
         String LUCKY_BUYER = "msg_lucky_buyer";
         String LUCKY_BUYER_DETAIL = "msg_lucky_buyer_detail";
         String LUCKY_BUYER_VALID = "msg_lucky_valid";
@@ -278,6 +281,7 @@ public interface AppEventTracking {
         String TICKER_SEARCH_TEXT = "ticker_text_search";
         String FILTER_SORT = "sort_filter_data";
         String EXCLUDED_URL = "excluded-url";
+        String EXCLUDED_HOST = "excluded-host";
 
         String TICKER_PDP = "is_show_ticker_pdp";
         String TICKER_PDP_TEXT = "ticker_text_pdp";
@@ -289,5 +293,9 @@ public interface AppEventTracking {
 
     interface LOCA {
         String NOTIFICATION_BUNDLE = "ll";
+    }
+
+    interface AF {
+        String APPSFLYER_KEY = "APPSFLYER_KEY";
     }
 }

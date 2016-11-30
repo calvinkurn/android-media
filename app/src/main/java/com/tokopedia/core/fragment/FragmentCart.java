@@ -75,7 +75,6 @@ import com.tokopedia.core.cart.model.CartShipments;
 import com.tokopedia.core.cart.model.CartShop;
 import com.tokopedia.core.cart.model.GatewayList;
 import com.tokopedia.core.customadapter.ListProductCart;
-import com.tokopedia.core.discovery.activity.BrowseProductActivity;
 import com.tokopedia.core.interfaces.CartInterfaces;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.NetworkHandler;
@@ -89,6 +88,7 @@ import com.tokopedia.core.payment.model.responsedynamicpayment.DynamicPaymentDat
 import com.tokopedia.core.payment.model.responsevoucher.VoucherCodeData;
 import com.tokopedia.core.payment.receiver.PaymentResultReceiver;
 import com.tokopedia.core.payment.services.PaymentIntentService;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdUrl;
@@ -393,10 +393,15 @@ public class FragmentCart extends Fragment implements CartInterfaces.FragmentCar
         BalanceView.setVisibility(View.GONE);
         MainView.setVisibility(View.GONE);
         // Untuk redirect ke index home
-        noResult = new NoResultHandler(context, view, R.string.error_no_cart_1, R.string.error_no_cart_2, BrowseProductActivity.getDefaultMoveToIntent(getActivity()));
+        noResult = new NoResultHandler(
+                context, view, R.string.error_no_cart_1,
+                R.string.error_no_cart_2,
+                BrowseProductRouter.getDefaultBrowseIntent(getActivity()));
 
         try {
-            noResult.setResultImage(context, context.getResources().getDrawable(R.drawable.status_no_result));
+            noResult.setResultImage(context,
+                    context.getResources().getDrawable(R.drawable.status_no_result));
+
         } catch (OutOfMemoryError e) {
             e.printStackTrace();
         }
@@ -619,7 +624,7 @@ public class FragmentCart extends Fragment implements CartInterfaces.FragmentCar
         tvCariSekarang.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(BrowseProductActivity.getDefaultMoveToIntent(getActivity()));
+                startActivity(BrowseProductRouter.getDefaultBrowseIntent(getActivity()));
             }
         });
         GetCartInfoRetrofit();
@@ -1638,7 +1643,7 @@ public class FragmentCart extends Fragment implements CartInterfaces.FragmentCar
             tvTickerGTM.setAutoLinkMask(0);
             Linkify.addLinks(tvTickerGTM, Linkify.WEB_URLS);
         } else {
-            tvTickerGTM.setVisibility(View.VISIBLE);
+            tvTickerGTM.setVisibility(View.GONE);
         }
     }
 
@@ -2090,6 +2095,7 @@ public class FragmentCart extends Fragment implements CartInterfaces.FragmentCar
         interactor.updateInsurance(context, maps, new PaymentNetInteractor.OnUpdateInsurance() {
                     @Override
                     public void onSuccess(String message) {
+                        CancelEdit();
                         GetCartInfoRetrofit();
                     }
 

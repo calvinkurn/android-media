@@ -10,7 +10,7 @@ import java.util.Arrays;
 /**
  * Created by m.normansyah on 29/12/2015.
  */
-@Parcel(parcelsIndex = false)
+@Parcel
 public class ProductSubmitModel {
 
     /**
@@ -38,7 +38,7 @@ public class ProductSubmitModel {
     @Expose
     String server_process_time;
 
-    @Parcel(parcelsIndex = false)
+    @Parcel
     public static class Data{
 
         /**

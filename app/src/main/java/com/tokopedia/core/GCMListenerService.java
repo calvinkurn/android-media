@@ -31,13 +31,13 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
-import com.tokopedia.core.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.prototype.ManageProductCache;
 import com.tokopedia.core.prototype.ShopSettingCache;
 import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
@@ -71,7 +71,6 @@ public class GCMListenerService extends GcmListenerService {
 
     public interface NotificationListener {
         void onGetNotif();
-
         void onRefreshCart(int status);
     }
 
@@ -116,8 +115,11 @@ public class GCMListenerService extends GcmListenerService {
                 createNotification(data, ShopInfoActivity.class);
                 break;
             case TkpdState.GCMServiceState.GCM_DEEPLINK:
-                if (SessionHandler.isV4Login(this))
-                    createNotification(data, DeepLinkActivity.class);
+                if (SessionHandler.isV4Login(this)) {
+                    if(CustomerRouter.getDeeplinkClass() != null) {
+                        createNotification(data, CustomerRouter.getDeeplinkClass());
+                    }
+                }
                 break;
             case TkpdState.GCMServiceState.GCM_CART:
                 if (SessionHandler.isV4Login(this)) createNotification(data, Cart.class);
@@ -236,6 +238,7 @@ public class GCMListenerService extends GcmListenerService {
                 break;
             case TkpdState.GCMServiceState.GCM_NEWORDER:
 //                resultclass = ShopTransactionV2.class;
+                componentName = SellerRouter.getActivitySellingTransactionName(this);
                 intent = SellerRouter.getActivitySellingTransaction(this);
                 //bundle.putInt("notif_call", NotificationCode);
                 title = data.getString("counter") + " " + this.getString(R.string.title_new_order);
@@ -507,7 +510,7 @@ public class GCMListenerService extends GcmListenerService {
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         if (componentName != null) {
             stackBuilder.addParentStack(componentName);
-        } else {
+        } else if(resultclass != null){
             stackBuilder.addParentStack(resultclass);
         }
         stackBuilder.addNextIntent(intent);

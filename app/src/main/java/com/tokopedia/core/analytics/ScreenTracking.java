@@ -1,6 +1,8 @@
 package com.tokopedia.core.analytics;
 
+import android.app.Activity;
 import android.app.Fragment;
+import android.text.TextUtils;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
@@ -12,6 +14,7 @@ import com.tokopedia.core.analytics.container.AppsflyerContainer;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.util.SessionHandler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +28,46 @@ import java.util.Map;
 public class ScreenTracking extends TrackingUtils {
 
     private static final String TAG = ScreenTracking.class.getSimpleName();
+    public interface IOpenScreenAnalytics {
+        String getScreenName();
+    }
+    public static void sendScreen(Activity activity, IOpenScreenAnalytics openScreenAnalytics){
+        ScreenTracking.OpenScreenTracking openScreenTracking = ScreenTracking
+                .OpenScreenTracking
+                .newInstance(activity, openScreenAnalytics);
+        openScreenTracking.execute();
+    }
+
+    private static class OpenScreenTracking {
+        private IOpenScreenAnalytics mOpenScreenAnalytics;
+        Authenticated authEvent;
+        Activity mActivity;
+
+        public static OpenScreenTracking newInstance(Activity activity,
+                                                     IOpenScreenAnalytics openScreenAnalytics) {
+            return new OpenScreenTracking(activity, openScreenAnalytics);
+        }
+
+        OpenScreenTracking(Activity activity, IOpenScreenAnalytics openScreenAnalytics) {
+            this.mOpenScreenAnalytics = openScreenAnalytics;
+            this.mActivity = activity;
+            authEvent = new Authenticated();
+            authEvent.setUserFullName(SessionHandler.getLoginName(activity));
+            authEvent.setUserID(SessionHandler.getLoginID(activity));
+            authEvent.setShopID(SessionHandler.getShopID(activity));
+            authEvent.setUserSeller(SessionHandler.getShopID(activity).equals("0") ? 0 : 1);
+        }
+
+        public void execute() {
+            if (mOpenScreenAnalytics == null || TextUtils.isEmpty(mOpenScreenAnalytics.getScreenName())) {
+                ScreenTracking.eventAuthScreen(authEvent, this.mActivity.getClass().getSimpleName());
+                ScreenTracking.screenLoca(this.mActivity.getClass().getSimpleName());
+            } else {
+                ScreenTracking.eventAuthScreen(authEvent, mOpenScreenAnalytics.getScreenName());
+                ScreenTracking.screenLoca(mOpenScreenAnalytics.getScreenName());
+            }
+        }
+    }
 
     public static void screen(Fragment fragment){
         getGTMEngine()

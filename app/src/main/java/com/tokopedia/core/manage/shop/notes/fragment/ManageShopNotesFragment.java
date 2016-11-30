@@ -26,6 +26,7 @@ import com.tokopedia.core.manage.shop.notes.model.ShopNotesResult;
 import com.tokopedia.core.manage.shop.notes.presenter.ManageShopNotesPresenter;
 import com.tokopedia.core.manage.shop.notes.presenter.ManageShopNotesPresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.shopinfo.ShopNotesDetail;
 import com.tokopedia.core.util.RefreshHandler;
 
 import butterknife.Bind;
@@ -139,8 +140,11 @@ public class ManageShopNotesFragment extends BasePresenterFragment<ManageShopNot
                     listener.onAddShopNote(true, shopNote);
                 else
                     listener.onAddShopNote(false, shopNote);
+            }
 
-
+            @Override
+            public void onGoToDetail(ShopNote shopNote) {
+                startActivity(ShopNotesDetail.createIntent(getActivity(), shopNote));
             }
         });
         shopNotes.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));

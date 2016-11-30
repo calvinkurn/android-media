@@ -27,8 +27,6 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.var.TkpdState;
 
-import org.parceler.Parcels;
-
 import butterknife.Bind;
 
 /**
@@ -79,8 +77,7 @@ public class
     @Override
     protected void initView(View view) {
         adapter = InboxReputationDetailAdapter.createAdapter(getActivity(), presenter);
-        adapter.setInboxReputation((InboxReputationItem) Parcels.unwrap(getArguments()
-                .getParcelable(BUNDLE_INBOX_REPUTATION)));
+        adapter.setInboxReputation((InboxReputationItem) getArguments().getParcelable(BUNDLE_INBOX_REPUTATION));
         refreshHandler = new RefreshHandler(getActivity(), getView(), onRefresh());
         refreshHandler.setPullEnabled(false);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());

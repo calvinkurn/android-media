@@ -23,6 +23,14 @@
             android:name="com.tokopedia.seller.OrderHistoryView"
             android:label="@string/title_activity_order_history_view"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".ShippingConfirmationDetail"
+            android:label="@string/title_activity_shipping_confirmation_detail"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ShippingConfirmationProdConf"
+            android:label="@string/title_activity_shipping_confirmation_prod_conf"
+            android:screenOrientation="portrait" />
         <service
             android:name=".selling.SellingService"
             android:exported="false" />

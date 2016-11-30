@@ -7,16 +7,16 @@ import org.parceler.Parcel;
 /**
  * Created by m.normansyah on 23/12/2015.
  */
-@Parcel(parcelsIndex = false)
+@Parcel
 public class WholeSaleAdapterModel {
     double quantityOne;
     double quantityTwo;
     double wholeSalePrice;
     long bDid;
 
-    private boolean isNoErrorQOne;
-    private boolean isNoErrorQTwo;
-    private boolean isNoErrorPrice;
+    private boolean isNoErrorQOne = true;
+    private boolean isNoErrorQTwo = true;
+    private boolean isNoErrorPrice = true;
 
     /**
      * this is for parcelable

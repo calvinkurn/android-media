@@ -93,7 +93,6 @@ public class HomeCategoryMenuDbManager implements DbFlowOperation<CategoryMenuMo
             if (categoryMenuModelDb == null) {
                 return true;
             } else {
-
                 long oldTime = categoryMenuModelDb.getLastUpdated();
                 long oneHour = 1000 * 60 * 60;
                 Log.d("TAG", "isHomeCategoryMenuStillValid: oneHour : "
@@ -139,6 +138,7 @@ public class HomeCategoryMenuDbManager implements DbFlowOperation<CategoryMenuMo
 
         List<CategoryMenuModelDb> categoryMenuModelDbList = SQLite.select().
                 from(CategoryMenuModelDb.class).queryList();
+
         for (CategoryMenuModelDb categoryMenuModelDb : categoryMenuModelDbList) {
             List<CategoryItemModel> categoryItemModels = new ArrayList<>();
             for (CategoryItemModelDb categoryItemModelDb : categoryMenuModelDb.getAllItemsInSection()) {

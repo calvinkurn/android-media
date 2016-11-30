@@ -494,14 +494,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
             @Override
             public void onNext(Response<TkpdResponse> response) {
                 if (response.isSuccessful()) {
-                    if (!response.body().isError()) {
-                        listener.onSuccess();
-                    } else {
-                        listener.onError((response.body().getErrorMessages() != null
-                                && !response.body().getErrorMessages().isEmpty())
-                                ? response.body().getErrorMessages().get(0)
-                                : ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                    }
+                    listener.onSuccess();
                 } else {
                     listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }

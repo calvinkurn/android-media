@@ -17,7 +17,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,7 +30,6 @@ import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.Cart;
 import com.tokopedia.core.ForceUpdate;
 import com.tokopedia.core.MaintenancePage;
@@ -44,12 +42,12 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.database.manager.CategoryDatabaseManager;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.discovery.activity.BrowseProductActivity;
 import com.tokopedia.core.drawer.DrawerVariable;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.retrofit.utils.DialogForceLogout;
 import com.tokopedia.core.network.retrofit.utils.DialogNoConnection;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.ErrorNetworkReceiver;
@@ -59,6 +57,7 @@ import com.tokopedia.core.service.HadesService;
 import com.tokopedia.core.service.constant.HadesConstant;
 import com.tokopedia.core.session.Login;
 import com.tokopedia.core.session.presenter.Session;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.PhoneVerificationUtil;
 import com.tokopedia.core.util.RequestManager;
@@ -67,8 +66,6 @@ import com.tokopedia.core.util.VersionInfo;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.var.ToolbarVariable;
-
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -84,7 +81,7 @@ import rx.schedulers.Schedulers;
  */
 public abstract class TActivity extends AppCompatActivity implements SessionHandler.onLogoutListener,
         HadesBroadcastReceiver.ReceiveListener,
-        ErrorNetworkReceiver.ReceiveListener {
+        ErrorNetworkReceiver.ReceiveListener, ScreenTracking.IOpenScreenAnalytics {
 
     public static final int DEFAULT_NOT_FETCH_DEPARTMENT = -1;
     private Boolean isPause = false;
@@ -111,8 +108,6 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
     //[START] This is for downloading departmend id using IntentService
 
     public PhoneVerificationUtil phoneVerificationUtil;
-
-    public abstract String getScreenName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -222,8 +217,7 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
             bindLogService();
 
         initGTM();
-        sendToGTM();
-        sendToLocalytics();
+        sendScreenAnalytics();
         verifyFetchDepartment();
         if (phoneVerificationUtil != null) {
 //            phoneVerificationUtil.registerSMSReceiver();
@@ -249,33 +243,8 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
         isBind = true;
     }
 
-    private void sendToGTM() {
-        if(TextUtils.isEmpty(this.getScreenName())){
-            try {
-                throw new Exception("ScreenName cannot null");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        Authenticated authEvent = new Authenticated();
-        authEvent.setUserFullName(SessionHandler.getLoginName(this));
-        authEvent.setUserID(SessionHandler.getLoginID(this));
-        authEvent.setShopID(SessionHandler.getShopID(this));
-        authEvent.setUserSeller(SessionHandler.getShopID(this).equals("0") ? 0 : 1);
-
-        CommonUtils.dumper("GAv4 appdata " + new JSONObject(authEvent.getAuthDataLayar()).toString());
-        if(TextUtils.isEmpty(this.getScreenName()))
-        {
-            ScreenTracking.eventAuthScreen(authEvent, this.getClass().getSimpleName());
-        }else {
-            ScreenTracking.eventAuthScreen(authEvent, this.getScreenName());
-        }
-
-    }
-
-    private void sendToLocalytics(){
-        ScreenTracking.screenLoca(getScreenName());
+    private void sendScreenAnalytics() {
+        ScreenTracking.sendScreen(this, this);
     }
 
     private HUDIntent.HUDInterface onBindServiceListener(){
@@ -365,7 +334,10 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
     }
 
     protected boolean onSearchOptionSelected() {
-        BrowseProductActivity.moveTo(this, "0", TopAdsApi.SRC_BROWSE_PRODUCT);
+        Intent intent = BrowseProductRouter
+                .getBrowseProductIntent(this, "0", TopAdsApi.SRC_BROWSE_PRODUCT);
+
+        startActivity(intent);
         return true;
     }
 
@@ -607,7 +579,7 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("mailto:" + "android.feedback@tokopedia.com"));
         intent.putExtra(Intent.EXTRA_SUBJECT, "Masalah Server Error");
-        intent.putExtra(Intent.EXTRA_TEXT, "Versi Aplikasi: "+ BuildConfig.VERSION_CODE);
+        intent.putExtra(Intent.EXTRA_TEXT, "Versi Aplikasi: "+ GlobalConfig.VERSION_CODE);
         startActivity(Intent.createChooser(intent, "Kirim Email"));
     }
 }

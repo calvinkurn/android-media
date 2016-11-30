@@ -1,3 +1,10 @@
+/*
+ * Created By Kulomady on 11/25/16 11:34 PM
+ * Copyright (c) 2016. All rights reserved
+ *
+ * Last Modified 11/25/16 11:34 PM
+ */
+
 package com.tokopedia.core.discovery.model;
 
 import com.google.gson.Gson;
@@ -85,7 +92,7 @@ public class HotListBannerModel {
 
     }
 
-    public static final class HotListBannerContainer implements ObjContainer<HotListBannerModel>{
+    public static final class HotListBannerContainer implements ObjContainer<HotListBannerModel> {
         HotListBannerModel hotListBannerModel;
 
         public HotListBannerContainer(HotListBannerModel hotListBannerModel) {

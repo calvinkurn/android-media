@@ -1,5 +1,6 @@
 package com.tokopedia.core.shopinfo;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.manage.shop.notes.model.ShopNote;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.shopinfo.facades.GetShopNote;
 import com.tokopedia.core.shopinfo.models.NoteModel;
@@ -20,6 +22,8 @@ import rx.subscriptions.CompositeSubscription;
 public class ShopNotesDetail extends TActivity {
 
     private CompositeSubscription compositeSubscription= new CompositeSubscription();
+
+
 
     private class ViewHolder{
         TextView title;
@@ -45,6 +49,14 @@ public class ShopNotesDetail extends TActivity {
         intent.putExtra("shop_id", shopId);
         intent.putExtra("note_id", noteId);
         intent.putExtra("shop_domain", shopDomain);
+        return intent;
+    }
+
+    public static Intent createIntent(Context context, ShopNote shopNote) {
+        Intent intent =  new Intent(context, ShopNotesDetail.class);
+        intent.putExtra("shop_id", shopNote.getShopId());
+        intent.putExtra("note_id", shopNote.getNoteId());
+        intent.putExtra("shop_domain", shopNote.getShopDomain());
         return intent;
     }
 

@@ -9,7 +9,7 @@ import org.parceler.ParcelClass;
  * Created by Erry on 7/19/2016.
  */
 
-@Parcel(parcelsIndex = false)
+@Parcel
 public class SellingStatusTxModel {
     public String UserName;
     public String RefNum;

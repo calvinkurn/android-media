@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by m.normansyah on 17/12/2015.
  */
-@Parcel(parcelsIndex = false)
+@Parcel
 public class GetShopNoteModel {
 
     /**
@@ -79,7 +79,7 @@ public class GetShopNoteModel {
         this.serverProcessTime = serverProcessTime;
     }
 
-    @Parcel(parcelsIndex = false)
+    @Parcel
     public static class Data{
 
         /**
@@ -141,7 +141,7 @@ public class GetShopNoteModel {
         }
     }
 
-    @Parcel(parcelsIndex = false)
+    @Parcel
     public static class ShopNoteModel{
         /**
          * this is for parcelable

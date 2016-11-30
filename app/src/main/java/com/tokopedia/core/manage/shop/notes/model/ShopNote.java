@@ -22,6 +22,8 @@ public class ShopNote implements Parcelable {
     @Expose
     private String noteTitle;
     private int position;
+    private String shopId;
+    private String shopDomain;
 
     protected ShopNote(Parcel in) {
         noteStatus = in.readString();
@@ -106,5 +108,21 @@ public class ShopNote implements Parcelable {
         dest.writeString(noteId);
         dest.writeString(noteTitle);
         dest.writeInt(position);
+    }
+
+    public void setShopId(String shopId) {
+        this.shopId = shopId;
+    }
+
+    public String getShopId() {
+        return shopId;
+    }
+
+    public void setShopDomain(String shopDomain) {
+        this.shopDomain = shopDomain;
+    }
+
+    public String getShopDomain() {
+        return shopDomain;
     }
 }
