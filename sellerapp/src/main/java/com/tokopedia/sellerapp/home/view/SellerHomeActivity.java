@@ -1018,6 +1018,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
     protected void onResume() {
         super.onResume();
         shopController.init(this);
+        smoothAppBarLayout.setExpanded(true);
         sendToGTM();
         sendToLocalytics();
     }
