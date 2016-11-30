@@ -35,8 +35,9 @@ import com.tokopedia.tkpd.home.util.DefaultRetryListener;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * Created by m.normansyah on 30/10/2015.
@@ -44,19 +45,20 @@ import butterknife.ButterKnife;
 public class FragmentIndexFavoriteV2 extends TkpdBaseV4Fragment implements FavoriteView, DefaultRetryListener.OnClickRetry {
     Favorite favorite;
     BaseRecyclerViewAdapter adapter;// FavoriteRecyclerViewAdapter
-    @Bind(R2.id.index_favorite_recycler_view)
+    @BindView(R.id.index_favorite_recycler_view)
     RecyclerView recyclerView;
-    @Bind(R2.id.swipe_refresh_layout)
+    @BindView(R.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
-    @Bind(R2.id.include_loading)
+    @BindView(R.id.include_loading)
     ProgressBar progressBar;
-    @Bind(R2.id.main_content)
+    @BindView(R.id.main_content)
     RelativeLayout mainContent;
     RecyclerView.LayoutManager layoutManager;
     DefaultItemAnimator animator;
     RetryHandler retryHandlerFull;
 
     public static final String WISHLISH_EXTRA_KEY = "Wishlist";
+    private Unbinder unbinder;
 
     @Override
     public void initHolder() {
@@ -233,7 +235,7 @@ public class FragmentIndexFavoriteV2 extends TkpdBaseV4Fragment implements Favor
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_index_favorite_v2, container, false);
-        ButterKnife.bind(this, parentView);
+        unbinder = ButterKnife.bind(this, parentView);
         prepareView();
         displayProgressBar(true);
         displayMainContent(false);
@@ -247,7 +249,7 @@ public class FragmentIndexFavoriteV2 extends TkpdBaseV4Fragment implements Favor
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     @Override

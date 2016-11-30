@@ -39,7 +39,7 @@ import com.tokopedia.discovery.view.FragmentBrowseProductView;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID;
 
@@ -59,7 +59,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     private static final int PORTRAIT_COLUMN_FOOTER = 2;
     private static final int PORTRAIT_COLUMN = 1;
 
-    @Bind(R2.id.fragmentv2list)
+    @BindView(R2.id.fragmentv2list)
     RecyclerView mRecyclerView;
 
     private static String ARG_1 = "";

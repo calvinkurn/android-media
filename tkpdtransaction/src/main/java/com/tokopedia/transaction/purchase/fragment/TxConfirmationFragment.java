@@ -38,7 +38,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * TxConfirmationFragment
@@ -50,7 +50,7 @@ public class TxConfirmationFragment extends BasePresenterFragment<TxConfirmation
         AdapterView.OnItemClickListener, TxListUIReceiver.ActionListener {
     public static final int REQUEST_CONFIRMATION_DETAIL = 0;
 
-    @Bind(R2.id.order_list)
+    @BindView(R2.id.order_list)
     LazyListView lvTXConf;
 
     private View loadMoreView;

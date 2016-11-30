@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Tokopedia3.Launcher">
         <activity
-            android:name="com.tokopedia.core.SplashScreen"
+            android:name=".SplashScreenActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -30,14 +30,25 @@
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.tokopedia.seller.ShippingConfirmationDetail"
-            android:label="@string/title_activity_shipping_confirmation_detail"
+        <activity android:name=".gmsubscribe.GMSubscribeActivity"
+            android:label="Berlangganan Gold Merchant"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.seller.ShippingConfirmationProdConf"
-            android:label="@string/title_activity_shipping_confirmation_prod_conf"
-            android:screenOrientation="portrait" />
+        <activity android:name=".home.view.SellerHomeActivity"
+            android:label="Home"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3"
+            android:exported="true"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="tkpd" />
+            </intent-filter>
+
+        </activity>
 
 
         <meta-data

@@ -35,7 +35,7 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -51,16 +51,16 @@ public class DynamicFilterOtherFragment extends BaseFragment<DynamicFilterOtherP
         return  dynamicFilterOtherFragment;
     }
 
-    @Bind(R2.id.dynamic_filter_other_search_container)
+    @BindView(R2.id.dynamic_filter_other_search_container)
     LinearLayout dynamicFilterOtherSearchContainer;
 
-    @Bind(R2.id.dynamic_filter_other_search)
+    @BindView(R2.id.dynamic_filter_other_search)
     EditText dynamicFilterOtherSearch;
 
-    @Bind(R2.id.dynamic_filter_other_recyclerview)
+    @BindView(R2.id.dynamic_filter_other_recyclerview)
     RecyclerView dynamicFilterOtherRecyclerView;
 
-    @Bind(R2.id.dynamic_filter_other_finish)
+    @BindView(R2.id.dynamic_filter_other_finish)
     Button dynamicFilterOtherFinish;
 
     DynamicFilterOtherAdapter dynamicFilterOtherAdapter;

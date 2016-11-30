@@ -32,7 +32,7 @@ import com.tokopedia.discovery.view.ShopView;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Erry on 6/30/2016.
@@ -41,7 +41,7 @@ import butterknife.Bind;
 public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchNetwork {
     public static final int IDFRAGMENT = 1903_909;
     public static final String INDEX = "FRAGMENT_INDEX";
-    @Bind(R2.id.list_shop)
+    @BindView(R2.id.list_shop)
     RecyclerView list_shop;
 
     List<RecyclerViewItem> browseShopModelList = new ArrayList<>();

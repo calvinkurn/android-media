@@ -36,8 +36,9 @@ import com.tokopedia.tkpd.home.presenter.WishListView;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * Created by m.normansyah on 01/12/2015.
@@ -45,20 +46,21 @@ import butterknife.ButterKnife;
 public class WishListFragment extends TkpdBaseV4Fragment implements WishListView {
 
     public static final String FRAGMENT_TAG = "WishListFragment";
+    private Unbinder unbinder;
 
     public WishListFragment(){}
 
     public static final Fragment newInstance(){
         return new WishListFragment();
     }
-    @Bind(R2.id.swipe_refresh_layout)
+    @BindView(R.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
 
-    @Bind(R2.id.recycler_view)
+    @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
-    @Bind(R2.id.progress_bar)
+    @BindView(R.id.progress_bar)
     ProgressBar progressBar;
-    @Bind(R2.id.main_content)
+    @BindView(R.id.main_content)
     LinearLayout mainContent;
 
     GridLayoutManager layoutManager;
@@ -90,7 +92,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.activity_recyclerview, container, false);
-        ButterKnife.bind(this, parentView);
+        unbinder = ButterKnife.bind(this, parentView);
         wishList.subscribe();
         wishList.initAnalyticsHandler(getActivity());
         ScreenTracking.screen(getScreenName());
@@ -108,7 +110,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         wishList.unSubscribe();
     }
 
