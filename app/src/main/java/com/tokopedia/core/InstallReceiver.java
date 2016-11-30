@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.appsflyer.MultipleInstallBroadcastReceiver;
+import com.appsflyer.SingleInstallBroadcastReceiver;
 import com.google.android.gms.analytics.CampaignTrackingReceiver;
 import com.localytics.android.ReferralReceiver;
 import com.tkpd.library.utils.CommonUtils;
@@ -29,16 +29,18 @@ public class InstallReceiver extends BroadcastReceiver {
                     @Override
                     public Boolean call(ReceiverData receiverData) {
                         CommonUtils.dumper("RECEIVED BROADCAST");
-                        new CampaignTrackingReceiver().onReceive(receiverData.contextData, receiverData.intentData);
 
-                        MultipleInstallBroadcastReceiver appsflyerInstall = new MultipleInstallBroadcastReceiver();
+                        SingleInstallBroadcastReceiver appsflyerInstall = new SingleInstallBroadcastReceiver();
                         appsflyerInstall.onReceive(receiverData.contextData, receiverData.intentData);
+
+                        new CampaignTrackingReceiver().onReceive(receiverData.contextData, receiverData.intentData);
 
                         ReferralReceiver localyticsInstall = new ReferralReceiver();
                         localyticsInstall.onReceive(receiverData.contextData, receiverData.intentData);
                         return true;
                     }
                 })
+                .unsubscribeOn(Schedulers.newThread())
                 .subscribe();
 	}
 

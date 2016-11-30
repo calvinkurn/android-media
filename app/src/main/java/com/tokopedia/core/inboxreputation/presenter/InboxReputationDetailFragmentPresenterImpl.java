@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.R;
 import com.tokopedia.core.inboxreputation.InboxReputationConstant;
-import com.tokopedia.core.inboxreputation.model.ImageUpload;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationDetailActivity;
 import com.tokopedia.core.inboxreputation.adapter.viewbinder.HeaderReputationDataBinder;
 import com.tokopedia.core.inboxreputation.fragment.InboxReputationDetailFragment;
@@ -18,6 +17,7 @@ import com.tokopedia.core.inboxreputation.interactor.CacheInboxReputationInterac
 import com.tokopedia.core.inboxreputation.interactor.InboxReputationRetrofitInteractor;
 import com.tokopedia.core.inboxreputation.interactor.InboxReputationRetrofitInteractorImpl;
 import com.tokopedia.core.inboxreputation.listener.InboxReputationDetailFragmentView;
+import com.tokopedia.core.inboxreputation.model.ImageUpload;
 import com.tokopedia.core.inboxreputation.model.inboxreputation.InboxReputation;
 import com.tokopedia.core.inboxreputation.model.inboxreputation.InboxReputationItem;
 import com.tokopedia.core.inboxreputation.model.inboxreputationdetail.InboxReputationDetail;
@@ -29,8 +29,6 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.var.TkpdState;
-
-import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -392,8 +390,8 @@ public class InboxReputationDetailFragmentPresenterImpl implements
                              int position) {
         Intent intent = new Intent(viewListener.getActivity(), InboxReputationDetailActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(InboxReputationFormFragment.PARAM_INBOX_REPUTATION, Parcels.wrap(inboxReputation));
-        bundle.putParcelable(InboxReputationFormFragment.PARAM_INBOX_REPUTATION_DETAIL, Parcels.wrap(inboxReputationDetail.getInboxReputationDetailItemList().get(position)));
+        bundle.putParcelable(InboxReputationFormFragment.PARAM_INBOX_REPUTATION, inboxReputation);
+        bundle.putParcelable(InboxReputationFormFragment.PARAM_INBOX_REPUTATION_DETAIL, inboxReputationDetail.getInboxReputationDetailItemList().get(position));
         bundle.putString("token", inboxReputationDetail.getToken());
         bundle.putInt("position", position);
         bundle.putString("nav", InboxReputationDetailActivity.NAV_EDIT_PRODUCT);
@@ -406,8 +404,8 @@ public class InboxReputationDetailFragmentPresenterImpl implements
     public void onGiveReview(InboxReputationItem inboxReputation, InboxReputationDetail inboxReputationDetail, int position) {
         Intent intent = new Intent(viewListener.getActivity(), InboxReputationDetailActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(InboxReputationFormFragment.PARAM_INBOX_REPUTATION_DETAIL, Parcels.wrap(inboxReputationDetail.getInboxReputationDetailItemList().get(position)));
-        bundle.putParcelable(InboxReputationFormFragment.PARAM_INBOX_REPUTATION, Parcels.wrap(inboxReputation));
+        bundle.putParcelable(InboxReputationFormFragment.PARAM_INBOX_REPUTATION_DETAIL, inboxReputationDetail.getInboxReputationDetailItemList().get(position));
+        bundle.putParcelable(InboxReputationFormFragment.PARAM_INBOX_REPUTATION, inboxReputation);
         bundle.putString("token", inboxReputationDetail.getToken());
         bundle.putInt("position", position);
         bundle.putString("nav", InboxReputationDetailActivity.NAV_POST_PRODUCT);
@@ -421,8 +419,8 @@ public class InboxReputationDetailFragmentPresenterImpl implements
 
         Intent intent = new Intent(viewListener.getActivity(), InboxReputationDetailActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(InboxReputationFormFragment.PARAM_INBOX_REPUTATION_DETAIL, Parcels.wrap(inboxReputationDetail.getInboxReputationDetailItemList().get(position)));
-        bundle.putParcelable(InboxReputationFormFragment.PARAM_INBOX_REPUTATION, Parcels.wrap(inboxReputation));
+        bundle.putParcelable(InboxReputationFormFragment.PARAM_INBOX_REPUTATION_DETAIL, inboxReputationDetail.getInboxReputationDetailItemList().get(position));
+        bundle.putParcelable(InboxReputationFormFragment.PARAM_INBOX_REPUTATION, inboxReputation);
         bundle.putString("token", inboxReputationDetail.getToken());
         bundle.putInt("position", position);
         bundle.putString("nav", InboxReputationDetailActivity.NAV_RESPONSE_PRODUCT);

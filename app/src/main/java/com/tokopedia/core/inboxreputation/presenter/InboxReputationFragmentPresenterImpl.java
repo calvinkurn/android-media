@@ -21,8 +21,6 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.var.TkpdState;
 
-import org.parceler.Parcels;
-
 import java.util.Map;
 
 /**
@@ -50,7 +48,7 @@ public class InboxReputationFragmentPresenterImpl implements InboxReputationFrag
 
     @Override
     public void initData() {
-        CommonUtils.dumper("NISNIS" + viewListener.getUserVisibleHint() +  " " + isDataEmpty() + " " + isLoading());
+        CommonUtils.dumper("NISNIS" + viewListener.getUserVisibleHint() + " " + isDataEmpty() + " " + isLoading());
         if (viewListener.getUserVisibleHint() && isDataEmpty() && !isLoading()) {
             cacheInboxReputationInteractor.getInboxReputationCache(viewListener.getArguments().getString(PARAM_NAV),
                     new CacheInboxReputationInteractor.GetInboxReputationCacheListener() {
@@ -129,15 +127,15 @@ public class InboxReputationFragmentPresenterImpl implements InboxReputationFrag
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
-        if (isVisibleToUser && isDataEmpty() &&!isShowingNetworkError) {
+        if (isVisibleToUser && isDataEmpty() && !isShowingNetworkError) {
             getInboxReputation();
         }
     }
 
     @Override
     public void refreshList() {
-            resetPage();
-            getInboxReputation();
+        resetPage();
+        getInboxReputation();
     }
 
     public boolean isLoading() {
@@ -274,7 +272,8 @@ public class InboxReputationFragmentPresenterImpl implements InboxReputationFrag
         Intent intent = new Intent(viewListener.getActivity(), InboxReputationDetailActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(InboxReputationDetailFragment.BUNDLE_POSITION, position);
-        bundle.putParcelable(InboxReputationDetailFragment.BUNDLE_INBOX_REPUTATION, Parcels.wrap(viewListener.getAdapter().getList().get(position)));
+        bundle.putParcelable(InboxReputationDetailFragment.BUNDLE_INBOX_REPUTATION,
+                viewListener.getAdapter().getList().get(position));
         intent.putExtras(bundle);
         viewListener.startActivityForResult(intent, TkpdState.RequestCode.CODE_OPEN_DETAIL_REPUTATION);
         UnifyTracking.eventReviewDetail(viewListener.getArguments().getString(PARAM_NAV, "N/A"));
@@ -383,24 +382,24 @@ public class InboxReputationFragmentPresenterImpl implements InboxReputationFrag
         param.setAct(ACT_GET_REPUTATION);
         param.setNav(viewListener.getArguments().getString(PARAM_NAV));
         param.setKeyword(invoiceId);
-        param.setFilter(getFilter());
+        param.setFilter("");
         return param.getInboxReputationParam();
     }
 
     private void showError(String error, NetworkErrorHelper.RetryClickedListener listener) {
         isShowingNetworkError = true;
-        if(viewListener.getAdapter().getList().size() == 0){
+        if (viewListener.getAdapter().getList().size() == 0) {
             viewListener.showEmptyState(error, listener);
-        }else {
+        } else {
             viewListener.showSnackbar(error, listener);
         }
     }
 
     private void showNetworkError(NetworkErrorHelper.RetryClickedListener listener) {
         isShowingNetworkError = true;
-        if(viewListener.getAdapter().getList().size() == 0){
+        if (viewListener.getAdapter().getList().size() == 0) {
             viewListener.showEmptyState(listener);
-        } else{
+        } else {
             viewListener.showSnackbar(listener);
         }
     }

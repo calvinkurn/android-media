@@ -65,14 +65,18 @@ public class CommonUtils {
 	}
 
 	public static boolean isFinishActivitiesOptionEnabled(Context context) {
-		int result;
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-			result = Settings.System.getInt(context.getContentResolver(), Settings.Global.ALWAYS_FINISH_ACTIVITIES, 0);
-		} else {
-			result = Settings.Global.getInt(context.getContentResolver(), Settings.System.ALWAYS_FINISH_ACTIVITIES, 0);
+		int result = 0;
+		try {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+				result = Settings.System.getInt(context.getContentResolver(), Settings.Global.ALWAYS_FINISH_ACTIVITIES, 0);
+			} else {
+				result = Settings.Global.getInt(context.getContentResolver(), Settings.System.ALWAYS_FINISH_ACTIVITIES, 0);
+			}
+		} catch (Exception e){
+			e.printStackTrace();
+		} finally {
+			return result == 1;
 		}
-
-		return result == 1;
 	}
 
 	@SuppressWarnings("deprecation")

@@ -14,6 +14,8 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.core.manage.shop.notes.model.ShopNote;
+import com.tokopedia.core.session.presenter.Session;
+import com.tokopedia.core.util.SessionHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +36,8 @@ public class ShopNotesAdapter extends BaseLinearRecyclerViewAdapter {
         void onDeleteNote(ShopNote shopNote);
 
         void onEditNote(ShopNote shopNote);
+
+        void onGoToDetail(ShopNote shopNote);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -46,6 +50,9 @@ public class ShopNotesAdapter extends BaseLinearRecyclerViewAdapter {
 
         @Bind(R2.id.edit_notes)
         ImageView editButton;
+
+        @Bind(R2.id.main)
+        View mainView;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -116,6 +123,16 @@ public class ShopNotesAdapter extends BaseLinearRecyclerViewAdapter {
                 listener.onEditNote(list.get(position));
             }
         });
+        holder.mainView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                list.get(position).setPosition(position);
+                list.get(position).setShopId(SessionHandler.getShopID(context));
+                list.get(position).setShopDomain(SessionHandler.getShopDomain(context));
+                listener.onGoToDetail(list.get(position));
+            }
+        });
+
     }
 
 

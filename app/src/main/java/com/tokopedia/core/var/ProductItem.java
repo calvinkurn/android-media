@@ -4,6 +4,7 @@ import android.text.Spanned;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.network.entity.topads.TopAds;
 
 import org.parceler.Parcel;
 import org.parceler.Transient;

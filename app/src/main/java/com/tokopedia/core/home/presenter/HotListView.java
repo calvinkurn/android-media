@@ -83,9 +83,8 @@ public interface HotListView extends BaseView {
     /**
      * some clicked trigger to move to other activity
      * @param bundle
-     * @param clazz
      */
-    void moveToOtherActivity(Bundle bundle, Class<?> clazz);
+    void moveToOtherActivity(Bundle bundle);
 
     /**
      * @return current used adapter

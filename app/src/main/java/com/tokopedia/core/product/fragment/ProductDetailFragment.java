@@ -23,7 +23,6 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.customview.ButtonBuyView;
 import com.tokopedia.core.product.customview.ButtonShareView;
@@ -74,6 +73,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public static final int RE_REQUEST = 2;
 
     private static final String ARG_PARAM_PRODUCT_PASS_DATA = "ARG_PARAM_PRODUCT_PASS_DATA";
+    private static final String ARG_FROM_DEEPLINK = "ARG_FROM_DEEPLINK";
     public static final String STATE_DETAIL_PRODUCT = "STATE_DETAIL_PRODUCT";
     public static final String STATE_OTHER_PRODUCTS = "STATE_OTHER_PRODUCTS";
     private static final String TAG = ProductDetailFragment.class.getSimpleName();
@@ -134,6 +134,15 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         ProductDetailFragment fragment = new ProductDetailFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARG_PARAM_PRODUCT_PASS_DATA, productPass);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public static ProductDetailFragment newInstanceForDeeplink(@NonNull ProductPass productPass) {
+        ProductDetailFragment fragment = new ProductDetailFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(ARG_PARAM_PRODUCT_PASS_DATA, productPass);
+        args.putBoolean(ARG_FROM_DEEPLINK, true);
         fragment.setArguments(args);
         return fragment;
     }
@@ -437,7 +446,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     @Override
-    public void showWishListRetry() {
+    public void showWishListRetry(String errorMessage) {
         NetworkErrorHelper.showSnackbar(getActivity());
     }
 
@@ -448,7 +457,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onNullData() {
-        if(getActivity() instanceof DeepLinkActivity){
+        Boolean isFromDeeplink = getArguments().getBoolean(ARG_FROM_DEEPLINK, false);
+        if(isFromDeeplink){
             ProductPass pass = (ProductPass) getArguments().get(ARG_PARAM_PRODUCT_PASS_DATA);
             webViewHandleListener = (DeepLinkWebViewHandleListener) getActivity();
             webViewHandleListener.catchToWebView(pass != null ? pass.getProductUri() : "");

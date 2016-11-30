@@ -1071,6 +1071,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="shipping_sicepat">SiCepat</string>
     <string name="shipping_ninja">Ninja Xpress</string>
     <string name="shipping_grab">Grab</string>
+    <string name="shipping_jnt">J&amp;T</string>
     <string name="msg_remove_wishlist">Sukses menghapus wishlist</string>
     <string name="msg_add_wishlist">Sukses menambah wishlist</string>
     <string name="go_to_wishlist">Lihat Wishlist</string>
@@ -1787,4 +1788,5 @@ di Tokopedia Sekarang!</string>
     <string name="preview_picture_open_action">BUKA</string>
     <string name="preview_picture_download_action">Download Gambar</string>
     <!--END : string related to Product Picture Download -->
+    <string name="error_upload_image">Gagal mengunggah gambar</string>
 </resources>

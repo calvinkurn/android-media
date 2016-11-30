@@ -1520,13 +1520,12 @@ public class ManageProduct extends TkpdActivity implements
                 spinnerCat3.setVisibility(View.GONE);
                 LastSpinner = 1;
                 if (position > 0) {
-                    List<CategoryDB> level1 =
-                            DbManagerImpl.getInstance().getDepartmentParent();;
+                    List<CategoryDB> level2 = DbManagerImpl.getInstance().getDepartmentChild(2, Integer.parseInt(data_id.get(position - 1)));
                     data = new ArrayList<>();
                     data_id2 = new ArrayList<>();
-                    for (CategoryDB lvl1 : level1) {
-                        data.add(lvl1.getNameCategory());
-                        data_id2.add(lvl1.getDepartmentId() + "");
+                    for (CategoryDB lvl2 : level2) {
+                        data.add(lvl2.getNameCategory());
+                        data_id2.add(lvl2.getDepartmentId() + "");
                     }
                     if (!data.isEmpty()) {
                         spinnerItemList = new ArrayList<>();
@@ -1560,11 +1559,7 @@ public class ManageProduct extends TkpdActivity implements
                 spinnerCat3.setVisibility(View.GONE);
                 LastSpinner = 2;
                 if (position > 0) {
-                    List<CategoryDB> level3 =
-                            new Select()
-                                    .from(CategoryDB.class)
-                                    .where(CategoryDB_Table.parentId.is(Integer.parseInt(data_id2.get(position - 1))))
-                                    .queryList();
+                    List<CategoryDB> level3 = DbManagerImpl.getInstance().getDepartmentChild(3, Integer.parseInt(data_id2.get(position - 1)));
                     data = new ArrayList<>();
                     data_id3 = new ArrayList<>();
                     for (CategoryDB lvl3 : level3) {

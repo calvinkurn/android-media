@@ -1,3 +1,10 @@
+/*
+ * Created By Kulomady on 11/26/16 12:47 AM
+ * Copyright (c) 2016. All rights reserved
+ *
+ * Last Modified 11/26/16 12:47 AM
+ */
+
 package com.tokopedia.core.discovery.old;
 
 import android.content.Context;
@@ -54,7 +61,9 @@ public class HeaderHotAdapter extends PagerAdapter {
 	    	desc.setText(null);
 	    } else if (position == 1) {
 	    	desc.setBackgroundColor(0xB3000000);
-	    	desc.setText(Html.fromHtml(descText));
+			if(descText!=null) {
+				desc.setText(Html.fromHtml(descText));
+			}
 	    	int dp = (int) context.getResources().getDimension(R.dimen.padding_small);
 	    	desc.setPadding(dp, dp, dp, dp);
 	    }

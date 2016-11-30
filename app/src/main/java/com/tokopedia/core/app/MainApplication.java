@@ -27,6 +27,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.service.HUDIntent;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.InstabugHelper;
 import com.tokopedia.core.util.RequestManager;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -58,6 +59,7 @@ public class MainApplication extends TkpdMultiDexApplication {
     public static ServiceConnection hudConnection;
     public static String PACKAGE_NAME;
     public static MainApplication instance;
+    private static GlobalConfig GlobalConfig;
 
     public static MainApplication getInstance() {
         return instance;
@@ -342,4 +344,13 @@ public class MainApplication extends TkpdMultiDexApplication {
                 .build());
         //FlowManager.initModule(TkpdCoreGeneratedDatabaseHolder.class);
 	}
+
+    public static GlobalConfig getGlobalConfig() {
+        return GlobalConfig;
+    }
+
+    public static void setGlobalConfig(GlobalConfig globalConfig) {
+        GlobalConfig = globalConfig;
+    }
+
 }

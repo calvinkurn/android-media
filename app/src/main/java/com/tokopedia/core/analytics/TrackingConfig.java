@@ -57,6 +57,7 @@ public abstract class TrackingConfig {
      * @param what type container (GTM, Appsflyer, Localytics)
      */
     public static void runFirstTime(AnalyticsKind what){
+        CommonUtils.dumper("runfirstime");
         switch (what){
             case GTM:
                 getGTMEngine().loadContainer();

@@ -27,7 +27,6 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
-import com.tokopedia.core.discovery.activity.BrowseProductActivity;
 import com.tokopedia.core.inboxmessage.activity.SendMessageActivity;
 import com.tokopedia.core.myproduct.ProductActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -46,10 +45,11 @@ import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.reputationproduct.ReputationProduct;
-import com.tokopedia.core.router.DiscoveryRouter;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.router.discovery.DetailProductRouter;
+import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
-import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.session.Login;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.shop.ShopEditorActivity;
@@ -152,7 +152,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void processToBrowseProduct(@NonNull Context context, @NonNull Bundle bundle) {
-        Intent intent = new Intent(context, BrowseProductActivity.class);
+        Intent intent = BrowseProductRouter.getDefaultBrowseIntent(context);
         intent.putExtras(bundle);
         viewListener.navigateToActivity(intent);
     }
@@ -527,7 +527,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void processToCatalog(Context context, String catalogId) {
-        viewListener.navigateToActivity(DiscoveryRouter.getCatalogDetailActivity(context, catalogId));
+        viewListener.navigateToActivity(DetailProductRouter.getCatalogDetailActivity(context, catalogId));
     }
 
     private static int getWishListIcon(int status) {
@@ -608,12 +608,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     @Override
                     public void onError(String error) {
                         viewListener.finishLoadingWishList();
-                        NetworkErrorHelper.showDialogCustomMSG(context, new NetworkErrorHelper.RetryClickedListener() {
-                            @Override
-                            public void onRetryClicked() {
-                                requestAddWishList(context, productId);
-                            }
-                        }, error);
+                        viewListener.showWishListRetry(error);
                     }
                 });
     }
@@ -635,12 +630,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     @Override
                     public void onError(String error) {
                         viewListener.finishLoadingWishList();
-                        NetworkErrorHelper.showDialogCustomMSG(context, new NetworkErrorHelper.RetryClickedListener() {
-                            @Override
-                            public void onRetryClicked() {
-                                requestRemoveWishList(context, productId);
-                            }
-                        }, error);
+                        viewListener.showWishListRetry(error);
                     }
                 });
     }
