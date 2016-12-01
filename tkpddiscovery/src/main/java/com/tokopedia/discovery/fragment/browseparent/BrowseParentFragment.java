@@ -72,6 +72,12 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     LinearLayout tabContainer;
     private String source;
     private String formatKey = "%d_%s";
+
+    @Override
+    public String getScreenName() {
+        return null;
+    }
+
     public DiscoveryActivityPresenter discoveryActivityPresenter = new DiscoveryActivityPresenter.DiscoveryActivityPresenterImpl() {
         @Override
         public BrowseProductActivityModel getBrowseProductActivityModel() {

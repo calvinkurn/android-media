@@ -30,6 +30,11 @@ public abstract class BasePresenterFragment<P> extends TkpdFragment {
     }
 
     @Override
+    protected String getScreenName() {
+        return this.getClass().getSimpleName();
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(isRetainInstance());

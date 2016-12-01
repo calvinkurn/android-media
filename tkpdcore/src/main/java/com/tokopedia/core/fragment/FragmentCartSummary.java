@@ -34,6 +34,7 @@ import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.Cart;
 import com.tokopedia.core.CreditCardActivity;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -179,6 +180,11 @@ public class FragmentCartSummary extends TkpdFragment implements CartInterfaces.
     private CarStep1Data cartStep1Data;
     private boolean isDataFromWSV4;
     private PaymentNetInteractorImpl netInteractor;
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_CART_SUMMARY;
+    }
 
     public interface ActivityCartSummaryCommunicator {
         void TriggerToFinishTx(int Gateway, String response);
@@ -2122,6 +2128,6 @@ public class FragmentCartSummary extends TkpdFragment implements CartInterfaces.
     @Override
     public void onResume() {
         super.onResume();
-        ScreenTracking.screen(this);
+        ScreenTracking.screen(getScreenName());
     }
 }

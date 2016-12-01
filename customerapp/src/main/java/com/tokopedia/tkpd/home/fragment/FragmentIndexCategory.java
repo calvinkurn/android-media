@@ -34,11 +34,13 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
-import com.tokopedia.tkpd.R;
+import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.customView.WrapContentViewPager;
 import com.tokopedia.core.database.model.category.CategoryData;
 import com.tokopedia.core.home.BannerWebView;
@@ -50,6 +52,7 @@ import com.tokopedia.core.network.entity.home.Ticker;
 import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.NonScrollLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
@@ -78,14 +81,14 @@ import java.util.Map;
  * Created by Nisie on 1/07/15.
  * modified by mady add feature Recharge and change home menu
  */
-public class FragmentIndexCategory extends Fragment implements
+public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         CategoryView,
         RechargeCategoryView,
         SectionListCategoryAdapter.OnCategoryClickedListener,
         SectionListCategoryAdapter.OnGimmicClickedListener, HomeCatMenuView {
 
     private static final long SLIDE_DELAY = 8000;
-    private static final String TAG = FragmentIndexCategory.class.getSimpleName();
+    public static final String TAG = FragmentIndexCategory.class.getSimpleName();
     private ViewHolder holder;
     private Model model;
     private PromoImagePagerAdapter pagerAdapter;
@@ -136,6 +139,11 @@ public class FragmentIndexCategory extends Fragment implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_HOME_PRODUCT_CATEGORY;
     }
 
     @Override
@@ -486,8 +494,7 @@ public class FragmentIndexCategory extends Fragment implements
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser && getActivity() != null && isAdded()) {
             setLocalyticFlow();
-//            ScreenTracking.screen(this);
-            ScreenTracking.screen(this);
+            ScreenTracking.screen(getScreenName());
             sendAppsFlyerData();
             holder.wrapperScrollview.smoothScrollTo(0, 0);
         } else {
@@ -499,7 +506,7 @@ public class FragmentIndexCategory extends Fragment implements
 
 
     public void sendAppsFlyerData() {
-        TrackingUtils.fragmentBasedAFEvent(getContext(), TrackingUtils.TYPE_FRAGMENT_INDEX_CATEGORY);
+        TrackingUtils.fragmentBasedAFEvent(HomeRouter.IDENTIFIER_CATEGORY_FRAGMENT);
     }
 
     @Override
