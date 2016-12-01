@@ -120,18 +120,23 @@ public class InputShippingRefNumDialog {
                     valid = false;
                     referenceNumber.setError(context.getString(R.string.error_field_required));
                 }
-                if (referenceNumber.getText().toString().equals(cache.getShippingRefNum())) {
-                    valid = false;
-                    referenceNumber.setError(context.getString(R.string.error_update_receipt_number));
-                }
+
                 if (referenceNumber.length() < 8 || referenceNumber.length() > 17) {
                     valid = false;
                     referenceNumber.setError(context.getString(R.string.error_receipt_number));
                 }
+
                 if (shippingSpinner.getSelectedItemPosition() == 0) {
                     valid = false;
                     errorShippingSpinner.setVisibility(View.VISIBLE);
                 }
+
+                if (referenceNumber.getText().toString().equals(cache.getShippingRefNum()) &&
+                        ((ResCenterKurir.Kurir) shippingSpinner.getItemAtPosition(shippingSpinner.getSelectedItemPosition() - 1)).getShipmentId().equals(cache.getShippingID())) {
+                    valid = false;
+                    referenceNumber.setError(context.getString(R.string.error_update_receipt_number));
+                }
+
                 if (valid) {
                     LocalCacheManager.ReturnPackage.Builder(resolutionID)
                             .getCache()
