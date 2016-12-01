@@ -554,6 +554,9 @@ public class CreateResCenterFormData implements Parcelable {
         @SerializedName("trouble_list")
         @Expose
         private List<TroubleData> troubleList;
+        @SerializedName("trouble_list_fr")
+        @Expose
+        private List<TroubleData> troubleListFreeReturn;
         @SerializedName("attachment")
         @Expose
         private Integer attachment;
@@ -612,6 +615,14 @@ public class CreateResCenterFormData implements Parcelable {
             this.troubleList = troubleList;
         }
 
+        public List<TroubleData> getTroubleListFreeReturn() {
+            return troubleListFreeReturn;
+        }
+
+        public void setTroubleListFreeReturn(List<TroubleData> troubleListFreeReturn) {
+            this.troubleListFreeReturn = troubleListFreeReturn;
+        }
+
         public TroubleCategoryData() {
         }
 
@@ -625,6 +636,7 @@ public class CreateResCenterFormData implements Parcelable {
             dest.writeString(this.categoryTroubleId);
             dest.writeString(this.categoryTroubleText);
             dest.writeTypedList(this.troubleList);
+            dest.writeTypedList(this.troubleListFreeReturn);
             dest.writeValue(this.attachment);
             dest.writeValue(this.productIsReceived);
             dest.writeValue(this.productRelated);
@@ -634,6 +646,7 @@ public class CreateResCenterFormData implements Parcelable {
             this.categoryTroubleId = in.readString();
             this.categoryTroubleText = in.readString();
             this.troubleList = in.createTypedArrayList(TroubleData.CREATOR);
+            this.troubleListFreeReturn = in.createTypedArrayList(TroubleData.CREATOR);
             this.attachment = (Integer) in.readValue(Integer.class.getClassLoader());
             this.productIsReceived = (Integer) in.readValue(Integer.class.getClassLoader());
             this.productRelated = (Integer) in.readValue(Integer.class.getClassLoader());
