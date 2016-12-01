@@ -156,7 +156,6 @@ public class DynamicFilterListFragment extends BaseFragment<DynamicFilterList> i
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
     }
 
     @OnClick(R2.id.dynamic_filter_list_reset)

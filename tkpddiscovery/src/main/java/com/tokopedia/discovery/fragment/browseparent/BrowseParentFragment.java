@@ -403,7 +403,6 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
     }
 
     private void sendTabClickGTM() {
