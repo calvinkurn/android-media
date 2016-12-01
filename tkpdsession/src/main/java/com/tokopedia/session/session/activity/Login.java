@@ -1,11 +1,13 @@
 package com.tokopedia.session.session.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PersistableBundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -35,8 +37,12 @@ import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.fragment.FragmentSecurityQuestion;
 import com.tokopedia.core.network.v4.NetworkConfig;
+import com.tokopedia.core.onboarding.OnboardingActivity;
 import com.tokopedia.core.presenter.BaseView;
+import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.service.constant.DownloadServiceConstant;
+import com.tokopedia.core.shop.ShopEditorActivity;
+import com.tokopedia.core.shop.presenter.ShopSettingView;
 import com.tokopedia.session.session.fragment.ActivationResentFragment;
 import com.tokopedia.session.session.fragment.ForgotPasswordFragment;
 import com.tokopedia.session.session.fragment.LoginFragment;
@@ -221,27 +227,48 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                 }
                 break;
 
-//            case SELLER_HOME:
-//                if(SessionHandler.isV4Login(this)) {
-//                    if (SessionHandler.isFirstTimeUser(this) || !SessionHandler.isUserSeller(this)) {
-//                        //  Launch app intro
-//                        Intent intent = new Intent(this, OnboardingActivity.class);
-//                        startActivity(intent);
-//                        return;
-//                    }
-//
-//                    Intent intent = null;
-//                    if (SessionHandler.isUserSeller(this)) {
-//                        intent = new Intent(this, SellerHomeActivity.class);
-//                    } else {
-//                        intent = moveToCreateShop(this);
-//                    }
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                    intent.putExtra(ParentIndexHome.EXTRA_INIT_FRAGMENT,
-//                            ParentIndexHome.INIT_STATE_FRAGMENT_FEED);
-//                    startActivity(intent);
-//                }
-//                break;
+            case SELLER_HOME:
+                if(SessionHandler.isV4Login(this)) {
+                    if (SessionHandler.isFirstTimeUser(this) || !SessionHandler.isUserSeller(this)) {
+                        //  Launch app intro
+                        Intent intent = SellerAppRouter.getSellerOnBoardingActivity(this);
+                        startActivity(intent);
+                        return;
+                    }
+
+                    Intent intent = null;
+                    if (SessionHandler.isUserSeller(this)) {
+                        intent = SellerAppRouter.getSellerHomeActivity(this);
+                    } else {
+                        intent = moveToCreateShop(this);
+                    }
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
+                            HomeRouter.INIT_STATE_FRAGMENT_FEED);
+                    startActivity(intent);
+                }
+                break;
+        }
+    }
+    @NonNull
+    public static Intent moveToCreateShop(Context context) {
+        if(context == null)
+            return null;
+
+        if(SessionHandler.isMsisdnVerified()) {
+            Intent intent;
+            intent = new Intent(context, ShopEditorActivity.class);
+            intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.CREATE_SHOP_FRAGMENT_TAG);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            return intent;
+        }else{
+            // TODO move to msisdn activity
+            /*Intent intent;
+            intent = new Intent(context, MsisdnActivity.class);
+            intent.putExtra(MsisdnActivity.SOURCE, Login.class.getSimpleName());
+            return intent;*/
+
+            return null;
         }
     }
 
