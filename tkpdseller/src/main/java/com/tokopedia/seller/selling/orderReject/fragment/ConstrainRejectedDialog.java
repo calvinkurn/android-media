@@ -18,7 +18,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.seller.selling.orderReject.ConfirmRejectOrderActivity;
 import com.tokopedia.seller.selling.orderReject.adapter.ProductListAdapter;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -26,11 +26,11 @@ import butterknife.ButterKnife;
  */
 public class ConstrainRejectedDialog extends DialogFragment {
 
-    @Bind(R2.id.confirm_button)
+    @BindView(R2.id.confirm_button)
     TextView confirmBtn;
-    @Bind(R2.id.reason)
+    @BindView(R2.id.reason)
     EditText reasonTxt;
-    @Bind(R2.id.title)
+    @BindView(R2.id.title)
     TextView titleTxt;
 
     OnConfirmReject onConfirmReject;

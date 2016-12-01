@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
 
 import java.util.ArrayList;

@@ -37,7 +37,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -53,39 +53,39 @@ public class CatalogDetailFragment extends BasePresenterFragment<ICatalogDetailP
     private static final String STATE_CATALOG_SPEC_LIST = "STATE_CATALOG_SPEC_LIST";
     private static final String STATE_CATALOG_SHARE_DATA = "STATE_CATALOG_SHARE_DATA";
 
-    @Bind(R2.id.holder_btn_buy)
+    @BindView(R2.id.holder_btn_buy)
     View holderCatalogBtnBuy;
-    @Bind(R2.id.btn_buy)
+    @BindView(R2.id.btn_buy)
     TextView btnBuy;
-    @Bind(R2.id.holder_header_info)
+    @BindView(R2.id.holder_header_info)
     View holderCatalogHeaderInfo;
-    @Bind(R2.id.tv_catalog_name)
+    @BindView(R2.id.tv_catalog_name)
     TextView tvCatalogName;
-    @Bind(R2.id.tv_catalog_price)
+    @BindView(R2.id.tv_catalog_price)
     TextView tvCatalogPrice;
-    @Bind(R2.id.holder_catalog_desc)
+    @BindView(R2.id.holder_catalog_desc)
     View holderCatalogDesc;
-    @Bind(R2.id.expand_text_catalog_desc)
+    @BindView(R2.id.expand_text_catalog_desc)
     ExpandableTextView tvCatalogDesc;
-    @Bind(R2.id.holder_catalog_image)
+    @BindView(R2.id.holder_catalog_image)
     View holderCatalogImage;
-    @Bind(R2.id.vp_catalog_image)
+    @BindView(R2.id.vp_catalog_image)
     ViewPager vpCatalogImage;
-    @Bind(R2.id.indicator)
+    @BindView(R2.id.indicator)
     LinePageIndicator indicator;
-    @Bind(R2.id.holder_catalog_review)
+    @BindView(R2.id.holder_catalog_review)
     View holderReview;
-    @Bind(R2.id.tv_review_desc)
+    @BindView(R2.id.tv_review_desc)
     TextView tvReviewDesc;
-    @Bind(R2.id.tv_review_name)
+    @BindView(R2.id.tv_review_name)
     TextView tvReviewName;
-    @Bind(R2.id.tv_review_score)
+    @BindView(R2.id.tv_review_score)
     TextView tvReviewScore;
-    @Bind(R2.id.iv_review_logo)
+    @BindView(R2.id.iv_review_logo)
     ImageView ivReviewLogo;
-    @Bind(R2.id.holder_catalog_spec)
+    @BindView(R2.id.holder_catalog_spec)
     View holderCatalogSpec;
-    @Bind(R2.id.catalog_spec_list)
+    @BindView(R2.id.catalog_spec_list)
     RecyclerView rvCatalogSpec;
     private String catalogId;
     private ICatalogActionFragment catalogActionFragment;

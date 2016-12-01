@@ -9,7 +9,7 @@ package com.tokopedia.tkpd.home.presenter;
 
 import android.util.Log;
 
-import com.tokopedia.core.R;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
 import com.tokopedia.core.network.entity.homeMenu.HomeCategoryMenuItem;
 import com.tokopedia.core.network.entity.homeMenu.LayoutSection;
@@ -203,10 +203,7 @@ public class HomeCatMenuPresenterImpl implements HomeCatMenuPresenter,
 
     private void renderHomeCategoryMenu(List<CategoryMenuModel> menuModels) {
         if (isViewNotNull()) {
-            view.renderHomeCatMenu(
-                    (ArrayList<CategoryMenuModel>)
-                            menuModels
-            );
+            view.renderHomeCatMenu((ArrayList<CategoryMenuModel>) menuModels);
         }
     }
 

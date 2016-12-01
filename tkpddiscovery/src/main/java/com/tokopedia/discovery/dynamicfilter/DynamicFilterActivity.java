@@ -36,8 +36,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * Created by noiz354 on 7/11/16.
@@ -47,11 +48,11 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
     private static final String FILTER_SELECTED_PRICE_MIN = "pmin";
     private static final String FILTER_SELECTED_PRICE_MAX = "pmax";
 
-    @Bind(R2.id.dynamic_filter_list)
+    @BindView(R2.id.dynamic_filter_list)
     FrameLayout dynamicFilterList;
-    @Bind(R2.id.toolbar)
+    @BindView(R2.id.toolbar)
     Toolbar toolbar;
-    @Bind(R2.id.dynamic_filter_detail)
+    @BindView(R2.id.dynamic_filter_detail)
     FrameLayout dynamicFilterDetail;
     private static final String TAG = DynamicFilterActivity.class.getSimpleName();
     DynamicFilterPresenter dynamicFilterPresenter;
@@ -66,17 +67,18 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
     public static final String ACTION_SELECT_FILTER = "ACTION_SELECT_FILTER";
     public static final String EXTRA_FILTER_KEY = "EXTRA_FILTER_KEY";
     public static final String EXTRA_FILTER_VALUE = "EXTRA_FILTER_VALUE";
-    @Bind(R2.id.root)
+    @BindView(R2.id.root)
     CoordinatorLayout root;
     private SharedPreferences preferences;
     private FragmentManager fragmentManager;
+    private Unbinder unbinder;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dynamic_filter_activity);
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -197,6 +199,17 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
         selectedFilter.remove(key);
         Intent intent = new Intent(ACTION_SELECT_FILTER);
         intent.putExtra(EXTRA_FILTER_KEY, key);
+
+        //for prevent disable reset selected indicator for category harga
+        if(selectedFilter.containsKey("pmax")){
+            return;
+        }
+        if(selectedFilter.containsKey("pmin")){
+            return;
+        }
+        if(selectedFilter.containsKey("wholesale")){
+            return;
+        }
         intent.putExtra(EXTRA_FILTER_VALUE, false);
         sendBroadcast(intent);
     }
@@ -230,7 +243,7 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
 //        saveFilterSelectionPosition();
 //        saveFilterSelection();
 //        saveFilterText();
@@ -282,6 +295,19 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
     }
 
     private boolean isFormValid() {
+        boolean isFormValid;
+        if (selectedFilter.containsKey(FILTER_SELECTED_PRICE_MAX)
+                || selectedFilter.containsKey(FILTER_SELECTED_PRICE_MIN)) {
+            isFormValid = isPriceFormValid();
+        } else {
+            //other form is doesn't have validation so always return valid
+            isFormValid = true;
+        }
+
+        return isFormValid;
+    }
+
+    private boolean isPriceFormValid() {
         boolean isFormValid = false;
         if (selectedFilter != null && selectedFilter.size() > 0) {
             double priceMin = -1;

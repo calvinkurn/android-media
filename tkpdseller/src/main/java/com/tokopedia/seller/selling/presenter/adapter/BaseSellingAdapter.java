@@ -19,7 +19,7 @@ import com.tokopedia.core.var.TkpdState;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -50,7 +50,7 @@ public abstract class BaseSellingAdapter<T, VH extends RecyclerView.ViewHolder> 
     }
 
     public static class ViewHolderRetry extends SwappingHolder {
-        @Bind(R2.id.button_retry)
+        @BindView(R2.id.button_retry)
         TextView retry;
 
         public ViewHolderRetry(View itemView) {
@@ -61,7 +61,7 @@ public abstract class BaseSellingAdapter<T, VH extends RecyclerView.ViewHolder> 
     }
 
     public static class ViewHolderEmpty extends SwappingHolder {
-        @Bind(R2.id.no_result_image)
+        @BindView(R2.id.no_result_image)
         ImageView emptyImage;
 
         public ViewHolderEmpty(View itemView) {

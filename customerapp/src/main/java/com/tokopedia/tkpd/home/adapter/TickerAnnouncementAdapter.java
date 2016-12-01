@@ -16,9 +16,9 @@ import android.widget.TextView;
 import com.tokopedia.core.network.entity.home.Ticker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.home.BannerWebView;
+import com.tokopedia.core.home.BannerWebView;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -45,13 +45,13 @@ public class TickerAnnouncementAdapter extends RecyclerView.Adapter<TickerAnnoun
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.announcement_ticker_container)
+        @BindView(R.id.announcement_ticker_container)
         LinearLayout announcementContainer;
 
-        @Bind(R.id.ticker_title)
+        @BindView(R.id.ticker_title)
         TextView title;
 
-        @Bind(R.id.ticker_message)
+        @BindView(R.id.ticker_message)
         TextView message;
 
 
