@@ -117,7 +117,7 @@ public class BuyerEditProductResCenterFragment
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         adapter = new ProductAdapter(
                 passData.getProductTroubleChoosenList(),
-                passData.getTroubleCategoryChoosen().getTroubleList(),
+                passData.getTroubleCategoryChoosen(),
                 passData.getFormData()
         );
         productRecyclerView.setHasFixedSize(true);

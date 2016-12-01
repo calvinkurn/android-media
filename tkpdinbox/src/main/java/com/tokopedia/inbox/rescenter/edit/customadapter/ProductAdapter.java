@@ -18,6 +18,7 @@ import com.tokopedia.inbox.rescenter.edit.model.passdata.EditResCenterFormData;
 import com.tokopedia.inbox.rescenter.edit.model.responsedata.PassProductTrouble;
 import com.tokopedia.inbox.rescenter.edit.model.passdata.ProductData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,6 +28,7 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private static final int TYPE_SELECT_PRODUCT = 1991;
     private static final int TYPE_FORM_PRODUCT = 1990;
+    private EditResCenterFormData.TroubleCategoryData categoryChoosen;
     private EditResCenterFormData formData;
     private Context context;
     private List<ProductData> listProduct;
@@ -37,13 +39,14 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public ProductAdapter(EditResCenterFormData formData) {
         this.formData = formData;
         this.listProduct = formData.getListProd();
+        this.listProductTroubleChoosen = new ArrayList<>();
     }
 
     public ProductAdapter(List<PassProductTrouble> listProduct,
-                          List<EditResCenterFormData.TroubleData> listTrouble,
+                          EditResCenterFormData.TroubleCategoryData categoryChoosen,
                           EditResCenterFormData formData) {
         this.listProductTroubleChoosen = listProduct;
-        this.listTrouble = listTrouble;
+        this.categoryChoosen = categoryChoosen;
         this.formData = formData;
     }
 
@@ -109,7 +112,7 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemViewType(int position) {
-        if (listTrouble == null) {
+        if (listProductTroubleChoosen.isEmpty()) {
             return TYPE_SELECT_PRODUCT;
         } else {
             return TYPE_FORM_PRODUCT;
@@ -159,14 +162,14 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         ProductData productData = listProductTroubleChoosen.get(position).getProductData();
         holder.viewBoxDesc.setVisibility(View.GONE);
         holder.viewTotalValue.setVisibility(View.GONE);
-        renderSpinner(holder);
+        renderSpinner(holder, productData);
         renderProductDetail(holder, productData);
         renderTotalValue(holder, productData.getQuantity());
         setPreviousProductTroubleData(holder, position);
     }
 
-    private void renderSpinner(final FormViewHolder holder) {
-        troubleAdapter = new TroubleSpinnerAdapter(context, android.R.layout.simple_spinner_item, listTrouble);
+    private void renderSpinner(final FormViewHolder holder, ProductData productData) {
+        troubleAdapter = new TroubleSpinnerAdapter(context, android.R.layout.simple_spinner_item, getListTrouble(productData));
         troubleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         holder.troubleSpinner.setAdapter(troubleAdapter);
         holder.troubleSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -186,6 +189,14 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
             }
         });
+    }
+
+    private List<EditResCenterFormData.TroubleData> getListTrouble(ProductData productData) {
+        if (productData.getIsFreeReturn() == 1) {
+            return categoryChoosen.getTroubleListFreeReturn();
+        } else {
+            return categoryChoosen.getTroubleList();
+        }
     }
 
     private void renderProductDetail(FormViewHolder holder, ProductData productData) {

@@ -123,7 +123,7 @@ public class ChooseProductTroubleFragment extends BasePresenterFragment<ChoooseP
     @Override
     protected void initView(View view) {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        adapter = new ProductAdapter(passData.getProductTroubleChoosenList(), passData.getTroubleCategoryChoosen().getTroubleList());
+        adapter = new ProductAdapter(passData.getProductTroubleChoosenList(), passData.getTroubleCategoryChoosen());
         productRecyclerView.setHasFixedSize(true);
         productRecyclerView.setLayoutManager(layoutManager);
         productRecyclerView.setAdapter(adapter);
