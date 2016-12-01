@@ -117,6 +117,7 @@ public class FragmentIndexCategory extends Fragment implements
 
         private ViewHolder() {
         }
+
     }
 
     public FragmentIndexCategory() {
@@ -212,7 +213,14 @@ public class FragmentIndexCategory extends Fragment implements
             holder.bannerIndicator.setFillColor(ContextCompat.getColor(getContext(), R.color.green_400));
             holder.bannerIndicator.setStrokeColor(ContextCompat.getColor(getContext(), R.color.green_500));
             holder.bannerIndicator.setViewPager(holder.bannerViewPager);
-
+            holder.promoLink.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getActivity(), BannerWebView.class);
+                    intent.putExtra("url", "https://www.tokopedia.com/promo/?flag_app=1");
+                    startActivity(intent);
+                }
+            });
             model.listBanner.clear();
             model.listBanner.addAll(promoList);
             pagerAdapter.notifyDataSetChanged();
@@ -223,12 +231,6 @@ public class FragmentIndexCategory extends Fragment implements
             param.height = metrics.widthPixels / 2;
             holder.bannerViewPager.setLayoutParams(param);
             holder.wrapperScrollview.smoothScrollTo(0, 0);
-            holder.promoLink.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Log.d("KLIK", "KLIK");
-                }
-            });
             startSlide();
         } else {
             ((ViewGroup) holder.bannerContainer.getParent()).removeView(holder.banner);
