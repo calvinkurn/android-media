@@ -2,7 +2,6 @@ package com.tokopedia.tkpd.home.interactor;
 
 
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
-import com.tokopedia.core.network.entity.homeMenu.HomeCategoryMenuItem;
 
 import java.util.List;
 
@@ -16,7 +15,7 @@ import rx.Subscriber;
 
 public interface HomeMenuInteractor {
 
-    void fetchHomeCategoryMenuFromNetwork(Subscriber<Response<HomeCategoryMenuItem>> networksubscriber);
+    void fetchHomeCategoryMenuFromNetwork(Subscriber<Response<String>> networksubscriber);
 
     void fetchHomeCategoryMenuFromDb(OnFetchHomeCategoryMenuFromDbListener listener);
 

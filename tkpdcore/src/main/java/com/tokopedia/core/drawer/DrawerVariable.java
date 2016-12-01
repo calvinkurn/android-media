@@ -44,7 +44,6 @@ import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.myproduct.ManageProduct;
-import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
@@ -418,7 +417,8 @@ public class DrawerVariable {
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.HELP);
                 break;
             case TkpdState.DrawerPosition.RESOLUTION_CENTER:
-                context.startActivity(InboxResCenterActivity.createIntent(context));
+                intent = InboxRouter.getInboxResCenterActivityIntent(context);
+                context.startActivity(intent);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.RESOLUTION_CENTER);
                 break;
             case TkpdState.DrawerPosition.DEVELOPER_OPTIONS:

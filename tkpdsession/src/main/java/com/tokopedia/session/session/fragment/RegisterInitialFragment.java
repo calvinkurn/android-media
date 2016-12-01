@@ -24,6 +24,8 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.service.DownloadService;
@@ -121,9 +123,14 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
     }
 
     @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_REGISTER;
+    }
+
+    @Override
     public void onResume() {
         presenter.initData(getActivity());
-        TrackingUtils.screen(this);
+        ScreenTracking.screen(getScreenName());
         super.onResume();
     }
 
@@ -342,7 +349,6 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
         super.onDestroyView();
         presenter.unSubscribeFacade();
         KeyboardHandler.DropKeyboard(getActivity(),getView());
-        unbinder.unbind();
     }
 
     private void storeCacheGTM(String key, String value) {

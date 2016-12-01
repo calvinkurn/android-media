@@ -48,6 +48,11 @@ public class TxSummaryFragment extends BasePresenterFragment<TxSummaryPresenter>
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     public void onRefresh(View view) {
         presenter.getNotificationFromNetwork(getActivity());
         refreshHandler.setPullEnabled(false);

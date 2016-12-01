@@ -325,15 +325,6 @@
             android:label="@string/title_activity_product_info"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.rescenter.detail.activity.ResCenterActivity"
-            android:label="@string/title_activity_res_center"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
-        <activity
-            android:name="com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity"
-            android:label="@string/title_activity_res_center"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.tokopedia.core.ForceUpdate"
             android:label="@string/title_activity_force_update"
             android:screenOrientation="portrait" />
@@ -476,15 +467,7 @@
             android:label="@string/title_activity_share"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.rescenter.create.activity.CreateResCenterActivity"
-            android:label="@string/title_activity_create_resolution"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.rescenter.edit.activity.EditResCenterActivity"
-            android:label="@string/title_activity_edit_resolution"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.rescenter.onboarding.FreeReturnOnboardingActivity"
+            android:name="com.tokopedia.core.onboarding.FreeReturnOnboardingActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
         <activity
@@ -585,9 +568,6 @@
             android:name="com.tokopedia.core.inboxreputation.intentservice.InboxReviewIntentService"
             android:exported="false" />
         <service
-            android:name="com.tokopedia.core.rescenter.detail.service.DetailResCenterService"
-            android:exported="false" />
-        <service
             android:name="com.tokopedia.core.manage.people.profile.intentservice.ManagePeopleProfileIntentService"
             android:exported="false" />
         <service android:name="com.tokopedia.core.service.HUDIntent" />
@@ -604,9 +584,6 @@
             android:exported="false" />
         <service
             android:name="com.tokopedia.core.talkview.intentservice.TalkViewIntentService"
-            android:exported="false" />
-        <service
-            android:name="com.tokopedia.core.rescenter.create.service.CreateResCenterService"
             android:exported="false" />
         <service
             android:name="com.tokopedia.core.myproduct.service.ProductService"

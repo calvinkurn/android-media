@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.core.app.IAnalyticsFragment;
 import com.tokopedia.core.presenter.BaseView;
 
 import butterknife.ButterKnife;
@@ -16,7 +17,7 @@ import butterknife.Unbinder;
 /**
  * Created by m.normansyah on 1/27/16.
  */
-public abstract  class BaseFragment<T extends Base> extends Fragment implements BaseView{
+public abstract class BaseFragment<T extends Base> extends Fragment implements BaseView, IAnalyticsFragment{
     protected T presenter;
     protected View parentView;
     protected Unbinder unbinder;
@@ -29,6 +30,11 @@ public abstract  class BaseFragment<T extends Base> extends Fragment implements 
         presenter.fetchFromPreference(getActivity());
         presenter.fetchRotationData(savedInstanceState);
         presenter.initDataInstance(getActivity());
+    }
+
+    @Override
+    public String getScreenName() {
+        return this.getClass().getSimpleName();
     }
 
     @Nullable

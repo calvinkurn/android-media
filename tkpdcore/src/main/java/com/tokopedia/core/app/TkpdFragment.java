@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 
-public class TkpdFragment extends Fragment {
+public abstract class TkpdFragment extends Fragment {
 	
 	public Context context;
 	
@@ -24,6 +24,8 @@ public class TkpdFragment extends Fragment {
 		context = activity;
         CommonUtils.dumper(getClass().toString());
 	}
+
+	protected abstract String getScreenName();
 
 	public static boolean isNetworkStatusAvailable (Context context) {
 		ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);

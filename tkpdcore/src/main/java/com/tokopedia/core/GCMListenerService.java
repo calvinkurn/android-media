@@ -35,13 +35,12 @@ import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.prototype.ManageProductCache;
 import com.tokopedia.core.prototype.ShopSettingCache;
-import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
-import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -232,7 +231,7 @@ public class GCMListenerService extends GcmListenerService {
                 desc = data.getString("desc");
                 break;
             case TkpdState.GCMServiceState.GCM_RES_CENTER:
-                resultclass = InboxResCenterActivity.class;
+                intent = InboxRouter.getInboxResCenterActivityIntent(this);
                 title = this.getString(R.string.title_new_rescenter);
                 ticker = data.getString("desc");
                 desc = data.getString("desc");
@@ -322,56 +321,63 @@ public class GCMListenerService extends GcmListenerService {
                 desc = data.getString("desc");
                 break;
             case TkpdState.GCMServiceState.GCM_PURCHASE_DISPUTE:
-                resultclass = InboxResCenterActivity.class;
-                bundle.putInt(InboxResCenterActivity.EXTRA_STATE_TAB_POSITION,
+                componentName = InboxRouter.getInboxResCenterActivityComponentName(this);
+                intent = InboxRouter.getInboxResCenterActivityIntent(this);
+                bundle.putInt(InboxRouter.EXTRA_STATE_TAB_POSITION,
                         TkpdState.InboxResCenter.RESO_BUYER);
                 title = this.getString(R.string.title_notif_rescenter);
                 ticker = data.getString("desc");
                 desc = data.getString("desc");
                 break;
             case TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_REPLY:
-                resultclass = InboxResCenterActivity.class;
-                bundle.putInt(InboxResCenterActivity.EXTRA_STATE_TAB_POSITION,
+                componentName = InboxRouter.getInboxResCenterActivityComponentName(this);
+                intent = InboxRouter.getInboxResCenterActivityIntent(this);
+                bundle.putInt(InboxRouter.EXTRA_STATE_TAB_POSITION,
                         TkpdState.InboxResCenter.RESO_BUYER);
                 title = this.getString(R.string.title_notif_rescenter);
                 ticker = data.getString("desc");
                 desc = data.getString("desc");
                 break;
             case TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_REPLY:
-                resultclass = InboxResCenterActivity.class;
-                bundle.putInt(InboxResCenterActivity.EXTRA_STATE_TAB_POSITION,
+                componentName = InboxRouter.getInboxResCenterActivityComponentName(this);
+                intent = InboxRouter.getInboxResCenterActivityIntent(this);
+                bundle.putInt(InboxRouter.EXTRA_STATE_TAB_POSITION,
                         TkpdState.InboxResCenter.RESO_MINE);
                 title = this.getString(R.string.title_notif_rescenter);
                 ticker = data.getString("desc");
                 desc = data.getString("desc");
                 break;
             case TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_AGREE:
-                resultclass = InboxResCenterActivity.class;
-                bundle.putInt(InboxResCenterActivity.EXTRA_STATE_TAB_POSITION,
+                componentName = InboxRouter.getInboxResCenterActivityComponentName(this);
+                intent = InboxRouter.getInboxResCenterActivityIntent(this);
+                bundle.putInt(InboxRouter.EXTRA_STATE_TAB_POSITION,
                         TkpdState.InboxResCenter.RESO_MINE);
                 title = this.getString(R.string.title_notif_rescenter);
                 ticker = data.getString("desc");
                 desc = data.getString("desc");
                 break;
             case TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_AGREE:
-                resultclass = InboxResCenterActivity.class;
-                bundle.putInt(InboxResCenterActivity.EXTRA_STATE_TAB_POSITION,
+                componentName = InboxRouter.getInboxResCenterActivityComponentName(this);
+                intent = InboxRouter.getInboxResCenterActivityIntent(this);
+                bundle.putInt(InboxRouter.EXTRA_STATE_TAB_POSITION,
                         TkpdState.InboxResCenter.RESO_BUYER);
                 title = this.getString(R.string.title_notif_rescenter);
                 ticker = data.getString("desc");
                 desc = data.getString("desc");
                 break;
             case TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_BUYER_REPLY:
-                resultclass = InboxResCenterActivity.class;
-                bundle.putInt(InboxResCenterActivity.EXTRA_STATE_TAB_POSITION,
+                componentName = InboxRouter.getInboxResCenterActivityComponentName(this);
+                intent = InboxRouter.getInboxResCenterActivityIntent(this);
+                bundle.putInt(InboxRouter.EXTRA_STATE_TAB_POSITION,
                         TkpdState.InboxResCenter.RESO_MINE);
                 title = this.getString(R.string.title_notif_rescenter);
                 ticker = data.getString("desc");
                 desc = data.getString("desc");
                 break;
             case TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_SELLER_REPLY:
-                resultclass = InboxResCenterActivity.class;
-                bundle.putInt(InboxResCenterActivity.EXTRA_STATE_TAB_POSITION,
+                componentName = InboxRouter.getInboxResCenterActivityComponentName(this);
+                intent = InboxRouter.getInboxResCenterActivityIntent(this);
+                bundle.putInt(InboxRouter.EXTRA_STATE_TAB_POSITION,
                         TkpdState.InboxResCenter.RESO_BUYER);
                 title = this.getString(R.string.title_notif_rescenter);
                 ticker = data.getString("desc");
