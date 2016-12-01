@@ -35,6 +35,7 @@ import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.prototype.ManageProductCache;
 import com.tokopedia.core.prototype.ShopSettingCache;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
@@ -277,7 +278,7 @@ public class GCMListenerService extends GcmListenerService {
                 componentName = TransactionPurchaseRouter.getPurchaseActivityComponentName(this);
                 intent = TransactionPurchaseRouter.createIntentPurchaseActivity(this);
                 bundle.putInt(TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION,
-                        TransactionPurchaseRouter.TAB_TX_STATUS);
+                        TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER);
                 title = this.getString(R.string.title_notif_purchase_confirmed);
                 ticker = data.getString("desc");
                 desc = data.getString("desc");
@@ -286,7 +287,7 @@ public class GCMListenerService extends GcmListenerService {
                 componentName = TransactionPurchaseRouter.getPurchaseActivityComponentName(this);
                 intent = TransactionPurchaseRouter.createIntentPurchaseActivity(this);
                 bundle.putInt(TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION,
-                        TransactionPurchaseRouter.TAB_TX_STATUS);
+                        TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER);
                 title = this.getString(R.string.title_notif_purchase_accepted);
                 ticker = data.getString("desc");
                 desc = data.getString("desc");
@@ -295,7 +296,7 @@ public class GCMListenerService extends GcmListenerService {
                 componentName = TransactionPurchaseRouter.getPurchaseActivityComponentName(this);
                 intent = TransactionPurchaseRouter.createIntentPurchaseActivity(this);
                 bundle.putInt(TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION,
-                        TransactionPurchaseRouter.TAB_TX_STATUS);
+                        TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER);
                 title = this.getString(R.string.title_notif_purchase_partial_accepted);
                 ticker = data.getString("desc");
                 desc = data.getString("desc");
@@ -304,7 +305,7 @@ public class GCMListenerService extends GcmListenerService {
                 componentName = TransactionPurchaseRouter.getPurchaseActivityComponentName(this);
                 intent = TransactionPurchaseRouter.createIntentPurchaseActivity(this);
                 bundle.putInt(TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION,
-                        TransactionPurchaseRouter.TAB_TX_ALL);
+                        TransactionPurchaseRouter.TAB_POSITION_PURCHASE_ALL_ORDER);
                 bundle.putString(TransactionPurchaseRouter.EXTRA_STATE_TX_FILTER,
                         TransactionPurchaseRouter.TRANSACTION_CANCELED_FILTER_ID);
                 title = this.getString(R.string.title_notif_purchase_rejected);
@@ -315,7 +316,7 @@ public class GCMListenerService extends GcmListenerService {
                 componentName = TransactionPurchaseRouter.getPurchaseActivityComponentName(this);
                 intent = TransactionPurchaseRouter.createIntentPurchaseActivity(this);
                 bundle.putInt(TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION,
-                        TransactionPurchaseRouter.TAB_TX_DELIVER);
+                        TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVER_ORDER);
                 title = this.getString(R.string.title_notif_purchase_delivered);
                 ticker = data.getString("desc");
                 desc = data.getString("desc");
