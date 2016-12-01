@@ -20,6 +20,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.Cart;
 import com.tokopedia.core.GCMListenerService.NotificationListener;
 import com.tokopedia.core.GalleryBrowser;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.tkpd.R;
 
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -205,7 +206,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
         });
 
         t.start();
-        if (!isSellerApp()) {
+        if (!GlobalConfig.isSellerApp()) {
             drawer.createDrawer(true);
             drawer.setEnabled(true);
             drawer.setOnSearchClickListener(new View.OnClickListener() {
@@ -215,10 +216,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
                 }
             });
         }
-    }
-
-    private boolean isSellerApp() {
-        return getApplication().getClass().getSimpleName().equals("SellerMainApplication");
     }
 
 

@@ -152,7 +152,6 @@ public class DrawerVariableSeller extends DrawerVariable {
         adapter = new DrawerSellerAdapter(context, model.data);
         layoutManager = new LinearLayoutManager(context);
         animator = new DefaultItemAnimator();
-        toolbar.createToolbarWithDrawer();
         initFacade();
         createShopMenu();
         createInboxMenu();

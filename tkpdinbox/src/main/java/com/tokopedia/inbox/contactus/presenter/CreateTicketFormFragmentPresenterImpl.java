@@ -4,6 +4,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.inbox.BuildConfig;
 import com.tokopedia.inbox.contactus.ContactUsConstant;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
@@ -80,7 +81,7 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
         pass.setTicketCategoryId(String.valueOf(viewListener.getArguments().getInt(PARAM_LAST_CATEGORY_ID)));
         pass.setMessageBody(viewListener.getMessage());
         pass.setAttachment(viewListener.getAttachment());
-        if(isSellerApp()){
+        if(GlobalConfig.isSellerApp()){
             pass.setSource("android_sellerapp");
             String version = "";
             try {
@@ -94,11 +95,6 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
             pass.setAppVersion(version);
         }
         return pass;
-    }
-
-    private boolean isSellerApp() {
-        return viewListener.getActivity().getApplication().getClass().getSimpleName().equals("SellerMainApplication");
-
     }
 
     private boolean isTicketValid() {

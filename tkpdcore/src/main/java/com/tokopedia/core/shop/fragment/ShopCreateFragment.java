@@ -33,6 +33,7 @@ import com.tokopedia.core.shop.ShopEditorActivity;
 import com.tokopedia.core.shop.presenter.ShopCreatePresenter;
 import com.tokopedia.core.shop.presenter.ShopCreatePresenterImpl;
 import com.tokopedia.core.shop.presenter.ShopCreateView;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.PhoneVerificationUtil;
 import com.tokopedia.core.util.UploadImageReVamp;
 
@@ -374,7 +375,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     @Override
     public void showPhoneVerification(boolean needVerify) {
         if (needVerify) {
-            if (!isSellerApp()) {
+            if (!GlobalConfig.isSellerApp()) {
                 if (((TActivity) getActivity()).phoneVerificationUtil != null)
                     ((TActivity) getActivity()).phoneVerificationUtil.setMSISDNListener(
                             new PhoneVerificationUtil.MSISDNListener() {
@@ -423,10 +424,6 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
         submitButton.setVisibility((needVerify) ? View.GONE : View.VISIBLE);
         verifyButton.setVisibility((needVerify) ? View.VISIBLE : View.GONE);
         verifyInstruction.setVisibility((needVerify) ? View.VISIBLE : View.GONE);
-    }
-
-    private boolean isSellerApp() {
-        return getActivity().getApplication().getClass().getSimpleName().equals("SellerMainApplication");
     }
 
     @Override

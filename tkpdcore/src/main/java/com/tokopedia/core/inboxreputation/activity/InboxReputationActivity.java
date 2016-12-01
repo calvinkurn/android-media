@@ -17,6 +17,7 @@ import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.inboxreputation.adapter.SectionsPagerAdapter;
 import com.tokopedia.core.inboxreputation.fragment.InboxReputationFragment;
 import com.tokopedia.core.inboxreputation.listener.InboxReputationView;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 
 import java.util.ArrayList;
@@ -71,7 +72,7 @@ public class InboxReputationActivity extends DrawerPresenterActivity
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator));
         indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
 
-        if (isSellerApp()) {
+        if (GlobalConfig.isSellerApp()) {
             indicator.addTab(indicator.newTab().setText(getString(R.string.title_my_product)));
             indicator.setVisibility(View.GONE);
         } else {
@@ -90,7 +91,7 @@ public class InboxReputationActivity extends DrawerPresenterActivity
     @Override
     public List<Fragment> getFragmentList() {
         List<Fragment> fragmentList = new ArrayList<>();
-        if (isSellerApp()) {
+        if (GlobalConfig.isSellerApp()) {
             fragmentList.add(InboxReputationFragment.createInstance(REVIEW_PRODUCT));
         } else {
             fragmentList.add(InboxReputationFragment.createInstance(REVIEW_ALL));
@@ -98,10 +99,6 @@ public class InboxReputationActivity extends DrawerPresenterActivity
             fragmentList.add(InboxReputationFragment.createInstance(REVIEW_USER));
         }
         return fragmentList;
-    }
-
-    private boolean isSellerApp() {
-        return getApplication().getClass().getSimpleName().equals("SellerMainApplication");
     }
 
     @Override

@@ -42,6 +42,7 @@ import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.session.session.fragment.ActivationResentFragment;
@@ -196,7 +197,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         Log.d(getClass().getSimpleName(), "moveTo " + type);
         switch (type) {
             case MOVE_TO_CART_TYPE:
-                if (isSellerApp() && !SessionHandler.isMsisdnVerified()) {
+                if (GlobalConfig.isSellerApp() && !SessionHandler.isMsisdnVerified()) {
                     Intent intent = new Intent(this, MsisdnActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
@@ -211,7 +212,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                 }
                 break;
             case HOME:
-                if (isSellerApp() && !SessionHandler.isMsisdnVerified()) {
+                if (GlobalConfig.isSellerApp() && !SessionHandler.isMsisdnVerified()) {
                     Intent intent = new Intent(this, MsisdnActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
@@ -251,10 +252,6 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
 //                }
 //                break;
         }
-    }
-
-    private boolean isSellerApp() {
-        return getApplication().getClass().getSimpleName().equals("SellerMainApplication");
     }
 
     @Override

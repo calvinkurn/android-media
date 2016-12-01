@@ -149,7 +149,7 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
             new GlobalCacheManager().deleteAll();
         }
 
-        if (isSellerApp()) {
+        if (GlobalConfig.isSellerApp()) {
             drawer = new DrawerVariableSeller(this);
         } else {
             drawer = new DrawerVariable(this);
@@ -161,10 +161,6 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
 
         HockeyAppHelper.handleLogin(this);
         HockeyAppHelper.checkForUpdate(this);
-    }
-
-    private boolean isSellerApp() {
-        return ((MainApplication) getApplication()).getApplicationType() == 2;
     }
 
     @Override
@@ -202,7 +198,7 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
         MainApplication.setActivityState(0);
         MainApplication.setActivityname(null);
 
-        if (!isSellerApp()) {
+        if (!GlobalConfig.isSellerApp()) {
             if (phoneVerificationUtil != null) {
 //            phoneVerificationUtil.unregister();
                 phoneVerificationUtil.setHasShown(false);
@@ -235,7 +231,7 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
         initGTM();
         sendScreenAnalytics();
         verifyFetchDepartment();
-        if (!isSellerApp()) {
+        if (!GlobalConfig.isSellerApp()) {
             if (phoneVerificationUtil != null) {
 //            phoneVerificationUtil.registerSMSReceiver();
                 if (!phoneVerificationUtil.hasShown())
@@ -325,7 +321,7 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
         RequestManager.cancelAllRequest();
         unbindLogService();
         unregisterHadesReceiver();
-        if (!isSellerApp()) {
+        if (!GlobalConfig.isSellerApp()) {
             if (phoneVerificationUtil != null)
                 phoneVerificationUtil.unSubscribe();
         }

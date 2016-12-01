@@ -73,7 +73,7 @@ public class PhoneVerificationUtil implements MSISDNConstant {
                             SessionHandler.setIsMSISDNVerified(result.getMsisdn().isVerified());
                             SessionHandler.setPhoneNumber(result.getMsisdn().getUserPhone());
                             if (!result.getMsisdn().isVerified()) {
-                                if (!isSellerApp())
+                                if (!GlobalConfig.isSellerApp())
                                     showVerificationDialog();
                                 else
                                     msisdnListener.onMSISDNNotVerified();
@@ -115,10 +115,6 @@ public class PhoneVerificationUtil implements MSISDNConstant {
                     });
 
         }
-    }
-
-    private boolean isSellerApp() {
-        return ((Activity) context).getApplication().getClass().getSimpleName().equals("SellerMainApplication");
     }
 
     public void showVerificationDialog() {

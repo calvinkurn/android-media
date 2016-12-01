@@ -28,6 +28,7 @@ import com.tokopedia.core.talk.inboxtalk.intentservice.InboxTalkIntentService;
 import com.tokopedia.core.talk.inboxtalk.intentservice.InboxTalkResultReceiver;
 import com.tokopedia.core.talk.inboxtalk.listener.InboxTalkActivityView;
 import com.tokopedia.core.talk.inboxtalk.presenter.InboxTalkActivityPresenterImpl;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
@@ -79,7 +80,7 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
     }
 
     private void setContent() {
-        if (isSellerApp()) {
+        if (GlobalConfig.isSellerApp()) {
             setContentSellerApp();
         } else {
             setContentBuyerApp();
@@ -288,7 +289,7 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
                 fragment = fragmentList.get(position);
             } else {
                 Bundle b = new Bundle();
-                if (isSellerApp()) {
+                if (GlobalConfig.isSellerApp()) {
                     b.putString("nav", "inbox-talk-my-product");
                 } else {
                     switch (position) {
@@ -318,7 +319,4 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
         }
     }
 
-    private boolean isSellerApp() {
-        return getApplication().getClass().getSimpleName().equals("SellerMainApplication");
-    }
 }
