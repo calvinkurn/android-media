@@ -17,7 +17,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.instabug.library.Instabug;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -530,10 +529,6 @@ public class DrawerVariable {
                 }
                 context.startActivity(intent);
                 break;
-            case TkpdState.DrawerPosition.REPORT:
-                isFinish = false;
-                Instabug.invoke();
-                break;
             case TkpdState.DrawerPosition.LOGOUT:
                 isFinish = false;
                 SessionHandler session = new SessionHandler(context);
@@ -634,9 +629,6 @@ public class DrawerVariable {
         model.data.add(new DrawerSeparator());
         model.data.add(new DrawerItem("Daftar", 0, 0, TkpdState.DrawerPosition.REGISTER, true));
         model.data.add(new DrawerSeparator());
-        if (TrackingUtils.getBoolean(AppEventTracking.GTM.REPORT)) {
-            model.data.add(new DrawerItem("Laporkan", 0, 0, TkpdState.DrawerPosition.REPORT, true));
-        }
         if (BuildConfig.DEBUG) {
             model.data.add(new DrawerItem("Developer Options", 0, 0, TkpdState.DrawerPosition.DEVELOPER_OPTIONS, true));
         }
@@ -803,9 +795,6 @@ public class DrawerVariable {
             model.data.add(model.shopMenu);
         }
         model.data.add(new DrawerItem("Pengaturan", 0, R.drawable.icon_setting, TkpdState.DrawerPosition.SETTINGS, false));
-        if (TrackingUtils.getBoolean(AppEventTracking.GTM.REPORT)) {
-            model.data.add(new DrawerItem("Laporkan", 0, R.drawable.ic_report_but, TkpdState.DrawerPosition.REPORT, false));
-        }
         if (!TrackingUtils.getBoolean(AppEventTracking.GTM.CONTACT_US)) {
             model.data.add(new DrawerItem("Hubungi Kami", 0, R.drawable.ic_contact_us, TkpdState.DrawerPosition.CONTACT_US, false));
         }

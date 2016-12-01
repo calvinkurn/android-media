@@ -93,7 +93,6 @@ dependencies {
     }
     compile 'com.appsflyer:af-android-sdk:4.6.0@aar'
     compile 'com.localytics.android:library:4.0+'
-    compile 'com.instabug.library:instabug:2+'
     compile 'net.hockeyapp.android:HockeySDK:4.0.0'
     compile'com.github.hotchemi:permissionsdispatcher:2.2.0@aar'
     apt 'com.github.hotchemi:permissionsdispatcher-processor:2.2.0'
