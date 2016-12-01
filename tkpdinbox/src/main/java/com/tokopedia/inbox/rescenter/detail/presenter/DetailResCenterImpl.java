@@ -445,7 +445,12 @@ public class DetailResCenterImpl implements DetailResCenterPresenter {
 
     @Override
     public void onDestroyView() {
+        deleteAttachment();
         retrofitInteractor.unsubscribe();
+    }
+
+    private void deleteAttachment() {
+        LocalCacheManager.ImageAttachment.Builder(view.getResolutionID()).clearAll();
     }
 
     @Override
