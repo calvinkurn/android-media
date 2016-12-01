@@ -13,6 +13,12 @@
         <item name="android:text">@string/top_ads_statistic_info_default_value</item>
     </style>
 
+    <style name="TextView.ListSummary">
+        <item name="android:textSize">@dimen/text_size_xlarge</item>
+        <item name="android:textColor">@color/green_200</item>
+        <item name="android:text">@string/top_ads_statistic_info_default_value</item>
+    </style>
+
     <style name="CardView.TopAds">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -20,6 +26,7 @@
         <item name="contentPaddingLeft">@dimen/top_ads_dashboard_padding_cards</item>
         <item name="contentPaddingRight">@dimen/top_ads_dashboard_padding_cards</item>
         <item name="contentPaddingBottom">@dimen/top_ads_dashboard_padding_cards</item>
-        <item name="android:background">@color/white</item>
+        <item name="cardCornerRadius">0dp</item>
+        <item name="cardBackgroundColor">@color/white</item>
     </style>
 </resources>

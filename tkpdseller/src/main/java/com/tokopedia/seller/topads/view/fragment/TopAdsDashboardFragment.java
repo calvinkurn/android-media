@@ -25,7 +25,7 @@ import java.util.Locale;
 
 import butterknife.Bind;
 
-public class TopAdsDashboardFragment<T> extends BasePresenterFragment<T> implements TopAdsDashboardFragmentListener {
+public abstract class TopAdsDashboardFragment<T> extends BasePresenterFragment<T> implements TopAdsDashboardFragmentListener {
 
     private static String TAG = TopAdsDashboardFragment.class.getSimpleName();
 
@@ -57,11 +57,6 @@ public class TopAdsDashboardFragment<T> extends BasePresenterFragment<T> impleme
     protected Date startDate;
     protected Date endDate;
 
-    public static TopAdsDashboardFragment createInstance() {
-        TopAdsDashboardFragment fragment = new TopAdsDashboardFragment();
-        return fragment;
-    }
-
     @Override
     protected boolean isRetainInstance() {
         return false;
@@ -88,11 +83,6 @@ public class TopAdsDashboardFragment<T> extends BasePresenterFragment<T> impleme
     }
 
     @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
     protected void initialListener(Activity activity) {
 
     }
@@ -100,11 +90,6 @@ public class TopAdsDashboardFragment<T> extends BasePresenterFragment<T> impleme
     @Override
     protected void setupArguments(Bundle arguments) {
 
-    }
-
-    @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_top_ads_product;
     }
 
     @Override
@@ -195,7 +180,7 @@ public class TopAdsDashboardFragment<T> extends BasePresenterFragment<T> impleme
         updateInfoText(costInfoLayout, R.id.text_view_content, String.valueOf(summary.getCostSum()));
     }
 
-    private void updateInfoText(View layout, int resourceId, String value) {
+    protected void updateInfoText(View layout, int resourceId, String value) {
         ((TextView) layout.findViewById(resourceId)).setText(value);
     }
 }
