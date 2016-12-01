@@ -1,6 +1,7 @@
 package com.tokopedia.sellerapp;
 
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.InstabugHelper;
 
@@ -23,5 +24,6 @@ public class SellerMainApplication extends MainApplication {
         HockeyAppHelper.setEnableDistribution(BuildConfig.ENABLE_DISTRIBUTION);
         InstabugHelper.setEnableDistribution(BuildConfig.ENABLE_DISTRIBUTION);
         InstabugHelper.setDebug(BuildConfig.DEBUG);
+        com.tokopedia.core.util.GlobalConfig.APPLICATION_TYPE = SELLER_APPLICATION;
     }
 }

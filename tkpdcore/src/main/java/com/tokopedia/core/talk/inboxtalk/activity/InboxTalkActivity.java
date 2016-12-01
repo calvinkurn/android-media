@@ -12,6 +12,7 @@ import android.support.v4.view.ViewPager;
 import android.view.ActionMode;
 import android.view.View;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.GCMListenerService;
 import com.tokopedia.core.R;
@@ -21,11 +22,13 @@ import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.talk.inboxtalk.fragment.InboxTalkFragment;
 import com.tokopedia.core.talk.inboxtalk.intentservice.InboxTalkIntentService;
 import com.tokopedia.core.talk.inboxtalk.intentservice.InboxTalkResultReceiver;
 import com.tokopedia.core.talk.inboxtalk.listener.InboxTalkActivityView;
 import com.tokopedia.core.talk.inboxtalk.presenter.InboxTalkActivityPresenterImpl;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
@@ -77,6 +80,23 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
     }
 
     private void setContent() {
+        if (GlobalConfig.isSellerApp()) {
+            setContentSellerApp();
+        } else {
+            setContentBuyerApp();
+        }
+
+        for (String content : contentArray) {
+            indicator.addTab(indicator.newTab().setText(content));
+        }
+    }
+
+    private void setContentSellerApp() {
+        contentArray = new String[]{getString(R.string.title_my_product)};
+        indicator.setVisibility(View.GONE);
+    }
+
+    private void setContentBuyerApp() {
         if (checkHasNoShop()) {
             contentArray = new String[]{getString(R.string.title_menu_all)};
             indicator.setVisibility(View.GONE);
@@ -85,9 +105,6 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
                     getString(R.string.title_my_product),
                     getString(R.string.title_following)};
             indicator.setVisibility(View.VISIBLE);
-        }
-        for (String content : contentArray) {
-            indicator.addTab(indicator.newTab().setText(content));
         }
     }
 
@@ -272,16 +289,20 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
                 fragment = fragmentList.get(position);
             } else {
                 Bundle b = new Bundle();
-                switch (position) {
-                    case 0:
-                        b.putString("nav", "inbox-talk");
-                        break;
-                    case 1:
-                        b.putString("nav", "inbox-talk-my-product");
-                        break;
-                    case 2:
-                        b.putString("nav", "inbox-talk-following");
-                        break;
+                if (GlobalConfig.isSellerApp()) {
+                    b.putString("nav", "inbox-talk-my-product");
+                } else {
+                    switch (position) {
+                        case 0:
+                            b.putString("nav", "inbox-talk");
+                            break;
+                        case 1:
+                            b.putString("nav", "inbox-talk-my-product");
+                            break;
+                        case 2:
+                            b.putString("nav", "inbox-talk-following");
+                            break;
+                    }
                 }
                 b.putBoolean("unread", forceUnread);
                 fragment = new InboxTalkFragment();
@@ -297,4 +318,5 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
             return contentArray.length;
         }
     }
+
 }

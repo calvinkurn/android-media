@@ -6,6 +6,15 @@ package com.tokopedia.core.util;
 
 public class GlobalConfig {
 
+    public static final int SELLER_APPLICATION = 2;
+    public static final int CONSUMER_APPLICATION = -1;
+
     public static String VERSION_NAME = "1.0";
     public static int VERSION_CODE = 1;
+    public static int APPLICATION_TYPE = CONSUMER_APPLICATION;
+
+    public static boolean isSellerApp(){
+        return APPLICATION_TYPE == SELLER_APPLICATION;
+    }
+
 }
