@@ -80,7 +80,7 @@ public class InputShippingRefNumDialog {
 
         for (ResCenterKurir.Kurir kurir : resCenterKurirList.getList()) {
             if (kurir.getShipmentId().equals(cache.getShippingID())) {
-                shippingSpinner.setSelection(resCenterKurirList.getList().indexOf(kurir));
+                shippingSpinner.setSelection(resCenterKurirList.getList().indexOf(kurir) + 1);
             }
         }
 
