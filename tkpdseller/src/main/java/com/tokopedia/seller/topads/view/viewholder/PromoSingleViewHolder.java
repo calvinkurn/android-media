@@ -51,5 +51,8 @@ public class PromoSingleViewHolder extends RecyclerView.ViewHolder {
     public void bindData(Ad ad) {
         titleProduct.setText(ad.getProductName());
         statusActive.setText(ad.getAdStatus());
+        promoPriceUsed.setText(ad.getAdPriceBidFmt());
+        totalPricePromo.setText(ad.getAdPriceDailySpentFmt());
+
     }
 }
