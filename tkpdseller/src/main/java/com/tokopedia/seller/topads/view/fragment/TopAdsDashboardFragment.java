@@ -13,9 +13,15 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
+import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.model.data.DataDeposit;
 import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardFragmentListener;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import butterknife.Bind;
 
@@ -23,12 +29,17 @@ public class TopAdsDashboardFragment<T> extends BasePresenterFragment<T> impleme
 
     private static String TAG = TopAdsDashboardFragment.class.getSimpleName();
 
+    private static final String RANGE_DATE_FORMAT = "dd MMM yyyy";
+
     @Bind(R2.id.image_view_shop_icon)
     ImageView shopIconImageView;
     @Bind(R2.id.text_view_shop_title)
     TextView shopTitleTextView;
     @Bind(R2.id.text_view_deposit_desc)
     TextView depositDescTextView;
+
+    @Bind(R2.id.text_view_range_date)
+    TextView rangeDateDescTextView;
 
     @Bind(R2.id.layout_top_ads_info_text_impression)
     View impressionInfoLayout;
@@ -42,6 +53,9 @@ public class TopAdsDashboardFragment<T> extends BasePresenterFragment<T> impleme
     View averageMainInfoLayout;
     @Bind(R2.id.layout_top_ads_info_text_cost)
     View costInfoLayout;
+
+    protected Date startDate;
+    protected Date endDate;
 
     public static TopAdsDashboardFragment createInstance() {
         TopAdsDashboardFragment fragment = new TopAdsDashboardFragment();
@@ -146,12 +160,30 @@ public class TopAdsDashboardFragment<T> extends BasePresenterFragment<T> impleme
     }
 
     private void initialLayout() {
+        Calendar startCalendar = Calendar.getInstance();
+        Calendar endCalendar = Calendar.getInstance();
+        startCalendar.add(Calendar.DAY_OF_YEAR, -7);
+        startDate = startCalendar.getTime();
+        endDate = endCalendar.getTime();
+        updateRangeDate();
         updateInfoText(impressionInfoLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_impression)));
         updateInfoText(clickInfoLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_click)));
         updateInfoText(ctrInfoLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_ctr)));
         updateInfoText(conversionInfoLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_conversion)));
         updateInfoText(averageMainInfoLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_average)));
         updateInfoText(costInfoLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_cost)));
+    }
+
+    protected void updateRangeDate() {
+        rangeDateDescTextView.setText(getString(R.string.top_ads_range_date_text, getStartDateText(), getEndDateText()));
+    }
+
+    private String getStartDateText() {
+        return new SimpleDateFormat(RANGE_DATE_FORMAT, Locale.ENGLISH).format(startDate);
+    }
+
+    private String getEndDateText() {
+        return new SimpleDateFormat(RANGE_DATE_FORMAT, Locale.ENGLISH).format(endDate);
     }
 
     private void updateSummaryLayout(Summary summary) {

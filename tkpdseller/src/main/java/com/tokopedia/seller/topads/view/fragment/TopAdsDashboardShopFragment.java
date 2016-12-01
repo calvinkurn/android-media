@@ -29,10 +29,7 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
     @Override
     protected void initView(View view) {
         super.initView(view);
-        Calendar startCalendar = Calendar.getInstance();
-        Calendar endCalendar = Calendar.getInstance();
-        endCalendar.add(Calendar.DAY_OF_YEAR, 3);
-        presenter.populateSummary(startCalendar.getTime(), endCalendar.getTime());
+        presenter.populateSummary(startDate, endDate);
         presenter.populateDeposit();
         presenter.populateShopInfo();
     }
