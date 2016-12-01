@@ -68,6 +68,10 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
 
         void deleteMessageForever(Bundle param);
 
+        void markAsRead(Bundle param);
+
+        void markAsUnread(Bundle param);
+
     }
 
     public static InboxMessageFragment createInstance(String navigation) {
@@ -236,6 +240,24 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
             @Override
             public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
                 mode.setTitle(String.valueOf(adapter.getSelected()));
+                switch (adapter.getChosenMessageStatus()) {
+                    case STATE_READ:
+                        menu.findItem(R2.id.action_mark_as_unread).setVisible(true);
+                        menu.findItem(R2.id.action_mark_as_read).setVisible(false);
+                        break;
+                    case STATE_NOT_READ:
+                        menu.findItem(R2.id.action_mark_as_read).setVisible(true);
+                        menu.findItem(R2.id.action_mark_as_unread).setVisible(false);
+                        break;
+                    case STATE_BOTH:
+                        menu.findItem(R2.id.action_mark_as_unread).setVisible(true);
+                        menu.findItem(R2.id.action_mark_as_read).setVisible(true);
+                        break;
+                    default:
+                        menu.findItem(R2.id.action_mark_as_unread).setVisible(false);
+                        menu.findItem(R2.id.action_mark_as_read).setVisible(false);
+                        break;
+                }
                 return true;
             }
 
@@ -256,6 +278,14 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
                         return true;
                     case R2.id.action_move_inbox:
                         presenter.moveInbox(MOVE_ALL);
+                        mode.finish();
+                        return true;
+                    case R2.id.action_mark_as_read:
+                        presenter.markAsRead();
+                        mode.finish();
+                        return true;
+                    case R2.id.action_mark_as_unread:
+                        presenter.markAsUnread();
                         mode.finish();
                         return true;
                     default:
@@ -745,6 +775,48 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
             presenter.setMessageRead(data);
             if (data.getExtras().getBoolean(MUST_REFRESH))
                 presenter.refreshData();
+        }
+    }
+
+    @Override
+    public void onFailedMarkAsRead(Bundle resultData) {
+        final ActInboxMessagePass param = resultData.getParcelable(PARAM_MARK_AS_READ);
+        String error = resultData.getString(EXTRA_ERROR, "");
+        enableActions();
+        finishLoading();
+        showError(error);
+    }
+
+    @Override
+    public void onFailedMarkAsUnread(Bundle resultData) {
+        final ActInboxMessagePass param = resultData.getParcelable(PARAM_MARK_AS_UNREAD);
+        String error = resultData.getString(EXTRA_ERROR, "");
+        enableActions();
+        finishLoading();
+        showError(error);
+    }
+
+    @Override
+    public void onSuccessMarkAsRead(Bundle resultData) {
+        finishLoading();
+        enableActions();
+
+        final ActInboxMessagePass pass = resultData.getParcelable(PARAM_MARK_AS_READ);
+        if (pass != null) {
+            getAdapter().setListMove(pass.getListMove());
+            getAdapter().markAsRead();
+        }
+    }
+
+    @Override
+    public void onSuccessMarkAsUnread(Bundle resultData) {
+        finishLoading();
+        enableActions();
+
+        final ActInboxMessagePass pass = resultData.getParcelable(PARAM_MARK_AS_UNREAD);
+        if (pass != null) {
+            getAdapter().setListMove(pass.getListMove());
+            getAdapter().markAsUnread();
         }
     }
 }

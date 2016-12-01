@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.tokopedia.core.network.apiservices.kunyit.KunyitService;
 import com.tokopedia.core.network.apiservices.shop.ShopService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
@@ -34,13 +35,13 @@ public class ShopTalkRetrofitInteractorImpl implements ShopTalkRetrofitInteracto
 
     private final CompositeSubscription compositeSubscription;
     private final ShopService shopService;
-    private final ActionService actionService;
+    private final KunyitService kunyitService;
     private boolean isRequesting;
 
     public ShopTalkRetrofitInteractorImpl() {
         compositeSubscription = new CompositeSubscription();
         shopService = new ShopService();
-        actionService = new ActionService();
+        kunyitService = new KunyitService();
     }
 
     @Override
@@ -123,8 +124,8 @@ public class ShopTalkRetrofitInteractorImpl implements ShopTalkRetrofitInteracto
                            @NonNull final ActionShopTalkListener listener) {
         setRequesting(true);
 
-        Observable<Response<TkpdResponse>> observable = actionService.getApi()
-                .actionDeleteTalk(AuthUtil.generateParams(context, params));
+        Observable<Response<TkpdResponse>> observable = kunyitService.getApi()
+                .deleteProductTalk(AuthUtil.generateParams(context, params));
 
         Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
             @Override
@@ -198,8 +199,8 @@ public class ShopTalkRetrofitInteractorImpl implements ShopTalkRetrofitInteracto
                            @NonNull final ActionShopTalkListener listener) {
         setRequesting(true);
 
-        Observable<Response<TkpdResponse>> observable = actionService.getApi()
-                .actionFollowTalk(AuthUtil.generateParams(context, params));
+        Observable<Response<TkpdResponse>> observable = kunyitService.getApi()
+                .followProductTalk(AuthUtil.generateParams(context, params));
 
         Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
             @Override
@@ -273,8 +274,8 @@ public class ShopTalkRetrofitInteractorImpl implements ShopTalkRetrofitInteracto
                              @NonNull final ActionShopTalkListener listener) {
         setRequesting(true);
 
-        Observable<Response<TkpdResponse>> observable = actionService.getApi()
-                .actionFollowTalk(AuthUtil.generateParams(context, params));
+        Observable<Response<TkpdResponse>> observable = kunyitService.getApi()
+                .followProductTalk(AuthUtil.generateParams(context, params));
 
         Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
             @Override
@@ -348,8 +349,8 @@ public class ShopTalkRetrofitInteractorImpl implements ShopTalkRetrofitInteracto
                            @NonNull final ActionShopTalkListener listener) {
         setRequesting(true);
 
-        Observable<Response<TkpdResponse>> observable = actionService.getApi()
-                .actionReportTalk(AuthUtil.generateParams(context, params));
+        Observable<Response<TkpdResponse>> observable = kunyitService.getApi()
+                .reportProductTalk(AuthUtil.generateParams(context, params));
 
         Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
             @Override

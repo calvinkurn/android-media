@@ -33,13 +33,6 @@ import butterknife.ButterKnife;
 public class InboxMessageAdapter extends BaseLinearRecyclerViewAdapter
         implements InboxMessageConstant {
 
-    private static final int VIEW_MESSAGE = 100;
-    private static final int STATE_READ = 0;
-    private static final int STATE_NOT_READ = 2;
-    private static final int STATE_SELECTED = 3;
-    private static final int STATE_NOT_SELECTED = 3;
-
-
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R2.id.user_name)
@@ -196,9 +189,9 @@ public class InboxMessageAdapter extends BaseLinearRecyclerViewAdapter
 
 
     private void setReadStatus(ViewHolder holder, int position) {
-        if (list.get(position).getMessageReadStatus() == 0)
+        if (list.get(position).getMessageReadStatus() == STATE_NOT_READ)
             setNotReadState(holder);
-        else if (list.get(position).getMessageReadStatus() == 1)
+        else if (list.get(position).getMessageReadStatus() == STATE_READ)
             setReadState(holder);
     }
 
@@ -425,6 +418,50 @@ public class InboxMessageAdapter extends BaseLinearRecyclerViewAdapter
     public void setEnabled(boolean isActionEnabled) {
         this.isActionEnabled = isActionEnabled;
         notifyDataSetChanged();
+    }
+
+    public void markAsRead() {
+        for (InboxMessageItem moveItem : listMove) {
+            for (InboxMessageItem inboxMessageItem : list) {
+                if (moveItem.getMessageId() == inboxMessageItem.getMessageId()) {
+                    inboxMessageItem.setMessageReadStatus(STATE_READ);
+                    break;
+                }
+            }
+        }
+
+        listMove.clear();
+        notifyDataSetChanged();
+    }
+
+    public void markAsUnread() {
+        for (InboxMessageItem moveItem : listMove) {
+            for (InboxMessageItem inboxMessageItem : list) {
+                if (moveItem.getMessageId() == inboxMessageItem.getMessageId()) {
+                    inboxMessageItem.setMessageReadStatus(STATE_NOT_READ);
+                    break;
+                }
+            }
+        }
+
+        listMove.clear();
+        notifyDataSetChanged();
+    }
+
+    public int getChosenMessageStatus() {
+        int statusRead = 0;
+        int statusUnread = 0;
+
+        for (InboxMessageItem inboxMessageItem : listMove) {
+            if (inboxMessageItem.getMessageReadStatus() == STATE_READ)
+                statusRead = STATE_READ;
+
+            if (inboxMessageItem.getMessageReadStatus() == STATE_NOT_READ) {
+                statusUnread = STATE_NOT_READ;
+            }
+
+        }
+        return statusRead + statusUnread;
     }
 
 }

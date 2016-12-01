@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.tokopedia.core.network.apiservices.user.MessageActService;
+import com.tokopedia.core.network.apiservices.kunyit.KunyitService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -32,17 +32,17 @@ public class SendMessageRetrofitInteractorImpl implements SendMessageRetrofitInt
     private static final String DEFAULT_MSG_ERROR = "Terjadi Kesalahan, Mohon ulangi beberapa saat lagi";
 
     private final CompositeSubscription compositeSubscription;
-    private MessageActService inboxService;
+    private KunyitService kunyitService;
 
     public SendMessageRetrofitInteractorImpl() {
         this.compositeSubscription = new CompositeSubscription();
-        this.inboxService = new MessageActService();
+        this.kunyitService = new KunyitService();
 
     }
 
     @Override
     public void sendMessage(@NonNull final Context context, @NonNull Map<String, String> params, @NonNull final SendMessageListener listener) {
-        Observable<Response<TkpdResponse>> observable = inboxService.getApi()
+        Observable<Response<TkpdResponse>> observable = kunyitService.getApi()
                 .sendMessage(AuthUtil.generateParams(context, params));
 
         Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {

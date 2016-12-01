@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.tokopedia.core.inboxmessage.model.inboxmessage.InboxMessage;
 import com.tokopedia.core.inboxmessage.model.inboxmessagedetail.InboxMessageDetail;
-import com.tokopedia.core.network.apiservices.user.InboxMsgService;
+import com.tokopedia.core.network.apiservices.kunyit.KunyitService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -35,12 +35,12 @@ public class InboxMessageRetrofitInteractorImpl implements InboxMessageRetrofitI
     private static final String DEFAULT_MSG_ERROR = "Terjadi Kesalahan, Mohon ulangi beberapa saat lagi";
 
     private final CompositeSubscription compositeSubscription;
-    private InboxMsgService inboxService;
+    private KunyitService kunyitService;
     private boolean isRequesting;
 
     public InboxMessageRetrofitInteractorImpl() {
         this.compositeSubscription = new CompositeSubscription();
-        this.inboxService = new InboxMsgService();
+        this.kunyitService = new KunyitService();
         this.isRequesting = false;
     }
 
@@ -49,8 +49,8 @@ public class InboxMessageRetrofitInteractorImpl implements InboxMessageRetrofitI
 
         setRequesting(true);
 
-        Observable<Response<TkpdResponse>> observable = inboxService.getApi()
-                .getMessage(AuthUtil.generateParams(context, params));
+        Observable<Response<TkpdResponse>> observable = kunyitService.getApi()
+                .getInboxMessage(AuthUtil.generateParams(context, params));
 
         Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
             @Override
@@ -130,8 +130,8 @@ public class InboxMessageRetrofitInteractorImpl implements InboxMessageRetrofitI
     @Override
     public void getInboxMessageDetail(@NonNull final Context context, @NonNull final Map<String, String> params, @NonNull final GetInboxMessageDetailListener listener) {
         setRequesting(true);
-        Observable<Response<TkpdResponse>> observable = inboxService.getApi()
-                .getDetail(AuthUtil.generateParams(context, params));
+        Observable<Response<TkpdResponse>> observable = kunyitService.getApi()
+                .getInboxMessageDetail(AuthUtil.generateParams(context, params));
 
         Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
             @Override

@@ -30,18 +30,12 @@ import rx.subscriptions.CompositeSubscription;
  * migrate retrofit 2 by Angga.Prasetiyo
  */
 public class TalkViewRetrofitInteractorImpl implements TalkViewRetrofitInteractor {
-
-    TalkService talkService;
-    TalkActService talkActService;
-    InboxTalkService inboxTalkService;
+    
     KunyitService kunyitService;
     CompositeSubscription compositeSubscription;
 
     public static TalkViewRetrofitInteractor createInstance() {
         TalkViewRetrofitInteractorImpl facade = new TalkViewRetrofitInteractorImpl();
-        facade.talkService = new TalkService();
-        facade.talkActService = new TalkActService();
-        facade.inboxTalkService = new InboxTalkService();
         facade.kunyitService = new KunyitService();
         facade.compositeSubscription = new CompositeSubscription();
         return facade;
@@ -51,10 +45,10 @@ public class TalkViewRetrofitInteractorImpl implements TalkViewRetrofitInteracto
     public void getComment(Context context, Map<String, String> param, final String from, final GetCommentListener listener) {
         Observable<Response<TkpdResponse>> observable;
         if (from.equals(TalkViewActivity.PRODUCT_TALK) || from.equals(TalkViewActivity.SHOP_TALK)) {
-            observable = talkService.getApi()
+            observable = kunyitService.getApi()
                     .getCommentTalk((AuthUtil.generateParams(context, param)));
         } else {
-            observable = inboxTalkService.getApi().getDetail(AuthUtil.generateParams(context, param));
+            observable = kunyitService.getApi().getTalkDetail(AuthUtil.generateParams(context, param));
         }
 
         Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
@@ -119,7 +113,7 @@ public class TalkViewRetrofitInteractorImpl implements TalkViewRetrofitInteracto
 
     @Override
     public void reply(Context context, Map<String, String> param, final AddCommentListener listener) {
-        Observable<Response<TkpdResponse>> observable = talkActService.getApi()
+        Observable<Response<TkpdResponse>> observable = kunyitService.getApi()
                 .addCommentTalk(AuthUtil.generateParams(context, param));
 
         Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {

@@ -3,7 +3,7 @@ package com.tokopedia.core.network.constants;
 /**
  * Created by Angga.Prasetiyo on 07/12/2015.
  */
-public interface  TkpdBaseURL {
+public interface TkpdBaseURL {
 
     String LIVE_DOMAIN = "https://ws.tokopedia.com/";
     String STAGE_DOMAIN = "https://ws-staging.tokopedia.com/";
@@ -106,8 +106,6 @@ public interface  TkpdBaseURL {
         String URL_WISH_LIST_ACTION = BASE_DOMAIN + "v4/action/wishlist/";
         String URL_WISH_LIST = BASE_DOMAIN + "v4/wishlist/";
         String URL_GENERAL_ACTION = BASE_DOMAIN + "v4/action/general-usage/";
-        String URL_INBOX_MESSAGE = BASE_DOMAIN + "v4/inbox-message/";
-        String URL_INBOX_PRICE_ALERT = BASE_DOMAIN + "v4/inbox-price-alert/";
         String URL_INBOX_REPUTATION = BASE_DOMAIN + "v4/inbox-reputation/";
         String URL_INBOX_RES_CENTER = BASE_DOMAIN + "v4/inbox-resolution-center/";
         String URL_INBOX_REVIEW = BASE_DOMAIN + "v4/inbox-review/";
@@ -116,13 +114,11 @@ public interface  TkpdBaseURL {
         String URL_INTERRUPT_ACTION = BASE_DOMAIN + "v4/action/interrupt/";
         String URL_INTERRUPT = BASE_DOMAIN + "v4/interrupt/";
         String URL_INVOICE = BASE_DOMAIN + "v4/";
-        String URL_MESSAGE_ACTION = BASE_DOMAIN + "v4/action/message/";
         String URL_MSISDN_ACTION = BASE_DOMAIN + "v4/action/msisdn/";
         String URL_MSISDN = BASE_DOMAIN + "v4/msisdn/";
         String URL_NOTIFICATION = BASE_DOMAIN + "v4/notification/";
         String URL_PEOPLE_ACTION = BASE_DOMAIN + "v4/action/people/";
         String URL_PEOPLE = BASE_DOMAIN + "v4/people/";
-        String URL_SESSION_ACTION = BASE_DOMAIN + "v4/action/session/";
         String URL_SESSION = BASE_DOMAIN + "v4/session/";
         String URL_REGISTER = BASE_DOMAIN + "v4/action/register/";
         String URL_TICKET_ACTION = BASE_DOMAIN + "v4/action/ticket/";
@@ -138,14 +134,6 @@ public interface  TkpdBaseURL {
         String PATH_EDIT_EMAIL = "edit_email.pl";
         String PATH_RESEND_CODE = "resend_code.pl";
         String PATH_RESET_PASSWORD = "reset_password.pl";
-
-        String PATH_GET_INBOX_MESSAGE = "get_inbox_message.pl";
-        String PATH_GET_INBOX_DETAIL_MESSAGE = "get_inbox_detail_message.pl";
-
-        String PATH_GET_ADD_CATALOG_PRICE_ALERT_FORM = "get_add_catalog_price_alert_form.pl";
-        String PATH_GET_ADD_PRODUCT_PRICE_ALERT_FORM = "get_add_product_price_alert_form.pl";
-        String PATH_GET_PRICE_ALERT = "get_price_alert.pl";
-        String PATH_GET_PRICE_ALERT_DETAIL = "get_price_alert_detail.pl";
 
         String PATH_GET_INBOX_REPUTATION = "get_inbox_reputation.pl";
         String PATH_GET_LIST_REPUTATION_REVIEW = "get_list_reputation_review.pl";
@@ -187,7 +175,7 @@ public interface  TkpdBaseURL {
         String PATH_UNDO_DELETE_MESSAGES = "undo_delete_messages.pl";
         String PATH_MOVE_TO_INBOX = "move_to_inbox.pl";
         String PATH_UNDO_MOVE_TO_INBOX = "undo_move_to_inbox.pl";
-        String PATH_DELETE_MESSAGES_FOREVER= "delete_forever_messages.pl";
+        String PATH_DELETE_MESSAGES_FOREVER = "delete_forever_messages.pl";
 
         String PATH_ARCHIVE_MESSAGE_DETAIL = "archive_messages_detail.pl";
         String PATH_DELETE_FOREVER_MESSAGE_DETAIL = "delete_forever_messages_detail.pl";
@@ -239,15 +227,6 @@ public interface  TkpdBaseURL {
         String PATH_GET_PROFILE = "get_profile.pl";
         String PATH_GET_RANDOM_FAV_SHOP = "get_random_fav_shop.pl";
         String PATH_GET_SEARCH_BANK_ACCOUNT = "search_bank_account.pl";
-
-        String PATH_ADD_CATALOG_PRICE_ALERT = "add_catalog_price_alert.pl";
-        String PATH_ADD_PRODUCT_PRICE_ALERT = "add_product_price_alert.pl";
-        String PATH_DELETE_CATALOG_PRICE_ALERT = "delete_catalog_price_alert.pl";
-        String PATH_DELETE_PRODUCT_PRICE_ALERT = "delete_product_price_alert.pl";
-        String PATH_EDIT_INBOX_PRICE_ALERT = "edit_inbox_price_alert.pl";
-        String PATH_REMOVE_PRODUCT_PRICE_ALERT = "remove_product_price_alert.pl";
-
-        String PATH_DO_REGISTER = "do_register.pl";
 
         String PATH_LOGIN = "login.pl";
         String PATH_CREATE_PASSWORD = "create_password.pl";
@@ -567,7 +546,6 @@ public interface  TkpdBaseURL {
     }
 
 
-
     interface Recharge {
         String VERSION = "v1.1";
         String RECHARGE = "recharge";
@@ -576,40 +554,51 @@ public interface  TkpdBaseURL {
         String PATH_CATEGORY = VERSION + "/category/list";
         String PATH_OPERATOR = VERSION + "/operator/list";
         String PATH_PRODUCT = VERSION + "/product/list";
-        String PATH_RECENT_NUMBER =  VERSION + "/recent-number";
+        String PATH_RECENT_NUMBER = VERSION + "/recent-number";
         String PATH_LAST_ORDER = VERSION + "/last-order";
         String PATH_SALDO = "/saldo/";
     }
 
-    interface Kunyit {
-//        String GET_INBOX_TALK = "/v2/inbox/talks";
-//        String GET_PRODUCT_TALK = "/v2/talks/read";
-//        String GET_COMMENT_TALK = "/v2/comments/read";
-//        String GET_INBOX_TALK_DETAIL = "/v2/inbox/talks/detail";
-//        String ADD_PRODUCT_TALK = "/v2/talks/create";
-//        String ADD_COMMENT_TALK = "/v2/comments/create";
-//        String DELETE_COMMENT_TALK = "/v2/comments/delete";
-//        String REPORT_COMMENT_TALK = "/v1/report/talkcomments";
-//        String FOLLOW_PRODUCT_TALK = "/v2/talks/follow";
-//        String DELETE_PRODUCT_TALK = "/v2/talks/delete";
-//        String REPORT_PRODUCT_TALK = "/v1/report/talks";
+    interface KunyitTalk {
+        String BASE_HOST_INBOX_TALK = "/talk/v2";
 
-        String GET_INBOX_TALK = "/v2/talk/inbox";
-        String GET_PRODUCT_TALK = "/v2/talk";
-        String GET_COMMENT_TALK = "/v2/talk/comment";
-        String GET_INBOX_TALK_DETAIL = "/v2/talk/inbox/detail";
+        String GET_INBOX_TALK = BASE_HOST_INBOX_TALK + "/inbox";
+        String GET_PRODUCT_TALK = BASE_HOST_INBOX_TALK + "/read";
+        String GET_SHOP_TALK = BASE_HOST_INBOX_TALK + "/read";
+        String GET_COMMENT_TALK = BASE_HOST_INBOX_TALK + "/comment";
+        String GET_INBOX_TALK_DETAIL = BASE_HOST_INBOX_TALK + "/inbox/detail";
 
-        String ADD_PRODUCT_TALK    = "/v2/talk/create";
-        String FOLLOW_PRODUCT_TALK = "/v2/talk/follow";
-        String DELETE_PRODUCT_TALK = "/v2/talk/delete";
-        String REPORT_PRODUCT_TALK = "/v2/talk/report";
+        String ADD_PRODUCT_TALK = BASE_HOST_INBOX_TALK + "/create";
+        String FOLLOW_PRODUCT_TALK = BASE_HOST_INBOX_TALK + "/follow";
+        String DELETE_PRODUCT_TALK = BASE_HOST_INBOX_TALK + "/delete";
+        String REPORT_PRODUCT_TALK = BASE_HOST_INBOX_TALK + "/report";
 
-        String ADD_COMMENT_TALK    = "/v2/talk/comment/create";
-        String DELETE_COMMENT_TALK = "/v2/talk/comment/delete";
-        String REPORT_COMMENT_TALK = "/v2/talk/comment/report";
+        String ADD_COMMENT_TALK = BASE_HOST_INBOX_TALK + "/comment/create";
+        String DELETE_COMMENT_TALK = BASE_HOST_INBOX_TALK + "/comment/delete";
+        String REPORT_COMMENT_TALK = BASE_HOST_INBOX_TALK + "/comment/report";
 
     }
-    interface Accounts{
+
+    interface KunyitMessage {
+        String BASE_HOST_INBOX_MESSAGE = "/message/v1";
+        String GET_INBOX_MESSAGE = BASE_HOST_INBOX_MESSAGE + "/list";
+        String GET_INBOX_DETAIL_MESSAGE = BASE_HOST_INBOX_MESSAGE + "/detail";
+        String SEND_MESSAGE = BASE_HOST_INBOX_MESSAGE + "/send";
+        String SEND_REPLY_MESSAGE = BASE_HOST_INBOX_MESSAGE + "/reply";
+        String DELETE_MESSAGES = BASE_HOST_INBOX_MESSAGE + "/delete";
+        String DELETE_MESSAGES_FOREVER = BASE_HOST_INBOX_MESSAGE + "/delete/forever";
+        String UNDO_DELETE_MESSAGES = BASE_HOST_INBOX_MESSAGE + "/delete/undo";
+        String ARCHIVE_MESSAGES = BASE_HOST_INBOX_MESSAGE + "/archive";
+        String UNDO_ARCHIVE_MESSAGES = BASE_HOST_INBOX_MESSAGE + "/archive/undo";
+        String FLAG_SPAM = BASE_HOST_INBOX_MESSAGE + "/spam";
+        String UNDO_FLAG_SPAM = BASE_HOST_INBOX_MESSAGE + "/spam/undo";
+        String MOVE_TO_INBOX = BASE_HOST_INBOX_MESSAGE + "/move_inbox";
+        String UNDO_MOVE_TO_INBOX = BASE_HOST_INBOX_MESSAGE + "/move_inbox/undo";
+        String MARK_AS_READ = BASE_HOST_INBOX_MESSAGE + "/mark/read";
+        String MARK_AS_UNREAD = BASE_HOST_INBOX_MESSAGE + "/mark/unread";
+    }
+
+    interface Accounts {
         String PATH_GET_TOKEN = "token";
         String PATH_GET_INFO = "info";
         String PATH_GET_PROFILE = "profile/json/{id}";
@@ -621,7 +610,7 @@ public interface  TkpdBaseURL {
         String RESENT_ACTIVATION = "/api/resend";
     }
 
-    interface Home{
+    interface Home {
         String PATH_API_V1_ANNOUNCEMENT_TICKER = "/api/v1/tickers";
     }
 }

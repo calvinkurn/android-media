@@ -56,6 +56,8 @@ public interface InboxMessageConstant {
     int ACTION_SEND_REPLY = 118;
     int ACTION_FLAG_SPAM = 119;
     int ACTION_UNDO_FLAG_SPAM = 120;
+    int ACTION_MARK_AS_READ = 121;
+    int ACTION_MARK_AS_UNREAD = 122;
 
 
     String PARAM_ARCHIVE_MESSAGE = "PARAM_ARCHIVE_MESSAGE";
@@ -69,10 +71,11 @@ public interface InboxMessageConstant {
     String PARAM_SEND_REPLY = "PARAM_SEND_REPLY";
     String PARAM_FLAG_SPAM = "PARAM_FLAG_SPAM";
     String PARAM_UNDO_FLAG_SPAM = "PARAM_UNDO_FLAG_SPAM";
+    String PARAM_MARK_AS_READ = "PARAM_MARK_AS_READ";
+    String PARAM_MARK_AS_UNREAD = "PARAM_MARK_AS_READ";
 
     String EXTRA_POSITION = "EXTRA_POSITION";
-    String EXTRA_FLAGGED_MESSAGE= "EXTRA_FLAGGED_MESSAGE";
-
+    String EXTRA_FLAGGED_MESSAGE = "EXTRA_FLAGGED_MESSAGE";
 
 
     String EXTRA_ERROR = "EXTRA_ERROR";
@@ -82,4 +85,9 @@ public interface InboxMessageConstant {
     String FILTER_BUNDLE = "INBOX_MESSAGE_FILTER";
     String BUNDLE_POSITION = "POSITION";
 
+    int VIEW_MESSAGE = 100;
+    int STATE_SELECTED = 100;
+    int STATE_READ = 1;
+    int STATE_NOT_READ = 2;
+    int STATE_BOTH = 3;
 }

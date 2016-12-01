@@ -35,9 +35,7 @@ public class InboxTalkIntentService extends IntentService {
     public static final String EXTRA_BUNDLE = "EXTRA_BUNDLE";
     public static final String EXTRA_RECEIVER = "EXTRA_RECEIVER";
     public static final String EXTRA_RESULT = "EXTRA_RESULT";
-
-
-    TalkActService talkActService;
+    
     KunyitService kunyitService;
     ResultReceiver receiver;
 
@@ -78,7 +76,6 @@ public class InboxTalkIntentService extends IntentService {
         if (intent != null) {
             int action = intent.getIntExtra(EXTRA_TYPE, 0);
             Bundle bundle = intent.getBundleExtra(EXTRA_BUNDLE);
-            talkActService = new TalkActService();
             kunyitService = new KunyitService();
             receiver = intent.getParcelableExtra(EXTRA_RECEIVER);
 
@@ -102,7 +99,7 @@ public class InboxTalkIntentService extends IntentService {
         TalkPass param = (TalkPass) bundle.get(PARAM_FOLLOW);
         final Bundle resultData = new Bundle();
         resultData.putParcelable(PARAM_FOLLOW, param);
-        talkActService.getApi().followProductTalk(AuthUtil.
+        kunyitService.getApi().followProductTalk(AuthUtil.
                 generateParams(getBaseContext(), param.getParamFollow()))
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
@@ -114,7 +111,7 @@ public class InboxTalkIntentService extends IntentService {
         TalkPass param = (TalkPass) bundle.get(PARAM_DELETE);
         final Bundle resultData = new Bundle();
         resultData.putParcelable(PARAM_DELETE, param);
-        talkActService.getApi().deleteProductTalk(AuthUtil.
+        kunyitService.getApi().deleteProductTalk(AuthUtil.
                 generateParams(getBaseContext(), param.getParamDelete()))
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
@@ -126,7 +123,7 @@ public class InboxTalkIntentService extends IntentService {
         TalkPass param = (TalkPass) bundle.get(PARAM_REPORT);
         final Bundle resultData = new Bundle();
         resultData.putParcelable(PARAM_REPORT, param);
-        talkActService.getApi().reportProductTalk(AuthUtil.
+        kunyitService.getApi().reportProductTalk(AuthUtil.
                 generateParams(getBaseContext(), param.getParamReport()))
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())

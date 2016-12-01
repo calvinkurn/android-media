@@ -82,10 +82,17 @@ public interface InboxMessageView {
 
     void showEmptyState();
 
-
     void showEmptyState(String error);
 
     boolean hasRetry();
 
     void setMustRefresh(boolean isMustRefresh);
+
+    void onFailedMarkAsRead(Bundle resultData);
+
+    void onFailedMarkAsUnread(Bundle resultData);
+
+    void onSuccessMarkAsRead(Bundle resultData);
+
+    void onSuccessMarkAsUnread(Bundle resultData);
 }

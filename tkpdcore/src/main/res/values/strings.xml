@@ -1794,4 +1794,7 @@ di Tokopedia Sekarang!</string>
     <string name="prompt_delete_talk">Apakah anda  yakin ingin menghapus diskusi ini?</string>
     <string name="product_image">Product Image</string>
     <string name="title_delete_discussion">Hapus diskusi</string>
+
+    <string name="mark_as_read">Tandai sudah dibaca</string>
+    <string name="mark_as_unread">Tandai belum dibaca</string>
 </resources>

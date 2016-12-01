@@ -164,6 +164,12 @@ public class InboxMessageActivity extends DrawerPresenterActivity
             case ACTION_DELETE_FOREVER:
                 ((InboxMessageFragment) fragment).onSuccessDeleteForever(resultData);
                 break;
+            case ACTION_MARK_AS_READ:
+                ((InboxMessageFragment) fragment).onSuccessMarkAsRead(resultData);
+                break;
+            case ACTION_MARK_AS_UNREAD:
+                ((InboxMessageFragment) fragment).onSuccessMarkAsUnread(resultData);
+                break;
             default:
                 throw new UnsupportedOperationException("Invalid Type Action");
         }
@@ -208,7 +214,12 @@ public class InboxMessageActivity extends DrawerPresenterActivity
             case ACTION_DELETE_FOREVER:
                 ((InboxMessageFragment) fragment).onFailedDeleteForever(resultData);
                 break;
-
+            case ACTION_MARK_AS_READ:
+                ((InboxMessageFragment) fragment).onFailedMarkAsRead(resultData);
+                break;
+            case ACTION_MARK_AS_UNREAD:
+                ((InboxMessageFragment) fragment).onFailedMarkAsUnread(resultData);
+                break;
             default:
                 throw new UnsupportedOperationException("Invalid Type Action");
         }
@@ -254,6 +265,18 @@ public class InboxMessageActivity extends DrawerPresenterActivity
     public void deleteMessageForever(Bundle param) {
         InboxMessageIntentService.startAction(this,
                 param, mReceiver, ACTION_DELETE_FOREVER);
+    }
+
+    @Override
+    public void markAsRead(Bundle param) {
+        InboxMessageIntentService.startAction(this,
+                param, mReceiver, ACTION_MARK_AS_READ);
+    }
+
+    @Override
+    public void markAsUnread(Bundle param) {
+        InboxMessageIntentService.startAction(this,
+                param, mReceiver, ACTION_MARK_AS_UNREAD);
     }
 
     @Override

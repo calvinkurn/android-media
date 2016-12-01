@@ -73,12 +73,16 @@ public class InboxMessageIntentService extends IntentService implements InboxMes
                 case ACTION_UNDO_FLAG_SPAM:
                     handleUndoFlagSpam(bundle, receiver, action);
                     break;
+                case ACTION_MARK_AS_READ:
+                    handleMarkAsRead(bundle, receiver, action);
+                    break;
+                case ACTION_MARK_AS_UNREAD:
+                    handleMarkAsUnread(bundle, receiver, action);
+                    break;
                 default:
                     throw new UnsupportedOperationException("Unknown Action");
             }
-
-        }
-        else{
+        } else{
             CommonUtils.dumper("Failed onHandle Intent");
         }
     }
@@ -511,4 +515,89 @@ public class InboxMessageIntentService extends IntentService implements InboxMes
                     });
         }
     }
+
+    private void handleMarkAsUnread(Bundle bundle, final ResultReceiver receiver, int action) {
+        ActInboxMessagePass param = bundle.getParcelable(PARAM_MARK_AS_UNREAD);
+        final Bundle resultData = new Bundle();
+        resultData.putInt(EXTRA_TYPE, action);
+        resultData.putAll(bundle);
+
+        if (param != null) {
+            actNetworkInteractor.markAsUnread(getBaseContext(), param.getMoveInboxParam(),
+                    new InboxMessageActRetrofitInteractor.ActInboxMessageListener() {
+                        @Override
+                        public void onSuccess() {
+                            receiver.send(STATUS_SUCCESS, resultData);
+
+                        }
+
+                        @Override
+                        public void onTimeout() {
+                            resultData.putString(EXTRA_ERROR, getString(R.string.msg_connection_timeout));
+                            receiver.send(STATUS_ERROR, resultData);
+
+                        }
+
+                        @Override
+                        public void onError(String error) {
+                            resultData.putString(EXTRA_ERROR, error);
+                            receiver.send(STATUS_ERROR, resultData);
+                        }
+
+                        @Override
+                        public void onNullData() {
+
+                        }
+
+                        @Override
+                        public void onNoInternetConnection() {
+                            resultData.putString(EXTRA_ERROR, getString(R.string.msg_no_connection));
+                            receiver.send(STATUS_ERROR, resultData);
+                        }
+                    });
+        }
+    }
+
+    private void handleMarkAsRead(Bundle bundle, final ResultReceiver receiver, int action) {
+        ActInboxMessagePass param = bundle.getParcelable(PARAM_MARK_AS_READ);
+        final Bundle resultData = new Bundle();
+        resultData.putInt(EXTRA_TYPE, action);
+        resultData.putAll(bundle);
+
+        if (param != null) {
+            actNetworkInteractor.markAsRead(getBaseContext(), param.getMoveInboxParam(),
+                    new InboxMessageActRetrofitInteractor.ActInboxMessageListener() {
+                        @Override
+                        public void onSuccess() {
+                            receiver.send(STATUS_SUCCESS, resultData);
+
+                        }
+
+                        @Override
+                        public void onTimeout() {
+                            resultData.putString(EXTRA_ERROR, getString(R.string.msg_connection_timeout));
+                            receiver.send(STATUS_ERROR, resultData);
+
+                        }
+
+                        @Override
+                        public void onError(String error) {
+                            resultData.putString(EXTRA_ERROR, error);
+                            receiver.send(STATUS_ERROR, resultData);
+                        }
+
+                        @Override
+                        public void onNullData() {
+
+                        }
+
+                        @Override
+                        public void onNoInternetConnection() {
+                            resultData.putString(EXTRA_ERROR, getString(R.string.msg_no_connection));
+                            receiver.send(STATUS_ERROR, resultData);
+                        }
+                    });
+        }
+    }
+
 }

@@ -66,6 +66,10 @@ public interface InboxMessageFragmentPresenter {
 
     boolean hasActionListener();
 
+    void markAsRead();
+
+    void markAsUnread();
+
     InboxMessagePass getFilterParam();
 
     void restoreFilterBundle(InboxMessagePass inboxMessagePass);

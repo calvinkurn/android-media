@@ -310,7 +310,7 @@ public class InboxMessageFragmentPresenterImpl implements InboxMessageFragmentPr
                 InboxMessageDetailItem sentMessage = data.getExtras().getParcelable(PARAM_SENT_MESSAGE);
                 int position = data.getIntExtra(PARAM_POSITION, -1);
                 if (position != -1) {
-                    viewListener.getAdapter().getList().get(position).setMessageReadStatus(1);
+                    viewListener.getAdapter().getList().get(position).setMessageReadStatus(STATE_READ);
                     if (sentMessage != null) {
                         viewListener.getAdapter().getList().get(position).setMessageCreateTimeFmt(viewListener.getAdapter().getList().get(position).getMessageCreateTimeFmt());
                         viewListener.getAdapter().getList().get(position).setMessageReply(sentMessage.getMessageReply().toString());
@@ -492,5 +492,27 @@ public class InboxMessageFragmentPresenterImpl implements InboxMessageFragmentPr
     @Override
     public boolean isOnLastPosition(int itemPosition, int visibleItem) {
         return itemPosition == visibleItem;
+    }
+
+    @Override
+    public void markAsRead() {
+        viewListener.disableActions();
+        final ActInboxMessagePass pass = getMoveInboxPass();
+
+        viewListener.showLoadingDialog();
+        Bundle param = new Bundle();
+        param.putParcelable(PARAM_MARK_AS_READ, pass);
+        actListener.markAsRead(param);
+    }
+
+    @Override
+    public void markAsUnread() {
+        viewListener.disableActions();
+        final ActInboxMessagePass pass = getMoveInboxPass();
+
+        viewListener.showLoadingDialog();
+        Bundle param = new Bundle();
+        param.putParcelable(PARAM_MARK_AS_UNREAD, pass);
+        actListener.markAsUnread(param);
     }
 }

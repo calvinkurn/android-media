@@ -14,10 +14,10 @@ import java.util.Map;
 public interface InboxMessageRetrofitInteractor {
 
     void getInboxMessage(@NonNull Context context, @NonNull Map<String, String> params,
-                          @NonNull GetInboxMessageListener listener);
+                         @NonNull GetInboxMessageListener listener);
 
     void getInboxMessageDetail(@NonNull Context context, @NonNull Map<String, String> params,
-                         @NonNull GetInboxMessageDetailListener listener);
+                               @NonNull GetInboxMessageDetailListener listener);
 
     void unSubscribeObservable();
 
