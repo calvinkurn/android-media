@@ -20,6 +20,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.Cart;
 import com.tokopedia.core.GCMListenerService.NotificationListener;
 import com.tokopedia.core.GalleryBrowser;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.tkpd.R;
 
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -124,7 +125,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
     private void sendNotifLocalyticsCallback() {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            if (bundle.containsKey(AppEventTracking.LOCA.NOTIFICATION_BUNDLE)){
+            if (bundle.containsKey(AppEventTracking.LOCA.NOTIFICATION_BUNDLE)) {
                 TrackingUtils.eventLocaNotificationCallback(getIntent());
             }
         }
@@ -206,15 +207,18 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
         });
 
         t.start();
-        drawer.createDrawer(true);
-        drawer.setEnabled(true);
-        drawer.setOnSearchClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onSearchOptionSelected();
-            }
-        });
+        if (!GlobalConfig.isSellerApp()) {
+            drawer.createDrawer(true);
+            drawer.setEnabled(true);
+            drawer.setOnSearchClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onSearchOptionSelected();
+                }
+            });
+        }
     }
+
 
     public void initCreate() {
 
@@ -280,12 +284,12 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
      * send Localytics user attributes
      * by : Hafizh Herdi
      */
-    private void getUserCache(){
+    private void getUserCache() {
         try {
             LocalCacheHandler cacheUser = new LocalCacheHandler(this, TkpdState.CacheName.CACHE_USER);
             TrackingUtils.eventLocaUserAttributes(SessionHandler.getLoginID(this), cacheUser.getString("user_name"), "");
-        }catch (Exception e){
-            CommonUtils.dumper(TAG+" error connecting to GCM Service");
+        } catch (Exception e) {
+            CommonUtils.dumper(TAG + " error connecting to GCM Service");
             TrackingUtils.eventLogAnalytics(ParentIndexHome.class.getSimpleName(), e.getMessage());
         }
     }

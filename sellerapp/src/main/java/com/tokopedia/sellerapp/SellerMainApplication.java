@@ -20,5 +20,6 @@ public class SellerMainApplication extends MainApplication {
     public void onCreate() {
         super.onCreate();
         HockeyAppHelper.setEnableDistribution(BuildConfig.ENABLE_DISTRIBUTION);
+        com.tokopedia.core.util.GlobalConfig.APPLICATION_TYPE = SELLER_APPLICATION;
     }
 }

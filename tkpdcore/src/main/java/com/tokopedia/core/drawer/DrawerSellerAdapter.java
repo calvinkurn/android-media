@@ -3,7 +3,7 @@ package com.tokopedia.core.drawer;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +23,6 @@ import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.drawer.model.DrawerHeader;
 import com.tokopedia.core.drawer.model.DrawerItem;
 import com.tokopedia.core.drawer.model.DrawerItemList;
-import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
 import com.tokopedia.core.people.activity.PeopleInfoDrawerActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
@@ -31,12 +30,10 @@ import com.tokopedia.core.var.TkpdState;
 
 import java.util.List;
 
-import static com.tokopedia.core.drawer.var.UserType.TYPE_PEOPLE;
-
 /**
  * Created by Nisie on 5/08/15.
  */
-public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class DrawerSellerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private String DEFAULT_BANNER = "web_service-shopnocover.png";
     private static final String TAG = "DrawerAdapter";
@@ -60,28 +57,22 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         ImageView icon;
         TextView name;
         TextView deposit;
-        TextView topPoint;
         ImageView coverImg;
         RelativeLayout gradientBlack;
         LinearLayout drawerPointsLayout;
         RelativeLayout saldoLayout;
-        RelativeLayout topPointsLayout;
         View loadingSaldo;
-        View loadingLoyalty;
 
         public HeaderViewHolder(View itemView) {
             super(itemView);
             icon = (ImageView) itemView.findViewById(R.id.user_avatar);
             name = (TextView) itemView.findViewById(R.id.name_text);
             deposit = (TextView) itemView.findViewById(R.id.deposit_text);
-            topPoint = (TextView) itemView.findViewById(R.id.toppoints_text);
             coverImg = (ImageView) itemView.findViewById(R.id.cover_img);
             gradientBlack = (RelativeLayout) itemView.findViewById(R.id.gradient_black);
             drawerPointsLayout = (LinearLayout) itemView.findViewById(R.id.drawer_points_layout);
             saldoLayout = (RelativeLayout) itemView.findViewById(R.id.drawer_saldo);
-            topPointsLayout = (RelativeLayout) itemView.findViewById(R.id.drawer_top_points);
             loadingSaldo = itemView.findViewById(R.id.loading_saldo);
-            loadingLoyalty = itemView.findViewById(R.id.loading_loyalty);
         }
     }
 
@@ -122,7 +113,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-    public DrawerAdapter(Context context, List<RecyclerViewItem> data) {
+    public DrawerSellerAdapter(Context context, List<RecyclerViewItem> data) {
         this.context = context;
         this.data = data;
     }
@@ -172,7 +163,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private HeaderViewHolder createHeaderViewHolder(ViewGroup parent) {
         View itemLayoutView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.drawer_header, null);
+                .inflate(R.layout.drawer_header_seller, null);
         return new HeaderViewHolder(itemLayoutView);
     }
 
@@ -313,9 +304,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         DrawerHeader header = (DrawerHeader) data.get(0);
         holder.drawerPointsLayout.setVisibility(View.VISIBLE);
         holder.name.setVisibility(View.VISIBLE);
-//        holder.favorite.setVisibility(View.VISIBLE);
         holder.icon.setVisibility(View.VISIBLE);
-        //  holder.home.setVisibility(View.VISIBLE);
 
         CommonUtils.dumper("DrawerTag : ShopCover Link : " + header.shopCover);
 
@@ -343,38 +332,11 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             holder.deposit.setVisibility(View.VISIBLE);
         }
 
-        if (header.Loyalty.equals("")) {
-            holder.loadingLoyalty.setVisibility(View.VISIBLE);
-            holder.topPoint.setVisibility(View.GONE);
-        } else {
-            holder.loadingLoyalty.setVisibility(View.GONE);
-            holder.topPoint.setVisibility(View.VISIBLE);
-            holder.topPoint.setText(header.Loyalty);
-        }
-
         holder.saldoLayout.setOnClickListener(onDepositClicked());
-        holder.topPointsLayout.setOnClickListener(onTopPointsClicked(header.LoyaltyUrl));
         holder.name.setOnClickListener(onPeopleClicked());
         holder.icon.setOnClickListener(onPeopleClicked());
 
-//        holder.topupSaldoButton.setOnClickListener(onTopupSaldoClickedListener(generateTopupUrl()));
 
-    }
-
-    private View.OnClickListener onTopPointsClicked(final String loyaltyUrl) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                drawerListener.OnClosed();
-                Bundle bundle = new Bundle();
-                bundle.putString("url", loyaltyUrl);
-                Intent intent = new Intent(context, LoyaltyDetail.class);
-                intent.putExtras(bundle);
-                context.startActivity(intent);
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.TOPPOINTS);
-                finishActivity();
-            }
-        };
     }
 
     private View.OnClickListener onDepositClicked() {
@@ -385,7 +347,6 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 if (drawerPosition != TkpdState.DrawerPosition.PEOPLE_DEPOSIT) {
                     Intent intent = new Intent(context, DepositActivity.class);
                     context.startActivity(intent);
-                    sendGTMNavigationEvent(AppEventTracking.EventLabel.DEPOSIT);
                     finishActivity();
                 }
             }
@@ -394,7 +355,11 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private void finishActivity() {
         if (drawerPosition != TkpdState.DrawerPosition.INDEX_HOME) {
-            ((TActivity) context).finish();
+            if (context instanceof AppCompatActivity) {
+                ((AppCompatActivity) context).finish();
+            } else if (context instanceof TActivity) {
+                ((TActivity) context).finish();
+            }
         }
     }
 
@@ -419,7 +384,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private void bindHeaderGuest(HeaderViewHolder holder, int position) {
         holder.name.setVisibility(View.GONE);
         holder.icon.setVisibility(View.GONE);
-        ImageHandler.loadImageWithId(holder.coverImg,R.drawable.drawer_header_bg);
+        ImageHandler.loadImageWithId(holder.coverImg, R.drawable.drawer_header_bg);
         holder.gradientBlack.setBackgroundResource(0);
         holder.drawerPointsLayout.setVisibility(View.GONE);
     }
@@ -434,23 +399,23 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return data.get(position).getType();
     }
 
-    public void setGroupClickedListener(GroupClickedListener groupListener) {
+    void setGroupClickedListener(GroupClickedListener groupListener) {
         this.groupListener = groupListener;
     }
 
-    public void setChildClickedListener(ChildClickedListener childListener) {
+    void setChildClickedListener(ChildClickedListener childListener) {
         this.childListener = childListener;
     }
 
-    public void setDrawerListener(DrawerListener drawerListener) {
+    void setDrawerListener(DrawerListener drawerListener) {
         this.drawerListener = drawerListener;
     }
 
-    public void setItemSelected(int drawerPosition) {
+    void setItemSelected(int drawerPosition) {
         this.drawerPosition = drawerPosition;
     }
-
-    private void sendGTMNavigationEvent(String label){
+    
+    private void sendGTMNavigationEvent(String label) {
         UnifyTracking.eventDrawerClick(label);
     }
 }

@@ -12,7 +12,7 @@ public class LoginInterruptModel {
     @SerializedName("shop_is_gold")
     int shopIsGold;
     @SerializedName("msisdn_is_verified")
-    int msisdnIsVerified;
+    String msisdnIsVerified;
     @SerializedName("shop_id")
     int shopId;
     @SerializedName("shop_name")
@@ -45,10 +45,10 @@ public class LoginInterruptModel {
     }
 
     public boolean getMsisdnIsVerified() {
-        return msisdnIsVerified == 1;
+        return msisdnIsVerified.equals("1");
     }
 
-    public void setMsisdnIsVerified(int msisdnIsVerified) {
+    public void setMsisdnIsVerified(String msisdnIsVerified) {
         this.msisdnIsVerified = msisdnIsVerified;
     }
 

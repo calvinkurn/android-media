@@ -17,6 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.instabug.library.Instabug;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -28,8 +29,6 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.drawer.interactor.NetworkInteractor;
 import com.tokopedia.core.drawer.interactor.NetworkInteractorImpl;
 import com.tokopedia.core.drawer.model.DrawerHeader;
@@ -43,12 +42,10 @@ import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.myproduct.ManageProduct;
+import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
-import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.router.home.SimpleHomeRouter;
-import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shop.ShopEditorActivity;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -65,16 +62,16 @@ import java.util.List;
  * Created by Nisie on 5/08/15.
  */
 
-public class DrawerVariable {
+public class DrawerVariableSeller extends DrawerVariable {
     private static final String IS_INBOX_OPENED = "IS_INBOX_OPENED";
     private static final String IS_SHOP_OPENED = "IS_SHOP_OPENED";
-    private static final String IS_PEOPLE_OPENED = "IS_PEOPLE_OPENED";
+    private static final String IS_GM_SUBSCRIBE_OPENED = "IS_GM_SUBSCRIBE_OPENED";
 
     private NetworkInteractor networkInteractor;
     public AppCompatActivity context;
     private ViewHolder holder;
     private Model model;
-    private DrawerAdapter adapter;
+    private DrawerSellerAdapter adapter;
     private LinearLayoutManager layoutManager;
 
     private SessionHandler Session;
@@ -87,27 +84,31 @@ public class DrawerVariable {
     private ToolbarVariable toolbar;
     private boolean hasUpdated = false;
 
+    @Override
     public boolean hasUpdated() {
         return hasUpdated;
     }
 
+    @Override
     public void setHasUpdated(boolean hasUpdated) {
         this.hasUpdated = hasUpdated;
     }
 
     public class Model {
         private DrawerHeader header;
-        private DrawerItemList peopleMenu;
+        private DrawerItem sellerHome;
         private DrawerItemList shopMenu;
         private DrawerItemList inboxMenu;
+        //        private DrawerItemList gmSubscribeMenu;
         private List<RecyclerViewItem> data;
 
         public Model() {
             data = new ArrayList<>();
             header = new DrawerHeader(context);
-            peopleMenu = new DrawerItemList("Pembelian", 0, R.drawable.icon_pembelian, TkpdState.DrawerPosition.PEOPLE, true);
+            sellerHome = new DrawerItem("Beranda", 0, R.drawable.icon_home, TkpdState.DrawerPosition.SELLER_INDEX_HOME, false);
             shopMenu = new DrawerItemList("Penjualan", 0, R.drawable.icon_penjualan, TkpdState.DrawerPosition.SHOP, true);
             inboxMenu = new DrawerItemList("Kotak Masuk", 0, R.drawable.icon_inbox, TkpdState.DrawerPosition.INBOX, true);
+//            gmSubscribeMenu = new DrawerItemList("Gold Merchant", 0, R.drawable.ic_goldmerchant_drawer, TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE, true);
         }
 
     }
@@ -123,12 +124,14 @@ public class DrawerVariable {
     }
 
 
-    public DrawerVariable(AppCompatActivity context) {
+    public DrawerVariableSeller(AppCompatActivity context) {
+        super(context);
         this.context = context;
     }
 
-    public void createDrawer(boolean withSearchBox) {
-        initVar(withSearchBox);
+    @Override
+    public void createDrawer() {
+        initVar();
         initView();
         initListener();
         prepareView();
@@ -136,36 +139,33 @@ public class DrawerVariable {
         setDrawer();
     }
 
-    public void createDrawer() {
-        createDrawer(false);
-    }
-
-    public void setOnSearchClickListener(View.OnClickListener listener) {
-        toolbar.setSearchViewClickListener(listener);
-    }
-
-    private void initVar(boolean withSearchBox) {
+    private void initVar() {
         networkInteractor = new NetworkInteractorImpl();
         Session = new SessionHandler(context);
         Cache = new LocalCacheHandler(context, TkpdState.CacheName.CACHE_USER);
         CacheNotif = new LocalCacheHandler(context, "NOTIFICATION_DATA");
         holder = new ViewHolder();
         model = new Model();
-        model.peopleMenu.list = new ArrayList<>();
         model.shopMenu.list = new ArrayList<>();
         model.inboxMenu.list = new ArrayList<>();
-        adapter = new DrawerAdapter(context, model.data);
+//        model.gmSubscribeMenu.list = new ArrayList<>();
+        adapter = new DrawerSellerAdapter(context, model.data);
         layoutManager = new LinearLayoutManager(context);
         animator = new DefaultItemAnimator();
-        if (withSearchBox) {
-            toolbar.createToolbarWithSearchBox();
-        } else if (context instanceof TkpdActivity) {
-            toolbar.createToolbarWithDrawer();
-        }
         initFacade();
-        createPeopleMenu();
         createShopMenu();
         createInboxMenu();
+//        createGoldMerchantMenu();
+    }
+
+    private void createGoldMerchantMenu() {
+//        String gmString = isGoldMerchant() ? context.getString(R.string.extend_gold_merchant) : context.getString(R.string.upgrade_gold_merchant);
+//        model.gmSubscribeMenu.list.add(new DrawerItem(gmString, 0, 0, TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND, false));
+//        model.gmSubscribeMenu.list.add(new DrawerItem("Transaksi Gold Merchant", 0, 0, TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_TRANSACTION, false));
+    }
+
+    private boolean isGoldMerchant() {
+        return Session.isGoldMerchant(context);
     }
 
     private void initView() {
@@ -192,6 +192,7 @@ public class DrawerVariable {
         setEnabled(false);
     }
 
+    @Override
     public void setDrawerPosition(int drawerPosition) {
         this.drawerPosition = drawerPosition;
         adapter.setItemSelected(drawerPosition);
@@ -204,11 +205,11 @@ public class DrawerVariable {
         adapter.setDrawerListener(onDrawer());
         toolbar.setOnDrawerToggleClick(onToggleClickedListener());
         holder.shopLayout.setOnClickListener(onShopClicked());
-        holder.drawerLayout.addDrawerListener(onDrawerListener());
+        holder.drawerLayout.setDrawerListener(onDrawerListener());
     }
 
-    private DrawerAdapter.DrawerListener onDrawer() {
-        return new DrawerAdapter.DrawerListener() {
+    private DrawerSellerAdapter.DrawerListener onDrawer() {
+        return new DrawerSellerAdapter.DrawerListener() {
             @Override
             public void OnClosed() {
                 closeDrawer();
@@ -256,14 +257,13 @@ public class DrawerVariable {
                     intent.putExtras(ShopInfoActivity.createBundle(Session.getShopID(), "", model.header.shopName, model.header.shopIcon, 0));
                     context.startActivity(intent);
                 }
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.SHOP_EN);
                 closeDrawer();
             }
         };
     }
 
-    private DrawerAdapter.GroupClickedListener onGroupClickedListener() {
-        return new DrawerAdapter.GroupClickedListener() {
+    private DrawerSellerAdapter.GroupClickedListener onGroupClickedListener() {
+        return new DrawerSellerAdapter.GroupClickedListener() {
             @Override
             public void OnExpanded(int position) {
                 expandGroup(position);
@@ -310,21 +310,20 @@ public class DrawerVariable {
             case TkpdState.DrawerPosition.INBOX:
                 Cache.putBoolean(IS_INBOX_OPENED, isExpand);
                 break;
-            case TkpdState.DrawerPosition.PEOPLE:
-                Cache.putBoolean(IS_PEOPLE_OPENED, isExpand);
-                break;
             case TkpdState.DrawerPosition.SHOP:
                 Cache.putBoolean(IS_SHOP_OPENED, isExpand);
                 break;
+//            case TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE:
+//                Cache.putBoolean(IS_GM_SUBSCRIBE_OPENED, isExpand);
+//                break;
             default:
                 break;
         }
         Cache.applyEditor();
-        sendGTMNavigationEvent(group.label);
     }
 
-    private DrawerAdapter.ChildClickedListener onChildClickedListener() {
-        return new DrawerAdapter.ChildClickedListener() {
+    private DrawerSellerAdapter.ChildClickedListener onChildClickedListener() {
+        return new DrawerSellerAdapter.ChildClickedListener() {
             @Override
             public void OnClicked(int position) {
                 CommonUtils.dumper("DRAWERTAG : START ACTION AT :" + position + " shopId : " + ((DrawerItem) model.data.get(position)).id + "Drawer Position : " + drawerPosition);
@@ -340,12 +339,17 @@ public class DrawerVariable {
 
     private void startAction(int position) {
         Boolean isFinish = true;
+        Intent intent;
         switch (((DrawerItem) model.data.get(position)).id) {
-            case TkpdState.DrawerPosition.INDEX_HOME:
-                Intent intent = HomeRouter.getHomeActivity(context);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                context.startActivity(intent);
-                break;
+//            case TkpdState.DrawerPosition.SELLER_INDEX_HOME:
+//                context.startActivity(new Intent(context, SellerHomeActivity.class));
+//                break;
+//            case TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND:
+//                context.startActivity(new Intent(context, GMSubscribeActivity.class));
+//                break;
+//            case TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_TRANSACTION:
+//                context.startActivity(new Intent(context, GMSubscribeTransactionActivity.class));
+//                break;
             case TkpdState.DrawerPosition.LOGIN:
             case TkpdState.DrawerPosition.REGISTER:
                 intent = SessionRouter.getLoginActivityIntent(context);
@@ -353,26 +357,6 @@ public class DrawerVariable {
                 intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
                 context.startActivity(intent);
 //                context.finish();
-                break;
-            case TkpdState.DrawerPosition.PEOPLE_CONFIRM_PAYMENT:
-                goToPeopleConfirmPayment();
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.PAYMENT_CONFIRMATION);
-                break;
-            case TkpdState.DrawerPosition.PEOPLE_ORDER_STATUS:
-                goToPeopleOrderStatus();
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.ORDER_STATUS);
-                break;
-            case TkpdState.DrawerPosition.PEOPLE_CONFIRM_SHIPPING:
-                goToPeopleConfirmShipping();
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.RECEIVE_CONFIRMATION);
-                break;
-            case TkpdState.DrawerPosition.PEOPLE_TRANSACTION_CANCELED:
-                goToPeopleTransactionCanceled();
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.CANCELLED_ORDER);
-                break;
-            case TkpdState.DrawerPosition.PEOPLE_TRANSACTION_LIST:
-                goToPeopleTransactionList();
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.PURCHASE_LIST);
                 break;
             case TkpdState.DrawerPosition.SHOP_NEW_ORDER:
                 goToShopNewOrder();
@@ -416,24 +400,11 @@ public class DrawerVariable {
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.HELP);
                 break;
             case TkpdState.DrawerPosition.RESOLUTION_CENTER:
-                intent = InboxRouter.getInboxResCenterActivityIntent(context);
-                context.startActivity(intent);
+                context.startActivity(InboxResCenterActivity.createIntent(context));
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.RESOLUTION_CENTER);
                 break;
             case TkpdState.DrawerPosition.DEVELOPER_OPTIONS:
                 startIntent(DeveloperOptions.class);
-                break;
-            case TkpdState.DrawerPosition.WISHLIST:
-//                Bundle bundle = new Bundle();
-//                bundle.putInt(SimpleHomeActivity.FRAGMENT_TYPE, SimpleHomeActivity.WISHLIST_FRAGMENT);
-//                Intent wishList = new Intent(context, SimpleHomeActivity.class);
-//                wishList.putExtras(bundle);
-
-                Intent wishList = SimpleHomeRouter
-                        .getSimpleHomeActivityIntent(context, SimpleHomeRouter.WISHLIST_FRAGMENT);
-
-                context.startActivity(wishList);
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.WISHLIST);
                 break;
             case TkpdState.DrawerPosition.SETTINGS:
                 context.startActivity(new Intent(context, ManageGeneral.class));
@@ -441,10 +412,14 @@ public class DrawerVariable {
                 break;
             case TkpdState.DrawerPosition.CONTACT_US:
                 intent = InboxRouter.getContactUsActivityIntent(context);
-                if(TrackingUtils.getBoolean(AppEventTracking.GTM.CREATE_TICKET)) {
+                if (TrackingUtils.getBoolean(AppEventTracking.GTM.CREATE_TICKET)) {
                     intent.putExtra("link", "https://tokopedia.com/contact-us-android");
                 }
                 context.startActivity(intent);
+                break;
+            case TkpdState.DrawerPosition.REPORT:
+                isFinish = false;
+                Instabug.invoke();
                 break;
             case TkpdState.DrawerPosition.LOGOUT:
                 isFinish = false;
@@ -481,6 +456,10 @@ public class DrawerVariable {
     }
 
     private void goToShopNewOrder() {
+        goToShopNewOrder(context);
+    }
+
+    public static void goToShopNewOrder(Context context) {
         Intent intent = SellerRouter.getActivitySellingTransaction(context);
         Bundle bundle = new Bundle();
         bundle.putInt("tab", 1);
@@ -489,33 +468,12 @@ public class DrawerVariable {
         context.startActivity(intent);
     }
 
-    private void goToPeopleTransactionCanceled() {
-        context.startActivity(TransactionPurchaseRouter.createIntentTxCanceled(context));
-    }
-
-    private void goToPeopleTransactionList() {
-        context.startActivity(TransactionPurchaseRouter.createIntentTxAll(context));
-    }
-
-    private void goToPeopleConfirmShipping() {
-        context.startActivity(TransactionPurchaseRouter.createIntentConfirmShipping(context));
-    }
-
-    private void goToPeopleOrderStatus() {
-        context.startActivity(TransactionPurchaseRouter.createIntentTxStatus(context));
-    }
-
-    private void goToPeopleConfirmPayment() {
-        context.startActivity(TransactionPurchaseRouter.createIntentConfirmPayment(context));
-    }
-
-    private void goToManageProduct() {
-
-    }
-
     private void startIntent(Class<?> cls) {
         context.startActivity(new Intent(context, cls));
+    }
 
+    public static void startIntent(Context context, Class<?> cls) {
+        context.startActivity(new Intent(context, cls));
     }
 
 
@@ -528,26 +486,6 @@ public class DrawerVariable {
         return Session.getLoginID() != null && Session.isV4Login();
     }
 
-    private void createDataGuest() {
-        clearData();
-        CommonUtils.dumper("DrawerTag : CreateDataGuest");
-
-        model.data.add(new DrawerHeader());
-        model.data.add(new DrawerItem("Beranda", 0, 0, TkpdState.DrawerPosition.INDEX_HOME, true));
-        model.data.add(new DrawerSeparator());
-        model.data.add(new DrawerItem("Masuk", 0, 0, TkpdState.DrawerPosition.LOGIN, true));
-        model.data.add(new DrawerSeparator());
-        model.data.add(new DrawerItem("Daftar", 0, 0, TkpdState.DrawerPosition.REGISTER, true));
-        model.data.add(new DrawerSeparator());
-        if (BuildConfig.DEBUG) {
-            model.data.add(new DrawerItem("Developer Options", 0, 0, TkpdState.DrawerPosition.DEVELOPER_OPTIONS, true));
-        }
-        //      model.data.add(new DrawerItem("Developer Options", 0, 0, TkpdState.DrawerPosition.DEVELOPER_OPTIONS, true));
-        adapter.notifyDataSetChanged();
-
-
-    }
-
     private void clearData() {
         model.data.clear();
     }
@@ -556,22 +494,21 @@ public class DrawerVariable {
         if (Cache.getBoolean(IS_INBOX_OPENED, false)) {
             expandGroup(getDrawerListPosition(TkpdState.DrawerPosition.INBOX));
         }
-        if (Cache.getBoolean(IS_PEOPLE_OPENED, false)) {
-            expandGroup(getDrawerListPosition(TkpdState.DrawerPosition.PEOPLE));
-        }
         if (Cache.getBoolean(IS_SHOP_OPENED, false)) {
             expandGroup(getDrawerListPosition(TkpdState.DrawerPosition.SHOP));
         }
+//        if (Cache.getBoolean(IS_GM_SUBSCRIBE_OPENED, false)){
+//            expandGroup(getDrawerListPosition(TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE));
+//        }
     }
 
     private void setSelected() {
         adapter.setItemSelected(drawerPosition);
     }
 
-
+    @Override
     public void updateData() {
         clearData();
-        hasUpdated = true;
 
         if (isLogin()) {
             setCache();
@@ -584,7 +521,6 @@ public class DrawerVariable {
             }
 
             getDeposit();
-            getNotification();
 
             if (interval > 9000 || model.header.Loyalty.equals("")) {
                 getLoyalty();
@@ -602,21 +538,44 @@ public class DrawerVariable {
             holder.footerShadow.setVisibility(View.GONE);
         }
 
+        getNotification();
         adapter.notifyDataSetChanged();
         holder.recyclerView.smoothScrollToPosition(0);
     }
 
-    public void updateBalance() {
-        getLoyalty();
+    private void createDataGuest() {
+        clearData();
+        CommonUtils.dumper("DrawerTag : CreateDataGuest");
+
+        model.data.add(new DrawerHeader());
+        model.data.add(new DrawerItem("Beranda", 0, 0, TkpdState.DrawerPosition.INDEX_HOME, true));
+        model.data.add(new DrawerSeparator());
+        model.data.add(new DrawerItem("Masuk", 0, 0, TkpdState.DrawerPosition.LOGIN, true));
+        model.data.add(new DrawerSeparator());
+        model.data.add(new DrawerItem("Daftar", 0, 0, TkpdState.DrawerPosition.REGISTER, true));
+        model.data.add(new DrawerSeparator());
+        if (TrackingUtils.getBoolean(AppEventTracking.GTM.REPORT)) {
+            model.data.add(new DrawerItem("Laporkan", 0, 0, TkpdState.DrawerPosition.REPORT, true));
+        }
+        if (BuildConfig.DEBUG) {
+            model.data.add(new DrawerItem("Developer Options", 0, 0, TkpdState.DrawerPosition.DEVELOPER_OPTIONS, true));
+        }
+        adapter.notifyDataSetChanged();
+
+
     }
 
     private void setCache() {
         setCacheHeader();
-        setCachePeopleMenu();
         setCacheShopMenu();
         setCacheInboxMenu();
+        setCacheGMSubscribeMenu();
         setCacheFooter();
         adapter.notifyDataSetChanged();
+    }
+
+    private void setCacheGMSubscribeMenu() {
+//        model.gmSubscribeMenu.isExpanded = CacheNotif.getBoolean(IS_GM_SUBSCRIBE_OPENED, false);
     }
 
     private void setCacheFooter() {
@@ -642,15 +601,6 @@ public class DrawerVariable {
         model.header.LoyaltyUrl = Cache.getString("loyalty_url", "");
     }
 
-    private void setCachePeopleMenu() {
-        model.peopleMenu.isExpanded = CacheNotif.getBoolean("IS_PEOPLE_OPENED", false);
-        model.peopleMenu.list.get(0).notif = CacheNotif.getInt("payment_conf", 0);
-        model.peopleMenu.list.get(1).notif = CacheNotif.getInt("order_status", 0);
-        model.peopleMenu.list.get(2).notif = CacheNotif.getInt("delivery_confirm", 0);
-        model.peopleMenu.list.get(3).notif = CacheNotif.getInt("reorder", 0);
-
-    }
-
     private void setCacheShopMenu() {
         model.shopMenu.isExpanded = CacheNotif.getBoolean("IS_SHOP_OPENED", false);
         model.shopMenu.list.get(0).notif = CacheNotif.getInt("new_order", 0);
@@ -669,19 +619,11 @@ public class DrawerVariable {
 
     }
 
-    private void createPeopleMenu() {
-        model.peopleMenu.list.add(new DrawerItem("Konfirmasi Pembayaran", 0, 0, TkpdState.DrawerPosition.PEOPLE_CONFIRM_PAYMENT, false));
-        model.peopleMenu.list.add(new DrawerItem("Status Pemesanan", 0, 0, TkpdState.DrawerPosition.PEOPLE_ORDER_STATUS, false));
-        model.peopleMenu.list.add(new DrawerItem("Konfirmasi Penerimaan", 0, 0, TkpdState.DrawerPosition.PEOPLE_CONFIRM_SHIPPING, false));
-        model.peopleMenu.list.add(new DrawerItem("Transaksi Dibatalkan", 0, 0, TkpdState.DrawerPosition.PEOPLE_TRANSACTION_CANCELED, false));
-        model.peopleMenu.list.add(new DrawerItem("Daftar Pembelian", 0, 0, TkpdState.DrawerPosition.PEOPLE_TRANSACTION_LIST, false));
-    }
-
     private void createShopMenu() {
-        model.shopMenu.list.add(new DrawerItem("Order Baru", 0, 0, TkpdState.DrawerPosition.SHOP_NEW_ORDER, false));
-        model.shopMenu.list.add(new DrawerItem("Konfirmasi Pengiriman", 0, 0, TkpdState.DrawerPosition.SHOP_CONFIRM_SHIPPING, false));
-        model.shopMenu.list.add(new DrawerItem("Status Pengiriman", 0, 0, TkpdState.DrawerPosition.SHOP_SHIPPING_STATUS, false));
-        model.shopMenu.list.add(new DrawerItem("Daftar Penjualan", 0, 0, TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST, false));
+        model.shopMenu.list.add(new DrawerItem("Order baru", 0, 0, TkpdState.DrawerPosition.SHOP_NEW_ORDER, false));
+        model.shopMenu.list.add(new DrawerItem("Konfirmasi pengiriman", 0, 0, TkpdState.DrawerPosition.SHOP_CONFIRM_SHIPPING, false));
+        model.shopMenu.list.add(new DrawerItem("Status pengiriman", 0, 0, TkpdState.DrawerPosition.SHOP_SHIPPING_STATUS, false));
+        model.shopMenu.list.add(new DrawerItem("Daftar penjualan", 0, 0, TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST, false));
         model.shopMenu.list.add(new DrawerSeparator());
         model.shopMenu.list.add(new DrawerItem("Daftar Produk", 0, 0, TkpdState.DrawerPosition.MANAGE_PRODUCT, true));
         model.shopMenu.list.add(new DrawerItem("Etalase Toko", 0, 0, TkpdState.DrawerPosition.MANAGE_ETALASE, true));
@@ -689,29 +631,43 @@ public class DrawerVariable {
 
     private void createInboxMenu() {
         model.inboxMenu.list.add(new DrawerItem("Pesan", 0, 0, TkpdState.DrawerPosition.INBOX_MESSAGE, false));
-        model.inboxMenu.list.add(new DrawerItem("Diskusi Produk", 0, 0, TkpdState.DrawerPosition.INBOX_TALK, false));
+        model.inboxMenu.list.add(new DrawerItem("Diskusi produk", 0, 0, TkpdState.DrawerPosition.INBOX_TALK, false));
         model.inboxMenu.list.add(new DrawerItem("Ulasan", 0, 0, TkpdState.DrawerPosition.INBOX_REVIEW, false));
-        model.inboxMenu.list.add(new DrawerItem("Layanan Pengguna", 0, 0, TkpdState.DrawerPosition.INBOX_TICKET, false));
-        model.inboxMenu.list.add(new DrawerItem("Pusat Resolusi", 0, 0, TkpdState.DrawerPosition.RESOLUTION_CENTER, false));
+        model.inboxMenu.list.add(new DrawerItem("Layanan pengguna", 0, 0, TkpdState.DrawerPosition.INBOX_TICKET, false));
+        model.inboxMenu.list.add(new DrawerItem("Pusat resolusi", 0, 0, TkpdState.DrawerPosition.RESOLUTION_CENTER, false));
     }
 
     private void addMenuToDrawer() {
-        model.data.add(model.header);
-        model.data.add(new DrawerItem("Beranda", 0, R.drawable.icon_home, TkpdState.DrawerPosition.INDEX_HOME, false));
-        model.data.add(new DrawerItem("Wishlist", 0, R.drawable.icon_wishlist, TkpdState.DrawerPosition.WISHLIST, false));
-        model.data.add(model.inboxMenu);
-        model.data.add(model.peopleMenu);
-        if (!Session.getShopID().equals("0") && !Session.getShopID().equals("")) {
+        if (Session.getShopID().isEmpty() || Session.getShopID().equals("0")) {
+            // Means it is a buyer so inflate seller navigation menu
+            model.data.add(model.header);
+            model.data.add(new DrawerItem("Beranda", 0, R.drawable.icon_home, TkpdState.DrawerPosition.INDEX_HOME,
+                    false));
+            model.data.add(new DrawerItem("Wishlist", 0, R.drawable.icon_wishlist, TkpdState.DrawerPosition.WISHLIST,
+                    false));
+            model.data.add(model.inboxMenu);
+            model.data.add(new DrawerItem("Pengaturan", 0, R.drawable.icon_setting, TkpdState.DrawerPosition.SETTINGS,
+                    false));
+            model.data.add(new DrawerItem("Keluar", 0, R.drawable.ic_menu_logout, TkpdState.DrawerPosition.LOGOUT,
+                    false));
+        } else {
+            model.data.add(model.header);
+            model.data.add(model.sellerHome);
+//            model.data.add(model.gmSubscribeMenu);
+            model.data.add(model.inboxMenu);
             model.data.add(model.shopMenu);
+            model.data.add(new DrawerItem("Pengaturan", 0, R.drawable.icon_setting, TkpdState.DrawerPosition.SETTINGS,
+                    false));
+            if (!TrackingUtils.getBoolean(AppEventTracking.GTM.CONTACT_US)) {
+                model.data.add(new DrawerItem("Hubungi Kami", 0, R.drawable.ic_contact_us, TkpdState.DrawerPosition.CONTACT_US, false));
+            }
+            model.data.add(new DrawerItem("Keluar", 0, R.drawable.ic_menu_logout, TkpdState.DrawerPosition.LOGOUT,
+                    false));
         }
-        model.data.add(new DrawerItem("Pengaturan", 0, R.drawable.icon_setting, TkpdState.DrawerPosition.SETTINGS, false));
-        if (!TrackingUtils.getBoolean(AppEventTracking.GTM.CONTACT_US)) {
-            model.data.add(new DrawerItem("Hubungi Kami", 0, R.drawable.ic_contact_us, TkpdState.DrawerPosition.CONTACT_US, false));
-        }
-        model.data.add(new DrawerItem("Keluar", 0, R.drawable.ic_menu_logout, TkpdState.DrawerPosition.LOGOUT, false));
-        if (BuildConfig.DEBUG & MainApplication.isDebug()) {
-            model.data.add(new DrawerItem("Developer Options", 0, android.R.drawable.stat_sys_warning, TkpdState.DrawerPosition.DEVELOPER_OPTIONS, false));
-        }
+//                if (BuildConfig.DEBUG & MainApplication.isDebug()) {
+//            model.data.add(new DrawerItem("Developer Options", 0, android.R.drawable.stat_sys_warning,
+//                    TkpdState.DrawerPosition.DEVELOPER_OPTIONS, false));
+//        }
     }
 
     private void getLoyalty() {
@@ -765,6 +721,7 @@ public class DrawerVariable {
         });
     }
 
+    @Override
     public void getDeposit() {
         networkInteractor.getDeposit(context, new NetworkInteractor.DepositListener() {
             @Override
@@ -797,6 +754,7 @@ public class DrawerVariable {
         adapter.notifyDataSetChanged();
     }
 
+    @Override
     public void getNotification() {
         if (!isLogin()) {
             return;
@@ -804,7 +762,6 @@ public class DrawerVariable {
         networkInteractor.getNotification(context, new NetworkInteractor.NotificationListener() {
             @Override
             public void onSuccess(NotificationItem notificationItem) {
-                setNotificationPeople(notificationItem);
                 setNotificationShop(notificationItem);
                 setNotificationInbox(notificationItem);
                 toolbar.updateToolbar(notificationItem);
@@ -816,29 +773,6 @@ public class DrawerVariable {
 
             }
         });
-    }
-
-
-    private void setNotificationPeople(NotificationItem notificationItem) {
-        model.peopleMenu.notif = notificationItem.getNotifPurchase();
-        for (DrawerItem item : model.peopleMenu.list) {
-            switch (item.id) {
-                case TkpdState.DrawerPosition.PEOPLE_CONFIRM_PAYMENT:
-                    item.notif = notificationItem.payment_conf;
-                    break;
-                case TkpdState.DrawerPosition.PEOPLE_ORDER_STATUS:
-                    item.notif = notificationItem.order_status;
-                    break;
-                case TkpdState.DrawerPosition.PEOPLE_CONFIRM_SHIPPING:
-                    item.notif = notificationItem.delivery_confirm;
-                    break;
-                case TkpdState.DrawerPosition.PEOPLE_TRANSACTION_CANCELED:
-                    item.notif = notificationItem.reorder;
-                    break;
-                default:
-                    item.notif = 0;
-            }
-        }
     }
 
     private void setNotificationShop(NotificationItem notificationItem) {
@@ -896,23 +830,27 @@ public class DrawerVariable {
                 } else {
                     openDrawer();
                 }
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.NAVIGATION_DRAWER);
             }
         };
     }
 
+    @Override
     public void closeDrawer() {
-        holder.drawerLayout.closeDrawer(GravityCompat.START);
+        if (holder != null && holder.drawerLayout != null)
+            holder.drawerLayout.closeDrawer(GravityCompat.START);
     }
 
+    @Override
     public void openDrawer() {
         holder.drawerLayout.openDrawer(GravityCompat.START);
     }
 
+    @Override
     public void setToolbar(ToolbarVariable toolbar) {
         this.toolbar = toolbar;
     }
 
+    @Override
     public void setEnabled(Boolean isEnabled) {
         if (isEnabled) {
             holder.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
@@ -921,6 +859,7 @@ public class DrawerVariable {
         }
     }
 
+    @Override
     public int getDrawerListPosition(int id) {
         int position = 0;
         for (int i = 1; i < model.data.size(); i++) {
@@ -933,20 +872,18 @@ public class DrawerVariable {
         return position;
     }
 
+    @Override
     public boolean isOpened() {
         return holder.drawerLayout.isDrawerOpen(GravityCompat.START);
     }
 
 
+    @Override
     public void unsubscribe() {
         networkInteractor.unsubscribe();
     }
 
     private void sendGTMNavigationEvent(String label) {
         UnifyTracking.eventDrawerClick(label);
-    }
-
-    public static void startIntent(Context context, Class<?> cls) {
-        context.startActivity(new Intent(context, cls));
     }
 }
