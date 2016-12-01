@@ -450,7 +450,6 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
         super.onDestroyView();
         presenter.unSubscribeFacade();
         KeyboardHandler.DropKeyboard(getActivity(),getView());
-        unbinder.unbind();
         dismissSnackbar();
     }
 
