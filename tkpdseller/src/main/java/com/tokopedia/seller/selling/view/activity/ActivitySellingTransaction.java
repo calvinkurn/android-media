@@ -59,7 +59,6 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
     ViewPager mViewPager;
     private TabLayout indicator;
     private TextView sellerTickerView;
-    private TextView sellerTickerHyperlinkView;
 
     private String[] CONTENT;
     private List<Fragment> fragmentList;
@@ -91,8 +90,6 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
     private void initView() {
         sellerTickerView = (TextView) findViewById(R.id.seller_ticker);
         sellerTickerView.setMovementMethod(new ScrollingMovementMethod());
-        sellerTickerHyperlinkView = (TextView) findViewById(R.id.seller_ticker_hyperlink);
-        sellerTickerHyperlinkView.setMovementMethod(new ScrollingMovementMethod());
         initSellerTicker();
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setOffscreenPageLimit(4);
@@ -102,10 +99,8 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
     private void initSellerTicker() {
         GTMContainer gtmContainer = GTMContainer.newInstance(this);
 
-        if(true){
-            setTextViewHTML(sellerTickerHyperlinkView, "silahkan download Seller app. <a href='com.tokopedia.sellerapp'>Klik di sini</a>");
-        } else if (gtmContainer.getString("is_show_ticker_sales").equalsIgnoreCase("true")) {
-            String message = gtmContainer.getString("ticker_text_sales");
+        if(gtmContainer.getString("is_show_ticker_sales").equalsIgnoreCase("true")){
+            String message = gtmContainer.getString("ticker_text_sales_rich");
             showTickerGTM(message);
         } else {
             showTickerGTM(null);
@@ -143,18 +138,6 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
         }
     }
 
-    protected void setTextViewHTML(TextView text, String html)
-    {
-        CharSequence sequence = Html.fromHtml(html);
-        SpannableStringBuilder strBuilder = new SpannableStringBuilder(sequence);
-        URLSpan[] urls = strBuilder.getSpans(0, sequence.length(), URLSpan.class);
-        for(URLSpan span : urls) {
-            makeLinkClickable(strBuilder, span);
-        }
-        text.setText(strBuilder);
-        text.setMovementMethod(LinkMovementMethod.getInstance());
-    }
-
     public void startNewActivity(String packageName) {
         Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
         if (intent != null) {
@@ -172,10 +155,15 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
 
     private void showTickerGTM(String message) {
         if (message != null) {
-            sellerTickerView.setText(Html.fromHtml(message));
+            CharSequence sequence = Html.fromHtml(message);
+            SpannableStringBuilder strBuilder = new SpannableStringBuilder(sequence);
+            URLSpan[] urls = strBuilder.getSpans(0, sequence.length(), URLSpan.class);
+            for(URLSpan span : urls) {
+                makeLinkClickable(strBuilder, span);
+            }
+            sellerTickerView.setText(strBuilder);
+            sellerTickerView.setMovementMethod(LinkMovementMethod.getInstance());
             sellerTickerView.setVisibility(View.VISIBLE);
-            sellerTickerView.setAutoLinkMask(0);
-            Linkify.addLinks(sellerTickerView, Linkify.WEB_URLS);
         } else {
             sellerTickerView.setVisibility(View.GONE);
         }
