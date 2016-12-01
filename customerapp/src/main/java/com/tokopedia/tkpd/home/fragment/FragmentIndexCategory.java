@@ -213,14 +213,7 @@ public class FragmentIndexCategory extends Fragment implements
             holder.bannerIndicator.setFillColor(ContextCompat.getColor(getContext(), R.color.green_400));
             holder.bannerIndicator.setStrokeColor(ContextCompat.getColor(getContext(), R.color.green_500));
             holder.bannerIndicator.setViewPager(holder.bannerViewPager);
-            holder.promoLink.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(getActivity(), BannerWebView.class);
-                    intent.putExtra("url", "https://www.tokopedia.com/promo/?flag_app=1");
-                    startActivity(intent);
-                }
-            });
+            holder.promoLink.setOnClickListener(onPromoLinkClicked());
             model.listBanner.clear();
             model.listBanner.addAll(promoList);
             pagerAdapter.notifyDataSetChanged();
