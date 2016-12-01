@@ -19,6 +19,7 @@ import android.view.Window;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.customView.EndLessScrollBehavior;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.adapter.ManagePeopleAddressAdapter;
@@ -28,7 +29,6 @@ import com.tokopedia.core.manage.people.address.model.AddressModel;
 import com.tokopedia.core.manage.people.address.presenter.ManagePeopleAddressFragmentImpl;
 import com.tokopedia.core.manage.people.address.presenter.ManagePeopleAddressFragmentPresenter;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.rescenter.inbox.customviews.EndLessScrollBehavior;
 import com.tokopedia.core.util.RefreshHandler;
 
 import java.util.ArrayList;

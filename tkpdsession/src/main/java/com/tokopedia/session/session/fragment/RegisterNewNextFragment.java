@@ -36,6 +36,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.base.BaseFragment;
@@ -414,7 +415,7 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
         switch (type){
             case DownloadService.REGISTER:
 
-                TrackingUtils.fragmentBasedAFEvent(this);
+                TrackingUtils.fragmentBasedAFEvent(SessionRouter.IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT);
 
                 RegisterSuccessModel registerSuccessModel = Parcels.unwrap(data.getParcelable(DownloadService.REGISTER_MODEL_KEY));
                 switch (registerSuccessModel.getIsActive()){
@@ -474,7 +475,6 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
         super.onDestroyView();
         presenter.unSubscribe();
         KeyboardHandler.DropKeyboard(getActivity(),getView());
-        unbinder.unbind();
     }
 
     private void sendLocalyticsRegisterEvent(int userId){

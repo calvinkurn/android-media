@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:background="@color/tkpd_bg_color_grery"
-    tools:context=".rescenter.create.fragment.ChooseProductTroubleFragment">
+    android:background="@color/tkpd_bg_color_grery">
 
     <ProgressBar
         android:id="@+id/include_loading"

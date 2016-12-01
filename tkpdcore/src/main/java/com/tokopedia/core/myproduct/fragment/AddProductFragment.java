@@ -62,7 +62,9 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SimpleSpinnerAdapter;
 import com.tkpd.library.utils.TwitterHandler;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.myproduct.ManageProduct;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -152,7 +154,7 @@ import static com.tokopedia.core.myproduct.presenter.ImageGalleryImpl.Pair;
  * Created by m.normansyah on 03/12/2015.
  * start support for multi fragment. 8/4/2016
  */
-public class AddProductFragment extends Fragment implements AddProductView, DelegateOnClick {
+public class AddProductFragment extends TkpdBaseV4Fragment implements AddProductView, DelegateOnClick {
 
     public static final int DEFAULT_INVALID_VALUE = -999;
     public static final String PRODUCT_TYPE = "PRODUCT_TYPE";
@@ -166,6 +168,10 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
     public static final String NO_CATALOG_OPTION = "Tidak menggunakan katalog";
     private Unbinder unbinder;
 
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_ADD_PRODUCT;
+    }
 
     public void removeImageSelected(int i) {
         ImageModel imageModel = photos.get(i);
@@ -1775,7 +1781,7 @@ public class AddProductFragment extends Fragment implements AddProductView, Dele
         dismissErrorProductName();
         dismissPriceError();
         dismissWeightError();
-        ScreenTracking.screen(this);
+        ScreenTracking.screen(getScreenName());
         addProduct.setupNameDebounceListener(getActivity());
     }
 

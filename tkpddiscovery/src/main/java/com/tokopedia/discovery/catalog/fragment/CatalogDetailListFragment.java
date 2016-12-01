@@ -108,6 +108,11 @@ public class CatalogDetailListFragment extends BasePresenterFragment<ICatalogDet
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     protected boolean getOptionsMenuEnable() {
         return false;
     }

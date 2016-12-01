@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:background="@color/tkpd_bg_color_grery"
-    tools:context="com.tokopedia.core.rescenter.create.fragment.ChooseSolutionFragment">
+    android:background="@color/tkpd_bg_color_grery">
 
     <ProgressBar
         android:id="@+id/include_loading"
@@ -52,14 +51,14 @@
                     android:text="@string/title_shop"
                     android:textSize="@dimen/font_small" />
 
-                <com.tokopedia.core.rescenter.create.customview.AttachmentSectionCreateResCenterView
+                <com.tokopedia.inbox.rescenter.create.customview.AttachmentSectionCreateResCenterView
                     android:id="@+id/view_attachment_section"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_small"
                     />
 
-                <com.tokopedia.core.rescenter.create.customview.SolutionSectionCreateResCenterView
+                <com.tokopedia.inbox.rescenter.create.customview.SolutionSectionCreateResCenterView
                     android:id="@+id/view_solution_section"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

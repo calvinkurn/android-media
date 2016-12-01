@@ -36,6 +36,7 @@ import com.tokopedia.core.myproduct.ProductActivity;
 import com.tokopedia.core.myproduct.fragment.AddProductFragment;
 import com.tokopedia.core.onboarding.OnboardingActivity;
 import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
@@ -542,7 +543,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
     }
 
     private void TrackFirstTime() {
-        TrackingUtils.activityBasedAFEvent(TrackingUtils.PARENT_HOME_ACTIVITY);
+        TrackingUtils.activityBasedAFEvent(HomeRouter.IDENTIFIER_HOME_ACTIVITY);
 
         LocalCacheHandler cache = new LocalCacheHandler(this, TkpdCache.FIRST_TIME);
         cache.putBoolean(TkpdCache.Key.IS_FIRST_TIME, true);

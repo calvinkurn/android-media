@@ -25,7 +25,9 @@ import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.network.BasicNetworkHandler;
 import com.tokopedia.core.network.TkpdNetworkURLHandler;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.rescenter.onboarding.FreeReturnOnboardingActivity;
+import com.tokopedia.core.onboarding.ConstantOnBoarding;
+import com.tokopedia.core.onboarding.FreeReturnOnboardingActivity;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -226,7 +228,7 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
                 SessionHandler.setFirstTimeUser(DeveloperOptions.this, true);
                 Toast.makeText(DeveloperOptions.this, "OnBoarding Resetted", Toast.LENGTH_SHORT).show();
                 LocalCacheHandler.clearCache(DeveloperOptions.this,
-                        FreeReturnOnboardingActivity.CACHE_FREE_RETURN);
+                        ConstantOnBoarding.CACHE_FREE_RETURN);
 
 
 
@@ -235,7 +237,7 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
         testOnBoarding.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(FreeReturnOnboardingActivity.newInstance(getBaseContext(), "1234"),789);
+                startActivityForResult(InboxRouter.getFreeReturnOnBoardingActivityIntent(getBaseContext(), "1234"),789);
             }
         });
     }

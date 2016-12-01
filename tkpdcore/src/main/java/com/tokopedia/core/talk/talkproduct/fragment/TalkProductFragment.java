@@ -402,11 +402,6 @@ public class TalkProductFragment extends BasePresenterFragment<TalkProductPresen
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-    }
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
         presenter.unSubscribe();

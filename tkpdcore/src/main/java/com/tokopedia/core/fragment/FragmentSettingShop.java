@@ -15,7 +15,9 @@ import com.tokopedia.core.EtalaseShopEditor;
 import com.tokopedia.core.ManageShopAddress;
 import com.tokopedia.core.PaymentEditor;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.core.customadapter.SimpleListTabViewAdapter;
 import com.tokopedia.core.manage.shop.notes.activity.ManageShopNotesActivity;
 import com.tokopedia.core.shipping.EditShippingActivity;
@@ -23,7 +25,7 @@ import com.tokopedia.core.shop.ShopEditorActivity;
 
 import java.util.ArrayList;
 
-public class FragmentSettingShop extends Fragment{
+public class FragmentSettingShop extends TkpdFragment{
 	private SimpleListTabViewAdapter lvAdapter;
 	private ListView lvManage;
 	private ArrayList<String> Name = new ArrayList<String>();
@@ -32,6 +34,12 @@ public class FragmentSettingShop extends Fragment{
 	public static FragmentSettingShop newInstance() {
 		return new FragmentSettingShop();
 	}
+
+	@Override
+	protected String getScreenName() {
+		return AppScreen.SCREEN_SETTING_MANAGE_SHOP;
+	}
+
 	@Override
 	public void onAttach(Activity activity){
 		super.onAttach(activity);
@@ -100,7 +108,7 @@ public class FragmentSettingShop extends Fragment{
 	@Override
 	public void setUserVisibleHint(boolean isVisibleToUser) {
 		if (isVisibleToUser && isAdded() && getActivity() !=null) {
-			ScreenTracking.screen(this);
+			ScreenTracking.screen(getScreenName());
 		}
 		super.setUserVisibleHint(isVisibleToUser);
 	}

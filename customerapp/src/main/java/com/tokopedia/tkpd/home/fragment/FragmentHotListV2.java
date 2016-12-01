@@ -16,9 +16,11 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.tkpd.R;
-
+import com.tokopedia.core.R;
+import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
@@ -49,7 +51,7 @@ import butterknife.Unbinder;
  * 3. enable retry policy
  * 4. caching page one
  */
-public class FragmentHotListV2 extends Fragment implements HotListView {
+public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView {
     public static final String FRAGMENT_TAG = "FragmentHotListV2";
     
     private HotListAdapter adapter;
@@ -59,6 +61,12 @@ public class FragmentHotListV2 extends Fragment implements HotListView {
     @BindView(R.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
     private RecyclerView.LayoutManager layoutManager;
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_HOME_HOTLIST;
+    }
+
     private Unbinder unbinder;
 
     @Override
@@ -208,7 +216,7 @@ public class FragmentHotListV2 extends Fragment implements HotListView {
         if (isVisibleToUser && isAdded() && getActivity() !=null) {
             hotList.setLocalyticFlow(getActivity());
             hotList.sendAppsFlyerData(getActivity());
-            ScreenTracking.screen(this);
+            ScreenTracking.screen(getScreenName());
         }
         super.setUserVisibleHint(isVisibleToUser);
     }

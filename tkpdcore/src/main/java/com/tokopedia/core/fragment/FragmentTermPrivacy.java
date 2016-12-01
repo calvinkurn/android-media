@@ -51,6 +51,11 @@ public class FragmentTermPrivacy extends TkpdFragment {
 
     }
 
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
+
     private View rootView;
     private ViewHolder holder;
     private WebViewHandler webViewHandler;
