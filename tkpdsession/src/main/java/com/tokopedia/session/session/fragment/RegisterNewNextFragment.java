@@ -474,7 +474,6 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
         super.onDestroyView();
         presenter.unSubscribe();
         KeyboardHandler.DropKeyboard(getActivity(),getView());
-        unbinder.unbind();
     }
 
     private void sendLocalyticsRegisterEvent(int userId){
