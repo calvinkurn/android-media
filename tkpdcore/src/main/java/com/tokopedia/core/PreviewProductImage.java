@@ -12,10 +12,12 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.Html;
 import android.util.Log;
@@ -263,8 +265,17 @@ public class PreviewProductImage extends TActivity {
                 } else {
                     Intent intent = new Intent();
                     intent.setAction(Intent.ACTION_VIEW);
+                    String packageName = PreviewProductImage.this.getApplicationContext().getPackageName();
                     File file = new File(path);
-                    intent.setDataAndType(Uri.fromFile(file), "image/*");
+                    Uri uri;
+                    if(android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.M){
+                        uri = FileProvider.getUriForFile(PreviewProductImage.this, packageName + ".fileprovider", file);
+                        intent.addFlags (Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    }else{
+                        uri = Uri.fromFile(file);
+                    }
+                    intent.setDataAndType(uri, "image/*");
+
                     PendingIntent pIntent = PendingIntent.getActivity(PreviewProductImage.this, 0, intent, 0);
 
                     notificationBuilder.setContentText(getString(R.string.download_success))
