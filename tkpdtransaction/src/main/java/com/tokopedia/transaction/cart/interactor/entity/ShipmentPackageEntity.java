@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.cart.repository.entity;
+package com.tokopedia.transaction.cart.interactor.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -1,11 +1,11 @@
-package com.tokopedia.transaction.cart.repository.entity.mapper;
+package com.tokopedia.transaction.cart.interactor.entity.mapper;
 
 import com.tokopedia.transaction.cart.model.calculateshipment.Shipment;
 import com.tokopedia.transaction.cart.model.calculateshipment.ShipmentPackage;
 import com.tokopedia.transaction.cart.model.shipmentcart.EditShipmentCart;
-import com.tokopedia.transaction.cart.repository.entity.EditShipmentEntity;
-import com.tokopedia.transaction.cart.repository.entity.ShipmentEntity;
-import com.tokopedia.transaction.cart.repository.entity.ShipmentPackageEntity;
+import com.tokopedia.transaction.cart.interactor.entity.EditShipmentEntity;
+import com.tokopedia.transaction.cart.interactor.entity.ShipmentEntity;
+import com.tokopedia.transaction.cart.interactor.entity.ShipmentPackageEntity;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,15 +1,17 @@
-package com.tokopedia.transaction.cart.repository.source;
+package com.tokopedia.transaction.cart.interactor.source;
 
 import com.tokopedia.core.network.apiservices.transaction.TXCartActService;
 import com.tokopedia.core.network.apiservices.transaction.TXCartService;
+import com.tokopedia.core.network.apiservices.user.PeopleActService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
-import com.tokopedia.transaction.cart.model.shipmentcart.EditShipmentCart;
-import com.tokopedia.transaction.cart.repository.entity.CalculateShipmentEntity;
-import com.tokopedia.transaction.cart.repository.entity.EditShipmentEntity;
-import com.tokopedia.transaction.cart.repository.entity.ShipmentEntity;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.transaction.cart.interactor.entity.CalculateShipmentEntity;
+import com.tokopedia.transaction.cart.interactor.entity.EditShipmentEntity;
+import com.tokopedia.transaction.cart.interactor.entity.ShipmentEntity;
+import com.tokopedia.transaction.cart.model.savelocation.SaveLocationData;
 
 import org.json.JSONException;
 
@@ -21,13 +23,13 @@ import rx.Observable;
 import rx.functions.Func1;
 
 /**
- * @author  by alvarisi on 11/30/16.
+ * @author by alvarisi on 11/30/16.
  */
 
 public class CloudShipmentCartSource {
     private static final String KEY_FLAG_IS_SUCCESS = "is_success";
 
-    public Observable<List<ShipmentEntity>> shipments(Map<String, String> param){
+    public Observable<List<ShipmentEntity>> shipments(Map<String, String> param) {
         return Observable.just(param)
                 .flatMap(new Func1<Map<String, String>, Observable<Response<TkpdResponse>>>() {
                     @Override
@@ -121,6 +123,64 @@ public class CloudShipmentCartSource {
                                 }
                             } else {
                                 throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                            }
+                        } else {
+                            new ErrorHandler(new ErrorListener() {
+                                @Override
+                                public void onUnknown() {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                                }
+
+                                @Override
+                                public void onTimeout() {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                                }
+
+                                @Override
+                                public void onServerError() {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                                }
+
+                                @Override
+                                public void onBadRequest() {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                                }
+
+                                @Override
+                                public void onForbidden() {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                                }
+                            }, response.code());
+                        }
+                        throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                    }
+                });
+    }
+
+    public Observable<SaveLocationData> editLocation(Map<String, String> param) {
+        return Observable.just(param)
+                .flatMap(new Func1<Map<String, String>, Observable<Response<TkpdResponse>>>() {
+                    @Override
+                    public Observable<Response<TkpdResponse>> call(Map<String, String> params) {
+                        PeopleActService service = new PeopleActService();
+                        return service
+                                .getApi()
+                                .editAddress(params);
+                    }
+                })
+                .map(new Func1<Response<TkpdResponse>, SaveLocationData>() {
+                    @Override
+                    public SaveLocationData call(Response<TkpdResponse> response) {
+                        if (response.isSuccessful()) {
+                            if (!response.body().isError()) {
+                                if (!response.body().isNullData() &&
+                                        !response.body().getJsonData().isNull(KEY_FLAG_IS_SUCCESS)) {
+                                    return response.body().convertDataObj(SaveLocationData.class);
+                                } else {
+                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_NULL_DATA);
+                                }
+                            } else {
+                                throw new RuntimeException(response.body().getErrorMessages().get(0));
                             }
                         } else {
                             new ErrorHandler(new ErrorListener() {

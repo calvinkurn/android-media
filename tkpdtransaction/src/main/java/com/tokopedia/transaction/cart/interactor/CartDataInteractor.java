@@ -11,12 +11,15 @@ import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.transaction.cart.interactor.entity.EditShipmentEntity;
+import com.tokopedia.transaction.cart.interactor.entity.ShipmentEntity;
+import com.tokopedia.transaction.cart.interactor.entity.mapper.ShipmentEntityDataMapper;
+import com.tokopedia.transaction.cart.interactor.source.CloudShipmentCartSource;
 import com.tokopedia.transaction.cart.model.calculateshipment.Shipment;
 import com.tokopedia.transaction.cart.model.cartdata.CartModel;
 import com.tokopedia.transaction.cart.model.savelocation.SaveLocationData;
 import com.tokopedia.transaction.cart.model.shipmentcart.EditShipmentCart;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
-import com.tokopedia.transaction.cart.repository.ShipmentCartRepository;
 import com.tokopedia.transaction.exception.HttpErrorException;
 import com.tokopedia.transaction.exception.ResponseErrorException;
 
@@ -46,11 +49,16 @@ public class CartDataInteractor implements ICartDataInteractor {
     private final TXCartActService txCartActService;
     private final CompositeSubscription compositeSubscription;
 
+    private CloudShipmentCartSource cloudSource;
+    private ShipmentEntityDataMapper mapper;
+
     public CartDataInteractor() {
         this.compositeSubscription = new CompositeSubscription();
         this.txService = new TXService();
         this.txCartActService = new TXCartActService();
         this.txActService = new TXActService();
+        this.cloudSource = new CloudShipmentCartSource();
+        this.mapper = new ShipmentEntityDataMapper();
     }
 
     @Override
@@ -351,8 +359,13 @@ public class CartDataInteractor implements ICartDataInteractor {
 
     @Override
     public void calculateShipment(TKPDMapParam<String, String> param, Subscriber<List<Shipment>> subscriber) {
-        ShipmentCartRepository shipmentCartRepository = new ShipmentCartRepository();
-        shipmentCartRepository.shipments(param)
+        cloudSource.shipments(param)
+                .map(new Func1<List<ShipmentEntity>, List<Shipment>>() {
+                    @Override
+                    public List<Shipment> call(List<ShipmentEntity> shipmentEntities) {
+                        return mapper.transform(shipmentEntities);
+                    }
+                })
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())
@@ -361,8 +374,13 @@ public class CartDataInteractor implements ICartDataInteractor {
 
     @Override
     public void editShipmentCart(TKPDMapParam<String, String> param, Subscriber<EditShipmentCart> subscriber) {
-        ShipmentCartRepository shipmentCartRepository = new ShipmentCartRepository();
-        shipmentCartRepository.editShipment(param)
+        cloudSource.editShipment(param)
+                .map(new Func1<EditShipmentEntity, EditShipmentCart>() {
+                    @Override
+                    public EditShipmentCart call(EditShipmentEntity editShipmentEntity) {
+                        return mapper.transform(editShipmentEntity);
+                    }
+                })
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())
@@ -371,61 +389,7 @@ public class CartDataInteractor implements ICartDataInteractor {
 
     @Override
     public void editLocationShipment(TKPDMapParam<String, String> param, Subscriber<SaveLocationData> subscriber) {
-        Observable.just(param)
-                .flatMap(new Func1<TKPDMapParam<String, String>, Observable<Response<TkpdResponse>>>() {
-                    @Override
-                    public Observable<Response<TkpdResponse>> call(TKPDMapParam<String, String> params) {
-                        PeopleActService service = new PeopleActService();
-                        return service
-                                .getApi()
-                                .editAddress(params);
-                    }
-                })
-                .map(new Func1<Response<TkpdResponse>, SaveLocationData>() {
-                    @Override
-                    public SaveLocationData call(Response<TkpdResponse> response) {
-                        if (response.isSuccessful()) {
-                            if (!response.body().isError()) {
-                                if (!response.body().isNullData() &&
-                                        !response.body().getJsonData().isNull(KEY_FLAG_IS_SUCCESS)) {
-                                    return response.body().convertDataObj(SaveLocationData.class);
-                                } else {
-                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_NULL_DATA);
-                                }
-                            } else {
-                                throw new RuntimeException(response.body().getErrorMessages().get(0));
-                            }
-                        } else {
-                            new ErrorHandler(new ErrorListener() {
-                                @Override
-                                public void onUnknown() {
-                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                                }
-
-                                @Override
-                                public void onTimeout() {
-                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
-                                }
-
-                                @Override
-                                public void onServerError() {
-                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                                }
-
-                                @Override
-                                public void onBadRequest() {
-                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                                }
-
-                                @Override
-                                public void onForbidden() {
-                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                                }
-                            }, response.code());
-                        }
-                        throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                    }
-                })
+        cloudSource.editLocation(param)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())
