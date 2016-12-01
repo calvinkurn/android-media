@@ -35,7 +35,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.util.RefreshHandler;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Nisie on 4/21/16.
@@ -43,13 +43,13 @@ import butterknife.Bind;
 public class InboxTicketFragment extends BasePresenterFragment<InboxTicketFragmentPresenter>
         implements InboxTicketView, InboxTicketConstant {
 
-    @Bind(R2.id.message_list)
+    @BindView(R2.id.message_list)
     RecyclerView listMessage;
 
-    @Bind(R2.id.swipe_refresh_layout)
+    @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
 
-    @Bind(R2.id.fab)
+    @BindView(R2.id.fab)
     FloatingActionButton fab;
 
     View filterLayout;

@@ -23,7 +23,7 @@ import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterView;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -90,10 +90,10 @@ public class DynamicFilterOtherAdapter extends ProductAdapter {
     public static class TextBoxViewHolder extends RecyclerView.ViewHolder {
 
 
-        @Bind(R2.id.text_box_container)
+        @BindView(R2.id.text_box_container)
         TextInputLayout TextBoxContainer;
 
-        @Bind(R2.id.text_box)
+        @BindView(R2.id.text_box)
         EditText textBox;
 
         TextBoxModel textBoxModel;
@@ -185,7 +185,7 @@ public class DynamicFilterOtherAdapter extends ProductAdapter {
 
     public class CheckBoxViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R2.id.checkbox)
+        @BindView(R2.id.checkbox)
         CheckBox checkBox;
 
         CheckBoxModel checkBoxModel;
