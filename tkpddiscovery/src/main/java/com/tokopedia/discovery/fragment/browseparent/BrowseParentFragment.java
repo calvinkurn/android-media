@@ -406,12 +406,6 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
         return rootView;
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
-
     private void sendTabClickGTM() {
         switch (source) {
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP:
