@@ -3,6 +3,7 @@ package com.tokopedia.transaction.cart.listener;
 import com.tokopedia.core.product.listener.ViewListener;
 import com.tokopedia.transaction.cart.model.cartdata.GatewayList;
 import com.tokopedia.transaction.cart.model.cartdata.TransactionList;
+import com.tokopedia.transaction.cart.model.voucher.VoucherData;
 
 import java.util.List;
 
@@ -26,4 +27,8 @@ public interface ICartView extends ViewListener {
     void renderCheckoutCartDepositAmount(String depositAmount);
 
     void renderErrorPaymentCart(boolean isError, String messageError);
+
+    void renderSuccessVoucherChecked(String messageSuccess, VoucherData data);
+
+    void renderFailedVoucherChecked(String messageError);
 }

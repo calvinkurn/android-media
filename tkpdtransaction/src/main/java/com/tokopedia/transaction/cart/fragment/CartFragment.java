@@ -14,9 +14,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -45,6 +43,7 @@ import com.tokopedia.transaction.cart.model.cartdata.GatewayList;
 import com.tokopedia.transaction.cart.model.cartdata.TransactionList;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
+import com.tokopedia.transaction.cart.model.voucher.VoucherData;
 import com.tokopedia.transaction.cart.presenter.CartPresenter;
 import com.tokopedia.transaction.cart.presenter.ICartPresenter;
 import com.tokopedia.transaction.cart.receivers.CartBroadcastReceiver;
@@ -52,7 +51,6 @@ import com.tokopedia.transaction.cart.receivers.CartBroadcastReceiver;
 import java.util.List;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 
 /**
  * @author anggaprasetiyo on 11/1/16.
@@ -314,6 +312,25 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
+    public void renderSuccessVoucherChecked(String messageSuccess, VoucherData data) {
+        tilEtVoucherCode.setError(null);
+        tilEtVoucherCode.setErrorEnabled(false);
+        tvVoucherDesc.setText(
+                data.getVoucher().getVoucherAmount().equals("0")
+                        ? data.getVoucher().getVoucherPromoDesc()
+                        : String.format(
+                        "Anda mendapatkan voucher\nRp.%s,-", data.getVoucher().getVoucherAmountIdr()
+                )
+        );
+    }
+
+    @Override
+    public void renderFailedVoucherChecked(String messageError) {
+        tilEtVoucherCode.setErrorEnabled(true);
+        tilEtVoucherCode.setError(messageError);
+    }
+
+    @Override
     public void onSelectedPaymentGateway(GatewayList gateway) {
         if (gateway.getGateway() == 0) {
             holderUseDeposit.setVisibility(View.GONE);
@@ -455,6 +472,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                     tilEtVoucherCode.setErrorEnabled(false);
                     checkoutDataBuilder.voucherCode(etVoucherCode.getText().toString());
                 }
+
                 checkoutDataBuilder.usedDeposit(
                         etUseDeposit.getText().toString().replaceAll("\\D+", "")
                 );

@@ -25,13 +25,18 @@ public interface ICartPresenter {
     void processCancelCartProduct(@NonNull Activity activity, @NonNull TransactionList cartData,
                                   @NonNull CartProduct cartProductData);
 
-    void processSubmitEditCart(Activity activity, TransactionList cartData,
-                               List<ProductEditData> cartProductEditDataList);
+    void processSubmitEditCart(@NonNull Activity activity, @NonNull TransactionList cartData,
+                               @NonNull List<ProductEditData> cartProductEditDataList);
 
-    void processUpdateInsurance(Activity activity, TransactionList cartData, boolean useInsurance);
+    void processUpdateInsurance(@NonNull Activity activity, @NonNull TransactionList cartData,
+                                boolean useInsurance);
 
-    void processCheckoutCart(Activity activity, CheckoutData.Builder checkoutDataBuilder,
-                             List<CartItemEditable> cartItemEditables);
+    void processCheckoutCart(
+            @NonNull Activity activity, @NonNull CheckoutData.Builder checkoutDataBuilder,
+            @NonNull List<CartItemEditable> cartItemEditables
+    );
+
+    void processCheckVoucherCode(@NonNull Activity activity, @NonNull String voucherCode);
 
     void processStep2PaymentCart(Activity activity, TopPayParameterData data);
 }

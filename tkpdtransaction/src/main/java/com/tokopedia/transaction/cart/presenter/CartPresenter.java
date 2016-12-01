@@ -13,6 +13,7 @@ import com.tokopedia.transaction.cart.interactor.CartDataInteractor;
 import com.tokopedia.transaction.cart.interactor.ICartDataInteractor;
 import com.tokopedia.transaction.cart.listener.ICartView;
 import com.tokopedia.transaction.cart.model.CartItemEditable;
+import com.tokopedia.transaction.cart.model.ResponseTransform;
 import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
 import com.tokopedia.transaction.cart.model.cartdata.CartModel;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
@@ -20,6 +21,7 @@ import com.tokopedia.transaction.cart.model.cartdata.TransactionList;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutDropShipperData;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
+import com.tokopedia.transaction.cart.model.voucher.VoucherData;
 import com.tokopedia.transaction.cart.services.CartIntentService;
 
 import java.util.ArrayList;
@@ -243,8 +245,9 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
-    public void processCheckoutCart(Activity activity, CheckoutData.Builder checkoutDataBuilder,
-                                    List<CartItemEditable> cartItemEditables) {
+    public void processCheckoutCart(@NonNull Activity activity,
+                                    @NonNull CheckoutData.Builder checkoutDataBuilder,
+                                    @NonNull List<CartItemEditable> cartItemEditables) {
         List<String> dropShipperNameList = new ArrayList<>();
         List<String> dropShipperPhoneList = new ArrayList<>();
 
@@ -296,6 +299,7 @@ public class CartPresenter implements ICartPresenter {
                     .value(entry.getValue())
                     .build());
         }
+
         CheckoutData checkoutData = checkoutDataBuilder
                 .dropShipperDataList(checkoutDropShipperDataList)
                 .dropShipString(dropShipperParamString)
@@ -313,10 +317,38 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
+    public void processCheckVoucherCode(@NonNull Activity activity, @NonNull String voucherCode) {
+        view.showProgressLoading();
+        TKPDMapParam<String, String> params = new TKPDMapParam<>();
+        params.put("voucher_code", voucherCode);
+        cartDataInteractor.checkVoucherCode(AuthUtil.generateParamsNetwork(activity, params),
+                new Subscriber<ResponseTransform<VoucherData>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(ResponseTransform<VoucherData> voucherDataResponseTransform) {
+                        view.renderSuccessVoucherChecked(
+                                voucherDataResponseTransform.getMessageSuccess(),
+                                voucherDataResponseTransform.getData()
+                        );
+                    }
+                });
+    }
+
+    @Override
     public void processStep2PaymentCart(Activity activity, TopPayParameterData data) {
 
     }
 
+    @NonNull
     private Map<String, String> generateDropShipperParam(List<String> dropShipperNameList,
                                                          List<String> dropShipperPhoneList,
                                                          List<String> dropShipperStringList) {

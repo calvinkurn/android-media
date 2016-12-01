@@ -6,17 +6,20 @@ import com.tokopedia.core.network.apiservices.transaction.TXActService;
 import com.tokopedia.core.network.apiservices.transaction.TXCartActService;
 import com.tokopedia.core.network.apiservices.transaction.TXCartService;
 import com.tokopedia.core.network.apiservices.transaction.TXService;
+import com.tokopedia.core.network.apiservices.transaction.TXVoucherService;
 import com.tokopedia.core.network.apiservices.user.PeopleActService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.transaction.cart.model.ResponseTransform;
 import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentData;
 import com.tokopedia.transaction.cart.model.cartdata.CartModel;
 import com.tokopedia.transaction.cart.model.savelocation.SaveLocationData;
 import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartData;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
+import com.tokopedia.transaction.cart.model.voucher.VoucherData;
 import com.tokopedia.transaction.exception.HttpErrorException;
 import com.tokopedia.transaction.exception.ResponseErrorException;
 
@@ -42,6 +45,7 @@ public class CartDataInteractor implements ICartDataInteractor {
     private final TXService txService;
     private final TXActService txActService;
     private final TXCartActService txCartActService;
+    private final TXVoucherService txVoucherService;
     private final CompositeSubscription compositeSubscription;
 
     public CartDataInteractor() {
@@ -49,6 +53,7 @@ public class CartDataInteractor implements ICartDataInteractor {
         this.txService = new TXService();
         this.txCartActService = new TXCartActService();
         this.txActService = new TXActService();
+        this.txVoucherService = new TXVoucherService();
     }
 
     @Override
@@ -552,4 +557,45 @@ public class CartDataInteractor implements ICartDataInteractor {
     public void unSubscribeObservable() {
         if (compositeSubscription.hasSubscriptions()) compositeSubscription.unsubscribe();
     }
+
+    @Override
+    public void checkVoucherCode(TKPDMapParam<String, String> param,
+                                 Subscriber<ResponseTransform<VoucherData>> subscriber) {
+        Observable.just(param)
+                .flatMap(new Func1<TKPDMapParam<String, String>, Observable<Response<TkpdResponse>>>() {
+                    @Override
+                    public Observable<Response<TkpdResponse>> call(TKPDMapParam<String, String> param) {
+                        return txVoucherService.getApi().checkVoucherCode(param);
+                    }
+                })
+                .map(new Func1<Response<TkpdResponse>, ResponseTransform<VoucherData>>() {
+                    @Override
+                    public ResponseTransform<VoucherData> call(Response<TkpdResponse> response) {
+                        if (response.isSuccessful()) {
+                            if (!response.body().isError()) {
+                                ResponseTransform<VoucherData> voucherDataResponseTransform
+                                        = new ResponseTransform<>();
+                                voucherDataResponseTransform.setData(
+                                        response.body().convertDataObj(VoucherData.class)
+                                );
+                                voucherDataResponseTransform.setMessageSuccess(
+                                        response.body().getStatusMessageJoined()
+                                );
+                                return voucherDataResponseTransform;
+                            } else {
+                                throw new RuntimeException(new ResponseErrorException(
+                                        response.body().getErrorMessageJoined()
+                                ));
+                            }
+                        }
+                        throw new RuntimeException(new HttpErrorException(response.code()));
+                    }
+                })
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribe(subscriber);
+    }
+
+
 }
