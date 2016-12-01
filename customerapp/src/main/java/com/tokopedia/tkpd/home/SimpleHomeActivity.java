@@ -142,7 +142,6 @@ public class SimpleHomeActivity extends TActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbinder.unbind();
     }
 
     @Override

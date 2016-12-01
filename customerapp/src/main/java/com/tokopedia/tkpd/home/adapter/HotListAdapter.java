@@ -38,7 +38,7 @@ public class HotListAdapter extends BaseRecyclerViewAdapter {
         TextView mNameOfProduct;
         @BindView(R.id.hotprod_price)
         TextView mPrice;
-        @BindView(R.id.hot_list_cardview)
+        @BindView(R.id.hot_list_cardview_listproduct)
         CardView cardView;
 
         public ViewHolder(View itemView) {
