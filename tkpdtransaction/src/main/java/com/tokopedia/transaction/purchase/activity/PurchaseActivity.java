@@ -23,7 +23,7 @@ import com.tokopedia.transaction.purchase.fragment.TxSummaryFragment;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 
 /**
@@ -33,9 +33,9 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
         TxSummaryFragment.OnCenterMenuClickListener, GCMListenerService.NotificationListener,
         PurchaseTabAdapter.Listener, TxListFragment.StateFilterListener {
 
-    @Bind(R2.id.pager)
+    @BindView(R2.id.pager)
     ViewPager viewPager;
-    @Bind(R2.id.indicator)
+    @BindView(R2.id.indicator)
     TabLayout indicator;
 
     public List<String> tabContents;

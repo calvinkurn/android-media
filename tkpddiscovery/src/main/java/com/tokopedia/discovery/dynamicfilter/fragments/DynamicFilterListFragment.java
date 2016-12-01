@@ -29,7 +29,7 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -58,10 +58,10 @@ public class DynamicFilterListFragment extends BaseFragment<DynamicFilterList> i
         return dynamicFilterFirstTimeFragment;
     }
 
-    @Bind(R2.id.dynamic_filter_list_recyclerview)
+    @BindView(R2.id.dynamic_filter_list_recyclerview)
     RecyclerView dynamicFilterList;
 
-    @Bind(R2.id.dynamic_filter_list_reset)
+    @BindView(R2.id.dynamic_filter_list_reset)
     Button dynamicFilterListReset;
 
     DynamicFilterListAdapter dynamicFilterListAdapter;
@@ -151,12 +151,6 @@ public class DynamicFilterListFragment extends BaseFragment<DynamicFilterList> i
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
         ButterKnife.bind(this, rootView);
         return rootView;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
     }
 
     @OnClick(R2.id.dynamic_filter_list_reset)

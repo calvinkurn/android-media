@@ -38,7 +38,7 @@ import com.tokopedia.discovery.view.CatalogView;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Erry on 6/30/2016.
@@ -54,7 +54,7 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
     private static final int PORTRAIT_COLUMN_FOOTER = 2;
     private static final int PORTRAIT_COLUMN = 1;
 
-    @Bind(R2.id.list_catalog)
+    @BindView(R2.id.list_catalog)
     RecyclerView list_catalog;
 
     private List<RecyclerViewItem> browseCatalogModelList = new ArrayList<>();

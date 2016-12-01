@@ -24,7 +24,7 @@ import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -110,17 +110,17 @@ public class CatalogDetailAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
     class ShopItemHolder extends RecyclerView.ViewHolder {
-        @Bind(R2.id.seller_img)
+        @BindView(R2.id.seller_img)
         ImageView shopImage;
-        @Bind(R2.id.seller_name)
+        @BindView(R2.id.seller_name)
         TextView shopName;
-        @Bind(R2.id.seller_loc)
+        @BindView(R2.id.seller_loc)
         TextView shopLocation;
-        @Bind(R2.id.seller_rating)
+        @BindView(R2.id.seller_rating)
         ImageView shopRating;
-        @Bind(R2.id.list_product)
+        @BindView(R2.id.list_product)
         RecyclerView listProduct;
-        @Bind(R2.id.header_seller)
+        @BindView(R2.id.header_seller)
         RelativeLayout shopContainer;
 
         ShopItemHolder(View view) {

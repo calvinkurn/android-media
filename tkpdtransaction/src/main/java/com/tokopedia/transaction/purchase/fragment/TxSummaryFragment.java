@@ -19,7 +19,7 @@ import com.tokopedia.transaction.purchase.presenter.TxSummaryPresenterImpl;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * TxSummaryFragment
@@ -33,7 +33,7 @@ public class TxSummaryFragment extends BasePresenterFragment<TxSummaryPresenter>
     public static int INSTANCE_TYPE_PURCHASE = 1;
     public static int INSTANCE_TYPE_SALES = 2;
 
-    @Bind(R2.id.menu_list)
+    @BindView(R2.id.menu_list)
     ListView lvSummary;
     private TxSummaryAdapter summaryAdapter;
     private int instanceType;

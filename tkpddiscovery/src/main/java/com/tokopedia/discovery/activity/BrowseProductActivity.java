@@ -78,7 +78,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
 import rx.Subscriber;
@@ -104,7 +104,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
 
     private static final String TAG = BrowseProductActivity.class.getSimpleName();
     private static final String KEY_GTM = "GTMFilterData";
-    @Bind(R2.id.progressBar)
+    @BindView(R2.id.progressBar)
     ProgressBar progressBar;
     private SearchView searchView;
     private String searchQuery;
@@ -151,13 +151,13 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     private Fragment mLastFragment;
     private int keepActivitySettings;
     private boolean firstTime = true;
-    @Bind(R2.id.root)
+    @BindView(R2.id.root)
     CoordinatorLayout coordinatorLayout;
-    @Bind(R2.id.toolbar)
+    @BindView(R2.id.toolbar)
     Toolbar toolbar;
-    @Bind(R2.id.bottom_navigation)
+    @BindView(R2.id.bottom_navigation)
     AHBottomNavigation bottomNavigation;
-    @Bind(R2.id.container)
+    @BindView(R2.id.container)
     FrameLayout container;
     BrowseProductActivityModel browseProductActivityModel;
     DiscoveryInteractor discoveryInteractor;

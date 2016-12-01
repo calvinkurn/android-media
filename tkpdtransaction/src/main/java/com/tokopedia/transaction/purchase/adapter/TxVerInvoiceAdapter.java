@@ -14,7 +14,7 @@ import com.tokopedia.transaction.purchase.model.response.txverinvoice.Detail;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -50,7 +50,7 @@ public class TxVerInvoiceAdapter extends ArrayAdapter<Detail> {
     }
 
     class ViewHolder {
-        @Bind(R2.id.text)
+        @BindView(R2.id.text)
         TextView tvTitle;
 
         public ViewHolder(View convertView) {

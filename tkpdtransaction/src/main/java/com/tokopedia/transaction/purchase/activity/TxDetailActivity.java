@@ -37,7 +37,7 @@ import com.tokopedia.transaction.purchase.view.NestedListView;
 
 import java.text.MessageFormat;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -47,49 +47,49 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
         TxDetailViewListener, TxProductListAdapter.ActionListener {
     private static final String EXTRA_ORDER_DATA = "EXTRA_ORDER_DATA";
 
-    @Bind(R2.id.invoice_text)
+    @BindView(R2.id.invoice_text)
     TextView tvInvoiceNumber;
-    @Bind(R2.id.shop_name)
+    @BindView(R2.id.shop_name)
     TextView tvShopName;
-    @Bind(R2.id.product_list)
+    @BindView(R2.id.product_list)
     NestedListView lvProduct;
-    @Bind(R2.id.shipping_cost)
+    @BindView(R2.id.shipping_cost)
     TextView tvShippingCost;
-    @Bind(R2.id.additional_cost)
+    @BindView(R2.id.additional_cost)
     TextView tvAdditionalCost;
-    @Bind(R2.id.destination)
+    @BindView(R2.id.destination)
     TextView tvDestination;
-    @Bind(R2.id.destination_detail)
+    @BindView(R2.id.destination_detail)
     TextView tvDestinationDetail;
-    @Bind(R2.id.quantity)
+    @BindView(R2.id.quantity)
     TextView tvQuantity;
-    @Bind(R2.id.grand_total)
+    @BindView(R2.id.grand_total)
     TextView tvGrandTotal;
-    @Bind(R2.id.transaction)
+    @BindView(R2.id.transaction)
     TextView tvTransactionDate;
-    @Bind(R2.id.see_all)
+    @BindView(R2.id.see_all)
     TextView btnShowMoreHistory;
-    @Bind(R2.id.receive_btn)
+    @BindView(R2.id.receive_btn)
     TextView btnReceiveOrder;
-    @Bind(R2.id.reject_btn)
+    @BindView(R2.id.reject_btn)
     TextView btnRejectOrder;
-    @Bind(R2.id.ask_seller)
+    @BindView(R2.id.ask_seller)
     TextView btnAskSeller;
-    @Bind(R2.id.track_btn)
+    @BindView(R2.id.track_btn)
     TextView btnTrackOrder;
-    @Bind(R2.id.complain_but)
+    @BindView(R2.id.complain_but)
     TextView btnComplainOrder;
-    @Bind(R2.id.upload_proof)
+    @BindView(R2.id.upload_proof)
     TextView btnUploadProof;
-    @Bind(R2.id.btn_request_cancel_order)
+    @BindView(R2.id.btn_request_cancel_order)
     TextView btnRequestCancelOrder;
-    @Bind(R2.id.sender_name)
+    @BindView(R2.id.sender_name)
     TextView tvSenderName;
-    @Bind(R2.id.sender_phone)
+    @BindView(R2.id.sender_phone)
     TextView tvSenderPhone;
-    @Bind(R2.id.sender_form)
+    @BindView(R2.id.sender_form)
     View holderFormSender;
-    @Bind(R2.id.order_status_layout)
+    @BindView(R2.id.order_status_layout)
     LinearLayout holderOrderStatus;
 
     private OrderData orderData;

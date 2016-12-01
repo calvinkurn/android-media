@@ -48,7 +48,7 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -61,14 +61,14 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     public static final String SOURCE_EXTRA = "SOURCE_EXTRA";
     public static final String FILTER_EXTRA = "FILTER_EXTRA";
     public static final String POSITION_EXTRA = "POSITION_EXTRA";
-    @Bind(R2.id.pager)
+    @BindView(R2.id.pager)
     ViewPager viewPager;
-    @Bind(R2.id.tabs)
+    @BindView(R2.id.tabs)
     TabLayout tabLayout;
-    @Bind(R2.id.discovery_ticker)
+    @BindView(R2.id.discovery_ticker)
     TextView discoveryTicker;
     public static final String TAG = BrowseParentFragment.class.getSimpleName();
-    @Bind(R2.id.tab_container)
+    @BindView(R2.id.tab_container)
     LinearLayout tabContainer;
     private String source;
     private String formatKey = "%d_%s";
@@ -119,7 +119,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
             return ((BrowseProductActivity) getActivity()).checkHasFilterAttrIsNull(activeTab);
         }
     };
-    //    @Bind(R2.id.progressBar)
+    //    @BindView(R2.id.progressBar)
 //    ProgressBar progressBar;
     private BrowserSectionsPagerAdapter mSectionsPagerAdapter;
 
@@ -398,12 +398,6 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
         ButterKnife.bind(this, rootView);
         return rootView;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
     }
 
     private void sendTabClickGTM() {
