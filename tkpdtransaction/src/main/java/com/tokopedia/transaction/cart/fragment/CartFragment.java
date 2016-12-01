@@ -14,7 +14,9 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -50,6 +52,7 @@ import com.tokopedia.transaction.cart.receivers.CartBroadcastReceiver;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.ButterKnife;
 
 /**
  * @author anggaprasetiyo on 11/1/16.
@@ -117,6 +120,10 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     TextView tvLoyaltyBalance;
     @Bind(R2.id.holder_loyalty_balance)
     LinearLayout holderLoyaltyBalance;
+    @Bind(R2.id.et_use_deposit)
+    EditText etUseDeposit;
+    @Bind(R2.id.holder_use_deposit)
+    LinearLayout holderUseDeposit;
 
     private ICartActionFragment actionListener;
     private CheckoutData.Builder checkoutDataBuilder;
@@ -280,45 +287,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         final CartItemAdapter adapter = new CartItemAdapter(this, this);
         adapter.fillDataList(cartList);
         rvCart.setAdapter(adapter);
-        btnCheckout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                List<CartItemEditable> cartItemEditables = adapter.getDataList();
-                boolean canBeCheckout = true;
-                int positionError = cartItemEditables.size() - 1;
-
-                if (cbUseVoucher.isChecked() && etVoucherCode.getText().toString().isEmpty()) {
-                    tilEtVoucherCode.setErrorEnabled(true);
-                    tilEtVoucherCode.setError("Voucher Kosong");
-                    return;
-                } else if (cbUseVoucher.isChecked() && !etVoucherCode.getText().toString().isEmpty()) {
-                    tilEtVoucherCode.setError(null);
-                    tilEtVoucherCode.setErrorEnabled(false);
-                    checkoutDataBuilder.voucherCode(etVoucherCode.getText().toString());
-                }
-
-                for (int i = 0, cartItemEditablesSize = cartItemEditables.size();
-                     i < cartItemEditablesSize; i++) {
-                    CartItemEditable cartItemEditable = cartItemEditables.get(i);
-                    adapter.renderErrorCart(cartItemEditable);
-                    if (cartItemEditable.finalizeAllData().getErrorType()
-                            != CartItemEditable.ERROR_NON) {
-                        canBeCheckout = false;
-                    }
-                }
-                if (!canBeCheckout) {
-                    int heightScroll = nsvContainer.computeVerticalScrollRange();
-                    int heightRv = rvCart.computeVerticalScrollOffset();
-                    nsvContainer.smoothScrollTo(0, heightScroll
-                            - (heightRv - (heightRv / cartItemEditables.size() * positionError)));
-                    showToastMessage("Keranjang tidak dapat diproses," +
-                            " mohon periksa kembali keranjang Anda.");
-                } else {
-                    presenter.processCheckoutCart(getActivity(), checkoutDataBuilder,
-                            cartItemEditables);
-                }
-            }
-        });
+        btnCheckout.setOnClickListener(getCheckoutButtonClickListener(adapter));
     }
 
     @Override
@@ -332,7 +301,26 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
+    public void renderErrorPaymentCart(boolean isError, String messageError) {
+        checkoutDataBuilder.errorPayment(isError);
+        checkoutDataBuilder.errorPaymentMessage(messageError);
+        if (isError) {
+            tvErrorPayment.setText(messageError);
+            tvErrorPayment.setVisibility(View.VISIBLE);
+        } else {
+            tvErrorPayment.setVisibility(View.GONE);
+        }
+
+    }
+
+    @Override
     public void onSelectedPaymentGateway(GatewayList gateway) {
+        if (gateway.getGateway() == 0) {
+            holderUseDeposit.setVisibility(View.GONE);
+            checkoutDataBuilder.usedDeposit("0");
+        } else {
+            holderUseDeposit.setVisibility(View.VISIBLE);
+        }
         checkoutDataBuilder.gateway(gateway.getGateway() + "");
         ImageHandler.LoadImage(ivLogoBtnPaymentMethod, gateway.getGatewayImage());
         tvInfoPaymentMethod.setText(gateway.getGatewayDesc());
@@ -447,4 +435,53 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     public void onGetParameterTopPayOngoing(String message) {
         showProgressLoading();
     }
+
+    @NonNull
+    private View.OnClickListener getCheckoutButtonClickListener(final CartItemAdapter adapter) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<CartItemEditable> cartItemEditables = adapter.getDataList();
+                boolean canBeCheckout = true;
+                int positionError = cartItemEditables.size() - 1;
+
+                if (cbUseVoucher.isChecked() && etVoucherCode.getText().toString().isEmpty()) {
+                    tilEtVoucherCode.setErrorEnabled(true);
+                    tilEtVoucherCode.setError("Voucher Kosong");
+                    return;
+                } else if (cbUseVoucher.isChecked()
+                        && !etVoucherCode.getText().toString().isEmpty()) {
+                    tilEtVoucherCode.setError(null);
+                    tilEtVoucherCode.setErrorEnabled(false);
+                    checkoutDataBuilder.voucherCode(etVoucherCode.getText().toString());
+                }
+                checkoutDataBuilder.usedDeposit(
+                        etUseDeposit.getText().toString().replaceAll("\\D+", "")
+                );
+
+                for (int i = 0, cartItemEditablesSize = cartItemEditables.size();
+                     i < cartItemEditablesSize; i++) {
+                    CartItemEditable cartItemEditable = cartItemEditables.get(i);
+                    adapter.renderErrorCart(cartItemEditable);
+                    if (cartItemEditable.finalizeAllData().getErrorType()
+                            != CartItemEditable.ERROR_NON) {
+                        canBeCheckout = false;
+                    }
+                }
+                if (!canBeCheckout) {
+                    int heightScroll = nsvContainer.computeVerticalScrollRange();
+                    int heightRv = rvCart.computeVerticalScrollOffset();
+                    nsvContainer.smoothScrollTo(0, heightScroll
+                            - (heightRv - (heightRv / cartItemEditables.size() * positionError)));
+                    showToastMessage("Keranjang tidak dapat diproses," +
+                            " mohon periksa kembali keranjang Anda.");
+                } else {
+                    presenter.processCheckoutCart(getActivity(), checkoutDataBuilder,
+                            cartItemEditables);
+                }
+            }
+        };
+    }
+
+
 }

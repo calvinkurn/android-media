@@ -67,6 +67,10 @@ public class CartPresenter implements ICartPresenter {
                 view.renderCartListData(data.getTransactionLists());
                 view.renderCheckoutCartDepositAmount(data.getDeposit() + "");
                 view.renderCheckoutCartToken(data.getToken());
+                view.renderErrorPaymentCart(
+                        (data.getCheckoutNotifError() != null && !data.getCheckoutNotifError().equals("0")
+                        ), data.getCheckoutNotifError()
+                );
             }
         });
     }
@@ -102,6 +106,10 @@ public class CartPresenter implements ICartPresenter {
                         view.renderCartListData(data.getTransactionLists());
                         view.renderCheckoutCartDepositAmount(data.getDeposit() + "");
                         view.renderCheckoutCartToken(data.getToken());
+                        view.renderErrorPaymentCart(
+                                (data.getCheckoutNotifError() != null && !data.getCheckoutNotifError().equals("0")
+                                ), data.getCheckoutNotifError()
+                        );
                         view.hideProgressLoading();
                     }
                 });
@@ -140,6 +148,10 @@ public class CartPresenter implements ICartPresenter {
                         view.renderCartListData(data.getTransactionLists());
                         view.renderCheckoutCartDepositAmount(data.getDeposit() + "");
                         view.renderCheckoutCartToken(data.getToken());
+                        view.renderErrorPaymentCart(
+                                (data.getCheckoutNotifError() != null && !data.getCheckoutNotifError().equals("0")
+                                ), data.getCheckoutNotifError()
+                        );
                         view.hideProgressLoading();
                     }
                 });
@@ -180,6 +192,10 @@ public class CartPresenter implements ICartPresenter {
                         view.renderCartListData(data.getTransactionLists());
                         view.renderCheckoutCartDepositAmount(data.getDeposit() + "");
                         view.renderCheckoutCartToken(data.getToken());
+                        view.renderErrorPaymentCart(
+                                (data.getCheckoutNotifError() != null && !data.getCheckoutNotifError().equals("0")
+                                ), data.getCheckoutNotifError()
+                        );
                         view.hideProgressLoading();
                     }
                 });
@@ -217,6 +233,10 @@ public class CartPresenter implements ICartPresenter {
                         view.renderCartListData(data.getTransactionLists());
                         view.renderCheckoutCartDepositAmount(data.getDeposit() + "");
                         view.renderCheckoutCartToken(data.getToken());
+                        view.renderErrorPaymentCart(
+                                (data.getCheckoutNotifError() != null && !data.getCheckoutNotifError().equals("0")
+                                ), data.getCheckoutNotifError()
+                        );
                         view.hideProgressLoading();
                     }
                 });

@@ -241,7 +241,7 @@ android {
     }
     splits {
         density {
-            enable allowSplit()
+            enable false
             exclude "tvdpi", "xxxhdpi", "ldpi" //Add or modify the supported density here`
             compatibleScreens 'small', 'normal', 'large', 'xlarge' //Discouraged to touch this
         }

@@ -24,4 +24,6 @@ public interface ICartView extends ViewListener {
     void renderCheckoutCartToken(String token);
 
     void renderCheckoutCartDepositAmount(String depositAmount);
+
+    void renderErrorPaymentCart(boolean isError, String messageError);
 }
