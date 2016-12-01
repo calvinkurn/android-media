@@ -166,21 +166,6 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         }
-
-        Resources resources = this.getResources();
-        AssetManager assetManager = resources.getAssets();
-        InputStream inputStream;
-        try {
-            CommonUtils.dumper(this.getClass().getSimpleName());
-            Log.i("adwords tag", this.getClass().getSimpleName());
-            Properties properties = new Properties();
-            inputStream = assetManager.open("adwords-build.properties");
-            properties.load(inputStream);
-
-        } catch (IOException e) {
-            CommonUtils.dumper(e);
-            e.printStackTrace();
-        }
     }
 
     @Override
