@@ -1,5 +1,5 @@
 
-package com.tokopedia.core.shop.presenter;
+package com.tokopedia.seller.shop.presenter;
 
 import android.content.Intent;
 

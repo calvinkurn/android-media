@@ -1,4 +1,4 @@
-package com.tokopedia.core.shop.utils;
+package com.tokopedia.seller.shop.utils;
 
 import android.os.AsyncTask;
 import android.os.Environment;

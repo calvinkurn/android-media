@@ -1,4 +1,4 @@
-package com.tokopedia.core.shop;
+package com.tokopedia.seller.shop;
 
 import android.content.Context;
 import android.content.Intent;
@@ -23,11 +23,11 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.shipping.OpenShopEditShipping;
 import com.tokopedia.core.shipping.fragment.EditShippingViewListener;
 import com.tokopedia.core.shipping.model.openshopshipping.OpenShopData;
-import com.tokopedia.core.shop.fragment.ShopCreateFragment;
-import com.tokopedia.core.shop.fragment.ShopEditorFragment;
-import com.tokopedia.core.shop.presenter.ShopCreateView;
-import com.tokopedia.core.shop.presenter.ShopEditorView;
-import com.tokopedia.core.shop.presenter.ShopSettingView;
+import com.tokopedia.seller.shop.fragment.ShopCreateFragment;
+import com.tokopedia.seller.shop.fragment.ShopEditorFragment;
+import com.tokopedia.seller.shop.presenter.ShopCreateView;
+import com.tokopedia.seller.shop.presenter.ShopEditorView;
+import com.tokopedia.seller.shop.presenter.ShopSettingView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 
 import java.io.File;
