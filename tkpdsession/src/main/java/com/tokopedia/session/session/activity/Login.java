@@ -479,7 +479,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         session.setWhichFragment(TkpdState.DrawerPosition.SECURITY_QUESTION);
         setToolbarTitle();
         invalidateOptionsMenu();
-40    }
+   }
 
     @Override
     public void destroy() {
