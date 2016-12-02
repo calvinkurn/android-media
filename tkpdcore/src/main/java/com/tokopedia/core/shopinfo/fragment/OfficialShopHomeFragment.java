@@ -27,12 +27,12 @@ import butterknife.ButterKnife;
 
 public class OfficialShopHomeFragment extends Fragment {
 
-    public static final String SHOP_MODEL = "SHOP_MODEL";
+    public static final String SHOP_URL = "SHOP_URL";
 
-    public static OfficialShopHomeFragment newInstance(ShopModel shopModel) {
+    public static OfficialShopHomeFragment newInstance(String url) {
 
         Bundle args = new Bundle();
-        args.putParcelable(SHOP_MODEL, Parcels.wrap(shopModel));
+        args.putString(SHOP_URL, url);
         OfficialShopHomeFragment fragment = new OfficialShopHomeFragment();
         fragment.setArguments(args);
         return fragment;
@@ -57,7 +57,7 @@ public class OfficialShopHomeFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ShopModel model = Parcels.unwrap(getArguments().getBundle(SHOP_MODEL));
-        webView.loadUrl(model.info.shopUrl.replace("www", "m"));
+        String url = getArguments().getString(SHOP_URL);
+        webView.loadUrl(url.replace("www", "m"));
     }
 }

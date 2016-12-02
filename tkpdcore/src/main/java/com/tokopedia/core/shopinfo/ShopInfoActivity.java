@@ -159,8 +159,9 @@ public class ShopInfoActivity extends TActivity {
             loadSavedModel(savedInstanceState);
             if (shopModel.info.shopOpenSince == null) {
                 initFacadeAndLoadShopInfo();
-            } else
-                updateView();
+            } else {
+//                updateView();
+            }
         }
     }
 
@@ -246,7 +247,11 @@ public class ShopInfoActivity extends TActivity {
                 showShopInfo();
                 shopModel = new Gson().fromJson(result, com.tokopedia.core.shopinfo.models.shopmodel.ShopModel.class);
                 shopInfoString = result;
-                updateView();
+                try {
+                    updateView();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -407,16 +412,13 @@ public class ShopInfoActivity extends TActivity {
 //        ShopTabPagerAdapter adapter = ShopTabPagerAdapter.createAdapter(getFragmentManager(), this, shopModel);
         adapter = new ShopTabPagerAdapter(getFragmentManager(), this, shopModel);
         holder.pager.setAdapter(adapter);
-        holder.pager.addOnPageChangeListener(new
-                TabLayout.TabLayoutOnPageChangeListener(holder.indicator));
-        holder.indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(holder.pager));
     }
 
     private void loadShopInfo() {
         facadeGetRetrofit.getShopInfo();
     }
 
-    private void updateView() {
+    private void updateView() throws Exception {
         facadeAction.setShopModel(shopModel);
         if(shopModel.info.shopIsOfficial == 1){
             adapter.initOfficialShop(shopModel);
@@ -425,7 +427,10 @@ public class ShopInfoActivity extends TActivity {
         }
         for (String title : ShopTabPagerAdapter.TITLES)
             holder.indicator.addTab(holder.indicator.newTab().setText(title));
-
+        holder.indicator.setupWithViewPager(holder.pager);
+        holder.pager.addOnPageChangeListener(new
+                TabLayout.TabLayoutOnPageChangeListener(holder.indicator));
+        holder.indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(holder.pager));
         shopModel.info.shopName = Html.fromHtml(shopModel.info.shopName).toString();
         setListener();
         holder.collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);

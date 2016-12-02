@@ -39,7 +39,7 @@ public class ShopTabPagerAdapter extends FragmentPagerAdapter {
     public void initOfficialShop(ShopModel shopModel){
         this.shopModel = shopModel;
         TITLES = context.getResources().getStringArray(R.array.official_store_tab_title);
-        fragments.add(OfficialShopHomeFragment.newInstance(shopModel));
+        fragments.add(OfficialShopHomeFragment.newInstance(shopModel.info.shopUrl));
         fragments.add(ProductList.create());
         fragments.add(ShopTalkFragment.createInstance());
         fragments.add(ShopReputationList.create());
