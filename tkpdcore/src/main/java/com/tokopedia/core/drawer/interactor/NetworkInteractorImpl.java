@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.Html;
 
 import com.tokopedia.core.drawer.DrawerVariable;
+import com.tokopedia.core.drawer.model.DrawerHeader;
 import com.tokopedia.core.drawer.model.LoyaltyItem.LoyaltyItem;
 import com.tokopedia.core.drawer.model.notification.NotificationData;
 import com.tokopedia.core.drawer.model.profileinfo.ProfileData;
@@ -234,8 +235,8 @@ public class NetworkInteractorImpl implements NetworkInteractor {
         return notif;
     }
 
-    private DrawerVariable.DrawerHeader parseToDrawerHeader(ProfileData data) {
-        DrawerVariable.DrawerHeader drawerHeader = new DrawerVariable.DrawerHeader();
+    private DrawerHeader parseToDrawerHeader(ProfileData data) {
+        DrawerHeader drawerHeader = new DrawerHeader();
 
         if (data.getShopInfo() != null) {
             drawerHeader.shopName = Html.fromHtml(data.getShopInfo().getShopName()).toString();

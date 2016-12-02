@@ -20,9 +20,9 @@ import android.widget.ProgressBar;
 import com.tkpd.library.ui.floatbutton.FabSpeedDial;
 import com.tkpd.library.ui.floatbutton.ListenerFabClick;
 import com.tkpd.library.ui.floatbutton.SimpleMenuListenerAdapter;
-import com.tokopedia.tkpd.R;
-
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
@@ -33,6 +33,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.adapter.DataFeedAdapter;
 import com.tokopedia.tkpd.home.presenter.ProductFeed;
 import com.tokopedia.tkpd.home.presenter.ProductFeed2Impl;
@@ -54,7 +55,7 @@ import static com.tokopedia.tkpd.home.presenter.ProductFeed.messageTag;
  * Created by m.normansyah on 13/11/2015.
  * modified by m.normansyah on 27/11/2015
  */
-public class FragmentProductFeed extends Fragment implements ProductFeedView, DefaultRetryListener.OnClickRetry{
+public class FragmentProductFeed extends TkpdBaseV4Fragment implements ProductFeedView, DefaultRetryListener.OnClickRetry{
 
     @BindView(R.id.index_main_recycler_view)
     RecyclerView indexRecyclerView;
@@ -88,6 +89,11 @@ public class FragmentProductFeed extends Fragment implements ProductFeedView, De
         adapter.restoreAdapterPaging(savedInstanceState);
         //gw comment dulu soalnya karena kita udah ada cache lokal - rico -
         //adapter.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_HOME_PRODUCT_FEED;
     }
 
     @Nullable
@@ -235,7 +241,7 @@ public class FragmentProductFeed extends Fragment implements ProductFeedView, De
         // this is called when user view Fragment inside ViewPager
         // if visible to User then send data localytic
         if (isVisibleToUser&&getActivity()!=null) {
-            ScreenTracking.screen(this);
+            ScreenTracking.screen(getScreenName());
             productFeedPresenter.setLocalyticFlow(getActivity(), getActivity().getString(R.string.home_product_feed));
             productFeedPresenter.sendAppsFlyerData(getActivity());
         }

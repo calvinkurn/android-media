@@ -1794,4 +1794,20 @@ di Tokopedia Sekarang!</string>
     <string name="prompt_delete_talk">Apakah anda  yakin ingin menghapus diskusi ini?</string>
     <string name="product_image">Product Image</string>
     <string name="title_delete_discussion">Hapus diskusi</string>
+
+    <!-- BEGIN SELLER ON BOARDING RELATED STRING RESOURCE -->
+    <string name="seller_onb_1_title">Manage Dashboard</string>
+    <string name="seller_onb_1_sub_title">Mau lihat data tokomu?</string>
+    <string name="seller_onb_1_desc">Dengan fitur baru Dashboard, kini kamu makin mudah untuk mengelola tokomu!</string>
+    <string name="seller_onb_2_title">Live Chat</string>
+    <string name="seller_onb_2_sub_title">Mau meningkatkan pelayanan tokomu?</string>
+    <string name="seller_onb_2_desc">Yep, dengan fitur Live Chat kamu sekarang bisa langsung berkomunikasi dengan calon pembeli. Cepat dan mudah!</string>
+    <string name="seller_onb_3_title">Buka Toko Gratis</string>
+    <string name="seller_onb_3_sub_title">Mau jualan juga?</string>
+    <string name="seller_onb_3_desc">Yup, ciptakan peluangmu dan buka tokomu di Tokopedia. Gratis dan mudah!</string>
+
+
+    <string name="title_msisdn">Verifikasi Nomor HP</string>
+    <string name="title_try_again_in">Coba lagi dalam :</string>
+
 </resources>

@@ -10,7 +10,9 @@ import android.preference.PreferenceFragment;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.app.TkpdBasePreferenceFragment;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RouterUtils;
@@ -18,7 +20,7 @@ import com.tokopedia.core.util.RouterUtils;
 /**
  * Created by Angga.Prasetiyo on 13/01/2016.
  */
-public class AboutFragment extends PreferenceFragment {
+public class AboutFragment extends TkpdBasePreferenceFragment {
     private static final String TAG = AboutFragment.class.getSimpleName();
 
     private Preference prefVersion;
@@ -34,6 +36,11 @@ public class AboutFragment extends PreferenceFragment {
     }
 
     public AboutFragment() {
+    }
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_SETTING_ABOUT_US;
     }
 
     @Override
@@ -125,7 +132,7 @@ public class AboutFragment extends PreferenceFragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded() && getActivity() !=null) {
-            ScreenTracking.screen(this);
+            ScreenTracking.screen(getScreenName());
         }
         super.setUserVisibleHint(isVisibleToUser);
     }

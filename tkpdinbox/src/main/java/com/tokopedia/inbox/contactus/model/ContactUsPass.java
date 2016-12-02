@@ -1,5 +1,9 @@
 package com.tokopedia.inbox.contactus.model;
 
+import android.content.pm.PackageManager;
+
+import com.tokopedia.core.BuildConfig;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.inboxreputation.model.ImageUpload;
 import com.tokopedia.core.network.retrofit.response.GeneratedHost;
 
@@ -31,6 +35,9 @@ public class ContactUsPass {
     private static final String PARAM_IMAGE_ID = "image_id";
     private static final String PARAM_ATTACHMENT_STRING = "attachment_string";
     private static final String PARAM_IS_TEMP = "is_temp";
+    private static final String PARAM_APP_VERSION = "app_version";
+    private static final String PARAM_SOURCE = "source";
+
 
     String ticketCategoryId;
     String messageBody;
@@ -41,6 +48,8 @@ public class ContactUsPass {
     String postKey;
     String fileUploaded;
     private GeneratedHost generatedHost;
+    private String source;
+    private String appVersion;
 
     public String getTicketCategoryId() {
         return ticketCategoryId;
@@ -124,6 +133,12 @@ public class ContactUsPass {
             param.put(PARAM_INVOICE_NUMBER, getInvoiceNumber());
         if (getServerId() != null)
             param.put(PARAM_SERVER_ID, getServerId());
+
+        if (getAppVersion() != null)
+            param.put(PARAM_APP_VERSION, getAppVersion());
+        if (getSource() != null)
+            param.put(PARAM_SOURCE, getSource());
+
         return param;
     }
 
@@ -170,5 +185,21 @@ public class ContactUsPass {
 
     public void setGeneratedHost(GeneratedHost generatedHost) {
         this.generatedHost = generatedHost;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setAppVersion(String appVersion) {
+        this.appVersion = appVersion;
+    }
+
+    public String getAppVersion() {
+        return appVersion;
     }
 }

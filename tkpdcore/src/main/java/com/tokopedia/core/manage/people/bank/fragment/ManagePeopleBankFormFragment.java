@@ -24,6 +24,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.database.model.Bank;
@@ -479,9 +480,14 @@ public class ManagePeopleBankFormFragment extends BasePresenterFragment<ManagePe
     }
 
     @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_PEOPLE_BANK_FORM;
+    }
+
+    @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded() && getActivity() !=null) {
-            ScreenTracking.screen(this);
+            ScreenTracking.screen(getScreenName());
         }
         super.setUserVisibleHint(isVisibleToUser);
     }

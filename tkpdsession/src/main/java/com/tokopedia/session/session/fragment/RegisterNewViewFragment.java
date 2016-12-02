@@ -47,6 +47,7 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -644,8 +645,13 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
     }
 
     @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_REGISTER;
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
-        ScreenTracking.screen(this);
+        ScreenTracking.screen(getScreenName());
     }
 }

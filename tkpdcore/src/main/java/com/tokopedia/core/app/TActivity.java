@@ -43,6 +43,7 @@ import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.database.manager.CategoryDatabaseManager;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer.DrawerVariable;
+import com.tokopedia.core.drawer.DrawerVariableSeller;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.retrofit.utils.DialogForceLogout;
@@ -137,16 +138,23 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
         supportFragmentManager = getFragmentManager();
 
         mReceiverHades = new HadesBroadcastReceiver();
+
         phoneVerificationUtil = new PhoneVerificationUtil(this);
 
         mReceiverLogout = new ErrorNetworkReceiver();
 
         /* clear cache if not login */
-        if (!SessionHandler.isV4Login(this)){
+        if (!SessionHandler.isV4Login(this)) {
 //            CacheHomeInteractorImpl.deleteAllCache();
             new GlobalCacheManager().deleteAll();
         }
-        drawer = new DrawerVariable(this);
+
+        if (GlobalConfig.isSellerApp()) {
+            drawer = new DrawerVariableSeller(this);
+        } else {
+            drawer = new DrawerVariable(this);
+        }
+
         drawer.setToolbar(toolbar);
         drawer.createDrawer();
         drawer.setEnabled(false);
@@ -166,21 +174,6 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         }
-
-        Resources resources = this.getResources();
-        AssetManager assetManager = resources.getAssets();
-        InputStream inputStream;
-        try {
-            CommonUtils.dumper(this.getClass().getSimpleName());
-            Log.i("adwords tag", this.getClass().getSimpleName());
-            Properties properties = new Properties();
-            inputStream = assetManager.open("adwords-build.properties");
-            properties.load(inputStream);
-
-        } catch (IOException e) {
-            CommonUtils.dumper(e);
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -189,11 +182,14 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
         isPause = true;
         MainApplication.setActivityState(0);
         MainApplication.setActivityname(null);
-        if (phoneVerificationUtil != null) {
-//            phoneVerificationUtil.unregister();
-            phoneVerificationUtil.setHasShown(false);
-            phoneVerificationUtil.dismissDialog();
 
+        if (!GlobalConfig.isSellerApp()) {
+            if (phoneVerificationUtil != null) {
+//            phoneVerificationUtil.unregister();
+                phoneVerificationUtil.setHasShown(false);
+                phoneVerificationUtil.dismissDialog();
+
+            }
         }
         drawer.setHasUpdated(false);
         HockeyAppHelper.unregisterManager();
@@ -220,13 +216,15 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
         initGTM();
         sendScreenAnalytics();
         verifyFetchDepartment();
-        if (phoneVerificationUtil != null) {
+        if (!GlobalConfig.isSellerApp()) {
+            if (phoneVerificationUtil != null) {
 //            phoneVerificationUtil.registerSMSReceiver();
-            if (!phoneVerificationUtil.hasShown())
-                phoneVerificationUtil.checkIsMSISDNVerified();
+                if (!phoneVerificationUtil.hasShown())
+                    phoneVerificationUtil.checkIsMSISDNVerified();
 
+            }
         }
-        if(!drawer.hasUpdated()){
+        if (!drawer.hasUpdated()) {
             drawer.updateData();
         }
 
@@ -248,7 +246,7 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
         ScreenTracking.sendScreen(this, this);
     }
 
-    private HUDIntent.HUDInterface onBindServiceListener(){
+    private HUDIntent.HUDInterface onBindServiceListener() {
         return new HUDIntent.HUDInterface() {
             @Override
             public void onServiceConnected(HUDIntent service, ServiceConnection connection) {
@@ -308,8 +306,10 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
         RequestManager.cancelAllRequest();
         unbindLogService();
         unregisterHadesReceiver();
-        if(phoneVerificationUtil!= null)
-            phoneVerificationUtil.unSubscribe();
+        if (!GlobalConfig.isSellerApp()) {
+            if (phoneVerificationUtil != null)
+                phoneVerificationUtil.unSubscribe();
+        }
         unregisterForceLogoutReceiver();
 
         HockeyAppHelper.unregisterManager();
@@ -422,9 +422,9 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
         if (success) {
             finish();
             Intent intent;
-            if(isSeller()){
+            if (isSeller()) {
                 intent = SessionRouter.getLoginActivityIntent(this);
-            }else {
+            } else {
                 intent = HomeRouter.getHomeActivity(this);
             }
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -432,7 +432,7 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
         }
     }
 
-    private boolean isSeller(){
+    private boolean isSeller() {
         return getApplication().getClass().getSimpleName().equals("SellerMainApplication");
     }
 
@@ -562,7 +562,7 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-               snackBar.dismiss();
+                snackBar.dismiss();
             }
         }, 10000);
     }
@@ -589,7 +589,7 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("mailto:" + "android.feedback@tokopedia.com"));
         intent.putExtra(Intent.EXTRA_SUBJECT, "Masalah Server Error");
-        intent.putExtra(Intent.EXTRA_TEXT, "Versi Aplikasi: "+ GlobalConfig.VERSION_CODE);
+        intent.putExtra(Intent.EXTRA_TEXT, "Versi Aplikasi: " + GlobalConfig.VERSION_CODE);
         startActivity(Intent.createChooser(intent, "Kirim Email"));
     }
 }

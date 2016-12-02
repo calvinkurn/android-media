@@ -74,6 +74,36 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
     }
 
     @Override
+    public void getListProductForOperator(final OnGetListProductForOperator onGetListProductForOperator, final int categoryId) {
+        Observable.just(true)
+                .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<Boolean, List<Product>>() {
+                    @Override
+                    public List<Product> call(Boolean b) {
+                        return new RechargeProductManager().getListDataByCategory(categoryId);
+                    }
+                })
+                .subscribe(new Subscriber<List<Product>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        onGetListProductForOperator.onErrorFetchProdcuts(e);
+                    }
+
+                    @Override
+                    public void onNext(List<Product> products) {
+                        onGetListProductForOperator.onSuccessFetchProducts(products);
+                    }
+                });
+    }
+
+    @Override
     public void getListProductDefaultOperator(
             final OnGetListProduct onGetListProduct,final int categoryId, final String operatorId) {
 
@@ -85,7 +115,7 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                     @Override
                     public List<Product> call(Boolean rechargeOperatorModelDB) {
                         return new RechargeProductManager().getListData(categoryId,
-                                    Integer.parseInt(operatorId));
+                                Integer.parseInt(operatorId));
                     }
                 })
                 .subscribe(new Subscriber<List<Product>>() {
@@ -351,6 +381,40 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
             }
         });
 
+    }
+
+    @Override
+    public void getOperatorListByIds(final List<Integer> operatorIds, final OnGetListOperatorByIdsListener listener) {
+        Observable.just(operatorIds)
+                .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<List<Integer>, List<RechargeOperatorModelDBAttrs>>() {
+                    @Override
+                    public List<RechargeOperatorModelDBAttrs> call(List<Integer> operatorIds) {
+                        return new RechargeOperatorManager().getListDataOperator(operatorIds);
+
+                    }
+                }).subscribe(new Subscriber<List<RechargeOperatorModelDBAttrs>>() {
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                listener.onError(e);
+            }
+
+            @Override
+            public void onNext(List<RechargeOperatorModelDBAttrs> results) {
+                if (results.size()>0) {
+                    listener.onSuccessFetchOperators(results);
+                } else {
+                    listener.onEmpty();
+                }
+
+            }
+        });
     }
 
 }

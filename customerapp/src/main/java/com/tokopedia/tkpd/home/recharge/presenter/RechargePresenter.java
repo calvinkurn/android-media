@@ -16,7 +16,9 @@ public interface RechargePresenter {
 
     void updateMinLenghAndOperator(String operatorId);
 
-    void validateWithDefaultOperator( int categoryId, String operatorId);
+    void validateWithOperator(int categoryId, String operatorId);
+
+    void getListOperatorFromCategory( int categoryId);
 
     boolean isAlreadyHavePhonebookDataOnCache(String key);
 
