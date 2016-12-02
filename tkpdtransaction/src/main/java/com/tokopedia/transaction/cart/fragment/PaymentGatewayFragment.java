@@ -12,8 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.adapter.PaymentGatewayAdapter;
 import com.tokopedia.transaction.cart.model.cartdata.GatewayList;
 
@@ -70,7 +70,7 @@ public class PaymentGatewayFragment extends DialogFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dialog_fragment_payment_gateway, container);
+        View view = inflater.inflate(R.layout.fragment_dialog_payment_gateway_tx_module, container);
         ButterKnife.bind(this, view);
         rvPaymentGateway.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvPaymentGateway.setAdapter(new PaymentGatewayAdapter(this, gatewayList));

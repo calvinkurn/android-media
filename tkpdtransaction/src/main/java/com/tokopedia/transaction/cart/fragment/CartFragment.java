@@ -28,8 +28,8 @@ import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.util.NonScrollLayoutManager;
 import com.tokopedia.transaction.cart.activity.ShipmentCartActivity;
@@ -176,7 +176,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_cart_revamp;
+        return R.layout.fragment_cart_tx_module;
     }
 
     @Override

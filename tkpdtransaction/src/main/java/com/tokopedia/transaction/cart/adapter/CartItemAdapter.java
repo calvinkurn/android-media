@@ -25,8 +25,8 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.model.CartInsurance;
 import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.CartPartialDeliver;
@@ -45,7 +45,7 @@ import butterknife.ButterKnife;
  */
 
 public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private static final int TYPE_CART_ITEM = R.layout.cart_item_holder;
+    private static final int TYPE_CART_ITEM = R.layout.holder_item_cart_tx_module;
     private final Fragment hostFragment;
     private final CartAction cartAction;
 

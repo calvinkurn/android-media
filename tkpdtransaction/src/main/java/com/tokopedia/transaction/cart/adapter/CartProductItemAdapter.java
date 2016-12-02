@@ -12,8 +12,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.model.CartProductItemEditable;
 import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
@@ -29,7 +29,7 @@ import butterknife.ButterKnife;
  */
 
 class CartProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private static final int TYPE_PRODUCT_ITEM = R.layout.cart_product_item_holder;
+    private static final int TYPE_PRODUCT_ITEM = R.layout.holder_item_product_cart_tx_module;
     private final Fragment hostFragment;
 
     private List<Object> dataList = new ArrayList<>();

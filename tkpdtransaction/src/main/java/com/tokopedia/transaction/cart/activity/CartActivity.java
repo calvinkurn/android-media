@@ -39,7 +39,7 @@ public class CartActivity extends BasePresenterActivity implements ICartActionFr
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_cart_revamp;
+        return R.layout.activity_cart_tx_module;
     }
 
     @Override

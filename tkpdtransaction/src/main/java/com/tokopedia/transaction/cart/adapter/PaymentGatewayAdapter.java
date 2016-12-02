@@ -8,8 +8,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.fragment.PaymentGatewayFragment;
 import com.tokopedia.transaction.cart.model.cartdata.GatewayList;
 
@@ -61,7 +61,7 @@ public class PaymentGatewayAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public int getItemViewType(int position) {
-        return R.layout.simple_payment_listview;
+        return R.layout.holder_item_payment_gateway_tx_module;
     }
 
     @Override

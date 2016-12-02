@@ -7,14 +7,14 @@ import android.support.v4.view.ViewPager;
 import android.view.inputmethod.InputMethodManager;
 
 import com.tokopedia.core.GCMListenerService;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.TransactionRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.activity.CartActivity;
 import com.tokopedia.transaction.purchase.adapter.PurchaseTabAdapter;
 import com.tokopedia.transaction.purchase.fragment.TxListFragment;
@@ -66,7 +66,7 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_purchase;
+        return R.layout.activity_purchase_tx_module;
     }
 
     @Override

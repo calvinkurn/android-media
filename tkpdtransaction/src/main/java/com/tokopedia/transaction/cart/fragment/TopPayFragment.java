@@ -21,9 +21,10 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
-import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.listener.ICartActionFragment;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 
@@ -108,7 +109,7 @@ public class TopPayFragment extends BasePresenterFragment implements View.OnKeyL
 
     @Override
     protected int getFragmentLayout() {
-        return com.tokopedia.transaction.R.layout.fragment_top_pay;
+        return R.layout.fragment_top_pay_tx_module;
     }
 
     @Override
