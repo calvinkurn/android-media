@@ -714,6 +714,24 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventDepositTopUp(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.DEPOSIT,
+                AppEventTracking.Category.DEPOSIT,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.TOPUP
+        ).getEvent());
+    }
+
+    public static void eventDepositWithdraw(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.DEPOSIT,
+                AppEventTracking.Category.DEPOSIT,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.WITHDRAW
+        ).getEvent());
+    }
+
     public static  void eventAppsFlyerViewListingSearch(java.util.List<ProductItem> model, String keyword){
         JSONArray afProdIds = new JSONArray();
         ArrayList<String> prodIdArray = new ArrayList<>();

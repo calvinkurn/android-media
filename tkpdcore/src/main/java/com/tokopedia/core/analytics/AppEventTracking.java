@@ -90,6 +90,7 @@ public interface AppEventTracking {
         String LOGIN_CLICK = "clickLogin";
         String TRUECALLER = "installedTrueCaller";
         String GMSUBSCRIBE = "subscribeGoldMerchant";
+        String DEPOSIT = "clickSaldo";
     }
 
     interface Category {
@@ -134,6 +135,7 @@ public interface AppEventTracking {
         String SALES = "Sales";
         String TRUECALLER = "TrueCaller";
         String GOLD_MERCHANT = "Gold Merchant";
+        String DEPOSIT = "Saldo";
     }
 
     interface Action {
@@ -267,6 +269,8 @@ public interface AppEventTracking {
         String REGISTER = "Register";
         String CTA = "CTA";
         String SUBSCRIBE_SUCCESS = "Subscribe Success";
+        String TOPUP = "TopUp";
+        String WITHDRAW = "Withdraw";
     }
 
     interface SOCIAL_MEDIA {
