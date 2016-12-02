@@ -134,15 +134,6 @@ public class TrackingUtils extends TrackingConfig {
                         userId
                 );
     }
-    public static void eventGoldMerchantSuccess() {
-        Nishikino.init(MainApplication.getAppContext()).startAnalytics()
-                .sendButtonClick(
-                        AppEventTracking.Event.GMSUBSCRIBE,
-                        AppEventTracking.Category.GOLD_MERCHANT,
-                        AppEventTracking.Action.SUBSCRIBE,
-                        AppEventTracking.EventLabel.SUBSCRIBE_SUCCESS
-                );
-    }
 
     public static void eventLocaNotificationCallback(Intent intent){
         getLocaEngine().sendNotificationCallback(intent);
