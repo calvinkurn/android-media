@@ -1,9 +1,11 @@
 package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,6 +18,7 @@ import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.model.data.DataDeposit;
 import com.tokopedia.seller.topads.model.data.Summary;
+import com.tokopedia.seller.topads.view.activity.TopAdsAddCreditActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardFragmentListener;
 
 import java.text.SimpleDateFormat;
@@ -24,6 +27,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import butterknife.Bind;
+import butterknife.OnClick;
 
 public abstract class TopAdsDashboardFragment<T> extends BasePresenterFragment<T> implements TopAdsDashboardFragmentListener {
 
@@ -182,5 +186,11 @@ public abstract class TopAdsDashboardFragment<T> extends BasePresenterFragment<T
 
     protected void updateInfoText(View layout, int resourceId, String value) {
         ((TextView) layout.findViewById(resourceId)).setText(value);
+    }
+
+    @OnClick(R2.id.image_button_add_deposit)
+    void goToAddCredit() {
+        Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
+        startActivity(intent);
     }
 }

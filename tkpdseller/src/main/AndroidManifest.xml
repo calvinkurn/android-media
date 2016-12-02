@@ -36,6 +36,11 @@
             android:name=".topads.view.activity.TopAdsDashboardActivity"
             android:label="@string/title_top_ads_dashboard"/>
 
+        <activity
+            android:name=".topads.view.activity.TopAdsAddCreditActivity"
+            android:label="@string/title_top_ads_add_credit"
+            android:theme="@style/Theme.Tokopedia3"/>
+
         <service
             android:name=".selling.SellingService"
             android:exported="false"/>
