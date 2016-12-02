@@ -66,6 +66,10 @@ public class TxConfirmationFragment extends BasePresenterFragment<TxConfirmation
     private Set<TxConfData> txConfDataSelected = new HashSet<>();
     private TxListUIReceiver txUIReceiver;
 
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
 
     public static TxConfirmationFragment createInstance() {
         return new TxConfirmationFragment();

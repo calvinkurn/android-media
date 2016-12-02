@@ -104,6 +104,11 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     protected void onFirstTimeLaunched() {
         presenter.setCache();
     }

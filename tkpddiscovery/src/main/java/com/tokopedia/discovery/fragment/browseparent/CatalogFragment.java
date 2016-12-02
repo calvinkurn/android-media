@@ -76,6 +76,11 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
         }
     };
 
+    @Override
+    public String getScreenName() {
+        return null;
+    }
+
     private void changeLayoutType(BrowseProductRouter.GridType gridType) {
         this.gridType = gridType;
         switch (gridType) {

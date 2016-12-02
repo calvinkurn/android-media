@@ -28,7 +28,6 @@ import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.service.HUDIntent;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.InstabugHelper;
 import com.tokopedia.core.util.RequestManager;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.var.NotificationVariable;
@@ -92,8 +91,6 @@ public class MainApplication extends TkpdMultiDexApplication {
 		initDbFlow();
 
         Localytics.autoIntegrate(this);
-
-        InstabugHelper.initInstabug(this);
     }
 
 

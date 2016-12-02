@@ -2,8 +2,7 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".rescenter.detail.activity.ResCenterActivity">
+    android:layout_height="match_parent">
 
     <ProgressBar
         android:layout_width="wrap_content"
@@ -16,14 +15,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.tokopedia.core.rescenter.detail.customview.ReplyEditorView
+        <com.tokopedia.inbox.rescenter.detail.customview.ReplyEditorView
             android:id="@+id/custom_view_reply_editor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             tools:layout="@layout/layout_rescenter_reply_editor" />
 
-        <com.tokopedia.core.rescenter.detail.customview.DetailView
+        <com.tokopedia.inbox.rescenter.detail.customview.DetailView
             android:id="@+id/custom_view_detail_rescenter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

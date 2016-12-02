@@ -662,7 +662,6 @@ public class ManageProduct extends TkpdActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbinder.unbind();
         RxUtils.unsubscribeIfNotNull(compositeSubscription);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(onCompletedAddReceiver);
         if (addProductReceiver.isOrderedBroadcast()) unregisterReceiver(addProductReceiver);

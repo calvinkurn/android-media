@@ -23,6 +23,8 @@ import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ListViewHelper;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.seller.OrderHistoryView;
@@ -61,7 +63,7 @@ import rx.subscriptions.CompositeSubscription;
  * Created by Tkpd_Eka on 2/24/2015.
  */
 @RuntimePermissions
-public class FragmentShopTxStatusDetailV2 extends Fragment {
+public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment {
 
     public FragmentShopTxStatusDetailV2() {
 
@@ -136,9 +138,14 @@ public class FragmentShopTxStatusDetailV2 extends Fragment {
         setViewData();
         setListener();
         if (getActivity() != null) {
-            ScreenTracking.screen(this);
+            ScreenTracking.screen(getScreenName());
         }
         return rootView;
+    }
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_TX_PEOPLE_DETAIL;
     }
 
     @Override

@@ -47,6 +47,14 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.EtalaseShopEditor;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.appsflyer.Jordan;
+import com.tokopedia.core.analytics.nishikino.Nishikino;
+import com.tokopedia.core.analytics.nishikino.model.Authenticated;
+import com.tokopedia.core.deposit.activity.DepositActivity;
+import com.tokopedia.core.drawer.DrawerVariable;
+import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.drawer.DrawerVariableSeller;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
@@ -58,22 +66,13 @@ import com.tokopedia.core.network.apiservices.shop.ShopService;
 import com.tokopedia.core.network.apiservices.transaction.DepositService;
 import com.tokopedia.core.network.apiservices.user.InboxResCenterService;
 import com.tokopedia.core.network.apiservices.user.NotificationService;
-import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
-import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.sellerapp.R;
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.appsflyer.Jordan;
-import com.tokopedia.core.analytics.nishikino.Nishikino;
-import com.tokopedia.core.analytics.nishikino.model.Authenticated;
-import com.tokopedia.core.deposit.activity.DepositActivity;
-import com.tokopedia.core.drawer.DrawerVariable;
-import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.sellerapp.gmsubscribe.GMSubscribeActivity;
 import com.tokopedia.sellerapp.home.boommenu.BoomMenuButton;
 import com.tokopedia.sellerapp.home.boommenu.SquareMenuButton;
@@ -110,7 +109,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
-import static com.tokopedia.core.drawer.DrawerVariable.goToShopNewOrder;
+import static com.tokopedia.core.drawer.DrawerVariableSeller.goToShopNewOrder;
 import static com.tokopedia.core.drawer.DrawerVariable.startIntent;
 
 public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.GCMHandlerListener,
@@ -202,7 +201,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
 
     @OnClick({R.id.complain_see_more, R.id.complain_container})
     public void complainSeeMore() {
-        startActivity(InboxResCenterActivity.createIntent(this));
+        startActivity(InboxRouter.getInboxResCenterActivityIntent(this));
     }
 
     @OnClick(R.id.seller_home_container)
@@ -230,7 +229,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
     String userId;
     String shopId;
 
-    DrawerVariable drawer;
+    DrawerVariableSeller drawer;
     ActionBarDrawerToggle mDrawerToggle;
 
     @Nullable
@@ -348,8 +347,9 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
     }
 
     private void initDrawer() {
-        drawer = new DrawerVariable(this);
+        drawer = new DrawerVariableSeller(this);
         toolbar = new FckToolbarVariable(this, sellerHomeToolbar);
+        toolbar.createToolbarWithDrawer();
         drawer.setToolbar(toolbar);
         drawer.createDrawer();
         drawer.setEnabled(true);

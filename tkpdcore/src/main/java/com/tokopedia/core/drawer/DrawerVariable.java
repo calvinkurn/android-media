@@ -17,7 +17,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.instabug.library.Instabug;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -33,6 +32,10 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.drawer.interactor.NetworkInteractor;
 import com.tokopedia.core.drawer.interactor.NetworkInteractorImpl;
+import com.tokopedia.core.drawer.model.DrawerHeader;
+import com.tokopedia.core.drawer.model.DrawerItem;
+import com.tokopedia.core.drawer.model.DrawerItemList;
+import com.tokopedia.core.drawer.model.DrawerSeparator;
 import com.tokopedia.core.drawer.model.LoyaltyItem.LoyaltyItem;
 import com.tokopedia.core.drawer.var.NotificationItem;
 import com.tokopedia.core.drawer.var.UserType;
@@ -40,12 +43,11 @@ import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.myproduct.ManageProduct;
-import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
-import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shop.ShopEditorActivity;
@@ -108,93 +110,6 @@ public class DrawerVariable {
             inboxMenu = new DrawerItemList("Kotak Masuk", 0, R.drawable.icon_inbox, TkpdState.DrawerPosition.INBOX, true);
         }
 
-    }
-
-    public static class DrawerHeader extends RecyclerViewItem {
-
-        public String userName = "";
-        public String shopName = "";
-        public String userIcon = "";
-        public String shopIcon = "";
-        public String shopCover = "";
-        public String deposit = "";
-        public String timestamp = "";
-        public String ShopId = "";
-        public String Loyalty = "";
-        public String LoyaltyUrl = "";
-        public UserType userType = UserType.TYPE_GUEST;
-
-        public DrawerHeader() {
-            setType(TkpdState.DrawerItem.TYPE_HEADER);
-        }
-
-        public DrawerHeader(Context context) {
-            setType(TkpdState.DrawerItem.TYPE_HEADER);
-            LocalCacheHandler Cache = new LocalCacheHandler(context,
-                    TkpdState.CacheName.CACHE_USER);
-            this.timestamp = Cache.getString("timestamp", timestamp);
-            this.userName = Cache.getString("user_name", userName);
-            this.userIcon = Cache.getString("user_pic_uri", userIcon);
-            this.shopName = Cache.getString("user_shop", shopName);
-            this.shopIcon = Cache.getString("shop_pic_uri", shopIcon);
-            this.shopCover = Cache.getString("shop_cover_uri", shopCover);
-            this.ShopId = Cache.getString("shop_id", ShopId);
-        }
-
-
-        public void setDataToCache(Context context) {
-            LocalCacheHandler Cache = new LocalCacheHandler(context, TkpdState.CacheName.CACHE_USER);
-            Cache.putString("timestamp", timestamp);
-            Cache.putString("user_name", userName);
-            Cache.putString("user_pic_uri", userIcon);
-            Cache.putString("user_shop", shopName);
-            Cache.putString("shop_pic_uri", shopIcon);
-            Cache.putString("shop_cover_uri", shopCover);
-            Cache.putString("shop_id", ShopId);
-            Cache.applyEditor();
-        }
-
-        public String getDeposit(Context context) {
-            LocalCacheHandler Cache = new LocalCacheHandler(context, TkpdState.CacheName.CACHE_USER);
-            return Cache.getString("deposit", "");
-        }
-    }
-
-    public static class DrawerItem extends RecyclerViewItem {
-
-        public int id = 0;
-        public String label = "";
-        public int iconId;
-        public int notif = 0;
-        public boolean isExpanded = false;
-
-        public DrawerItem(String label, int notif, int iconId, int id, boolean isExpanded) {
-            setType(TkpdState.DrawerItem.TYPE_ITEM);
-            this.id = id;
-            this.label = label;
-            this.notif = notif;
-            this.iconId = iconId;
-            this.isExpanded = isExpanded;
-        }
-    }
-
-    public static class DrawerItemList extends DrawerItem {
-
-        public List<DrawerItem> list = new ArrayList<>();
-        public boolean isExpandable = false;
-
-        public DrawerItemList(String label, int notif, int iconId, int id, boolean isExpandable) {
-            super(label, notif, iconId, id, false);
-            setType(TkpdState.DrawerItem.TYPE_LIST);
-            this.isExpandable = isExpandable;
-        }
-    }
-
-    public static class DrawerSeparator extends DrawerItem {
-        public DrawerSeparator() {
-            super("", 0, 0, 0, false);
-            setType(TkpdState.DrawerItem.TYPE_SEPARATOR);
-        }
     }
 
     private class ViewHolder {
@@ -501,7 +416,8 @@ public class DrawerVariable {
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.HELP);
                 break;
             case TkpdState.DrawerPosition.RESOLUTION_CENTER:
-                context.startActivity(InboxResCenterActivity.createIntent(context));
+                intent = InboxRouter.getInboxResCenterActivityIntent(context);
+                context.startActivity(intent);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.RESOLUTION_CENTER);
                 break;
             case TkpdState.DrawerPosition.DEVELOPER_OPTIONS:
@@ -530,10 +446,6 @@ public class DrawerVariable {
                 }
                 context.startActivity(intent);
                 break;
-            case TkpdState.DrawerPosition.REPORT:
-                isFinish = false;
-                Instabug.invoke();
-                break;
             case TkpdState.DrawerPosition.LOGOUT:
                 isFinish = false;
                 SessionHandler session = new SessionHandler(context);
@@ -551,31 +463,24 @@ public class DrawerVariable {
     }
 
     private void goToShopTransactionList() {
-//        Intent intent = new Intent(context, ShopTransactionV2.class);
         Intent intent = SellerRouter.getActivitySellingTransaction(context);
         intent.putExtra("tab", 4);
         context.startActivity(intent);
     }
 
     private void goToShopShippingStatus() {
-//        Intent intent = new Intent(context, ShopTransactionV2.class);
         Intent intent = SellerRouter.getActivitySellingTransaction(context);
         intent.putExtra("tab", 3);
         context.startActivity(intent);
     }
 
     private void goToShopConfirmShipping() {
-//        Intent intent = new Intent(context, ShopTransactionV2.class);
         Intent intent = SellerRouter.getActivitySellingTransaction(context);
         intent.putExtra("tab", 2);
         context.startActivity(intent);
     }
 
-    private void goToShopNewOrder(){
-        goToShopNewOrder(context);
-    }
-
-    public static void goToShopNewOrder(Context context) {
+    private void goToShopNewOrder() {
         Intent intent = SellerRouter.getActivitySellingTransaction(context);
         Bundle bundle = new Bundle();
         bundle.putInt("tab", 1);
@@ -634,9 +539,6 @@ public class DrawerVariable {
         model.data.add(new DrawerSeparator());
         model.data.add(new DrawerItem("Daftar", 0, 0, TkpdState.DrawerPosition.REGISTER, true));
         model.data.add(new DrawerSeparator());
-        if (TrackingUtils.getBoolean(AppEventTracking.GTM.REPORT)) {
-            model.data.add(new DrawerItem("Laporkan", 0, 0, TkpdState.DrawerPosition.REPORT, true));
-        }
         if (BuildConfig.DEBUG) {
             model.data.add(new DrawerItem("Developer Options", 0, 0, TkpdState.DrawerPosition.DEVELOPER_OPTIONS, true));
         }
@@ -803,9 +705,6 @@ public class DrawerVariable {
             model.data.add(model.shopMenu);
         }
         model.data.add(new DrawerItem("Pengaturan", 0, R.drawable.icon_setting, TkpdState.DrawerPosition.SETTINGS, false));
-        if (TrackingUtils.getBoolean(AppEventTracking.GTM.REPORT)) {
-            model.data.add(new DrawerItem("Laporkan", 0, R.drawable.ic_report_but, TkpdState.DrawerPosition.REPORT, false));
-        }
         if (!TrackingUtils.getBoolean(AppEventTracking.GTM.CONTACT_US)) {
             model.data.add(new DrawerItem("Hubungi Kami", 0, R.drawable.ic_contact_us, TkpdState.DrawerPosition.CONTACT_US, false));
         }
@@ -839,7 +738,7 @@ public class DrawerVariable {
     private void getUserInfo() {
         networkInteractor.getProfileInfo(context, new NetworkInteractor.ProfileInfoListener() {
             @Override
-            public void onSuccess(DrawerVariable.DrawerHeader profile) {
+            public void onSuccess(DrawerHeader profile) {
                 if (profile.shopIcon == null || profile.shopIcon.equals("")) {
                     Uri uri = Uri.parse("android.resource://" + BuildConfig.APPLICATION_ID
                             + "/drawable/ic_default_shop_ava");

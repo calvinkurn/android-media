@@ -1,5 +1,6 @@
 package com.tokopedia.core.welcome.view;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
@@ -16,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.facebook.login.LoginFragment;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
@@ -29,6 +31,7 @@ import com.tokopedia.core.session.model.LoginProviderModel;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.AppEventTracking;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.presenter.WelcomeFragmentPresenter;
 import com.tokopedia.core.welcome.presenter.WelcomeFragmentPresenterImpl;
@@ -36,11 +39,18 @@ import com.tokopedia.core.welcome.presenter.WelcomeFragmentPresenterImpl;
 import java.util.List;
 
 import butterknife.BindView;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 
 /**
  * Created by stevenfredian on 10/5/16.
  */
 
+@RuntimePermissions
 public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresenter> implements WelcomeFragmentView{
 
     @BindView(R2.id.background)
@@ -276,7 +286,7 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
                     tv.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            onGoogleClick();
+                            WelcomeFragmentPermissionsDispatcher.onGoogleClickWithCheck(WelcomeFragment.this);
                         }
                     });
                 } else {
@@ -304,7 +314,8 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
         };
     }
 
-    private void onGoogleClick() {
+    @NeedsPermission(Manifest.permission.GET_ACCOUNTS)
+    public void onGoogleClick() {
         presenter.loginGoogle(getActivity());
         storeCacheGTM(AppEventTracking.GTMCacheKey.LOGIN_TYPE,
                 AppEventTracking.GTMCacheValue.GMAIL);
@@ -399,5 +410,26 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
     @Override
     public void showSplash() {
         splash.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        WelcomeFragmentPermissionsDispatcher.onRequestPermissionsResult(WelcomeFragment.this,requestCode, grantResults);
+    }
+
+    @OnShowRationale(Manifest.permission.GET_ACCOUNTS)
+    void showRationaleForGetAccounts(final PermissionRequest request) {
+        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.GET_ACCOUNTS);
+    }
+
+    @OnPermissionDenied(Manifest.permission.GET_ACCOUNTS)
+    void showDeniefForGetAccounts() {
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.GET_ACCOUNTS);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.GET_ACCOUNTS)
+    void showNeverAskForGetAccounts() {
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.GET_ACCOUNTS);
     }
 }

@@ -21,8 +21,10 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.session.session.presenter.ForgotPassword;
 import com.tokopedia.session.session.presenter.ForgotPasswordImpl;
 import com.tokopedia.session.session.presenter.ForgotPasswordView;
@@ -39,7 +41,7 @@ import butterknife.Unbinder;
  * @since 18/11/2015
  * @version 2
  */
-public class ForgotPasswordFragment extends Fragment implements ForgotPasswordView{
+public class ForgotPasswordFragment extends TkpdBaseV4Fragment implements ForgotPasswordView{
 
     @BindView(R2.id.front_view)
      View FrontView;
@@ -153,10 +155,15 @@ public class ForgotPasswordFragment extends Fragment implements ForgotPasswordVi
     }
 
     @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_FORGOT_PASSWORD;
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         setLocalyticFlow();
-        ScreenTracking.screen(this);
+        ScreenTracking.screen(getScreenName());
         forgotPassword.subscribe();
         forgotPassword.initData(getActivity());
         Email.addTextChangedListener(watcher(tilEmail));
