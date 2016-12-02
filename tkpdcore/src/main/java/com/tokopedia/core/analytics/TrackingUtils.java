@@ -196,9 +196,5 @@ public class TrackingUtils extends TrackingConfig {
     public static void eventGoldMerchantSuccess() {
         Log.e("TrackingUtils", "please provide implementation");
     }
-
-    public static void eventTrueCaller(String loginID) {
-        Log.e("TrackingUtils", "please provide implementation");
-    }
 }
 
