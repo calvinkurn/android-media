@@ -59,7 +59,7 @@ public class AppsflyerContainer implements IAppsflyerContainer {
     }
 
     private void setAppsFlyerKey(String key) {
-        //AppsFlyerLib.getInstance().startTracking((android.app.Application) MainApplication.getInstance(), key);
+        AppsFlyerLib.getInstance().startTracking((android.app.Application) MainApplication.getInstance(), key);
     }
 
     private void setCurrencyCode(String code) {
