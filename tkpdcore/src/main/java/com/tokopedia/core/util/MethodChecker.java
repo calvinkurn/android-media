@@ -3,10 +3,14 @@ package com.tokopedia.core.util;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewCompat;
 import android.view.View;
+
+import java.io.File;
 
 /**
  * Created by nisie on 10/28/16.
@@ -40,4 +44,11 @@ public class MethodChecker {
     }
 
 
+    public static Uri getUri(Context context, File outputMediaFile) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", outputMediaFile);
+        } else {
+            return Uri.fromFile(outputMediaFile);
+        }
+    }
 }

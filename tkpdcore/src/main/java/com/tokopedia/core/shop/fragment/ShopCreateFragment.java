@@ -34,6 +34,7 @@ import com.tokopedia.core.shop.presenter.ShopCreatePresenter;
 import com.tokopedia.core.shop.presenter.ShopCreatePresenterImpl;
 import com.tokopedia.core.shop.presenter.ShopCreateView;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.PhoneVerificationUtil;
 import com.tokopedia.core.util.UploadImageReVamp;
 
@@ -107,7 +108,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
             imageText.setVisibility(View.GONE);
             ImageHandler.loadImageFit2(getActivity()
                     , shopAvatar
-                    , Uri.fromFile(new File(imagePath)).toString());
+                    , MethodChecker.getUri(getActivity(), new File(imagePath)).toString());
             presenter.saveShopAvatarUrl(imagePath);
         }
     }
@@ -379,46 +380,46 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
                 if (((TActivity) getActivity()).phoneVerificationUtil != null)
                     ((TActivity) getActivity()).phoneVerificationUtil.setMSISDNListener(
                             new PhoneVerificationUtil.MSISDNListener() {
-                        @Override
-                        public void onMSISDNVerified() {
-                            showPhoneVerification(false);
-                        }
+                                @Override
+                                public void onMSISDNVerified() {
+                                    showPhoneVerification(false);
+                                }
 
-                        @Override
-                        public void onMSISDNNotVerified() {
+                                @Override
+                                public void onMSISDNNotVerified() {
 
-                        }
+                                }
 
-                        @Override
-                        public void onNoConnection() {
+                                @Override
+                                public void onNoConnection() {
 
-                        }
+                                }
 
-                        @Override
-                        public void onTimeout() {
+                                @Override
+                                public void onTimeout() {
 
-                        }
+                                }
 
-                        @Override
-                        public void onFailAuth() {
+                                @Override
+                                public void onFailAuth() {
 
-                        }
+                                }
 
-                        @Override
-                        public void onNullData() {
+                                @Override
+                                public void onNullData() {
 
-                        }
+                                }
 
-                        @Override
-                        public void onThrowable(Throwable e) {
+                                @Override
+                                public void onThrowable(Throwable e) {
 
-                        }
+                                }
 
-                        @Override
-                        public void onError(String error) {
+                                @Override
+                                public void onError(String error) {
 
-                        }
-                    });
+                                }
+                            });
             }
         }
         submitButton.setVisibility((needVerify) ? View.GONE : View.VISIBLE);

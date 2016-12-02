@@ -24,7 +24,6 @@ public class ShareData implements Parcelable {
     private String uri;
     private String description;
     private String imgUri;
-    private Bitmap bitmap;
     private String textContent;
     private String source;
 
@@ -38,7 +37,6 @@ public class ShareData implements Parcelable {
         uri = in.readString();
         description = in.readString();
         imgUri = in.readString();
-        bitmap = in.readParcelable(Bitmap.class.getClassLoader());
         textContent = in.readString();
         source = in.readString();
     }
@@ -51,7 +49,6 @@ public class ShareData implements Parcelable {
         dest.writeString(uri);
         dest.writeString(description);
         dest.writeString(imgUri);
-        dest.writeParcelable(bitmap, flags);
         dest.writeString(textContent);
         dest.writeString(source);
     }
@@ -111,14 +108,6 @@ public class ShareData implements Parcelable {
 
     public void setImgUri(String imgUri) {
         this.imgUri = imgUri;
-    }
-
-    public Bitmap getBitmap() {
-        return bitmap;
-    }
-
-    public void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
     }
 
     public String getTextContent() {
@@ -240,7 +229,6 @@ public class ShareData implements Parcelable {
             shareData.setUri(uri);
             shareData.setDescription(description);
             shareData.setImgUri(imgUri);
-            shareData.setBitmap(bitmap);
             shareData.setType(type);
             shareData.setTextContent(textContent);
             shareData.setSource(source);
