@@ -316,10 +316,12 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
             }
         };
 
-        compositeSubscription.add(observable.subscribeOn(Schedulers.immediate())
-                .unsubscribeOn(Schedulers.immediate())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(subscriber));
+        compositeSubscription.add(
+                observable.subscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(subscriber)
+        );
     }
 
 

@@ -3,6 +3,7 @@ package com.tokopedia.core.database.recharge.operator;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.database.recharge.product.Promo;
 import com.tokopedia.core.recharge.model.operator.Rule;
 
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class Attributes {
     private Rule rule;
 
     /**
-     * 
+     *
      * @return
      *     The additionalForm
      */
@@ -51,7 +52,7 @@ public class Attributes {
     }
 
     /**
-     * 
+     *
      * @param additionalForm
      *     The additional_form
      */
@@ -60,7 +61,7 @@ public class Attributes {
     }
 
     /**
-     * 
+     *
      * @return
      *     The image
      */
@@ -69,7 +70,7 @@ public class Attributes {
     }
 
     /**
-     * 
+     *
      * @param image
      *     The image
      */
@@ -78,7 +79,7 @@ public class Attributes {
     }
 
     /**
-     * 
+     *
      * @return
      *     The maximumLength
      */
@@ -87,7 +88,7 @@ public class Attributes {
     }
 
     /**
-     * 
+     *
      * @param maximumLength
      *     The maximum_length
      */
@@ -96,7 +97,7 @@ public class Attributes {
     }
 
     /**
-     * 
+     *
      * @return
      *     The minimumLength
      */
@@ -105,7 +106,7 @@ public class Attributes {
     }
 
     /**
-     * 
+     *
      * @param minimumLength
      *     The minimum_length
      */
@@ -114,7 +115,7 @@ public class Attributes {
     }
 
     /**
-     * 
+     *
      * @return
      *     The name
      */
@@ -123,7 +124,7 @@ public class Attributes {
     }
 
     /**
-     * 
+     *
      * @param name
      *     The name
      */
@@ -132,7 +133,7 @@ public class Attributes {
     }
 
     /**
-     * 
+     *
      * @return
      *     The prefix
      */
@@ -141,7 +142,7 @@ public class Attributes {
     }
 
     /**
-     * 
+     *
      * @param prefix
      *     The prefix
      */
@@ -150,7 +151,7 @@ public class Attributes {
     }
 
     /**
-     * 
+     *
      * @return
      *     The slug
      */
@@ -159,7 +160,7 @@ public class Attributes {
     }
 
     /**
-     * 
+     *
      * @param slug
      *     The slug
      */
@@ -168,7 +169,7 @@ public class Attributes {
     }
 
     /**
-     * 
+     *
      * @return
      *     The status
      */
@@ -177,7 +178,7 @@ public class Attributes {
     }
 
     /**
-     * 
+     *
      * @param status
      *     The status
      */
@@ -186,7 +187,7 @@ public class Attributes {
     }
 
     /**
-     * 
+     *
      * @return
      *     The weight
      */
@@ -195,7 +196,7 @@ public class Attributes {
     }
 
     /**
-     * 
+     *
      * @param weight
      *     The weight
      */

@@ -18,6 +18,7 @@ import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.appindexing.Action;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tokopedia.core.ManageShop;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -50,8 +51,8 @@ import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
+import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.session.presenter.Session;
-import com.tokopedia.core.shop.ShopEditorActivity;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.talk.talkproduct.activity.TalkProductActivity;
 import com.tokopedia.core.util.AppIndexHandler;
@@ -161,8 +162,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     public void processToCreateShop(@NonNull Context context) {
         Intent intent;
         if (SessionHandler.isV4Login(context)) {
-            intent = new Intent(context, ShopEditorActivity.class);
-            intent.putExtra(ShopEditorActivity.FRAGMENT_TO_SHOW, ShopEditorActivity.CREATE_SHOP_FRAGMENT_TAG);
+            intent = SellerRouter.getAcitivityShopCreateEdit(context);
+            intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
+                    SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
             viewListener.navigateToActivity(intent);
         } else {
             intent = SessionRouter.getLoginActivityIntent(context);

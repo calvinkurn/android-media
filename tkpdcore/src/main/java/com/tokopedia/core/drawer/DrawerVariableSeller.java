@@ -45,7 +45,6 @@ import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.session.presenter.SessionView;
-import com.tokopedia.core.shop.ShopEditorActivity;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity;
 import com.tokopedia.core.util.SessionHandler;
@@ -247,8 +246,9 @@ public class DrawerVariableSeller extends DrawerVariable {
             @Override
             public void onClick(View v) {
                 if (Session.getShopID().equals("0") || Session.getShopID().equals("")) {
-                    Intent intent = new Intent(context, ShopEditorActivity.class);
-                    intent.putExtra(ShopEditorActivity.FRAGMENT_TO_SHOW, ShopEditorActivity.CREATE_SHOP_FRAGMENT_TAG);
+                    Intent intent = SellerRouter.getAcitivityShopCreateEdit(context);
+                    intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
+                            SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
                     context.startActivity(intent);
                 } else {
                     Intent intent = new Intent(context, ShopInfoActivity.class);
@@ -398,8 +398,7 @@ public class DrawerVariableSeller extends DrawerVariable {
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.HELP);
                 break;
             case TkpdState.DrawerPosition.RESOLUTION_CENTER:
-                intent = InboxRouter.getInboxResCenterActivityIntent(context);
-                context.startActivity(intent);
+                context.startActivity(InboxRouter.getInboxResCenterActivityIntent(context));
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.RESOLUTION_CENTER);
                 break;
             case TkpdState.DrawerPosition.DEVELOPER_OPTIONS:

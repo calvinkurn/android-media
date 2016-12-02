@@ -648,9 +648,6 @@
         <!-- ======================================================= -->
         <!-- PROVIDERS REGISTRY -->
         <!-- ======================================================= -->
-        <service
-            android:name="com.tokopedia.core.shop.ShopEditService"
-            android:exported="false" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

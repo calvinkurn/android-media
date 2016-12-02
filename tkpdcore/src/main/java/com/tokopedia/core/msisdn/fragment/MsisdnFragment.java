@@ -25,8 +25,7 @@ import com.tokopedia.core.msisdn.listener.MsisdnVerificationFragmentView;
 import com.tokopedia.core.msisdn.presenter.MsisdnVerificationFragmentPresenter;
 import com.tokopedia.core.msisdn.presenter.MsisdnVerificationFragmentPresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.shop.ShopEditorActivity;
-import com.tokopedia.core.shop.presenter.ShopSettingView;
+import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.PhoneVerificationUtil;
@@ -101,8 +100,9 @@ public class MsisdnFragment extends BasePresenterFragment<MsisdnVerificationFrag
             @Override
             public void onMSISDNVerified() {
                 finishLoading();
-                Intent intent = new Intent(getActivity(), ShopEditorActivity.class);
-                intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.CREATE_SHOP_FRAGMENT_TAG);
+                Intent intent = SellerRouter.getAcitivityShopCreateEdit(context);
+                intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
+                        SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
                 startActivity(intent);
                 getActivity().finish();
             }
@@ -381,8 +381,9 @@ public class MsisdnFragment extends BasePresenterFragment<MsisdnVerificationFrag
     @Override
     public void onSuccessVerifyOTP() {
         finishLoading();
-        Intent intent = new Intent(getActivity(), ShopEditorActivity.class);
-        intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.CREATE_SHOP_FRAGMENT_TAG);
+        Intent intent = SellerRouter.getAcitivityShopCreateEdit(context);
+        intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
+                SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
         startActivity(intent);
         getActivity().finish();
 

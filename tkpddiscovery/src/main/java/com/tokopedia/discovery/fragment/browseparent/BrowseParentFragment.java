@@ -265,9 +265,6 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
         }
         if (uri.contains("/catalog/")) {
             URLParser urlParser = new URLParser(uri);
-//            Intent intent = new Intent(getActivity(), Catalog.class);
-//            intent.putExtra(HotList.CATALOG_ID_KEY, urlParser.getHotAlias());
-//            getActivity().startActivity(intent);
             getActivity().startActivity(DetailProductRouter.getCatalogDetailActivity(getActivity(),
                     urlParser.getHotAlias()));
             getActivity().finish();

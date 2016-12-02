@@ -13,7 +13,7 @@ import android.view.WindowManager;
 import com.tkpd.library.ui.view.CustomSearchView;
 import com.tokopedia.core.R;
 import com.tokopedia.core.customadapter.RetryDataBinder;
-import com.tokopedia.core.shop.ShopEditorActivity;
+import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.shopinfo.models.productmodel.ShopProduct;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
@@ -140,8 +140,9 @@ public class GetProductUrlUtil {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-                Intent intent = new Intent(context, ShopEditorActivity.class);
-                intent.putExtra(ShopEditorActivity.FRAGMENT_TO_SHOW, ShopEditorActivity.CREATE_SHOP_FRAGMENT_TAG);
+                Intent intent = SellerRouter.getAcitivityShopCreateEdit(context);
+                intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
+                        SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
                 context.startActivity(intent);
             }
         };
