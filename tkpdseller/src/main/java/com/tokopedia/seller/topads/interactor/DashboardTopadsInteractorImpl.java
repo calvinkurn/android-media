@@ -12,6 +12,7 @@ import com.tokopedia.seller.topads.datasource.TopAdsCacheDataSourceImpl;
 import com.tokopedia.seller.topads.datasource.TopAdsDbDataSource;
 import com.tokopedia.seller.topads.datasource.TopAdsDbDataSourceImpl;
 import com.tokopedia.seller.topads.model.data.Cell;
+import com.tokopedia.seller.topads.model.data.DataCredit;
 import com.tokopedia.seller.topads.model.data.DataDeposit;
 import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.model.data.TotalAd;
@@ -145,6 +146,22 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
     }
 
     @Override
+    public void getCreditList(Listener<List<DataCredit>> listener) {
+        Observable<Response<CreditResponse>> depositObservable = topAdsManagementService.getApi().getDashboardCredit();
+        compositeSubscription.add(depositObservable
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .flatMap(new Func1<Response<CreditResponse>, Observable<List<DataCredit>>>() {
+                    @Override
+                    public Observable<List<DataCredit>> call(Response<CreditResponse> response) {
+                        return Observable.just(response.body().getData());
+                    }
+                })
+                .subscribe(new SubscribeOnNext<List<DataCredit>>(listener), new SubscribeOnError(listener)));
+    }
+
+    @Override
     public void getDashboardProduct(HashMap<String, String> params, final Listener<ProductResponse> listener) {
         Observable<Response<ProductResponse>> observable = topAdsManagementService.getApi()
                 .getDashboardProduct(params);
@@ -220,34 +237,6 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
 
                     @Override
                     public void onNext(Response<DepositResponse> response) {
-                        if (response.isSuccessful()) {
-                            listener.onSuccess(response.body());
-                        } else {
-                            // TODO Define error
-                        }
-                    }
-                }));
-    }
-
-    @Override
-    public void getDashboardCredit(HashMap<String, String> params, final Listener<CreditResponse> listener) {
-        Observable<Response<CreditResponse>> observable = topAdsManagementService.getApi().getDashboardCredit(params);
-        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Response<CreditResponse>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        listener.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(Response<CreditResponse> response) {
                         if (response.isSuccessful()) {
                             listener.onSuccess(response.body());
                         } else {

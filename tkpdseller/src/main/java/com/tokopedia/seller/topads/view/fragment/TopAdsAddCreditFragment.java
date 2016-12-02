@@ -13,20 +13,25 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
+import com.tokopedia.seller.topads.model.data.DataCredit;
 import com.tokopedia.seller.topads.model.data.DataDeposit;
 import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.presenter.TopAdsAddCreditPresenter;
+import com.tokopedia.seller.topads.presenter.TopAdsAddCreditPresenterImpl;
+import com.tokopedia.seller.topads.presenter.TopAdsDashboardProductPresenterImpl;
+import com.tokopedia.seller.topads.view.listener.TopAdsAddCreditFragmentListener;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardFragmentListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.OnClick;
 
-public class TopAdsAddCreditFragment extends BasePresenterFragment<TopAdsAddCreditPresenter>  {
+public class TopAdsAddCreditFragment extends BasePresenterFragment<TopAdsAddCreditPresenter> implements TopAdsAddCreditFragmentListener {
 
     private static String TAG = TopAdsAddCreditFragment.class.getSimpleName();
 
@@ -62,7 +67,7 @@ public class TopAdsAddCreditFragment extends BasePresenterFragment<TopAdsAddCred
 
     @Override
     protected void initialPresenter() {
-
+        presenter = new TopAdsAddCreditPresenterImpl(getActivity(), this);
     }
 
     @Override
@@ -82,7 +87,7 @@ public class TopAdsAddCreditFragment extends BasePresenterFragment<TopAdsAddCred
 
     @Override
     protected void initView(View view) {
-
+        presenter.populateCreditList();
     }
 
     @Override
@@ -97,6 +102,16 @@ public class TopAdsAddCreditFragment extends BasePresenterFragment<TopAdsAddCred
 
     @Override
     protected void setActionVar() {
+
+    }
+
+    @Override
+    public void onCreditListLoaded(@NonNull List<DataCredit> creditList) {
+
+    }
+
+    @Override
+    public void onLoadCreditListError() {
 
     }
 }

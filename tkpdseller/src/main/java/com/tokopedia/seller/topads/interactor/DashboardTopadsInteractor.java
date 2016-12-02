@@ -1,6 +1,7 @@
 package com.tokopedia.seller.topads.interactor;
 
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.seller.topads.model.data.DataCredit;
 import com.tokopedia.seller.topads.model.data.DataDeposit;
 import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.model.data.TotalAd;
@@ -12,6 +13,7 @@ import com.tokopedia.seller.topads.model.exchange.ShopResponse;
 import com.tokopedia.seller.topads.model.exchange.StatisticRequest;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by zulfikarrahman on 11/4/16.
@@ -33,6 +35,8 @@ public interface DashboardTopadsInteractor {
 
     void getTotalAd(ShopRequest shopRequest, final Listener<TotalAd> listener);
 
+    void getCreditList(final Listener<List<DataCredit>> listener);
+
     void unSubscribe();
 
     void getDashboardProduct(HashMap<String, String> params, Listener<ProductResponse> listener);
@@ -40,6 +44,4 @@ public interface DashboardTopadsInteractor {
     void getDashboardShop(HashMap<String, String> params, Listener<ShopResponse> listener);
 
     void getDashboardResponse(HashMap<String, String> params, Listener<DepositResponse> listener);
-
-    void getDashboardCredit(HashMap<String, String> params, Listener<CreditResponse> listener);
 }

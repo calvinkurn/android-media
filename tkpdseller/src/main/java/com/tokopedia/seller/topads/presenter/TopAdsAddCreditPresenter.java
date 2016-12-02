@@ -5,4 +5,5 @@ package com.tokopedia.seller.topads.presenter;
  */
 public interface TopAdsAddCreditPresenter {
 
+    void populateCreditList();
 }

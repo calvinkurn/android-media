@@ -37,5 +37,5 @@ public interface TopAdsManagementApi {
     Observable<Response<ShopResponse>> getDashboardShop(@QueryMap Map<String, String> params);
 
     @GET(TopAdsNetworkConstant.PATH_DASHBOARD_CREDIT)
-    Observable<Response<CreditResponse>> getDashboardCredit(@QueryMap Map<String, String> params);
+    Observable<Response<CreditResponse>> getDashboardCredit();
 }
