@@ -17,6 +17,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.R;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.ProductItem;
 
 import java.util.List;
@@ -77,7 +78,7 @@ public class HistoryProductRecyclerViewAdapter extends RecyclerView.Adapter<Hist
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.productName.setText(Html.fromHtml(data.get(position).name));
+        holder.productName.setText(MethodChecker.fromHtml(data.get(position).name));
         holder.productPrice.setText(data.get(position).price);
         holder.shopName.setText(data.get(position).shop);
         ImageHandler.loadImageFit2(holder.getContext(), holder.productImage, data.get(position).imgUri);

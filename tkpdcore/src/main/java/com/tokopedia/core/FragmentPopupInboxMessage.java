@@ -1,6 +1,7 @@
 package com.tokopedia.core;
 
 import com.tokopedia.core.listener.ShowPopupInboxMessageListener;
+import com.tokopedia.core.util.MethodChecker;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -56,8 +57,8 @@ public class FragmentPopupInboxMessage extends Fragment {
 		vCheckbox = (CheckBox) view.findViewById(R.id.checked_never_show);
 		vClosebut = (TextView) view.findViewById(R.id.close_but);
 		
-		vContent.setText(Html.fromHtml(context.getResources().getString(R.string.html_content)));
-		vContent2.setText(Html.fromHtml(context.getResources().getString(R.string.html_content_2)));
+		vContent.setText(MethodChecker.fromHtml(context.getResources().getString(R.string.html_content)));
+		vContent2.setText(MethodChecker.fromHtml(context.getResources().getString(R.string.html_content_2)));
 		
 		vContent2.setClickable(true);
 		vContent2.setMovementMethod (LinkMovementMethod.getInstance());

@@ -8,6 +8,8 @@ import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewCompat;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.View;
 
 import java.io.File;
@@ -50,5 +52,15 @@ public class MethodChecker {
         } else {
             return Uri.fromFile(outputMediaFile);
         }
+    }
+
+    public static Spanned fromHtml(String text) {
+        Spanned result;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            result = Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            result = Html.fromHtml(text);
+        }
+        return result;
     }
 }

@@ -19,6 +19,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.customView.TextViewCopyable;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.transaction.purchase.fragment.TxListFragment;
 import com.tokopedia.transaction.purchase.model.response.txlist.OrderData;
@@ -142,11 +143,11 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
     private void renderOthersNormalContent(ViewHolder holder, OrderData item) {
         ImageHandler.loadImageCircle2(context, holder.imgShopAvatar, item.getOrderShop().getShopPic());
         String shopName = context.getString(R.string.title_buy_from)
-                + " : " + Html.fromHtml(item.getOrderShop().getShopName());
+                + " : " + MethodChecker.fromHtml(item.getOrderShop().getShopName());
         holder.tvShopName.setText(shopName);
-        holder.tvStatus.setText(Html.fromHtml(item.getOrderLast().getLastBuyerStatus()));
+        holder.tvStatus.setText(MethodChecker.fromHtml(item.getOrderLast().getLastBuyerStatus()));
         holder.tvInvoice.setText(item.getOrderDetail().getDetailInvoice());
-        holder.tvDate.setText(Html.fromHtml(item.getOrderDetail().getDetailOrderDate()));
+        holder.tvDate.setText(MethodChecker.fromHtml(item.getOrderDetail().getDetailOrderDate()));
 
         holder.tvUploadTx.setVisibility(View.GONE);
         holder.tvPreOrder.setVisibility(item.getOrderDetail().getDetailPreorder() != null

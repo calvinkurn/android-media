@@ -37,6 +37,7 @@ import com.tokopedia.core.prototype.ShopSettingCache;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.shoplocation.model.deletelocation.DeleteLocationResponse;
 import com.tokopedia.core.shoplocation.model.getshopaddress.ShopAddress;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 
 import org.json.JSONArray;
@@ -278,17 +279,17 @@ public class ManageShopAddress extends TActivity {
                 for (int i = 0; i < data.length(); i++) {
                     Location = new JSONObject(data.getString(i));
                     LocationId.add(Location.getString("addr_id"));
-                    LocationNameList.add(Html.fromHtml(Location.getString("addr_name")).toString());
+                    LocationNameList.add(MethodChecker.fromHtml(Location.getString("addr_name")).toString());
                     LocationPhoneList.add(Location.getString("phone"));
                     LocationFaxList.add(Location.getString("fax"));
                     LocationEmailList.add(Location.getString("email"));
                     LocationAddressList.add(
-                            Html.fromHtml(Location.getString("address")).toString()
+                            MethodChecker.fromHtml(Location.getString("address")).toString()
                                     + "\n" + Location.getString("district_name")
                                     + ", " + Location.getString("city_name")
                                     + ", " + Location.getString("postal_code")
                     );
-                    LocationAddress.add(Html.fromHtml(Location.getString("address")).toString());
+                    LocationAddress.add(MethodChecker.fromHtml(Location.getString("address")).toString());
                     LocationProvinceId.add(Location.getString("province_id"));
                     LocationCityId.add(Location.getString("city_id"));
                     LocationDistrictId.add(Location.getString("district_id"));
@@ -325,7 +326,7 @@ public class ManageShopAddress extends TActivity {
             for (int i = 0; i < data.getList().size(); i++) {
                 com.tokopedia.core.shoplocation.model.getshopaddress.List Location = data.getList().get(i);
                 LocationId.add(Location.getLocationAddressId());
-                LocationNameList.add(Html.fromHtml(Location.getLocationAddressName()).toString());
+                LocationNameList.add(MethodChecker.fromHtml(Location.getLocationAddressName()).toString());
                 if (!CommonUtils.checkNullForZeroJson(Location.getLocationPhone())) {
                     Location.setLocationPhone("");
                 }
@@ -339,12 +340,12 @@ public class ManageShopAddress extends TActivity {
                 LocationFaxList.add(Location.getLocationFax());
                 LocationEmailList.add(Location.getLocationEmail());
                 LocationAddressList.add(
-                        Html.fromHtml(Location.getLocationAddress()).toString()
+                        MethodChecker.fromHtml(Location.getLocationAddress()).toString()
                                 + "\n" + Location.getLocationDistrictName()
                                 + ", " + Location.getLocationCityName()
                                 + ", " + Location.getLocationPostalCode()
                 );
-                LocationAddress.add(Html.fromHtml(Location.getLocationAddress()).toString());
+                LocationAddress.add(MethodChecker.fromHtml(Location.getLocationAddress()).toString());
                 LocationProvinceId.add(Location.getLocationProvinceId());
                 LocationCityId.add(Location.getLocationCityId());
                 LocationDistrictId.add(Location.getLocationDistrictId());

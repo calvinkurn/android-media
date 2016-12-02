@@ -16,6 +16,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.customwidget.SquareImageView;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.shopinfo.models.productmodel.List;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.ProductItem;
 
 import butterknife.BindView;
@@ -58,7 +59,7 @@ public class ProductMediumDelegate {
             return;
         VHolder vholder = (VHolder) holder;
         ImageHandler.loadImageFit2(vholder.itemView.getContext(), vholder.img, item.productImage300);
-        vholder.name.setText(Html.fromHtml(item.productName));
+        vholder.name.setText(MethodChecker.fromHtml(item.productName));
         vholder.price.setText(item.productPrice);
         if (item.productPreorder != null)
             vholder.preorder.setVisibility(item.productPreorder.equals("0") ? View.INVISIBLE : View.VISIBLE);

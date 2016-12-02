@@ -37,6 +37,7 @@ import com.tokopedia.core.review.model.helpful_review.HelpfulReviewList;
 import com.tokopedia.core.review.model.product_review.ReviewProductModel;
 import com.tokopedia.core.review.presenter.ProductReviewPresenter;
 import com.tokopedia.core.review.var.Const;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.StarGenerator;
@@ -254,7 +255,7 @@ public class ProductReviewAdapter extends BaseRecyclerViewAdapter {
         }
         holder.adapter.addList(review.getImages());
         ImageHandler.loadImageCircle2(context, holder.avatar, review.getReviewUserImage());
-        holder.username.setText(Html.fromHtml(review.getReviewUserName()).toString());
+        holder.username.setText(MethodChecker.fromHtml(review.getReviewUserName()).toString());
         holder.date.setText(review.getReviewCreateTime());
         holder.comment.setText(review.getReviewMessage());
         holder.comment.setMovementMethod(new SelectableSpannedMovementMethod());
@@ -396,9 +397,9 @@ public class ProductReviewAdapter extends BaseRecyclerViewAdapter {
             }
             holder.adapter.addList(review.getImages());
             ImageHandler.loadImageCircle2(context, holder.avatar[i], review.getReviewUserImage());
-            holder.username[i].setText(Html.fromHtml(review.getReviewUserName()).toString());
+            holder.username[i].setText(MethodChecker.fromHtml(review.getReviewUserName()).toString());
             holder.date[i].setText(review.getReviewCreateTime());
-            holder.comment[i].setText(Html.fromHtml(review.getReviewMessage()));
+            holder.comment[i].setText(MethodChecker.fromHtml(review.getReviewMessage()));
             holder.comment[i].setMovementMethod(new SelectableSpannedMovementMethod());
             StarGenerator.setReputationStars(context, holder.starAccuracy[i], review.getReviewRateAccuracy());
             StarGenerator.setReputationStars(context, holder.starQuality[i], review.getReviewRateProduct());

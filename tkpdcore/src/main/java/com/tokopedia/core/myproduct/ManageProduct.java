@@ -101,6 +101,7 @@ import com.tokopedia.core.prototype.ProductCache;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.rxjava.RxUtils;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.RefreshHandler.OnRefreshHandlerListener;
@@ -1860,7 +1861,7 @@ public class ManageProduct extends TkpdActivity implements
     private void initEtalaseFilter(List<EtalaseDB> etalaseDBs) {
         for (EtalaseDB etalaseDB :
                 etalaseDBs) {
-            EtalaseFilters.add(String.valueOf(Html.fromHtml(etalaseDB.getEtalaseName())));
+            EtalaseFilters.add(String.valueOf(MethodChecker.fromHtml(etalaseDB.getEtalaseName())));
             EtalaseIdFilters.add(String.valueOf(etalaseDB.getEtalaseId()));
         }
         EtalaseAdapter = new ArrayAdapter<String>(

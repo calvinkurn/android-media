@@ -26,6 +26,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.customadapter.TouchImageAdapter;
 import com.tokopedia.core.customadapter.TouchImageAdapter.OnImageStateChange;
+import com.tokopedia.core.util.MethodChecker;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -85,7 +86,7 @@ public class PreviewProductImage extends TActivity {
         if (imgDesc == null) {
             Desc.setVisibility(View.GONE);
         } else {
-            Desc.setText(Html.fromHtml(imgDesc.get(0)));
+            Desc.setText(MethodChecker.fromHtml(imgDesc.get(0)));
         }
 
         findViewById(R.id.download_image).setOnClickListener(

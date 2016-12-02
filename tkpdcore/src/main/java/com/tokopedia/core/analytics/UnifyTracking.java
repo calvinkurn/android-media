@@ -7,6 +7,7 @@ import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.ProductItem;
 
 import org.json.JSONArray;
@@ -557,7 +558,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.WISHLIST,
                 AppEventTracking.Category.WISHLIST,
                 AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.ADD_TO_WISHLIST_LABEL + Html.fromHtml(label)
+                AppEventTracking.EventLabel.ADD_TO_WISHLIST_LABEL + MethodChecker.fromHtml(label)
         ).getEvent());
     }
 

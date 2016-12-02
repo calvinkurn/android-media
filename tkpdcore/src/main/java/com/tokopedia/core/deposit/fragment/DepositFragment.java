@@ -25,6 +25,7 @@ import com.tokopedia.core.deposit.presenter.DepositFragmentPresenter;
 import com.tokopedia.core.deposit.presenter.DepositFragmentPresenterImpl;
 import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RefreshHandler;
 
 import butterknife.BindView;
@@ -306,7 +307,7 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
     @Override
     public void showHoldWarning(String summaryHoldDepositIdr) {
         reviewWarning.setVisibility(View.VISIBLE);
-        amountBeingReviewed.setText(Html.fromHtml(getString(R.string.message_deposit_review) + " <b>" + summaryHoldDepositIdr + "</b>" + " " + getString(R.string.message_time_deposit_return)));
+        amountBeingReviewed.setText(MethodChecker.fromHtml(getString(R.string.message_deposit_review) + " <b>" + summaryHoldDepositIdr + "</b>" + " " + getString(R.string.message_time_deposit_return)));
     }
 
     @Override

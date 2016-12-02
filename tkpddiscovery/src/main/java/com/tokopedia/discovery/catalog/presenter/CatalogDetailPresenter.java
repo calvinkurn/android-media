@@ -7,6 +7,7 @@ import android.text.Html;
 
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.R;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.discovery.catalog.interactor.CatalogDataInteractor;
 import com.tokopedia.discovery.catalog.interactor.ICataloDataInteractor;
 import com.tokopedia.discovery.catalog.listener.IDetailCatalogView;
@@ -76,7 +77,7 @@ public class CatalogDetailPresenter implements ICatalogDetailPresenter {
                     public void onNext(CatalogDetailData catalogDetailData) {
                         catalogView.hideMainProcessLoading();
                         catalogView.renderCatalogDescription(
-                                Html.fromHtml(catalogDetailData.getCatalogInfo()
+                                MethodChecker.fromHtml(catalogDetailData.getCatalogInfo()
                                         .getCatalogDescription()).toString()
                         );
                         catalogView.renderCatalogImage(

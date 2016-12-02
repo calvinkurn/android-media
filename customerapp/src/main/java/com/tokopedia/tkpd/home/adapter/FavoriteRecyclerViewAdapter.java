@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
@@ -190,7 +191,7 @@ public class FavoriteRecyclerViewAdapter extends BaseRecyclerViewAdapter {
 
         ShopItem shop = (ShopItem) data.get(position);
         //[BUGFIX] AN-1118 [Home & Login V2] Appear HTML tag on Favorit Tab
-        holder.name.setText(Html.fromHtml(shop.name));
+        holder.name.setText(MethodChecker.fromHtml(shop.name));
         //[BUGFIX] AN-1118 [Home & Login V2] Appear HTML tag on Favorit Tab
         holder.location.setText(shop.location);
         setFavorite(holder, position);

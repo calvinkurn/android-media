@@ -27,6 +27,7 @@ import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.shop.presenter.ShopEditorPresenter;
 import com.tokopedia.core.shop.presenter.ShopEditorPresenterImpl;
 import com.tokopedia.core.shop.presenter.ShopEditorView;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.UploadImageReVamp;
 
@@ -177,13 +178,13 @@ public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implem
                 mShopSloganText.setError((String) data[0]);
                 break;
             case ShopEditorPresenter.SHOP_NAME:
-                mShopNameText.setText(Html.fromHtml((String) data[0]));
+                mShopNameText.setText(MethodChecker.fromHtml((String) data[0]));
                 break;
             case ShopEditorPresenter.SHOP_SLOGAN:
-                mShopSloganText.setText(Html.fromHtml((String) data[0]));
+                mShopSloganText.setText(MethodChecker.fromHtml((String) data[0]));
                 break;
             case ShopEditorPresenter.SHOP_DESC:
-                mShopDescText.setText(Html.fromHtml((String) data[0]));
+                mShopDescText.setText(MethodChecker.fromHtml((String) data[0]));
                 break;
             default:
                 throw new RuntimeException("please register type here!!!");

@@ -5,6 +5,7 @@ import android.text.Html;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.util.MethodChecker;
 
 public class BankAccount {
 
@@ -75,7 +76,7 @@ public class BankAccount {
      *     The bankAccountName
      */
     public String getBankAccountName() {
-        return Html.fromHtml(bankAccountName).toString();
+        return MethodChecker.fromHtml(bankAccountName).toString();
     }
 
     /**
@@ -147,7 +148,7 @@ public class BankAccount {
      *     The bankName
      */
     public String getBankName() {
-        return Html.fromHtml(bankName).toString();
+        return MethodChecker.fromHtml(bankName).toString();
     }
 
     /**

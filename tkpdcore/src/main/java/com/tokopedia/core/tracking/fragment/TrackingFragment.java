@@ -23,6 +23,7 @@ import com.tokopedia.core.tracking.listener.TrackingFragmentView;
 import com.tokopedia.core.tracking.model.tracking.TrackingResponse;
 import com.tokopedia.core.tracking.presenter.TrackingFragmentPresenter;
 import com.tokopedia.core.tracking.presenter.TrackingFragmentPresenterImpl;
+import com.tokopedia.core.util.MethodChecker;
 
 import butterknife.BindView;
 
@@ -196,7 +197,7 @@ public class TrackingFragment  extends BasePresenterFragment<TrackingFragmentPre
     public void showErrorMessage() {
         mainView.setVisibility(View.GONE);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(Html.fromHtml(getString(R.string.error_520_tracking)));
+        builder.setMessage(MethodChecker.fromHtml(getString(R.string.error_520_tracking)));
         Dialog dialog = builder.create();
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.show();
@@ -278,7 +279,7 @@ public class TrackingFragment  extends BasePresenterFragment<TrackingFragmentPre
             case ORDER_INVALID:
                 mainView.setVisibility(View.GONE);
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setMessage(Html.fromHtml(getString(R.string.error_520_tracking)));
+                builder.setMessage(MethodChecker.fromHtml(getString(R.string.error_520_tracking)));
                 Dialog dialog = builder.create();
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.show();

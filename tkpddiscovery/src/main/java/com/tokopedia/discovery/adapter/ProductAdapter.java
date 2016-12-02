@@ -52,6 +52,7 @@ import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
@@ -637,17 +638,17 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             if (data.getSpannedName() != null)
                 title.setText(data.getSpannedName());
             else
-                title.setText(Html.fromHtml(data.name));
+                title.setText(MethodChecker.fromHtml(data.name));
             price.setText(data.price);
             if (data.getShop_location() != null)
-                location.setText(Html.fromHtml(data.getShop_location()));
+                location.setText(MethodChecker.fromHtml(data.getShop_location()));
             else
                 location.setVisibility(View.INVISIBLE);
 
             if (data.getSpannedShop() != null)
                 shopName.setText(data.getSpannedShop());
             else
-                shopName.setText(Html.fromHtml(data.shop));
+                shopName.setText(MethodChecker.fromHtml(data.shop));
             ImageHandler.loadImageThumbs(context, productImage, data.imgUri);
             viewHolder.badgesContainer.removeAllViews();
             if (data.getBadges() != null) {

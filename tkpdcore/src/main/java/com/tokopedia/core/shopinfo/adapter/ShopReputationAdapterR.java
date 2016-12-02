@@ -27,6 +27,7 @@ import com.tokopedia.core.inboxreputation.adapter.ImageUploadAdapter;
 import com.tokopedia.core.inboxreputation.model.ImageUpload;
 import com.tokopedia.core.shopinfo.models.ReputationModel;
 import com.tokopedia.core.util.LabelUtils;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.StarGenerator;
 
@@ -185,9 +186,9 @@ public class ShopReputationAdapterR extends AbstractRecyclerAdapter{
         }else{
             holder.imageHolder.setVisibility(View.GONE);
         }
-        holder.username.setText(Html.fromHtml(model.username).toString());
+        holder.username.setText(MethodChecker.fromHtml(model.username).toString());
         holder.date.setText(model.date);
-        holder.comment.setText(Html.fromHtml(model.comment));
+        holder.comment.setText(MethodChecker.fromHtml(model.comment));
         holder.label.giveSquareLabel(model.userLabel);
         holder.textPercentage.setText(model.counterSmiley);
         StarGenerator.setReputationStars(context, holder.starAccuracy, model.starAccuracy);
@@ -201,7 +202,7 @@ public class ShopReputationAdapterR extends AbstractRecyclerAdapter{
 
     private void setProductInfo(ViewHolder holder, String productName){
         if(productName.length()>0 && !productName.equals("0")){
-            holder.prodName.setText(Html.fromHtml(productName));
+            holder.prodName.setText(MethodChecker.fromHtml(productName));
             holder.viewProduct.setVisibility(View.VISIBLE);
         }
         else{

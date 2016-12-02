@@ -40,6 +40,7 @@ import com.tokopedia.core.payment.interactor.PaymentNetInteractorImpl;
 import com.tokopedia.core.payment.model.responsecalculateshipping.CalculateShipping;
 import com.tokopedia.core.payment.model.responsecalculateshipping.Shipment;
 import com.tokopedia.core.payment.model.responsecalculateshipping.ShipmentPackage;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.TkpdUrl;
 
 import org.json.JSONArray;
@@ -348,8 +349,8 @@ public class EditAddressCart extends TActivity {
         CurrAddressID = OldAddressID;
         CurrShippingID = OldShippingID;
         CurrSPid = OldSPid;
-        addressName = Html.fromHtml(extras.getString("address_title")).toString();
-        addressStreet = Html.fromHtml(extras.getString("address")).toString();
+        addressName = MethodChecker.fromHtml(extras.getString("address_title")).toString();
+        addressStreet = MethodChecker.fromHtml(extras.getString("address")).toString();
         latitude = extras.getString("latitude");
         longitude = extras.getString("longitude");
     }
@@ -732,8 +733,8 @@ public class EditAddressCart extends TActivity {
         longitude = temp.getLongitude();
         addressGeoLocation = GeoLocationUtils.reverseGeoCode(this, latitude, longitude);
         valueLocation.setText(addressGeoLocation);
-        AddressTitle.setText(Html.fromHtml(addressName));
-        Address.setText(Html.fromHtml(addressStreet));
+        AddressTitle.setText(MethodChecker.fromHtml(addressName));
+        Address.setText(MethodChecker.fromHtml(addressStreet));
         addressStreet = temp.getAddressStreet();
         ReceiverName = temp.getReceiverName();
         ReceiverPhone = temp.getReceiverPhone();
@@ -752,8 +753,8 @@ public class EditAddressCart extends TActivity {
         latitude = extras.getString("latitude");
         longitude = extras.getString("longitude");
         valueLocation.setText(extras.getString("full_address", ""));
-        AddressTitle.setText(Html.fromHtml(extras.getString("address_title")));
-        Address.setText(Html.fromHtml(extras.getString("address_detail")));
+        AddressTitle.setText(MethodChecker.fromHtml(extras.getString("address_title")));
+        Address.setText(MethodChecker.fromHtml(extras.getString("address_detail")));
         CurrAddressID = extras.getString("address_id");
         RecalculateShippingAddressWS4();
     }

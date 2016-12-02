@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
@@ -67,7 +68,7 @@ public class WishlistRecyclerViewAdapter extends RecyclerView.Adapter<WishlistRe
 
     @Override
     public void onBindViewHolder(WishlistRecyclerViewAdapter.ViewHolder holder, int position) {
-        holder.productName.setText(Html.fromHtml(data.get(position).name));
+        holder.productName.setText(MethodChecker.fromHtml(data.get(position).name));
         holder.productPrice.setText(data.get(position).price);
         holder.shopName.setText(data.get(position).shop);
         setProductImage(holder, data.get(position));

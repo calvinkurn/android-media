@@ -22,6 +22,7 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.discovery.catalog.listener.ICatalogActionFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.discovery.catalog.adapter.CatalogImageAdapter;
 import com.tokopedia.discovery.catalog.adapter.CatalogSpecAdapterHelper;
 import com.tokopedia.discovery.catalog.listener.CatalogImageTouchListener;
@@ -239,7 +240,7 @@ public class CatalogDetailFragment extends BasePresenterFragment<ICatalogDetailP
     public void renderCatalogReview(CatalogReview catalogReview) {
         this.stateCatalogReview = catalogReview;
         holderReview.setVisibility(View.VISIBLE);
-        tvReviewDesc.setText(Html.fromHtml(catalogReview.getReviewDescription()));
+        tvReviewDesc.setText(MethodChecker.fromHtml(catalogReview.getReviewDescription()));
         tvReviewName.setText(catalogReview.getReviewFrom());
         tvReviewScore.setText(MessageFormat.format("Nilai : {0}", catalogReview.getReviewRating()));
         ImageHandler.LoadImage(ivReviewLogo, catalogReview.getReviewFromImage());

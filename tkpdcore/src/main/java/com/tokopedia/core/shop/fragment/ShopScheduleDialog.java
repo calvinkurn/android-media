@@ -23,6 +23,7 @@ import com.tokopedia.core.shop.model.ShopScheduleModel;
 import com.tokopedia.core.shop.model.shopData.ClosedDetail;
 import com.tokopedia.core.shop.model.shopData.ClosedScheduleDetail;
 import com.tokopedia.core.shop.presenter.ShopEditorPresenter;
+import com.tokopedia.core.util.MethodChecker;
 
 import org.parceler.Parcels;
 
@@ -283,10 +284,10 @@ public class ShopScheduleDialog extends DialogFragment {
             endDate.setText(data.getCloseEnd());
         }
         /*if(checkNullForZeroJson(closedDetail.getNote())){
-            noteText.setText(Html.fromHtml(closedDetail.getNote()));
+            noteText.setText(MethodChecker.fromHtml(closedDetail.getNote()));
         }*/
         if(!isEmpty(data.getCloseLaterNote())){
-            noteText.setText(Html.fromHtml(data.getCloseLaterNote()));
+            noteText.setText(MethodChecker.fromHtml(data.getCloseLaterNote()));
         }
     }
 

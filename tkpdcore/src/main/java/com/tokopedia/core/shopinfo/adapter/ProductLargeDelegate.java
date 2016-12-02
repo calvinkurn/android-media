@@ -23,6 +23,7 @@ import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.customwidget.SquareImageView;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.shopinfo.models.productmodel.List;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.ProductItem;
 
 import java.util.ArrayList;
@@ -72,7 +73,7 @@ public class ProductLargeDelegate {
         VHolder vholder = (VHolder) holder;
         Context context = vholder.mainView.getContext();
         ImageHandler.LoadImage(vholder.img, item.productImage300);
-        vholder.name.setText(Html.fromHtml(item.productName));
+        vholder.name.setText(MethodChecker.fromHtml(item.productName));
         vholder.price.setText(item.productPrice);
         if (item.labels == null) {
             item.labels = new ArrayList<ProductItem.Label>();

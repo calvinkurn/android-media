@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.R;
+import com.tokopedia.core.util.MethodChecker;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -231,7 +232,7 @@ public class CommonUtils {
 	}
 
 	public static void UniversalToast (Context context, String text) {
-		Toast.makeText(context, Html.fromHtml(text), Toast.LENGTH_LONG).show();
+		Toast.makeText(context, MethodChecker.fromHtml(text), Toast.LENGTH_LONG).show();
 	}
 
 	public static float DptoPx(Context context, int dp) {

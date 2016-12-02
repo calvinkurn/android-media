@@ -31,6 +31,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.TopAdsUtil;
 import com.tokopedia.core.var.ProductItem;
 
@@ -97,10 +98,10 @@ public class TopAdsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         if (viewHolder instanceof ViewHolder) {
             ViewHolder holder = (ViewHolder) viewHolder;
             ProductItem item = getItem(position);
-            holder.productName.setText(Html.fromHtml(item.name));
+            holder.productName.setText(MethodChecker.fromHtml(item.name));
             holder.productPrice.setText(item.price);
             holder.shopLocation.setText(item.getShop_location());
-            holder.shopName.setText(Html.fromHtml(item.shop));
+            holder.shopName.setText(MethodChecker.fromHtml(item.shop));
             setProductImage(holder, item);
             setClickListener(holder, item);
             setLabels(holder, item);

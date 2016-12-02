@@ -19,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
@@ -127,9 +128,9 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
 
     private void bindProductViewHolder(ViewHolder viewHolder, int position) {
         ProductItem product = (ProductItem) data.get(position);
-        viewHolder.productName.setText(Html.fromHtml(product.name));
+        viewHolder.productName.setText(MethodChecker.fromHtml(product.name));
         viewHolder.productPrice.setText(product.price);
-        viewHolder.shopName.setText(Html.fromHtml(product.shop));
+        viewHolder.shopName.setText(MethodChecker.fromHtml(product.shop));
         setProductImage(viewHolder, product);
         if(product.labels == null) {
             product.labels = new ArrayList<ProductItem.Label>();
@@ -153,9 +154,9 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
 
     private void bindWishlistViewHolder(ViewHolder viewHolder, int position) {
         ProductItem product = (ProductItem) data.get(position);
-        viewHolder.productName.setText(Html.fromHtml(product.name));
+        viewHolder.productName.setText(MethodChecker.fromHtml(product.name));
         viewHolder.productPrice.setText(product.price);
-        viewHolder.shopName.setText(Html.fromHtml(product.shop));
+        viewHolder.shopName.setText(MethodChecker.fromHtml(product.shop));
         setProductImage(viewHolder, product);
         if(product.labels == null) {
             product.labels = new ArrayList<ProductItem.Label>();

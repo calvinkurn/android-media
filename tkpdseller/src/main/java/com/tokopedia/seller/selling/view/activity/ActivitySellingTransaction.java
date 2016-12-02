@@ -30,6 +30,7 @@ import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.selling.SellingService;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingNewOrder;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingShipping;
@@ -101,7 +102,7 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
 
     private void showTickerGTM(String message) {
         if (message != null) {
-            sellerTickerView.setText(Html.fromHtml(message));
+            sellerTickerView.setText(MethodChecker.fromHtml(message));
             sellerTickerView.setVisibility(View.VISIBLE);
             sellerTickerView.setAutoLinkMask(0);
             Linkify.addLinks(sellerTickerView, Linkify.WEB_URLS);

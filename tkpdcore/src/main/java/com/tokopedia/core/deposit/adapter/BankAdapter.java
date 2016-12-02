@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.deposit.model.BankAccount;
+import com.tokopedia.core.util.MethodChecker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +63,7 @@ public class BankAdapter extends ArrayAdapter {
         } else if (position == list.size() + 1) {
             text = context.getString(R.string.title_add_bank_account);
         } else {
-            text = Html.fromHtml(list.get(position - 1).getBankName() + "<br/>"
+            text = MethodChecker.fromHtml(list.get(position - 1).getBankName() + "<br/>"
                     + " " + list.get(position - 1).getBankAccountNumber() + "<br/>"
                     + " a/n " + list.get(position - 1).getBankAccountName()).toString();
         }

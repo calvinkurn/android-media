@@ -28,6 +28,7 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.customView.OrderStatusView;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.product.model.passdata.ProductPass;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.transaction.purchase.adapter.TxProductListAdapter;
 import com.tokopedia.transaction.purchase.listener.TxDetailViewListener;
 import com.tokopedia.transaction.purchase.model.response.txlist.OrderData;
@@ -184,7 +185,7 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
             holderFormSender.setVisibility(View.GONE);
         }
         tvInvoiceNumber.setText(orderData.getOrderDetail().getDetailInvoice());
-        tvShopName.setText(Html.fromHtml(orderData.getOrderShop().getShopName()));
+        tvShopName.setText(MethodChecker.fromHtml(orderData.getOrderShop().getShopName()));
         tvAdditionalCost.setText(orderData.getOrderDetail().getDetailTotalAddFeeIdr());
         tvShippingCost.setText(orderData.getOrderDetail().getDetailShippingPriceIdr());
         tvQuantity.setText(MessageFormat.format("{0} Barang",
@@ -192,7 +193,7 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
         tvGrandTotal.setText(orderData.getOrderDetail().getDetailOpenAmountIdr());
         tvTransactionDate.setText(orderData.getOrderDetail().getDetailOrderDate());
         tvDestination.setText(MessageFormat.format("{0} {1}",
-                Html.fromHtml(orderData.getOrderShipment().getShipmentName() + " -"),
+                MethodChecker.fromHtml(orderData.getOrderShipment().getShipmentName() + " -"),
                 orderData.getOrderShipment().getShipmentProduct()));
         tvDestinationDetail.setText(orderData.getOrderDestination().getDetailDestination()
                 .replace("&amp;", "&"));

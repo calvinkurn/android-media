@@ -30,6 +30,7 @@ import com.tokopedia.core.inboxreputation.model.ImageUpload;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.LabelUtils;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.ReportTalkReview;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.StarGenerator;
@@ -217,9 +218,9 @@ public class ListViewReputationAdapter extends BaseAdapter {
     private void setModelToView(int position) {
         ImageHandler.loadImageCircle2(context, holder.avatar, list.get(position).avatarUrl);
 //        ImageHandler.LoadImageCircle(holder.avatar, list.get(position).avatarUrl);
-        holder.username.setText(Html.fromHtml(list.get(position).username).toString());
+        holder.username.setText(MethodChecker.fromHtml(list.get(position).username).toString());
         holder.date.setText(list.get(position).date);
-        holder.comment.setText(Html.fromHtml(list.get(position).comment).toString());
+        holder.comment.setText(MethodChecker.fromHtml(list.get(position).comment).toString());
         holder.label.giveSquareLabel(list.get(position).userLabel);
         holder.textPercentage.setText(list.get(position).counterSmiley);
         setProductInfo(list.get(position).productName);
@@ -231,7 +232,7 @@ public class ListViewReputationAdapter extends BaseAdapter {
 
     private void setProductInfo(String productName) {
         if (productName.length() > 0 && !productName.equals("0")) {
-            productName = Html.fromHtml(productName).toString();
+            productName = MethodChecker.fromHtml(productName).toString();
             holder.prodName.setText(productName);
             holder.viewProduct.setVisibility(View.VISIBLE);
         } else {

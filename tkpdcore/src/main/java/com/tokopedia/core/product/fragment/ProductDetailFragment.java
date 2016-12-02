@@ -52,6 +52,7 @@ import com.tokopedia.core.product.presenter.ProductDetailPresenter;
 import com.tokopedia.core.product.presenter.ProductDetailPresenterImpl;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.util.AppIndexHandler;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
 
 import java.util.List;
@@ -487,7 +488,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         tvTickerGTM.setVisibility(View.VISIBLE);
         tvTickerGTM.setAutoLinkMask(0);
         Linkify.addLinks(tvTickerGTM, Linkify.WEB_URLS);
-        tvTickerGTM.setText(Html.fromHtml(tvTickerGTM.getText().toString()));
+        tvTickerGTM.setText(MethodChecker.fromHtml(tvTickerGTM.getText().toString()));
     }
 
     @Override
