@@ -109,6 +109,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         private ViewPager bannerViewPager;
         private CirclePageIndicator bannerIndicator;
         private RelativeLayout bannerContainer;
+        private TextView promoLink;
         TabLayout tabLayoutRecharge;
         WrapContentViewPager viewpagerRecharge;
         RecyclerView announcementContainer;
@@ -119,6 +120,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
         private ViewHolder() {
         }
+
     }
 
     public FragmentIndexCategory() {
@@ -213,13 +215,13 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             holder.banner = getActivity().getLayoutInflater().inflate(R.layout.banner, holder.bannerContainer);
             holder.bannerViewPager = (ViewPager) holder.banner.findViewById(R.id.view_pager);
             holder.bannerIndicator = (CirclePageIndicator) holder.banner.findViewById(R.id.indicator);
-
+            holder.promoLink = (TextView) holder.banner.findViewById(R.id.promo_link);
             holder.bannerViewPager.setAdapter(pagerAdapter);
             holder.bannerViewPager.addOnPageChangeListener(onPromoChanged());
             holder.bannerIndicator.setFillColor(ContextCompat.getColor(getContext(), R.color.green_400));
             holder.bannerIndicator.setStrokeColor(ContextCompat.getColor(getContext(), R.color.green_500));
             holder.bannerIndicator.setViewPager(holder.bannerViewPager);
-
+            holder.promoLink.setOnClickListener(onPromoLinkClicked());
             model.listBanner.clear();
             model.listBanner.addAll(promoList);
             pagerAdapter.notifyDataSetChanged();
@@ -350,8 +352,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         holder.categoriesRecylerview.setHasFixedSize(true);
         holder.categoriesRecylerview.setNestedScrollingEnabled(false);
 
-        recyclerViewCategoryMenuAdapter =
-                new RecyclerViewCategoryMenuAdapter(getContext());
+        recyclerViewCategoryMenuAdapter = new RecyclerViewCategoryMenuAdapter(getContext());
 
         recyclerViewCategoryMenuAdapter.setHomeMenuWidth(getHomeMenuWidth());
 
@@ -363,10 +364,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                 new NonScrollLayoutManager(getActivity(),
                         LinearLayoutManager.VERTICAL,
                         false)
-        );
-        holder.categoriesRecylerview.addItemDecoration(
-                new DividerItemDecoration(getActivity(),
-                        LinearLayoutManager.VERTICAL)
         );
         holder.categoriesRecylerview.setAdapter(recyclerViewCategoryMenuAdapter);
     }
@@ -381,6 +378,17 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                     intent.putExtra("url", url);
                     startActivity(intent);
                 }
+            }
+        };
+    }
+
+    private View.OnClickListener onPromoLinkClicked(){
+        return new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), BannerWebView.class);
+                intent.putExtra("url", "https://www.tokopedia.com/promo/?flag_app=1");
+                startActivity(intent);
             }
         };
     }
@@ -653,12 +661,10 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            LayoutInflater inflater = (LayoutInflater) getActivity()
-                    .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
             View view = inflater.inflate(R.layout.image_slider, container, false);
 
-            ImageView promoImage = (ImageView) view
-                    .findViewById(R.id.image);
+            ImageView promoImage = (ImageView) view.findViewById(R.id.image);
             promoImage.setOnClickListener(onPromoClicked(promoList.get(position).promoUrl));
             loadImageTemp(promoImage, promoList.get(position).imgUrl);
             container.addView(view);
@@ -701,7 +707,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         Point size = new Point();
         display.getSize(size);
         int width = size.x;
-        int widthOfHomeMenuView = (int) (width / 5);
+        int widthOfHomeMenuView = (int) (width / 2);
         return widthOfHomeMenuView;
     }
 
