@@ -15,7 +15,7 @@ import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 import com.tokopedia.sellerapp.onboarding.fragment.OnBoardingSellerFragment;
 
-public class OnBoardingSellerActivity extends OnboardingActivity{
+public class OnboardingSellerActivity extends OnboardingActivity{
     private SessionHandler sessionHandler;
 
     @Override

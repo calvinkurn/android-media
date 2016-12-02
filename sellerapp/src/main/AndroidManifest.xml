@@ -65,7 +65,7 @@
             android:name="APPSFLYER_KEY"
             android:value="SdSopxGtYr9yK8QEjFVHXL" />
 
-        <activity android:name=".onboarding.activity.OnBoardingSellerActivity"></activity>
+        <activity android:name=".onboarding.activity.OnboardingSellerActivity"></activity>
     </application>
 
 </manifest>
