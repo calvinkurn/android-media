@@ -1795,4 +1795,5 @@ di Tokopedia Sekarang!</string>
     <string name="product_image">Product Image</string>
     <string name="title_delete_discussion">Hapus diskusi</string>
     <string name="buyer_request_cancel">Pembeli mengajukan pembatalan pesanan</string>
+    <string name="buyer_request_cancel_reason">Pembeli mengajukan pembatalan pesanan dengan alasan</string>
 </resources>
