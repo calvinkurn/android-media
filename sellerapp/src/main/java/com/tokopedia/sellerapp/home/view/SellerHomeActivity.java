@@ -66,12 +66,15 @@ import com.tokopedia.core.network.apiservices.shop.ShopService;
 import com.tokopedia.core.network.apiservices.transaction.DepositService;
 import com.tokopedia.core.network.apiservices.user.InboxResCenterService;
 import com.tokopedia.core.network.apiservices.user.NotificationService;
+import com.tokopedia.core.session.presenter.Session;
+import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.gmsubscribe.GMSubscribeActivity;
 import com.tokopedia.sellerapp.home.boommenu.BoomMenuButton;
@@ -742,13 +745,12 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
     @Override
     public void onLogout(Boolean success) {
         finish();
-
-        /*Intent intent = new Intent(this, WelcomeActivity.class);
-        intent.putExtra(com.tokopedia.session.session.presenter.Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
+        Intent intent = new Intent(this, WelcomeActivity.class);
+        intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
         intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-        startActivity(intent);*/
+        startActivity(intent);
     }
 
     public static class SellerHomeNewOrderView {
