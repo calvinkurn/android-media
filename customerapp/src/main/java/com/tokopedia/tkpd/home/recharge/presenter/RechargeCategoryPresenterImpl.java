@@ -21,9 +21,11 @@ import com.tokopedia.tkpd.home.recharge.interactor.RechargeDBInteractor;
 import com.tokopedia.tkpd.home.recharge.interactor.RechargeDBInteractorImpl;
 import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractor;
 import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractorImpl;
+import com.tokopedia.tkpd.home.recharge.util.CategoryComparator;
 import com.tokopedia.tkpd.home.recharge.view.RechargeCategoryView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -66,9 +68,9 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter,
 
     @Override
     public void fetchRecentNumberList() {
-       this.rechargeNetworkInteractor.getRecentNumbers(
-               AuthUtil.generateParams(activity),this
-       );
+        this.rechargeNetworkInteractor.getRecentNumbers(
+                AuthUtil.generateParams(activity),this
+        );
     }
 
     @Override
@@ -108,7 +110,7 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter,
     @Override
     public void onSuccess(ProductData data) {
         this.rechargeDBInteractor.storeProductData(data);
-            finishPrepareRechargeModule();
+        finishPrepareRechargeModule();
     }
 
     @Override
@@ -141,7 +143,7 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter,
 
     @Override
     public void onGetRecentNumbersSuccess(RecentData recentNumber) {
-       this.rechargeDBInteractor.storeRecentData(recentNumber);
+        this.rechargeDBInteractor.storeRecentData(recentNumber);
     }
 
     @Override
@@ -198,6 +200,7 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter,
                         categories.add(category);
                     }
                 }
+                Collections.sort(categories, new CategoryComparator());
                 categoryData.setData(categories);
                 view.renderDataRechargeCategory(categoryData);
             } else {
