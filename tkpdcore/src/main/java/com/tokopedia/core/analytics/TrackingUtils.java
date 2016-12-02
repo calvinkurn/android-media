@@ -181,5 +181,9 @@ public class TrackingUtils extends TrackingConfig {
     public static double getDouble(String key) {
         return getGTMEngine().getDouble(key);
     }
+
+    public static void eventGoldMerchantSuccess() {
+
+    }
 }
 

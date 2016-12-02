@@ -1050,7 +1050,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
     public void onStart() {
         super.onStart();
         if(appInstalledOrNot(ARG_TRUECALLER_PACKAGE)){
-            TrackingUtils.eventTrueCaller(SessionHandler.getLoginID(this));
+//            TrackingUtils.eventTrueCaller(SessionHandler.getLoginID(this));
         }
     }
     private boolean appInstalledOrNot(String uri) {
