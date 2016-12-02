@@ -17,7 +17,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.instabug.library.Instabug;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -42,7 +41,6 @@ import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.myproduct.ManageProduct;
-import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
@@ -400,7 +398,8 @@ public class DrawerVariableSeller extends DrawerVariable {
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.HELP);
                 break;
             case TkpdState.DrawerPosition.RESOLUTION_CENTER:
-                context.startActivity(InboxResCenterActivity.createIntent(context));
+                intent = InboxRouter.getInboxResCenterActivityIntent(context);
+                context.startActivity(intent);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.RESOLUTION_CENTER);
                 break;
             case TkpdState.DrawerPosition.DEVELOPER_OPTIONS:
@@ -416,10 +415,6 @@ public class DrawerVariableSeller extends DrawerVariable {
                     intent.putExtra("link", "https://tokopedia.com/contact-us-android");
                 }
                 context.startActivity(intent);
-                break;
-            case TkpdState.DrawerPosition.REPORT:
-                isFinish = false;
-                Instabug.invoke();
                 break;
             case TkpdState.DrawerPosition.LOGOUT:
                 isFinish = false;
