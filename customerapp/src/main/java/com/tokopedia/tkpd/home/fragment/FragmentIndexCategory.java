@@ -50,7 +50,7 @@ import com.tokopedia.core.network.entity.home.Ticker;
 import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
-import com.tokopedia.core.util.NonScrollLayoutManager;
+import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.tkpd.home.HomeCatMenuView;
@@ -67,7 +67,6 @@ import com.tokopedia.tkpd.home.recharge.adapter.RechargeViewPagerAdapter;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenter;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenterImpl;
 import com.tokopedia.tkpd.home.recharge.view.RechargeCategoryView;
-import com.tokopedia.tkpd.home.util.DividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -353,7 +352,7 @@ public class FragmentIndexCategory extends Fragment implements
 
 
         holder.categoriesRecylerview.setLayoutManager(
-                new NonScrollLayoutManager(getActivity(),
+                new NonScrollLinearLayoutManager(getActivity(),
                         LinearLayoutManager.VERTICAL,
                         false)
         );
