@@ -44,4 +44,6 @@ public interface ShopFavoritedFragmentView {
     void setRetry(String error);
 
     boolean isEmpty();
+
+    void showEmpty();
 }

@@ -16,8 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.core.onboarding.fragment.OnBoardingFragment;
-import com.tokopedia.core.shop.ShopEditorActivity;
-import com.tokopedia.core.shop.presenter.ShopSettingView;
+import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.sellerapp.R;
 
 public class OnBoardingSellerFragment extends OnBoardingFragment {
@@ -137,9 +136,10 @@ public class OnBoardingSellerFragment extends OnBoardingFragment {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ShopEditorActivity.class);
-                intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.CREATE_SHOP_FRAGMENT_TAG);
-                intent.putExtra(ShopSettingView.ON_BACK, ShopSettingView.LOG_OUT);
+                Intent intent = SellerRouter.getAcitivityShopCreateEdit(getActivity());
+                intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
+                        SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
+                intent.putExtra(SellerRouter.ShopSettingConstant.ON_BACK, SellerRouter.ShopSettingConstant.LOG_OUT);
                 startActivity(intent);
                 getActivity().finish();
             }

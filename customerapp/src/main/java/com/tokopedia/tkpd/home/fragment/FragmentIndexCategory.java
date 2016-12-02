@@ -552,8 +552,8 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         holder.viewpagerRecharge.setAdapter(rechargeViewPagerAdapter);
         holder.viewpagerRecharge.getAdapter().notifyDataSetChanged();
         LocalCacheHandler handler = new LocalCacheHandler(getActivity(), "tabSelection");
-        if (handler.getInt("rechargeSelectedPosition") != null && handler.getInt("rechargeSelectedPosition") == 2) {
-            holder.viewpagerRecharge.setCurrentItem(1);
+        if (handler.getInt("rechargeSelectedPosition") != null && handler.getInt("rechargeSelectedPosition")<rechargeCategory.getData().size()) {
+            holder.viewpagerRecharge.setCurrentItem(handler.getInt("rechargeSelectedPosition"));
             LocalCacheHandler.clearCache(getActivity(), "tabSelection");
         } else {
             holder.viewpagerRecharge.setCurrentItem(0);

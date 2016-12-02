@@ -1,4 +1,4 @@
-package com.tokopedia.core.shop.fragment;
+package com.tokopedia.seller.shop.fragment;
 
 import android.content.Context;
 import android.content.Intent;
@@ -24,9 +24,9 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.session.base.BaseFragment;
-import com.tokopedia.core.shop.presenter.ShopEditorPresenter;
-import com.tokopedia.core.shop.presenter.ShopEditorPresenterImpl;
-import com.tokopedia.core.shop.presenter.ShopEditorView;
+import com.tokopedia.seller.shop.presenter.ShopEditorPresenter;
+import com.tokopedia.seller.shop.presenter.ShopEditorPresenterImpl;
+import com.tokopedia.seller.shop.presenter.ShopEditorView;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.UploadImageReVamp;
 

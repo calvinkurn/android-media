@@ -44,4 +44,11 @@ public class RechargeOperatorModelDBAttrs extends BaseModel {
     @Column
     public Boolean showProduct;
 
+    @Column
+    public Integer weight;
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }
