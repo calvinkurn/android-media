@@ -125,6 +125,25 @@ public class TrackingUtils extends TrackingConfig {
         getAFEngine().sendTrackEvent(AFInAppEventType.CONTENT_VIEW, listViewEvent);
     }
 
+    public static void eventTrueCaller(String userId) {
+        Nishikino.init(MainApplication.getAppContext()).startAnalytics()
+                .sendButtonClick(
+                        AppEventTracking.Event.TRUECALLER,
+                        AppEventTracking.Category.TRUECALLER,
+                        AppEventTracking.Action.INSTALLED,
+                        userId
+                );
+    }
+    public static void eventGoldMerchantSuccess() {
+        Nishikino.init(MainApplication.getAppContext()).startAnalytics()
+                .sendButtonClick(
+                        AppEventTracking.Event.GMSUBSCRIBE,
+                        AppEventTracking.Category.GOLD_MERCHANT,
+                        AppEventTracking.Action.SUBSCRIBE,
+                        AppEventTracking.EventLabel.SUBSCRIBE_SUCCESS
+                );
+    }
+
     public static void eventLocaNotificationCallback(Intent intent){
         getLocaEngine().sendNotificationCallback(intent);
     }

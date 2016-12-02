@@ -15,7 +15,7 @@ import com.tokopedia.core.util.SessionHandler;
  */
 public class OnboardingActivity extends BaseOnboardingActivity {
 
-    View decorView;
+    protected View decorView;
 
     @Override
     public void init(Bundle savedInstanceState) {

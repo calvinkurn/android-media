@@ -88,6 +88,7 @@ public interface AppEventTracking {
         String LOGIN_ERROR = "loginError";
         String REGISTER_LOGIN = "registerLogin";
         String LOGIN_CLICK = "clickLogin";
+        String TRUECALLER = "installedTrueCaller";
         String GMSUBSCRIBE = "subscribeGoldMerchant";
     }
 
@@ -131,6 +132,7 @@ public interface AppEventTracking {
         String ADD_PRODUCT = "Add Product";
         String HAMBURGER = "Hamburger Icon";
         String SALES = "Sales";
+        String TRUECALLER = "TrueCaller";
         String GOLD_MERCHANT = "Gold Merchant";
     }
 
@@ -157,6 +159,7 @@ public interface AppEventTracking {
         String LOGIN = "Login Success";
         String LOGIN_ERROR = "Login Error";
         String REGISTER = "Register";
+        String INSTALLED = "Installed";
         String SUBSCRIBE = "Subscribe";
     }
 
