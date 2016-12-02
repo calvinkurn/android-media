@@ -11,6 +11,7 @@ import com.tokopedia.core.router.home.HomeRouter;
  */
 public final class AppScreen {
 
+
     private AppScreen() {
 
     }

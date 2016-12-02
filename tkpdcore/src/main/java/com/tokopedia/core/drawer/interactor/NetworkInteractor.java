@@ -3,6 +3,7 @@ package com.tokopedia.core.drawer.interactor;
 import android.content.Context;
 
 import com.tokopedia.core.drawer.DrawerVariable;
+import com.tokopedia.core.drawer.model.DrawerHeader;
 import com.tokopedia.core.drawer.model.LoyaltyItem.LoyaltyItem;
 import com.tokopedia.core.drawer.var.NotificationItem;
 
@@ -23,7 +24,7 @@ public interface NetworkInteractor {
 
     interface ProfileInfoListener {
 
-        void onSuccess(DrawerVariable.DrawerHeader data);
+        void onSuccess(DrawerHeader data);
 
         void onError(String message);
     }

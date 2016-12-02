@@ -10,7 +10,7 @@ import com.tokopedia.sellerapp.R;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.tokopedia.core.drawer.DrawerVariable.goToShopNewOrder;
+import static com.tokopedia.core.drawer.DrawerVariableSeller.goToShopNewOrder;
 
 /**
  * Created by normansyahputa on 9/8/16.

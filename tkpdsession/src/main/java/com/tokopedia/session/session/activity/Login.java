@@ -30,19 +30,27 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.Cart;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.fragment.FragmentSecurityQuestion;
+import com.tokopedia.core.msisdn.activity.MsisdnActivity;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.onboarding.OnboardingActivity;
 import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.constant.DownloadServiceConstant;
 import com.tokopedia.core.shop.ShopEditorActivity;
 import com.tokopedia.core.shop.presenter.ShopSettingView;
+import com.tokopedia.core.session.model.CreatePasswordModel;
+import com.tokopedia.core.session.model.LoginFacebookViewModel;
+import com.tokopedia.core.session.model.LoginGoogleModel;
+import com.tokopedia.core.session.presenter.Session;
+import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.session.session.fragment.ActivationResentFragment;
 import com.tokopedia.session.session.fragment.ForgotPasswordFragment;
 import com.tokopedia.session.session.fragment.LoginFragment;
@@ -50,25 +58,15 @@ import com.tokopedia.session.session.fragment.RegisterInitialFragment;
 import com.tokopedia.session.session.fragment.RegisterNewNextFragment;
 import com.tokopedia.session.session.fragment.RegisterNewViewFragment;
 import com.tokopedia.session.session.fragment.RegisterPassPhoneFragment;
+import com.tokopedia.session.session.google.GoogleActivity;
 import com.tokopedia.session.session.intentservice.LoginResultReceiver;
 import com.tokopedia.session.session.intentservice.LoginService;
 import com.tokopedia.session.session.intentservice.RegisterResultReceiver;
 import com.tokopedia.session.session.intentservice.RegisterService;
 import com.tokopedia.session.session.intentservice.ResetPasswordResultReceiver;
 import com.tokopedia.session.session.intentservice.ResetPasswordService;
-import com.tokopedia.core.session.model.CreatePasswordModel;
-import com.tokopedia.core.session.model.LoginFacebookViewModel;
-import com.tokopedia.core.session.presenter.Session;
-import com.tokopedia.session.session.presenter.SessionImpl;
-import com.tokopedia.core.session.presenter.SessionView;
-import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.service.DownloadService;
-import com.tokopedia.session.session.google.GoogleActivity;
-import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.session.session.model.LoginModel;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.session.session.presenter.SessionImpl;
 
 import org.parceler.Parcels;
 
@@ -205,15 +203,26 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         Log.d(getClass().getSimpleName(), "moveTo " + type);
         switch (type) {
             case MOVE_TO_CART_TYPE:
-                if (SessionHandler.isV4Login(this)) {
-                    startActivity(new Intent(this, Cart.class));
-                } else {
-                    Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
-                    intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOME);
+                if (GlobalConfig.isSellerApp() && !SessionHandler.isMsisdnVerified()) {
+                    Intent intent = new Intent(this, MsisdnActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
+                } else {
+                    if (SessionHandler.isV4Login(this)) {
+                        startActivity(new Intent(this, Cart.class));
+                    } else {
+                        Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
+                        intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOME);
+                        startActivity(intent);
+                    }
                 }
                 break;
             case HOME:
+                if (GlobalConfig.isSellerApp() && !SessionHandler.isMsisdnVerified()) {
+                    Intent intent = new Intent(this, MsisdnActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                } else{
                 if (SessionHandler.isV4Login(this)) {
                     Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
                     intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
@@ -224,7 +233,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                     intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
                             HomeRouter.INIT_STATE_FRAGMENT_HOME);
                     startActivity(intent);
-                }
+                }}
                 break;
 
             case SELLER_HOME:
@@ -851,8 +860,8 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
 
     @Override
     public void showError(String text) {
-        if(text!=null){
-            SnackbarManager.make(this,text, Snackbar.LENGTH_LONG).show();
+        if (text != null) {
+            SnackbarManager.make(this, text, Snackbar.LENGTH_LONG).show();
         }
     }
 }

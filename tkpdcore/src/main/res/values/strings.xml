@@ -1806,4 +1806,8 @@ di Tokopedia Sekarang!</string>
     <string name="seller_onb_3_sub_title">Mau jualan juga?</string>
     <string name="seller_onb_3_desc">Yup, ciptakan peluangmu dan buka tokomu di Tokopedia. Gratis dan mudah!</string>
 
+
+    <string name="title_msisdn">Verifikasi Nomor HP</string>
+    <string name="title_try_again_in">Coba lagi dalam :</string>
+
 </resources>

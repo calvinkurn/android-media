@@ -134,8 +134,7 @@ public class FavoriteRecyclerViewAdapter extends BaseRecyclerViewAdapter {
     }
 
     private RecyclerView.ViewHolder createViewHolderFavShop(ViewGroup parent) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.listview_manage_favorited_shop, null);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.listview_manage_favorited_shop, null);
         return new ViewHolderFavShop(view);
     }
 

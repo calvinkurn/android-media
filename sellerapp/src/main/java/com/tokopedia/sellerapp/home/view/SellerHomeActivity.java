@@ -54,6 +54,7 @@ import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.drawer.DrawerVariable;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.drawer.DrawerVariableSeller;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
@@ -111,7 +112,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
-import static com.tokopedia.core.drawer.DrawerVariable.goToShopNewOrder;
+import static com.tokopedia.core.drawer.DrawerVariableSeller.goToShopNewOrder;
 import static com.tokopedia.core.drawer.DrawerVariable.startIntent;
 
 public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.GCMHandlerListener,
@@ -231,7 +232,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
     String userId;
     String shopId;
 
-    DrawerVariable drawer;
+    DrawerVariableSeller drawer;
     ActionBarDrawerToggle mDrawerToggle;
 
     @Nullable
@@ -349,8 +350,9 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
     }
 
     private void initDrawer() {
-        drawer = new DrawerVariable(this);
+        drawer = new DrawerVariableSeller(this);
         toolbar = new FckToolbarVariable(this, sellerHomeToolbar);
+        toolbar.createToolbarWithDrawer();
         drawer.setToolbar(toolbar);
         drawer.createDrawer();
         drawer.setEnabled(true);

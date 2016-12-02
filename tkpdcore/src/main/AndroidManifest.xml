@@ -488,6 +488,12 @@
             android:screenOrientation="portrait">
         </activity>
 
+        <activity
+            android:name=".msisdn.activity.MsisdnActivity"
+            android:label="@string/title_msisdn"
+            android:parentActivityName=".session.Login"
+            android:screenOrientation="portrait" />
+
         <!--=======================================================-->
         <!--RECEIVERS REGISTRY-->
         <!--=======================================================-->
