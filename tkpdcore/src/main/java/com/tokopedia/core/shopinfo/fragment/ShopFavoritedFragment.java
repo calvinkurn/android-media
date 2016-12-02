@@ -212,15 +212,14 @@ public class ShopFavoritedFragment extends BasePresenterFragment<ShopFavoritedFr
 
     @Override
     public void showEmptyState() {
-        NoResult.showMessage();
         setActionsEnabled(false);
-      /*  NetworkErrorHelper.showEmptyState(getActivity(), getView(), new NetworkErrorHelper.RetryClickedListener() {
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 String shopId = getArguments().getString("shop_id");
                 presenter.setCache(shopId);
             }
-        });*/
+        });
     }
 
     @Override
@@ -265,6 +264,12 @@ public class ShopFavoritedFragment extends BasePresenterFragment<ShopFavoritedFr
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void showEmpty() {
+        NoResult.showMessage();
+        setActionsEnabled(false);
     }
 
 
