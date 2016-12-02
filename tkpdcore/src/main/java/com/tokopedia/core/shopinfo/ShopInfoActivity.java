@@ -101,6 +101,7 @@ public class ShopInfoActivity extends TActivity {
     private ScaleAnimation animateFav;
     private String shopInfoString;
     private String adKey;
+    private ShopTabPagerAdapter adapter;
     public static final String LOGIN_ACTION = BuildConfig.APPLICATION_ID + ".LOGIN_ACTION";
     private BroadcastReceiver loginReceiver = new BroadcastReceiver() {
         @Override
@@ -403,9 +404,8 @@ public class ShopInfoActivity extends TActivity {
     }
 
     private void initPager() {
-        for (int ids : ShopTabPagerAdapter.TITLES)
-            holder.indicator.addTab(holder.indicator.newTab().setText(getString(ids)));
-        ShopTabPagerAdapter adapter = ShopTabPagerAdapter.createAdapter(getFragmentManager(), this, shopModel.info.shopId, shopModel.info.shopDomain);
+//        ShopTabPagerAdapter adapter = ShopTabPagerAdapter.createAdapter(getFragmentManager(), this, shopModel);
+        adapter = new ShopTabPagerAdapter(getFragmentManager(), this, shopModel);
         holder.pager.setAdapter(adapter);
         holder.pager.addOnPageChangeListener(new
                 TabLayout.TabLayoutOnPageChangeListener(holder.indicator));
@@ -418,13 +418,20 @@ public class ShopInfoActivity extends TActivity {
 
     private void updateView() {
         facadeAction.setShopModel(shopModel);
+        if(shopModel.info.shopIsOfficial == 1){
+            adapter.initOfficialShop(shopModel);
+        } else {
+            adapter.initRegularShop();
+        }
+        for (String title : ShopTabPagerAdapter.TITLES)
+            holder.indicator.addTab(holder.indicator.newTab().setText(title));
+
         shopModel.info.shopName = Html.fromHtml(shopModel.info.shopName).toString();
         setListener();
         holder.collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
         holder.collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
         if (holder.shopAvatar.getDrawable() == null)
             ImageHandler.loadImageCircle2(this, holder.shopAvatar, shopModel.info.shopAvatar);
-//            ImageHandler.LoadImageCircle(holder.shopAvatar, shopModel.info.shopAvatar);
         ImageHandler.loadImageLucky2(this, holder.luckyShop, shopModel.info.shopLucky);
         setFreeReturn(holder, shopModel.info);
         holder.shopName.setText(Html.fromHtml(shopModel.info.shopName));
@@ -484,9 +491,9 @@ public class ShopInfoActivity extends TActivity {
             holder.infoShop.setBackgroundResource(0);
         } else {
             holder.goldShop.setVisibility(View.VISIBLE);
-            ImageHandler.loadImageCover2(holder.banner, shopModel.info.shopCover);
             holder.infoShop.setBackgroundResource(R.drawable.cover_shader);
         }
+        ImageHandler.loadImageCover2(holder.banner, shopModel.info.shopCover);
     }
 
     private void showOfficialCover() {
