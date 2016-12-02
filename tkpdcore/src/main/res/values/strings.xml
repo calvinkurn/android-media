@@ -1370,7 +1370,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_still_need_help">Masih Memerlukan Bantuan?</string>
     <string name="title_choose_problem">Pilih Masalah</string>
     <string name="title_choose_detail_problem">Pilih Detail Masalah</string>
-    <string name="title_problem_category">Kategori Masalah</string>
+    <string name="title_problem_category">Masalah :</string>
     <string name="title_problem_detail">Keterangan Masalah Anda</string>
     <string name="title_invoice_no">No Invoice</string>
     <string name="title_invoice_no_and_user_name">No Invoice / Nama Penerima</string>
@@ -1798,4 +1798,7 @@ di Tokopedia Sekarang!</string>
     <string name="title_msisdn">Verifikasi Nomor HP</string>
     <string name="title_try_again_in">Coba lagi dalam :</string>
 
+    <string name="notification_error_ssl_cert_invalid">Invalid SSL Certificate. Apakah anda ingin melanjutkan?</string>
+    <string name="title_email_address">Alamat Email</string>
+    <string name="title_phone_optional">Nomor Telepon (Optional)</string>
 </resources>

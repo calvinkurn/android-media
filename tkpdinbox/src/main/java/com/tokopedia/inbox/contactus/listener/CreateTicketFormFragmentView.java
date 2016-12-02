@@ -2,10 +2,11 @@ package com.tokopedia.inbox.contactus.listener;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.widget.EditText;
 
-import com.tokopedia.inbox.contactus.model.contactusform.TicketFormData;
 import com.tokopedia.core.inboxreputation.model.ImageUpload;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.inbox.contactus.model.solution.SolutionResult;
 
 import java.util.ArrayList;
 
@@ -21,9 +22,9 @@ public interface CreateTicketFormFragmentView {
 
     void finishLoading();
 
-    void setResult(TicketFormData ticketFormData);
+    void setResult(SolutionResult ticketFormData);
 
-    String getMessage();
+    EditText getMessage();
 
     String getString(int resId);
 
@@ -37,4 +38,9 @@ public interface CreateTicketFormFragmentView {
 
     void showErrorEmptyState(String error, NetworkErrorHelper.RetryClickedListener retryClickedListener);
 
+    EditText getEmail();
+
+    void showErrorValidation(EditText view, String error);
+
+    EditText getPhoneNumber();
 }

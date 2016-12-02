@@ -381,6 +381,7 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
     public void onSuccessReply(TicketReplyDatum ticketReply) {
         comment.setText("");
         KeyboardHandler.DropKeyboard(getActivity(), comment);
+        attachButton.setVisibility(View.VISIBLE);
 
         if (adapter.getTicketView().getData().size() < 2) {
             adapter.getTicketView().getData().add(ticketReply);

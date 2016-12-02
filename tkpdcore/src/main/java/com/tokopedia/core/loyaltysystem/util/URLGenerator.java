@@ -51,6 +51,13 @@ public class URLGenerator {
         return urlFinal;
     }
 
+    public static String generateURLContactUs(String url, Context context) {
+        return getBaseUrl() + "wvlogin?token="
+                + GCMHandler.getRegistrationId(context)
+                + "&uid=" + SessionHandler.getLoginID(context)
+                + "&url=" + url;
+    }
+
     private static String getBaseUrl() {
         String baseUrl = TkpdBaseURL.JS_DOMAIN;
         if (BuildConfig.DEBUG) {
@@ -64,4 +71,5 @@ public class URLGenerator {
         }
         return baseUrl;
     }
+
 }

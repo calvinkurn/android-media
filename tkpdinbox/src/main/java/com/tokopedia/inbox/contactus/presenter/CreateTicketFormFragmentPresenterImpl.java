@@ -1,11 +1,8 @@
 package com.tokopedia.inbox.contactus.presenter;
 
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-
 import com.tokopedia.core.R;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.inbox.BuildConfig;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.contactus.ContactUsConstant;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
 import com.tokopedia.inbox.contactus.fragment.CreateTicketFormFragment;
@@ -13,16 +10,13 @@ import com.tokopedia.inbox.contactus.interactor.ContactUsRetrofitInteractor;
 import com.tokopedia.inbox.contactus.interactor.ContactUsRetrofitInteractorImpl;
 import com.tokopedia.inbox.contactus.listener.CreateTicketFormFragmentView;
 import com.tokopedia.inbox.contactus.model.ContactUsPass;
-import com.tokopedia.inbox.contactus.model.contactusform.TicketForm;
-import com.tokopedia.core.network.NetworkErrorHelper;
-
-import java.util.HashMap;
+import com.tokopedia.inbox.contactus.model.solution.SolutionResult;
 
 /**
  * Created by nisie on 8/12/16.
  */
 public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFragmentPresenter,
-        ContactUsConstant{
+        ContactUsConstant {
 
     CreateTicketFormFragmentView viewListener;
     ContactUsRetrofitInteractor networkInteractor;
@@ -36,7 +30,7 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
 
     @Override
     public void sendTicket() {
-        if(isTicketValid()){
+        if (isTicketValid()) {
             viewListener.showLoading();
             networkInteractor.sendTicket(viewListener.getActivity(), getSendTicketParam(), new ContactUsRetrofitInteractor.SendTicketListener() {
                 @Override
@@ -78,32 +72,27 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
 
     private ContactUsPass getSendTicketParam() {
         ContactUsPass pass = new ContactUsPass();
-        pass.setTicketCategoryId(String.valueOf(viewListener.getArguments().getInt(PARAM_LAST_CATEGORY_ID)));
-        pass.setMessageBody(viewListener.getMessage());
+        pass.setSolutionId(String.valueOf(viewListener.getArguments().getString(
+                ContactUsActivity.PARAM_SOLUTION_ID)));
+        pass.setMessageBody(viewListener.getMessage().getText().toString());
         pass.setAttachment(viewListener.getAttachment());
-        if(GlobalConfig.isSellerApp()){
-            pass.setSource("android_sellerapp");
-            String version = "";
-            try {
-                PackageInfo pInfo = null;
-                pInfo = viewListener.getActivity().getPackageManager().getPackageInfo(viewListener.getActivity().getPackageName(), 0);
-                version = pInfo.versionName;
-
-            } catch (PackageManager.NameNotFoundException e) {
-                version = com.tokopedia.core.BuildConfig.VERSION_NAME;
-            }
-            pass.setAppVersion(version);
-        }
+        pass.setName(SessionHandler.getLoginName(viewListener.getActivity()));
+        pass.setEmail(viewListener.getEmail().getText().toString());
+        pass.setPhoneNumber(viewListener.getPhoneNumber().getText().toString());
+        pass.setTag(String.valueOf(viewListener.getArguments().getString(
+                ContactUsActivity.PARAM_TAG)));
+        pass.setOrderId(String.valueOf(viewListener.getArguments().getString(
+                ContactUsActivity.PARAM_ORDER_ID)));
         return pass;
     }
 
     private boolean isTicketValid() {
 
-        if (viewListener.getMessage().trim().length() == 0) {
-            viewListener.showError(viewListener.getString(R.string.error_detail_empty));
+        if (viewListener.getMessage().getText().toString().trim().length() == 0) {
+            viewListener.showErrorValidation(viewListener.getMessage(), viewListener.getString(R.string.error_detail_empty));
             return false;
-        } else if (viewListener.getMessage().trim().length() < 30) {
-            viewListener.showError(viewListener.getString(R.string.error_detail_too_short));
+        } else if (viewListener.getMessage().getText().toString().trim().length() < 30) {
+            viewListener.showErrorValidation(viewListener.getMessage(), viewListener.getString(R.string.error_detail_too_short));
             return false;
         }
         return true;
@@ -113,75 +102,64 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
     public void initForm() {
         viewListener.showLoading();
         viewListener.removeErrorEmptyState();
-        networkInteractor.getFormModelContactUs(viewListener.getActivity(), getFormParam(), new ContactUsRetrofitInteractor.GetContactFormListener() {
-
-            @Override
-            public void onSuccess(TicketForm ticketForm) {
-                viewListener.setResult(ticketForm.getList().get(0));
-            }
-
-            @Override
-            public void onNoNetworkConnection() {
-                viewListener.finishLoading();
-                viewListener.showErrorEmptyState("", new NetworkErrorHelper.RetryClickedListener() {
+        networkInteractor.getSolution(viewListener.getActivity(),
+                viewListener.getArguments().getString(ContactUsActivity.PARAM_SOLUTION_ID, "0"),
+                new ContactUsRetrofitInteractor.GetSolutionListener() {
                     @Override
-                    public void onRetryClicked() {
-                        initForm();
+                    public void onSuccess(SolutionResult result) {
+                        viewListener.setResult(result);
+
+                    }
+
+                    @Override
+                    public void onNoNetworkConnection() {
+                        viewListener.finishLoading();
+                        viewListener.showErrorEmptyState("", new NetworkErrorHelper.RetryClickedListener() {
+                            @Override
+                            public void onRetryClicked() {
+                                initForm();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onTimeout(String error) {
+                        viewListener.finishLoading();
+                        viewListener.showErrorEmptyState(error, new NetworkErrorHelper.RetryClickedListener() {
+                            @Override
+                            public void onRetryClicked() {
+                                initForm();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(String s) {
+                        viewListener.finishLoading();
+                        viewListener.showErrorEmptyState(s, new NetworkErrorHelper.RetryClickedListener() {
+                            @Override
+                            public void onRetryClicked() {
+                                initForm();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onNullData() {
+                        viewListener.finishLoading();
+                        viewListener.showErrorEmptyState(viewListener.getString(R.string.default_request_error_null_data),
+                                new NetworkErrorHelper.RetryClickedListener() {
+                                    @Override
+                                    public void onRetryClicked() {
+                                        initForm();
+                                    }
+                                });
                     }
                 });
-
-            }
-
-            @Override
-            public void onTimeout(String error) {
-                viewListener.finishLoading();
-                viewListener.showErrorEmptyState(error, new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        initForm();
-                    }
-                });
-
-            }
-
-            @Override
-            public void onError(String s) {
-                viewListener.finishLoading();
-                viewListener.showErrorEmptyState(s, new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        initForm();
-                    }
-                });
-
-            }
-
-            @Override
-            public void onNullData() {
-                viewListener.finishLoading();
-                viewListener.showErrorEmptyState(viewListener.getString(R.string.default_request_error_null_data),
-                        new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        initForm();
-                    }
-                });
-            }
-
-
-
-
-        });
     }
 
     @Override
     public void onDestroyView() {
         networkInteractor.unsubscribe();
-    }
-
-    private HashMap<String, String> getFormParam() {
-        ContactUsPass pass = new ContactUsPass();
-        pass.setTicketCategoryId(viewListener.getTicketCategoryId());
-        return pass.getContactUsFormParam();
     }
 }
