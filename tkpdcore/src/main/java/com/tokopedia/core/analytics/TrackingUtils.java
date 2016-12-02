@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
@@ -180,6 +181,14 @@ public class TrackingUtils extends TrackingConfig {
 
     public static double getDouble(String key) {
         return getGTMEngine().getDouble(key);
+    }
+
+    public static void eventGoldMerchantSuccess() {
+        Log.e("TrackingUtils", "please provide implementation");
+    }
+
+    public static void eventTrueCaller(String loginID) {
+        Log.e("TrackingUtils", "please provide implementation");
     }
 }
 

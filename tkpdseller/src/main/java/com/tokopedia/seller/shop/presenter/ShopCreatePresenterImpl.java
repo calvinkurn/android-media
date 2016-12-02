@@ -1,4 +1,4 @@
-package com.tokopedia.core.shop.presenter;
+package com.tokopedia.seller.shop.presenter;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -18,9 +18,9 @@ import com.tokopedia.core.network.apiservices.shop.MyShopActService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.shipping.model.openshopshipping.OpenShopData;
-import com.tokopedia.core.shop.ShopEditService;
-import com.tokopedia.core.shop.ShopEditorActivity;
-import com.tokopedia.core.shop.constant.ShopEditServiceConstant;
+import com.tokopedia.seller.shop.ShopEditService;
+import com.tokopedia.seller.shop.ShopEditorActivity;
+import com.tokopedia.seller.shop.constant.ShopEditServiceConstant;
 import com.tokopedia.core.shop.model.ShopCreateParams;
 import com.tokopedia.core.shop.model.checkDomainShopName.CheckDomainShopName;
 import com.tokopedia.core.shop.model.openShopSubmitData.OpenShopSubmitData;
@@ -43,9 +43,9 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.tokopedia.core.shop.ShopEditService.RETRY_DATA;
-import static com.tokopedia.core.shop.constant.ShopEditServiceConstant.OPEN_SHOP_VALIDATION_PARAM;
-import static com.tokopedia.core.shop.constant.ShopEditServiceConstant.PIC_SRC;
+import static com.tokopedia.seller.shop.ShopEditService.RETRY_DATA;
+import static com.tokopedia.seller.shop.constant.ShopEditServiceConstant.OPEN_SHOP_VALIDATION_PARAM;
+import static com.tokopedia.seller.shop.constant.ShopEditServiceConstant.PIC_SRC;
 
 /**
  * Created by Sebast on 5/19/2016.

@@ -1,4 +1,4 @@
-package com.tokopedia.core.shop.fragment;
+package com.tokopedia.seller.shop.fragment;
 
 import android.app.Dialog;
 
@@ -22,7 +22,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.shop.model.ShopScheduleModel;
 import com.tokopedia.core.shop.model.shopData.ClosedDetail;
 import com.tokopedia.core.shop.model.shopData.ClosedScheduleDetail;
-import com.tokopedia.core.shop.presenter.ShopEditorPresenter;
+import com.tokopedia.seller.shop.presenter.ShopEditorPresenter;
 
 import org.parceler.Parcels;
 
