@@ -5,4 +5,15 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+    </android.support.v7.widget.RecyclerView>
+
+    <Button
+        android:id="@+id/button_choose_credit"
+        style="@style/ButtonGreen"
+        android:text="@string/label_top_ads_choose_credit"/>
 </LinearLayout>

@@ -3,6 +3,8 @@ package com.tokopedia.seller.topads.view.fragment;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,6 +21,7 @@ import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.presenter.TopAdsAddCreditPresenter;
 import com.tokopedia.seller.topads.presenter.TopAdsAddCreditPresenterImpl;
 import com.tokopedia.seller.topads.presenter.TopAdsDashboardProductPresenterImpl;
+import com.tokopedia.seller.topads.view.adapter.TopAdsCreditAdapter;
 import com.tokopedia.seller.topads.view.listener.TopAdsAddCreditFragmentListener;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardFragmentListener;
 
@@ -34,6 +37,11 @@ import butterknife.OnClick;
 public class TopAdsAddCreditFragment extends BasePresenterFragment<TopAdsAddCreditPresenter> implements TopAdsAddCreditFragmentListener {
 
     private static String TAG = TopAdsAddCreditFragment.class.getSimpleName();
+
+    @Bind(R2.id.recycler_view)
+    RecyclerView recyclerView;
+
+    private TopAdsCreditAdapter adapter;
 
     public static TopAdsAddCreditFragment createInstance() {
         TopAdsAddCreditFragment fragment = new TopAdsAddCreditFragment();
@@ -87,6 +95,9 @@ public class TopAdsAddCreditFragment extends BasePresenterFragment<TopAdsAddCred
 
     @Override
     protected void initView(View view) {
+        adapter = new TopAdsCreditAdapter();
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setAdapter(adapter);
         presenter.populateCreditList();
     }
 
@@ -107,7 +118,8 @@ public class TopAdsAddCreditFragment extends BasePresenterFragment<TopAdsAddCred
 
     @Override
     public void onCreditListLoaded(@NonNull List<DataCredit> creditList) {
-
+        adapter.setCreditList(creditList);
+        adapter.notifyDataSetChanged();
     }
 
     @Override

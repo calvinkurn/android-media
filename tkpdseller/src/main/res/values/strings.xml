@@ -12,9 +12,10 @@
     <string name="label_top_ads_conversion">Conversion</string>
     <string name="label_top_ads_average">Rata - Rata</string>
     <string name="label_top_ads_cost">Terpakai</string>
-
     <string name="label_top_ads_groups">Groups</string>
     <string name="label_top_ads_items">Items</string>
+
+    <string name="label_top_ads_choose_credit">Pilih</string>
 
     <string name="top_ads_statistic_info_default_value">0</string>
 
