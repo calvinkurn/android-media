@@ -12,7 +12,7 @@ import java.util.Locale;
  * Created by Nathaniel on 11/25/2016.
  */
 
-public class DepositRequest {
+public class ShopRequest {
 
     private String shopId;
 

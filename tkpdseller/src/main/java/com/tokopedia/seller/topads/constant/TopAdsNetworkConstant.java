@@ -6,10 +6,12 @@ package com.tokopedia.seller.topads.constant;
 
 public class TopAdsNetworkConstant {
 
-    public static final String PATH_DASHBOARD_PRODUCT = "v1/dashboard/products";
-    public static final String PATH_DASHBOARD_SHOP = "/v1/dashboard/shop";
     public static final String PATH_DASHBOARD_STATISTIC = "/v1.1/dashboard/statistics";
     public static final String PATH_DASHBOARD_DEPOSIT = "/v1.1/dashboard/deposit";
+    public static final String PATH_DASHBOARD_TOTAL_AD = "/v1.1/dashboard/total_ad";
+
+    public static final String PATH_DASHBOARD_PRODUCT = "v1/dashboard/products";
+    public static final String PATH_DASHBOARD_SHOP = "/v1/dashboard/shop";
     public static final String PATH_DASHBOARD_CREDIT = "/v1/tkpd_products";
 
     public static final String PARAM_SHOP_ID = "shop_id";

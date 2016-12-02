@@ -1,17 +1,20 @@
 package com.tokopedia.seller.topads.view.fragment;
 
+import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
+import com.tokopedia.seller.topads.model.data.TotalAd;
 import com.tokopedia.seller.topads.presenter.TopAdsDashboardProductPresenterImpl;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardFragmentListener;
+import com.tokopedia.seller.topads.view.listener.TopAdsDashboardProductFragmentListener;
 
 import java.util.Calendar;
 
 import butterknife.Bind;
 
-public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopAdsDashboardProductPresenterImpl> implements TopAdsDashboardFragmentListener {
+public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopAdsDashboardProductPresenterImpl> implements TopAdsDashboardProductFragmentListener {
 
     @Bind(R2.id.layout_top_ads_product_group_summary)
     View productGroupSummaryLayout;
@@ -43,5 +46,17 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
         presenter.populateSummary(startDate, endDate);
         presenter.populateDeposit();
         presenter.populateShopInfo();
+        presenter.populateTotalAd();
+    }
+
+    @Override
+    public void onTotalAdLoaded(@NonNull TotalAd totalAd) {
+        updateInfoText(productGroupSummaryLayout, R.id.text_view_content, String.valueOf(totalAd.getTotalShopAd()));
+        updateInfoText(productItemSummaryLayout, R.id.text_view_content, String.valueOf(totalAd.getTotalProductAd()));
+    }
+
+    @Override
+    public void onLoadTotalAdError(@NonNull Throwable throwable) {
+
     }
 }

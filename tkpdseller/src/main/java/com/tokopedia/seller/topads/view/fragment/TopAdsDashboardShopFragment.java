@@ -5,10 +5,11 @@ import android.view.View;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.presenter.TopAdsDashboardShopPresenterImpl;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardFragmentListener;
+import com.tokopedia.seller.topads.view.listener.TopAdsDashboardStoreFragmentListener;
 
 import java.util.Calendar;
 
-public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsDashboardShopPresenterImpl> implements TopAdsDashboardFragmentListener {
+public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsDashboardShopPresenterImpl> implements TopAdsDashboardStoreFragmentListener {
 
     public static TopAdsDashboardShopFragment createInstance() {
         TopAdsDashboardShopFragment fragment = new TopAdsDashboardShopFragment();
