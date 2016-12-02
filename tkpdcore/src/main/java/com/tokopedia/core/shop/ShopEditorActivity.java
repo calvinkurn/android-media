@@ -13,8 +13,10 @@ import android.widget.FrameLayout;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.myproduct.fragment.AddProductFragment;
@@ -29,6 +31,7 @@ import com.tokopedia.core.shop.presenter.ShopCreateView;
 import com.tokopedia.core.shop.presenter.ShopEditorView;
 import com.tokopedia.core.shop.presenter.ShopSettingView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.util.SessionHandler;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -48,6 +51,7 @@ public class ShopEditorActivity extends TkpdActivity implements
 
     @BindView(R2.id.container)
     FrameLayout container;
+    private String onBack;
 
     @Override
     public String getScreenName() {
@@ -105,7 +109,13 @@ public class ShopEditorActivity extends TkpdActivity implements
 
     @Override
     public void onBackPressed() {
-        finish();
+        if(onBack == null || onBack.equals(FINISH)) {
+            finish();
+        }else if(onBack.equals(LOG_OUT)){
+            SessionHandler session = new SessionHandler(this);
+            session.Logout(this);
+            UnifyTracking.eventDrawerClick((AppEventTracking.EventLabel.SIGN_OUT));
+        }
     }
 
     public static void startOpenShopEditShippingActivity(AppCompatActivity context){
@@ -141,6 +151,7 @@ public class ShopEditorActivity extends TkpdActivity implements
                         break;
                 }
             }
+            onBack = intent.getExtras().getString(ON_BACK);
         }
     }
 

@@ -46,6 +46,7 @@ public class SplashScreenActivity extends SplashScreen {
             Intent intent;
             intent = new Intent(context, ShopEditorActivity.class);
             intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.CREATE_SHOP_FRAGMENT_TAG);
+            intent.putExtra(ShopSettingView.ON_BACK, ShopSettingView.LOG_OUT);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             return intent;
         }else{

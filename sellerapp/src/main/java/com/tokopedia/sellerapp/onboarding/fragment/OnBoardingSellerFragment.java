@@ -139,6 +139,7 @@ public class OnBoardingSellerFragment extends OnBoardingFragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), ShopEditorActivity.class);
                 intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.CREATE_SHOP_FRAGMENT_TAG);
+                intent.putExtra(ShopSettingView.ON_BACK, ShopSettingView.LOG_OUT);
                 startActivity(intent);
                 getActivity().finish();
             }

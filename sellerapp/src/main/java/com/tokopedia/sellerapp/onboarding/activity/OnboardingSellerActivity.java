@@ -76,6 +76,7 @@ public class OnBoardingSellerActivity extends OnboardingActivity{
         } else {
             Intent intent = new Intent(this, ShopEditorActivity.class);
             intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.CREATE_SHOP_FRAGMENT_TAG);
+            intent.putExtra(ShopSettingView.ON_BACK, ShopSettingView.LOG_OUT);
             startActivity(intent);
         }
         finish();
