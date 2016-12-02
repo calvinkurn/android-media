@@ -17,7 +17,7 @@ public class MsisdnVerificationFragmentPresenterImpl implements MsisdnVerificati
     MsisdnVerificationFragmentView viewListener;
     MsisdnVerificationRetrofitInteractor networkInteractor;
 
-    public MsisdnVerificationFragmentPresenterImpl(MsisdnVerificationFragment viewListener) {
+    public MsisdnVerificationFragmentPresenterImpl(MsisdnVerificationFragmentView viewListener) {
         this.viewListener = viewListener;
         this.networkInteractor = new MsisdnVerificationRetrofitInteractorImpl();
     }
