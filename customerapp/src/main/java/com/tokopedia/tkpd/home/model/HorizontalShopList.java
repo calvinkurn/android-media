@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.home.model;
 
+import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.core.network.entity.home.TopAdsHome;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HorizontalShopList extends RecyclerViewItem implements Parcelable {
-    List<ShopItem> shopItemList;
+    List<ShopItem> shopItemList = new ArrayList<>();
 
     public HorizontalShopList(){
         setType(TkpdState.RecyclerViewItem.TYPE_LIST);
@@ -68,7 +69,12 @@ public class HorizontalShopList extends RecyclerViewItem implements Parcelable {
 
     @Override
     public void writeToParcel(android.os.Parcel dest, int flags) {
-        dest.writeList(this.shopItemList);
+        if (shopItemList == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(shopItemList);
+        }
     }
 
     protected HorizontalShopList(android.os.Parcel in) {
@@ -78,10 +84,9 @@ public class HorizontalShopList extends RecyclerViewItem implements Parcelable {
 
     public static final Parcelable.Creator<HorizontalShopList> CREATOR
             = new Parcelable.Creator<HorizontalShopList>() {
-
         @Override
-        public HorizontalShopList createFromParcel(android.os.Parcel source) {
-            return new HorizontalShopList(source);
+        public HorizontalShopList createFromParcel(Parcel in) {
+            return new HorizontalShopList(in);
         }
 
         @Override
