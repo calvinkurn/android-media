@@ -116,6 +116,7 @@ public class ShopFavoritedFragmentPresenterImpl implements ShopFavoritedFragment
         viewListener.getAdapter().addList(data.getList());
         if (viewListener.isEmpty()) {
             viewListener.getAdapter().showEmpty(true);
+            viewListener.showEmptyState();
         }
         if (paging.CheckNextPage()) {
             viewListener.setLoading();
