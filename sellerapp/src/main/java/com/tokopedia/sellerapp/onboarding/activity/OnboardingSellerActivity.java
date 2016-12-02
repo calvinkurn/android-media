@@ -8,14 +8,13 @@ import android.util.Log;
 import android.view.View;
 
 import com.tokopedia.core.onboarding.OnboardingActivity;
-import com.tokopedia.core.shop.ShopEditorActivity;
-import com.tokopedia.core.shop.presenter.ShopSettingView;
+import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 import com.tokopedia.sellerapp.onboarding.fragment.OnBoardingSellerFragment;
 
-public class OnBoardingSellerActivity extends OnboardingActivity{
+public class OnboardingSellerActivity extends OnboardingActivity{
     private SessionHandler sessionHandler;
 
     @Override
@@ -74,8 +73,9 @@ public class OnBoardingSellerActivity extends OnboardingActivity{
         if (isUserHasShop()) {
             startActivity(new Intent(this, SellerHomeActivity.class));
         } else {
-            Intent intent = new Intent(this, ShopEditorActivity.class);
-            intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.CREATE_SHOP_FRAGMENT_TAG);
+            Intent intent = SellerRouter.getAcitivityShopCreateEdit(this);
+            intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
+                    SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
             startActivity(intent);
         }
         finish();

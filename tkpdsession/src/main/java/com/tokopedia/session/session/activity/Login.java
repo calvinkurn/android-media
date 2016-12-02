@@ -37,11 +37,10 @@ import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.onboarding.OnboardingActivity;
 import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.constant.DownloadServiceConstant;
-import com.tokopedia.core.shop.ShopEditorActivity;
-import com.tokopedia.core.shop.presenter.ShopSettingView;
 import com.tokopedia.core.session.model.CreatePasswordModel;
 import com.tokopedia.core.session.model.LoginFacebookViewModel;
 import com.tokopedia.core.session.model.LoginGoogleModel;
@@ -266,8 +265,9 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
 
         if(SessionHandler.isMsisdnVerified()) {
             Intent intent;
-            intent = new Intent(context, ShopEditorActivity.class);
-            intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.CREATE_SHOP_FRAGMENT_TAG);
+            intent = SellerRouter.getAcitivityShopCreateEdit(context);
+            intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
+                    SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             return intent;
         }else{
