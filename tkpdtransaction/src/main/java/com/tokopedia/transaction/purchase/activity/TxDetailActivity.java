@@ -340,6 +340,13 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
     }
 
     @Override
+    public void renderSuccessRequestCancelOrder(String message) {
+        orderData.getOrderButton().setButtonCancelRequest("0");
+        showToastMessage(message);
+        btnRequestCancelOrder.setVisibility(View.GONE);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         presenter.onDestroyView();
