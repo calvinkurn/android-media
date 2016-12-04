@@ -21,13 +21,14 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
+import com.tokopedia.core.shopinfo.models.productmodel.Label;
 import com.tokopedia.core.shopinfo.models.productmodel.List;
 import com.tokopedia.core.var.Badge;
-import com.tokopedia.core.var.Label;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by Tkpd_Eka on 10/22/2015.

@@ -22,9 +22,9 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.customwidget.SquareImageView;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
+import com.tokopedia.core.shopinfo.models.productmodel.Label;
 import com.tokopedia.core.shopinfo.models.productmodel.List;
 import com.tokopedia.core.var.Badge;
-import com.tokopedia.core.var.Label;
 
 import java.util.ArrayList;
 

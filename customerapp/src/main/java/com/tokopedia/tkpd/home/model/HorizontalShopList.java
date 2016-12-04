@@ -68,25 +68,20 @@ public class HorizontalShopList extends RecyclerViewItem implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(android.os.Parcel dest, int flags) {
-        if (shopItemList == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(shopItemList);
-        }
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeTypedList(this.shopItemList);
     }
 
-    protected HorizontalShopList(android.os.Parcel in) {
-        this.shopItemList = new ArrayList<>();
-        in.readList(this.shopItemList, ShopItem.class.getClassLoader());
+    protected HorizontalShopList(Parcel in) {
+        super(in);
+        this.shopItemList = in.createTypedArrayList(ShopItem.CREATOR);
     }
 
-    public static final Parcelable.Creator<HorizontalShopList> CREATOR
-            = new Parcelable.Creator<HorizontalShopList>() {
+    public static final Creator<HorizontalShopList> CREATOR = new Creator<HorizontalShopList>() {
         @Override
-        public HorizontalShopList createFromParcel(Parcel in) {
-            return new HorizontalShopList(in);
+        public HorizontalShopList createFromParcel(Parcel source) {
+            return new HorizontalShopList(source);
         }
 
         @Override

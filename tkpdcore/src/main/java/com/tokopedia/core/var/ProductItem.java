@@ -1,12 +1,12 @@
 package com.tokopedia.core.var;
 
+import android.os.Parcelable;
 import android.text.Spanned;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.network.entity.topads.TopAds;
 
-import org.parceler.Parcel;
 import org.parceler.Transient;
 
 import java.io.Serializable;
@@ -17,8 +17,7 @@ import java.util.List;
  * Created by Nathania on 4/06/15.
  * modified by m.normansyah - set type for certainly
  */
-@Parcel
-public class ProductItem extends RecyclerViewItem implements Serializable{
+public class ProductItem extends RecyclerViewItem implements Serializable, Parcelable {
 
     public static final int PRODUCT_ITEM_TYPE = 192_012;
 
@@ -331,4 +330,72 @@ public class ProductItem extends RecyclerViewItem implements Serializable{
         this.isWishlist = isWishlist;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(android.os.Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeString(this.id);
+        dest.writeString(this.name);
+        dest.writeString(this.price);
+        dest.writeInt(this.isNewGold);
+        dest.writeString(this.shop);
+        dest.writeString(this.imgUri);
+        dest.writeString(this.isGold);
+        dest.writeString(this.luckyShop);
+        dest.writeInt(this.shopId);
+        dest.writeString(this.preorder);
+        dest.writeString(this.wholesale);
+        dest.writeList(this.labels);
+        dest.writeTypedList(this.badges);
+        dest.writeString(this.shop_location);
+        dest.writeString(this.free_return);
+        dest.writeParcelable((Parcelable) this.spannedName, flags);
+        dest.writeParcelable((Parcelable) this.spannedShop, flags);
+        dest.writeValue(this.isWishlist);
+        dest.writeValue(this.isAvailable);
+        dest.writeValue(this.isTopAds);
+        dest.writeParcelable(this.topAds, flags);
+    }
+
+    protected ProductItem(android.os.Parcel in) {
+        super(in);
+        this.id = in.readString();
+        this.name = in.readString();
+        this.price = in.readString();
+        this.isNewGold = in.readInt();
+        this.shop = in.readString();
+        this.imgUri = in.readString();
+        this.isGold = in.readString();
+        this.luckyShop = in.readString();
+        this.shopId = in.readInt();
+        this.preorder = in.readString();
+        this.wholesale = in.readString();
+        this.labels = new ArrayList<Label>();
+        in.readList(this.labels, Label.class.getClassLoader());
+        this.badges = in.createTypedArrayList(Badge.CREATOR);
+        this.shop_location = in.readString();
+        this.free_return = in.readString();
+        this.spannedName = in.readParcelable(Spanned.class.getClassLoader());
+        this.spannedShop = in.readParcelable(Spanned.class.getClassLoader());
+        this.isWishlist = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.isAvailable = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.isTopAds = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.topAds = in.readParcelable(TopAds.class.getClassLoader());
+    }
+
+    public static final Creator<ProductItem> CREATOR = new Creator<ProductItem>() {
+        @Override
+        public ProductItem createFromParcel(android.os.Parcel source) {
+            return new ProductItem(source);
+        }
+
+        @Override
+        public ProductItem[] newArray(int size) {
+            return new ProductItem[size];
+        }
+    };
 }

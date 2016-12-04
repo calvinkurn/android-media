@@ -1,15 +1,15 @@
 package com.tokopedia.core.var;
 
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
-import org.parceler.Parcel;
 
 /**
  * @author Kulomady on 12/2/16.
  */
-@Parcel
-public class Badge extends RecyclerViewItem {
+public class Badge extends RecyclerViewItem implements Parcelable {
+
 
     @SerializedName("title")
     @Expose
@@ -60,4 +60,38 @@ public class Badge extends RecyclerViewItem {
         this.imgUrl = imgUrl;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(android.os.Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeString(this.title);
+        dest.writeString(this.imgUrl);
+        dest.writeString(this.imageUrl);
+    }
+
+    public Badge() {
+    }
+
+    protected Badge(android.os.Parcel in) {
+        super(in);
+        this.title = in.readString();
+        this.imgUrl = in.readString();
+        this.imageUrl = in.readString();
+    }
+
+    public static final Creator<Badge> CREATOR = new Creator<Badge>() {
+        @Override
+        public Badge createFromParcel(android.os.Parcel source) {
+            return new Badge(source);
+        }
+
+        @Override
+        public Badge[] newArray(int size) {
+            return new Badge[size];
+        }
+    };
 }
