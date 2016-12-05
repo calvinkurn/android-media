@@ -30,4 +30,9 @@ public interface ICataloDataInteractor {
      */
     void getDetailCatalogListData(CatalogListWrapperData catalogListWrapperData,
                                   Subscriber<CatalogDetailListData> subscriber);
+
+    /**
+     * unsubscribe when view is destroyed
+     */
+    void unsubscribe();
 }
