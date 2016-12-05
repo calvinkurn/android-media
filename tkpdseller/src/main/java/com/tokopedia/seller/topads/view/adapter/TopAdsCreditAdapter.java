@@ -1,6 +1,7 @@
 package com.tokopedia.seller.topads.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
@@ -37,7 +38,8 @@ public class TopAdsCreditAdapter extends RecyclerView.Adapter<TopAdsCreditAdapte
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = View.inflate(parent.getContext(), R.layout.listview_top_ads_credit, null);
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        View view = inflater.inflate(R.layout.listview_top_ads_credit, parent, false);
         ViewHolder holder = new ViewHolder(view);
         return holder;
     }

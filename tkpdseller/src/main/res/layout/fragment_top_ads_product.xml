@@ -24,6 +24,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/top_ads_dashboard_margin_cards"/>
 
+        <include layout="@layout/include_separator_horizontal"/>
+
         <include
             android:id="@+id/layout_top_ads_product_item_summary"
             layout="@layout/include_top_ads_product_list_summary"
