@@ -387,11 +387,10 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int i = item.getItemId();
-        if (i == android.R.id.home) {
+        if (item.getItemId() == android.R.id.home) {
             finish();
 
-        } else if (i == R.id.action_search) {
+        } else if (item.getItemId() == R.id.action_search) {
             return false;
         }
         return super.onOptionsItemSelected(item);

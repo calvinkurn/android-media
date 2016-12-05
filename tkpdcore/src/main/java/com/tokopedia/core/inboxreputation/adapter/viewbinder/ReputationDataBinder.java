@@ -449,14 +449,13 @@ public class ReputationDataBinder extends DataBinder<ReputationDataBinder.ViewHo
 
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                int i = item.getItemId();
-                if (i == R.id.action_edit) {
+                if (item.getItemId() == R.id.action_edit) {
                     presenter.onEditReview(inboxReputation, inboxReputationDetail, position);
                     return true;
-                } else if (i == R.id.action_report) {
+                } else if (item.getItemId() == R.id.action_report) {
                     showReport(position);
                     return true;
-                } else if (i == R.id.action_delete) {
+                } else if (item.getItemId() == R.id.action_delete) {
                     presenter.deleteResponse(getParamDelete(position), position);
                     return true;
                 } else {

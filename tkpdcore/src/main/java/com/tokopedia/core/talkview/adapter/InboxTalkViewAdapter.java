@@ -178,12 +178,11 @@ public class InboxTalkViewAdapter extends TalkViewAdapter{
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 DialogFragment dialog;
-                int i = item.getItemId();
-                if (i == R.id.action_delete) {
+                if (item.getItemId() == R.id.action_delete) {
                     dialog = DeleteTalkDialog.createInstance(deleteListener(talk, position));
                     dialog.show(fragment.getFragmentManager(), DeleteTalkDialog.FRAGMENT_TAG);
                     return true;
-                } else if (i == R.id.action_report) {
+                } else if (item.getItemId() == R.id.action_report) {
                     dialog = ReportTalkDialog.createInstance(reportListener(talk, position));
                     dialog.show(fragment.getFragmentManager(), ReportTalkDialog.FRAGMENT_TAG);
                     return true;

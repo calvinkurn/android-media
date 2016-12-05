@@ -223,11 +223,10 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int i = item.getItemId();
-        if (i == android.R.id.home) {
+        if (item.getItemId() == android.R.id.home) {
             getActivity().onBackPressed();
             return true;
-        } else if (i == R.id.action_send) {
+        } else if (item.getItemId() == R.id.action_send) {
             presenter.onConfirmClicked();
         }
         return super.onOptionsItemSelected(item);

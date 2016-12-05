@@ -148,11 +148,10 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int i = item.getItemId();
-        if (i == android.R.id.home) {
+        if (item.getItemId() == android.R.id.home) {
             getActivity().onBackPressed();
             return true;
-        } else if (i == R.id.action_refresh) {
+        } else if (item.getItemId() == R.id.action_refresh) {
             if (!isRequest) {
                 swipe.setRefreshing(true);
                 refresh();
@@ -576,16 +575,15 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 DialogFragment dialog;
-                int i = item.getItemId();
-                if (i == R.id.action_delete || i == R.id.action_delete_talk) {
+                if (item.getItemId() == R.id.action_delete || item.getItemId() == R.id.action_delete_talk) {
                     dialog = DeleteTalkDialog.createInstance(deleteListener());
                     dialog.show(getFragmentManager(), DeleteTalkDialog.FRAGMENT_TAG);
                     return true;
-                } else if (i == R.id.action_follow || i == R.id.action_unfollow) {
+                } else if (item.getItemId() == R.id.action_follow || item.getItemId() == R.id.action_unfollow) {
                     dialog = FollowTalkDialog.createInstance(followListener(), isFollow);
                     dialog.show(getFragmentManager(), FollowTalkDialog.FRAGMENT_TAG);
                     return true;
-                } else if (i == R.id.action_report) {
+                } else if (item.getItemId() == R.id.action_report) {
                     dialog = ReportTalkDialog.createInstance(reportListener());
                     dialog.show(getFragmentManager(), ReportTalkDialog.FRAGMENT_TAG);
                     return true;

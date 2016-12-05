@@ -113,8 +113,7 @@ public class ChooseAddressActivity extends BasePresenterActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int i = item.getItemId();
-        if (i == R.id.action_add_address) {
+        if (item.getItemId() == R.id.action_add_address) {
             Intent intent = new Intent(getBaseContext(), AddAddressActivity.class);
             Bundle bundle = new Bundle();
             bundle.putBoolean("is_edit", false);

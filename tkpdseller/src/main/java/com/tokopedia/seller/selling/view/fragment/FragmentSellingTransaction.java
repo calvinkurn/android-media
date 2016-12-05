@@ -547,11 +547,10 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
         return new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                int i = item.getItemId();
-                if (i == R.id.action_edit) {
+                if (item.getItemId() == R.id.action_edit) {
                     listener.onEditRef(model);
                     return true;
-                } else if (i == R.id.action_track) {
+                } else if (item.getItemId() == R.id.action_track) {
                     listener.onTrack(model);
                     return true;
                 } else {

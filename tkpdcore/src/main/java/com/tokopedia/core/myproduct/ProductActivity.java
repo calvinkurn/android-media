@@ -634,11 +634,10 @@ public class ProductActivity extends BaseProductActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int i = item.getItemId();
-        if (i == R.id.home) {
+        if (item.getItemId() == R.id.home) {
             Log.d(TAG, messageTAG + " R.id.home !!!");
             return true;
-        } else if (i == android.R.id.home) {
+        } else if (item.getItemId() == android.R.id.home) {
             Log.d(TAG, messageTAG + " android.R.id.home !!!");
             getSupportFragmentManager().popBackStack();
             return true;

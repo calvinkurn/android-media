@@ -571,8 +571,7 @@ public class ListViewManageProdAdapter extends BaseAdapter
                 Bundle bundle;
                 boolean isEdit;
                 boolean isCopy;
-                int i = item.getItemId();
-                if (i == R.id.action_edit) {//			        	bundle = new Bundle();
+                if (item.getItemId() == R.id.action_edit) {//			        	bundle = new Bundle();
 //						intent = new Intent(context, EditProduct.class);
 //						bundle.putString("product_id", ProductID);
 //						bundle.putBoolean("is_edit", true);
@@ -582,7 +581,7 @@ public class ListViewManageProdAdapter extends BaseAdapter
                     intent = ProductActivity.moveToEditFragment(context, isEdit, ProductID);
                     context.startActivityForResult(intent, 1);
                     return true;
-                } else if (i == R.id.action_copy) {//			        	bundle = new Bundle();
+                } else if (item.getItemId() == R.id.action_copy) {//			        	bundle = new Bundle();
 //						intent = new Intent(context, EditProduct.class);
 //						bundle.putString("product_id", ProductID);
 //						bundle.putBoolean("is_edit", false);
@@ -592,7 +591,7 @@ public class ListViewManageProdAdapter extends BaseAdapter
                     intent = ProductActivity.moveToCopyFragment(context, isCopy, ProductID);
                     context.startActivityForResult(intent, 1);
                     return true;
-                } else if (i == R.id.action_edit_price) {
+                } else if (item.getItemId() == R.id.action_edit_price) {
                     holder.Prices.setVisibility(View.VISIBLE);
                     holder.PriceView.setVisibility(View.GONE);
                     holder.Currency.setVisibility(View.VISIBLE);

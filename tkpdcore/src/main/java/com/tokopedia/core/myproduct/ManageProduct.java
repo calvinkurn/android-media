@@ -454,28 +454,27 @@ public class ManageProduct extends TkpdActivity implements
             @Override
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                 // Respond to clicks on the actions in the CAB
-                int i = item.getItemId();
-                if (i == R.id.action_update_etalase) {
+                if (item.getItemId() == R.id.action_update_etalase) {
                     ActionTaken = true;
                     ShowEtalaseChange();
                     mode.finish();
                     return true;
-                } else if (i == R.id.action_update_categories) {
+                } else if (item.getItemId() == R.id.action_update_categories) {
                     ActionTaken = true;
                     ShowCategoriesChange();
                     mode.finish();
                     return true;
-                } else if (i == R.id.action_update_insurance) {
+                } else if (item.getItemId() == R.id.action_update_insurance) {
                     ActionTaken = true;
                     ShowInsuranceChange();
                     mode.finish();
                     return true;
-                } else if (i == R.id.action_update_returnable) {
+                } else if (item.getItemId() == R.id.action_update_returnable) {
                     ActionTaken = true;
                     changeMultipleReturnable();
                     mode.finish();
                     return true;
-                } else if (i == R.id.action_delete) {
+                } else if (item.getItemId() == R.id.action_delete) {
                     ActionTaken = true;
                     ShowDeleteChange();
                     mode.finish();
@@ -724,8 +723,7 @@ public class ManageProduct extends TkpdActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int i = item.getItemId();
-        if (i == R.id.add_product) {
+        if (item.getItemId() == R.id.add_product) {
             if (isProdManager == 1) {
                 ProductActivity.moveToAddProduct(this);
             } else {
@@ -733,10 +731,10 @@ public class ManageProduct extends TkpdActivity implements
                         getString(R.string.error_permission));
             }
             return true;
-        } else if (i == R.id.filter) {
+        } else if (item.getItemId() == R.id.filter) {
             ShowFilterDialog();
             return true;
-        } else if (i == R.id.sort) {
+        } else if (item.getItemId() == R.id.sort) {
             if (!loading)
                 SortDialog.show();
             return true;

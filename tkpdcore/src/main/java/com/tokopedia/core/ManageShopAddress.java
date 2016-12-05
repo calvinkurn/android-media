@@ -420,8 +420,7 @@ public class ManageShopAddress extends TActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        int i = item.getItemId();
-        if (i == R.id.add_address) {
+        if (item.getItemId() == R.id.add_address) {
             if (LocationNameList.size() < 3) {
                 Intent intent = new Intent(ManageShopAddress.this, ShopAddressForm.class);
                 Bundle bundle = new Bundle();
@@ -432,7 +431,7 @@ public class ManageShopAddress extends TActivity {
                 Toast.makeText(ManageShopAddress.this, getString(R.string.error_max_address), Toast.LENGTH_SHORT).show();
             }
             return true;
-        } else if (i == android.R.id.home) {
+        } else if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
         } else {

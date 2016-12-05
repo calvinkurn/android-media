@@ -321,9 +321,7 @@ public class ShopReputationAdapterR extends AbstractRecyclerAdapter{
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                CommonUtils.dumper(item.getItemId());
-                int i = item.getItemId();
-                if (i == R.id.action_report) {
+                if (item.getItemId() == R.id.action_report) {
                     listener.onReport(position);
                     return true;
                 } else {

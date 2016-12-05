@@ -264,7 +264,7 @@ public class CatalogDetailFragment extends BasePresenterFragment<ICatalogDetailP
     @Override
     public void renderCatalogDescription(final String catalogDesc) {
         this.stateCatalogDesc = catalogDesc;
-git stat        holderCatalogDesc.setVisibility(View.VISIBLE);
+        holderCatalogDesc.setVisibility(View.VISIBLE);
         tvCatalogDesc.setText(catalogDesc);
     }
 

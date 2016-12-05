@@ -323,14 +323,13 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int i = item.getItemId();
-        if (i == android.R.id.home) {
+        if (item.getItemId() == android.R.id.home) {
             return onHomeOptionSelected();
-        } else if (i == R.id.action_settings) {
+        } else if (item.getItemId() == R.id.action_settings) {
             return onSettingsOptionSelected();
-        } else if (i == R.id.action_search) {
+        } else if (item.getItemId() == R.id.action_search) {
             return onSearchOptionSelected();
-        } else if (i == R.id.action_cart) {
+        } else if (item.getItemId() == R.id.action_cart) {
             return onCartOptionSelected();
         }
         return super.onOptionsItemSelected(item);

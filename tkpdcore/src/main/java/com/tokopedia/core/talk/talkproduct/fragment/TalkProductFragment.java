@@ -115,11 +115,10 @@ public class TalkProductFragment extends BasePresenterFragment<TalkProductPresen
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int i = item.getItemId();
-        if (i == android.R.id.home) {
+        if (item.getItemId() == android.R.id.home) {
             getActivity().onBackPressed();
             return true;
-        } else if (i == R.id.action_talk_add) {
+        } else if (item.getItemId() == R.id.action_talk_add) {
             ShowDialogAddNew();
             return true;
         }

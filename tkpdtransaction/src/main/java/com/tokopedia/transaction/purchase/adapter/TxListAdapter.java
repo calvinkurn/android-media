@@ -281,20 +281,19 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
 
         @Override
         public boolean onMenuItemClick(MenuItem item) {
-            int i = item.getItemId();
-            if (i == R.id.action_track) {
+            if (item.getItemId() == R.id.action_track) {
                 actionListener.actionTrackOrder(orderData);
                 return true;
-            } else if (i == R.id.action_confirm_package) {
+            } else if (item.getItemId() == R.id.action_confirm_package) {
                 actionListener.actionConfirmDeliver(orderData);
                 return true;
-            } else if (i == R.id.action_upload) {
+            } else if (item.getItemId() == R.id.action_upload) {
                 actionListener.actionUploadTx(orderData);
                 return true;
-            } else if (i == R.id.action_open_dispute) {
+            } else if (item.getItemId() == R.id.action_open_dispute) {
                 actionListener.actionDispute(orderData, 0);
                 return true;
-            } else if (i == R.id.action_show_complain) {
+            } else if (item.getItemId() == R.id.action_show_complain) {
                 actionListener.actionShowComplain(orderData);
                 return true;
             } else {

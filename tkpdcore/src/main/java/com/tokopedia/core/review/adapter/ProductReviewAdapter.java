@@ -281,8 +281,7 @@ public class ProductReviewAdapter extends BaseRecyclerViewAdapter {
                 popUp.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        int i = item.getItemId();
-                        if (i == R.id.action_report) {
+                        if (item.getItemId() == R.id.action_report) {
                             showDialogReport(review);
                             return true;
                         } else {

@@ -310,17 +310,16 @@ public class TalkProductAdapter extends BaseRecyclerViewAdapter {
                 public boolean onMenuItemClick(MenuItem item) {
                     DialogFragment dialog;
                     CommonUtils.dumper(item.getItemId());
-                    int i = item.getItemId();
-                    if (i == R.id.action_follow || i == R.id.action_unfollow) {
+                    if (item.getItemId() == R.id.action_follow || item.getItemId() == R.id.action_unfollow) {
                         dialog = FollowTalkDialog.createInstance(followListener(talk, position)
                                 , talk.getTalkFollowStatus());
                         dialog.show(fragment.getFragmentManager(), FollowTalkDialog.FRAGMENT_TAG);
                         return true;
-                    } else if (i == R.id.action_delete_talk || i == R.id.action_delete) {
+                    } else if (item.getItemId() == R.id.action_delete_talk || item.getItemId() == R.id.action_delete) {
                         dialog = DeleteTalkDialog.createInstance(deleteListener(talk, position));
                         dialog.show(fragment.getFragmentManager(), DeleteTalkDialog.FRAGMENT_TAG);
                         return true;
-                    } else if (i == R.id.action_report) {
+                    } else if (item.getItemId() == R.id.action_report) {
                         dialog = ReportTalkDialog.createInstance(reportListener(talk, position));
                         dialog.show(fragment.getFragmentManager(), ReportTalkDialog.FRAGMENT_TAG);
                         return true;

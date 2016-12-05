@@ -211,18 +211,16 @@ public class ShopTalkAdapter extends BaseLinearRecyclerViewAdapter {
                     popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
-                            CommonUtils.dumper(item.getItemId());
-                            int i = item.getItemId();
-                            if (i == R.id.action_follow) {
+                            if (item.getItemId() == R.id.action_follow) {
                                 listener.onFollowTalk(list.get(position));
                                 return true;
-                            } else if (i == R.id.action_unfollow) {
+                            } else if (item.getItemId() == R.id.action_unfollow) {
                                 listener.onUnfollowTalk(list.get(position));
                                 return true;
-                            } else if (i == R.id.action_delete_talk) {
+                            } else if (item.getItemId() == R.id.action_delete_talk) {
                                 listener.onDeleteTalk(list.get(position));
                                 return true;
-                            } else if (i == R.id.action_report) {
+                            } else if (item.getItemId() == R.id.action_report) {
                                 listener.onReportTalk(list.get(position));
                                 return true;
                             } else {

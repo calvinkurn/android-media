@@ -30,8 +30,7 @@ public class ClipboardHandler {
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
 				// TODO Auto-generated method stub
-				int i = item.getItemId();
-				if (i == R.id.action_copy) {
+				if (item.getItemId() == R.id.action_copy) {
 					CopyToClipboard(context, ((TextView) v).getText().toString());
 					return false;
 				}
