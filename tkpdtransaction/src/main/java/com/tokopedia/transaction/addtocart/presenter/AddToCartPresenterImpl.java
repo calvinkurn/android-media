@@ -84,7 +84,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                         viewListener.renderFormProductInfo(data.getForm().getProductDetail());
                         viewListener.renderFormAddress(data.getForm().getDestination());
                         viewListener.hideInitLoading();
-                        if (data.getForm().getDestination() != null && data.getShop().getUt() != 0 && !TextUtils.isEmpty(data.getShop().getToken()))
+                        if (data.getShop().getUt() != 0 && !TextUtils.isEmpty(data.getShop().getToken()))
                             calculateKeroRates(context, data);
                     }
 
