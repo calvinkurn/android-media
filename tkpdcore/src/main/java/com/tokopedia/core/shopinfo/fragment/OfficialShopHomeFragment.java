@@ -5,15 +5,26 @@ package com.tokopedia.core.shopinfo.fragment;
  */
 
 import android.app.Fragment;
+import android.graphics.Bitmap;
+import android.net.http.SslError;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.CookieManager;
+import android.webkit.SslErrorHandler;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.home.fragment.FragmentBannerWebView;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 
 import org.parceler.Parcels;
@@ -28,7 +39,49 @@ import butterknife.ButterKnife;
 public class OfficialShopHomeFragment extends Fragment {
 
     public static final String SHOP_URL = "SHOP_URL";
+    private WebView webviewBanner;
+    private class MyWebViewClient extends WebChromeClient {
+        @Override
+        public void onProgressChanged(WebView view, int newProgress) {
+            try {
+                if (newProgress == 100) {
+                    view.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                    getActivity().setProgressBarIndeterminateVisibility(false);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            super.onProgressChanged(view, newProgress);
+        }
+    }
+    private class MyWebClient extends WebViewClient {
+        @Override
+        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            super.onPageStarted(view, url, favicon);
+            try {
+                getActivity().setProgressBarIndeterminateVisibility(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            progressBar.setVisibility(View.VISIBLE);
+        }
 
+        @Override
+        public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+            super.onReceivedSslError(view, handler, error);
+            handler.cancel();
+            progressBar.setVisibility(View.GONE);
+        }
+
+
+        public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+            CommonUtils.dumper("DEEPLINK " + errorCode + "  " + description + " " + failingUrl);
+            super.onReceivedError(view, errorCode, description, failingUrl);
+            progressBar.setVisibility(View.GONE);
+        }
+
+    }
     public static OfficialShopHomeFragment newInstance(String url) {
 
         Bundle args = new Bundle();
@@ -40,10 +93,18 @@ public class OfficialShopHomeFragment extends Fragment {
 
     @BindView(R2.id.webview)
     WebView webView;
+    @BindView(R2.id.progress)
+    ProgressBar progressBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onDestroyView() {
+        getActivity().setProgressBarIndeterminateVisibility(false);
+        super.onDestroyView();
     }
 
     @Nullable
@@ -58,6 +119,38 @@ public class OfficialShopHomeFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         String url = getArguments().getString(SHOP_URL);
-        webView.loadUrl(url.replace("www", "m"));
+        if(url.startsWith("www"))
+            url = url.replace("www", "m");
+        clearCache(webView);
+        webView.loadUrl(url);
+        webView.setWebViewClient(new MyWebClient());
+        webView.setWebChromeClient(new MyWebViewClient());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            WebView.setWebContentsDebuggingEnabled(true);
+            webviewBanner.setWebContentsDebuggingEnabled(true);
+            CommonUtils.dumper("webviewconf debugging = true");
+        }
+        getActivity().setProgressBarIndeterminateVisibility(true);
+        WebSettings webSettings = webView.getSettings();
+        webSettings.setDomStorageEnabled(true);
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setBuiltInZoomControls(true);
+        optimizeWebView();
+        CookieManager.getInstance().setAcceptCookie(true);
+    }
+
+    private void clearCache(WebView webView) {
+        if (webView != null) {
+            webView.clearCache(true);
+        }
+    }
+
+    private void optimizeWebView() {
+        if (Build.VERSION.SDK_INT >= 19) {
+            webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        }
+        else {
+            webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
     }
 }

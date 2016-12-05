@@ -429,7 +429,7 @@
             android:label="@string/choose_location"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.home.SimpleHomeActivity"
+            android:name="com.tokopedia.tkpd.home.SimpleHomeActivity"
             android:label="@string/title_activity_simple_home"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3" />
