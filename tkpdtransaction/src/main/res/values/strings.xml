@@ -9,4 +9,8 @@
     <string name="label_error_request_cancel_order_reason_empty">Alasan pembatalan harus diisi</string>
     <string name="label_error_request_cancel_order_reason_to_short">Alasan pembatalan terlalu pendek, minimum 10 karakter</string>
 
+    <string name="label_error_reason_must_fill">Alasan harus diisi</string>
+    <string name="shipment_no_courier_available">Agen kurir tidak tersedia</string>
+    <string name="courier_not_available">Alamat tidak didukung agen pengirim.</string>
+    <string name="shipment_data_not_complete">Data tidak lengkap.</string>
 </resources>
