@@ -1635,7 +1635,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
     }
 
     @Override
-    public void enableProductNameEdit() {git st
+    public void enableProductNameEdit() {
         addProductProductName.setEnabled(true);
         addProductProductName.setInputType(InputType.TYPE_CLASS_TEXT);
     }
