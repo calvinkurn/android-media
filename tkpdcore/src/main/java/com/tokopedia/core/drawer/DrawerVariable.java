@@ -354,7 +354,7 @@ public class DrawerVariable {
                 context.startActivity(intent);
 //                context.finish();
                 break;
-            case TkpdState.DrawerPosition.PEOPLE_CONFIRM_PAYMENT:
+            case TkpdState.DrawerPosition.PEOPLE_PAYMENT_STATUS:
                 goToPeopleConfirmPayment();
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.PAYMENT_CONFIRMATION);
                 break;
@@ -670,7 +670,7 @@ public class DrawerVariable {
     }
 
     private void createPeopleMenu() {
-        model.peopleMenu.list.add(new DrawerItem("Konfirmasi Pembayaran", 0, 0, TkpdState.DrawerPosition.PEOPLE_CONFIRM_PAYMENT, false));
+        model.peopleMenu.list.add(new DrawerItem("Status Pembayaran", 0, 0, TkpdState.DrawerPosition.PEOPLE_PAYMENT_STATUS, false));
         model.peopleMenu.list.add(new DrawerItem("Status Pemesanan", 0, 0, TkpdState.DrawerPosition.PEOPLE_ORDER_STATUS, false));
         model.peopleMenu.list.add(new DrawerItem("Konfirmasi Penerimaan", 0, 0, TkpdState.DrawerPosition.PEOPLE_CONFIRM_SHIPPING, false));
         model.peopleMenu.list.add(new DrawerItem("Transaksi Dibatalkan", 0, 0, TkpdState.DrawerPosition.PEOPLE_TRANSACTION_CANCELED, false));
@@ -823,8 +823,8 @@ public class DrawerVariable {
         model.peopleMenu.notif = notificationItem.getNotifPurchase();
         for (DrawerItem item : model.peopleMenu.list) {
             switch (item.id) {
-                case TkpdState.DrawerPosition.PEOPLE_CONFIRM_PAYMENT:
-                    item.notif = notificationItem.payment_conf;
+                case TkpdState.DrawerPosition.PEOPLE_PAYMENT_STATUS:
+                    item.notif = notificationItem.payment_confirmed;
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_ORDER_STATUS:
                     item.notif = notificationItem.order_status;
