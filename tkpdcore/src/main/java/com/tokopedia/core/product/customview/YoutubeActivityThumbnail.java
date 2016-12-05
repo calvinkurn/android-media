@@ -53,7 +53,7 @@ public class YoutubeActivityThumbnail extends LinearLayout{
     }
 
     public void setVideo(final String videoId, final int videoIndex) {
-        youTubeThumbnailView.initialize(getContext().getString(R.string.GOOGLE_API_KEY),
+        youTubeThumbnailView.initialize(getContext().getApplicationContext().getString(R.string.GOOGLE_API_KEY),
                 thumbnailListener(videoId, videoIndex));
     }
 

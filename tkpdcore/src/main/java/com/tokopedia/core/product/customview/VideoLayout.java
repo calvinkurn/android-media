@@ -35,7 +35,8 @@ public class VideoLayout extends LinearLayout{
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.youtube_video_list_place_holder, this, true);
-        productVideoHorizontalScroll = (ProductVideoHorizontalScroll) findViewById(R.id.product_video_horizontal_scroll);
+        productVideoHorizontalScroll = (ProductVideoHorizontalScroll)
+                findViewById(R.id.product_video_horizontal_scroll);
     }
 
     public void renderData(VideoData data) {

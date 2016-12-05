@@ -61,7 +61,7 @@ public class ProductYoutubeActivity extends YouTubeBaseActivity
         if(youtubeVideoList.size() > 1)
             showVideoList();
         else {
-            youTubePlayerView.initialize(getString(R.string.GOOGLE_API_KEY),
+            youTubePlayerView.initialize(getApplicationContext().getString(R.string.GOOGLE_API_KEY),
                     onSingleVideoInitializedListener());
         }
     }
@@ -159,7 +159,7 @@ public class ProductYoutubeActivity extends YouTubeBaseActivity
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        youTubePlayerScreen.release();
+        if(youTubePlayerScreen != null) youTubePlayerScreen.release();
     }
 
     @Override
@@ -182,7 +182,7 @@ public class ProductYoutubeActivity extends YouTubeBaseActivity
     @Override
     public void onInitiazlizeVideo(int videoIndex) {
         if(videoIndex == youtubeVideoList.size() -1)
-            youTubePlayerView.initialize(getString(R.string.GOOGLE_API_KEY),
+            youTubePlayerView.initialize(getApplicationContext().getString(R.string.GOOGLE_API_KEY),
                     onInitializedListener());
     }
 

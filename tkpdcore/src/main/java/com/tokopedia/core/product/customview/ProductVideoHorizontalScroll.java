@@ -42,7 +42,7 @@ public class ProductVideoHorizontalScroll extends HorizontalScrollView {
     }
 
     public void renderData(VideoData data) {
-        if(YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(getContext())
+        if(YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(getContext().getApplicationContext())
                 .equals(YouTubeInitializationResult.SUCCESS)) {
             for (int i = 0; i < data.getVideo().size(); i++) {
                 placeHolder.addView(new YoutubeThumbnailViewHolder(getContext(), data, i));
