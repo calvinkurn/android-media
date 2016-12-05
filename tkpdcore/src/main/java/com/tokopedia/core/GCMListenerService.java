@@ -181,6 +181,10 @@ public class GCMListenerService extends GcmListenerService {
                 return true;
             case TkpdState.GCMServiceState.GCM_REVIEW_REPLY:
                 return true;
+            case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_BUYER:
+                return true;
+            case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_BUYER:
+                return true;
             case TkpdState.GCMServiceState.GCM_PURCHASE_ACCEPTED:
                 return true;
             case TkpdState.GCMServiceState.GCM_PURCHASE_DELIVERED:
@@ -202,13 +206,24 @@ public class GCMListenerService extends GcmListenerService {
         }
     }
 
+    private boolean isDeprecated(int tkpCode) {
+        switch (tkpCode) {
+            case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY:
+                return true;
+            case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY:
+                return true;
+            default:
+                return false;
+        }
+    }
+
     public boolean isValidForSellerApp(int tkpCode) {
         return !getApplication().getClass().getSimpleName().equals("SellerMainApplication") && isExcludeFromSellerApp(tkpCode);
     }
 
     private void sendNotification(Bundle data) {
         int tkpCode = Integer.parseInt(data.getString("tkp_code"));
-        if (!CheckSettings(tkpCode) && isValidForSellerApp(tkpCode)) {
+        if (!CheckSettings(tkpCode) && isValidForSellerApp(tkpCode) && !isDeprecated(tkpCode)) {
             return;
         }
 
@@ -292,14 +307,28 @@ public class GCMListenerService extends GcmListenerService {
 //                resultclass = ParentIndexHome.class;
                 resultclass = HomeRouter.getHomeActivityClass();
                 break;
-            case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY:
+            case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_BUYER:
                 resultclass = InboxReputationActivity.class;
                 //bundle.putInt("notif_call", NotificationCode);
                 title = this.getString(R.string.title_get_reputation);
                 ticker = data.getString("desc");
                 desc = data.getString("desc");
                 break;
-            case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY:
+            case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_BUYER:
+                resultclass = InboxReputationActivity.class;
+                //bundle.putInt("notif_call", NotificationCode);
+                title = this.getString(R.string.title_get_edit_reputation);
+                ticker = data.getString("desc");
+                desc = data.getString("desc");
+                break;
+            case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_SELLER:
+                resultclass = InboxReputationActivity.class;
+                //bundle.putInt("notif_call", NotificationCode);
+                title = this.getString(R.string.title_get_reputation);
+                ticker = data.getString("desc");
+                desc = data.getString("desc");
+                break;
+            case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_SELLER:
                 resultclass = InboxReputationActivity.class;
                 //bundle.putInt("notif_call", NotificationCode);
                 title = this.getString(R.string.title_get_edit_reputation);
@@ -900,9 +929,13 @@ public class GCMListenerService extends GcmListenerService {
                 return settings.getBoolean("notification_receive_promo", true);
             case TkpdState.GCMServiceState.GCM_HOT_LIST:
                 return settings.getBoolean("notification_receive_promo", true);
-            case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY:
+            case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_BUYER:
                 return settings.getBoolean("notification_receive_reputation", true);
-            case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY:
+            case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_BUYER:
+                return settings.getBoolean("notification_receive_reputation", true);
+            case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_SELLER:
+                return settings.getBoolean("notification_receive_reputation", true);
+            case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_SELLER:
                 return settings.getBoolean("notification_receive_reputation", true);
             case TkpdState.GCMServiceState.GCM_NEWORDER:
                 return settings.getBoolean("notification_sales", true);
