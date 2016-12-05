@@ -208,7 +208,7 @@ public class FragmentIndexFavoriteV2 extends TkpdBaseV4Fragment implements Favor
         initIntentExtra();
         if (getActivity() instanceof ParentIndexHome) {
             if (((ParentIndexHome) getActivity()).getViewPager() != null) {
-                if (!isDataExist() && ((ParentIndexHome)getActivity()).getViewPager().getCurrentItem() == 2) {
+                if (!isDataExist() && ((ParentIndexHome) getActivity()).getViewPager().getCurrentItem() == 2) {
                     favorite.initData();
                     Log.d("NISNISNIS", "IMPRESSION ON CREATE");
                 }
@@ -362,10 +362,12 @@ public class FragmentIndexFavoriteV2 extends TkpdBaseV4Fragment implements Favor
     @Override
     public void displayProgressBar(boolean isDisplay) {
         Log.d(TAG, FragmentIndexFavoriteV2.class.getSimpleName() + " progress bar ingin " + (isDisplay ? "dihidupkan" : "dimatikan"));
-        if (isDisplay)
-            progressBar.setVisibility(View.VISIBLE);
-        else
-            progressBar.setVisibility(View.GONE);
+        if (progressBar != null) {
+            if (isDisplay)
+                progressBar.setVisibility(View.VISIBLE);
+            else
+                progressBar.setVisibility(View.GONE);
+        }
     }
 
     private Boolean isDataExist() {

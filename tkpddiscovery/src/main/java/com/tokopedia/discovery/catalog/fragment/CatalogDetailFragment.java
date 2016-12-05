@@ -264,7 +264,7 @@ public class CatalogDetailFragment extends BasePresenterFragment<ICatalogDetailP
     @Override
     public void renderCatalogDescription(final String catalogDesc) {
         this.stateCatalogDesc = catalogDesc;
-        holderCatalogDesc.setVisibility(View.VISIBLE);
+git stat        holderCatalogDesc.setVisibility(View.VISIBLE);
         tvCatalogDesc.setText(catalogDesc);
     }
 
@@ -394,4 +394,9 @@ public class CatalogDetailFragment extends BasePresenterFragment<ICatalogDetailP
                 && stateCatalogSpecList != null && stateShareData != null;
     }
 
+    @Override
+    public void onDestroyView() {
+        presenter.unsubscribeObservable();
+        super.onDestroyView();
+    }
 }

@@ -56,6 +56,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+import com.tokopedia.core.R;
 
 public class EtalaseShopEditor extends TActivity {
 
@@ -129,14 +130,13 @@ public class EtalaseShopEditor extends TActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Pass the event to ActionBarDrawerToggle, if it returns
         // true, then it has handled the app icon touch event
-        int i = item.getItemId();
-        if (i == R.id.action_add_new) {
+        if(item.getItemId()==R.id.action_add_new){
             ShowAddNewDialog();
             return true;
-        } else if (i == android.R.id.home) {
+        }else if(item.getItemId()==android.R.id.home){
             onBackPressed();
             return true;
-        } else {
+        }else{
             return super.onOptionsItemSelected(item);
         }
 

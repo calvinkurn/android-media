@@ -15,7 +15,7 @@ public class SellerAppRouter {
 
     private static final String SELLER_HOME_ACTIVITY = "com.tokopedia.sellerapp.home.view.SellerHomeActivity";
 
-    private static final String SELLER_ONBOARDING_ACTIVITY = "com.tokopedia.sellerapp.onboarding.activity.OnBoardingSellerActivity";
+    private static final String SELLER_ONBOARDING_ACTIVITY = "com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity";
 
     public static Intent getSellerHomeActivity(Context context) {
         return RouterUtils.getActivityIntent(context, SELLER_HOME_ACTIVITY);

@@ -85,10 +85,8 @@ public class SortProductActivity extends TActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int i = item.getItemId();
-        if (i == R.id.action_close) {
+        if (item.getItemId()==R.id.action_close) {
             finish();
-
         }
         return super.onOptionsItemSelected(item);
     }
