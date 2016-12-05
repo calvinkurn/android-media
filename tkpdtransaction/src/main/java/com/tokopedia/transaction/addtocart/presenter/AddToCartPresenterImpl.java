@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.view.Window;
 
 import com.appsflyer.AFInAppEventParameterName;
@@ -83,7 +84,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                         viewListener.renderFormProductInfo(data.getForm().getProductDetail());
                         viewListener.renderFormAddress(data.getForm().getDestination());
                         viewListener.hideInitLoading();
-                        if (data.getForm().getDestination() != null)
+                        if (data.getForm().getDestination() != null && data.getShop().getUt() != 0 && !TextUtils.isEmpty(data.getShop().getToken()))
                             calculateKeroRates(context, data);
                     }
 
@@ -97,7 +98,6 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     @Override
     public void calculateKeroRates(@NonNull Context context, @NonNull final AtcFormData atcFormData) {
         viewListener.disableBuyButton();
-        CommonUtils.dumper("rates/v1 kerorates called calculateKeroRates");
         keroNetInteractor.calculateShipping(context, KeroppiParam.paramsKero(atcFormData.getShop(),
                 atcFormData.getForm().getDestination(), atcFormData.getForm().getProductDetail()),
                 new KeroNetInteractor.CalculationListener() {
