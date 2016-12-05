@@ -27,6 +27,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.home.fragment.FragmentBannerWebView;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 
 import org.parceler.Parcels;
@@ -162,6 +163,7 @@ public class OfficialShopHomeFragment extends Fragment {
         Uri uri = Uri.parse(url);
         String etalaseId = uri.getLastPathSegment();
         Log.d(TAG, "URL "+url+" etalase id "+etalaseId);
-        return false;
+        ((ShopInfoActivity) getActivity()).switchTab(etalaseId);
+        return true;
     }
 }

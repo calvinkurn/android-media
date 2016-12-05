@@ -78,10 +78,6 @@ public class ShopProductListAdapter extends RecyclerView.Adapter {
         header.setEtalaseAdapter(etalaseAdapter);
     }
 
-    public void setSelectedEtalase(int index){
-        header.set
-    }
-
     public void setSelectedEtalasePos(int pos) {
         header.setSelectedEtalase(pos);
         notifyDataSetChanged();
