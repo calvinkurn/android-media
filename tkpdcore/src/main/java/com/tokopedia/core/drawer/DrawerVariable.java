@@ -824,7 +824,7 @@ public class DrawerVariable {
         for (DrawerItem item : model.peopleMenu.list) {
             switch (item.id) {
                 case TkpdState.DrawerPosition.PEOPLE_PAYMENT_STATUS:
-                    item.notif = notificationItem.payment_conf;
+                    item.notif = notificationItem.payment_confirmed;
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_ORDER_STATUS:
                     item.notif = notificationItem.order_status;
