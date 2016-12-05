@@ -6,10 +6,12 @@ package com.tokopedia.core.shopinfo.fragment;
 
 import android.app.Fragment;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +40,7 @@ import butterknife.ButterKnife;
 
 public class OfficialShopHomeFragment extends Fragment {
 
+    private static final String TAG = OfficialShopHomeFragment.class.getSimpleName();
     public static final String SHOP_URL = "SHOP_URL";
     private WebView webviewBanner;
     private class MyWebViewClient extends WebChromeClient {
@@ -74,6 +77,10 @@ public class OfficialShopHomeFragment extends Fragment {
             progressBar.setVisibility(View.GONE);
         }
 
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            return overrideUrl(url);
+        }
 
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             CommonUtils.dumper("DEEPLINK " + errorCode + "  " + description + " " + failingUrl);
@@ -119,9 +126,6 @@ public class OfficialShopHomeFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         String url = getArguments().getString(SHOP_URL);
-        if(url.startsWith("www"))
-            url = url.replace("www", "m");
-        clearCache(webView);
         webView.loadUrl(url);
         webView.setWebViewClient(new MyWebClient());
         webView.setWebChromeClient(new MyWebViewClient());
@@ -152,5 +156,12 @@ public class OfficialShopHomeFragment extends Fragment {
         else {
             webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
+    }
+
+    private boolean overrideUrl(String url) {
+        Uri uri = Uri.parse(url);
+        String etalaseId = uri.getLastPathSegment();
+        Log.d(TAG, "URL "+url+" etalase id "+etalaseId);
+        return false;
     }
 }

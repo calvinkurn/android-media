@@ -165,6 +165,10 @@ public class ShopInfoActivity extends TActivity {
         }
     }
 
+    public void switchTab(String etalaseId){
+        
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
