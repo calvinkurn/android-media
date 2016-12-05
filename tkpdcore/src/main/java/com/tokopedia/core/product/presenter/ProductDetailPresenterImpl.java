@@ -40,6 +40,7 @@ import com.tokopedia.core.product.interactor.RetrofitInteractor;
 import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.product.listener.ProductDetailView;
 import com.tokopedia.core.product.model.etalase.Etalase;
+import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
@@ -272,6 +273,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             viewListener.refreshMenu();
                             requestOtherProducts(context,
                                     NetworkParam.paramOtherProducts(productDetailData));
+                            requestVideo(context, productDetailData
+                                    .getInfo().getProductId().toString());
                         }
 
                         @Override
@@ -688,6 +691,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         viewListener.hideProgressLoading();
                         viewListener.refreshMenu();
                         requestOtherProducts(context, NetworkParam.paramOtherProducts(data));
+                        requestVideo(context, data.getInfo().getProductId().toString());
                     }
 
                     @Override
@@ -739,5 +743,19 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void sendButtonClickEvent(@NonNull Context context, @NonNull ProductDetailData successResult) {
         UnifyTracking.eventPDPAddToWishlist(successResult.getInfo().getProductName());
+    }
+
+    private void requestVideo(@NonNull Context context, @NonNull String productID) {
+        retrofitInteractor.requestProductVideo(context, productID, new RetrofitInteractor.VideoLoadedListener() {
+            @Override
+            public void onSuccess(@NonNull VideoData data) {
+                viewListener.loadVideo(data);
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
     }
 }

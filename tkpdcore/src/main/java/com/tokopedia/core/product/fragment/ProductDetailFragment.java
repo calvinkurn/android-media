@@ -40,10 +40,12 @@ import com.tokopedia.core.product.customview.RatingView;
 import com.tokopedia.core.product.customview.ShopInfoView;
 import com.tokopedia.core.product.customview.TalkReviewView;
 import com.tokopedia.core.product.customview.TransactionSuccessView;
+import com.tokopedia.core.product.customview.VideoLayout;
 import com.tokopedia.core.product.customview.WholesaleView;
 import com.tokopedia.core.product.dialog.ReportProductDialogFragment;
 import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
 import com.tokopedia.core.product.listener.ProductDetailView;
+import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productother.ProductOther;
@@ -116,6 +118,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     FreeReturnView freeReturnView;
     @BindView(R2.id.view_transaction_success)
     TransactionSuccessView transactionSuccess;
+    @BindView(R2.id.video_layout)
+    VideoLayout videoLayout;
 
     private ProductPass productPass;
     private ProductDetailData productData;
@@ -416,6 +420,12 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void updateWishListStatus(int status) {
         this.productData.getInfo().setProductAlreadyWishlist(status);
+    }
+
+    @Override
+    public void loadVideo(VideoData data) {
+        videoLayout.setVisibility(View.VISIBLE);
+        this.videoLayout.renderData(data);
     }
 
     @Override

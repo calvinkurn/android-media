@@ -522,6 +522,9 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
+        <activity android:name=".product.activity.ProductYoutubeActivity"
+            android:screenOrientation="landscape"/>
+
         <!--=======================================================-->
         <!--RECEIVERS REGISTRY-->
         <!--=======================================================-->

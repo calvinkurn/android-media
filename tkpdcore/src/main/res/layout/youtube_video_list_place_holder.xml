@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="20dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/margin_small"
+        android:text="Video Product"
+        android:textColor="#333333"
+        android:paddingBottom="@dimen/margin_vs"
+        android:layout_marginBottom="@dimen/margin_vs"
+        android:textStyle="bold"
+        android:textSize="16sp"/>
+
+    <com.tokopedia.core.product.customview.ProductVideoHorizontalScroll
+        android:id="@+id/product_video_horizontal_scroll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</LinearLayout>
