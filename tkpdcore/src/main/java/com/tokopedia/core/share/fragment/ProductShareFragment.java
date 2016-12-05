@@ -93,6 +93,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
 
     /**
      * added for add product from product share
+     *
      * @param type
      * @param productId
      * @param stockStatus
@@ -147,11 +148,11 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
     protected void setupArguments(Bundle arguments) {
         this.shareData = arguments.getParcelable(ARGS_SHARE_DATA);
 
-        int type = arguments.getInt(ProductService.TYPE,-1);
-        long productId = arguments.getLong(ProductService.PRODUCT_DATABASE_ID,-1);
-        String stockStatus = arguments.getString(ProductService.STOCK_STATUS,"");
+        int type = arguments.getInt(ProductService.TYPE, -1);
+        long productId = arguments.getLong(ProductService.PRODUCT_DATABASE_ID, -1);
+        String stockStatus = arguments.getString(ProductService.STOCK_STATUS, "");
         // if there is product need to be uploaded
-        if(type != -1 && productId != -1 && !stockStatus.equals("")){
+        if (type != -1 && productId != -1 && !stockStatus.equals("")) {
             ((DownloadResultSender) getActivity()).sendDataToInternet(type, arguments);
         }
     }
@@ -166,9 +167,9 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
         getActivity().invalidateOptionsMenu();
         progressBar.setVisibility(View.GONE);
         loadingAddProduct.setVisibility(View.GONE);
-        if (this.shareData != null){
-            if (shareData.getType() != null){
-                switch (shareData.getType()){
+        if (this.shareData != null) {
+            if (shareData.getType() != null) {
+                switch (shareData.getType()) {
                     case ShareData.CATALOG_TYPE:
                         tvTitle.setText("Bagikan Katalog Ini!");
                         break;
@@ -190,11 +191,11 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
     }
 
     public void onError(int type, Bundle resultData) {
-        switch(type){
+        switch (type) {
             case ProductService.ADD_PRODUCT:
             case ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
                 String messageError = resultData.getString(ProductService.MESSAGE_ERROR_FLAG, ProductService.INVALID_MESSAGE_ERROR);
-                if(!messageError.equals(ProductService.INVALID_MESSAGE_ERROR)){
+                if (!messageError.equals(ProductService.INVALID_MESSAGE_ERROR)) {
                     progressBar.setVisibility(View.GONE);
                     errorImage.setVisibility(View.VISIBLE);
                     loadingAddProduct.setText(R.string.error_failed_add_product);
@@ -206,6 +207,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
         }
 
     }
+
     private void setIconShareVisibility(int visibility) {
         bbmShare.setVisibility(visibility);
         whatsappShare.setVisibility(visibility);
@@ -219,13 +221,13 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
         moreShare.setVisibility(visibility);
     }
 
-    private void setVisibilityTitle(int visibility){
+    private void setVisibilityTitle(int visibility) {
         tvTitle.setVisibility(visibility);
         subtitle.setVisibility(visibility);
     }
 
-    public void setData(int type, Bundle data){
-        switch(type){
+    public void setData(int type, Bundle data) {
+        switch (type) {
             case ProductService.ADD_PRODUCT:
             case ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
                 final long productServerId = data.getLong(ProductService.PRODUCT_DATABASE_ID);
@@ -234,19 +236,26 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
                     public void run() {
                         ProductDB ProductDB = new Select()
                                 .from(ProductDB.class)
-                                .where(ProductDB_Table.productId.is((int)productServerId))
+                                .where(ProductDB_Table.productId.is((int) productServerId))
                                 .querySingle();
-                        ProductDB.setPictureDBs(ProductDB.getImages());
-                        ProductDB.setWholesalePriceDBs(ProductDB.getWholeSales());
+                        if (ProductDB!= null && ProductDB.getImages() != null)
+                            ProductDB.setPictureDBs(ProductDB.getImages());
+                        if (ProductDB!= null && ProductDB.getWholeSales() != null)
+                            ProductDB.setWholesalePriceDBs(ProductDB.getWholeSales());
                         shareData = new ShareData();
-                        shareData.setName(ProductDB.getNameProd());
+                        if (ProductDB!= null && ProductDB.getNameProd() != null)
+                            shareData.setName(ProductDB.getNameProd());
 
-                        if(CommonUtils.checkCollectionNotNull(ProductDB.getPictureDBs()))
+                        if (ProductDB!= null && ProductDB.getPictureDBs()!= null
+                                && CommonUtils.checkCollectionNotNull(ProductDB.getPictureDBs()))
                             shareData.setImgUri(ProductDB.getPictureDBs().get(0).getPath());
 
-                        shareData.setUri(ProductDB.getProductUrl());
-                        shareData.setDescription(ProductDB.getDescProd());
-                        shareData.setPrice(ProductDB.getPriceProd()+"");
+                        if (ProductDB!= null && ProductDB.getProductUrl() != null)
+                            shareData.setUri(ProductDB.getProductUrl());
+                        if (ProductDB!= null && ProductDB.getDescProd() != null)
+                            shareData.setDescription(ProductDB.getDescProd());
+                        if (ProductDB!= null)
+                            shareData.setPrice(ProductDB.getPriceProd() + "");
                     }
                 }, 100);//[END] move to manage product
                 break;
@@ -255,7 +264,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
 
     public void addingProduct(boolean isAdding) {
         int visibility;
-        if(isAdding){
+        if (isAdding) {
             progressBar.setVisibility(View.VISIBLE);
             loadingAddProduct.setVisibility(View.VISIBLE);
             visibility = View.GONE;
