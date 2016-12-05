@@ -126,11 +126,11 @@ public class CatalogDetailActivity extends BasePresenterActivity implements ICat
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R2.id.action_share_prod:
-                if (shareData != null) startActivity(ShareActivity.createIntent(this, shareData));
-                else NetworkErrorHelper.showSnackbar(this, "Data katalog belum tersedia");
-                return true;
+        int i = item.getItemId();
+        if (i == R.id.action_share_prod) {
+            if (shareData != null) startActivity(ShareActivity.createIntent(this, shareData));
+            else NetworkErrorHelper.showSnackbar(this, "Data katalog belum tersedia");
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

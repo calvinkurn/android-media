@@ -322,12 +322,12 @@ public class ShopReputationAdapterR extends AbstractRecyclerAdapter{
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 CommonUtils.dumper(item.getItemId());
-                switch (item.getItemId()) {
-                    case R2.id.action_report:
-                        listener.onReport(position);
-                        return true;
-                    default:
-                        return false;
+                int i = item.getItemId();
+                if (i == R.id.action_report) {
+                    listener.onReport(position);
+                    return true;
+                } else {
+                    return false;
                 }
             }
 

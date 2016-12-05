@@ -11,6 +11,7 @@ import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.TextView;
 
+import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 
 public class ClipboardHandler {
@@ -29,11 +30,11 @@ public class ClipboardHandler {
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
 				// TODO Auto-generated method stub
-				switch (item.getItemId()) {
-		        case R2.id.action_copy:
-		        	CopyToClipboard(context,((TextView)v).getText().toString());
-		            return false;
-		    }
+				int i = item.getItemId();
+				if (i == R.id.action_copy) {
+					CopyToClipboard(context, ((TextView) v).getText().toString());
+					return false;
+				}
 				return false;
 			}
 		});

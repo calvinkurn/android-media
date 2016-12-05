@@ -571,38 +571,36 @@ public class ListViewManageProdAdapter extends BaseAdapter
                 Bundle bundle;
                 boolean isEdit;
                 boolean isCopy;
-                switch (item.getItemId()) {
-                    case R2.id.action_edit:
-//			        	bundle = new Bundle();
+                int i = item.getItemId();
+                if (i == R.id.action_edit) {//			        	bundle = new Bundle();
 //						intent = new Intent(context, EditProduct.class);
 //						bundle.putString("product_id", ProductID);
 //						bundle.putBoolean("is_edit", true);
 //						intent.putExtras(bundle);
 //						context.startActivityForResult(intent, 1);
-                        isEdit = true;
-                        intent = ProductActivity.moveToEditFragment(context, isEdit, ProductID);
-                        context.startActivityForResult(intent, 1);
-                        return true;
-                    case R2.id.action_copy:
-//			        	bundle = new Bundle();
+                    isEdit = true;
+                    intent = ProductActivity.moveToEditFragment(context, isEdit, ProductID);
+                    context.startActivityForResult(intent, 1);
+                    return true;
+                } else if (i == R.id.action_copy) {//			        	bundle = new Bundle();
 //						intent = new Intent(context, EditProduct.class);
 //						bundle.putString("product_id", ProductID);
 //						bundle.putBoolean("is_edit", false);
 //						intent.putExtras(bundle);
 //						context.startActivityForResult(intent, 1);
-                        isCopy = true;
-                        intent = ProductActivity.moveToCopyFragment(context, isCopy, ProductID);
-                        context.startActivityForResult(intent, 1);
-                        return true;
-                    case R2.id.action_edit_price:
-                        holder.Prices.setVisibility(View.VISIBLE);
-                        holder.PriceView.setVisibility(View.GONE);
-                        holder.Currency.setVisibility(View.VISIBLE);
-                        holder.SaveBut.setVisibility(View.VISIBLE);
-                        EditMode.add(ProductID);
-                        return true;
-                    default:
-                        return false;
+                    isCopy = true;
+                    intent = ProductActivity.moveToCopyFragment(context, isCopy, ProductID);
+                    context.startActivityForResult(intent, 1);
+                    return true;
+                } else if (i == R.id.action_edit_price) {
+                    holder.Prices.setVisibility(View.VISIBLE);
+                    holder.PriceView.setVisibility(View.GONE);
+                    holder.Currency.setVisibility(View.VISIBLE);
+                    holder.SaveBut.setVisibility(View.VISIBLE);
+                    EditMode.add(ProductID);
+                    return true;
+                } else {
+                    return false;
                 }
             }
 

@@ -281,12 +281,12 @@ public class ProductReviewAdapter extends BaseRecyclerViewAdapter {
                 popUp.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R2.id.action_report:
-                                showDialogReport(review);
-                                return true;
-                            default:
-                                return false;
+                        int i = item.getItemId();
+                        if (i == R.id.action_report) {
+                            showDialogReport(review);
+                            return true;
+                        } else {
+                            return false;
                         }
                     }
                 });

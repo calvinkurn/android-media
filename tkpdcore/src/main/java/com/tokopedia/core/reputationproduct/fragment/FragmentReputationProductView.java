@@ -720,16 +720,16 @@ public class FragmentReputationProductView extends Fragment {
         return new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R2.id.action_report:
-                        showDialogReport();
-                        return true;
-                    case R2.id.action_delete:
-                        progressDialog.showDialog();
-                        deleteComment();
-                        return true;
-                    default:
-                        return false;
+                int i = item.getItemId();
+                if (i == R.id.action_report) {
+                    showDialogReport();
+                    return true;
+                } else if (i == R.id.action_delete) {
+                    progressDialog.showDialog();
+                    deleteComment();
+                    return true;
+                } else {
+                    return false;
                 }
             }
         };

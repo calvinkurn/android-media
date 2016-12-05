@@ -129,15 +129,15 @@ public class EtalaseShopEditor extends TActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Pass the event to ActionBarDrawerToggle, if it returns
         // true, then it has handled the app icon touch event
-        switch (item.getItemId()) {
-            case R2.id.action_add_new:
-                ShowAddNewDialog();
-                return true;
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        int i = item.getItemId();
+        if (i == R.id.action_add_new) {
+            ShowAddNewDialog();
+            return true;
+        } else if (i == android.R.id.home) {
+            onBackPressed();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
 
         // Handle your other action bar items...

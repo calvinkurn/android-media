@@ -330,14 +330,14 @@ public class ListViewReputationAdapter extends BaseAdapter {
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R2.id.action_report:
-                                ReportTalkReview report = new ReportTalkReview(
-                                        (Activity) context, 1, list.get(position).reviewId, "report_comment_review", shopId);
-                                report.ShowDialogReport();
-                                return true;
-                            default:
-                                return false;
+                        int i = item.getItemId();
+                        if (i == R.id.action_report) {
+                            ReportTalkReview report = new ReportTalkReview(
+                                    (Activity) context, 1, list.get(position).reviewId, "report_comment_review", shopId);
+                            report.ShowDialogReport();
+                            return true;
+                        } else {
+                            return false;
                         }
                     }
                 });

@@ -591,16 +591,16 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                getActivity().onBackPressed();
-                return true;
-            case R2.id.action_wishlist:
-                presenter.processWishList(context, productData);
-                return true;
-            case R2.id.action_report:
-                presenter.reportProduct(context);
-                return true;
+        int i = item.getItemId();
+        if (i == android.R.id.home) {
+            getActivity().onBackPressed();
+            return true;
+        } else if (i == R.id.action_wishlist) {
+            presenter.processWishList(context, productData);
+            return true;
+        } else if (i == R.id.action_report) {
+            presenter.reportProduct(context);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

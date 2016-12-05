@@ -352,13 +352,12 @@ public class ManagePeopleAddressFragment extends BasePresenterFragment<ManagePeo
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R2.id.action_add_address:
-                this.openFormAddressView(null);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-
+        int i = item.getItemId();
+        if (i == R.id.action_add_address) {
+            this.openFormAddressView(null);
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
     }
 }

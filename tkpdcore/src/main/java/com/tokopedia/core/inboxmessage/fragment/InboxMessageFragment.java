@@ -241,25 +241,25 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
 
             @Override
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-                switch (item.getItemId()) {
-                    case R2.id.action_move_achieve:
-                        presenter.moveInbox(ARCHIVE_ALL);
-                        mode.finish();
-                        return true;
-                    case R2.id.action_move_trash:
-                        presenter.moveInbox(DELETE_ALL);
-                        mode.finish();
-                        return true;
-                    case R2.id.action_delete:
-                        presenter.moveInbox(DELETE_FOREVER);
-                        mode.finish();
-                        return true;
-                    case R2.id.action_move_inbox:
-                        presenter.moveInbox(MOVE_ALL);
-                        mode.finish();
-                        return true;
-                    default:
-                        return false;
+                int i = item.getItemId();
+                if (i == R.id.action_move_achieve) {
+                    presenter.moveInbox(ARCHIVE_ALL);
+                    mode.finish();
+                    return true;
+                } else if (i == R.id.action_move_trash) {
+                    presenter.moveInbox(DELETE_ALL);
+                    mode.finish();
+                    return true;
+                } else if (i == R.id.action_delete) {
+                    presenter.moveInbox(DELETE_FOREVER);
+                    mode.finish();
+                    return true;
+                } else if (i == R.id.action_move_inbox) {
+                    presenter.moveInbox(MOVE_ALL);
+                    mode.finish();
+                    return true;
+                } else {
+                    return false;
                 }
             }
 

@@ -96,13 +96,12 @@ public class SendMessageFragment extends BasePresenterFragment<SendMessagePresen
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-            case R2.id.action_send:
-                presenter.doSendMessage();
-                break;
+        int i = item.getItemId();
+        if (i == android.R.id.home) {
+            onBackPressed();
+            return true;
+        } else if (i == R.id.action_send) {
+            presenter.doSendMessage();
         }
         return super.onOptionsItemSelected(item);
     }

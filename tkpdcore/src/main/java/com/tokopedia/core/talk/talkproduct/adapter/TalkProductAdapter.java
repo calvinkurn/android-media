@@ -310,24 +310,22 @@ public class TalkProductAdapter extends BaseRecyclerViewAdapter {
                 public boolean onMenuItemClick(MenuItem item) {
                     DialogFragment dialog;
                     CommonUtils.dumper(item.getItemId());
-                    switch (item.getItemId()) {
-                        case R2.id.action_follow:
-                        case R2.id.action_unfollow:
-                            dialog = FollowTalkDialog.createInstance(followListener(talk, position)
-                                    , talk.getTalkFollowStatus());
-                            dialog.show(fragment.getFragmentManager(), FollowTalkDialog.FRAGMENT_TAG);
-                            return true;
-                        case R2.id.action_delete_talk:
-                        case R2.id.action_delete:
-                            dialog = DeleteTalkDialog.createInstance(deleteListener(talk, position));
-                            dialog.show(fragment.getFragmentManager(), DeleteTalkDialog.FRAGMENT_TAG);
-                            return true;
-                        case R2.id.action_report:
-                            dialog = ReportTalkDialog.createInstance(reportListener(talk, position));
-                            dialog.show(fragment.getFragmentManager(), ReportTalkDialog.FRAGMENT_TAG);
-                            return true;
-                        default:
-                            return false;
+                    int i = item.getItemId();
+                    if (i == R.id.action_follow || i == R.id.action_unfollow) {
+                        dialog = FollowTalkDialog.createInstance(followListener(talk, position)
+                                , talk.getTalkFollowStatus());
+                        dialog.show(fragment.getFragmentManager(), FollowTalkDialog.FRAGMENT_TAG);
+                        return true;
+                    } else if (i == R.id.action_delete_talk || i == R.id.action_delete) {
+                        dialog = DeleteTalkDialog.createInstance(deleteListener(talk, position));
+                        dialog.show(fragment.getFragmentManager(), DeleteTalkDialog.FRAGMENT_TAG);
+                        return true;
+                    } else if (i == R.id.action_report) {
+                        dialog = ReportTalkDialog.createInstance(reportListener(talk, position));
+                        dialog.show(fragment.getFragmentManager(), ReportTalkDialog.FRAGMENT_TAG);
+                        return true;
+                    } else {
+                        return false;
                     }
                 }
             });

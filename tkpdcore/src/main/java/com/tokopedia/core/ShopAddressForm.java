@@ -758,15 +758,15 @@ public class ShopAddressForm extends TActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-            case R2.id.action_send:
-                if (Validate()) {
-                    SaveAddressV4();
-                }
-                break;
+        int i = item.getItemId();
+        if (i == android.R.id.home) {
+            onBackPressed();
+            return true;
+        } else if (i == R.id.action_send) {
+            if (Validate()) {
+                SaveAddressV4();
+            }
+
         }
         return super.onOptionsItemSelected(item);
     }

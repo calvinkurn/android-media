@@ -110,25 +110,25 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R2.id.start_date:
-                datePicker.getDatePicker(onStartPicked(), new DatePickerV2.Date(startDate.getText().toString()));
-                break;
-            case R2.id.end_date:
-                datePicker.getDatePicker(onEndPicked(), new DatePickerV2.Date(endDate.getText().toString()));
-                break;
-            case R2.id.search_button:
-                String search = searchTxt.getQuery().toString();
-                if (!TextUtils.isEmpty(search)) {
-                    if (ValidationTextUtil.isValidSalesQuery(search)) {
-                        presenter.refreshOnFilter();
-                    } else {
-                        Snackbar.make(filterView, getActivity().getString(R.string.keyword_min_3_char), Snackbar.LENGTH_LONG).show();
-                    }
-                } else if (TextUtils.isEmpty(search)) {
+        int i = v.getId();
+        if (i == R.id.start_date) {
+            datePicker.getDatePicker(onStartPicked(), new DatePickerV2.Date(startDate.getText().toString()));
+
+        } else if (i == R.id.end_date) {
+            datePicker.getDatePicker(onEndPicked(), new DatePickerV2.Date(endDate.getText().toString()));
+
+        } else if (i == R.id.search_button) {
+            String search = searchTxt.getQuery().toString();
+            if (!TextUtils.isEmpty(search)) {
+                if (ValidationTextUtil.isValidSalesQuery(search)) {
                     presenter.refreshOnFilter();
+                } else {
+                    Snackbar.make(filterView, getActivity().getString(R.string.keyword_min_3_char), Snackbar.LENGTH_LONG).show();
                 }
-                break;
+            } else if (TextUtils.isEmpty(search)) {
+                presenter.refreshOnFilter();
+            }
+
         }
     }
 
@@ -547,17 +547,15 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
         return new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R2.id.action_edit:
-                        listener.onEditRef(model);
-                        return true;
-
-                    case R2.id.action_track:
-                        listener.onTrack(model);
-                        return true;
-
-                    default:
-                        return false;
+                int i = item.getItemId();
+                if (i == R.id.action_edit) {
+                    listener.onEditRef(model);
+                    return true;
+                } else if (i == R.id.action_track) {
+                    listener.onTrack(model);
+                    return true;
+                } else {
+                    return false;
                 }
             }
 
