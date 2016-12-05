@@ -1,4 +1,3 @@
-
 package com.tokopedia.transaction.cart.model.cartdata;
 
 import android.os.Parcel;

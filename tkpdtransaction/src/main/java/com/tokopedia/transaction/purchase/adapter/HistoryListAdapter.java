@@ -9,9 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 
 import java.util.ArrayList;
 

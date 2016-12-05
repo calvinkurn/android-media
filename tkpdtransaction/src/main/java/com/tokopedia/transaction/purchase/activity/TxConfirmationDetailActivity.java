@@ -15,12 +15,12 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.TokopediaBankAccount;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.listener.TxConfDetailViewListener;
 import com.tokopedia.transaction.purchase.model.response.txconfirmation.TxConfData;
 import com.tokopedia.transaction.purchase.model.response.txlist.OrderData;

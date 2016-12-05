@@ -12,13 +12,13 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.tokopedia.core.R;
+import com.tokopedia.transaction.R;
 
 /**
  * @author Kulomady on 8/15/2016.
  */
 public class ClearableEditText extends AppCompatEditText
-        implements View.OnTouchListener,View.OnFocusChangeListener,TextWatcher {
+        implements View.OnTouchListener, View.OnFocusChangeListener, TextWatcher {
 
     private Drawable mClearTextIcon;
     private OnFocusChangeListener mOnFocusChangeListener;
@@ -91,6 +91,7 @@ public class ClearableEditText extends AppCompatEditText
         }
         return mOnTouchListener != null && mOnTouchListener.onTouch(view, motionEvent);
     }
+
     @Override
     public final void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
         if (isFocused()) {

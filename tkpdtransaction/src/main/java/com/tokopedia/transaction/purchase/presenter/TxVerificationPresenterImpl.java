@@ -92,7 +92,7 @@ public class TxVerificationPresenterImpl implements TxVerificationPresenter {
 
     @Override
     public void processEditPayment(Context context, TxVerData data) {
-       viewListener.navigateToActivityRequest(ConfirmPaymentActivity.instanceEdit(context,
+        viewListener.navigateToActivityRequest(ConfirmPaymentActivity.instanceEdit(context,
                 data.getPaymentId()),
                 TxVerDetailActivity.REQUEST_EDIT_PAYMENT);
         // viewListener.navigateToActivityRequest(intent, 1);

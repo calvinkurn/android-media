@@ -20,14 +20,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.customView.OrderStatusView;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.product.model.passdata.ProductPass;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.adapter.TxProductListAdapter;
 import com.tokopedia.transaction.purchase.listener.TxDetailViewListener;
 import com.tokopedia.transaction.purchase.model.response.txlist.OrderData;

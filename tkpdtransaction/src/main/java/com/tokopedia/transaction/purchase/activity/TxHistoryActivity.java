@@ -5,12 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ListView;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.transaction.purchase.adapter.HistoryListAdapter;
 import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.purchase.adapter.HistoryListAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

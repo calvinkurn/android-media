@@ -6,11 +6,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.adapter.TxSummaryAdapter;
 import com.tokopedia.transaction.purchase.listener.TxSummaryViewListener;
 import com.tokopedia.transaction.purchase.model.TxSummaryItem;

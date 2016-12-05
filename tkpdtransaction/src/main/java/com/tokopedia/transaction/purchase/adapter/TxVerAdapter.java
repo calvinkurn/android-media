@@ -13,8 +13,8 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.OneOnClick;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.model.response.txverification.TxVerData;
 
 import java.text.MessageFormat;

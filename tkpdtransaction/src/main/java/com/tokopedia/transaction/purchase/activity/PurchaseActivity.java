@@ -184,8 +184,6 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
     @Override
     protected void initView() {
         super.initView();
-        viewPager = (ViewPager) findViewById(R.id.pager);
-        indicator = (TabLayout) findViewById(R.id.indicator);
         if (getIntent().getExtras() != null && getIntent().getExtras()
                 .getBoolean(TransactionPurchaseRouter.EXTRA_UPDATE_BALANCE, false))
             drawer.updateBalance();

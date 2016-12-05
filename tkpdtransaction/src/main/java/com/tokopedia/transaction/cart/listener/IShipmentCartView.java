@@ -9,7 +9,6 @@ import com.tokopedia.transaction.cart.adapter.ShipmentCartAdapter;
 import com.tokopedia.transaction.cart.adapter.ShipmentPackageCartAdapter;
 import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentData;
 import com.tokopedia.transaction.cart.model.calculateshipment.ShipmentPackage;
-import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartData;
 
 
 /**

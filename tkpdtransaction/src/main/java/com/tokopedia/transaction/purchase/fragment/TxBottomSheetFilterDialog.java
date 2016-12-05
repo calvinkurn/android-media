@@ -14,8 +14,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.DatePickerUtil;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.model.AllTxFilter;
 import com.tokopedia.transaction.purchase.model.TxFilterItem;
 import com.tokopedia.transaction.purchase.utils.FilterUtils;

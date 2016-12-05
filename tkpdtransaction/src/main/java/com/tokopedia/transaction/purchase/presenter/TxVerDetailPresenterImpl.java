@@ -3,6 +3,7 @@ package com.tokopedia.transaction.purchase.presenter;
 import android.app.Activity;
 import android.content.Context;
 
+import com.tokopedia.core.util.UploadImageReVamp;
 import com.tokopedia.transaction.purchase.activity.ConfirmPaymentActivity;
 import com.tokopedia.transaction.purchase.activity.TxVerDetailActivity;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
@@ -12,7 +13,6 @@ import com.tokopedia.transaction.purchase.interactor.TxUploadInteractorImpl;
 import com.tokopedia.transaction.purchase.listener.TxVerDetailViewListener;
 import com.tokopedia.transaction.purchase.model.response.txverification.TxVerData;
 import com.tokopedia.transaction.purchase.model.response.txverinvoice.TxVerInvoiceData;
-import com.tokopedia.core.util.UploadImageReVamp;
 
 import org.json.JSONObject;
 
@@ -55,7 +55,7 @@ public class TxVerDetailPresenterImpl implements TxVerDetailPresenter {
 
     @Override
     public void processEditPayment(Context context, TxVerData txVerData) {
-       viewListener.navigateToActivityRequest(ConfirmPaymentActivity.instanceEdit(context,
+        viewListener.navigateToActivityRequest(ConfirmPaymentActivity.instanceEdit(context,
                 txVerData.getPaymentId()),
                 TxVerDetailActivity.REQUEST_EDIT_PAYMENT);
     }

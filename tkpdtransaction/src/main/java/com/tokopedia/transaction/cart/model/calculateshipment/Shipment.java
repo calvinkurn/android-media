@@ -35,7 +35,6 @@ public class Shipment implements Parcelable {
     private String shipmentName;
 
 
-
     public Shipment() {
 
     }

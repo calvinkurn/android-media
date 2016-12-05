@@ -3,13 +3,12 @@ package com.tokopedia.transaction.cart.presenter;
 
 import com.tokopedia.core.geolocation.model.LocationPass;
 import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentWrapper;
-import com.tokopedia.transaction.cart.model.savelocation.LocationData;
 import com.tokopedia.transaction.cart.model.savelocation.SaveLocationWrapper;
 import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartWrapper;
 
 /**
  * @author anggaprasetiyo on 11/2/16.
- * modified by alvarisi
+ *         modified by alvarisi
  */
 
 public interface IShipmentCartPresenter {

@@ -23,12 +23,13 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.database.model.Bank;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.TokopediaBankAccount;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.listener.ConfirmPaymentViewListener;
 import com.tokopedia.transaction.purchase.model.ConfirmPaymentData;
 import com.tokopedia.transaction.purchase.model.ConfirmationData;
@@ -43,7 +44,6 @@ import com.tokopedia.transaction.purchase.model.response.formconfirmpayment.SysB
 import com.tokopedia.transaction.purchase.presenter.ConfirmPaymentPresenter;
 import com.tokopedia.transaction.purchase.presenter.ConfirmPaymentPresenterImpl;
 import com.tokopedia.transaction.purchase.receiver.TxActionReceiver;
-import com.tokopedia.core.util.TokopediaBankAccount;
 
 import java.text.MessageFormat;
 import java.util.Calendar;

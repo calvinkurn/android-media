@@ -12,9 +12,9 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.OneOnClick;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.product.model.passdata.ProductPass;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.model.response.txlist.OrderProduct;
 
 import java.text.MessageFormat;
@@ -57,7 +57,7 @@ public class TxProductListAdapter extends ArrayAdapter<OrderProduct> {
         final OrderProduct item = getItem(position);
         holder.tvProductName.setText(Html.fromHtml(item.getProductName()));
         holder.tvProductPrice.setText(item.getProductPrice());
-        holder.tvNotes.setText(Html.fromHtml(item.getProductNotes().length()==0 ? "-" : item.getProductNotes()));
+        holder.tvNotes.setText(Html.fromHtml(item.getProductNotes().length() == 0 ? "-" : item.getProductNotes()));
         holder.tvDeliverQty.setText(MessageFormat.format(" x {0} {1}",
                 item.getOrderDeliverQuantity(), context.getString(R.string.title_item)));
         holder.tvTotalPrice.setText(item.getOrderSubtotalPriceIdr());
