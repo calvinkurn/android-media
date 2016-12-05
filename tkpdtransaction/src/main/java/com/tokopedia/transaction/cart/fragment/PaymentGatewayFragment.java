@@ -20,8 +20,9 @@ import com.tokopedia.transaction.cart.model.cartdata.GatewayList;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * @author anggaprasetiyo on 11/3/16.
@@ -31,10 +32,11 @@ public class PaymentGatewayFragment extends DialogFragment implements
         PaymentGatewayAdapter.ActionListener {
     private static final String ARG_PARAM_EXTRA_GATEWAY_LIST = "ARG_PARAM_EXTRA_GATEWAY_LIST";
 
-    @Bind(R2.id.rv_payment_gateway)
+    @BindView(R2.id.rv_payment_gateway)
     RecyclerView rvPaymentGateway;
     private List<GatewayList> gatewayList;
     private ActionListener actionListener;
+    private Unbinder unbinder;
 
     public interface ActionListener {
         void onSelectedPaymentGateway(GatewayList gateway);
@@ -71,7 +73,7 @@ public class PaymentGatewayFragment extends DialogFragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dialog_payment_gateway_tx_module, container);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         rvPaymentGateway.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvPaymentGateway.setAdapter(new PaymentGatewayAdapter(this, gatewayList));
         return view;
@@ -80,7 +82,7 @@ public class PaymentGatewayFragment extends DialogFragment implements
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     @Override

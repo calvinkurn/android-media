@@ -21,7 +21,7 @@ import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -215,25 +215,25 @@ class CartProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     static class ProductItemHolder extends RecyclerView.ViewHolder {
-        @Bind(R2.id.tv_error)
+        @BindView(R2.id.tv_error)
         TextView tvError;
-        @Bind(R2.id.tv_preorder_label)
+        @BindView(R2.id.tv_preorder_label)
         TextView tvPreorderLabel;
-        @Bind(R2.id.btn_delete)
+        @BindView(R2.id.btn_delete)
         ImageView btnDelete;
-        @Bind(R2.id.iv_pic_product)
+        @BindView(R2.id.iv_pic_product)
         ImageView ivPicProduct;
-        @Bind(R2.id.tv_name_product)
+        @BindView(R2.id.tv_name_product)
         TextView tvNameProduct;
-        @Bind(R2.id.tv_price_product)
+        @BindView(R2.id.tv_price_product)
         TextView tvPriceProduct;
-        @Bind(R2.id.tv_weight_product)
+        @BindView(R2.id.tv_weight_product)
         TextView tvWeightProduct;
-        @Bind(R2.id.tv_preorder_period)
+        @BindView(R2.id.tv_preorder_period)
         TextView tvPreorderPeriod;
-        @Bind(R2.id.et_quantity_product)
+        @BindView(R2.id.et_quantity_product)
         EditText etQuantityProduct;
-        @Bind(R2.id.et_notes_product)
+        @BindView(R2.id.et_notes_product)
         EditText etNotesProduct;
 
         ProductItemHolder(View itemView) {

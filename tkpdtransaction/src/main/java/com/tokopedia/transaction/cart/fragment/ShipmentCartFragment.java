@@ -24,13 +24,13 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.core.addtocart.model.responseatcform.Destination;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.LocationPass;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
+import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
@@ -51,7 +51,7 @@ import com.tokopedia.transaction.cart.presenter.ShipmentCartPresenter;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -66,45 +66,45 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
     private static final String ARG_PARAM_EXTRA_TRANSACTION_DATA =
             "ARG_PARAM_EXTRA_TRANSACTION_DATA";
 
-    @Bind(R2.id.tv_title_address)
+    @BindView(R2.id.tv_title_address)
     TextView tvTitleAddress;
-    @Bind(R2.id.tv_detail_address)
+    @BindView(R2.id.tv_detail_address)
     TextView tvDetailAddress;
-    @Bind(R2.id.btn_choose_address)
+    @BindView(R2.id.btn_choose_address)
     TextView btnChooseAddress;
-    @Bind(R2.id.btn_add_address)
+    @BindView(R2.id.btn_add_address)
     TextView btnAddAddress;
-    @Bind(R2.id.cv_address)
+    @BindView(R2.id.cv_address)
     CardView cvAddress;
-    @Bind(R2.id.sp_shipment)
+    @BindView(R2.id.sp_shipment)
     AppCompatSpinner spShipment;
-    @Bind(R2.id.sp_shipment_package)
+    @BindView(R2.id.sp_shipment_package)
     AppCompatSpinner spShipmentPackage;
-    @Bind(R2.id.cv_shipment)
+    @BindView(R2.id.cv_shipment)
     CardView cvShipment;
-    @Bind(R2.id.iv_icon_geo_location)
+    @BindView(R2.id.iv_icon_geo_location)
     ImageView ivIconGeoLocation;
-    @Bind(R2.id.btn_change_value_location)
+    @BindView(R2.id.btn_change_value_location)
     ImageView btnChangeValueLocation;
-    @Bind(R2.id.tv_value_location)
+    @BindView(R2.id.tv_value_location)
     AppCompatTextView tvValueLocation;
-    @Bind(R2.id.tv_error_geo_location)
+    @BindView(R2.id.tv_error_geo_location)
     AppCompatTextView tvErrorGeoLocation;
-    @Bind(R2.id.layout_value_location)
+    @BindView(R2.id.layout_value_location)
     RelativeLayout layoutValueLocation;
-    @Bind(R2.id.cv_geo_location)
+    @BindView(R2.id.cv_geo_location)
     CardView cvGeoLocation;
-    @Bind(R2.id.pb_price)
+    @BindView(R2.id.pb_price)
     ProgressBar pbPrice;
-    @Bind(R2.id.tv_price)
+    @BindView(R2.id.tv_price)
     TextView tvPrice;
-    @Bind(R2.id.holder_price)
+    @BindView(R2.id.holder_price)
     RelativeLayout holderPrice;
-    @Bind(R2.id.cb_prices)
+    @BindView(R2.id.cb_prices)
     CardView cbPrices;
-    @Bind(R2.id.btn_save)
+    @BindView(R2.id.btn_save)
     AppCompatTextView btnSave;
-    @Bind(R2.id.container)
+    @BindView(R2.id.container)
     LinearLayout holderContainer;
 
     private TkpdProgressDialog progressdialog;

@@ -66,4 +66,9 @@ public class ShipmentCartActivity extends BasePresenterActivity {
     protected void setActionVar() {
 
     }
+
+    @Override
+    public String getScreenName() {
+        return null;
+    }
 }

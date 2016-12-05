@@ -50,7 +50,8 @@ import com.tokopedia.transaction.cart.receivers.CartBroadcastReceiver;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
+
 
 /**
  * @author anggaprasetiyo on 11/1/16.
@@ -60,67 +61,67 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         PaymentGatewayFragment.ActionListener, CartItemAdapter.CartAction,
         CartBroadcastReceiver.ActionTopPayListener {
 
-    @Bind(R2.id.logo)
+    @BindView(R2.id.logo)
     ProgressBar logo;
-    @Bind(R2.id.layout_root)
+    @BindView(R2.id.layout_root)
     FrameLayout layoutRoot;
-    @Bind(R2.id.tv_error_payment)
+    @BindView(R2.id.tv_error_payment)
     TextView tvErrorPayment;
-    @Bind(R2.id.tv_total_payment)
+    @BindView(R2.id.tv_total_payment)
     TextView tvTotalPayment;
-    @Bind(R2.id.nsv_container)
+    @BindView(R2.id.nsv_container)
     NestedScrollView nsvContainer;
-    @Bind(R2.id.tv_deposit_tokopedia)
+    @BindView(R2.id.tv_deposit_tokopedia)
     TextView tvDepositTokopedia;
-    @Bind(R2.id.iv_logo_btn_payment_method)
+    @BindView(R2.id.iv_logo_btn_payment_method)
     ImageView ivLogoBtnPaymentMethod;
-    @Bind(R2.id.tv_desc_btn_payment_method)
+    @BindView(R2.id.tv_desc_btn_payment_method)
     TextView tvDescBtnPaymentMethod;
-    @Bind(R2.id.btn_payment_method)
+    @BindView(R2.id.btn_payment_method)
     RelativeLayout btnPaymentMethod;
-    @Bind(R2.id.tv_info_payment_method)
+    @BindView(R2.id.tv_info_payment_method)
     TextView tvInfoPaymentMethod;
-    @Bind(R2.id.btn_checkout)
+    @BindView(R2.id.btn_checkout)
     TextView btnCheckout;
-    @Bind(R2.id.cb_use_voucher)
+    @BindView(R2.id.cb_use_voucher)
     CheckBox cbUseVoucher;
-    @Bind(R2.id.btn_check_voucher)
+    @BindView(R2.id.btn_check_voucher)
     TextView btnCheckVoucher;
-    @Bind(R2.id.et_voucher_code)
+    @BindView(R2.id.et_voucher_code)
     EditText etVoucherCode;
-    @Bind(R2.id.til_et_voucher_code)
+    @BindView(R2.id.til_et_voucher_code)
     TextInputLayout tilEtVoucherCode;
-    @Bind(R2.id.tv_voucher_desc)
+    @BindView(R2.id.tv_voucher_desc)
     TextView tvVoucherDesc;
-    @Bind(R2.id.holder_use_voucher)
+    @BindView(R2.id.holder_use_voucher)
     RelativeLayout holderUseVoucher;
-    @Bind(R2.id.cv_payment_selection)
+    @BindView(R2.id.cv_payment_selection)
     CardView cvPaymentSelection;
-    @Bind(R2.id.tv_cash_back_value)
+    @BindView(R2.id.tv_cash_back_value)
     TextView tvCashBackValue;
-    @Bind(R2.id.cv_cash_back)
+    @BindView(R2.id.cv_cash_back)
     CardView cvCashBack;
-    @Bind(R2.id.rv_cart)
+    @BindView(R2.id.rv_cart)
     RecyclerView rvCart;
-    @Bind(R2.id.holder_container)
+    @BindView(R2.id.holder_container)
     LinearLayout holderContainer;
-    @Bind(R2.id.no_res_img)
+    @BindView(R2.id.no_res_img)
     ImageView noResImg;
-    @Bind(R2.id.message_error_1)
+    @BindView(R2.id.message_error_1)
     TextView messageError1;
-    @Bind(R2.id.message_error_2)
+    @BindView(R2.id.message_error_2)
     TextView messageError2;
-    @Bind(R2.id.find_now)
+    @BindView(R2.id.find_now)
     TextView findNow;
-    @Bind(R2.id.include_no_result)
+    @BindView(R2.id.include_no_result)
     LinearLayout includeNoResult;
-    @Bind(R2.id.tv_loyalty_balance)
+    @BindView(R2.id.tv_loyalty_balance)
     TextView tvLoyaltyBalance;
-    @Bind(R2.id.holder_loyalty_balance)
+    @BindView(R2.id.holder_loyalty_balance)
     LinearLayout holderLoyaltyBalance;
-    @Bind(R2.id.et_use_deposit)
+    @BindView(R2.id.et_use_deposit)
     EditText etUseDeposit;
-    @Bind(R2.id.holder_use_deposit)
+    @BindView(R2.id.holder_use_deposit)
     LinearLayout holderUseDeposit;
 
     private ICartActionFragment actionListener;

@@ -31,7 +31,7 @@ import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * @author anggaprasetiyo on 11/29/16.
@@ -50,9 +50,9 @@ public class TopPayFragment extends BasePresenterFragment implements View.OnKeyL
     private static final String CONTAINS_LOGIN_URL = "login.pl";
     private static final long FORCE_TIMEOUT = 60000L;
 
-    @Bind(R2.id.webview)
+    @BindView(R2.id.webview)
     WebView webView;
-    @Bind(R2.id.progressbar)
+    @BindView(R2.id.progressbar)
     ProgressBar progressBar;
 
     private TopPayParameterData topPayParameterData;

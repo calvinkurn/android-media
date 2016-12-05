@@ -37,8 +37,9 @@ import com.tokopedia.transaction.cart.model.cartdata.TransactionList;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+
 
 /**
  * @author anggaprasetiyo on 11/10/16.
@@ -566,62 +567,62 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R2.id.holder_container)
+        @BindView(R2.id.holder_container)
         CardView holderContainer;
-        @Bind(R2.id.tv_error_1)
+        @BindView(R2.id.tv_error_1)
         TextView tvError1;
-        @Bind(R2.id.tv_error_2)
+        @BindView(R2.id.tv_error_2)
         TextView tvError2;
-        @Bind(R2.id.holder_error)
+        @BindView(R2.id.holder_error)
         LinearLayout holderError;
-        @Bind(R2.id.tv_shop_name)
+        @BindView(R2.id.tv_shop_name)
         TextView tvShopName;
-        @Bind(R2.id.btn_overflow)
+        @BindView(R2.id.btn_overflow)
         ImageView btnOverflow;
-        @Bind(R2.id.rv_cart_product)
+        @BindView(R2.id.rv_cart_product)
         RecyclerView rvCartProduct;
-        @Bind(R2.id.cb_dropshiper)
+        @BindView(R2.id.cb_dropshiper)
         CheckBox cbDropshiper;
-        @Bind(R2.id.et_dropshiper_name)
+        @BindView(R2.id.et_dropshiper_name)
         EditText etDropshiperName;
-        @Bind(R2.id.til_et_dropshiper_name)
+        @BindView(R2.id.til_et_dropshiper_name)
         TextInputLayout tilEtDropshiperName;
-        @Bind(R2.id.et_dropshiper_phone)
+        @BindView(R2.id.et_dropshiper_phone)
         EditText etDropshiperPhone;
-        @Bind(R2.id.til_et_dropshiper_phone)
+        @BindView(R2.id.til_et_dropshiper_phone)
         TextInputLayout tilEtDropshiperPhone;
-        @Bind(R2.id.holder_dropshiper_form)
+        @BindView(R2.id.holder_dropshiper_form)
         LinearLayout holderDropshiperForm;
-        @Bind(R2.id.holder_detail_cart_toggle)
+        @BindView(R2.id.holder_detail_cart_toggle)
         RelativeLayout holderDetailCartToggle;
-        @Bind(R2.id.tv_shipping_address)
+        @BindView(R2.id.tv_shipping_address)
         TextView tvShippingAddress;
-        @Bind(R2.id.tv_shipment)
+        @BindView(R2.id.tv_shipment)
         TextView tvShipment;
-        @Bind(R2.id.sp_use_insurance)
+        @BindView(R2.id.sp_use_insurance)
         Spinner spUseInsurance;
-        @Bind(R2.id.sp_shipment_option_choosen)
+        @BindView(R2.id.sp_shipment_option_choosen)
         Spinner spShipmentOptionChoosen;
-        @Bind(R2.id.tv_weight)
+        @BindView(R2.id.tv_weight)
         TextView tvWeight;
-        @Bind(R2.id.tv_sub_total)
+        @BindView(R2.id.tv_sub_total)
         TextView tvSubTotal;
-        @Bind(R2.id.tv_shipping_cost)
+        @BindView(R2.id.tv_shipping_cost)
         TextView tvShippingCost;
-        @Bind(R2.id.tv_insurance_price)
+        @BindView(R2.id.tv_insurance_price)
         TextView tvInsurancePrice;
-        @Bind(R2.id.tv_additional_cost)
+        @BindView(R2.id.tv_additional_cost)
         TextView tvAdditionalCost;
-        @Bind(R2.id.holder_detail_cart)
+        @BindView(R2.id.holder_detail_cart)
         LinearLayout holderDetailCart;
-        @Bind(R2.id.tv_total_price)
+        @BindView(R2.id.tv_total_price)
         TextView tvTotalPrice;
 
-        @Bind(R2.id.holder_action_editor)
+        @BindView(R2.id.holder_action_editor)
         LinearLayout holderActionEditor;
-        @Bind(R2.id.btn_save)
+        @BindView(R2.id.btn_save)
         TextView btnSave;
-        @Bind(R2.id.btn_cancel)
+        @BindView(R2.id.btn_cancel)
         TextView btnCancel;
 
         public ViewHolder(View itemView) {

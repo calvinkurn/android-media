@@ -16,7 +16,7 @@ import com.tokopedia.transaction.cart.model.cartdata.GatewayList;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -35,7 +35,7 @@ public class PaymentGatewayAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public PaymentGatewayAdapter(PaymentGatewayFragment fragment, List<GatewayList> gatewayLists) {
         this.fragment = fragment;
         this.gatewayLists = gatewayLists;
-        this.actionListener = (ActionListener) fragment;
+        this.actionListener = fragment;
     }
 
     @Override
@@ -70,11 +70,11 @@ public class PaymentGatewayAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R2.id.img)
+        @BindView(R2.id.img)
         ImageView ivLogo;
-        @Bind(R2.id.name)
+        @BindView(R2.id.name)
         TextView tvName;
-        @Bind(R2.id.payment_fee)
+        @BindView(R2.id.payment_fee)
         TextView tvFee;
 
         public ViewHolder(View itemView) {
