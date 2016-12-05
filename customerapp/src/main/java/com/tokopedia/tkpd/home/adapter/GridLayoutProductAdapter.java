@@ -221,7 +221,8 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
     }
 
     private void setBadges(ViewHolder holder, ProductItem data) {
-        if (data.getBadges() != null && holder.badgeContainer.getChildCount() == 0) {
+        holder.badgeContainer.removeAllViews();
+        if (data.getBadges() != null) {
             for (ProductItem.Badge badges : data.getBadges()) {
                 LuckyShopImage.loadImage(context, badges.getImageUrl(), holder.badgeContainer);
             }

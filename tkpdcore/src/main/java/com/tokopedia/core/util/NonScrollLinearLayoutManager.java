@@ -9,14 +9,14 @@ import com.tkpd.library.ui.view.LinearLayoutManager;
  * Created by nisie on 9/29/16.
  */
 
-public class NonScrollLayoutManager extends LinearLayoutManager {
+public class NonScrollLinearLayoutManager extends LinearLayoutManager {
 
-    public NonScrollLayoutManager(Context context) {
+    public NonScrollLinearLayoutManager(Context context) {
         super(context);
     }
 
-    public NonScrollLayoutManager(FragmentActivity activity, int vertical, boolean b) {
-        super(activity, vertical, b);
+    public NonScrollLinearLayoutManager(Context context, int vertical, boolean b) {
+        super(context, vertical, b);
     }
 
     @Override
