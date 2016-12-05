@@ -8,7 +8,6 @@ import android.os.Bundle;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.cart.fragment.ShipmentCartFragment;
-import com.tokopedia.transaction.cart.model.ShipmentCartPassData;
 import com.tokopedia.transaction.cart.model.cartdata.TransactionList;
 
 
@@ -44,7 +43,7 @@ public class ShipmentCartActivity extends BasePresenterActivity {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_shipment_cart;
+        return R.layout.activity_shipment_cart_tx_module;
     }
 
     @Override

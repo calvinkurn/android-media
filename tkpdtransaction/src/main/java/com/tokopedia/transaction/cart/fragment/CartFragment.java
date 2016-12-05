@@ -28,10 +28,10 @@ import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.util.NonScrollLayoutManager;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.activity.ShipmentCartActivity;
 import com.tokopedia.transaction.cart.adapter.CartItemAdapter;
 import com.tokopedia.transaction.cart.listener.ICartActionFragment;

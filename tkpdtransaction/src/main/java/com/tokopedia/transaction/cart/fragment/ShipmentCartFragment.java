@@ -24,8 +24,6 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.addtocart.model.responseatcform.Destination;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
@@ -34,6 +32,8 @@ import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.adapter.ShipmentCartAdapter;
 import com.tokopedia.transaction.cart.adapter.ShipmentPackageCartAdapter;
 import com.tokopedia.transaction.cart.listener.IShipmentCartView;
@@ -165,7 +165,7 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_shipment_cart;
+        return R.layout.fragment_shipment_cart_tx_module;
     }
 
     @Override
