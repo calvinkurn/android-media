@@ -176,7 +176,6 @@ public class ProductList extends V2BaseFragment {
         adapter.setListType(getShopParam.listState);
         adapter.setSelectedEtalasePos(getShopParam.selectedEtalase);
         adapter.setEtalaseAdapter(etalaseAdapter);
-
         configSearchView();
     }
 
@@ -491,7 +490,11 @@ public class ProductList extends V2BaseFragment {
             public void onSuccess(EtalaseModel model) {
                 etalaseModel = model;
                 updateEtalaseNameList();
-                getShopParam.selectedEtalase = etalaseNameList.indexOf(getActivity().getIntent().getExtras().getString(ETALASE_NAME, getString(R.string.title_all_etalase)));
+                if(getArguments().getString(ETALASE_ID_BUNDLE)!=null){
+                    getShopParam.selectedEtalase = etalaseIdList.indexOf(getArguments().getString(ETALASE_ID_BUNDLE));
+                } else {
+                    getShopParam.selectedEtalase = etalaseNameList.indexOf(getActivity().getIntent().getExtras().getString(ETALASE_NAME, getString(R.string.title_all_etalase)));
+                }
                 adapter.setSelectedEtalasePos(getShopParam.selectedEtalase);
                 adapter.notifyDataSetChanged();
             }

@@ -166,7 +166,7 @@ public class ShopInfoActivity extends TActivity {
     }
 
     public void switchTab(String etalaseId){
-        
+        holder.pager.setCurrentItem(1, true);
     }
 
     @Override
