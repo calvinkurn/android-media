@@ -30,7 +30,7 @@ import butterknife.BindView;
  * Created by Alifa on 10/12/2016.
  */
 
-public class TrackingFragment  extends BasePresenterFragment<TrackingFragmentPresenter> implements TrackingFragmentView {
+public class TrackingFragment extends BasePresenterFragment<TrackingFragmentPresenter> implements TrackingFragmentView {
 
     @BindView(R2.id.mainView)
     View mainView;
@@ -89,7 +89,7 @@ public class TrackingFragment  extends BasePresenterFragment<TrackingFragmentPre
     public static TrackingFragment createInstance(String orderId) {
         TrackingFragment fragment = new TrackingFragment();
         Bundle bundle = new Bundle();
-        Log.d("alifa", "createInstance: "+orderId);
+        Log.d("alifa", "createInstance: " + orderId);
         bundle.putString("order_id", orderId);
         fragment.setArguments(bundle);
         return fragment;
@@ -109,7 +109,7 @@ public class TrackingFragment  extends BasePresenterFragment<TrackingFragmentPre
     @Override
     protected void onFirstTimeLaunched() {
         setActionsEnabled(false);
-        Log.d("alifa", "onFirstTimeLaunched: "+getArguments().getString("order_id"));
+        Log.d("alifa", "onFirstTimeLaunched: " + getArguments().getString("order_id"));
         presenter.loadTrackingData(getArguments().getString("order_id"));
     }
 
@@ -173,7 +173,8 @@ public class TrackingFragment  extends BasePresenterFragment<TrackingFragmentPre
 
     @Override
     public void finishLoading() {
-        loadingStatus.setVisibility(View.GONE);
+        if (loadingStatus != null)
+            loadingStatus.setVisibility(View.GONE);
     }
 
     @Override
