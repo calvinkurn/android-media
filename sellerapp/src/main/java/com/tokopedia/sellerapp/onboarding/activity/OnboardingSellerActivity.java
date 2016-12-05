@@ -76,6 +76,7 @@ public class OnboardingSellerActivity extends OnboardingActivity{
             Intent intent = SellerRouter.getAcitivityShopCreateEdit(this);
             intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
                     SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
+            intent.putExtra(SellerRouter.ShopSettingConstant.ON_BACK, SellerRouter.ShopSettingConstant.LOG_OUT);
             startActivity(intent);
         }
         finish();

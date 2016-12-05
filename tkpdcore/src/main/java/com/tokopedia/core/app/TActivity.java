@@ -48,6 +48,7 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.retrofit.utils.DialogForceLogout;
 import com.tokopedia.core.network.retrofit.utils.DialogNoConnection;
+import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.SessionRouter;
@@ -68,6 +69,7 @@ import com.tokopedia.core.util.VersionInfo;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.var.ToolbarVariable;
+import com.tokopedia.core.welcome.WelcomeActivity;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -422,8 +424,8 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
         if (success) {
             finish();
             Intent intent;
-            if (isSeller()) {
-                intent = SessionRouter.getLoginActivityIntent(this);
+            if (isSellerApp()) {
+                intent = new Intent(this, WelcomeActivity.class);
             } else {
                 intent = HomeRouter.getHomeActivity(this);
             }
@@ -432,7 +434,7 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
         }
     }
 
-    private boolean isSeller() {
+    private boolean isSellerApp() {
         return getApplication().getClass().getSimpleName().equals("SellerMainApplication");
     }
 
