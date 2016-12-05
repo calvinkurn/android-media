@@ -6,4 +6,7 @@
     <string name="title_btn_alert_dialog_cancel">Batal</string>
     <string name="hint_dialog_alert_request_cancel_order_et_reason">Alasan</string>
     <string name="label_error_reason_must_fill">Alasan harus diisi</string>
+    <string name="shipment_no_courier_available">Agen kurir tidak tersedia</string>
+    <string name="courier_not_available">Alamat tidak didukung agen pengirim.</string>
+    <string name="shipment_data_not_complete">Data tidak lengkap.</string>
 </resources>
