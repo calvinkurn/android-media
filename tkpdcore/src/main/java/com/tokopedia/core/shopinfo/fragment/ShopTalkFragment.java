@@ -309,6 +309,7 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
 
     @Override
     public void showError(String error) {
+        setActionsEnabled(true);
         showErrorSnackbar(error);
     }
 
