@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.rescenter.inbox.listener;
 
+import android.app.Application;
 import android.os.Bundle;
 
 /**
@@ -20,4 +21,6 @@ public interface ResCenterView {
     Bundle getBundleArguments();
 
     void setTabPosition(int i);
+
+    Application getApplication();
 }

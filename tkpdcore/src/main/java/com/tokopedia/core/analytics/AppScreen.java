@@ -11,6 +11,7 @@ import com.tokopedia.core.router.home.HomeRouter;
  */
 public final class AppScreen {
 
+
     private AppScreen() {
 
     }
@@ -208,4 +209,7 @@ public final class AppScreen {
     public static final String SCREEN_RECHARGE_PAYMENT = "Recharge Payment WebView";
     public static final String SCREEN_SHARE = "Share Screen";
     public static final String SCREEN_GALLERY_BROWSE = "Browse Gallery Screen";
+    public static final String SCREEN_GM_SUBSCRIBE = "Gold Merchant Subscribe";
+    public static final String SCREEN_SELLER_HOME = "Seller Home";
+    public static final String SCREEN_PHONE_VERIFICATION = "Phone Verification Screen";
 }

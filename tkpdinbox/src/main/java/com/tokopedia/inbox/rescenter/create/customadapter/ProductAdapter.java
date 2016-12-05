@@ -30,18 +30,19 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private Context context;
     private CreateResCenterFormData formData;
     private List<CreateResCenterFormData.ProductData> listProduct;
-    private List<CreateResCenterFormData.TroubleData> listTrouble;
     private List<PassProductTrouble> listProductTroubleChoosen;
+    private CreateResCenterFormData.TroubleCategoryData troubleCategoryChoosen;
 
     public ProductAdapter(CreateResCenterFormData formData) {
         this.formData = formData;
         this.listProduct = formData.getListProd();
-        this.listTrouble = new ArrayList<>();
+        this.listProductTroubleChoosen = new ArrayList<>();
     }
 
-    public ProductAdapter(List<PassProductTrouble> listProduct, List<CreateResCenterFormData.TroubleData> listTrouble) {
+    public ProductAdapter(List<PassProductTrouble> listProduct,
+                          CreateResCenterFormData.TroubleCategoryData troubleCategoryChoosen) {
         this.listProductTroubleChoosen = listProduct;
-        this.listTrouble = listTrouble;
+        this.troubleCategoryChoosen = troubleCategoryChoosen;
     }
 
     public class FormViewHolder extends RecyclerView.ViewHolder {
@@ -106,7 +107,7 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemViewType(int position) {
-        if (listTrouble.isEmpty()) {
+        if (listProductTroubleChoosen.isEmpty()) {
             return TYPE_SELECT_PRODUCT;
         } else {
             return TYPE_FORM_PRODUCT;
@@ -149,13 +150,13 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         CreateResCenterFormData.ProductData productData = listProductTroubleChoosen.get(position).getProductData();
         holder.viewBoxDesc.setVisibility(View.GONE);
         holder.viewTotalValue.setVisibility(View.GONE);
-        renderSpinner(holder);
+        renderSpinner(holder, productData);
         renderProductDetail(holder, productData);
         renderTotalValue(holder, productData.getQuantity());
     }
 
-    private void renderSpinner(final FormViewHolder holder) {
-        TroubleSpinnerAdapter troubleAdapter = new TroubleSpinnerAdapter(context, android.R.layout.simple_spinner_item, listTrouble);
+    private void renderSpinner(final FormViewHolder holder, CreateResCenterFormData.ProductData productData) {
+        TroubleSpinnerAdapter troubleAdapter = new TroubleSpinnerAdapter(context, android.R.layout.simple_spinner_item, getListTrouble(productData));
         troubleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         holder.troubleSpinner.setAdapter(troubleAdapter);
         holder.troubleSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -175,6 +176,14 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
             }
         });
+    }
+
+    private List<CreateResCenterFormData.TroubleData> getListTrouble(CreateResCenterFormData.ProductData productData) {
+        if (productData.getIsFreeReturn() == 1) {
+            return troubleCategoryChoosen.getTroubleListFreeReturn();
+        } else {
+            return troubleCategoryChoosen.getTroubleList();
+        }
     }
 
     private void renderProductDetail(FormViewHolder holder, CreateResCenterFormData.ProductData productData) {

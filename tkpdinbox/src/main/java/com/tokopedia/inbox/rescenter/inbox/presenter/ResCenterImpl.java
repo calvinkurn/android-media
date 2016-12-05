@@ -42,13 +42,21 @@ public class ResCenterImpl implements ResCenterPresenter {
 
     @Override
     public void initFragmentList(@NonNull Context context, @NonNull List<InboxResCenterActivity.Model> list) {
-        if (isHasShop(context)) {
-            list.add(new InboxResCenterActivity.Model(TkpdState.InboxResCenter.RESO_ALL, context.getString(R.string.title_all_dispute)));
-            list.add(new InboxResCenterActivity.Model(TkpdState.InboxResCenter.RESO_MINE, context.getString(R.string.title_my_dispute)));
-            list.add(new InboxResCenterActivity.Model(TkpdState.InboxResCenter.RESO_BUYER, context.getString(R.string.title_buyer_dispute)));
+        if (!isSellerApp()) {
+            if (isHasShop(context)) {
+                list.add(new InboxResCenterActivity.Model(TkpdState.InboxResCenter.RESO_ALL, context.getString(R.string.title_all_dispute)));
+                list.add(new InboxResCenterActivity.Model(TkpdState.InboxResCenter.RESO_MINE, context.getString(R.string.title_my_dispute)));
+                list.add(new InboxResCenterActivity.Model(TkpdState.InboxResCenter.RESO_BUYER, context.getString(R.string.title_buyer_dispute)));
+            } else {
+                list.add(new InboxResCenterActivity.Model(TkpdState.InboxResCenter.RESO_ALL, context.getString(R.string.title_all_dispute)));
+            }
         } else {
-            list.add(new InboxResCenterActivity.Model(TkpdState.InboxResCenter.RESO_ALL, context.getString(R.string.title_all_dispute)));
+            list.add(new InboxResCenterActivity.Model(TkpdState.InboxResCenter.RESO_BUYER, context.getString(R.string.title_buyer_dispute)));
         }
+    }
+
+    public boolean isSellerApp() {
+        return view.getApplication().getClass().getSimpleName().equals("SellerMainApplication");
     }
 
     private boolean isHasShop(Context context) {

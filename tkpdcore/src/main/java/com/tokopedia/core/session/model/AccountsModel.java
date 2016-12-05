@@ -173,7 +173,7 @@ public class AccountsModel implements Parcelable {
     }
 
     public boolean getMsisdnIsVerifiedBoolean() {
-        return msisdnIsVerified == "1";
+        return msisdnIsVerified.equals("1");
     }
 
     /**

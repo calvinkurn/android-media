@@ -54,6 +54,7 @@ import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.drawer.DrawerVariable;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.drawer.DrawerVariableSeller;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
@@ -65,12 +66,15 @@ import com.tokopedia.core.network.apiservices.shop.ShopService;
 import com.tokopedia.core.network.apiservices.transaction.DepositService;
 import com.tokopedia.core.network.apiservices.user.InboxResCenterService;
 import com.tokopedia.core.network.apiservices.user.NotificationService;
+import com.tokopedia.core.session.presenter.Session;
+import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.gmsubscribe.GMSubscribeActivity;
 import com.tokopedia.sellerapp.home.boommenu.BoomMenuButton;
@@ -108,7 +112,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
-import static com.tokopedia.core.drawer.DrawerVariable.goToShopNewOrder;
+import static com.tokopedia.core.drawer.DrawerVariableSeller.goToShopNewOrder;
 import static com.tokopedia.core.drawer.DrawerVariable.startIntent;
 
 public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.GCMHandlerListener,
@@ -228,7 +232,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
     String userId;
     String shopId;
 
-    DrawerVariable drawer;
+    DrawerVariableSeller drawer;
     ActionBarDrawerToggle mDrawerToggle;
 
     @Nullable
@@ -346,8 +350,9 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
     }
 
     private void initDrawer() {
-        drawer = new DrawerVariable(this);
+        drawer = new DrawerVariableSeller(this);
         toolbar = new FckToolbarVariable(this, sellerHomeToolbar);
+        toolbar.createToolbarWithDrawer();
         drawer.setToolbar(toolbar);
         drawer.createDrawer();
         drawer.setEnabled(true);
@@ -740,13 +745,12 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
     @Override
     public void onLogout(Boolean success) {
         finish();
-
-        /*Intent intent = new Intent(this, WelcomeActivity.class);
-        intent.putExtra(com.tokopedia.session.session.presenter.Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
+        Intent intent = new Intent(this, WelcomeActivity.class);
+        intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
         intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-        startActivity(intent);*/
+        startActivity(intent);
     }
 
     public static class SellerHomeNewOrderView {
@@ -1016,6 +1020,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
     protected void onResume() {
         super.onResume();
         shopController.init(this);
+        smoothAppBarLayout.setExpanded(true);
         sendToGTM();
         sendToLocalytics();
     }
@@ -1050,7 +1055,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
     public void onStart() {
         super.onStart();
         if(appInstalledOrNot(ARG_TRUECALLER_PACKAGE)){
-            TrackingUtils.eventTrueCaller(SessionHandler.getLoginID(this));
+//            TrackingUtils.eventTrueCaller(SessionHandler.getLoginID(this));
         }
     }
     private boolean appInstalledOrNot(String uri) {
