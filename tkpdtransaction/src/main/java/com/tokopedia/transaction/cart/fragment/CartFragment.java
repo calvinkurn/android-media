@@ -29,7 +29,6 @@ import android.widget.Toast;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.util.NonScrollLayoutManager;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.activity.ShipmentCartActivity;
@@ -47,6 +46,7 @@ import com.tokopedia.transaction.cart.model.voucher.VoucherData;
 import com.tokopedia.transaction.cart.presenter.CartPresenter;
 import com.tokopedia.transaction.cart.presenter.ICartPresenter;
 import com.tokopedia.transaction.cart.receivers.CartBroadcastReceiver;
+import com.tokopedia.transaction.utils.LinearLayoutManagerNonScroll;
 
 import java.util.List;
 
@@ -282,7 +282,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void renderCartListData(final List<TransactionList> cartList) {
-        rvCart.setLayoutManager(new NonScrollLayoutManager(getActivity()));
+        rvCart.setLayoutManager(new LinearLayoutManagerNonScroll(getActivity()));
         final CartItemAdapter adapter = new CartItemAdapter(this, this);
         adapter.fillDataList(cartList);
         rvCart.setAdapter(adapter);
