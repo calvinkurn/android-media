@@ -141,6 +141,7 @@ public class OnBoardingSellerFragment extends OnBoardingFragment {
                     intent = SellerRouter.getAcitivityShopCreateEdit(getActivity());
                     intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
                             SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
+                    intent.putExtra(SellerRouter.ShopSettingConstant.ON_BACK, SellerRouter.ShopSettingConstant.LOG_OUT);
                     startActivity(intent);
                     getActivity().finish();
                 } else {

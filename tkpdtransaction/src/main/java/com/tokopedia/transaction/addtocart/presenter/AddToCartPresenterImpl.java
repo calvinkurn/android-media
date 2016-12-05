@@ -106,21 +106,25 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                         viewListener.renderFormShipmentRates(filterAvailableKeroShipment(
                                 rates.getAttributes(), atcFormData.getForm().getShipment())
                         );
+                        viewListener.enableBuyButton();
                     }
 
                     @Override
                     public void onFailed(String error) {
                         viewListener.showErrorMessage(error);
+                        viewListener.enableBuyButton();
                     }
 
                     @Override
                     public void onTimeout(String timeoutError) {
                         viewListener.showErrorMessage(timeoutError);
+                        viewListener.enableBuyButton();
                     }
 
                     @Override
                     public void onNoConnection() {
                         viewListener.onCartFailedLoading();
+                        viewListener.enableBuyButton();
                     }
                 });
     }
