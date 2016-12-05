@@ -24,6 +24,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.discovery.catalog.adapter.CatalogDetailAdapter;
 import com.tokopedia.discovery.catalog.adapter.CatalogLocationAdapter;
+import com.tokopedia.discovery.catalog.adapter.FilterItemAdapter;
 import com.tokopedia.discovery.catalog.listener.ICatalogDetailListView;
 import com.tokopedia.discovery.catalog.model.CatalogDetailItem;
 import com.tokopedia.discovery.catalog.model.CatalogDetailListLocation;
@@ -74,6 +75,9 @@ public class CatalogDetailListFragment extends BasePresenterFragment<ICatalogDet
     private List<CatalogDetailListLocation> mLocationsData;
     private CatalogListWrapperData mWrapperData;
     private SlideOffViewHandler mSlideOffViewHandler;
+
+    private int selectedSortPosition = 0;
+    private int selectedConditionPosition = 0;
 
     public CatalogDetailListFragment() {
     }
@@ -276,12 +280,15 @@ public class CatalogDetailListFragment extends BasePresenterFragment<ICatalogDet
     @Override
     public void showConditionDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
-        ArrayAdapter<SingleItemFilter> adapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.select_dialog_item, mConditionList);
+        FilterItemAdapter adapter = new FilterItemAdapter(getActivity(),
+                selectedConditionPosition, mConditionList);
+        /*ArrayAdapter<SingleItemFilter> adapter = new ArrayAdapter<>(getActivity(),
+                android.R.layout.select_dialog_item, mConditionList);*/
         alertDialog.setAdapter(adapter, new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
                 mWrapperData.setCondition(mConditionList.get(which).getId());
+                selectedConditionPosition = which;
                 refreshData();
             }
         });
