@@ -33,6 +33,7 @@ import com.tokopedia.transaction.purchase.listener.TxDetailViewListener;
 import com.tokopedia.transaction.purchase.model.response.txlist.OrderData;
 import com.tokopedia.transaction.purchase.presenter.TxDetailPresenter;
 import com.tokopedia.transaction.purchase.presenter.TxDetailPresenterImpl;
+import com.tokopedia.transaction.purchase.receiver.TxListUIReceiver;
 import com.tokopedia.transaction.purchase.view.NestedListView;
 
 import java.text.MessageFormat;
@@ -337,6 +338,14 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
     public void closeWithResult(int requestCode, Intent data) {
         this.setResult(requestCode, data);
         this.finish();
+    }
+
+    @Override
+    public void renderSuccessRequestCancelOrder(String message) {
+        orderData.getOrderButton().setButtonCancelRequest("0");
+        showToastMessage(message);
+        btnRequestCancelOrder.setVisibility(View.GONE);
+        TxListUIReceiver.sendBroadcastForceRefreshListData(this);
     }
 
     @Override
