@@ -108,10 +108,8 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R2.id.action_close:
-                finish();
-                break;
+        if (item.getItemId()==R.id.action_close) {
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }
