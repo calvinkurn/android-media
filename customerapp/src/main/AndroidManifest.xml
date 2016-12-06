@@ -28,10 +28,8 @@
             </intent-filter>
             <intent-filter>
                 <!-- LOCALYTICS TEST MESSAGE KEY -->
-                <data android:scheme="ampe5ce78bb486192da7790186-01e0f208-0058-11e5-9b02-00739d24cb30" />
+                <data android:scheme="@string/key_localytics_testmessage" />
 
-                <!-- DEBUG KEY -->
-                <!-- <data android:scheme="ampa4c853a5c07b6acfeb61343-037f3b9e-6591-11e5-bdf6-0013a62af900" /> -->
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -98,11 +96,7 @@
 
         <meta-data
             android:name="LOCALYTICS_APP_KEY"
-            android:value="e5ce78bb486192da7790186-01e0f208-0058-11e5-9b02-00739d24cb30" />
-        <!-- DEBUG KEY -->
-        <!-- <meta-data -->
-        <!-- android:name="LOCALYTICS_APP_KEY" -->
-        <!-- android:value="a4c853a5c07b6acfeb61343-037f3b9e-6591-11e5-bdf6-0013a62af900" /> -->
+            android:value="@string/key_localytics" />
 
         <meta-data
             android:name="GTM_RESOURCE"
@@ -110,11 +104,11 @@
 
         <meta-data
             android:name="GTM_ID"
-            android:value="GTM-P32KTB" />
+            android:value="@string/key_gtm" />
 
         <meta-data
             android:name="APPSFLYER_KEY"
-            android:value="SdSopxGtYr9yK8QEjFVHXL" />
+            android:value="@string/key_appsflyer" />
 
         <activity
             android:name=".home.ParentIndexHome"
