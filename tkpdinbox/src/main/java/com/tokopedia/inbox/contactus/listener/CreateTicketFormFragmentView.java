@@ -38,9 +38,5 @@ public interface CreateTicketFormFragmentView {
 
     void showErrorEmptyState(String error, NetworkErrorHelper.RetryClickedListener retryClickedListener);
 
-    EditText getEmail();
-
     void showErrorValidation(EditText view, String error);
-
-    EditText getPhoneNumber();
 }

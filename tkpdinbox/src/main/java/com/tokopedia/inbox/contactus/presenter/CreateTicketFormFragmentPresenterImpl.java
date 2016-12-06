@@ -77,8 +77,6 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
         pass.setMessageBody(viewListener.getMessage().getText().toString());
         pass.setAttachment(viewListener.getAttachment());
         pass.setName(SessionHandler.getLoginName(viewListener.getActivity()));
-        pass.setEmail(viewListener.getEmail().getText().toString());
-        pass.setPhoneNumber(viewListener.getPhoneNumber().getText().toString());
         pass.setTag(String.valueOf(viewListener.getArguments().getString(
                 ContactUsActivity.PARAM_TAG)));
         pass.setOrderId(String.valueOf(viewListener.getArguments().getString(

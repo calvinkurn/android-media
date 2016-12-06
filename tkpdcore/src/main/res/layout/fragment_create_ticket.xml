@@ -68,58 +68,10 @@
                 android:textSize="@dimen/font_small" />
 
             <TextView
-                android:id="@+id/title_email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/detail"
-                android:padding="@dimen/padding_small"
-                android:text="@string/title_email"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-
-            <EditText
-                android:id="@+id/email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/title_email"
-                android:layout_marginLeft="@dimen/margin_small"
-                android:layout_marginRight="@dimen/margin_small"
-                android:background="@android:color/white"
-                android:gravity="top"
-                android:hint="@string/title_email_address"
-                android:inputType="textEmailAddress"
-                android:padding="@dimen/padding_small"
-                android:textSize="@dimen/font_small" />
-
-            <TextView
-                android:id="@+id/title_phone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/email"
-                android:padding="@dimen/padding_small"
-                android:text="@string/title_phone_optional"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-
-            <EditText
-                android:id="@+id/phone_number"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/title_phone"
-                android:layout_marginLeft="@dimen/margin_small"
-                android:layout_marginRight="@dimen/margin_small"
-                android:background="@android:color/white"
-                android:gravity="top"
-                android:hint="@string/title_phone"
-                android:inputType="phone"
-                android:padding="@dimen/padding_small"
-                android:textSize="@dimen/font_small" />
-
-            <TextView
                 android:id="@+id/attachment_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/phone_number"
+                android:layout_below="@id/detail"
                 android:padding="@dimen/padding_small"
                 android:text="@string/title_attachment"
                 android:textSize="15sp"

@@ -76,12 +76,6 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
     @BindView(R2.id.attachment)
     RecyclerView attachment;
 
-    @BindView(R2.id.email)
-    EditText email;
-
-    @BindView(R2.id.phone_number)
-    EditText phoneNumber;
-
     ImageUploadAdapter imageAdapter;
     TkpdProgressDialog progressDialog;
     ImageUploadHandler imageUploadHandler;
@@ -299,19 +293,9 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
     }
 
     @Override
-    public EditText getEmail() {
-        return email;
-    }
-
-    @Override
     public void showErrorValidation(EditText view, String error) {
         view.setError(error);
         view.requestFocus();
-    }
-
-    @Override
-    public EditText getPhoneNumber() {
-        return phoneNumber;
     }
 
     @Override
