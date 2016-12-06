@@ -143,6 +143,7 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
                         }else if(item.getTitle().equals("Wanita")){
                             presenter.updateData(RegisterNewNext.GENDER, RegisterViewModel.GENDER_FEMALE);
                         }
+                        KeyboardHandler.DropKeyboard(getActivity(),getView());
                         return true;
                     }
                 });
@@ -418,7 +419,7 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
 
                 TrackingUtils.fragmentBasedAFEvent(SessionRouter.IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT);
 
-                RegisterSuccessModel registerSuccessModel = Parcels.unwrap(data.getParcelable(DownloadService.REGISTER_MODEL_KEY));
+                RegisterSuccessModel registerSuccessModel = data.getParcelable(DownloadService.REGISTER_MODEL_KEY);
                 switch (registerSuccessModel.getIsActive()){
                     case RegisterSuccessModel.USER_PENDING:
                         sendLocalyticsRegisterEvent(registerSuccessModel.getUserId());
