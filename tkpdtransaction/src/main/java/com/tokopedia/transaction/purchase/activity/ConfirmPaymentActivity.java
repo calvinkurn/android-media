@@ -704,38 +704,37 @@ public class ConfirmPaymentActivity extends BasePresenterActivity<ConfirmPayment
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            switch (resId) {
-                case R2.id.remark:
-                    tilEtRemark.setErrorEnabled(false);
-                    break;
-                case R2.id.nama_penyetor:
-                    tilEtDepositorName.setErrorEnabled(false);
-                    break;
-                case R2.id.input_total_payment:
-                    tilEtPaymentAmount.setErrorEnabled(false);
-                    CurrencyFormatHelper.SetToRupiah(etTotalPayment);
-                    break;
-                case R2.id.account_owner:
-                    tilEtAccountOwner.setErrorEnabled(false);
-                    confirmPaymentData.setBankAccountName(s.toString());
-                    break;
-                case R2.id.account_number:
-                    tilEtAccountNumber.setErrorEnabled(false);
-                    confirmPaymentData.setBankAccountNumber(s.toString());
-                    break;
-                case R2.id.branch:
-                    tilEtBankBranch.setErrorEnabled(false);
-                    confirmPaymentData.setBankAccountBranch(s.toString());
-                    break;
-                case R2.id.password:
-                    if (s.length() <= 0) {
-                        renderErrorDepositorPassword(getString(R.string.error_empty_password));
-                    } else {
-                        tilEtPassword.setError(null);
-                        tilEtPassword.setErrorEnabled(false);
-                    }
-                    confirmPaymentData.setPasswordDeposit(s.toString());
-                    break;
+            if (resId == R.id.remark) {
+                tilEtRemark.setErrorEnabled(false);
+
+            } else if (resId == R.id.nama_penyetor) {
+                tilEtDepositorName.setErrorEnabled(false);
+
+            } else if (resId == R.id.input_total_payment) {
+                tilEtPaymentAmount.setErrorEnabled(false);
+                CurrencyFormatHelper.SetToRupiah(etTotalPayment);
+
+            } else if (resId == R.id.account_owner) {
+                tilEtAccountOwner.setErrorEnabled(false);
+                confirmPaymentData.setBankAccountName(s.toString());
+
+            } else if (resId == R.id.account_number) {
+                tilEtAccountNumber.setErrorEnabled(false);
+                confirmPaymentData.setBankAccountNumber(s.toString());
+
+            } else if (resId == R.id.branch) {
+                tilEtBankBranch.setErrorEnabled(false);
+                confirmPaymentData.setBankAccountBranch(s.toString());
+
+            } else if (resId == R.id.password) {
+                if (s.length() <= 0) {
+                    renderErrorDepositorPassword(getString(R.string.error_empty_password));
+                } else {
+                    tilEtPassword.setError(null);
+                    tilEtPassword.setErrorEnabled(false);
+                }
+                confirmPaymentData.setPasswordDeposit(s.toString());
+
             }
         }
 

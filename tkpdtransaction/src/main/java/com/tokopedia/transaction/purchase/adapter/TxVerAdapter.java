@@ -2,6 +2,7 @@ package com.tokopedia.transaction.purchase.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,8 +25,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * TxVerAdapter
- * Created by Angga.Prasetiyo on 25/05/2016.
+ * @author Angga.Prasetiyo on 25/05/2016.
  */
 public class TxVerAdapter extends ArrayAdapter<TxVerData> {
 
@@ -34,7 +34,10 @@ public class TxVerAdapter extends ArrayAdapter<TxVerData> {
     private final ActionListener actionListener;
 
     public TxVerAdapter(Context context, ActionListener actionListener) {
-        super(context, R.layout.listview_payment_verfication, new ArrayList<TxVerData>());
+        super(
+                context, R.layout.holder_item_transaction_verification_tx_module,
+                new ArrayList<TxVerData>()
+        );
         this.context = context;
         this.actionListener = actionListener;
         this.inflater = LayoutInflater.from(context);
@@ -47,18 +50,22 @@ public class TxVerAdapter extends ArrayAdapter<TxVerData> {
         void actionUploadProof(TxVerData data);
     }
 
+    @NonNull
     @SuppressLint("InflateParams")
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
         final ViewHolder holder;
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.listview_payment_verfication, null);
+            convertView = inflater.inflate(
+                    R.layout.holder_item_transaction_verification_tx_module, null
+            );
             holder = new ViewHolder(convertView);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
         final TxVerData item = getItem(position);
+        if (item == null) return convertView;
         holder.tvPaymentDate.setText(item.getPaymentDate());
         holder.btnOverflow.setOnClickListener(new OneOnClick() {
             @Override
@@ -66,8 +73,6 @@ public class TxVerAdapter extends ArrayAdapter<TxVerData> {
                 showPopUp(view, item);
             }
         });
-
-
         holder.tvSysAccountNumber.setText(item.getSystemAccountNo());
         holder.tvSysAccountBankName.setText(item.getBankName());
         holder.tvPaymentRefNumber.setText(item.getPaymentRefNum());
@@ -99,15 +104,15 @@ public class TxVerAdapter extends ArrayAdapter<TxVerData> {
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R2.id.action_edit:
-                        actionListener.actionEditPayment(data);
-                        return true;
-                    case R2.id.action_upload:
-                        actionListener.actionUploadProof(data);
-                        return true;
-                    default:
-                        return false;
+                int i = item.getItemId();
+                if (i == R.id.action_edit) {
+                    actionListener.actionEditPayment(data);
+                    return true;
+                } else if (i == R.id.action_upload) {
+                    actionListener.actionUploadProof(data);
+                    return true;
+                } else {
+                    return false;
                 }
             }
         });

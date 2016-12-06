@@ -2,6 +2,7 @@ package com.tokopedia.transaction.purchase.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,8 +25,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * TxProductListAdapter
- * Created by Angga.Prasetiyo on 28/04/2016.
+ * @author Angga.Prasetiyo on 28/04/2016.
  */
 public class TxProductListAdapter extends ArrayAdapter<OrderProduct> {
     private final LayoutInflater inflater;
@@ -37,18 +37,22 @@ public class TxProductListAdapter extends ArrayAdapter<OrderProduct> {
     }
 
     public TxProductListAdapter(Context context, ActionListener listener) {
-        super(context, R.layout.listview_shop_order_detail_product, new ArrayList<OrderProduct>());
+        super(context, R.layout.holder_item_transaction_product_list_tx_module,
+                new ArrayList<OrderProduct>());
         this.inflater = LayoutInflater.from(context);
         this.context = context;
         this.listener = listener;
     }
 
+    @NonNull
     @SuppressLint("InflateParams")
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.listview_shop_order_detail_product, null);
+            convertView = inflater.inflate(
+                    R.layout.holder_item_transaction_product_list_tx_module, null
+            );
             holder = new ViewHolder(convertView);
             convertView.setTag(holder);
         } else {
@@ -57,7 +61,9 @@ public class TxProductListAdapter extends ArrayAdapter<OrderProduct> {
         final OrderProduct item = getItem(position);
         holder.tvProductName.setText(Html.fromHtml(item.getProductName()));
         holder.tvProductPrice.setText(item.getProductPrice());
-        holder.tvNotes.setText(Html.fromHtml(item.getProductNotes().length() == 0 ? "-" : item.getProductNotes()));
+        holder.tvNotes.setText(
+                Html.fromHtml(item.getProductNotes().length() == 0 ? "-" : item.getProductNotes())
+        );
         holder.tvDeliverQty.setText(MessageFormat.format(" x {0} {1}",
                 item.getOrderDeliverQuantity(), context.getString(R.string.title_item)));
         holder.tvTotalPrice.setText(item.getOrderSubtotalPriceIdr());

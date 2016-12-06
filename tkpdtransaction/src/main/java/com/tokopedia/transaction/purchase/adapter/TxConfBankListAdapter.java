@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.purchase.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +13,7 @@ import com.tokopedia.core.database.model.Bank;
 import java.util.List;
 
 /**
- * TxConfBankListAdapter
- * Created by Angga.Prasetiyo on 23/06/2016.
+ * @author Angga.Prasetiyo on 23/06/2016.
  */
 public class TxConfBankListAdapter extends ArrayAdapter<Bank> {
     private final int resourceId;
@@ -25,8 +25,9 @@ public class TxConfBankListAdapter extends ArrayAdapter<Bank> {
         this.resourceId = resource;
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) convertView = inflater.inflate(resourceId, parent, false);
         if (convertView instanceof TextView)
             ((TextView) convertView).setText(getItem(position).getBankName());

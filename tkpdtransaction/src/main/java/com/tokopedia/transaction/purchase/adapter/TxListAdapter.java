@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.purchase.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -29,8 +30,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * TxListAdapter
- * Created by Angga.Prasetiyo on 21/04/2016.
+ * @author Angga.Prasetiyo on 21/04/2016.
  */
 public class TxListAdapter extends ArrayAdapter<OrderData> {
     private final LayoutInflater inflater;
@@ -59,18 +59,21 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
     }
 
     public TxListAdapter(Context context, int instanceType, ActionListener actionListener) {
-        super(context, R.layout.listview_tx_order_stats, new ArrayList<OrderData>());
+        super(context, R.layout.holder_item_transaction_list_tx_module, new ArrayList<OrderData>());
         this.context = context;
         this.actionListener = actionListener;
         this.inflater = LayoutInflater.from(context);
         this.instanceType = instanceType;
     }
 
+    @NonNull
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
         final ViewHolder holder;
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.listview_tx_order_stats, parent, false);
+            convertView = inflater.inflate(
+                    R.layout.holder_item_transaction_list_tx_module, parent, false
+            );
             holder = new ViewHolder(convertView);
             convertView.setTag(holder);
         } else {
@@ -275,7 +278,7 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
     private class OnMenuPopupClicked implements PopupMenu.OnMenuItemClickListener {
         private final OrderData orderData;
 
-        public OnMenuPopupClicked(OrderData item) {
+        OnMenuPopupClicked(OrderData item) {
             this.orderData = item;
         }
 

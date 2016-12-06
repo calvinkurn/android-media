@@ -20,15 +20,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * TxSummaryAdapter
- * Created by Angga.Prasetiyo on 07/04/2016.
+ * @author Angga.Prasetiyo on 07/04/2016.
  */
 public class TxSummaryAdapter extends ArrayAdapter<TxSummaryItem> {
     public final LayoutInflater inflater;
     private List<TxSummaryItem> dataList = new ArrayList<>();
 
     public TxSummaryAdapter(Context context) {
-        super(context, R.layout.gridview_tx_center);
+        super(context, R.layout.holder_item_transaction_summary_tx_module);
         this.inflater = LayoutInflater.from(context);
         this.dataList = new ArrayList<>();
     }
@@ -53,15 +52,20 @@ public class TxSummaryAdapter extends ArrayAdapter<TxSummaryItem> {
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.gridview_tx_center, parent, false);
+            convertView = inflater.inflate(
+                    R.layout.holder_item_transaction_summary_tx_module, parent, false
+            );
             holder = new ViewHolder(convertView);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.tvName.setText(getItem(position).getName());
-        holder.tvCount.setText(MessageFormat.format("{0}", getItem(position).getCount()));
-        holder.tvDesc.setText(getItem(position).getDesc());
+        final TxSummaryItem item = getItem(position);
+        if (item != null) {
+            holder.tvName.setText(item.getName());
+            holder.tvCount.setText(MessageFormat.format("{0}", item.getCount()));
+            holder.tvDesc.setText(item.getDesc());
+        }
         return convertView;
     }
 

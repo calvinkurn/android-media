@@ -2,6 +2,7 @@ package com.tokopedia.transaction.purchase.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,34 +19,37 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * TxVerInvoiceAdapter
- * Created by Angga.Prasetiyo on 13/06/2016.
+ * @author Angga.Prasetiyo on 13/06/2016.
  */
 public class TxVerInvoiceAdapter extends ArrayAdapter<Detail> {
-    private static final String TAG = TxVerInvoiceAdapter.class.getSimpleName();
 
     private final LayoutInflater inflater;
-    private final Context context;
 
     public TxVerInvoiceAdapter(Context context) {
-        super(context, R.layout.listview_simple, new ArrayList<Detail>());
-        this.context = context;
+        super(
+                context, R.layout.holder_item_transaction_verification_invoice_tx_module,
+                new ArrayList<Detail>()
+        );
         this.inflater = LayoutInflater.from(context);
     }
 
+    @NonNull
     @SuppressLint("InflateParams")
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.listview_simple, null);
+            convertView = inflater.inflate(
+                    R.layout.holder_item_transaction_verification_invoice_tx_module, null
+            );
             holder = new ViewHolder(convertView);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.tvTitle.setText(getItem(position).getInvoice());
-        holder.tvTitle.setTextColor(context.getResources().getColor(R.color.href_link));
+        final Detail item = getItem(position);
+        if (item == null) return convertView;
+        holder.tvTitle.setText(item.getInvoice());
         return convertView;
     }
 
