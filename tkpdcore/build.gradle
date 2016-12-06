@@ -1,3 +1,12 @@
+apply plugin: 'com.android.library'
+apply plugin: 'io.fabric'
+apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'android-apt'
+apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'com.jfrog.artifactory'
+apply plugin: 'maven-publish'
+
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
@@ -12,12 +21,51 @@ buildscript {
     }
 }
 
-apply plugin: 'com.android.library'
-apply plugin: 'io.fabric'
-apply plugin: 'com.neenbedankt.android-apt'
-apply plugin: 'com.google.gms.google-services'
-apply plugin: 'android-apt'
-apply plugin: 'com.jakewharton.butterknife'
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId 'com.tokopedia.core'
+            artifactId 'core'
+            version '0.3'
+            artifact("$buildDir/outputs/aar/tkpdcore-release.aar")
+            pom.withXml {
+                def dependenciesNode = asNode().appendNode('dependencies')
+
+                //Iterate over the compile dependencies (we don't want the test ones), adding a <dependency> node for each
+                configurations.compile.allDependencies.each {
+                    if (it.group != null && it.name != null) {
+                        def dependencyNode = dependenciesNode.appendNode('dependency')
+                        dependencyNode.appendNode('groupId', it.group)
+                        dependencyNode.appendNode('artifactId', it.name)
+                        dependencyNode.appendNode('version', it.version)
+                    }
+                }
+            }
+        }
+    }
+}
+
+artifactory {
+    contextUrl = 'http://jenkins.tkpd:8081/artifactory'
+    publish {
+        repository {
+            repoKey = 'libs-release-local'
+
+            username = artifactory_username
+            password = artifactory_password
+        }
+        defaults {
+            publications('aar')
+            publishArtifacts = true
+
+            properties = ['qa.level': 'basic', 'q.os': 'android', 'dev.team': 'core']
+            publishPom = true
+        }
+    }
+}
+
+
 
 repositories {
     flatDir {
