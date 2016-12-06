@@ -1,7 +1,6 @@
 package com.tokopedia.seller.selling.view.fragment;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -10,7 +9,6 @@ import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -21,10 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.SearchView;
 import android.widget.Spinner;
@@ -33,7 +28,6 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.DatePickerV2;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
@@ -59,7 +53,7 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.subscriptions.CompositeSubscription;
@@ -69,13 +63,13 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransaction> implements SellingStatusTransactionView, View.OnClickListener {
 
-    @Bind(R2.id.order_list)
+    @BindView(R2.id.order_list)
     RecyclerView recyclerView;
-    @Bind(R2.id.swipe_refresh_layout)
+    @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
-    @Bind(R2.id.fab)
+    @BindView(R2.id.fab)
     FloatingActionButton fab;
-    @Bind(R2.id.root)
+    @BindView(R2.id.root)
     CoordinatorLayout rootView;
 
     private static final String ORDER_ID = "OrderID";
@@ -116,25 +110,25 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R2.id.start_date:
-                datePicker.getDatePicker(onStartPicked(), new DatePickerV2.Date(startDate.getText().toString()));
-                break;
-            case R2.id.end_date:
-                datePicker.getDatePicker(onEndPicked(), new DatePickerV2.Date(endDate.getText().toString()));
-                break;
-            case R2.id.search_button:
-                String search = searchTxt.getQuery().toString();
-                if (!TextUtils.isEmpty(search)) {
-                    if (ValidationTextUtil.isValidSalesQuery(search)) {
-                        presenter.refreshOnFilter();
-                    } else {
-                        Snackbar.make(filterView, getActivity().getString(R.string.keyword_min_3_char), Snackbar.LENGTH_LONG).show();
-                    }
-                } else if (TextUtils.isEmpty(search)) {
+        int i = v.getId();
+        if (i == R.id.start_date) {
+            datePicker.getDatePicker(onStartPicked(), new DatePickerV2.Date(startDate.getText().toString()));
+
+        } else if (i == R.id.end_date) {
+            datePicker.getDatePicker(onEndPicked(), new DatePickerV2.Date(endDate.getText().toString()));
+
+        } else if (i == R.id.search_button) {
+            String search = searchTxt.getQuery().toString();
+            if (!TextUtils.isEmpty(search)) {
+                if (ValidationTextUtil.isValidSalesQuery(search)) {
                     presenter.refreshOnFilter();
+                } else {
+                    Snackbar.make(filterView, getActivity().getString(R.string.keyword_min_3_char), Snackbar.LENGTH_LONG).show();
                 }
-                break;
+            } else if (TextUtils.isEmpty(search)) {
+                presenter.refreshOnFilter();
+            }
+
         }
     }
 
@@ -553,17 +547,14 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
         return new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R2.id.action_edit:
-                        listener.onEditRef(model);
-                        return true;
-
-                    case R2.id.action_track:
-                        listener.onTrack(model);
-                        return true;
-
-                    default:
-                        return false;
+                if (item.getItemId() == R.id.action_edit) {
+                    listener.onEditRef(model);
+                    return true;
+                } else if (item.getItemId() == R.id.action_track) {
+                    listener.onTrack(model);
+                    return true;
+                } else {
+                    return false;
                 }
             }
 

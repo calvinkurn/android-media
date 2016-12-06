@@ -17,12 +17,11 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.inboxmessage.activity.SendMessageActivity;
 import com.tokopedia.core.inboxmessage.fragment.SendMessageFragment;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
-import com.tokopedia.core.rescenter.create.activity.CreateResCenterActivity;
-import com.tokopedia.core.rescenter.detail.activity.ResCenterActivity;
-import com.tokopedia.core.rescenter.detail.model.passdata.ActivityParamenterPassData;
-import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
-import com.tokopedia.core.rescenter.onboarding.FreeReturnOnboardingActivity;
-import com.tokopedia.core.router.TransactionRouter;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.onboarding.ConstantOnBoarding;
+import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.AppUtils;
@@ -74,10 +73,7 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
     public void processShowComplain(Context context, OrderButton orderButton) {
         Uri uri = Uri.parse(orderButton.getButtonResCenterUrl());
         String res_id = uri.getQueryParameter("id");
-        ActivityParamenterPassData activityParamenterPassData = new ActivityParamenterPassData();
-        activityParamenterPassData.setResCenterId(res_id);
-        Intent intent = ResCenterActivity.newInstance(context, activityParamenterPassData);
-        viewListener.navigateToActivity(intent);
+        viewListener.navigateToActivity(InboxRouter.getDetailResCenterActivityIntent(context, res_id));
     }
 
     @SuppressWarnings("deprecation")
@@ -99,9 +95,9 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
                          * n=0&id=<ORDER_ID>&t=5&s=6 -> tanya kurir
                          */
                         viewListener.navigateToActivityRequest(
-                                CreateResCenterActivity.newInstancePackageNotReceived(context,
-                                        orderData.getOrderDetail().getDetailOrderId(), 5, 6),
-                                TransactionRouter.CREATE_RESCENTER_REQUEST_CODE);
+                                InboxRouter.getCreateResCenterActivityIntent(context, orderData.getOrderDetail().getDetailOrderId(), 5, 6),
+                                TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE
+                        );
                     }
                 });
         builder.setNegativeButton(context.getString(R.string.action_refund),
@@ -113,9 +109,9 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
                          * n=0&id=<ORDER_ID>&t=5&s=1 --> pengembalian dana
                          */
                         viewListener.navigateToActivityRequest(
-                                CreateResCenterActivity.newInstancePackageNotReceived(context,
-                                        orderData.getOrderDetail().getDetailOrderId(), 5, 1),
-                                TransactionRouter.CREATE_RESCENTER_REQUEST_CODE);
+                                InboxRouter.getCreateResCenterActivityIntent(context, orderData.getOrderDetail().getDetailOrderId(), 5, 1),
+                                TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE
+                        );
                     }
                 });
         Dialog alertDialog = builder.create();
@@ -192,6 +188,44 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
         netInteractor.unSubscribeObservable();
     }
 
+    @Override
+    public void processRequestCancelOrder(final Activity activity, String reason, OrderData orderData) {
+        viewListener.showProgressLoading();
+        TKPDMapParam<String, String> params = new TKPDMapParam<>();
+        params.put("order_id", orderData.getOrderDetail().getDetailOrderId());
+        params.put("reason_cancel", reason);
+        netInteractor.requestCancelOrder(AuthUtil.generateParamsNetwork(activity, params),
+                new TxOrderNetInteractor.RequestCancelOrderListener() {
+                    @Override
+                    public void onSuccess(String message) {
+                        viewListener.hideProgressLoading();
+                        if (message == null || message.isEmpty()) message = activity.getString(
+                                com.tokopedia.transaction.R.string
+                                        .default_success_message_request_cancel_order
+                        );
+                        viewListener.renderSuccessRequestCancelOrder(message);
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        viewListener.hideProgressLoading();
+                        viewListener.showToastMessage(message);
+                    }
+
+                    @Override
+                    public void onTimeout(String message) {
+                        viewListener.hideProgressLoading();
+                        viewListener.showToastMessage(message);
+                    }
+
+                    @Override
+                    public void onNoConnection(String message) {
+                        viewListener.hideProgressLoading();
+                        viewListener.showToastMessage(message);
+                    }
+                });
+    }
+
     private void processReview(final Context context, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         if (message == null || message.isEmpty())
@@ -222,7 +256,7 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 viewListener.navigateToActivity(
-                                        InboxResCenterActivity.createIntent(context)
+                                        InboxRouter.getInboxResCenterActivityIntent(context)
                                 );
                                 viewListener.closeWithResult(
                                         TkpdState.TxActivityCode.BuyerCreateResolution, null
@@ -263,9 +297,9 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     viewListener.navigateToActivityRequest(
-                            CreateResCenterActivity.newInstance(context,
+                            InboxRouter.getCreateResCenterActivityIntent(context,
                                     orderData.getOrderDetail().getDetailOrderId()),
-                            TransactionRouter.CREATE_RESCENTER_REQUEST_CODE
+                            TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE
                     );
                 }
 
@@ -284,19 +318,16 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         LocalCacheHandler cache = new LocalCacheHandler(context,
-                                FreeReturnOnboardingActivity.CACHE_FREE_RETURN);
-                        if (cache.getBoolean(FreeReturnOnboardingActivity.HAS_SEEN_ONBOARDING))
-                            viewListener.navigateToActivityRequest(
-                                    CreateResCenterActivity.newInstance(context,
-                                            orderData.getOrderDetail().getDetailOrderId()),
-                                    TransactionRouter.CREATE_RESCENTER_REQUEST_CODE
+                                ConstantOnBoarding.CACHE_FREE_RETURN);
+                        if (cache.getBoolean(ConstantOnBoarding.HAS_SEEN_FREE_RETURN_ONBOARDING)) {
+                            viewListener.navigateToActivityRequest(InboxRouter.getCreateResCenterActivityIntent(context, orderData.getOrderDetail().getDetailOrderId()),
+                                    TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE
                             );
-                        else
-                            viewListener.navigateToActivityRequest(
-                                    FreeReturnOnboardingActivity.newInstance(context,
-                                            orderData.getOrderDetail().getDetailOrderId()),
-                                    TransactionRouter.CREATE_RESCENTER_REQUEST_CODE
+                        } else {
+                            viewListener.navigateToActivityRequest(InboxRouter.getFreeReturnOnBoardingActivityIntent(context, orderData.getOrderDetail().getDetailOrderId()),
+                                    TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE
                             );
+                        }
                     }
                 });
         builder.setPositiveButton(context.getString(R.string.title_done),
@@ -330,14 +361,14 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
             netInteractor.confirmDeliver(context, params,
                     new TxOrderNetInteractor.OnConfirmFinishDeliver() {
 
-                                        @Override
-                                        public void onSuccess(String message, JSONObject lucky) {
-                                            TxListUIReceiver.sendBroadcastForceRefreshListData(context);
-                                            viewListener.hideProgressLoading();
-                                            TrackingUtils.eventLoca(context.getString(R.string.confirm_received));
-                                            processReview(context, message);
-                                            dialog.dismiss();
-                                        }
+                        @Override
+                        public void onSuccess(String message, JSONObject lucky) {
+                            TxListUIReceiver.sendBroadcastForceRefreshListData(context);
+                            viewListener.hideProgressLoading();
+                            TrackingUtils.eventLoca(context.getString(R.string.confirm_received));
+                            processReview(context, message);
+                            dialog.dismiss();
+                        }
 
                         @Override
                         public void onError(String message) {
@@ -374,7 +405,7 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
     @Override
     public void onActivityResult(Context context, int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case TransactionRouter.CREATE_RESCENTER_REQUEST_CODE:
+            case TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
                     processResolution(context, null);
                 }

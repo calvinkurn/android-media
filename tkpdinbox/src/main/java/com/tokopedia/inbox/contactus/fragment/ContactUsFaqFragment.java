@@ -24,7 +24,7 @@ import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity.BackButtonListener;
 import com.tokopedia.core.var.TkpdUrl;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 import static com.tokopedia.core.analytics.container.GTMContainer.getContainer;
 import static com.tokopedia.inbox.contactus.ContactUsConstant.PARAM_URL;
@@ -36,13 +36,13 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
 
     private static final String GTM_CONTACTUS_URL = "url_contactus";
 
-    @Bind(R2.id.scroll_view)
+    @BindView(R2.id.scroll_view)
     ScrollView mainView;
 
-    @Bind(R2.id.webview)
+    @BindView(R2.id.webview)
     WebView webView;
 
-    @Bind(R2.id.progressbar)
+    @BindView(R2.id.progressbar)
     ProgressBar progressBar;
 
     ContactUsFaqListener listener;
@@ -63,6 +63,11 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
     @Override
     protected boolean isRetainInstance() {
         return true;
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 
     @Override

@@ -18,11 +18,8 @@ import android.widget.TextView;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
-import com.tokopedia.core.rescenter.create.activity.CreateResCenterActivity;
-import com.tokopedia.core.rescenter.detail.activity.ResCenterActivity;
-import com.tokopedia.core.rescenter.detail.model.passdata.ActivityParamenterPassData;
-import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
-import com.tokopedia.core.rescenter.onboarding.FreeReturnOnboardingActivity;
+import com.tokopedia.core.onboarding.ConstantOnBoarding;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.PagingHandler;
@@ -346,8 +343,7 @@ public class TxListPresenterImpl implements TxListPresenter {
                          * n=0&id=<ORDER_ID>&t=5&s=6 -> tanya kurir
                          */
                         viewListener.navigateToActivityRequest(
-                                CreateResCenterActivity.newInstancePackageNotReceived(
-                                        context, data.getOrderDetail().getDetailOrderId(), 5, 6),
+                                InboxRouter.getCreateResCenterActivityIntent(context, data.getOrderDetail().getDetailOrderId(), 5, 6),
                                 CREATE_RESCENTER_REQUEST_CODE
                         );
                     }
@@ -361,8 +357,7 @@ public class TxListPresenterImpl implements TxListPresenter {
                          * n=0&id=<ORDER_ID>&t=5&s=1 --> pengembalian dana
                          */
                         viewListener.navigateToActivityRequest(
-                                CreateResCenterActivity.newInstancePackageNotReceived(
-                                        context, data.getOrderDetail().getDetailOrderId(), 5, 1),
+                                InboxRouter.getCreateResCenterActivityIntent(context, data.getOrderDetail().getDetailOrderId(), 5, 1),
                                 CREATE_RESCENTER_REQUEST_CODE
                         );
                     }
@@ -383,10 +378,7 @@ public class TxListPresenterImpl implements TxListPresenter {
     public void processShowComplain(Context context, OrderData data) {
         Uri uri = Uri.parse(data.getOrderButton().getButtonResCenterUrl());
         String res_id = uri.getQueryParameter("id");
-        ActivityParamenterPassData activityParamenterPassData = new ActivityParamenterPassData();
-        activityParamenterPassData.setResCenterId(res_id);
-        Intent intent = ResCenterActivity.newInstance(context, activityParamenterPassData);
-        viewListener.navigateToActivity(intent);
+        viewListener.navigateToActivity(InboxRouter.getDetailResCenterActivityIntent(context, res_id));
     }
 
     @Override
@@ -420,7 +412,7 @@ public class TxListPresenterImpl implements TxListPresenter {
         builder.setMessage(message).setPositiveButton(context.getString(R.string.title_ok),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        viewListener.navigateToActivity(InboxResCenterActivity.createIntent(context));
+                        viewListener.navigateToActivity(InboxRouter.getInboxResCenterActivityIntent(context));
                     }
                 });
         Dialog alertDialog = builder.create();
@@ -458,8 +450,7 @@ public class TxListPresenterImpl implements TxListPresenter {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             viewListener.navigateToActivityRequest(
-                                    CreateResCenterActivity.newInstance(
-                                            context, orderData.getOrderDetail().getDetailOrderId()),
+                                    InboxRouter.getCreateResCenterActivityIntent(context, orderData.getOrderDetail().getDetailOrderId()),
                                     CREATE_RESCENTER_REQUEST_CODE
                             );
                         }
@@ -478,19 +469,14 @@ public class TxListPresenterImpl implements TxListPresenter {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         LocalCacheHandler cache = new LocalCacheHandler(context,
-                                FreeReturnOnboardingActivity.CACHE_FREE_RETURN);
-                        if (cache.getBoolean(FreeReturnOnboardingActivity.HAS_SEEN_ONBOARDING))
-                            viewListener.navigateToActivityRequest(
-                                    CreateResCenterActivity.newInstance(context,
-                                            orderData.getOrderDetail().getDetailOrderId()),
-                                    CREATE_RESCENTER_REQUEST_CODE
-                            );
-                        else
-                            viewListener.navigateToActivityRequest(
-                                    FreeReturnOnboardingActivity.newInstance(context,
-                                            orderData.getOrderDetail().getDetailOrderId()),
-                                    CREATE_RESCENTER_REQUEST_CODE
-                            );
+                                ConstantOnBoarding.CACHE_FREE_RETURN);
+                        if (cache.getBoolean(ConstantOnBoarding.HAS_SEEN_FREE_RETURN_ONBOARDING)) {
+                            viewListener.navigateToActivityRequest(InboxRouter.getCreateResCenterActivityIntent(context,
+                                    orderData.getOrderDetail().getDetailOrderId()), CREATE_RESCENTER_REQUEST_CODE);
+                        } else {
+                            viewListener.navigateToActivityRequest(InboxRouter.getFreeReturnOnBoardingActivityIntent(context,
+                                    orderData.getOrderDetail().getDetailOrderId()), CREATE_RESCENTER_REQUEST_CODE);
+                        }
                     }
                 });
         builder.setPositiveButton(context.getString(R.string.title_done),

@@ -10,12 +10,12 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.inbox.contactus.ContactUsConstant;
 import com.tokopedia.inbox.contactus.fragment.ContactUsCategoryFragment;
 import com.tokopedia.inbox.contactus.fragment.ContactUsFaqFragment;
 import com.tokopedia.inbox.contactus.fragment.ContactUsFaqFragment.ContactUsFaqListener;
 import com.tokopedia.inbox.contactus.fragment.CreateTicketFormFragment;
-import com.tokopedia.core.home.ParentIndexHome;
 
 import java.util.ArrayList;
 
@@ -143,7 +143,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
     @Override
     public void onFinishCreateTicket() {
         CommonUtils.UniversalToast(this,getString(R.string.title_contact_finish));
-        Intent intent = new Intent(this,ParentIndexHome.class);
+        Intent intent = HomeRouter.getHomeActivity(this);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();

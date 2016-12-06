@@ -16,7 +16,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -35,10 +35,10 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R2.id.image_upload)
+        @BindView(R2.id.image_upload)
         ImageView image;
 
-        @Bind(R2.id.delete_but)
+        @BindView(R2.id.delete_but)
         ImageView deleteButton;
 
         public ViewHolder(View itemView) {

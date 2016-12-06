@@ -11,7 +11,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R2;
 import com.tokopedia.seller.selling.model.SellingStatusTxModel;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -19,23 +19,23 @@ import butterknife.ButterKnife;
  */
 
 public class TransactionViewHolder extends BaseSellingViewHolder<SellingStatusTxModel> {
-    @Bind(R2.id.icon)
+    @BindView(R2.id.icon)
     ImageView icon;
-    @Bind(R2.id.subtitle)
+    @BindView(R2.id.subtitle)
     TextView subtitle;
-    @Bind(R2.id.title)
+    @BindView(R2.id.title)
     TextView title;
-    @Bind(R2.id.overflow_btn)
+    @BindView(R2.id.overflow_btn)
     public LinearLayout overflow_btn;
-    @Bind(R2.id.deadline_view)
+    @BindView(R2.id.deadline_view)
     LinearLayout deadLineContainer;
-    @Bind(R2.id.status)
+    @BindView(R2.id.status)
     TextView status;
-    @Bind(R2.id.deadline_date)
+    @BindView(R2.id.deadline_date)
     TextView deadlineDate;
-    @Bind(R2.id.invoice)
+    @BindView(R2.id.invoice)
     TextView invoice;
-    @Bind(R2.id.list_item)
+    @BindView(R2.id.list_item)
     LinearLayout itemLayout;
 
     public TransactionViewHolder(View itemView) {

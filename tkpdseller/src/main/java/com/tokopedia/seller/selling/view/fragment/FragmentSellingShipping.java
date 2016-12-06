@@ -2,12 +2,9 @@ package com.tokopedia.seller.selling.view.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -25,7 +22,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.PopupMenu;
 import android.widget.SearchView;
 import android.widget.Spinner;
@@ -52,7 +48,7 @@ import com.tokopedia.core.util.RefreshHandler;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -61,11 +57,11 @@ import butterknife.OnClick;
  */
 public class FragmentSellingShipping extends BaseFragment<Shipping> implements ShippingView {
 
-    @Bind(R2.id.order_list)
+    @BindView(R2.id.order_list)
     RecyclerView recyclerView;
-    @Bind(R2.id.fab)
+    @BindView(R2.id.fab)
     FloatingActionButton fab;
-    @Bind(R2.id.root)
+    @BindView(R2.id.root)
     View rootView;
     private View filterView;
     SearchView search;
@@ -269,21 +265,18 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
         return new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch ((item.getItemId())) {
-                    case R2.id.action_confirm:
-                        onConfirm(position);
-                        return true;
-
-                    case R2.id.action_cancel:
-                        onCancel(position);
-                        return true;
-
-                    case R2.id.action_detail_ship:
-                        onOpenDetail(position);
-                        return true;
-
-                    default:
-                        return false;
+                int i = (item.getItemId());
+                if (i == R.id.action_confirm) {
+                    onConfirm(position);
+                    return true;
+                } else if (i == R.id.action_cancel) {
+                    onCancel(position);
+                    return true;
+                } else if (i == R.id.action_detail_ship) {
+                    onOpenDetail(position);
+                    return true;
+                } else {
+                    return false;
                 }
             }
         };
