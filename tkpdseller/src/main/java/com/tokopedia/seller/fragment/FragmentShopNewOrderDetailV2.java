@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -339,7 +340,11 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
 
         if(orderDetail.getDetailCancelRequest() != null && orderDetail.getDetailCancelRequest().getCancelRequest() == 1){
             holder.wrapperBuyerRequestCancel.setVisibility(View.VISIBLE);
-            holder.buyerRequestCancel.setText(orderDetail.getDetailCancelRequest().getReason());
+            if(Build.VERSION.SDK_INT >= 24) {
+                holder.buyerRequestCancel.setText("\"" + Html.fromHtml(orderDetail.getDetailCancelRequest().getReason(), Html.FROM_HTML_MODE_LEGACY) + "\"");
+            }else{
+                holder.buyerRequestCancel.setText("\"" + Html.fromHtml(orderDetail.getDetailCancelRequest().getReason()) + "\"");
+            }
             holder.dateRequestCancel.setText(orderDetail.getDetailCancelRequest().getReasonTime());
         }
 

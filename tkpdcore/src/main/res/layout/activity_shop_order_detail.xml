@@ -137,6 +137,13 @@
             android:orientation="vertical" >
 
             <TextView
+                android:id="@+id/date_buyer_request_cancel"
+                android:layout_marginBottom="@dimen/margin_vs"
+                android:gravity="left"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
                 android:layout_marginBottom="@dimen/margin_vs"
                 android:text="@string/buyer_request_cancel_reason"
                 android:textColor="@color/red_500"
@@ -152,15 +159,6 @@
                 android:maxLines="2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/date_buyer_request_cancel"
-                android:layout_marginBottom="@dimen/margin_vs"
-                android:gravity="right"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-
         </LinearLayout>
 
         <LinearLayout
