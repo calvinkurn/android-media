@@ -332,6 +332,11 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
+    public void renderSuccessCancelCart(String messageSuccess) {
+        showToastMessage(messageSuccess);
+    }
+
+    @Override
     public void onSelectedPaymentGateway(GatewayList gateway) {
         if (gateway.getGateway() == 0) {
             holderUseDeposit.setVisibility(View.GONE);

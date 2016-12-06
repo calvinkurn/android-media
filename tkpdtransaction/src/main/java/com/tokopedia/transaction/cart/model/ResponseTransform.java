@@ -9,6 +9,7 @@ public class ResponseTransform<T> {
     private T data;
     private String messageSuccess;
     private String messageError;
+    private Throwable throwable;
 
     public T getData() {
         return data;
@@ -32,5 +33,13 @@ public class ResponseTransform<T> {
 
     public void setMessageError(String messageError) {
         this.messageError = messageError;
+    }
+
+    public Throwable getThrowable() {
+        return throwable;
+    }
+
+    public void setThrowable(Throwable throwable) {
+        this.throwable = throwable;
     }
 }

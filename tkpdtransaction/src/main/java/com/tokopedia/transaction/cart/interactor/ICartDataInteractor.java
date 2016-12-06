@@ -25,7 +25,7 @@ public interface ICartDataInteractor {
 
     void cancelCart(TKPDMapParam<String, String> paramCancelCart,
                     TKPDMapParam<String, String> paramCartInfo,
-                    Subscriber<CartModel> subscriber);
+                    Subscriber<ResponseTransform<CartModel>> subscriber);
 
     void calculateCart(TKPDMapParam<String, String> param, Subscriber<Object> subscriber);
 
@@ -39,7 +39,8 @@ public interface ICartDataInteractor {
                               Subscriber<SaveLocationData> subscriber);
 
     void updateCart(TKPDMapParam<String, String> paramUpdate,
-                    TKPDMapParam<String, String> paramCart, Subscriber<CartModel> subscriber);
+                    TKPDMapParam<String, String> paramCart,
+                    Subscriber<ResponseTransform<CartModel>> subscriber);
 
     void updateInsuranceCart(TKPDMapParam<String, String> paramUpdate,
                              TKPDMapParam<String, String> paramCart,

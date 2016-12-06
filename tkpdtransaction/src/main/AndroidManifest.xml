@@ -29,7 +29,7 @@
         <activity
             android:name="com.tokopedia.transaction.purchase.activity.PurchaseActivity"
             android:label="@string/title_purchase"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -39,7 +39,13 @@
         <activity
             android:name="com.tokopedia.transaction.cart.activity.CartActivity"
             android:label="@string/title_activity_cart"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name="com.tokopedia.transaction.cart.activity.ShipmentCartActivity"
             android:label="@string/title_activity_cart_shipment"
