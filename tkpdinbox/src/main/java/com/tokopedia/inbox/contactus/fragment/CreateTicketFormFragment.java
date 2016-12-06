@@ -45,7 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -64,28 +64,28 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
         void onFinishCreateTicket();
     }
 
-    @Bind(R2.id.category_list)
+    @BindView(R2.id.category_list)
     LinearLayout categoryPathList;
 
-    @Bind(R2.id.main_category)
+    @BindView(R2.id.main_category)
     TextView mainCategory;
 
-    @Bind(R2.id.invoice)
+    @BindView(R2.id.invoice)
     EditText invoice;
 
-    @Bind(R2.id.detail)
+    @BindView(R2.id.detail)
     EditText detail;
 
-    @Bind(R2.id.invoice_text)
+    @BindView(R2.id.invoice_text)
     View invoiceText;
 
-    @Bind(R2.id.attachment_text)
+    @BindView(R2.id.attachment_text)
     View attachmentText;
 
-    @Bind(R2.id.main)
+    @BindView(R2.id.main)
     View mainView;
 
-    @Bind(R2.id.attachment)
+    @BindView(R2.id.attachment)
     RecyclerView attachment;
 
     ImageUploadAdapter imageAdapter;
@@ -139,6 +139,11 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
             KeyboardHandler.DropKeyboard(getActivity(), getView());
         presenter.sendTicket();
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 
     @Override

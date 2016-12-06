@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.view.Window;
 
 import com.appsflyer.AFInAppEventParameterName;
@@ -83,8 +84,11 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                         viewListener.renderFormProductInfo(data.getForm().getProductDetail());
                         viewListener.renderFormAddress(data.getForm().getDestination());
                         viewListener.hideInitLoading();
-                        if (data.getForm().getDestination() != null)
+                        if (data.getShop().getUt() != 0 && !TextUtils.isEmpty(data.getShop().getToken())) {
                             calculateKeroRates(context, data);
+                        }else{
+                            viewListener.hideProgressLoading();
+                        }
                     }
 
                     @Override
@@ -96,7 +100,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
 
     @Override
     public void calculateKeroRates(@NonNull Context context, @NonNull final AtcFormData atcFormData) {
-        CommonUtils.dumper("rates/v1 kerorates called calculateKeroRates");
+        viewListener.disableBuyButton();
         keroNetInteractor.calculateShipping(context, KeroppiParam.paramsKero(atcFormData.getShop(),
                 atcFormData.getForm().getDestination(), atcFormData.getForm().getProductDetail()),
                 new KeroNetInteractor.CalculationListener() {
@@ -105,21 +109,25 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                         viewListener.renderFormShipmentRates(filterAvailableKeroShipment(
                                 rates.getAttributes(), atcFormData.getForm().getShipment())
                         );
+                        viewListener.enableBuyButton();
                     }
 
                     @Override
                     public void onFailed(String error) {
                         viewListener.showErrorMessage(error);
+                        viewListener.enableBuyButton();
                     }
 
                     @Override
                     public void onTimeout(String timeoutError) {
                         viewListener.showErrorMessage(timeoutError);
+                        viewListener.enableBuyButton();
                     }
 
                     @Override
                     public void onNoConnection() {
                         viewListener.onCartFailedLoading();
+                        viewListener.enableBuyButton();
                     }
                 });
     }

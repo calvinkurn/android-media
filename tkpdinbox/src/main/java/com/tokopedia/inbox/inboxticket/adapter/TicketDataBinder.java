@@ -26,7 +26,7 @@ import com.tokopedia.core.util.LabelUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -42,19 +42,19 @@ public class TicketDataBinder extends DataBinder<TicketDataBinder.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R2.id.user_ava)
+        @BindView(R2.id.user_ava)
         ImageView userAva;
 
-        @Bind(R2.id.user_name)
+        @BindView(R2.id.user_name)
         TextView userName;
 
-        @Bind(R2.id.create_time)
+        @BindView(R2.id.create_time)
         TextView createTime;
 
-        @Bind(R2.id.image_upload_layout)
+        @BindView(R2.id.image_upload_layout)
         RecyclerView imageUploadLayout;
 
-        @Bind(R2.id.message)
+        @BindView(R2.id.message)
         TextView message;
 
         LabelUtils label;

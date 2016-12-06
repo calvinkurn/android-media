@@ -41,7 +41,7 @@ import com.tokopedia.transaction.purchase.receiver.TxListUIReceiver;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -61,7 +61,7 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
     public static final int REQUEST_VERIFICATION_DETAIL = 2;
     private static final String TAG = TxVerificationFragment.class.getSimpleName();
 
-    @Bind(R2.id.order_list)
+    @BindView(R2.id.order_list)
     LazyListView lvTXVerification;
 
     private View loadMoreView;
@@ -78,6 +78,11 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
 
     public static TxVerificationFragment createInstance() {
         return new TxVerificationFragment();
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 
     @Override

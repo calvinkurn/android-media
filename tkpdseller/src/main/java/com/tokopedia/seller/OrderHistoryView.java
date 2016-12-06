@@ -11,9 +11,9 @@ import android.widget.ListView;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
 import com.tokopedia.seller.customadapter.ListViewOrderStatus;
 import com.tokopedia.seller.selling.model.shopconfirmationdetail.*;
-import com.tokopedia.seller.selling.model.orderShipping.OrderHistory;
 
 import org.json.JSONArray;
 import org.json.JSONException;

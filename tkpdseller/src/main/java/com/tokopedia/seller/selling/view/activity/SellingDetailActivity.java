@@ -29,7 +29,7 @@ import com.tokopedia.core.service.DownloadService;
 
 import org.parceler.Parcels;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -37,7 +37,7 @@ import butterknife.ButterKnife;
  */
 public class SellingDetailActivity extends TkpdActivity implements  DownloadResultReceiver.Receiver {
 
-    @Bind(R2.id.toolbar)
+    @BindView(R2.id.toolbar)
     Toolbar toolbar;
 
     public enum Type {

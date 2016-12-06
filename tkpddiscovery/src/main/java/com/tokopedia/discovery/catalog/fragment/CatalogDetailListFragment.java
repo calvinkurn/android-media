@@ -37,7 +37,7 @@ import com.tokopedia.core.util.SlideOffViewHandler;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * @author by Alvarisi
@@ -46,21 +46,21 @@ import butterknife.Bind;
 public class CatalogDetailListFragment extends BasePresenterFragment<ICatalogDetailListPresenter>
         implements ICatalogDetailListView {
     public static final String CATALOG_ID = "catalog_id";
-    @Bind(R2.id.sorting)
+    @BindView(R2.id.sorting)
     TextView mSorting;
-    @Bind(R2.id.condition)
+    @BindView(R2.id.condition)
     TextView mCondition;
-    @Bind(R2.id.location)
+    @BindView(R2.id.location)
     TextView mLocation;
-    @Bind(R2.id.list)
+    @BindView(R2.id.list)
     RecyclerView mList;
-    @Bind(R2.id.container)
+    @BindView(R2.id.container)
     CoordinatorLayout mContainer;
-    @Bind(R2.id.filter_container)
+    @BindView(R2.id.filter_container)
     LinearLayout mFilterContainer;
-    @Bind(R2.id.loading)
+    @BindView(R2.id.loading)
     ProgressBar mLoading;
-    @Bind(R2.id.swipe_refresh_layout)
+    @BindView(R2.id.swipe_refresh_layout)
     SwipeRefreshLayout mRefresh;
 
     CatalogDetailAdapter mAdapter;
@@ -105,6 +105,11 @@ public class CatalogDetailListFragment extends BasePresenterFragment<ICatalogDet
     @Override
     public void onRestoreState(Bundle savedState) {
 
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 
     @Override

@@ -65,7 +65,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.Subscriber;
@@ -99,69 +99,69 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
 
     private Handler handler = new Handler();
 
-    @Bind(R2.id.tv_ticker_gtm)
+    @BindView(R2.id.tv_ticker_gtm)
     TextView tvTickerGTM;
-    @Bind(R2.id.add_to_cart_coordinatlayout)
+    @BindView(R2.id.add_to_cart_coordinatlayout)
     CoordinatorLayout cartCoordinatLayout;
-    @Bind(R2.id.iv_pic)
+    @BindView(R2.id.iv_pic)
     ImageView ivProduct;
-    @Bind(R2.id.tv_name)
+    @BindView(R2.id.tv_name)
     TextView tvProductName;
-    @Bind(R2.id.tv_preorder)
+    @BindView(R2.id.tv_preorder)
     TextView tvPreOrder;
-    @Bind(R2.id.tv_preorder_info)
+    @BindView(R2.id.tv_preorder_info)
     TextView tvPreOrderInfo;
-    @Bind(R2.id.et_form_qty)
+    @BindView(R2.id.et_form_qty)
     EditText etQuantity;
-    @Bind(R2.id.sp_form_insurance)
+    @BindView(R2.id.sp_form_insurance)
     Spinner spInsurance;
-    @Bind(R2.id.et_form_notes)
+    @BindView(R2.id.et_form_notes)
     EditText etRemark;
-    @Bind(R2.id.tv_address_detail)
+    @BindView(R2.id.tv_address_detail)
     TextView tvAddressDetail;
-    @Bind(R2.id.tv_address_name)
+    @BindView(R2.id.tv_address_name)
     TextView tvAddressName;
-    @Bind(R2.id.btn_choose_address)
+    @BindView(R2.id.btn_choose_address)
     TextView btnAddressChange;
-    @Bind(R2.id.btn_add_address)
+    @BindView(R2.id.btn_add_address)
     TextView btnAddressNew;
-    @Bind(R2.id.sp_shipment)
+    @BindView(R2.id.sp_shipment)
     Spinner spShippingAgency;
-    @Bind(R2.id.sp_shipment_package)
+    @BindView(R2.id.sp_shipment_package)
     Spinner spShippingService;
-    @Bind(R2.id.tv_price_product)
+    @BindView(R2.id.tv_price_product)
     TextView tvProductPrice;
-    @Bind(R2.id.tv_price_shipping)
+    @BindView(R2.id.tv_price_shipping)
     TextView tvShippingPrice;
-    @Bind(R2.id.layout_product_price)
+    @BindView(R2.id.layout_product_price)
     RelativeLayout viewProductPrice;
-    @Bind(R2.id.layout_shipping_price)
+    @BindView(R2.id.layout_shipping_price)
     RelativeLayout viewShippingPrice;
-    @Bind(R2.id.pb_price)
+    @BindView(R2.id.pb_price)
     ProgressBar pbLoadingPrice;
-    @Bind(R2.id.tv_error_shipping)
+    @BindView(R2.id.tv_error_shipping)
     TextView tvErrorShipping;
-    @Bind(R2.id.btn_buy)
+    @BindView(R2.id.btn_buy)
     TextView btnBuy;
-    @Bind(R2.id.product_view)
+    @BindView(R2.id.product_view)
     LinearLayout viewProduct;
-    @Bind(R2.id.layout_value_geo_location)
+    @BindView(R2.id.layout_value_geo_location)
     View viewAssignLocation;
-    @Bind(R2.id.layout_geo_location)
+    @BindView(R2.id.layout_geo_location)
     View viewFieldLocation;
-    @Bind(R2.id.et_geo_location)
+    @BindView(R2.id.et_geo_location)
     EditText etValueLocation;
-    @Bind(R2.id.til_form_qty)
+    @BindView(R2.id.til_form_qty)
     TextInputLayout tilAmount;
-    @Bind(R2.id.til_form_notes)
+    @BindView(R2.id.til_form_notes)
     TextInputLayout tilRemark;
-    @Bind(R2.id.container)
+    @BindView(R2.id.container)
     LinearLayout container;
-    @Bind(R2.id.increase_button)
+    @BindView(R2.id.increase_button)
     View increaseButton;
-    @Bind(R2.id.decrease_button)
+    @BindView(R2.id.decrease_button)
     View decreaseButton;
-    @Bind(R2.id.calculate_cart_progress_bar)
+    @BindView(R2.id.calculate_cart_progress_bar)
     View calculateCartProgressBar;
 
     private AtcFormData atcFormData;
@@ -236,6 +236,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     @Override
     public void hideProgressLoading() {
         progressDialog.dismiss();
+        calculateCartProgressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -368,6 +369,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 spShippingAgency.setSelection(i);
             }
         }
+        btnBuy.setEnabled(true);
     }
 
     @Override
@@ -409,12 +411,14 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
 
     @Override
     public void disableBuyButton() {
+        CommonUtils.dumper("buyrel disabled button called");
         btnBuy.setEnabled(false);
     }
 
     @Override
     public void enableBuyButton() {
         finishCalculateCartLoading();
+        CommonUtils.dumper("buyrel enabled button called");
         btnBuy.setEnabled(true);
     }
 

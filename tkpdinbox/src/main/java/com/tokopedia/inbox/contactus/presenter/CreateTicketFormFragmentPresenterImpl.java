@@ -1,6 +1,11 @@
 package com.tokopedia.inbox.contactus.presenter;
 
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+
 import com.tokopedia.core.R;
+import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.inbox.BuildConfig;
 import com.tokopedia.inbox.contactus.ContactUsConstant;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
 import com.tokopedia.inbox.contactus.fragment.CreateTicketFormFragment;
@@ -76,6 +81,19 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
         pass.setTicketCategoryId(String.valueOf(viewListener.getArguments().getInt(PARAM_LAST_CATEGORY_ID)));
         pass.setMessageBody(viewListener.getMessage());
         pass.setAttachment(viewListener.getAttachment());
+        if(GlobalConfig.isSellerApp()){
+            pass.setSource("android_sellerapp");
+            String version = "";
+            try {
+                PackageInfo pInfo = null;
+                pInfo = viewListener.getActivity().getPackageManager().getPackageInfo(viewListener.getActivity().getPackageName(), 0);
+                version = pInfo.versionName;
+
+            } catch (PackageManager.NameNotFoundException e) {
+                version = com.tokopedia.core.BuildConfig.VERSION_NAME;
+            }
+            pass.setAppVersion(version);
+        }
         return pass;
     }
 

@@ -40,7 +40,7 @@ import com.tokopedia.transaction.purchase.presenter.TxVerDetailPresenterImpl;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -63,23 +63,23 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
     private TxVerData txVerData;
     private TxVerInvoiceAdapter invoiceAdapter;
 
-    @Bind(R2.id.listView1)
+    @BindView(R2.id.listView1)
     ListView lvInvoice;
-    @Bind(R2.id.date)
+    @BindView(R2.id.date)
     TextView tvPaymentDate;
-    @Bind(R2.id.total_invoice)
+    @BindView(R2.id.total_invoice)
     TextView tvAmountPayment;
-    @Bind(R2.id.account_owner)
+    @BindView(R2.id.account_owner)
     TextView tvOwnerAccountBank;
-    @Bind(R2.id.account_number)
+    @BindView(R2.id.account_number)
     TextView tvSysAccountBank;
-    @Bind(R2.id.changePayment)
+    @BindView(R2.id.changePayment)
     View btnEditPayment;
-    @Bind(R2.id.upload_button)
+    @BindView(R2.id.upload_button)
     View btnUploadProof;
-    @Bind(R2.id.transfer_account_information)
+    @BindView(R2.id.transfer_account_information)
     RelativeLayout holderAccountBankInfo;
-    @Bind(R2.id.indomaret_code_detail_label)
+    @BindView(R2.id.indomaret_code_detail_label)
     TextView tvPaymentCode;
 
     private TkpdProgressDialog mProgressDialog;

@@ -1,4 +1,13 @@
 <resources>
     <string name="app_name">tkpdtransaction</string>
     <string name="message_failed_pick_image">Gambar gagal diambil</string>
+    <string name="default_success_message_request_cancel_order">Berhasil mengajukan pembatalan pesanan</string>
+    <string name="label_title_dialog_request_cancel_order">Pengajuan Pembatalan Pesanan</string>
+    <string name="label_sub_title_dialog_request_cancel_order">Apakah Anda yakin akan meminta penjual untuk membatalkan pesanan ini?</string>
+    <string name="title_btn_alert_dialog_adjust">Ajukan</string>
+    <string name="title_btn_alert_dialog_cancel">Batal</string>
+    <string name="hint_dialog_alert_request_cancel_order_et_reason">Alasan</string>
+    <string name="label_error_request_cancel_order_reason_empty">Alasan pembatalan harus diisi</string>
+    <string name="label_error_request_cancel_order_reason_to_short">Alasan pembatalan terlalu pendek, minimum 10 karakter</string>
+
 </resources>

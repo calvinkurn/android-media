@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -98,15 +98,15 @@ public class TxConfAdapter extends ArrayAdapter<TxConfData> {
     }
 
     class ViewHolder {
-        @Bind(R2.id.shop_name)
+        @BindView(R2.id.shop_name)
         TextView tvShopName;
-        @Bind(R2.id.tx_date)
+        @BindView(R2.id.tx_date)
         TextView tvCreateDate;
-        @Bind(R2.id.due_date)
+        @BindView(R2.id.due_date)
         TextView tvDueDate;
-        @Bind(R2.id.total_invoice_order)
+        @BindView(R2.id.total_invoice_order)
         TextView tvTotalLeftAmount;
-        @Bind(R2.id.main_view)
+        @BindView(R2.id.main_view)
         View holderMain;
 
         public ViewHolder(View view) {

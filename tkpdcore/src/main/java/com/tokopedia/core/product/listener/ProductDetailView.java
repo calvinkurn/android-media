@@ -1,0 +1,272 @@
+package com.tokopedia.core.product.listener;
+
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+
+import com.tokopedia.core.product.model.passdata.ProductPass;
+import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.product.model.productother.ProductOther;
+import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
+
+import java.util.List;
+
+/**
+ * Created by ANGGA on 11/2/2015.
+ */
+public interface ProductDetailView extends ViewListener {
+
+    /**
+     * Saat salah satu kategori product di klik.
+     *
+     * @param bundle bundle data yang dikirim
+     */
+    void onProductDepartmentClicked(@NonNull Bundle bundle);
+
+    /**
+     * Saat product katalog di klik.
+     *
+     * @param catalogId nama dari product katalog
+     */
+    void onProductCatalogClicked(@NonNull String catalogId);
+
+    /**
+     * Pada saat product etalase diklik
+     *
+     * @param bundle bundle data yang dikirim
+     */
+    void onProductEtalaseClicked(@NonNull Bundle bundle);
+
+    /**
+     * Pada saat ulasan product diklik
+     *
+     * @param bundle bundle data yang dikirim
+     */
+    void onProductTalkClicked(@NonNull Bundle bundle);
+
+    /**
+     * Pada saat diskusi produk diklik
+     *
+     * @param bundle bundle data yang dikirim
+     */
+    void onProductReviewClicked(@NonNull Bundle bundle);
+
+    /**
+     * Pada saat promosikan produk diklik
+     *
+     * @param productData product data model
+     */
+    void onProductManagePromoteClicked(ProductDetailData productData);
+
+    /**
+     * Pada saat gambar toko diklik
+     *
+     * @param bundle data yang dikirim
+     */
+    void onProductShopAvatarClicked(@NonNull Bundle bundle);
+
+
+    /**
+     * Pada saat produk lainnya diklik
+     *
+     * @param productPass bundle data yang dikirim
+     */
+    void onProductOtherClicked(@NonNull ProductPass productPass);
+
+    /**
+     * Pada saat nama toko diklik
+     *
+     * @param bundle bundle data yang dikirim
+     */
+    void onProductShopNameClicked(@NonNull Bundle bundle);
+
+    /**
+     * Pada saat tombol ke etalase diklik
+     *
+     * @param productId product id
+     */
+    void onProductManageToEtalaseClicked(int productId);
+
+    /**
+     * Pada saat tombol edit diklik
+     *
+     * @param bundle bundle data yang dikirim
+     */
+    void onProductManageEditClicked(@NonNull Bundle bundle);
+
+    /**
+     * Pada saat tombol soldout dklik
+     *
+     * @param productId id product
+     */
+    void onProductManageSoldOutClicked(int productId);
+
+    /**
+     * Pada saat tombol share diklik
+     *
+     * @param data  data yang dikirim
+     */
+    void onProductShareClicked(@NonNull ShareData data);
+
+    /**
+     * Pada saat rating product diklik
+     *
+     * @param bundle bundle data yang dikirim
+     */
+    void onProductRatingClicked(@NonNull Bundle bundle);
+
+    /**
+     * Pada saat ada error pada toko
+     */
+    void onProductShopInfoError();
+
+    /**
+     * Pada saat status error pada product
+     */
+    void onProductStatusError();
+
+    /**
+     * Pada saat status tombol buat toko baru diklik
+     */
+    void onProductNewShopClicked();
+
+    /**
+     * Pada saat tombol beli di klik
+     * user dalam keadaan login
+     *
+     * @param data model yang dikirim
+     */
+    void onProductBuySessionLogin(@NonNull ProductCartPass data);
+
+    /**
+     * Pada saat tombol beli di klik
+     * user dalam keadaan tidak login
+     *
+     * @param bundle bundle yang dikirim
+     */
+    void onProductBuySessionNotLogin(@NonNull Bundle bundle);
+
+    /**
+     * mengisi UI dengan data sementara
+     *
+     * @param productPass data product sementara, nama, harga, foto
+     */
+    void renderTempProductData(ProductPass productPass);
+
+    /**
+     * ngisi/mengupdate UI dari full data product detail yang diterima
+     *
+     * @param successResult data product detail
+     */
+    void onProductDetailLoaded(@NonNull ProductDetailData successResult);
+
+    /**
+     * Pada saat salah satu gambar product diklik
+     *
+     * @param bundle model yang dikirim
+     */
+    void onProductPictureClicked(@NonNull Bundle bundle);
+
+    /**
+     * Megisi/mengupdate UI dengan data product lainnya yang diterima
+     *
+     * @param productOthers list data produk lainnya
+     */
+    void onOtherProductLoaded(List<ProductOther> productOthers);
+
+    /**
+     * Pada saat tombol pesan di info toko diklik
+     *
+     * @param bundle bundle yang dikirim
+     */
+    void onProductShopMessageClicked(@NonNull Bundle bundle);
+
+    /**
+     * Setelah product di edit
+     */
+    void onProductHasEdited();
+
+    /**
+     * setelah ulasan product diupdate
+     */
+    void onProductTalkUpdated();
+
+    /**
+     * Mengupdate satatus toko
+     * difavorite kan atau tidak difavorite kan
+     *
+     * @param statFave status favorite
+     */
+    void onShopFavoriteUpdated(int statFave);
+
+    /**
+     * refresh icon love pada shop info
+     */
+    void refreshFaveShopStatus();
+
+    /**
+     * Pada saat tombol favorite toko diklik
+     *
+     * @param shopId id toko tersebut
+     */
+    void onProductShopFaveClicked(String shopId);
+
+    /**
+     * Pada saat berhasil pindahkan product ke etalase
+     */
+    void onSuccessToEtalase();
+
+    /**
+     * Pada saat berhasil pindahkan product ke gudang
+     */
+    void onSuccessToWarehouse();
+
+    /**
+     * Pada saat reputation di shop info diklik
+     *
+     * @param bundle bundle data yang dikirim
+     */
+    void onProductShopRatingClicked(Bundle bundle);
+
+    /**
+     * hilangkan loading request whislist
+     */
+    void finishLoadingWishList();
+
+    /**
+     * tampilkan progress bar loading whislist
+     */
+    void loadingWishList();
+
+    /**
+     * update wishlist status di UI
+     *
+     * @param status status
+     */
+    void updateWishListStatus(int status);
+
+    /**
+     * refresh options menu di action bar
+     */
+    void refreshMenu();
+
+    void showProductDetailRetry(String errorMessage);
+
+    void showProductOthersRetry();
+
+    void showFaveShopRetry();
+
+    void showWishListRetry(String errorMessage);
+
+    void showPromoteRetry();
+
+    void onNullData();
+
+    void showReportDialog();
+
+    void onProductReportClicked();
+
+    void showTickerGTM(String message);
+
+    void hideTickerGTM();
+}
