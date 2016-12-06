@@ -117,12 +117,11 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
         </activity>
-
         <activity
-            android:name=".home.SimpleHomeActivity"
+            android:name="com.tokopedia.tkpd.home.SimpleHomeActivity"
             android:label="@string/title_activity_simple_home"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3" />
+            android:theme="@style/Theme.Tokopedia3"/>
     </application>
 
 </manifest>

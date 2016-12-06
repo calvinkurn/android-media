@@ -424,11 +424,7 @@
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/choose_location"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.home.SimpleHomeActivity"
-            android:label="@string/title_activity_simple_home"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3" />
+
         <activity
             android:name="com.tokopedia.core.shopinfo.ShopInfoActivity"
             android:label=""
