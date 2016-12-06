@@ -90,6 +90,7 @@ public class InboxResCenterActivity extends DrawerPresenterActivity<ResCenterPre
     @Override
     protected void initView() {
         super.initView();
+        presenter.initView();
     }
 
     @Override
@@ -150,6 +151,11 @@ public class InboxResCenterActivity extends DrawerPresenterActivity<ResCenterPre
     @Override
     public void setTabPosition(int i) {
         viewPager.setCurrentItem(i, true);
+    }
+
+    @Override
+    public TabLayout getTabLayout() {
+        return tabLayout;
     }
 
     public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
