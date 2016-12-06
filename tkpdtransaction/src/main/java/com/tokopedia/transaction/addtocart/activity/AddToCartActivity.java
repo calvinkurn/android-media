@@ -27,6 +27,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
@@ -79,7 +80,6 @@ import rx.schedulers.Schedulers;
 public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         implements AddToCartViewListener, AdapterView.OnItemSelectedListener,
         TextWatcher, ATCResultReceiver.Receiver {
-    private static final String TAG = AddToCartActivity.class.getSimpleName();
     public static final String EXTRA_ADDRESS_DATA = "EXTRA_ADDRESS_DATA";
     public static final String EXTRA_LATITUDE = "latitude";
     public static final String EXTRA_LONGITUDE = "longitude";
@@ -164,7 +164,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     @BindView(R2.id.calculate_cart_progress_bar)
     View calculateCartProgressBar;
 
-    private AtcFormData atcFormData;
     private ATCResultReceiver atcReceiver;
     private Subscription subscription;
 
@@ -261,7 +260,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
 
     @Override
     public void initialOrderData(AtcFormData data) {
-        this.atcFormData = data;
         this.orderData = OrderData.createFromATCForm(data, productCartPass);
     }
 
@@ -301,7 +299,10 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             btnBuy.setText(getString(R.string.title_buy));
         }
         tvProductName.setText(data.getProductName());
-        etQuantity.setText((orderData == null ? data.getProductMinOrder() : String.valueOf(orderData.getQuantity())));
+        etQuantity.setText(
+                (orderData == null ? data.getProductMinOrder()
+                        : String.valueOf(orderData.getQuantity()))
+        );
         etQuantity.setEnabled(true);
         etRemark.setEnabled(true);
         tvProductPrice.setText(data.getProductPrice());
@@ -374,7 +375,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     @Override
     public void hideNetworkError() {
         container.setVisibility(View.VISIBLE);
-        findViewById(R.id.main_scroll).setVisibility(View.VISIBLE);
+        View mainView = findViewById(R.id.main_scroll);
+        if (mainView != null) mainView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -423,8 +425,9 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
 
     @Override
     public void showErrorMessage(String message) {
-        Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG)
-                .show();
+        View view = findViewById(android.R.id.content);
+        if (view != null) Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show();
+        else Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -499,7 +502,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     @Override
     public void onCartFailedLoading() {
         hideInitLoading();
-        findViewById(R.id.main_scroll).setVisibility(View.GONE);
+        View mainView = findViewById(R.id.main_scroll);
+        if (mainView != null) mainView.setVisibility(View.GONE);
         NetworkErrorHelper.showEmptyState(this, parentView,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
@@ -544,13 +548,17 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         } else if (parent.getAdapter().getItem(position) instanceof Product) {
             orderData.setShipmentPackage(((Product) parent.getAdapter()
                     .getItem(position)).getShipperProductId());
-            tvShippingPrice.setText(((Product)
-                    parent.getAdapter().getItem(position)).getFormattedPrice() + "");
+            tvShippingPrice.setText(MessageFormat.format("{0}", ((Product)
+                    parent.getAdapter().getItem(position)).getFormattedPrice()));
             tvErrorShipping.setVisibility(View.GONE);
             if (((Product) parent.getAdapter().getItem(position)).getIsShowMap() == 1) {
                 viewFieldLocation.setVisibility(View.VISIBLE);
                 if (!(etValueLocation.getText().length() > 0)) {
-                    Snackbar.make(cartCoordinatLayout, getString(R.string.message_gojek_shipping_package), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(
+                            cartCoordinatLayout,
+                            getString(R.string.message_gojek_shipping_package),
+                            Snackbar.LENGTH_LONG
+                    ).show();
                 }
             } else {
                 viewFieldLocation.setVisibility(View.GONE);
@@ -574,8 +582,14 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             etQuantity.setFocusable(false);
             switch (requestCode) {
                 case REQUEST_CHOOSE_ADDRESS:
-                    renderFormAddress((Destination) data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS));
-                    this.orderData.setAddress((Destination) data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS));
+                    renderFormAddress(
+                            (Destination)
+                                    data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS)
+                    );
+                    this.orderData.setAddress(
+                            (Destination)
+                                    data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS)
+                    );
                     startCalculateCartLoading();
                     presenter.calculateKeroAddressShipping(this, orderData);
                     CommonUtils.dumper("rates/v1 kerorates called request choose address");
@@ -589,7 +603,9 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                     break;
                 case REQUEST_CHOOSE_LOCATION:
                     Bundle bundle = data.getExtras();
-                    LocationPass locationPass = bundle.getParcelable(GeolocationActivity.EXTRA_EXISTING_LOCATION);
+                    LocationPass locationPass = bundle.getParcelable(
+                            GeolocationActivity.EXTRA_EXISTING_LOCATION
+                    );
                     if (locationPass != null) {
                         this.orderData.getAddress().setLatitude(locationPass.getLatitude());
                         this.orderData.getAddress().setLongitude(locationPass.getLongitude());
@@ -685,12 +701,20 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             tilAmount.setError(getString(R.string.error_min_order)
                     + " " + orderData.getMinOrder());
             if (etQuantity.requestFocus())
-                getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                getWindow().setSoftInputMode(
+                        WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE
+                );
         } else if (orderData.getAddress() == null) {
             showErrorMessage(getString(R.string.error_no_address));
         } else if (getCurrentFocus() == etQuantity) {
             CommonUtils.dumper("rates/v1 kerorates called aftertextchanged");
-            orderData.setWeight(CommonUtils.round((Double.parseDouble(orderData.getInitWeight()) * Double.parseDouble(s.toString())), 2) + "");
+            orderData.setWeight(
+                    CommonUtils.round(
+                            (Double.parseDouble(
+                                    orderData.getInitWeight()) * Double.parseDouble(s.toString())
+                            ), 2
+                    ) + ""
+            );
             tilAmount.setError(null);
             tilAmount.setErrorEnabled(false);
             presenter.calculateAllPrices(AddToCartActivity.this, orderData);
@@ -741,7 +765,9 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         outState.putParcelable("destinationData", this.mDestination);
         outState.putParcelable("locationPassData", this.mLocationPass);
         outState.putParcelable("productDetailData", this.mProductDetail);
-        outState.putParcelableArrayList("shipmentsData", (ArrayList<? extends Parcelable>) this.mShipments);
+        outState.putParcelableArrayList(
+                "shipmentsData", (ArrayList<? extends Parcelable>) this.mShipments
+        );
     }
 
     @Override
@@ -834,7 +860,9 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     if (subscription != null) subscription.unsubscribe();
-                    subscription = incrementCounterSubscription().subscribe(increaseQuantitySubscriber());
+                    subscription = incrementCounterSubscription().subscribe(
+                            increaseQuantitySubscriber()
+                    );
                     CommonUtils.dumper("SUBSCRIBE");
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_CANCEL ||
                         motionEvent.getAction() == MotionEvent.ACTION_UP) {
@@ -853,7 +881,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     if (subscription != null) subscription.unsubscribe();
-                    subscription = incrementCounterSubscription().subscribe(decreaseQuantitySubscriber());
+                    subscription = incrementCounterSubscription()
+                            .subscribe(decreaseQuantitySubscriber());
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_CANCEL ||
                         motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     if (subscription != null) {
