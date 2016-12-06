@@ -1,15 +1,14 @@
 package com.tokopedia.core.home.model;
 
+import android.os.Parcel;
+
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 
-import org.parceler.Parcel;
-
 /**
  * Created by m.normansyah on 28/10/2015.
  */
-@Parcel
 public class HotListModel extends RecyclerViewItem{
     @SerializedName("title")
     String hotListName;
@@ -110,4 +109,42 @@ public class HotListModel extends RecyclerViewItem{
                 ", hotListKey='" + hotListKey + '\'' +
                 '}';
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeString(this.hotListName);
+        dest.writeString(this.hotListPrice);
+        dest.writeString(this.hotListImage);
+        dest.writeString(this.hotListBiggerImage);
+        dest.writeString(this.hotListProductUrl);
+        dest.writeString(this.hotListKey);
+    }
+
+    protected HotListModel(Parcel in) {
+        super(in);
+        this.hotListName = in.readString();
+        this.hotListPrice = in.readString();
+        this.hotListImage = in.readString();
+        this.hotListBiggerImage = in.readString();
+        this.hotListProductUrl = in.readString();
+        this.hotListKey = in.readString();
+    }
+
+    public static final Creator<HotListModel> CREATOR = new Creator<HotListModel>() {
+        @Override
+        public HotListModel createFromParcel(Parcel source) {
+            return new HotListModel(source);
+        }
+
+        @Override
+        public HotListModel[] newArray(int size) {
+            return new HotListModel[size];
+        }
+    };
 }

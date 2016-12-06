@@ -117,7 +117,7 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
                 super.onScrolled(recyclerView, dx, dy);
                 int lastItemPosition = layoutManager.findLastVisibleItemPosition();
                 int visibleItem = layoutManager.getItemCount() - 1;
-                if (lastItemPosition == visibleItem)
+                if (lastItemPosition == visibleItem && !presenter.isRequesting() && !adapter.getList().isEmpty())
                     presenter.loadMore();
             }
         });
@@ -309,6 +309,7 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
 
     @Override
     public void showError(String error) {
+        setActionsEnabled(true);
         showErrorSnackbar(error);
     }
 
