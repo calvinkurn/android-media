@@ -3,6 +3,7 @@ package com.tokopedia.core;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -717,7 +718,7 @@ public class ShopAddressForm extends TActivity {
         SpinnerRegency.setVisibility(View.VISIBLE);
         SpinnerSubDistrict.setVisibility(View.VISIBLE);
         AddressName.setText(location_name);
-        Address.setText(location_address);
+        Address.setText(Html.fromHtml(location_address));
         PostCode.setText(post_code);
         if (!phone.equals("null")) {
             Phone.setText(phone);
