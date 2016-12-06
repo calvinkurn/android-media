@@ -9,7 +9,8 @@
         android:id="@+id/btn_helper_cart"
         android:layout_width="?actionBarSize"
         android:layout_height="?actionBarSize"
-        android:background="@color/accent" />
+        android:background="@color/accent"
+        android:visibility="gone" />
 
     <include layout="@layout/layout_tab_indicator_main" />
 
