@@ -23,10 +23,8 @@
             <intent-filter>
 
                 <!-- LOCALYTICS TEST MESSAGE KEY -->
-                <data android:scheme="amp463690f70572b471ff52632-9a506f10-588e-11e6-5bf2-0042876ec363" />
+                <data android:scheme="@string/key_localytics_testmessage" />
 
-                <!-- DEBUG KEY -->
-                <!-- <data android:scheme="ampa4c853a5c07b6acfeb61343-037f3b9e-6591-11e5-bdf6-0013a62af900" /> -->
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -56,16 +54,16 @@
 
         <meta-data
             android:name="LOCALYTICS_APP_KEY"
-            android:value="463690f70572b471ff52632-9a506f10-588e-11e6-5bf2-0042876ec363" />
+            android:value="@string/key_localytics" />
         <meta-data
             android:name="GTM_RESOURCE"
             android:resource="@raw/gtm_seller" />
         <meta-data
             android:name="GTM_ID"
-            android:value="GTM-PHC2L9" />
+            android:value="@string/key_gtm" />
         <meta-data
             android:name="APPSFLYER_KEY"
-            android:value="SdSopxGtYr9yK8QEjFVHXL" />
+            android:value="@string/key_appsflyer" />
 
         <activity android:name=".onboarding.activity.OnboardingSellerActivity"></activity>
     </application>
