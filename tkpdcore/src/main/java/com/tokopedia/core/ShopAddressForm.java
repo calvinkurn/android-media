@@ -670,7 +670,7 @@ public class ShopAddressForm extends TActivity {
 
         HashMap<String, String> saveAddressParam = PrepareParamSaveAddress(
                 AddressName.getText().toString(),
-                Address.getText().toString().replaceAll("\\n", "<br />"),
+                Address.getText().toString(),
                 ProvinceID.get(SpinnerProvince.getSelectedItemPosition() - 1).toString(),
                 RegencyID.get(SpinnerRegency.getSelectedItemPosition() - 1).toString(),
                 SubDistrictID.get(SpinnerSubDistrict.getSelectedItemPosition() - 1).toString(),
