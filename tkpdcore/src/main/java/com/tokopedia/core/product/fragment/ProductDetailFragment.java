@@ -78,6 +78,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private static final String ARG_FROM_DEEPLINK = "ARG_FROM_DEEPLINK";
     public static final String STATE_DETAIL_PRODUCT = "STATE_DETAIL_PRODUCT";
     public static final String STATE_OTHER_PRODUCTS = "STATE_OTHER_PRODUCTS";
+    public static final String STATE_VIDEO = "STATE_VIDEO";
     private static final String TAG = ProductDetailFragment.class.getSimpleName();
 
     @BindView(R2.id.tv_ticker_gtm)
@@ -124,6 +125,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private ProductPass productPass;
     private ProductDetailData productData;
     private List<ProductOther> productOthers;
+    private VideoData videoData;
     private AppIndexHandler appIndexHandler;
     private ProgressDialog loading;
 
@@ -426,6 +428,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public void loadVideo(VideoData data) {
         videoLayout.setVisibility(View.VISIBLE);
         this.videoLayout.renderData(data);
+        videoData = data;
     }
 
     @Override
@@ -591,6 +594,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         Log.d(TAG, "onSaveState");
         presenter.saveStateProductDetail(outState, STATE_DETAIL_PRODUCT, productData);
         presenter.saveStateProductOthers(outState, STATE_OTHER_PRODUCTS, productOthers);
+        presenter.saveStateVideoData(outState, STATE_VIDEO, videoData);
     }
 
     @Override
