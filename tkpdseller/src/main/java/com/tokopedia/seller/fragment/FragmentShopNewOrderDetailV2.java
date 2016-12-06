@@ -340,11 +340,11 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
 
         if(orderDetail.getDetailCancelRequest() != null && orderDetail.getDetailCancelRequest().getCancelRequest() == 1){
             holder.wrapperBuyerRequestCancel.setVisibility(View.VISIBLE);
-            if(Build.VERSION.SDK_INT >= 24) {
-                holder.buyerRequestCancel.setText("\"" + Html.fromHtml(orderDetail.getDetailCancelRequest().getReason(), Html.FROM_HTML_MODE_LEGACY) + "\"");
-            }else{
+//            if(Build.VERSION.SDK_INT >= 24) {
+//                holder.buyerRequestCancel.setText("\"" + Html.fromHtml(orderDetail.getDetailCancelRequest().getReason(), Html.) + "\"");
+//            }else{
                 holder.buyerRequestCancel.setText("\"" + Html.fromHtml(orderDetail.getDetailCancelRequest().getReason()) + "\"");
-            }
+//            }
             holder.dateRequestCancel.setText(orderDetail.getDetailCancelRequest().getReasonTime());
         }
 
