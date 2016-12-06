@@ -560,7 +560,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
     private void renderLastOrder() {
         lastOrder = rechargePresenter.getLastOrderFromCache();
-        if (lastOrder != null) {
+        if (lastOrder != null && lastOrder.getData() != null && category != null) {
             if (lastOrder.getData().getAttributes().getCategory_id() == category.getId()) {
                 rechargeEditText.setText(lastOrder.getData().getAttributes().getClient_number());
             }
