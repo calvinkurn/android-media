@@ -622,4 +622,10 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         districtTitle.setVisibility(View.GONE);
         subDistrictError.setVisibility(View.GONE);
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.onDestroyView();
+    }
 }
