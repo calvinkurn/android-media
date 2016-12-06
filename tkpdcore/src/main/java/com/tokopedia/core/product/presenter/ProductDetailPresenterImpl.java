@@ -273,8 +273,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             viewListener.refreshMenu();
                             requestOtherProducts(context,
                                     NetworkParam.paramOtherProducts(productDetailData));
-                            requestVideo(context, productDetailData
-                                    .getInfo().getProductId().toString());
+                            setGoldMerchantFeatures(context, productDetailData);
                         }
 
                         @Override
@@ -691,7 +690,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         viewListener.hideProgressLoading();
                         viewListener.refreshMenu();
                         requestOtherProducts(context, NetworkParam.paramOtherProducts(data));
-                        requestVideo(context, data.getInfo().getProductId().toString());
+                        setGoldMerchantFeatures(context, data);
                     }
 
                     @Override
@@ -746,7 +745,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     private void requestVideo(@NonNull Context context, @NonNull String productID) {
-        retrofitInteractor.requestProductVideo(context, productID, new RetrofitInteractor.VideoLoadedListener() {
+        retrofitInteractor.requestProductVideo(context, productID,
+                new RetrofitInteractor.VideoLoadedListener() {
             @Override
             public void onSuccess(@NonNull VideoData data) {
                 viewListener.loadVideo(data);
@@ -757,5 +757,11 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
             }
         });
+    }
+
+    private void setGoldMerchantFeatures(Context context, ProductDetailData productDetailData) {
+        if(productDetailData.getShopInfo().getShopIsGold() == 1) {
+            requestVideo(context, productDetailData.getInfo().getProductId().toString());
+        }
     }
 }
