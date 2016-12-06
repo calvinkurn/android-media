@@ -718,7 +718,7 @@ public class ShopAddressForm extends TActivity {
         SpinnerRegency.setVisibility(View.VISIBLE);
         SpinnerSubDistrict.setVisibility(View.VISIBLE);
         AddressName.setText(location_name);
-        Address.setText(Html.fromHtml(location_address));
+        Address.setText(location_address);
         PostCode.setText(post_code);
         if (!phone.equals("null")) {
             Phone.setText(phone);
