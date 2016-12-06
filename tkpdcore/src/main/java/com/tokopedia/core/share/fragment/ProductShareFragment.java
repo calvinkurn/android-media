@@ -290,13 +290,12 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                getFragmentManager().popBackStack();
-                return true;
-            case R2.id.action_close:
-                getActivity().onBackPressed();
-                return true;
+        if (item.getItemId()==R.id.action_close) {
+            getActivity().onBackPressed();
+            return true;
+        } else if (item.getItemId()==R.id.home) {
+            getFragmentManager().popBackStack();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

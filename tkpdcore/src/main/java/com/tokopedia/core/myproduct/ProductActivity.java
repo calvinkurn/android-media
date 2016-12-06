@@ -650,7 +650,6 @@ public class ProductActivity extends BaseProductActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbinder.unbind();
     }
 
     @Override

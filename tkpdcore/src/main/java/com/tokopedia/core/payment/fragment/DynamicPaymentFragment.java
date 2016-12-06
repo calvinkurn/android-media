@@ -151,7 +151,8 @@ public class DynamicPaymentFragment extends BasePresenterFragment
             switch (keyCode) {
                 case KeyEvent.KEYCODE_BACK:
                     if (paymentId != null && !paymentId.isEmpty()) {
-                        actionListener.onDynamicPaymentSuccess(paymentId, MESSAGE_PAYMENT_SUCCESS);
+                        actionListener.onDynamicPaymentSuccess(dynamicPaymentData
+                                .getParameter().getTransactionId(), MESSAGE_PAYMENT_SUCCESS);
                     } else {
                         actionListener.onDynamicPaymentCanceled(MESSAGE_PAYMENT_CANCELED);
                     }

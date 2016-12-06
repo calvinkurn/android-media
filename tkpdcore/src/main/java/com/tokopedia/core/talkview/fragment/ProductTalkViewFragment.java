@@ -26,6 +26,11 @@ public class ProductTalkViewFragment extends TalkViewFragment{
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     protected TalkViewAdapter getAdapter() {
         return ProductTalkViewAdapter.createAdapter(this, items);
     }

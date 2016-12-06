@@ -216,6 +216,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="delivery_confirm">Konfirmasi Penerimaan</string>
     <!-- <string name="payment_verify">Verifikasi Pembayaran</string> -->
     <string name="payment_verify">Ubah Pembayaran</string>
+    <string name="payment_status">Status Pembayaran</string>
     <string name="talk">Diskusi Produk</string>
     <string name="review">Ulasan</string>
     <string name="message">Pesan</string>
@@ -948,8 +949,9 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_payment_confirmation">KONFIRMASI</string>
     <!-- <string name="title_payment_verification">VERIFIKASI</string> -->
     <string name="title_payment_verification">Ubah Pembayaran</string>
-    <string name="title_order_status">STATUS</string>
-    <string name="title_receive_confirmation">PAKET DITERIMA</string>
+    <string name="title_payment_status">Status Pembayaran</string>
+    <string name="title_order_status">Status Pemesanan</string>
+    <string name="title_receive_confirmation">Konfirmasi Penerimaan</string>
     <string name="title_receive_confirmation_dashboard">Konfirmasi Penerimaan</string>
     <string name="error_bank_not_selected">Mohon pilih bank</string>
     <string name="dialog_edit_courier">Ganti Kurir Pengiriman</string>
@@ -1055,6 +1057,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_item">Barang</string>
     <string name="payment_confirm_desc">Segera lakukan pembayaran</string>
     <string name="payment_verification_desc">Sedang dalam proses verifikasi</string>
+    <string name="payment_status_desc">Status pembayaran anda</string>
     <string name="order_status_desc">Pantau transaksi anda</string>
     <string name="title_receive_confirmation_dashboard_desc">Barang sudah diterima?</string>
     <string name="title_transaction_list_desc">Transaksi anda yang dibatalkan</string>
@@ -1794,6 +1797,22 @@ di Tokopedia Sekarang!</string>
     <string name="prompt_delete_talk">Apakah anda  yakin ingin menghapus diskusi ini?</string>
     <string name="product_image">Product Image</string>
     <string name="title_delete_discussion">Hapus diskusi</string>
+
+    <!-- BEGIN SELLER ON BOARDING RELATED STRING RESOURCE -->
+    <string name="seller_onb_1_title">Manage Dashboard</string>
+    <string name="seller_onb_1_sub_title">Mau lihat data tokomu?</string>
+    <string name="seller_onb_1_desc">Dengan fitur baru Dashboard, kini kamu makin mudah untuk mengelola tokomu!</string>
+    <string name="seller_onb_2_title">Live Chat</string>
+    <string name="seller_onb_2_sub_title">Mau meningkatkan pelayanan tokomu?</string>
+    <string name="seller_onb_2_desc">Yep, dengan fitur Live Chat kamu sekarang bisa langsung berkomunikasi dengan calon pembeli. Cepat dan mudah!</string>
+    <string name="seller_onb_3_title">Buka Toko Gratis</string>
+    <string name="seller_onb_3_sub_title">Mau jualan juga?</string>
+    <string name="seller_onb_3_desc">Yup, ciptakan peluangmu dan buka tokomu di Tokopedia. Gratis dan mudah!</string>
+
+
+    <string name="title_msisdn">Verifikasi Nomor HP</string>
+    <string name="title_try_again_in">Coba lagi dalam :</string>
+
 
 
     <!--START : string related to Product Picture Download -->

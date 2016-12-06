@@ -17,14 +17,15 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.tkpd.R;
-
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.util.RetryHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.adapter.FavoriteRecyclerViewAdapter;
 import com.tokopedia.tkpd.home.favorite.presenter.Favorite;
@@ -40,7 +41,7 @@ import butterknife.Unbinder;
 /**
  * Created by m.normansyah on 30/10/2015.
  */
-public class FragmentIndexFavoriteV2 extends Fragment implements FavoriteView, DefaultRetryListener.OnClickRetry {
+public class FragmentIndexFavoriteV2 extends TkpdBaseV4Fragment implements FavoriteView, DefaultRetryListener.OnClickRetry {
     Favorite favorite;
     BaseRecyclerViewAdapter adapter;// FavoriteRecyclerViewAdapter
     @BindView(R.id.index_favorite_recycler_view)
@@ -61,6 +62,11 @@ public class FragmentIndexFavoriteV2 extends Fragment implements FavoriteView, D
     @Override
     public void initHolder() {
 
+    }
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_HOME_FAVORITE_SHOP;
     }
 
     @Override
@@ -202,7 +208,7 @@ public class FragmentIndexFavoriteV2 extends Fragment implements FavoriteView, D
         initIntentExtra();
         if (getActivity() instanceof ParentIndexHome) {
             if (((ParentIndexHome) getActivity()).getViewPager() != null) {
-                if (!isDataExist() && ((ParentIndexHome)getActivity()).getViewPager().getCurrentItem() == 2) {
+                if (!isDataExist() && ((ParentIndexHome) getActivity()).getViewPager().getCurrentItem() == 2) {
                     favorite.initData();
                     Log.d("NISNISNIS", "IMPRESSION ON CREATE");
                 }
@@ -298,7 +304,7 @@ public class FragmentIndexFavoriteV2 extends Fragment implements FavoriteView, D
             if (isVisibleToUser && isAdded() && getActivity() != null) {
                 favorite.setLocalyticFlow(getActivity());
                 favorite.sendAppsFlyerData(getActivity());
-                ScreenTracking.screen(this);
+                ScreenTracking.screen(getScreenName());
                 if (!isDataExist()) {
                     favorite.initData();
                     Log.d("NISNISNIS", "IMPRESSION USER VISIBLE HINT");
@@ -356,10 +362,12 @@ public class FragmentIndexFavoriteV2 extends Fragment implements FavoriteView, D
     @Override
     public void displayProgressBar(boolean isDisplay) {
         Log.d(TAG, FragmentIndexFavoriteV2.class.getSimpleName() + " progress bar ingin " + (isDisplay ? "dihidupkan" : "dimatikan"));
-        if (isDisplay)
-            progressBar.setVisibility(View.VISIBLE);
-        else
-            progressBar.setVisibility(View.GONE);
+        if (progressBar != null) {
+            if (isDisplay)
+                progressBar.setVisibility(View.VISIBLE);
+            else
+                progressBar.setVisibility(View.GONE);
+        }
     }
 
     private Boolean isDataExist() {

@@ -50,7 +50,6 @@ public class AppsflyerContainer implements IAppsflyerContainer {
     @Override
     public void initAppsFlyer(String key, String userID) {
         setCurrencyCode("IDR");
-        setUseHTTPFalback(true);
         setUserID(userID);
         setAndroidID();
         setAFLog(true);
@@ -59,15 +58,11 @@ public class AppsflyerContainer implements IAppsflyerContainer {
     }
 
     private void setAppsFlyerKey(String key) {
-        //AppsFlyerLib.getInstance().startTracking((android.app.Application) MainApplication.getInstance(), key);
+        AppsFlyerLib.getInstance().startTracking(MainApplication.getInstance(), key);
     }
 
     private void setCurrencyCode(String code) {
         AppsFlyerLib.getInstance().setCurrencyCode(code);
-    }
-
-    private void setUseHTTPFalback(boolean state) {
-        //AppsFlyerLib.getInstance().setUseHTTPFalback(state);
     }
 
     @Override

@@ -108,10 +108,8 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R2.id.action_close:
-                finish();
-                break;
+        if (item.getItemId()==R.id.action_close) {
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -121,8 +119,7 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
     public void setFragmentForFirstTime3(List<DynamicFilterModel.Filter> data) {
         setFragmentBasedOnData(DynamicFilterModel.Filter.createCategory());
         Fragment dynamicFilterListFragment = DynamicFilterListFragment.newInstance2(data);
-        setFragment(dynamicFilterListFragment,
-                DynamicFilterListView.FRAGMENT_TAG, R.id.dynamic_filter_list);
+        setFragment(dynamicFilterListFragment, DynamicFilterListView.FRAGMENT_TAG, R.id.dynamic_filter_list);
     }
 
     @Override
