@@ -140,10 +140,7 @@ public class RechargeCategoryFragment extends
 
     @Override
     public void renderErrorNetwork() {
-        if (extraData.getBoolean(EXTRA_ALLOW_ERROR)){
-            hideFetchDataLoading();
-            NetworkErrorHelper.showEmptyState(getActivity(), getView(), getRetryListener());
-        }
+
     }
 
     @NonNull
@@ -177,7 +174,7 @@ public class RechargeCategoryFragment extends
             TextView tv = (TextView) (((LinearLayout) ((LinearLayout)
                     tabLayoutRecharge.getChildAt(0))
                     .getChildAt(positionRecharge)).getChildAt(1));
-            if (tv != null) tv.setCompoundDrawablesWithIntrinsicBounds(
+            if (tv != null && isAdded()) tv.setCompoundDrawablesWithIntrinsicBounds(
                     null,
                     null,
                     ResourcesCompat.getDrawable(getResources(), R.drawable.recharge_circle, null)
