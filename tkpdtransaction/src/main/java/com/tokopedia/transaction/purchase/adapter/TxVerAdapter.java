@@ -102,7 +102,7 @@ public class TxVerAdapter extends ArrayAdapter<TxVerData> {
                 if (item.getItemId() == R.id.action_edit) {
                     actionListener.actionEditPayment(data);
                     return true;
-                } else if (item.getItemId() == R2.id.action_upload) {
+                } else if (item.getItemId() == R.id.action_upload) {
                     actionListener.actionUploadProof(data);
                     return true;
                 } else {

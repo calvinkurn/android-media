@@ -480,7 +480,7 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
                 if (item.getItemId() == R.id.action_edit) {
                     listener.onEditRef(model);
                     return true;
-                } else if (item.getItemId() == R2.id.action_track) {
+                } else if (item.getItemId() == R.id.action_track) {
                     listener.onTrack(model);
                     return true;
                 } else {
