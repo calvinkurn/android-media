@@ -449,18 +449,17 @@ public class ReputationDataBinder extends DataBinder<ReputationDataBinder.ViewHo
 
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R2.id.action_edit:
-                        presenter.onEditReview(inboxReputation, inboxReputationDetail, position);
-                        return true;
-                    case R2.id.action_report:
-                        showReport(position);
-                        return true;
-                    case R2.id.action_delete:
-                        presenter.deleteResponse(getParamDelete(position), position);
-                        return true;
-                    default:
-                        return false;
+                if (item.getItemId() == R.id.action_edit) {
+                    presenter.onEditReview(inboxReputation, inboxReputationDetail, position);
+                    return true;
+                } else if (item.getItemId() == R.id.action_report) {
+                    showReport(position);
+                    return true;
+                } else if (item.getItemId() == R.id.action_delete) {
+                    presenter.deleteResponse(getParamDelete(position), position);
+                    return true;
+                } else {
+                    return false;
                 }
             }
 

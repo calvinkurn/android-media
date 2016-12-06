@@ -319,31 +319,22 @@ public class NotificationCenter extends MultiPaneActivity implements Notificatio
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Pass the event to ActionBarDrawerToggle, if it returns
-        // true, then it has handled the app icon touch event
-//	    if (drawer.mDrawerToggle.onOptionsItemSelected(item)) {
-//	      return true;
-//	    }else{
-        switch (item.getItemId()) {
-            case R2.id.action_search:
-                return onSearchOptionSelected();
-            case R2.id.action_cart:
-                if (!SessionHandler.isV4Login(getBaseContext())) {
-                    Intent intent = SessionRouter.getLoginActivityIntent(this);
-                    intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-                    startActivity(intent);
-                } else {
-                    startActivity(new Intent(getBaseContext(), Cart.class));
-                }
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+        if (item.getItemId() == R.id.action_search)
+            return onSearchOptionSelected();
+        else if (item.getItemId() == R.id.action_search) {
+
+            if (!SessionHandler.isV4Login(getBaseContext())) {
+                Intent intent = SessionRouter.getLoginActivityIntent(this);
+                intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
+                startActivity(intent);
+            } else {
+                startActivity(new Intent(getBaseContext(), Cart.class));
+            }
+            return true;
+        } else
+            return super.onOptionsItemSelected(item);
 
     }
-    // Handle your other action bar items...
-//	}
-
 
     @Override
     public void onGetNotif() {
