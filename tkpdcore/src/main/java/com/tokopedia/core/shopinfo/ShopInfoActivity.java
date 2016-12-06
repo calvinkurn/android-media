@@ -49,6 +49,7 @@ import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.shopinfo.adapter.ShopTabPagerAdapter;
 import com.tokopedia.core.shopinfo.facades.ActionShopInfoRetrofit;
 import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
+import com.tokopedia.core.shopinfo.fragment.ProductList;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -166,6 +167,8 @@ public class ShopInfoActivity extends TActivity {
     }
 
     public void switchTab(String etalaseId){
+        ProductList productListFragment = (ProductList) adapter.getItem(1);
+        productListFragment.setSelectedEtalase(etalaseId);
         holder.pager.setCurrentItem(1, true);
     }
 

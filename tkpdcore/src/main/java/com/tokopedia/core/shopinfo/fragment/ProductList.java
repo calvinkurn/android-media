@@ -88,6 +88,11 @@ public class ProductList extends V2BaseFragment {
         return fragment;
     }
 
+    public void setSelectedEtalase(String etalaseId) {
+        int etalaseIndex = etalaseIdList.indexOf(etalaseId);
+        adapter.setSelectedEtalasePos(etalaseIndex);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

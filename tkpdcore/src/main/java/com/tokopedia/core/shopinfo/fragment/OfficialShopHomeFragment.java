@@ -83,6 +83,11 @@ public class OfficialShopHomeFragment extends Fragment {
             return overrideUrl(url);
         }
 
+        @Override
+        public void onLoadResource(WebView view, String url) {
+            Log.d(TAG, "URL "+url);
+        }
+
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             CommonUtils.dumper("DEEPLINK " + errorCode + "  " + description + " " + failingUrl);
             super.onReceivedError(view, errorCode, description, failingUrl);
@@ -126,6 +131,7 @@ public class OfficialShopHomeFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        progressBar.setIndeterminate(true);
         String url = getArguments().getString(SHOP_URL);
         webView.loadUrl(url);
         webView.setWebViewClient(new MyWebClient());
@@ -139,7 +145,8 @@ public class OfficialShopHomeFragment extends Fragment {
         WebSettings webSettings = webView.getSettings();
         webSettings.setDomStorageEnabled(true);
         webSettings.setJavaScriptEnabled(true);
-        webSettings.setBuiltInZoomControls(true);
+        webSettings.setBuiltInZoomControls(false);
+        webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
         optimizeWebView();
         CookieManager.getInstance().setAcceptCookie(true);
     }
@@ -162,7 +169,7 @@ public class OfficialShopHomeFragment extends Fragment {
     private boolean overrideUrl(String url) {
         Uri uri = Uri.parse(url);
         String etalaseId = uri.getLastPathSegment();
-        Log.d(TAG, "URL "+url+" etalase id "+etalaseId);
+        Log.d(TAG, "URL "+url+" etalase id "+etalaseId+" host "+uri.getHost()+" scheme "+uri.getScheme());
         ((ShopInfoActivity) getActivity()).switchTab(etalaseId);
         return true;
     }
