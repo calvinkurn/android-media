@@ -5,7 +5,8 @@ package com.tokopedia.core.network.constants;
  */
 public interface  TkpdBaseURL {
 
-    String LIVE_DOMAIN = "https://ws.tokopedia.com/";
+    //    String LIVE_DOMAIN = "https://ws.tokopedia.com/";
+    String LIVE_DOMAIN = "https://ws-staging.tokopedia.com/";
     String STAGE_DOMAIN = "https://ws-staging.tokopedia.com/";
     String ALPHA_DOMAIN = "https://ws-alpha.tokopedia.com/";
     String BASE_DOMAIN = LIVE_DOMAIN;
@@ -19,7 +20,8 @@ public interface  TkpdBaseURL {
     String HADES_DOMAIN = "https://hades.tokopedia.com";
     String RECHARGE_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
     String RECHARGE_STAGING_DOMAIN = "https://pulsa-api-staging.tokopedia.com/";
-    String ACCOUNTS_DOMAIN = "https://accounts.tokopedia.com/";
+    //    String ACCOUNTS_DOMAIN = "https://accounts.tokopedia.com/";
+    String ACCOUNTS_DOMAIN = "https://accounts-staging.tokopedia.com/";
     String ACCOUNTS_STAGING_DOMAIN = "https://accounts-staging.tokopedia.com/";
     String ACCOUNTS_ALPHA_DOMAIN = "https://accounts-alpha.tokopedia.com/";
     String INBOX_DOMAIN = "https://inbox.tokopedia.com";
@@ -564,6 +566,8 @@ public interface  TkpdBaseURL {
         String PATH_WISHLIST = "wishlist";
 
         String API_HOME_CATEGORY_MENU = "/api/v1/layout/category";
+        String PATH_USER_RECENT_VIEW = "users/";
+        String PATH_RECENT_VIEW = "/recentview/products/v1";
     }
 
 

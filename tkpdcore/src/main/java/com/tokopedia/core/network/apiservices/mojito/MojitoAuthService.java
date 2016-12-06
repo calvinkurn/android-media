@@ -18,7 +18,7 @@ public class MojitoAuthService extends GlobalAuthService<MojitoAuthApi> {
 
     @Override
     protected String getBaseUrl() {
-        return TkpdBaseURL.MOJITO_DOMAIN;
+        return TkpdBaseURL.MOJITO_STAGING_DOMAIN;
     }
 
     @Override

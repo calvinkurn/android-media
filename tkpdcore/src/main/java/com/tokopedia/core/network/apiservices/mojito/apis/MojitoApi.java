@@ -19,12 +19,15 @@ import rx.Observable;
 public interface MojitoApi {
 
     @GET(TkpdBaseURL.Mojito.PATH_USER+"{userId}/"+TkpdBaseURL.Mojito.PATH_WISHLIST_PRODUCT)
-    Observable<Response<WishlistData>> getWishlist(@Path("userId") String UserId, @Query("count") int Count, @Query("page") int Page);
+    Observable<Response<WishlistData>> getWishlist(@Path("userId") String UserId,
+                                                   @Query("count") int Count,
+                                                   @Query("page") int Page);
 
     //api requirement add static header
     @Headers({
             "X-Device: android"})
     @GET(TkpdBaseURL.Mojito.API_HOME_CATEGORY_MENU)
     Observable<Response<HomeCategoryMenuItem>> getHomeCategoryMenu();
+
 
 }
