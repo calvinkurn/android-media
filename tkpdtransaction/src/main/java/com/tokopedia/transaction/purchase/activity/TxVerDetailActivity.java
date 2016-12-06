@@ -111,7 +111,7 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_people_payment_verification_detail;
+        return R.layout.activity_transaction_verification_detail_tx_module;
     }
 
     @Override

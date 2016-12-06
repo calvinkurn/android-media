@@ -190,7 +190,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_add_to_cart_new;
+        return R.layout.activity_add_to_cart_tx_module;
     }
 
     @Override

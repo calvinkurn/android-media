@@ -117,7 +117,7 @@ public class TxConfirmationFragment extends BasePresenterFragment<TxConfirmation
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_tx_payment_conf;
+        return R.layout.fragment_transaction_confirmation_tx_module;
     }
 
     @SuppressLint("InflateParams")

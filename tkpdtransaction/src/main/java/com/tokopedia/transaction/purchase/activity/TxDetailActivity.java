@@ -120,7 +120,7 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_people_tx_details;
+        return R.layout.activity_transaction_detail_tx_module;
     }
 
     @Override

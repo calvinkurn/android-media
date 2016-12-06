@@ -96,7 +96,7 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_transaction_payment_confirmation_detail;
+        return R.layout.activity_transaction_confirmation_detail_tx_module;
     }
 
     @Override

@@ -173,7 +173,7 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_tx_list_order;
+        return R.layout.fragment_transaction_list_tx_module;
     }
 
     @SuppressLint("InflateParams")

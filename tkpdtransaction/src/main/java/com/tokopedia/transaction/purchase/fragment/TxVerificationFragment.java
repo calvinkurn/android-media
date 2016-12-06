@@ -127,7 +127,7 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_tx_payment_verification;
+        return R.layout.fragment_transaction_verification_list_tx_module;
     }
 
     @SuppressLint("InflateParams")

@@ -122,7 +122,7 @@ public class TxSummaryFragment extends BasePresenterFragment<TxSummaryPresenter>
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_people_tx_center;
+        return R.layout.fragment_transaction_summary_tx_module;
     }
 
     @Override

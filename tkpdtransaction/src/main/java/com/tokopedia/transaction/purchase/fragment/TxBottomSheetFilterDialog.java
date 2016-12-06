@@ -71,7 +71,7 @@ public class TxBottomSheetFilterDialog implements AdapterView.OnItemSelectedList
         this.allTxFilter = allTxFilter;
         this.onFilterListener = onFilterListener;
         this.dialog = new BottomSheetDialog(activity);
-        this.dialog.setContentView(R.layout.layout_filter_payment_transaction);
+        this.dialog.setContentView(R.layout.dialog_transaction_filter_tx_module);
         unbinder = ButterKnife.bind(this, this.dialog);
         initViewContent(allTxFilter);
         this.dialog.setOnDismissListener(this);

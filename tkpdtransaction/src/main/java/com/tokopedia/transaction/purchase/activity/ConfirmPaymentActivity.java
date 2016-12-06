@@ -210,7 +210,7 @@ public class ConfirmPaymentActivity extends BasePresenterActivity<ConfirmPayment
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_confirm_payment;
+        return R.layout.activity_confirm_payment_tx_module;
     }
 
     @Override

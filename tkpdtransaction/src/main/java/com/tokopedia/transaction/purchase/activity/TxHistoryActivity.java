@@ -43,7 +43,7 @@ public class TxHistoryActivity extends TActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        inflateView(R.layout.activity_order_history_view);
+        inflateView(R.layout.activity_transaction_history_tx_module);
         ButterKnife.bind(this);
         HistoryListAdapter adapter = new HistoryListAdapter(this);
         listView.setAdapter(adapter);
