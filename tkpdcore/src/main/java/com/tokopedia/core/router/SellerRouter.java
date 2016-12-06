@@ -25,6 +25,10 @@ public class SellerRouter {
 
         String EDIT_SHOP_FRAGMENT_TAG = "EditShopFragment";
         String CREATE_SHOP_FRAGMENT_TAG = "CreateShopFragment";
+
+        String ON_BACK = "ON_BACK";
+        String LOG_OUT = "LOG_OUT";
+        String FINISH = "FINISH";
     }
 
     public static Intent getAcitivityShopCreateEdit(Context context){

@@ -31,7 +31,7 @@
         app:layout_anchor="@id/recycler_view"
         app:layout_anchorGravity="bottom|right|end"
         app:backgroundTint="@color/green_500"
-        app:layout_behavior="com.tokopedia.core.rescenter.inbox.customviews.ScrollAwareFABBehavior"
+        app:layout_behavior="com.tokopedia.inbox.rescenter.inbox.customviews.ScrollAwareFABBehavior"
         />
 
 </android.support.design.widget.CoordinatorLayout>

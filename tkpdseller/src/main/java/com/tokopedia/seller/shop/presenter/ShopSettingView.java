@@ -13,6 +13,10 @@ public interface ShopSettingView {
     String EDIT_SHOP_FRAGMENT_TAG = "EditShopFragment";
     String CREATE_SHOP_FRAGMENT_TAG = "CreateShopFragment";
 
+    String ON_BACK = "ON_BACK";
+    String LOG_OUT = "LOG_OUT";
+    String FINISH = "FINISH";
+
     void initFragment(String FRAGMENT_TAG);
     void moveToFragment(Fragment fragment, boolean isAddtoBackStack, String TAG);
     void fetchExtras(Intent intent);
