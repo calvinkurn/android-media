@@ -9,10 +9,12 @@ import java.util.List;
  * @author Kulomady 05 on 7/13/2016.
  */
 public interface RechargeView {
-    
+
     void showProgressFetchingData();
 
     void renderDataProducts(List<Product> products);
+
+    void renderDataOperators(List<RechargeOperatorModelDBAttrs> operators);
 
     void renderDataProductsEmpty(String message);
 

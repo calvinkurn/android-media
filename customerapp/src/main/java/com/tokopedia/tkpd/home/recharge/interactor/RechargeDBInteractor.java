@@ -18,6 +18,8 @@ public interface RechargeDBInteractor {
 
     void getListProduct(OnGetListProduct onGetListProduct, String prefix, int categoryId, Boolean validatePrefix);
 
+    void getListProductForOperator(OnGetListProductForOperator onGetListProductForOperator, int categoryId);
+
     void getListProductDefaultOperator(OnGetListProduct onGetListProduct, int categoryId, String operatorId);
 
     void getCategory(OnGetCategory onGetCategory);
@@ -38,10 +40,18 @@ public interface RechargeDBInteractor {
 
     void getOperatorById(String operatorId,OnGetOperatorByIdListener listener);
 
+    void getOperatorListByIds(List<Integer> operatorId,OnGetListOperatorByIdsListener listener);
+
     interface OnGetListProduct {
         void onSuccess(List<Product> listProduct);
 
         void onError(Throwable e);
+    }
+
+    interface OnGetListProductForOperator {
+        void onSuccessFetchProducts(List<Product> listProduct);
+
+        void onErrorFetchProdcuts(Throwable e);
     }
 
     interface OnGetCategory {
@@ -62,6 +72,14 @@ public interface RechargeDBInteractor {
 
     interface OnGetOperatorByIdListener {
         void onSuccess(RechargeOperatorModelDBAttrs operator);
+
+        void onError(Throwable e);
+
+        void onEmpty();
+    }
+
+    interface OnGetListOperatorByIdsListener {
+        void onSuccessFetchOperators(List<RechargeOperatorModelDBAttrs> operators);
 
         void onError(Throwable e);
 

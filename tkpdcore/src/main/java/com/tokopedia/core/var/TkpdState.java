@@ -46,8 +46,8 @@ public class TkpdState {
 		public static final int DEVELOPER_OPTIONS = 20;
 		public static final int MANAGE_ETALASE = 21;
 
-		public static final int PEOPLE_CONFIRM_PAYMENT = 201;
-		public static final int PEOPLE_ORDER_STATUS = 202;
+        public static final int PEOPLE_PAYMENT_STATUS = 201;
+        public static final int PEOPLE_ORDER_STATUS = 202;
 		public static final int PEOPLE_CONFIRM_SHIPPING = 203;
 		public static final int PEOPLE_TRANSACTION_LIST = 204;
         public static final int PEOPLE_TRANSACTION_CANCELED = 205;

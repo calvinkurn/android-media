@@ -52,7 +52,7 @@ import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.util.NonScrollLayoutManager;
+import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.tkpd.R;
@@ -70,7 +70,6 @@ import com.tokopedia.tkpd.home.recharge.adapter.RechargeViewPagerAdapter;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenter;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenterImpl;
 import com.tokopedia.tkpd.home.recharge.view.RechargeCategoryView;
-import com.tokopedia.tkpd.home.util.DividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -361,7 +360,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
 
         holder.categoriesRecylerview.setLayoutManager(
-                new NonScrollLayoutManager(getActivity(),
+                new NonScrollLinearLayoutManager(getActivity(),
                         LinearLayoutManager.VERTICAL,
                         false)
         );
@@ -552,8 +551,8 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         holder.viewpagerRecharge.setAdapter(rechargeViewPagerAdapter);
         holder.viewpagerRecharge.getAdapter().notifyDataSetChanged();
         LocalCacheHandler handler = new LocalCacheHandler(getActivity(), "tabSelection");
-        if (handler.getInt("rechargeSelectedPosition") != null && handler.getInt("rechargeSelectedPosition") == 2) {
-            holder.viewpagerRecharge.setCurrentItem(1);
+        if (handler.getInt("rechargeSelectedPosition") != null && handler.getInt("rechargeSelectedPosition")<rechargeCategory.getData().size()) {
+            holder.viewpagerRecharge.setCurrentItem(handler.getInt("rechargeSelectedPosition"));
             LocalCacheHandler.clearCache(getActivity(), "tabSelection");
         } else {
             holder.viewpagerRecharge.setCurrentItem(0);

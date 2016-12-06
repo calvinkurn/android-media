@@ -200,9 +200,10 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
                     public void onSuccess(String message) {
                         viewListener.hideProgressLoading();
                         if (message == null || message.isEmpty()) message = activity.getString(
-                                com.tokopedia.transaction.R.string.default_success_message_request_cancel_order
+                                com.tokopedia.transaction.R.string
+                                        .default_success_message_request_cancel_order
                         );
-                        viewListener.showToastMessage(message);
+                        viewListener.renderSuccessRequestCancelOrder(message);
                     }
 
                     @Override

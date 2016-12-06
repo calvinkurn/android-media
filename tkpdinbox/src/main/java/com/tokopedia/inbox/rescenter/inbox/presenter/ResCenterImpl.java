@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.gcm.NotificationModHandler;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.inbox.rescenter.inbox.listener.ResCenterView;
 import com.tokopedia.core.util.SessionHandler;
@@ -72,9 +73,9 @@ public class ResCenterImpl implements ResCenterPresenter {
     }
 
     private void setTabPosition(Context context) {
-        if (isHasShop(context)) {
+        if (isHasShop(context) && view.getBundleArguments() != null) {
             Bundle bundle = view.getBundleArguments();
-            switch (bundle.getInt(InboxResCenterActivity.EXTRA_STATE_TAB_POSITION, 2)) {
+            switch (bundle.getInt(InboxRouter.EXTRA_STATE_TAB_POSITION, 2)) {
                 case 1:
                     // TkpdState.InboxResCenter.RESO_BUYER;
                     view.setTabPosition(2);

@@ -95,6 +95,11 @@ public class CatalogDataInteractor implements ICataloDataInteractor {
                 .subscribe(subscriber);
     }
 
+    @Override
+    public void unsubscribe() {
+        compositeSubscription.unsubscribe();
+    }
+
     @NonNull
     private Func2<CatalogListWrapperData, Response<CatalogDetailListData>, CatalogListWrapperData>
     transformWrapCatalogListData() {

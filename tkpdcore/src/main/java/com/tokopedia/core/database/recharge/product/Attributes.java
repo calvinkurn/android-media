@@ -27,9 +27,12 @@ public class Attributes {
     @SerializedName("status")
     @Expose
     private Integer status;
+    @SerializedName("weight")
+    @Expose
+    private Integer weight;
 
     /**
-     * 
+     *
      * @return
      *     The desc
      */
@@ -38,7 +41,7 @@ public class Attributes {
     }
 
     /**
-     * 
+     *
      * @param desc
      *     The desc
      */
@@ -47,7 +50,7 @@ public class Attributes {
     }
 
     /**
-     * 
+     *
      * @return
      *     The detail
      */
@@ -56,7 +59,7 @@ public class Attributes {
     }
 
     /**
-     * 
+     *
      * @param detail
      *     The detail
      */
@@ -65,7 +68,7 @@ public class Attributes {
     }
 
     /**
-     * 
+     *
      * @return
      *     The detailUrl
      */
@@ -74,7 +77,7 @@ public class Attributes {
     }
 
     /**
-     * 
+     *
      * @param detailUrl
      *     The detail_url
      */
@@ -83,7 +86,7 @@ public class Attributes {
     }
 
     /**
-     * 
+     *
      * @return
      *     The info
      */
@@ -92,7 +95,7 @@ public class Attributes {
     }
 
     /**
-     * 
+     *
      * @param info
      *     The info
      */
@@ -101,7 +104,7 @@ public class Attributes {
     }
 
     /**
-     * 
+     *
      * @return
      *     The price
      */
@@ -110,7 +113,7 @@ public class Attributes {
     }
 
     /**
-     * 
+     *
      * @param price
      *     The price
      */
@@ -119,7 +122,7 @@ public class Attributes {
     }
 
     /**
-     * 
+     *
      * @return
      *     The promo
      */
@@ -128,7 +131,7 @@ public class Attributes {
     }
 
     /**
-     * 
+     *
      * @param promo
      *     The promo
      */
@@ -137,7 +140,7 @@ public class Attributes {
     }
 
     /**
-     * 
+     *
      * @return
      *     The status
      */
@@ -146,7 +149,7 @@ public class Attributes {
     }
 
     /**
-     * 
+     *
      * @param status
      *     The status
      */
@@ -154,4 +157,11 @@ public class Attributes {
         this.status = status;
     }
 
+    public Integer getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Integer weight) {
+        this.weight = weight;
+    }
 }
