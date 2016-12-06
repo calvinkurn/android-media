@@ -2,7 +2,8 @@ package com.tokopedia.core.network.entity.wishlist;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.core.var.Badge;
+import com.tokopedia.core.var.Label;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,24 +42,24 @@ public class Wishlist {
     Boolean isPreOrder;
     @SerializedName("badges")
     @Expose
-    public List<ProductItem.Badge> badges;
+    public List<Badge> badges;
     @SerializedName("labels")
     @Expose
-    public List<ProductItem.Label> labels;
+    public List<Label> labels;
 
-    public List<ProductItem.Label> getLabels() {
+    public List<Label> getLabels() {
         return labels;
     }
 
-    public void setLabels(List<ProductItem.Label> labels) {
+    public void setLabels(List<Label> labels) {
         this.labels = labels;
     }
 
-    public List<ProductItem.Badge> getBadges() {
+    public List<Badge> getBadges() {
         return badges;
     }
 
-    public void setBadges(List<ProductItem.Badge> badges) {
+    public void setBadges(List<Badge> badges) {
         this.badges = badges;
     }
 

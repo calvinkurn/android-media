@@ -1,11 +1,3 @@
-
-/*
- * Created By Kulomady on 11/25/16 11:18 PM
- * Copyright (c) 2016. All rights reserved
- *
- * Last Modified 11/25/16 11:18 PM
- */
-
 package com.tokopedia.core.discovery.model;
 
 import com.google.gson.Gson;

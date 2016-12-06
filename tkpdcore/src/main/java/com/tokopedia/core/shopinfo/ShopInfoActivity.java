@@ -35,6 +35,7 @@ import com.tokopedia.core.ManageShop;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.inboxmessage.activity.SendMessageActivity;
 import com.tokopedia.core.inboxmessage.fragment.SendMessageFragment;
@@ -51,8 +52,7 @@ import com.tokopedia.core.shopinfo.facades.ActionShopInfoRetrofit;
 import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.TkpdState;
 
 import java.util.List;
@@ -444,9 +444,9 @@ public class ShopInfoActivity extends TActivity {
     }
 
     private void setFreeReturn(ViewHolder holder, Info data) {
-        List<ProductItem.Badge> badges = data.badges;
+        List<Badge> badges = data.badges;
         for (int i = 0; i < badges.size(); i++) {
-            ProductItem.Badge badge = badges.get(i);
+            Badge badge = badges.get(i);
             if (badge.getTitle().equals("Free Returns")) {
                 LuckyShopImage.loadImage(holder.freeReturns, badge.getImageUrl());
             }

@@ -1,22 +1,19 @@
 package com.tokopedia.tkpd.home.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.tokopedia.core.network.entity.home.TopAdsHome;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.ShopItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.tkpd.home.favorite.presenter.Favorite;
 
-import org.parceler.Parcel;
-
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by m.normansyah on 31/10/2015.
- */
-@Parcel
-public class HorizontalShopList extends RecyclerViewItem{
-    List<ShopItem> shopItemList;
+public class HorizontalShopList extends RecyclerViewItem implements Parcelable {
+    List<ShopItem> shopItemList = new ArrayList<>();
 
     public HorizontalShopList(){
         setType(TkpdState.RecyclerViewItem.TYPE_LIST);
@@ -58,9 +55,38 @@ public class HorizontalShopList extends RecyclerViewItem{
 
     public static List<ShopItem> fromDatas(TopAdsHome.Data... data){
         List<ShopItem> shopItems = new ArrayList<>();
-        for(int i= 0;i<data.length;i++){
-            shopItems.add(fromData(data[i]));
+        for (TopAdsHome.Data aData : data) {
+            shopItems.add(fromData(aData));
         }
         return shopItems;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeTypedList(this.shopItemList);
+    }
+
+    protected HorizontalShopList(Parcel in) {
+        super(in);
+        this.shopItemList = in.createTypedArrayList(ShopItem.CREATOR);
+    }
+
+    public static final Creator<HorizontalShopList> CREATOR = new Creator<HorizontalShopList>() {
+        @Override
+        public HorizontalShopList createFromParcel(Parcel source) {
+            return new HorizontalShopList(source);
+        }
+
+        @Override
+        public HorizontalShopList[] newArray(int size) {
+            return new HorizontalShopList[size];
+        }
+    };
 }
