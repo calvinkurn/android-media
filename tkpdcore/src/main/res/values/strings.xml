@@ -1822,4 +1822,5 @@ di Tokopedia Sekarang!</string>
     <string name="download_success">Gambar berhasil diunduh</string>
     <string name="preview_picture_open_action">BUKA</string>
     <string name="preview_picture_download_action">Download Gambar</string>
+    <string name="download_error">Terjadi kesalahan pengunduhan gambar</string>
 </resources>

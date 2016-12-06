@@ -10,10 +10,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.BoolRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
@@ -53,6 +55,11 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 @RuntimePermissions
 public class PreviewProductImage extends TActivity {
@@ -161,7 +168,6 @@ public class PreviewProductImage extends TActivity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // TODO Auto-generated method stub
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         }
@@ -180,10 +186,18 @@ public class PreviewProductImage extends TActivity {
     }
 
     private void openImageDownloaded(String path) {
+        String packageName = PreviewProductImage.this.getApplicationContext().getPackageName();
         File file = new File(path);
         Intent sintent = new Intent();
         sintent.setAction(Intent.ACTION_VIEW);
-        sintent.setDataAndType(Uri.fromFile(file), "image/*");
+        Uri uri;
+        if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            uri = FileProvider.getUriForFile(PreviewProductImage.this, packageName + ".fileprovider", file);
+            sintent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        } else {
+            uri = Uri.fromFile(file);
+        }
+        sintent.setDataAndType(uri, "image/*");
         startActivity(sintent);
         PreviewProductImage.this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -224,26 +238,27 @@ public class PreviewProductImage extends TActivity {
 
     @NeedsPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public void actionDownloadAndSavePicture() {
-        String filename = processPicName(vp.getCurrentItem()) + ".jpg";
+        final String filenameParam = processPicName(vp.getCurrentItem()) + ".jpg";
         Random random = new Random();
         final int randomNotificationId = generateRandomInteger(random);
         final NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         final NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(PreviewProductImage.this);
-        notificationBuilder.setContentTitle(filename)
+        notificationBuilder.setContentTitle(filenameParam)
                 .setContentText(getString(R.string.download_in_process))
-                .setSmallIcon(R.drawable.qc_launcher)
+                .setSmallIcon(R.drawable.ic_stat_notify)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_stat_notify))
                 .setAutoCancel(true)
         ;
         notificationBuilder.setProgress(0, 0, true);
         notificationManager.notify(randomNotificationId, notificationBuilder.build());
 
-        SimpleTarget<Bitmap> target2 = new SimpleTarget<Bitmap>() {
+        SimpleTarget<Bitmap> targetListener = new SimpleTarget<Bitmap>() {
             @Override
             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                 final String path = CommonUtils.SaveImageFromBitmap(PreviewProductImage.this,
-                        resource, processPicName(vp.getCurrentItem()));
+                        resource, filenameParam);
                 if (path == null) {
                     notificationBuilder.setContentText(getString(R.string.download_failed))
                             .setProgress(0, 0, false);
@@ -268,10 +283,10 @@ public class PreviewProductImage extends TActivity {
                     String packageName = PreviewProductImage.this.getApplicationContext().getPackageName();
                     File file = new File(path);
                     Uri uri;
-                    if(android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.M){
+                    if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
                         uri = FileProvider.getUriForFile(PreviewProductImage.this, packageName + ".fileprovider", file);
-                        intent.addFlags (Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    }else{
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    } else {
                         uri = Uri.fromFile(file);
                     }
                     intent.setDataAndType(uri, "image/*");
@@ -331,7 +346,9 @@ public class PreviewProductImage extends TActivity {
                         .show();
             }
         };
-        ImageHandler.loadImageBitmap2(getApplicationContext(), fileLoc.get(vp.getCurrentItem()), target2);
+        ImageHandler.loadImageBitmap2(getApplicationContext(), fileLoc.get(vp.getCurrentItem()), targetListener);
+
+
     }
 
     @OnShowRationale(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
