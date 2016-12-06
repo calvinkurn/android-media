@@ -235,6 +235,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     @Override
     public void hideProgressLoading() {
         progressDialog.dismiss();
+        calculateCartProgressBar.setVisibility(View.GONE);
     }
 
     @Override

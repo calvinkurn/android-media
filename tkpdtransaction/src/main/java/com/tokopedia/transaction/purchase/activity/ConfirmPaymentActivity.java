@@ -740,28 +740,27 @@ public class ConfirmPaymentActivity extends BasePresenterActivity<ConfirmPayment
 
         @Override
         public void afterTextChanged(Editable s) {
-            switch (resId) {
-                case R2.id.remark:
-                    confirmPaymentData.setComments(s.toString());
-                    break;
-                case R2.id.nama_penyetor:
-                    confirmPaymentData.setDepositor(s.toString());
-                    break;
-                case R2.id.input_total_payment:
-                    confirmPaymentData.setPaymentAmount(s.toString());
-                    break;
-                case R2.id.account_owner:
-                    confirmPaymentData.setBankAccountName(s.toString());
-                    break;
-                case R2.id.account_number:
-                    confirmPaymentData.setBankAccountNumber(s.toString());
-                    break;
-                case R2.id.branch:
-                    confirmPaymentData.setBankAccountBranch(s.toString());
-                    break;
-                case R2.id.password:
-                    confirmPaymentData.setPasswordDeposit(s.toString());
-                    break;
+            if (resId == R.id.remark) {
+                confirmPaymentData.setComments(s.toString());
+
+            } else if (resId == R.id.nama_penyetor) {
+                confirmPaymentData.setDepositor(s.toString());
+
+            } else if (resId == R.id.input_total_payment) {
+                confirmPaymentData.setPaymentAmount(s.toString());
+
+            } else if (resId == R.id.account_owner) {
+                confirmPaymentData.setBankAccountName(s.toString());
+
+            } else if (resId == R.id.account_number) {
+                confirmPaymentData.setBankAccountNumber(s.toString());
+
+            } else if (resId == R.id.branch) {
+                confirmPaymentData.setBankAccountBranch(s.toString());
+
+            } else if (resId == R.id.password) {
+                confirmPaymentData.setPasswordDeposit(s.toString());
+
             }
         }
     }

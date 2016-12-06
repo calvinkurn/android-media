@@ -113,16 +113,15 @@ public class ChooseAddressActivity extends BasePresenterActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R2.id.action_add_address:
-                Intent intent = new Intent(getBaseContext(), AddAddressActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putBoolean("is_edit", false);
-                intent.putExtras(bundle);
-                startActivityForResult(intent, ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.action_add_address) {
+            Intent intent = new Intent(getBaseContext(), AddAddressActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("is_edit", false);
+            intent.putExtras(bundle);
+            startActivityForResult(intent, ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
     }
 }

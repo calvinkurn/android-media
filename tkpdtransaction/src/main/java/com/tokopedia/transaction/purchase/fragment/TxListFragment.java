@@ -529,10 +529,9 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
     @Override
     public void onClick(View v) {
         int i = v.getId();
-        if (i == R.id.fab_filter) {
+        if (i == R.id.fab_filter)
             bottomSheetFilterDialog.show();
 
-        }
     }
 
     @Override

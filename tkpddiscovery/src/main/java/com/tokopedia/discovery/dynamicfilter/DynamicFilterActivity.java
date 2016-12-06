@@ -108,9 +108,8 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId()==R.id.action_close) {
+        if (item.getItemId() == R.id.action_close)
             finish();
-        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -199,13 +198,13 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
         intent.putExtra(EXTRA_FILTER_KEY, key);
 
         //for prevent disable reset selected indicator for category harga
-        if(selectedFilter.containsKey("pmax")){
+        if (selectedFilter.containsKey("pmax")) {
             return;
         }
-        if(selectedFilter.containsKey("pmin")){
+        if (selectedFilter.containsKey("pmin")) {
             return;
         }
-        if(selectedFilter.containsKey("wholesale")){
+        if (selectedFilter.containsKey("wholesale")) {
             return;
         }
         intent.putExtra(EXTRA_FILTER_VALUE, false);

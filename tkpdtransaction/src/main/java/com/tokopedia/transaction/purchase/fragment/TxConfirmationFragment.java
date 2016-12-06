@@ -441,13 +441,12 @@ public class TxConfirmationFragment extends BasePresenterFragment<TxConfirmation
 
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-        switch (item.getItemId()) {
-            case R2.id.action_confirm:
-                presenter.processMultiConfirmPayment(getActivity(), txConfDataSelected);
-                return true;
-            case R2.id.action_cancel:
-                presenter.processMultipleCancelPayment(getActivity(), txConfDataSelected);
-                return true;
+        if (item.getItemId() == R.id.action_confirm) {
+            presenter.processMultiConfirmPayment(getActivity(), txConfDataSelected);
+            return true;
+        } else if (item.getItemId() == R.id.action_cancel) {
+            presenter.processMultipleCancelPayment(getActivity(), txConfDataSelected);
+            return true;
         }
         return false;
     }

@@ -12,7 +12,7 @@ public class SellerMainApplication extends MainApplication {
     public static final int SELLER_APPLICATION = 2;
 
     @Override
-    protected int getApplicationType() {
+    public int getApplicationType() {
         return SELLER_APPLICATION;
     }
 
