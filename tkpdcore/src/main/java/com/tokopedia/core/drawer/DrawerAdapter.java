@@ -167,7 +167,6 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         View itemLayoutView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.drawer_group, parent, false);
-        ImageHandler.loadImageWithId((ImageView) itemLayoutView.findViewById(R.id.arrow), R.drawable.right_arrow);
         return new ListViewHolder(itemLayoutView);
     }
 
