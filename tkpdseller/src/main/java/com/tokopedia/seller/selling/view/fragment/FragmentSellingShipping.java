@@ -310,7 +310,6 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
         initPresenter();
         presenter.getShippingList(isVisibleToUser);
         super.setUserVisibleHint(isVisibleToUser);
-        presenter.checkValidationToSendGoogleAnalytic(isVisibleToUser, getActivity());
         ScreenTracking.screenLoca(AppScreen.SCREEN_LOCA_SHIPPING);
         ScreenTracking.screen(AppScreen.SCREEN_TX_SHOP_CONFIRM_SHIPPING);
     }

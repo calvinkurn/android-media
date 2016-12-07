@@ -166,13 +166,10 @@ public class FragmentSellingTxCenter extends BaseFragment<PeopleTxCenter> implem
     public void setUserVisibleHint(boolean isVisibleToUser) {
         initPresenter();
         presenter.fetchArguments(getArguments());
-        presenter.checkValidationToSendGoogleAnalytic(isVisibleToUser, getActivity());
-        loadData();
         ScreenTracking.screenLoca(AppScreen.SCREEN_LOCA_TXCENTER);
         ScreenTracking.screen(AppScreen.SCREEN_TX_SHOP_CENTER);
         super.setUserVisibleHint(isVisibleToUser);
         presenter.setLocalyticFlow(getActivity());
-        CommonUtils.dumper("Localytics is null activity "+getActivity());
     }
 
     @Override
