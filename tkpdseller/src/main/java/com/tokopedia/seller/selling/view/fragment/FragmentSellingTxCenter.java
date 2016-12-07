@@ -6,9 +6,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customadapter.ListViewPeopleTransactionSummary;
 import com.tokopedia.seller.selling.presenter.PeopleTxCenter;
@@ -164,9 +167,11 @@ public class FragmentSellingTxCenter extends BaseFragment<PeopleTxCenter> implem
         initPresenter();
         presenter.fetchArguments(getArguments());
         presenter.checkValidationToSendGoogleAnalytic(isVisibleToUser, getActivity());
-        presenter.setLocalyticFlow(getActivity());
         loadData();
+        ScreenTracking.screenLoca(AppScreen.SCREEN_LOCA_TXCENTER);
         super.setUserVisibleHint(isVisibleToUser);
+        presenter.setLocalyticFlow(getActivity());
+        CommonUtils.dumper("Localytics is null activity "+getActivity());
     }
 
     @Override

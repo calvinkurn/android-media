@@ -26,6 +26,8 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.PagingHandler;
@@ -111,8 +113,9 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
         initPresenter();
 
         presenter.getStatusTransactionList(isVisibleToUser, SellingStatusTransactionImpl.Type.STATUS);
-        presenter.checkValidationToSendGoogleAnalytic(isVisibleToUser, getActivity());
         super.setUserVisibleHint(isVisibleToUser);
+        ScreenTracking.screenLoca(AppScreen.SCREEN_LOCA_SHIPPINGSTATUS);
+        presenter.checkValidationToSendGoogleAnalytic(isVisibleToUser, getActivity());
     }
 
 

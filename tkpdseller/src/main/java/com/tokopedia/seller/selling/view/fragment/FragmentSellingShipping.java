@@ -34,6 +34,8 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
 import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
@@ -307,8 +309,9 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
     public void setUserVisibleHint(boolean isVisibleToUser) {
         initPresenter();
         presenter.getShippingList(isVisibleToUser);
-        presenter.checkValidationToSendGoogleAnalytic(isVisibleToUser, getActivity());
         super.setUserVisibleHint(isVisibleToUser);
+        presenter.checkValidationToSendGoogleAnalytic(isVisibleToUser, getActivity());
+        ScreenTracking.screenLoca(AppScreen.SCREEN_LOCA_SHIPPING);
     }
 
     @Override
