@@ -5,11 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.cart.fragment.CartFragment;
+import com.tokopedia.transaction.cart.fragment.TopPayFragment;
 import com.tokopedia.transaction.cart.listener.ICartActionFragment;
 
 
@@ -68,7 +70,17 @@ public class CartActivity extends BasePresenterActivity implements ICartActionFr
     @Override
     public void onBackPressed() {
         if (getFragmentManager().getBackStackEntryCount() > 0) {
-            getFragmentManager().popBackStack();
+            if (getFragmentManager().findFragmentById(R.id.container) instanceof TopPayFragment) {
+                TopPayFragment topPayFragment = ((TopPayFragment)
+                        getFragmentManager().findFragmentById(R.id.container));
+                if (topPayFragment.getPaymentId() != null) {
+                    topPayFragment.testMethod();
+                } else {
+                    getFragmentManager().popBackStack();
+                }
+            } else {
+                getFragmentManager().popBackStack();
+            }
         } else {
             this.finish();
         }
@@ -82,7 +94,7 @@ public class CartActivity extends BasePresenterActivity implements ICartActionFr
 
     @Override
     public void onTopPaySuccess(String paymentId, String message) {
-
+        Toast.makeText(this, paymentId + " " + message, Toast.LENGTH_SHORT).show();
     }
 
     @Override

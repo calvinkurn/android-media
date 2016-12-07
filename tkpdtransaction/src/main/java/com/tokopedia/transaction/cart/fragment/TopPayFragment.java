@@ -20,9 +20,11 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.listener.ICartActionFragment;
@@ -137,9 +139,6 @@ public class TopPayFragment extends BasePresenterFragment implements View.OnKeyL
 
     @Override
     protected void setActionVar() {
-//        webView.postUrl(topPayParameterData.getRedirectUrl(),
-//                EncodingUtils.getBytes(topPayParameterData.getQueryString(), CHARSET_UTF_8));
-
         try {
             webView.postUrl(topPayParameterData.getRedirectUrl(),
                     topPayParameterData.getQueryString().getBytes(CHARSET_UTF_8));
@@ -180,6 +179,12 @@ public class TopPayFragment extends BasePresenterFragment implements View.OnKeyL
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void testMethod() {
+        Toast.makeText(getActivity(), "Holalalalalalalalala", Toast.LENGTH_SHORT).show();
+        startActivity(TransactionPurchaseRouter.createIntentTxSummary(getActivity()));
+        getActivity().finish();
     }
 
     private class TopPayWebViewClient extends WebViewClient {
