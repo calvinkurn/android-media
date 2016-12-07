@@ -371,6 +371,7 @@ public class InboxMessageFragmentPresenterImpl implements InboxMessageFragmentPr
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser, boolean isMustRefresh) {
+        initAnalytics();
         if (isDataEmpty() && isVisibleToUser && !viewListener.hasRetry()) {
             getInboxMessage();
         } else if (isMustRefresh) {
