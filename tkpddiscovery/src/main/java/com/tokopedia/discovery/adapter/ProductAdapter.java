@@ -1,10 +1,3 @@
-/*
- * Created By Kulomady on 11/26/16 1:02 AM
- * Copyright (c) 2016. All rights reserved
- *
- * Last Modified 11/26/16 1:02 AM
- */
-
 package com.tokopedia.discovery.adapter;
 
 import android.app.Activity;
@@ -53,6 +46,8 @@ import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.var.Badge;
+import com.tokopedia.core.var.Label;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
@@ -651,13 +646,13 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             ImageHandler.loadImageThumbs(context, productImage, data.imgUri);
             viewHolder.badgesContainer.removeAllViews();
             if (data.getBadges() != null) {
-                for (ProductItem.Badge badges : data.getBadges()) {
+                for (Badge badges : data.getBadges()) {
                     LuckyShopImage.loadImage(context, badges.getImageUrl(), badgesContainer);
                 }
             }
             viewHolder.labelContainer.removeAllViews();
             if (data.getLabels() != null) {
-                for (ProductItem.Label label : data.getLabels()) {
+                for (Label label : data.getLabels()) {
                     View view = LayoutInflater.from(context).inflate(R.layout.label_layout, null);
                     TextView labelText = (TextView) view.findViewById(R.id.label);
                     labelText.setText(label.getTitle());
