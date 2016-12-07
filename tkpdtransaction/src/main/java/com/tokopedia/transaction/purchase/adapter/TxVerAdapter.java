@@ -99,15 +99,14 @@ public class TxVerAdapter extends ArrayAdapter<TxVerData> {
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R2.id.action_edit:
-                        actionListener.actionEditPayment(data);
-                        return true;
-                    case R2.id.action_upload:
-                        actionListener.actionUploadProof(data);
-                        return true;
-                    default:
-                        return false;
+                if (item.getItemId() == R.id.action_edit) {
+                    actionListener.actionEditPayment(data);
+                    return true;
+                } else if (item.getItemId() == R.id.action_upload) {
+                    actionListener.actionUploadProof(data);
+                    return true;
+                } else {
+                    return false;
                 }
             }
         });

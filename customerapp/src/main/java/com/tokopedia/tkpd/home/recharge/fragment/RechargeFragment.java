@@ -30,6 +30,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -559,7 +560,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
     private void renderLastOrder() {
         lastOrder = rechargePresenter.getLastOrderFromCache();
-        if (lastOrder != null) {
+        if (lastOrder != null && lastOrder.getData() != null && category != null) {
             if (lastOrder.getData().getAttributes().getCategory_id() == category.getId()) {
                 rechargeEditText.setText(lastOrder.getData().getAttributes().getClient_number());
             }
@@ -737,7 +738,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     //endregion
 
     private void gotoLogin() {
-        Intent intent = new Intent(getActivity(), Login.class);
+        Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
         intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
         rechargePresenter.saveLastInputToCache(
                 LAST_INPUT_KEY + category.getId(),
