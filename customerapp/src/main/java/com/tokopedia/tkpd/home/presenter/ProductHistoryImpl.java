@@ -151,7 +151,7 @@ public class ProductHistoryImpl implements ProductHistory {
     public void fetchDataFromInternet(Context context) {
         String userId = SessionHandler.getLoginID(context);
         compositeSubscription.add(mojitoService.getApi()
-                .getRecentViews(userId, userId)
+                .getRecentViews(userId)
 
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

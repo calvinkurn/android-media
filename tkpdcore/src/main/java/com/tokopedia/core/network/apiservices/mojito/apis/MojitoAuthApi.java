@@ -7,7 +7,6 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import retrofit2.Response;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import rx.Observable;
@@ -28,7 +27,6 @@ public interface MojitoAuthApi {
     Observable<Response<TkpdResponse>> addWishlist(@Path("productId") String productId);
 
     @GET(TkpdBaseURL.Mojito.PATH_USER_RECENT_VIEW + "{userId}" + TkpdBaseURL.Mojito.PATH_RECENT_VIEW)
-    Observable<Response<RecentViewData>> getRecentViews(@Header("user-id") String userId,
-                                                        @Path("userId") String UserId);
+    Observable<Response<RecentViewData>> getRecentViews(@Path("userId") String UserId);
 
 }
