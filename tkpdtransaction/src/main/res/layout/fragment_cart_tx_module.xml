@@ -3,109 +3,43 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/padding_small"
-    android:paddingRight="@dimen/padding_small">
+    android:padding="@dimen/padding_small">
 
-    <include
-        layout="@layout/loader"
+    <ProgressBar
+        android:id="@+id/pb_main_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        tools:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tv_ticker_gtm"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:visibility="gone" />
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/padding_vs"
+        android:background="@drawable/bg_yellow_border_yelow"
+        android:maxLines="3"
+        android:padding="@dimen/padding_small"
+        android:visibility="gone"
+        tools:text="vhashkjalsla asbhdkashahs askjdhasjdhas asdbaksdlasd"
+        tools:visibility="visible" />
+
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/nsv_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        tools:ignore="ObsoleteLayoutParam">
+        android:visibility="gone"
+        tools:ignore="ObsoleteLayoutParam"
+        tools:visibility="visible">
 
         <LinearLayout
             android:id="@+id/holder_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-            <!-- Header Shopping Cart -->
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small"
-                android:layout_marginTop="@dimen/margin_small"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_small"
-                    android:layout_marginRight="@dimen/margin_small"
-                    android:gravity="center_horizontal"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="@dimen/screen_per_3_pad"
-                        android:layout_height="wrap_content"
-                        android:gravity="left"
-                        android:text="@string/title_shopping_cart"
-                        android:textSize="@dimen/fontvs"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="@dimen/screen_per_3_pad"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:text="@string/title_summary"
-                        android:textColor="@color/time_color"
-                        android:textSize="@dimen/fontvs" />
-
-                    <TextView
-                        android:layout_width="@dimen/screen_per_3_pad"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:text="@string/title_confirmation"
-                        android:textColor="@color/time_color"
-                        android:textSize="@dimen/fontvs" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_small"
-                    android:gravity="center_horizontal"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="@dimen/margin_med"
-                        android:layout_height="@dimen/margin_med"
-                        android:src="@drawable/ic_shopping_cart_done" />
-
-                    <TextView
-                        android:layout_width="@dimen/screen_per_3_pad"
-                        android:layout_height="0.1dp"
-                        android:layout_gravity="center"
-                        android:background="@color/time_color"
-                        android:gravity="center" />
-
-                    <ImageView
-                        android:layout_width="@dimen/margin_med"
-                        android:layout_height="@dimen/margin_med"
-                        android:src="@drawable/ic_shopping_cart_undone" />
-
-                    <TextView
-                        android:layout_width="@dimen/screen_per_3_pad"
-                        android:layout_height="0.1dp"
-                        android:layout_gravity="center"
-                        android:background="@color/time_color"
-                        android:gravity="center" />
-
-                    <ImageView
-                        android:layout_width="@dimen/margin_med"
-                        android:layout_height="@dimen/margin_med"
-                        android:src="@drawable/ic_shopping_cart_undone" />
-                </LinearLayout>
-            </LinearLayout>
 
             <android.support.v7.widget.CardView
                 android:id="@+id/cv_payment_selection"
@@ -149,12 +83,11 @@
                             android:id="@+id/tv_total_payment"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_toRightOf="@id/string_saldo"
-                            android:gravity="right"
-                            android:text="Rp 200.000,-"
+                            android:gravity="end"
                             android:textColor="@color/black"
                             android:textSize="@dimen/font_large"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            tools:text="Rp 200.000,-" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -167,6 +100,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/margin_small"
                             android:layout_marginRight="@dimen/margin_small"
                             android:text="@string/title_loyalty_points"
                             android:textColor="@color/label_color"
@@ -176,8 +110,7 @@
                             android:id="@+id/tv_loyalty_balance"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_toRightOf="@id/string_tot"
-                            android:gravity="right|end"
+                            android:gravity="end"
                             android:textColor="@color/label_color"
                             android:textSize="@dimen/fontvs"
                             tools:text="Rp 2.000.213,-" />
@@ -192,6 +125,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/et_tkpd_balance"
+                            android:layout_marginEnd="@dimen/margin_small"
                             android:layout_marginRight="@dimen/margin_small"
                             android:text="Saldo Tokopedia Anda saat ini"
                             android:textColor="@color/label_color"
@@ -223,10 +157,13 @@
                             android:layout_width="55sp"
                             android:layout_height="28sp"
                             android:layout_centerVertical="true"
+                            android:layout_marginEnd="@dimen/margin_vs"
                             android:layout_marginRight="@dimen/margin_vs"
                             android:layout_toLeftOf="@+id/tv_desc_btn_payment_method"
-                            android:visibility="visible"
-                            tools:src="@drawable/android_check_default" />
+                            android:layout_toStartOf="@+id/tv_desc_btn_payment_method"
+                            android:visibility="gone"
+                            tools:ignore="ContentDescription"
+                            tools:src="@drawable/icon_bca" />
 
                         <TextView
                             android:id="@+id/tv_desc_btn_payment_method"
@@ -246,9 +183,12 @@
                             android:layout_height="@dimen/small_dp"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="@dimen/margin_vs"
+                            android:layout_marginStart="@dimen/margin_vs"
+                            android:layout_toEndOf="@+id/tv_desc_btn_payment_method"
                             android:layout_toRightOf="@+id/tv_desc_btn_payment_method"
                             android:background="@drawable/overflow_selected"
-                            android:src="@drawable/chevron_down" />
+                            android:src="@drawable/chevron_down"
+                            tools:ignore="ContentDescription" />
                     </RelativeLayout>
 
                     <TextView
@@ -260,7 +200,7 @@
                         android:background="@color/green_200"
                         android:padding="@dimen/margin_vs"
                         android:text="Tidak dikenakan biaya"
-                        android:visibility="visible" />
+                        android:visibility="gone" />
 
                     <LinearLayout
                         android:id="@+id/holder_use_deposit"
@@ -316,7 +256,9 @@
                         android:id="@+id/holder_use_voucher"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center">
+                        android:layout_gravity="center"
+                        android:visibility="gone"
+                        tools:visibility="visible">
 
                         <TextView
                             android:id="@+id/btn_check_voucher"
@@ -324,8 +266,8 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentRight="true"
-                            android:layout_centerVertical="true"
                             android:layout_marginLeft="@dimen/margin_small"
+                            android:layout_marginStart="@dimen/margin_small"
                             android:background="@color/green_500"
                             android:gravity="center"
                             android:padding="@dimen/margin_small"
@@ -368,15 +310,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/padding_small"
+                android:visibility="gone"
                 app:cardBackgroundColor="@color/white"
                 app:cardElevation="2dp"
-                app:contentPadding="@dimen/padding_small">
+                app:contentPadding="@dimen/padding_small"
+                tools:visibility="visible">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/tv_label_1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -386,10 +332,13 @@
 
                     <TextView
                         android:id="@+id/tv_cash_back_value"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
+                        android:layout_toEndOf="@+id/tv_label_1"
+                        android:layout_toRightOf="@+id/tv_label_1"
+                        android:gravity="end"
                         android:textColor="@color/green_500"
                         android:textStyle="bold"
                         tools:text="5000" />
@@ -402,11 +351,5 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
-
-    <include
-        layout="@layout/error_no_result"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
 
 </FrameLayout>

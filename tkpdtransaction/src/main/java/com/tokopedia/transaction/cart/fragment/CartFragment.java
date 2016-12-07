@@ -14,11 +14,12 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.util.Linkify;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -29,6 +30,8 @@ import android.widget.Toast;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.activity.ShipmentCartActivity;
@@ -61,10 +64,9 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         PaymentGatewayFragment.ActionListener, CartItemAdapter.CartAction,
         CartBroadcastReceiver.ActionTopPayListener {
 
-    @BindView(R2.id.logo)
-    ProgressBar logo;
-    @BindView(R2.id.layout_root)
-    FrameLayout layoutRoot;
+
+    @BindView(R2.id.pb_main_loading)
+    ProgressBar pbMainLoading;
     @BindView(R2.id.tv_error_payment)
     TextView tvErrorPayment;
     @BindView(R2.id.tv_total_payment)
@@ -105,16 +107,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     RecyclerView rvCart;
     @BindView(R2.id.holder_container)
     LinearLayout holderContainer;
-    @BindView(R2.id.no_res_img)
-    ImageView noResImg;
-    @BindView(R2.id.message_error_1)
-    TextView messageError1;
-    @BindView(R2.id.message_error_2)
-    TextView messageError2;
-    @BindView(R2.id.find_now)
-    TextView findNow;
-    @BindView(R2.id.include_no_result)
-    LinearLayout includeNoResult;
     @BindView(R2.id.tv_loyalty_balance)
     TextView tvLoyaltyBalance;
     @BindView(R2.id.holder_loyalty_balance)
@@ -123,6 +115,8 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     EditText etUseDeposit;
     @BindView(R2.id.holder_use_deposit)
     LinearLayout holderUseDeposit;
+    @BindView(R2.id.tv_ticker_gtm)
+    TextView tvTickerGTM;
 
     private ICartActionFragment actionListener;
     private CheckoutData.Builder checkoutDataBuilder;
@@ -167,7 +161,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     protected void initialListener(Activity activity) {
         actionListener = (ICartActionFragment) activity;
-
     }
 
     @Override
@@ -263,6 +256,43 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
+    public void renderButtonCheckVoucherListener() {
+        cbUseVoucher.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    holderUseVoucher.setVisibility(View.VISIBLE);
+                    btnCheckVoucher.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            presenter.processCheckVoucherCode(
+                                    getActivity(), etVoucherCode.getText().toString().trim()
+                            );
+                        }
+                    });
+                } else {
+                    holderUseVoucher.setVisibility(View.GONE);
+                    btnCheckVoucher.setOnClickListener(null);
+                    etVoucherCode.setText("");
+                }
+            }
+        });
+
+    }
+
+    @Override
+    public void renderVisiblePotentialCashBack(String cashBack) {
+        cvCashBack.setVisibility(View.VISIBLE);
+        tvCashBackValue.setText(cashBack);
+    }
+
+    @Override
+    public void renderGonePotentialCashBack() {
+        cvCashBack.setVisibility(View.GONE);
+        tvCashBackValue.setText("");
+    }
+
+    @Override
     public void renderPaymentGatewayOption(final List<GatewayList> gatewayList) {
         btnPaymentMethod.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -319,26 +349,66 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         tvVoucherDesc.setText(
                 data.getVoucher().getVoucherAmount().equals("0")
                         ? data.getVoucher().getVoucherPromoDesc()
-                        : String.format(
-                        "Anda mendapatkan voucher\nRp.%s,-", data.getVoucher().getVoucherAmountIdr()
-                )
+                        : String.format("Anda mendapatkan voucher\nRp.%s,-",
+                        data.getVoucher().getVoucherAmountIdr())
         );
-    }
-
-    @Override
-    public void renderFailedVoucherChecked(String messageError) {
-        tilEtVoucherCode.setErrorEnabled(true);
-        tilEtVoucherCode.setError(messageError);
-    }
-
-    @Override
-    public void renderSuccessCancelCart(String messageSuccess) {
-        showToastMessage(messageSuccess);
     }
 
     @Override
     public void showAlertDialogInfo(String messageSuccess) {
 
+    }
+
+    @Override
+    public void renderErrorCheckVoucher(String message) {
+        tilEtVoucherCode.setErrorEnabled(true);
+        tilEtVoucherCode.setError(message);
+    }
+
+    @Override
+    public void renderEmptyCart() {
+        nsvContainer.setVisibility(View.GONE);
+        pbMainLoading.setVisibility(View.GONE);
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(),
+                "Keranjang belanja Anda Kosong.",
+                "Yuk belanja di situs resmi jual beli online, aman dan nyaman.",
+                "CARI SEKARANG",
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        navigateToActivity(
+                                BrowseProductRouter.getDefaultBrowseIntent(getActivity())
+                        );
+                        getActivity().finish();
+                    }
+                }
+        );
+    }
+
+    @Override
+    public void renderVisibleMainCartContainer() {
+        nsvContainer.setVisibility(View.VISIBLE);
+        pbMainLoading.setVisibility(View.GONE);
+        presenter.processGetTickerGTM();
+    }
+
+    @Override
+    public void renderInitialLoadingCartInfo() {
+        nsvContainer.setVisibility(View.GONE);
+        pbMainLoading.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void renderVisibleTickerGTM(String message) {
+        tvTickerGTM.setText(Html.fromHtml(message));
+        tvTickerGTM.setVisibility(View.VISIBLE);
+        tvTickerGTM.setAutoLinkMask(0);
+        Linkify.addLinks(tvTickerGTM, Linkify.WEB_URLS);
+    }
+
+    @Override
+    public void renderGoneTickerGTM() {
+        tvTickerGTM.setVisibility(View.GONE);
     }
 
     @Override

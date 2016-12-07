@@ -39,4 +39,6 @@ public interface ICartPresenter {
     void processCheckVoucherCode(@NonNull Activity activity, @NonNull String voucherCode);
 
     void processStep2PaymentCart(Activity activity, TopPayParameterData data);
+
+    void processGetTickerGTM();
 }

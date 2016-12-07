@@ -21,7 +21,7 @@ import rx.Subscriber;
 public interface ICartDataInteractor {
 
     void getCartData(TKPDMapParam<String, String> param,
-                     Subscriber<CartModel> subscriber);
+                     Subscriber<ResponseTransform<CartModel>> subscriber);
 
     void cancelCart(TKPDMapParam<String, String> paramCancelCart,
                     TKPDMapParam<String, String> paramCartInfo,

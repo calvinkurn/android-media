@@ -16,6 +16,12 @@ public interface ICartView extends ViewListener {
 
     void renderTotalPayment(String grandTotalWithoutLPIDR);
 
+    void renderButtonCheckVoucherListener();
+
+    void renderVisiblePotentialCashBack(String cashBack);
+
+    void renderGonePotentialCashBack();
+
     void renderPaymentGatewayOption(List<GatewayList> gatewayList);
 
     void renderLoyaltyBalance(String lpAmountIdr, boolean visibleHolder);
@@ -30,9 +36,17 @@ public interface ICartView extends ViewListener {
 
     void renderSuccessVoucherChecked(String messageSuccess, VoucherData data);
 
-    void renderFailedVoucherChecked(String messageError);
-
-    void renderSuccessCancelCart(String messageSuccess);
-
     void showAlertDialogInfo(String messageSuccess);
+
+    void renderErrorCheckVoucher(String message);
+
+    void renderEmptyCart();
+
+    void renderVisibleMainCartContainer();
+
+    void renderInitialLoadingCartInfo();
+
+    void renderVisibleTickerGTM(String message);
+
+    void renderGoneTickerGTM();
 }

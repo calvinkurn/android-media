@@ -64,34 +64,13 @@ public class CartDataInteractor implements ICartDataInteractor {
 
     @Override
     public void getCartData(TKPDMapParam<String, String> param,
-                            Subscriber<CartModel> subscriber) {
-        Observable<Response<TkpdResponse>> observable = txService.getApi().doPayment(param);
-        compositeSubscription.add(observable
-                .map(new Func1<Response<TkpdResponse>, CartModel>() {
-                    @Override
-                    public CartModel call(Response<TkpdResponse> response) {
-                        if (response.isSuccessful()) {
-                            if (!response.body().isError()) {
-                                return response.body().convertDataObj(CartModel.class);
-                            } else {
-                                throw new RuntimeException(
-                                        new ResponseErrorException(
-                                                response.body().getErrorMessageJoined()
-                                        )
-                                );
-                            }
-                        } else {
-                            throw new RuntimeException(
-                                    new HttpErrorException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
-                            );
-                        }
-                    }
-                })
+                            Subscriber<ResponseTransform<CartModel>> subscriber) {
+        compositeSubscription.add(Observable.just(new ResponseTransform<CartModel>())
+                .flatMap(funcTransformFromGetCartInfo(param))
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber));
-
     }
 
     @Override
@@ -379,10 +358,12 @@ public class CartDataInteractor implements ICartDataInteractor {
     @Override
     public void checkVoucherCode(TKPDMapParam<String, String> param,
                                  Subscriber<ResponseTransform<VoucherData>> subscriber) {
-        Observable.just(param)
-                .flatMap(new Func1<TKPDMapParam<String, String>, Observable<Response<TkpdResponse>>>() {
+        compositeSubscription.add(Observable.just(param)
+                .flatMap(new Func1<TKPDMapParam<String, String>,
+                        Observable<Response<TkpdResponse>>>() {
                     @Override
-                    public Observable<Response<TkpdResponse>> call(TKPDMapParam<String, String> param) {
+                    public Observable<Response<TkpdResponse>>
+                    call(TKPDMapParam<String, String> param) {
                         return txVoucherService.getApi().checkVoucherCode(param);
                     }
                 })
@@ -406,13 +387,15 @@ public class CartDataInteractor implements ICartDataInteractor {
                                 ));
                             }
                         }
-                        throw new RuntimeException(new HttpErrorException(response.code()));
+                        throw new RuntimeException(
+                                new HttpErrorException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+                        );
                     }
                 })
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())
-                .subscribe(subscriber);
+                .subscribe(subscriber));
     }
 
     @Override
@@ -452,31 +435,33 @@ public class CartDataInteractor implements ICartDataInteractor {
                         );
                         return cartModelResponseTransform;
                     } else {
-                        throw new RuntimeException(response.body().getErrorMessages().get(0));
+                        throw new RuntimeException(
+                                new ResponseErrorException(response.body().getErrorMessageJoined())
+                        );
                     }
                 } else {
-                    handleErrorHttpError(response);
+                    throw new RuntimeException(
+                            new HttpErrorException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+                    );
                 }
-                throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
             }
         };
     }
 
     @NonNull
-    private Func1<Response<TkpdResponse>,
-            ResponseTransform<CartModel>> funcTransformFromUpdateDeleteActionCart() {
+    private Func1<Response<TkpdResponse>, ResponseTransform<CartModel>>
+    funcTransformFromUpdateDeleteActionCart() {
         return new Func1<Response<TkpdResponse>, ResponseTransform<CartModel>>() {
             @Override
             public ResponseTransform<CartModel> call(Response<TkpdResponse> response) {
-                if (response.isSuccessful() && !response.body().isError()
-                        && !response.body().isNullData()) {
+
+                if (response.isSuccessful()) {
                     if (!response.body().getJsonData().isNull(KEY_FLAG_IS_SUCCESS)) {
                         try {
                             int status = response.body().getJsonData()
                                     .getInt(KEY_FLAG_IS_SUCCESS);
-                            String message = status == 1 ? response.body()
-                                    .getStatusMessages().get(0)
-                                    : response.body().getErrorMessages().get(0);
+                            String message = status == 1 ? response.body().getErrorMessageJoined()
+                                    : response.body().getErrorMessageJoined();
                             switch (status) {
                                 case 1:
                                     ResponseTransform<CartModel> responseTransform
@@ -486,51 +471,26 @@ public class CartDataInteractor implements ICartDataInteractor {
                                     );
                                     return responseTransform;
                                 default:
-                                    throw new RuntimeException(message);
+                                    throw new RuntimeException(new ResponseErrorException(message));
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            throw new RuntimeException(e);
+                            throw new RuntimeException(
+                                    new ResponseErrorException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+                            );
                         }
+                    } else {
+                        throw new RuntimeException(
+                                new ResponseErrorException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+                        );
                     }
-                    throw new RuntimeException("");
+                } else {
+                    throw new RuntimeException(
+                            new HttpErrorException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+                    );
                 }
-                throw new RuntimeException("");
             }
         };
-    }
-
-    private void handleErrorHttpError(Response<TkpdResponse> response) {
-        new ErrorHandler(new ErrorListener() {
-            @Override
-            public void onUnknown() {
-                throw new RuntimeException(
-                        new HttpErrorException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
-                );
-            }
-
-            @Override
-            public void onTimeout() {
-                throw new RuntimeException(
-                        ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                );
-            }
-
-            @Override
-            public void onServerError() {
-                throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-            }
-
-            @Override
-            public void onBadRequest() {
-                throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-            }
-
-            @Override
-            public void onForbidden() {
-                throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-            }
-        }, response.code());
     }
 
 

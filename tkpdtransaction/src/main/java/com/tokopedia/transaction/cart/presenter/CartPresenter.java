@@ -5,7 +5,10 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.payment.interactor.PaymentNetInteractor;
 import com.tokopedia.core.payment.interactor.PaymentNetInteractorImpl;
@@ -23,7 +26,11 @@ import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutDropShipperDat
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 import com.tokopedia.transaction.cart.model.voucher.VoucherData;
 import com.tokopedia.transaction.cart.services.CartIntentService;
+import com.tokopedia.transaction.exception.HttpErrorException;
+import com.tokopedia.transaction.exception.ResponseErrorException;
 
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,8 +55,9 @@ public class CartPresenter implements ICartPresenter {
 
     @Override
     public void processGetCartData(@NonNull Activity activity) {
+        view.renderInitialLoadingCartInfo();
         TKPDMapParam<String, String> params = AuthUtil.generateParamsNetwork(activity);
-        cartDataInteractor.getCartData(params, new Subscriber<CartModel>() {
+        cartDataInteractor.getCartData(params, new Subscriber<ResponseTransform<CartModel>>() {
             @Override
             public void onCompleted() {
 
@@ -61,7 +69,16 @@ public class CartPresenter implements ICartPresenter {
             }
 
             @Override
-            public void onNext(CartModel data) {
+            public void onNext(ResponseTransform<CartModel> responseTransform) {
+                CartModel data = responseTransform.getData();
+                if (data.getTransactionLists().isEmpty()) {
+                    view.renderEmptyCart();
+                    return;
+                }
+                view.renderVisibleMainCartContainer();
+                if (data.getCashback() != 0)
+                    view.renderVisiblePotentialCashBack(data.getCashbackIdr());
+                else view.renderGonePotentialCashBack();
                 view.renderDepositInfo(data.getDepositIdr());
                 view.renderTotalPayment(data.getGrandTotalWithoutLPIDR());
                 view.renderPaymentGatewayOption(data.getGatewayList());
@@ -73,6 +90,7 @@ public class CartPresenter implements ICartPresenter {
                         (data.getCheckoutNotifError() != null && !data.getCheckoutNotifError().equals("0")
                         ), data.getCheckoutNotifError()
                 );
+                view.renderButtonCheckVoucherListener();
             }
         });
     }
@@ -101,13 +119,21 @@ public class CartPresenter implements ICartPresenter {
 
                     @Override
                     public void onNext(ResponseTransform<CartModel> responseTransform) {
+                        view.hideProgressLoading();
                         CartModel data = responseTransform.getData();
                         view.showToastMessage(
                                 responseTransform.getMessageSuccess().isEmpty()
                                         ? "Berhasil menghapus item keranjang"
                                         : responseTransform.getMessageSuccess()
                         );
+                        if (data.getTransactionLists().isEmpty()) {
+                            view.renderEmptyCart();
+                            return;
+                        }
                         view.renderDepositInfo(data.getDepositIdr());
+                        if (data.getCashback() != 0)
+                            view.renderVisiblePotentialCashBack(data.getCashbackIdr());
+                        else view.renderGonePotentialCashBack();
                         view.renderTotalPayment(data.getGrandTotalWithoutLPIDR());
                         view.renderPaymentGatewayOption(data.getGatewayList());
                         view.renderLoyaltyBalance(data.getLpAmountIdr(), data.getLpAmount() != 0);
@@ -119,7 +145,8 @@ public class CartPresenter implements ICartPresenter {
                                         && !data.getCheckoutNotifError().equals("0")),
                                 data.getCheckoutNotifError()
                         );
-                        view.hideProgressLoading();
+                        view.renderButtonCheckVoucherListener();
+
                     }
                 });
     }
@@ -151,10 +178,18 @@ public class CartPresenter implements ICartPresenter {
 
                     @Override
                     public void onNext(ResponseTransform<CartModel> responseTransform) {
+                        view.hideProgressLoading();
                         CartModel data = responseTransform.getData();
                         view.showToastMessage(responseTransform.getMessageSuccess().isEmpty()
                                 ? "Berhasil menghapus item keranjang"
                                 : responseTransform.getMessageSuccess());
+                        if (data.getTransactionLists().isEmpty()) {
+                            view.renderEmptyCart();
+                            return;
+                        }
+                        if (data.getCashback() != 0)
+                            view.renderVisiblePotentialCashBack(data.getCashbackIdr());
+                        else view.renderGonePotentialCashBack();
                         view.renderDepositInfo(data.getDepositIdr());
                         view.renderTotalPayment(data.getGrandTotalWithoutLPIDR());
                         view.renderPaymentGatewayOption(data.getGatewayList());
@@ -167,7 +202,7 @@ public class CartPresenter implements ICartPresenter {
                                         && !data.getCheckoutNotifError().equals("0")),
                                 data.getCheckoutNotifError()
                         );
-                        view.hideProgressLoading();
+                        view.renderButtonCheckVoucherListener();
                     }
                 });
     }
@@ -201,12 +236,20 @@ public class CartPresenter implements ICartPresenter {
 
                     @Override
                     public void onNext(ResponseTransform<CartModel> responseTransform) {
+                        view.hideProgressLoading();
                         CartModel data = responseTransform.getData();
                         view.showToastMessage(
                                 responseTransform.getMessageSuccess().isEmpty()
                                         ? "Berhasil mengubah keranjang"
                                         : responseTransform.getMessageSuccess()
                         );
+                        if (data.getTransactionLists().isEmpty()) {
+                            view.renderEmptyCart();
+                            return;
+                        }
+                        if (data.getCashback() != 0)
+                            view.renderVisiblePotentialCashBack(data.getCashbackIdr());
+                        else view.renderGonePotentialCashBack();
                         view.renderDepositInfo(data.getDepositIdr());
                         view.renderTotalPayment(data.getGrandTotalWithoutLPIDR());
                         view.renderPaymentGatewayOption(data.getGatewayList());
@@ -219,7 +262,7 @@ public class CartPresenter implements ICartPresenter {
                                         && !data.getCheckoutNotifError().equals("0")),
                                 data.getCheckoutNotifError()
                         );
-                        view.hideProgressLoading();
+                        view.renderButtonCheckVoucherListener();
                     }
                 });
     }
@@ -250,12 +293,20 @@ public class CartPresenter implements ICartPresenter {
 
                     @Override
                     public void onNext(ResponseTransform<CartModel> responseTransform) {
+                        view.hideProgressLoading();
                         CartModel data = responseTransform.getData();
                         view.showToastMessage(
                                 responseTransform.getMessageSuccess().isEmpty()
                                         ? "Berhasil mengubah asuransi"
                                         : responseTransform.getMessageSuccess()
                         );
+                        if (data.getTransactionLists().isEmpty()) {
+                            view.renderEmptyCart();
+                            return;
+                        }
+                        if (data.getCashback() != 0)
+                            view.renderVisiblePotentialCashBack(data.getCashbackIdr());
+                        else view.renderGonePotentialCashBack();
                         view.renderDepositInfo(data.getDepositIdr());
                         view.renderTotalPayment(data.getGrandTotalWithoutLPIDR());
                         view.renderPaymentGatewayOption(data.getGatewayList());
@@ -268,7 +319,7 @@ public class CartPresenter implements ICartPresenter {
                                         && !data.getCheckoutNotifError().equals("0")),
                                 data.getCheckoutNotifError()
                         );
-                        view.hideProgressLoading();
+                        view.renderButtonCheckVoucherListener();
                     }
                 });
     }
@@ -359,7 +410,18 @@ public class CartPresenter implements ICartPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        if (e instanceof SocketTimeoutException) {
+                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                        } else if (e instanceof UnknownHostException) {
+                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
+                        } else if (e.getCause() instanceof ResponseErrorException) {
+                            view.renderErrorCheckVoucher(e.getCause().getMessage());
+                        } else if (e.getCause() instanceof HttpErrorException) {
+                            view.showToastMessage(e.getCause().getMessage());
+                        } else {
+                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                        }
+                        view.hideProgressLoading();
                     }
 
                     @Override
@@ -368,6 +430,7 @@ public class CartPresenter implements ICartPresenter {
                                 voucherDataResponseTransform.getMessageSuccess(),
                                 voucherDataResponseTransform.getData()
                         );
+                        view.hideProgressLoading();
                     }
                 });
     }
@@ -375,6 +438,16 @@ public class CartPresenter implements ICartPresenter {
     @Override
     public void processStep2PaymentCart(Activity activity, TopPayParameterData data) {
 
+    }
+
+    @Override
+    public void processGetTickerGTM() {
+        if (TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_CART).equalsIgnoreCase("true")) {
+            String message = TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_CART_TEXT);
+            view.renderVisibleTickerGTM(message);
+        } else {
+            view.renderGoneTickerGTM();
+        }
     }
 
     @NonNull
