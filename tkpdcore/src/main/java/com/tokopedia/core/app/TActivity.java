@@ -423,7 +423,7 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
         if (success) {
             finish();
             Intent intent;
-            if (isSellerApp()) {
+            if (GlobalConfig.isSellerApp()) {
                 intent = new Intent(this, WelcomeActivity.class);
             } else {
                 intent = HomeRouter.getHomeActivity(this);
