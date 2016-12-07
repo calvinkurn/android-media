@@ -44,13 +44,13 @@ public interface ICartDataInteractor {
 
     void updateInsuranceCart(TKPDMapParam<String, String> paramUpdate,
                              TKPDMapParam<String, String> paramCart,
-                             Subscriber<CartModel> subscriber);
+                             Subscriber<ResponseTransform<CartModel>> subscriber);
 
     void getParameterTopPay(TKPDMapParam<String, String> params, Scheduler schedulers,
                             Subscriber<TopPayParameterData> subscriber);
 
-    void unSubscribeObservable();
-
     void checkVoucherCode(TKPDMapParam<String, String> stringStringTKPDMapParam,
                           Subscriber<ResponseTransform<VoucherData>> subscriber);
+
+    void unSubscribeObservable();
 }

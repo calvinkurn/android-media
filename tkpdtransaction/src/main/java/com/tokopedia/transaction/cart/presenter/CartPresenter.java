@@ -85,40 +85,48 @@ public class CartPresenter implements ICartPresenter {
         maps.put("shipment_id", data.getCartShipments().getShipmentId());
         maps.put("shipment_package_id", data.getCartShipments().getShipmentPackageId());
         maps.put("shop_id", data.getCartShop().getShopId());
-//        cartDataInteractor.cancelCart(AuthUtil.generateParamsNetwork(activity, maps),
-//                AuthUtil.generateParamsNetwork(activity),
-//                new Subscriber<CartModel>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        e.printStackTrace();
-//                        view.hideProgressLoading();
-//                    }
-//
-//                    @Override
-//                    public void onNext(CartModel data) {
-//                        view.renderDepositInfo(data.getDepositIdr());
-//                        view.renderTotalPayment(data.getGrandTotalWithoutLPIDR());
-//                        view.renderPaymentGatewayOption(data.getGatewayList());
-//                        view.renderLoyaltyBalance(data.getLpAmountIdr(), data.getLpAmount() != 0);
-//                        view.renderCartListData(data.getTransactionLists());
-//                        view.renderCheckoutCartDepositAmount(data.getDeposit() + "");
-//                        view.renderCheckoutCartToken(data.getToken());
-//                        view.renderErrorPaymentCart(
-//                                (data.getCheckoutNotifError() != null && !data.getCheckoutNotifError().equals("0")
-//                                ), data.getCheckoutNotifError()
-//                        );
-//                        view.hideProgressLoading();
-//                    }
-//                });
+        cartDataInteractor.cancelCart(AuthUtil.generateParamsNetwork(activity, maps),
+                AuthUtil.generateParamsNetwork(activity),
+                new Subscriber<ResponseTransform<CartModel>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        view.hideProgressLoading();
+                    }
+
+                    @Override
+                    public void onNext(ResponseTransform<CartModel> responseTransform) {
+                        CartModel data = responseTransform.getData();
+                        view.showToastMessage(
+                                responseTransform.getMessageSuccess().isEmpty()
+                                        ? "Berhasil menghapus item keranjang"
+                                        : responseTransform.getMessageSuccess()
+                        );
+                        view.renderDepositInfo(data.getDepositIdr());
+                        view.renderTotalPayment(data.getGrandTotalWithoutLPIDR());
+                        view.renderPaymentGatewayOption(data.getGatewayList());
+                        view.renderLoyaltyBalance(data.getLpAmountIdr(), data.getLpAmount() != 0);
+                        view.renderCartListData(data.getTransactionLists());
+                        view.renderCheckoutCartDepositAmount(data.getDeposit() + "");
+                        view.renderCheckoutCartToken(data.getToken());
+                        view.renderErrorPaymentCart(
+                                (data.getCheckoutNotifError() != null
+                                        && !data.getCheckoutNotifError().equals("0")),
+                                data.getCheckoutNotifError()
+                        );
+                        view.hideProgressLoading();
+                    }
+                });
     }
 
     @Override
-    public void processCancelCartProduct(@NonNull Activity activity, @NonNull TransactionList cartData,
+    public void processCancelCartProduct(@NonNull Activity activity,
+                                         @NonNull TransactionList cartData,
                                          @NonNull CartProduct cartProductData) {
         view.showProgressLoading();
         TKPDMapParam<String, String> maps = new TKPDMapParam<>();
@@ -142,18 +150,22 @@ public class CartPresenter implements ICartPresenter {
                     }
 
                     @Override
-                    public void onNext(ResponseTransform<CartModel> data) {
-                        view.renderSuccessCancelCart(data.getMessageSuccess());
-                        view.renderDepositInfo(data.getData().getDepositIdr());
-                        view.renderTotalPayment(data.getData().getGrandTotalWithoutLPIDR());
-                        view.renderPaymentGatewayOption(data.getData().getGatewayList());
-                        view.renderLoyaltyBalance(data.getData().getLpAmountIdr(), data.getData().getLpAmount() != 0);
-                        view.renderCartListData(data.getData().getTransactionLists());
-                        view.renderCheckoutCartDepositAmount(data.getData().getDeposit() + "");
-                        view.renderCheckoutCartToken(data.getData().getToken());
+                    public void onNext(ResponseTransform<CartModel> responseTransform) {
+                        CartModel data = responseTransform.getData();
+                        view.showToastMessage(responseTransform.getMessageSuccess().isEmpty()
+                                ? "Berhasil menghapus item keranjang"
+                                : responseTransform.getMessageSuccess());
+                        view.renderDepositInfo(data.getDepositIdr());
+                        view.renderTotalPayment(data.getGrandTotalWithoutLPIDR());
+                        view.renderPaymentGatewayOption(data.getGatewayList());
+                        view.renderLoyaltyBalance(data.getLpAmountIdr(), data.getLpAmount() != 0);
+                        view.renderCartListData(data.getTransactionLists());
+                        view.renderCheckoutCartDepositAmount(data.getDeposit() + "");
+                        view.renderCheckoutCartToken(data.getToken());
                         view.renderErrorPaymentCart(
-                                (data.getData().getCheckoutNotifError() != null && !data.getData().getCheckoutNotifError().equals("0")
-                                ), data.getData().getCheckoutNotifError()
+                                (data.getCheckoutNotifError() != null
+                                        && !data.getCheckoutNotifError().equals("0")),
+                                data.getCheckoutNotifError()
                         );
                         view.hideProgressLoading();
                     }
@@ -161,7 +173,8 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
-    public void processSubmitEditCart(@NonNull Activity activity, @NonNull TransactionList cartData,
+    public void processSubmitEditCart(@NonNull Activity activity,
+                                      @NonNull TransactionList cartData,
                                       @NonNull List<ProductEditData> cartProductEditDataList) {
         view.showProgressLoading();
         TKPDMapParam<String, String> maps = new TKPDMapParam<>();
@@ -187,19 +200,24 @@ public class CartPresenter implements ICartPresenter {
                     }
 
                     @Override
-                    public void onNext(ResponseTransform<CartModel> data) {
-                        view.showToastMessage(data.getMessageSuccess());
-                        view.renderDepositInfo(data.getData().getDepositIdr());
-                        view.renderTotalPayment(data.getData().getGrandTotalWithoutLPIDR());
-                        view.renderPaymentGatewayOption(data.getData().getGatewayList());
-                        view.renderLoyaltyBalance(data.getData().getLpAmountIdr(), data.getData().getLpAmount() != 0);
-                        view.renderCartListData(data.getData().getTransactionLists());
-                        view.renderCheckoutCartDepositAmount(data.getData().getDeposit() + "");
-                        view.renderCheckoutCartToken(data.getData().getToken());
+                    public void onNext(ResponseTransform<CartModel> responseTransform) {
+                        CartModel data = responseTransform.getData();
+                        view.showToastMessage(
+                                responseTransform.getMessageSuccess().isEmpty()
+                                        ? "Berhasil mengubah keranjang"
+                                        : responseTransform.getMessageSuccess()
+                        );
+                        view.renderDepositInfo(data.getDepositIdr());
+                        view.renderTotalPayment(data.getGrandTotalWithoutLPIDR());
+                        view.renderPaymentGatewayOption(data.getGatewayList());
+                        view.renderLoyaltyBalance(data.getLpAmountIdr(), data.getLpAmount() != 0);
+                        view.renderCartListData(data.getTransactionLists());
+                        view.renderCheckoutCartDepositAmount(data.getDeposit() + "");
+                        view.renderCheckoutCartToken(data.getToken());
                         view.renderErrorPaymentCart(
-                                (data.getData().getCheckoutNotifError() != null
-                                        && !data.getData().getCheckoutNotifError().equals("0")
-                                ), data.getData().getCheckoutNotifError()
+                                (data.getCheckoutNotifError() != null
+                                        && !data.getCheckoutNotifError().equals("0")),
+                                data.getCheckoutNotifError()
                         );
                         view.hideProgressLoading();
                     }
@@ -218,7 +236,7 @@ public class CartPresenter implements ICartPresenter {
         maps.put("shop_id", cartData.getCartShop().getShopId());
         cartDataInteractor.updateInsuranceCart(AuthUtil.generateParamsNetwork(activity, maps),
                 AuthUtil.generateParamsNetwork(activity),
-                new Subscriber<CartModel>() {
+                new Subscriber<ResponseTransform<CartModel>>() {
                     @Override
                     public void onCompleted() {
 
@@ -231,7 +249,13 @@ public class CartPresenter implements ICartPresenter {
                     }
 
                     @Override
-                    public void onNext(CartModel data) {
+                    public void onNext(ResponseTransform<CartModel> responseTransform) {
+                        CartModel data = responseTransform.getData();
+                        view.showToastMessage(
+                                responseTransform.getMessageSuccess().isEmpty()
+                                        ? "Berhasil mengubah asuransi"
+                                        : responseTransform.getMessageSuccess()
+                        );
                         view.renderDepositInfo(data.getDepositIdr());
                         view.renderTotalPayment(data.getGrandTotalWithoutLPIDR());
                         view.renderPaymentGatewayOption(data.getGatewayList());

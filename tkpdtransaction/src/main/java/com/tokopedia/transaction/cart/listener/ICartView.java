@@ -33,4 +33,6 @@ public interface ICartView extends ViewListener {
     void renderFailedVoucherChecked(String messageError);
 
     void renderSuccessCancelCart(String messageSuccess);
+
+    void showAlertDialogInfo(String messageSuccess);
 }
