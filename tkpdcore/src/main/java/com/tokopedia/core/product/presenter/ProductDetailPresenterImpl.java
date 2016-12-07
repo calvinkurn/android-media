@@ -40,6 +40,7 @@ import com.tokopedia.core.product.interactor.RetrofitInteractor;
 import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.product.listener.ProductDetailView;
 import com.tokopedia.core.product.model.etalase.Etalase;
+import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
@@ -272,6 +273,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             viewListener.refreshMenu();
                             requestOtherProducts(context,
                                     NetworkParam.paramOtherProducts(productDetailData));
+                            setGoldMerchantFeatures(context, productDetailData);
                         }
 
                         @Override
@@ -515,14 +517,23 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
+    public void saveStateVideoData(Bundle outState, String key, VideoData value) {
+        if (value !=null) outState.putParcelable(key, value);
+    }
+
+    @Override
     public void processStateData(Bundle savedInstanceState) {
         ProductDetailData productData = savedInstanceState
                 .getParcelable(ProductDetailFragment.STATE_DETAIL_PRODUCT);
         List<ProductOther> productOthers = savedInstanceState
                 .getParcelableArrayList(ProductDetailFragment.STATE_OTHER_PRODUCTS);
+        VideoData videoData = savedInstanceState.getParcelable(ProductDetailFragment.STATE_VIDEO);
         if (productData != null & productOthers != null) {
             viewListener.onProductDetailLoaded(productData);
             viewListener.onOtherProductLoaded(productOthers);
+            if (videoData != null) {
+                viewListener.loadVideo(videoData);
+            }
         }
     }
 
@@ -688,6 +699,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         viewListener.hideProgressLoading();
                         viewListener.refreshMenu();
                         requestOtherProducts(context, NetworkParam.paramOtherProducts(data));
+                        setGoldMerchantFeatures(context, data);
                     }
 
                     @Override
@@ -739,5 +751,26 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void sendButtonClickEvent(@NonNull Context context, @NonNull ProductDetailData successResult) {
         UnifyTracking.eventPDPAddToWishlist(successResult.getInfo().getProductName());
+    }
+
+    private void requestVideo(@NonNull Context context, @NonNull String productID) {
+        retrofitInteractor.requestProductVideo(context, productID,
+                new RetrofitInteractor.VideoLoadedListener() {
+            @Override
+            public void onSuccess(@NonNull VideoData data) {
+                viewListener.loadVideo(data);
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
+    }
+
+    private void setGoldMerchantFeatures(Context context, ProductDetailData productDetailData) {
+        if(productDetailData.getShopInfo().getShopIsGold() == 1) {
+            requestVideo(context, productDetailData.getInfo().getProductId().toString());
+        }
     }
 }
