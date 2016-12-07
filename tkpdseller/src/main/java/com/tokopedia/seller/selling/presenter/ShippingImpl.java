@@ -211,6 +211,7 @@ public class ShippingImpl extends Shipping {
     @Override
     public void doRefresh() {
         if (!isLoading && view.getUserVisible()) {
+            view.hideFilter();
             view.getPaging().resetPage();
             if (!view.isRefreshing()) {
                 clearData();

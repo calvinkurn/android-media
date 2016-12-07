@@ -53,6 +53,7 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
     public void getStatusTransactionList(boolean isVisibleToUser, Type type) {
         this.type = type;
         if (isVisibleToUser && isDataEmpty() && !isLoading) {
+            addLoading();
             switch (type) {
                 case STATUS:
                     getStatusList();

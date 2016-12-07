@@ -132,49 +132,49 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
 
 
     @BindView(R2.id.buyer_name)
-    TextView BuyerName;
+    TextView buyerName;
     @BindView(R2.id.invoice_text)
-    TextView Invoice;
+    TextView invoice;
     @BindView(R2.id.courier)
-    TextView Courier;
+    TextView courier;
     @BindView(R2.id.total_item)
-    TextView TotalItem;
+    TextView totalItem;
     @BindView(R2.id.value)
-    TextView Value;
+    TextView value;
     @BindView(R2.id.receiver_name)
-    TextView ReceiverName;
+    TextView receiverName;
     @BindView(R2.id.destination)
-    TextView Destination;
+    TextView destination;
     @BindView(R2.id.error_message)
-    TextView ErrorMessage;
+    TextView errorMessage;
     @BindView(R2.id.scan)
-    ImageView ScanBarcode;
+    ImageView scanBarcode;
     @BindView(R2.id.confirm_button)
-    TextView ConfirmButton;
+    TextView confirmButton;
     @BindView(R2.id.detail_button)
-    TextView DetailButton;
+    TextView detailButton;
     @BindView(R2.id.ship_ref_number)
-    EditText ReferenceNumber;
+    EditText referenceNumber;
     @BindView(R2.id.cancel_button)
-    TextView CancelButton;
+    TextView cancelButton;
     @BindView(R2.id.sender_name)
-    TextView SenderName;
+    TextView senderName;
     @BindView(R2.id.sender_phone)
-    TextView SenderPhone;
+    TextView senderPhone;
     @BindView(R2.id.error_spinner)
     TextView errorSpinner;
     @BindView(R2.id.checkBoxSwitchCourier)
-    CheckBox SwitchCourier;
+    CheckBox switchCourier;
     @BindView(R2.id.spinner_kurir)
-    Spinner SpinnerAgency;
+    Spinner spinnerAgency;
     @BindView(R2.id.spinner_type)
-    Spinner SpinnerService;
+    Spinner spinnerService;
     @BindView(R2.id.sender_form)
-    View SenderForm;
+    View senderForm;
     @BindView(R2.id.product_list)
-    ListView ProductListView;
+    ListView productListView;
     @BindView(R2.id.layout)
-    LinearLayout ShippingLayout;
+    LinearLayout shippingLayout;
     @BindView(R2.id.scroll_view)
     ScrollView mainScroll;
     @BindView(R2.id.loadingSpinner)
@@ -259,8 +259,8 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
             serviceName.add(serviceList.get(i).serviceName);
         }
         SimpleSpinnerAdapter servicePackageAdapter = SimpleSpinnerAdapter.createAdapter(getActivity(), serviceName);
-        SpinnerAgency.setAdapter(servicePackageAdapter);
-        SpinnerAgency.setVisibility(View.VISIBLE);
+        spinnerAgency.setAdapter(servicePackageAdapter);
+        spinnerAgency.setVisibility(View.VISIBLE);
     }
 
     @Nullable
@@ -287,42 +287,42 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
 
     private void setViewDataV4() {
         OrderDetail orderDetail = orderShippingList.getOrderDetail();
-        TotalItem.setText(Html.fromHtml(getString(R.string.title_total_item) + ": <b>" + orderDetail.getDetailQuantity() + " ( " + orderDetail.getDetailTotalWeight() + "kg )</b>"));
-        Invoice.setText(orderDetail.getDetailInvoice());
-        Value.setText(Html.fromHtml(getString(R.string.title_transaction_value) + " : <b>" + orderDetail.getDetailOpenAmountIdr() + "</b>"));
+        totalItem.setText(Html.fromHtml(getString(R.string.title_total_item) + ": <b>" + orderDetail.getDetailQuantity() + " ( " + orderDetail.getDetailTotalWeight() + "kg )</b>"));
+        invoice.setText(orderDetail.getDetailInvoice());
+        value.setText(Html.fromHtml(getString(R.string.title_transaction_value) + " : <b>" + orderDetail.getDetailOpenAmountIdr() + "</b>"));
 
         if (CommonUtils.checkNullForZeroJson(orderDetail.getDetailDropshipName())
                 && CommonUtils.checkNullForZeroJson(orderDetail.getDetailDropshipTelp())) {
-            SenderName.setText(orderDetail.getDetailDropshipName());
-            SenderPhone.setText(orderDetail.getDetailDropshipTelp());
-            SenderForm.setVisibility(View.VISIBLE);
+            senderName.setText(orderDetail.getDetailDropshipName());
+            senderPhone.setText(orderDetail.getDetailDropshipTelp());
+            senderForm.setVisibility(View.VISIBLE);
         } else {
-            SenderForm.setVisibility(View.GONE);
+            senderForm.setVisibility(View.GONE);
         }
 
-        BuyerName.setText(orderShippingList.getOrderCustomer().getCustomerName());
+        buyerName.setText(orderShippingList.getOrderCustomer().getCustomerName());
 
         OrderShipment orderShipment = orderShippingList.getOrderShipment();
-        Courier.setText(orderShipment.getShipmentName() + "( " + orderShipment.getShipmentProduct() + " )");
+        courier.setText(orderShipment.getShipmentName() + "( " + orderShipment.getShipmentProduct() + " )");
         shippingID = orderShipment.getShipmentId();
         if (orderShippingList.getIsPickUp() == 1) {
-            ConfirmButton.setText(getString(R.string.title_pickup_button));
+            confirmButton.setText(getString(R.string.title_pickup_button));
             viewDefaultDestination.setVisibility(View.GONE);
             viewPickupLocationCourier.setVisibility(View.VISIBLE);
         } else {
-            ConfirmButton.setText(getString(R.string.title_confirm_button));
+            confirmButton.setText(getString(R.string.title_confirm_button));
             viewDefaultDestination.setVisibility(View.VISIBLE);
             viewPickupLocationCourier.setVisibility(View.GONE);
         }
 
         OrderDestination orderDestination = orderShippingList.getOrderDestination();
-        ReceiverName.setText(Html.fromHtml(orderDestination.getReceiverName()));
+        receiverName.setText(Html.fromHtml(orderDestination.getReceiverName()));
         String vDest = Html.fromHtml(orderDestination.getAddressStreet()).toString()
                 + "\n" + orderDestination.getAddressDistrict() + "    " + orderDestination.getAddressCity() + ", " + orderDestination.getAddressPostal()
                 + "\n" + orderDestination.getAddressProvince() + "\n" + getString(R.string.title_phone) + " : " + orderDestination.getReceiverPhone();
         vDest = vDest.replaceAll("&#39;", "'");
         vDest = vDest.replaceAll("&amp;", "'");
-        Destination.setText(vDest);
+        destination.setText(vDest);
         deliveryLocationDetail.setText(vDest);
 
         OrderShop orderShop = orderShippingList.getOrderShop();
@@ -340,15 +340,15 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     @SuppressWarnings("EmptyCatchBlock")
     private void setAdapter() {
         adapter = ListViewShopTxDetailProdListV2.createInstance(getActivity(), orderShippingList.getOrderProducts());
-        ProductListView.setAdapter(adapter);
+        productListView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
-        ProductListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        productListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 startActivity(ProductInfoActivity.createInstance(getActivity(), orderShippingList.getOrderProducts().get(position).getProductId().toString()));
             }
         });
-        ListViewHelper.getListViewSize(ProductListView);
+        ListViewHelper.getListViewSize(productListView);
     }
 
     @OnClick(R2.id.buyer_name)
@@ -366,7 +366,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     @OnItemSelected(R2.id.spinner_kurir)
     public void onAgencySelect(int position) {
         if (position == 0) {
-            SpinnerService.setVisibility(View.INVISIBLE);
+            spinnerService.setVisibility(View.INVISIBLE);
         } else {
             setSpinnerService(position);
         }
@@ -375,12 +375,12 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     @OnCheckedChanged(R2.id.checkBoxSwitchCourier)
     public void onSwitchCourierChecked(CompoundButton buttonView, boolean isChecked) {
         if (isChecked) {
-            ShippingLayout.setVisibility(View.VISIBLE);
+            shippingLayout.setVisibility(View.VISIBLE);
         } else {
             resetError();
-            ShippingLayout.setVisibility(View.GONE);
-            SpinnerAgency.setSelection(0);
-            SpinnerService.setSelection(0);
+            shippingLayout.setVisibility(View.GONE);
+            spinnerAgency.setSelection(0);
+            spinnerService.setSelection(0);
         }
     }
 
@@ -394,7 +394,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
 
     @OnClick(R2.id.invoice_text)
     public void onInvoiceClick() {
-        AppUtils.InvoiceDialog(getActivity(), invoiceUrl, invoicePdf, Invoice.getText().toString());
+        AppUtils.InvoiceDialog(getActivity(), invoiceUrl, invoicePdf, invoice.getText().toString());
     }
 
     @OnClick(R2.id.scan)
@@ -460,7 +460,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
         modelParamSelling.setActionType("confirm");
         modelParamSelling.setOrderId(orderId);
         modelParamSelling.setPosition(position);
-        modelParamSelling.setRefNum(ReferenceNumber.getText().toString());
+        modelParamSelling.setRefNum(referenceNumber.getText().toString());
         modelParamSelling.setShipmentId(getAgencyId());
         modelParamSelling.setShipmentName(getAgencyName());
         modelParamSelling.setSpId(getServiceId());
@@ -471,18 +471,18 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
 
     private boolean checkConfirmationError() {
         resetError();
-        if (orderShippingList.getIsPickUp() != 1 && (ReferenceNumber.length() < 7 || ReferenceNumber.length() > 17)) {
-            ReferenceNumber.requestFocus();
-            ReferenceNumber.setError(getString(R.string.error_receipt_number));
+        if (orderShippingList.getIsPickUp() != 1 && (referenceNumber.length() < 7 || referenceNumber.length() > 17)) {
+            referenceNumber.requestFocus();
+            referenceNumber.setError(getString(R.string.error_receipt_number));
             return false;
         }
-        if (SwitchCourier.isChecked()) {
-            if (SpinnerAgency.getSelectedItemPosition() == 0) {
+        if (switchCourier.isChecked()) {
+            if (spinnerAgency.getSelectedItemPosition() == 0) {
                 errorSpinner.setText(getString(R.string.error_shipping_must_choose));
                 errorSpinner.setVisibility(View.VISIBLE);
                 return false;
             }
-            if (SpinnerService.getSelectedItemPosition() == 0) {
+            if (spinnerService.getSelectedItemPosition() == 0) {
                 errorSpinner.setText(getString(R.string.error_service_must_choose));
                 errorSpinner.setVisibility(View.VISIBLE);
                 return false;
@@ -493,7 +493,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
 
     private String getAgencyId() {
         try {
-            return serviceList.get(SpinnerAgency.getSelectedItemPosition()).serviceId;
+            return serviceList.get(spinnerAgency.getSelectedItemPosition()).serviceId;
         } catch (Exception e) {
             return "";
         }
@@ -501,7 +501,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
 
     private String getAgencyName() {
         try {
-            return serviceList.get(SpinnerAgency.getSelectedItemPosition()).serviceName;
+            return serviceList.get(spinnerAgency.getSelectedItemPosition()).serviceName;
         } catch (Exception e) {
             return "";
         }
@@ -509,7 +509,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
 
     private String getServiceId() {
         try {
-            return serviceList.get(SpinnerAgency.getSelectedItemPosition()).packageId.get(SpinnerService.getSelectedItemPosition());
+            return serviceList.get(spinnerAgency.getSelectedItemPosition()).packageId.get(spinnerService.getSelectedItemPosition());
         } catch (Exception e) {
             return "";
         }
@@ -531,13 +531,17 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     }
 
     private void finishShipping(boolean isAfterSaveInstance) {
-        CancelButton.setVisibility(View.GONE);
-        ConfirmButton.setText(getActivity().getString(R.string.title_order_processed));
-        ConfirmButton.setOnClickListener(null);
-        ReferenceNumber.setClickable(false);
-        ReferenceNumber.setFocusable(false);
-        ScanBarcode.setClickable(false);
-        SwitchCourier.setClickable(false);
+        cancelButton.setVisibility(View.GONE);
+        confirmButton.setText(getActivity().getString(R.string.title_order_processed));
+        confirmButton.setOnClickListener(null);
+        referenceNumber.setClickable(false);
+        referenceNumber.setFocusable(false);
+        spinnerAgency.setEnabled(false);
+        spinnerService.setEnabled(false);
+        spinnerAgency.setClickable(false);
+        spinnerService.setClickable(false);
+        scanBarcode.setClickable(false);
+        switchCourier.setClickable(false);
         isConfirmDone = true;
         if(!isAfterSaveInstance) {
             getActivity().setResult(getActivity().RESULT_OK);
@@ -552,8 +556,8 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
             packageName.add(serviceList.get(pos).packageList.get(i));
         }
         SimpleSpinnerAdapter servicePackageAdapter = SimpleSpinnerAdapter.createAdapter(getActivity(), packageName);
-        SpinnerService.setAdapter(servicePackageAdapter);
-        SpinnerService.setVisibility(View.VISIBLE);
+        spinnerService.setAdapter(servicePackageAdapter);
+        spinnerService.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -561,7 +565,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if(requestCode == REQUEST_CODE_BARCODE) {
-                ReferenceNumber.setText(CommonUtils.getBarcode(data));
+                referenceNumber.setText(CommonUtils.getBarcode(data));
             }
         }
     }
