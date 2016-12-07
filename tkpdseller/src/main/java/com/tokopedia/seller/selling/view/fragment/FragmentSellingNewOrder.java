@@ -223,6 +223,7 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
         presenter.getOrderList(isVisibleToUser);
         presenter.checkValidationToSendGoogleAnalytic(isVisibleToUser, getActivity());
         ScreenTracking.screenLoca(AppScreen.SCREEN_LOCA_NEWORDER);
+        ScreenTracking.screenLoca(AppScreen.SCREEN_TX_SHOP_NEW_ORDER);
         super.setUserVisibleHint(isVisibleToUser);
     }
 
