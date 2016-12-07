@@ -1745,6 +1745,7 @@ di Tokopedia Sekarang!</string>
     <string name="action_report_as_spam">Laporkan sebagai spam</string>
     <string name="error_empty_home_menu">Data Home Menu Kosong</string>
     <string name="error_home_menu">Home Menu Error</string>
+    <string name="title_home">Home</string>
     <string name="try_again">Terjadi kesalahan. Mohon coba kembali.</string>
 
     <string name="need_permission_camera">Aplikasi ini membutuhkan izin untuk mengakses Kamera. Perbolehkan Android meminta izin?</string>
