@@ -89,7 +89,6 @@ public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresen
 
     @Override
     public void onResume() {
-        presenter.setLocalyticFlow(this);
         super.onResume();
     }
 

@@ -49,7 +49,7 @@ public interface ProductDetailPresenter {
 
     void processToCart(@NonNull Context context, @NonNull ProductCartPass data);
 
-    void sendAnalytics(@NonNull Context context, @NonNull ProductDetailData successResult);
+    void sendAnalytics(@NonNull ProductDetailData successResult);
 
     void processToPicturePreview(@NonNull Context context, @NonNull Bundle bundle);
 

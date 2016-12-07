@@ -241,7 +241,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
-    public void sendAnalytics(@NonNull Context context, @NonNull ProductDetailData successResult) {
+    public void sendAnalytics(@NonNull ProductDetailData successResult) {
         Product product = new Product();
         product.setProductID("" + successResult.getInfo().getProductId());
         product.setProductName("" + successResult.getInfo().getProductName());
