@@ -115,10 +115,8 @@ public class GCMListenerService extends GcmListenerService {
                 createNotification(data, ShopInfoActivity.class);
                 break;
             case TkpdState.GCMServiceState.GCM_DEEPLINK:
-                if (SessionHandler.isV4Login(this)) {
-                    if(CustomerRouter.getDeeplinkClass() != null) {
-                        createNotification(data, CustomerRouter.getDeeplinkClass());
-                    }
+                if (CustomerRouter.getDeeplinkClass() != null) {
+                    createNotification(data, CustomerRouter.getDeeplinkClass());
                 }
                 break;
             case TkpdState.GCMServiceState.GCM_CART:
