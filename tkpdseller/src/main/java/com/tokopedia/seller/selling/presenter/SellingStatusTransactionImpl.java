@@ -230,6 +230,7 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
         listDatas.addAll(model);
         view.notifyDataSetChanged(listDatas);
         view.setRefreshPullEnable(true);
+        view.showFab();
     }
 
     @Override
@@ -241,6 +242,7 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
         }
         view.getPaging().setHasNext(false);
         view.setRefreshPullEnable(true);
+        view.showFab();
         view.removeRetry();
     }
 
@@ -249,6 +251,7 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
         finishConnection();
         if (listDatas.size() == 0) {
             view.addRetry();
+            view.hideFab();
         } else {
             NetworkErrorHelper.showSnackbar((Activity) context);
         }
@@ -260,6 +263,7 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
         finishConnection();
         if (listDatas.size() == 0) {
             view.addRetry();
+            view.hideFab();
         } else {
             NetworkErrorHelper.showSnackbar((Activity) context);
         }

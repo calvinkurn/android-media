@@ -164,6 +164,16 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
     }
 
     @Override
+    public void showFab() {
+        fab.show();
+    }
+
+    @Override
+    public void hideFab() {
+        fab.hide();
+    }
+
+    @Override
     public void onNetworkError(int type, Object... data) {
         swipeToRefresh.setRefreshing(false);
         if(adapter.getListData().size() == 0) {
