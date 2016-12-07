@@ -213,8 +213,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
 
     @Override
     public Destination generateAddressData(Intent data) {
-        Destination destination = data.getExtras().getParcelable(ManageAddressConstant.EXTRA_ADDRESS);
-        return destination;
+        return Destination.convertFromBundle(data.getExtras().getParcelable(ManageAddressConstant.EXTRA_ADDRESS));
     }
 
     @Override
