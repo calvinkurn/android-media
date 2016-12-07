@@ -223,7 +223,11 @@ public class GCMListenerService extends GcmListenerService {
 
     private void sendNotification(Bundle data) {
         int tkpCode = Integer.parseInt(data.getString("tkp_code"));
-        if (!CheckSettings(tkpCode) && isValidForSellerApp(tkpCode) && !isDeprecated(tkpCode)) {
+        /**
+         * Use this code to exclude deprecated code which still sent from server
+         * if (!CheckSettings(tkpCode) && isValidForSellerApp(tkpCode) && !isDeprecated(tkpCode)) {
+         */
+        if (!CheckSettings(tkpCode) && isValidForSellerApp(tkpCode)) {
             return;
         }
 
@@ -306,6 +310,20 @@ public class GCMListenerService extends GcmListenerService {
                 ticker = data.getString("desc");
 //                resultclass = ParentIndexHome.class;
                 resultclass = HomeRouter.getHomeActivityClass();
+                break;
+            case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY:
+                resultclass = InboxReputationActivity.class;
+                //bundle.putInt("notif_call", NotificationCode);
+                title = this.getString(R.string.title_get_reputation);
+                ticker = data.getString("desc");
+                desc = data.getString("desc");
+                break;
+            case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY:
+                resultclass = InboxReputationActivity.class;
+                //bundle.putInt("notif_call", NotificationCode);
+                title = this.getString(R.string.title_get_edit_reputation);
+                ticker = data.getString("desc");
+                desc = data.getString("desc");
                 break;
             case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_BUYER:
                 resultclass = InboxReputationActivity.class;
