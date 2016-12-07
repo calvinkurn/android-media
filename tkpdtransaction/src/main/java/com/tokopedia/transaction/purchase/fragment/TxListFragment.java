@@ -88,6 +88,11 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
         return fragment;
     }
 
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
+
     public static TxListFragment instanceAllOrder(String txFilterID) {
         TxListFragment fragment = new TxListFragment();
         Bundle bundle = new Bundle();
@@ -524,11 +529,9 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
     @Override
     public void onClick(View v) {
         int i = v.getId();
-        switch (i) {
-            case R2.id.fab_filter:
-                bottomSheetFilterDialog.show();
-                break;
-        }
+        if (i == R.id.fab_filter)
+            bottomSheetFilterDialog.show();
+
     }
 
     @Override

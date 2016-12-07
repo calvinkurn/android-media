@@ -44,7 +44,6 @@ import com.tokopedia.core.network.apiservices.user.NotificationService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.notification.model.Notification;
-import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
@@ -852,7 +851,7 @@ public class NotificationVariable {
 
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(context, InboxResCenterActivity.class);
+                        Intent intent = InboxRouter.getInboxResCenterActivityIntent(context);
                         // create smart click for inbox
                         if (MessageCount.size() > 5 && MessageCount.get(5) > 0) {
                             intent.putExtra("unread", true);

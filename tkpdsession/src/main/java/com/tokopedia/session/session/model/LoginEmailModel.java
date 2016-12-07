@@ -39,7 +39,7 @@ public class LoginEmailModel {
     int msisdnShowDialog;// msisdn_show_dialog
 
     @SerializedName("msisdn_is_verified")
-    int msisdnIsVerified;// msisdn is verified
+    String msisdnIsVerified;// msisdn is verified
 
     @SerializedName("shop_avatar")
     String shopAvatar;// shop_avatar
@@ -84,7 +84,7 @@ public class LoginEmailModel {
     }
 
     public boolean getMsisdnIsVerified() {
-        return msisdnIsVerified == 1 ;
+        return msisdnIsVerified.equals("1");
     }
 
     public int getShopIsGold() {

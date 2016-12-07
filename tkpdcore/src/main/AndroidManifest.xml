@@ -71,10 +71,6 @@
         <meta-data
             android:name="net.hockeyapp.android.appIdentifier"
             android:value="528b17702bf941a581f15e188677306b " />
-        <!-- DEBUG KEY -->
-        <!-- <meta-data -->
-        <!-- android:name="LOCALYTICS_APP_KEY" -->
-        <!-- android:value="a4c853a5c07b6acfeb61343-037f3b9e-6591-11e5-bdf6-0013a62af900" /> -->
         <!-- <meta-data -->
         <!-- android:name="com.google.android.gms.version" -->
         <!-- android:value="@integer/google_play_services_version" /> -->
@@ -325,15 +321,6 @@
             android:label="@string/title_activity_product_info"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.rescenter.detail.activity.ResCenterActivity"
-            android:label="@string/title_activity_res_center"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
-        <activity
-            android:name="com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity"
-            android:label="@string/title_activity_res_center"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.tokopedia.core.ForceUpdate"
             android:label="@string/title_activity_force_update"
             android:screenOrientation="portrait" />
@@ -437,11 +424,7 @@
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/choose_location"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.home.SimpleHomeActivity"
-            android:label="@string/title_activity_simple_home"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3" />
+
         <activity
             android:name="com.tokopedia.core.shopinfo.ShopInfoActivity"
             android:label=""
@@ -476,15 +459,7 @@
             android:label="@string/title_activity_share"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.rescenter.create.activity.CreateResCenterActivity"
-            android:label="@string/title_activity_create_resolution"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.rescenter.edit.activity.EditResCenterActivity"
-            android:label="@string/title_activity_edit_resolution"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.rescenter.onboarding.FreeReturnOnboardingActivity"
+            android:name="com.tokopedia.core.onboarding.FreeReturnOnboardingActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
         <activity
@@ -504,6 +479,12 @@
         <activity android:name="com.tokopedia.core.welcome.WelcomeActivity"
             android:screenOrientation="portrait">
         </activity>
+
+        <activity
+            android:name=".msisdn.activity.MsisdnActivity"
+            android:label="@string/title_msisdn"
+            android:parentActivityName=".session.Login"
+            android:screenOrientation="portrait" />
 
         <!--=======================================================-->
         <!--RECEIVERS REGISTRY-->
@@ -579,9 +560,6 @@
             android:name="com.tokopedia.core.inboxreputation.intentservice.InboxReviewIntentService"
             android:exported="false" />
         <service
-            android:name="com.tokopedia.core.rescenter.detail.service.DetailResCenterService"
-            android:exported="false" />
-        <service
             android:name="com.tokopedia.core.manage.people.profile.intentservice.ManagePeopleProfileIntentService"
             android:exported="false" />
         <service android:name="com.tokopedia.core.service.HUDIntent" />
@@ -598,9 +576,6 @@
             android:exported="false" />
         <service
             android:name="com.tokopedia.core.talkview.intentservice.TalkViewIntentService"
-            android:exported="false" />
-        <service
-            android:name="com.tokopedia.core.rescenter.create.service.CreateResCenterService"
             android:exported="false" />
         <service
             android:name="com.tokopedia.core.myproduct.service.ProductService"
@@ -664,9 +639,7 @@
         <!-- ======================================================= -->
         <!-- PROVIDERS REGISTRY -->
         <!-- ======================================================= -->
-        <service
-            android:name="com.tokopedia.core.shop.ShopEditService"
-            android:exported="false" />
+
     </application>
 
 </manifest>

@@ -30,7 +30,7 @@ public interface SessionView {
     int INVALID_MOVE_TYPE = -1;
     int MOVE_TO_CART_TYPE = 1;
     int HOME = 2;
-    int SELLER_HOME = 4;
+    int SELLER_HOME = 3;
 
     boolean isFragmentCreated(String tag);
 

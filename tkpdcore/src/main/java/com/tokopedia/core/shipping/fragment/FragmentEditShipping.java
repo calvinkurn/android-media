@@ -405,14 +405,13 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case android.R.id.home:
-                getActivity().finish();
-                return true;
-            case R2.id.action_send:
-                if(fragmentShippingHeader.isShown()){
-                    submitData();
-                }else showErrorToast(getString(R.string.dialog_on_process));
+        if (item.getItemId() == android.R.id.home) {
+            getActivity().finish();
+            return true;
+        } else if (item.getItemId() == R.id.action_send) {
+            if (fragmentShippingHeader.isShown()) {
+                submitData();
+            } else showErrorToast(getString(R.string.dialog_on_process));
         }
         return super.onOptionsItemSelected(item);
     }

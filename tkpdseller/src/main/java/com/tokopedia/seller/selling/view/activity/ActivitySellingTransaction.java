@@ -2,7 +2,10 @@ package com.tokopedia.seller.selling.view.activity;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
@@ -10,13 +13,19 @@ import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.SpannableStringBuilder;
+import android.text.method.LinkMovementMethod;
 import android.text.method.ScrollingMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.URLSpan;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -90,8 +99,8 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
     private void initSellerTicker() {
         GTMContainer gtmContainer = GTMContainer.newInstance(this);
 
-        if (gtmContainer.getString("is_show_ticker_sales").equalsIgnoreCase("true")) {
-            String message = gtmContainer.getString("ticker_text_sales");
+        if(gtmContainer.getString("is_show_ticker_sales").equalsIgnoreCase("true")){
+            String message = gtmContainer.getString("ticker_text_sales_rich");
             showTickerGTM(message);
         } else {
             showTickerGTM(null);
@@ -99,12 +108,62 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
 
     }
 
+    protected void makeLinkClickable(SpannableStringBuilder strBuilder, final URLSpan span)
+    {
+        int start = strBuilder.getSpanStart(span);
+        int end = strBuilder.getSpanEnd(span);
+        int flags = strBuilder.getSpanFlags(span);
+        ClickableSpan clickable = new ClickableSpan() {
+            public void onClick(View view) {
+                Log.d("Seller Page", "URL Clicked" + span);
+                if(span.getURL().equals("com.tokopedia.sellerapp")){
+                    startNewActivity(span.getURL());
+                } else {
+                    openLink(span.getURL());
+                }
+            }
+        };
+        strBuilder.setSpan(clickable, start, end, flags);
+        strBuilder.removeSpan(span);
+    }
+
+    private void openLink(String url) {
+        try {
+            Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(myIntent);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(this, "No application can handle this request."
+                    + " Please install a webbrowser",  Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+    }
+
+    public void startNewActivity(String packageName) {
+        Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
+        if (intent != null) {
+            // We found the activity now start the activity
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } else {
+            // Bring user to the market or let them choose an app?
+            intent = new Intent(Intent.ACTION_VIEW);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setData(Uri.parse("market://details?id=" + packageName));
+            startActivity(intent);
+        }
+    }
+
     private void showTickerGTM(String message) {
         if (message != null) {
-            sellerTickerView.setText(Html.fromHtml(message));
+            CharSequence sequence = Html.fromHtml(message);
+            SpannableStringBuilder strBuilder = new SpannableStringBuilder(sequence);
+            URLSpan[] urls = strBuilder.getSpans(0, sequence.length(), URLSpan.class);
+            for(URLSpan span : urls) {
+                makeLinkClickable(strBuilder, span);
+            }
+            sellerTickerView.setText(strBuilder);
+            sellerTickerView.setMovementMethod(LinkMovementMethod.getInstance());
             sellerTickerView.setVisibility(View.VISIBLE);
-            sellerTickerView.setAutoLinkMask(0);
-            Linkify.addLinks(sellerTickerView, Linkify.WEB_URLS);
         } else {
             sellerTickerView.setVisibility(View.GONE);
         }

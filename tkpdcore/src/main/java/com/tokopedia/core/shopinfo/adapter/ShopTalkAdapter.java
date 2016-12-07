@@ -211,22 +211,20 @@ public class ShopTalkAdapter extends BaseLinearRecyclerViewAdapter {
                     popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
-                            CommonUtils.dumper(item.getItemId());
-                            switch (item.getItemId()) {
-                                case R2.id.action_follow:
-                                    listener.onFollowTalk(list.get(position));
-                                    return true;
-                                case R2.id.action_unfollow:
-                                    listener.onUnfollowTalk(list.get(position));
-                                    return true;
-                                case R2.id.action_delete_talk:
-                                    listener.onDeleteTalk(list.get(position));
-                                    return true;
-                                case R2.id.action_report:
-                                    listener.onReportTalk(list.get(position));
-                                    return true;
-                                default:
-                                    return false;
+                            if (item.getItemId() == R.id.action_follow) {
+                                listener.onFollowTalk(list.get(position));
+                                return true;
+                            } else if (item.getItemId() == R.id.action_unfollow) {
+                                listener.onUnfollowTalk(list.get(position));
+                                return true;
+                            } else if (item.getItemId() == R.id.action_delete_talk) {
+                                listener.onDeleteTalk(list.get(position));
+                                return true;
+                            } else if (item.getItemId() == R.id.action_report) {
+                                listener.onReportTalk(list.get(position));
+                                return true;
+                            } else {
+                                return false;
                             }
                         }
 

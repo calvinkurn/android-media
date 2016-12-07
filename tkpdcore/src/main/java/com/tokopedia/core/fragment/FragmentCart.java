@@ -57,6 +57,7 @@ import com.tokopedia.core.EditAddressCart;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -66,6 +67,7 @@ import com.tokopedia.core.analytics.nishikino.model.Basket;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
+import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.core.cart.interactor.CartRetrofitInteractor;
 import com.tokopedia.core.cart.interactor.CartRetrofitInteractorImpl;
 import com.tokopedia.core.cart.model.CartDestination;
@@ -103,7 +105,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FragmentCart extends Fragment implements CartInterfaces.FragmentCartCommunicator, PaymentResultReceiver.Receiver {
+public class FragmentCart extends TkpdFragment implements CartInterfaces.FragmentCartCommunicator, PaymentResultReceiver.Receiver {
 
     private static final int PAYMENT_SALDO = 0;
     private static final int PAYMENT_TRANSFER = 1;
@@ -246,6 +248,11 @@ public class FragmentCart extends Fragment implements CartInterfaces.FragmentCar
     private PaymentResultReceiver atcReceiver;
     private PaymentNetInteractor interactor;
     private PopupMenu popupMenu;
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_CART_PAGE;
+    }
 
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
@@ -1128,54 +1135,54 @@ public class FragmentCart extends Fragment implements CartInterfaces.FragmentCar
 
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
-                            switch (item.getItemId()) {
-                                case R2.id.action_cart_edit:
-                                    if (!EditMode) {
-                                        isItemHighLight = true;
-                                        itemTemp.ListProduct.TriggerEdit();
-                                        EditMode = true;
-                                        ButtonEditor.setVisibility(View.VISIBLE);
-                                        EditPos = currPos;
-                                        CheckoutBut.setEnabled(false);
-                                        LayoutParams param = new LayoutParams(LayoutParams.MATCH_PARENT,
-                                                LayoutParams.MATCH_PARENT);
-                                        param.setMargins(0, 0, 0,
-                                                (int) context.getResources().getDimension(R.dimen.btn_height));
-                                        lvContainer.setLayoutParams(param);
-                                        itemTemp.MainView.setBackgroundResource(R.drawable.cards_highlight);
-                                    }
-                                    return true;
-                                case R2.id.action_cart_delete:
+                            int i1 = item.getItemId();
+                            if (i1 == R.id.action_cart_edit) {
+                                if (!EditMode) {
                                     isItemHighLight = true;
-                                    CancelEdit();
-                                    AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(context);
-                                    myAlertDialog.setTitle(context.getString(R.string.title_cancel_confirm));
-                                    myAlertDialog.setMessage(context.getString(R.string.msg_cancel_1)
-                                            + " " + ShopName.get(currPos) + " "
-                                            + context.getString(R.string.msg_cancel_3) + " " + TotalPrice.get(currPos));
+                                    itemTemp.ListProduct.TriggerEdit();
+                                    EditMode = true;
+                                    ButtonEditor.setVisibility(View.VISIBLE);
+                                    EditPos = currPos;
+                                    CheckoutBut.setEnabled(false);
+                                    LayoutParams param = new LayoutParams(LayoutParams.MATCH_PARENT,
+                                            LayoutParams.MATCH_PARENT);
+                                    param.setMargins(0, 0, 0,
+                                            (int) context.getResources().getDimension(R.dimen.btn_height));
+                                    lvContainer.setLayoutParams(param);
+                                    itemTemp.MainView.setBackgroundResource(R.drawable.cards_highlight);
+                                }
+                                return true;
+                            } else if (i1 == R.id.action_cart_delete) {
+                                isItemHighLight = true;
+                                CancelEdit();
+                                AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(context);
+                                myAlertDialog.setTitle(context.getString(R.string.title_cancel_confirm));
+                                myAlertDialog.setMessage(context.getString(R.string.msg_cancel_1)
+                                        + " " + ShopName.get(currPos) + " "
+                                        + context.getString(R.string.msg_cancel_3) + " " + TotalPrice.get(currPos));
 
-                                    myAlertDialog.setPositiveButton(context.getString(R.string.title_yes),
-                                            new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface arg0, int arg1) {
-                                                    progressdialog = new TkpdProgressDialog(context,
-                                                            TkpdProgressDialog.NORMAL_PROGRESS);
-                                                    progressdialog.showDialog();
-                                                    CancelCartWS4(AddrID.get(currPos), ShippingID.get(currPos),
-                                                            SPid.get(currPos), ShopID.get(currPos));
-                                                }
+                                myAlertDialog.setPositiveButton(context.getString(R.string.title_yes),
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface arg0, int arg1) {
+                                                progressdialog = new TkpdProgressDialog(context,
+                                                        TkpdProgressDialog.NORMAL_PROGRESS);
+                                                progressdialog.showDialog();
+                                                CancelCartWS4(AddrID.get(currPos), ShippingID.get(currPos),
+                                                        SPid.get(currPos), ShopID.get(currPos));
+                                            }
 
-                                            });
+                                        });
 
-                                    myAlertDialog.setNegativeButton(context.getString(R.string.title_no),
-                                            new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface arg0, int arg1) {
+                                myAlertDialog.setNegativeButton(context.getString(R.string.title_no),
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface arg0, int arg1) {
 
-                                                }
-                                            });
-                                    myAlertDialog.show();
-                                    return true;
-                                default:
-                                    return false;
+                                            }
+                                        });
+                                myAlertDialog.show();
+                                return true;
+                            } else {
+                                return false;
                             }
                         }
                     });
@@ -2763,6 +2770,6 @@ public class FragmentCart extends Fragment implements CartInterfaces.FragmentCar
     @Override
     public void onResume() {
         super.onResume();
-        ScreenTracking.screen(this);
+        ScreenTracking.screen(getScreenName());
     }
 }

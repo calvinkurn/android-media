@@ -236,6 +236,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     @Override
     public void hideProgressLoading() {
         progressDialog.dismiss();
+        calculateCartProgressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -368,6 +369,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 spShippingAgency.setSelection(i);
             }
         }
+        btnBuy.setEnabled(true);
     }
 
     @Override
@@ -409,12 +411,14 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
 
     @Override
     public void disableBuyButton() {
+        CommonUtils.dumper("buyrel disabled button called");
         btnBuy.setEnabled(false);
     }
 
     @Override
     public void enableBuyButton() {
         finishCalculateCartLoading();
+        CommonUtils.dumper("buyrel enabled button called");
         btnBuy.setEnabled(true);
     }
 

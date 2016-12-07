@@ -6,15 +6,12 @@ import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 
-import org.parceler.Parcel;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by m.normansyah on 27/10/2015.
  */
-@Parcel
 public class HorizontalProductList extends RecyclerViewItem{
     List<ProductItem> listProduct;
 
@@ -74,4 +71,32 @@ public class HorizontalProductList extends RecyclerViewItem{
                 "listProduct=" + listProduct +
                 '}';
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(android.os.Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeTypedList(this.listProduct);
+    }
+
+    protected HorizontalProductList(android.os.Parcel in) {
+        super(in);
+        this.listProduct = in.createTypedArrayList(ProductItem.CREATOR);
+    }
+
+    public static final Creator<HorizontalProductList> CREATOR = new Creator<HorizontalProductList>() {
+        @Override
+        public HorizontalProductList createFromParcel(android.os.Parcel source) {
+            return new HorizontalProductList(source);
+        }
+
+        @Override
+        public HorizontalProductList[] newArray(int size) {
+            return new HorizontalProductList[size];
+        }
+    };
 }

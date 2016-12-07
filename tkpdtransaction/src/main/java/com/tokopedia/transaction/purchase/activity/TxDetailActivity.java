@@ -33,6 +33,7 @@ import com.tokopedia.transaction.purchase.listener.TxDetailViewListener;
 import com.tokopedia.transaction.purchase.model.response.txlist.OrderData;
 import com.tokopedia.transaction.purchase.presenter.TxDetailPresenter;
 import com.tokopedia.transaction.purchase.presenter.TxDetailPresenterImpl;
+import com.tokopedia.transaction.purchase.receiver.TxListUIReceiver;
 import com.tokopedia.transaction.purchase.view.NestedListView;
 
 import java.text.MessageFormat;
@@ -340,6 +341,14 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
     }
 
     @Override
+    public void renderSuccessRequestCancelOrder(String message) {
+        orderData.getOrderButton().setButtonCancelRequest("0");
+        showToastMessage(message);
+        btnRequestCancelOrder.setVisibility(View.GONE);
+        TxListUIReceiver.sendBroadcastForceRefreshListData(this);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         presenter.onDestroyView();
@@ -361,6 +370,12 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(
                 com.tokopedia.transaction.R.string.label_title_dialog_request_cancel_order)
+        );
+        builder.setMessage(
+                getString(
+                        com.tokopedia.transaction.R.string
+                                .label_sub_title_dialog_request_cancel_order
+                )
         );
         LayoutInflater inflater = this.getLayoutInflater();
         @SuppressLint("InflateParams") View layout = inflater.inflate(
@@ -400,24 +415,43 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                String reason = etReason.getText().toString();
-                                if (reason.isEmpty()) {
-                                    tilEtReason.setErrorEnabled(true);
-                                    tilEtReason.setError(getString(
-                                            com.tokopedia.transaction.R
-                                                    .string.label_error_reason_must_fill
-                                    ));
-                                } else {
-                                    dialog.dismiss();
-                                    presenter.processRequestCancelOrder(
-                                            TxDetailActivity.this, reason, orderData
-                                    );
-                                }
+                                processRequestCancelOrderWithValidationInput(
+                                        etReason, tilEtReason, dialog
+                                );
                             }
                         }
                 );
             }
         };
+    }
+
+    private void processRequestCancelOrderWithValidationInput(EditText etReason,
+                                                              TextInputLayout tilEtReason,
+                                                              DialogInterface dialog) {
+        String reason = etReason.getText().toString();
+        if (reason.isEmpty()) {
+            tilEtReason.setErrorEnabled(true);
+            tilEtReason.setError(getString(
+                    com.tokopedia.transaction
+                            .R.string
+                            .label_error_request_cancel_order_reason_empty
+            ));
+        } else {
+            if (reason.length() < 10) {
+                tilEtReason.setErrorEnabled(true);
+                tilEtReason.setError(getString(
+                        com.tokopedia.transaction
+                                .R.string
+                                .label_error_request_cancel_order_reason_to_short
+                ));
+            } else {
+                dialog.dismiss();
+                presenter.processRequestCancelOrder(
+                        TxDetailActivity.this, reason, orderData
+                );
+            }
+
+        }
     }
 
     private void alterHistoryComment(String comment, int historyIndex) {

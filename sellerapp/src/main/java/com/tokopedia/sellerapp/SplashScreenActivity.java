@@ -6,8 +6,8 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.tokopedia.core.SplashScreen;
-import com.tokopedia.core.shop.ShopEditorActivity;
-import com.tokopedia.core.shop.presenter.ShopSettingView;
+import com.tokopedia.core.msisdn.activity.MsisdnActivity;
+import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
@@ -43,19 +43,18 @@ public class SplashScreenActivity extends SplashScreen {
             return null;
 
         if(SessionHandler.isMsisdnVerified()) {
-            Intent intent;
-            intent = new Intent(context, ShopEditorActivity.class);
-            intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.CREATE_SHOP_FRAGMENT_TAG);
+            Intent intent = SellerRouter.getAcitivityShopCreateEdit(context);
+            intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
+                    SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
+            intent.putExtra(SellerRouter.ShopSettingConstant.ON_BACK, SellerRouter.ShopSettingConstant.LOG_OUT);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             return intent;
         }else{
-            // TODO move to msisdn activity
-            /*Intent intent;
+            Intent intent;
             intent = new Intent(context, MsisdnActivity.class);
-            intent.putExtra(MsisdnActivity.SOURCE, Login.class.getSimpleName());
-            return intent;*/
-
-            return null;
+            intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
+                    SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
+            return intent;
         }
     }
 }

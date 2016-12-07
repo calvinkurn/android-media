@@ -135,6 +135,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/title_full_name"
                     android:maxLines="1"
+                    android:inputType="textCapWords"
                     android:singleLine="true"
                     android:imeOptions="actionNext"/>
 

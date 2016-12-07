@@ -13,7 +13,9 @@ import android.widget.ListView;
 
 import com.tokopedia.core.ManagePeoplePassword;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.core.customadapter.SimpleListTabViewAdapter;
 import com.tokopedia.core.manage.ManageConstant;
 import com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActivity;
@@ -25,7 +27,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 
 import java.util.ArrayList;
 
-public class FragmentSettingPeople extends Fragment implements ManageConstant {
+public class FragmentSettingPeople extends TkpdFragment implements ManageConstant {
 
     private SimpleListTabViewAdapter lvAdapter;
     private ListView lvManage;
@@ -42,6 +44,10 @@ public class FragmentSettingPeople extends Fragment implements ManageConstant {
         super.onAttach(activity);
     }
 
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_SETTING_MANAGE_PROFILE;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -105,7 +111,7 @@ public class FragmentSettingPeople extends Fragment implements ManageConstant {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded() && getActivity() !=null) {
-            ScreenTracking.screen(this);
+            ScreenTracking.screen(getScreenName());
         }
         super.setUserVisibleHint(isVisibleToUser);
     }

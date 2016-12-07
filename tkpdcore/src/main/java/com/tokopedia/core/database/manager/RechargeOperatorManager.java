@@ -10,12 +10,13 @@ import com.tokopedia.core.database.model.RechargeOperatorModelDBAttrs;
 import com.tokopedia.core.database.model.RechargeOperatorModelDBAttrs_Table;
 import com.tokopedia.core.database.recharge.operator.Operator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author ricoharisin on 7/15/16.
  */
-public class RechargeOperatorManager implements DbFlowOperation<RechargeOperatorModelDBAttrs> {
+public class RechargeOperatorManager  implements DbFlowOperation<RechargeOperatorModelDBAttrs> {
     @Override
     public void store() {
 
@@ -26,7 +27,9 @@ public class RechargeOperatorManager implements DbFlowOperation<RechargeOperator
 
     }
 
-    public void store(String prefix, String name, int operatorId, int status, String image, int minLength, int maxLength, String nominalText, Boolean showProduct, Boolean showPrice) {
+    public void store(String prefix, String name, int operatorId, int status, String image,
+                      int minLength, int maxLength, String nominalText, Boolean showProduct,
+                      Boolean showPrice, int weight) {
         RechargeOperatorModelDBAttrs db = new RechargeOperatorModelDBAttrs();
         db.operatorId = operatorId;
         db.image = image;
@@ -38,6 +41,7 @@ public class RechargeOperatorManager implements DbFlowOperation<RechargeOperator
         db.nominalText =  nominalText;
         db.showPrice =  showPrice;
         db.showProduct = showProduct;
+        db.weight = weight;
         db.save();
     }
 
@@ -77,6 +81,16 @@ public class RechargeOperatorManager implements DbFlowOperation<RechargeOperator
         return modelDB;
     }
 
+    public List<RechargeOperatorModelDBAttrs> getListDataOperator(List<Integer> operatorIds) {
+        List<RechargeOperatorModelDBAttrs> results = new ArrayList<>();
+        for (Integer id: operatorIds) {
+            results.add(new Select().from(RechargeOperatorModelDBAttrs.class)
+                    .where(RechargeOperatorModelDBAttrs_Table.operatorId.is((int)id))
+                    .querySingle());
+        }
+        return results;
+    }
+
     @Override
     public List<RechargeOperatorModelDBAttrs> getDataList(String key) {
         return null;
@@ -110,7 +124,8 @@ public class RechargeOperatorManager implements DbFlowOperation<RechargeOperator
                                 operator.getAttributes().getMaximumLength(),
                                 operator.getAttributes().getRule().getProductText(),
                                 operator.getAttributes().getRule().getShowProduct(),
-                                operator.getAttributes().getRule().getShowPrice()
+                                operator.getAttributes().getRule().getShowPrice(),
+                                operator.getAttributes().getWeight()
                         );
                     }
                 } else {
@@ -124,7 +139,8 @@ public class RechargeOperatorManager implements DbFlowOperation<RechargeOperator
                             operator.getAttributes().getMaximumLength(),
                             operator.getAttributes().getRule().getProductText(),
                             operator.getAttributes().getRule().getShowProduct(),
-                            operator.getAttributes().getRule().getShowPrice()
+                            operator.getAttributes().getRule().getShowPrice(),
+                            operator.getAttributes().getWeight()
                     );
                 }
             }

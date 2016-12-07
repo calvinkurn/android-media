@@ -14,7 +14,7 @@ public class DbFlowDatabase {
 
     public static final String NAME = "tokopedia";
 
-    public static final int VERSION = 4;
+    public static final int VERSION = 6;
 
     @Migration(version = DbFlowDatabase.VERSION, database = DbFlowDatabase.class)
     public static class Migration2 extends BaseMigration {

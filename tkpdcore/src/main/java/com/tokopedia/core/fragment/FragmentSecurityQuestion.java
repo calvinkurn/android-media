@@ -151,7 +151,6 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
     }
 
     @Override

@@ -387,12 +387,11 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                break;
-            case R2.id.action_search:
-                return false;
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+
+        } else if (item.getItemId() == R.id.action_search) {
+            return false;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -766,8 +765,12 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
             discoveryInteractor.getDynamicAttribute(this, BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG, browseProductActivityModel.getDepartmentId());
         } else if (source.contains("shop")) {
             discoveryInteractor.getDynamicAttribute(this, BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP, browseProductActivityModel.getDepartmentId());
-        } else if (source.contains("directory")) {
+        } else if (source.contains("directory") && activeTab == 0) {
+            Log.d(TAG,"get dynamic filter product");
             discoveryInteractor.getDynamicAttribute(this, BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY, browseProductActivityModel.getDepartmentId());
+        } else if (source.contains("directory") && activeTab == 1) {
+            Log.d(TAG,"get dynamic filter catalog");
+            discoveryInteractor.getDynamicAttribute(this, BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG, browseProductActivityModel.getDepartmentId());
         } else {
             discoveryInteractor.getDynamicAttribute(this, BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT, browseProductActivityModel.getDepartmentId());
         }
