@@ -550,7 +550,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
         <item>3</item>
         <item>4</item>
     </string-array>
-    <string name="sort_browse_catalog_product_sold">Product Terjual</string>
+    <string name="sort_browse_catalog_product_sold">Produk Terjual</string>
     <string name="sort_browse_catalog_lowest_price">Harga Terendah</string>
     <string name="sort_browse_catalog_highest_price">Harga Tertinggi</string>
     <string name="sort_browse_catalog_all_condition">Semua Kondisi</string>
