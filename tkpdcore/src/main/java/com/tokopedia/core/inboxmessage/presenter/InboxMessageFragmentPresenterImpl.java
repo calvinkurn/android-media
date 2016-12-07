@@ -6,6 +6,7 @@ import android.view.View;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.inboxmessage.InboxMessageConstant;
 import com.tokopedia.core.inboxmessage.activity.InboxMessageDetailActivity;
@@ -439,16 +440,16 @@ public class InboxMessageFragmentPresenterImpl implements InboxMessageFragmentPr
             String screenName;
             switch (NAV) {
                 case MESSAGE_ARCHIVE:
-                    screenName = "Inbox - Archive Page";
+                    screenName = AppScreen.SCREEN_INBOX_ARCHIVE;
                     break;
                 case MESSAGE_SENT:
-                    screenName = "Inbox - Sent Page";
+                    screenName = AppScreen.SCREEN_INBOX_SENT;
                     break;
                 case MESSAGE_TRASH:
-                    screenName = "Inbox - Trash Page";
+                    screenName = AppScreen.SCREEN_INBOX_TRASH;
                     break;
                 default:
-                    screenName = "Inbox Page";
+                    screenName = AppScreen.SCREEN_INBOX_MAIN;
                     break;
             }
             ScreenTracking.screenLoca(screenName);
