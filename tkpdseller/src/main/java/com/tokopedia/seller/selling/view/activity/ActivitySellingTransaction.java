@@ -90,7 +90,6 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
     private void initView() {
         sellerTickerView = (TextView) findViewById(R.id.seller_ticker);
         sellerTickerView.setMovementMethod(new ScrollingMovementMethod());
-        initSellerTicker();
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setOffscreenPageLimit(4);
         indicator = (TabLayout) findViewById(R.id.indicator);
@@ -106,6 +105,12 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
             showTickerGTM(null);
         }
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initSellerTicker();
     }
 
     protected void makeLinkClickable(SpannableStringBuilder strBuilder, final URLSpan span)
