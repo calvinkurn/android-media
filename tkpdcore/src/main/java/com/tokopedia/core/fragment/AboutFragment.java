@@ -13,6 +13,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.TkpdBasePreferenceFragment;
+import com.tokopedia.core.manage.general.ManageWebViewActivity;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RouterUtils;
@@ -63,8 +64,8 @@ public class AboutFragment extends TkpdBasePreferenceFragment {
         prefTerm.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse("https://www.tokopedia.com/terms.pl"));
+                Intent i = ManageWebViewActivity.getCallingIntent(getActivity(), "https://www.tokopedia.com/terms.pl",
+                                getString(R.string.manage_terms_and_conditions));
                 getActivity().startActivity(i);
                 return false;
             }
@@ -72,8 +73,8 @@ public class AboutFragment extends TkpdBasePreferenceFragment {
         prefPrivacy.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse("https://www.tokopedia.com/privacy.pl"));
+                Intent i = ManageWebViewActivity.getCallingIntent(getActivity(), "https://www.tokopedia.com/privacy.pl",
+                        getString(R.string.manage_privacy));
                 getActivity().startActivity(i);
                 return false;
             }
