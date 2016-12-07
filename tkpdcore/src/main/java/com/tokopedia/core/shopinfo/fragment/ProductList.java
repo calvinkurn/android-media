@@ -89,8 +89,10 @@ public class ProductList extends V2BaseFragment {
     }
 
     public void setSelectedEtalase(String etalaseId) {
-        int etalaseIndex = etalaseIdList.indexOf(etalaseId);
-        adapter.setSelectedEtalasePos(etalaseIndex);
+        if(adapter!=null) {
+            int etalaseIndex = etalaseIdList.indexOf(etalaseId);
+            adapter.setSelectedEtalasePos(etalaseIndex);
+        }
     }
 
     @Override
