@@ -453,6 +453,7 @@ public class InboxMessageFragmentPresenterImpl implements InboxMessageFragmentPr
                     break;
             }
             ScreenTracking.screenLoca(screenName);
+            ScreenTracking.screen(screenName);
         } catch (NullPointerException e) {
             CommonUtils.dumper("LocalTag Inbox Message Err : " + e.toString());
         }

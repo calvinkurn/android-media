@@ -108,7 +108,7 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
         presenter.getStatusTransactionList(isVisibleToUser, SellingStatusTransactionImpl.Type.TRANSACTION);
         presenter.checkValidationToSendGoogleAnalytic(isVisibleToUser, getActivity());
         ScreenTracking.screenLoca(AppScreen.SCREEN_LOCA_TXSTATUS);
-        ScreenTracking.screenLoca(AppScreen.SCREEN_TX_SHOP_TRANSACTION_SELLING_LIST);
+        ScreenTracking.screen(AppScreen.SCREEN_TX_SHOP_TRANSACTION_SELLING_LIST);
         super.setUserVisibleHint(isVisibleToUser);
     }
 
