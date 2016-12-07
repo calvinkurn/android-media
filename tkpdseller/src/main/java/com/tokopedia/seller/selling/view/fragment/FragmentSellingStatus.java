@@ -419,16 +419,14 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
             @Override
             public void onSuccess(String refNum) {
                 progressDialog.dismiss();
-                adapter.clearData();
-                presenter.getStatusTransactionList(getUserVisibleHint(), SellingStatusTransactionImpl.Type.STATUS);
+                presenter.refreshOnFilter();
             }
 
             @Override
             public void onFailed(String errorMsg) {
                 CommonUtils.UniversalToast(getActivity(), errorMsg);
                 progressDialog.dismiss();
-                adapter.clearData();
-                presenter.getStatusTransactionList(getUserVisibleHint(), SellingStatusTransactionImpl.Type.STATUS);
+                presenter.refreshOnFilter();
             }
         };
     }
