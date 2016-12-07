@@ -462,7 +462,6 @@ public class Destination implements Parcelable {
         destination.setProvinceName(address.getProvinceName());
         destination.setLatitude(address.getLatitude());
         destination.setLongitude(address.getLongitude());
-        destination.setLatLng(address.getLatLng());
         destination.setPassword(address.getPassword());
         return destination;
     }
