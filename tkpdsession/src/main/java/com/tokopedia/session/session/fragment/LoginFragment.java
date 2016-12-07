@@ -706,6 +706,10 @@ public class LoginFragment extends Fragment implements LoginView {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case 100:
+                if(resultCode == Activity.RESULT_CANCELED){
+                    KeyboardHandler.DropKeyboard(getActivity(),getView());
+                    break;
+                }
                 Bundle bundle = data.getBundleExtra("bundle");
                 if (bundle.getString("path").contains("error")) {
                     snackbar = SnackbarManager.make(getActivity(), bundle.getString("message"), Snackbar.LENGTH_LONG);

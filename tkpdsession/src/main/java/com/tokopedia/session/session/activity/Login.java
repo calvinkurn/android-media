@@ -50,6 +50,7 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.session.session.fragment.ActivationResentFragment;
 import com.tokopedia.session.session.fragment.ForgotPasswordFragment;
 import com.tokopedia.session.session.fragment.LoginFragment;
@@ -171,7 +172,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.login_fragment, fragment, TAG);
         if (isAddtoBackStack)
-            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.addToBackStack(TAG);
         fragmentTransaction.commit();
     }
 
@@ -524,12 +525,13 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
 
     @Override
     public void onBackPressed() {
-        if (getFragmentManager().getBackStackEntryCount() > 0) {
-            getFragmentManager().popBackStack();
+        if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
+            getSupportFragmentManager().popBackStack();
         } else {
-            super.onBackPressed();
+            Intent intent = new Intent(Login.this, WelcomeActivity.class);
+            startActivity(intent);
+            finish();
         }
-
     }
 
     @Override
