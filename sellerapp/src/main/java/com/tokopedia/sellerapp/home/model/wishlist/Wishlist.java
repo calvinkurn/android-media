@@ -2,6 +2,7 @@ package com.tokopedia.sellerapp.home.model.wishlist;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.ProductItem;
 
 import java.util.ArrayList;
@@ -41,14 +42,14 @@ public class Wishlist {
     Boolean isPreOrder;
     @SerializedName("badges")
     @Expose
-    public List<ProductItem.Badge> badges = new ArrayList<ProductItem.Badge>();
+    public List<Badge> badges = new ArrayList<>();
 
 
-    public List<ProductItem.Badge> getBadges() {
+    public List<Badge> getBadges() {
         return badges;
     }
 
-    public void setBadges(List<ProductItem.Badge> badges) {
+    public void setBadges(List<Badge> badges) {
         this.badges = badges;
     }
 

@@ -5,7 +5,9 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.IntentFilter;
 
+import com.tokopedia.core.msisdn.IncomingSms;
 import com.tokopedia.core.msisdn.MSISDNConstant;
 import com.tokopedia.core.msisdn.fragment.MsisdnVerificationFragment;
 import com.tokopedia.core.msisdn.interactor.MsisdnVerificationRetrofitInteractor;
@@ -26,7 +28,6 @@ public class PhoneVerificationUtil implements MSISDNConstant {
 
     MsisdnVerificationRetrofitInteractor msisdnNetworkInteractor;
     MSISDNListener msisdnListener;
-    //    IncomingSms smsReceiver;
     boolean hasShown = false;
     DialogFragment dialogFragment;
 
@@ -56,8 +57,6 @@ public class PhoneVerificationUtil implements MSISDNConstant {
     public PhoneVerificationUtil(Context context) {
         this.context = context;
         this.msisdnNetworkInteractor = new MsisdnVerificationRetrofitInteractorImpl();
-//        this.smsReceiver = new IncomingSms();
-
     }
 
     public void checkIsMSISDNVerified() {
@@ -132,15 +131,9 @@ public class PhoneVerificationUtil implements MSISDNConstant {
             ((MsisdnVerificationFragment) dialogFragment).setListener(msisdnListener);
         dialogFragment.show(ft, TAG_DIALOG);
 
-//        smsReceiver.setListener(((MsisdnVerificationFragment) dialogFragment));
-
     }
 
-//    public void registerSMSReceiver() {
-//        IntentFilter filter = new IntentFilter();
-//        filter.addAction("android.provider.Telephony.SMS_RECEIVED");
-//        context.registerReceiver(smsReceiver, filter);
-//    }
+
 
     public boolean isShowing() {
         return dialogFragment.getShowsDialog();
@@ -150,11 +143,6 @@ public class PhoneVerificationUtil implements MSISDNConstant {
     public void setMSISDNListener(MSISDNListener msisdnListener) {
         this.msisdnListener = msisdnListener;
     }
-
-//    public void unregister() {
-//        if (smsReceiver != null)
-//            context.unregisterReceiver(smsReceiver);
-//    }
 
     public void unSubscribe() {
         if (msisdnNetworkInteractor != null)

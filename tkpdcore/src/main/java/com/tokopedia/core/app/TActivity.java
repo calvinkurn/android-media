@@ -187,7 +187,6 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
 
         if (!GlobalConfig.isSellerApp()) {
             if (phoneVerificationUtil != null) {
-//            phoneVerificationUtil.unregister();
                 phoneVerificationUtil.setHasShown(false);
                 phoneVerificationUtil.dismissDialog();
 
@@ -220,7 +219,6 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
         verifyFetchDepartment();
         if (!GlobalConfig.isSellerApp()) {
             if (phoneVerificationUtil != null) {
-//            phoneVerificationUtil.registerSMSReceiver();
                 if (!phoneVerificationUtil.hasShown())
                     phoneVerificationUtil.checkIsMSISDNVerified();
 

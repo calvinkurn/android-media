@@ -36,11 +36,10 @@ public class IncomingSms extends BroadcastReceiver {
                         Object pdus[] = (Object[]) bundle.get("pdus");
                         currentMessage = SmsMessage.createFromPdu((byte[]) pdus[0]);
                     }
-                    String phoneNumber = currentMessage.getDisplayOriginatingAddress();
-                    String senderNum = phoneNumber;
+                    String senderNum = currentMessage.getDisplayOriginatingAddress();
                     String message = currentMessage.getDisplayMessageBody();
                     try {
-                        if (senderNum.equals("Tokopedia") || message.startsWith("[Tokopedia]")) {
+                        if (senderNum.equals("Tokopedia") || message.startsWith("Tokopedia")) {
                             if (listener != null)
                                 listener.onReceiveSMS(message);
                         }

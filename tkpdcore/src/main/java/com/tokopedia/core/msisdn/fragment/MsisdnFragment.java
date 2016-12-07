@@ -405,12 +405,9 @@ public class MsisdnFragment extends BasePresenterFragment<MsisdnVerificationFrag
     public void onReceiveSMS(String message) {
         if (message.contains("Verifikasi Nomor Handphone")) {
             CommonUtils.dumper("NISNISSMS " + message);
-            String regexString = Pattern.quote("kode") + "(.*?)" + Pattern.quote("sebelum");
-
-
+            String regexString = Pattern.quote("Tokopedia - ") + "(.*?)" + Pattern.quote("adalah");
             Pattern pattern = Pattern.compile(regexString);
             Matcher matcher = pattern.matcher(message);
-
 
             while (matcher.find()) {
                 String otpCode = matcher.group(1).trim();
