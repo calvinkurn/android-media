@@ -609,12 +609,7 @@ public class GCMListenerService extends GcmListenerService {
                 break;
             }
             case TkpdState.GCMServiceState.GCM_DEEPLINK: {
-                try {
-                    intent = new Intent(Intent.ACTION_VIEW, Uri.parse(data.getString("url"))).putExtras(data);
-                } catch (NullPointerException e) {
-                    CommonUtils.dumper("NotifTag : No Deeplink : " + e.toString());
-                    intent = HomeRouter.getHomeActivity(this);
-                }
+                intent.setData(Uri.parse(data.getString("url")));
                 break;
             }
             case TkpdState.GCMServiceState.GCM_CATEGORY: {
