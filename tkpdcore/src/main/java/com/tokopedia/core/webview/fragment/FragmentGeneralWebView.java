@@ -22,16 +22,27 @@ import com.tokopedia.core.R;
 
 public class FragmentGeneralWebView extends Fragment implements BaseWebViewClient.WebViewCallback, View.OnKeyListener {
     private static final String TAG = FragmentGeneralWebView.class.getSimpleName();
+    private static final String ARG_JS_ENABLED = "ARG_JS_ENABLED";
 
     private WebView WebViewGeneral;
     private OnFragmentInteractionListener mListener;
     private ProgressBar progressBar;
     private String url;
+    private boolean mIsJavascriptEnabled;
 
     public static FragmentGeneralWebView createInstance(String url) {
         FragmentGeneralWebView fragment = new FragmentGeneralWebView();
         Bundle args = new Bundle();
         args.putString("url", url);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public static FragmentGeneralWebView createInstanceJsEnabled(String url, boolean jsEnabled) {
+        FragmentGeneralWebView fragment = new FragmentGeneralWebView();
+        Bundle args = new Bundle();
+        args.putString("url", url);
+        args.putBoolean(ARG_JS_ENABLED, jsEnabled);
         fragment.setArguments(args);
         return fragment;
     }
@@ -43,11 +54,12 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null)
+        if (getArguments() != null) {
             url = getArguments().getString("url");
+            mIsJavascriptEnabled = getArguments().getBoolean(ARG_JS_ENABLED, true);
+        }
     }
 
-    @SuppressLint("SetJavaScriptEnabled")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -58,7 +70,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         progressBar = (ProgressBar) fragmentView.findViewById(R.id.progressbar);
         progressBar.setIndeterminate(true);
         WebViewGeneral.setOnKeyListener(this);
-        WebViewGeneral.getSettings().setJavaScriptEnabled(true);
+        WebViewGeneral.getSettings().setJavaScriptEnabled(this.mIsJavascriptEnabled);
         WebViewGeneral.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
         WebViewGeneral.setWebViewClient(new BaseWebViewClient(this));
         WebViewGeneral.setWebChromeClient(new WebChromeClient() {

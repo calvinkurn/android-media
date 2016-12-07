@@ -1,18 +1,20 @@
 package com.tokopedia.core.manage.general;
 
 import android.app.Activity;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
+
+import butterknife.BindView;
 
 public class ManageWebViewActivity extends BasePresenterActivity<ManageWebViewContract.Presenter>
         implements FragmentGeneralWebView.OnFragmentInteractionListener {
@@ -58,7 +60,16 @@ public class ManageWebViewActivity extends BasePresenterActivity<ManageWebViewCo
 
     @Override
     protected void setViewListener() {
-
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        if (toolbar != null) {
+            toolbar.removeAllViews();
+            setSupportActionBar(toolbar);
+            if (getSupportActionBar()!=null) {
+                getSupportActionBar().setTitle(mPageTitle);
+                getSupportActionBar().setHomeButtonEnabled(true);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            }
+        }
     }
 
     @Override
@@ -72,7 +83,11 @@ public class ManageWebViewActivity extends BasePresenterActivity<ManageWebViewCo
     }
 
     private void openWebView(String uri) {
-        FragmentGeneralWebView fragment = FragmentGeneralWebView.createInstance(uri);
+        boolean enableJs = true;
+        if (android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            enableJs = false;
+        }
+        FragmentGeneralWebView fragment = FragmentGeneralWebView.createInstanceJsEnabled(uri, enableJs);
         getFragmentManager().beginTransaction().add(R.id.container, fragment).commit();
     }
 
@@ -95,5 +110,16 @@ public class ManageWebViewActivity extends BasePresenterActivity<ManageWebViewCo
     @Override
     public void onWebViewProgressLoad() {
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
