@@ -1,15 +1,15 @@
 package com.tokopedia.core.var;
 
-import com.google.gson.annotations.SerializedName;
+import android.os.Parcelable;
 
-import org.parceler.Parcel;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Nisie on 10/06/15.
  * add parceler support by m.normansyah 31/10/2015
  */
-@Parcel
-public class ShopItem extends RecyclerViewItem{
+
+public class ShopItem extends RecyclerViewItem implements Parcelable {
 
 
     @SerializedName("shop_name")// 1
@@ -35,4 +35,48 @@ public class ShopItem extends RecyclerViewItem{
     public ShopItem() {
 
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(android.os.Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeString(this.name);
+        dest.writeString(this.iconUri);
+        dest.writeString(this.coverUri);
+        dest.writeString(this.location);
+        dest.writeString(this.isFav);
+        dest.writeString(this.id);
+        dest.writeString(this.adKey);
+        dest.writeString(this.adR);
+        dest.writeString(this.shopClickUrl);
+    }
+
+    protected ShopItem(android.os.Parcel in) {
+        super(in);
+        this.name = in.readString();
+        this.iconUri = in.readString();
+        this.coverUri = in.readString();
+        this.location = in.readString();
+        this.isFav = in.readString();
+        this.id = in.readString();
+        this.adKey = in.readString();
+        this.adR = in.readString();
+        this.shopClickUrl = in.readString();
+    }
+
+    public static final Creator<ShopItem> CREATOR = new Creator<ShopItem>() {
+        @Override
+        public ShopItem createFromParcel(android.os.Parcel source) {
+            return new ShopItem(source);
+        }
+
+        @Override
+        public ShopItem[] newArray(int size) {
+            return new ShopItem[size];
+        }
+    };
 }

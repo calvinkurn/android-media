@@ -158,7 +158,7 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
                 intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
                 intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
                 startActivity(intent);
-                getActivity().finish();
+//                getActivity().finish();
             }
         });
 
@@ -169,7 +169,7 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
                 intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.REGISTER);
                 intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
                 startActivity(intent);
-                getActivity().finish();
+//                getActivity().finish();
             }
         });
 

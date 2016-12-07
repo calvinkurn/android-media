@@ -16,7 +16,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.customwidget.SquareImageView;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.shopinfo.models.productmodel.List;
-import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.core.var.Badge;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -73,10 +73,10 @@ public class ProductMediumDelegate {
     }
 
     private void setBadge(VHolder holder, List item) {
-        java.util.List<ProductItem.Badge> badgeList = item.badges;
+        java.util.List<Badge> badgeList = item.badges;
         holder.containerBadge.removeAllViews();
         for (int i = 0; i < badgeList.size(); i++) {
-            ProductItem.Badge badge = badgeList.get(i);
+            Badge badge = badgeList.get(i);
             ImageView badgeImage = BadgeUtil.createDynamicBadge(holder.itemView.getContext());
             badgeImage.setVisibility(View.GONE);
             holder.containerBadge.addView(badgeImage);

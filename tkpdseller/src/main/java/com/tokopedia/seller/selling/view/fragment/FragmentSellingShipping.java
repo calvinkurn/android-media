@@ -265,21 +265,18 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
         return new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch ((item.getItemId())) {
-                    case R2.id.action_confirm:
-                        onConfirm(position);
-                        return true;
-
-                    case R2.id.action_cancel:
-                        onCancel(position);
-                        return true;
-
-                    case R2.id.action_detail_ship:
-                        onOpenDetail(position);
-                        return true;
-
-                    default:
-                        return false;
+                int i = (item.getItemId());
+                if (i == R.id.action_confirm) {
+                    onConfirm(position);
+                    return true;
+                } else if (i == R.id.action_cancel) {
+                    onCancel(position);
+                    return true;
+                } else if (i == R.id.action_detail_ship) {
+                    onOpenDetail(position);
+                    return true;
+                } else {
+                    return false;
                 }
             }
         };

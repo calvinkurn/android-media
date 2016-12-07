@@ -420,23 +420,22 @@ public class ManageShopAddress extends TActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()) {
-            case R2.id.add_address:
-                if (LocationNameList.size() < 3) {
-                    Intent intent = new Intent(ManageShopAddress.this, ShopAddressForm.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putBoolean("is_new", true);
-                    intent.putExtras(bundle);
-                    startActivityForResult(intent, 0);
-                } else {
-                    Toast.makeText(ManageShopAddress.this, getString(R.string.error_max_address), Toast.LENGTH_SHORT).show();
-                }
-                return true;
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.add_address) {
+            if (LocationNameList.size() < 3) {
+                Intent intent = new Intent(ManageShopAddress.this, ShopAddressForm.class);
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("is_new", true);
+                intent.putExtras(bundle);
+                startActivityForResult(intent, 0);
+            } else {
+                Toast.makeText(ManageShopAddress.this, getString(R.string.error_max_address), Toast.LENGTH_SHORT).show();
+            }
+            return true;
+        } else if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
     }
 

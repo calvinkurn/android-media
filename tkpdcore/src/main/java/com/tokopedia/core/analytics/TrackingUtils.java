@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
@@ -134,15 +135,6 @@ public class TrackingUtils extends TrackingConfig {
                         userId
                 );
     }
-    public static void eventGoldMerchantSuccess() {
-        Nishikino.init(MainApplication.getAppContext()).startAnalytics()
-                .sendButtonClick(
-                        AppEventTracking.Event.GMSUBSCRIBE,
-                        AppEventTracking.Category.GOLD_MERCHANT,
-                        AppEventTracking.Action.SUBSCRIBE,
-                        AppEventTracking.EventLabel.SUBSCRIBE_SUCCESS
-                );
-    }
 
     public static void eventLocaNotificationCallback(Intent intent){
         getLocaEngine().sendNotificationCallback(intent);
@@ -202,7 +194,7 @@ public class TrackingUtils extends TrackingConfig {
     }
 
     public static void eventGoldMerchantSuccess() {
-
+        Log.e("TrackingUtils", "please provide implementation");
     }
 }
 

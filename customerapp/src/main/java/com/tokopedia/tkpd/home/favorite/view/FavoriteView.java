@@ -13,7 +13,7 @@ import java.util.List;
  * modified by m.normansyah on 24/11/2015
  */
 public interface FavoriteView {
-    String TAG = "MNORMANSYAH";
+ String TAG = "Favorite";
     // why this is saved in here -
     // to show other developer what value needed for this class
     int LANDSCAPE = Configuration.ORIENTATION_LANDSCAPE;

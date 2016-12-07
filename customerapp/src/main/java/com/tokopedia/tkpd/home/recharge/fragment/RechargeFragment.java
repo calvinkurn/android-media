@@ -30,8 +30,8 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.tkpd.R;
-
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customView.RechargeEditText;
@@ -51,10 +51,14 @@ import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpd.home.fragment.FragmentIndexCategory;
 import com.tokopedia.tkpd.home.recharge.activity.RechargePaymentWebView;
 import com.tokopedia.tkpd.home.recharge.adapter.NominalAdapter;
+import com.tokopedia.tkpd.home.recharge.adapter.OperatorAdapter;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargePresenter;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargePresenterImpl;
+import com.tokopedia.tkpd.home.recharge.util.OperatorComparator;
+import com.tokopedia.tkpd.home.recharge.util.ProductComparator;
 import com.tokopedia.tkpd.home.recharge.view.RechargeView;
 
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -108,6 +112,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     ProgressBar rechargeProgressbar;
     @BindView(R.id.spnNominal)
     Spinner spnNominal;
+    @BindView(R.id.spnOperator)
+    Spinner spnOperator;
     @BindView(R.id.errorNominal)
     TextView errorNominal;
     @BindView(R.id.btn_buy)
@@ -120,20 +126,24 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     private boolean isAlreadyHavePhonePrefixInView;
     private Category category;
     private List<Product> productList;
+    private List<RechargeOperatorModelDBAttrs> operatorList;
     private Product selectedProduct;
+    private String selectedOperatorId;
     private LocalCacheHandler cacheHandlerPhoneBook;
     private LastOrder lastOrder;
     private int minLengthDefaultOperator = -1;
     private Bundle bundle;
     private Boolean showPrice = true;
+    private int currentPosition;
     private Unbinder unbinder;
     //endregion
 
-    public static RechargeFragment newInstance(Category category) {
+    public static RechargeFragment newInstance(Category category, int position) {
         RechargeFragment rechargeFragment = new RechargeFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_PARAM_CATEGORY, category);
         rechargeFragment.setArguments(bundle);
+        rechargeFragment.currentPosition = position;
         return rechargeFragment;
     }
 
@@ -197,19 +207,10 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         initListener();
         CategoryAttributes categoryAttributes = category.getAttributes();
         rechargePresenter.fetchRecentNumbers(category.getId());
-        renderDefaultView(categoryAttributes);
         hideProgressFetchData();
         setRechargeEditTextCallback();
         setRechargeEditTextTouchCallback();
-        if (!category.getAttributes().getValidatePrefix())
-            this.rechargePresenter.updateMinLenghAndOperator(category.getAttributes().getDefaultOperatorId());
-        if (!category.getAttributes().getClientNumber().getIsShown()) {
-            tlpLabelTextView.setVisibility(View.GONE);
-            rechargeEditText.setVisibility(View.GONE);
-            this.rechargePresenter.validateWithDefaultOperator(
-                    category.getId(),
-                    category.getAttributes().getDefaultOperatorId());
-        }
+        renderDefaultView(categoryAttributes);
         return view;
     }
 
@@ -276,7 +277,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         temp = validateTextPrefix(temp);
         if (!category.getAttributes().getValidatePrefix()) {
             if (s.length()>=minLengthDefaultOperator) {
-                this.rechargePresenter.validateWithDefaultOperator(
+                this.rechargePresenter.validateWithOperator(
                         category.getId(),
                         category.getAttributes().getDefaultOperatorId());
             } else {
@@ -317,6 +318,9 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
     @Override
     public void onButtonContactClicked() {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(getActivity(), "tabSelection");
+        localCacheHandler.putInt("rechargeSelectedPosition", currentPosition);
+        localCacheHandler.applyEditor();
         RechargeFragmentPermissionsDispatcher.doLaunchContactPickerWithCheck(RechargeFragment.this);
     }
 
@@ -344,6 +348,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
     @Override
     public void renderDataProducts(List<Product> productList) {
+        Collections.sort(productList, new ProductComparator());
         if (rechargeEditText.getText().length() > 0 || !category.getAttributes().getClientNumber().getIsShown()) {
             if (productList != null && productList.size() > 0) {
                 this.productList = productList;
@@ -369,6 +374,37 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             hideFormAndImageOperator();
             isAlreadyHavePhonePrefixInView = false;
         }
+    }
+
+    @Override
+    public void renderDataOperators(List<RechargeOperatorModelDBAttrs> operators) {
+        Collections.sort(operators, new OperatorComparator());
+        operatorList=operators;
+        spnOperator.setVisibility(View.VISIBLE);
+        OperatorAdapter adapterOperator = new OperatorAdapter(
+                getActivity(),
+                android.R.layout.simple_spinner_item,
+                operators
+        );
+        Log.d("alifa", " "+adapterOperator);
+        spnOperator.setAdapter(adapterOperator);
+        spnOperator.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                rechargeEditText.setText("");
+                selectedOperatorId = Integer.toString(operatorList.get(i).operatorId);
+                if (!category.getAttributes().getClientNumber().getIsShown()) {
+                    setUpForNotUsingTextEdit();
+                } else {
+                    rechargePresenter.updateMinLenghAndOperator(selectedOperatorId);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     private void setSpnNominalSelectionBasedLastOrder(List<Product> productList) {
@@ -475,7 +511,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         ClientNumber clientNumber = categoryAttributes.getClientNumber();
         tlpLabelTextView.setText(clientNumber.getText());
         tlpLabelTextView.setHint(clientNumber.getPlaceholder());
-
         buyWithCreditCheckbox.setVisibility(
                 categoryAttributes.getInstantCheckoutAvailable() ? View.VISIBLE : View.INVISIBLE
         );
@@ -484,6 +519,22 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         setPhoneBookVisibility();
 
 
+        if (!category.getAttributes().getValidatePrefix()) {
+            selectedOperatorId = category.getAttributes().getDefaultOperatorId();
+            this.rechargePresenter.updateMinLenghAndOperator(selectedOperatorId);
+            if (!category.getAttributes().getClientNumber().getIsShown()) {
+                setUpForNotUsingTextEdit();
+            }
+        }
+
+    }
+
+    private void setUpForNotUsingTextEdit() {
+        tlpLabelTextView.setVisibility(View.GONE);
+        rechargeEditText.setVisibility(View.GONE);
+        this.rechargePresenter.validateWithOperator(
+                category.getId(),
+                selectedOperatorId);
     }
 
     private void setTextToEditTextOrSetVisibilityForm() {
@@ -509,7 +560,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
     private void renderLastOrder() {
         lastOrder = rechargePresenter.getLastOrderFromCache();
-        if (lastOrder != null) {
+        if (lastOrder != null && lastOrder.getData() != null && category != null) {
             if (lastOrder.getData().getAttributes().getCategory_id() == category.getId()) {
                 rechargeEditText.setText(lastOrder.getData().getAttributes().getClient_number());
             }
@@ -606,7 +657,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     @NeedsPermission(Manifest.permission.READ_CONTACTS)
     public void doLaunchContactPicker() {
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(getActivity(), "tabSelection");
-        localCacheHandler.putInt("rechargeSelectedPosition", category.getId());
+        localCacheHandler.putInt("rechargeSelectedPosition", currentPosition);
         localCacheHandler.applyEditor();
         Intent contactPickerIntent = new Intent(
                 Intent.ACTION_PICK,
@@ -687,7 +738,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     //endregion
 
     private void gotoLogin() {
-        Intent intent = new Intent(getActivity(), Login.class);
+        Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
         intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
         rechargePresenter.saveLastInputToCache(
                 LAST_INPUT_KEY + category.getId(),

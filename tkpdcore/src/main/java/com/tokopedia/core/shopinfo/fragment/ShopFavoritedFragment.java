@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.tkpd.library.ui.utilities.NoResultHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
@@ -36,6 +37,7 @@ public class ShopFavoritedFragment extends BasePresenterFragment<ShopFavoritedFr
     RefreshHandler refreshHandler;
     LinearLayoutManager linearLayoutManager;
     Snackbar snackbar;
+    private NoResultHandler NoResult;
 
     public static ShopFavoritedFragment createInstance(String shopId) {
         ShopFavoritedFragment fragment = new ShopFavoritedFragment();
@@ -110,6 +112,8 @@ public class ShopFavoritedFragment extends BasePresenterFragment<ShopFavoritedFr
     protected void initView(View view) {
         this.refreshHandler = new RefreshHandler(getActivity(), view, onRefresh());
         snackbar = SnackbarManager.make(getActivity(), "", Snackbar.LENGTH_INDEFINITE);
+        NoResult = new NoResultHandler(getActivity().getWindow().getDecorView().getRootView());
+        NoResult.removeMessage();
     }
 
     private RecyclerView.OnScrollListener onScroll() {
@@ -260,6 +264,12 @@ public class ShopFavoritedFragment extends BasePresenterFragment<ShopFavoritedFr
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void showEmpty() {
+        NoResult.showMessage();
+        setActionsEnabled(false);
     }
 
 

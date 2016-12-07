@@ -14,6 +14,8 @@ import com.tokopedia.core.discovery.model.Breadcrumb;
 import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.var.Badge;
+import com.tokopedia.core.var.Label;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.TkpdState;
 
@@ -211,10 +213,10 @@ public class BrowseProductModel {
         public String productPreOder;
 
         @SerializedName("labels")
-        public List<ProductItem.Label> labels;
+        public List<Label> labels;
 
         @SerializedName("badges")
-        public List<ProductItem.Badge> badges;
+        public List<Badge> badges;
 
         @Override
         public ProductItem from(Products data) {

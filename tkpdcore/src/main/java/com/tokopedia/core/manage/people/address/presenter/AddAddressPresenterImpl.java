@@ -190,6 +190,11 @@ public class AddAddressPresenterImpl implements AddAddressPresenter, ManageAddre
         DataManagerImpl.getDataManager().getListDistrict(viewListener.getActivity(), getDataReceiver(GET_LIST_DISTRICT), city.getCityId());
     }
 
+    @Override
+    public void onDestroyView() {
+        networkInteractor.unsubscribe();
+    }
+
 
     @Override
     public void getListCity(Province province) {

@@ -8,10 +8,13 @@
 package com.tokopedia.core.network.entity.topads;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by ricoharisin on 6/9/16.
  */
-public class TopAds {
+public class TopAds implements Parcelable {
 
     private String id;
     private String adRefKey;
@@ -88,4 +91,46 @@ public class TopAds {
         topAds.setShopClickUrl(data.shopClickUrl);
         return topAds;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
+        dest.writeString(this.adRefKey);
+        dest.writeString(this.redirect);
+        dest.writeString(this.stickerId);
+        dest.writeString(this.stickerImage);
+        dest.writeString(this.productClickUrl);
+        dest.writeString(this.shopClickUrl);
+    }
+
+    public TopAds() {
+    }
+
+    protected TopAds(Parcel in) {
+        this.id = in.readString();
+        this.adRefKey = in.readString();
+        this.redirect = in.readString();
+        this.stickerId = in.readString();
+        this.stickerImage = in.readString();
+        this.productClickUrl = in.readString();
+        this.shopClickUrl = in.readString();
+    }
+
+    public static final Parcelable.Creator<TopAds> CREATOR = new Parcelable.Creator<TopAds>() {
+        @Override
+        public TopAds createFromParcel(Parcel source) {
+            return new TopAds(source);
+        }
+
+        @Override
+        public TopAds[] newArray(int size) {
+            return new TopAds[size];
+        }
+    };
 }
