@@ -162,7 +162,7 @@ public class LoginFragment extends Fragment implements LoginView {
             if(temp.equals(DownloadService.FACEBOOK)){
                 onFacebookClick();
             }else if(temp.equals(DownloadService.GOOGLE)){
-                onGoogleClick();
+                LoginFragmentPermissionsDispatcher.onGooglePlusClickedWithCheck(LoginFragment.this);
             }else if(temp.equals(DownloadService.WEBVIEW)){
                 String url = getArguments().getString("url");
                 String name = getArguments().getString("name");
@@ -358,11 +358,6 @@ public class LoginFragment extends Fragment implements LoginView {
 
     public void onFacebookClick() {
         login.loginFacebook();
-    }
-
-    public void onGoogleClick() {
-        showProgress(true);
-        ((GoogleActivity) getActivity()).onSignInClicked();
     }
 
     @Override
@@ -576,7 +571,7 @@ public class LoginFragment extends Fragment implements LoginView {
                     tv.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            onGoogleClick();
+                            LoginFragmentPermissionsDispatcher.onGooglePlusClickedWithCheck(LoginFragment.this);
                         }
                     });
                 } else {
