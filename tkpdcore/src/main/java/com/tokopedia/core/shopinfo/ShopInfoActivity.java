@@ -503,9 +503,9 @@ public class ShopInfoActivity extends TActivity {
             holder.infoShop.setBackgroundResource(0);
         } else {
             holder.goldShop.setVisibility(View.VISIBLE);
+            ImageHandler.loadImageCover2(holder.banner, shopModel.info.shopCover);
             holder.infoShop.setBackgroundResource(R.drawable.cover_shader);
         }
-        ImageHandler.loadImageCover2(holder.banner, shopModel.info.shopCover);
     }
 
     private void showOfficialCover() {
