@@ -5,6 +5,7 @@ package com.tokopedia.core.shopinfo.fragment;
  */
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
@@ -26,6 +27,7 @@ import android.widget.ProgressBar;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.fragment.FragmentBannerWebView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
@@ -168,9 +170,14 @@ public class OfficialShopHomeFragment extends Fragment {
 
     private boolean overrideUrl(String url) {
         Uri uri = Uri.parse(url);
-        String etalaseId = uri.getLastPathSegment();
-        Log.d(TAG, "URL "+url+" etalase id "+etalaseId+" host "+uri.getHost()+" scheme "+uri.getScheme());
-        ((ShopInfoActivity) getActivity()).switchTab(etalaseId);
+        if(uri.getScheme().equals("tokopedia")) {
+            String etalaseId = uri.getLastPathSegment();
+            ((ShopInfoActivity) getActivity()).switchTab(etalaseId);
+        } else if(uri.getScheme().startsWith("http")) {
+            Intent intent = new Intent(getActivity(), BannerWebView.class);
+            intent.putExtra("url", url);
+            startActivity(intent);
+        }
         return true;
     }
 }
