@@ -452,8 +452,10 @@ public class ShopInfoActivity extends TActivity {
         holder.collapsingToolbarLayout.setTitle(" ");
         if(shopModel.info.shopIsOfficial==1){
             showOfficialCover();
+            holder.indicator.setTabMode(TabLayout.MODE_SCROLLABLE);
         } else {
             showGoldCover();
+            holder.indicator.setTabMode(TabLayout.MODE_FIXED);
         }
         showShopAction();
         setShopAlreadyFavorite();
