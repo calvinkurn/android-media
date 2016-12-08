@@ -18,7 +18,6 @@ import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.appindexing.Action;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CurrencyFormatHelper;
-import com.tokopedia.core.ManageShop;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -46,18 +45,19 @@ import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.reputationproduct.ReputationProduct;
+import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
-import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.talk.talkproduct.activity.TalkProductActivity;
 import com.tokopedia.core.util.AppIndexHandler;
 import com.tokopedia.core.util.DeepLinkUtils;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
@@ -455,12 +455,17 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     public void prepareOptionMenu(Menu menu, Context context, ProductDetailData productData) {
         MenuItem wishList = menu.findItem(R.id.action_wishlist);
         MenuItem report = menu.findItem(R.id.action_report);
-
+        boolean isSellerApp = GlobalConfig.isSellerApp();
         if (productData != null) {
             wishList.setIcon(getWishListIcon(productData.getInfo().getProductAlreadyWishlist()));
             if (!productData.getShopInfo().getShopId().equals(SessionHandler.getShopID(context))) {
-                wishList.setVisible(true);
-                wishList.setEnabled(true);
+                if (isSellerApp) {
+                    wishList.setVisible(false);
+                    wishList.setEnabled(false);
+                } else {
+                    wishList.setVisible(true);
+                    wishList.setEnabled(true);
+                }
                 report.setVisible(true);
                 report.setEnabled(true);
             } else {
