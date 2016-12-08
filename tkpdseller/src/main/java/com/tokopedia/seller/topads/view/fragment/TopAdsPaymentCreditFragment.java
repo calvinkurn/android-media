@@ -52,6 +52,7 @@ public class TopAdsPaymentCreditFragment extends TkpdFragment {
     }
 
     private void loadWeb() {
+        webView.getSettings().setJavaScriptEnabled(true);
         webView.loadUrl(URLGenerator.generateURLSessionLogin(Uri.encode(dataCredit.getProductUrl()), getActivity()));
         webView.setWebViewClient(new WebViewClient() {
             @Override

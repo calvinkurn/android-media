@@ -43,6 +43,15 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
         super.initView(view);
         updateInfoText(productGroupSummaryLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_groups)));
         updateInfoText(productItemSummaryLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_items)));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadData();
+    }
+
+    private void loadData() {
         presenter.populateSummary(startDate, endDate);
         presenter.populateDeposit();
         presenter.populateShopInfo();
