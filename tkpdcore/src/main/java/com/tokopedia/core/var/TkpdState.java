@@ -73,7 +73,9 @@ public class TkpdState {
         public static final int LOGOUT = 43;
         public static final int SELLER_INDEX_HOME = 44;
         public static final int REGISTER_INITIAL = 45;
-	}
+        public static final int SELLER_GM_SUBSCRIBE = 46;
+        public static final int SELLER_GM_SUBSCRIBE_EXTEND = 47;
+    }
 
     public class Application {
         public static final int ACTIVITY = 1;
