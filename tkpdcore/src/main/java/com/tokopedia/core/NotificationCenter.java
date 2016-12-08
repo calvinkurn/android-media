@@ -24,11 +24,14 @@ import com.tokopedia.core.inboxmessage.fragment.InboxMessageFragment;
 import com.tokopedia.core.inboxreputation.fragment.InboxReputationFragment;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.talk.inboxtalk.fragment.InboxTalkFragment;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
@@ -392,4 +395,16 @@ public class NotificationCenter extends MultiPaneActivity implements Notificatio
         createDetailView(page);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (isTaskRoot() && GlobalConfig.isSellerApp()) {
+            startActivity(SellerAppRouter.getSellerHomeActivity(this));
+            finish();
+        } else if (isTaskRoot()) {
+            startActivity(HomeRouter.getHomeActivity(this));
+            finish();
+        }
+        super.onBackPressed();
+
+    }
 }
