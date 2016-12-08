@@ -1799,6 +1799,8 @@ di Tokopedia Sekarang!</string>
     <string name="prompt_delete_talk">Apakah anda  yakin ingin menghapus diskusi ini?</string>
     <string name="product_image">Product Image</string>
     <string name="title_delete_discussion">Hapus diskusi</string>
+    <string name="buyer_request_cancel">Pembeli mengajukan pembatalan pesanan</string>
+    <string name="buyer_request_cancel_reason">Pembeli mengajukan pembatalan pesanan dengan alasan</string>
 
     <!-- BEGIN SELLER ON BOARDING RELATED STRING RESOURCE -->
     <string name="seller_onb_1_title">Manage Dashboard</string>

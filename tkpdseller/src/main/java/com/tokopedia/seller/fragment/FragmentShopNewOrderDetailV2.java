@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -209,6 +210,9 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         public TextView pickupLocationDetail;
         public TextView deliveryLocationDetail;
         public LinearLayout wrapperInsurance;
+        View wrapperBuyerRequestCancel;
+        TextView buyerRequestCancel;
+        TextView dateRequestCancel;
     }
 
     public static class Model {
@@ -312,6 +316,9 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         holder.pickupLocationDetail = (TextView) rootView.findViewById(R.id.pickup_detail_location);
         holder.deliveryLocationDetail = (TextView) rootView.findViewById(R.id.destination_detail_location);
         holder.wrapperInsurance = (LinearLayout) rootView.findViewById(R.id.wrapper_insurance);
+        holder.wrapperBuyerRequestCancel = (View) rootView.findViewById(R.id.wrapper_buyer_request_cancel);
+        holder.buyerRequestCancel = (TextView) rootView.findViewById(R.id.buyer_request_cancel);
+        holder.dateRequestCancel = (TextView) rootView.findViewById(R.id.date_buyer_request_cancel);
     }
 
     private void setViewDataV4() {
@@ -330,6 +337,17 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         } else {
             holder.SenderForm.setVisibility(View.GONE);
         }
+
+        if(orderDetail.getDetailCancelRequest() != null && orderDetail.getDetailCancelRequest().getCancelRequest() == 1){
+            holder.wrapperBuyerRequestCancel.setVisibility(View.VISIBLE);
+//            if(Build.VERSION.SDK_INT >= 24) {
+//                holder.buyerRequestCancel.setText("\"" + Html.fromHtml(orderDetail.getDetailCancelRequest().getReason(), Html.) + "\"");
+//            }else{
+                holder.buyerRequestCancel.setText("\"" + Html.fromHtml(orderDetail.getDetailCancelRequest().getReason()) + "\"");
+//            }
+            holder.dateRequestCancel.setText(orderDetail.getDetailCancelRequest().getReasonTime());
+        }
+
         holder.BuyerName.setText(Html.fromHtml(customer.getCustomerName()));
         userId = customer.getCustomerId();
         holder.AdditionalCost.setText(orderDetail.getDetailAdditionalFeeIdr());

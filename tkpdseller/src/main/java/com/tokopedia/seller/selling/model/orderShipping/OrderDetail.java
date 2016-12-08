@@ -97,6 +97,27 @@ public class OrderDetail {
     @SerializedName("detail_order_status")
     @Expose
     Integer detailOrderStatus;
+    @SerializedName("detail_cancel_request")
+    @Expose
+    private DetailCancelRequest detailCancelRequest;
+
+    /**
+     *
+     * @return
+     * The detailCancelRequest
+     */
+    public DetailCancelRequest getDetailCancelRequest() {
+        return detailCancelRequest;
+    }
+
+    /**
+     *
+     * @param detailCancelRequest
+     * The detail_cancel_request
+     */
+    public void setDetailCancelRequest(DetailCancelRequest detailCancelRequest) {
+        this.detailCancelRequest = detailCancelRequest;
+    }
 
     /**
      * 
