@@ -342,7 +342,6 @@
         <activity
             android:name="com.tokopedia.core.inboxmessage.activity.InboxMessageActivity"
             android:label="@string/title_inbox_message"
-            android:parentActivityName="com.tokopedia.core.home.ParentIndexHome"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"
             tools:ignore="UnusedAttribute" />
