@@ -16,13 +16,12 @@ import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 
 import butterknife.BindView;
 
-public class ManageWebViewActivity extends BasePresenterActivity<ManageWebViewContract.Presenter>
+public class ManageWebViewActivity extends BasePresenterActivity
         implements FragmentGeneralWebView.OnFragmentInteractionListener {
 
     private static final String ARG_TITLE = "ARG_TITLE";
     private Uri mUri;
     private String mPageTitle;
-    private ManageWebViewPresenter mPresenter;
 
     public static Intent getCallingIntent(Activity activity, String url, String title) {
         Bundle bundle = new Bundle();
@@ -45,7 +44,7 @@ public class ManageWebViewActivity extends BasePresenterActivity<ManageWebViewCo
 
     @Override
     protected void initialPresenter() {
-        mPresenter = new ManageWebViewPresenter();
+
     }
 
     @Override
@@ -64,7 +63,7 @@ public class ManageWebViewActivity extends BasePresenterActivity<ManageWebViewCo
         if (toolbar != null) {
             toolbar.removeAllViews();
             setSupportActionBar(toolbar);
-            if (getSupportActionBar()!=null) {
+            if (getSupportActionBar() != null) {
                 getSupportActionBar().setTitle(mPageTitle);
                 getSupportActionBar().setHomeButtonEnabled(true);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -83,11 +82,7 @@ public class ManageWebViewActivity extends BasePresenterActivity<ManageWebViewCo
     }
 
     private void openWebView(String uri) {
-        boolean enableJs = true;
-        if (android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            enableJs = false;
-        }
-        FragmentGeneralWebView fragment = FragmentGeneralWebView.createInstanceJsEnabled(uri, enableJs);
+        FragmentGeneralWebView fragment = FragmentGeneralWebView.createInstance(uri);
         getFragmentManager().beginTransaction().add(R.id.container, fragment).commit();
     }
 
