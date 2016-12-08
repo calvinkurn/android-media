@@ -12,6 +12,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.product.listener.ProductDetailView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 
 import butterknife.BindView;
@@ -67,7 +68,7 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
         setOnClickListener(new ClickBuy(data));
         if (data.getShopInfo().getShopIsOwner() == 1 || data.getShopInfo().getShopStatus() != 1
                 || (data.getInfo().getProductStatus().equals("3") & data.getShopInfo().getShopStatus() == 1)
-                || (data.getShopInfo().getShopIsAllowManage() == 1)) {
+                || (data.getShopInfo().getShopIsAllowManage() == 1 || GlobalConfig.isSellerApp())) {
             setVisibility(GONE);
         } else {
             setVisibility(VISIBLE);
