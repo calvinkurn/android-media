@@ -1,15 +1,17 @@
-package com.tokopedia.transaction.cart.fragment;
+package com.tokopedia.transaction.cart.activity;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.MenuItem;
 import android.view.View;
 import android.webkit.ConsoleMessage;
 import android.webkit.SslErrorHandler;
@@ -20,13 +22,20 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
-import com.tokopedia.core.app.BasePresenterFragment;
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.cart.listener.ITopPayView;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
+import com.tokopedia.transaction.cart.receivers.CartBroadcastReceiver;
+import com.tokopedia.transaction.cart.services.CartIntentService;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -34,14 +43,13 @@ import java.net.URLDecoder;
 import butterknife.BindView;
 
 /**
- * @author anggaprasetiyo on 11/29/16.
+ * @author anggaprasetiyo on 12/8/16.
  */
 
-public class TopPayFragment extends BasePresenterFragment implements View.OnKeyListener {
-    private static final String TAG = TopPayFragment.class.getSimpleName();
-    private static final String EXTRA_ARGS_DYNAMIC_PAYMENT_DATA = "EXTRA_ARGS_DYNAMIC_PAYMENT_DATA";
-    private static final String MESSAGE_PAYMENT_SUCCESS = "Pembayaran Berhasil";
-    private static final String MESSAGE_PAYMENT_CANCELED = "Proses pembayaran dibatalkan";
+public class TopPayActivity extends BasePresenterActivity implements ITopPayView,
+        CartBroadcastReceiver.ActionTopPayThanksListener, View.OnKeyListener {
+    private static final String EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA";
+    private static final String TAG = TopPayActivity.class.getSimpleName();
     private static final String MESSAGE_PAYMENT_FAILED = "Proses pembayaran gagal, coba kembali";
     private static final String KEY_QUERY_PAYMENT_ID = "id";
     private static final String KEY_QUERY_LD = "ld";
@@ -49,47 +57,31 @@ public class TopPayFragment extends BasePresenterFragment implements View.OnKeyL
     private static final String CONTAINS_ACCOUNT_URL = "accounts.tokopedia.com";
     private static final String CONTAINS_LOGIN_URL = "login.pl";
     private static final long FORCE_TIMEOUT = 60000L;
+    public static final int REQUEST_CODE = 1005;
 
     @BindView(R2.id.webview)
     WebView webView;
     @BindView(R2.id.progressbar)
     ProgressBar progressBar;
 
-    private TopPayParameterData topPayParameterData;
-    private ActionTopPay actionListener;
+    private TkpdProgressDialog progressDialogNormal;
     private String paymentId;
+    private TopPayParameterData topPayParameterData;
 
-    public static TopPayFragment newInstance(TopPayParameterData data) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(EXTRA_ARGS_DYNAMIC_PAYMENT_DATA, data);
-        TopPayFragment fragment = new TopPayFragment();
-        fragment.setArguments(bundle);
-        return fragment;
+    public static Intent createInstance(Context context, TopPayParameterData parameterData) {
+        Intent intent = new Intent(context, TopPayActivity.class);
+        intent.putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, parameterData);
+        return intent;
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return false;
-    }
-
-    @Override
-    protected void onFirstTimeLaunched() {
+    protected void setupURIPass(Uri data) {
 
     }
 
     @Override
-    public void onSaveState(Bundle state) {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return true;
+    protected void setupBundlePass(Bundle extras) {
+        topPayParameterData = extras.getParcelable(EXTRA_PARAMETER_TOP_PAY_DATA);
     }
 
     @Override
@@ -98,41 +90,32 @@ public class TopPayFragment extends BasePresenterFragment implements View.OnKeyL
     }
 
     @Override
-    protected void initialListener(Activity activity) {
-        actionListener = (ActionTopPay) activity;
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-        this.topPayParameterData = arguments.getParcelable(EXTRA_ARGS_DYNAMIC_PAYMENT_DATA);
-    }
-
-    @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_top_pay_tx_module;
-    }
-
-    @Override
-    protected void initView(View view) {
-
+    protected int getLayoutId() {
+        return R.layout.activity_top_pay;
     }
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
-    protected void setViewListener() {
+    protected void initView() {
         progressBar.setIndeterminate(true);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setDomStorageEnabled(true);
         webView.getSettings().setBuiltInZoomControls(false);
         webView.getSettings().setDisplayZoomControls(true);
+        webView.getSettings().setAppCacheEnabled(true);
         webView.setWebViewClient(new TopPayWebViewClient());
         webView.setWebChromeClient(new TopPayWebViewChromeClient());
         webView.setOnKeyListener(this);
     }
 
     @Override
-    protected void initialVar() {
+    protected void setViewListener() {
 
+    }
+
+    @Override
+    protected void initVar() {
+        progressDialogNormal = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
     }
 
     @Override
@@ -145,8 +128,9 @@ public class TopPayFragment extends BasePresenterFragment implements View.OnKeyL
         }
     }
 
-    public String getPaymentId() {
-        return paymentId;
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_CART_SUMMARY_CHECKOUT;
     }
 
     @Override
@@ -154,10 +138,10 @@ public class TopPayFragment extends BasePresenterFragment implements View.OnKeyL
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             switch (keyCode) {
                 case KeyEvent.KEYCODE_BACK:
-                    if (paymentId != null && !paymentId.isEmpty()) {
-                        actionListener.onTopPaySuccess(paymentId, MESSAGE_PAYMENT_SUCCESS);
+                    if (webView.canGoBack()) {
+                        webView.goBack();
                     } else {
-                        actionListener.onTopPayCanceled(MESSAGE_PAYMENT_CANCELED);
+                        super.onBackPressed();
                     }
                     return true;
             }
@@ -166,22 +150,83 @@ public class TopPayFragment extends BasePresenterFragment implements View.OnKeyL
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                if (paymentId != null && !paymentId.isEmpty()) {
-                    actionListener.onTopPaySuccess(paymentId, MESSAGE_PAYMENT_SUCCESS);
-                } else {
-                    actionListener.onTopPayCanceled(MESSAGE_PAYMENT_CANCELED);
-                }
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
+    public void navigateToActivityRequest(Intent intent, int requestCode) {
+        startActivityForResult(intent, requestCode);
     }
 
-    public void testMethod() {
-        startActivity(TransactionPurchaseRouter.createIntentTxSummary(getActivity()));
-        getActivity().finish();
+    @Override
+    public void navigateToActivity(Intent intent) {
+        startActivity(intent);
+    }
+
+    @Override
+    public void showProgressLoading() {
+        progressDialogNormal.setCancelable(false);
+        progressDialogNormal.showDialog();
+    }
+
+    @Override
+    public void hideProgressLoading() {
+        progressDialogNormal.dismiss();
+    }
+
+    @Override
+    public void showToastMessage(String message) {
+        View view = findViewById(android.R.id.content);
+        if (view != null) Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show();
+        else Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showDialog(Dialog dialog) {
+        if (!dialog.isShowing()) dialog.show();
+    }
+
+    @Override
+    public void dismissDialog(Dialog dialog) {
+        if (dialog.isShowing()) dialog.dismiss();
+    }
+
+    @Override
+    public void closeView() {
+        this.finish();
+    }
+
+    @Override
+    public void onGetThanksTopPaySuccess(String message) {
+        hideProgressLoading();
+        showToastMessage(message);
+        navigateToActivity(TransactionPurchaseRouter.createIntentTxSummary(this));
+        closeView();
+    }
+
+    @Override
+    public void onGetThanksTopPayFailed(String message) {
+        hideProgressLoading();
+        NetworkErrorHelper.createSnackbarWithAction(this, message,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        closeView();
+                    }
+                });
+    }
+
+    @Override
+    public void onGetThanksTopPayNoConnection(String message) {
+        hideProgressLoading();
+        NetworkErrorHelper.showDialog(this,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        actionTopPaySucess(paymentId);
+                    }
+                });
+    }
+
+    @Override
+    public void onGetThanksTopPayOngoing(String message) {
+        showProgressLoading();
     }
 
     private class TopPayWebViewClient extends WebViewClient {
@@ -197,7 +242,7 @@ public class TopPayFragment extends BasePresenterFragment implements View.OnKeyL
                 String id = uri.getQueryParameter(KEY_QUERY_PAYMENT_ID);
                 view.stopLoading();
                 paymentId = id;
-                actionListener.onTopPaySuccess(id, MESSAGE_PAYMENT_SUCCESS);
+                actionTopPaySucess(paymentId);
                 return true;
             } else if (url.contains(CONTAINS_ACCOUNT_URL)) {
                 Uri uriMain = Uri.parse(url);
@@ -213,11 +258,11 @@ public class TopPayFragment extends BasePresenterFragment implements View.OnKeyL
                 String id = uri.getQueryParameter(KEY_QUERY_PAYMENT_ID);
                 view.stopLoading();
                 paymentId = id;
-                actionListener.onTopPaySuccess(id, MESSAGE_PAYMENT_SUCCESS);
+                actionTopPaySucess(paymentId);
                 return true;
             } else if (url.contains(CONTAINS_LOGIN_URL)) {
                 view.stopLoading();
-                actionListener.onTopPayFailed(MESSAGE_PAYMENT_FAILED);
+                actionTopPayFailed(MESSAGE_PAYMENT_FAILED);
                 return true;
             } else {
                 return super.shouldOverrideUrlLoading(view, url);
@@ -262,7 +307,7 @@ public class TopPayFragment extends BasePresenterFragment implements View.OnKeyL
                         e.printStackTrace();
                     }
                     if (timeout) {
-                        getActivity().runOnUiThread(new Runnable() {
+                        runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 showError(view, WebViewClient.ERROR_TIMEOUT);
@@ -275,7 +320,7 @@ public class TopPayFragment extends BasePresenterFragment implements View.OnKeyL
         }
 
         private void showError(WebView view, int errorCode) {
-            String message = "";
+            String message;
             switch (errorCode) {
                 case WebViewClient.ERROR_TIMEOUT:
                     message = ErrorNetMessage.MESSAGE_ERROR_TIMEOUT;
@@ -285,8 +330,25 @@ public class TopPayFragment extends BasePresenterFragment implements View.OnKeyL
                     break;
             }
             view.stopLoading();
-            if (actionListener != null) actionListener.onTopPayFailed(message);
+            actionTopPayFailed(message);
         }
+    }
+
+    private void actionTopPayFailed(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void actionTopPaySucess(String id) {
+        if (id == null) {
+            onGetThanksTopPayFailed("Pembayaran gagal, Mohon coba kembali");
+            return;
+        }
+        Intent intent = new Intent(Intent.ACTION_SYNC, null, this,
+                CartIntentService.class);
+        intent.putExtra(CartIntentService.EXTRA_ACTION,
+                CartIntentService.SERVICE_ACTION_GET_THANKS_TOP_PAY);
+        intent.putExtra(CartIntentService.EXTRA_PAYMENT_ID, id);
+        startService(intent);
     }
 
     private class TopPayWebViewChromeClient extends WebChromeClient {
@@ -298,6 +360,7 @@ public class TopPayFragment extends BasePresenterFragment implements View.OnKeyL
             super.onProgressChanged(view, newProgress);
         }
 
+        @SuppressWarnings("deprecation")
         public void onConsoleMessage(String message, int lineNumber, String sourceID) {
             Log.d(TAG, message + " -- From line " + lineNumber + " of " + sourceID);
         }
@@ -308,11 +371,14 @@ public class TopPayFragment extends BasePresenterFragment implements View.OnKeyL
         }
     }
 
-    public interface ActionTopPay {
-        void onTopPaySuccess(String paymentId, String message);
-
-        void onTopPayFailed(String message);
-
-        void onTopPayCanceled(String message);
+    @Override
+    public void onBackPressed() {
+        if (webView.canGoBack()) {
+            webView.goBack();
+        } else {
+            finish();
+        }
     }
+
+
 }

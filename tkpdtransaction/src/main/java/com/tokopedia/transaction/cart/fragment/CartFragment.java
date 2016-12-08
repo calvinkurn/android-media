@@ -35,6 +35,7 @@ import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.activity.ShipmentCartActivity;
+import com.tokopedia.transaction.cart.activity.TopPayActivity;
 import com.tokopedia.transaction.cart.adapter.CartItemAdapter;
 import com.tokopedia.transaction.cart.listener.ICartActionFragment;
 import com.tokopedia.transaction.cart.listener.ICartView;
@@ -194,7 +195,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     protected void initialVar() {
         cartBroadcastReceiver = new CartBroadcastReceiver(this);
         getActivity().registerReceiver(
-                cartBroadcastReceiver, new IntentFilter(CartBroadcastReceiver.ACTION_TOP_PAY)
+                cartBroadcastReceiver, new IntentFilter(CartBroadcastReceiver.ACTION_GET_PARAMETER_TOP_PAY)
         );
     }
 
@@ -514,7 +515,10 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     public void onGetParameterTopPaySuccess(TopPayParameterData data) {
         hideProgressLoading();
         showToastMessage("berhasil!!!!");
-        actionListener.replaceFragmentWithBackStack(TopPayFragment.newInstance(data));
+        navigateToActivityRequest(
+                TopPayActivity.createInstance(getActivity(), data), TopPayActivity.REQUEST_CODE
+        );
+        //  actionListener.replaceFragmentWithBackStack(TopPayFragment.newInstance(data));
     }
 
     @Override
@@ -582,5 +586,11 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         };
     }
 
-
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == TopPayActivity.REQUEST_CODE) {
+            presenter.processGetCartData(getActivity());
+        }
+    }
 }
