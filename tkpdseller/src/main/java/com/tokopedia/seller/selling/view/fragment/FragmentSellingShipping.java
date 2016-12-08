@@ -642,4 +642,14 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
         });
         snackbar.show();
     }
+
+    @Override
+    public void showFab() {
+        fab.show();
+    }
+
+    @Override
+    public void hideFab() {
+        fab.hide();
+    }
 }

@@ -440,6 +440,16 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
     }
 
     @Override
+    public void showFab() {
+        fab.show();
+    }
+
+    @Override
+    public void hideFab() {
+        fab.hide();
+    }
+
+    @Override
     public void onMessageError(int type, Object... data) {
 
     }

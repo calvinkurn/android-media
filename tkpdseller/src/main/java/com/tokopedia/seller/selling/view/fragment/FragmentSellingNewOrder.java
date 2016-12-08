@@ -335,6 +335,16 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
         return page;
     }
 
+    @Override
+    public void hideFab(){
+        fab.hide();
+    }
+
+    @Override
+    public void showFab(){
+        fab.show();
+    }
+
     private SearchView.OnQueryTextListener onSearchQuery() {
         return new SearchView.OnQueryTextListener() {
             @Override
