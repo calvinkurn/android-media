@@ -346,11 +346,10 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         this.newShopView.renderData(successResult);
         this.buttonShareView.renderData(successResult);
         this.interactionListener.onProductDetailLoaded(successResult);
-        this.presenter.sendAnalytics(context, successResult);
+        this.presenter.sendAnalytics(successResult);
         this.presenter.sendAppsFlyerData(context, successResult, AFInAppEventType.CONTENT_VIEW);
         this.presenter.startIndexingApp(appIndexHandler, successResult);
         this.refreshMenu();
-
     }
 
     @Override
