@@ -3,6 +3,7 @@ package com.tokopedia.core.drawer.var;
 import android.content.Context;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdCache;
 
 
@@ -80,7 +81,7 @@ public class NotificationItem {
         CacheNotif.putInt("inc_notif", inc_notif);
         CacheNotif.putInt("total_notif", total_notif);
         CacheNotif.putInt(TkpdCache.Key.TOTAL_CART, total_cart);
-        if(total_cart > 0){
+        if (total_cart > 0) {
             CacheNotif.putInt(TkpdCache.Key.IS_HAS_CART, 1);
         }
         CacheNotif.putLong("expiry", System.currentTimeMillis() / 1000);
@@ -93,7 +94,11 @@ public class NotificationItem {
     }
 
     public int getTotalNotif() {
-        return CacheNotif.getInt("total_notif");
+        if (!GlobalConfig.isSellerApp())
+            return CacheNotif.getInt("total_notif");
+        else
+            return CacheNotif.getInt("total_notif") - getNotifPurchase();
+
     }
 
     public boolean isUnread() {
