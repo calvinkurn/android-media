@@ -1,6 +1,7 @@
 package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,12 +16,14 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
+import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.model.data.DataCredit;
 import com.tokopedia.seller.topads.model.data.DataDeposit;
 import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.presenter.TopAdsAddCreditPresenter;
 import com.tokopedia.seller.topads.presenter.TopAdsAddCreditPresenterImpl;
 import com.tokopedia.seller.topads.presenter.TopAdsDashboardProductPresenterImpl;
+import com.tokopedia.seller.topads.view.activity.TopAdsPaymentCreditActivity;
 import com.tokopedia.seller.topads.view.adapter.TopAdsCreditAdapter;
 import com.tokopedia.seller.topads.view.listener.TopAdsAddCreditFragmentListener;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardFragmentListener;
@@ -125,5 +128,12 @@ public class TopAdsAddCreditFragment extends BasePresenterFragment<TopAdsAddCred
     @Override
     public void onLoadCreditListError() {
 
+    }
+
+    @OnClick(R2.id.button_choose_credit)
+    void chooseCredit() {
+        Intent intent = new Intent(getActivity(), TopAdsPaymentCreditActivity.class);
+        intent.putExtra(TopAdsConstant.EXTRA_CREDIT, adapter.getSelectedCredit());
+        startActivity(intent);
     }
 }

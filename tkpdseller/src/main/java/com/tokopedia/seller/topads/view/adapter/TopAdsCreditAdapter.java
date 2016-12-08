@@ -51,10 +51,24 @@ public class TopAdsCreditAdapter extends RecyclerView.Adapter<TopAdsCreditAdapte
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkedPosition = holder.getAdapterPosition();
-                notifyDataSetChanged();
+                onSelectItem(holder.getAdapterPosition());
             }
         });
+        holder.radioButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onSelectItem(holder.getAdapterPosition());
+            }
+        });
+    }
+
+    private void onSelectItem(int position) {
+        checkedPosition = position;
+        notifyDataSetChanged();
+    }
+
+    public DataCredit getSelectedCredit() {
+        return creditList.get(checkedPosition);
     }
 
     @Override
