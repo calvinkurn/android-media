@@ -173,7 +173,7 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(':tkpdinbox')
+    compile 'com.tokopedia.inbox:inbox:0.4'
     compile project(':tkpddiscovery')
     compile project(':tkpdtransaction')
     compile project(':tkpdseller')
