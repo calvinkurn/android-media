@@ -238,7 +238,6 @@ public class ShippingImpl extends Shipping {
     @Override
     public void onQueryTextChange(String newText) {
         if (newText.length() == 0)
-            view.hideFilter();
             doRefresh();
     }
 
