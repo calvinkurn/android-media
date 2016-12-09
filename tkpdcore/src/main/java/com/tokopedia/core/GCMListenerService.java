@@ -574,7 +574,7 @@ public class GCMListenerService extends GcmListenerService {
                     }
             );
         } else {
-            mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), getDrawableIcon()));
+            mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), getDrawableLargeIcon()));
         }
 
 
@@ -634,6 +634,7 @@ public class GCMListenerService extends GcmListenerService {
 
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
                     .setSmallIcon(getDrawableIcon())
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), getDrawableLargeIcon()))
                     .setAutoCancel(true);
             NotificationCompat.BigTextStyle bigStyle;
             bigStyle = new NotificationCompat.BigTextStyle();
@@ -730,6 +731,7 @@ public class GCMListenerService extends GcmListenerService {
 
         final Notification.Builder mBuilder = new Notification.Builder(getBaseContext())
                 .setSmallIcon(getDrawableIcon())
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), getDrawableLargeIcon()))
                 .setAutoCancel(true);
 
         if (!TextUtils.isEmpty(data.getString("url_icon"))) {
@@ -797,7 +799,7 @@ public class GCMListenerService extends GcmListenerService {
 
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
                     .setSmallIcon(getDrawableIcon())
-                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), getDrawableIcon()))
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), getDrawableLargeIcon()))
                     .setAutoCancel(true);
             NotificationCompat.BigTextStyle bigStyle = new NotificationCompat.BigTextStyle();
             mBuilder.setContentTitle(data.getString("title_update"));
@@ -829,9 +831,16 @@ public class GCMListenerService extends GcmListenerService {
 
     private int getDrawableIcon() {
         if (GlobalConfig.isSellerApp())
-            return R.drawable.qc_launcher2;
+            return R.drawable.ic_stat_notify2;
         else
             return R.drawable.ic_stat_notify;
+    }
+
+    private int getDrawableLargeIcon() {
+        if (GlobalConfig.isSellerApp())
+            return R.drawable.qc_launcher2;
+        else
+            return R.drawable.qc_launcher;
     }
 
     private void resetData(Bundle data) {
