@@ -23,6 +23,8 @@
             android:layout_height="25dp"
             android:layout_gravity="bottom"
             android:gravity="center_vertical"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="@dimen/margin_vs"
             android:orientation="horizontal">
 
             <com.tkpd.library.viewpagerindicator.CirclePageIndicator
