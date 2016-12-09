@@ -407,7 +407,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     }
 
     private void setSpnNominalSelectionBasedLastOrder(List<Product> productList) {
-        if (lastOrder != null) {
+        if (lastOrder != null  && lastOrder.getData() != null
+                && lastOrder.getData().getAttributes() != null ) {
             int lastProductId = lastOrder.getData().getAttributes().getProduct_id();
             for (int i = 0; i < productList.size(); i++) {
                 if (productList.get(i).getId().equals(lastProductId)) {

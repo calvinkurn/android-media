@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
@@ -46,6 +47,7 @@ import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
@@ -71,6 +73,7 @@ public class GCMListenerService extends GcmListenerService {
 
     public interface NotificationListener {
         void onGetNotif();
+
         void onRefreshCart(int status);
     }
 
@@ -477,7 +480,7 @@ public class GCMListenerService extends GcmListenerService {
         ArrayList<String> Desc;
         ArrayList<Integer> Code;
         final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.ic_stat_notify)
+                .setSmallIcon(getDrawableIcon())
                 .setAutoCancel(true);
         NotificationCompat.InboxStyle inboxStyle;
         NotificationCompat.BigTextStyle bigStyle;
@@ -539,7 +542,7 @@ public class GCMListenerService extends GcmListenerService {
         }
 
 
-        if(!TextUtils.isEmpty(data.getString("url_img"))){
+        if (!TextUtils.isEmpty(data.getString("url_img"))) {
 
             ImageHandler.loadImageBitmapNotification(
                     this,
@@ -556,11 +559,11 @@ public class GCMListenerService extends GcmListenerService {
                     }
             );
 
-        }else {
+        } else {
 
         }
 
-        if(!TextUtils.isEmpty(data.getString("url_icon"))){
+        if (!TextUtils.isEmpty(data.getString("url_icon"))) {
             ImageHandler.loadImageBitmapNotification(
                     this,
                     data.getString("url_icon"), new OnGetFileListener() {
@@ -570,10 +573,9 @@ public class GCMListenerService extends GcmListenerService {
                         }
                     }
             );
-        }else {
-            mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_stat_notify));
+        } else {
+            mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), getDrawableLargeIcon()));
         }
-
 
 
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -595,7 +597,7 @@ public class GCMListenerService extends GcmListenerService {
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         if (componentName != null) {
             stackBuilder.addParentStack(componentName);
-        } else if(resultclass != null){
+        } else if (resultclass != null) {
             stackBuilder.addParentStack(resultclass);
         }
         stackBuilder.addNextIntent(intent);
@@ -631,7 +633,8 @@ public class GCMListenerService extends GcmListenerService {
             NotificationManager mNotificationManager = (NotificationManager) getBaseContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
-                    .setSmallIcon(R.drawable.ic_stat_notify)
+                    .setSmallIcon(getDrawableIcon())
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), getDrawableLargeIcon()))
                     .setAutoCancel(true);
             NotificationCompat.BigTextStyle bigStyle;
             bigStyle = new NotificationCompat.BigTextStyle();
@@ -727,10 +730,11 @@ public class GCMListenerService extends GcmListenerService {
         final NotificationManager mNotificationManager = (NotificationManager) getBaseContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
         final Notification.Builder mBuilder = new Notification.Builder(getBaseContext())
-                .setSmallIcon(R.drawable.ic_stat_notify)
+                .setSmallIcon(getDrawableIcon())
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), getDrawableLargeIcon()))
                 .setAutoCancel(true);
 
-        if(!TextUtils.isEmpty(data.getString("url_icon"))){
+        if (!TextUtils.isEmpty(data.getString("url_icon"))) {
             ImageHandler.loadImageBitmapNotification(
                     this,
                     data.getString("url_icon"), new OnGetFileListener() {
@@ -740,8 +744,8 @@ public class GCMListenerService extends GcmListenerService {
                         }
                     }
             );
-        }else {
-            mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_stat_notify));
+        } else {
+            mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), getDrawableIcon()));
         }
 
         ImageHandler.loadImageBitmapNotification(
@@ -794,8 +798,8 @@ public class GCMListenerService extends GcmListenerService {
             NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
-                    .setSmallIcon(R.drawable.ic_stat_notify)
-                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_stat_notify))
+                    .setSmallIcon(getDrawableIcon())
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), getDrawableLargeIcon()))
                     .setAutoCancel(true);
             NotificationCompat.BigTextStyle bigStyle = new NotificationCompat.BigTextStyle();
             mBuilder.setContentTitle(data.getString("title_update"));
@@ -823,6 +827,20 @@ public class GCMListenerService extends GcmListenerService {
             updateStats.putInt(TkpdCache.Key.STATUS, Integer.parseInt(data.getString("status")));
             updateStats.applyEditor();
         }
+    }
+
+    private int getDrawableIcon() {
+        if (GlobalConfig.isSellerApp())
+            return R.drawable.ic_stat_notify2;
+        else
+            return R.drawable.ic_stat_notify;
+    }
+
+    private int getDrawableLargeIcon() {
+        if (GlobalConfig.isSellerApp())
+            return R.drawable.qc_launcher2;
+        else
+            return R.drawable.qc_launcher;
     }
 
     private void resetData(Bundle data) {
@@ -1001,7 +1019,7 @@ public class GCMListenerService extends GcmListenerService {
         TrackingUtils.eventLocaNotificationReceived(data);
     }
 
-    public interface OnGetFileListener{
+    public interface OnGetFileListener {
         void onFileReady(File file);
     }
 
