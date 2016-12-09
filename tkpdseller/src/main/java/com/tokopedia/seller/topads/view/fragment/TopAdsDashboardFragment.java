@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,7 +14,6 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
-import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.model.data.DataDeposit;
 import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.view.activity.TopAdsAddCreditActivity;
@@ -26,7 +24,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 public abstract class TopAdsDashboardFragment<T> extends BasePresenterFragment<T> implements TopAdsDashboardFragmentListener {
@@ -35,27 +33,27 @@ public abstract class TopAdsDashboardFragment<T> extends BasePresenterFragment<T
 
     private static final String RANGE_DATE_FORMAT = "dd MMM yyyy";
 
-    @Bind(R2.id.image_view_shop_icon)
+    @BindView(R2.id.image_view_shop_icon)
     ImageView shopIconImageView;
-    @Bind(R2.id.text_view_shop_title)
+    @BindView(R2.id.text_view_shop_title)
     TextView shopTitleTextView;
-    @Bind(R2.id.text_view_deposit_desc)
+    @BindView(R2.id.text_view_deposit_desc)
     TextView depositDescTextView;
 
-    @Bind(R2.id.text_view_range_date)
+    @BindView(R2.id.text_view_range_date)
     TextView rangeDateDescTextView;
 
-    @Bind(R2.id.layout_top_ads_info_text_impression)
+    @BindView(R2.id.layout_top_ads_info_text_impression)
     View impressionInfoLayout;
-    @Bind(R2.id.layout_top_ads_info_text_click)
+    @BindView(R2.id.layout_top_ads_info_text_click)
     View clickInfoLayout;
-    @Bind(R2.id.layout_top_ads_info_text_ctr)
+    @BindView(R2.id.layout_top_ads_info_text_ctr)
     View ctrInfoLayout;
-    @Bind(R2.id.layout_top_ads_info_text_conversion)
+    @BindView(R2.id.layout_top_ads_info_text_conversion)
     View conversionInfoLayout;
-    @Bind(R2.id.layout_top_ads_info_text_average)
+    @BindView(R2.id.layout_top_ads_info_text_average)
     View averageMainInfoLayout;
-    @Bind(R2.id.layout_top_ads_info_text_cost)
+    @BindView(R2.id.layout_top_ads_info_text_cost)
     View costInfoLayout;
 
     protected Date startDate;

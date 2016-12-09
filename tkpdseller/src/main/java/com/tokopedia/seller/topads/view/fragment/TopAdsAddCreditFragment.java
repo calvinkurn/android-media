@@ -7,41 +7,28 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
-import com.tkpd.library.utils.Logger;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.model.data.DataCredit;
-import com.tokopedia.seller.topads.model.data.DataDeposit;
-import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.presenter.TopAdsAddCreditPresenter;
 import com.tokopedia.seller.topads.presenter.TopAdsAddCreditPresenterImpl;
-import com.tokopedia.seller.topads.presenter.TopAdsDashboardProductPresenterImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsPaymentCreditActivity;
 import com.tokopedia.seller.topads.view.adapter.TopAdsCreditAdapter;
 import com.tokopedia.seller.topads.view.listener.TopAdsAddCreditFragmentListener;
-import com.tokopedia.seller.topads.view.listener.TopAdsDashboardFragmentListener;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 public class TopAdsAddCreditFragment extends BasePresenterFragment<TopAdsAddCreditPresenter> implements TopAdsAddCreditFragmentListener {
 
     private static String TAG = TopAdsAddCreditFragment.class.getSimpleName();
 
-    @Bind(R2.id.recycler_view)
+    @BindView(R2.id.recycler_view)
     RecyclerView recyclerView;
 
     private TopAdsCreditAdapter adapter;

@@ -1,0 +1,39 @@
+package com.tokopedia.core.var;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
+/**
+ * Created by Nisie on 19/06/15.
+ */
+
+public class RecyclerViewItem implements Serializable, Parcelable {
+    int type = 0;
+    public void setType(int type){
+        this.type = type;
+    }
+    public int getType(){
+        return this.type;
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.type);
+    }
+
+    public RecyclerViewItem() {
+    }
+
+    protected RecyclerViewItem(Parcel in) {
+        this.type = in.readInt();
+    }
+
+}

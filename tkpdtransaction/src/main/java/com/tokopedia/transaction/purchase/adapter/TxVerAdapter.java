@@ -20,7 +20,7 @@ import com.tokopedia.transaction.purchase.model.response.txverification.TxVerDat
 import java.text.MessageFormat;
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -99,15 +99,14 @@ public class TxVerAdapter extends ArrayAdapter<TxVerData> {
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R2.id.action_edit:
-                        actionListener.actionEditPayment(data);
-                        return true;
-                    case R2.id.action_upload:
-                        actionListener.actionUploadProof(data);
-                        return true;
-                    default:
-                        return false;
+                if (item.getItemId() == R.id.action_edit) {
+                    actionListener.actionEditPayment(data);
+                    return true;
+                } else if (item.getItemId() == R.id.action_upload) {
+                    actionListener.actionUploadProof(data);
+                    return true;
+                } else {
+                    return false;
                 }
             }
         });
@@ -144,27 +143,27 @@ public class TxVerAdapter extends ArrayAdapter<TxVerData> {
     }
 
     class ViewHolder {
-        @Bind(R2.id.date)
+        @BindView(R2.id.date)
         TextView tvPaymentDate;
-        @Bind(R2.id.user_account)
+        @BindView(R2.id.user_account)
         TextView tvUserAccountName;
-        @Bind(R2.id.system_account)
+        @BindView(R2.id.system_account)
         TextView tvSysAccountNumber;
-        @Bind(R2.id.total_invoice)
+        @BindView(R2.id.total_invoice)
         TextView tvPayementAmount;
-        @Bind(R2.id.payment_ref)
+        @BindView(R2.id.payment_ref)
         TextView tvPaymentRefNumber;
-        @Bind(R2.id.user_bank_name)
+        @BindView(R2.id.user_bank_name)
         TextView tvUserAccountBankName;
-        @Bind(R2.id.system_bank_name)
+        @BindView(R2.id.system_bank_name)
         TextView tvSysAccountBankName;
-        @Bind(R2.id.payment_method_name)
+        @BindView(R2.id.payment_method_name)
         TextView tvSpecialPaymentMethod;
-        @Bind(R2.id.but_overflow)
+        @BindView(R2.id.but_overflow)
         View btnOverflow;
-        @Bind(R2.id.normal_payment_info)
+        @BindView(R2.id.normal_payment_info)
         LinearLayout holderNormalPayment;
-        @Bind(R2.id.unchangeable_payment_info)
+        @BindView(R2.id.unchangeable_payment_info)
         LinearLayout holderUnchangeablePayment;
 
         public ViewHolder(View view) {

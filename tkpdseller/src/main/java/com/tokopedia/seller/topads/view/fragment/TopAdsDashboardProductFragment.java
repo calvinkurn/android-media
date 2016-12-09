@@ -7,19 +7,16 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.model.data.TotalAd;
 import com.tokopedia.seller.topads.presenter.TopAdsDashboardProductPresenterImpl;
-import com.tokopedia.seller.topads.view.listener.TopAdsDashboardFragmentListener;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardProductFragmentListener;
 
-import java.util.Calendar;
-
-import butterknife.Bind;
+import butterknife.BindView;
 
 public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopAdsDashboardProductPresenterImpl> implements TopAdsDashboardProductFragmentListener {
 
-    @Bind(R2.id.layout_top_ads_product_group_summary)
+    @BindView(R2.id.layout_top_ads_product_group_summary)
     View productGroupSummaryLayout;
 
-    @Bind(R2.id.layout_top_ads_product_item_summary)
+    @BindView(R2.id.layout_top_ads_product_item_summary)
     View productItemSummaryLayout;
 
     public static TopAdsDashboardProductFragment createInstance() {

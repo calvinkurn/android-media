@@ -23,7 +23,7 @@ import com.tokopedia.seller.selling.orderReject.model.ModelEditDescription;
 
 import org.parceler.Parcels;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -31,11 +31,11 @@ import butterknife.ButterKnife;
  */
 public class EditVarianDialog extends DialogFragment {
 
-    @Bind(R2.id.description)
+    @BindView(R2.id.description)
     EditText descTxt;
-    @Bind(R2.id.title)
+    @BindView(R2.id.title)
     TextView titleTxt;
-    @Bind(R2.id.checkbox)
+    @BindView(R2.id.checkbox)
     CheckBox checkBox;
 
     public static final String TITLE = "title";

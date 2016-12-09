@@ -4,7 +4,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -15,7 +14,7 @@ import com.tokopedia.seller.topads.model.data.DataCredit;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -78,9 +77,9 @@ public class TopAdsCreditAdapter extends RecyclerView.Adapter<TopAdsCreditAdapte
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R2.id.radio_button)
+        @BindView(R2.id.radio_button)
         public RadioButton radioButton;
-        @Bind(R2.id.text_view_content)
+        @BindView(R2.id.text_view_content)
         public TextView contentTextView;
 
         public ViewHolder(View view) {

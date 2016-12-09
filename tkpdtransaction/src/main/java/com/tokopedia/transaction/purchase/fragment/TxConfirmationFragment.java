@@ -38,7 +38,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * TxConfirmationFragment
@@ -50,7 +50,7 @@ public class TxConfirmationFragment extends BasePresenterFragment<TxConfirmation
         AdapterView.OnItemClickListener, TxListUIReceiver.ActionListener {
     public static final int REQUEST_CONFIRMATION_DETAIL = 0;
 
-    @Bind(R2.id.order_list)
+    @BindView(R2.id.order_list)
     LazyListView lvTXConf;
 
     private View loadMoreView;
@@ -66,6 +66,10 @@ public class TxConfirmationFragment extends BasePresenterFragment<TxConfirmation
     private Set<TxConfData> txConfDataSelected = new HashSet<>();
     private TxListUIReceiver txUIReceiver;
 
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
 
     public static TxConfirmationFragment createInstance() {
         return new TxConfirmationFragment();
@@ -437,13 +441,12 @@ public class TxConfirmationFragment extends BasePresenterFragment<TxConfirmation
 
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-        switch (item.getItemId()) {
-            case R2.id.action_confirm:
-                presenter.processMultiConfirmPayment(getActivity(), txConfDataSelected);
-                return true;
-            case R2.id.action_cancel:
-                presenter.processMultipleCancelPayment(getActivity(), txConfDataSelected);
-                return true;
+        if (item.getItemId() == R.id.action_confirm) {
+            presenter.processMultiConfirmPayment(getActivity(), txConfDataSelected);
+            return true;
+        } else if (item.getItemId() == R.id.action_cancel) {
+            presenter.processMultipleCancelPayment(getActivity(), txConfDataSelected);
+            return true;
         }
         return false;
     }

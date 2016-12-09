@@ -3,11 +3,9 @@ package com.tokopedia.seller.topads.view.fragment;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -15,22 +13,23 @@ import android.widget.ProgressBar;
 
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.core.payment.fragment.DynamicPaymentFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.model.data.DataCredit;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public class TopAdsPaymentCreditFragment extends TkpdFragment {
 
-    @Bind(R2.id.webview)
+    @BindView(R2.id.webview)
     WebView webView;
-    @Bind(R2.id.progressbar)
+    @BindView(R2.id.progressbar)
     ProgressBar progressBar;
 
+    private Unbinder unbinder;
     private DataCredit dataCredit;
 
     public static TopAdsPaymentCreditFragment createInstance() {
@@ -48,6 +47,7 @@ public class TopAdsPaymentCreditFragment extends TkpdFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fragment_general_web_view, container, false);
+        unbinder = ButterKnife.bind(this, view);
         return view;
     }
 
@@ -88,6 +88,11 @@ public class TopAdsPaymentCreditFragment extends TkpdFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 }

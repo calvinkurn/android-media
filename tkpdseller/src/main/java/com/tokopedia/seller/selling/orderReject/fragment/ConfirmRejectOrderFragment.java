@@ -40,7 +40,7 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -51,15 +51,15 @@ public class ConfirmRejectOrderFragment extends Fragment implements SellingView 
 
     public static final String PRODUCT_DETAIL_KEY = "product_detail_key";
 
-    @Bind(R2.id.reason)
+    @BindView(R2.id.reason)
     TextView reasonText;
-    @Bind(R2.id.list)
+    @BindView(R2.id.list)
     RecyclerView recyclerView;
-    @Bind(R2.id.confirm_button)
+    @BindView(R2.id.confirm_button)
     TextView confirmButton;
-    @Bind(R2.id.pBar)
+    @BindView(R2.id.pBar)
     ProgressBar progressBar;
-    @Bind(R2.id.title_edit_product)
+    @BindView(R2.id.title_edit_product)
     TextView titleEditProduct;
 
     private ProductListAdapter listAdapter;

@@ -19,7 +19,7 @@ import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardShopFragment;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Nathaniel on 11/22/2016.
@@ -27,9 +27,9 @@ import butterknife.Bind;
 
 public class TopAdsDashboardActivity extends BasePresenterActivity {
 
-    @Bind(R2.id.pager)
+    @BindView(R2.id.pager)
     ViewPager viewPager;
-    @Bind(R2.id.indicator)
+    @BindView(R2.id.indicator)
     TabLayout indicator;
 
     @Override

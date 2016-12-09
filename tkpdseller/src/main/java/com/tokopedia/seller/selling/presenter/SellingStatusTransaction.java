@@ -3,7 +3,6 @@ package com.tokopedia.seller.selling.presenter;
 import android.content.Context;
 
 import com.tokopedia.core.session.baseFragment.BaseImpl;
-import com.tokopedia.core.util.PagingHandler;
 
 /**
  * Created by Erry on 7/19/2016.
@@ -27,4 +26,6 @@ public abstract class SellingStatusTransaction extends BaseImpl<SellingStatusTra
     public abstract void onScrollList(boolean isLastItemVisible);
 
     public abstract void refreshOnFilter();
+
+    public abstract void finishConnection();
 }

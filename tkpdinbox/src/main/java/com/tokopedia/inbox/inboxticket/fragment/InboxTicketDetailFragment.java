@@ -40,7 +40,7 @@ import com.tokopedia.inbox.inboxticket.presenter.InboxTicketDetailFragmentPresen
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -60,31 +60,31 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
         void sendRating(Bundle param);
     }
 
-    @Bind(R2.id.ticket_list)
+    @BindView(R2.id.ticket_list)
     RecyclerView listTicket;
 
-    @Bind(R2.id.swipe_refresh_layout)
+    @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
 
-    @Bind(R2.id.list_image_upload)
+    @BindView(R2.id.list_image_upload)
     RecyclerView listImage;
 
-    @Bind(R2.id.attach_but)
+    @BindView(R2.id.attach_but)
     ImageView attachButton;
 
-    @Bind(R2.id.send_but)
+    @BindView(R2.id.send_but)
     ImageView sendButton;
 
-    @Bind(R2.id.new_comment)
+    @BindView(R2.id.new_comment)
     EditText comment;
 
-    @Bind(R2.id.add_comment_area)
+    @BindView(R2.id.add_comment_area)
     View commentView;
 
-    @Bind(R2.id.loading_layout)
+    @BindView(R2.id.loading_layout)
     View loading;
 
-    @Bind(R2.id.ticket_notice)
+    @BindView(R2.id.ticket_notice)
     TextView ticketNotice;
 
     InboxTicketDetailAdapter adapter;
@@ -101,6 +101,11 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
     @Override
     protected boolean isRetainInstance() {
         return false;
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 
     @Override
