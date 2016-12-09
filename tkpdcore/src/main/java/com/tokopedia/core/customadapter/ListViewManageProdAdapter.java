@@ -49,6 +49,7 @@ import com.tokopedia.core.myproduct.presenter.NetworkInteractorImpl;
 import com.tokopedia.core.myproduct.utils.VerificationUtils;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.util.SessionHandler;
 
 import org.json.JSONException;
@@ -457,20 +458,6 @@ public class ListViewManageProdAdapter extends BaseAdapter
         if (returnablePolicy != 1) {
             holder.returnableView.setVisibility(View.GONE);
         }
-        holder.pNameView.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                if (!multiselect) {
-                    Bundle bundle = new Bundle();
-                    Intent intent = new Intent(context, ProductInfoActivity.class);
-                    bundle.putString("product_id", ProductID);
-                    intent.putExtras(bundle);
-                    context.startActivity(intent);
-                }
-            }
-        });
-
         holder.EditBut.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -653,6 +640,15 @@ public class ListViewManageProdAdapter extends BaseAdapter
 
     public void setMultiselect(boolean multiselect) {
         this.multiselect = multiselect;
+    }
+
+    public ProductPass getProductDataToPass(int position) {
+        return ProductPass.Builder.aProductPass()
+                .setProductPrice(manageProductModels.get(position).getPrice())
+                .setProductId(manageProductModels.get(position).getProdID())
+                .setProductName(manageProductModels.get(position).getProdName())
+                .setProductImage(manageProductModels.get(position).getProdImgUri())
+                .build();
     }
 
 }

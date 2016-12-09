@@ -573,7 +573,8 @@ public class ManageProduct extends TkpdActivity implements
                     Bundle bundle = new Bundle();
                     //				Intent intent = new Intent(ManageProduct.this, ProductDetailPresenter.class);
                     Intent intent = new Intent(ManageProduct.this, ProductInfoActivity.class);
-                    bundle.putString("product_id", lvadapter.getProductId(position));
+                    bundle.putParcelable(ProductInfoActivity.EXTRA_PRODUCT_PASS,
+                            lvadapter.getProductDataToPass(position));
                     intent.putExtras(bundle);
                     startActivityForResult(intent, 2);
                 }

@@ -24,6 +24,7 @@ import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.Label;
 import com.tokopedia.core.var.ProductItem;
@@ -215,7 +216,8 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
 
                 Bundle bundle = new Bundle();
                 Intent intent = new Intent(context, ProductInfoActivity.class);
-                bundle.putString("product_id", product.id);
+                bundle.putParcelable(ProductInfoActivity.EXTRA_PRODUCT_ITEM,
+                        product);
                 intent.putExtras(bundle);
                 context.startActivity(intent);
             }
@@ -323,4 +325,14 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
             return context.getResources().getColor(id);
         }
     }
+
+    private ProductPass getProductDataToPass(ProductItem productItem) {
+        return ProductPass.Builder.aProductPass()
+                .setProductPrice(productItem.getPrice())
+                .setProductId(productItem.getId())
+                .setProductName(productItem.getName())
+                .setProductImage(productItem.getImgUri())
+                .build();
+    }
+
 }

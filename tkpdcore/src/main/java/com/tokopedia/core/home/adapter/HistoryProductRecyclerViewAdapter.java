@@ -95,7 +95,8 @@ public class HistoryProductRecyclerViewAdapter extends RecyclerView.Adapter<Hist
                     UnifyTracking.eventFeedRecent(data.get(position).getName());
                     Bundle bundle = new Bundle();
                     Intent intent = new Intent(context, ProductInfoActivity.class);
-                    bundle.putString("product_id", data.get(position).id);
+                    bundle.putParcelable(ProductInfoActivity.EXTRA_PRODUCT_ITEM,
+                            data.get(position));
                     intent.putExtras(bundle);
                     context.startActivity(intent);
                 }

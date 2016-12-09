@@ -17,12 +17,14 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.model.Product;
 import com.tokopedia.core.home.adapter.HistoryProductRecyclerViewAdapter;
 import com.tokopedia.core.home.adapter.ProductFeedAdapter;
 import com.tokopedia.core.home.adapter.ViewHolderHistoryProduct;
 import com.tokopedia.core.home.model.HistoryProductListItem;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.Label;
 import com.tokopedia.core.var.ProductItem;
@@ -151,7 +153,7 @@ public class DataFeedAdapter extends ProductAdapter {
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
                 Intent intent = new Intent(context, ProductInfoActivity.class);
-                bundle.putString("product_id", data.id);
+                bundle.putParcelable(ProductInfoActivity.EXTRA_PRODUCT_PASS, productPass(data));
                 intent.putExtras(bundle);
                 UnifyTracking.eventFeedView(data.getName());
                 context.startActivity(intent);
@@ -262,5 +264,14 @@ public class DataFeedAdapter extends ProductAdapter {
     public boolean isHistory(int position) {
         boolean isInRange = position >= 0 && position < data.size();
         return isInRange && data.get(position) != null && data.get(position) instanceof HistoryProductListItem;
+    }
+
+    private ProductPass productPass(ProductItem productItem) {
+        return ProductPass.Builder.aProductPass()
+                .setProductPrice(productItem.getPrice())
+                .setProductId(productItem.getId())
+                .setProductName(productItem.getName())
+                .setProductImage(productItem.getImgUri())
+                .build();
     }
 }
