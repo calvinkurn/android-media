@@ -7,6 +7,7 @@ import android.util.Log;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.tokopedia.core.network.apiservices.ace.AceSearchService;
+import com.tokopedia.core.network.apiservices.goldmerchant.ProductVideoService;
 import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
 import com.tokopedia.core.network.apiservices.product.ProductActService;
 import com.tokopedia.core.network.apiservices.product.ProductService;
@@ -23,6 +24,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.product.facade.NetworkParam;
 import com.tokopedia.core.product.listener.ReportProductDialogView;
 import com.tokopedia.core.product.model.etalase.EtalaseData;
+import com.tokopedia.core.product.model.goldmerchant.ProductVideoData;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
@@ -64,6 +66,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     private final FaveShopActService faveShopActService;
     private final AceSearchService aceSearchService;
     private final MojitoAuthService mojitoAuthService;
+    private final ProductVideoService productVideoService;
 
     public RetrofitInteractorImpl() {
         this.productService = new ProductService();
@@ -73,6 +76,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
         this.compositeSubscription = new CompositeSubscription();
         this.aceSearchService = new AceSearchService();
         this.mojitoAuthService = new MojitoAuthService();
+        this.productVideoService = new ProductVideoService();
     }
 
     @Override
@@ -544,6 +548,41 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber));
+    }
+
+    @Override
+    public void requestProductVideo(@NonNull Context context,
+                                    @NonNull String productId,
+                                    @NonNull final VideoLoadedListener listener) {
+
+        Observable<Response<ProductVideoData>> observable = productVideoService.getApi()
+                .fetchVideo(productId);
+
+        Subscriber<Response<ProductVideoData>> subscriber =
+                new Subscriber<Response<ProductVideoData>>() {
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Response<ProductVideoData> productVideoDataResponse) {
+                        if(productVideoDataResponse.body() != null)
+                            listener.onSuccess(productVideoDataResponse.body().getData().get(0));
+                    }
+                };
+        compositeSubscription.add(observable
+                .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber));
+
     }
 
     @Override

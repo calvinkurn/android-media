@@ -3,6 +3,7 @@ package com.tokopedia.sellerapp.home.model.network;
 import android.net.Uri;
 
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.ProductItem;
 
 import java.util.ArrayList;
@@ -230,7 +231,7 @@ public class ProductFeedData3 {
         String preorder;
 
         @SerializedName("badges")
-        List<ProductItem.Badge> badges;
+        List<Badge> badges;
 
         public String getShopLucky() {
             return shopLucky;
@@ -384,11 +385,11 @@ public class ProductFeedData3 {
             this.shopGoldStatus = shopGoldStatus;
         }
 
-        public List<ProductItem.Badge> getBadges() {
+        public List<Badge> getBadges() {
             return badges;
         }
 
-        public void setBadges(List<ProductItem.Badge> badges) {
+        public void setBadges(List<Badge> badges) {
             this.badges = badges;
         }
     }

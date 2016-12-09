@@ -95,7 +95,7 @@ public class AboutFragment extends TkpdBasePreferenceFragment {
         prefShare.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                String urlPlayStore = "http://play.google.com/store/apps/details?shopId=" + getActivity().getPackageName();
+                String urlPlayStore = "http://play.google.com/store/apps/details?shopId=" + getActivity().getApplication().getPackageName();
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
                 sendIntent.putExtra(Intent.EXTRA_TEXT, getActivity().getResources().getString(R.string.msg_share_apps) + "\n" + urlPlayStore);
@@ -107,7 +107,7 @@ public class AboutFragment extends TkpdBasePreferenceFragment {
         prefReview.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                Uri uri = Uri.parse("market://details?id=" + BuildConfig.APPLICATION_ID);
+                Uri uri = Uri.parse("market://details?id=" + getActivity().getApplication().getPackageName());
                 Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
                 goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
                 try {
@@ -115,7 +115,7 @@ public class AboutFragment extends TkpdBasePreferenceFragment {
                 } catch (ActivityNotFoundException e) {
                     getActivity().startActivity(new Intent(Intent.ACTION_VIEW,
                             Uri.parse("https://play.google.com/store/apps/details?id="
-                                    + BuildConfig.APPLICATION_ID)));
+                                    + getActivity().getApplication().getPackageName())));
                 }
                 return false;
             }

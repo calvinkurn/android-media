@@ -16,6 +16,8 @@ import android.widget.SearchView;
 import android.widget.Spinner;
 
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
 import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
 import com.tokopedia.seller.selling.view.viewHolder.OrderViewHolder;
@@ -219,7 +221,8 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
         initPresenter();
 
         presenter.getOrderList(isVisibleToUser);
-        presenter.checkValidationToSendGoogleAnalytic(isVisibleToUser, getActivity());
+        ScreenTracking.screenLoca(AppScreen.SCREEN_LOCA_NEWORDER);
+        ScreenTracking.screen(AppScreen.SCREEN_TX_SHOP_NEW_ORDER);
         super.setUserVisibleHint(isVisibleToUser);
     }
 
@@ -330,6 +333,16 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
     @Override
     public PagingHandler getPaging() {
         return page;
+    }
+
+    @Override
+    public void hideFab(){
+        fab.hide();
+    }
+
+    @Override
+    public void showFab(){
+        fab.show();
     }
 
     private SearchView.OnQueryTextListener onSearchQuery() {

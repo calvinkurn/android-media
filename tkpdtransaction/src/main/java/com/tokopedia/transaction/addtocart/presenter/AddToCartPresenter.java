@@ -57,4 +57,6 @@ public interface AddToCartPresenter {
     void onViewDestroyed();
 
     void processGetGTMTicker();
+
+    boolean isAllowKeroAccess(AtcFormData data);
 }
