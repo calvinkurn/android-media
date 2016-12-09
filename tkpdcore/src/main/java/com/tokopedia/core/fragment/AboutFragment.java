@@ -66,12 +66,13 @@ public class AboutFragment extends TkpdBasePreferenceFragment {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 Intent intent;
+                String termUrl = "https://www.tokopedia.com/terms.pl";
                 if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                    intent = ManageWebViewActivity.getCallingIntent(getActivity(), "https://www.tokopedia.com/terms.pl",
+                    intent = ManageWebViewActivity.getCallingIntent(getActivity(), termUrl,
                             getString(R.string.manage_terms_and_conditions));
                 } else {
                     intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setData(Uri.parse("https://www.tokopedia.com/terms.pl"));
+                    intent.setData(Uri.parse(termUrl));
                 }
                 getActivity().startActivity(intent);
                 return false;
@@ -81,12 +82,13 @@ public class AboutFragment extends TkpdBasePreferenceFragment {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 Intent intent;
+                String privacyUrl = "https://www.tokopedia.com/privacy.pl";
                 if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                    intent = ManageWebViewActivity.getCallingIntent(getActivity(), "https://www.tokopedia.com/privacy.pl",
+                    intent = ManageWebViewActivity.getCallingIntent(getActivity(), privacyUrl,
                             getString(R.string.manage_privacy));
                 }else{
                     intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setData(Uri.parse("https://www.tokopedia.com/privacy.pl"));
+                    intent.setData(Uri.parse(privacyUrl));
                 }
                 getActivity().startActivity(intent);
                 return false;
