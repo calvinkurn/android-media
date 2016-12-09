@@ -24,6 +24,7 @@ import android.widget.PopupMenu;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.DatePickerV2;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
@@ -123,7 +124,7 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
                 if (ValidationTextUtil.isValidSalesQuery(search)) {
                     presenter.refreshOnFilter();
                 } else {
-                    Snackbar.make(filterView, getActivity().getString(R.string.keyword_min_3_char), Snackbar.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), getActivity().getString(R.string.keyword_min_3_char), Toast.LENGTH_SHORT).show();
                 }
             } else if (TextUtils.isEmpty(search)) {
                 presenter.refreshOnFilter();
