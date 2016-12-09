@@ -26,6 +26,7 @@ import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.rxjava.RxUtils;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdUrl;
 
@@ -57,7 +58,7 @@ public class DialogLogoutFragment extends DialogFragment {
         final Activity activity = getActivity();
         progressDialog = new TkpdProgressDialog(activity, TkpdProgressDialog.NORMAL_PROGRESS);
         return new AlertDialog.Builder(getActivity())
-                .setIcon(R.drawable.ic_new_logo)
+                .setIcon(getDrawable())
                 .setTitle(getString(R.string.action_logout) + " dari Tokopedia")
                 .setMessage(getString(R.string.message_confirmation_logout))
                 .setPositiveButton(R.string.action_logout, null)
@@ -68,6 +69,13 @@ public class DialogLogoutFragment extends DialogFragment {
                                 dismiss();
                             }
                         }).create();
+    }
+
+    private int getDrawable() {
+        if (GlobalConfig.isSellerApp())
+            return R.drawable.qc_launcher2;
+        else
+            return R.drawable.qc_launcher;
     }
 
     public void logoutToTheInternet(final Activity activity) {
