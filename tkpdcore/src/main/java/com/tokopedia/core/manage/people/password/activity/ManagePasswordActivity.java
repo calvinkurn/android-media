@@ -16,7 +16,9 @@ import com.tokopedia.core.manage.people.password.intentservice.ManagePasswordRes
 import com.tokopedia.core.manage.people.password.presenter.ManagePasswordActivityPresenter;
 import com.tokopedia.core.manage.people.password.presenter.ManagePasswordActivityPresenterImpl;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.welcome.WelcomeActivity;
 
 public class ManagePasswordActivity extends BasePresenterActivity<ManagePasswordActivityPresenter>
                                     implements ManagePasswordActivityView, ManagePasswordResultReceiver.Receiver{
@@ -127,7 +129,12 @@ public class ManagePasswordActivity extends BasePresenterActivity<ManagePassword
     private void exit() {
         new GlobalCacheManager().deleteAll();
         SessionHandler.clearUserData(this);
-        Intent intent = HomeRouter.getHomeActivity(this);
+        Intent intent;
+        if (GlobalConfig.isSellerApp()) {
+            intent = new Intent(this, WelcomeActivity.class);
+        } else {
+            intent = HomeRouter.getHomeActivity(this);
+        }
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }

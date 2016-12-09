@@ -68,9 +68,31 @@ public class ProductList extends V2BaseFragment {
     private String shopDomain;
     private GetShopInfoRetrofit facadeShopInfo;
     private GetShopProductRetrofit facadeShopProd;
+    public static final String ETALASE_ID_BUNDLE = "ETALASE_ID";
 
-    public static ProductList create() {
-        return new ProductList();
+    public static ProductList newInstance() {
+        
+        Bundle args = new Bundle();
+        
+        ProductList fragment = new ProductList();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public static ProductList newInstance(String etalaseId) {
+
+        Bundle args = new Bundle();
+        args.putString(ETALASE_ID_BUNDLE, etalaseId);
+        ProductList fragment = new ProductList();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public void setSelectedEtalase(String etalaseId) {
+        if(adapter!=null) {
+            int etalaseIndex = etalaseIdList.indexOf(etalaseId);
+            adapter.setSelectedEtalasePos(etalaseIndex);
+        }
     }
 
     @Override
@@ -161,7 +183,6 @@ public class ProductList extends V2BaseFragment {
         adapter.setListType(getShopParam.listState);
         adapter.setSelectedEtalasePos(getShopParam.selectedEtalase);
         adapter.setEtalaseAdapter(etalaseAdapter);
-
         configSearchView();
     }
 
@@ -306,6 +327,12 @@ public class ProductList extends V2BaseFragment {
             etalaseNameList.add(getActivity().getIntent().getExtras().getString(ETALASE_NAME, getString(R.string.title_all_etalase)));
             etalaseIdList.add(getActivity().getIntent().getExtras().getString(ETALASE_ID, "etalase"));
         }
+        String selectedId = getArguments().getString(ETALASE_ID_BUNDLE);
+        if(selectedId!=null) {
+            int index = etalaseIdList.indexOf(selectedId);
+
+        }
+
     }
 
     @Override
@@ -470,7 +497,11 @@ public class ProductList extends V2BaseFragment {
             public void onSuccess(EtalaseModel model) {
                 etalaseModel = model;
                 updateEtalaseNameList();
-                getShopParam.selectedEtalase = etalaseNameList.indexOf(getActivity().getIntent().getExtras().getString(ETALASE_NAME, getString(R.string.title_all_etalase)));
+                if(getArguments().getString(ETALASE_ID_BUNDLE)!=null){
+                    getShopParam.selectedEtalase = etalaseIdList.indexOf(getArguments().getString(ETALASE_ID_BUNDLE));
+                } else {
+                    getShopParam.selectedEtalase = etalaseNameList.indexOf(getActivity().getIntent().getExtras().getString(ETALASE_NAME, getString(R.string.title_all_etalase)));
+                }
                 adapter.setSelectedEtalasePos(getShopParam.selectedEtalase);
                 adapter.notifyDataSetChanged();
             }

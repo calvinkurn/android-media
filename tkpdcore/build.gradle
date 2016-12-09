@@ -97,6 +97,7 @@ dependencies {
     compile 'net.hockeyapp.android:HockeySDK:4.0.0'
     compile'com.github.hotchemi:permissionsdispatcher:2.2.0@aar'
     apt 'com.github.hotchemi:permissionsdispatcher-processor:2.2.0'
+    compile files('libs/YouTubeAndroidPlayerApi.jar')
 }
 
 

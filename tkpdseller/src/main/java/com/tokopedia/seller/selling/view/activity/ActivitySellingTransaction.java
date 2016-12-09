@@ -39,6 +39,7 @@ import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.seller.selling.SellingService;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingNewOrder;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingShipping;
@@ -90,7 +91,6 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
     private void initView() {
         sellerTickerView = (TextView) findViewById(R.id.seller_ticker);
         sellerTickerView.setMovementMethod(new ScrollingMovementMethod());
-        initSellerTicker();
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setOffscreenPageLimit(4);
         indicator = (TabLayout) findViewById(R.id.indicator);
@@ -106,6 +106,12 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
             showTickerGTM(null);
         }
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initSellerTicker();
     }
 
     protected void makeLinkClickable(SpannableStringBuilder strBuilder, final URLSpan span)
@@ -340,15 +346,19 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.cart_and_search, menu);
-        LocalCacheHandler Cache = new LocalCacheHandler(getBaseContext(), "NOTIFICATION_DATA");
-        int CartCache = Cache.getInt("is_has_cart");
-        if (CartCache > 0) {
-            menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_new_action_cart_active);
-        } else {
-            menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_new_action_cart);
+        if (!GlobalConfig.isSellerApp()) {
+            getMenuInflater().inflate(R.menu.cart_and_search, menu);
+            LocalCacheHandler Cache = new LocalCacheHandler(getBaseContext(), "NOTIFICATION_DATA");
+            int CartCache = Cache.getInt("is_has_cart");
+            if (CartCache > 0) {
+                menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_new_action_cart_active);
+            } else {
+                menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_new_action_cart);
+            }
+            return true;
+        }else {
+            return super.onCreateOptionsMenu(menu);
         }
-        return true;
     }
 
     public Fragment getFragmentMainPager(int position) {

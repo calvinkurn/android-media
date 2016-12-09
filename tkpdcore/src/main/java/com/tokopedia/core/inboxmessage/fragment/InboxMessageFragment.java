@@ -118,7 +118,6 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
     @Override
     protected void onFirstTimeLaunched() {
         presenter.initData();
-        presenter.initAnalytics();
 
     }
 

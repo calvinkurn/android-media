@@ -68,7 +68,7 @@ public class InboxResCenterImpl implements InboxResCenterPresenter {
         activityParamenterPassData.setResCenterId(resolutionID);
         Intent intent = ResCenterActivity.newInstance(context, activityParamenterPassData);
         context.startActivity(intent);
-        UnifyTracking.eventResolutionDetail(resCenterTabModel.titleFragment);
+        UnifyTracking.eventResolutionDetail(getResCenterTabModel().titleFragment);
     }
 
     @Override
@@ -124,11 +124,11 @@ public class InboxResCenterImpl implements InboxResCenterPresenter {
     @Override
     public Map<String, String> generateParams(Context context) {
         ResCenterInboxDataPass pass = new ResCenterInboxDataPass();
-        pass.setRequestAs(resCenterTabModel.typeFragment);
-        pass.setRequestAsString(resCenterTabModel.titleFragment);
+        pass.setRequestAs(getResCenterTabModel().typeFragment);
+        pass.setRequestAsString(getResCenterTabModel().titleFragment);
 
         LocalCacheManager.Filter cacheManager = LocalCacheManager.Filter
-                .Builder(String.valueOf(resCenterTabModel.typeFragment), resCenterTabModel.titleFragment)
+                .Builder(String.valueOf(getResCenterTabModel().typeFragment), getResCenterTabModel().titleFragment)
                 .getCache();
         pass.setFilterStatus(cacheManager.getFilterStatus());
         pass.setFilterStatusString(cacheManager.getFilterStatusText());
@@ -174,7 +174,7 @@ public class InboxResCenterImpl implements InboxResCenterPresenter {
     @Override
     public void setOnFragmentSavingState(Bundle state) {
         listener.saveCurrentInboxList(state);
-        state.putParcelable(CURRENT_MODEL_TAB, resCenterTabModel);
+        state.putParcelable(CURRENT_MODEL_TAB, getResCenterTabModel());
         state.putBoolean(STATE_CONNECTION, allowConnection);
     }
 
@@ -300,6 +300,11 @@ public class InboxResCenterImpl implements InboxResCenterPresenter {
         } else {
             listener.showMessageErrorSnackBar(message);
         }
+    }
+
+    @Override
+    public InboxResCenterActivity.Model getResCenterTabModel() {
+        return resCenterTabModel;
     }
 
 }

@@ -53,6 +53,7 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
     public void getStatusTransactionList(boolean isVisibleToUser, Type type) {
         this.type = type;
         if (isVisibleToUser && isDataEmpty() && !isLoading) {
+            addLoading();
             switch (type) {
                 case STATUS:
                     getStatusList();
@@ -229,6 +230,7 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
         listDatas.addAll(model);
         view.notifyDataSetChanged(listDatas);
         view.setRefreshPullEnable(true);
+        view.showFab();
     }
 
     @Override
@@ -240,6 +242,7 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
         }
         view.getPaging().setHasNext(false);
         view.setRefreshPullEnable(true);
+        view.showFab();
         view.removeRetry();
     }
 
@@ -248,6 +251,7 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
         finishConnection();
         if (listDatas.size() == 0) {
             view.addRetry();
+            view.hideFab();
         } else {
             NetworkErrorHelper.showSnackbar((Activity) context);
         }
@@ -259,6 +263,7 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
         finishConnection();
         if (listDatas.size() == 0) {
             view.addRetry();
+            view.hideFab();
         } else {
             NetworkErrorHelper.showSnackbar((Activity) context);
         }

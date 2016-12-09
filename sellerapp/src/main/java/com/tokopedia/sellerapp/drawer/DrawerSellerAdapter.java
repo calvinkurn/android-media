@@ -1,4 +1,4 @@
-package com.tokopedia.core.drawer;
+package com.tokopedia.sellerapp.drawer;
 
 import android.content.Context;
 import android.content.Intent;

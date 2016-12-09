@@ -19,6 +19,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.msisdn.IncomingSms;
 import com.tokopedia.core.msisdn.MSISDNConstant;
 import com.tokopedia.core.msisdn.listener.MsisdnVerificationFragmentView;
@@ -175,6 +176,7 @@ public class MsisdnVerificationFragment extends DialogFragment
         sendOtp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventOTPSend();
                 KeyboardHandler.DropKeyboard(getActivity(),sendOtp);
                 presenter.requestOTP(phoneNumberEditText.getText().toString().trim());
 
@@ -184,6 +186,7 @@ public class MsisdnVerificationFragment extends DialogFragment
         verifyOtp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventOTPVerif();
                 KeyboardHandler.DropKeyboard(getActivity(),verifyOtp);
                 presenter.verifyOTP(otpEditText.getText().toString().trim());
             }
