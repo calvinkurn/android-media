@@ -1816,5 +1816,8 @@ di Tokopedia Sekarang!</string>
 
     <string name="title_msisdn">Verifikasi Nomor HP</string>
     <string name="title_try_again_in">Coba lagi dalam :</string>
+    <string name="manage_default_page_title">Pengaturan</string>
+    <string name="manage_terms_and_conditions">Syarat dan Ketentuan</string>
+    <string name="manage_privacy">Kebijakan Privasi</string>
 
 </resources>
