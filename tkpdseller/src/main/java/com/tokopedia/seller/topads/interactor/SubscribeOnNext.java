@@ -16,6 +16,10 @@ public class SubscribeOnNext<T> implements Action1<T> {
 
     @Override
     public void call(T t) {
-        listener.onSuccess(t);
+        if (t != null) {
+            listener.onSuccess(t);
+        } else {
+            listener.onError(new NullPointerException());
+        }
     }
 }
