@@ -7,15 +7,25 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.localytics.android.Localytics;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.R;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.analytics.TrackingUtils;
+
+import java.io.IOException;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 public class GCMHandler {
 
@@ -48,7 +58,7 @@ public class GCMHandler {
             regid = getRegistrationId(context);
             CommonUtils.dumper("start gcm get");
             if (regid.isEmpty()) {
-                new registerInBackground().execute();
+                registerFCM();
             } else {
 
                 Localytics.setPushRegistrationId(regid);
@@ -66,36 +76,50 @@ public class GCMHandler {
 
     }
 
-    private class registerInBackground extends AsyncTask<Void, Void, GCMParam> {
+    private void registerFCM(){
+        Observable.just(true)
+                .subscribeOn(Schedulers.newThread())
+                .map(new Func1<Boolean, GCMParam>(){
+                    @Override
+                    public GCMParam call(Boolean aBoolean) {
+                        GCMParam param = new GCMParam();
+                        regid = FirebaseInstanceId.getInstance().getToken();
+                        if (!TextUtils.isEmpty(regid)) {
+                            storeRegistrationId(regid);
+                            param.statusCode = STATUS_OK;
+                            param.statusMessage = "Device registered, registration ID=" + regid;
+                            CommonUtils.dumper("Device registered, registration ID=" + regid);
+                        } else {
+                            param.statusCode = STATUS_ERROR;
+                            param.statusMessage = "GCM registration error";
+                            CommonUtils.dumper("GCM registration error");
+                        }
+                        return param;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<GCMParam>() {
+                    @Override
+                    public void onCompleted() {
 
-        @Override
-        protected GCMParam doInBackground(Void... params) {
-            GCMParam param = new GCMParam();
-            regid = FirebaseInstanceId.getInstance().getToken();
-            if (!TextUtils.isEmpty(regid)) {
-                storeRegistrationId(regid);
-                param.statusCode = STATUS_OK;
-                param.statusMessage = "Device registered, registration ID=" + regid;
-                CommonUtils.dumper("Device registered, registration ID=" + regid);
-            } else {
-                param.statusCode = STATUS_ERROR;
-                param.statusMessage = "GCM registration error";
-                CommonUtils.dumper("GCM registration error");
-            }
-            return param;
-        }
+                    }
 
-        @Override
-        protected void onPostExecute(GCMParam param) {
-            if (param.statusCode != STATUS_OK) {
-                TrackingUtils
-                        .eventError(context.getClass().toString(), param.statusMessage);
-                storeDummyGCMID();
-            }
-            Log.d(TAG, "GCM RegistrationId: " + regid);
-            gcmlistener.onGCMSuccess(regid);
-        }
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
 
+                    @Override
+                    public void onNext(GCMParam gcmParam) {
+                        if (gcmParam.statusCode != STATUS_OK) {
+                            TrackingUtils
+                                    .eventError(context.getClass().toString(), gcmParam.statusMessage);
+                            storeDummyGCMID();
+                        }
+                        Log.d(TAG, "GCM RegistrationId: " + regid);
+                        gcmlistener.onGCMSuccess(regid);
+                    }
+                });
     }
 
     private void storeRegistrationId(String id) {
