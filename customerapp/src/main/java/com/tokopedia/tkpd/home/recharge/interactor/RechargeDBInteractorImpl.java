@@ -48,7 +48,7 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                 .map(new Func1<RechargeOperatorModelDBAttrs, List<Product>>() {
                     @Override
                     public List<Product> call(RechargeOperatorModelDBAttrs rechargeOperatorModelDBAttrs) {
-                        if (validatePrefix && rechargeOperatorModelDBAttrs !=null)
+                        if (validatePrefix)
                             return new RechargeProductManager().getListData(categoryId,
                                     rechargeOperatorModelDBAttrs.operatorId);
 
