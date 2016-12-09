@@ -81,7 +81,7 @@ public class ReplyEditorView extends BaseView<DetailResCenterData.Detail, Detail
         actionAttachment.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (attachmentData.size() < 5) {
+                if (adapter.getItemCount() < 5) {
                     listener.setOnAttachmentClickListener();
                 } else {
                     listener.showToastMessage(getContext().getString(R.string.max_upload_detail_res_center));
