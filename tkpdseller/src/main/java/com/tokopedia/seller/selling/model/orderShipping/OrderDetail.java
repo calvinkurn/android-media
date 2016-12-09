@@ -99,7 +99,7 @@ public class OrderDetail {
     Integer detailOrderStatus;
     @SerializedName("detail_cancel_request")
     @Expose
-    private DetailCancelRequest detailCancelRequest;
+    DetailCancelRequest detailCancelRequest;
 
     /**
      *
