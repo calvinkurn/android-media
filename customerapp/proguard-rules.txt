@@ -294,4 +294,8 @@
 
 -keep class com.tokopedia.core.util.GlobalConfig
 
+-keep class com.tokopedia.core.network.entity.** { *; }
+
+
+
 
