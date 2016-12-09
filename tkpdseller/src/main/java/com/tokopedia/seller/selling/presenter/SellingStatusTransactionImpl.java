@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.R;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.ValidationTextUtil;
 import com.tokopedia.seller.facade.FacadeShopTransaction;
@@ -103,7 +104,7 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
                 view.hideFilterView();
                 onRefreshStatusTransaction();
             } else {
-                showToastMessage(context.getString(R2.string.keyword_min_3_char));
+                showToastMessage(context.getString(R.string.keyword_min_3_char));
             }
         }
     }
