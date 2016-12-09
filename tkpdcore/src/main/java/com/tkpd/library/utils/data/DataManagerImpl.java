@@ -146,31 +146,31 @@ public class DataManagerImpl implements DataManager {
 //                new Select().from(Province.class).execute();
 //
 //        if (provinces == null || provinces.size() <= 0) {
-            dataReceiver.getSubscription().add(
-                    //[START] HIT NETWORK
-                    new AddressService().getApi().getProvince(
-                            AuthUtil.generateParams(context, new HashMap<String, String>())
-                    )
-                            .map(new Func1<Response<TkpdResponse>, Response<TkpdResponse>>() {
-                                @Override
-                                public Response<TkpdResponse> call(Response<TkpdResponse> response) {
-                                    ListProvince.Data datas = new GsonBuilder().create().fromJson(response.body().getStringData(), ListProvince.Data.class);
-                                    DatabaseWrapper database = FlowManager.getDatabase(DbFlowDatabase.NAME).getWritableDatabase();
-                                    database.beginTransaction();
-                                    try {
-                                        for (Province a : Province.toDbs(datas.getProvinces())) {
-                                            a.save();
-                                        }
-                                        database.setTransactionSuccessful();
-                                    } finally {
-                                        database.endTransaction();
+        dataReceiver.getSubscription().add(
+                //[START] HIT NETWORK
+                new AddressService().getApi().getProvince(
+                        AuthUtil.generateParams(context, new HashMap<String, String>())
+                )
+                        .map(new Func1<Response<TkpdResponse>, Response<TkpdResponse>>() {
+                            @Override
+                            public Response<TkpdResponse> call(Response<TkpdResponse> response) {
+                                ListProvince.Data datas = new GsonBuilder().create().fromJson(response.body().getStringData(), ListProvince.Data.class);
+                                DatabaseWrapper database = FlowManager.getDatabase(DbFlowDatabase.NAME).getWritableDatabase();
+                                database.beginTransaction();
+                                try {
+                                    for (Province a : Province.toDbs(datas.getProvinces())) {
+                                        a.save();
                                     }
-                                    return response;
+                                    database.setTransactionSuccessful();
+                                } finally {
+                                    database.endTransaction();
                                 }
-                            })
-                            .subscribeOn(Schedulers.newThread())
-                            .unsubscribeOn(Schedulers.newThread())
-                            .observeOn(AndroidSchedulers.mainThread())
+                                return response;
+                            }
+                        })
+                        .subscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
 //                            .retry(5)
                         .subscribe(new Subscriber<Response<TkpdResponse>>() {
                             @Override
@@ -464,13 +464,12 @@ public class DataManagerImpl implements DataManager {
 
     @Override
     public void getListBank(Context context, final DataReceiver dataReceiver) {
-        int T = 15;
-        A:
-        do {
+        for (int T = 15; T > 0; T--) {
             HashMap<String, String> param = new HashMap<>();
             param.put("keyword", "");
             param.put("page", T + "");
             param.put("profile_user_id", "");
+            final int finalT = T;
             new PeopleService().getApi().searchBankAccount(
                     AuthUtil.generateParams(context, param)
             ).map(
@@ -536,22 +535,18 @@ public class DataManagerImpl implements DataManager {
                                 @Override
                                 public void onNext(List<Bank> banks) {
                                     Log.d("MNORMANSYAH", DataManagerImpl.class.getSimpleName() + " do nothing just log ");
+                                    if (finalT == 1) {
+                                        List<Bank> listBank = new Select().from(Bank.class).queryList();
+                                        Log.d("MNORMANSYAH", "banks -> " + banks);
+                                        if (banks.size() > 0)
+                                            dataReceiver.setBank(listBank);
+                                        else
+                                            dataReceiver.onMessageError("Gagal mengambil data bank");
+                                    }
                                 }
                             }
                     );
-        } while (T-- > 0);
-
-        new android.os.Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                List<Bank> banks =new Select().from(Bank.class).queryList();
-                Log.d("MNORMANSYAH", "banks -> "+banks);
-                if(banks!=null&&banks.size()>0)
-                    dataReceiver.setBank(banks);
-                else
-                    dataReceiver.onMessageError("Gagal mengambil data bank");
-            }
-        }, 100);
+        }
 
     }
 
@@ -699,7 +694,7 @@ public class DataManagerImpl implements DataManager {
                                              } finally {
                                                  database.endTransaction();
                                              }
-                                         }else{
+                                         } else {
                                              throw new RuntimeException("tidak dapat mendapatkan daftar district");
                                          }
 
@@ -760,7 +755,8 @@ public class DataManagerImpl implements DataManager {
         List<CategoryDB> departments = new Select()
                 .from(CategoryDB.class)
                 .where(CategoryDB_Table.parentId.is(departmentId))
-                .queryList();;
+                .queryList();
+        ;
 
         //[START] get from network
         if (departments == null || departments.size() <= 0) {
@@ -821,7 +817,8 @@ public class DataManagerImpl implements DataManager {
                                             List<CategoryDB> departments = new Select()
                                                     .from(CategoryDB.class)
                                                     .where(CategoryDB_Table.parentId.is(departmentId))
-                                                    .queryList();;
+                                                    .queryList();
+                                            ;
                                             //[START] set result to receiver
                                             dataReceiver.setDepartments(departments);
                                         }
@@ -865,8 +862,7 @@ public class DataManagerImpl implements DataManager {
                                         public void onNext(DepartmentParentModel departmentParentModel) {
                                             // save to db
                                             DepartmentParentModel.DepartmentParent[] list = departmentParentModel.getData().getList();
-                                            if(list!=null)
-                                            {
+                                            if (list != null) {
                                                 DatabaseWrapper database = FlowManager.getDatabase(DbFlowDatabase.NAME).getWritableDatabase();
                                                 database.beginTransaction();
                                                 try {
