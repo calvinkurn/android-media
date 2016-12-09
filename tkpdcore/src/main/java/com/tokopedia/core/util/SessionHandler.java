@@ -7,6 +7,7 @@ import android.net.http.SslError;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.webkit.CookieManager;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -174,6 +175,8 @@ public class SessionHandler {
         InboxReputationCacheManager reputationDetailCache = new InboxReputationCacheManager();
         reputationDetailCache.deleteAll();
         logoutInstagram(context);
+        MethodChecker.removeAllCookies();
+
 
     }
 
