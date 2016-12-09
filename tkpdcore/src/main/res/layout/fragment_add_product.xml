@@ -354,7 +354,7 @@
 
             <!-- ini ditampilkan ketika verifikasi harga normal sudah -->
             <com.tkpd.library.ui.expandablelayout.ExpandableRelativeLayout
-                android:id="@+id/add_product_wholesale_layout"
+                android:id="@+id/add_product_wholesale_container"
                 android:layout_width="match_parent"
                 android:layout_height="201.33dp"
                 app:ael_duration="500"
@@ -363,60 +363,11 @@
                 <!--android:layout_below="@+id/add_product_tittle_wholesale"-->
                 <!--android:background="@drawable/cards_ui_2"-->
 
-                <LinearLayout
-                    android:id="@+id/add_product_wholesale_row_name"
+                <com.tokopedia.core.myproduct.customview.wholesale.WholesaleLayout
+                    android:id="@+id/add_product_wholesale_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:orientation="horizontal"
-                    android:weightSum="1"
-                    android:layout_marginTop="@dimen/new_margin_med">
+                    android:layout_height="wrap_content"/>
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:text="@string/min_product"
-                        android:textColor="@color/label_color"
-                        android:textSize="@dimen/new_text_size_small"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_weight="0.3"
-                        />
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:text="@string/max_product"
-                        android:textColor="@color/label_color"
-                        android:textSize="@dimen/new_text_size_small"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_weight="0.3"
-                        />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:text="@string/price_per_product"
-                        android:textColor="@color/label_color"
-                        android:textSize="@dimen/new_text_size_small"
-                        android:layout_weight="0.4"/>
-                </LinearLayout>
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/add_product_wholesale_item"
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:layout_below="@+id/add_product_wholesale_row_name" />
-
-
-                <TextView
-                    android:id="@+id/add_product_add_whole_sale_item"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/add_product_wholesale_item"
-                    android:layout_marginTop="@dimen/margin_small"
-                    android:background="@drawable/btn_shop"
-                    android:gravity="center"
-                    android:padding="@dimen/padding_small"
-                    android:text="@string/add_wholesale_price" />
             </com.tkpd.library.ui.expandablelayout.ExpandableRelativeLayout>
         </LinearLayout>
 

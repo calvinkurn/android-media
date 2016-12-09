@@ -88,6 +88,8 @@ import com.tokopedia.core.myproduct.adapter.ClickToSelectWithImage;
 import com.tokopedia.core.myproduct.adapter.PhotoAdapter;
 import com.tokopedia.core.myproduct.adapter.TextDeleteAdapter;
 import com.tokopedia.core.myproduct.adapter.WholesaleAdapter;
+import com.tokopedia.core.myproduct.customview.wholesale.WholesaleLayout;
+import com.tokopedia.core.myproduct.customview.wholesale.WholesaleModel;
 import com.tokopedia.core.myproduct.model.CatalogDataModel;
 import com.tokopedia.core.myproduct.model.DepartmentParentModel;
 import com.tokopedia.core.myproduct.model.EtalaseModel;
@@ -111,6 +113,7 @@ import com.tokopedia.core.myproduct.service.ProductService;
 import com.tokopedia.core.myproduct.utils.AddProductType;
 import com.tokopedia.core.myproduct.utils.DelegateOnClick;
 import com.tokopedia.core.myproduct.utils.MetadataUtil;
+import com.tokopedia.core.myproduct.utils.PriceUtils;
 import com.tokopedia.core.myproduct.utils.ProductEditHelper;
 import com.tokopedia.core.myproduct.utils.UploadPhotoTask;
 import com.tokopedia.core.myproduct.utils.VerificationUtils;
@@ -353,14 +356,11 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
     @BindView(R2.id.add_product_tittle_wholesale)
     RelativeLayout addProductTitleWholeSale;
 
-    @BindView(R2.id.add_product_wholesale_layout)
+    @BindView(R2.id.add_product_wholesale_container)
     ExpandableRelativeLayout wholeSaleContainer;
 
-    @BindView(R2.id.add_product_wholesale_item)
-    RecyclerView addProductWholeSaleItem;
-    @BindView(R2.id.add_product_add_whole_sale_item)
-    TextView addProductAddWholeSaleItem;
-    WholesaleAdapter wholesaleAdapter;
+    @BindView(R2.id.add_product_wholesale_layout)
+    WholesaleLayout wholesaleLayout;
 
     @BindView(R2.id.add_product_add_to)
     RecyclerView addProductAddTo;
@@ -695,7 +695,11 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         outState.putInt(SAVED_WEIGHT_UNIT, selectedWeightUnit);// 9.a
         outState.putString(SAVED_WEIGHT_DESC, selectedWeightUnitDesc); // 9.b
         outState.putString(SAVED_MIN_ORDER, addProductMinimumOrder.getText().toString());// 10
-        outState.putParcelable(SAVED_WHOLE_SALE, Parcels.wrap(new ArrayList<WholeSaleAdapterModel>(wholesaleAdapter.getDatas())));// 11
+        ArrayList<WholeSaleAdapterModel> models = new ArrayList<>();
+        for(WholesaleModel model : wholesaleLayout.getDatas()){
+            models.add(new WholeSaleAdapterModel(model.getQtyOne(), model.getQtyTwo(), model.getQtyPrice()));
+        }
+        outState.putParcelable(SAVED_WHOLE_SALE, Parcels.wrap(models));// 11
         if (checkNotNull(displayEtalaseModels))
             outState.putParcelable(SAVED_ETALASES, Parcels.wrap(new ArrayList<TextDeleteModel>(displayEtalaseModels)));// 12
         outState.putString(SAVED_NEW_ETALASE, addProductAddToNewEtalase.getText().toString());// 13
@@ -1565,23 +1569,23 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
 
     @Override
     public void initWholeSaleAdapter(ArrayList<WholeSaleAdapterModel> wholeSaleAdapterModels) {
-        wholesaleAdapter = new WholesaleAdapter(wholeSaleAdapterModels);
-        wholesaleAdapter.setCurrencyUnit(selectedCurrencyDesc);
-        wholesaleAdapter.setPrice(CurrencyFormatHelper.RemoveNonNumeric(addProductPrice.getText().toString()));
-
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        addProductWholeSaleItem.setLayoutManager(layoutManager);
-        addProductWholeSaleItem.setAdapter(wholesaleAdapter);
+        List<WholesaleModel> models = new ArrayList<>();
+        for (WholeSaleAdapterModel model : wholeSaleAdapterModels){
+            models.add(new WholesaleModel(
+                    Double.valueOf(model.getQuantityOne()).intValue(),
+                    Double.valueOf(model.getQuantityTwo()).intValue(),
+                    model.getWholeSalePrice()));
+        }
+        wholesaleLayout.setupParams(
+                Double.parseDouble(addProductPrice.getText().toString()),
+                (selectedCurrencyDesc.equals("Rp") ? PriceUtils.CURRENCY_RUPIAH : PriceUtils.CURRENCY_DOLLAR),
+                models);
     }
 
     public void initWholeSaleAdapter() {
-        wholesaleAdapter = new WholesaleAdapter();
-        wholesaleAdapter.setCurrencyUnit(selectedCurrencyDesc);
-        wholesaleAdapter.setPrice(CurrencyFormatHelper.RemoveNonNumeric(addProductPrice.getText().toString()));
-
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        addProductWholeSaleItem.setLayoutManager(layoutManager);
-        addProductWholeSaleItem.setAdapter(wholesaleAdapter);
+        wholesaleLayout.setupParams(
+                Double.parseDouble(addProductPrice.getText().toString()),
+                (selectedCurrencyDesc.equals("Rp") ? PriceUtils.CURRENCY_RUPIAH : PriceUtils.CURRENCY_DOLLAR));
     }
 
     @Override
@@ -1773,9 +1777,15 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
     public void onResume() {
         super.onResume();
         if (alreadyLoad) {
+            List<WholesaleModel> models = new ArrayList<>();
             for (WholeSaleAdapterModel model : wholeSaleAdapterModels) {
-                wholesaleAdapter.add(model);
+                models.add(new WholesaleModel(
+                        Double.valueOf(model.getQuantityOne()).intValue(),
+                        Double.valueOf(model.getQuantityTwo()).intValue(),
+                        model.getWholeSalePrice()
+                ));
             }
+            wholesaleLayout.setDatas(models);
         }
         mSimpleFacebook = SimpleFacebook.getInstance(getActivity());
         dismissErrorProductName();
@@ -1868,7 +1878,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
                     return;
                 }
                 if (selectedCurrencyDesc != null && !item.getLabel().equals(selectedCurrencyDesc)) {
-                    wholesaleAdapter.clearAll();
+                    wholesaleLayout.clearAll();
                 }
                 selectedCurrency = selectedIndex;
                 selectedCurrencyDesc = item.getLabel();
@@ -2102,24 +2112,18 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         if (!verif.getModel1()) {
             addProductPriceAlert.setErrorEnabled(true);
             addProductPriceAlert.setError(verif.getModel2());
-            wholesaleAdapter.clearAll();
+            wholesaleLayout.clearAll();
         } else {
             dismissPriceError();
-            wholesaleAdapter.setCurrencyUnit(selectedCurrencyDesc);
+            wholesaleLayout.setCurrencyUnit((selectedCurrencyDesc.equals("Rp"))? PriceUtils.CURRENCY_RUPIAH: PriceUtils.CURRENCY_DOLLAR);
 //            wholesaleAdapter.setCurrencyUnit(addProductCurrency.getSelectedItem().toString());
-            wholesaleAdapter.setPrice(s.toString());
+            wholesaleLayout.setPrice(Double.parseDouble(s.toString()));
         }
     }
 
     private void dismissPriceError() {
         addProductPriceAlert.setError(null);
         addProductPriceAlert.setErrorEnabled(false);
-    }
-
-    @OnClick(R2.id.add_product_add_whole_sale_item)
-    public void onWholeSaleAdd() {
-        wholesaleAdapter.add(new WholeSaleAdapterModel(0, 0, 0));
-        addProductWholeSaleItem.scrollToPosition(wholesaleAdapter.getDatas().size() - 1);
     }
 
     @Override
@@ -2616,13 +2620,17 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         inputAddProductModel.setMinimumOrder(Integer.parseInt(addProductMinimumOrder.getText().toString()));
 
         // 7. get harga grosir - compile ketika disini doang - kosongkan terlebih dahulu,
-        Log.d(TAG, messageTAG + wholesaleAdapter.getDatas());
+        Log.d(TAG, messageTAG + wholesaleLayout.getDatas());
         // TODO : SOMETHING WRONG WITH WHOLESALE LOGIC, IT WILL BYPASS THE WHOLESALE CHECK
 //        if(!wholesaleAdapter.isNoError()){
 //            Snackbar.make(parentView, "Terjadi kesalahan pada harga grosir", Snackbar.LENGTH_LONG).show();
 //            return null;
 //        }
-        inputAddProductModel.setWholeSales(wholesaleAdapter.getDatas());
+        List<WholeSaleAdapterModel> datas = new ArrayList<>();
+        for (WholesaleModel model : wholesaleLayout.getDatas()){
+            datas.add(new WholeSaleAdapterModel(model.getQtyOne(), model.getQtyTwo(), model.getQtyPrice()));
+        }
+        inputAddProductModel.setWholeSales(datas);
 
         // 9. get terima pengembalian
         String[] array2 = getResources().getStringArray(R.array.return_policy);
