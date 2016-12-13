@@ -33,10 +33,6 @@ public class GCMHandler {
     private String regid;
     private GCMHandlerListener gcmlistener;
 
-    public interface GCMHandlerListener {
-        void onGCMSuccess(String gcmId);
-    }
-
     public GCMHandler (Context context) {
         this.context = context;
     }

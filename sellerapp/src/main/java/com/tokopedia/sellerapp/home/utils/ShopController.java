@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
@@ -58,7 +59,7 @@ public class ShopController extends BaseController{
         this.gson = gson;
     }
 
-    public void init(GCMHandler.GCMHandlerListener gcmHandlerListener){
+    public void init(GCMHandlerListener gcmHandlerListener){
         if(gcmHandlerListener == null)
             return;
 

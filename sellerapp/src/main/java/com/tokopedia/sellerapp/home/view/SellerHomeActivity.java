@@ -52,6 +52,7 @@ import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.sellerapp.drawer.DrawerVariableSeller;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
@@ -113,7 +114,7 @@ import rx.functions.Action1;
 import static com.tokopedia.sellerapp.drawer.DrawerVariableSeller.goToShopNewOrder;
 import static com.tokopedia.core.drawer.DrawerVariable.startIntent;
 
-public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.GCMHandlerListener,
+public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerListener,
         SessionHandler.onLogoutListener {
     private static final String ARG_TRUECALLER_PACKAGE = "com.truecaller";
     public static final String messageTAG = SellerHomeActivity.class.getSimpleName();
