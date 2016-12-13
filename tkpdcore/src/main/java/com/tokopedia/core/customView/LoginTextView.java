@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Space;
+import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
@@ -196,7 +197,7 @@ public class LoginTextView extends LinearLayout {
     }
 
     public void setImageNextToText(){
-        Space space = (Space) findViewById(R.id.space);
-        space.setVisibility(GONE);
+        TextView textView = (TextView) findViewById(R.id.provider_name);
+        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1));
     }
 }
