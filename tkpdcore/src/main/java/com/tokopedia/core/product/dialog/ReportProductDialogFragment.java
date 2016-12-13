@@ -64,8 +64,6 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
     TextInputLayout wrapper;
     @BindView(R2.id.report_type)
     Spinner reportTypeSpinner;
-    @BindView(R2.id.line_spinner)
-    View lineSpinner;
     @BindView(R2.id.error_spinner)
     TextView errorSpinner;
     @BindView(R2.id.dummy_spinner)
@@ -150,7 +148,6 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
     @OnItemSelected(R2.id.report_type)
     public void onItemSpinnerSelected() {
         errorSpinner.setVisibility(View.GONE);
-        lineSpinner.setBackgroundColor(getResources().getColor(R.color.white));
         ReportType reportChose = reportTypeList.get(reportTypeSpinner.getSelectedItemPosition());
         int response = reportChose.getReportResponse();
 
@@ -214,7 +211,6 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
 
     private void resetError() {
         errorSpinner.setVisibility(View.GONE);
-        lineSpinner.setBackgroundColor(getResources().getColor(R.color.grey_500));
         wrapper.setErrorEnabled(false);
         wrapper.setError(null);
     }
@@ -235,7 +231,6 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
         if (error.toLowerCase().contains("kategori")) {
             errorSpinner.setVisibility(View.VISIBLE);
             errorSpinner.setText(error);
-            lineSpinner.setBackgroundColor(getResources().getColor(R.color.red_500));
         } else if (error.toLowerCase().contains("deskripsi")) {
             wrapper.setErrorEnabled(true);
             wrapper.setError(error);

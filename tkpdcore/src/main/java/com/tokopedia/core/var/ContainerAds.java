@@ -24,5 +24,5 @@ public class ContainerAds {
     public ArrayList<String> Referer = new ArrayList<String>();
     public ArrayList<String> ShopLucky = new ArrayList<String>();
     public ArrayList<String> ProductClickUrl = new ArrayList<String>();
-	public ArrayList<List<ProductItem.Badge>> badges = new ArrayList<>();
+	public ArrayList<List<Badge>> badges = new ArrayList<>();
 }

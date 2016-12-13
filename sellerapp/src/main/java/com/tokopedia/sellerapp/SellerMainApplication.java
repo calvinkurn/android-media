@@ -1,18 +1,23 @@
 package com.tokopedia.sellerapp;
 
+import android.support.v7.app.AppCompatActivity;
+
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreListener;
+import com.tokopedia.core.drawer.DrawerVariable;
 import com.tokopedia.core.util.HockeyAppHelper;
+import com.tokopedia.sellerapp.drawer.DrawerVariableSeller;
 
 /**
  * Created by ricoharisin on 11/11/16.
  */
 
-public class SellerMainApplication extends MainApplication {
+public class SellerMainApplication extends MainApplication implements TkpdCoreListener {
 
     public static final int SELLER_APPLICATION = 2;
 
     @Override
-    protected int getApplicationType() {
+    public int getApplicationType() {
         return SELLER_APPLICATION;
     }
 
@@ -21,5 +26,10 @@ public class SellerMainApplication extends MainApplication {
         super.onCreate();
         HockeyAppHelper.setEnableDistribution(BuildConfig.ENABLE_DISTRIBUTION);
         com.tokopedia.core.util.GlobalConfig.APPLICATION_TYPE = SELLER_APPLICATION;
+    }
+
+    @Override
+    public DrawerVariable getDrawer(AppCompatActivity activity) {
+        return new DrawerVariableSeller(activity);
     }
 }

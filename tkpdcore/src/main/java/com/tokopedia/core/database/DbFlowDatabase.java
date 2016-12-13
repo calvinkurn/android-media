@@ -13,7 +13,7 @@ public class DbFlowDatabase {
 
     public static final String NAME = "tokopedia";
 
-    public static final int VERSION = 5;
+    public static final int VERSION = 7;
 
     @Migration(version = DbFlowDatabase.VERSION, database = DbFlowDatabase.class)
     public static class Migration2 extends BaseMigration {
@@ -23,4 +23,6 @@ public class DbFlowDatabase {
             //database.execSQL("DROP TABLE IF EXISTS RechargeOperatorModelDB_Table");
         }
     }
+
+
 }

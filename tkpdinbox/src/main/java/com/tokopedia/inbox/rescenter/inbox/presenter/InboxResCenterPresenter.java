@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.inbox.rescenter.inbox.model.Paging;
 import com.tokopedia.inbox.rescenter.inbox.model.ResCenterInboxData;
 
@@ -74,4 +75,5 @@ public interface InboxResCenterPresenter {
 
     void setActionOnItemListClickListener(Context context, String resolutionID);
 
+    InboxResCenterActivity.Model getResCenterTabModel();
 }

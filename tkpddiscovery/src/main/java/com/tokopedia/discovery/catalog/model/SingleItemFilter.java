@@ -1,10 +1,12 @@
 package com.tokopedia.discovery.catalog.model;
 
+import com.tokopedia.core.customadapter.ColoredFilterModel;
+
 /**
  * @author by alvarisi on 10/19/16.
  */
 
-public class SingleItemFilter {
+public class SingleItemFilter implements ColoredFilterModel{
     private String id;
     private String name;
 
@@ -32,5 +34,10 @@ public class SingleItemFilter {
     @Override
     public String toString() {
         return this.name;
+    }
+
+    @Override
+    public String getText() {
+        return name;
     }
 }

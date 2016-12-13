@@ -113,9 +113,9 @@ public class LoginTextView extends LinearLayout {
     }
 
     public void setUp() {
-        try {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             setBackground(shape);
-        }catch (NoSuchMethodError error){
+        }else {
             setBackgroundDrawable(shape);
         }
     }

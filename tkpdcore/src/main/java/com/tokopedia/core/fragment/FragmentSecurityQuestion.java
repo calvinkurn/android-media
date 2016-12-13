@@ -253,44 +253,8 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     public void showViewOtp() {
         vOtp.setVisibility(View.VISIBLE);
         vSecurity.setVisibility(View.GONE);
-        titleOTP.setText("Halo, "+SessionHandler.getTempLoginName(getActivity()));
-        String phone = SessionHandler.getTempPhoneNumber(getActivity()).toString();
-        phone = phone.substring(phone.length() - 4);
-        phoneNumber.setText("XXXX-XXXX-"+phone);
         securityQuestion.doRequestOtp();
-        //TODO: add textwathcer with auto added dash 081X-XXXX-XXXX
-        /*phoneNumber.addTextChangedListener(new PhoneNumberFormattingTextWatcher());*/
-        /*phoneNumber.addTextChangedListener(new TextWatcher() {
-            int keyDel = 0;
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                phoneNumber.setOnKeyListener(new View.OnKeyListener() {
-                    @Override
-                    public boolean onKey(View v, int keyCode, KeyEvent event) {
-                        if (keyCode == KeyEvent.KEYCODE_DEL)
-                            keyDel = 1;
-                        return false;
-                    }
-                });
-                if (keyDel == 0) {
-                    int len = phoneNumber.getText().length();
-                    if(len == 3) {
-                        phoneNumber.setText(phoneNumber.getText() + "-");
-                        phoneNumber.setSelection(phoneNumber.getText().length());
-                    }
-                } else {
-                    keyDel = 0;
-                }
-            }
-            @Override
-            public void afterTextChanged(Editable arg0) {
-                // TODO Auto-generated method stub
-            }
-            @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-                // TODO Auto-generated method stub
-            }
-        });*/
+        titleOTP.setText("Halo, "+SessionHandler.getTempLoginName(getActivity()));
     }
 
 
@@ -304,11 +268,16 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
                 vSendOtp.setText(securityQuestion.getOtpSendString());
                 vInputOtp.setEnabled(true);
                 titleSecurity.setText(getResources().getString(R.string.content_security_question_phone));
+                String phone = SessionHandler.getTempPhoneNumber(getActivity());
+                phone = phone.substring(phone.length() - 4);
+                phoneNumber.setText(new StringBuilder().append("XXXX-XXXX-").append(phone).toString());
+                phoneNumber.setVisibility(View.VISIBLE);
                 break;
             case QuestionFormModel.OTP_Email_TYPE:
                 vSendOtp.setText(securityQuestion.getOtpSendString());
                 vInputOtp.setEnabled(true);
                 titleSecurity.setText(getResources().getString(R.string.content_security_question_email));
+                phoneNumber.setVisibility(View.GONE);
                 break;
         }
         ;

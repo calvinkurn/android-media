@@ -23,6 +23,8 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.talk.inboxtalk.fragment.InboxTalkFragment;
 import com.tokopedia.core.talk.inboxtalk.intentservice.InboxTalkIntentService;
 import com.tokopedia.core.talk.inboxtalk.intentservice.InboxTalkResultReceiver;
@@ -317,6 +319,18 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
         public int getCount() {
             return contentArray.length;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isTaskRoot() && GlobalConfig.isSellerApp()) {
+            startActivity(SellerAppRouter.getSellerHomeActivity(this));
+            finish();
+        } else if(isTaskRoot()){
+            startActivity(HomeRouter.getHomeActivity(this));
+            finish();
+        }
+        super.onBackPressed();
     }
 
 }

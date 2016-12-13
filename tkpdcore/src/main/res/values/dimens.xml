@@ -97,6 +97,11 @@
     <dimen name="medal_size">20dp</dimen>
     <dimen name="icon_size">48dp</dimen>
 
+    <!-- youtube thumbnail dimens -->
+    <dimen name="youtube_video_thumbnail_overlay_size">48dp</dimen>
+    <dimen name="youtube_place_holder_horizontal_width">120dp</dimen>
+    <dimen name="youtube_place_holder_horizontal_height">68dp</dimen>
+
     <!-- Inbox Ticket -->
     <dimen name="padding_comment_area">45dp</dimen>
     <dimen name="img_index_home">144.5dp</dimen>

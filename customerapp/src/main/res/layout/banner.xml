@@ -32,6 +32,7 @@
                 android:layout_alignBottom="@+id/view_pager"
                 android:layout_gravity="left|center"
                 android:layout_weight="0.8"
+                android:layout_marginLeft="2dp"
                 android:padding="@dimen/padding_vs" />
 
             <TextView
