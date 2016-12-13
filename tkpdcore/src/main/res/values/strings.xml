@@ -1820,4 +1820,14 @@ di Tokopedia Sekarang!</string>
     <string name="manage_terms_and_conditions">Syarat dan Ketentuan</string>
     <string name="manage_privacy">Kebijakan Privasi</string>
 
+
+
+    <!--START : string related to Product Picture Download -->
+    <string name="download_picture">Mengunduh gambar</string>
+    <string name="download_in_process">Unduh gambar dalam proses</string>
+    <string name="download_failed">Gambar gagal diunduh</string>
+    <string name="download_success">Gambar berhasil diunduh</string>
+    <string name="preview_picture_open_action">BUKA</string>
+    <string name="preview_picture_download_action">Download Gambar</string>
+    <string name="download_error">Terjadi kesalahan pengunduhan gambar</string>
 </resources>
