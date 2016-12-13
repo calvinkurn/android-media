@@ -172,7 +172,6 @@ public class OfficialShopHomeFragment extends Fragment {
     private boolean overrideUrl(String url) {
         Uri uri = Uri.parse(url);
         if(uri.getScheme().equals("tokopedia")) {
-            Log.d(TAG, "segment "+uri.getPathSegments().get(1));
             String id = uri.getLastPathSegment();
             switch (uri.getPathSegments().get(1)) {
                 case "etalase":
