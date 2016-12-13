@@ -1,6 +1,6 @@
 package com.tokopedia.core;
 
-import android.*;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Notification;
@@ -13,16 +13,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.BoolRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.Html;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,47 +45,29 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 @RuntimePermissions
 public class PreviewProductImage extends TActivity {
 
-    private TouchViewPager vp;
-    private TextView Desc;
+    @BindView(R2.id.view_pager)
+    public TouchViewPager vpImage;
+    @BindView(R2.id.desc)
+    public TextView tvDescription;
+    @BindView(R2.id.download_image)
+    public TextView tvDownload;
     private TouchImageAdapter adapter;
-    private ArrayList<String> fileLoc;
-    private ArrayList<String> imgDesc;
+    private ArrayList<String> fileLocations;
+    private ArrayList<String> imageDescriptions;
     private int lastPos = 0;
-
-    @Override
-    public String getScreenName() {
-        return AppScreen.SCREEN_PRODUCT_IMAGE_PREVIEW;
-    }
-
-
-    private String processPicName(int index) {
-        String picName = "";
-        Date date = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyyhhmmss");
-        String dateString = sdf.format(date);
-        try {
-            picName = getIntent().getExtras().getString("product_name", dateString)
-                    .replaceAll("[^a-zA-Z0-9]", "") + "_" + Integer.toString(index + 1);
-        } catch (NullPointerException e) {
-            finish();
-        }
-        return picName;
-    }
+    private int position = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,24 +75,41 @@ public class PreviewProductImage extends TActivity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
-        hideToolbar();
+        hideActionBar();
         inflateView(R.layout.activity_preview_product_image);
+        ButterKnife.bind(this);
+        Bundle extras;
 
-        fileLoc = getIntent().getExtras().getStringArrayList("fileloc");
-        imgDesc = getIntent().getExtras().getStringArrayList("image_desc");
-        int pos = getIntent().getExtras().getInt("img_pos");
-        vp = (TouchViewPager) findViewById(R.id.view_pager);
-        Desc = (TextView) findViewById(R.id.desc);
-        if (imgDesc == null) {
-            Desc.setVisibility(View.GONE);
+        if (getIntent().getExtras() != null) {
+            extras = getIntent().getExtras();
+            fileLocations = extras.getStringArrayList("fileloc");
+            imageDescriptions = extras.getStringArrayList("image_desc");
+            position = extras.getInt("img_pos");
         } else {
-            Desc.setText(Html.fromHtml(imgDesc.get(0)));
+            fileLocations = new ArrayList<>();
+            imageDescriptions = new ArrayList<>();
         }
-        TextView tvDownload = (TextView) findViewById(R.id.download_image);
-        tvDownload.setOnClickListener(getDownloadClickListener());
-        adapter = new TouchImageAdapter(PreviewProductImage.this, fileLoc, 100);
 
-        vp.setOnPageChangeListener(new OnPageChangeListener() {
+        adapter = new TouchImageAdapter(PreviewProductImage.this, fileLocations, 100);
+        setViewListener();
+    }
+
+
+    private void hideActionBar() {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+    }
+
+    private void setViewListener() {
+        if (imageDescriptions == null) {
+            tvDescription.setVisibility(View.GONE);
+        } else {
+            tvDescription.setText(Html.fromHtml(imageDescriptions.get(0)));
+        }
+        tvDownload.setOnClickListener(getDownloadClickListener());
+
+        vpImage.addOnPageChangeListener(new OnPageChangeListener() {
             @Override
             public void onPageSelected(int arg0) {
 
@@ -123,10 +118,10 @@ public class PreviewProductImage extends TActivity {
             @Override
             public void onPageScrolled(int arg0, float arg1, int arg2) {
                 if (arg0 != lastPos) {
-                    if (imgDesc == null) {
-                        Desc.setVisibility(View.GONE);
+                    if (imageDescriptions == null) {
+                        tvDescription.setVisibility(View.GONE);
                     } else {
-                        Desc.setText(imgDesc.get(arg0));
+                        tvDescription.setText(imageDescriptions.get(arg0));
                     }
                     lastPos = arg0;
                 }
@@ -142,30 +137,24 @@ public class PreviewProductImage extends TActivity {
 
             @Override
             public void OnStateZoom() {
-                vp.SetAllowPageSwitching(false);
+                vpImage.SetAllowPageSwitching(false);
             }
 
             @Override
             public void OnStateDefault() {
-                vp.SetAllowPageSwitching(true);
+                vpImage.SetAllowPageSwitching(true);
             }
         });
-        vp.setAdapter(adapter);
-        vp.setCurrentItem(pos);
+        vpImage.setAdapter(adapter);
+        vpImage.setCurrentItem(position);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.action_save_button_img, menu);
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
-     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -186,17 +175,10 @@ public class PreviewProductImage extends TActivity {
     }
 
     private void openImageDownloaded(String path) {
-        String packageName = PreviewProductImage.this.getApplicationContext().getPackageName();
         File file = new File(path);
         Intent sintent = new Intent();
         sintent.setAction(Intent.ACTION_VIEW);
-        Uri uri;
-        if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-            uri = FileProvider.getUriForFile(PreviewProductImage.this, packageName + ".fileprovider", file);
-            sintent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        } else {
-            uri = Uri.fromFile(file);
-        }
+        Uri uri = Uri.fromFile(file);
         sintent.setDataAndType(uri, "image/*");
         startActivity(sintent);
         PreviewProductImage.this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -236,9 +218,29 @@ public class PreviewProductImage extends TActivity {
         dialog.show();
     }
 
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_PRODUCT_IMAGE_PREVIEW;
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private String processPicName(int index) {
+        String picName = "";
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyyhhmmss");
+        String dateString = sdf.format(date);
+        try {
+            picName = getIntent().getExtras().getString("product_name", dateString)
+                    .replaceAll("[^a-zA-Z0-9]", "") + "_" + Integer.toString(index + 1);
+        } catch (NullPointerException e) {
+            finish();
+        }
+        return picName;
+    }
+
     @NeedsPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public void actionDownloadAndSavePicture() {
-        final String filenameParam = processPicName(vp.getCurrentItem()) + ".jpg";
+        final String filenameParam = processPicName(vpImage.getCurrentItem()) + ".jpg";
         Random random = new Random();
         final int randomNotificationId = generateRandomInteger(random);
         final NotificationManager notificationManager =
@@ -280,15 +282,8 @@ public class PreviewProductImage extends TActivity {
                 } else {
                     Intent intent = new Intent();
                     intent.setAction(Intent.ACTION_VIEW);
-                    String packageName = PreviewProductImage.this.getApplicationContext().getPackageName();
                     File file = new File(path);
-                    Uri uri;
-                    if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-                        uri = FileProvider.getUriForFile(PreviewProductImage.this, packageName + ".fileprovider", file);
-                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    } else {
-                        uri = Uri.fromFile(file);
-                    }
+                    Uri uri = Uri.fromFile(file);
                     intent.setDataAndType(uri, "image/*");
 
                     PendingIntent pIntent = PendingIntent.getActivity(PreviewProductImage.this, 0, intent, 0);
@@ -346,9 +341,7 @@ public class PreviewProductImage extends TActivity {
                         .show();
             }
         };
-        ImageHandler.loadImageBitmap2(getApplicationContext(), fileLoc.get(vp.getCurrentItem()), targetListener);
-
-
+        ImageHandler.loadImageBitmap2(getApplicationContext(), fileLocations.get(vpImage.getCurrentItem()), targetListener);
     }
 
     @OnShowRationale(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
