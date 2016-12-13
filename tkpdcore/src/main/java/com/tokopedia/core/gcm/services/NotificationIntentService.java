@@ -1,11 +1,11 @@
-package com.tokopedia.core.notification.services;
+package com.tokopedia.core.gcm.services;
 
 import android.app.IntentService;
 import android.content.Intent;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.notification.interactor.NotificationDataInteractor;
-import com.tokopedia.core.notification.model.FcmTokenUpdate;
+import com.tokopedia.core.gcm.interactor.NotificationDataInteractor;
+import com.tokopedia.core.gcm.model.FcmTokenUpdate;
 
 import rx.Subscriber;
 

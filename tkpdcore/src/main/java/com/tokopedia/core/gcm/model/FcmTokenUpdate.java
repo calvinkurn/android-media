@@ -1,4 +1,4 @@
-package com.tokopedia.core.notification.model;
+package com.tokopedia.core.gcm.model;
 
 /**
  * @author  by alvarisi on 12/8/16.

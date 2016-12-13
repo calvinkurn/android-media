@@ -1,4 +1,4 @@
-package com.tokopedia.core.notification.interactor.source;
+package com.tokopedia.core.gcm.interactor.source;
 
 import com.tokopedia.core.network.apiservices.notification.NotificationService;
 

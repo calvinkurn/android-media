@@ -1,6 +1,6 @@
-package com.tokopedia.core.notification.interactor;
+package com.tokopedia.core.gcm.interactor;
 
-import com.tokopedia.core.notification.interactor.source.CloudNotificationDataSource;
+import com.tokopedia.core.gcm.interactor.source.CloudNotificationDataSource;
 
 import java.util.Map;
 

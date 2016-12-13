@@ -1,4 +1,4 @@
-package com.tokopedia.core.notification.interactor;
+package com.tokopedia.core.gcm.interactor;
 
 import java.util.Map;
 
