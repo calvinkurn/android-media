@@ -28,15 +28,17 @@
             />
     </RelativeLayout>
     <CheckBox
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/dont_show"
         android:textColor="@color/grey_700"
+        android:layout_marginTop="@dimen/margin_small"
         android:text="Jangan tampilkan lagi"
         />
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_small">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
