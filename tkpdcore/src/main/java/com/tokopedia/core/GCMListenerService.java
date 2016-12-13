@@ -22,6 +22,8 @@ import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.gcm.GcmListenerService;
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -63,7 +65,7 @@ import java.util.Map;
 /**
  * Created by hangnadi on 9/7/15.
  */
-public class GCMListenerService extends GcmListenerService {
+public class GCMListenerService extends FirebaseMessagingService {
 
     private LocalCacheHandler cache;
     private NotificationListener listener;
@@ -75,7 +77,9 @@ public class GCMListenerService extends GcmListenerService {
     }
 
     @Override
-    public void onMessageReceived(String from, Bundle data) {
+    public void onMessageReceived(RemoteMessage message) {
+        Bundle data = convertMap(message.getData());
+
         CommonUtils.dumper(data.toString());
         cache = new LocalCacheHandler(this, TkpdCache.G_CODE);
         if (isAllowToHandleNotif(data)) {
@@ -83,6 +87,17 @@ public class GCMListenerService extends GcmListenerService {
             tunnelData(data);
         }
         setAnalyticHandler(data.getString("tkp_code"));
+    }
+
+    private Bundle convertMap(Map<String, String> map) {
+        Bundle bundle = new Bundle(map != null ? map.size() : 0);
+        if (map != null) {
+            for (Map.Entry<String, String> entry : map.entrySet()) {
+                bundle.putString(entry.getKey(), entry.getValue());
+                CommonUtils.dumper("FCM key "+entry.getKey()+" value "+ entry.getValue());
+            }
+        }
+        return bundle;
     }
 
     private void setAnalyticHandler(String code) {
@@ -115,10 +130,8 @@ public class GCMListenerService extends GcmListenerService {
                 createNotification(data, ShopInfoActivity.class);
                 break;
             case TkpdState.GCMServiceState.GCM_DEEPLINK:
-                if (SessionHandler.isV4Login(this)) {
-                    if(CustomerRouter.getDeeplinkClass() != null) {
-                        createNotification(data, CustomerRouter.getDeeplinkClass());
-                    }
+                if (CustomerRouter.getDeeplinkClass() != null) {
+                    createNotification(data, CustomerRouter.getDeeplinkClass());
                 }
                 break;
             case TkpdState.GCMServiceState.GCM_CART:

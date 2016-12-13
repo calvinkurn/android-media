@@ -31,6 +31,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.customadapter.LazyListView;
 import com.tokopedia.core.customadapter.ListViewEtalaseEditor;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.shop.MyShopEtalaseActService;
 import com.tokopedia.core.network.apiservices.shop.MyShopEtalaseService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -192,6 +193,12 @@ public class EtalaseShopEditor extends TActivity {
                             @Override
                             public void onError(Throwable e) {
                                 Log.e(STUART, ETALASE_SHOP_EDITOR + "on error");
+                                NetworkErrorHelper.showEmptyState(EtalaseShopEditor.this, mainView, new NetworkErrorHelper.RetryClickedListener() {
+                                    @Override
+                                    public void onRetryClicked() {
+                                        GetEtalaseV4();
+                                    }
+                                });
                             }
 
                             @Override

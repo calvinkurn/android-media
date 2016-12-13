@@ -11,6 +11,7 @@ import android.util.Log;
 
 import com.google.gson.GsonBuilder;
 import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
@@ -93,7 +94,10 @@ public class LoginService extends IntentService implements DownloadServiceConsta
         intent.putExtra(TYPE, type);
         intent.putExtra(IS_NEED_LOGIN, isNeedLogin);
 
-        /* Send optional extras to Download IntentService */
+        LocalCacheHandler loginUuid = new LocalCacheHandler(context, Login.LOGIN_UUID_KEY);
+        String uuid = loginUuid.getString(Login.UUID_KEY, Login.DEFAULT_UUID_VALUE);
+        intent.putExtra(Login.UUID_KEY, uuid);
+
         switch (type){
             case LOGIN_ACCOUNTS_TOKEN :
                 LoginViewModel model= Parcels.unwrap(bundle.getParcelable(LOGIN_VIEW_MODEL_KEY));
@@ -179,6 +183,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                 data.setGrantType(Login.GRANT_SDK);
                 data.setSocialType(Login.GooglePlusType);
                 data.setParcelable(Parcels.wrap(loginGoogleModel));
+                data.setUUID(intent.getStringExtra(Login.UUID_KEY));
                 handleAccounts(data);
                 break;
 
@@ -196,6 +201,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                 data.setGrantType(Login.GRANT_SDK);
                 data.setSocialType(Login.FacebookType);
                 data.setParcelable(Parcels.wrap(loginFacebookViewModel));
+                data.setUUID(intent.getStringExtra(Login.UUID_KEY));
                 handleAccounts(data);
                 break;
 
@@ -206,6 +212,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                 data.setCode(intent.getStringExtra(Login.CODE));
                 data.setRedirectUri("https://" + intent.getStringExtra(Login.REDIRECT_URI));
                 data.setGrantType(Login.GRANT_WEBVIEW);
+                data.setUUID(intent.getStringExtra(Login.UUID_KEY));
                 handleAccounts(data);
                 break;
 

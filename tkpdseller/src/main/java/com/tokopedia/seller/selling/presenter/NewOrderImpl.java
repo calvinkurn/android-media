@@ -239,6 +239,7 @@ public class NewOrderImpl extends NewOrder {
                 listDatas.addAll(modelNewOrder.DataList);
                 view.notifyDataSetChanged(listDatas);
                 view.setRefreshPullEnable(true);
+                view.showFab();
             }
 
             @Override
@@ -250,6 +251,7 @@ public class NewOrderImpl extends NewOrder {
                 }
                 view.getPaging().setHasNext(false);
                 view.setRefreshPullEnable(true);
+                view.showFab();
                 view.removeRetry();
             }
 
@@ -262,10 +264,12 @@ public class NewOrderImpl extends NewOrder {
             public void OnError() {
                 finishConnection();
                 if (listDatas.size() == 0) {
+                    view.hideFab();
                     view.addRetry();
                 } else {
                     NetworkErrorHelper.showSnackbar((Activity) context);
                 }
+
                 view.setRefreshPullEnable(true);
             }
 

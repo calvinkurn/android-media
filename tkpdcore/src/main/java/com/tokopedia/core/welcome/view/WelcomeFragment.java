@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.View;
 import android.view.WindowManager;
@@ -161,17 +162,12 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
 //                getActivity().finish();
             }
         });
-
-        register.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = SessionRouter.getLoginActivityIntent(context);
-                intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.REGISTER);
-                intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
-                startActivity(intent);
-//                getActivity().finish();
-            }
-        });
+//
+//        register.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//            }
+//        });
 
         String sourceString = "Belum punya akun? "+ "Daftar";
 
@@ -180,7 +176,10 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
         spannable.setSpan(new ClickableSpan() {
                               @Override
                               public void onClick(View view) {
-
+                                  Intent intent = SessionRouter.getLoginActivityIntent(context);
+                                  intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.REGISTER);
+                                  intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
+                                  startActivity(intent);
                               }
 
                               @Override
@@ -194,6 +193,7 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
                 ,0);
 
         register.setText(spannable, TextView.BufferType.SPANNABLE);
+        register.setMovementMethod(LinkMovementMethod.getInstance());
 
         isNotFirstRun = new LocalCacheHandler(getActivity(), "FirstRun");
 

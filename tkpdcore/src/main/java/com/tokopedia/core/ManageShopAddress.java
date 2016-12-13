@@ -37,6 +37,7 @@ import com.tokopedia.core.prototype.ShopSettingCache;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.shoplocation.model.deletelocation.DeleteLocationResponse;
 import com.tokopedia.core.shoplocation.model.getshopaddress.ShopAddress;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 
 import org.json.JSONArray;
@@ -68,6 +69,7 @@ public class ManageShopAddress extends TActivity {
     private ArrayList<String> LocationDistrictId = new ArrayList<String>();
     private ArrayList<String> LocationAddress = new ArrayList<String>();
 
+    private View mainView;
     private LazyListView LocationListView;
     private ListViewManageShopLocation LocationAdapter;
     private NoResultHandler noResult;
@@ -96,6 +98,7 @@ public class ManageShopAddress extends TActivity {
         compositeSubscription = RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         inflateView(R.layout.activity_manage_shop_address);
+        mainView = (View) findViewById(R.id.mainView);
         noResult = new NoResultHandler(getWindow().getDecorView().getRootView());
         MainProgress = new TkpdProgressDialog(this, TkpdProgressDialog.MAIN_PROGRESS, getWindow().getDecorView().getRootView());
         MainProgress.setLoadingViewId(R.id.include_loading);
@@ -386,7 +389,7 @@ public class ManageShopAddress extends TActivity {
                                 MainProgress.dismiss();
                                 mState = HIDE_MENU;
                                 invalidateOptionsMenu();
-                                NetworkErrorHelper.showEmptyState(ManageShopAddress.this, getWindow().getDecorView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+                                NetworkErrorHelper.showEmptyState(ManageShopAddress.this, mainView, new NetworkErrorHelper.RetryClickedListener() {
                                     @Override
                                     public void onRetryClicked() {
                                         GetShopLocationsV4();
@@ -476,8 +479,10 @@ public class ManageShopAddress extends TActivity {
                 // make sure this auto-generated web page URL is correct.
                 // Otherwise, set the URL to null.
                 Uri.parse("http://host/path"),
+                GlobalConfig.isSellerApp() ?
+                        Uri.parse("android-app://com.tokopedia.sellerapp/http/host/path"):
+                        Uri.parse("android-app://com.tokopedia.tkpd/http/host/path")
                 // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://com.tokopedia.tkpd/http/host/path")
         );
         AppIndex.AppIndexApi.start(client, viewAction);
     }
@@ -495,8 +500,10 @@ public class ManageShopAddress extends TActivity {
                 // make sure this auto-generated web page URL is correct.
                 // Otherwise, set the URL to null.
                 Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://com.tokopedia.tkpd/http/host/path")
+
+                GlobalConfig.isSellerApp() ?
+                        Uri.parse("android-app://com.tokopedia.sellerapp/http/host/path"):
+                        Uri.parse("android-app://com.tokopedia.tkpd/http/host/path")
         );
         AppIndex.AppIndexApi.end(client, viewAction);
         client.disconnect();

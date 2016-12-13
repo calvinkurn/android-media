@@ -529,8 +529,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
             getSupportFragmentManager().popBackStack();
         } else {
             if(GlobalConfig.isSellerApp()){
-                Intent intent = new Intent(Login.this, WelcomeActivity.class);
-                startActivity(intent);
+
             }
             finish();
         }

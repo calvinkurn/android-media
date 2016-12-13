@@ -56,4 +56,8 @@ public interface SellingStatusTransactionView extends BaseView {
     String getStartDate();
 
     String getEndDate();
+
+    void showFab();
+
+    void hideFab();
 }

@@ -185,12 +185,8 @@ public class ActivationResentFragment extends TkpdBaseV4Fragment implements Base
 
                 boolean isSuccess = "1".equals(result.optString("is_success"));
                 if (isSuccess) {
-                    String t1 = ActivationResentFragment.this.getActivity()
-                            .getString(R.string.alert_account_pending_first_half);
-                    String t3 = ActivationResentFragment.this.getActivity().getString(R.string
-                            .alert_account_pending_second_half);
                     alertboxNavigateToParentIndexHome(
-                            t1 + "" + email.getText() + " " + t3
+                            statusMessages.toString().replace("[","").replace("]","")
                     );
                 } else {
                     SnackbarManager.make(getActivity(), errorMessages.toString(), Snackbar.LENGTH_LONG).show();

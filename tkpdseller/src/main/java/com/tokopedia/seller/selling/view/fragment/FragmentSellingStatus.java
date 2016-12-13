@@ -167,6 +167,16 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
     }
 
     @Override
+    public void showFab() {
+        fab.show();
+    }
+
+    @Override
+    public void hideFab() {
+        fab.hide();
+    }
+
+    @Override
     public void onNetworkError(int type, Object... data) {
         swipeToRefresh.setRefreshing(false);
         if(adapter.getListData().size() == 0) {
@@ -422,16 +432,14 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
             @Override
             public void onSuccess(String refNum) {
                 progressDialog.dismiss();
-                adapter.clearData();
-                presenter.getStatusTransactionList(getUserVisibleHint(), SellingStatusTransactionImpl.Type.STATUS);
+                presenter.refreshOnFilter();
             }
 
             @Override
             public void onFailed(String errorMsg) {
                 CommonUtils.UniversalToast(getActivity(), errorMsg);
                 progressDialog.dismiss();
-                adapter.clearData();
-                presenter.getStatusTransactionList(getUserVisibleHint(), SellingStatusTransactionImpl.Type.STATUS);
+                presenter.refreshOnFilter();
             }
         };
     }
