@@ -35,12 +35,8 @@ public class NotificationIntentService extends IntentService {
     }
 
     private void handleUpdateClientId(FcmTokenUpdate data) {
-        TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put("device_id_old", data.getOldToken());
-        param.put("device_id_new", data.getNewToken());
-        param.put("os_type", data.getOsType());
         if (mInteractor == null) mInteractor = new NotificationDataInteractor();
-        mInteractor.updateClientFcmId(param, new UpdateClientIdSubscriber());
+        mInteractor.updateTokenServer(data, new UpdateClientIdSubscriber());
     }
 
     private class UpdateClientIdSubscriber extends Subscriber<String> {

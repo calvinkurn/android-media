@@ -1,6 +1,7 @@
 package com.tokopedia.core.network.apiservices.notification.apis;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 
 import java.util.Map;
 
@@ -17,5 +18,5 @@ import rx.Observable;
 public interface NotificationApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.FCM.UPDATE_FCM)
-    Observable<Response<String>> update(@FieldMap Map<String, String> params);
+    Observable<Response<TkpdResponse>> update(@FieldMap Map<String, String> params);
 }

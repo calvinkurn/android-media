@@ -8,6 +8,7 @@ import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.localytics.android.Localytics;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.gcm.model.FcmTokenUpdate;
+import com.tokopedia.core.util.SessionHandler;
 
 import rx.Observable;
 
@@ -38,11 +39,14 @@ public class FCMInstanceIDService extends FirebaseInstanceIdService implements I
             String localToken = GCMHandler.getRegistrationId(getApplicationContext());
             Log.d(TAG, "RefreshedToken: " + token + ", localToken: " + localToken);
             if (!localToken.equals(token)) {
+                SessionHandler sessionHandler = new SessionHandler(getApplicationContext());
+
                 IFcmRefreshTokenReceiver fcmRefreshTokenReceiver = new FcmRefreshTokenReceiver(this.getApplication());
                 FcmTokenUpdate tokenUpdate = new FcmTokenUpdate();
                 tokenUpdate.setOldToken(localToken);
                 tokenUpdate.setNewToken(token);
                 tokenUpdate.setOsType(String.valueOf(2));
+                tokenUpdate.setAccessToken(sessionHandler.getAccessToken(this));
                 fcmRefreshTokenReceiver.onTokenReceive(Observable.just(tokenUpdate));
             }
         }

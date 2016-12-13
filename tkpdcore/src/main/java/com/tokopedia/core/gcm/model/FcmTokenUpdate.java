@@ -11,11 +11,16 @@ public class FcmTokenUpdate implements Parcelable{
     private String mOldToken;
     private String mNewToken;
     private String mOsType;
+    private String mAccessToken;
+
+    public FcmTokenUpdate() {
+    }
 
     protected FcmTokenUpdate(Parcel in) {
         mOldToken = in.readString();
         mNewToken = in.readString();
         mOsType = in.readString();
+        mAccessToken = in.readString();
     }
 
     public static final Creator<FcmTokenUpdate> CREATOR = new Creator<FcmTokenUpdate>() {
@@ -29,9 +34,6 @@ public class FcmTokenUpdate implements Parcelable{
             return new FcmTokenUpdate[size];
         }
     };
-
-    public FcmTokenUpdate() {
-    }
 
     public String getOldToken() {
         return mOldToken;
@@ -57,6 +59,14 @@ public class FcmTokenUpdate implements Parcelable{
         mOsType = osType;
     }
 
+    public String getAccessToken() {
+        return mAccessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        mAccessToken = accessToken;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -67,5 +77,6 @@ public class FcmTokenUpdate implements Parcelable{
         dest.writeString(mOldToken);
         dest.writeString(mNewToken);
         dest.writeString(mOsType);
+        dest.writeString(mAccessToken);
     }
 }
