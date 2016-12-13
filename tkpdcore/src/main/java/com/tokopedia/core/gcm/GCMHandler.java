@@ -3,14 +3,11 @@ package com.tokopedia.core.gcm;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.localytics.android.Localytics;
@@ -18,8 +15,6 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.analytics.TrackingUtils;
-
-import java.io.IOException;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -32,6 +27,7 @@ public class GCMHandler {
     private static final String TAG = GCMHandler.class.getSimpleName();
     private static int STATUS_OK = 1;
     private static int STATUS_ERROR = 2;
+    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private String SENDER_ID = "673352445777";
     private Context context;
     private String regid;
@@ -53,10 +49,9 @@ public class GCMHandler {
         if(listener!=null)
             gcmlistener = listener;
 
-        Integer resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
-        if (resultCode == ConnectionResult.SUCCESS) {
+        if (checkPlayServices()) {
             regid = getRegistrationId(context);
-            CommonUtils.dumper("start gcm get");
+            CommonUtils.dumper(TAG+ "start gcm get");
             if (regid.isEmpty()) {
                 registerFCM();
             } else {
@@ -67,13 +62,8 @@ public class GCMHandler {
                     gcmlistener.onGCMSuccess(regid);
             }
         } else {
-            Log.d(TAG, GCMHandler.class.getSimpleName()+" failed to get gcm id !!!");
-            Dialog dialog = GooglePlayServicesUtil.getErrorDialog(resultCode, (Activity)context, 0);
-            if (dialog != null) {
-                dialog.show();
-            }
+            Log.d(TAG, " failed to get gcm id !!!");
         }
-
     }
 
     private void registerFCM(){
@@ -151,4 +141,18 @@ public class GCMHandler {
     }
 
 
+    private boolean checkPlayServices() {
+        GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
+        int result = googleAPI.isGooglePlayServicesAvailable(context);
+        if(result != ConnectionResult.SUCCESS) {
+            if(googleAPI.isUserResolvableError(result)) {
+                googleAPI.getErrorDialog((Activity) context, result,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            }
+
+            return false;
+        }
+
+        return true;
+    }
 }
