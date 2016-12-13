@@ -26,6 +26,7 @@ import com.tokopedia.discovery.dynamicfilter.presenter.CategoryPresenterImpl;
 import com.tokopedia.discovery.dynamicfilter.presenter.CategoryView;
 import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterPresenter;
 import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterView;
+import com.tokopedia.discovery.util.NpaLinearLayoutManager;
 
 import org.parceler.Parcels;
 
@@ -143,8 +144,7 @@ public class DynamicFilterCategoryFragment extends BaseFragment<CategoryPresente
     @Override
     public void setupRecyclerView() {
         // Set the layout manager to a LinearLayout manager for vertical list
-        dynamicFilterCategory.setLayoutManager(new LinearLayoutManager(getActivity()));
-//        dynamicFilterCategory.addItemDecoration(new DividerItemDecoration(getActivity()));
+        dynamicFilterCategory.setLayoutManager(new NpaLinearLayoutManager(getActivity()));
         dynamicFilterCategory.setHasFixedSize(true);
         dynamicFilterCategory.setAdapter(dynamicCategoryAdapter);
     }
