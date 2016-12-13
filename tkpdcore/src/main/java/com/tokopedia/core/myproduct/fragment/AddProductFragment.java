@@ -328,7 +328,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
     @BindView(R2.id.add_product_product_name)
     EditText addProductProductName;
 
-    String selectedCurrencyDesc;
+    String selectedCurrencyDesc = "Rp";
     @BindView(R2.id.add_product_currency)
     ClickToSelectEditText<SimpleTextModel> addProductCurrency;
     @BindView(R2.id.add_product_price)
@@ -1585,7 +1585,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
     public void initWholeSaleAdapter() {
         wholesaleLayout.setupParams(
                 Double.parseDouble(addProductPrice.getText().toString()),
-                (selectedCurrencyDesc.equals("Rp") ? PriceUtils.CURRENCY_RUPIAH : PriceUtils.CURRENCY_DOLLAR));
+                (selectedCurrencyDesc == null || selectedCurrencyDesc.equals("Rp") ? PriceUtils.CURRENCY_RUPIAH : PriceUtils.CURRENCY_DOLLAR));
     }
 
     @Override
