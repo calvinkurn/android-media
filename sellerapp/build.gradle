@@ -58,8 +58,8 @@ def archiveAPK(variant, output) {
 android {
 
     project.ext {
-        defaultVersionCode = 2030104;
-        defaultVersionName = "2.3.1";
+        defaultVersionCode = 1000404;
+        defaultVersionName = "1.0.4";
     }
 
     compileSdkVersion 24
