@@ -426,7 +426,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void processResultTalk(int resultCode, Intent data) {
         if (isResultOK(resultCode) & isIntentOK(data)) {
-            if (data.getBooleanExtra(TalkProductActivity.RESULT_TALK_HAS_ADDED, false)) {
+            if (data.getExtras() != null && data.getBooleanExtra(
+                    TalkProductActivity.RESULT_TALK_HAS_ADDED, false
+            )) {
                 viewListener.onProductTalkUpdated();
             }
         }
@@ -523,7 +525,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void saveStateVideoData(Bundle outState, String key, VideoData value) {
-        if (value !=null) outState.putParcelable(key, value);
+        if (value != null) outState.putParcelable(key, value);
     }
 
     @Override
@@ -761,20 +763,20 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     private void requestVideo(@NonNull Context context, @NonNull String productID) {
         retrofitInteractor.requestProductVideo(context, productID,
                 new RetrofitInteractor.VideoLoadedListener() {
-            @Override
-            public void onSuccess(@NonNull VideoData data) {
-                viewListener.loadVideo(data);
-            }
+                    @Override
+                    public void onSuccess(@NonNull VideoData data) {
+                        viewListener.loadVideo(data);
+                    }
 
-            @Override
-            public void onError() {
+                    @Override
+                    public void onError() {
 
-            }
-        });
+                    }
+                });
     }
 
     private void setGoldMerchantFeatures(Context context, ProductDetailData productDetailData) {
-        if(productDetailData.getShopInfo().getShopIsGold() == 1) {
+        if (productDetailData.getShopInfo().getShopIsGold() == 1) {
             requestVideo(context, productDetailData.getInfo().getProductId().toString());
         }
     }
