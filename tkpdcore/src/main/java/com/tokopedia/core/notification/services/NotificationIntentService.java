@@ -5,7 +5,7 @@ import android.content.Intent;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.notification.interactor.NotificationDataInteractor;
-import com.tokopedia.core.notification.model.FcmClientIdUpdate;
+import com.tokopedia.core.notification.model.FcmTokenUpdate;
 
 import rx.Subscriber;
 
@@ -28,16 +28,16 @@ public class NotificationIntentService extends IntentService {
         int code = intent.getIntExtra(ARG_EXTRA_GCM_UPDATE, 0);
         switch (code) {
             case CODE_EXTRA_GCM_UPDATE:
-                FcmClientIdUpdate data = intent.getParcelableExtra(ARG_EXTRA_GCM_UPDATE_DATA);
+                FcmTokenUpdate data = intent.getParcelableExtra(ARG_EXTRA_GCM_UPDATE_DATA);
                 handleUpdateClientId(data);
                 break;
         }
     }
 
-    private void handleUpdateClientId(FcmClientIdUpdate data) {
+    private void handleUpdateClientId(FcmTokenUpdate data) {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put("device_id_old", data.getOldClientId());
-        param.put("device_id_new", data.getNewClientId());
+        param.put("device_id_old", data.getOldToken());
+        param.put("device_id_new", data.getNewToken());
         param.put("os_type", data.getOsType());
         if (mInteractor == null) mInteractor = new NotificationDataInteractor();
         mInteractor.updateClientFcmId(param, new UpdateClientIdSubscriber());
