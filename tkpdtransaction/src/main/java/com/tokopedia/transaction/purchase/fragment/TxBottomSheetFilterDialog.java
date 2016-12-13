@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.design.widget.BottomSheetDialog;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -66,7 +67,6 @@ public class TxBottomSheetFilterDialog implements AdapterView.OnItemSelectedList
             Activity activity,
             AllTxFilter allTxFilter,
             OnFilterListener onFilterListener) {
-
         this.activity = activity;
         this.allTxFilter = allTxFilter;
         this.onFilterListener = onFilterListener;
@@ -175,7 +175,6 @@ public class TxBottomSheetFilterDialog implements AdapterView.OnItemSelectedList
 
     public void dismiss() {
         dialog.dismiss();
-        unbinder.unbind();
     }
 
     public void setStateFilterSelection(String txFilterID) {
@@ -184,5 +183,9 @@ public class TxBottomSheetFilterDialog implements AdapterView.OnItemSelectedList
             if (txFilterItemList.get(i).getId().equalsIgnoreCase(txFilterID)) index = i;
         }
         spnFilter.setSelection(index);
+    }
+
+    void unbindDialog() {
+        unbinder.unbind();
     }
 }

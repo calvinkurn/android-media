@@ -538,6 +538,7 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
     public void onDestroyView() {
         super.onDestroyView();
         presenter.onDestroyView();
+        bottomSheetFilterDialog.unbindDialog();
         getActivity().unregisterReceiver(txUIReceiver);
     }
 
