@@ -51,7 +51,7 @@ public class PaymentGatewayAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         viewHolder.tvName.setText(item != null ? item.getGatewayName() : "");
         ImageHandler.LoadImage(viewHolder.ivLogo, item != null ? item.getGatewayImage() : "");
         viewHolder.tvFee.setText(item != null ? item.getGatewayDesc() : "");
-        viewHolder.tvName.setOnClickListener(new View.OnClickListener() {
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 actionListener.onSelectedPaymentGateway(item);

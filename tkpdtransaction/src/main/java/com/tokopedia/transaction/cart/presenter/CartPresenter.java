@@ -334,8 +334,6 @@ public class CartPresenter implements ICartPresenter {
         List<String> dropShipperStringList = new ArrayList<>();
         List<String> partialDeliverStringList = new ArrayList<>();
 
-
-        //  StringBuilder partialDeliverParamBuilder = new StringBuilder();
         for (CartItemEditable data : cartItemEditables) {
             if (data.isDropShipper()) {
                 dropShipperNameList.add(data.getDropShipperName());
@@ -447,6 +445,43 @@ public class CartPresenter implements ICartPresenter {
             view.renderVisibleTickerGTM(message);
         } else {
             view.renderGoneTickerGTM();
+        }
+    }
+
+    @Override
+    public void processValidationCheckoutData(Activity activity) {
+        List<CartItemEditable> cartItemEditables = view.getItemCartListCheckoutData();
+        boolean canBeCheckout = true;
+
+        CheckoutData.Builder checkoutDataBuilder = view.getCheckoutDataBuilder();
+        String voucherCode = view.getVoucherCodeCheckoutData();
+        boolean isUseVoucher = view.isCheckoutDataUseVoucher();
+
+        if (isUseVoucher && voucherCode.isEmpty()) {
+            view.renderErrorCheckVoucher("Voucher Kosong");
+            return;
+        } else if (isUseVoucher && !voucherCode.isEmpty()) {
+            view.renderDisableErrorCheckVoucher();
+            checkoutDataBuilder.voucherCode(voucherCode);
+        }
+
+        String depositCheckout = view.getDepositCheckoutData();
+        checkoutDataBuilder.usedDeposit(depositCheckout.replaceAll("\\D+", ""));
+
+        for (int i = 0, cartItemEditablesSize = cartItemEditables.size();
+             i < cartItemEditablesSize; i++) {
+            CartItemEditable cartItemEditable = cartItemEditables.get(i);
+            view.renderErrorCartItem(cartItemEditable);
+            if (cartItemEditable.finalizeAllData().getErrorType()
+                    != CartItemEditable.ERROR_NON) {
+                canBeCheckout = false;
+            }
+        }
+        if (!canBeCheckout) {
+            view.showToastMessage("Keranjang tidak dapat diproses," +
+                    " mohon periksa kembali keranjang Anda.");
+        } else {
+            processCheckoutCart(activity, checkoutDataBuilder, cartItemEditables);
         }
     }
 
