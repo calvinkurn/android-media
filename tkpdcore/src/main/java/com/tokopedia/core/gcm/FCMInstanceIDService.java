@@ -13,7 +13,7 @@ import com.tokopedia.core.util.SessionHandler;
 import rx.Observable;
 
 /**
- * Created by Herdi_WORK on 09.12.16.
+ * @author by Herdi_WORK on 09.12.16.
  */
 
 public class FCMInstanceIDService extends FirebaseInstanceIdService implements IFCMInstanceIDService {
@@ -40,14 +40,16 @@ public class FCMInstanceIDService extends FirebaseInstanceIdService implements I
             Log.d(TAG, "RefreshedToken: " + token + ", localToken: " + localToken);
             if (!localToken.equals(token)) {
                 SessionHandler sessionHandler = new SessionHandler(getApplicationContext());
-
-                IFcmRefreshTokenReceiver fcmRefreshTokenReceiver = new FcmRefreshTokenReceiver(this.getApplication());
-                FcmTokenUpdate tokenUpdate = new FcmTokenUpdate();
-                tokenUpdate.setOldToken(localToken);
-                tokenUpdate.setNewToken(token);
-                tokenUpdate.setOsType(String.valueOf(2));
-                tokenUpdate.setAccessToken(sessionHandler.getAccessToken(this));
-                fcmRefreshTokenReceiver.onTokenReceive(Observable.just(tokenUpdate));
+                if (sessionHandler.isV4Login()) {
+                    IFcmRefreshTokenReceiver fcmRefreshTokenReceiver = new FcmRefreshTokenReceiver(getBaseContext());
+                    FcmTokenUpdate tokenUpdate = new FcmTokenUpdate();
+                    tokenUpdate.setOldToken(localToken);
+                    tokenUpdate.setNewToken(token);
+                    tokenUpdate.setOsType(String.valueOf(2));
+                    tokenUpdate.setAccessToken(sessionHandler.getAccessToken(this));
+                    tokenUpdate.setUserId(sessionHandler.getLoginID());
+                    fcmRefreshTokenReceiver.onTokenReceive(Observable.just(tokenUpdate));
+                }
             }
         }
     }

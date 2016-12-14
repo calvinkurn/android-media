@@ -11,7 +11,7 @@ import rx.Subscriber;
  */
 
 public interface INotificationDataInteractor {
-    void updateTokenServer(FcmTokenUpdate data, Subscriber<String> subscriber);
+    void updateTokenServer(FcmTokenUpdate data, Subscriber<Boolean> subscriber);
 
     void unSubscribeObservable();
 }

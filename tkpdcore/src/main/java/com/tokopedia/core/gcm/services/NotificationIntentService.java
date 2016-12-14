@@ -39,7 +39,7 @@ public class NotificationIntentService extends IntentService {
         mInteractor.updateTokenServer(data, new UpdateClientIdSubscriber());
     }
 
-    private class UpdateClientIdSubscriber extends Subscriber<String> {
+    private class UpdateClientIdSubscriber extends Subscriber<Boolean> {
         @Override
         public void onCompleted() {
 
@@ -51,7 +51,7 @@ public class NotificationIntentService extends IntentService {
         }
 
         @Override
-        public void onNext(String s) {
+        public void onNext(Boolean s) {
 
         }
     }

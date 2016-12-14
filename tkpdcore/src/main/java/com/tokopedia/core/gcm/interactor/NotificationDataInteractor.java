@@ -1,5 +1,6 @@
 package com.tokopedia.core.gcm.interactor;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.gcm.interactor.source.CloudNotificationDataSource;
 import com.tokopedia.core.gcm.model.FcmTokenUpdate;
 
@@ -24,7 +25,7 @@ public class NotificationDataInteractor implements INotificationDataInteractor {
     }
 
     @Override
-    public void updateTokenServer(FcmTokenUpdate data, Subscriber<String> subscriber) {
+    public void updateTokenServer(FcmTokenUpdate data, Subscriber<Boolean> subscriber) {
         this.mCloudNotificationDataSource.updateTokenServer(data)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())

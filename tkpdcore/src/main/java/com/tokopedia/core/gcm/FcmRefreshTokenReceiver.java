@@ -1,8 +1,10 @@
 package com.tokopedia.core.gcm;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.gcm.model.FcmTokenUpdate;
 import com.tokopedia.core.gcm.services.NotificationIntentService;
 
@@ -14,10 +16,10 @@ import rx.functions.Action1;
  */
 
 public class FcmRefreshTokenReceiver implements IFcmRefreshTokenReceiver {
-    private Application mApplication;
+    private Context mContext;
 
-    public FcmRefreshTokenReceiver(Application application) {
-        this.mApplication = application;
+    public FcmRefreshTokenReceiver(Context context) {
+        this.mContext = context;
     }
 
     @Override
@@ -25,10 +27,10 @@ public class FcmRefreshTokenReceiver implements IFcmRefreshTokenReceiver {
         tokenUpdate.subscribe(new Action1<FcmTokenUpdate>() {
             @Override
             public void call(FcmTokenUpdate fcmTokenUpdate) {
-                Intent intent = new Intent(mApplication, NotificationIntentService.class);
+                Intent intent = new Intent(Intent.ACTION_SYNC, null, mContext,  NotificationIntentService.class);
                 intent.putExtra(NotificationIntentService.ARG_EXTRA_GCM_UPDATE, NotificationIntentService.CODE_EXTRA_GCM_UPDATE);
                 intent.putExtra(NotificationIntentService.ARG_EXTRA_GCM_UPDATE_DATA, fcmTokenUpdate);
-                mApplication.startService(intent);
+                mContext.startService(intent);
             }
         }, new Action1<Throwable>() {
             @Override

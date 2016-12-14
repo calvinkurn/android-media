@@ -1,9 +1,12 @@
 package com.tokopedia.core.gcm.interactor.source;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.gcm.model.FcmTokenUpdate;
 import com.tokopedia.core.network.apiservices.notification.NotificationService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+
+import org.json.JSONException;
 
 import java.util.Map;
 
@@ -16,7 +19,9 @@ import rx.functions.Func1;
  */
 
 public class CloudNotificationDataSource {
-    public Observable<String> updateTokenServer(FcmTokenUpdate data) {
+    private static final String KEY_FLAG_IS_SUCCESS = "is_success";
+
+    public Observable<Boolean> updateTokenServer(FcmTokenUpdate data) {
         return Observable.just(data)
                 .flatMap(new Func1<FcmTokenUpdate, Observable<Response<TkpdResponse>>>() {
                     @Override
@@ -25,15 +30,42 @@ public class CloudNotificationDataSource {
                         param.put("device_id_old", requestData.getOldToken());
                         param.put("device_id_new", requestData.getNewToken());
                         param.put("os_type", requestData.getOsType());
+                        param.put("user_id", requestData.getUserId());
                         NotificationService service = new NotificationService(requestData.getAccessToken());
-                        return service.getApi().update(param);
+                        return service.getApi().updateToken(param);
                     }
                 })
-                .map(new Func1<Response<TkpdResponse>, String>() {
+                .map(new Func1<Response<TkpdResponse>, Boolean>() {
                     @Override
-                    public String call(Response<TkpdResponse> response) {
+                    public Boolean call(Response<TkpdResponse> response) {
                         if (response.isSuccessful()) {
-                            return response.body().getStatus();
+                            TkpdResponse tkpdResponse = response.body();
+                            if (tkpdResponse.isError()) {
+                                if (!tkpdResponse.getErrorMessages().isEmpty()) {
+                                    return false;
+                                } else {
+                                    return false;
+                                }
+                            }
+                            if (tkpdResponse.isNullData()) {
+                                return false;
+                            }
+                            if (!response.body().getJsonData().isNull(KEY_FLAG_IS_SUCCESS)) {
+                                try {
+                                    int status = response.body().getJsonData()
+                                            .getInt(KEY_FLAG_IS_SUCCESS);
+                                    switch (status) {
+                                        case 1:
+                                            return true;
+                                        default:
+                                            return false;
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    return false;
+                                }
+                            }
+                            return false;
                         } else {
                             throw new RuntimeException("error");
                         }
