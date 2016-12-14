@@ -38,7 +38,7 @@ public class ProductVideoHorizontalScroll extends HorizontalScrollView {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.horizontal_scroll_youtube_view, this, true);
-        placeHolder = (LinearLayout) findViewById(R.id.place_holder);
+        placeHolder = (LinearLayout) findViewById(R.id.youtube_video_place_holder);
     }
 
     public void renderData(VideoData data) {

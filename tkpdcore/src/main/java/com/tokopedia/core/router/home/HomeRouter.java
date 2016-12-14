@@ -25,7 +25,7 @@ public class HomeRouter {
     public static final int INIT_STATE_FRAGMENT_HOTLIST = 3;
 
     private static final String ACTIVITY_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
-    private static final String ACTIVITY_BANNER_WEBVIEW = "com.tokopedia.tkpd.home.BannerWebView";
+    private static final String ACTIVITY_BANNER_WEBVIEW = "com.tokopedia.core.home.BannerWebView";
 
 
     public static Intent getHomeActivity(Context context) {
