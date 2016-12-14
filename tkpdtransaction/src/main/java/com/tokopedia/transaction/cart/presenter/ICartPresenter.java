@@ -18,29 +18,21 @@ import java.util.List;
  */
 
 public interface ICartPresenter {
-    void processGetCartData(@NonNull Activity activity);
+    void processGetCartData();
 
-    void processCancelCart(@NonNull Activity activity, @NonNull TransactionList data);
+    void processCancelCart(@NonNull TransactionList cartData);
 
-    void processCancelCartProduct(@NonNull Activity activity, @NonNull TransactionList cartData,
+    void processCancelCartProduct(@NonNull TransactionList cartData,
                                   @NonNull CartProduct cartProductData);
 
-    void processSubmitEditCart(@NonNull Activity activity, @NonNull TransactionList cartData,
+    void processSubmitEditCart(@NonNull TransactionList cartData,
                                @NonNull List<ProductEditData> cartProductEditDataList);
 
-    void processUpdateInsurance(@NonNull Activity activity, @NonNull TransactionList cartData,
-                                boolean useInsurance);
+    void processUpdateInsurance(@NonNull TransactionList cartData, boolean useInsurance);
 
-    void processCheckoutCart(
-            @NonNull Activity activity, @NonNull CheckoutData.Builder checkoutDataBuilder,
-            @NonNull List<CartItemEditable> cartItemEditables
-    );
-
-    void processCheckVoucherCode(@NonNull Activity activity, @NonNull String voucherCode);
-
-    void processStep2PaymentCart(Activity activity, TopPayParameterData data);
+    void processCheckVoucherCode();
 
     void processGetTickerGTM();
 
-    void processValidationCheckoutData(Activity activity);
+    void processValidationCheckoutData();
 }

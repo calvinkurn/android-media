@@ -1,17 +1,14 @@
 package com.tokopedia.transaction.cart.presenter;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.payment.interactor.PaymentNetInteractor;
-import com.tokopedia.core.payment.interactor.PaymentNetInteractorImpl;
+import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.cart.interactor.CartDataInteractor;
 import com.tokopedia.transaction.cart.interactor.ICartDataInteractor;
 import com.tokopedia.transaction.cart.listener.ICartView;
@@ -23,7 +20,6 @@ import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import com.tokopedia.transaction.cart.model.cartdata.TransactionList;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutDropShipperData;
-import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 import com.tokopedia.transaction.cart.model.voucher.VoucherData;
 import com.tokopedia.transaction.cart.services.CartIntentService;
 import com.tokopedia.transaction.exception.HttpErrorException;
@@ -41,22 +37,19 @@ import rx.Subscriber;
 /**
  * @author anggaprasetiyo on 11/3/16.
  */
-
 public class CartPresenter implements ICartPresenter {
     private final ICartView view;
     private final ICartDataInteractor cartDataInteractor;
-    private final PaymentNetInteractor paymentNetInteractor;
 
     public CartPresenter(ICartView iCartView) {
         this.view = iCartView;
         this.cartDataInteractor = new CartDataInteractor();
-        this.paymentNetInteractor = new PaymentNetInteractorImpl();
     }
 
     @Override
-    public void processGetCartData(@NonNull Activity activity) {
+    public void processGetCartData() {
         view.renderInitialLoadingCartInfo();
-        TKPDMapParam<String, String> params = AuthUtil.generateParamsNetwork(activity);
+        TKPDMapParam<String, String> params = view.getGeneratedAuthParamNetwork(null);
         cartDataInteractor.getCartData(params, new Subscriber<ResponseTransform<CartModel>>() {
             @Override
             public void onCompleted() {
@@ -96,15 +89,15 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
-    public void processCancelCart(@NonNull Activity activity, @NonNull TransactionList data) {
+    public void processCancelCart(@NonNull TransactionList cartData) {
         view.showProgressLoading();
         TKPDMapParam<String, String> maps = new TKPDMapParam<>();
-        maps.put("address_id", data.getCartDestination().getAddressId());
-        maps.put("shipment_id", data.getCartShipments().getShipmentId());
-        maps.put("shipment_package_id", data.getCartShipments().getShipmentPackageId());
-        maps.put("shop_id", data.getCartShop().getShopId());
-        cartDataInteractor.cancelCart(AuthUtil.generateParamsNetwork(activity, maps),
-                AuthUtil.generateParamsNetwork(activity),
+        maps.put("address_id", cartData.getCartDestination().getAddressId());
+        maps.put("shipment_id", cartData.getCartShipments().getShipmentId());
+        maps.put("shipment_package_id", cartData.getCartShipments().getShipmentPackageId());
+        maps.put("shop_id", cartData.getCartShop().getShopId());
+        cartDataInteractor.cancelCart(view.getGeneratedAuthParamNetwork(maps),
+                view.getGeneratedAuthParamNetwork(null),
                 new Subscriber<ResponseTransform<CartModel>>() {
                     @Override
                     public void onCompleted() {
@@ -123,7 +116,8 @@ public class CartPresenter implements ICartPresenter {
                         CartModel data = responseTransform.getData();
                         view.showToastMessage(
                                 responseTransform.getMessageSuccess().isEmpty()
-                                        ? "Berhasil menghapus item keranjang"
+                                        ? view.getStringFromResource
+                                        (R.string.label_message_success_cancel_cart)
                                         : responseTransform.getMessageSuccess()
                         );
                         if (data.getTransactionLists().isEmpty()) {
@@ -152,8 +146,7 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
-    public void processCancelCartProduct(@NonNull Activity activity,
-                                         @NonNull TransactionList cartData,
+    public void processCancelCartProduct(@NonNull TransactionList cartData,
                                          @NonNull CartProduct cartProductData) {
         view.showProgressLoading();
         TKPDMapParam<String, String> maps = new TKPDMapParam<>();
@@ -162,8 +155,8 @@ public class CartPresenter implements ICartPresenter {
         maps.put("shipment_id", cartData.getCartShipments().getShipmentId());
         maps.put("shipment_package_id", cartData.getCartShipments().getShipmentPackageId());
         maps.put("shop_id", cartData.getCartShop().getShopId());
-        cartDataInteractor.cancelCart(AuthUtil.generateParamsNetwork(activity, maps),
-                AuthUtil.generateParamsNetwork(activity),
+        cartDataInteractor.cancelCart(view.getGeneratedAuthParamNetwork(maps),
+                view.getGeneratedAuthParamNetwork(null),
                 new Subscriber<ResponseTransform<CartModel>>() {
                     @Override
                     public void onCompleted() {
@@ -181,7 +174,7 @@ public class CartPresenter implements ICartPresenter {
                         view.hideProgressLoading();
                         CartModel data = responseTransform.getData();
                         view.showToastMessage(responseTransform.getMessageSuccess().isEmpty()
-                                ? "Berhasil menghapus item keranjang"
+                                ? view.getStringFromResource(R.string.label_message_success_cancel_cart)
                                 : responseTransform.getMessageSuccess());
                         if (data.getTransactionLists().isEmpty()) {
                             view.renderEmptyCart();
@@ -208,8 +201,7 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
-    public void processSubmitEditCart(@NonNull Activity activity,
-                                      @NonNull TransactionList cartData,
+    public void processSubmitEditCart(@NonNull TransactionList cartData,
                                       @NonNull List<ProductEditData> cartProductEditDataList) {
         view.showProgressLoading();
         TKPDMapParam<String, String> maps = new TKPDMapParam<>();
@@ -220,8 +212,8 @@ public class CartPresenter implements ICartPresenter {
         maps.put("cart_sp_id", cartData.getCartShipments().getShipmentPackageId());
         maps.put("lp_flag", "1");
         maps.put("cart_string", cartData.getCartString());
-        cartDataInteractor.updateCart(AuthUtil.generateParamsNetwork(activity, maps),
-                AuthUtil.generateParamsNetwork(activity),
+        cartDataInteractor.updateCart(view.getGeneratedAuthParamNetwork(maps),
+                view.getGeneratedAuthParamNetwork(null),
                 new Subscriber<ResponseTransform<CartModel>>() {
                     @Override
                     public void onCompleted() {
@@ -268,8 +260,7 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
-    public void processUpdateInsurance(@NonNull Activity activity,
-                                       @NonNull TransactionList cartData, boolean useInsurance) {
+    public void processUpdateInsurance(@NonNull TransactionList cartData, boolean useInsurance) {
         view.showProgressLoading();
         TKPDMapParam<String, String> maps = new TKPDMapParam<>();
         maps.put("address_id", cartData.getCartDestination().getAddressId());
@@ -277,8 +268,8 @@ public class CartPresenter implements ICartPresenter {
         maps.put("shipment_id", cartData.getCartShipments().getShipmentId());
         maps.put("shipment_package_id", cartData.getCartShipments().getShipmentPackageId());
         maps.put("shop_id", cartData.getCartShop().getShopId());
-        cartDataInteractor.updateInsuranceCart(AuthUtil.generateParamsNetwork(activity, maps),
-                AuthUtil.generateParamsNetwork(activity),
+        cartDataInteractor.updateInsuranceCart(view.getGeneratedAuthParamNetwork(maps),
+                view.getGeneratedAuthParamNetwork(null),
                 new Subscriber<ResponseTransform<CartModel>>() {
                     @Override
                     public void onCompleted() {
@@ -324,10 +315,8 @@ public class CartPresenter implements ICartPresenter {
                 });
     }
 
-    @Override
-    public void processCheckoutCart(@NonNull Activity activity,
-                                    @NonNull CheckoutData.Builder checkoutDataBuilder,
-                                    @NonNull List<CartItemEditable> cartItemEditables) {
+    private void processCheckoutCart(@NonNull CheckoutData.Builder checkoutDataBuilder,
+                                     @NonNull List<CartItemEditable> cartItemEditables) {
         List<String> dropShipperNameList = new ArrayList<>();
         List<String> dropShipperPhoneList = new ArrayList<>();
 
@@ -386,20 +375,20 @@ public class CartPresenter implements ICartPresenter {
                 .step("1")
                 .build();
 
-        Intent intent = new Intent(Intent.ACTION_SYNC, null, activity,
+        Intent intent = new Intent(Intent.ACTION_SYNC, null, view.getContextActivity(),
                 CartIntentService.class);
         intent.putExtra(CartIntentService.EXTRA_ACTION,
                 CartIntentService.SERVICE_ACTION_GET_PARAMETER_DATA);
         intent.putExtra(CartIntentService.EXTRA_CHECKOUT_DATA, checkoutData);
-        activity.startService(intent);
+        view.executeService(intent);
     }
 
     @Override
-    public void processCheckVoucherCode(@NonNull Activity activity, @NonNull String voucherCode) {
+    public void processCheckVoucherCode() {
         view.showProgressLoading();
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
-        params.put("voucher_code", voucherCode);
-        cartDataInteractor.checkVoucherCode(AuthUtil.generateParamsNetwork(activity, params),
+        params.put("voucher_code", view.getVoucherCodeCheckoutData());
+        cartDataInteractor.checkVoucherCode(view.getGeneratedAuthParamNetwork(params),
                 new Subscriber<ResponseTransform<VoucherData>>() {
                     @Override
                     public void onCompleted() {
@@ -434,11 +423,6 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
-    public void processStep2PaymentCart(Activity activity, TopPayParameterData data) {
-
-    }
-
-    @Override
     public void processGetTickerGTM() {
         if (TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_CART).equalsIgnoreCase("true")) {
             String message = TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_CART_TEXT);
@@ -449,7 +433,7 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
-    public void processValidationCheckoutData(Activity activity) {
+    public void processValidationCheckoutData() {
         List<CartItemEditable> cartItemEditables = view.getItemCartListCheckoutData();
         boolean canBeCheckout = true;
 
@@ -478,10 +462,11 @@ public class CartPresenter implements ICartPresenter {
             }
         }
         if (!canBeCheckout) {
-            view.showToastMessage("Keranjang tidak dapat diproses," +
-                    " mohon periksa kembali keranjang Anda.");
+            view.showToastMessage(view.getStringFromResource(
+                    R.string.label_message_error_cannot_checkout
+            ));
         } else {
-            processCheckoutCart(activity, checkoutDataBuilder, cartItemEditables);
+            processCheckoutCart(checkoutDataBuilder, cartItemEditables);
         }
     }
 

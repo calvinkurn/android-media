@@ -1,7 +1,11 @@
 package com.tokopedia.transaction.cart.listener;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.product.listener.ViewListener;
 import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.cartdata.GatewayList;
@@ -40,8 +44,6 @@ public interface ICartView extends ViewListener {
 
     void renderSuccessVoucherChecked(String messageSuccess, VoucherData data);
 
-    void showAlertDialogInfo(String messageSuccess);
-
     void renderErrorCheckVoucher(String message);
 
     void renderEmptyCart();
@@ -67,4 +69,14 @@ public interface ICartView extends ViewListener {
     String getDepositCheckoutData();
 
     void renderErrorCartItem(CartItemEditable cartItemEditable);
+
+    String getStringFromResource(@StringRes int resId);
+
+    TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
+            TKPDMapParam<String, String> originParams
+    );
+
+    Activity getContextActivity();
+
+    void executeService(Intent intent);
 }
