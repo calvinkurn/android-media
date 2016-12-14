@@ -1923,6 +1923,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
             return;
 
         Snackbar.make(parentView, generateMessageError(getActivity(), errorMessages.toString()), Snackbar.LENGTH_LONG).show();
+        showProgress(false);
 //        Toast.makeText(AddProductFragment.this.getActivity(), errorMessages.toString(), Toast.LENGTH_LONG).show();
     }
 
