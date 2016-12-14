@@ -135,8 +135,8 @@ dependencies {
     compile rootProject.ext.miscDependencies.captureActivity
     compile rootProject.ext.miscDependencies.multiDex
     compile rootProject.ext.miscDependencies.parcelerApi
-    compile rootProject.ext.miscDependencies.gson
     apt rootProject.ext.miscDependencies.parceler
+    compile rootProject.ext.miscDependencies.gson
     compile rootProject.ext.miscDependencies.simpleFb
     compile rootProject.ext.miscDependencies.rxAndroid
     compile rootProject.ext.miscDependencies.rxJava
