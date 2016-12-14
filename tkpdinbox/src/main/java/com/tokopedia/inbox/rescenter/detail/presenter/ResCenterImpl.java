@@ -36,7 +36,7 @@ public class ResCenterImpl implements ResCenterPresenter {
             activityParamenterPassData = bundle.getParcelable(ResCenterActivity.EXTRA_RES_CENTER_PASS);
             if (activityParamenterPassData == null) {
                 activityParamenterPassData = ActivityParamenterPassData.Builder.aResCenterPass()
-                        .setResCenterId(bundle.getString("resolution_id", ""))
+                        .setResCenterId(bundle.getString("EXTRA_RESOLUTION_ID", ""))
                         .build();
             }
         }

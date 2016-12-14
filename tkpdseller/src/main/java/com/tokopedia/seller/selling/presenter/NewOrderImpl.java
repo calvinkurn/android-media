@@ -14,6 +14,7 @@ import com.tokopedia.seller.selling.view.fragment.FragmentSellingNewOrder;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingData;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
 import com.tokopedia.core.util.ValidationTextUtil;
+import com.tokopedia.core.R;
 
 import org.parceler.Parcels;
 
@@ -121,7 +122,7 @@ public class NewOrderImpl extends NewOrder {
                 view.hideFilterView();
                 onRefreshOrder();
             } else {
-                showToastMessage("Keyword terlalu pendek, minimal 3 karakter");
+                showToastMessage(context.getString(R.string.keyword_min_3_char));
             }
         }
     }

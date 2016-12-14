@@ -13,13 +13,13 @@ import org.parceler.Parcel;
 public class DetailCancelRequest {
     @SerializedName("cancel_request")
     @Expose
-    private Integer cancelRequest;
+    Integer cancelRequest;
     @SerializedName("reason_time")
     @Expose
-    private String reasonTime;
+    String reasonTime;
     @SerializedName("reason")
     @Expose
-    private String reason;
+    String reason;
 
     /**
      *

@@ -68,6 +68,7 @@ import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.shopinfo.models.shopnotes.GetShopNotes;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
@@ -2122,7 +2123,7 @@ public class ProductService extends IntentService implements ProductServiceConst
                     .setContentText(ON_PROGRESS_UPLOADING)
                     .setStyle(new NotificationCompat.BigTextStyle().bigText(ON_PROGRESS_UPLOADING))
                     .setContentIntent(pIntent)
-                    .setSmallIcon(R.drawable.ic_stat_notify)
+                    .setSmallIcon(getDrawableIcon())
                     .setGroup(group);
             if (notificationProgress == 0) {
                 notification.setProgress(0, 0, true);
@@ -2144,7 +2145,7 @@ public class ProductService extends IntentService implements ProductServiceConst
                     .setContentText(ON_COMPLETE_UPLOADING + contextText)
                     .setStyle(new NotificationCompat.BigTextStyle().bigText(ON_COMPLETE_UPLOADING + contextText))
                     .setAutoCancel(true)
-                    .setSmallIcon(R.drawable.ic_stat_notify)
+                    .setSmallIcon(getDrawableIcon())
                     .setGroup(group)
                     .setProgress(0, 0, false)
                     .setOngoing(false);
@@ -2165,7 +2166,7 @@ public class ProductService extends IntentService implements ProductServiceConst
                     .setStyle(new NotificationCompat.BigTextStyle().bigText(errorMessage))
                     .setContentIntent(errorIntent)
                     .setAutoCancel(true)
-                    .setSmallIcon(R.drawable.ic_stat_notify)
+                    .setSmallIcon(getDrawableIcon())
                     .setGroup(group)
                     .setProgress(0, 0, false).setOngoing(false);
             setRingtone();
@@ -2182,6 +2183,13 @@ public class ProductService extends IntentService implements ProductServiceConst
             return notificationId;
         }
 
+    }
+
+    private int getDrawableIcon() {
+        if (GlobalConfig.isSellerApp())
+            return R.drawable.qc_launcher2;
+        else
+            return R.drawable.ic_stat_notify;
     }
 
 }
