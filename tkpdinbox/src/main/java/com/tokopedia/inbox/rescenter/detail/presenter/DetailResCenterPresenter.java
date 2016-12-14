@@ -35,15 +35,14 @@ public interface DetailResCenterPresenter {
     void requestCourierList(@NonNull Context context,
                             @NonNull InputShippingRefNumDialog.Listener listener);
 
-    void onOverflowShippingRefNumClick(@NonNull Context context,
-                                       @NonNull String url,
-                                       @NonNull InputShippingRefNumDialog.Listener listener);
+    void onEditShippingClickListener(@NonNull Context context,
+                                     @NonNull String url);
 
     void onButtonAttachmentClick(Context context);
 
     void showScanBarcode(Context context);
 
-    void showShippingRefNumDialog(boolean isEditShippingRefNum, Context context, InputShippingRefNumDialog.Listener listener);
+    void onNewShippingClickListener(Context context);
 
     void actionAcceptSolution();
 

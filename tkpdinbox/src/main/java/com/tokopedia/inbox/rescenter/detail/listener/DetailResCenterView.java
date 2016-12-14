@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.rescenter.detail.listener;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.tokopedia.core.database.model.AttachmentResCenterDB;
@@ -70,7 +71,7 @@ public interface DetailResCenterView {
 
     void actionCancelResolution(String paramID);
 
-    void openInputShippingRef(String paramID);
+    void openInputShippingRef();
 
     void openTrackShippingRef(String url);
 
@@ -97,4 +98,8 @@ public interface DetailResCenterView {
     void setErrorWvLogin();
 
     String getResolutionID();
+
+    void startActivity(Intent intent);
+
+    void startActivityForResult(Intent intent, int requestCode);
 }

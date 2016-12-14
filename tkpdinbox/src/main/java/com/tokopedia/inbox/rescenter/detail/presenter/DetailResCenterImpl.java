@@ -31,6 +31,7 @@ import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.ResCenterTr
 import com.tokopedia.inbox.rescenter.detail.model.passdata.ActivityParamenterPassData;
 import com.tokopedia.inbox.rescenter.detail.service.DetailResCenterService;
 import com.tokopedia.inbox.rescenter.detail.service.DetailResCenterServiceConstant;
+import com.tokopedia.inbox.rescenter.shipping.activity.InputShippingActivity;
 import com.tokopedia.inbox.rescenter.utils.LocalCacheManager;
 
 import java.util.List;
@@ -53,7 +54,6 @@ public class DetailResCenterImpl implements DetailResCenterPresenter {
     private ResCenterView mListener;
     private GlobalCacheManager globalCacheManager;
     private LocalCacheManager.MessageConversation cache;
-    private boolean isEditShippingRefNum;
 
     public DetailResCenterImpl(DetailResCenterFragment fragment) {
         this.view = fragment;
@@ -104,20 +104,7 @@ public class DetailResCenterImpl implements DetailResCenterPresenter {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE_SCAN_BARCODE) {
-            if (resultCode == Activity.RESULT_OK && data != null) {
-                LocalCacheManager.ReturnPackage.Builder(view.getResolutionID())
-                        .getCache()
-                        .setShippingRefNum(data.getStringExtra("SCAN_RESULT"))
-                        .save();
-
-                if (isEditShippingRefNum) {
-                    actionEditShippingRefNum();
-                } else {
-                    actionInputShippingRefNum();
-                }
-            }
-        } else if (requestCode == REQUEST_APPEAL_RESOLUTION) {
+        if (requestCode == REQUEST_APPEAL_RESOLUTION) {
             if (resultCode == Activity.RESULT_OK) {
                 view.refreshPage();
             }
@@ -310,33 +297,23 @@ public class DetailResCenterImpl implements DetailResCenterPresenter {
     }
 
     @Override
-    public void onOverflowShippingRefNumClick(@NonNull Context context,
-                                              @NonNull String url,
-                                              @NonNull InputShippingRefNumDialog.Listener listener) {
-
-        LocalCacheManager.ReturnPackage
-                .Builder(view.getResolutionID())
-                .setConversationID(Uri.parse(url).getQueryParameter("conv_id"))
-                .setShippingID(Uri.parse(url).getQueryParameter("ship_id"))
-                .setShippingRefNum(Uri.parse(url).getQueryParameter("ship_ref"))
-                .save();
-
-        showShippingRefNumDialog(true, context, listener);
+    public void onEditShippingClickListener(@NonNull Context context, @NonNull String url) {
+        String conversationID = Uri.parse(url).getQueryParameter("conv_id");
+        String shippingID = Uri.parse(url).getQueryParameter("ship_id");
+        String shippingRefNum = Uri.parse(url).getQueryParameter("ship_ref");
+        view.startActivity(
+                InputShippingActivity.createEditPageIntent(context,
+                        view.getResolutionID(),
+                        conversationID,
+                        shippingID,
+                        shippingRefNum
+                )
+        );
     }
 
     @Override
-    public void showShippingRefNumDialog(boolean isEditShippingRefNum, Context context, InputShippingRefNumDialog.Listener listener) {
-        try {
-            this.isEditShippingRefNum = isEditShippingRefNum;
-            if (globalCacheManager.getValueString(view.getResolutionID()) != null) {
-                view.showInputShippingRefNumDialog(view.getResolutionID(), listener);
-            } else {
-                requestCourierList(context, listener);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            requestCourierList(context, listener);
-        }
+    public void onNewShippingClickListener(Context context) {
+        view.startActivity(InputShippingActivity.createNewPageIntent(context, view.getResolutionID()));
     }
 
     @Override

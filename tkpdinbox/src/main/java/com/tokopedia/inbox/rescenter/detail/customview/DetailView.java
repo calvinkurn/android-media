@@ -185,7 +185,7 @@ public class DetailView extends BaseView<Detail, DetailResCenterView> {
                 });
                 return true;
             case "input_ship_ref":
-                listener.openInputShippingRef(paramID);
+                listener.openInputShippingRef();
                 return true;
             case "track_ship_ref":
                 listener.openTrackShippingRef(url);

@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.rescenter.detail.presenter;
+package com.tokopedia.inbox.rescenter.shipping.presenter;
 
 /**
  * Created by hangnadi on 12/13/16.

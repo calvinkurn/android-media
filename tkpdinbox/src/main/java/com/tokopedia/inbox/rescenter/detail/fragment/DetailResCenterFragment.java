@@ -425,37 +425,13 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     }
 
     @Override
-    public void openInputShippingRef(String paramID) {
-        presenter.showShippingRefNumDialog(false,
-                getActivity(),
-                new InputShippingRefNumDialog.Listener() {
-                    @Override
-                    public void onSubmitButtonClick() {
-                        presenter.actionInputShippingRefNum();
-                    }
-
-                    @Override
-                    public void onScanButtonClick() {
-                        presenter.showScanBarcode(getActivity());
-                    }
-                });
+    public void openInputShippingRef() {
+        presenter.onNewShippingClickListener(getActivity());
     }
 
     @Override
     public void openEditShippingRef(String url) {
-        presenter.onOverflowShippingRefNumClick(context,
-                url,
-                new InputShippingRefNumDialog.Listener() {
-                    @Override
-                    public void onSubmitButtonClick() {
-                        presenter.actionEditShippingRefNum();
-                    }
-
-                    @Override
-                    public void onScanButtonClick() {
-                        presenter.showScanBarcode(getActivity());
-                    }
-                });
+        presenter.onEditShippingClickListener(getActivity(), url);
     }
 
     @Override
