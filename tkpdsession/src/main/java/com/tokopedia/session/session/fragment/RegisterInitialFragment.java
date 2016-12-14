@@ -179,6 +179,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
                         ,getString(R.string.error_download_provider), Snackbar.LENGTH_INDEFINITE)
                         .setAction(getString(R.string.title_try_again), retryDiscover());
                 snackbar.show();
+                loginButton.setEnabled(false);
                 break;
             default:
                 showError(s);
@@ -205,6 +206,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
     @Override
     public void showProvider(List<LoginProviderModel.ProvidersBean> data) {
         listProvider = data;
+        loginButton.setEnabled(true);
         if (listProvider != null && checkHasNoProvider()) {
             presenter.saveProvider(listProvider);
 

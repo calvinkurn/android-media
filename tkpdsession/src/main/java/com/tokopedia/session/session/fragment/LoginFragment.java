@@ -544,6 +544,8 @@ public class LoginFragment extends Fragment implements LoginView {
 
     @Override
     public void showProvider(List<LoginProviderModel.ProvidersBean> data) {
+        accountSignIn.setEnabled(true);
+        registerButton.setEnabled(true);
         listProvider = data;
         if (listProvider != null && checkHasNoProvider()) {
             login.saveProvider(listProvider);
@@ -618,9 +620,11 @@ public class LoginFragment extends Fragment implements LoginView {
     }
 
     public boolean checkHasNoProvider() {
-        for (int i = linearLayout.getChildCount() - 1; i >= 0; i--) {
-            if (linearLayout.getChildAt(i) instanceof LoginTextView) {
-                return false;
+        if(linearLayout!=null){
+            for (int i = linearLayout.getChildCount() - 1; i >= 0; i--) {
+                if (linearLayout.getChildAt(i) instanceof LoginTextView) {
+                    return false;
+                }
             }
         }
         return true;
@@ -666,6 +670,8 @@ public class LoginFragment extends Fragment implements LoginView {
                 snackbar = SnackbarManager.make(getActivity(), "Gagal mendownload provider", Snackbar.LENGTH_INDEFINITE)
                         .setAction("Coba lagi", retryDiscover());
                 snackbar.show();
+                accountSignIn.setEnabled(false);
+                registerButton.setEnabled(false);
                 break;
             default:
                 snackbar = SnackbarManager.make(getActivity(), text, Snackbar.LENGTH_LONG);
