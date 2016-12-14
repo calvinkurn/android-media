@@ -69,7 +69,7 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
                 .flatMap(new Func1<Summary, Observable<Summary>>() {
                     @Override
                     public Observable<Summary> call(Summary summary) {
-                        if (!topAdsCacheDataSource.isStatisticDataExpired() || summary != null) {
+                        if (!topAdsCacheDataSource.isStatisticDataExpired() && summary != null) {
                             return Observable.just(summary);
                         }
                         Observable<Response<StatisticResponse>> statisticApiObservable = topAdsManagementService.getApi().getDashboardStatistic(statisticRequest.getParams());
