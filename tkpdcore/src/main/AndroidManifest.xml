@@ -509,6 +509,8 @@
         <activity android:name=".product.activity.ProductYoutubeActivity"
             android:screenOrientation="landscape"/>
 
+        <activity android:name=".manage.general.ManageWebViewActivity"
+                  android:screenOrientation="portrait"/>
         <!--=======================================================-->
         <!--RECEIVERS REGISTRY-->
         <!--=======================================================-->

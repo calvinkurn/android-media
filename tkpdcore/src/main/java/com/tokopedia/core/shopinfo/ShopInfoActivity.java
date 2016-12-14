@@ -167,9 +167,15 @@ public class ShopInfoActivity extends TActivity {
     }
 
     public void switchTab(String etalaseId){
-        ProductList productListFragment = (ProductList) adapter.getItem(1);
-        productListFragment.setSelectedEtalase(etalaseId);
-        holder.pager.setCurrentItem(1, true);
+        try {
+            if (!etalaseId.equals("all")) {
+                ProductList productListFragment = (ProductList) adapter.getItem(1);
+                productListFragment.setSelectedEtalase(etalaseId);
+            }
+            holder.pager.setCurrentItem(1, true);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override

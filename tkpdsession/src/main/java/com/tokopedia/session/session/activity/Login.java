@@ -172,7 +172,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.login_fragment, fragment, TAG);
         if (isAddtoBackStack)
-            fragmentTransaction.addToBackStack(TAG);
+            fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 
@@ -337,7 +337,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     @Override
     public void moveToRegisterInitial() {
         Fragment fragment = RegisterInitialFragment.newInstance();
-        moveToFragment(fragment, true, REGISTER_INITIAL, TkpdState.DrawerPosition.REGISTER_INITIAL);
+        moveToFragment(fragment, false, REGISTER_INITIAL, TkpdState.DrawerPosition.REGISTER_INITIAL);
 
         // Change the header
         session.setWhichFragment(TkpdState.DrawerPosition.REGISTER_INITIAL);
@@ -348,7 +348,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     @Override
     public void moveToLogin() {
         Fragment loginFragment = LoginFragment.newInstance("", false, "","","");
-        moveToFragment(loginFragment, true, LOGIN_FRAGMENT_TAG, TkpdState.DrawerPosition.LOGIN);
+        moveToFragment(loginFragment, false, LOGIN_FRAGMENT_TAG, TkpdState.DrawerPosition.LOGIN);
 
         // Change the header
         session.setWhichFragment(TkpdState.DrawerPosition.LOGIN);
@@ -359,12 +359,12 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     @Override
     public void moveToForgotPassword() {
         Log.d(TAG, messageTAG + supportFragmentManager.getBackStackEntryCount());
-        if (supportFragmentManager.getBackStackEntryCount() > 1) {
-            FragmentManager.BackStackEntry first = supportFragmentManager.getBackStackEntryAt(1);
-            supportFragmentManager.popBackStack(first.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        }
+//        if (supportFragmentManager.getBackStackEntryCount() > 1) {
+//            FragmentManager.BackStackEntry first = supportFragmentManager.getBackStackEntryAt(1);
+//            supportFragmentManager.popBackStack(first.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+//        }
         Fragment fragment = new ForgotPasswordFragment();
-        moveToFragment(fragment, true, FORGOT_PASSWORD_TAG, TkpdState.DrawerPosition.FORGOT_PASSWORD);
+        moveToFragment(fragment, false, FORGOT_PASSWORD_TAG, TkpdState.DrawerPosition.FORGOT_PASSWORD);
 
         session.setWhichFragment(TkpdState.DrawerPosition.FORGOT_PASSWORD);
         setToolbarTitle();

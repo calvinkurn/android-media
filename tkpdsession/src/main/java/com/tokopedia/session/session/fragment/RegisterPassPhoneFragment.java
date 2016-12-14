@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -284,12 +285,11 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
     private void makeItEnabled(TextView tv, boolean status){
         tv.setEnabled(status);
         if(status){
-            try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 tv.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.new_edittext_white));
-            }catch (NoSuchMethodError e){
+            }else{
                 tv.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(),R.drawable.new_edittext_white));
             }
-
         }else{
             tv.setBackgroundColor(Color.parseColor("#EEEEEE"));
         }

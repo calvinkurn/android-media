@@ -263,8 +263,8 @@ public class InboxReputationAdapter extends BaseLinearRecyclerViewAdapter {
                         TextView netral = (TextView) view.findViewById(R.id.text_netral);
                         TextView bad = (TextView) view.findViewById(R.id.text_bad);
                         smile.setText(String.valueOf(list.get(pos).getUserReputation().getPositive()));
-                        netral.setText(String.valueOf(list.get(pos).getUserReputation().getNegative()));
-                        bad.setText(String.valueOf(list.get(pos).getUserReputation().getNeutral()));
+                        netral.setText(String.valueOf(list.get(pos).getUserReputation().getNeutral()));
+                        bad.setText(String.valueOf(list.get(pos).getUserReputation().getNegative()));
                     }
 
                     @Override

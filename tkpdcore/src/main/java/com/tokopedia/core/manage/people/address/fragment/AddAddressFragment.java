@@ -153,7 +153,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
     private void setEditParam(Destination address) {
         addressTypeEditText.setText(address.getAddressName());
-        addressEditText.setText(Html.fromHtml(address.getAddressStreet()));
+        addressEditText.setText(address.getAddressStreet());
         receiverNameEditText.setText(address.getReceiverName());
         receiverPhoneEditText.setText(address.getReceiverPhone());
         postcodeEditText.setText(address.getPostalCode());
