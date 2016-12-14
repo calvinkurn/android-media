@@ -2634,7 +2634,9 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
 //        }
         List<WholeSaleAdapterModel> datas = new ArrayList<>();
         for (WholesaleModel model : wholesaleLayout.getDatas()){
-            datas.add(new WholeSaleAdapterModel(model.getQtyOne(), model.getQtyTwo(), model.getQtyPrice()));
+            WholeSaleAdapterModel adapterModel = new WholeSaleAdapterModel(model.getQtyOne(), model.getQtyTwo(), model.getQtyPrice());
+            adapterModel.setbDid(DbManagerImpl.getInstance().addHargaGrosir(adapterModel));
+            datas.add(adapterModel);
         }
         inputAddProductModel.setWholeSales(datas);
 
