@@ -11,8 +11,8 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.localytics.android.Localytics;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.util.PasswordGenerator;
 
 import rx.Observable;
 import rx.Subscriber;
