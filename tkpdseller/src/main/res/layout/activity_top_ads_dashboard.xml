@@ -1,21 +1,28 @@
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_alignParentTop="true"
+    android:layout_centerHorizontal="true"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <include layout="@layout/layout_tab_indicator_main_fixed"/>
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:orientation="vertical">
-
-        <include layout="@layout/layout_tab_indicator_main_fixed" />
+        android:layout_height="match_parent">
 
         <android.support.v4.view.ViewPager
             android:id="@+id/pager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
+            android:layout_height="match_parent"/>
 
-</RelativeLayout>
+        <com.tkpd.library.ui.floatbutton.FabSpeedDial
+            style="@style/FabSpeedDial"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            app:fabMenu="@menu/menu_fab_top_ads"/>
+    </RelativeLayout>
+</LinearLayout>

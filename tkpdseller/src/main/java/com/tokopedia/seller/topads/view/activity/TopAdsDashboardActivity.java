@@ -6,8 +6,13 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.MenuItem;
+import android.view.View;
 
-import com.tokopedia.core.R2;
+import com.tkpd.library.ui.floatbutton.FabSpeedDial;
+import com.tkpd.library.ui.floatbutton.ListenerFabClick;
+import com.tkpd.library.ui.floatbutton.SimpleMenuListenerAdapter;
+import com.tokopedia.seller.R2;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.seller.R;
@@ -31,6 +36,8 @@ public class TopAdsDashboardActivity extends BasePresenterActivity {
     ViewPager viewPager;
     @BindView(R2.id.indicator)
     TabLayout indicator;
+    @BindView(R2.id.fab_speed_dial)
+    FabSpeedDial fabSpeedDial;
 
     @Override
     public String getScreenName() {
@@ -65,7 +72,25 @@ public class TopAdsDashboardActivity extends BasePresenterActivity {
         indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
         indicator.addTab(indicator.newTab().setText(R.string.title_top_ads_product));
         indicator.addTab(indicator.newTab().setText(R.string.title_top_ads_store));
+        fabSpeedDial.setListenerFabClick(new ListenerFabClick() {
+            @Override
+            public void onFabClick() {
+                if (!fabSpeedDial.isShown()) {
+                    fabSpeedDial.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
+            @Override
+            public boolean onMenuItemSelected(MenuItem menuItem) {
+                if (menuItem.getItemId() == R.id.action_add_promo_group) {
 
+                } else if (menuItem.getItemId() == R.id.action_add_promo_product) {
+
+                }
+                return false;
+            }
+        });
     }
 
     public PagerAdapter getViewPagerAdapter() {

@@ -19,6 +19,18 @@
         <item name="android:text">@string/top_ads_statistic_info_default_value</item>
     </style>
 
+    <style name="FabSpeedDial">
+        <item name="android:id">@id/fab_speed_dial</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="fabBackgroundTint">@color/green_500</item>
+        <item name="fabGravity">bottom_end</item>
+        <item name="miniFabBackgroundTint">@color/mini_fab_title_background_tint</item>
+        <item name="miniFabDrawableTint">@android:color/white</item>
+        <item name="miniFabTitleTextColor">@android:color/white</item>
+        <item name="touchGuardDrawable">@drawable/background_blur</item>
+    </style>
+
     <style name="CardView.TopAds">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
