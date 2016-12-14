@@ -129,4 +129,8 @@ public class WholesaleLayout extends RelativeLayout implements WholesaleAdapterI
     public void clearAll() {
         adapter.clearAll();
     }
+
+    public boolean checkIfErrorExist() {
+        return adapter.checkIfErrorExist();
+    }
 }

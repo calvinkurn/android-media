@@ -87,7 +87,6 @@ import com.tokopedia.core.myproduct.ProductSocMedActivity;
 import com.tokopedia.core.myproduct.adapter.ClickToSelectWithImage;
 import com.tokopedia.core.myproduct.adapter.PhotoAdapter;
 import com.tokopedia.core.myproduct.adapter.TextDeleteAdapter;
-import com.tokopedia.core.myproduct.adapter.WholesaleAdapter;
 import com.tokopedia.core.myproduct.customview.wholesale.WholesaleLayout;
 import com.tokopedia.core.myproduct.customview.wholesale.WholesaleModel;
 import com.tokopedia.core.myproduct.model.CatalogDataModel;
@@ -121,7 +120,6 @@ import com.tokopedia.core.myproduct.utils.VerificationUtils;
 import com.tokopedia.core.myproduct.view.AddProductShare;
 import com.tokopedia.core.myproduct.view.AddProductSocMedSubmit;
 import com.tokopedia.core.myproduct.view.AddProductSubmit;
-import com.tokopedia.core.product.model.productdetail.ProductImage;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.ShareSocmedHandler;
@@ -2629,11 +2627,10 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
 
         // 7. get harga grosir - compile ketika disini doang - kosongkan terlebih dahulu,
         Log.d(TAG, messageTAG + wholesaleLayout.getDatas());
-        // TODO : SOMETHING WRONG WITH WHOLESALE LOGIC, IT WILL BYPASS THE WHOLESALE CHECK
-//        if(!wholesaleAdapter.isNoError()){
-//            Snackbar.make(parentView, "Terjadi kesalahan pada harga grosir", Snackbar.LENGTH_LONG).show();
-//            return null;
-//        }
+        if(wholesaleLayout.checkIfErrorExist()){
+            Snackbar.make(parentView, "Terjadi kesalahan pada harga grosir", Snackbar.LENGTH_LONG).show();
+            return null;
+        }
         List<WholeSaleAdapterModel> datas = new ArrayList<>();
         for (WholesaleModel model : wholesaleLayout.getDatas()){
             WholeSaleAdapterModel adapterModel = new WholeSaleAdapterModel(model.getQtyOne(), model.getQtyTwo(), model.getQtyPrice());

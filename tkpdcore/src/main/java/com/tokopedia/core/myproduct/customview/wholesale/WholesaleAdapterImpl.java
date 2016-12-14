@@ -135,18 +135,22 @@ public class WholesaleAdapterImpl extends RecyclerView.Adapter<WholesaleViewHold
 
     @Override
     public boolean checkIfErrorExist() {
+        boolean bool = false;
         for(WholesaleModel model : data){
             if(model.getViewHolder().getQtyOneError() != null){
-                return true;
+                bool = true;
+                break;
             }
             if(model.getViewHolder().getQtyTwoError() != null){
-                return true;
+                bool = true;
+                break;
             }
             if(model.getViewHolder().getQtyPriceError() != null){
-                return true;
+                bool = true;
+                break;
             }
         }
-        return false;
+        return bool;
     }
 
     @Override
