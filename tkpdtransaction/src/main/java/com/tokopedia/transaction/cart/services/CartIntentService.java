@@ -29,8 +29,11 @@ import rx.schedulers.Schedulers;
 public class CartIntentService extends IntentService {
     public static final String EXTRA_ACTION = "EXTRA_ACTION";
     public static final String EXTRA_CHECKOUT_DATA = "EXTRA_CHECKOUT_DATA";
+    public static final String EXTRA_PAYMENT_ID = "EXTRA_PAYMENT_ID";
+
     public static final int SERVICE_ACTION_NO_DEFINED = 0;
     public static final int SERVICE_ACTION_GET_PARAMETER_DATA = 1;
+    public static final int SERVICE_ACTION_GET_THANKS_TOP_PAY = 2;
 
     private ICartDataInteractor cartDataInteractor;
 
@@ -46,7 +49,79 @@ public class CartIntentService extends IntentService {
                 CheckoutData checkoutData = intent.getParcelableExtra(EXTRA_CHECKOUT_DATA);
                 getParameterDataTopPay(checkoutData);
                 break;
+            case SERVICE_ACTION_GET_THANKS_TOP_PAY:
+                String paymentId = intent.getStringExtra(EXTRA_CHECKOUT_DATA);
+                getThanksTopPay(paymentId);
+                break;
         }
+    }
+
+    private void getThanksTopPay(String paymentId) {
+        TKPDMapParam<String, String> params = new TKPDMapParam<>();
+        params.put("id", paymentId);
+        Intent intent = new Intent(CartBroadcastReceiver.ACTION_GET_THANKS_TOP_PAY);
+        intent.putExtra(CartBroadcastReceiver.EXTRA_RESULT_CODE_TOP_PAY_ACTION,
+                CartBroadcastReceiver.RESULT_CODE_TOP_PAY_PROCESS_ONGOING);
+        intent.putExtra(CartBroadcastReceiver.EXTRA_MESSAGE_TOP_PAY_ACTION,
+                "Validasi pembayaran");
+        sendBroadcast(intent);
+        cartDataInteractor.getThanksTopPay(AuthUtil.generateParamsNetwork(this, params),
+                Schedulers.immediate(),
+                new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        Intent intent = new Intent(CartBroadcastReceiver.ACTION_GET_THANKS_TOP_PAY);
+                        intent.putExtra(CartBroadcastReceiver.EXTRA_RESULT_CODE_TOP_PAY_ACTION,
+                                CartBroadcastReceiver.RESULT_CODE_TOP_PAY_ERROR);
+                        if (e instanceof UnknownHostException) {
+                            intent.putExtra(CartBroadcastReceiver.EXTRA_MESSAGE_TOP_PAY_ACTION,
+                                    ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
+                        } else if (e instanceof SocketTimeoutException) {
+                            intent.putExtra(CartBroadcastReceiver.EXTRA_MESSAGE_TOP_PAY_ACTION,
+                                    ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                        } else {
+                            intent.putExtra(CartBroadcastReceiver.EXTRA_MESSAGE_TOP_PAY_ACTION,
+                                    e.getCause() instanceof ResponseErrorException ? e.getMessage()
+                                            : ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                        }
+                        sendBroadcast(intent);
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        if (aBoolean) {
+                            Intent intent = new Intent(
+                                    CartBroadcastReceiver.ACTION_GET_THANKS_TOP_PAY
+                            );
+                            intent.putExtra(
+                                    CartBroadcastReceiver.EXTRA_RESULT_CODE_TOP_PAY_ACTION,
+                                    CartBroadcastReceiver.RESULT_CODE_TOP_PAY_SUCCESS
+                            );
+                            intent.putExtra(
+                                    CartBroadcastReceiver.EXTRA_MESSAGE_TOP_PAY_ACTION,
+                                    "Pemayaran Berhasil"
+                            );
+                        } else {
+                            Intent intent = new Intent(
+                                    CartBroadcastReceiver.ACTION_GET_THANKS_TOP_PAY
+                            );
+                            intent.putExtra(
+                                    CartBroadcastReceiver.EXTRA_RESULT_CODE_TOP_PAY_ACTION,
+                                    CartBroadcastReceiver.RESULT_CODE_TOP_PAY_ERROR
+                            );
+                            intent.putExtra(
+                                    CartBroadcastReceiver.EXTRA_MESSAGE_TOP_PAY_ACTION,
+                                    "Pemayaran Gagal"
+                            );
+                        }
+                    }
+                });
     }
 
     private void getParameterDataTopPay(CheckoutData checkoutData) {
@@ -70,7 +145,7 @@ public class CartIntentService extends IntentService {
         }
 
         if (cartDataInteractor == null) cartDataInteractor = new CartDataInteractor();
-        Intent intent = new Intent(CartBroadcastReceiver.ACTION_TOP_PAY);
+        Intent intent = new Intent(CartBroadcastReceiver.ACTION_GET_PARAMETER_TOP_PAY);
         intent.putExtra(CartBroadcastReceiver.EXTRA_RESULT_CODE_TOP_PAY_ACTION,
                 CartBroadcastReceiver.RESULT_CODE_TOP_PAY_PROCESS_ONGOING);
         intent.putExtra(CartBroadcastReceiver.EXTRA_MESSAGE_TOP_PAY_ACTION,
@@ -91,7 +166,7 @@ public class CartIntentService extends IntentService {
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        Intent intent = new Intent(CartBroadcastReceiver.ACTION_TOP_PAY);
+                        Intent intent = new Intent(CartBroadcastReceiver.ACTION_GET_PARAMETER_TOP_PAY);
                         intent.putExtra(CartBroadcastReceiver.EXTRA_RESULT_CODE_TOP_PAY_ACTION,
                                 CartBroadcastReceiver.RESULT_CODE_TOP_PAY_ERROR);
                         if (e instanceof UnknownHostException) {
@@ -110,7 +185,7 @@ public class CartIntentService extends IntentService {
 
                     @Override
                     public void onNext(TopPayParameterData topPayParameterData) {
-                        Intent intent = new Intent(CartBroadcastReceiver.ACTION_TOP_PAY);
+                        Intent intent = new Intent(CartBroadcastReceiver.ACTION_GET_PARAMETER_TOP_PAY);
                         intent.putExtra(CartBroadcastReceiver.EXTRA_RESULT_CODE_TOP_PAY_ACTION,
                                 CartBroadcastReceiver.RESULT_CODE_TOP_PAY_SUCCESS);
                         intent.putExtra(

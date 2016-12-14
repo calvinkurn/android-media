@@ -211,6 +211,55 @@ public class CartDataInteractor implements ICartDataInteractor {
     }
 
     @Override
+    public void getThanksTopPay(TKPDMapParam<String, String> params,
+                                Scheduler schedulers, Subscriber<Boolean> subscriber) {
+        Observable<Response<TkpdResponse>> observable
+                = txActService.getApi().getThanksDynamicPayment(params);
+        compositeSubscription.add(observable
+                .map(new Func1<Response<TkpdResponse>, Boolean>() {
+                    @Override
+                    public Boolean call(Response<TkpdResponse> response) {
+                        if (response.isSuccessful()) {
+                            if (!response.body().isError()) {
+                                if (!response.body().getJsonData().isNull("is_success")) {
+                                    try {
+                                        return response.body()
+                                                .getJsonData().getInt("is_success") == 1;
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                        throw new RuntimeException(
+                                                new RuntimeException(
+                                                        ErrorNetMessage.MESSAGE_ERROR_DEFAULT
+                                                )
+                                        );
+                                    }
+                                } else {
+                                    throw new RuntimeException(
+                                            new RuntimeException(
+                                                    ErrorNetMessage.MESSAGE_ERROR_DEFAULT
+                                            )
+                                    );
+                                }
+                            } else {
+                                throw new RuntimeException(
+                                        new ResponseErrorException(
+                                                response.body().getErrorMessageJoined()
+                                        )
+                                );
+                            }
+                        } else {
+                            throw new RuntimeException(new HttpErrorException(response.code()));
+                        }
+                    }
+                })
+                .subscribeOn(schedulers)
+                .observeOn(schedulers)
+                .unsubscribeOn(schedulers)
+                .subscribe(subscriber)
+        );
+    }
+
+    @Override
     public void editShipmentCart(TKPDMapParam<String, String> param,
                                  Subscriber<ShipmentCartData> subscriber) {
         Observable.just(param)

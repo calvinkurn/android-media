@@ -75,7 +75,13 @@ public class PaymentGatewayFragment extends DialogFragment implements
         View view = inflater.inflate(R.layout.fragment_dialog_payment_gateway_tx_module, container);
         unbinder = ButterKnife.bind(this, view);
         rvPaymentGateway.setLayoutManager(new LinearLayoutManager(getActivity()));
-        rvPaymentGateway.setAdapter(new PaymentGatewayAdapter(this, gatewayList));
+        List<GatewayList> filteredGateway = new ArrayList<>();
+        for (int i = 0; i < gatewayList.size(); i++) {
+            GatewayList gateway = gatewayList.get(i);
+            if (gateway.getToppayFlag() != null && !gateway.getToppayFlag().equals("0")
+                    && !gateway.getToppayFlag().isEmpty()) filteredGateway.add(gateway);
+        }
+        rvPaymentGateway.setAdapter(new PaymentGatewayAdapter(this, filteredGateway));
         return view;
     }
 

@@ -49,6 +49,9 @@ public interface ICartDataInteractor {
     void getParameterTopPay(TKPDMapParam<String, String> params, Scheduler schedulers,
                             Subscriber<TopPayParameterData> subscriber);
 
+    void getThanksTopPay(TKPDMapParam<String, String> params, Scheduler schedulers,
+                         Subscriber<Boolean> subscriber);
+
     void checkVoucherCode(TKPDMapParam<String, String> stringStringTKPDMapParam,
                           Subscriber<ResponseTransform<VoucherData>> subscriber);
 

@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.cart.adapter;
 
 import android.app.Fragment;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.CardView;
@@ -9,7 +10,6 @@ import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,6 +34,7 @@ import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import com.tokopedia.transaction.cart.model.cartdata.TransactionList;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -114,7 +115,6 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void fillDataList(List<TransactionList> dataList) {
-        //  dataList.clear();
         for (TransactionList data : dataList) {
             this.dataList.add(new CartItemEditable(data));
         }
@@ -150,8 +150,8 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 || (cartData.getCartErrorMessage1() != null
                 && !cartData.getCartErrorMessage1().equals("0"))) {
             holder.holderError.setVisibility(View.VISIBLE);
-            holder.tvError1.setText(cartData.getCartErrorMessage1() + "");
-            holder.tvError2.setText(cartData.getCartErrorMessage2() + "");
+            holder.tvError1.setText(MessageFormat.format("{0}", cartData.getCartErrorMessage1()));
+            holder.tvError2.setText(MessageFormat.format("{0}", cartData.getCartErrorMessage2()));
         } else {
             holder.holderError.setVisibility(View.GONE);
         }
@@ -249,10 +249,6 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private void renderDropShipperOption(final ViewHolder holder, final CartItemEditable data) {
-//        holder.etDropshiperPhone.addTextChangedListener(null);
-//        holder.etDropshiperName.addTextChangedListener(null);
-
-
         switch (data.getErrorType()) {
             case CartItemEditable.ERROR_DROPSHIPPER_NAME:
                 holder.tilEtDropshiperName.setErrorEnabled(true);
@@ -271,15 +267,21 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holder.etDropshiperPhone.setText(data.getDropShipperPhone() != null
                 ? data.getDropShipperPhone() : "");
 
-        final TextWatcher textWatcherDropShipperName = getWatcherEtDropShipperName(data, cartData, holder);
-        final TextWatcher textWatcherDropShipperPhone = getWatcherEtDropShipperPhone(data, cartData, holder);
+        final TextWatcher textWatcherDropShipperName
+                = getWatcherEtDropShipperName(data, cartData, holder);
+        final TextWatcher textWatcherDropShipperPhone
+                = getWatcherEtDropShipperPhone(data, cartData, holder);
 
         holder.cbDropshiper.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    updateDropShipperCartName(cartData, holder.etDropshiperName.getText().toString());
-                    updateDropShipperCartPhone(cartData, holder.etDropshiperPhone.getText().toString());
+                    updateDropShipperCartName(
+                            cartData, holder.etDropshiperName.getText().toString()
+                    );
+                    updateDropShipperCartPhone(
+                            cartData, holder.etDropshiperPhone.getText().toString()
+                    );
                     holder.holderDropshiperForm.setVisibility(View.VISIBLE);
                     insertDropShipperCartData(cartData);
                     holder.etDropshiperName.addTextChangedListener(textWatcherDropShipperName);
@@ -314,7 +316,6 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
             @Override
             public void afterTextChanged(Editable s) {
-                Log.d("aftertextchanged phone", s.toString());
                 if (!s.toString().equalsIgnoreCase(data.getDropShipperPhone()))
                     updateDropShipperCartPhone(cartData, s.toString());
             }
@@ -339,7 +340,6 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
             @Override
             public void afterTextChanged(Editable s) {
-                Log.d("aftertextchanged name", s.toString());
                 if (!s.toString().equalsIgnoreCase(data.getDropShipperName()))
                     updateDropShipperCartName(cartData, s.toString());
             }
@@ -420,7 +420,6 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     .equals(cartData.getCartString())) {
                 ((CartItemEditable) dataList.get(i)).setPartialDeliver(true);
                 ((CartItemEditable) dataList.get(i)).setCartStringForDeliverOption("");
-                // this.notifyItemChanged(i);
                 return;
             }
         }
@@ -433,7 +432,6 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     .equals(cartData.getCartString())) {
                 ((CartItemEditable) dataList.get(i)).setDropShipper(false);
                 ((CartItemEditable) dataList.get(i)).setCartStringForDropShipperOption("");
-                //  this.notifyItemChanged(i);
                 return;
             }
         }
@@ -448,7 +446,6 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 ((CartItemEditable) dataList.get(i)).setCartStringForDropShipperOption(
                         cartData.getCartString()
                 );
-                // this.notifyItemChanged(i);
                 return;
             }
         }
@@ -534,21 +531,34 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return false;
     }
 
+    @SuppressWarnings("deprecation")
     private void renderEditableMode(ViewHolder holder, CartItemEditable data,
                                     CartProductItemAdapter adapterProduct) {
         if (data.isEditMode()) {
             holder.holderActionEditor.setVisibility(View.VISIBLE);
-            holder.holderContainer.setCardBackgroundColor(
-                    hostFragment.getResources().getColor(R.color.grey_100)
-            );
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                holder.holderContainer.setBackground(
+                        hostFragment.getResources().getDrawable(R.drawable.bg_cart_item_editable_mode)
+                );
+            } else {
+                holder.holderContainer.setBackgroundDrawable(
+                        hostFragment.getResources().getDrawable(R.drawable.bg_cart_item_editable_mode)
+                );
+            }
             holder.btnOverflow.setEnabled(false);
             adapterProduct.enableEditMode();
             adapterProduct.notifyDataSetChanged();
         } else {
             holder.holderActionEditor.setVisibility(View.GONE);
-            holder.holderContainer.setCardBackgroundColor(
-                    hostFragment.getResources().getColor(R.color.white)
-            );
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                holder.holderContainer.setBackground(
+                        hostFragment.getResources().getDrawable(R.drawable.bg_cart_item_normal_mode)
+                );
+            } else {
+                holder.holderContainer.setBackgroundDrawable(
+                        hostFragment.getResources().getDrawable(R.drawable.bg_cart_item_normal_mode)
+                );
+            }
             holder.btnOverflow.setEnabled(true);
             adapterProduct.disableEditMode();
             adapterProduct.notifyDataSetChanged();

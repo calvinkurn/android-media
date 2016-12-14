@@ -41,4 +41,6 @@ public interface ICartPresenter {
     void processStep2PaymentCart(Activity activity, TopPayParameterData data);
 
     void processGetTickerGTM();
+
+    void processValidationCheckoutData(Activity activity);
 }
