@@ -1,4 +1,4 @@
-package com.tokopedia.core;
+package com.tokopedia.core.gcm;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
@@ -22,25 +22,27 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
-import com.google.android.gms.gcm.GcmListenerService;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.URLParser;
+import com.tokopedia.core.Cart;
+import com.tokopedia.core.ManageGeneral;
+import com.tokopedia.core.NotificationCenter;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
+import com.tokopedia.core.gcm.GCMUtils;
 import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.prototype.ManageProductCache;
 import com.tokopedia.core.prototype.ShopSettingCache;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.CustomerRouter;
-import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -191,50 +193,8 @@ public class GCMListenerService extends FirebaseMessagingService {
         return code;
     }
 
-    private boolean isExcludeFromSellerApp(int tkpCode) {
-        switch (tkpCode) {
-            case TkpdState.GCMServiceState.GCM_REVIEW:
-                return true;
-            case TkpdState.GCMServiceState.GCM_REVIEW_REPLY:
-                return true;
-            case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_BUYER:
-                return true;
-            case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_BUYER:
-                return true;
-            case TkpdState.GCMServiceState.GCM_PURCHASE_ACCEPTED:
-                return true;
-            case TkpdState.GCMServiceState.GCM_PURCHASE_DELIVERED:
-                return true;
-            case TkpdState.GCMServiceState.GCM_PURCHASE_PARTIAL_PROCESSED:
-                return true;
-            case TkpdState.GCMServiceState.GCM_PURCHASE_REJECTED:
-                return true;
-            case TkpdState.GCMServiceState.GCM_PURCHASE_VERIFIED:
-                return true;
-            case TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_REPLY:
-                return true;
-            case TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_AGREE:
-                return true;
-            case TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_BUYER_REPLY:
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    private boolean isDeprecated(int tkpCode) {
-        switch (tkpCode) {
-            case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY:
-                return true;
-            case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY:
-                return true;
-            default:
-                return false;
-        }
-    }
-
     public boolean isValidForSellerApp(int tkpCode) {
-        return !getApplication().getClass().getSimpleName().equals("SellerMainApplication") && isExcludeFromSellerApp(tkpCode);
+        return !getApplication().getClass().getSimpleName().equals("SellerMainApplication") && GCMUtils.isExcludeFromSellerApp(tkpCode);
     }
 
     private void sendNotification(Bundle data) {
