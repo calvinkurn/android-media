@@ -227,7 +227,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams) holder.bannerViewPager.getLayoutParams();
             DisplayMetrics metrics = new DisplayMetrics();
             getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-            param.height = metrics.widthPixels / 2;
+            //param.height = metrics.widthPixels / 2;
             holder.bannerViewPager.setLayoutParams(param);
             holder.wrapperScrollview.smoothScrollTo(0, 0);
             startSlide();
