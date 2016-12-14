@@ -138,45 +138,45 @@ public class OnBoardingFragment extends Fragment {
         i.setImageDrawable(ContextCompat.getDrawable(getActivity(), drawable));
         m.setBackgroundColor(bgColor);
 
-//        Button login = (Button) v.findViewById(R.id.button_login);
-//        login.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                SessionHandler.setFirstTimeUser(getActivity(), false);
-//                Intent intent = new Intent();
-//                intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-//                intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
-//                getActivity().setResult(Activity.RESULT_OK, intent);
-//                getActivity().finish();
-//
-//            }
-//        });
-//
-//        Button register = (Button) v.findViewById(R.id.button_register);
-//        register.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                SessionHandler.setFirstTimeUser(getActivity(), false);
-//                Intent intent = new Intent();
-//                intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.REGISTER);
-//                intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
-//                getActivity().setResult(Activity.RESULT_OK, intent);
-//                getActivity().finish();
-//
-//
-//            }
-//        });
+        Button login = (Button) v.findViewById(R.id.button_login);
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SessionHandler.setFirstTimeUser(getActivity(), false);
+                Intent intent = new Intent();
+                intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
+                intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
+                getActivity().setResult(Activity.RESULT_OK, intent);
+                getActivity().finish();
 
-//        TextView search = (TextView) v.findViewById(R.id.button_search);
-//        search.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                SessionHandler.setFirstTimeUser(getActivity(), false);
-//                Intent intent = new Intent(getActivity(), HomeRouter.getHomeActivityClass());
-//                getActivity().startActivity(intent);
-//                getActivity().finish();
-//            }
-//        });
+            }
+        });
+
+        Button register = (Button) v.findViewById(R.id.button_register);
+        register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SessionHandler.setFirstTimeUser(getActivity(), false);
+                Intent intent = new Intent();
+                intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.REGISTER);
+                intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
+                getActivity().setResult(Activity.RESULT_OK, intent);
+                getActivity().finish();
+
+
+            }
+        });
+
+        TextView search = (TextView) v.findViewById(R.id.button_search);
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SessionHandler.setFirstTimeUser(getActivity(), false);
+                Intent intent = new Intent(getActivity(), HomeRouter.getHomeActivityClass());
+                getActivity().startActivity(intent);
+                getActivity().finish();
+            }
+        });
 
         return v;
     }
