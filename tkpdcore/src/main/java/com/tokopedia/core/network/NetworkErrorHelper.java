@@ -3,6 +3,7 @@ package com.tokopedia.core.network;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.design.widget.Snackbar;
@@ -20,7 +21,6 @@ import com.tokopedia.core.R;
  * Created by ricoharisin on 5/30/16.
  */
 public class NetworkErrorHelper {
-
 
 
     public interface RetryClickedListener {
@@ -54,7 +54,9 @@ public class NetworkErrorHelper {
                 }
             });
         }
-        dialog.create().show();
+        Dialog finalDialog = dialog.create();
+        finalDialog.setCanceledOnTouchOutside(false);
+        finalDialog.show();
     }
 
     public static SnackbarRetry createSnackbarWithAction(Activity activity, final RetryClickedListener listener) {
@@ -106,14 +108,14 @@ public class NetworkErrorHelper {
         }
     }
 
-    public static void removeEmptyState(View rootview){
+    public static void removeEmptyState(View rootview) {
         try {
             rootview.findViewById(R.id.main_retry).setVisibility(View.GONE);
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
         }
     }
 
-    public static void showEmptyState(Context context, final View rootview , String message, final RetryClickedListener listener) {
+    public static void showEmptyState(Context context, final View rootview, String message, final RetryClickedListener listener) {
         try {
             rootview.findViewById(R.id.main_retry).setVisibility(View.VISIBLE);
         } catch (NullPointerException e) {
@@ -139,7 +141,7 @@ public class NetworkErrorHelper {
 
     }
 
-    public static void hideEmptyState(final View rootview ) {
+    public static void hideEmptyState(final View rootview) {
         try {
             rootview.findViewById(R.id.main_retry).setVisibility(View.GONE);
         } catch (NullPointerException e) {
