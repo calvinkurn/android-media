@@ -1,8 +1,6 @@
 package com.tokopedia.core.gcm.interactor;
 
-import com.tokopedia.core.gcm.model.FcmTokenUpdate;
-
-import java.util.Map;
+import com.tokopedia.core.gcm.model.FCMTokenUpdate;
 
 import rx.Subscriber;
 
@@ -11,7 +9,7 @@ import rx.Subscriber;
  */
 
 public interface INotificationDataInteractor {
-    void updateTokenServer(FcmTokenUpdate data, Subscriber<Boolean> subscriber);
+    void updateTokenServer(FCMTokenUpdate data, Subscriber<Boolean> subscriber);
 
     void unSubscribeObservable();
 }

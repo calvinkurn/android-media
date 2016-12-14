@@ -4,8 +4,7 @@ import android.app.IntentService;
 import android.content.Intent;
 
 import com.tokopedia.core.gcm.interactor.NotificationDataInteractor;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.gcm.model.FcmTokenUpdate;
+import com.tokopedia.core.gcm.model.FCMTokenUpdate;
 
 import rx.Subscriber;
 
@@ -28,13 +27,13 @@ public class NotificationIntentService extends IntentService {
         int code = intent.getIntExtra(ARG_EXTRA_GCM_UPDATE, 0);
         switch (code) {
             case CODE_EXTRA_GCM_UPDATE:
-                FcmTokenUpdate data = intent.getParcelableExtra(ARG_EXTRA_GCM_UPDATE_DATA);
+                FCMTokenUpdate data = intent.getParcelableExtra(ARG_EXTRA_GCM_UPDATE_DATA);
                 handleUpdateClientId(data);
                 break;
         }
     }
 
-    private void handleUpdateClientId(FcmTokenUpdate data) {
+    private void handleUpdateClientId(FCMTokenUpdate data) {
         if (mInteractor == null) mInteractor = new NotificationDataInteractor();
         mInteractor.updateTokenServer(data, new UpdateClientIdSubscriber());
     }
