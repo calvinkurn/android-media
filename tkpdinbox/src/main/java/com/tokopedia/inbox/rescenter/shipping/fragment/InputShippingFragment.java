@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.rescenter.shipping.fragment;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -11,9 +12,10 @@ import android.widget.TextView;
 import com.tokopedia.core.R2;
 import com.tokopedia.inbox.R;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsModel;
 import com.tokopedia.inbox.rescenter.shipping.view.InputShippingRefNumView;
-import com.tokopedia.inbox.rescenter.shipping.presenter.InputShippingRefNumImpl;
-import com.tokopedia.inbox.rescenter.shipping.presenter.InputShippingRefNumPresenter;
+import com.tokopedia.inbox.rescenter.shipping.presenter.InputShippingFragmentImpl;
+import com.tokopedia.inbox.rescenter.shipping.presenter.InputShippingFragmentPresenter;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -21,8 +23,10 @@ import butterknife.OnClick;
 /**
  * Created by hangnadi on 12/13/16.
  */
-public class InputShippingRefNumFragment extends BasePresenterFragment<InputShippingRefNumPresenter>
+public class InputShippingFragment extends BasePresenterFragment<InputShippingFragmentPresenter>
         implements InputShippingRefNumView {
+
+    private static final String EXTRA_PARAM_MODEL = "params_model";
 
     @BindView(R2.id.ref_number)
     EditText shippingRefNum;
@@ -36,6 +40,14 @@ public class InputShippingRefNumFragment extends BasePresenterFragment<InputShip
     @OnClick(R2.id.confirm_button)
     public void onConfirmButtonClick() {
 
+    }
+
+    public static Fragment newInstance(InputShippingParamsModel model) {
+        InputShippingFragment fragment = new InputShippingFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(EXTRA_PARAM_MODEL, model);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override
@@ -65,7 +77,7 @@ public class InputShippingRefNumFragment extends BasePresenterFragment<InputShip
 
     @Override
     protected void initialPresenter() {
-        presenter = new InputShippingRefNumImpl(this);
+        presenter = new InputShippingFragmentImpl(this);
     }
 
     @Override

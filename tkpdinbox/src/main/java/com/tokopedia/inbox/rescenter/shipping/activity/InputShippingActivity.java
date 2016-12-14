@@ -8,6 +8,7 @@ import android.os.Bundle;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsModel;
 import com.tokopedia.inbox.rescenter.shipping.presenter.InputShippingPresenter;
 import com.tokopedia.inbox.rescenter.shipping.presenter.InputShippingImpl;
 import com.tokopedia.inbox.rescenter.shipping.view.InputShippingView;
@@ -19,11 +20,20 @@ import com.tokopedia.inbox.rescenter.shipping.view.InputShippingView;
 public class InputShippingActivity extends BasePresenterActivity<InputShippingPresenter>
         implements InputShippingView {
 
+    public static final java.lang.String EXTRA_PARAM_RESOLUTION_ID = "resolution_id";
+    public static final java.lang.String EXTRA_PARAM_CONVERSATION_ID = "conversation_id";
+    public static final java.lang.String EXTRA_PARAM_SHIPPING_ID = "shipping_id";
+    public static final java.lang.String EXTRA_PARAM_SHIPPING_REFNUM = "shipping_ref";
+
+    private InputShippingParamsModel paramsModel;
+    private Bundle bundleExtras;
+    private Uri uriData;
+
     public static Intent createNewPageIntent(Context context,
                                              String resolutionID) {
         Intent intent = new Intent(context, InputShippingActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString("resolution_id", resolutionID);
+        bundle.putString(EXTRA_PARAM_RESOLUTION_ID, resolutionID);
         intent.putExtras(bundle);
         return intent;
     }
@@ -35,22 +45,27 @@ public class InputShippingActivity extends BasePresenterActivity<InputShippingPr
                                               String shippingRefNum) {
         Intent intent = new Intent(context, InputShippingActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString("resolution_id", resolutionID);
-        bundle.putString("conversation_id", conversationID);
-        bundle.putString("shipping_id", shippingID);
-        bundle.putString("shipping_ref", shippingRefNum);
+        bundle.putString(EXTRA_PARAM_RESOLUTION_ID, resolutionID);
+        bundle.putString(EXTRA_PARAM_CONVERSATION_ID, conversationID);
+        bundle.putString(EXTRA_PARAM_SHIPPING_ID, shippingID);
+        bundle.putString(EXTRA_PARAM_SHIPPING_REFNUM, shippingRefNum);
         intent.putExtras(bundle);
         return intent;
     }
 
     @Override
     protected void setupURIPass(Uri data) {
-
+        this.uriData = data;
     }
 
     @Override
     protected void setupBundlePass(Bundle extras) {
+        this.bundleExtras = extras;
+    }
 
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_RESOLUTION_CENTER_INPUT_SHIPPING;
     }
 
     @Override
@@ -65,7 +80,7 @@ public class InputShippingActivity extends BasePresenterActivity<InputShippingPr
 
     @Override
     protected void initView() {
-
+        presenter.initView(this);
     }
 
     @Override
@@ -84,8 +99,22 @@ public class InputShippingActivity extends BasePresenterActivity<InputShippingPr
     }
 
     @Override
-    public String getScreenName() {
-        return AppScreen.SCREEN_RESOLUTION_CENTER_INPUT_SHIPPING;
+    public InputShippingParamsModel getParamsModel() {
+        return paramsModel;
     }
 
+    @Override
+    public void setParamsModel(InputShippingParamsModel paramsModel) {
+        this.paramsModel = paramsModel;
+    }
+
+    @Override
+    public Bundle getBundleExtras() {
+        return bundleExtras;
+    }
+
+    @Override
+    public Uri getUriData() {
+        return uriData;
+    }
 }
