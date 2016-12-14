@@ -562,6 +562,9 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
         </service>
+        <service
+            android:name="com.tokopedia.core.gcm.services.NotificationIntentService"
+            android:exported="false" />
         <service android:name="com.google.android.gms.analytics.CampaignTrackingService" />
         <service
             android:name="com.tokopedia.core.service.DownloadService"
