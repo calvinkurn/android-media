@@ -435,7 +435,7 @@
             android:layout_marginRight="@dimen/margin_small"
             android:background="@drawable/button_buy_from_cart"
             android:gravity="center"
-            android:text="@string/title_receive_confirmation"
+            android:text="@string/title_package_received"
             android:textColor="@color/white"
             android:textStyle="bold" />
 

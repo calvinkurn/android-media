@@ -178,8 +178,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void reportProduct(@NonNull Context context) {
         if (SessionHandler.isV4Login(context)) {
-            viewListener.showReportDialog();
             UnifyTracking.eventPDPReport();
+            viewListener.showReportDialog();
         } else {
             UnifyTracking.eventPDPReportNotLogin();
             Intent intent = SessionRouter.getLoginActivityIntent(context);
