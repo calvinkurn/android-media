@@ -71,4 +71,8 @@ public interface ShippingView extends BaseView {
     void addEmptyView();
 
     void removeEmpty();
+
+    void showFab();
+
+    void hideFab();
 }

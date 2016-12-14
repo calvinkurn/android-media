@@ -1,6 +1,7 @@
 package com.tokopedia.sellerapp.home.fragment;
 
 import android.app.DialogFragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -10,11 +11,14 @@ import android.view.Window;
 import android.widget.CheckBox;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.sellerapp.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class CloseAppsDialogFragment extends DialogFragment {
     public static final String CLOSE_APPS_CACHE = "CLOSE_APPS_CACHE";
@@ -53,7 +57,10 @@ public class CloseAppsDialogFragment extends DialogFragment {
             mHandler.putBoolean(DONT_SHOW_FLAG, true);
             mHandler.applyEditor();
         }
-        getActivity().finish();
+        Intent intent = new Intent(getApplicationContext(), WelcomeActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("EXIT", true);
+        startActivity(intent);
     }
 
     @OnClick(R.id.no_but)

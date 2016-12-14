@@ -10,12 +10,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.GalleryBrowser;
@@ -247,10 +249,15 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
                     String imagePath = null;
                     if (data != null) {
                         imagePath = data.getExtras().getString(GalleryBrowser.IMAGE_URL, null);
-                    } else if (imageUploadHandler.getCameraFileloc() != null) {
+                    } else if (imageUploadHandler != null &&
+                            imageUploadHandler.getCameraFileloc() != null) {
                         imagePath = imageUploadHandler.getCameraFileloc();
                     }
-                    presenter.uploadProofImageWSV4(this, imagePath, txVerData);
+                    if (imagePath != null) {
+                        presenter.uploadProofImageWSV4(this, imagePath, txVerData);
+                    } else {
+                        showToastMessage(getString(com.tokopedia.transaction.R.string.message_failed_pick_image));
+                    }
                     break;
             }
         }

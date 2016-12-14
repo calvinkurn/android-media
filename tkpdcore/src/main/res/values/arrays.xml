@@ -179,4 +179,17 @@
         <item>@string/message_success_unfollow</item>
         <item>@string/message_success_follow</item>
     </string-array>
+    <string-array name="official_store_tab_title">
+        <item>@string/title_home</item>
+        <item>@string/title_product</item>
+        <item>@string/title_talk_only</item>
+        <item>@string/title_review</item>
+        <item>@string/title_notes_menu</item>
+    </string-array>
+    <string-array name="regular_store_tab_title">
+        <item>@string/title_product</item>
+        <item>@string/title_talk_only</item>
+        <item>@string/title_review</item>
+        <item>@string/title_notes_menu</item>
+    </string-array>
 </resources>

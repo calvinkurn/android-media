@@ -584,12 +584,14 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             switch (requestCode) {
                 case REQUEST_CHOOSE_ADDRESS:
                     renderFormAddress(
-                            (Destination)
+                            Destination.convertFromBundle(
                                     data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS)
+                            )
                     );
                     this.orderData.setAddress(
-                            (Destination)
+                            Destination.convertFromBundle(
                                     data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS)
+                            )
                     );
                     startCalculateCartLoading();
                     presenter.calculateKeroAddressShipping(this, orderData);

@@ -30,6 +30,7 @@ public interface  TkpdBaseURL {
     String JAHE_DOMAIN = "https://jahe.tokopedia.com";
     String PULSA_WEB_DOMAIN = "https://pulsa.tokopedia.com";
     String PULSA_WEB_STAGING_DOMAIN = "https://pulsa-staging.tokopedia.com";
+    String GOLD_MERCHANT_DOMAIN = "https://goldmerchant.tokopedia.com";
 
     interface Product {
         String URL_PRODUCT = BASE_DOMAIN + "v4/product/";
@@ -623,5 +624,9 @@ public interface  TkpdBaseURL {
 
     interface Home{
         String PATH_API_V1_ANNOUNCEMENT_TICKER = "/api/v1/tickers";
+    }
+
+    interface GoldMerchant{
+        String GET_PRODUCT_VIDEO = "/v1/product/video/";
     }
 }

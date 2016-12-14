@@ -58,4 +58,8 @@ public interface NewOrderView extends BaseView {
     void addEmptyView();
 
     void removeEmpty();
+
+    void hideFab();
+
+    void showFab();
 }

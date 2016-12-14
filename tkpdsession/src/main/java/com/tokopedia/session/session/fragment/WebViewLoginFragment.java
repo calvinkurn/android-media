@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.inputmethodservice.Keyboard;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 
@@ -181,5 +183,12 @@ public class WebViewLoginFragment extends DialogFragment {
                 return false;
             }
         });
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_CANCELED, getActivity().getIntent());
+//        KeyboardHandler.hideSoftKeyboard(getActivity());
+        super.onDismiss(dialog);
     }
 }

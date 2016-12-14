@@ -3,6 +3,7 @@ package com.tokopedia.core;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -670,7 +671,7 @@ public class ShopAddressForm extends TActivity {
 
         HashMap<String, String> saveAddressParam = PrepareParamSaveAddress(
                 AddressName.getText().toString(),
-                Address.getText().toString().replaceAll("\\n", "<br />"),
+                Address.getText().toString(),
                 ProvinceID.get(SpinnerProvince.getSelectedItemPosition() - 1).toString(),
                 RegencyID.get(SpinnerRegency.getSelectedItemPosition() - 1).toString(),
                 SubDistrictID.get(SpinnerSubDistrict.getSelectedItemPosition() - 1).toString(),

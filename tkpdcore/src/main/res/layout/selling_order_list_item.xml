@@ -3,13 +3,13 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:id="@+id/main_view"
     android:background="@drawable/border_bottom_05dp"
+    android:padding="16dp"
     android:layout_height="wrap_content">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:background="?attr/selectableItemBackground"
-        android:padding="16dp"
         >
 
         <!-- buyer profile picture -->
@@ -101,4 +101,14 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <TextView
+        android:visibility="gone"
+        android:layout_marginLeft="58dp"
+        android:text="@string/buyer_request_cancel"
+        android:textColor="@color/red_500"
+        android:id="@+id/buyer_request_cancel"
+        android:maxLines="2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 </LinearLayout>

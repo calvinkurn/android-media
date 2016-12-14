@@ -105,8 +105,15 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         list.setLayoutManager(layoutManager);
         list.setAdapter(adapter);
-
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (adapter.getList().isEmpty() && !adapter.isEmpty() && !presenter.isRequesting()) {
+            presenter.getShopTalk();
+        }
     }
 
     @Override
@@ -248,9 +255,6 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && adapter.getList().isEmpty() && !adapter.isEmpty() && !presenter.isRequesting()) {
-            presenter.getShopTalk();
-        }
     }
 
     @Override

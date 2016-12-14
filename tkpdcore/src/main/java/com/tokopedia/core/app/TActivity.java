@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
-import android.content.res.AssetManager;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,7 +23,6 @@ import android.widget.FrameLayout;
 
 import com.localytics.android.Localytics;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -35,20 +32,16 @@ import com.tokopedia.core.ForceUpdate;
 import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.database.manager.CategoryDatabaseManager;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer.DrawerVariable;
-import com.tokopedia.core.drawer.DrawerVariableSeller;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.retrofit.utils.DialogForceLogout;
 import com.tokopedia.core.network.retrofit.utils.DialogNoConnection;
-import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.SessionRouter;
@@ -70,10 +63,6 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.var.ToolbarVariable;
 import com.tokopedia.core.welcome.WelcomeActivity;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -152,7 +141,7 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
         }
 
         if (GlobalConfig.isSellerApp()) {
-            drawer = new DrawerVariableSeller(this);
+            drawer = ((TkpdCoreListener)getApplication()).getDrawer(this);
         } else {
             drawer = new DrawerVariable(this);
         }
@@ -423,7 +412,7 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
         if (success) {
             finish();
             Intent intent;
-            if (isSellerApp()) {
+            if (GlobalConfig.isSellerApp()) {
                 intent = new Intent(this, WelcomeActivity.class);
             } else {
                 intent = HomeRouter.getHomeActivity(this);

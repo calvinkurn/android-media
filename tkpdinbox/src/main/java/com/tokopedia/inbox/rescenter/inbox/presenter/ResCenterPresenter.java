@@ -24,4 +24,7 @@ public interface ResCenterPresenter {
                           @NonNull List<InboxResCenterActivity.Model> list);
 
     void onActionVar(Context context);
+
+    void initView();
+
 }

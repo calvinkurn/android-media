@@ -28,7 +28,9 @@ import android.widget.Toast;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.google.android.gms.common.api.Api;
 import com.google.gson.Gson;
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
@@ -126,12 +128,12 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         return AppScreen.SCREEN_BROWSE_PRODUCT_FROM_SEARCH;
     }
 
-    public void sendHotlist(String selected, String keyword) {
+    public void sendHotlist(String selected) {
         fetchHotListHeader(selected);
+        browseProductActivityModel.setQ("");
         browseProductActivityModel.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT);
         browseProductActivityModel.alias = selected;
     }
-
 
 
     public enum FDest {
@@ -229,7 +231,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                 };
             }
         })
-                .debounce(400, TimeUnit.MILLISECONDS)
+                .debounce(150, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -347,7 +349,6 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                 (SearchView.SearchAutoComplete) searchView.findViewById(R.id.search_src_text);
         mSearchSrcTextView.setTextColor(getResources().getColor(R.color.white));
         mSearchSrcTextView.setHintTextColor(getResources().getColor(R.color.white));
-
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         MenuItemCompat.setOnActionExpandListener(searchItem, this);
         MenuItemCompat.setActionView(searchItem, searchView);
