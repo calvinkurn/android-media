@@ -7,21 +7,15 @@ import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
-import android.util.Log;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.tkpd.library.utils.CommonUtils;
@@ -36,13 +30,11 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
-import com.tokopedia.core.gcm.GCMUtils;
 import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
-import com.tokopedia.core.prototype.ManageProductCache;
-import com.tokopedia.core.prototype.ShopSettingCache;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.CustomerRouter;
+import com.tokopedia.core.R;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -71,7 +63,7 @@ import java.util.Map;
  */
 public class GCMListenerService extends FirebaseMessagingService {
 
-    private LocalCacheHandler cache;
+    private GCMCacheManager cacheManager;
     private NotificationListener listener;
     private long[] pattern = {500, 500, 500, 500, 500, 500, 500, 500, 500};
 
@@ -83,26 +75,16 @@ public class GCMListenerService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage message) {
-        Bundle data = convertMap(message.getData());
+        Bundle data = GCMUtils.convertMap(message.getData());
 
         CommonUtils.dumper(data.toString());
+        cacheManager = new GCMCacheManager(this);
         cache = new LocalCacheHandler(this, TkpdCache.G_CODE);
-        if (isAllowToHandleNotif(data)) {
-            setCache();
+        if (cacheManager.isAllowToHandleNotif(data)) {
+            cacheManager.setCache(this);
             tunnelData(data);
         }
         setAnalyticHandler(data.getString("tkp_code"));
-    }
-
-    private Bundle convertMap(Map<String, String> map) {
-        Bundle bundle = new Bundle(map != null ? map.size() : 0);
-        if (map != null) {
-            for (Map.Entry<String, String> entry : map.entrySet()) {
-                bundle.putString(entry.getKey(), entry.getValue());
-                CommonUtils.dumper("FCM key "+entry.getKey()+" value "+ entry.getValue());
-            }
-        }
-        return bundle;
     }
 
     private void setAnalyticHandler(String code) {
@@ -113,7 +95,7 @@ public class GCMListenerService extends FirebaseMessagingService {
     }
 
     private void tunnelData(Bundle data) {
-        switch (getCode(data)) {
+        switch (GCMUtils.getCode(data)) {
             case TkpdState.GCMServiceState.GCM_HOT_LIST:
                 // TODO Handle with latest code
 //                createNotification(data, BrowseHotDetail.class);
@@ -176,25 +158,10 @@ public class GCMListenerService extends FirebaseMessagingService {
                             }
                         }
                     }
-                    resetCache(data);
+                    cacheManager.resetCache(data);
                 }
                 break;
         }
-    }
-
-
-    private int getCode(Bundle data) {
-        int code;
-        try {
-            code = Integer.parseInt(data.getString("tkp_code"));
-        } catch (Exception e) {
-            code = 0;
-        }
-        return code;
-    }
-
-    public boolean isValidForSellerApp(int tkpCode) {
-        return !getApplication().getClass().getSimpleName().equals("SellerMainApplication") && GCMUtils.isExcludeFromSellerApp(tkpCode);
     }
 
     private void sendNotification(Bundle data) {
@@ -203,7 +170,7 @@ public class GCMListenerService extends FirebaseMessagingService {
          * Use this code to exclude deprecated code which still sent from server
          * if (!CheckSettings(tkpCode) && isValidForSellerApp(tkpCode) && !isDeprecated(tkpCode)) {
          */
-        if (!CheckSettings(tkpCode) && isValidForSellerApp(tkpCode)) {
+        if (!cacheManager.checkSettings(tkpCode) && GCMUtils.isValidForSellerApp(tkpCode, getApplication())) {
             return;
         }
 
@@ -451,43 +418,23 @@ public class GCMListenerService extends FirebaseMessagingService {
     private void createNotification(Intent intent, Class<?> resultclass, String title, String ticker, String desc,
                                     Bundle bundle, final Bundle data, ComponentName componentName) {
         NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-        ArrayList<String> Content;
-        ArrayList<String> Desc;
-        ArrayList<Integer> Code;
+        final ArrayList<String> Content =  new ArrayList<>(), Desc =  new ArrayList<>();
+        final ArrayList<Integer>  Code = new ArrayList<>();
         final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(getDrawableIcon())
                 .setAutoCancel(true);
         NotificationCompat.InboxStyle inboxStyle;
         NotificationCompat.BigTextStyle bigStyle;
 
-        LocalCacheHandler cache = new LocalCacheHandler(this, TkpdCache.GCM_NOTIFICATION);
-        Content = cache.getArrayListString(TkpdCache.Key.NOTIFICATION_CONTENT);
-        Desc = cache.getArrayListString(TkpdCache.Key.NOTIFICATION_DESC);
-        Code = cache.getArrayListInteger(TkpdCache.Key.NOTIFICATION_CODE);
-        try {
-            for (int i = 0; i < Code.size(); i++) {
-                if (Code.get(i) == Integer.parseInt(data.getString("tkp_code"))) {
-                    Content.remove(i);
-                    Code.remove(i);
-                    Desc.remove(i);
-                }
-            }
-        } catch (Exception e) {
-            Crashlytics.log(Log.ERROR, "PUSH NOTIF - IndexOutOfBounds",
-                    "tkp_code:" + Integer.parseInt(data.getString("tkp_code")) +
-                            " size contentArray " + Content.size() +
-                            " size codeArray " + Code.size() +
-                            " size Desc " + Desc.size());
-            e.printStackTrace();
-        }
+       cacheManager.processNotifData(data, title, desc, new GCMCacheManager.CacheProcessListener() {
+           @Override
+           public void onDataProcessed(ArrayList<String> content, ArrayList<String> desc, ArrayList<Integer> code) {
+               Content.addAll(content);
+               Code.addAll(code);
+               Desc.addAll(desc);
+           }
+       });
 
-        Content.add(title);
-        Code.add(Integer.parseInt(data.getString("tkp_code")));
-        Desc.add(desc);
-        cache.putArrayListString(TkpdCache.Key.NOTIFICATION_CONTENT, Content);
-        cache.putArrayListString(TkpdCache.Key.NOTIFICATION_DESC, Desc);
-        cache.putArrayListInteger(TkpdCache.Key.NOTIFICATION_CODE, Code);
-        cache.applyEditor();
         if (Code.size() == 1) {
             bigStyle = new NotificationCompat.BigTextStyle();
             mBuilder.setContentTitle(title);
@@ -563,9 +510,9 @@ public class GCMListenerService extends FirebaseMessagingService {
             intent.putExtras(bundle);
         }
 
-        if (isAllowBell()) {
-            mBuilder.setSound(getSoundUri());
-            if (isVibrate()) {
+        if (cacheManager.isAllowBell()) {
+            mBuilder.setSound(cacheManager.getSoundUri());
+            if (cacheManager.isVibrate()) {
                 mBuilder.setVibrate(pattern);
             }
         }
@@ -580,7 +527,7 @@ public class GCMListenerService extends FirebaseMessagingService {
         //PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
         mBuilder.setContentIntent(resultPendingIntent);
         Notification notif = mBuilder.build();
-        if (isVibrate() && isAllowBell()) notif.defaults |= Notification.DEFAULT_VIBRATE;
+        if (cacheManager.isVibrate() && cacheManager.isAllowBell()) notif.defaults |= Notification.DEFAULT_VIBRATE;
         mNotificationManager.notify(100, notif);
     }
 
@@ -593,7 +540,7 @@ public class GCMListenerService extends FirebaseMessagingService {
     }
 
     private void createNotification(Bundle data, Class<?> intentClass) {
-        if (!CheckSettings(Integer.parseInt(data.getString("tkp_code")))) {
+        if (!cacheManager.checkSettings(Integer.parseInt(data.getString("tkp_code")))) {
             return;
         }
         if (data.getString("url_img") != null) {
@@ -619,9 +566,9 @@ public class GCMListenerService extends FirebaseMessagingService {
             mBuilder.setStyle(bigStyle);
             mBuilder.setTicker(data.getString("desc"));
 
-            if (isAllowBell()) {
-                mBuilder.setSound(getSoundUri());
-                if (isVibrate()) {
+            if (cacheManager.isAllowBell()) {
+                mBuilder.setSound(cacheManager.getSoundUri());
+                if (cacheManager.isVibrate()) {
                     mBuilder.setVibrate(pattern);
                 }
             }
@@ -639,7 +586,7 @@ public class GCMListenerService extends FirebaseMessagingService {
             PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
             mBuilder.setContentIntent(resultPendingIntent);
             Notification notif = mBuilder.build();
-            if (isVibrate() && isAllowBell()) notif.defaults |= Notification.DEFAULT_VIBRATE;
+            if (cacheManager.isVibrate() && cacheManager.isAllowBell()) notif.defaults |= Notification.DEFAULT_VIBRATE;
             mNotificationManager.notify(100, notif);
         } catch (NullPointerException e) {
             CommonUtils.dumper("NotifTag : Null Value" + e.toString());
@@ -739,9 +686,9 @@ public class GCMListenerService extends FirebaseMessagingService {
                         mBuilder.setStyle(bigStyle);
                         mBuilder.setTicker(data.getString("desc"));
 
-                        if (isAllowBell()) {
-                            mBuilder.setSound(getSoundUri());
-                            if (isVibrate()) {
+                        if (cacheManager.isAllowBell()) {
+                            mBuilder.setSound(cacheManager.getSoundUri());
+                            if (cacheManager.isVibrate()) {
                                 mBuilder.setVibrate(pattern);
                             }
                         }
@@ -759,7 +706,7 @@ public class GCMListenerService extends FirebaseMessagingService {
                         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
                         mBuilder.setContentIntent(resultPendingIntent);
                         Notification notif = mBuilder.build();
-                        if (isVibrate() && isAllowBell())
+                        if (cacheManager.isVibrate() && cacheManager.isAllowBell())
                             notif.defaults |= Notification.DEFAULT_VIBRATE;
                         mNotificationManager.notify(Integer.parseInt(data.getString("tkp_code")), notif);
                     }
@@ -782,9 +729,9 @@ public class GCMListenerService extends FirebaseMessagingService {
             mBuilder.setStyle(bigStyle);
             mBuilder.setTicker(data.getString("title_update"));
 
-            if (isAllowBell()) {
-                mBuilder.setSound(getSoundUri());
-                if (isVibrate()) {
+            if (cacheManager.isAllowBell()) {
+                mBuilder.setSound(cacheManager.getSoundUri());
+                if (cacheManager.isVibrate()) {
                     mBuilder.setVibrate(pattern);
                 }
             }
@@ -795,12 +742,10 @@ public class GCMListenerService extends FirebaseMessagingService {
             PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
             mBuilder.setContentIntent(contentIntent);
             Notification notif = mBuilder.build();
-            if (isVibrate() && isAllowBell()) notif.defaults |= Notification.DEFAULT_VIBRATE;
+            if (cacheManager.isVibrate() && cacheManager.isAllowBell()) notif.defaults |= Notification.DEFAULT_VIBRATE;
             mNotificationManager.notify(TkpdState.GCMServiceState.GCM_UPDATE_NOTIFICATION, notif);
 
-            LocalCacheHandler updateStats = new LocalCacheHandler(this, TkpdCache.STATUS_UPDATE);
-            updateStats.putInt(TkpdCache.Key.STATUS, Integer.parseInt(data.getString("status")));
-            updateStats.applyEditor();
+            cacheManager.updateStats(data);
         }
     }
 
@@ -832,143 +777,6 @@ public class GCMListenerService extends FirebaseMessagingService {
                     break;
             }
         }
-    }
-
-    private void setCache() {
-        cache = new LocalCacheHandler(this, TkpdCache.G_CODE);
-        cache.setExpire(1);
-        cache.applyEditor();
-    }
-
-    private void resetCache(Bundle data) {
-        if (Integer.parseInt(data.getString("tkp_code")) > 600
-                && Integer.parseInt(data.getString("tkp_code")) < 802) {
-            doResetCache(Integer.parseInt(data.getString("tkp_code")));
-        }
-    }
-
-    private void doResetCache(int code) {
-        switch (code) {
-            case TkpdState.GCMServiceState.GCM_PEOPLE_PROFILE:
-                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_PROFILE, getApplicationContext());
-                break;
-            case TkpdState.GCMServiceState.GCM_PEOPLE_NOTIF_SETTING:
-                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_NOTIFICATION, getApplicationContext());
-                break;
-            case TkpdState.GCMServiceState.GCM_PEOPLE_PRIVACY_SETTING:
-                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_PRIVACY, getApplicationContext());
-                break;
-            case TkpdState.GCMServiceState.GCM_PEOPLE_ADDRESS_SETTING:
-
-                break;
-            case TkpdState.GCMServiceState.GCM_SHOP_INFO:
-                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_SHOP_INFO, getApplicationContext());
-                break;
-            case TkpdState.GCMServiceState.GCM_SHOP_PAYMENT:
-                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_PAYMENT, getApplicationContext());
-                break;
-            case TkpdState.GCMServiceState.GCM_SHOP_ETALASE:
-                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_ETALASE, getApplicationContext());
-                break;
-            case TkpdState.GCMServiceState.GCM_SHOP_NOTES:
-                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_NOTES, getApplicationContext());
-                break;
-            case TkpdState.GCMServiceState.GCM_PRODUCT_LIST:
-                ManageProductCache.ClearCache(getApplicationContext());
-                break;
-        }
-    }
-
-    private boolean isAllowToHandleNotif(Bundle data) {
-        try {
-            return (!cache.isExpired() || cache.getString(TkpdCache.Key.PREV_CODE) == null || !data.isEmpty() || data.getString("g_id").equals(cache.getString(TkpdCache.Key.PREV_CODE)));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public Uri getSoundUri() {
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-        String StringSoundUri = settings.getString("notifications_new_message_ringtone", null);
-        if (StringSoundUri != null) {
-            return Uri.parse(StringSoundUri);
-        } else {
-            return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        }
-    }
-
-    private Boolean isVibrate() {
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-        return settings.getBoolean("notifications_new_message_vibrate", false);
-    }
-
-    private Boolean isAllowBell() {
-        long prevTime = cache.getLong(TkpdCache.Key.PREV_TIME);
-        long currTIme = System.currentTimeMillis();
-        CommonUtils.dumper("prev time: " + prevTime);
-        CommonUtils.dumper("curr time: " + currTIme);
-        if (currTIme - prevTime > 15000) {
-            cache.putLong(TkpdCache.Key.PREV_TIME, currTIme);
-            cache.applyEditor();
-            return true;
-        }
-        return false;
-    }
-
-    private boolean CheckSettings(int code) {
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-        switch (code) {
-            case TkpdState.GCMServiceState.GCM_MESSAGE:
-                return settings.getBoolean("notification_receive_pm", true);
-            case TkpdState.GCMServiceState.GCM_TALK:
-                return settings.getBoolean("notification_receive_talk", true);
-            case TkpdState.GCMServiceState.GCM_REVIEW:
-                return settings.getBoolean("notification_receive_review", true);
-            case TkpdState.GCMServiceState.GCM_REVIEW_EDIT:
-                return settings.getBoolean("notification_receive_review", true);
-            case TkpdState.GCMServiceState.GCM_REVIEW_REPLY:
-                return settings.getBoolean("notification_receive_review", true);
-            case TkpdState.GCMServiceState.GCM_PROMO:
-                return settings.getBoolean("notification_receive_promo", true);
-            case TkpdState.GCMServiceState.GCM_HOT_LIST:
-                return settings.getBoolean("notification_receive_promo", true);
-            case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_BUYER:
-                return settings.getBoolean("notification_receive_reputation", true);
-            case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_BUYER:
-                return settings.getBoolean("notification_receive_reputation", true);
-            case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_SELLER:
-                return settings.getBoolean("notification_receive_reputation", true);
-            case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_SELLER:
-                return settings.getBoolean("notification_receive_reputation", true);
-            case TkpdState.GCMServiceState.GCM_NEWORDER:
-                return settings.getBoolean("notification_sales", true);
-            case TkpdState.GCMServiceState.GCM_PURCHASE_VERIFIED:
-                return settings.getBoolean("notification_purchase", true);
-            case TkpdState.GCMServiceState.GCM_PURCHASE_ACCEPTED:
-                return settings.getBoolean("notification_purchase", true);
-            case TkpdState.GCMServiceState.GCM_PURCHASE_PARTIAL_PROCESSED:
-                return settings.getBoolean("notification_purchase", true);
-            case TkpdState.GCMServiceState.GCM_PURCHASE_REJECTED:
-                return settings.getBoolean("notification_purchase", true);
-            case TkpdState.GCMServiceState.GCM_PURCHASE_DELIVERED:
-                return settings.getBoolean("notification_purchase", true);
-            case TkpdState.GCMServiceState.GCM_PURCHASE_DISPUTE:
-                return settings.getBoolean("notification_receive_rescenter", true);
-            case TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_REPLY:
-                return settings.getBoolean("notification_receive_rescenter", true);
-            case TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_REPLY:
-                return settings.getBoolean("notification_receive_rescenter", true);
-            case TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_AGREE:
-                return settings.getBoolean("notification_receive_rescenter", true);
-            case TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_AGREE:
-                return settings.getBoolean("notification_receive_rescenter", true);
-            case TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_SELLER_REPLY:
-                return settings.getBoolean("notification_receive_rescenter", true);
-            case TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_BUYER_REPLY:
-                return settings.getBoolean("notification_receive_rescenter", true);
-        }
-        return true;
     }
 
     private Bundle localyticsIntent(Bundle data) {

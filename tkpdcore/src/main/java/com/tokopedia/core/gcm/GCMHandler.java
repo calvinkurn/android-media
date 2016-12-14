@@ -1,14 +1,12 @@
 package com.tokopedia.core.gcm;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.localytics.android.Localytics;
 import com.tkpd.library.utils.CommonUtils;
