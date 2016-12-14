@@ -1,6 +1,6 @@
 package com.tokopedia.core.gcm;
 
-import com.tokopedia.core.gcm.model.FcmTokenUpdate;
+import com.tokopedia.core.gcm.model.FCMTokenUpdate;
 
 import rx.Observable;
 
@@ -8,6 +8,6 @@ import rx.Observable;
  * @author  by alvarisi on 12/13/16.
  */
 
-public interface IFcmRefreshTokenReceiver {
-    void onTokenReceive(Observable<FcmTokenUpdate> tokenUpdate);
+public interface IFCMRefreshTokenReceiver {
+    void onTokenReceive(Observable<FCMTokenUpdate> tokenUpdate);
 }
