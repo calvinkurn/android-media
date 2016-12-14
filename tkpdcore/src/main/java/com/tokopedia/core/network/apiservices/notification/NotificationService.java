@@ -18,7 +18,7 @@ public class NotificationService extends BearerService<NotificationApi> {
 
     @Override
     protected String getBaseUrl() {
-        return TkpdBaseURL.ACCOUNTS_STAGING_DOMAIN;
+        return TkpdBaseURL.BASE_DOMAIN;
     }
 
     @Override

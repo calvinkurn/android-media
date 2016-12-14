@@ -3,8 +3,8 @@ package com.tokopedia.core.gcm;
 import android.content.Context;
 import android.content.Intent;
 
+import com.tokopedia.core.gcm.intentservices.PushNotificationIntentService;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
-import com.tokopedia.core.gcm.services.NotificationIntentService;
 
 import rx.Observable;
 import rx.functions.Action1;
@@ -25,9 +25,9 @@ public class FCMRefreshTokenReceiver implements IFCMRefreshTokenReceiver {
         tokenUpdate.subscribe(new Action1<FCMTokenUpdate>() {
             @Override
             public void call(FCMTokenUpdate FCMTokenUpdate) {
-                Intent intent = new Intent(Intent.ACTION_SYNC, null, mContext,  NotificationIntentService.class);
-                intent.putExtra(NotificationIntentService.ARG_EXTRA_GCM_UPDATE, NotificationIntentService.CODE_EXTRA_GCM_UPDATE);
-                intent.putExtra(NotificationIntentService.ARG_EXTRA_GCM_UPDATE_DATA, FCMTokenUpdate);
+                Intent intent = new Intent(Intent.ACTION_SYNC, null, mContext,  PushNotificationIntentService.class);
+                intent.putExtra(PushNotificationIntentService.ARG_EXTRA_GCM_UPDATE, PushNotificationIntentService.CODE_EXTRA_GCM_UPDATE);
+                intent.putExtra(PushNotificationIntentService.ARG_EXTRA_GCM_UPDATE_DATA, FCMTokenUpdate);
                 mContext.startService(intent);
             }
         }, new Action1<Throwable>() {
