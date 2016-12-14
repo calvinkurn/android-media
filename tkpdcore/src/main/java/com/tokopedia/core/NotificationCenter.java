@@ -15,7 +15,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.GCMListenerService.NotificationListener;
+import com.tokopedia.core.gcm.GCMListenerService.NotificationListener;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.MultiPaneActivity;

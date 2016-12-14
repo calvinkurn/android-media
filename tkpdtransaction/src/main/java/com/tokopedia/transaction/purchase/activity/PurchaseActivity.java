@@ -6,7 +6,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.view.inputmethod.InputMethodManager;
 
-import com.tokopedia.core.GCMListenerService;
+import com.tokopedia.core.gcm.GCMListenerService;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;

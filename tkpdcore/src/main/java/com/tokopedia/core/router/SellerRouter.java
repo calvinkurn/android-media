@@ -5,7 +5,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 
-import com.tokopedia.core.GCMListenerService;
 import com.tokopedia.core.util.RouterUtils;
 
 /**

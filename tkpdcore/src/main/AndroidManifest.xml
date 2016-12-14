@@ -548,7 +548,7 @@
             android:exported="false" />
         <service android:name="com.tokopedia.core.service.HUDIntent" />
         <service
-            android:name="com.tokopedia.core.GCMListenerService"
+            android:name="com.tokopedia.core.gcm.GCMListenerService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

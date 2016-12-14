@@ -29,7 +29,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.tokopedia.core.GCMListenerService;
+import com.tokopedia.core.gcm.GCMListenerService;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
 
