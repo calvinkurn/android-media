@@ -48,8 +48,9 @@ import butterknife.BindView;
 
 public class TopPayActivity extends BasePresenterActivity implements ITopPayView,
         CartBroadcastReceiver.ActionTopPayThanksListener, View.OnKeyListener {
-    private static final String EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA";
     private static final String TAG = TopPayActivity.class.getSimpleName();
+
+    private static final String EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA";
     private static final String MESSAGE_PAYMENT_FAILED = "Proses pembayaran gagal, coba kembali";
     private static final String KEY_QUERY_PAYMENT_ID = "id";
     private static final String KEY_QUERY_LD = "ld";
@@ -219,7 +220,7 @@ public class TopPayActivity extends BasePresenterActivity implements ITopPayView
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        actionTopPaySucess(paymentId);
+                        actionTopPaySucess();
                     }
                 });
     }
@@ -236,13 +237,11 @@ public class TopPayActivity extends BasePresenterActivity implements ITopPayView
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             view.invalidate();
-            paymentId = Uri.parse(url).getQueryParameter(KEY_QUERY_PAYMENT_ID);
             if (url.contains(topPayParameterData.getCallbackUrlPath())) {
                 Uri uri = Uri.parse(url);
-                String id = uri.getQueryParameter(KEY_QUERY_PAYMENT_ID);
+                paymentId = uri.getQueryParameter(KEY_QUERY_PAYMENT_ID);
                 view.stopLoading();
-                paymentId = id;
-                actionTopPaySucess(paymentId);
+                actionTopPaySucess();
                 return true;
             } else if (url.contains(CONTAINS_ACCOUNT_URL)) {
                 Uri uriMain = Uri.parse(url);
@@ -255,10 +254,9 @@ public class TopPayActivity extends BasePresenterActivity implements ITopPayView
                     urlThanks = "";
                 }
                 Uri uri = Uri.parse(urlThanks);
-                String id = uri.getQueryParameter(KEY_QUERY_PAYMENT_ID);
+                paymentId = uri.getQueryParameter(KEY_QUERY_PAYMENT_ID);
                 view.stopLoading();
-                paymentId = id;
-                actionTopPaySucess(paymentId);
+                actionTopPaySucess();
                 return true;
             } else if (url.contains(CONTAINS_LOGIN_URL)) {
                 view.stopLoading();
@@ -338,8 +336,8 @@ public class TopPayActivity extends BasePresenterActivity implements ITopPayView
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    private void actionTopPaySucess(String id) {
-        if (id == null) {
+    private void actionTopPaySucess() {
+        if (paymentId == null) {
             onGetThanksTopPayFailed("Pembayaran gagal, Mohon coba kembali");
             return;
         }
@@ -347,7 +345,7 @@ public class TopPayActivity extends BasePresenterActivity implements ITopPayView
                 CartIntentService.class);
         intent.putExtra(CartIntentService.EXTRA_ACTION,
                 CartIntentService.SERVICE_ACTION_GET_THANKS_TOP_PAY);
-        intent.putExtra(CartIntentService.EXTRA_PAYMENT_ID, id);
+        intent.putExtra(CartIntentService.EXTRA_PAYMENT_ID, paymentId);
         startService(intent);
     }
 
@@ -379,6 +377,4 @@ public class TopPayActivity extends BasePresenterActivity implements ITopPayView
             finish();
         }
     }
-
-
 }

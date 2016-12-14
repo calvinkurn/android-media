@@ -1,25 +1,21 @@
 package com.tokopedia.transaction.cart.activity;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.cart.fragment.CartFragment;
-import com.tokopedia.transaction.cart.fragment.TopPayFragment;
-import com.tokopedia.transaction.cart.listener.ICartActionFragment;
 
 
 /**
  * @author anggaprasetiyo on 11/1/16.
  */
 
-public class CartActivity extends BasePresenterActivity implements ICartActionFragment {
+public class CartActivity extends BasePresenterActivity {
 
     public static Intent createInstance(Context context) {
         return new Intent(context, CartActivity.class);
@@ -64,46 +60,6 @@ public class CartActivity extends BasePresenterActivity implements ICartActionFr
 
     @Override
     protected void setActionVar() {
-
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (getFragmentManager().getBackStackEntryCount() > 0) {
-            if (getFragmentManager().findFragmentById(R.id.container) instanceof TopPayFragment) {
-                TopPayFragment topPayFragment = ((TopPayFragment)
-                        getFragmentManager().findFragmentById(R.id.container));
-                if (topPayFragment.getPaymentId() != null) {
-                    topPayFragment.testMethod();
-                } else {
-                    getFragmentManager().popBackStack();
-                }
-            } else {
-                getFragmentManager().popBackStack();
-            }
-        } else {
-            this.finish();
-        }
-    }
-
-    @Override
-    public void replaceFragmentWithBackStack(Fragment fragment) {
-        getFragmentManager().beginTransaction().replace(R.id.container,
-                fragment).addToBackStack(null).commit();
-    }
-
-    @Override
-    public void onTopPaySuccess(String paymentId, String message) {
-        Toast.makeText(this, paymentId + " " + message, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onTopPayFailed(String message) {
-
-    }
-
-    @Override
-    public void onTopPayCanceled(String message) {
 
     }
 

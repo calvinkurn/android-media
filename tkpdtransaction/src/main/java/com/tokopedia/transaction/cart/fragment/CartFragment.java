@@ -37,7 +37,6 @@ import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.activity.ShipmentCartActivity;
 import com.tokopedia.transaction.cart.activity.TopPayActivity;
 import com.tokopedia.transaction.cart.adapter.CartItemAdapter;
-import com.tokopedia.transaction.cart.listener.ICartActionFragment;
 import com.tokopedia.transaction.cart.listener.ICartView;
 import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
@@ -52,6 +51,7 @@ import com.tokopedia.transaction.cart.presenter.ICartPresenter;
 import com.tokopedia.transaction.cart.receivers.CartBroadcastReceiver;
 import com.tokopedia.transaction.utils.LinearLayoutManagerNonScroll;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 import butterknife.BindView;
@@ -60,11 +60,9 @@ import butterknife.BindView;
 /**
  * @author anggaprasetiyo on 11/1/16.
  */
-
 public class CartFragment extends BasePresenterFragment<ICartPresenter> implements ICartView,
         PaymentGatewayFragment.ActionListener, CartItemAdapter.CartAction,
         CartBroadcastReceiver.ActionTopPayListener {
-
 
     @BindView(R2.id.pb_main_loading)
     ProgressBar pbMainLoading;
@@ -119,10 +117,10 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @BindView(R2.id.tv_ticker_gtm)
     TextView tvTickerGTM;
 
-    private ICartActionFragment actionListener;
     private CheckoutData.Builder checkoutDataBuilder;
     private TkpdProgressDialog progressDialogNormal;
     private CartBroadcastReceiver cartBroadcastReceiver;
+    private CartItemAdapter cartItemAdapter;
 
     public static Fragment newInstance() {
         return new CartFragment();
@@ -161,7 +159,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     protected void initialListener(Activity activity) {
-        actionListener = (ICartActionFragment) activity;
     }
 
     @Override
@@ -194,9 +191,9 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     protected void initialVar() {
         cartBroadcastReceiver = new CartBroadcastReceiver(this);
-        getActivity().registerReceiver(
-                cartBroadcastReceiver, new IntentFilter(CartBroadcastReceiver.ACTION_GET_PARAMETER_TOP_PAY)
-        );
+        getActivity().registerReceiver(cartBroadcastReceiver, new IntentFilter(
+                CartBroadcastReceiver.ACTION_GET_PARAMETER_TOP_PAY
+        ));
     }
 
     @Override
@@ -314,10 +311,10 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void renderCartListData(final List<TransactionList> cartList) {
         rvCart.setLayoutManager(new LinearLayoutManagerNonScroll(getActivity()));
-        final CartItemAdapter adapter = new CartItemAdapter(this, this);
-        adapter.fillDataList(cartList);
-        rvCart.setAdapter(adapter);
-        btnCheckout.setOnClickListener(getCheckoutButtonClickListener(adapter));
+        cartItemAdapter = new CartItemAdapter(this, this);
+        cartItemAdapter.fillDataList(cartList);
+        rvCart.setAdapter(cartItemAdapter);
+        btnCheckout.setOnClickListener(getCheckoutButtonClickListener());
     }
 
     @Override
@@ -331,16 +328,11 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderErrorPaymentCart(boolean isError, String messageError) {
+    public void renderErrorPaymentCart(boolean isError, @NonNull String messageError) {
         checkoutDataBuilder.errorPayment(isError);
+        tvErrorPayment.setText(messageError);
         checkoutDataBuilder.errorPaymentMessage(messageError);
-        if (isError) {
-            tvErrorPayment.setText(messageError);
-            tvErrorPayment.setVisibility(View.VISIBLE);
-        } else {
-            tvErrorPayment.setVisibility(View.GONE);
-        }
-
+        tvErrorPayment.setVisibility(isError ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -370,10 +362,10 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     public void renderEmptyCart() {
         nsvContainer.setVisibility(View.GONE);
         pbMainLoading.setVisibility(View.GONE);
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(),
-                "Keranjang belanja Anda Kosong.",
-                "Yuk belanja di situs resmi jual beli online, aman dan nyaman.",
-                "CARI SEKARANG",
+        NetworkErrorHelper.showEmptyState(
+                getActivity(), getView(), getString(R.string.label_title_empty_cart),
+                getString(R.string.label_sub_title_empty_cart),
+                getString(R.string.label_btn_action_empty_cart),
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
@@ -399,6 +391,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         pbMainLoading.setVisibility(View.VISIBLE);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void renderVisibleTickerGTM(String message) {
         tvTickerGTM.setText(Html.fromHtml(message));
@@ -413,6 +406,42 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
+    public List<CartItemEditable> getItemCartListCheckoutData() {
+        return cartItemAdapter.getDataList();
+    }
+
+    @Override
+    public String getVoucherCodeCheckoutData() {
+        return etVoucherCode.getText().toString();
+    }
+
+    @Override
+    public boolean isCheckoutDataUseVoucher() {
+        return cbUseVoucher.isChecked();
+    }
+
+    @Override
+    public void renderDisableErrorCheckVoucher() {
+        tilEtVoucherCode.setError(null);
+        tilEtVoucherCode.setErrorEnabled(false);
+    }
+
+    @Override
+    public CheckoutData.Builder getCheckoutDataBuilder() {
+        return checkoutDataBuilder;
+    }
+
+    @Override
+    public String getDepositCheckoutData() {
+        return etUseDeposit.getText().toString();
+    }
+
+    @Override
+    public void renderErrorCartItem(CartItemEditable cartItemEditable) {
+        cartItemAdapter.renderErrorCart(cartItemEditable);
+    }
+
+    @Override
     public void onSelectedPaymentGateway(GatewayList gateway) {
         if (gateway.getGateway() == 0) {
             holderUseDeposit.setVisibility(View.GONE);
@@ -420,7 +449,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         } else {
             holderUseDeposit.setVisibility(View.VISIBLE);
         }
-        checkoutDataBuilder.gateway(gateway.getGateway() + "");
+        checkoutDataBuilder.gateway(MessageFormat.format("{0}", gateway.getGateway()));
         ImageHandler.LoadImage(ivLogoBtnPaymentMethod, gateway.getGatewayImage());
         tvInfoPaymentMethod.setText(gateway.getGatewayDesc());
         tvDescBtnPaymentMethod.setText(gateway.getGatewayName());
@@ -460,12 +489,9 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
         alertDialog.setTitle(context.getString(R.string.title_cancel_confirm));
         alertDialog.setMessage(context.getString(R.string.msg_cancel_1)
-                + " "
-                + data.getCartShop().getShopName()
-                + " "
-                + context.getString(R.string.msg_cancel_3)
-                + " "
-                + data.getCartTotalAmountIdr());
+                + " " + data.getCartShop().getShopName()
+                + " " + context.getString(R.string.msg_cancel_3)
+                + " " + data.getCartTotalAmountIdr());
         alertDialog.setPositiveButton(context.getString(R.string.title_yes),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface arg0, int arg1) {
@@ -482,16 +508,11 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
         alertDialog.setTitle(getString(R.string.title_cancel_confirm));
         alertDialog.setMessage(getString(R.string.msg_cancel_1)
-                + " "
-                + cartData.getCartShop().getShopName()
-                + " "
-                + getString(R.string.msg_cancel_2)
-                + " "
-                + cartProductData.getProductName()
-                + " "
-                + getString(R.string.msg_cancel_3)
-                + " "
-                + cartProductData.getProductTotalPriceIdr());
+                + " " + cartData.getCartShop().getShopName()
+                + " " + getString(R.string.msg_cancel_2)
+                + " " + cartProductData.getProductName()
+                + " " + getString(R.string.msg_cancel_3)
+                + " " + cartProductData.getProductTotalPriceIdr());
         alertDialog.setPositiveButton(context.getString(R.string.title_yes),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface arg0, int arg1) {
@@ -500,7 +521,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                         );
                     }
                 });
-
         alertDialog.setNegativeButton(context.getString(R.string.title_no), null);
         return alertDialog;
     }
@@ -514,11 +534,9 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void onGetParameterTopPaySuccess(TopPayParameterData data) {
         hideProgressLoading();
-        showToastMessage("berhasil!!!!");
         navigateToActivityRequest(
                 TopPayActivity.createInstance(getActivity(), data), TopPayActivity.REQUEST_CODE
         );
-        //  actionListener.replaceFragmentWithBackStack(TopPayFragment.newInstance(data));
     }
 
     @Override
@@ -539,49 +557,11 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @NonNull
-    private View.OnClickListener getCheckoutButtonClickListener(final CartItemAdapter adapter) {
+    private View.OnClickListener getCheckoutButtonClickListener() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<CartItemEditable> cartItemEditables = adapter.getDataList();
-                boolean canBeCheckout = true;
-                int positionError = cartItemEditables.size() - 1;
-
-                if (cbUseVoucher.isChecked() && etVoucherCode.getText().toString().isEmpty()) {
-                    tilEtVoucherCode.setErrorEnabled(true);
-                    tilEtVoucherCode.setError("Voucher Kosong");
-                    return;
-                } else if (cbUseVoucher.isChecked()
-                        && !etVoucherCode.getText().toString().isEmpty()) {
-                    tilEtVoucherCode.setError(null);
-                    tilEtVoucherCode.setErrorEnabled(false);
-                    checkoutDataBuilder.voucherCode(etVoucherCode.getText().toString());
-                }
-
-                checkoutDataBuilder.usedDeposit(
-                        etUseDeposit.getText().toString().replaceAll("\\D+", "")
-                );
-
-                for (int i = 0, cartItemEditablesSize = cartItemEditables.size();
-                     i < cartItemEditablesSize; i++) {
-                    CartItemEditable cartItemEditable = cartItemEditables.get(i);
-                    adapter.renderErrorCart(cartItemEditable);
-                    if (cartItemEditable.finalizeAllData().getErrorType()
-                            != CartItemEditable.ERROR_NON) {
-                        canBeCheckout = false;
-                    }
-                }
-                if (!canBeCheckout) {
-                    int heightScroll = nsvContainer.computeVerticalScrollRange();
-                    int heightRv = rvCart.computeVerticalScrollOffset();
-                    nsvContainer.smoothScrollTo(0, heightScroll
-                            - (heightRv - (heightRv / cartItemEditables.size() * positionError)));
-                    showToastMessage("Keranjang tidak dapat diproses," +
-                            " mohon periksa kembali keranjang Anda.");
-                } else {
-                    presenter.processCheckoutCart(getActivity(), checkoutDataBuilder,
-                            cartItemEditables);
-                }
+                presenter.processValidationCheckoutData(getActivity());
             }
         };
     }
