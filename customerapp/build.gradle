@@ -163,11 +163,11 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_7
     }
     splits {
-//        density {
-//            enable allowSplit()
-//            exclude "tvdpi", "xxxhdpi", "ldpi" //Add or modify the supported density here`
-//            compatibleScreens 'small', 'normal', 'large', 'xlarge' //Discouraged to touch this
-//        }
+        density {
+            enable allowSplit()
+            exclude "tvdpi", "xxxhdpi", "ldpi" //Add or modify the supported density here`
+            compatibleScreens 'small', 'normal', 'large', 'xlarge' //Discouraged to touch this
+        }
     }
 }
 
