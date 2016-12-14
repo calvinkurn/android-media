@@ -26,8 +26,8 @@ public class WholesaleAdapterImpl extends RecyclerView.Adapter<WholesaleViewHold
 
     private List<WholesaleModel> data;
     private final WholesaleAdapterListener listener;
-    private final double mainPrice;
-    private final int currency;
+    private double mainPrice;
+    private int currency;
 
     public WholesaleAdapterImpl(WholesaleAdapterListener listener, double mainPrice, int currency){
         this.data = new ArrayList<>();
@@ -162,6 +162,14 @@ public class WholesaleAdapterImpl extends RecyclerView.Adapter<WholesaleViewHold
     public void clearAll() {
         data.clear();
         notifyDataSetChanged();
+    }
+
+    public void setMainPrice(double mainPrice) {
+        this.mainPrice = mainPrice;
+    }
+
+    public void setCurrency(int currency) {
+        this.currency = currency;
     }
 
 

@@ -111,6 +111,7 @@ import com.tokopedia.core.myproduct.presenter.ProductSocMedPresenter;
 import com.tokopedia.core.myproduct.presenter.ProductView;
 import com.tokopedia.core.myproduct.service.ProductService;
 import com.tokopedia.core.myproduct.utils.AddProductType;
+import com.tokopedia.core.myproduct.utils.CurrencyFormatter;
 import com.tokopedia.core.myproduct.utils.DelegateOnClick;
 import com.tokopedia.core.myproduct.utils.MetadataUtil;
 import com.tokopedia.core.myproduct.utils.PriceUtils;
@@ -1576,16 +1577,20 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
                     Double.valueOf(model.getQuantityTwo()).intValue(),
                     model.getWholeSalePrice()));
         }
+        Double price = addProductPrice.getText().toString().isEmpty()? 0 : Double.parseDouble(CurrencyFormatter.getRawString(addProductPrice.getText().toString()));
+        int currency = (selectedCurrencyDesc == null || selectedCurrencyDesc.equals("Rp") ? PriceUtils.CURRENCY_RUPIAH : PriceUtils.CURRENCY_DOLLAR);
         wholesaleLayout.setupParams(
-                Double.parseDouble(addProductPrice.getText().toString()),
-                (selectedCurrencyDesc.equals("Rp") ? PriceUtils.CURRENCY_RUPIAH : PriceUtils.CURRENCY_DOLLAR),
+                price,
+                currency,
                 models);
     }
 
     public void initWholeSaleAdapter() {
+        Double price = addProductPrice.getText().toString().isEmpty()? 0 : Double.parseDouble(CurrencyFormatter.getRawString(addProductPrice.getText().toString()));
+        int currency = (selectedCurrencyDesc == null || selectedCurrencyDesc.equals("Rp") ? PriceUtils.CURRENCY_RUPIAH : PriceUtils.CURRENCY_DOLLAR);
         wholesaleLayout.setupParams(
-                Double.parseDouble(addProductPrice.getText().toString()),
-                (selectedCurrencyDesc == null || selectedCurrencyDesc.equals("Rp") ? PriceUtils.CURRENCY_RUPIAH : PriceUtils.CURRENCY_DOLLAR));
+                price,
+                currency);
     }
 
     @Override
@@ -2115,9 +2120,10 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
             wholesaleLayout.clearAll();
         } else {
             dismissPriceError();
-            wholesaleLayout.setCurrencyUnit((selectedCurrencyDesc.equals("Rp"))? PriceUtils.CURRENCY_RUPIAH: PriceUtils.CURRENCY_DOLLAR);
-//            wholesaleAdapter.setCurrencyUnit(addProductCurrency.getSelectedItem().toString());
-            wholesaleLayout.setPrice(Double.parseDouble(s.toString()));
+            Double price = addProductPrice.getText().toString().isEmpty()? 0 : Double.parseDouble(CurrencyFormatter.getRawString(addProductPrice.getText().toString()));
+            int currency = (selectedCurrencyDesc == null || selectedCurrencyDesc.equals("Rp") ? PriceUtils.CURRENCY_RUPIAH : PriceUtils.CURRENCY_DOLLAR);
+            wholesaleLayout.setCurrencyUnit(currency);
+            wholesaleLayout.setPrice(price);
         }
     }
 

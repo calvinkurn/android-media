@@ -109,4 +109,5 @@
     <item name="icon_search_hotlist" type="id" />
     <item name="icon_search_sugestion" type="id" />
     <item name="button_add_wholesale" type="id"/>
+    <item name="header_wholesale" type="id"/>
 </resources>

@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.myproduct.model.WholeSaleAdapterModel;
+import com.tokopedia.core.myproduct.utils.PriceUtils;
 
 import java.util.List;
 
@@ -23,8 +24,6 @@ import java.util.List;
 
 public class WholesaleLayout extends RelativeLayout implements WholesaleAdapterImpl.WholesaleAdapterListener {
     private WholesaleAdapterImpl adapter;
-    private double mainPrice;
-    private int currency;
 
     public WholesaleLayout(Context context) {
         super(context);
@@ -47,29 +46,34 @@ public class WholesaleLayout extends RelativeLayout implements WholesaleAdapterI
     }
 
     private void initView(){
-        getHeader();
+        addView(getHeader());
         addView(getButton());
         addView(getRecyclerView());
     }
 
     private View getHeader() {
-        return LayoutInflater.from(getContext()).inflate(R.layout.wholesale_column_name, this, false);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.wholesale_column_name, this, false);
+        view.setId(R.id.header_wholesale);
+        return view;
     }
 
     public void setupParams(double mainPrice, int currency){
-        this.mainPrice = mainPrice;
-        this.currency = currency;
+        adapter.setMainPrice(mainPrice);
+        adapter.setCurrency(currency);
     }
 
     public void setupParams(double mainPrice, int currency, List<WholesaleModel> datas){
-        this.mainPrice = mainPrice;
-        this.currency = currency;
+        adapter.setMainPrice(mainPrice);
+        adapter.setCurrency(currency);
         this.adapter.setData(datas);
     }
 
     public void setCurrencyUnit(int currency){
-        this.currency = currency;
+        adapter.setCurrency(currency);
+    }
 
+    public void setPrice(double price) {
+        adapter.setMainPrice(price);
     }
 
     @NonNull
@@ -78,11 +82,11 @@ public class WholesaleLayout extends RelativeLayout implements WholesaleAdapterI
         LayoutParams layoutParams = new LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams.addRule(BELOW, R.id.header_wholesale);
         layoutParams.addRule(ABOVE, R.id.button_add_wholesale);
         layoutParams.addRule(TEXT_ALIGNMENT_CENTER, TRUE);
-        layoutParams.addRule(ALIGN_PARENT_TOP, TRUE);
         recyclerView.setLayoutParams(layoutParams);
-        adapter = new WholesaleAdapterImpl(this, mainPrice, currency);
+        adapter = new WholesaleAdapterImpl(this, 0, PriceUtils.CURRENCY_RUPIAH);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         return recyclerView;
@@ -124,9 +128,5 @@ public class WholesaleLayout extends RelativeLayout implements WholesaleAdapterI
 
     public void clearAll() {
         adapter.clearAll();
-    }
-
-    public void setPrice(double price) {
-        mainPrice = price;
     }
 }
