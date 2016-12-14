@@ -620,11 +620,11 @@ public interface TkpdBaseURL {
     }
 
     interface ContactUs {
-        String URL_CONTACT_US = WEB_DOMAIN + "contact-us/";
+        String URL_CONTACT_US = WEB_DOMAIN + "contact-us";
 
-        String PATH_GET_SOLUTION = URL_CONTACT_US + "ajax/solution/{id}";
-        String PATH_CREATE_STEP_1 = URL_CONTACT_US + "ajax/create/step/1";
-        String PATH_CREATE_STEP_2 = URL_CONTACT_US + "ajax/create/step/2";
+        String PATH_GET_SOLUTION = URL_CONTACT_US + "/ajax/solution/{id}";
+        String PATH_CREATE_STEP_1 = URL_CONTACT_US + "/ajax/create/step/1";
+        String PATH_CREATE_STEP_2 = URL_CONTACT_US + "/ajax/create/step/2";
         String URL_HELP = MOBILE_DOMAIN + "bantuan/";
     }
 }

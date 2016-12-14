@@ -33,6 +33,8 @@ public class ContactUsPass {
     private static final String PARAM_IMAGE_ID = "image_id";
     private static final String PARAM_ATTACHMENT_STRING = "attachment_string";
     private static final String PARAM_IS_TEMP = "is_temp";
+    private static final String PARAM_UTM_SOURCE = "utm_source";
+    private static final String PARAM_FLAG_APP = "flag_app";
 
     String solutionId;
     String messageBody;
@@ -119,6 +121,8 @@ public class ContactUsPass {
         param.put(PARAM_ORDER_ID, getOrderId());
         param.put(PARAM_PHONE, getPhoneNumber());
         param.put(PARAM_TAG, getPhoneNumber());
+        param.put(PARAM_UTM_SOURCE, "android");
+        param.put(PARAM_FLAG_APP,"1");
 
         if (getAttachment() != null && getAttachment().size() > 0) {
             param.put(PARAM_ATTACHMENT_STRING, getPhotoAll());
@@ -164,6 +168,8 @@ public class ContactUsPass {
         HashMap<String, String> param = new HashMap<>();
         param.put(PARAM_POST_KEY, getPostKey());
         param.put(PARAM_FILE_UPLOADED, getFileUploaded());
+        param.put(PARAM_UTM_SOURCE, "android");
+        param.put(PARAM_FLAG_APP,"1");
         return param;
     }
 
