@@ -284,6 +284,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
      * upload to the ws just for this
      */
     public void pushProduct() {
+        isCreateNewActivity = false;
         saveProduct(true);
     }
 
