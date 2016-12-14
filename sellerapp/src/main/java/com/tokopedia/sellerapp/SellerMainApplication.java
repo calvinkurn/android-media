@@ -26,16 +26,15 @@ public class SellerMainApplication extends MainApplication implements TkpdCoreLi
 
     @Override
     public void onCreate() {
-        super.onCreate();
         HockeyAppHelper.setEnableDistribution(BuildConfig.ENABLE_DISTRIBUTION);
         com.tokopedia.core.util.GlobalConfig.APPLICATION_TYPE = SELLER_APPLICATION;
-
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             com.tokopedia.core.util.GlobalConfig.VERSION_NAME = pInfo.versionName;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+        super.onCreate();
     }
 
     @Override
