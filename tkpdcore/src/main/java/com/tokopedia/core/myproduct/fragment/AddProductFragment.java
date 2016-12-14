@@ -2117,7 +2117,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         if (!verif.getModel1()) {
             addProductPriceAlert.setErrorEnabled(true);
             addProductPriceAlert.setError(verif.getModel2());
-            wholesaleLayout.clearAll();
         } else {
             dismissPriceError();
             Double price = addProductPrice.getText().toString().isEmpty()? 0 : Double.parseDouble(CurrencyFormatter.getRawString(addProductPrice.getText().toString()));
