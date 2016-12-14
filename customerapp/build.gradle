@@ -15,7 +15,7 @@ def getAPKArchiveFolder(variant) {
 }
 
 def allowSplit() {
-    return false;
+    return !project.hasProperty('tkpdBuildType');
 }
 
 def allowDistribution() {
@@ -162,11 +162,21 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
     }
+    splits {
+        density {
+            enable allowSplit()
+            exclude "tvdpi", "xxxhdpi", "ldpi" //Add or modify the supported density here`
+            compatibleScreens 'small', 'normal', 'large', 'xlarge' //Discouraged to touch this
+        }
+    }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile project(':tkpdinbox')
     compile project(':tkpddiscovery')
+    compile project(':tkpdtransaction')
+    compile project(':tkpdseller')
     compile project(':tkpdsession')
 
     //testing

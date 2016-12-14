@@ -563,7 +563,7 @@
             </intent-filter>
         </service>
         <service
-            android:name="com.tokopedia.core.gcm.services.NotificationIntentService"
+            android:name="com.tokopedia.core.gcm.intentservices.PushNotificationIntentService"
             android:exported="false" />
         <service android:name="com.google.android.gms.analytics.CampaignTrackingService" />
         <service

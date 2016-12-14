@@ -8,7 +8,7 @@ import rx.Subscriber;
  * @author by alvarisi on 12/8/16.
  */
 
-public interface INotificationDataInteractor {
+public interface IPushNotificationDataInteractor {
     void updateTokenServer(FCMTokenUpdate data, Subscriber<Boolean> subscriber);
 
     void unSubscribeObservable();

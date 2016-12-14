@@ -1,6 +1,6 @@
 package com.tokopedia.core.gcm.interactor;
 
-import com.tokopedia.core.gcm.interactor.source.CloudNotificationDataSource;
+import com.tokopedia.core.gcm.interactor.source.CloudPushNotificationDataSource;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
 
 import rx.Subscriber;
@@ -12,18 +12,18 @@ import rx.subscriptions.CompositeSubscription;
  * @author  by alvarisi on 12/8/16.
  */
 
-public class NotificationDataInteractor implements INotificationDataInteractor {
+public class PushNotificationDataInteractor implements IPushNotificationDataInteractor {
     private final CompositeSubscription mCompositeSubscription;
-    private final CloudNotificationDataSource mCloudNotificationDataSource;
+    private final CloudPushNotificationDataSource mCloudPushNotificationDataSource;
 
-    public NotificationDataInteractor() {
-        this.mCloudNotificationDataSource = new CloudNotificationDataSource();
+    public PushNotificationDataInteractor() {
+        this.mCloudPushNotificationDataSource = new CloudPushNotificationDataSource();
         this.mCompositeSubscription = new CompositeSubscription();
     }
 
     @Override
     public void updateTokenServer(FCMTokenUpdate data, Subscriber<Boolean> subscriber) {
-        this.mCloudNotificationDataSource.updateTokenServer(data)
+        this.mCloudPushNotificationDataSource.updateTokenServer(data)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())

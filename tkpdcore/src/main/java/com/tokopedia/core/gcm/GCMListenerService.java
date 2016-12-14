@@ -79,7 +79,6 @@ public class GCMListenerService extends FirebaseMessagingService {
 
         CommonUtils.dumper(data.toString());
         cacheManager = new GCMCacheManager(this);
-        cache = new LocalCacheHandler(this, TkpdCache.G_CODE);
         if (cacheManager.isAllowToHandleNotif(data)) {
             cacheManager.setCache(this);
             tunnelData(data);

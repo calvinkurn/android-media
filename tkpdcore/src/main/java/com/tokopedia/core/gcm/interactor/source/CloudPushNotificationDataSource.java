@@ -15,7 +15,7 @@ import rx.functions.Func1;
  * @author by alvarisi on 12/8/16.
  */
 
-public class CloudNotificationDataSource {
+public class CloudPushNotificationDataSource {
     private static final String KEY_FLAG_IS_SUCCESS = "is_success";
 
     public Observable<Boolean> updateTokenServer(FCMTokenUpdate data) {
