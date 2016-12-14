@@ -103,7 +103,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FragmentCart extends TkpdFragment implements CartInterfaces.FragmentCartCommunicator, PaymentResultReceiver.Receiver {
+public class FragmentCart extends TkpdFragment implements CartInterfaces.FragmentCartCommunicator,
+        PaymentResultReceiver.Receiver {
 
     private static final int PAYMENT_SALDO = 0;
     private static final int PAYMENT_TRANSFER = 1;
@@ -379,8 +380,8 @@ public class FragmentCart extends TkpdFragment implements CartInterfaces.Fragmen
         SaldoTokopedia = (EditText) view.findViewById(R.id.et_tkpd_balance);
         RpCurrency = (TextView) view.findViewById(R.id.rp_currency);
         ErrorArea = (TextView) view.findViewById(R.id.error_payment);
-        BalanceView = (View) view.findViewById(R.id.balance_view);
-        ButtonEditor = (View) view.findViewById(R.id.button_editor);
+        BalanceView = view.findViewById(R.id.balance_view);
+        ButtonEditor = view.findViewById(R.id.button_editor);
         MainView = (LinearLayout) view.findViewById(R.id.main_view);
         PaymentWrapper = view.findViewById(R.id.payment_wrapper);
         PaymentChooseBut = (TextView) view.findViewById(R.id.spinner_payment);
@@ -1200,6 +1201,7 @@ public class FragmentCart extends TkpdFragment implements CartInterfaces.Fragmen
 
                 @Override
                 public void onClick(View arg0) {
+                    if (EditMode) CancelEdit();
                     Bundle bundle = new Bundle();
                     bundle.putString("weight", Weight.get(currPos));
                     bundle.putString("shop_id", ShopID.get(currPos));
@@ -1224,6 +1226,7 @@ public class FragmentCart extends TkpdFragment implements CartInterfaces.Fragmen
 
                 @Override
                 public void onClick(View v) {
+                    if (EditMode) CancelEdit();
                     Bundle bundle = new Bundle();
                     bundle.putString("weight", Weight.get(currPos));
                     bundle.putString("shop_id", ShopID.get(currPos));
