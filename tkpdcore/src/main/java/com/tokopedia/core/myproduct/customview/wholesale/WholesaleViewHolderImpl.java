@@ -1,5 +1,6 @@
 package com.tokopedia.core.myproduct.customview.wholesale;
 
+import android.renderscript.Double2;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.view.View;
@@ -82,9 +83,14 @@ public class WholesaleViewHolderImpl extends RecyclerView.ViewHolder implements 
         this.currency = currency;
     }
 
-    public void bindView(WholesaleAdapter listener, int position) {
+    public void bindView(WholesaleAdapter listener, int position, WholesaleModel wholesaleModel) {
         this.listener = listener;
         this.position = position;
+        if(wholesaleModel != null) {
+            this.qtyOne.setText(String.format("%d", wholesaleModel.getQtyOne()));
+            this.qtyTwo.setText(String.format("%d", wholesaleModel.getQtyTwo()));
+            this.qtyPrice.setText(String.format("%.00f", wholesaleModel.getQtyPrice()));
+        }
     }
 
     @Override

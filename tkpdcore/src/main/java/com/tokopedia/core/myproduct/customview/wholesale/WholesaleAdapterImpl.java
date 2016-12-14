@@ -45,7 +45,7 @@ public class WholesaleAdapterImpl extends RecyclerView.Adapter<WholesaleViewHold
     @Override
     public void onBindViewHolder(WholesaleViewHolderImpl holder, int position) {
         data.get(position).setViewHolder(holder);
-        holder.bindView(this, position);
+        holder.bindView(this, position, data.get(position));
     }
 
     @Override
@@ -91,34 +91,36 @@ public class WholesaleAdapterImpl extends RecyclerView.Adapter<WholesaleViewHold
     private void checkError() {
 
         for(int i = 0; i < data.size(); i++){
+            if(data.get(i).getViewHolder() != null) {
 
-            if(data.get(i).getQtyOne() >= data.get(i).getQtyTwo()){
-                data.get(i).getViewHolder().onQtyTwoError("Jumlah barang harus lebih besar dari jumlah barang pertama");
-            } else {
-                data.get(i).getViewHolder().onQtyTwoError(null);
-            }
+                if (data.get(i).getQtyOne() >= data.get(i).getQtyTwo()) {
+                    data.get(i).getViewHolder().onQtyTwoError("Jumlah barang harus lebih besar dari jumlah barang pertama");
+                } else {
+                    data.get(i).getViewHolder().onQtyTwoError(null);
+                }
 
-            double comparingPrice;
-            int qtyBefore = 0;
-            if(i == 0){
-                comparingPrice = mainPrice;
-            } else {
-                comparingPrice = data.get(i - 1).getQtyPrice();
-                qtyBefore = data.get(i - 1).getQtyTwo();
-            }
-            Pair<Boolean, String> pair = PriceUtils.validatePrice(currency, data.get(i).getQtyPrice());
-            if (!pair.first) {
-                data.get(i).getViewHolder().onQtyPriceError(pair.second);
-            } else if(data.get(i).getQtyPrice() >= comparingPrice) {
-                data.get(i).getViewHolder().onQtyPriceError("Harga harus lebih rendah dari harga sebelumnya");
-            } else {
-                data.get(i).getViewHolder().onQtyPriceError(null);
-            }
+                double comparingPrice;
+                int qtyBefore = 0;
+                if (i == 0) {
+                    comparingPrice = mainPrice;
+                } else {
+                    comparingPrice = data.get(i - 1).getQtyPrice();
+                    qtyBefore = data.get(i - 1).getQtyTwo();
+                }
+                Pair<Boolean, String> pair = PriceUtils.validatePrice(currency, data.get(i).getQtyPrice());
+                if (!pair.first) {
+                    data.get(i).getViewHolder().onQtyPriceError(pair.second);
+                } else if (data.get(i).getQtyPrice() >= comparingPrice) {
+                    data.get(i).getViewHolder().onQtyPriceError("Harga harus lebih rendah dari harga sebelumnya");
+                } else {
+                    data.get(i).getViewHolder().onQtyPriceError(null);
+                }
 
-            if(data.get(i).getQtyOne() <= qtyBefore){
-                data.get(i).getViewHolder().onQtyOneError("Jumlah barang harus lebih besar dari jumlah barang sebelumnya");
-            } else {
-                data.get(i).getViewHolder().onQtyOneError(null);
+                if (data.get(i).getQtyOne() <= qtyBefore) {
+                    data.get(i).getViewHolder().onQtyOneError("Jumlah barang harus lebih besar dari jumlah barang sebelumnya");
+                } else {
+                    data.get(i).getViewHolder().onQtyOneError(null);
+                }
             }
 
         }
