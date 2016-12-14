@@ -18,5 +18,5 @@ import rx.Observable;
 public interface NotificationApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.FCM.UPDATE_FCM)
-    Observable<Response<TkpdResponse>> update(@FieldMap Map<String, String> params);
+    Observable<Response<TkpdResponse>> updateToken(@FieldMap Map<String, String> params);
 }
