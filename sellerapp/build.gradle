@@ -62,7 +62,7 @@ android {
         defaultVersionName = "1.0.4";
     }
 
-    compileSdkVersion 24
+    compileSdkVersion 23
     buildToolsVersion '25'
     useLibrary 'org.apache.http.legacy'
     sourceSets {
