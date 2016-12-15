@@ -23,13 +23,15 @@ import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.inboxmessage.fragment.InboxMessageFragment;
 import com.tokopedia.core.inboxreputation.fragment.InboxReputationFragment;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
-import com.tokopedia.core.rescenter.inbox.fragment.InboxResCenterFragment;
 import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.talk.inboxtalk.fragment.InboxTalkFragment;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
@@ -178,43 +180,43 @@ public class NotificationCenter extends MultiPaneActivity implements Notificatio
                     break;
                 case 306:
                     if (!isAlreadyExist(getString(R.string.title_buyer_dispute))) {
-                        FragmentList.add(InboxResCenterFragment.createInstance(this, TkpdState.InboxResCenter.RESO_BUYER));
+                        FragmentList.add(InboxRouter.instanceInboxResCenterFromNotification(this, InboxRouter.RESO_BUYER));
                         CONTENT.add(getString(R.string.title_buyer_dispute));
                     }
                     break;
                 case 115:
                     if (!isAlreadyExist(getString(R.string.title_my_dispute))) {
-                        FragmentList.add(InboxResCenterFragment.createInstance(this, TkpdState.InboxResCenter.RESO_MINE));
+                        FragmentList.add(InboxRouter.instanceInboxResCenterFromNotification(this, InboxRouter.RESO_MINE));
                         CONTENT.add(getString(R.string.title_my_dispute));
                     }
                     break;
                 case 125:
                     if (!isAlreadyExist(getString(R.string.title_buyer_dispute))) {
-                        FragmentList.add(InboxResCenterFragment.createInstance(this, TkpdState.InboxResCenter.RESO_BUYER));
+                        FragmentList.add(InboxRouter.instanceInboxResCenterFromNotification(this, InboxRouter.RESO_BUYER));
                         CONTENT.add(getString(R.string.title_buyer_dispute));
                     }
                     break;
                 case 135:
                     if (!isAlreadyExist(getString(R.string.title_my_dispute))) {
-                        FragmentList.add(InboxResCenterFragment.createInstance(this, TkpdState.InboxResCenter.RESO_MINE));
+                        FragmentList.add(InboxRouter.instanceInboxResCenterFromNotification(this, InboxRouter.RESO_MINE));
                         CONTENT.add(getString(R.string.title_my_dispute));
                     }
                     break;
                 case 145:
                     if (!isAlreadyExist(getString(R.string.title_buyer_dispute))) {
-                        FragmentList.add(InboxResCenterFragment.createInstance(this, TkpdState.InboxResCenter.RESO_BUYER));
+                        FragmentList.add(InboxRouter.instanceInboxResCenterFromNotification(this, InboxRouter.RESO_BUYER));
                         CONTENT.add(getString(R.string.title_buyer_dispute));
                     }
                     break;
                 case 155:
                     if (!isAlreadyExist(getString(R.string.title_buyer_dispute))) {
-                        FragmentList.add(InboxResCenterFragment.createInstance(this, TkpdState.InboxResCenter.RESO_BUYER));
+                        FragmentList.add(InboxRouter.instanceInboxResCenterFromNotification(this, InboxRouter.RESO_BUYER));
                         CONTENT.add(getString(R.string.title_buyer_dispute));
                     }
                     break;
                 case 165:
                     if (!isAlreadyExist(getString(R.string.title_my_dispute))) {
-                        FragmentList.add(InboxResCenterFragment.createInstance(this, TkpdState.InboxResCenter.RESO_MINE));
+                        FragmentList.add(InboxRouter.instanceInboxResCenterFromNotification(this, InboxRouter.RESO_MINE));
                         CONTENT.add(getString(R.string.title_my_dispute));
                     }
                     break;
@@ -320,31 +322,22 @@ public class NotificationCenter extends MultiPaneActivity implements Notificatio
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Pass the event to ActionBarDrawerToggle, if it returns
-        // true, then it has handled the app icon touch event
-//	    if (drawer.mDrawerToggle.onOptionsItemSelected(item)) {
-//	      return true;
-//	    }else{
-        switch (item.getItemId()) {
-            case R2.id.action_search:
-                return onSearchOptionSelected();
-            case R2.id.action_cart:
-                if (!SessionHandler.isV4Login(getBaseContext())) {
-                    Intent intent = SessionRouter.getLoginActivityIntent(this);
-                    intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-                    startActivity(intent);
-                } else {
-                    startActivity(new Intent(getBaseContext(), Cart.class));
-                }
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+        if (item.getItemId() == R.id.action_search)
+            return onSearchOptionSelected();
+        else if (item.getItemId() == R.id.action_search) {
+
+            if (!SessionHandler.isV4Login(getBaseContext())) {
+                Intent intent = SessionRouter.getLoginActivityIntent(this);
+                intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
+                startActivity(intent);
+            } else {
+                startActivity(new Intent(getBaseContext(), Cart.class));
+            }
+            return true;
+        } else
+            return super.onOptionsItemSelected(item);
 
     }
-    // Handle your other action bar items...
-//	}
-
 
     @Override
     public void onGetNotif() {
@@ -402,4 +395,16 @@ public class NotificationCenter extends MultiPaneActivity implements Notificatio
         createDetailView(page);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (isTaskRoot() && GlobalConfig.isSellerApp()) {
+            startActivity(SellerAppRouter.getSellerHomeActivity(this));
+            finish();
+        } else if (isTaskRoot()) {
+            startActivity(HomeRouter.getHomeActivity(this));
+            finish();
+        }
+        super.onBackPressed();
+
+    }
 }

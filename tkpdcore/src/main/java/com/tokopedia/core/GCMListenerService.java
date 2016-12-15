@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
@@ -35,17 +36,18 @@ import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.prototype.ManageProductCache;
 import com.tokopedia.core.prototype.ShopSettingCache;
-import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.CustomerRouter;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
-import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
@@ -71,6 +73,7 @@ public class GCMListenerService extends GcmListenerService {
 
     public interface NotificationListener {
         void onGetNotif();
+
         void onRefreshCart(int status);
     }
 
@@ -115,10 +118,8 @@ public class GCMListenerService extends GcmListenerService {
                 createNotification(data, ShopInfoActivity.class);
                 break;
             case TkpdState.GCMServiceState.GCM_DEEPLINK:
-                if (SessionHandler.isV4Login(this)) {
-                    if(CustomerRouter.getDeeplinkClass() != null) {
-                        createNotification(data, CustomerRouter.getDeeplinkClass());
-                    }
+                if (CustomerRouter.getDeeplinkClass() != null) {
+                    createNotification(data, CustomerRouter.getDeeplinkClass());
                 }
                 break;
             case TkpdState.GCMServiceState.GCM_CART:
@@ -175,8 +176,59 @@ public class GCMListenerService extends GcmListenerService {
         return code;
     }
 
+    private boolean isExcludeFromSellerApp(int tkpCode) {
+        switch (tkpCode) {
+            case TkpdState.GCMServiceState.GCM_REVIEW:
+                return true;
+            case TkpdState.GCMServiceState.GCM_REVIEW_REPLY:
+                return true;
+            case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_BUYER:
+                return true;
+            case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_BUYER:
+                return true;
+            case TkpdState.GCMServiceState.GCM_PURCHASE_ACCEPTED:
+                return true;
+            case TkpdState.GCMServiceState.GCM_PURCHASE_DELIVERED:
+                return true;
+            case TkpdState.GCMServiceState.GCM_PURCHASE_PARTIAL_PROCESSED:
+                return true;
+            case TkpdState.GCMServiceState.GCM_PURCHASE_REJECTED:
+                return true;
+            case TkpdState.GCMServiceState.GCM_PURCHASE_VERIFIED:
+                return true;
+            case TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_REPLY:
+                return true;
+            case TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_AGREE:
+                return true;
+            case TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_BUYER_REPLY:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private boolean isDeprecated(int tkpCode) {
+        switch (tkpCode) {
+            case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY:
+                return true;
+            case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public boolean isValidForSellerApp(int tkpCode) {
+        return !getApplication().getClass().getSimpleName().equals("SellerMainApplication") && isExcludeFromSellerApp(tkpCode);
+    }
+
     private void sendNotification(Bundle data) {
-        if (!CheckSettings(Integer.parseInt(data.getString("tkp_code")))) {
+        int tkpCode = Integer.parseInt(data.getString("tkp_code"));
+        /**
+         * Use this code to exclude deprecated code which still sent from server
+         * if (!CheckSettings(tkpCode) && isValidForSellerApp(tkpCode) && !isDeprecated(tkpCode)) {
+         */
+        if (!CheckSettings(tkpCode) && isValidForSellerApp(tkpCode)) {
             return;
         }
 
@@ -232,7 +284,7 @@ public class GCMListenerService extends GcmListenerService {
                 desc = data.getString("desc");
                 break;
             case TkpdState.GCMServiceState.GCM_RES_CENTER:
-                resultclass = InboxResCenterActivity.class;
+                intent = InboxRouter.getInboxResCenterActivityIntent(this);
                 title = this.getString(R.string.title_new_rescenter);
                 ticker = data.getString("desc");
                 desc = data.getString("desc");
@@ -274,11 +326,39 @@ public class GCMListenerService extends GcmListenerService {
                 ticker = data.getString("desc");
                 desc = data.getString("desc");
                 break;
+            case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_BUYER:
+                resultclass = InboxReputationActivity.class;
+                //bundle.putInt("notif_call", NotificationCode);
+                title = this.getString(R.string.title_get_reputation);
+                ticker = data.getString("desc");
+                desc = data.getString("desc");
+                break;
+            case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_BUYER:
+                resultclass = InboxReputationActivity.class;
+                //bundle.putInt("notif_call", NotificationCode);
+                title = this.getString(R.string.title_get_edit_reputation);
+                ticker = data.getString("desc");
+                desc = data.getString("desc");
+                break;
+            case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_SELLER:
+                resultclass = InboxReputationActivity.class;
+                //bundle.putInt("notif_call", NotificationCode);
+                title = this.getString(R.string.title_get_reputation);
+                ticker = data.getString("desc");
+                desc = data.getString("desc");
+                break;
+            case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_SELLER:
+                resultclass = InboxReputationActivity.class;
+                //bundle.putInt("notif_call", NotificationCode);
+                title = this.getString(R.string.title_get_edit_reputation);
+                ticker = data.getString("desc");
+                desc = data.getString("desc");
+                break;
             case TkpdState.GCMServiceState.GCM_PURCHASE_VERIFIED:
                 componentName = TransactionPurchaseRouter.getPurchaseActivityComponentName(this);
                 intent = TransactionPurchaseRouter.createIntentPurchaseActivity(this);
                 bundle.putInt(TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION,
-                        TransactionPurchaseRouter.TAB_TX_STATUS);
+                        TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER);
                 title = this.getString(R.string.title_notif_purchase_confirmed);
                 ticker = data.getString("desc");
                 desc = data.getString("desc");
@@ -287,7 +367,7 @@ public class GCMListenerService extends GcmListenerService {
                 componentName = TransactionPurchaseRouter.getPurchaseActivityComponentName(this);
                 intent = TransactionPurchaseRouter.createIntentPurchaseActivity(this);
                 bundle.putInt(TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION,
-                        TransactionPurchaseRouter.TAB_TX_STATUS);
+                        TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER);
                 title = this.getString(R.string.title_notif_purchase_accepted);
                 ticker = data.getString("desc");
                 desc = data.getString("desc");
@@ -296,7 +376,7 @@ public class GCMListenerService extends GcmListenerService {
                 componentName = TransactionPurchaseRouter.getPurchaseActivityComponentName(this);
                 intent = TransactionPurchaseRouter.createIntentPurchaseActivity(this);
                 bundle.putInt(TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION,
-                        TransactionPurchaseRouter.TAB_TX_STATUS);
+                        TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER);
                 title = this.getString(R.string.title_notif_purchase_partial_accepted);
                 ticker = data.getString("desc");
                 desc = data.getString("desc");
@@ -305,7 +385,7 @@ public class GCMListenerService extends GcmListenerService {
                 componentName = TransactionPurchaseRouter.getPurchaseActivityComponentName(this);
                 intent = TransactionPurchaseRouter.createIntentPurchaseActivity(this);
                 bundle.putInt(TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION,
-                        TransactionPurchaseRouter.TAB_TX_ALL);
+                        TransactionPurchaseRouter.TAB_POSITION_PURCHASE_ALL_ORDER);
                 bundle.putString(TransactionPurchaseRouter.EXTRA_STATE_TX_FILTER,
                         TransactionPurchaseRouter.TRANSACTION_CANCELED_FILTER_ID);
                 title = this.getString(R.string.title_notif_purchase_rejected);
@@ -316,62 +396,69 @@ public class GCMListenerService extends GcmListenerService {
                 componentName = TransactionPurchaseRouter.getPurchaseActivityComponentName(this);
                 intent = TransactionPurchaseRouter.createIntentPurchaseActivity(this);
                 bundle.putInt(TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION,
-                        TransactionPurchaseRouter.TAB_TX_DELIVER);
+                        TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVER_ORDER);
                 title = this.getString(R.string.title_notif_purchase_delivered);
                 ticker = data.getString("desc");
                 desc = data.getString("desc");
                 break;
             case TkpdState.GCMServiceState.GCM_PURCHASE_DISPUTE:
-                resultclass = InboxResCenterActivity.class;
-                bundle.putInt(InboxResCenterActivity.EXTRA_STATE_TAB_POSITION,
+                componentName = InboxRouter.getInboxResCenterActivityComponentName(this);
+                intent = InboxRouter.getInboxResCenterActivityIntent(this);
+                bundle.putInt(InboxRouter.EXTRA_STATE_TAB_POSITION,
                         TkpdState.InboxResCenter.RESO_BUYER);
                 title = this.getString(R.string.title_notif_rescenter);
                 ticker = data.getString("desc");
                 desc = data.getString("desc");
                 break;
             case TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_REPLY:
-                resultclass = InboxResCenterActivity.class;
-                bundle.putInt(InboxResCenterActivity.EXTRA_STATE_TAB_POSITION,
+                componentName = InboxRouter.getInboxResCenterActivityComponentName(this);
+                intent = InboxRouter.getInboxResCenterActivityIntent(this);
+                bundle.putInt(InboxRouter.EXTRA_STATE_TAB_POSITION,
                         TkpdState.InboxResCenter.RESO_BUYER);
                 title = this.getString(R.string.title_notif_rescenter);
                 ticker = data.getString("desc");
                 desc = data.getString("desc");
                 break;
             case TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_REPLY:
-                resultclass = InboxResCenterActivity.class;
-                bundle.putInt(InboxResCenterActivity.EXTRA_STATE_TAB_POSITION,
+                componentName = InboxRouter.getInboxResCenterActivityComponentName(this);
+                intent = InboxRouter.getInboxResCenterActivityIntent(this);
+                bundle.putInt(InboxRouter.EXTRA_STATE_TAB_POSITION,
                         TkpdState.InboxResCenter.RESO_MINE);
                 title = this.getString(R.string.title_notif_rescenter);
                 ticker = data.getString("desc");
                 desc = data.getString("desc");
                 break;
             case TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_AGREE:
-                resultclass = InboxResCenterActivity.class;
-                bundle.putInt(InboxResCenterActivity.EXTRA_STATE_TAB_POSITION,
+                componentName = InboxRouter.getInboxResCenterActivityComponentName(this);
+                intent = InboxRouter.getInboxResCenterActivityIntent(this);
+                bundle.putInt(InboxRouter.EXTRA_STATE_TAB_POSITION,
                         TkpdState.InboxResCenter.RESO_MINE);
                 title = this.getString(R.string.title_notif_rescenter);
                 ticker = data.getString("desc");
                 desc = data.getString("desc");
                 break;
             case TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_AGREE:
-                resultclass = InboxResCenterActivity.class;
-                bundle.putInt(InboxResCenterActivity.EXTRA_STATE_TAB_POSITION,
+                componentName = InboxRouter.getInboxResCenterActivityComponentName(this);
+                intent = InboxRouter.getInboxResCenterActivityIntent(this);
+                bundle.putInt(InboxRouter.EXTRA_STATE_TAB_POSITION,
                         TkpdState.InboxResCenter.RESO_BUYER);
                 title = this.getString(R.string.title_notif_rescenter);
                 ticker = data.getString("desc");
                 desc = data.getString("desc");
                 break;
             case TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_BUYER_REPLY:
-                resultclass = InboxResCenterActivity.class;
-                bundle.putInt(InboxResCenterActivity.EXTRA_STATE_TAB_POSITION,
+                componentName = InboxRouter.getInboxResCenterActivityComponentName(this);
+                intent = InboxRouter.getInboxResCenterActivityIntent(this);
+                bundle.putInt(InboxRouter.EXTRA_STATE_TAB_POSITION,
                         TkpdState.InboxResCenter.RESO_MINE);
                 title = this.getString(R.string.title_notif_rescenter);
                 ticker = data.getString("desc");
                 desc = data.getString("desc");
                 break;
             case TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_SELLER_REPLY:
-                resultclass = InboxResCenterActivity.class;
-                bundle.putInt(InboxResCenterActivity.EXTRA_STATE_TAB_POSITION,
+                componentName = InboxRouter.getInboxResCenterActivityComponentName(this);
+                intent = InboxRouter.getInboxResCenterActivityIntent(this);
+                bundle.putInt(InboxRouter.EXTRA_STATE_TAB_POSITION,
                         TkpdState.InboxResCenter.RESO_BUYER);
                 title = this.getString(R.string.title_notif_rescenter);
                 ticker = data.getString("desc");
@@ -393,7 +480,7 @@ public class GCMListenerService extends GcmListenerService {
         ArrayList<String> Desc;
         ArrayList<Integer> Code;
         final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.ic_stat_notify)
+                .setSmallIcon(getDrawableIcon())
                 .setAutoCancel(true);
         NotificationCompat.InboxStyle inboxStyle;
         NotificationCompat.BigTextStyle bigStyle;
@@ -455,7 +542,7 @@ public class GCMListenerService extends GcmListenerService {
         }
 
 
-        if(!TextUtils.isEmpty(data.getString("url_img"))){
+        if (!TextUtils.isEmpty(data.getString("url_img"))) {
 
             ImageHandler.loadImageBitmapNotification(
                     this,
@@ -472,11 +559,11 @@ public class GCMListenerService extends GcmListenerService {
                     }
             );
 
-        }else {
+        } else {
 
         }
 
-        if(!TextUtils.isEmpty(data.getString("url_icon"))){
+        if (!TextUtils.isEmpty(data.getString("url_icon"))) {
             ImageHandler.loadImageBitmapNotification(
                     this,
                     data.getString("url_icon"), new OnGetFileListener() {
@@ -486,10 +573,9 @@ public class GCMListenerService extends GcmListenerService {
                         }
                     }
             );
-        }else {
-            mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_stat_notify));
+        } else {
+            mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), getDrawableLargeIcon()));
         }
-
 
 
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -511,7 +597,7 @@ public class GCMListenerService extends GcmListenerService {
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         if (componentName != null) {
             stackBuilder.addParentStack(componentName);
-        } else if(resultclass != null){
+        } else if (resultclass != null) {
             stackBuilder.addParentStack(resultclass);
         }
         stackBuilder.addNextIntent(intent);
@@ -547,7 +633,8 @@ public class GCMListenerService extends GcmListenerService {
             NotificationManager mNotificationManager = (NotificationManager) getBaseContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
-                    .setSmallIcon(R.drawable.ic_stat_notify)
+                    .setSmallIcon(getDrawableIcon())
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), getDrawableLargeIcon()))
                     .setAutoCancel(true);
             NotificationCompat.BigTextStyle bigStyle;
             bigStyle = new NotificationCompat.BigTextStyle();
@@ -602,12 +689,7 @@ public class GCMListenerService extends GcmListenerService {
                 break;
             }
             case TkpdState.GCMServiceState.GCM_DEEPLINK: {
-                try {
-                    intent = new Intent(Intent.ACTION_VIEW, Uri.parse(data.getString("url"))).putExtras(data);
-                } catch (NullPointerException e) {
-                    CommonUtils.dumper("NotifTag : No Deeplink : " + e.toString());
-                    intent = HomeRouter.getHomeActivity(this);
-                }
+                intent.setData(Uri.parse(data.getString("url")));
                 break;
             }
             case TkpdState.GCMServiceState.GCM_CATEGORY: {
@@ -648,10 +730,11 @@ public class GCMListenerService extends GcmListenerService {
         final NotificationManager mNotificationManager = (NotificationManager) getBaseContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
         final Notification.Builder mBuilder = new Notification.Builder(getBaseContext())
-                .setSmallIcon(R.drawable.ic_stat_notify)
+                .setSmallIcon(getDrawableIcon())
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), getDrawableLargeIcon()))
                 .setAutoCancel(true);
 
-        if(!TextUtils.isEmpty(data.getString("url_icon"))){
+        if (!TextUtils.isEmpty(data.getString("url_icon"))) {
             ImageHandler.loadImageBitmapNotification(
                     this,
                     data.getString("url_icon"), new OnGetFileListener() {
@@ -661,8 +744,8 @@ public class GCMListenerService extends GcmListenerService {
                         }
                     }
             );
-        }else {
-            mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_stat_notify));
+        } else {
+            mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), getDrawableIcon()));
         }
 
         ImageHandler.loadImageBitmapNotification(
@@ -715,8 +798,8 @@ public class GCMListenerService extends GcmListenerService {
             NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
-                    .setSmallIcon(R.drawable.ic_stat_notify)
-                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_stat_notify))
+                    .setSmallIcon(getDrawableIcon())
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), getDrawableLargeIcon()))
                     .setAutoCancel(true);
             NotificationCompat.BigTextStyle bigStyle = new NotificationCompat.BigTextStyle();
             mBuilder.setContentTitle(data.getString("title_update"));
@@ -744,6 +827,20 @@ public class GCMListenerService extends GcmListenerService {
             updateStats.putInt(TkpdCache.Key.STATUS, Integer.parseInt(data.getString("status")));
             updateStats.applyEditor();
         }
+    }
+
+    private int getDrawableIcon() {
+        if (GlobalConfig.isSellerApp())
+            return R.drawable.ic_stat_notify2;
+        else
+            return R.drawable.ic_stat_notify;
+    }
+
+    private int getDrawableLargeIcon() {
+        if (GlobalConfig.isSellerApp())
+            return R.drawable.qc_launcher2;
+        else
+            return R.drawable.qc_launcher;
     }
 
     private void resetData(Bundle data) {
@@ -861,9 +958,13 @@ public class GCMListenerService extends GcmListenerService {
                 return settings.getBoolean("notification_receive_promo", true);
             case TkpdState.GCMServiceState.GCM_HOT_LIST:
                 return settings.getBoolean("notification_receive_promo", true);
-            case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY:
+            case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_BUYER:
                 return settings.getBoolean("notification_receive_reputation", true);
-            case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY:
+            case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_BUYER:
+                return settings.getBoolean("notification_receive_reputation", true);
+            case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_SELLER:
+                return settings.getBoolean("notification_receive_reputation", true);
+            case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_SELLER:
                 return settings.getBoolean("notification_receive_reputation", true);
             case TkpdState.GCMServiceState.GCM_NEWORDER:
                 return settings.getBoolean("notification_sales", true);
@@ -918,7 +1019,7 @@ public class GCMListenerService extends GcmListenerService {
         TrackingUtils.eventLocaNotificationReceived(data);
     }
 
-    public interface OnGetFileListener{
+    public interface OnGetFileListener {
         void onFileReady(File file);
     }
 

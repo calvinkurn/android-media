@@ -19,6 +19,9 @@ import com.tokopedia.core.inboxmessage.fragment.InboxMessageFragment;
 import com.tokopedia.core.inboxmessage.intentservice.InboxMessageIntentService;
 import com.tokopedia.core.inboxmessage.intentservice.InboxMessageResultReceiver;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
+import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 
 import java.util.ArrayList;
@@ -284,5 +287,18 @@ public class InboxMessageActivity extends DrawerPresenterActivity
         super.onActivityResult(requestCode, resultCode, data);
         getFragmentManager().findFragmentById(R.id.pager).onActivityResult(requestCode,
                 resultCode, data);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isTaskRoot() && GlobalConfig.isSellerApp()) {
+            startActivity(SellerAppRouter.getSellerHomeActivity(this));
+            finish();
+        } else if (isTaskRoot()){
+            startActivity(HomeRouter.getHomeActivity(this));
+            finish();
+        }
+        super.onBackPressed();
+
     }
 }

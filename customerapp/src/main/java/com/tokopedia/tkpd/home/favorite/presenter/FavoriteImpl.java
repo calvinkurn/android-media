@@ -238,7 +238,7 @@ public class FavoriteImpl implements Favorite {
         mPaging.onSavedInstanceState(outState);
         index = view.getLastPosition();
         outState.putInt(POSITION_VIEW, index);
-        outState.putParcelable(DATA, Parcels.wrap(data));
+//        outState.putParcelable(DATA, Parcels.wrap(data));
     }
 
     @Override
@@ -246,7 +246,7 @@ public class FavoriteImpl implements Favorite {
         if (outState != null) {
             Log.d(TAG, "last page : " + mPaging.onCreate(outState));
             index = outState.getInt(POSITION_VIEW, defaultPositionView);
-            data = Parcels.unwrap(outState.getParcelable(DATA));
+//            data = Parcels.unwrap(outState.getParcelable(DATA));
         }
     }
 

@@ -1,6 +1,7 @@
 package com.tokopedia.core.product.dialog;
 
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -64,8 +65,6 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
     TextInputLayout wrapper;
     @BindView(R2.id.report_type)
     Spinner reportTypeSpinner;
-    @BindView(R2.id.line_spinner)
-    View lineSpinner;
     @BindView(R2.id.error_spinner)
     TextView errorSpinner;
     @BindView(R2.id.dummy_spinner)
@@ -108,6 +107,8 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
     }
 
     private void setContent() {
+        getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         showLayout(false);
         cacheInteractor.loadReportTypeFromCache(this);
     }
@@ -150,7 +151,6 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
     @OnItemSelected(R2.id.report_type)
     public void onItemSpinnerSelected() {
         errorSpinner.setVisibility(View.GONE);
-        lineSpinner.setBackgroundColor(getResources().getColor(R.color.white));
         ReportType reportChose = reportTypeList.get(reportTypeSpinner.getSelectedItemPosition());
         int response = reportChose.getReportResponse();
 
@@ -214,7 +214,6 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
 
     private void resetError() {
         errorSpinner.setVisibility(View.GONE);
-        lineSpinner.setBackgroundColor(getResources().getColor(R.color.grey_500));
         wrapper.setErrorEnabled(false);
         wrapper.setError(null);
     }
@@ -235,7 +234,6 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
         if (error.toLowerCase().contains("kategori")) {
             errorSpinner.setVisibility(View.VISIBLE);
             errorSpinner.setText(error);
-            lineSpinner.setBackgroundColor(getResources().getColor(R.color.red_500));
         } else if (error.toLowerCase().contains("deskripsi")) {
             wrapper.setErrorEnabled(true);
             wrapper.setError(error);
@@ -253,10 +251,12 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
 
     @Override
     public void downloadReportType() {
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         retrofitInteractor.downloadReportType(getActivity(),productDetailData.getInfo().getProductId(),this);
     }
 
     public void setReportAdapterFromCache(String data) {
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         ReportTypeModel reportTypeModel = new GsonBuilder().create().fromJson(data, ReportTypeModel.class);
         reportTypeList = reportTypeModel.getReportType();
         setReportAdapterFromNetwork(reportTypeList);
@@ -301,5 +301,11 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
 
     public void setListener(ProductDetailFragment productDetailFragment) {
         listener = productDetailFragment;
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 }

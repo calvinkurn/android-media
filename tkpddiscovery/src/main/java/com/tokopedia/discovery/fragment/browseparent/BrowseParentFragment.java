@@ -72,6 +72,12 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     LinearLayout tabContainer;
     private String source;
     private String formatKey = "%d_%s";
+
+    @Override
+    public String getScreenName() {
+        return null;
+    }
+
     public DiscoveryActivityPresenter discoveryActivityPresenter = new DiscoveryActivityPresenter.DiscoveryActivityPresenterImpl() {
         @Override
         public BrowseProductActivityModel getBrowseProductActivityModel() {
@@ -247,7 +253,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
         if (uri.contains("/hot/")) {
             Uri myurl = Uri.parse(uri);
             uri = myurl.getPathSegments().get(1);
-            ((BrowseProductActivity) getActivity()).sendHotlist(uri, "");
+            ((BrowseProductActivity) getActivity()).sendHotlist(uri);
         }
         if (uri.contains("/p/")) {
             BrowseProductActivity browseProductActivity = (BrowseProductActivity) getActivity();
@@ -258,9 +264,6 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
         }
         if (uri.contains("/catalog/")) {
             URLParser urlParser = new URLParser(uri);
-//            Intent intent = new Intent(getActivity(), Catalog.class);
-//            intent.putExtra(HotList.CATALOG_ID_KEY, urlParser.getHotAlias());
-//            getActivity().startActivity(intent);
             getActivity().startActivity(DetailProductRouter.getCatalogDetailActivity(getActivity(),
                     urlParser.getHotAlias()));
             getActivity().finish();

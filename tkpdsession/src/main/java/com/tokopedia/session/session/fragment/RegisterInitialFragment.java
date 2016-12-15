@@ -1,5 +1,6 @@
 package com.tokopedia.session.session.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -24,6 +25,8 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.service.DownloadService;
@@ -121,9 +124,14 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
     }
 
     @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_REGISTER;
+    }
+
+    @Override
     public void onResume() {
         presenter.initData(getActivity());
-        TrackingUtils.screen(this);
+        ScreenTracking.screen(getScreenName());
         super.onResume();
     }
 
@@ -171,6 +179,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
                         ,getString(R.string.error_download_provider), Snackbar.LENGTH_INDEFINITE)
                         .setAction(getString(R.string.title_try_again), retryDiscover());
                 snackbar.show();
+                loginButton.setEnabled(false);
                 break;
             default:
                 showError(s);
@@ -197,6 +206,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
     @Override
     public void showProvider(List<LoginProviderModel.ProvidersBean> data) {
         listProvider = data;
+        loginButton.setEnabled(true);
         if (listProvider != null && checkHasNoProvider()) {
             presenter.saveProvider(listProvider);
 
@@ -286,6 +296,10 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode){
             case 100:
+                if(resultCode == Activity.RESULT_CANCELED){
+                    KeyboardHandler.DropKeyboard(getActivity(),getView());
+                    break;
+                }
                 Bundle bundle = data.getBundleExtra("bundle");
                 if(bundle.getString("path").contains("error")){
                     snackbar = SnackbarManager.make(getActivity(), bundle.getString("message"), Snackbar.LENGTH_LONG);

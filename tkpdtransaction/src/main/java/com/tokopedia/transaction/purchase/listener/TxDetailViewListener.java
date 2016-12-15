@@ -11,4 +11,6 @@ import com.tokopedia.core.product.listener.ViewListener;
 public interface TxDetailViewListener extends ViewListener {
 
     void closeWithResult(int requestCode, Intent data);
+
+    void renderSuccessRequestCancelOrder(String message);
 }

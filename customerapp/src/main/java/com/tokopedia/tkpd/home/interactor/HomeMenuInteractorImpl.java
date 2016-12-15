@@ -2,7 +2,6 @@ package com.tokopedia.tkpd.home.interactor;
 
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
-import com.tokopedia.core.network.entity.homeMenu.HomeCategoryMenuItem;
 import com.tokopedia.tkpd.home.database.HomeCategoryMenuDbManager;
 
 import java.util.List;
@@ -31,7 +30,7 @@ public class HomeMenuInteractorImpl implements HomeMenuInteractor {
 
     @Override
     public void fetchHomeCategoryMenuFromNetwork(
-            Subscriber<Response<HomeCategoryMenuItem>> networksubscriber) {
+            Subscriber<Response<String>> networksubscriber) {
 
         subscription.add(mojitoService.getApi().getHomeCategoryMenu().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -45,7 +44,7 @@ public class HomeMenuInteractorImpl implements HomeMenuInteractor {
     public void fetchHomeCategoryMenuFromDb(OnFetchHomeCategoryMenuFromDbListener listener) {
         HomeCategoryMenuDbManager homeCategoryMenuDbManager = new HomeCategoryMenuDbManager();
         try {
-            List<CategoryMenuModel> results = homeCategoryMenuDbManager.getDataCategoryMenu();
+            List<CategoryMenuModel> results = homeCategoryMenuDbManager.getDataHomeCategoryMenu();
             listener.onSuccessFetchHomeCategoryListFromDb(results);
 
         } catch (Throwable throwable) {

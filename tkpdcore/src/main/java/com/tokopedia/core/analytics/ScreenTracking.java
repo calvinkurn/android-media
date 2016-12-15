@@ -69,19 +69,18 @@ public class ScreenTracking extends TrackingUtils {
         }
     }
 
-    public static void screen(Fragment fragment){
-        getGTMEngine()
-                .sendScreen(AppScreen.convertFragmentScreen(fragment));
-    }
-
     public static void screen(String screen){
+        if(TextUtils.isEmpty(screen)){
+            try {
+                throw new Exception("Fragment ScreenName cannot null");
+            } catch (Exception e) {
+                e.printStackTrace();
+                screen = "Default Fragment Name";
+            }
+        }
+
         getGTMEngine()
                 .sendScreen(screen);
-    }
-
-    public static void screen(android.support.v4.app.Fragment fragment){
-        getGTMEngine()
-                .sendScreen(AppScreen.convertFragmentScreen(fragment));
     }
 
     public static void screenLoca(String screenName){

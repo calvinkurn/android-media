@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.WindowManager;
@@ -621,5 +622,11 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         spinnerSubDistrict.setVisibility(View.GONE);
         districtTitle.setVisibility(View.GONE);
         subDistrictError.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.onDestroyView();
     }
 }

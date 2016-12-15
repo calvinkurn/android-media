@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.View;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
@@ -16,6 +17,9 @@ import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.inboxreputation.adapter.SectionsPagerAdapter;
 import com.tokopedia.core.inboxreputation.fragment.InboxReputationFragment;
 import com.tokopedia.core.inboxreputation.listener.InboxReputationView;
+import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 
 import java.util.ArrayList;
@@ -70,9 +74,14 @@ public class InboxReputationActivity extends DrawerPresenterActivity
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator));
         indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
 
-        indicator.addTab(indicator.newTab().setText(getString(R.string.title_menu_all)));
-        indicator.addTab(indicator.newTab().setText(getString(R.string.title_my_product)));
-        indicator.addTab(indicator.newTab().setText(getString(R.string.title_my_review)));
+        if (GlobalConfig.isSellerApp()) {
+            indicator.addTab(indicator.newTab().setText(getString(R.string.title_my_product)));
+            indicator.setVisibility(View.GONE);
+        } else {
+            indicator.addTab(indicator.newTab().setText(getString(R.string.title_menu_all)));
+            indicator.addTab(indicator.newTab().setText(getString(R.string.title_my_product)));
+            indicator.addTab(indicator.newTab().setText(getString(R.string.title_my_review)));
+        }
 
     }
 
@@ -84,9 +93,13 @@ public class InboxReputationActivity extends DrawerPresenterActivity
     @Override
     public List<Fragment> getFragmentList() {
         List<Fragment> fragmentList = new ArrayList<>();
-        fragmentList.add(InboxReputationFragment.createInstance(REVIEW_ALL));
-        fragmentList.add(InboxReputationFragment.createInstance(REVIEW_PRODUCT));
-        fragmentList.add(InboxReputationFragment.createInstance(REVIEW_USER));
+        if (GlobalConfig.isSellerApp()) {
+            fragmentList.add(InboxReputationFragment.createInstance(REVIEW_PRODUCT));
+        } else {
+            fragmentList.add(InboxReputationFragment.createInstance(REVIEW_ALL));
+            fragmentList.add(InboxReputationFragment.createInstance(REVIEW_PRODUCT));
+            fragmentList.add(InboxReputationFragment.createInstance(REVIEW_USER));
+        }
         return fragmentList;
     }
 
@@ -119,5 +132,18 @@ public class InboxReputationActivity extends DrawerPresenterActivity
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isTaskRoot() && GlobalConfig.isSellerApp()) {
+            startActivity(SellerAppRouter.getSellerHomeActivity(this));
+            finish();
+        } else if (isTaskRoot()){
+            startActivity(HomeRouter.getHomeActivity(this));
+            finish();
+        }
+        super.onBackPressed();
+
     }
 }

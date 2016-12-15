@@ -114,6 +114,11 @@ public class CatalogDetailFragment extends BasePresenterFragment<ICatalogDetailP
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     protected boolean isRetainInstance() {
         return false;
     }
@@ -389,4 +394,9 @@ public class CatalogDetailFragment extends BasePresenterFragment<ICatalogDetailP
                 && stateCatalogSpecList != null && stateShareData != null;
     }
 
+    @Override
+    public void onDestroyView() {
+        presenter.unsubscribeObservable();
+        super.onDestroyView();
+    }
 }

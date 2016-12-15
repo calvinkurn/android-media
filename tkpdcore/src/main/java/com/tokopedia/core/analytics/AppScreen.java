@@ -1,28 +1,8 @@
 package com.tokopedia.core.analytics;
 
-import android.app.Activity;
-import android.app.Fragment;
-
 import com.appsflyer.AFInAppEventType;
-import com.tokopedia.core.R;
-import com.tokopedia.core.fragment.AboutFragment;
-import com.tokopedia.core.fragment.FragmentCart;
-import com.tokopedia.core.fragment.FragmentCartFinish;
-import com.tokopedia.core.fragment.FragmentCartSummary;
-import com.tokopedia.core.fragment.FragmentSettingPeople;
-import com.tokopedia.core.fragment.FragmentSettingShop;
-import com.tokopedia.core.fragment.SettingsFragment;
-import com.tokopedia.core.manage.people.bank.fragment.ManagePeopleBankFormFragment;
-import com.tokopedia.core.manage.people.notification.activity.ManageNotificationActivity;
-import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity;
-import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
-import com.tokopedia.core.manage.shop.notes.activity.ManageShopNotesActivity;
-import com.tokopedia.core.manage.shop.notes.fragment.ManageShopNotesFormFragment;
-import com.tokopedia.core.myproduct.ManageProduct;
-import com.tokopedia.core.myproduct.ProductActivity;
-import com.tokopedia.core.myproduct.fragment.AddProductFragment;
-
-//import com.tokopedia.discovery.catalog.activity.CatalogDetailActivity;
+import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.home.HomeRouter;
 
 
 /**
@@ -31,102 +11,25 @@ import com.tokopedia.core.myproduct.fragment.AddProductFragment;
  */
 public final class AppScreen {
 
+
     private AppScreen() {
 
     }
 
-    public static String convertFragmentScreen(Fragment actClass) {
-        if (actClass instanceof AboutFragment) {
-            return SCREEN_SETTING_ABOUT_US;
-        } else if (actClass instanceof FragmentSettingPeople) {
-            return SCREEN_SETTING_MANAGE_PROFILE;
-        } else if (actClass instanceof SettingsFragment) {
-            return SCREEN_SETTING_MANAGE_APP;
-        } else if (actClass instanceof FragmentSettingShop) {
-            return SCREEN_SETTING_MANAGE_SHOP;
-        } else if (actClass instanceof FragmentCart) {
-            return SCREEN_CART_PAGE;
-        } else if (actClass instanceof FragmentCartSummary) {
-            return SCREEN_CART_SUMMARY;
-        } else if (actClass instanceof FragmentCartFinish) {
-            return SCREEN_CART_FINISH;
-        } else if (actClass instanceof ManagePeopleBankFormFragment) {
-            return SCREEN_PEOPLE_BANK_FORM;
+    public static String convertAFActivityEvent(String tag) {
+        if (tag.equals(HomeRouter.IDENTIFIER_HOME_ACTIVITY)) {
+            return AFInAppEventType.LOGIN;
         } else {
-            return actClass.getClass().getSimpleName();
+            return AFInAppEventType.CONTENT_VIEW;
         }
     }
 
-
-    public static String convertAFFragmentEvent(android.support.v4.app.Fragment fragment){
-//        if (fragment instanceof RegisterNewNextFragment || fragment instanceof RegisterPassPhoneFragment){
-//            return AFInAppEventType.COMPLETE_REGISTRATION;
-//        } else {
-//            return AFInAppEventType.CONTENT_VIEW;
-//        }
-        return null;
-    }
-
-    public static String convertFragmentScreen(android.support.v4.app.Fragment actClass) {
-//        if (actClass instanceof FragmentHotListV2) {
-//            return SCREEN_HOME_HOTLIST;
-//        } else if (actClass instanceof FragmentIndexFavoriteV2) {
-//            public static String convertFragmentScreen(android.support.v4.app.Fragment actClass) {
-//                if (actClass instanceof FragmentHotListV2) {
-//                    return SCREEN_HOME_HOTLIST;
-//                } else if (actClass instanceof FragmentIndexFavoriteV2) {
-//                    return SCREEN_HOME_FAVORITE_SHOP;
-//                } else if (actClass instanceof FragmentIndexCategory) {
-//                    return SCREEN_HOME_PRODUCT_CATEGORY;
-//                } else if (actClass instanceof FragmentProductFeed) {
-//                    return SCREEN_HOME_PRODUCT_FEED;
-//                } else if (actClass instanceof RegisterNewViewFragment) {
-//                    return SCREEN_REGISTER;
-//                } else if (actClass instanceof RegisterPassPhoneFragment) {
-//                    return SCREEN_REGISTER_THIRD;
-//                } else if (actClass instanceof WishListFragment) {
-//                    return SCREEN_FRAGMENT_WISHLIST;
-//                } else if (actClass instanceof ForgotPasswordFragment) {
-//                    return SCREEN_FORGOT_PASSWORD;
-//                } else if (actClass instanceof ActivationResentFragment) {
-//                    return SCREEN_REGISTER_ACTIVATION;
-//                } else if (actClass instanceof AddProductFragment) {
-//                    return SCREEN_ADD_PRODUCT;
-//                    //} else if (actClass instanceof FragmentShopTxStatusDetailV2){
-//                    //  return SCREEN_TX_PEOPLE_DETAIL;
-//                } else {
-//                    return actClass.getClass().getSimpleName();
-//                }
-//            }
-//            return SCREEN_HOME_FAVORITE_SHOP;
-//        } else if (actClass instanceof FragmentIndexCategory) {
-//            return SCREEN_HOME_PRODUCT_CATEGORY;
-//        } else if (actClass instanceof FragmentProductFeed) {
-//            return SCREEN_HOME_PRODUCT_FEED;
-//        } else if (actClass instanceof RegisterNewViewFragment) {
-//            return SCREEN_REGISTER;
-//        } else if (actClass instanceof RegisterPassPhoneFragment) {
-//            return SCREEN_REGISTER_THIRD;
-//        } else if (actClass instanceof WishListFragment) {
-//            return SCREEN_FRAGMENT_WISHLIST;
-//        } else if (actClass instanceof ForgotPasswordFragment) {
-//            return SCREEN_FORGOT_PASSWORD;
-//        } else if (actClass instanceof ActivationResentFragment) {
-//            return SCREEN_REGISTER_ACTIVATION;
-//        } else if (actClass instanceof AddProductFragment) {
-//            return SCREEN_ADD_PRODUCT;
-//            //} else if (actClass instanceof FragmentShopTxStatusDetailV2){
-//            //  return SCREEN_TX_PEOPLE_DETAIL;
-//        } else {
-//            return actClass.getClass().getSimpleName();
-//        }
-        //TODO fix tracking
-        // udah persetujuan dari hafiz suruh comment
-        return actClass.getClass().getSimpleName();
-    }
-
-    private static Fragment getFragment(Activity actClass) {
-        return actClass.getFragmentManager().findFragmentById(R.id.container);
+    public static String convertAFFragmentEvent(String tag) {
+        if (tag.equals(SessionRouter.IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT) || tag.equals(SessionRouter.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT)) {
+            return AFInAppEventType.COMPLETE_REGISTRATION;
+        } else {
+            return AFInAppEventType.CONTENT_VIEW;
+        }
     }
 
     public static final String SCREEN_INDEX_HOME = "Index Main";
@@ -306,6 +209,18 @@ public final class AppScreen {
     public static final String SCREEN_RECHARGE_PAYMENT = "Recharge Payment WebView";
     public static final String SCREEN_SHARE = "Share Screen";
     public static final String SCREEN_GALLERY_BROWSE = "Browse Gallery Screen";
-    public static final String SCREEN_GM_SUBSCRIBE = "Subscribe to the GM";
+    public static final String SCREEN_GM_SUBSCRIBE = "Gold Merchant Subscribe";
     public static final String SCREEN_SELLER_HOME = "Seller Home";
+    public static final String SCREEN_PHONE_VERIFICATION = "Phone Verification Screen";
+
+    public static final String SCREEN_INBOX_MAIN = "Inbox Page";
+    public static final String SCREEN_INBOX_SENT = "Inbox - Sent Page";
+    public static final String SCREEN_INBOX_ARCHIVE = "Inbox - Archive Page";
+    public static final String SCREEN_INBOX_TRASH = "Inbox - Trash Page";
+
+    public static final String SCREEN_LOCA_NEWORDER = "Transaction - New Order Page";
+    public static final String SCREEN_LOCA_TXCENTER = "Transaction List - Selling Page";
+    public static final String SCREEN_LOCA_TXSTATUS = "Transaction - Sell page";
+    public static final String SCREEN_LOCA_SHIPPING = "Transaction - Shipping Confirmation Page";
+    public static final String SCREEN_LOCA_SHIPPINGSTATUS = "Transaction - Shipping status";
 }

@@ -6,16 +6,17 @@ import android.content.Context;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.transaction.purchase.listener.TxSummaryViewListener;
-import com.tokopedia.transaction.purchase.model.TxSummaryItem;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.var.NotificationVariable;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.transaction.purchase.listener.TxSummaryViewListener;
+import com.tokopedia.transaction.purchase.model.TxSummaryItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Angga.Prasetiyo on 07/04/2016.
+ * @author Angga.Prasetiyo on 07/04/2016.
  */
 public class TxSummaryPresenterImpl implements TxSummaryPresenter {
     private static final String TAG = TxSummaryPresenterImpl.class.getSimpleName();
@@ -30,17 +31,31 @@ public class TxSummaryPresenterImpl implements TxSummaryPresenter {
         LocalCacheHandler cache = new LocalCacheHandler(context, TkpdCache.NOTIFICATION_DATA);
         List<Integer> countList = cache.getArrayListInteger(TkpdCache.Key.PURCHASE_COUNT);
         List<TxSummaryItem> summaryItemList = new ArrayList<>();
-        summaryItemList.add(new TxSummaryItem(context.getString(R.string.payment_confirm),
-                context.getString(R.string.payment_confirm_desc), countList.get(0)));
-        summaryItemList.add(new TxSummaryItem(context.getString(R.string.payment_verify),
-                context.getString(R.string.payment_verification_desc), countList.get(1)));
-        summaryItemList.add(new TxSummaryItem(context.getString(R.string.order_status),
-                context.getString(R.string.order_status_desc), countList.get(2)));
-        summaryItemList.add(new TxSummaryItem(context.getString(R.string.delivery_confirm),
+
+        summaryItemList.add(new TxSummaryItem(
+                TransactionPurchaseRouter.TAB_POSITION_PURCHASE_VERIFICATION,
+                context.getString(R.string.payment_status),
+                context.getString(R.string.payment_status_desc),
+                countList.get(1)
+        ));
+        summaryItemList.add(new TxSummaryItem(
+                TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER,
+                context.getString(R.string.order_status),
+                context.getString(R.string.order_status_desc),
+                countList.get(2)
+        ));
+        summaryItemList.add(new TxSummaryItem(
+                TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVER_ORDER,
+                context.getString(R.string.delivery_confirm),
                 context.getString(R.string.title_receive_confirmation_dashboard_desc),
-                countList.get(3)));
-        summaryItemList.add(new TxSummaryItem(context.getString(R.string.reorder),
-                context.getString(R.string.title_transaction_list_desc), countList.get(4)));
+                countList.get(3)
+        ));
+        summaryItemList.add(new TxSummaryItem(
+                TransactionPurchaseRouter.TAB_POSITION_PURCHASE_ALL_ORDER,
+                context.getString(R.string.reorder),
+                context.getString(R.string.title_transaction_list_desc),
+                countList.get(4)
+        ));
         viewListener.renderPurchaseSummary(summaryItemList);
     }
 

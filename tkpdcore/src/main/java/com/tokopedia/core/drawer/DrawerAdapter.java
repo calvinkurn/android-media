@@ -16,18 +16,22 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.deposit.activity.DepositActivity;
-import com.tokopedia.core.drawer.DrawerVariable.DrawerItemList;
+import com.tokopedia.core.drawer.model.DrawerHeader;
+import com.tokopedia.core.drawer.model.DrawerItem;
+import com.tokopedia.core.drawer.model.DrawerItemList;
 import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
 import com.tokopedia.core.people.activity.PeopleInfoDrawerActivity;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 
 import java.util.List;
+
+import static com.tokopedia.core.drawer.var.UserType.TYPE_PEOPLE;
 
 /**
  * Created by Nisie on 5/08/15.
@@ -191,7 +195,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     private void bindSingleViewHolder(SingleItemViewHolder holder, int position) {
-        DrawerVariable.DrawerItem menu = (DrawerVariable.DrawerItem) data.get(position);
+        DrawerItem menu = (DrawerItem) data.get(position);
         holder.label.setText(menu.label);
         setNotif(menu.notif, holder);
         setSelectedBackground(menu, holder);
@@ -204,7 +208,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-    private void setSelectedBackground(DrawerVariable.DrawerItem menu, SingleItemViewHolder holder) {
+    private void setSelectedBackground(DrawerItem menu, SingleItemViewHolder holder) {
         if (menu.id == drawerPosition) {
             holder.label.setTextColor(context.getResources().getColor(R.color.green_500));
         } else if (menu.iconId != 0) {
@@ -295,7 +299,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private void bindHeaderViewHolder(HeaderViewHolder holder, int position) {
 
-        switch (((DrawerVariable.DrawerHeader) data.get(position)).userType) {
+        switch (((DrawerHeader) data.get(position)).userType) {
             case TYPE_PEOPLE:
                 bindHeaderPeople(holder, position);
                 break;
@@ -306,7 +310,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     private void bindHeaderPeople(HeaderViewHolder holder, int position) {
-        DrawerVariable.DrawerHeader header = (DrawerVariable.DrawerHeader) data.get(0);
+        DrawerHeader header = (DrawerHeader) data.get(0);
         holder.drawerPointsLayout.setVisibility(View.VISIBLE);
         holder.name.setVisibility(View.VISIBLE);
 //        holder.favorite.setVisibility(View.VISIBLE);
@@ -415,7 +419,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private void bindHeaderGuest(HeaderViewHolder holder, int position) {
         holder.name.setVisibility(View.GONE);
         holder.icon.setVisibility(View.GONE);
-        ImageHandler.loadImageWithId(holder.coverImg,R.drawable.drawer_header_bg);
+        ImageHandler.loadImageWithId(holder.coverImg, R.drawable.drawer_header_bg);
         holder.gradientBlack.setBackgroundResource(0);
         holder.drawerPointsLayout.setVisibility(View.GONE);
     }
@@ -446,7 +450,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         this.drawerPosition = drawerPosition;
     }
 
-    private void sendGTMNavigationEvent(String label){
+    private void sendGTMNavigationEvent(String label) {
         UnifyTracking.eventDrawerClick(label);
     }
 }

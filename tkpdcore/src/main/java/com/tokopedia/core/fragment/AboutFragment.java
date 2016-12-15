@@ -3,6 +3,7 @@ package com.tokopedia.core.fragment;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -10,7 +11,10 @@ import android.preference.PreferenceFragment;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.app.TkpdBasePreferenceFragment;
+import com.tokopedia.core.manage.general.ManageWebViewActivity;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RouterUtils;
@@ -18,7 +22,7 @@ import com.tokopedia.core.util.RouterUtils;
 /**
  * Created by Angga.Prasetiyo on 13/01/2016.
  */
-public class AboutFragment extends PreferenceFragment {
+public class AboutFragment extends TkpdBasePreferenceFragment {
     private static final String TAG = AboutFragment.class.getSimpleName();
 
     private Preference prefVersion;
@@ -34,6 +38,11 @@ public class AboutFragment extends PreferenceFragment {
     }
 
     public AboutFragment() {
+    }
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_SETTING_ABOUT_US;
     }
 
     @Override
@@ -56,25 +65,39 @@ public class AboutFragment extends PreferenceFragment {
         prefTerm.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse("https://www.tokopedia.com/terms.pl"));
-                getActivity().startActivity(i);
+                Intent intent;
+                String termUrl = "https://www.tokopedia.com/terms.pl";
+                if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                    intent = ManageWebViewActivity.getCallingIntent(getActivity(), termUrl,
+                            getString(R.string.manage_terms_and_conditions));
+                } else {
+                    intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(termUrl));
+                }
+                getActivity().startActivity(intent);
                 return false;
             }
         });
         prefPrivacy.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse("https://www.tokopedia.com/privacy.pl"));
-                getActivity().startActivity(i);
+                Intent intent;
+                String privacyUrl = "https://www.tokopedia.com/privacy.pl";
+                if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                    intent = ManageWebViewActivity.getCallingIntent(getActivity(), privacyUrl,
+                            getString(R.string.manage_privacy));
+                }else{
+                    intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(privacyUrl));
+                }
+                getActivity().startActivity(intent);
                 return false;
             }
         });
         prefShare.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                String urlPlayStore = "http://play.google.com/store/apps/details?shopId=" + getActivity().getPackageName();
+                String urlPlayStore = "http://play.google.com/store/apps/details?shopId=" + getActivity().getApplication().getPackageName();
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
                 sendIntent.putExtra(Intent.EXTRA_TEXT, getActivity().getResources().getString(R.string.msg_share_apps) + "\n" + urlPlayStore);
@@ -86,7 +109,7 @@ public class AboutFragment extends PreferenceFragment {
         prefReview.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                Uri uri = Uri.parse("market://details?id=" + BuildConfig.APPLICATION_ID);
+                Uri uri = Uri.parse("market://details?id=" + getActivity().getApplication().getPackageName());
                 Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
                 goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
                 try {
@@ -94,7 +117,7 @@ public class AboutFragment extends PreferenceFragment {
                 } catch (ActivityNotFoundException e) {
                     getActivity().startActivity(new Intent(Intent.ACTION_VIEW,
                             Uri.parse("https://play.google.com/store/apps/details?id="
-                                    + BuildConfig.APPLICATION_ID)));
+                                    + getActivity().getApplication().getPackageName())));
                 }
                 return false;
             }
@@ -125,7 +148,7 @@ public class AboutFragment extends PreferenceFragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded() && getActivity() !=null) {
-            ScreenTracking.screen(this);
+            ScreenTracking.screen(getScreenName());
         }
         super.setUserVisibleHint(isVisibleToUser);
     }

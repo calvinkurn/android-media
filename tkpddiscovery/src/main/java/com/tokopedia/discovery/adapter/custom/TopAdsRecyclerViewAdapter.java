@@ -1,10 +1,3 @@
-/*
- * Created By Kulomady on 11/26/16 1:08 AM
- * Copyright (c) 2016. All rights reserved
- *
- * Last Modified 11/26/16 1:08 AM
- */
-
 package com.tokopedia.discovery.adapter.custom;
 
 import android.app.Activity;
@@ -32,6 +25,8 @@ import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.util.TopAdsUtil;
+import com.tokopedia.core.var.Badge;
+import com.tokopedia.core.var.Label;
 import com.tokopedia.core.var.ProductItem;
 
 import java.util.List;
@@ -129,7 +124,7 @@ public class TopAdsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
     private void setLabels(ViewHolder holder, ProductItem item) {
         if (item.getLabels() != null && holder.labelContainer.getChildCount() == 0)
-            for (ProductItem.Label label : item.getLabels()) {
+            for (Label label : item.getLabels()) {
                 View view = LayoutInflater.from(context).inflate(R.layout.label_layout, null);
                 TextView labelText = (TextView) view.findViewById(R.id.label);
                 labelText.setText(label.getTitle());
@@ -149,7 +144,7 @@ public class TopAdsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
     private void setBadges(ViewHolder holder, ProductItem item) {
         if (item.getBadges() != null && holder.badgeContainer.getChildCount() == 0)
-            for (ProductItem.Badge badges : item.getBadges()) {
+            for (Badge badges : item.getBadges()) {
                 View view = LayoutInflater.from(context).inflate(R.layout.badge_layout, null);
                 ImageView imageBadge = (ImageView) view.findViewById(R.id.badge);
                 holder.badgeContainer.addView(view);

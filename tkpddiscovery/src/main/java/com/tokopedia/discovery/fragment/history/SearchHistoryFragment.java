@@ -43,6 +43,10 @@ public class SearchHistoryFragment extends BaseFragment<SearchHistory> implement
 
     LinearLayoutManager linearLayoutManager;
 
+    @Override
+    public String getScreenName() {
+        return null;
+    }
 
     @Override
     protected void initPresenter() {
@@ -113,7 +117,7 @@ public class SearchHistoryFragment extends BaseFragment<SearchHistory> implement
 
     @Override
     public void sendHotlistResult(String selected, String keyword) {
-        ((BrowseProductActivity) getActivity()).sendHotlist(selected, keyword);
+        ((BrowseProductActivity) getActivity()).sendHotlist(selected);
     }
 
     @Override

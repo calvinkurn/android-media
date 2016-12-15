@@ -64,14 +64,14 @@ public class MyMessageDataBinder extends DataBinder<MyMessageDataBinder.ViewHold
 
         @Override
         public boolean onMenuItemClick(MenuItem menuItem) {
-            switch (menuItem.getItemId()) {
-                case R2.id.action_copy:
-                    ClipboardManager clipboard = (ClipboardManager) itemView.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData clip = ClipData.newPlainText("label", message.getText());
-                    clipboard.setPrimaryClip(clip);
-                    return true;
-                default:
-                    return false;
+            int i = menuItem.getItemId();
+            if (i == R.id.action_copy) {
+                ClipboardManager clipboard = (ClipboardManager) itemView.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("label", message.getText());
+                clipboard.setPrimaryClip(clip);
+                return true;
+            } else {
+                return false;
             }
         }
     }

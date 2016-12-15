@@ -16,13 +16,16 @@ public class HomeRouter {
     public static final String TAG_FETCH_BANK = "FETCH_BANK";
 
     public static final String EXTRA_INIT_FRAGMENT = "EXTRA_INIT_FRAGMENT";
+    public static final String IDENTIFIER_HOME_ACTIVITY = "ParentIndexHome";
+    public static final String IDENTIFIER_CATEGORY_FRAGMENT = "FragmentIndexCategory";
+
     public static final int INIT_STATE_FRAGMENT_HOME = 0;
     public static final int INIT_STATE_FRAGMENT_FEED = 1;
     public static final int INIT_STATE_FRAGMENT_FAVORITE = 2;
     public static final int INIT_STATE_FRAGMENT_HOTLIST = 3;
 
     private static final String ACTIVITY_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
-    private static final String ACTIVITY_BANNER_WEBVIEW = "com.tokopedia.tkpd.home.BannerWebView";
+    private static final String ACTIVITY_BANNER_WEBVIEW = "com.tokopedia.core.home.BannerWebView";
 
 
     public static Intent getHomeActivity(Context context) {

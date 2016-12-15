@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.PagerAdapter;
@@ -34,11 +33,12 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
-import com.tokopedia.tkpd.R;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.customView.WrapContentViewPager;
 import com.tokopedia.core.database.model.category.CategoryData;
 import com.tokopedia.core.home.BannerWebView;
@@ -50,9 +50,11 @@ import com.tokopedia.core.network.entity.home.Ticker;
 import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
-import com.tokopedia.core.util.NonScrollLayoutManager;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.HomeCatMenuView;
 import com.tokopedia.tkpd.home.adapter.RecyclerViewCategoryMenuAdapter;
 import com.tokopedia.tkpd.home.adapter.SectionListCategoryAdapter;
@@ -67,7 +69,6 @@ import com.tokopedia.tkpd.home.recharge.adapter.RechargeViewPagerAdapter;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenter;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenterImpl;
 import com.tokopedia.tkpd.home.recharge.view.RechargeCategoryView;
-import com.tokopedia.tkpd.home.util.DividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -78,14 +79,14 @@ import java.util.Map;
  * Created by Nisie on 1/07/15.
  * modified by mady add feature Recharge and change home menu
  */
-public class FragmentIndexCategory extends Fragment implements
+public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         CategoryView,
         RechargeCategoryView,
         SectionListCategoryAdapter.OnCategoryClickedListener,
         SectionListCategoryAdapter.OnGimmicClickedListener, HomeCatMenuView {
 
     private static final long SLIDE_DELAY = 8000;
-    private static final String TAG = FragmentIndexCategory.class.getSimpleName();
+    public static final String TAG = FragmentIndexCategory.class.getSimpleName();
     private ViewHolder holder;
     private Model model;
     private PromoImagePagerAdapter pagerAdapter;
@@ -106,6 +107,7 @@ public class FragmentIndexCategory extends Fragment implements
         private ViewPager bannerViewPager;
         private CirclePageIndicator bannerIndicator;
         private RelativeLayout bannerContainer;
+        private TextView promoLink;
         TabLayout tabLayoutRecharge;
         WrapContentViewPager viewpagerRecharge;
         RecyclerView announcementContainer;
@@ -116,6 +118,7 @@ public class FragmentIndexCategory extends Fragment implements
 
         private ViewHolder() {
         }
+
     }
 
     public FragmentIndexCategory() {
@@ -136,6 +139,11 @@ public class FragmentIndexCategory extends Fragment implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_HOME_PRODUCT_CATEGORY;
     }
 
     @Override
@@ -205,13 +213,13 @@ public class FragmentIndexCategory extends Fragment implements
             holder.banner = getActivity().getLayoutInflater().inflate(R.layout.banner, holder.bannerContainer);
             holder.bannerViewPager = (ViewPager) holder.banner.findViewById(R.id.view_pager);
             holder.bannerIndicator = (CirclePageIndicator) holder.banner.findViewById(R.id.indicator);
-
+            holder.promoLink = (TextView) holder.banner.findViewById(R.id.promo_link);
             holder.bannerViewPager.setAdapter(pagerAdapter);
             holder.bannerViewPager.addOnPageChangeListener(onPromoChanged());
             holder.bannerIndicator.setFillColor(ContextCompat.getColor(getContext(), R.color.green_400));
             holder.bannerIndicator.setStrokeColor(ContextCompat.getColor(getContext(), R.color.green_500));
             holder.bannerIndicator.setViewPager(holder.bannerViewPager);
-
+            holder.promoLink.setOnClickListener(onPromoLinkClicked());
             model.listBanner.clear();
             model.listBanner.addAll(promoList);
             pagerAdapter.notifyDataSetChanged();
@@ -219,7 +227,7 @@ public class FragmentIndexCategory extends Fragment implements
             RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams) holder.bannerViewPager.getLayoutParams();
             DisplayMetrics metrics = new DisplayMetrics();
             getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-            param.height = metrics.widthPixels / 2;
+            //param.height = metrics.widthPixels / 2;
             holder.bannerViewPager.setLayoutParams(param);
             holder.wrapperScrollview.smoothScrollTo(0, 0);
             startSlide();
@@ -342,8 +350,7 @@ public class FragmentIndexCategory extends Fragment implements
         holder.categoriesRecylerview.setHasFixedSize(true);
         holder.categoriesRecylerview.setNestedScrollingEnabled(false);
 
-        recyclerViewCategoryMenuAdapter =
-                new RecyclerViewCategoryMenuAdapter(getContext());
+        recyclerViewCategoryMenuAdapter = new RecyclerViewCategoryMenuAdapter(getContext());
 
         recyclerViewCategoryMenuAdapter.setHomeMenuWidth(getHomeMenuWidth());
 
@@ -352,13 +359,9 @@ public class FragmentIndexCategory extends Fragment implements
 
 
         holder.categoriesRecylerview.setLayoutManager(
-                new NonScrollLayoutManager(getActivity(),
+                new NonScrollLinearLayoutManager(getActivity(),
                         LinearLayoutManager.VERTICAL,
                         false)
-        );
-        holder.categoriesRecylerview.addItemDecoration(
-                new DividerItemDecoration(getActivity(),
-                        LinearLayoutManager.VERTICAL)
         );
         holder.categoriesRecylerview.setAdapter(recyclerViewCategoryMenuAdapter);
     }
@@ -373,6 +376,17 @@ public class FragmentIndexCategory extends Fragment implements
                     intent.putExtra("url", url);
                     startActivity(intent);
                 }
+            }
+        };
+    }
+
+    private View.OnClickListener onPromoLinkClicked(){
+        return new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), BannerWebView.class);
+                intent.putExtra("url", "https://www.tokopedia.com/promo/?flag_app=1");
+                startActivity(intent);
             }
         };
     }
@@ -486,8 +500,7 @@ public class FragmentIndexCategory extends Fragment implements
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser && getActivity() != null && isAdded()) {
             setLocalyticFlow();
-//            ScreenTracking.screen(this);
-            ScreenTracking.screen(this);
+            ScreenTracking.screen(getScreenName());
             sendAppsFlyerData();
             holder.wrapperScrollview.smoothScrollTo(0, 0);
         } else {
@@ -499,7 +512,7 @@ public class FragmentIndexCategory extends Fragment implements
 
 
     public void sendAppsFlyerData() {
-        TrackingUtils.fragmentBasedAFEvent(getContext(), TrackingUtils.TYPE_FRAGMENT_INDEX_CATEGORY);
+        TrackingUtils.fragmentBasedAFEvent(HomeRouter.IDENTIFIER_CATEGORY_FRAGMENT);
     }
 
     @Override
@@ -537,8 +550,8 @@ public class FragmentIndexCategory extends Fragment implements
         holder.viewpagerRecharge.setAdapter(rechargeViewPagerAdapter);
         holder.viewpagerRecharge.getAdapter().notifyDataSetChanged();
         LocalCacheHandler handler = new LocalCacheHandler(getActivity(), "tabSelection");
-        if (handler.getInt("rechargeSelectedPosition") != null && handler.getInt("rechargeSelectedPosition") == 2) {
-            holder.viewpagerRecharge.setCurrentItem(1);
+        if (handler.getInt("rechargeSelectedPosition") != null && handler.getInt("rechargeSelectedPosition")<rechargeCategory.getData().size()) {
+            holder.viewpagerRecharge.setCurrentItem(handler.getInt("rechargeSelectedPosition"));
             LocalCacheHandler.clearCache(getActivity(), "tabSelection");
         } else {
             holder.viewpagerRecharge.setCurrentItem(0);
@@ -646,12 +659,10 @@ public class FragmentIndexCategory extends Fragment implements
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            LayoutInflater inflater = (LayoutInflater) getActivity()
-                    .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
             View view = inflater.inflate(R.layout.image_slider, container, false);
 
-            ImageView promoImage = (ImageView) view
-                    .findViewById(R.id.image);
+            ImageView promoImage = (ImageView) view.findViewById(R.id.image);
             promoImage.setOnClickListener(onPromoClicked(promoList.get(position).promoUrl));
             loadImageTemp(promoImage, promoList.get(position).imgUrl);
             container.addView(view);
@@ -694,7 +705,7 @@ public class FragmentIndexCategory extends Fragment implements
         Point size = new Point();
         display.getSize(size);
         int width = size.x;
-        int widthOfHomeMenuView = (int) (width / 5);
+        int widthOfHomeMenuView = (int) (width / 2);
         return widthOfHomeMenuView;
     }
 

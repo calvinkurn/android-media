@@ -31,6 +31,7 @@ import com.tokopedia.core.deposit.model.WithdrawForm;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.AppUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 
 import java.util.HashMap;
 import java.util.List;
@@ -230,6 +231,7 @@ public class WithdrawFragmentPresenterImpl implements WithdrawFragmentPresenter 
         networkInteractor.doWithdraw(viewListener.getActivity(), getDoWithdrawParam(), new WithdrawRetrofitInteractor.DoWithdrawListener() {
             @Override
             public void onSuccess() {
+                UnifyTracking.eventDepositWithdraw();
                 viewListener.finishLoading();
                 viewListener.enableView();
                 Intent intent = new Intent();

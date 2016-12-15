@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.addtocart.model.responseatcform;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.Html;
@@ -440,5 +441,28 @@ public class Destination implements Parcelable {
         parcel.writeString(districtName);
         parcel.writeString(geoLocation);
         parcel.writeString(password);
+    }
+
+    public static Destination convertFromBundle(Parcelable bundle) {
+        com.tokopedia.core.manage.people.address.model.Destination address = (com.tokopedia.core.manage.people.address.model.Destination) bundle;
+        Destination destination = new Destination();
+        destination.setPostalCode(address.getPostalCode());
+        destination.setAddressStreet(address.getAddressStreet());
+        destination.setReceiverPhone(address.getReceiverPhone());
+        destination.setReceiverName(address.getReceiverName());
+        destination.setAddressId(address.getAddressId());
+        destination.setAddressName(address.getAddressName());
+        destination.setAddressStatus(address.getAddressStatus());
+        destination.setCityId(address.getCityId());
+        destination.setCityName(address.getCityName());
+        destination.setCountryName(address.getCountryName());
+        destination.setDistrictId(address.getDistrictId());
+        destination.setDistrictName(address.getDistrictName());
+        destination.setProvinceId(address.getProvinceId());
+        destination.setProvinceName(address.getProvinceName());
+        destination.setLatitude(address.getLatitude());
+        destination.setLongitude(address.getLongitude());
+        destination.setPassword(address.getPassword());
+        return destination;
     }
 }

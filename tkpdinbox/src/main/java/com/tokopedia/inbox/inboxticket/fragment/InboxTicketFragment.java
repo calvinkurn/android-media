@@ -93,6 +93,11 @@ public class InboxTicketFragment extends BasePresenterFragment<InboxTicketFragme
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     protected boolean getOptionsMenuEnable() {
         return true;
     }
@@ -104,13 +109,13 @@ public class InboxTicketFragment extends BasePresenterFragment<InboxTicketFragme
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R2.id.action_help:
-                goToHelp();
-                return true;
-
+        if (item.getItemId() == R.id.action_help) {
+            goToHelp();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
+
     }
 
     @Override
@@ -258,6 +263,7 @@ public class InboxTicketFragment extends BasePresenterFragment<InboxTicketFragme
         } else {
             fab.setVisibility(View.GONE);
         }
+        adapter.setActionEnabled(isEnabled);
     }
 
     @Override

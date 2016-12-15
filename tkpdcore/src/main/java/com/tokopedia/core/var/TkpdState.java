@@ -46,8 +46,8 @@ public class TkpdState {
 		public static final int DEVELOPER_OPTIONS = 20;
 		public static final int MANAGE_ETALASE = 21;
 
-		public static final int PEOPLE_CONFIRM_PAYMENT = 201;
-		public static final int PEOPLE_ORDER_STATUS = 202;
+        public static final int PEOPLE_PAYMENT_STATUS = 201;
+        public static final int PEOPLE_ORDER_STATUS = 202;
 		public static final int PEOPLE_CONFIRM_SHIPPING = 203;
 		public static final int PEOPLE_TRANSACTION_LIST = 204;
         public static final int PEOPLE_TRANSACTION_CANCELED = 205;
@@ -71,8 +71,11 @@ public class TkpdState {
         public static final int CONTACT_US = 41;
         public static final int REPORT = 42;
         public static final int LOGOUT = 43;
+        public static final int SELLER_INDEX_HOME = 44;
         public static final int REGISTER_INITIAL = 45;
-	}
+        public static final int SELLER_GM_SUBSCRIBE = 46;
+        public static final int SELLER_GM_SUBSCRIBE_EXTEND = 47;
+    }
 
     public class Application {
         public static final int ACTIVITY = 1;
@@ -311,6 +314,10 @@ public class TkpdState {
         public static final int GCM_REVIEW_REPLY = 123;
         public static final int GCM_REPUTATION_SMILEY = 202;
         public static final int GCM_REPUTATION_EDIT_SMILEY = 212;
+        public static final int GCM_REPUTATION_SMILEY_TO_SELLER = 222;
+        public static final int GCM_REPUTATION_EDIT_SMILEY_TO_SELLER = 232;
+        public static final int GCM_REPUTATION_SMILEY_TO_BUYER = 242;
+        public static final int GCM_REPUTATION_EDIT_SMILEY_TO_BUYER = 252;
         public static final int GCM_PURCHASE_VERIFIED = 301;
         public static final int GCM_PURCHASE_ACCEPTED = 302;
         public static final int GCM_PURCHASE_PARTIAL_PROCESSED = 303;
