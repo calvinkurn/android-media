@@ -44,12 +44,11 @@ import com.tokopedia.transaction.cart.adapter.CartItemAdapter;
 import com.tokopedia.transaction.cart.listener.ICartView;
 import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
+import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import com.tokopedia.transaction.cart.model.cartdata.GatewayList;
-import com.tokopedia.transaction.cart.model.cartdata.TransactionList;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
-import com.tokopedia.transaction.cart.model.voucher.VoucherData;
 import com.tokopedia.transaction.cart.presenter.CartPresenter;
 import com.tokopedia.transaction.cart.presenter.ICartPresenter;
 import com.tokopedia.transaction.cart.receivers.CartBroadcastReceiver;
@@ -100,16 +99,12 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     TextView tvVoucherDesc;
     @BindView(R2.id.holder_use_voucher)
     RelativeLayout holderUseVoucher;
-    @BindView(R2.id.cv_payment_selection)
-    CardView cvPaymentSelection;
     @BindView(R2.id.tv_cash_back_value)
     TextView tvCashBackValue;
     @BindView(R2.id.cv_cash_back)
     CardView cvCashBack;
     @BindView(R2.id.rv_cart)
     RecyclerView rvCart;
-    @BindView(R2.id.holder_container)
-    LinearLayout holderContainer;
     @BindView(R2.id.tv_loyalty_balance)
     TextView tvLoyaltyBalance;
     @BindView(R2.id.holder_loyalty_balance)
@@ -263,7 +258,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderGonePotentialCashBack() {
+    public void renderInvisiblePotentialCashBack() {
         cvCashBack.setVisibility(View.GONE);
         tvCashBackValue.setText("");
     }
@@ -274,13 +269,17 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderLoyaltyBalance(String lpAmountIdr, boolean visibleHolder) {
-        holderLoyaltyBalance.setVisibility(visibleHolder ? View.VISIBLE : View.GONE);
-        tvLoyaltyBalance.setText(lpAmountIdr);
+    public void renderVisibleLoyaltyBalance(String loyaltyAmountIDR) {
+        tvLoyaltyBalance.setText(loyaltyAmountIDR);
     }
 
     @Override
-    public void renderCartListData(final List<TransactionList> cartList) {
+    public void renderInvisibleLoyaltyBalance() {
+        holderLoyaltyBalance.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void renderCartListData(final List<CartItem> cartList) {
         rvCart.setLayoutManager(new LinearLayoutManagerNonScroll(getActivity()));
         cartItemAdapter = new CartItemAdapter(this, this);
         cartItemAdapter.fillDataList(cartList);
@@ -289,7 +288,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderCheckoutCartToken(String token) {
+    public void setCheckoutCartToken(String token) {
         checkoutDataBuilder.token(token);
     }
 
@@ -299,23 +298,25 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderErrorPaymentCart(boolean isError, @NonNull String messageError) {
-        checkoutDataBuilder.errorPayment(isError);
+    public void renderVisibleErrorPaymentCart(@NonNull String messageError) {
+        checkoutDataBuilder.errorPayment(true);
         tvErrorPayment.setText(messageError);
         checkoutDataBuilder.errorPaymentMessage(messageError);
-        tvErrorPayment.setVisibility(isError ? View.VISIBLE : View.GONE);
+        tvErrorPayment.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void renderSuccessVoucherChecked(String messageSuccess, VoucherData data) {
+    public void renderInvisibleErrorPaymentCart() {
+        checkoutDataBuilder.errorPayment(false);
+        checkoutDataBuilder.errorPaymentMessage(null);
+        tvErrorPayment.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void renderSuccessCheckVoucher(String descVoucher) {
         tilEtVoucherCode.setError(null);
         tilEtVoucherCode.setErrorEnabled(false);
-        tvVoucherDesc.setText(
-                data.getVoucher().getVoucherAmount().equals("0")
-                        ? data.getVoucher().getVoucherPromoDesc()
-                        : getString(R.string.label_message_default_voucher_desc_result) +
-                        data.getVoucher().getVoucherAmountIdr()
-        );
+        tvVoucherDesc.setText(descVoucher);
     }
 
     @Override
@@ -325,7 +326,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderEmptyCart() {
+    public void renderErrorEmptyCart() {
         nsvContainer.setVisibility(View.GONE);
         pbMainLoading.setVisibility(View.GONE);
         NetworkErrorHelper.showEmptyState(
@@ -360,7 +361,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderGoneTickerGTM() {
+    public void renderInvisibleTickerGTM() {
         tvTickerGTM.setVisibility(View.GONE);
     }
 
@@ -401,6 +402,50 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
+    public void renderErrorTimeoutInitialCartInfo(String messageError) {
+        NetworkErrorHelper.showEmptyState(
+                getActivity(), getView(),
+                getString(R.string.label_title_error_timeout_initial_cart_data),
+                messageError,
+                getString(R.string.label_title_button_retry),
+                getRetryErrorInitialCartInfoClickListener()
+        );
+    }
+
+    @Override
+    public void renderErrorNoConnectionInitialCartInfo(String messageError) {
+        NetworkErrorHelper.showEmptyState(
+                getActivity(), getView(),
+                getString(R.string.label_title_error_no_connection_initial_cart_data),
+                messageError,
+                getString(R.string.label_title_button_retry),
+                getRetryErrorInitialCartInfoClickListener()
+        );
+    }
+
+    @Override
+    public void renderErrorResponseInitialCartInfo(String messageError) {
+        NetworkErrorHelper.showEmptyState(
+                getActivity(), getView(),
+                getString(R.string.label_title_error_default_initial_cart_data),
+                messageError,
+                getString(R.string.label_title_button_retry),
+                getRetryErrorInitialCartInfoClickListener()
+        );
+    }
+
+    @Override
+    public void renderErrorDefaultInitialCartInfo(String messageError) {
+        NetworkErrorHelper.showEmptyState(
+                getActivity(), getView(),
+                getString(R.string.label_title_error_default_initial_cart_data),
+                messageError,
+                getString(R.string.label_title_button_retry),
+                getRetryErrorInitialCartInfoClickListener()
+        );
+    }
+
+    @Override
     public String getStringFromResource(@StringRes int resId) {
         return getResources().getString(resId);
     }
@@ -430,38 +475,41 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         } else {
             holderUseDeposit.setVisibility(View.VISIBLE);
         }
+        tvInfoPaymentMethod.setVisibility(View.VISIBLE);
+        tvInfoPaymentMethod.setText(gateway.getFeeInformation(getActivity()));
         checkoutDataBuilder.gateway(MessageFormat.format("{0}", gateway.getGateway()));
+        ivLogoBtnPaymentMethod.setVisibility(View.VISIBLE);
         ImageHandler.LoadImage(ivLogoBtnPaymentMethod, gateway.getGatewayImage());
         tvInfoPaymentMethod.setText(gateway.getGatewayDesc());
         tvDescBtnPaymentMethod.setText(gateway.getGatewayName());
     }
 
     @Override
-    public void onCancelCart(final TransactionList data) {
+    public void onCancelCart(final CartItem data) {
         AlertDialog.Builder alertDialog = generateDialogCancelCart(data);
         showDialog(alertDialog.create());
     }
 
 
     @Override
-    public void onCancelCartProduct(final TransactionList data, final CartProduct cartProduct) {
+    public void onCancelCartProduct(final CartItem data, final CartProduct cartProduct) {
         AlertDialog.Builder alertDialog = generateDialogCancelCartProduct(data, cartProduct);
         showDialog(alertDialog.create());
     }
 
     @Override
-    public void onChangeShipment(TransactionList data) {
+    public void onChangeShipment(CartItem data) {
         navigateToActivityRequest(ShipmentCartActivity.createInstance(getActivity(), data),
                 ShipmentCartActivity.INTENT_REQUEST_CODE);
     }
 
     @Override
-    public void onSubmitEditCart(TransactionList cartData, List<ProductEditData> cartProductEditDataList) {
+    public void onSubmitEditCart(CartItem cartData, List<ProductEditData> cartProductEditDataList) {
         presenter.processSubmitEditCart(cartData, cartProductEditDataList);
     }
 
     @Override
-    public void onUpdateInsuranceCart(TransactionList cartData, boolean useInsurance) {
+    public void onUpdateInsuranceCart(CartItem cartData, boolean useInsurance) {
         presenter.processUpdateInsurance(cartData, useInsurance);
     }
 
@@ -499,13 +547,14 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == TopPayActivity.REQUEST_CODE) {
+        if (requestCode == TopPayActivity.REQUEST_CODE
+                || requestCode == ShipmentCartActivity.INTENT_REQUEST_CODE) {
             presenter.processGetCartData();
         }
     }
 
     @NonNull
-    private AlertDialog.Builder generateDialogCancelCart(final TransactionList data) {
+    private AlertDialog.Builder generateDialogCancelCart(final CartItem data) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
         alertDialog.setTitle(context.getString(R.string.title_cancel_confirm));
         alertDialog.setMessage(context.getString(R.string.msg_cancel_1)
@@ -524,7 +573,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @NonNull
     private AlertDialog.Builder generateDialogCancelCartProduct(
-            final TransactionList cartData, final CartProduct cartProductData) {
+            final CartItem cartData, final CartProduct cartProductData) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
         alertDialog.setTitle(getString(R.string.title_cancel_confirm));
         alertDialog.setMessage(getString(R.string.msg_cancel_1)
@@ -603,6 +652,16 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                         BrowseProductRouter.getDefaultBrowseIntent(getActivity())
                 );
                 getActivity().finish();
+            }
+        };
+    }
+
+    @NonNull
+    private NetworkErrorHelper.RetryClickedListener getRetryErrorInitialCartInfoClickListener() {
+        return new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.processGetCartData();
             }
         };
     }

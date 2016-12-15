@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CartModel implements Parcelable {
+public class CartData implements Parcelable {
 
     @SerializedName("checkout_notif_button")
     @Expose
@@ -34,7 +34,7 @@ public class CartModel implements Parcelable {
     private String depositIdr;
     @SerializedName("list")
     @Expose
-    private List<TransactionList> transactionLists = new ArrayList<TransactionList>();
+    private List<CartItem> cartItemList = new ArrayList<CartItem>();
     @SerializedName("checkout_notif_error")
     @Expose
     private String checkoutNotifError;
@@ -50,9 +50,6 @@ public class CartModel implements Parcelable {
     @SerializedName("token")
     @Expose
     private String token;
-    //    @SerializedName("dropship_list")
-//    @Expose
-//    private Object dropshipList;
     @SerializedName("credit_card")
     @Expose
     private CreditCard creditCard;
@@ -139,12 +136,12 @@ public class CartModel implements Parcelable {
         this.depositIdr = depositIdr;
     }
 
-    public List<TransactionList> getTransactionLists() {
-        return transactionLists;
+    public List<CartItem> getCartItemList() {
+        return cartItemList;
     }
 
-    public void setTransactionLists(List<TransactionList> list) {
-        this.transactionLists = list;
+    public void setCartItemList(List<CartItem> list) {
+        this.cartItemList = list;
     }
 
     public String getCheckoutNotifError() {
@@ -236,6 +233,10 @@ public class CartModel implements Parcelable {
     }
 
 
+    public CartData() {
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -247,10 +248,10 @@ public class CartModel implements Parcelable {
         dest.writeString(this.cashbackIdr);
         dest.writeString(this.lpAmountIdr);
         dest.writeString(this.gateway);
-        dest.writeList(this.gatewayList);
+        dest.writeTypedList(this.gatewayList);
         dest.writeValue(this.deposit);
         dest.writeString(this.depositIdr);
-        dest.writeList(this.transactionLists);
+        dest.writeTypedList(this.cartItemList);
         dest.writeString(this.checkoutNotifError);
         dest.writeString(this.ecashFlag);
         dest.writeValue(this.notEmpty);
@@ -265,20 +266,15 @@ public class CartModel implements Parcelable {
         dest.writeString(this.grandTotalWithoutLPIDR);
     }
 
-    public CartModel() {
-    }
-
-    protected CartModel(Parcel in) {
+    protected CartData(Parcel in) {
         this.checkoutNotifButton = (Integer) in.readValue(Integer.class.getClassLoader());
         this.cashbackIdr = in.readString();
         this.lpAmountIdr = in.readString();
         this.gateway = in.readString();
-        this.gatewayList = new ArrayList<GatewayList>();
-        in.readList(this.gatewayList, GatewayList.class.getClassLoader());
+        this.gatewayList = in.createTypedArrayList(GatewayList.CREATOR);
         this.deposit = (Integer) in.readValue(Integer.class.getClassLoader());
         this.depositIdr = in.readString();
-        this.transactionLists = new ArrayList<TransactionList>();
-        in.readList(this.transactionLists, TransactionList.class.getClassLoader());
+        this.cartItemList = in.createTypedArrayList(CartItem.CREATOR);
         this.checkoutNotifError = in.readString();
         this.ecashFlag = in.readString();
         this.notEmpty = (Integer) in.readValue(Integer.class.getClassLoader());
@@ -293,15 +289,15 @@ public class CartModel implements Parcelable {
         this.grandTotalWithoutLPIDR = in.readString();
     }
 
-    public static final Creator<CartModel> CREATOR = new Creator<CartModel>() {
+    public static final Creator<CartData> CREATOR = new Creator<CartData>() {
         @Override
-        public CartModel createFromParcel(Parcel source) {
-            return new CartModel(source);
+        public CartData createFromParcel(Parcel source) {
+            return new CartData(source);
         }
 
         @Override
-        public CartModel[] newArray(int size) {
-            return new CartModel[size];
+        public CartData[] newArray(int size) {
+            return new CartData[size];
         }
     };
 }

@@ -15,7 +15,7 @@ import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.cart.model.ResponseTransform;
 import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentData;
-import com.tokopedia.transaction.cart.model.cartdata.CartModel;
+import com.tokopedia.transaction.cart.model.cartdata.CartData;
 import com.tokopedia.transaction.cart.model.savelocation.SaveLocationData;
 import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartData;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
@@ -64,8 +64,8 @@ public class CartDataInteractor implements ICartDataInteractor {
 
     @Override
     public void getCartData(TKPDMapParam<String, String> param,
-                            Subscriber<ResponseTransform<CartModel>> subscriber) {
-        compositeSubscription.add(Observable.just(new ResponseTransform<CartModel>())
+                            Subscriber<ResponseTransform<CartData>> subscriber) {
+        compositeSubscription.add(Observable.just(new ResponseTransform<CartData>())
                 .flatMap(funcTransformFromGetCartInfo(param))
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
@@ -76,7 +76,7 @@ public class CartDataInteractor implements ICartDataInteractor {
     @Override
     public void cancelCart(final TKPDMapParam<String, String> paramCancelCart,
                            final TKPDMapParam<String, String> paramCartInfo,
-                           Subscriber<ResponseTransform<CartModel>> subscriber) {
+                           Subscriber<ResponseTransform<CartData>> subscriber) {
         final Observable<Response<TkpdResponse>> observable
                 = txCartActService.getApi().cancelCart(paramCancelCart);
         compositeSubscription.add(observable
@@ -150,7 +150,7 @@ public class CartDataInteractor implements ICartDataInteractor {
     @Override
     public void updateCart(TKPDMapParam<String, String> paramUpdate,
                            final TKPDMapParam<String, String> paramCart,
-                           Subscriber<ResponseTransform<CartModel>> subscriber) {
+                           Subscriber<ResponseTransform<CartData>> subscriber) {
         final Observable<Response<TkpdResponse>> observable = txCartActService.getApi()
                 .editCart(paramUpdate);
         compositeSubscription.add(observable
@@ -165,7 +165,7 @@ public class CartDataInteractor implements ICartDataInteractor {
     @Override
     public void updateInsuranceCart(TKPDMapParam<String, String> paramUpdate,
                                     final TKPDMapParam<String, String> paramCart,
-                                    Subscriber<ResponseTransform<CartModel>> subscriber) {
+                                    Subscriber<ResponseTransform<CartData>> subscriber) {
         final Observable<Response<TkpdResponse>> observable = txCartActService.getApi()
                 .editInsurance(paramUpdate);
         compositeSubscription.add(observable
@@ -453,12 +453,12 @@ public class CartDataInteractor implements ICartDataInteractor {
     }
 
     @NonNull
-    private Func1<ResponseTransform<CartModel>, Observable<ResponseTransform<CartModel>>>
+    private Func1<ResponseTransform<CartData>, Observable<ResponseTransform<CartData>>>
     funcTransformFromGetCartInfo(final TKPDMapParam<String, String> paramCartInfo) {
-        return new Func1<ResponseTransform<CartModel>, Observable<ResponseTransform<CartModel>>>() {
+        return new Func1<ResponseTransform<CartData>, Observable<ResponseTransform<CartData>>>() {
             @Override
-            public Observable<ResponseTransform<CartModel>> call(
-                    ResponseTransform<CartModel> cartModelResponseTransform
+            public Observable<ResponseTransform<CartData>> call(
+                    ResponseTransform<CartData> cartModelResponseTransform
             ) {
                 return Observable.zip(Observable.just(cartModelResponseTransform),
                         txService.getApi().doPayment(paramCartInfo),
@@ -468,19 +468,19 @@ public class CartDataInteractor implements ICartDataInteractor {
     }
 
     @NonNull
-    private Func2<ResponseTransform<CartModel>, Response<TkpdResponse>,
-            ResponseTransform<CartModel>> funcZipResponseTransformFromResponseCartInfo() {
-        return new Func2<ResponseTransform<CartModel>, Response<TkpdResponse>,
-                ResponseTransform<CartModel>>() {
+    private Func2<ResponseTransform<CartData>, Response<TkpdResponse>,
+            ResponseTransform<CartData>> funcZipResponseTransformFromResponseCartInfo() {
+        return new Func2<ResponseTransform<CartData>, Response<TkpdResponse>,
+                ResponseTransform<CartData>>() {
             @Override
-            public ResponseTransform<CartModel> call(
-                    ResponseTransform<CartModel> cartModelResponseTransform,
+            public ResponseTransform<CartData> call(
+                    ResponseTransform<CartData> cartModelResponseTransform,
                     Response<TkpdResponse> response
             ) {
                 if (response.isSuccessful()) {
                     if (!response.body().isError()) {
                         cartModelResponseTransform.setData(
-                                response.body().convertDataObj(CartModel.class)
+                                response.body().convertDataObj(CartData.class)
                         );
                         return cartModelResponseTransform;
                     } else {
@@ -498,11 +498,11 @@ public class CartDataInteractor implements ICartDataInteractor {
     }
 
     @NonNull
-    private Func1<Response<TkpdResponse>, ResponseTransform<CartModel>>
+    private Func1<Response<TkpdResponse>, ResponseTransform<CartData>>
     funcTransformFromUpdateDeleteActionCart() {
-        return new Func1<Response<TkpdResponse>, ResponseTransform<CartModel>>() {
+        return new Func1<Response<TkpdResponse>, ResponseTransform<CartData>>() {
             @Override
-            public ResponseTransform<CartModel> call(Response<TkpdResponse> response) {
+            public ResponseTransform<CartData> call(Response<TkpdResponse> response) {
 
                 if (response.isSuccessful()) {
                     if (!response.body().getJsonData().isNull(KEY_FLAG_IS_SUCCESS)) {
@@ -513,7 +513,7 @@ public class CartDataInteractor implements ICartDataInteractor {
                                     : response.body().getErrorMessageJoined();
                             switch (status) {
                                 case 1:
-                                    ResponseTransform<CartModel> responseTransform
+                                    ResponseTransform<CartData> responseTransform
                                             = new ResponseTransform<>();
                                     responseTransform.setMessageSuccess(
                                             response.body().getStatusMessageJoined()

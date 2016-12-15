@@ -91,14 +91,15 @@
             android:visibility="visible"
             tools:visibility="gone" />
 
-        <CheckBox
+        <android.support.v7.widget.AppCompatCheckBox
             android:id="@+id/cb_dropshiper"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:button="@drawable/checkbox_default"
             android:text="@string/title_send_as_dropship"
             android:textColor="@color/black"
-            android:textSize="@dimen/font_small" />
+            android:textSize="@dimen/font_small"
+            app:backgroundTint="@color/colorPrimary" />
 
         <LinearLayout
             android:id="@+id/holder_dropshiper_form"
