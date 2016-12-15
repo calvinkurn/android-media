@@ -36,37 +36,37 @@ class CartProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private boolean editMode;
     private CartProductAction cartProductAction;
 
-    public void setCartProductAction(CartProductAction cartProductAction) {
+    void setCartProductAction(CartProductAction cartProductAction) {
         this.cartProductAction = cartProductAction;
     }
 
-    public interface CartProductAction {
+    interface CartProductAction {
         void onCancelCartProduct(CartProduct cartProduct);
     }
 
-    public CartProductItemAdapter(Fragment hostFragment) {
+    CartProductItemAdapter(Fragment hostFragment) {
         this.hostFragment = hostFragment;
     }
 
-    public void fillDataList(List<CartProduct> dataList) {
+    void fillDataList(List<CartProduct> dataList) {
         for (CartProduct data : dataList) {
             this.dataList.add(new CartProductItemEditable(data));
         }
         this.notifyDataSetChanged();
     }
 
-    public void disableEditMode() {
+    void disableEditMode() {
         resetEditState();
         editMode = false;
         this.notifyDataSetChanged();
     }
 
-    public void enableEditMode() {
+    void enableEditMode() {
         editMode = true;
         this.notifyDataSetChanged();
     }
 
-    public List<ProductEditData> getCartProductEditDataList() throws IllegalAccessException {
+    List<ProductEditData> getCartProductEditDataList() throws IllegalAccessException {
         if (editMode) {
             List<ProductEditData> productEditDatas = new ArrayList<>();
             for (int i = 0; i < dataList.size(); i++) {
@@ -169,6 +169,33 @@ class CartProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private void bindProductItemHolder(ProductItemHolder holder, final CartProductItemEditable item) {
         renderEditableMode(holder);
+
+        final CartProduct cartProduct = item.getCartProduct();
+
+        if (item.getCartProduct().getProductErrorMsg() != null
+                && !item.getCartProduct().getProductErrorMsg().isEmpty()
+                && !item.getCartProduct().getProductErrorMsg().equalsIgnoreCase("0")) {
+            holder.tvError.setText(item.getCartProduct().getProductErrorMsg());
+            holder.tvError.setVisibility(View.VISIBLE);
+        } else {
+            holder.tvError.setVisibility(View.GONE);
+        }
+
+        if (cartProduct.getProductPreorder() != null
+                && cartProduct.getProductPreorder().getStatus() == 1) {
+            holder.tvPreorderLabel.setVisibility(View.VISIBLE);
+            holder.tvPreorderPeriod.setVisibility(View.VISIBLE);
+            holder.tvPreorderPeriod.setText(
+                    hostFragment.getString(
+                            R.string.hint_preorder_text).replace(
+                            "YYY", cartProduct.getProductPreorder().getProcessTime()
+                    )
+            );
+        } else {
+            holder.tvPreorderLabel.setVisibility(View.GONE);
+            holder.tvPreorderPeriod.setVisibility(View.GONE);
+        }
+
         holder.tvNameProduct.setText(item.getCartProduct().getProductName());
         holder.tvPriceProduct.setText(item.getCartProduct().getProductTotalPriceIdr());
         holder.tvWeightProduct.setText(item.getCartProduct().getProductTotalWeight());

@@ -1,31 +1,27 @@
 package com.tokopedia.transaction.cart.presenter;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.payment.interactor.PaymentNetInteractor;
-import com.tokopedia.core.payment.interactor.PaymentNetInteractorImpl;
+import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.cart.interactor.CartDataInteractor;
 import com.tokopedia.transaction.cart.interactor.ICartDataInteractor;
 import com.tokopedia.transaction.cart.listener.ICartView;
 import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.ResponseTransform;
 import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
-import com.tokopedia.transaction.cart.model.cartdata.CartModel;
+import com.tokopedia.transaction.cart.model.cartdata.CartData;
+import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
-import com.tokopedia.transaction.cart.model.cartdata.TransactionList;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutDropShipperData;
-import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 import com.tokopedia.transaction.cart.model.voucher.VoucherData;
-import com.tokopedia.transaction.cart.services.CartIntentService;
+import com.tokopedia.transaction.cart.services.TopPayIntentService;
 import com.tokopedia.transaction.exception.HttpErrorException;
 import com.tokopedia.transaction.exception.ResponseErrorException;
 
@@ -41,23 +37,20 @@ import rx.Subscriber;
 /**
  * @author anggaprasetiyo on 11/3/16.
  */
-
 public class CartPresenter implements ICartPresenter {
     private final ICartView view;
     private final ICartDataInteractor cartDataInteractor;
-    private final PaymentNetInteractor paymentNetInteractor;
 
     public CartPresenter(ICartView iCartView) {
         this.view = iCartView;
         this.cartDataInteractor = new CartDataInteractor();
-        this.paymentNetInteractor = new PaymentNetInteractorImpl();
     }
 
     @Override
-    public void processGetCartData(@NonNull Activity activity) {
+    public void processGetCartData() {
         view.renderInitialLoadingCartInfo();
-        TKPDMapParam<String, String> params = AuthUtil.generateParamsNetwork(activity);
-        cartDataInteractor.getCartData(params, new Subscriber<ResponseTransform<CartModel>>() {
+        TKPDMapParam<String, String> params = view.getGeneratedAuthParamNetwork(null);
+        cartDataInteractor.getCartData(params, new Subscriber<ResponseTransform<CartData>>() {
             @Override
             public void onCompleted() {
 
@@ -65,47 +58,42 @@ public class CartPresenter implements ICartPresenter {
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                if (e instanceof SocketTimeoutException) {
+                    view.renderErrorTimeoutInitialCartInfo(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                } else if (e instanceof UnknownHostException) {
+                    view.renderErrorNoConnectionInitialCartInfo(
+                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION
+                    );
+                } else if (e.getCause() instanceof ResponseErrorException) {
+                    view.renderErrorResponseInitialCartInfo(e.getCause().getMessage());
+                } else if (e.getCause() instanceof HttpErrorException) {
+                    view.renderErrorDefaultInitialCartInfo(e.getCause().getMessage());
+                } else {
+                    view.renderErrorDefaultInitialCartInfo(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
+                view.hideProgressLoading();
             }
 
             @Override
-            public void onNext(ResponseTransform<CartModel> responseTransform) {
-                CartModel data = responseTransform.getData();
-                if (data.getTransactionLists().isEmpty()) {
-                    view.renderEmptyCart();
-                    return;
-                }
+            public void onNext(ResponseTransform<CartData> responseTransform) {
+                CartData cartData = responseTransform.getData();
                 view.renderVisibleMainCartContainer();
-                if (data.getCashback() != 0)
-                    view.renderVisiblePotentialCashBack(data.getCashbackIdr());
-                else view.renderGonePotentialCashBack();
-                view.renderDepositInfo(data.getDepositIdr());
-                view.renderTotalPayment(data.getGrandTotalWithoutLPIDR());
-                view.renderPaymentGatewayOption(data.getGatewayList());
-                view.renderLoyaltyBalance(data.getLpAmountIdr(), data.getLpAmount() != 0);
-                view.renderCartListData(data.getTransactionLists());
-                view.renderCheckoutCartDepositAmount(data.getDeposit() + "");
-                view.renderCheckoutCartToken(data.getToken());
-                view.renderErrorPaymentCart(
-                        (data.getCheckoutNotifError() != null && !data.getCheckoutNotifError().equals("0")
-                        ), data.getCheckoutNotifError()
-                );
-                view.renderButtonCheckVoucherListener();
+                processRenderViewCartData(cartData);
             }
         });
     }
 
     @Override
-    public void processCancelCart(@NonNull Activity activity, @NonNull TransactionList data) {
+    public void processCancelCart(@NonNull CartItem cartData) {
         view.showProgressLoading();
         TKPDMapParam<String, String> maps = new TKPDMapParam<>();
-        maps.put("address_id", data.getCartDestination().getAddressId());
-        maps.put("shipment_id", data.getCartShipments().getShipmentId());
-        maps.put("shipment_package_id", data.getCartShipments().getShipmentPackageId());
-        maps.put("shop_id", data.getCartShop().getShopId());
-        cartDataInteractor.cancelCart(AuthUtil.generateParamsNetwork(activity, maps),
-                AuthUtil.generateParamsNetwork(activity),
-                new Subscriber<ResponseTransform<CartModel>>() {
+        maps.put("address_id", cartData.getCartDestination().getAddressId());
+        maps.put("shipment_id", cartData.getCartShipments().getShipmentId());
+        maps.put("shipment_package_id", cartData.getCartShipments().getShipmentPackageId());
+        maps.put("shop_id", cartData.getCartShop().getShopId());
+        cartDataInteractor.cancelCart(view.getGeneratedAuthParamNetwork(maps),
+                view.getGeneratedAuthParamNetwork(null),
+                new Subscriber<ResponseTransform<CartData>>() {
                     @Override
                     public void onCompleted() {
 
@@ -114,46 +102,37 @@ public class CartPresenter implements ICartPresenter {
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
+                        if (e instanceof SocketTimeoutException) {
+                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                        } else if (e instanceof UnknownHostException) {
+                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
+                        } else if (e.getCause() instanceof ResponseErrorException) {
+                            view.showToastMessage(e.getCause().getMessage());
+                        } else if (e.getCause() instanceof HttpErrorException) {
+                            view.showToastMessage(e.getCause().getMessage());
+                        } else {
+                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                        }
                         view.hideProgressLoading();
                     }
 
                     @Override
-                    public void onNext(ResponseTransform<CartModel> responseTransform) {
+                    public void onNext(ResponseTransform<CartData> responseTransform) {
                         view.hideProgressLoading();
-                        CartModel data = responseTransform.getData();
-                        view.showToastMessage(
-                                responseTransform.getMessageSuccess().isEmpty()
-                                        ? "Berhasil menghapus item keranjang"
-                                        : responseTransform.getMessageSuccess()
+                        CartData cartData = responseTransform.getData();
+                        String messageSuccess = view.getStringFromResource(
+                                R.string.label_message_success_cancel_cart
                         );
-                        if (data.getTransactionLists().isEmpty()) {
-                            view.renderEmptyCart();
-                            return;
-                        }
-                        view.renderDepositInfo(data.getDepositIdr());
-                        if (data.getCashback() != 0)
-                            view.renderVisiblePotentialCashBack(data.getCashbackIdr());
-                        else view.renderGonePotentialCashBack();
-                        view.renderTotalPayment(data.getGrandTotalWithoutLPIDR());
-                        view.renderPaymentGatewayOption(data.getGatewayList());
-                        view.renderLoyaltyBalance(data.getLpAmountIdr(), data.getLpAmount() != 0);
-                        view.renderCartListData(data.getTransactionLists());
-                        view.renderCheckoutCartDepositAmount(data.getDeposit() + "");
-                        view.renderCheckoutCartToken(data.getToken());
-                        view.renderErrorPaymentCart(
-                                (data.getCheckoutNotifError() != null
-                                        && !data.getCheckoutNotifError().equals("0")),
-                                data.getCheckoutNotifError()
-                        );
-                        view.renderButtonCheckVoucherListener();
-
+                        if (!responseTransform.getMessageSuccess().isEmpty())
+                            messageSuccess = responseTransform.getMessageSuccess();
+                        view.showToastMessage(messageSuccess);
+                        processRenderViewCartData(cartData);
                     }
                 });
     }
 
     @Override
-    public void processCancelCartProduct(@NonNull Activity activity,
-                                         @NonNull TransactionList cartData,
+    public void processCancelCartProduct(@NonNull CartItem cartData,
                                          @NonNull CartProduct cartProductData) {
         view.showProgressLoading();
         TKPDMapParam<String, String> maps = new TKPDMapParam<>();
@@ -162,9 +141,9 @@ public class CartPresenter implements ICartPresenter {
         maps.put("shipment_id", cartData.getCartShipments().getShipmentId());
         maps.put("shipment_package_id", cartData.getCartShipments().getShipmentPackageId());
         maps.put("shop_id", cartData.getCartShop().getShopId());
-        cartDataInteractor.cancelCart(AuthUtil.generateParamsNetwork(activity, maps),
-                AuthUtil.generateParamsNetwork(activity),
-                new Subscriber<ResponseTransform<CartModel>>() {
+        cartDataInteractor.cancelCart(view.getGeneratedAuthParamNetwork(maps),
+                view.getGeneratedAuthParamNetwork(null),
+                new Subscriber<ResponseTransform<CartData>>() {
                     @Override
                     public void onCompleted() {
 
@@ -173,43 +152,37 @@ public class CartPresenter implements ICartPresenter {
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
+                        if (e instanceof SocketTimeoutException) {
+                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                        } else if (e instanceof UnknownHostException) {
+                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
+                        } else if (e.getCause() instanceof ResponseErrorException) {
+                            view.showToastMessage(e.getCause().getMessage());
+                        } else if (e.getCause() instanceof HttpErrorException) {
+                            view.showToastMessage(e.getCause().getMessage());
+                        } else {
+                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                        }
                         view.hideProgressLoading();
                     }
 
                     @Override
-                    public void onNext(ResponseTransform<CartModel> responseTransform) {
+                    public void onNext(ResponseTransform<CartData> responseTransform) {
                         view.hideProgressLoading();
-                        CartModel data = responseTransform.getData();
-                        view.showToastMessage(responseTransform.getMessageSuccess().isEmpty()
-                                ? "Berhasil menghapus item keranjang"
-                                : responseTransform.getMessageSuccess());
-                        if (data.getTransactionLists().isEmpty()) {
-                            view.renderEmptyCart();
-                            return;
-                        }
-                        if (data.getCashback() != 0)
-                            view.renderVisiblePotentialCashBack(data.getCashbackIdr());
-                        else view.renderGonePotentialCashBack();
-                        view.renderDepositInfo(data.getDepositIdr());
-                        view.renderTotalPayment(data.getGrandTotalWithoutLPIDR());
-                        view.renderPaymentGatewayOption(data.getGatewayList());
-                        view.renderLoyaltyBalance(data.getLpAmountIdr(), data.getLpAmount() != 0);
-                        view.renderCartListData(data.getTransactionLists());
-                        view.renderCheckoutCartDepositAmount(data.getDeposit() + "");
-                        view.renderCheckoutCartToken(data.getToken());
-                        view.renderErrorPaymentCart(
-                                (data.getCheckoutNotifError() != null
-                                        && !data.getCheckoutNotifError().equals("0")),
-                                data.getCheckoutNotifError()
+                        CartData cartData = responseTransform.getData();
+                        String messageSuccess = view.getStringFromResource(
+                                R.string.label_message_success_cancel_cart
                         );
-                        view.renderButtonCheckVoucherListener();
+                        if (!responseTransform.getMessageSuccess().isEmpty())
+                            messageSuccess = responseTransform.getMessageSuccess();
+                        view.showToastMessage(messageSuccess);
+                        processRenderViewCartData(cartData);
                     }
                 });
     }
 
     @Override
-    public void processSubmitEditCart(@NonNull Activity activity,
-                                      @NonNull TransactionList cartData,
+    public void processSubmitEditCart(@NonNull CartItem cartData,
                                       @NonNull List<ProductEditData> cartProductEditDataList) {
         view.showProgressLoading();
         TKPDMapParam<String, String> maps = new TKPDMapParam<>();
@@ -220,9 +193,9 @@ public class CartPresenter implements ICartPresenter {
         maps.put("cart_sp_id", cartData.getCartShipments().getShipmentPackageId());
         maps.put("lp_flag", "1");
         maps.put("cart_string", cartData.getCartString());
-        cartDataInteractor.updateCart(AuthUtil.generateParamsNetwork(activity, maps),
-                AuthUtil.generateParamsNetwork(activity),
-                new Subscriber<ResponseTransform<CartModel>>() {
+        cartDataInteractor.updateCart(view.getGeneratedAuthParamNetwork(maps),
+                view.getGeneratedAuthParamNetwork(null),
+                new Subscriber<ResponseTransform<CartData>>() {
                     @Override
                     public void onCompleted() {
 
@@ -231,45 +204,38 @@ public class CartPresenter implements ICartPresenter {
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
+                        if (e instanceof SocketTimeoutException) {
+                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                        } else if (e instanceof UnknownHostException) {
+                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
+                        } else if (e.getCause() instanceof ResponseErrorException) {
+                            view.showToastMessage(e.getCause().getMessage());
+                        } else if (e.getCause() instanceof HttpErrorException) {
+                            view.showToastMessage(e.getCause().getMessage());
+                        } else {
+                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                        }
                         view.hideProgressLoading();
                     }
 
                     @Override
-                    public void onNext(ResponseTransform<CartModel> responseTransform) {
+                    public void onNext(ResponseTransform<CartData> responseTransform) {
                         view.hideProgressLoading();
-                        CartModel data = responseTransform.getData();
-                        view.showToastMessage(
-                                responseTransform.getMessageSuccess().isEmpty()
-                                        ? "Berhasil mengubah keranjang"
-                                        : responseTransform.getMessageSuccess()
+                        CartData cartData = responseTransform.getData();
+                        String messageSuccess = view.getStringFromResource(
+                                R.string.label_message_success_update_item_cart_data
                         );
-                        if (data.getTransactionLists().isEmpty()) {
-                            view.renderEmptyCart();
-                            return;
+                        if (!responseTransform.getMessageSuccess().isEmpty()) {
+                            messageSuccess = responseTransform.getMessageSuccess();
                         }
-                        if (data.getCashback() != 0)
-                            view.renderVisiblePotentialCashBack(data.getCashbackIdr());
-                        else view.renderGonePotentialCashBack();
-                        view.renderDepositInfo(data.getDepositIdr());
-                        view.renderTotalPayment(data.getGrandTotalWithoutLPIDR());
-                        view.renderPaymentGatewayOption(data.getGatewayList());
-                        view.renderLoyaltyBalance(data.getLpAmountIdr(), data.getLpAmount() != 0);
-                        view.renderCartListData(data.getTransactionLists());
-                        view.renderCheckoutCartDepositAmount(data.getDeposit() + "");
-                        view.renderCheckoutCartToken(data.getToken());
-                        view.renderErrorPaymentCart(
-                                (data.getCheckoutNotifError() != null
-                                        && !data.getCheckoutNotifError().equals("0")),
-                                data.getCheckoutNotifError()
-                        );
-                        view.renderButtonCheckVoucherListener();
+                        view.showToastMessage(messageSuccess);
+                        processRenderViewCartData(cartData);
                     }
                 });
     }
 
     @Override
-    public void processUpdateInsurance(@NonNull Activity activity,
-                                       @NonNull TransactionList cartData, boolean useInsurance) {
+    public void processUpdateInsurance(@NonNull CartItem cartData, boolean useInsurance) {
         view.showProgressLoading();
         TKPDMapParam<String, String> maps = new TKPDMapParam<>();
         maps.put("address_id", cartData.getCartDestination().getAddressId());
@@ -277,9 +243,9 @@ public class CartPresenter implements ICartPresenter {
         maps.put("shipment_id", cartData.getCartShipments().getShipmentId());
         maps.put("shipment_package_id", cartData.getCartShipments().getShipmentPackageId());
         maps.put("shop_id", cartData.getCartShop().getShopId());
-        cartDataInteractor.updateInsuranceCart(AuthUtil.generateParamsNetwork(activity, maps),
-                AuthUtil.generateParamsNetwork(activity),
-                new Subscriber<ResponseTransform<CartModel>>() {
+        cartDataInteractor.updateInsuranceCart(view.getGeneratedAuthParamNetwork(maps),
+                view.getGeneratedAuthParamNetwork(null),
+                new Subscriber<ResponseTransform<CartData>>() {
                     @Override
                     public void onCompleted() {
 
@@ -288,54 +254,152 @@ public class CartPresenter implements ICartPresenter {
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
+                        if (e instanceof SocketTimeoutException) {
+                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                        } else if (e instanceof UnknownHostException) {
+                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
+                        } else if (e.getCause() instanceof ResponseErrorException) {
+                            view.showToastMessage(e.getCause().getMessage());
+                        } else if (e.getCause() instanceof HttpErrorException) {
+                            view.showToastMessage(e.getCause().getMessage());
+                        } else {
+                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                        }
                         view.hideProgressLoading();
                     }
 
                     @Override
-                    public void onNext(ResponseTransform<CartModel> responseTransform) {
+                    public void onNext(ResponseTransform<CartData> responseTransform) {
                         view.hideProgressLoading();
-                        CartModel data = responseTransform.getData();
-                        view.showToastMessage(
-                                responseTransform.getMessageSuccess().isEmpty()
-                                        ? "Berhasil mengubah asuransi"
-                                        : responseTransform.getMessageSuccess()
+                        CartData cartData = responseTransform.getData();
+                        String messageSuccess = view.getStringFromResource(
+                                R.string.label_message_success_update_cart_insurance
                         );
-                        if (data.getTransactionLists().isEmpty()) {
-                            view.renderEmptyCart();
-                            return;
+                        if (!responseTransform.getMessageSuccess().isEmpty()) {
+                            messageSuccess = responseTransform.getMessageSuccess();
                         }
-                        if (data.getCashback() != 0)
-                            view.renderVisiblePotentialCashBack(data.getCashbackIdr());
-                        else view.renderGonePotentialCashBack();
-                        view.renderDepositInfo(data.getDepositIdr());
-                        view.renderTotalPayment(data.getGrandTotalWithoutLPIDR());
-                        view.renderPaymentGatewayOption(data.getGatewayList());
-                        view.renderLoyaltyBalance(data.getLpAmountIdr(), data.getLpAmount() != 0);
-                        view.renderCartListData(data.getTransactionLists());
-                        view.renderCheckoutCartDepositAmount(data.getDeposit() + "");
-                        view.renderCheckoutCartToken(data.getToken());
-                        view.renderErrorPaymentCart(
-                                (data.getCheckoutNotifError() != null
-                                        && !data.getCheckoutNotifError().equals("0")),
-                                data.getCheckoutNotifError()
-                        );
-                        view.renderButtonCheckVoucherListener();
+                        view.showToastMessage(messageSuccess);
+                        processRenderViewCartData(cartData);
                     }
                 });
     }
 
     @Override
-    public void processCheckoutCart(@NonNull Activity activity,
-                                    @NonNull CheckoutData.Builder checkoutDataBuilder,
-                                    @NonNull List<CartItemEditable> cartItemEditables) {
+    public void processCheckVoucherCode() {
+        view.showProgressLoading();
+        TKPDMapParam<String, String> params = new TKPDMapParam<>();
+        params.put("voucher_code", view.getVoucherCodeCheckoutData());
+        cartDataInteractor.checkVoucherCode(view.getGeneratedAuthParamNetwork(params),
+                new Subscriber<ResponseTransform<VoucherData>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (e instanceof SocketTimeoutException) {
+                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                        } else if (e instanceof UnknownHostException) {
+                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
+                        } else if (e.getCause() instanceof ResponseErrorException) {
+                            view.renderErrorCheckVoucher(e.getCause().getMessage());
+                        } else if (e.getCause() instanceof HttpErrorException) {
+                            view.showToastMessage(e.getCause().getMessage());
+                        } else {
+                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                        }
+                        view.hideProgressLoading();
+                    }
+
+                    @Override
+                    public void onNext(ResponseTransform<VoucherData> responseTransform) {
+                        VoucherData voucherData = responseTransform.getData();
+                        String descVoucher = view.getStringFromResource(
+                                R.string.label_message_default_voucher_desc_result
+                        );
+                        if (voucherData.getVoucher().getVoucherAmount().equals("0"))
+                            descVoucher = voucherData.getVoucher().getVoucherPromoDesc();
+                        view.renderSuccessCheckVoucher(descVoucher);
+                        view.hideProgressLoading();
+                    }
+                });
+    }
+
+    @Override
+    public void processGetTickerGTM() {
+        if (TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_CART).equalsIgnoreCase("true")) {
+            String message = TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_CART_TEXT);
+            view.renderVisibleTickerGTM(message);
+        } else {
+            view.renderInvisibleTickerGTM();
+        }
+    }
+
+    @Override
+    public void processValidationCheckoutData() {
+        List<CartItemEditable> cartItemEditables = view.getItemCartListCheckoutData();
+        boolean canBeCheckout = true;
+
+        CheckoutData.Builder checkoutDataBuilder = view.getCheckoutDataBuilder();
+        String voucherCode = view.getVoucherCodeCheckoutData();
+        boolean isUseVoucher = view.isCheckoutDataUseVoucher();
+
+        if (isUseVoucher && voucherCode.isEmpty()) {
+            view.renderErrorCheckVoucher(
+                    view.getStringFromResource(R.string.label_error_form_voucher_code_empty)
+            );
+            return;
+        } else if (isUseVoucher && !voucherCode.isEmpty()) {
+            view.renderDisableErrorCheckVoucher();
+            checkoutDataBuilder.voucherCode(voucherCode);
+        }
+
+        String depositCheckout = view.getDepositCheckoutData();
+        checkoutDataBuilder.usedDeposit(depositCheckout.replaceAll("\\D+", ""));
+
+        for (int i = 0, cartItemEditablesSize = cartItemEditables.size();
+             i < cartItemEditablesSize; i++) {
+            CartItemEditable cartItemEditable = cartItemEditables.get(i);
+            view.renderErrorCartItem(cartItemEditable);
+            if (cartItemEditable.getErrorType() != CartItemEditable.ERROR_NON) {
+                canBeCheckout = false;
+            }
+        }
+        if (!canBeCheckout) {
+            view.showToastMessage(view.getStringFromResource(
+                    R.string.label_message_error_cannot_checkout
+            ));
+        } else {
+            processCheckoutCart(checkoutDataBuilder, cartItemEditables);
+        }
+    }
+
+    @NonNull
+    private Map<String, String> generateDropShipperParam(List<String> dropShipperNameList,
+                                                         List<String> dropShipperPhoneList,
+                                                         List<String> dropShipperStringList) {
+        Map<String, String> params = new HashMap<>();
+        for (int i = 0, dropShipperNameListSize = dropShipperNameList.size();
+             i < dropShipperNameListSize; i++) {
+            params.put(
+                    "dropship_name-" + dropShipperStringList.get(i), dropShipperNameList.get(i)
+            );
+            params.put(
+                    "dropship_telp-" + dropShipperStringList.get(i), dropShipperPhoneList.get(i)
+            );
+        }
+        return params;
+    }
+
+    private void processCheckoutCart(@NonNull CheckoutData.Builder checkoutDataBuilder,
+                                     @NonNull List<CartItemEditable> cartItemEditables) {
         List<String> dropShipperNameList = new ArrayList<>();
         List<String> dropShipperPhoneList = new ArrayList<>();
 
         List<String> dropShipperStringList = new ArrayList<>();
         List<String> partialDeliverStringList = new ArrayList<>();
 
-
-        //  StringBuilder partialDeliverParamBuilder = new StringBuilder();
         for (CartItemEditable data : cartItemEditables) {
             if (data.isDropShipper()) {
                 dropShipperNameList.add(data.getDropShipperName());
@@ -388,82 +452,36 @@ public class CartPresenter implements ICartPresenter {
                 .step("1")
                 .build();
 
-        Intent intent = new Intent(Intent.ACTION_SYNC, null, activity,
-                CartIntentService.class);
-        intent.putExtra(CartIntentService.EXTRA_ACTION,
-                CartIntentService.SERVICE_ACTION_GET_PARAMETER_DATA);
-        intent.putExtra(CartIntentService.EXTRA_CHECKOUT_DATA, checkoutData);
-        activity.startService(intent);
+        Intent intent = new Intent(Intent.ACTION_SYNC, null, view.getContextActivity(),
+                TopPayIntentService.class);
+        intent.putExtra(TopPayIntentService.EXTRA_ACTION,
+                TopPayIntentService.SERVICE_ACTION_GET_PARAMETER_DATA);
+        intent.putExtra(TopPayIntentService.EXTRA_CHECKOUT_DATA, checkoutData);
+        view.executeService(intent);
     }
 
-    @Override
-    public void processCheckVoucherCode(@NonNull Activity activity, @NonNull String voucherCode) {
-        view.showProgressLoading();
-        TKPDMapParam<String, String> params = new TKPDMapParam<>();
-        params.put("voucher_code", voucherCode);
-        cartDataInteractor.checkVoucherCode(AuthUtil.generateParamsNetwork(activity, params),
-                new Subscriber<ResponseTransform<VoucherData>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        if (e instanceof SocketTimeoutException) {
-                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
-                        } else if (e instanceof UnknownHostException) {
-                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
-                        } else if (e.getCause() instanceof ResponseErrorException) {
-                            view.renderErrorCheckVoucher(e.getCause().getMessage());
-                        } else if (e.getCause() instanceof HttpErrorException) {
-                            view.showToastMessage(e.getCause().getMessage());
-                        } else {
-                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                        }
-                        view.hideProgressLoading();
-                    }
-
-                    @Override
-                    public void onNext(ResponseTransform<VoucherData> voucherDataResponseTransform) {
-                        view.renderSuccessVoucherChecked(
-                                voucherDataResponseTransform.getMessageSuccess(),
-                                voucherDataResponseTransform.getData()
-                        );
-                        view.hideProgressLoading();
-                    }
-                });
-    }
-
-    @Override
-    public void processStep2PaymentCart(Activity activity, TopPayParameterData data) {
-
-    }
-
-    @Override
-    public void processGetTickerGTM() {
-        if (TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_CART).equalsIgnoreCase("true")) {
-            String message = TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_CART_TEXT);
-            view.renderVisibleTickerGTM(message);
+    private void processRenderViewCartData(CartData data) {
+        if (data.getCartItemList().isEmpty()) {
+            view.renderErrorEmptyCart();
+            return;
+        }
+        if (data.getCashback() != 0)
+            view.renderVisiblePotentialCashBack(data.getCashbackIdr());
+        else view.renderInvisiblePotentialCashBack();
+        view.renderDepositInfo(data.getDepositIdr());
+        view.renderTotalPayment(data.getGrandTotalWithoutLPIDR());
+        view.renderPaymentGatewayOption(data.getGatewayList());
+        if (data.getLpAmount() != 0) view.renderVisibleLoyaltyBalance(data.getLpAmountIdr());
+        else view.renderInvisibleLoyaltyBalance();
+        view.renderCartListData(data.getCartItemList());
+        view.renderCheckoutCartDepositAmount(data.getDeposit() + "");
+        view.setCheckoutCartToken(data.getToken());
+        if ((data.getCheckoutNotifError() != null && !data.getCheckoutNotifError().equals("0"))) {
+            view.renderVisibleErrorPaymentCart(data.getCheckoutNotifError());
         } else {
-            view.renderGoneTickerGTM();
+            view.renderInvisibleErrorPaymentCart();
         }
-    }
+        view.renderButtonCheckVoucherListener();
 
-    @NonNull
-    private Map<String, String> generateDropShipperParam(List<String> dropShipperNameList,
-                                                         List<String> dropShipperPhoneList,
-                                                         List<String> dropShipperStringList) {
-        Map<String, String> params = new HashMap<>();
-        for (int i = 0, dropShipperNameListSize = dropShipperNameList.size();
-             i < dropShipperNameListSize; i++) {
-            params.put(
-                    "dropship_name-" + dropShipperStringList.get(i), dropShipperNameList.get(i)
-            );
-            params.put(
-                    "dropship_telp-" + dropShipperStringList.get(i), dropShipperPhoneList.get(i)
-            );
-        }
-        return params;
     }
 }

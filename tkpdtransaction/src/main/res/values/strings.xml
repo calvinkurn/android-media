@@ -14,4 +14,19 @@
     <string name="shipment_no_courier_available">Agen kurir tidak tersedia</string>
     <string name="courier_not_available">Alamat tidak didukung agen pengirim.</string>
     <string name="shipment_data_not_complete">Data tidak lengkap.</string>
+    <string name="label_title_empty_cart">Keranjang belanja Anda Kosong.</string>
+    <string name="label_title_error_default_initial_cart_data">Terjadi Kesalahan</string>
+    <string name="label_title_error_timeout_initial_cart_data">Koneksi Timeout</string>
+    <string name="label_title_error_no_connection_initial_cart_data">Koneksi Internet</string>
+    <string name="label_title_button_retry">COBA LAGI</string>
+    <string name="label_sub_title_empty_cart">Yuk belanja di situs resmi jual beli online, aman dan nyaman.</string>
+    <string name="label_btn_action_empty_cart">CARI SEKARANG</string>
+    <string name="label_message_success_cancel_cart">Berhasil menghapus item keranjang</string>
+    <string name="label_message_error_cannot_checkout">Keranjang tidak dapat diproses, mohon periksa kembali keranjang Anda.</string>
+    <string name="label_message_default_voucher_desc_result">"Anda mendapatkan voucher\nRp. "</string>
+    <string name="label_error_form_dropshipper_name_empty">Nama pengirim harus diisi</string>
+    <string name="label_error_form_dropshipper_phone_empty">Telepon pengirim harus diisi</string>
+    <string name="label_error_form_voucher_code_empty">Voucher Kosong</string>
+    <string name="label_message_success_update_item_cart_data">Berhasil mengubah keranjang</string>
+    <string name="label_message_success_update_cart_insurance">Berhasil mengubah asuransi</string>
 </resources>

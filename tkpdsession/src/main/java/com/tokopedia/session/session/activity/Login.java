@@ -39,6 +39,7 @@ import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.constant.DownloadServiceConstant;
 import com.tokopedia.core.session.model.CreatePasswordModel;
@@ -209,7 +210,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                     startActivity(intent);
                 } else {
                     if (SessionHandler.isV4Login(this)) {
-                        startActivity(new Intent(this, Cart.class));
+                        startActivity(TransactionCartRouter.createInstanceCartActivity(this));
                     } else {
                         Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
                         intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOME);

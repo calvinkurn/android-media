@@ -36,13 +36,11 @@
         tools:visibility="visible">
 
         <LinearLayout
-            android:id="@+id/holder_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <android.support.v7.widget.CardView
-                android:id="@+id/cv_payment_selection"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/padding_small"
@@ -199,8 +197,8 @@
                         android:layout_marginBottom="@dimen/margin_small"
                         android:background="@color/green_200"
                         android:padding="@dimen/margin_vs"
-                        android:text="Tidak dikenakan biaya"
-                        android:visibility="gone" />
+                        android:visibility="gone"
+                        tools:text="Tidak dikenakan biaya" />
 
                     <LinearLayout
                         android:id="@+id/holder_use_deposit"

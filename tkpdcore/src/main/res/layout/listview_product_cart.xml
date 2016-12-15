@@ -25,6 +25,7 @@
                 android:gravity="center"
                 android:padding="@dimen/padding_vs"
                 android:textColor="@color/label_color"
+                tool:visibility="visible"
                 android:visibility="gone" />
 
             <TextView

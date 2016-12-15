@@ -1,9 +1,16 @@
 package com.tokopedia.transaction.cart.listener;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
+
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.product.listener.ViewListener;
+import com.tokopedia.transaction.cart.model.CartItemEditable;
+import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.GatewayList;
-import com.tokopedia.transaction.cart.model.cartdata.TransactionList;
-import com.tokopedia.transaction.cart.model.voucher.VoucherData;
+import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
 
 import java.util.List;
 
@@ -20,27 +27,27 @@ public interface ICartView extends ViewListener {
 
     void renderVisiblePotentialCashBack(String cashBack);
 
-    void renderGonePotentialCashBack();
+    void renderInvisiblePotentialCashBack();
 
     void renderPaymentGatewayOption(List<GatewayList> gatewayList);
 
-    void renderLoyaltyBalance(String lpAmountIdr, boolean visibleHolder);
+    void renderVisibleLoyaltyBalance(String loyaltyAmountIDR);
 
-    void renderCartListData(List<TransactionList> cartList);
+    void renderInvisibleLoyaltyBalance();
 
-    void renderCheckoutCartToken(String token);
+    void renderCartListData(List<CartItem> cartList);
 
     void renderCheckoutCartDepositAmount(String depositAmount);
 
-    void renderErrorPaymentCart(boolean isError, String messageError);
+    void renderVisibleErrorPaymentCart(@NonNull String messageError);
 
-    void renderSuccessVoucherChecked(String messageSuccess, VoucherData data);
+    void renderInvisibleErrorPaymentCart();
 
-    void showAlertDialogInfo(String messageSuccess);
+    void renderSuccessCheckVoucher(String descVoucher);
 
     void renderErrorCheckVoucher(String message);
 
-    void renderEmptyCart();
+    void renderErrorEmptyCart();
 
     void renderVisibleMainCartContainer();
 
@@ -48,5 +55,41 @@ public interface ICartView extends ViewListener {
 
     void renderVisibleTickerGTM(String message);
 
-    void renderGoneTickerGTM();
+    void renderInvisibleTickerGTM();
+
+    void renderDisableErrorCheckVoucher();
+
+    void renderErrorCartItem(CartItemEditable cartItemEditable);
+
+    void renderErrorTimeoutInitialCartInfo(String messageError);
+
+    void renderErrorNoConnectionInitialCartInfo(String messageError);
+
+    void renderErrorResponseInitialCartInfo(String messageError);
+
+    void renderErrorDefaultInitialCartInfo(String messageError);
+
+    void executeService(Intent intent);
+
+    void setCheckoutCartToken(String token);
+
+    List<CartItemEditable> getItemCartListCheckoutData();
+
+    String getVoucherCodeCheckoutData();
+
+    boolean isCheckoutDataUseVoucher();
+
+    CheckoutData.Builder getCheckoutDataBuilder();
+
+    String getDepositCheckoutData();
+
+    String getStringFromResource(@StringRes int resId);
+
+    TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
+            TKPDMapParam<String, String> originParams
+    );
+
+    Activity getContextActivity();
+
+
 }

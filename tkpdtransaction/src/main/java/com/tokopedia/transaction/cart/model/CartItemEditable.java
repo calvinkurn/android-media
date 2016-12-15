@@ -1,6 +1,6 @@
 package com.tokopedia.transaction.cart.model;
 
-import com.tokopedia.transaction.cart.model.cartdata.TransactionList;
+import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 
 /**
  * @author anggaprasetiyo on 11/10/16.
@@ -14,7 +14,7 @@ public class CartItemEditable {
     public static final int ERROR_CART_CANNOT_PROCESS = 3;
 
     private boolean isEditMode;
-    private TransactionList transactionList;
+    private CartItem cartItem;
 
     private boolean isDropShipper;
     private boolean isPartialDeliver;
@@ -25,8 +25,8 @@ public class CartItemEditable {
     private String cartStringForDropShipperOption;
     private int errorType;
 
-    public CartItemEditable(TransactionList data) {
-        this.transactionList = data;
+    public CartItemEditable(CartItem data) {
+        this.cartItem = data;
         this.isEditMode = false;
         this.isDropShipper = false;
         this.isPartialDeliver = false;
@@ -38,19 +38,21 @@ public class CartItemEditable {
     }
 
     public CartItemEditable finalizeAllData() {
-        if (this.getTransactionList().getCartCanProcess() == 0) {
+        if (this.getCartItem().getCartCanProcess() == 0) {
             errorType = ERROR_CART_CANNOT_PROCESS;
             return this;
-        }
-        if (this.isDropShipper() && (this.dropShipperName == null || this.dropShipperName.isEmpty())) {
+        } else if (this.isDropShipper() && (this.dropShipperName == null
+                || this.dropShipperName.isEmpty())) {
             errorType = ERROR_DROPSHIPPER_NAME;
             return this;
-        }
-        if (this.isDropShipper() && (this.dropShipperPhone == null || this.dropShipperPhone.isEmpty())) {
+        } else if (this.isDropShipper() && (this.dropShipperPhone == null
+                || this.dropShipperPhone.isEmpty())) {
             errorType = ERROR_DROPSHIPPER_PHONE;
             return this;
+        } else {
+            errorType = ERROR_NON;
+            return this;
         }
-        return this;
     }
 
     public boolean isEditMode() {
@@ -61,12 +63,12 @@ public class CartItemEditable {
         isEditMode = editMode;
     }
 
-    public TransactionList getTransactionList() {
-        return transactionList;
+    public CartItem getCartItem() {
+        return cartItem;
     }
 
-    public void setTransactionList(TransactionList transactionList) {
-        this.transactionList = transactionList;
+    public void setCartItem(CartItem cartItem) {
+        this.cartItem = cartItem;
     }
 
     public int getErrorType() {

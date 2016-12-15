@@ -3,7 +3,7 @@ package com.tokopedia.transaction.cart.interactor;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.transaction.cart.model.cartdata.CartModel;
+import com.tokopedia.transaction.cart.model.cartdata.CartData;
 
 import java.util.Map;
 
@@ -22,7 +22,7 @@ public interface CartRetrofitInteractor {
     void destroyObservable();
 
     interface OnGetCartInfo {
-        void onSuccess(CartModel model);
+        void onSuccess(CartData model);
 
         void onFailed(String error);
 
@@ -34,7 +34,7 @@ public interface CartRetrofitInteractor {
     }
 
     interface OnCancelCart {
-        void onSuccess(String message, CartModel data);
+        void onSuccess(String message, CartData data);
 
         void onFailedCancelCart(String causes);
 

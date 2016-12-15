@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TransactionList implements Parcelable {
+public class CartItem implements Parcelable {
 
     @SerializedName("cart_total_logistic_fee_idr")
     @Expose
@@ -418,10 +418,10 @@ public class TransactionList implements Parcelable {
         dest.writeString(this.cartString);
     }
 
-    public TransactionList() {
+    public CartItem() {
     }
 
-    protected TransactionList(Parcel in) {
+    protected CartItem(Parcel in) {
         this.cartTotalLogisticFeeIdr = in.readString();
         this.cartShippingRateIdr = in.readString();
         this.cartTotalLogisticFee = in.readString();
@@ -457,15 +457,15 @@ public class TransactionList implements Parcelable {
         this.cartString = in.readString();
     }
 
-    public static final Creator<TransactionList> CREATOR = new Creator<TransactionList>() {
+    public static final Creator<CartItem> CREATOR = new Creator<CartItem>() {
         @Override
-        public TransactionList createFromParcel(Parcel source) {
-            return new TransactionList(source);
+        public CartItem createFromParcel(Parcel source) {
+            return new CartItem(source);
         }
 
         @Override
-        public TransactionList[] newArray(int size) {
-            return new TransactionList[size];
+        public CartItem[] newArray(int size) {
+            return new CartItem[size];
         }
     };
 }

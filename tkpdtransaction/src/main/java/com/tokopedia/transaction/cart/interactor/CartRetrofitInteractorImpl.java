@@ -11,7 +11,7 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.cart.model.cancelcart.CancelCartData;
-import com.tokopedia.transaction.cart.model.cartdata.CartModel;
+import com.tokopedia.transaction.cart.model.cartdata.CartData;
 
 import org.json.JSONException;
 
@@ -72,7 +72,7 @@ public class CartRetrofitInteractorImpl implements CartRetrofitInteractor {
             public void onNext(Response<TkpdResponse> response) {
                 if (response.isSuccessful()) {
                     if (!response.body().isError()) {
-                        listener.onSuccess(response.body().convertDataObj(CartModel.class));
+                        listener.onSuccess(response.body().convertDataObj(CartData.class));
                     } else {
                         listener.onError(response.body().getErrorMessages().get(0));
                     }
@@ -246,7 +246,7 @@ public class CartRetrofitInteractorImpl implements CartRetrofitInteractor {
                                 cancelCartData.setMessageRefreshCart(response.body()
                                         .getErrorMessages().get(0));
                             } else {
-                                CartModel data = response.body().convertDataObj(CartModel.class);
+                                CartData data = response.body().convertDataObj(CartData.class);
                                 if (data != null) {
                                     cancelCartData.setSuccessRefresh(true);
                                     cancelCartData.setMessageRefreshCart(response.body()

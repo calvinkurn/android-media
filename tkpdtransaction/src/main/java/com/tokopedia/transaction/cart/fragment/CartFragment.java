@@ -9,12 +9,16 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.Html;
+import android.text.TextWatcher;
 import android.text.util.Linkify;
 import android.view.View;
 import android.widget.CheckBox;
@@ -31,26 +35,28 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.activity.ShipmentCartActivity;
+import com.tokopedia.transaction.cart.activity.TopPayActivity;
 import com.tokopedia.transaction.cart.adapter.CartItemAdapter;
-import com.tokopedia.transaction.cart.listener.ICartActionFragment;
 import com.tokopedia.transaction.cart.listener.ICartView;
 import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
+import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import com.tokopedia.transaction.cart.model.cartdata.GatewayList;
-import com.tokopedia.transaction.cart.model.cartdata.TransactionList;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
-import com.tokopedia.transaction.cart.model.voucher.VoucherData;
 import com.tokopedia.transaction.cart.presenter.CartPresenter;
 import com.tokopedia.transaction.cart.presenter.ICartPresenter;
-import com.tokopedia.transaction.cart.receivers.CartBroadcastReceiver;
+import com.tokopedia.transaction.cart.receivers.TopPayBroadcastReceiver;
 import com.tokopedia.transaction.utils.LinearLayoutManagerNonScroll;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 import butterknife.BindView;
@@ -59,11 +65,9 @@ import butterknife.BindView;
 /**
  * @author anggaprasetiyo on 11/1/16.
  */
-
 public class CartFragment extends BasePresenterFragment<ICartPresenter> implements ICartView,
         PaymentGatewayFragment.ActionListener, CartItemAdapter.CartAction,
-        CartBroadcastReceiver.ActionTopPayListener {
-
+        TopPayBroadcastReceiver.ActionTopPayListener {
 
     @BindView(R2.id.pb_main_loading)
     ProgressBar pbMainLoading;
@@ -97,16 +101,12 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     TextView tvVoucherDesc;
     @BindView(R2.id.holder_use_voucher)
     RelativeLayout holderUseVoucher;
-    @BindView(R2.id.cv_payment_selection)
-    CardView cvPaymentSelection;
     @BindView(R2.id.tv_cash_back_value)
     TextView tvCashBackValue;
     @BindView(R2.id.cv_cash_back)
     CardView cvCashBack;
     @BindView(R2.id.rv_cart)
     RecyclerView rvCart;
-    @BindView(R2.id.holder_container)
-    LinearLayout holderContainer;
     @BindView(R2.id.tv_loyalty_balance)
     TextView tvLoyaltyBalance;
     @BindView(R2.id.holder_loyalty_balance)
@@ -118,10 +118,10 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @BindView(R2.id.tv_ticker_gtm)
     TextView tvTickerGTM;
 
-    private ICartActionFragment actionListener;
     private CheckoutData.Builder checkoutDataBuilder;
     private TkpdProgressDialog progressDialogNormal;
-    private CartBroadcastReceiver cartBroadcastReceiver;
+    private TopPayBroadcastReceiver topPayBroadcastReceiver;
+    private CartItemAdapter cartItemAdapter;
 
     public static Fragment newInstance() {
         return new CartFragment();
@@ -135,7 +135,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     protected void onFirstTimeLaunched() {
         checkoutDataBuilder = new CheckoutData.Builder();
-        presenter.processGetCartData(getActivity());
+        presenter.processGetCartData();
     }
 
     @Override
@@ -160,7 +160,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     protected void initialListener(Activity activity) {
-        actionListener = (ICartActionFragment) activity;
     }
 
     @Override
@@ -180,22 +179,16 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     protected void setViewListener() {
-        cbUseVoucher.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) holderUseVoucher.setVisibility(View.VISIBLE);
-                else holderUseVoucher.setVisibility(View.GONE);
-            }
-        });
+        cbUseVoucher.setOnCheckedChangeListener(getOnCheckedUseVoucherOptionListener());
         cbUseVoucher.setChecked(false);
     }
 
     @Override
     protected void initialVar() {
-        cartBroadcastReceiver = new CartBroadcastReceiver(this);
-        getActivity().registerReceiver(
-                cartBroadcastReceiver, new IntentFilter(CartBroadcastReceiver.ACTION_TOP_PAY)
-        );
+        topPayBroadcastReceiver = new TopPayBroadcastReceiver(this);
+        getActivity().registerReceiver(topPayBroadcastReceiver, new IntentFilter(
+                TopPayBroadcastReceiver.ACTION_GET_PARAMETER_TOP_PAY
+        ));
     }
 
     @Override
@@ -257,27 +250,8 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void renderButtonCheckVoucherListener() {
-        cbUseVoucher.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    holderUseVoucher.setVisibility(View.VISIBLE);
-                    btnCheckVoucher.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            presenter.processCheckVoucherCode(
-                                    getActivity(), etVoucherCode.getText().toString().trim()
-                            );
-                        }
-                    });
-                } else {
-                    holderUseVoucher.setVisibility(View.GONE);
-                    btnCheckVoucher.setOnClickListener(null);
-                    etVoucherCode.setText("");
-                }
-            }
-        });
-
+        cbUseVoucher.setOnCheckedChangeListener(getOnCheckedUseVoucherOptionListener());
+        etVoucherCode.addTextChangedListener(getWatcherEtVoucherCode());
     }
 
     @Override
@@ -287,40 +261,37 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderGonePotentialCashBack() {
+    public void renderInvisiblePotentialCashBack() {
         cvCashBack.setVisibility(View.GONE);
         tvCashBackValue.setText("");
     }
 
     @Override
     public void renderPaymentGatewayOption(final List<GatewayList> gatewayList) {
-        btnPaymentMethod.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PaymentGatewayFragment dialog = PaymentGatewayFragment.newInstance(gatewayList);
-                dialog.setActionListener(CartFragment.this);
-                dialog.show(getFragmentManager(), PaymentGatewayFragment.class.getCanonicalName());
-            }
-        });
+        btnPaymentMethod.setOnClickListener(getButtonPaymentMethodClickListener(gatewayList));
     }
 
     @Override
-    public void renderLoyaltyBalance(String lpAmountIdr, boolean visibleHolder) {
-        holderLoyaltyBalance.setVisibility(visibleHolder ? View.VISIBLE : View.GONE);
-        tvLoyaltyBalance.setText(lpAmountIdr);
+    public void renderVisibleLoyaltyBalance(String loyaltyAmountIDR) {
+        tvLoyaltyBalance.setText(loyaltyAmountIDR);
     }
 
     @Override
-    public void renderCartListData(final List<TransactionList> cartList) {
+    public void renderInvisibleLoyaltyBalance() {
+        holderLoyaltyBalance.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void renderCartListData(final List<CartItem> cartList) {
         rvCart.setLayoutManager(new LinearLayoutManagerNonScroll(getActivity()));
-        final CartItemAdapter adapter = new CartItemAdapter(this, this);
-        adapter.fillDataList(cartList);
-        rvCart.setAdapter(adapter);
-        btnCheckout.setOnClickListener(getCheckoutButtonClickListener(adapter));
+        cartItemAdapter = new CartItemAdapter(this, this);
+        cartItemAdapter.fillDataList(cartList);
+        rvCart.setAdapter(cartItemAdapter);
+        btnCheckout.setOnClickListener(getCheckoutButtonClickListener());
     }
 
     @Override
-    public void renderCheckoutCartToken(String token) {
+    public void setCheckoutCartToken(String token) {
         checkoutDataBuilder.token(token);
     }
 
@@ -330,33 +301,25 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderErrorPaymentCart(boolean isError, String messageError) {
-        checkoutDataBuilder.errorPayment(isError);
+    public void renderVisibleErrorPaymentCart(@NonNull String messageError) {
+        checkoutDataBuilder.errorPayment(true);
+        tvErrorPayment.setText(messageError);
         checkoutDataBuilder.errorPaymentMessage(messageError);
-        if (isError) {
-            tvErrorPayment.setText(messageError);
-            tvErrorPayment.setVisibility(View.VISIBLE);
-        } else {
-            tvErrorPayment.setVisibility(View.GONE);
-        }
-
+        tvErrorPayment.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void renderSuccessVoucherChecked(String messageSuccess, VoucherData data) {
+    public void renderInvisibleErrorPaymentCart() {
+        checkoutDataBuilder.errorPayment(false);
+        checkoutDataBuilder.errorPaymentMessage(null);
+        tvErrorPayment.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void renderSuccessCheckVoucher(String descVoucher) {
         tilEtVoucherCode.setError(null);
         tilEtVoucherCode.setErrorEnabled(false);
-        tvVoucherDesc.setText(
-                data.getVoucher().getVoucherAmount().equals("0")
-                        ? data.getVoucher().getVoucherPromoDesc()
-                        : String.format("Anda mendapatkan voucher\nRp.%s,-",
-                        data.getVoucher().getVoucherAmountIdr())
-        );
-    }
-
-    @Override
-    public void showAlertDialogInfo(String messageSuccess) {
-
+        tvVoucherDesc.setText(descVoucher);
     }
 
     @Override
@@ -366,24 +329,17 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderEmptyCart() {
+    public void renderErrorEmptyCart() {
         nsvContainer.setVisibility(View.GONE);
         pbMainLoading.setVisibility(View.GONE);
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(),
-                "Keranjang belanja Anda Kosong.",
-                "Yuk belanja di situs resmi jual beli online, aman dan nyaman.",
-                "CARI SEKARANG",
-                new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        navigateToActivity(
-                                BrowseProductRouter.getDefaultBrowseIntent(getActivity())
-                        );
-                        getActivity().finish();
-                    }
-                }
+        NetworkErrorHelper.showEmptyState(
+                getActivity(), getView(), getString(R.string.label_title_empty_cart),
+                getString(R.string.label_sub_title_empty_cart),
+                getString(R.string.label_btn_action_empty_cart),
+                getRetryEmptyCartClickListener()
         );
     }
+
 
     @Override
     public void renderVisibleMainCartContainer() {
@@ -398,6 +354,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         pbMainLoading.setVisibility(View.VISIBLE);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void renderVisibleTickerGTM(String message) {
         tvTickerGTM.setText(Html.fromHtml(message));
@@ -407,8 +364,110 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderGoneTickerGTM() {
+    public void renderInvisibleTickerGTM() {
         tvTickerGTM.setVisibility(View.GONE);
+    }
+
+    @Override
+    public List<CartItemEditable> getItemCartListCheckoutData() {
+        return cartItemAdapter.getDataList();
+    }
+
+    @Override
+    public String getVoucherCodeCheckoutData() {
+        return etVoucherCode.getText().toString().trim();
+    }
+
+    @Override
+    public boolean isCheckoutDataUseVoucher() {
+        return cbUseVoucher.isChecked();
+    }
+
+    @Override
+    public void renderDisableErrorCheckVoucher() {
+        tilEtVoucherCode.setError(null);
+        tilEtVoucherCode.setErrorEnabled(false);
+    }
+
+    @Override
+    public CheckoutData.Builder getCheckoutDataBuilder() {
+        return checkoutDataBuilder;
+    }
+
+    @Override
+    public String getDepositCheckoutData() {
+        return etUseDeposit.getText().toString();
+    }
+
+    @Override
+    public void renderErrorCartItem(CartItemEditable cartItemEditable) {
+        cartItemAdapter.renderErrorCart(cartItemEditable);
+    }
+
+    @Override
+    public void renderErrorTimeoutInitialCartInfo(String messageError) {
+        NetworkErrorHelper.showEmptyState(
+                getActivity(), getView(),
+                getString(R.string.label_title_error_timeout_initial_cart_data),
+                messageError,
+                getString(R.string.label_title_button_retry),
+                getRetryErrorInitialCartInfoClickListener()
+        );
+    }
+
+    @Override
+    public void renderErrorNoConnectionInitialCartInfo(String messageError) {
+        NetworkErrorHelper.showEmptyState(
+                getActivity(), getView(),
+                getString(R.string.label_title_error_no_connection_initial_cart_data),
+                messageError,
+                getString(R.string.label_title_button_retry),
+                getRetryErrorInitialCartInfoClickListener()
+        );
+    }
+
+    @Override
+    public void renderErrorResponseInitialCartInfo(String messageError) {
+        NetworkErrorHelper.showEmptyState(
+                getActivity(), getView(),
+                getString(R.string.label_title_error_default_initial_cart_data),
+                messageError,
+                getString(R.string.label_title_button_retry),
+                getRetryErrorInitialCartInfoClickListener()
+        );
+    }
+
+    @Override
+    public void renderErrorDefaultInitialCartInfo(String messageError) {
+        NetworkErrorHelper.showEmptyState(
+                getActivity(), getView(),
+                getString(R.string.label_title_error_default_initial_cart_data),
+                messageError,
+                getString(R.string.label_title_button_retry),
+                getRetryErrorInitialCartInfoClickListener()
+        );
+    }
+
+    @Override
+    public String getStringFromResource(@StringRes int resId) {
+        return getResources().getString(resId);
+    }
+
+    @Override
+    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
+            @Nullable TKPDMapParam<String, String> originParams) {
+        return originParams == null ? AuthUtil.generateParamsNetwork(getActivity())
+                : AuthUtil.generateParamsNetwork(getActivity(), originParams);
+    }
+
+    @Override
+    public Activity getContextActivity() {
+        return getActivity();
+    }
+
+    @Override
+    public void executeService(Intent intent) {
+        getActivity().startService(intent);
     }
 
     @Override
@@ -419,102 +478,50 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         } else {
             holderUseDeposit.setVisibility(View.VISIBLE);
         }
-        checkoutDataBuilder.gateway(gateway.getGateway() + "");
+        tvInfoPaymentMethod.setVisibility(View.VISIBLE);
+        tvInfoPaymentMethod.setText(gateway.getFeeInformation(getActivity()));
+        checkoutDataBuilder.gateway(MessageFormat.format("{0}", gateway.getGateway()));
+        ivLogoBtnPaymentMethod.setVisibility(View.VISIBLE);
         ImageHandler.LoadImage(ivLogoBtnPaymentMethod, gateway.getGatewayImage());
         tvInfoPaymentMethod.setText(gateway.getGatewayDesc());
         tvDescBtnPaymentMethod.setText(gateway.getGatewayName());
     }
 
     @Override
-    public void onCancelCart(final TransactionList data) {
+    public void onCancelCart(final CartItem data) {
         AlertDialog.Builder alertDialog = generateDialogCancelCart(data);
         showDialog(alertDialog.create());
     }
 
 
     @Override
-    public void onCancelCartProduct(final TransactionList data, final CartProduct cartProduct) {
+    public void onCancelCartProduct(final CartItem data, final CartProduct cartProduct) {
         AlertDialog.Builder alertDialog = generateDialogCancelCartProduct(data, cartProduct);
         showDialog(alertDialog.create());
     }
 
     @Override
-    public void onChangeShipment(TransactionList data) {
+    public void onChangeShipment(CartItem data) {
         navigateToActivityRequest(ShipmentCartActivity.createInstance(getActivity(), data),
                 ShipmentCartActivity.INTENT_REQUEST_CODE);
     }
 
     @Override
-    public void onSubmitEditCart(TransactionList cartData, List<ProductEditData> cartProductEditDataList) {
-        presenter.processSubmitEditCart(getActivity(), cartData, cartProductEditDataList);
+    public void onSubmitEditCart(CartItem cartData, List<ProductEditData> cartProductEditDataList) {
+        presenter.processSubmitEditCart(cartData, cartProductEditDataList);
     }
 
     @Override
-    public void onUpdateInsuranceCart(TransactionList cartData, boolean useInsurance) {
-        presenter.processUpdateInsurance(getActivity(), cartData, useInsurance);
-    }
-
-    @NonNull
-    private AlertDialog.Builder generateDialogCancelCart(final TransactionList data) {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
-        alertDialog.setTitle(context.getString(R.string.title_cancel_confirm));
-        alertDialog.setMessage(context.getString(R.string.msg_cancel_1)
-                + " "
-                + data.getCartShop().getShopName()
-                + " "
-                + context.getString(R.string.msg_cancel_3)
-                + " "
-                + data.getCartTotalAmountIdr());
-        alertDialog.setPositiveButton(context.getString(R.string.title_yes),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        presenter.processCancelCart(getActivity(), data);
-                    }
-                });
-        alertDialog.setNegativeButton(context.getString(R.string.title_no), null);
-        return alertDialog;
-    }
-
-    @NonNull
-    private AlertDialog.Builder generateDialogCancelCartProduct(
-            final TransactionList cartData, final CartProduct cartProductData) {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
-        alertDialog.setTitle(getString(R.string.title_cancel_confirm));
-        alertDialog.setMessage(getString(R.string.msg_cancel_1)
-                + " "
-                + cartData.getCartShop().getShopName()
-                + " "
-                + getString(R.string.msg_cancel_2)
-                + " "
-                + cartProductData.getProductName()
-                + " "
-                + getString(R.string.msg_cancel_3)
-                + " "
-                + cartProductData.getProductTotalPriceIdr());
-        alertDialog.setPositiveButton(context.getString(R.string.title_yes),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        presenter.processCancelCartProduct(
-                                getActivity(), cartData, cartProductData
-                        );
-                    }
-                });
-
-        alertDialog.setNegativeButton(context.getString(R.string.title_no), null);
-        return alertDialog;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        getActivity().unregisterReceiver(cartBroadcastReceiver);
+    public void onUpdateInsuranceCart(CartItem cartData, boolean useInsurance) {
+        presenter.processUpdateInsurance(cartData, useInsurance);
     }
 
     @Override
     public void onGetParameterTopPaySuccess(TopPayParameterData data) {
         hideProgressLoading();
-        showToastMessage("berhasil!!!!");
-        actionListener.replaceFragmentWithBackStack(TopPayFragment.newInstance(data));
+        navigateToActivityRequest(
+                TopPayActivity.createInstance(getActivity(), data), TopPayActivity.REQUEST_CODE
+        );
     }
 
     @Override
@@ -526,7 +533,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void onGetParameterTopPayNoConnection(String message) {
         hideProgressLoading();
-        showToastMessage(message);
+        NetworkErrorHelper.showDialog(getActivity(), getRetryCheckoutClickListener());
     }
 
     @Override
@@ -534,53 +541,168 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         showProgressLoading();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getActivity().unregisterReceiver(topPayBroadcastReceiver);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == TopPayActivity.REQUEST_CODE
+                || requestCode == ShipmentCartActivity.INTENT_REQUEST_CODE) {
+            presenter.processGetCartData();
+        }
+    }
+
     @NonNull
-    private View.OnClickListener getCheckoutButtonClickListener(final CartItemAdapter adapter) {
+    private AlertDialog.Builder generateDialogCancelCart(final CartItem data) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+        alertDialog.setTitle(context.getString(R.string.title_cancel_confirm));
+        alertDialog.setMessage(context.getString(R.string.msg_cancel_1)
+                + " " + data.getCartShop().getShopName()
+                + " " + context.getString(R.string.msg_cancel_3)
+                + " " + data.getCartTotalAmountIdr());
+        alertDialog.setPositiveButton(context.getString(R.string.title_yes),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        presenter.processCancelCart(data);
+                    }
+                });
+        alertDialog.setNegativeButton(context.getString(R.string.title_no), null);
+        return alertDialog;
+    }
+
+    @NonNull
+    private AlertDialog.Builder generateDialogCancelCartProduct(
+            final CartItem cartData, final CartProduct cartProductData) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+        alertDialog.setTitle(getString(R.string.title_cancel_confirm));
+        alertDialog.setMessage(getString(R.string.msg_cancel_1)
+                + " " + cartData.getCartShop().getShopName()
+                + " " + getString(R.string.msg_cancel_2)
+                + " " + cartProductData.getProductName()
+                + " " + getString(R.string.msg_cancel_3)
+                + " " + cartProductData.getProductTotalPriceIdr());
+        alertDialog.setPositiveButton(context.getString(R.string.title_yes),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        presenter.processCancelCartProduct(cartData, cartProductData);
+                    }
+                });
+        alertDialog.setNegativeButton(context.getString(R.string.title_no), null);
+        return alertDialog;
+    }
+
+    @NonNull
+    private View.OnClickListener getCheckoutButtonClickListener() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<CartItemEditable> cartItemEditables = adapter.getDataList();
-                boolean canBeCheckout = true;
-                int positionError = cartItemEditables.size() - 1;
+                presenter.processValidationCheckoutData();
+            }
+        };
+    }
 
-                if (cbUseVoucher.isChecked() && etVoucherCode.getText().toString().isEmpty()) {
-                    tilEtVoucherCode.setErrorEnabled(true);
-                    tilEtVoucherCode.setError("Voucher Kosong");
-                    return;
-                } else if (cbUseVoucher.isChecked()
-                        && !etVoucherCode.getText().toString().isEmpty()) {
-                    tilEtVoucherCode.setError(null);
-                    tilEtVoucherCode.setErrorEnabled(false);
-                    checkoutDataBuilder.voucherCode(etVoucherCode.getText().toString());
-                }
-
-                checkoutDataBuilder.usedDeposit(
-                        etUseDeposit.getText().toString().replaceAll("\\D+", "")
-                );
-
-                for (int i = 0, cartItemEditablesSize = cartItemEditables.size();
-                     i < cartItemEditablesSize; i++) {
-                    CartItemEditable cartItemEditable = cartItemEditables.get(i);
-                    adapter.renderErrorCart(cartItemEditable);
-                    if (cartItemEditable.finalizeAllData().getErrorType()
-                            != CartItemEditable.ERROR_NON) {
-                        canBeCheckout = false;
-                    }
-                }
-                if (!canBeCheckout) {
-                    int heightScroll = nsvContainer.computeVerticalScrollRange();
-                    int heightRv = rvCart.computeVerticalScrollOffset();
-                    nsvContainer.smoothScrollTo(0, heightScroll
-                            - (heightRv - (heightRv / cartItemEditables.size() * positionError)));
-                    showToastMessage("Keranjang tidak dapat diproses," +
-                            " mohon periksa kembali keranjang Anda.");
+    @NonNull
+    private CompoundButton.OnCheckedChangeListener getOnCheckedUseVoucherOptionListener() {
+        return new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    holderUseVoucher.setVisibility(View.VISIBLE);
+                    btnCheckVoucher.setOnClickListener(getButtonCheckVoucherClickListener());
                 } else {
-                    presenter.processCheckoutCart(getActivity(), checkoutDataBuilder,
-                            cartItemEditables);
+                    holderUseVoucher.setVisibility(View.GONE);
+                    btnCheckVoucher.setOnClickListener(null);
+                    etVoucherCode.setText("");
                 }
             }
         };
     }
 
+    @NonNull
+    private View.OnClickListener getButtonCheckVoucherClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.processCheckVoucherCode();
+            }
+        };
+    }
 
+
+    @NonNull
+    private View.OnClickListener getButtonPaymentMethodClickListener(
+            final List<GatewayList> gatewayList) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PaymentGatewayFragment dialog = PaymentGatewayFragment.newInstance(gatewayList);
+                dialog.setActionListener(CartFragment.this);
+                dialog.show(getFragmentManager(), PaymentGatewayFragment.class.getCanonicalName());
+            }
+        };
+    }
+
+    @NonNull
+    private NetworkErrorHelper.RetryClickedListener getRetryEmptyCartClickListener() {
+        return new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                navigateToActivity(
+                        BrowseProductRouter.getDefaultBrowseIntent(getActivity())
+                );
+                getActivity().finish();
+            }
+        };
+    }
+
+    @NonNull
+    private NetworkErrorHelper.RetryClickedListener getRetryCheckoutClickListener() {
+        return new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.processValidationCheckoutData();
+            }
+        };
+    }
+
+    @NonNull
+    private NetworkErrorHelper.RetryClickedListener getRetryErrorInitialCartInfoClickListener() {
+        return new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.processGetCartData();
+            }
+        };
+    }
+
+
+    @NonNull
+    private TextWatcher getWatcherEtVoucherCode() {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.toString().isEmpty()) {
+                    renderErrorCheckVoucher(
+                            getString(R.string.label_error_form_voucher_code_empty)
+                    );
+                } else {
+                    renderDisableErrorCheckVoucher();
+                }
+            }
+        };
+    }
 }

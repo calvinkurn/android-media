@@ -15,7 +15,6 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.Cart;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PaymentTracking;
@@ -27,6 +26,7 @@ import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.LocationPass;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
@@ -86,7 +86,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                         viewListener.hideInitLoading();
                         if (isAllowKeroAccess(data)) {
                             calculateKeroRates(context, data);
-                        }else{
+                        } else {
                             viewListener.hideProgressLoading();
                         }
                     }
@@ -428,7 +428,9 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
         myAlertDialog.setPositiveButton(context.getString(R.string.title_pay),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface arg0, int arg1) {
-                        viewListener.navigateToActivity(new Intent(context, Cart.class));
+                        viewListener.navigateToActivity(
+                                TransactionCartRouter.createInstanceCartActivity(context)
+                        );
                         viewListener.closeView();
                     }
 

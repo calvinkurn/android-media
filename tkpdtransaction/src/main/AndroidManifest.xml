@@ -39,6 +39,10 @@
             android:label="@string/title_activity_cart_shipment"
             android:screenOrientation="portrait" />
         <activity
+            android:name="com.tokopedia.transaction.cart.activity.TopPayActivity"
+            android:label="Pembayaran"
+            android:screenOrientation="portrait" />
+        <activity
             android:name="com.tokopedia.transaction.addtocart.activity.AddToCartActivity"
             android:label="@string/title_activity_add_to_cart_v2"
             android:screenOrientation="portrait"
@@ -48,7 +52,7 @@
             android:name="com.tokopedia.transaction.purchase.services.TxActionIntentService"
             android:exported="false" />
         <service
-            android:name="com.tokopedia.transaction.cart.services.CartIntentService"
+            android:name="com.tokopedia.transaction.cart.services.TopPayIntentService"
             android:exported="false" />
         <service
             android:name="com.tokopedia.transaction.addtocart.services.ATCIntentService"

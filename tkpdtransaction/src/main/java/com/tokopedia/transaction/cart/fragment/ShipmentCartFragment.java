@@ -42,7 +42,7 @@ import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentW
 import com.tokopedia.transaction.cart.model.calculateshipment.Shipment;
 import com.tokopedia.transaction.cart.model.calculateshipment.ShipmentPackage;
 import com.tokopedia.transaction.cart.model.cartdata.CartDestination;
-import com.tokopedia.transaction.cart.model.cartdata.TransactionList;
+import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.savelocation.SaveLocationWrapper;
 import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartWrapper;
 import com.tokopedia.transaction.cart.presenter.IShipmentCartPresenter;
@@ -108,14 +108,14 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
     LinearLayout holderContainer;
 
     private TkpdProgressDialog progressdialog;
-    private TransactionList transactionPassData;
+    private CartItem transactionPassData;
     private CalculateShipmentData shipmentData;
     private ShipmentCartAdapter adapterShipment;
     private ShipmentPackageCartAdapter adapterShipmentPackage;
     private ShipmentCartWrapper wrapper;
     private LocationPass locationPass;
 
-    public static ShipmentCartFragment newInstance(TransactionList passData) {
+    public static ShipmentCartFragment newInstance(CartItem passData) {
         ShipmentCartFragment fragment = new ShipmentCartFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_PARAM_EXTRA_TRANSACTION_DATA, passData);
