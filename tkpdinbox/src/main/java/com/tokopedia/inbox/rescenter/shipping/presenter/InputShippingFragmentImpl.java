@@ -1,5 +1,7 @@
 package com.tokopedia.inbox.rescenter.shipping.presenter;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -24,6 +26,7 @@ import static com.tokopedia.inbox.rescenter.shipping.fragment.InputShippingFragm
 public class InputShippingFragmentImpl implements InputShippingFragmentPresenter {
 
     private static final String TAG = InputShippingFragmentPresenter.class.getSimpleName();
+    private static final int REQUEST_CODE_SCAN_BARCODE = 19;
 
     private final GlobalCacheManager cacheManager;
     private final RetrofitInteractor retrofit;
@@ -50,9 +53,9 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
         try {
             String json = cacheManager.getValueString(viewListener.getParamsModel().getResolutionID());
             if (json != null) {
-                renderInputShippingForm(
-                        (ResCenterKurir) CacheUtil.convertStringToModel(json, new TypeToken<ResCenterKurir>() {}.getType())
-                );
+                renderInputShippingForm(convertCacheToModel(json));
+                viewListener.showLoading(false);
+                viewListener.showMainPage(true);
             } else {
                 requestShippingList();
             }
@@ -60,6 +63,10 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
             e.printStackTrace();
             requestShippingList();
         }
+    }
+
+    private ResCenterKurir convertCacheToModel(String json) {
+        return CacheUtil.convertStringToModel(json, new TypeToken<ResCenterKurir>() {}.getType());
     }
 
     private void requestShippingList() {
@@ -113,5 +120,24 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
         );
         cacheManager.setCacheDuration(1800000); // expired in 30minutes
         cacheManager.store();
+    }
+
+    @Override
+    public void onScanBarcodeClick() {
+        Intent intent = new Intent("com.google.zxing.client.android.SCAN");
+        viewListener.startActivityForResult(intent, REQUEST_CODE_SCAN_BARCODE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case REQUEST_CODE_SCAN_BARCODE:
+                    viewListener.renderInputShippingRefNum(data != null ? data.getStringExtra("SCAN_RESULT") : "");
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }

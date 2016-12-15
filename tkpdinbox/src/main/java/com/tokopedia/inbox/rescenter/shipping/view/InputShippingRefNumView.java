@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.rescenter.shipping.view;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Parcelable;
 
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -29,4 +30,10 @@ public interface InputShippingRefNumView {
     void showLoading(boolean isVisible);
 
     void showMainPage(boolean isVisible);
+
+    void startActivityForResult(Intent intent, int requestCode);
+
+    void startActivity(Intent intent);
+
+    void renderInputShippingRefNum(String text);
 }

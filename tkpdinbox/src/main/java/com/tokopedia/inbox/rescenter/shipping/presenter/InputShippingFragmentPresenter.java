@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.rescenter.shipping.presenter;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 /**
@@ -12,4 +13,8 @@ public interface InputShippingFragmentPresenter {
     void onRestoreState(Bundle savedState);
 
     void onFirstTimeLaunched();
+
+    void onScanBarcodeClick();
+
+    void onActivityResult(int requestCode, int resultCode, Intent data);
 }

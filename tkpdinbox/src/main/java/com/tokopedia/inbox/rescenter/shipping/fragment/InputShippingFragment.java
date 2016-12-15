@@ -2,9 +2,10 @@ package com.tokopedia.inbox.rescenter.shipping.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -135,7 +136,30 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
 
     @Override
     protected void setViewListener() {
+        shippingRefNum.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressWarnings("unused")
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                final int DRAWABLE_LEFT = 0;
+                final int DRAWABLE_TOP = 1;
+                final int DRAWABLE_RIGHT = 2;
+                final int DRAWABLE_BOTTOM = 3;
 
+                EditText shippingRefNum = (EditText) view;
+                if(motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    if(motionEvent.getRawX() >= (shippingRefNum.getRight() - shippingRefNum.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                        presenter.onScanBarcodeClick();
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public void renderInputShippingRefNum(String text) {
+        shippingRefNum.setText(text);
     }
 
     @Override
@@ -170,5 +194,11 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
     @Override
     public void showMainPage(boolean isVisible) {
         mainView.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        presenter.onActivityResult(requestCode, resultCode, data);
     }
 }
