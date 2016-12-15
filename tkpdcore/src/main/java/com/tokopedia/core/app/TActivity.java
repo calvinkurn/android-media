@@ -141,7 +141,7 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
         }
 
         if (GlobalConfig.isSellerApp()) {
-            drawer = ((TkpdCoreListener)getApplication()).getDrawer(this);
+            drawer = ((TkpdCoreRouter)getApplication()).getDrawer(this);
         } else {
             drawer = new DrawerVariable(this);
         }
