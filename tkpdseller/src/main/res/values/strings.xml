@@ -5,6 +5,7 @@
     <string name="title_top_ads_product">Produk</string>
     <string name="title_top_ads_store">Toko</string>
     <string name="title_top_ads_add_credit">Tambah Kredit Promo</string>
+    <string name="title_top_ads_new_promo">Pilih Atau Buat Promo</string>
 
     <string name="label_top_ads_impression">Tampil</string>
     <string name="label_top_ads_click">Klik</string>
@@ -23,5 +24,11 @@
     <string name="top_ads_statistic_info_default_value">0</string>
     <string name="top_ads_range_date_text">%1$s - %2$s</string>
 
+    <!-- New Promo -->
+    <string name="label_top_ads_group_name">Nama Group</string>
+    <string name="label_top_ads_choose_group">Pilih Group</string>
+    <string name="label_top_ads_create_promo_new_group">Buat promo grup baru</string>
+    <string name="label_top_ads_create_promo_from_exist_group">Promo grup yang ada</string>
+    <string name="label_top_ads_create_promo_not_in_group">Tidak masuk ke promo grup</string>
 
 </resources>

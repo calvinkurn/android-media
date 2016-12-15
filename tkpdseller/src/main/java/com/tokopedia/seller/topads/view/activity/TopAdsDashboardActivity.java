@@ -1,6 +1,7 @@
 package com.tokopedia.seller.topads.view.activity;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -17,6 +18,7 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
+import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.view.adapter.TopAdsDashboardPagerAdapter;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardProductFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardShopFragment;
@@ -84,9 +86,13 @@ public class TopAdsDashboardActivity extends BasePresenterActivity {
             @Override
             public boolean onMenuItemSelected(MenuItem menuItem) {
                 if (menuItem.getItemId() == R.id.action_add_promo_group) {
-
+                    Intent intent = new Intent(TopAdsDashboardActivity.this, TopAdsNewPromoActivity.class);
+                    intent.putExtra(TopAdsExtraConstant.EXTRA_NEW_PROMO_CHOICE, TopAdsExtraConstant.TYPE_NEW_PROMO_GROUP);
+                    startActivity(intent);
                 } else if (menuItem.getItemId() == R.id.action_add_promo_product) {
-
+                    Intent intent = new Intent(TopAdsDashboardActivity.this, TopAdsNewPromoActivity.class);
+                    intent.putExtra(TopAdsExtraConstant.EXTRA_NEW_PROMO_CHOICE, TopAdsExtraConstant.TYPE_NEW_PROMO_NO_GROUP);
+                    startActivity(intent);
                 }
                 return false;
             }

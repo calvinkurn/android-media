@@ -19,6 +19,12 @@
         <item name="android:text">@string/top_ads_statistic_info_default_value</item>
     </style>
 
+    <style name="RadioGroup" parent="Widget.AppCompat.CompoundButton.RadioButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">20dp</item>
+    </style>
+
     <style name="FabSpeedDial">
         <item name="android:id">@id/fab_speed_dial</item>
         <item name="android:layout_width">wrap_content</item>
