@@ -305,7 +305,7 @@ public class Destination implements Parcelable {
      * @return The addressStreet
      */
     public String getAddressStreet() {
-        return Html.fromHtml(addressStreet.replace("\n", "<br/>")).toString();
+        return MethodChecker.fromHtml(addressStreet.replace("\n", "<br/>")).toString();
     }
 
     /**

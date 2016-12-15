@@ -65,6 +65,7 @@ import com.tokopedia.core.var.TkpdState;
 
 import org.parceler.Parcels;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -344,7 +345,7 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
 //            if(Build.VERSION.SDK_INT >= 24) {
 //                holder.buyerRequestCancel.setText("\"" + Html.fromHtml(orderDetail.getDetailCancelRequest().getReason(), Html.) + "\"");
 //            }else{
-                holder.buyerRequestCancel.setText("\"" + Html.fromHtml(orderDetail.getDetailCancelRequest().getReason()) + "\"");
+                holder.buyerRequestCancel.setText("\"" + MethodChecker.fromHtml(orderDetail.getDetailCancelRequest().getReason()) + "\"");
 //            }
             holder.dateRequestCancel.setText(orderDetail.getDetailCancelRequest().getReasonTime());
         }
