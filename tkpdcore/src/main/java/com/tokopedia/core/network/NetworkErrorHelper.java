@@ -3,6 +3,7 @@ package com.tokopedia.core.network;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.design.widget.Snackbar;
@@ -53,7 +54,9 @@ public class NetworkErrorHelper {
                 }
             });
         }
-        dialog.create().show();
+        Dialog finalDialog = dialog.create();
+        finalDialog.setCanceledOnTouchOutside(false);
+        finalDialog.show();
     }
 
     public static SnackbarRetry createSnackbarWithAction(Activity activity, final RetryClickedListener listener) {
@@ -92,39 +95,6 @@ public class NetworkErrorHelper {
             params.weight = 1.0f;
             View retryLoad = inflater.inflate(R.layout.design_error_network, (ViewGroup) rootview);
             View retryButon = retryLoad.findViewById(R.id.button_retry);
-            if (listener != null) {
-                retryButon.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-                        rootview.findViewById(R.id.main_retry).setVisibility(View.GONE);
-                        listener.onRetryClicked();
-                    }
-                });
-            }
-        }
-    }
-
-    public static void showEmptyState(Context context, final View rootview, String titleMessage,
-                                      String subTitleMessage, String titleRetry,
-                                      final RetryClickedListener listener) {
-        try {
-            rootview.findViewById(R.id.main_retry).setVisibility(View.VISIBLE);
-        } catch (NullPointerException e) {
-            LayoutInflater inflater = LayoutInflater.from(context);
-            LinearLayout.LayoutParams params
-                    = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT
-            );
-            params.gravity = Gravity.CENTER;
-            params.weight = 1.0f;
-            View retryLoad = inflater.inflate(R.layout.design_error_network, (ViewGroup) rootview);
-            TextView retryButon = (TextView) retryLoad.findViewById(R.id.button_retry);
-            TextView tvTitleMessage = (TextView) retryLoad.findViewById(R.id.message_retry);
-            TextView tvSubTitleMessage = (TextView) retryLoad.findViewById(R.id.sub_message_retry);
-            tvSubTitleMessage.setText(subTitleMessage);
-            tvTitleMessage.setText(titleMessage);
-            retryButon.setText(titleRetry);
             if (listener != null) {
                 retryButon.setOnClickListener(new View.OnClickListener() {
 

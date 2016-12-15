@@ -864,7 +864,7 @@ Namun tidak perlu khawatir karena staff kami selalu melakukan pengecekan.]]>
     <string name="ORDER_DELIVERED">600</string>
     <string name="ORDER_DELIVERY_FAILURE">630</string>
     <string name="ORDER_DELIVERY_AUTOMATIC">699</string>
-    <string name="title_package_received">Paket diterima</string>
+    <string name="title_package_received">Paket Diterima</string>
     <string name="title_package_not_received">Paket belum diterima</string>
     <string name="dialog_package_received">
  <![CDATA[
