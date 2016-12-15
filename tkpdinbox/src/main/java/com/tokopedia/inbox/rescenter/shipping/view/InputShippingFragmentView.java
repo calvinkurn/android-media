@@ -2,7 +2,11 @@ package com.tokopedia.inbox.rescenter.shipping.view;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Parcelable;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.tokopedia.core.database.model.AttachmentResCenterDB;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -27,6 +31,18 @@ public interface InputShippingFragmentView {
 
     void setAttachmentData(ArrayList<AttachmentResCenterDB> attachmentData);
 
+    EditText getShippingRefNum();
+
+    Spinner getShippingSpinner();
+
+    RecyclerView getListAttachment();
+
+    TextView getErrorSpinner();
+
+    View getLoadingView();
+
+    View getMainView();
+
     void renderAttachmentAdapter();
 
     void renderSpinner(List<ResCenterKurir.Kurir> shippingList);
@@ -34,10 +50,6 @@ public interface InputShippingFragmentView {
     void showTimeOutMessage(NetworkErrorHelper.RetryClickedListener listener);
 
     void showErrorMessage(String message);
-
-    void showLoading(boolean isVisible);
-
-    void showMainPage(boolean isVisible);
 
     void startActivityForResult(Intent intent, int requestCode);
 

@@ -82,8 +82,8 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
     }
 
     @OnClick(R2.id.confirm_button)
-    public void onConfirmButtonClick() {
-
+    public void setOnConfirmButtonClick() {
+        presenter.onConfirrmButtonClick();
     }
 
     @Override
@@ -104,6 +104,36 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
     @Override
     public void setAttachmentData(ArrayList<AttachmentResCenterDB> attachmentData) {
         this.attachmentData = attachmentData;
+    }
+
+    @Override
+    public EditText getShippingRefNum() {
+        return shippingRefNum;
+    }
+
+    @Override
+    public Spinner getShippingSpinner() {
+        return shippingSpinner;
+    }
+
+    @Override
+    public RecyclerView getListAttachment() {
+        return listAttachment;
+    }
+
+    @Override
+    public TextView getErrorSpinner() {
+        return errorSpinner;
+    }
+
+    @Override
+    public View getLoadingView() {
+        return loadingView;
+    }
+
+    @Override
+    public View getMainView() {
+        return mainView;
     }
 
     @Override
@@ -227,16 +257,6 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
         } else {
             showTimeOutMessage(null);
         }
-    }
-
-    @Override
-    public void showLoading(boolean isVisible) {
-        loadingView.setVisibility(isVisible ? View.VISIBLE : View.GONE);
-    }
-
-    @Override
-    public void showMainPage(boolean isVisible) {
-        mainView.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
     @Override

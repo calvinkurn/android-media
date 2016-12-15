@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
@@ -12,6 +13,7 @@ import com.tokopedia.core.database.model.AttachmentResCenterDB;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.shipping.interactor.NetworkParam;
 import com.tokopedia.inbox.rescenter.shipping.interactor.RetrofitInteractor;
 import com.tokopedia.inbox.rescenter.shipping.interactor.RetrofitInteractorImpl;
@@ -58,8 +60,8 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
             String json = cacheManager.getValueString(viewListener.getParamsModel().getResolutionID());
             if (json != null) {
                 renderInputShippingForm(convertCacheToModel(json));
-                viewListener.showLoading(false);
-                viewListener.showMainPage(true);
+                showLoading(false);
+                showMainPage(true);
             } else {
                 requestShippingList();
             }
@@ -67,6 +69,14 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
             e.printStackTrace();
             requestShippingList();
         }
+    }
+
+    private void showMainPage(boolean isVisible) {
+        viewListener.getMainView().setVisibility(isVisible ? View.VISIBLE : View.GONE);
+    }
+
+    private void showLoading(boolean isVisible) {
+        viewListener.getLoadingView().setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
     private ResCenterKurir convertCacheToModel(String json) {
@@ -80,31 +90,31 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
                     @Override
                     public void onStart() {
-                        viewListener.showLoading(true);
-                        viewListener.showMainPage(false);
+                        showLoading(true);
+                        showMainPage(false);
                     }
 
                     @Override
                     public void onSuccess(ResCenterKurir kurirList) {
                         storeCacheKurirList(kurirList);
                         renderInputShippingForm(kurirList);
-                        viewListener.showLoading(false);
-                        viewListener.showMainPage(true);
+                        showLoading(false);
+                        showMainPage(true);
                     }
 
                     @Override
                     public void onTimeOut(NetworkErrorHelper.RetryClickedListener listener) {
                         viewListener.showTimeOutMessage(listener);
-                        viewListener.showLoading(false);
-                        viewListener.showMainPage(false);
+                        showLoading(false);
+                        showMainPage(false);
                     }
 
                     @Override
                     public void onError(String message) {
                         Log.d(TAG, message);
                         viewListener.showErrorMessage(message);
-                        viewListener.showLoading(false);
-                        viewListener.showMainPage(false);
+                        showLoading(false);
+                        showMainPage(false);
                     }
                 });
     }
@@ -150,4 +160,56 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
         retrofit.unSubscribe();
     }
 
+    @Override
+    public void onConfirrmButtonClick() {
+        if (isValidToSubmit()) {
+
+        }
+    }
+
+    private boolean isValidToSubmit() {
+        String shippingRefNum = viewListener.getShippingRefNum().getText().toString();
+        int selectedShippingPosition = viewListener.getShippingSpinner().getSelectedItemPosition();
+
+        viewListener.getErrorSpinner().setVisibility(View.GONE);
+        viewListener.getShippingRefNum().setError(null);
+
+        if (shippingRefNum.replaceAll("\\s+","").length() == 0) {
+            viewListener.getShippingRefNum().setError(viewListener.getActivity().getString(R.string.error_field_required));
+            return false;
+        }
+
+        if (shippingRefNum.length() < 8 || shippingRefNum.length() > 17) {
+            viewListener.getShippingRefNum().setError(viewListener.getActivity().getString(R.string.error_receipt_number));
+            return false;
+        }
+
+        if (selectedShippingPosition == 0) {
+            viewListener.getErrorSpinner().setVisibility(View.VISIBLE);
+            return false;
+        }
+
+        if (isInstanceForEdit() && isShippingRefNumEditted(shippingRefNum) && isShippingEditted(getSelectedKurir())) {
+            viewListener.getShippingRefNum().setError(viewListener.getActivity().getString(R.string.error_update_receipt_number));
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean isInstanceForEdit() {
+        return viewListener.getParamsModel().getConversationID() != null || !viewListener.getParamsModel().getConversationID().isEmpty();
+    }
+
+    private boolean isShippingRefNumEditted(String shippingRefNum) {
+        return shippingRefNum.equals(viewListener.getParamsModel().getShippingRefNum());
+    }
+
+    private boolean isShippingEditted(ResCenterKurir.Kurir selectedKurir) {
+        return !selectedKurir.getShipmentId().equals(viewListener.getParamsModel().getShippingID());
+    }
+
+    private ResCenterKurir.Kurir getSelectedKurir() {
+        return (ResCenterKurir.Kurir) viewListener.getShippingSpinner().getItemAtPosition(viewListener.getShippingSpinner().getSelectedItemPosition() - 1);
+    }
 }

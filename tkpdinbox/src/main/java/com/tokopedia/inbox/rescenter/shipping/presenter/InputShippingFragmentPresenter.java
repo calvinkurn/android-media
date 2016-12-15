@@ -19,4 +19,6 @@ public interface InputShippingFragmentPresenter {
     void onActivityResult(int requestCode, int resultCode, Intent data);
 
     void onDestroy();
+
+    void onConfirrmButtonClick();
 }
