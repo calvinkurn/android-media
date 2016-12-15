@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SimpleSpinnerAdapter;
@@ -52,7 +53,6 @@ public class ProductList extends V2BaseFragment {
     }
 
 
-
     public static String ETALASE_NAME = "etalase_name";
     public static String ETALASE_ID = "etalase_id";
 
@@ -68,9 +68,31 @@ public class ProductList extends V2BaseFragment {
     private String shopDomain;
     private GetShopInfoRetrofit facadeShopInfo;
     private GetShopProductRetrofit facadeShopProd;
+    public static final String ETALASE_ID_BUNDLE = "ETALASE_ID";
 
-    public static ProductList create() {
-        return new ProductList();
+    public static ProductList newInstance() {
+
+        Bundle args = new Bundle();
+
+        ProductList fragment = new ProductList();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public static ProductList newInstance(String etalaseId) {
+
+        Bundle args = new Bundle();
+        args.putString(ETALASE_ID_BUNDLE, etalaseId);
+        ProductList fragment = new ProductList();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public void setSelectedEtalase(String etalaseId) {
+        if (adapter != null) {
+            int etalaseIndex = etalaseIdList.indexOf(etalaseId);
+            adapter.setSelectedEtalasePos(etalaseIndex);
+        }
     }
 
     @Override
@@ -161,7 +183,6 @@ public class ProductList extends V2BaseFragment {
         adapter.setListType(getShopParam.listState);
         adapter.setSelectedEtalasePos(getShopParam.selectedEtalase);
         adapter.setEtalaseAdapter(etalaseAdapter);
-
         configSearchView();
     }
 
@@ -172,8 +193,8 @@ public class ProductList extends V2BaseFragment {
         holder.searchView.requestFocusFromTouch();
 
         View searchPlate = holder.searchView.findViewById(R.id.search_plate);
-        if (searchPlate!=null) {
-            searchPlate.setPadding(0, 0 ,0 , 0);
+        if (searchPlate != null) {
+            searchPlate.setPadding(0, 0, 0, 0);
             EditText searchText = (EditText) searchPlate.findViewById(R.id.search_src_text);
             if (searchText != null) {
                 searchText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
@@ -186,7 +207,7 @@ public class ProductList extends V2BaseFragment {
                                 if (getActivity() != null && getActivity() instanceof ShopInfoActivity) {
                                     ((ShopInfoActivity) getActivity()).setToolbarCollapse();
                                 }
-                                if(getActivity()!=null){
+                                if (getActivity() != null) {
                                     UnifyTracking.eventDiscoverySearchShopDetail();
                                 }
                                 break;
@@ -198,19 +219,19 @@ public class ProductList extends V2BaseFragment {
 
             int searchIconHint = searchPlate.getContext().getResources().getIdentifier("android:id/abs__search_button", null, null);
             ImageView imageView = (ImageView) searchPlate.findViewById(searchIconHint);
-            if(imageView != null) {
+            if (imageView != null) {
                 ViewGroup.LayoutParams layoutParamsimage = new ViewGroup.LayoutParams(20, 20);
                 imageView.setLayoutParams(layoutParamsimage);
             }
 
-            ImageView closeButton = (ImageView)holder.searchView.findViewById(R.id.search_close_btn);
+            ImageView closeButton = (ImageView) holder.searchView.findViewById(R.id.search_close_btn);
 
-            if(closeButton != null){
+            if (closeButton != null) {
                 closeButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         getShopParam.keyword = "";
-                        if (!adapter.isLoading()){
+                        if (!adapter.isLoading()) {
                             refreshProductList();
                         }
                         //Clear query
@@ -224,8 +245,8 @@ public class ProductList extends V2BaseFragment {
         holder.searchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(getActivity()!= null && getActivity() instanceof ShopInfoActivity){
-                    ((ShopInfoActivity)getActivity()).setToolbarCollapse();
+                if (getActivity() != null && getActivity() instanceof ShopInfoActivity) {
+                    ((ShopInfoActivity) getActivity()).setToolbarCollapse();
                 }
             }
         });
@@ -233,7 +254,7 @@ public class ProductList extends V2BaseFragment {
             @Override
             public boolean onClose() {
                 getShopParam.keyword = "";
-                if (!adapter.isLoading()){
+                if (!adapter.isLoading()) {
                     refreshProductList();
                 }
                 return false;
@@ -244,11 +265,11 @@ public class ProductList extends V2BaseFragment {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 getShopParam.keyword = query;
-                if (!adapter.isLoading()){
+                if (!adapter.isLoading()) {
                     refreshProductList();
                 }
-                if(getActivity()!=null){
-                    CommonUtils.dumper("GAv4 clicked search "+query);
+                if (getActivity() != null) {
+                    CommonUtils.dumper("GAv4 clicked search " + query);
                 }
                 InputMethodManager imm = (InputMethodManager) getActivity().getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(holder.searchView.getWindowToken(), 0);
@@ -265,9 +286,9 @@ public class ProductList extends V2BaseFragment {
         holder.searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus){
-                    if(getActivity()!= null && getActivity() instanceof ShopInfoActivity){
-                        ((ShopInfoActivity)getActivity()).setToolbarCollapse();
+                if (hasFocus) {
+                    if (getActivity() != null && getActivity() instanceof ShopInfoActivity) {
+                        ((ShopInfoActivity) getActivity()).setToolbarCollapse();
                     }
                 }
             }
@@ -306,6 +327,12 @@ public class ProductList extends V2BaseFragment {
             etalaseNameList.add(getActivity().getIntent().getExtras().getString(ETALASE_NAME, getString(R.string.title_all_etalase)));
             etalaseIdList.add(getActivity().getIntent().getExtras().getString(ETALASE_ID, "etalase"));
         }
+        String selectedId = getArguments().getString(ETALASE_ID_BUNDLE);
+        if (selectedId != null) {
+            int index = etalaseIdList.indexOf(selectedId);
+
+        }
+
     }
 
     @Override
@@ -327,7 +354,7 @@ public class ProductList extends V2BaseFragment {
         return new ShopProductListAdapter.ProductListAdapterListener() {
             @Override
             public void onListTypeChange() {
-                if(getActivity()!=null){
+                if (getActivity() != null) {
                     CommonUtils.dumper("GAv4 clicked change list");
                 }
                 getShopParam.listState = adapter.getListType();
@@ -340,7 +367,7 @@ public class ProductList extends V2BaseFragment {
 
             @Override
             public void onFilterClick(View v) {
-                if(getActivity()!=null){
+                if (getActivity() != null) {
                     CommonUtils.dumper("GAv4 clicked filter shops");
                 }
                 showSortDialog();
@@ -354,7 +381,7 @@ public class ProductList extends V2BaseFragment {
 
             @Override
             public void onSpinnerEtalaseClick() {
-                if(getActivity()!=null){
+                if (getActivity() != null) {
                     CommonUtils.dumper("GAv4 clicked spinner etalase shops");
                 }
             }
@@ -374,14 +401,14 @@ public class ProductList extends V2BaseFragment {
         final String[] Value = getResources().getStringArray(R.array.sort_value);
         ArrayAdapter<CharSequence> adapterSort = new ArrayAdapter<CharSequence>(getActivity(),
                 android.R.layout.select_dialog_item,
-                android.R.id.text1,getResources().getStringArray(R.array.sort_option)){
+                android.R.id.text1, getResources().getStringArray(R.array.sort_option)) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View v = super.getView(position, convertView, parent);
                 TextView textView = (TextView) v.findViewById(android.R.id.text1);
 
                 try {
-                    if (Integer.parseInt(getShopParam.orderBy)-2 == position) {
+                    if (Integer.parseInt(getShopParam.orderBy) - 2 == position) {
                         textView.setTextColor(getActivity().getApplicationContext().getResources().getColor(R.color.green_500));
                     } else {
                         textView.setTextColor(getActivity().getApplicationContext().getResources().getColor(R.color.black));
@@ -428,9 +455,9 @@ public class ProductList extends V2BaseFragment {
             @Override
             public void onFailure(int connectionTypeError, String message) {
                 removeLoading();
-                switch (connectionTypeError){
+                switch (connectionTypeError) {
                     case GetShopProductRetrofit.CONNECTION_TYPE_ERROR:
-                        if(getShopParam.page == 1 && productModel.list.size() == 0) {
+                        if (getShopParam.page == 1 && productModel.list.size() == 0) {
 
                             adapter.showEmptyState(message, new ShopProductListAdapter.RetryClickedListener() {
                                 @Override
@@ -439,8 +466,7 @@ public class ProductList extends V2BaseFragment {
                                     refreshProductList();
                                 }
                             });
-                        }
-                        else{
+                        } else {
                             NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, new NetworkErrorHelper.RetryClickedListener() {
                                 @Override
                                 public void onRetryClicked() {
@@ -470,7 +496,11 @@ public class ProductList extends V2BaseFragment {
             public void onSuccess(EtalaseModel model) {
                 etalaseModel = model;
                 updateEtalaseNameList();
-                getShopParam.selectedEtalase = etalaseNameList.indexOf(getActivity().getIntent().getExtras().getString(ETALASE_NAME, getString(R.string.title_all_etalase)));
+                if (getArguments().getString(ETALASE_ID_BUNDLE) != null) {
+                    getShopParam.selectedEtalase = etalaseIdList.indexOf(getArguments().getString(ETALASE_ID_BUNDLE));
+                } else {
+                    getShopParam.selectedEtalase = etalaseNameList.indexOf(getActivity().getIntent().getExtras().getString(ETALASE_NAME, getString(R.string.title_all_etalase)));
+                }
                 adapter.setSelectedEtalasePos(getShopParam.selectedEtalase);
                 adapter.notifyDataSetChanged();
             }

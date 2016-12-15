@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.tokopedia.core.database.model.RechargeOperatorModelDBAttrs;
+import com.tokopedia.core.database.model.RechargeOperatorModel;
 import com.tokopedia.tkpd.R;
 
 import java.util.List;
@@ -19,12 +19,12 @@ import butterknife.ButterKnife;
  * Created by Alifa on 11/28/2016.
  */
 
-public class OperatorAdapter extends ArrayAdapter<RechargeOperatorModelDBAttrs> {
+public class OperatorAdapter extends ArrayAdapter<RechargeOperatorModel> {
     private final static int OUT_OF_STOCK = 3;
     private final LayoutInflater inflater;
-    private List<RechargeOperatorModelDBAttrs> operatorList;
+    private List<RechargeOperatorModel> operatorList;
 
-    public OperatorAdapter(Context context, int resource, List<RechargeOperatorModelDBAttrs> operatorList) {
+    public OperatorAdapter(Context context, int resource, List<RechargeOperatorModel> operatorList) {
         super(context, resource, operatorList);
         this.operatorList = operatorList;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -41,7 +41,7 @@ public class OperatorAdapter extends ArrayAdapter<RechargeOperatorModelDBAttrs> 
     }
 
     public View getCustomView(int position, View convertView, ViewGroup parent) {
-        RechargeOperatorModelDBAttrs operator = operatorList.get(position);
+        RechargeOperatorModel operator = operatorList.get(position);
         NormalViewHolder normalViewHolder;
         View rowNormal = convertView;
         if (rowNormal == null) {
@@ -55,7 +55,7 @@ public class OperatorAdapter extends ArrayAdapter<RechargeOperatorModelDBAttrs> 
         return rowNormal;
     }
 
-    private void renderProduct(OperatorAdapter.NormalViewHolder holder, RechargeOperatorModelDBAttrs operator) {
+    private void renderProduct(OperatorAdapter.NormalViewHolder holder, RechargeOperatorModel operator) {
         holder.operatorTextView.setText(operator.name);
     }
 
@@ -81,11 +81,11 @@ public class OperatorAdapter extends ArrayAdapter<RechargeOperatorModelDBAttrs> 
         }
     }
 
-    public List<RechargeOperatorModelDBAttrs> getOperatorList() {
+    public List<RechargeOperatorModel> getOperatorList() {
         return operatorList;
     }
 
-    public void setOperatorList(List<RechargeOperatorModelDBAttrs> operatorList) {
+    public void setOperatorList(List<RechargeOperatorModel> operatorList) {
         this.operatorList = operatorList;
     }
 

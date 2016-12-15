@@ -3,7 +3,6 @@ package com.tokopedia.core.fragment;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -55,7 +54,6 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.Cart;
 import com.tokopedia.core.EditAddressCart;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.PaymentTracking;
@@ -105,7 +103,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FragmentCart extends TkpdFragment implements CartInterfaces.FragmentCartCommunicator, PaymentResultReceiver.Receiver {
+public class FragmentCart extends TkpdFragment implements CartInterfaces.FragmentCartCommunicator,
+        PaymentResultReceiver.Receiver {
 
     private static final int PAYMENT_SALDO = 0;
     private static final int PAYMENT_TRANSFER = 1;
@@ -273,7 +272,7 @@ public class FragmentCart extends TkpdFragment implements CartInterfaces.Fragmen
                 activitycom.Loading();
                 break;
             case PaymentIntentService.RESULT_GET_PARAMETER_DYNAMIC_PAYMENT_NO_CONNECTION:
-                activitycom.Loading();
+                activitycom.FinishLoading();
                 NetworkErrorHelper.showDialog(getActivity(),
                         new NetworkErrorHelper.RetryClickedListener() {
                             @Override
@@ -284,6 +283,7 @@ public class FragmentCart extends TkpdFragment implements CartInterfaces.Fragmen
                 break;
             case PaymentIntentService.RESULT_STEP_1_PAYMENT_SUCCESS:
                 CarStep1Data cartData = resultData.getParcelable(PaymentIntentService.EXTRA_RESULT_STEP_1_PAYMENT);
+                activitycom.FinishLoading();
                 MainView.setVisibility(View.GONE);
                 activitycom.toSummaryCart(cartData);
                 break;
@@ -380,8 +380,8 @@ public class FragmentCart extends TkpdFragment implements CartInterfaces.Fragmen
         SaldoTokopedia = (EditText) view.findViewById(R.id.et_tkpd_balance);
         RpCurrency = (TextView) view.findViewById(R.id.rp_currency);
         ErrorArea = (TextView) view.findViewById(R.id.error_payment);
-        BalanceView = (View) view.findViewById(R.id.balance_view);
-        ButtonEditor = (View) view.findViewById(R.id.button_editor);
+        BalanceView = view.findViewById(R.id.balance_view);
+        ButtonEditor = view.findViewById(R.id.button_editor);
         MainView = (LinearLayout) view.findViewById(R.id.main_view);
         PaymentWrapper = view.findViewById(R.id.payment_wrapper);
         PaymentChooseBut = (TextView) view.findViewById(R.id.spinner_payment);
@@ -1128,7 +1128,7 @@ public class FragmentCart extends TkpdFragment implements CartInterfaces.Fragmen
                     if (isItemHighLight) {
                         return;
                     }
-                     popupMenu = new PopupMenu(context, v);
+                    popupMenu = new PopupMenu(context, v);
                     MenuInflater inflater = popupMenu.getMenuInflater();
                     inflater.inflate(R.menu.cart_item_menu, popupMenu.getMenu());
                     popupMenu.setOnMenuItemClickListener(new OnMenuItemClickListener() {
@@ -1201,6 +1201,7 @@ public class FragmentCart extends TkpdFragment implements CartInterfaces.Fragmen
 
                 @Override
                 public void onClick(View arg0) {
+                    if (EditMode) CancelEdit();
                     Bundle bundle = new Bundle();
                     bundle.putString("weight", Weight.get(currPos));
                     bundle.putString("shop_id", ShopID.get(currPos));
@@ -1225,6 +1226,7 @@ public class FragmentCart extends TkpdFragment implements CartInterfaces.Fragmen
 
                 @Override
                 public void onClick(View v) {
+                    if (EditMode) CancelEdit();
                     Bundle bundle = new Bundle();
                     bundle.putString("weight", Weight.get(currPos));
                     bundle.putString("shop_id", ShopID.get(currPos));
@@ -1265,8 +1267,8 @@ public class FragmentCart extends TkpdFragment implements CartInterfaces.Fragmen
         ItemContent.get(pos).vShopName.setText(ShopName.get(pos));
         setLuckyEmblem(luckyMerchantBadge.get(pos), ItemContent.get(pos).vShopName);
         ItemContent.get(pos).vTotalPrice.setText(TotalPrice.get(pos));
-        ItemContent.get(pos).vShippingAddress.setText(ShippingAddress.get(pos));
-        ItemContent.get(pos).vShippingAgency.setText(ShippingAgency.get(pos));
+        ItemContent.get(pos).vShippingAddress.setText(MessageFormat.format("{0} (Ubah) ", ShippingAddress.get(pos)));
+        ItemContent.get(pos).vShippingAgency.setText(MessageFormat.format("{0} (Ubah) ", ShippingAgency.get(pos)));
         ItemContent.get(pos).vTotalWeight.setText(TotalWeight.get(pos));
         ItemContent.get(pos).vSubTotal.setText(SubTotal.get(pos));
         ItemContent.get(pos).vShippingCost.setText(ShippingCost.get(pos));
@@ -1284,8 +1286,8 @@ public class FragmentCart extends TkpdFragment implements CartInterfaces.Fragmen
         ItemContent.get(pos).vShopName.setText(ShopName.get(pos));
         setLuckyEmblem(luckyMerchantBadge.get(pos), ItemContent.get(pos).vShopName);
         ItemContent.get(pos).vTotalPrice.setText(TotalPrice.get(pos));
-        ItemContent.get(pos).vShippingAddress.setText(ShippingAddress.get(pos));
-        ItemContent.get(pos).vShippingAgency.setText(ShippingAgency.get(pos));
+        ItemContent.get(pos).vShippingAddress.setText(MessageFormat.format("{0} (Ubah) ", ShippingAddress.get(pos)));
+        ItemContent.get(pos).vShippingAgency.setText(MessageFormat.format("{0} (Ubah) ", ShippingAgency.get(pos)));
         ItemContent.get(pos).vTotalWeight.setText(TotalWeight.get(pos));
         ItemContent.get(pos).vSubTotal.setText(SubTotal.get(pos));
         ItemContent.get(pos).vShippingCost.setText(ShippingCost.get(pos));
@@ -1320,7 +1322,7 @@ public class FragmentCart extends TkpdFragment implements CartInterfaces.Fragmen
                     @Override
                     public void onSuccess(CartModel model) {
 
-                        CommonUtils.dumper("GAv4 scrooge "+model.getGrandTotalIdr()+" entering cart ");
+                        CommonUtils.dumper("GAv4 scrooge " + model.getGrandTotalIdr() + " entering cart ");
 
                         GrandTotal = model.getGrandTotalIdr();
                         grandTotalWithoutLP = model.getGrandTotalWithoutLP();
@@ -1378,9 +1380,9 @@ public class FragmentCart extends TkpdFragment implements CartInterfaces.Fragmen
                                 purchase.setRevenue(model.getTransactionLists().get(i).getCartTotalProductPrice());
                                 purchase.setShipping(model.getTransactionLists().get(i).getCartShippingRate());
 
-                                try{
+                                try {
                                     shippingRate = shippingRate + Long.parseLong(model.getTransactionLists().get(i).getCartShippingRate());
-                                }catch (Exception e){
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
 
@@ -1433,7 +1435,7 @@ public class FragmentCart extends TkpdFragment implements CartInterfaces.Fragmen
                                     afItem.put(AFInAppEventParameterName.QUANTITY, detailProd.getProductQuantity());
 
                                     afProducts.add(afItem);
-                                    afProductIds.add(detailProd.getProductId()+"");
+                                    afProductIds.add(detailProd.getProductId() + "");
 
                                     checkoutAnalytics.addProduct(product.getProduct());
                                 }
@@ -1546,28 +1548,31 @@ public class FragmentCart extends TkpdFragment implements CartInterfaces.Fragmen
                                 ctr++;
                             }
 
-                            CommonUtils.dumper("GAv4 scrooge "+afQty+" price "+model.getGrandTotal()+" lp "+model.getLpAmount()+" size "+afAllItemsPurchased.length);
+                            CommonUtils.dumper("GAv4 scrooge " + afQty + " price " + model.getGrandTotal() + " lp " + model.getLpAmount() + " size " + afAllItemsPurchased.length);
                             addItemToLayout();
 
                             Gson afGSON = new Gson();
-                            String afpurchased = afGSON.toJson(afAllItemsPurchased, new TypeToken<Map[]>(){}.getType());
-                            String allPurchases = afGSON.toJson(allPurchase, new TypeToken<ArrayList<Purchase>>(){}.getType());
-                            String allLocaProducts = afGSON.toJson(locaProducts, new TypeToken<ArrayList<com.tokopedia.core.analytics.model.Product>>(){}.getType());
+                            String afpurchased = afGSON.toJson(afAllItemsPurchased, new TypeToken<Map[]>() {
+                            }.getType());
+                            String allPurchases = afGSON.toJson(allPurchase, new TypeToken<ArrayList<Purchase>>() {
+                            }.getType());
+                            String allLocaProducts = afGSON.toJson(locaProducts, new TypeToken<ArrayList<com.tokopedia.core.analytics.model.Product>>() {
+                            }.getType());
 
                             cache.putLong(Jordan.CACHE_LC_KEY_SHIPPINGRATE, shippingRate);
 
-                            cache.putString(Jordan.CACHE_LC_KEY_ALL_PRODUCTS,allLocaProducts);
+                            cache.putString(Jordan.CACHE_LC_KEY_ALL_PRODUCTS, allLocaProducts);
                             cache.putArrayListString(Jordan.CACHE_AF_KEY_JSONIDS, afProductIds);
                             cache.putInt(Jordan.CACHE_AF_KEY_QTY, afQty);
                             cache.putString(Jordan.CACHE_AF_KEY_ALL_PRODUCTS, afpurchased);
-                            cache.putString(Jordan.CACHE_AF_KEY_REVENUE, model.getGrandTotal()+"");
+                            cache.putString(Jordan.CACHE_AF_KEY_REVENUE, model.getGrandTotal() + "");
                             cache.putString(Jordan.CACHE_KEY_DATA_AR_ALLPURCHASE, allPurchases);
                             cache.applyEditor();
 
                             Map<String, Object> afValue = new HashMap<>();
                             afValue.put(AFInAppEventParameterName.PRICE, model.getGrandTotal());
                             afValue.put(AFInAppEventParameterName.CONTENT_ID, afProductIds);
-                            afValue.put(AFInAppEventParameterName.QUANTITY,afQty);
+                            afValue.put(AFInAppEventParameterName.QUANTITY, afQty);
                             afValue.put(AFInAppEventParameterName.CURRENCY, "IDR");
                             afValue.put("product", afAllItemsPurchased);
 
@@ -1992,7 +1997,7 @@ public class FragmentCart extends TkpdFragment implements CartInterfaces.Fragmen
                         myAlertDialog.setPositiveButton(context.getString(R.string.title_ok), new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface arg0, int arg1) {
                                 if (popupMenu != null) {
-                                     popupMenu.dismiss();
+                                    popupMenu.dismiss();
                                 }
                             }
 

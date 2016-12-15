@@ -42,7 +42,7 @@ public class Wishlist {
     Boolean isPreOrder;
     @SerializedName("badges")
     @Expose
-    public List<Badge> badges = new ArrayList<>();
+    public List<Badge> badges = new ArrayList<Badge>();
 
 
     public List<Badge> getBadges() {

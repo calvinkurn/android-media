@@ -33,6 +33,8 @@ public class OrderViewHolder extends BaseSellingViewHolder<OrderShippingList> {
     View MainView;
     @BindView(R2.id.order_date)
     TextView vOrderDate;
+    @BindView(R2.id.buyer_request_cancel)
+    TextView buyerRequestCancel;
 
     public OrderViewHolder(View itemView) {
         super(itemView);
@@ -47,6 +49,11 @@ public class OrderViewHolder extends BaseSellingViewHolder<OrderShippingList> {
         vOrderDate.setText(model.getOrderDetail().getDetailOrderDate());
         TotalTransaksi.setText(model.getOrderPayment().getPaymentKomisi());
         ImageHandler.loadImageCircle2(context, UserAvatar, model.getOrderCustomer().getCustomerImage());
+        if(model.getOrderDetail().getDetailCancelRequest() != null && model.getOrderDetail().getDetailCancelRequest().getCancelRequest() == 1){
+            buyerRequestCancel.setVisibility(View.VISIBLE);
+        }else{
+            buyerRequestCancel.setVisibility(View.GONE);
+        }
     }
 
     @Override

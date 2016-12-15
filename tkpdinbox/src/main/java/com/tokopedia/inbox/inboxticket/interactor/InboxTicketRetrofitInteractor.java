@@ -42,7 +42,7 @@ public interface InboxTicketRetrofitInteractor {
 
         void onError(String error);
 
-        void onNullData();
+        void onNullData(String replace);
 
         void onNoConnectionError();
 

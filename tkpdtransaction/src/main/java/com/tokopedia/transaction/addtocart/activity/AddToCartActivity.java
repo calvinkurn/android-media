@@ -575,8 +575,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             etQuantity.setFocusable(false);
             switch (requestCode) {
                 case REQUEST_CHOOSE_ADDRESS:
-                    renderFormAddress((Destination) data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS));
-                    this.orderData.setAddress((Destination) data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS));
+                    renderFormAddress(Destination.convertFromBundle(data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS)));
+                    this.orderData.setAddress(Destination.convertFromBundle(data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS)));
                     startCalculateCartLoading();
                     presenter.calculateKeroAddressShipping(this, orderData);
                     CommonUtils.dumper("rates/v1 kerorates called request choose address");

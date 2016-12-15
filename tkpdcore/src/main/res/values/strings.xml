@@ -318,6 +318,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
 Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
     <string name="tx_success_from">Transaksi Sukses dari </string>
     <string name="tx_title">Transaksi</string>
+    <string name="title_product_video">Video Produk</string>
     <!-- Strings related product info -->
 
 
@@ -551,7 +552,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
         <item>3</item>
         <item>4</item>
     </string-array>
-    <string name="sort_browse_catalog_product_sold">Product Terjual</string>
+    <string name="sort_browse_catalog_product_sold">Produk Terjual</string>
     <string name="sort_browse_catalog_lowest_price">Harga Terendah</string>
     <string name="sort_browse_catalog_highest_price">Harga Tertinggi</string>
     <string name="sort_browse_catalog_all_condition">Semua Kondisi</string>
@@ -863,7 +864,7 @@ Namun tidak perlu khawatir karena staff kami selalu melakukan pengecekan.]]>
     <string name="ORDER_DELIVERED">600</string>
     <string name="ORDER_DELIVERY_FAILURE">630</string>
     <string name="ORDER_DELIVERY_AUTOMATIC">699</string>
-    <string name="title_package_received">Paket diterima</string>
+    <string name="title_package_received">Paket Diterima</string>
     <string name="title_package_not_received">Paket belum diterima</string>
     <string name="dialog_package_received">
  <![CDATA[
@@ -1744,6 +1745,7 @@ di Tokopedia Sekarang!</string>
     <string name="action_report_as_spam">Laporkan sebagai spam</string>
     <string name="error_empty_home_menu">Data Home Menu Kosong</string>
     <string name="error_home_menu">Home Menu Error</string>
+    <string name="title_home">Home</string>
     <string name="try_again">Terjadi kesalahan. Mohon coba kembali.</string>
 
     <string name="need_permission_camera">Aplikasi ini membutuhkan izin untuk mengakses Kamera. Perbolehkan Android meminta izin?</string>
@@ -1800,6 +1802,8 @@ di Tokopedia Sekarang!</string>
     <string name="prompt_delete_talk">Apakah anda  yakin ingin menghapus diskusi ini?</string>
     <string name="product_image">Product Image</string>
     <string name="title_delete_discussion">Hapus diskusi</string>
+    <string name="buyer_request_cancel">Pembeli mengajukan pembatalan pesanan</string>
+    <string name="buyer_request_cancel_reason">Pembeli mengajukan pembatalan pesanan dengan alasan</string>
 
     <!-- BEGIN SELLER ON BOARDING RELATED STRING RESOURCE -->
     <string name="seller_onb_1_title">Manage Dashboard</string>
@@ -1815,5 +1819,18 @@ di Tokopedia Sekarang!</string>
 
     <string name="title_msisdn">Verifikasi Nomor HP</string>
     <string name="title_try_again_in">Coba lagi dalam :</string>
+    <string name="manage_default_page_title">Pengaturan</string>
+    <string name="manage_terms_and_conditions">Syarat dan Ketentuan</string>
+    <string name="manage_privacy">Kebijakan Privasi</string>
 
+
+
+    <!--START : string related to Product Picture Download -->
+    <string name="download_picture">Mengunduh gambar</string>
+    <string name="download_in_process">Unduh gambar dalam proses</string>
+    <string name="download_failed">Gambar gagal diunduh</string>
+    <string name="download_success">Gambar berhasil diunduh</string>
+    <string name="preview_picture_open_action">BUKA</string>
+    <string name="preview_picture_download_action">Download Gambar</string>
+    <string name="download_error">Terjadi kesalahan pengunduhan gambar</string>
 </resources>
