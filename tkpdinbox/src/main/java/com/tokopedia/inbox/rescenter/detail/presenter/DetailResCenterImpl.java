@@ -26,7 +26,6 @@ import com.tokopedia.inbox.rescenter.detail.interactor.RetrofitInteractorImpl;
 import com.tokopedia.inbox.rescenter.detail.listener.DetailResCenterView;
 import com.tokopedia.inbox.rescenter.detail.listener.ResCenterView;
 import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.DetailResCenterData;
-import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.ResCenterKurir;
 import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.ResCenterTrackShipping;
 import com.tokopedia.inbox.rescenter.detail.model.passdata.ActivityParamenterPassData;
 import com.tokopedia.inbox.rescenter.detail.service.DetailResCenterService;
@@ -244,56 +243,6 @@ public class DetailResCenterImpl implements DetailResCenterPresenter {
                     }
                 });
 
-    }
-
-    @Override
-    public void requestCourierList(@NonNull final Context context,
-                                   @NonNull final InputShippingRefNumDialog.Listener listener) {
-        retrofitInteractor.getKurirList(context,
-                new RetrofitInteractor.GetKurirListListener() {
-                    @Override
-                    public void onSuccess(ResCenterKurir resCenterKurirList) {
-                        globalCacheManager.setKey(view.getResolutionID());
-                        globalCacheManager.setValue(
-                                CacheUtil.convertModelToString(resCenterKurirList,
-                                        new TypeToken<ResCenterKurir>() {
-                                        }.getType()));
-                        globalCacheManager.setCacheDuration(1800000); // expired in 30minutes
-                        globalCacheManager.store();
-
-                        view.showInputShippingRefNumDialog(view.getResolutionID(), listener);
-                        Log.d(TAG, CacheUtil.convertModelToString(resCenterKurirList, new TypeToken<ResCenterKurir>() {
-                        }.getType()));
-                    }
-
-                    @Override
-                    public void onTimeOut(String message, NetworkErrorHelper.RetryClickedListener listener) {
-                        view.showTimeOutMessage();
-                    }
-
-                    @Override
-                    public void onFailAuth() {
-                    }
-
-                    @Override
-                    public void onThrowable(Throwable e) {
-                        for (int i = 0; i < e.getStackTrace().length; i++) {
-                            StackTraceElement[] stackTraceElements = e.getStackTrace();
-                            Log.d(TAG + "onThrowable", String.valueOf(stackTraceElements[i]));
-                        }
-                    }
-
-                    @Override
-                    public void onError(String message) {
-                        Log.d(TAG, message);
-                        view.showToastMessage(message);
-                    }
-
-                    @Override
-                    public void onNullData() {
-
-                    }
-                });
     }
 
     @Override

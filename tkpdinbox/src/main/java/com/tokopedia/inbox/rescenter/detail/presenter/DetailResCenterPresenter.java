@@ -32,9 +32,6 @@ public interface DetailResCenterPresenter {
     void requestTrackDelivery(@NonNull Context context,
                               @NonNull String url);
 
-    void requestCourierList(@NonNull Context context,
-                            @NonNull InputShippingRefNumDialog.Listener listener);
-
     void onEditShippingClickListener(@NonNull Context context,
                                      @NonNull String url);
 

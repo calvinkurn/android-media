@@ -2,7 +2,6 @@ package com.tokopedia.inbox.rescenter.detail.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
@@ -13,8 +12,8 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.R;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.inbox.rescenter.detail.customadapter.ShippingSpinnerAdapter;
-import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.ResCenterKurir;
+import com.tokopedia.inbox.rescenter.shipping.customadapter.ShippingSpinnerAdapter;
+import com.tokopedia.inbox.rescenter.shipping.model.ResCenterKurir;
 import com.tokopedia.inbox.rescenter.utils.LocalCacheManager;
 
 import java.util.List;
