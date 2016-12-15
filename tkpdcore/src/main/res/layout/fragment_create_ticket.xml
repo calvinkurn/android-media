@@ -86,6 +86,7 @@
                 android:layout_marginRight="@dimen/margin_small"
                 android:background="@android:color/white"
                 android:gravity="top"
+                android:inputType="phone"
                 android:padding="@dimen/padding_small"
                 android:textSize="@dimen/font_small" />
 

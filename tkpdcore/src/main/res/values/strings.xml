@@ -1832,4 +1832,5 @@ di Tokopedia Sekarang!</string>
     <string name="notification_error_ssl_cert_invalid">Invalid SSL Certificate. Apakah anda ingin melanjutkan?</string>
     <string name="title_email_address">Alamat Email</string>
     <string name="title_phone_optional">Nomor Telepon (Optional)</string>
+    <string name="error_attachment">Mohon tambahkan lampiran.</string>
 </resources>
