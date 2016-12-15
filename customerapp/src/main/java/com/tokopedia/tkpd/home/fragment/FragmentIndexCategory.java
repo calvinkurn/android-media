@@ -398,7 +398,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             @Override
             public void onSuccess(String result) {
                 try {
-                    ShopModel shopModel = new Gson().fromJson(result, 
+                    ShopModel shopModel = new Gson().fromJson(result,
                             com.tokopedia.core.shopinfo.models.shopmodel.ShopModel.class);
                     if (shopModel.info != null) {
                         JSONObject shop = new JSONObject(result);
