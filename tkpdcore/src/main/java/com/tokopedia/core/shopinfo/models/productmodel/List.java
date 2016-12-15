@@ -3,9 +3,6 @@ package com.tokopedia.core.shopinfo.models.productmodel;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.var.ProductItem;
-
-import java.util.ArrayList;
 
 public class List {
 
@@ -101,9 +98,9 @@ public class List {
     public String productWholesale;
     @SerializedName("badges")
     @Expose
-    public java.util.List<ProductItem.Badge> badges;
+    public java.util.List<com.tokopedia.core.var.Badge> badges;
     @SerializedName("labels")
     @Expose
-    public java.util.List<ProductItem.Label> labels;
+    public java.util.List<Label> labels;
 
 }

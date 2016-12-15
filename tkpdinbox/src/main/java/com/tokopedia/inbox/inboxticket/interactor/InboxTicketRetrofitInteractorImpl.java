@@ -104,7 +104,7 @@ public class InboxTicketRetrofitInteractorImpl implements InboxTicketRetrofitInt
                         listener.onSuccess(response.body().convertDataObj(InboxTicket.class));
 
                     } else {
-                        if (response.body().isNullData()) listener.onNullData();
+                        if (response.body().isNullData()) listener.onNullData(response.body().getErrorMessages().toString().replace("[","").replace("]",""));
                         else listener.onError(response.body().getErrorMessages().toString());
                     }
                 } else {

@@ -22,7 +22,9 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.customwidget.SquareImageView;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
+import com.tokopedia.core.shopinfo.models.productmodel.Label;
 import com.tokopedia.core.shopinfo.models.productmodel.List;
+import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.ProductItem;
 
@@ -30,8 +32,6 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static android.R.attr.tint;
 
 /**
  * Created by Tkpd_Eka on 10/9/2015.
@@ -76,15 +76,15 @@ public class ProductLargeDelegate {
         vholder.name.setText(MethodChecker.fromHtml(item.productName));
         vholder.price.setText(item.productPrice);
         if (item.labels == null) {
-            item.labels = new ArrayList<ProductItem.Label>();
+            item.labels = new ArrayList<Label>();
             if (item.productPreorder != null && item.productPreorder.equals("1")) {
-                ProductItem.Label label = new ProductItem.Label();
+                Label label = new Label();
                 label.setTitle(context.getString(R.string.preorder));
                 label.setColor(context.getString(R.string.white_hex_color));
                 item.labels.add(label);
             }
             if (item.productWholesale != null && item.productWholesale.equals("1")) {
-                ProductItem.Label label = new ProductItem.Label();
+                Label label = new Label();
                 label.setTitle(context.getString(R.string.grosir));
                 label.setColor(context.getString(R.string.white_hex_color));
                 item.labels.add(label);
@@ -99,7 +99,7 @@ public class ProductLargeDelegate {
     private void setLabels(VHolder holder, List data) {
         holder.containerLabel.removeAllViews();
         if (data.labels != null) {
-            for (ProductItem.Label label : data.labels) {
+            for (Label label : data.labels) {
                 View view = LayoutInflater.from(holder.mainView.getContext()).inflate(R.layout.label_layout, null);
                 TextView labelText = (TextView) view.findViewById(R.id.label);
                 labelText.setText(label.getTitle());
@@ -120,11 +120,11 @@ public class ProductLargeDelegate {
 
 
     private void setBadge(VHolder holder, List item) {
-        java.util.List<ProductItem.Badge> badgeList = item.badges;
+        java.util.List<Badge> badgeList = item.badges;
         holder.containerBadge.removeAllViews();
         if(badgeList != null) {
             for (int i = 0; i < badgeList.size(); i++) {
-                ProductItem.Badge badge = badgeList.get(i);
+                Badge badge = badgeList.get(i);
                 ImageView badgeImage = BadgeUtil.createDynamicBadge(holder.itemView.getContext());
                 badgeImage.setVisibility(View.GONE);
                 holder.containerBadge.addView(badgeImage);

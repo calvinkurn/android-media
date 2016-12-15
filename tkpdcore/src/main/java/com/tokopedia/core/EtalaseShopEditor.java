@@ -31,6 +31,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.customadapter.LazyListView;
 import com.tokopedia.core.customadapter.ListViewEtalaseEditor;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.shop.MyShopEtalaseActService;
 import com.tokopedia.core.network.apiservices.shop.MyShopEtalaseService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -57,6 +58,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+import com.tokopedia.core.R;
 
 public class EtalaseShopEditor extends TActivity {
 
@@ -130,15 +132,14 @@ public class EtalaseShopEditor extends TActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Pass the event to ActionBarDrawerToggle, if it returns
         // true, then it has handled the app icon touch event
-        switch (item.getItemId()) {
-            case R2.id.action_add_new:
-                ShowAddNewDialog();
-                return true;
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if(item.getItemId()==R.id.action_add_new){
+            ShowAddNewDialog();
+            return true;
+        }else if(item.getItemId()==android.R.id.home){
+            onBackPressed();
+            return true;
+        }else{
+            return super.onOptionsItemSelected(item);
         }
 
         // Handle your other action bar items...
@@ -193,6 +194,12 @@ public class EtalaseShopEditor extends TActivity {
                             @Override
                             public void onError(Throwable e) {
                                 Log.e(STUART, ETALASE_SHOP_EDITOR + "on error");
+                                NetworkErrorHelper.showEmptyState(EtalaseShopEditor.this, mainView, new NetworkErrorHelper.RetryClickedListener() {
+                                    @Override
+                                    public void onRetryClicked() {
+                                        GetEtalaseV4();
+                                    }
+                                });
                             }
 
                             @Override

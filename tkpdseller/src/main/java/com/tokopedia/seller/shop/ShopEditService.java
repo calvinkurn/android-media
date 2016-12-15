@@ -25,6 +25,7 @@ import com.tokopedia.core.network.retrofit.services.AuthService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.prototype.ShopSettingCache;
 import com.tokopedia.seller.shop.constant.ShopEditServiceConstant;
@@ -46,6 +47,7 @@ import org.parceler.Parcels;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -139,7 +141,7 @@ public class ShopEditService extends IntentService implements ShopEditServiceCon
         gson = new GsonBuilder().create();
         sessionHandler = new SessionHandler(getApplicationContext());
 
-        Map<String, String> params;
+        TKPDMapParam<String, String> params;
 
         switch (type) {
             case CREATE_SHOP:
@@ -159,8 +161,8 @@ public class ShopEditService extends IntentService implements ShopEditServiceCon
             case GET_SHOP_DATA:
                 sendRunningStatus(type);
                 service = new MyShopInfoService();
-                params = new HashMap<String, String>();
-                ((MyShopInfoService) service).getApi().getInfo(AuthUtil.generateParams(getApplicationContext(), params))
+                params = new TKPDMapParam<>();
+                ((MyShopInfoService) service).getApi().getInfo(AuthUtil.generateParamsNetwork(getApplicationContext(), params))
                         .subscribeOn(Schedulers.immediate())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Subscriber(type));
@@ -168,7 +170,7 @@ public class ShopEditService extends IntentService implements ShopEditServiceCon
             case POST_EDIT_DATA:
                 sendRunningStatus(type);
                 ShopEditorModel shopEditorModel = Parcels.unwrap(intent.getParcelableExtra(MODEL_EDIT_SHOP_DATA));
-                params = new HashMap<String, String>();
+                params = new TKPDMapParam<String, String>();
                 params.put("closed_note", "");
                 params.put("closed_until", "");
                 params.put("reason", "");
@@ -177,7 +179,7 @@ public class ShopEditService extends IntentService implements ShopEditServiceCon
                 params.put("status", "");
                 params.put("tag_line", shopEditorModel.getmShopSlogan());
                 service = new MyShopInfoActService();
-                ((MyShopInfoActService) service).getApi().updateInfo(AuthUtil.generateParams(getApplicationContext(), params))
+                ((MyShopInfoActService) service).getApi().updateInfo(AuthUtil.generateParamsNetwork(getApplicationContext(), params))
                         .subscribeOn(Schedulers.immediate())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Subscriber(type));
@@ -195,13 +197,13 @@ public class ShopEditService extends IntentService implements ShopEditServiceCon
             case UPDATE_SHOP_SCHEDULE:
                 sendRunningStatus(type);
                 ShopScheduleModel shopScheduleModel = Parcels.unwrap(intent.getParcelableExtra(MODEL_SCHEDULE_SHOP));
-                params = new HashMap<String, String>();
+                params = new TKPDMapParam<String, String>();
                 params.put("closed_note", shopScheduleModel.getClose_note());
                 params.put("close_start", shopScheduleModel.getClose_start());
                 params.put("close_end", shopScheduleModel.getClose_end());
                 params.put("close_action", shopScheduleModel.getClose_action().toString());
                 service = new MyShopInfoActService();
-                ((MyShopInfoActService) service).getApi().updateShopClose(AuthUtil.generateParams(getApplicationContext(), params))
+                ((MyShopInfoActService) service).getApi().updateShopClose(AuthUtil.generateParamsNetwork(getApplicationContext(), params))
                         .subscribeOn(Schedulers.immediate())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Subscriber(type));
@@ -521,9 +523,9 @@ public class ShopEditService extends IntentService implements ShopEditServiceCon
             @Override
             public Observable<Map<String, Object>> call(Map<String, Object> shopParams) {
 
-                HashMap<String, String> params = new HashMap<>();
+                TKPDMapParam<String, String> params = new TKPDMapParam<>();
                 params.put(SERVER_LANGUAGE, GOLANG_VALUE);
-                Observable<GenerateHostModel> result = new GenerateHostActService().getApi().generateHost2(AuthUtil.generateParams(getApplicationContext(), params));
+                Observable<GenerateHostModel> result = new GenerateHostActService().getApi().generateHost2(AuthUtil.generateParamsNetwork(getApplicationContext(), params));
 
                 return Observable.zip(Observable.just(shopParams)
                         , result,
@@ -611,11 +613,11 @@ public class ShopEditService extends IntentService implements ShopEditServiceCon
             @Override
             public Observable<Map<String, Object>> call(Map<String, Object> shopCreateParams) {
                 final UploadShopLogoData uploadShopLogoData = (UploadShopLogoData) shopCreateParams.get(UPLOAD_SHOP_LOGO_DATA);
-                Map<String, String> params = new HashMap<>();
+                TKPDMapParam<String, String> params = new TKPDMapParam<>();
                 params.put("pic_code", uploadShopLogoData.getData().getImage().getPicCode());
                 params.put("pic_src", uploadShopLogoData.getData().getImage().getPicSrc());
                 Observable<UpdateShopImageModel> uploadProductImageDataObservable =
-                        new MyShopInfoActService().getApi().updatePictureNew(AuthUtil.generateParams(getApplicationContext(), params));
+                        new MyShopInfoActService().getApi().updatePictureNew(AuthUtil.generateParamsNetwork(getApplicationContext(), params));
 
                 return Observable.zip(Observable.just(shopCreateParams), uploadProductImageDataObservable,
                         new Func2<Map<String, Object>, UpdateShopImageModel, Map<String, Object>>() {
@@ -637,15 +639,26 @@ public class ShopEditService extends IntentService implements ShopEditServiceCon
 
                 UploadShopLogoData uploadShopLogoData = (UploadShopLogoData) (shopParams.get(UPLOAD_SHOP_LOGO_DATA));
                 HashMap<String, String> openShopValidationParam = (HashMap<String, String>) (shopParams.get(OPEN_SHOP_VALIDATION_PARAM));
+                
+                //[START] change generate param to new param
+                Iterator<String> iterator = openShopValidationParam.keySet().iterator();
+                TKPDMapParam<String, String> openShopValidationParam2 = new TKPDMapParam<>();
+                for(;iterator.hasNext();) {
+                    String next = iterator.next();
+                    String s = openShopValidationParam.get(next);
+                    openShopValidationParam2.put(next,s);
+                }
 
                 if (uploadShopLogoData != null) {
                     // Add Shop Logo to the Parameter
                     openShopValidationParam.put(SHOP_LOGO, uploadShopLogoData.getData().getUpload().getSrc());
+                    openShopValidationParam2.put(SHOP_LOGO, uploadShopLogoData.getData().getUpload().getSrc());
                 }
+                //[END] change generate param to new param
 
                 service = new MyShopActService();
                 Observable<OpenShopValidationData> result = ((MyShopActService) service).getApi().openShopValidationNew(
-                        AuthUtil.generateParams(getApplicationContext(), openShopValidationParam));
+                        AuthUtil.generateParamsNetwork(getApplicationContext(), openShopValidationParam2));
 
                 return Observable.zip(Observable.just(shopParams), result,
                         new Func2<Map<String, Object>, OpenShopValidationData, Map<String, Object>>() {
@@ -691,10 +704,10 @@ public class ShopEditService extends IntentService implements ShopEditServiceCon
                 GenerateHostModel generateHostModel = (GenerateHostModel) shopParams.get(GENERATE_HOST_MODEL);
                 GenerateHostModel.GenerateHost generateHost = generateHostModel.getData().getGenerateHost();
 
-                Map<String, String> params = new HashMap<>();
+                TKPDMapParam<String, String> params = new TKPDMapParam<>();
                 params.put("shop_logo", shopLogo);
                 params.put("server_id", generateHost.getServerId());
-                Observable<OpenShopPictureModel> result = new MyShopActAfterService(HTTPS + generateHost.getUploadHost() + "/web-service/v4/action/upload-image-helper/").getApi().openShopPicture(AuthUtil.generateParams(getApplicationContext(), params));
+                Observable<OpenShopPictureModel> result = new MyShopActAfterService(HTTPS + generateHost.getUploadHost() + "/web-service/v4/action/upload-image-helper/").getApi().openShopPicture(AuthUtil.generateParamsNetwork(getApplicationContext(), params));
 
                 return Observable.zip(Observable.just(shopParams), result,
                         new Func2<Map<String, Object>, OpenShopPictureModel, Map<String, Object>>() {
@@ -715,8 +728,8 @@ public class ShopEditService extends IntentService implements ShopEditServiceCon
         };
     }
 
-    static HashMap<String, String> openShopSubmitCreateParam(String fileUploaded, String postKey) {
-        HashMap<String, String> param = new HashMap<>();
+    static TKPDMapParam<String, String> openShopSubmitCreateParam(String fileUploaded, String postKey) {
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("file_uploaded", fileUploaded);
         param.put("post_key", postKey);
         return param;
@@ -742,7 +755,7 @@ public class ShopEditService extends IntentService implements ShopEditServiceCon
 
                 service = new MyShopActService();
                 Observable<OpenShopSubmitData> result = ((MyShopActService) service).getApi().openShopSubmitNew(
-                        AuthUtil.generateParams(getApplicationContext(), openShopSubmitCreateParam(fileUploaded, postKey)));
+                        AuthUtil.generateParamsNetwork(getApplicationContext(), openShopSubmitCreateParam(fileUploaded, postKey)));
 
                 return Observable.zip(Observable.just(shopParams), result,
                         new Func2<Map<String, Object>, OpenShopSubmitData, Map<String, Object>>() {

@@ -144,6 +144,7 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
                         }else if(item.getTitle().equals("Wanita")){
                             presenter.updateData(RegisterNewNext.GENDER, RegisterViewModel.GENDER_FEMALE);
                         }
+                        KeyboardHandler.DropKeyboard(getActivity(),getView());
                         return true;
                     }
                 });
@@ -251,6 +252,7 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
     @OnClick(R2.id.register_finish_button)
     public void registerFinish(){
         String mPhone = registerNextPhoneNumber.getText().toString();
+        mPhone = mPhone.replace("-","");
         String mBirthDay = dateText.getText().toString();
 
         View focusView = null;
@@ -289,7 +291,7 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
         } else {
             View view = getActivity().getCurrentFocus();
             KeyboardHandler.DropKeyboard(getActivity(),view);
-            RegisterViewModel registerViewModel = presenter.compileAll(name, registerNextPhoneNumber.getText().toString());
+            RegisterViewModel registerViewModel = presenter.compileAll(name, mPhone);
             sendGTMClickStepTwo();
             presenter.register(getActivity(), registerViewModel);
         }
@@ -418,7 +420,7 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
 
                 TrackingUtils.fragmentBasedAFEvent(SessionRouter.IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT);
 
-                RegisterSuccessModel registerSuccessModel = Parcels.unwrap(data.getParcelable(DownloadService.REGISTER_MODEL_KEY));
+                RegisterSuccessModel registerSuccessModel = data.getParcelable(DownloadService.REGISTER_MODEL_KEY);
                 switch (registerSuccessModel.getIsActive()){
                     case RegisterSuccessModel.USER_PENDING:
                         sendLocalyticsRegisterEvent(registerSuccessModel.getUserId());

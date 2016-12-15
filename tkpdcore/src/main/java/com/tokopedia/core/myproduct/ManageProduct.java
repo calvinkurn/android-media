@@ -307,16 +307,15 @@ public class ManageProduct extends TkpdActivity implements
             public boolean onMenuItemSelected(MenuItem menuItem) {
                 int id = menuItem.getItemId();
 
-                switch (id) {
-                    case R2.id.action_instagram:
-                        onAddInstagram();
-                        break;
-                    case R2.id.action_gallery:
-                        ManageProductPermissionsDispatcher.onAddFromGalleryWithCheck(ManageProduct.this);
-                        break;
-                    case R2.id.action_camera:
-                        ManageProductPermissionsDispatcher.onAddFromCameraWithCheck(ManageProduct.this);
-                        break;
+                if (id == R.id.action_instagram) {
+                    onAddInstagram();
+
+                } else if (id == R.id.action_gallery) {
+                    ManageProductPermissionsDispatcher.onAddFromGalleryWithCheck(ManageProduct.this);
+
+                } else if (id == R.id.action_camera) {
+                    ManageProductPermissionsDispatcher.onAddFromCameraWithCheck(ManageProduct.this);
+
                 }
                 return false;
             }
@@ -383,7 +382,6 @@ public class ManageProduct extends TkpdActivity implements
 
         mReceiver = new DownloadResultReceiver(new Handler());
         mReceiver.setReceiver(this);
-
 
 
     }
@@ -457,42 +455,31 @@ public class ManageProduct extends TkpdActivity implements
             @Override
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                 // Respond to clicks on the actions in the CAB
-                switch (item.getItemId()) {
-                    // :)
-                    case R2.id.action_update_etalase:
-                        ActionTaken = true;
-                        ShowEtalaseChange();
-                        mode.finish();
-                        return true;
-                    case R2.id.action_update_categories:
-                        ActionTaken = true;
-                        ShowCategoriesChange();
-                        mode.finish();
-                        return true;
-/*				case R2.shopId.action_update_condition:
+                if (item.getItemId() == R.id.action_update_etalase) {
                     ActionTaken = true;
-					ShowConditionChange();
-					//=====================================DUMPER KRIS
-					CommonUtils.dumper("UPDATE CONDITION");
-					//=====================================
-					mode.finish();
-					return true;*/
-                    case R2.id.action_update_insurance:
-                        ActionTaken = true;
-                        ShowInsuranceChange();
-                        mode.finish();
-                        return true;
-                    case R2.id.action_update_returnable:
-                        ActionTaken = true;
-                        changeMultipleReturnable();
-                        mode.finish();
-                        return true;
-                    case R2.id.action_delete:
-                        ActionTaken = true;
-                        ShowDeleteChange();
-                        mode.finish();
-                        return true;
-
+                    ShowEtalaseChange();
+                    mode.finish();
+                    return true;
+                } else if (item.getItemId() == R.id.action_update_categories) {
+                    ActionTaken = true;
+                    ShowCategoriesChange();
+                    mode.finish();
+                    return true;
+                } else if (item.getItemId() == R.id.action_update_insurance) {
+                    ActionTaken = true;
+                    ShowInsuranceChange();
+                    mode.finish();
+                    return true;
+                } else if (item.getItemId() == R.id.action_update_returnable) {
+                    ActionTaken = true;
+                    changeMultipleReturnable();
+                    mode.finish();
+                    return true;
+                } else if (item.getItemId() == R.id.action_delete) {
+                    ActionTaken = true;
+                    ShowDeleteChange();
+                    mode.finish();
+                    return true;
                 }
                 mode.finish();
                 return false;
@@ -737,23 +724,21 @@ public class ManageProduct extends TkpdActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            // Respond to the action bar's Up/Home button
-            case R2.id.add_product:
-                if (isProdManager == 1) {
-                    ProductActivity.moveToAddProduct(this);
-                } else {
-                    CommonUtils.UniversalToast(getBaseContext(),
-                            getString(R.string.error_permission));
-                }
-                return true;
-            case R2.id.filter:
-                ShowFilterDialog();
-                return true;
-            case R2.id.sort:
-                if (!loading)
-                    SortDialog.show();
-                return true;
+        if (item.getItemId() == R.id.add_product) {
+            if (isProdManager == 1) {
+                ProductActivity.moveToAddProduct(this);
+            } else {
+                CommonUtils.UniversalToast(getBaseContext(),
+                        getString(R.string.error_permission));
+            }
+            return true;
+        } else if (item.getItemId() == R.id.filter) {
+            ShowFilterDialog();
+            return true;
+        } else if (item.getItemId() == R.id.sort) {
+            if (!loading)
+                SortDialog.show();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -1498,7 +1483,8 @@ public class ManageProduct extends TkpdActivity implements
         spinnerCat3.setVisibility(View.GONE);
 
         List<CategoryDB> level1 =
-                DbManagerImpl.getInstance().getDepartmentParent();;
+                DbManagerImpl.getInstance().getDepartmentParent();
+        ;
         data = new ArrayList<>();
         data_id = new ArrayList<>();
         for (CategoryDB lvl1 : level1) {
@@ -2580,22 +2566,22 @@ public class ManageProduct extends TkpdActivity implements
 
     @OnPermissionDenied(Manifest.permission.CAMERA)
     void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(this,Manifest.permission.CAMERA);
+        RequestPermissionUtil.onPermissionDenied(this, Manifest.permission.CAMERA);
     }
 
     @OnNeverAskAgain(Manifest.permission.CAMERA)
     void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(this,Manifest.permission.CAMERA);
+        RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.CAMERA);
     }
 
     @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(this,Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onPermissionDenied(this, Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
     @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(this,Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
     @OnPermissionDenied({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
@@ -2604,7 +2590,7 @@ public class ManageProduct extends TkpdActivity implements
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
 
-        RequestPermissionUtil.onPermissionDenied(this,listPermission);
+        RequestPermissionUtil.onPermissionDenied(this, listPermission);
     }
 
     @OnNeverAskAgain({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
@@ -2613,7 +2599,7 @@ public class ManageProduct extends TkpdActivity implements
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
 
-        RequestPermissionUtil.onNeverAskAgain(this,listPermission);
+        RequestPermissionUtil.onNeverAskAgain(this, listPermission);
     }
 
 }

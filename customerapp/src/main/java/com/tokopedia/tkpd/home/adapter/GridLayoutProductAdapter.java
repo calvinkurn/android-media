@@ -26,9 +26,12 @@ import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.var.Badge;
+import com.tokopedia.core.var.Label;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.presenter.WishListView;
 
 import java.util.ArrayList;
@@ -133,15 +136,15 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
         viewHolder.shopName.setText(MethodChecker.fromHtml(product.shop));
         setProductImage(viewHolder, product);
         if(product.labels == null) {
-            product.labels = new ArrayList<ProductItem.Label>();
+            product.labels = new ArrayList<Label>();
             if (product.preorder != null && product.preorder.equals("1")) {
-                ProductItem.Label label = new ProductItem.Label();
+                Label label = new Label();
                 label.setTitle(context.getString(R.string.preorder));
                 label.setColor(context.getString(R.string.white_hex_color));
                 product.labels.add(label);
             }
             if (product.wholesale != null && product.wholesale.equals("1")) {
-                ProductItem.Label label = new ProductItem.Label();
+                Label label = new Label();
                 label.setTitle(context.getString(R.string.grosir));
                 label.setColor(context.getString(R.string.white_hex_color));
                 product.labels.add(label);
@@ -159,15 +162,15 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
         viewHolder.shopName.setText(MethodChecker.fromHtml(product.shop));
         setProductImage(viewHolder, product);
         if(product.labels == null) {
-            product.labels = new ArrayList<ProductItem.Label>();
+            product.labels = new ArrayList<Label>();
             if (product.preorder != null && product.preorder.equals("1")) {
-                ProductItem.Label label = new ProductItem.Label();
+                Label label = new Label();
                 label.setTitle(context.getString(R.string.preorder));
                 label.setColor(context.getString(R.string.white_hex_color));
                 product.labels.add(label);
             }
             if (product.wholesale != null && product.wholesale.equals("1")) {
-                ProductItem.Label label = new ProductItem.Label();
+                Label label = new Label();
                 label.setTitle(context.getString(R.string.grosir));
                 label.setColor(context.getString(R.string.white_hex_color));
                 product.labels.add(label);
@@ -176,12 +179,12 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
         if(product.badges == null){
             product.badges = new ArrayList<>();
             if(product.isGold.equals("1")){
-                ProductItem.Badge badge = new ProductItem.Badge();
+                Badge badge = new Badge();
                 badge.setImageUrl("https://ecs7.tokopedia.net/img/gold-active-large.png");
                 product.badges.add(badge);
             }
             if(!product.luckyShop.isEmpty()){
-                ProductItem.Badge badge = new ProductItem.Badge();
+                Badge badge = new Badge();
                 badge.setImageUrl(product.luckyShop);
                 product.badges.add(badge);
             }
@@ -223,7 +226,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
 
     private void setBadges(ViewHolder holder, ProductItem data) {
         if (data.getBadges() != null && holder.badgeContainer.getChildCount() == 0) {
-            for (ProductItem.Badge badges : data.getBadges()) {
+            for (Badge badges : data.getBadges()) {
                 LuckyShopImage.loadImage(context, badges.getImageUrl(), holder.badgeContainer);
             }
         }
@@ -236,7 +239,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
     private void setLabels(ViewHolder holder, ProductItem data){
         holder.labelContainer.removeAllViews();
         if(data.getLabels() != null){
-            for (ProductItem.Label label : data.getLabels()) {
+            for (Label label : data.getLabels()) {
                 View view = LayoutInflater.from(context).inflate(R.layout.label_layout, null);
                 TextView labelText = (TextView) view.findViewById(R.id.label);
                 labelText.setText(label.getTitle());

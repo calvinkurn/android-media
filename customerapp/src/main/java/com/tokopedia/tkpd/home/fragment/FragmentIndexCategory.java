@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.PagerAdapter;
@@ -52,7 +51,7 @@ import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.util.NonScrollLayoutManager;
+import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.tkpd.R;
@@ -70,7 +69,6 @@ import com.tokopedia.tkpd.home.recharge.adapter.RechargeViewPagerAdapter;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenter;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenterImpl;
 import com.tokopedia.tkpd.home.recharge.view.RechargeCategoryView;
-import com.tokopedia.tkpd.home.util.DividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -229,7 +227,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams) holder.bannerViewPager.getLayoutParams();
             DisplayMetrics metrics = new DisplayMetrics();
             getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-            param.height = metrics.widthPixels / 2;
+            //param.height = metrics.widthPixels / 2;
             holder.bannerViewPager.setLayoutParams(param);
             holder.wrapperScrollview.smoothScrollTo(0, 0);
             startSlide();
@@ -361,7 +359,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
 
         holder.categoriesRecylerview.setLayoutManager(
-                new NonScrollLayoutManager(getActivity(),
+                new NonScrollLinearLayoutManager(getActivity(),
                         LinearLayoutManager.VERTICAL,
                         false)
         );

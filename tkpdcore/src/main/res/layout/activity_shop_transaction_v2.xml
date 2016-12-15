@@ -21,7 +21,6 @@
             android:fadeScrollbars="false"
             android:visibility="gone" />
 
-
         <android.support.v4.view.ViewPager
             android:id="@+id/pager"
             android:layout_width="match_parent"

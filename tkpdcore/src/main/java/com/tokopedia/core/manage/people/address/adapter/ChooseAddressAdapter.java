@@ -18,6 +18,7 @@ import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.manage.people.address.presenter.ChooseAddressFragmentPresenterImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,7 +106,7 @@ public class ChooseAddressAdapter extends BaseLinearRecyclerViewAdapter {
                 bundle.putParcelable(ManageAddressConstant.EDIT_PARAM, list.get(position));
                 bundle.putBoolean(ManageAddressConstant.IS_EDIT, true);
                 intent.putExtras(bundle);
-                context.startActivity(intent);
+                ((Activity) context).startActivityForResult(intent, ChooseAddressFragmentPresenterImpl.REQUEST_CHOOSE_ADDRESS_CODE);
             }
         });
 
@@ -127,7 +128,7 @@ public class ChooseAddressAdapter extends BaseLinearRecyclerViewAdapter {
 
     @Override
     public int getItemCount() {
-        return list.size() + super.getItemCount() ;
+        return list.size() + super.getItemCount();
     }
 
     public static ChooseAddressAdapter createInstance(Context context) {

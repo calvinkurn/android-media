@@ -1,5 +1,6 @@
 package com.tokopedia.seller.shop;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,22 +14,26 @@ import android.widget.FrameLayout;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.myproduct.fragment.AddProductFragment;
 import com.tokopedia.core.myproduct.utils.UploadPhotoTask;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.shipping.OpenShopEditShipping;
 import com.tokopedia.core.shipping.fragment.EditShippingViewListener;
 import com.tokopedia.core.shipping.model.openshopshipping.OpenShopData;
+import com.tokopedia.seller.Router;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.shop.fragment.ShopCreateFragment;
 import com.tokopedia.seller.shop.fragment.ShopEditorFragment;
 import com.tokopedia.seller.shop.presenter.ShopCreateView;
 import com.tokopedia.seller.shop.presenter.ShopEditorView;
 import com.tokopedia.seller.shop.presenter.ShopSettingView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.util.SessionHandler;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -48,6 +53,7 @@ public class ShopEditorActivity extends TkpdActivity implements
 
     @BindView(R2.id.container)
     FrameLayout container;
+    private String onBack;
 
     @Override
     public String getScreenName() {
@@ -105,7 +111,13 @@ public class ShopEditorActivity extends TkpdActivity implements
 
     @Override
     public void onBackPressed() {
-        finish();
+        if(onBack == null || onBack.equals(FINISH)) {
+            finish();
+        }else if(onBack.equals(LOG_OUT)){
+            SessionHandler session = new SessionHandler(this);
+            session.Logout(this);
+            UnifyTracking.eventDrawerClick((AppEventTracking.EventLabel.SIGN_OUT));
+        }
     }
 
     public static void startOpenShopEditShippingActivity(AppCompatActivity context){
@@ -141,6 +153,7 @@ public class ShopEditorActivity extends TkpdActivity implements
                         break;
                 }
             }
+            onBack = intent.getExtras().getString(ON_BACK);
         }
     }
 
@@ -149,20 +162,17 @@ public class ShopEditorActivity extends TkpdActivity implements
         return supportFragmentManager.findFragmentByTag(tag) == null;
     }
 
-    public static void finishActivity(Bundle bundle, Context context) {
-        Intent intent2 = new Intent(context,
-                HomeRouter.getHomeActivityClass());
-        intent2.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        context.startActivity(intent2);
-        Intent intent = new Intent(context, ShopInfoActivity.class);
+    public static void finishActivity(Bundle bundle, Activity activity) {
+        Router.goToHome(activity);
+        Intent intent = new Intent(activity, ShopInfoActivity.class);
         intent.putExtras(bundle);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        context.startActivity(intent);
-        if(context instanceof AppCompatActivity){
-            ((AppCompatActivity)context).finish();
+        activity.startActivity(intent);
+        if(activity instanceof AppCompatActivity){
+            ((AppCompatActivity)activity).finish();
         }
-        if(context instanceof TkpdActivity){
-            ((TkpdActivity)context).onGetNotif();
+        if(activity instanceof TkpdActivity){
+            ((TkpdActivity)activity).onGetNotif();
         }
         TrackingUtils.eventLoca("event : open store");
     }

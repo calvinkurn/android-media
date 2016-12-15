@@ -1,12 +1,9 @@
 package com.tokopedia.sellerapp.onboarding.fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +12,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.core.msisdn.activity.MsisdnActivity;
 import com.tokopedia.core.onboarding.fragment.OnBoardingFragment;
 import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.sellerapp.R;
 
 public class OnBoardingSellerFragment extends OnBoardingFragment {
@@ -36,15 +35,15 @@ public class OnBoardingSellerFragment extends OnBoardingFragment {
 
 
     public static OnBoardingSellerFragment newInstance(CharSequence title, CharSequence subTitle, CharSequence description,
-                                                 int imageDrawable, int bgColor, int viewType) {
+                                                       int imageDrawable, int bgColor, int viewType) {
         return newInstance(title, subTitle, description, imageDrawable, bgColor, 0, 0, viewType);
     }
 
 
     public static OnBoardingSellerFragment newInstance(CharSequence title, CharSequence subTitle, CharSequence description,
-                                                 int imageDrawable, int bgColor,
-                                                 int titleColor, int descColor,
-                                                 int viewType) {
+                                                       int imageDrawable, int bgColor,
+                                                       int titleColor, int descColor,
+                                                       int viewType) {
         OnBoardingSellerFragment sampleSlide = new OnBoardingSellerFragment();
 
         Bundle args = new Bundle();
@@ -116,7 +115,7 @@ public class OnBoardingSellerFragment extends OnBoardingFragment {
     }
 
     private View inflateEndingView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_onboarding_intro_ending, container, false);
+        View v = inflater.inflate(R.layout.fragment_onboarding_intro_ending_seller, container, false);
         TextView t = (TextView) v.findViewById(R.id.title);
         TextView subTitleTextView = (TextView) v.findViewById(R.id.sub_title);
         TextView d = (TextView) v.findViewById(R.id.description);
@@ -136,18 +135,28 @@ public class OnBoardingSellerFragment extends OnBoardingFragment {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = SellerRouter.getAcitivityShopCreateEdit(getActivity());
-                intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
-                        SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
-                startActivity(intent);
-                getActivity().finish();
+                Intent intent;
+                if (SessionHandler.isMsisdnVerified()) {
+                    intent = SellerRouter.getAcitivityShopCreateEdit(getActivity());
+                    intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
+                            SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
+                    intent.putExtra(SellerRouter.ShopSettingConstant.ON_BACK, SellerRouter.ShopSettingConstant.LOG_OUT);
+                    startActivity(intent);
+                    getActivity().finish();
+                } else {
+                    intent = new Intent(getActivity(), MsisdnActivity.class);
+                    intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
+                            SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
+                    startActivity(intent);
+                    getActivity().finish();
+                }
             }
         });
         return v;
     }
 
     private View inflateDefaultView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_onboarding_intro, container, false);
+        View v = inflater.inflate(R.layout.fragment_onboarding_intro_seller, container, false);
         TextView t = (TextView) v.findViewById(R.id.title);
         TextView subTitleTextView = (TextView) v.findViewById(R.id.sub_title);
         TextView d = (TextView) v.findViewById(R.id.description);

@@ -635,15 +635,14 @@ public class ReputationViewShop extends TActivity {
         return new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R2.id.action_report:
-                        showDialogReport();
-                        return true;
-                    case R2.id.action_delete:
-                        deleteComment();
-                        return true;
-                    default:
-                        return false;
+                if (item.getItemId() == R.id.action_report) {
+                    showDialogReport();
+                    return true;
+                } else if (item.getItemId() == R.id.action_delete) {
+                    deleteComment();
+                    return true;
+                } else {
+                    return false;
                 }
             }
         };

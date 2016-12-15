@@ -27,6 +27,7 @@ import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 
 import butterknife.BindView;
 
@@ -170,6 +171,7 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventDepositTopUp();
                 Bundle bundle = new Bundle();
                 bundle.putString("url", url);
                 Intent intent = new Intent(context, LoyaltyDetail.class);

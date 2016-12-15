@@ -46,7 +46,7 @@ public class CatalogSpec implements Parcelable {
 
     protected CatalogSpec(Parcel in) {
         this.specHeader = in.readString();
-        this.specChildList = new ArrayList<SpecChild>();
+        this.specChildList = new ArrayList<>();
         in.readList(this.specChildList, SpecChild.class.getClassLoader());
     }
 

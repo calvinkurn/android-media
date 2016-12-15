@@ -61,7 +61,7 @@ public class MainApplication extends TkpdMultiDexApplication {
     public static MainApplication instance;
     private static GlobalConfig GlobalConfig;
 
-    protected int getApplicationType(){
+    public int getApplicationType(){
         return DEFAULT_APPLICATION_TYPE;
     }
 

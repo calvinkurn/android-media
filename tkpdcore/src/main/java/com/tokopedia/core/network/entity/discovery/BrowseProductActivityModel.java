@@ -1,26 +1,17 @@
-/*
- * Created By Kulomady on 11/25/16 11:12 PM
- * Copyright (c) 2016. All rights reserved
- *
- * Last Modified 11/25/16 11:12 PM
- */
-
 package com.tokopedia.core.network.entity.discovery;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 
-import org.parceler.Parcel;
-
+import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by noiz354 on 7/15/16.
- */
-@Parcel
-public class BrowseProductActivityModel {
+public class BrowseProductActivityModel implements Parcelable {
     protected String parentDepartement = "0";
     protected String departmentId = "0";
     protected int fragmentId = BrowseProductRouter.VALUES_INVALID_FRAGMENT_ID;
@@ -152,4 +143,73 @@ public class BrowseProductActivityModel {
     public String toString() {
         return new Gson().toJson(this);
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.parentDepartement);
+        dest.writeString(this.departmentId);
+        dest.writeInt(this.fragmentId);
+        dest.writeString(this.adSrc);
+        dest.writeParcelable((Parcelable) this.hotListBannerModel, flags);
+        dest.writeString(this.alias);
+        dest.writeString(this.q);
+        dest.writeString(this.ob);
+        dest.writeString(this.obCatalog);
+        dest.writeByte(this.isSearchDeeplink ? (byte) 1 : (byte) 0);
+        dest.writeString(this.source);
+        dest.writeInt(this.activeTab);
+        dest.writeString(this.unique_id);
+        if (filterOptions != null) {
+            dest.writeInt(this.filterOptions.size());
+            for (Map.Entry<String, String> entry : this.filterOptions.entrySet()) {
+                dest.writeString(entry.getKey());
+                dest.writeString(entry.getValue());
+            }
+        }
+    }
+
+    public BrowseProductActivityModel() {
+    }
+
+    protected BrowseProductActivityModel(Parcel in) {
+        this.parentDepartement = in.readString();
+        this.departmentId = in.readString();
+        this.fragmentId = in.readInt();
+        this.adSrc = in.readString();
+        this.hotListBannerModel = in.readParcelable(HotListBannerModel.class.getClassLoader());
+        this.alias = in.readString();
+        this.q = in.readString();
+        this.ob = in.readString();
+        this.obCatalog = in.readString();
+        this.isSearchDeeplink = in.readByte() != 0;
+        this.source = in.readString();
+        this.activeTab = in.readInt();
+        this.unique_id = in.readString();
+        int filterOptionsSize = in.readInt();
+        this.filterOptions = new HashMap<>(filterOptionsSize);
+        for (int i = 0; i < filterOptionsSize; i++) {
+            String key = in.readString();
+            String value = in.readString();
+            this.filterOptions.put(key, value);
+        }
+    }
+
+    public static final Parcelable.Creator<BrowseProductActivityModel> CREATOR
+            = new Parcelable.Creator<BrowseProductActivityModel>() {
+        @Override
+        public BrowseProductActivityModel createFromParcel(Parcel source) {
+            return new BrowseProductActivityModel(source);
+        }
+
+        @Override
+        public BrowseProductActivityModel[] newArray(int size) {
+            return new BrowseProductActivityModel[size];
+        }
+    };
 }

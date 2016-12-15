@@ -237,6 +237,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     @Override
     public void hideProgressLoading() {
         progressDialog.dismiss();
+        calculateCartProgressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -369,6 +370,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 spShippingAgency.setSelection(i);
             }
         }
+        btnBuy.setEnabled(true);
     }
 
     @Override
@@ -410,12 +412,14 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
 
     @Override
     public void disableBuyButton() {
+        CommonUtils.dumper("buyrel disabled button called");
         btnBuy.setEnabled(false);
     }
 
     @Override
     public void enableBuyButton() {
         finishCalculateCartLoading();
+        CommonUtils.dumper("buyrel enabled button called");
         btnBuy.setEnabled(true);
     }
 
@@ -572,8 +576,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             etQuantity.setFocusable(false);
             switch (requestCode) {
                 case REQUEST_CHOOSE_ADDRESS:
-                    renderFormAddress((Destination) data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS));
-                    this.orderData.setAddress((Destination) data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS));
+                    renderFormAddress(Destination.convertFromBundle(data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS)));
+                    this.orderData.setAddress(Destination.convertFromBundle(data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS)));
                     startCalculateCartLoading();
                     presenter.calculateKeroAddressShipping(this, orderData);
                     CommonUtils.dumper("rates/v1 kerorates called request choose address");

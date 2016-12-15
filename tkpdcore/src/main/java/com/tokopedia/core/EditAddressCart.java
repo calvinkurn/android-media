@@ -145,7 +145,7 @@ public class EditAddressCart extends TActivity {
 
 
         loadingBar = (ProgressBar) findViewById(R.id.loading_calculate);
-        ShipCostView = (View) findViewById(R.id.shipping_price_view);
+        ShipCostView = findViewById(R.id.shipping_price_view);
         Address = (TextView) findViewById(R.id.address_detail);
         BuyBut = (TextView) findViewById(R.id.buy_button);
         AddressTitle = (TextView) findViewById(R.id.title_address);
@@ -562,9 +562,7 @@ public class EditAddressCart extends TActivity {
             public void onError(String message) {
                 container.setVisibility(View.GONE);
                 progressdialog.dismiss();
-                NetworkErrorHelper.showEmptyState(EditAddressCart.this,
-                        getWindow().getDecorView().getRootView(),
-                        message,
+                NetworkErrorHelper.showEmptyState(EditAddressCart.this, parentView, message,
                         new NetworkErrorHelper.RetryClickedListener() {
                             @Override
                             public void onRetryClicked() {
@@ -578,8 +576,7 @@ public class EditAddressCart extends TActivity {
             public void onNoConnection() {
                 container.setVisibility(View.GONE);
                 progressdialog.dismiss();
-                NetworkErrorHelper.showEmptyState(EditAddressCart.this,
-                        getWindow().getDecorView().getRootView(),
+                NetworkErrorHelper.showEmptyState(EditAddressCart.this, parentView,
                         new NetworkErrorHelper.RetryClickedListener() {
                             @Override
                             public void onRetryClicked() {

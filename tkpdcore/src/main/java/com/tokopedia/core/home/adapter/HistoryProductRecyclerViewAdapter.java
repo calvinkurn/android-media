@@ -13,10 +13,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
+import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.ProductItem;
 
@@ -122,7 +123,7 @@ public class HistoryProductRecyclerViewAdapter extends RecyclerView.Adapter<Hist
 
     private void setBadges(ViewHolder holder, ProductItem data) {
         if (data.getBadges() != null && holder.badgesContainer.getChildCount() == 0)
-            for (ProductItem.Badge badges : data.getBadges()) {
+            for (Badge badges : data.getBadges()) {
                 View view = LayoutInflater.from(context).inflate(R.layout.badge_layout_small, null);
                 ImageView imageBadge = (ImageView) view.findViewById(R.id.badge);
                 holder.badgesContainer.addView(view);

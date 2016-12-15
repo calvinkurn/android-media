@@ -35,6 +35,7 @@ import com.tokopedia.core.ManageShop;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.inboxmessage.activity.SendMessageActivity;
 import com.tokopedia.core.inboxmessage.fragment.SendMessageFragment;
@@ -49,11 +50,11 @@ import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.shopinfo.adapter.ShopTabPagerAdapter;
 import com.tokopedia.core.shopinfo.facades.ActionShopInfoRetrofit;
 import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
+import com.tokopedia.core.shopinfo.fragment.ProductList;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.TkpdState;
 
 import java.util.List;
@@ -102,6 +103,7 @@ public class ShopInfoActivity extends TActivity {
     private ScaleAnimation animateFav;
     private String shopInfoString;
     private String adKey;
+    private ShopTabPagerAdapter adapter;
     public static final String LOGIN_ACTION = BuildConfig.APPLICATION_ID + ".LOGIN_ACTION";
     private BroadcastReceiver loginReceiver = new BroadcastReceiver() {
         @Override
@@ -159,8 +161,21 @@ public class ShopInfoActivity extends TActivity {
             loadSavedModel(savedInstanceState);
             if (shopModel.info.shopOpenSince == null) {
                 initFacadeAndLoadShopInfo();
-            } else
-                updateView();
+            } else {
+//                updateView();
+            }
+        }
+    }
+
+    public void switchTab(String etalaseId){
+        try {
+            if (!etalaseId.equals("all")) {
+                ProductList productListFragment = (ProductList) adapter.getItem(1);
+                productListFragment.setSelectedEtalase(etalaseId);
+            }
+            holder.pager.setCurrentItem(1, true);
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -246,7 +261,11 @@ public class ShopInfoActivity extends TActivity {
                 showShopInfo();
                 shopModel = new Gson().fromJson(result, com.tokopedia.core.shopinfo.models.shopmodel.ShopModel.class);
                 shopInfoString = result;
-                updateView();
+                try {
+                    updateView();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -404,28 +423,34 @@ public class ShopInfoActivity extends TActivity {
     }
 
     private void initPager() {
-        for (int ids : ShopTabPagerAdapter.TITLES)
-            holder.indicator.addTab(holder.indicator.newTab().setText(getString(ids)));
-        ShopTabPagerAdapter adapter = ShopTabPagerAdapter.createAdapter(getFragmentManager(), this, shopModel.info.shopId, shopModel.info.shopDomain);
+//        ShopTabPagerAdapter adapter = ShopTabPagerAdapter.createAdapter(getFragmentManager(), this, shopModel);
+        adapter = new ShopTabPagerAdapter(getFragmentManager(), this, shopModel);
         holder.pager.setAdapter(adapter);
-        holder.pager.addOnPageChangeListener(new
-                TabLayout.TabLayoutOnPageChangeListener(holder.indicator));
-        holder.indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(holder.pager));
     }
 
     private void loadShopInfo() {
         facadeGetRetrofit.getShopInfo();
     }
 
-    private void updateView() {
+    private void updateView() throws Exception {
         facadeAction.setShopModel(shopModel);
+        if(shopModel.info.shopIsOfficial == 1){
+            adapter.initOfficialShop(shopModel);
+        } else {
+            adapter.initRegularShop();
+        }
+        for (String title : ShopTabPagerAdapter.TITLES)
+            holder.indicator.addTab(holder.indicator.newTab().setText(title));
+        holder.indicator.setupWithViewPager(holder.pager);
+        holder.pager.addOnPageChangeListener(new
+                TabLayout.TabLayoutOnPageChangeListener(holder.indicator));
+        holder.indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(holder.pager));
         shopModel.info.shopName = MethodChecker.fromHtml(shopModel.info.shopName).toString();
         setListener();
         holder.collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
         holder.collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
         if (holder.shopAvatar.getDrawable() == null)
             ImageHandler.loadImageCircle2(this, holder.shopAvatar, shopModel.info.shopAvatar);
-//            ImageHandler.LoadImageCircle(holder.shopAvatar, shopModel.info.shopAvatar);
         ImageHandler.loadImageLucky2(this, holder.luckyShop, shopModel.info.shopLucky);
         setFreeReturn(holder, shopModel.info);
         holder.shopName.setText(MethodChecker.fromHtml(shopModel.info.shopName));
@@ -434,8 +459,10 @@ public class ShopInfoActivity extends TActivity {
         holder.collapsingToolbarLayout.setTitle(" ");
         if(shopModel.info.shopIsOfficial==1){
             showOfficialCover();
+            holder.indicator.setTabMode(TabLayout.MODE_SCROLLABLE);
         } else {
             showGoldCover();
+            holder.indicator.setTabMode(TabLayout.MODE_FIXED);
         }
         showShopAction();
         setShopAlreadyFavorite();
@@ -445,9 +472,9 @@ public class ShopInfoActivity extends TActivity {
     }
 
     private void setFreeReturn(ViewHolder holder, Info data) {
-        List<ProductItem.Badge> badges = data.badges;
+        List<Badge> badges = data.badges;
         for (int i = 0; i < badges.size(); i++) {
-            ProductItem.Badge badge = badges.get(i);
+            Badge badge = badges.get(i);
             if (badge.getTitle().equals("Free Returns")) {
                 LuckyShopImage.loadImage(holder.freeReturns, badge.getImageUrl());
             }

@@ -72,10 +72,6 @@
         <meta-data
             android:name="net.hockeyapp.android.appIdentifier"
             android:value="528b17702bf941a581f15e188677306b " />
-        <!-- DEBUG KEY -->
-        <!-- <meta-data -->
-        <!-- android:name="LOCALYTICS_APP_KEY" -->
-        <!-- android:value="a4c853a5c07b6acfeb61343-037f3b9e-6591-11e5-bdf6-0013a62af900" /> -->
         <!-- <meta-data -->
         <!-- android:name="com.google.android.gms.version" -->
         <!-- android:value="@integer/google_play_services_version" /> -->
@@ -347,7 +343,6 @@
         <activity
             android:name="com.tokopedia.core.inboxmessage.activity.InboxMessageActivity"
             android:label="@string/title_inbox_message"
-            android:parentActivityName="com.tokopedia.core.home.ParentIndexHome"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"
             tools:ignore="UnusedAttribute" />
@@ -430,7 +425,7 @@
             android:label="@string/choose_location"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.home.SimpleHomeActivity"
+            android:name="com.tokopedia.tkpd.home.SimpleHomeActivity"
             android:label="@string/title_activity_simple_home"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3" />
@@ -458,10 +453,6 @@
         <activity
             android:name="com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity"
             android:label="@string/title_activity_inbox_talk"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="RechargePaymentWebView"
-            android:label="@string/app_name"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.core.share.ShareActivity"
@@ -523,6 +514,11 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
+        <activity android:name=".product.activity.ProductYoutubeActivity"
+            android:screenOrientation="landscape"/>
+
+        <activity android:name=".manage.general.ManageWebViewActivity"
+                  android:screenOrientation="portrait"/>
         <!--=======================================================-->
         <!--RECEIVERS REGISTRY-->
         <!--=======================================================-->

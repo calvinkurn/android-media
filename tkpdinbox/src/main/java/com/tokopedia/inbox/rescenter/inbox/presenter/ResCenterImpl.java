@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.view.View;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.gcm.NotificationModHandler;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.inbox.rescenter.inbox.listener.ResCenterView;
 import com.tokopedia.core.util.SessionHandler;
@@ -48,7 +50,7 @@ public class ResCenterImpl implements ResCenterPresenter {
                 list.add(new InboxResCenterActivity.Model(TkpdState.InboxResCenter.RESO_MINE, context.getString(R.string.title_my_dispute)));
                 list.add(new InboxResCenterActivity.Model(TkpdState.InboxResCenter.RESO_BUYER, context.getString(R.string.title_buyer_dispute)));
             } else {
-                list.add(new InboxResCenterActivity.Model(TkpdState.InboxResCenter.RESO_ALL, context.getString(R.string.title_all_dispute)));
+                list.add(new InboxResCenterActivity.Model(TkpdState.InboxResCenter.RESO_ALL, context.getString(R.string.title_my_dispute)));
             }
         } else {
             list.add(new InboxResCenterActivity.Model(TkpdState.InboxResCenter.RESO_BUYER, context.getString(R.string.title_buyer_dispute)));
@@ -71,10 +73,19 @@ public class ResCenterImpl implements ResCenterPresenter {
         setTabPosition(context);
     }
 
+    @Override
+    public void initView() {
+        if (isSellerApp()) {
+            view.getTabLayout().setVisibility(View.GONE);
+        } else {
+            view.getTabLayout().setVisibility(View.VISIBLE);
+        }
+    }
+
     private void setTabPosition(Context context) {
-        if (isHasShop(context)) {
+        if (isHasShop(context) && view.getBundleArguments() != null) {
             Bundle bundle = view.getBundleArguments();
-            switch (bundle.getInt(InboxResCenterActivity.EXTRA_STATE_TAB_POSITION, 2)) {
+            switch (bundle.getInt(InboxRouter.EXTRA_STATE_TAB_POSITION, 2)) {
                 case 1:
                     // TkpdState.InboxResCenter.RESO_BUYER;
                     view.setTabPosition(2);

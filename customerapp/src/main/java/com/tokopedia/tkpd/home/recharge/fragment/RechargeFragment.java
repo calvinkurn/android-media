@@ -30,11 +30,12 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.database.model.RechargeOperatorModel;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customView.RechargeEditText;
-import com.tokopedia.core.database.model.RechargeOperatorModelDBAttrs;
 import com.tokopedia.core.database.model.category.Category;
 import com.tokopedia.core.database.model.category.CategoryAttributes;
 import com.tokopedia.core.database.model.category.ClientNumber;
@@ -46,7 +47,6 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.VersionInfo;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpd.home.fragment.FragmentIndexCategory;
 import com.tokopedia.tkpd.home.recharge.activity.RechargePaymentWebView;
 import com.tokopedia.tkpd.home.recharge.adapter.NominalAdapter;
@@ -125,7 +125,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     private boolean isAlreadyHavePhonePrefixInView;
     private Category category;
     private List<Product> productList;
-    private List<RechargeOperatorModelDBAttrs> operatorList;
+    private List<RechargeOperatorModel> operatorList;
     private Product selectedProduct;
     private String selectedOperatorId;
     private LocalCacheHandler cacheHandlerPhoneBook;
@@ -376,7 +376,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     }
 
     @Override
-    public void renderDataOperators(List<RechargeOperatorModelDBAttrs> operators) {
+    public void renderDataOperators(List<RechargeOperatorModel> operators) {
         Collections.sort(operators, new OperatorComparator());
         operatorList=operators;
         spnOperator.setVisibility(View.VISIBLE);
@@ -407,7 +407,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     }
 
     private void setSpnNominalSelectionBasedLastOrder(List<Product> productList) {
-        if (lastOrder != null) {
+        if (lastOrder != null  && lastOrder.getData() != null
+                && lastOrder.getData().getAttributes() != null ) {
             int lastProductId = lastOrder.getData().getAttributes().getProduct_id();
             for (int i = 0; i < productList.size(); i++) {
                 if (productList.get(i).getId().equals(lastProductId)) {
@@ -439,7 +440,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     }
 
     @Override
-    public void setOperatorView(RechargeOperatorModelDBAttrs operator) {
+    public void setOperatorView(RechargeOperatorModel operator) {
         try {
             this.minLengthDefaultOperator = operator.minimumLength;
             this.rechargeEditText.getAutoCompleteTextView().setFilters(new InputFilter[]{new InputFilter.LengthFilter(operator.maximumLength)});
@@ -559,7 +560,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
     private void renderLastOrder() {
         lastOrder = rechargePresenter.getLastOrderFromCache();
-        if (lastOrder != null) {
+        if (lastOrder != null && lastOrder.getData() != null && category != null) {
             if (lastOrder.getData().getAttributes().getCategory_id() == category.getId()) {
                 rechargeEditText.setText(lastOrder.getData().getAttributes().getClient_number());
             }
@@ -737,7 +738,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     //endregion
 
     private void gotoLogin() {
-        Intent intent = new Intent(getActivity(), Login.class);
+        Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
         intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
         rechargePresenter.saveLastInputToCache(
                 LAST_INPUT_KEY + category.getId(),

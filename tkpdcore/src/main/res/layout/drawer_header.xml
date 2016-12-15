@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginBottom="@dimen/margin_small">
 
     <RelativeLayout
@@ -35,7 +36,7 @@
                     android:layout_height="@dimen/drawer_avatar"
                     android:layout_centerHorizontal="true"
                     android:background="@drawable/border_circle"
-                    android:src="@drawable/ic_loading_toped"
+                    tools:src="@drawable/ic_loading_toped"
                     />
 
                 <TextView

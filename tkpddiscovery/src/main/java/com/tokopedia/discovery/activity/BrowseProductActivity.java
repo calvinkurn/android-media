@@ -28,7 +28,9 @@ import android.widget.Toast;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.google.android.gms.common.api.Api;
 import com.google.gson.Gson;
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
@@ -108,11 +110,9 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     ProgressBar progressBar;
     private SearchView searchView;
     private String searchQuery;
-    //    private Map<String, String> filters;
     private FragmentManager fragmentManager;
     private SearchInteractor searchInteractor;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
-    //    private DynamicFilterModel.Data filterAttribute;
     private HashMap<Integer, DynamicFilterModel.Data> filterAttributMap = new HashMap<>();
     private HashMap<Integer, Map<String, String>> filtersMap = new HashMap<>();
     private SharedPreferences preferences;
@@ -126,12 +126,12 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         return AppScreen.SCREEN_BROWSE_PRODUCT_FROM_SEARCH;
     }
 
-    public void sendHotlist(String selected, String keyword) {
+    public void sendHotlist(String selected) {
         fetchHotListHeader(selected);
+        browseProductActivityModel.setQ("");
         browseProductActivityModel.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT);
         browseProductActivityModel.alias = selected;
     }
-
 
 
     public enum FDest {
@@ -176,7 +176,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
             deleteFilterAndSortCache();
         } else {
             firstTime = savedInstanceState.getBoolean(EXTRA_FIRST_TIME);
-            browseProductActivityModel = Parcels.unwrap(savedInstanceState.getParcelable(EXTRA_BROWSE_MODEL));
+            browseProductActivityModel = (BrowseProductActivityModel) savedInstanceState.getParcelable(EXTRA_BROWSE_MODEL);
             filterAttributMap = Parcels.unwrap(savedInstanceState.getParcelable(EXTRA_FILTER_MAP_ATTR));
             filtersMap = Parcels.unwrap(savedInstanceState.getParcelable(EXTRA_FILTER_MAP));
             browseProductActivityModel.setFilterOptions(filtersMap.get(browseProductActivityModel.getActiveTab()));
@@ -229,7 +229,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                 };
             }
         })
-                .debounce(400, TimeUnit.MILLISECONDS)
+                .debounce(150, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -280,7 +280,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(EXTRA_BROWSE_MODEL, Parcels.wrap(browseProductActivityModel));
+        outState.putParcelable(EXTRA_BROWSE_MODEL, browseProductActivityModel);
         outState.putBoolean(EXTRA_FIRST_TIME, firstTime);
         outState.putParcelable(EXTRA_FILTER_MAP, Parcels.wrap(filtersMap));
         outState.putParcelable(EXTRA_FILTER_MAP_ATTR, Parcels.wrap(filterAttributMap));
@@ -289,7 +289,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        browseProductActivityModel = Parcels.unwrap(savedInstanceState.getParcelable(EXTRA_BROWSE_MODEL));
+        browseProductActivityModel = (BrowseProductActivityModel) savedInstanceState.getParcelable(EXTRA_BROWSE_MODEL);
         afterRestoreSavedInstance = true;
     }
 
@@ -347,7 +347,6 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                 (SearchView.SearchAutoComplete) searchView.findViewById(R.id.search_src_text);
         mSearchSrcTextView.setTextColor(getResources().getColor(R.color.white));
         mSearchSrcTextView.setHintTextColor(getResources().getColor(R.color.white));
-
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         MenuItemCompat.setOnActionExpandListener(searchItem, this);
         MenuItemCompat.setActionView(searchItem, searchView);
@@ -387,12 +386,11 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                break;
-            case R2.id.action_search:
-                return false;
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+
+        } else if (item.getItemId() == R.id.action_search) {
+            return false;
         }
         return super.onOptionsItemSelected(item);
     }

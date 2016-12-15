@@ -178,7 +178,7 @@ public class RegisterService extends IntentService implements DownloadServiceCon
                     result = new Bundle();
                     result.putInt(TYPE, type);
                     RegisterSuccessModel registerSuccessModel = gson.fromJson(jsonObject.toString(), RegisterSuccessModel.class);
-                    result.putParcelable(REGISTER_MODEL_KEY, Parcels.wrap(registerSuccessModel));
+                    result.putParcelable(REGISTER_MODEL_KEY, registerSuccessModel);
                     result.putInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE, typeAccess);
                     receiver.send(STATUS_FINISHED, result);
                     break;

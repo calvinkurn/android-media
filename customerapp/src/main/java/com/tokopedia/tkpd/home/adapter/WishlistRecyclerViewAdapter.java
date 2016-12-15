@@ -14,11 +14,12 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.tkpd.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.tkpd.R;
 
 import java.util.List;
 
@@ -103,7 +104,7 @@ public class WishlistRecyclerViewAdapter extends RecyclerView.Adapter<WishlistRe
 
     private void setBadges(ViewHolder holder, ProductItem data) {
         if (data.getBadges() != null && holder.badgesContainer.getChildCount() == 0)
-            for (ProductItem.Badge badges : data.getBadges()) {
+            for (Badge badges : data.getBadges()) {
                 LuckyShopImage.loadImage(context, badges.getImageUrl(), holder.badgesContainer);
             }
     }

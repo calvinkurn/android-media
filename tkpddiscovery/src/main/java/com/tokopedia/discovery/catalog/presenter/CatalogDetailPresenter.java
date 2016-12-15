@@ -139,4 +139,9 @@ public class CatalogDetailPresenter implements ICatalogDetailPresenter {
         intent.putExtras(bundle);
         catalogView.navigateToActivity(intent);
     }
+
+    @Override
+    public void unsubscribeObservable() {
+        dataInteractor.unsubscribe();
+    }
 }

@@ -25,9 +25,12 @@ import com.tokopedia.core.home.adapter.ViewHolderHistoryProduct;
 import com.tokopedia.core.home.model.HistoryProductListItem;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.var.Badge;
+import com.tokopedia.core.var.Label;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.discovery.adapter.ProductAdapter;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.SimpleHomeActivity;
 import com.tokopedia.tkpd.home.presenter.ProductFeed2Impl;
@@ -118,7 +121,7 @@ public class DataFeedAdapter extends ProductAdapter {
     private void setBadges(ProductFeedAdapter.ViewHolderProductFeed holder, ProductItem data) {
         holder.badgesContainer.removeAllViews();
         if (data.getBadges() != null)
-            for (ProductItem.Badge badges : data.getBadges()) {
+            for (Badge badges : data.getBadges()) {
                 LuckyShopImage.loadImage(context, badges.getImageUrl(), holder.badgesContainer);
             }
     }
@@ -126,7 +129,7 @@ public class DataFeedAdapter extends ProductAdapter {
     private void setLabels(ProductFeedAdapter.ViewHolderProductFeed holder, ProductItem data) {
         holder.labelsContainer.removeAllViews();
         if (data.getLabels() != null)
-            for (ProductItem.Label label : data.getLabels()) {
+            for (Label label : data.getLabels()) {
                 View view = LayoutInflater.from(context).inflate(R.layout.label_layout, null);
                 TextView labelText = (TextView) view.findViewById(R.id.label);
                 labelText.setText(label.getTitle());

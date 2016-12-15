@@ -395,4 +395,9 @@ public class CatalogDetailFragment extends BasePresenterFragment<ICatalogDetailP
                 && stateCatalogSpecList != null && stateShareData != null;
     }
 
+    @Override
+    public void onDestroyView() {
+        presenter.unsubscribeObservable();
+        super.onDestroyView();
+    }
 }
