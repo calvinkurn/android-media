@@ -97,7 +97,7 @@ android {
         release {
             keyAlias 'tkpd'
             keyPassword 'tokopedia789'
-            storeFile file('/Users/normansyahputa/Downloads/tkpd-key.keystore')
+            storeFile file('./tkpd-key.keystore')
             storePassword 'tokopedia789'
         }
     }
