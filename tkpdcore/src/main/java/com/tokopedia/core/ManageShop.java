@@ -11,9 +11,9 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.customadapter.SimpleListTabViewAdapter;
+import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.manage.shop.notes.activity.ManageShopNotesActivity;
 import com.tokopedia.core.shipping.EditShippingActivity;
-import com.tokopedia.core.shop.ShopEditorActivity;
 
 import java.util.ArrayList;
 
@@ -52,48 +52,49 @@ public class ManageShop extends TkpdActivity {
         lvManage.setAdapter(lvAdapter);
         lvManage.setOnItemClickListener(new OnItemClickListener() {
 
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int pos,
-                                    long arg3) {
-                Intent intent = null;
-                switch (pos) {
-                    case 0:
-                        intent = new Intent(ManageShop.this, ShopEditorActivity.class);
-                        intent.putExtra(ShopEditorActivity.FRAGMENT_TO_SHOW, ShopEditorActivity.EDIT_SHOP_FRAGMENT_TAG);
-                        UnifyTracking.eventManageShopInfo();
-                        startActivityForResult(intent, 0);
-                        break;
-                    case 1:
-                        intent = new Intent(ManageShop.this, EditShippingActivity.class);
-                        UnifyTracking.eventManageShopShipping();
-                        startActivity(intent);
-                        break;
-                    case 2:
-                        UnifyTracking.eventManageShopPayment();
-                        intent = new Intent(ManageShop.this, PaymentEditor.class);
-                        startActivity(intent);
-                        break;
-                    case 3:
-                        UnifyTracking.eventManageShopEtalase();
-                        intent = new Intent(ManageShop.this, EtalaseShopEditor.class);
-                        startActivity(intent);
-                        break;
-                    case 4:
-                        UnifyTracking.eventManageShopNotes();
-                        intent = new Intent(ManageShop.this, ManageShopNotesActivity.class);
-                        startActivity(intent);
-                        break;
-                    case 5:
-                        UnifyTracking.eventManageShopLocation();
-                        intent = new Intent(ManageShop.this, ManageShopAddress.class);
-                        startActivity(intent);
-                        break;
-                }
-            }
-
-        });
-
-    }
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int pos,
+					long arg3) {
+				Intent intent = null;
+				switch(pos) {
+				case 0:
+					intent = SellerRouter.getAcitivityShopCreateEdit(ManageShop.this);
+					intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
+							SellerRouter.ShopSettingConstant.EDIT_SHOP_FRAGMENT_TAG);
+					UnifyTracking.eventManageShopInfo();
+					startActivityForResult(intent, 0);
+					break;
+				case 1:
+					intent = new Intent(ManageShop.this, EditShippingActivity.class);
+					UnifyTracking.eventManageShopShipping();
+					startActivity(intent);
+					break;
+				case 2:
+					UnifyTracking.eventManageShopPayment();
+					intent = new Intent(ManageShop.this, PaymentEditor.class);
+					startActivity(intent);
+					break;
+				case 3:
+					UnifyTracking.eventManageShopEtalase();
+					intent = new Intent(ManageShop.this, EtalaseShopEditor.class);
+					startActivity(intent);
+					break;
+				case 4:
+					UnifyTracking.eventManageShopNotes();
+					intent = new Intent(ManageShop.this, ManageShopNotesActivity.class);
+					startActivity(intent);
+					break;
+				case 5:
+					UnifyTracking.eventManageShopLocation();
+					intent = new Intent(ManageShop.this, ManageShopAddress.class);
+					startActivity(intent);
+					break;
+				}
+			}
+			
+		});
+		
+	}
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

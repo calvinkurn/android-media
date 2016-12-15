@@ -209,7 +209,18 @@ public final class AppScreen {
     public static final String SCREEN_RECHARGE_PAYMENT = "Recharge Payment WebView";
     public static final String SCREEN_SHARE = "Share Screen";
     public static final String SCREEN_GALLERY_BROWSE = "Browse Gallery Screen";
-    public static final String SCREEN_GM_SUBSCRIBE = "Subscribe to the GM";
+    public static final String SCREEN_GM_SUBSCRIBE = "Gold Merchant Subscribe";
     public static final String SCREEN_SELLER_HOME = "Seller Home";
     public static final String SCREEN_PHONE_VERIFICATION = "Phone Verification Screen";
+
+    public static final String SCREEN_INBOX_MAIN = "Inbox Page";
+    public static final String SCREEN_INBOX_SENT = "Inbox - Sent Page";
+    public static final String SCREEN_INBOX_ARCHIVE = "Inbox - Archive Page";
+    public static final String SCREEN_INBOX_TRASH = "Inbox - Trash Page";
+
+    public static final String SCREEN_LOCA_NEWORDER = "Transaction - New Order Page";
+    public static final String SCREEN_LOCA_TXCENTER = "Transaction List - Selling Page";
+    public static final String SCREEN_LOCA_TXSTATUS = "Transaction - Sell page";
+    public static final String SCREEN_LOCA_SHIPPING = "Transaction - Shipping Confirmation Page";
+    public static final String SCREEN_LOCA_SHIPPINGSTATUS = "Transaction - Shipping status";
 }

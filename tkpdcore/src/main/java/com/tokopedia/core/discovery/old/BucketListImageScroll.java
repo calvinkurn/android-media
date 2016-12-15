@@ -26,6 +26,7 @@ import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.util.TopAdsUtil;
+import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.ContainerAds;
 import com.tokopedia.core.var.ProductItem;
 
@@ -42,7 +43,7 @@ public class BucketListImageScroll {
     protected ArrayList<String> Referrer;
     protected ArrayList<String> ShopLucky;
     protected ArrayList<String> ProductClickUrl;
-    protected ArrayList<List<ProductItem.Badge>> badges;
+    protected ArrayList<List<Badge>> badges;
     protected int pos;
     protected Context context;
     public LayoutInflater inflater;
@@ -175,8 +176,8 @@ public class BucketListImageScroll {
 
     private void setBadges(LinearLayout containerBadges, int position) {
         if (badges!= null) {
-            List<ProductItem.Badge> badgeList = badges.get(position);
-            for (ProductItem.Badge badge : badgeList) {
+            List<Badge> badgeList = badges.get(position);
+            for (Badge badge : badgeList) {
                 View view = LayoutInflater.from(context).inflate(R.layout.badge_layout, null);
                 ImageView imageBadge = (ImageView) view.findViewById(R.id.badge);
                 containerBadges.addView(view);

@@ -39,11 +39,13 @@ import com.tokopedia.core.product.interactor.RetrofitInteractor;
 import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.product.listener.ProductDetailView;
 import com.tokopedia.core.product.model.etalase.Etalase;
+import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.reputationproduct.ReputationProduct;
+import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
@@ -51,11 +53,11 @@ import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.session.presenter.Session;
-import com.tokopedia.core.shop.ShopEditorActivity;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.talk.talkproduct.activity.TalkProductActivity;
 import com.tokopedia.core.util.AppIndexHandler;
 import com.tokopedia.core.util.DeepLinkUtils;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
@@ -160,8 +162,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     public void processToCreateShop(@NonNull Context context) {
         Intent intent;
         if (SessionHandler.isV4Login(context)) {
-            intent = new Intent(context, ShopEditorActivity.class);
-            intent.putExtra(ShopEditorActivity.FRAGMENT_TO_SHOW, ShopEditorActivity.CREATE_SHOP_FRAGMENT_TAG);
+            intent = SellerRouter.getAcitivityShopCreateEdit(context);
+            intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
+                    SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
             viewListener.navigateToActivity(intent);
         } else {
             intent = SessionRouter.getLoginActivityIntent(context);
@@ -175,8 +178,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void reportProduct(@NonNull Context context) {
         if (SessionHandler.isV4Login(context)) {
-            viewListener.showReportDialog();
             UnifyTracking.eventPDPReport();
+            viewListener.showReportDialog();
         } else {
             UnifyTracking.eventPDPReportNotLogin();
             Intent intent = SessionRouter.getLoginActivityIntent(context);
@@ -239,7 +242,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
-    public void sendAnalytics(@NonNull Context context, @NonNull ProductDetailData successResult) {
+    public void sendAnalytics(@NonNull ProductDetailData successResult) {
         Product product = new Product();
         product.setProductID("" + successResult.getInfo().getProductId());
         product.setProductName("" + successResult.getInfo().getProductName());
@@ -270,6 +273,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             viewListener.refreshMenu();
                             requestOtherProducts(context,
                                     NetworkParam.paramOtherProducts(productDetailData));
+                            setGoldMerchantFeatures(context, productDetailData);
                         }
 
                         @Override
@@ -422,7 +426,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void processResultTalk(int resultCode, Intent data) {
         if (isResultOK(resultCode) & isIntentOK(data)) {
-            if (data.getBooleanExtra(TalkProductActivity.RESULT_TALK_HAS_ADDED, false)) {
+            if (data.getExtras() != null && data.getBooleanExtra(
+                    TalkProductActivity.RESULT_TALK_HAS_ADDED, false
+            )) {
                 viewListener.onProductTalkUpdated();
             }
         }
@@ -451,12 +457,17 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     public void prepareOptionMenu(Menu menu, Context context, ProductDetailData productData) {
         MenuItem wishList = menu.findItem(R.id.action_wishlist);
         MenuItem report = menu.findItem(R.id.action_report);
-
+        boolean isSellerApp = GlobalConfig.isSellerApp();
         if (productData != null) {
             wishList.setIcon(getWishListIcon(productData.getInfo().getProductAlreadyWishlist()));
             if (!productData.getShopInfo().getShopId().equals(SessionHandler.getShopID(context))) {
-                wishList.setVisible(true);
-                wishList.setEnabled(true);
+                if (isSellerApp) {
+                    wishList.setVisible(false);
+                    wishList.setEnabled(false);
+                } else {
+                    wishList.setVisible(true);
+                    wishList.setEnabled(true);
+                }
                 report.setVisible(true);
                 report.setEnabled(true);
             } else {
@@ -513,14 +524,23 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
+    public void saveStateVideoData(Bundle outState, String key, VideoData value) {
+        if (value != null) outState.putParcelable(key, value);
+    }
+
+    @Override
     public void processStateData(Bundle savedInstanceState) {
         ProductDetailData productData = savedInstanceState
                 .getParcelable(ProductDetailFragment.STATE_DETAIL_PRODUCT);
         List<ProductOther> productOthers = savedInstanceState
                 .getParcelableArrayList(ProductDetailFragment.STATE_OTHER_PRODUCTS);
+        VideoData videoData = savedInstanceState.getParcelable(ProductDetailFragment.STATE_VIDEO);
         if (productData != null & productOthers != null) {
             viewListener.onProductDetailLoaded(productData);
             viewListener.onOtherProductLoaded(productOthers);
+            if (videoData != null) {
+                viewListener.loadVideo(videoData);
+            }
         }
     }
 
@@ -686,6 +706,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         viewListener.hideProgressLoading();
                         viewListener.refreshMenu();
                         requestOtherProducts(context, NetworkParam.paramOtherProducts(data));
+                        setGoldMerchantFeatures(context, data);
                     }
 
                     @Override
@@ -737,5 +758,26 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void sendButtonClickEvent(@NonNull Context context, @NonNull ProductDetailData successResult) {
         UnifyTracking.eventPDPAddToWishlist(successResult.getInfo().getProductName());
+    }
+
+    private void requestVideo(@NonNull Context context, @NonNull String productID) {
+        retrofitInteractor.requestProductVideo(context, productID,
+                new RetrofitInteractor.VideoLoadedListener() {
+                    @Override
+                    public void onSuccess(@NonNull VideoData data) {
+                        viewListener.loadVideo(data);
+                    }
+
+                    @Override
+                    public void onError() {
+
+                    }
+                });
+    }
+
+    private void setGoldMerchantFeatures(Context context, ProductDetailData productDetailData) {
+        if (productDetailData.getShopInfo().getShopIsGold() == 1) {
+            requestVideo(context, productDetailData.getInfo().getProductId().toString());
+        }
     }
 }

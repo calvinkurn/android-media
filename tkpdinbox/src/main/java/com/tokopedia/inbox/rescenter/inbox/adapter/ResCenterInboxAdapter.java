@@ -153,13 +153,14 @@ public class ResCenterInboxAdapter extends ResCenterExtendedAdapter {
 
     @Override
     protected void bindNoresultView(NoResultViewHolder holder) {
+        super.bindNoresultView(holder);
         SpannableString stringNoResult = new SpannableString(context.getString(R.string.msg_no_res_center));
 
         String linkStatus = context.getString(R.string.msg_no_res_center1);
         String linkTransactions = context.getString(R.string.msg_no_res_center2);
 
-        stringNoResult.setSpan(redirect(TransactionPurchaseRouter.createIntentPurchaseActivity(context), TransactionPurchaseRouter.TAB_TX_STATUS), stringNoResult.toString().indexOf(linkStatus), stringNoResult.toString().indexOf(linkStatus) + linkStatus.length(), 0);
-        stringNoResult.setSpan(redirect(TransactionPurchaseRouter.createIntentPurchaseActivity(context), TransactionPurchaseRouter.TAB_TX_ALL), stringNoResult.toString().indexOf(linkTransactions), stringNoResult.toString().indexOf(linkTransactions) + linkTransactions.length(), 0);
+        stringNoResult.setSpan(redirect(TransactionPurchaseRouter.createIntentPurchaseActivity(context), TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER), stringNoResult.toString().indexOf(linkStatus), stringNoResult.toString().indexOf(linkStatus) + linkStatus.length(), 0);
+        stringNoResult.setSpan(redirect(TransactionPurchaseRouter.createIntentPurchaseActivity(context), TransactionPurchaseRouter.TAB_POSITION_PURCHASE_ALL_ORDER), stringNoResult.toString().indexOf(linkTransactions), stringNoResult.toString().indexOf(linkTransactions) + linkTransactions.length(), 0);
 
         holder.additionalInfoText.setMovementMethod(LinkMovementMethod.getInstance());
         holder.additionalInfoText.setText(stringNoResult);
@@ -187,5 +188,10 @@ public class ResCenterInboxAdapter extends ResCenterExtendedAdapter {
     public void setList(ArrayList<ResCenterInboxItem> list) {
         this.list = list;
         notifyDataSetChanged();
+    }
+
+    @Override
+    protected int getCurrentTab() {
+        return presenter.getResCenterTabModel().typeFragment;
     }
 }

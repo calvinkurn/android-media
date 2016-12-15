@@ -25,7 +25,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by Angga.Prasetiyo on 17/11/2015.
+ * @author Angga.Prasetiyo on 17/11/2015.
  */
 public class DialogToEtalase extends Dialog {
     private final List<Etalase> etalaseList;
@@ -58,7 +58,9 @@ public class DialogToEtalase extends Dialog {
         setContentView(R.layout.dialog_move_to_etalase);
         ButterKnife.bind(this);
         setCancelable(true);
-        ArrayAdapter<Etalase> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, etalaseList);
+        ArrayAdapter<Etalase> adapter = new ArrayAdapter<>(
+                context, android.R.layout.simple_spinner_item, etalaseList
+        );
 
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -75,7 +77,7 @@ public class DialogToEtalase extends Dialog {
         tvYes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String newName = etNew.getText().toString();
+                String newName = etNew.getText().toString().trim();
                 final Etalase selected = (Etalase) spinner.getSelectedItem();
                 Map<String, String> param;
                 if (selected.getEtalaseId() != null) {
@@ -83,11 +85,11 @@ public class DialogToEtalase extends Dialog {
                         etNew.setError(context.getString(R.string.error_field_required));
                         return;
                     } else if (selected.getEtalaseId() == 0 & !newName.isEmpty()) {
-                        if (isAvailableEtalase(newName)) {
-                            etNew.setError(context.getString(R.string.error_etalase_exist));
-                            return;
-                        } else if (!ValidationTextUtil.isValidText(3, newName)) {
+                        if (!ValidationTextUtil.isValidText(3, newName)) {
                             etNew.setError(context.getString(R.string.error_min_3_character));
+                            return;
+                        } else if (isAvailableEtalase(newName)) {
+                            etNew.setError(context.getString(R.string.error_etalase_exist));
                             return;
                         }
                     }

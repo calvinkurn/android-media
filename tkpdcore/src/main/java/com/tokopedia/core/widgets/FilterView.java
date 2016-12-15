@@ -126,10 +126,10 @@ public class FilterView extends LinearLayout implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R2.id.filter_btn:
-                toggle();
-                break;
+        int i = v.getId();
+        if (i == R.id.filter_btn) {
+            toggle();
+
         }
     }
 }

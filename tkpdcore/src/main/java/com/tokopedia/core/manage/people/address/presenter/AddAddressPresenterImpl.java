@@ -60,6 +60,8 @@ public class AddAddressPresenterImpl implements AddAddressPresenter, ManageAddre
                 @Override
                 public void onSuccess(String address_id) {
                     viewListener.finishLoading();
+                    if(!address_id.equals(""))
+                        address.setAddressId(address_id);
                     viewListener.finishActivity(address);
                 }
 
@@ -188,6 +190,11 @@ public class AddAddressPresenterImpl implements AddAddressPresenter, ManageAddre
         viewListener.showLoadingDistrict();
         viewListener.setActionsEnabled(false);
         DataManagerImpl.getDataManager().getListDistrict(viewListener.getActivity(), getDataReceiver(GET_LIST_DISTRICT), city.getCityId());
+    }
+
+    @Override
+    public void onDestroyView() {
+        networkInteractor.unsubscribe();
     }
 
 

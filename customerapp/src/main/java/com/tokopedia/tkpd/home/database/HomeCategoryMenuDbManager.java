@@ -48,11 +48,10 @@ public class HomeCategoryMenuDbManager implements DbFlowOperation<HomeCategoryMe
 
     @Override
     public boolean isExpired(final long currentTime) {
-        try {
+        if (dataQueryHomeCategoryMenu()!=null) {
             long lastUpdated = dataQueryHomeCategoryMenu().getLastUpdated();
-            return isEmptyDataQueryHomeCategoryMenu() || isMoreThanOneHour(currentTime, lastUpdated);
-        } catch (Exception e) {
-            Log.e(TAG, "isExpired: ", e);
+            return isMoreThanOneHour(currentTime, lastUpdated);
+        } else {
             return true;
         }
     }
@@ -96,10 +95,6 @@ public class HomeCategoryMenuDbManager implements DbFlowOperation<HomeCategoryMe
     private boolean isMoreThanOneHour(long currentTime, long oldTime) {
         long oneHour = 1000 * 60 * 60;
         return currentTime - oldTime >= oneHour;
-    }
-
-    private boolean isEmptyDataQueryHomeCategoryMenu() {
-        return dataQueryHomeCategoryMenu() == null;
     }
 
 }

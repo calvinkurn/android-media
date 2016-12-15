@@ -117,7 +117,7 @@ public class RechargeEditText extends LinearLayout implements
 
     @Override
     public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
-        if (rechargeEditTextListener != null) {
+        if (rechargeEditTextListener != null && s.length()>0) {
             rechargeEditTextListener.onRechargeTextChanged(s, start, before, count);
         }
         if (s.length() > 0) {

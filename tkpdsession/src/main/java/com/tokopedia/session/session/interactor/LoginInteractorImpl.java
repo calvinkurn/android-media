@@ -110,8 +110,8 @@ public class LoginInteractorImpl implements LoginInteractor {
             }
         };
 
-        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
+        compositeSubscription.add(observable.subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber));
     }

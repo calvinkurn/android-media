@@ -119,8 +119,7 @@ public class BrowseShopAdapter extends ProductAdapter {
                 if(shopModel.isOfficial()) {
                     itemShopBought.setVisibility(View.GONE);
                     itemShopBadge.setImageResource(R.drawable.ic_badge_official);
-                }
-                if(shopModel.getIsGold().equals("1")){
+                } else if(shopModel.getIsGold().equals("1")){
                     itemShopBadge.setImageResource(R.drawable.ic_shop_gold);
                 }
             } else {

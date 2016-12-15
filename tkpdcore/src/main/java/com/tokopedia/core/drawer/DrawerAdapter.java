@@ -419,7 +419,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private void bindHeaderGuest(HeaderViewHolder holder, int position) {
         holder.name.setVisibility(View.GONE);
         holder.icon.setVisibility(View.GONE);
-        ImageHandler.loadImageWithId(holder.coverImg,R.drawable.drawer_header_bg);
+        ImageHandler.loadImageWithId(holder.coverImg, R.drawable.drawer_header_bg);
         holder.gradientBlack.setBackgroundResource(0);
         holder.drawerPointsLayout.setVisibility(View.GONE);
     }
@@ -450,7 +450,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         this.drawerPosition = drawerPosition;
     }
 
-    private void sendGTMNavigationEvent(String label){
+    private void sendGTMNavigationEvent(String label) {
         UnifyTracking.eventDrawerClick(label);
     }
 }

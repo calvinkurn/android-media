@@ -3,7 +3,6 @@ package com.tokopedia.tkpd.home.favorite.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -42,6 +41,7 @@ import butterknife.Unbinder;
  * Created by m.normansyah on 30/10/2015.
  */
 public class FragmentIndexFavoriteV2 extends TkpdBaseV4Fragment implements FavoriteView, DefaultRetryListener.OnClickRetry {
+    public static final String FRAGMEN_INDEX_FAVORITE_CLASS_NAME = FragmentIndexFavoriteV2.class.getSimpleName();
     Favorite favorite;
     BaseRecyclerViewAdapter adapter;// FavoriteRecyclerViewAdapter
     @BindView(R.id.index_favorite_recycler_view)
@@ -123,14 +123,15 @@ public class FragmentIndexFavoriteV2 extends TkpdBaseV4Fragment implements Favor
 
     @Override
     public void displayLoadMore(boolean isLoadMore) {
-        Log.d(TAG, FragmentIndexFavoriteV2.class.getSimpleName() + (isLoadMore ? " tampilkan" : " hilangkan ") + " load more");
+        Log.d(TAG, (isLoadMore ? " tampilkan" : " hilangkan ") + " load more");
         adapter.setIsLoading(isLoadMore);
     }
 
     @Override
     public boolean isLoadMoreShow() {
         GridLayoutManager temp = (GridLayoutManager) layoutManager;
-        return adapter.getItemViewType(temp.findLastCompletelyVisibleItemPosition()) == TkpdState.RecyclerView.VIEW_LOADING;
+        return adapter.getItemViewType(temp.findLastCompletelyVisibleItemPosition())
+                == TkpdState.RecyclerView.VIEW_LOADING;
     }
 
     @Override
@@ -149,7 +150,7 @@ public class FragmentIndexFavoriteV2 extends TkpdBaseV4Fragment implements Favor
 
     @Override
     public void displayRetry(boolean isRetry) {
-        Log.d(TAG, FragmentIndexFavoriteV2.class.getSimpleName() + (isRetry ? " tampilkan" : " hilangkan ") + " isRetry");
+        Log.d(TAG, (isRetry ? " tampilkan" : " hilangkan ") + " isRetry");
         adapter.setIsRetry(isRetry);
     }
 
@@ -163,7 +164,8 @@ public class FragmentIndexFavoriteV2 extends TkpdBaseV4Fragment implements Favor
         adapter.setOnRetryListenerRV(new BaseRecyclerViewAdapter.OnRetryListener() {
             @Override
             public void onRetryCliked() {
-                new DefaultRetryListener(DefaultRetryListener.RETRY_FOOTER, FragmentIndexFavoriteV2.this).onRetryCliked();
+                new DefaultRetryListener(DefaultRetryListener.RETRY_FOOTER,
+                        FragmentIndexFavoriteV2.this).onRetryCliked();
             }
         });
     }
@@ -208,7 +210,7 @@ public class FragmentIndexFavoriteV2 extends TkpdBaseV4Fragment implements Favor
         initIntentExtra();
         if (getActivity() instanceof ParentIndexHome) {
             if (((ParentIndexHome) getActivity()).getViewPager() != null) {
-                if (!isDataExist() && ((ParentIndexHome)getActivity()).getViewPager().getCurrentItem() == 2) {
+                if (!isDataExist() && ((ParentIndexHome) getActivity()).getViewPager().getCurrentItem() == 2) {
                     favorite.initData();
                     Log.d("NISNISNIS", "IMPRESSION ON CREATE");
                 }
@@ -226,7 +228,6 @@ public class FragmentIndexFavoriteV2 extends TkpdBaseV4Fragment implements Favor
         boolean isFromWishList = bundle.getBoolean(WISHLISH_EXTRA_KEY, false);
         if (isFromWishList) {
             favorite.initData();
-            Log.d("NISNISNIS", "IMPRESSION FAV ON WISHLIST");
         }
     }
 
@@ -260,20 +261,8 @@ public class FragmentIndexFavoriteV2 extends TkpdBaseV4Fragment implements Favor
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, FragmentIndexFavoriteV2.class.getSimpleName() + " screen Rotation " + (isLandscape() ? "LANDSCAPE" : "PORTRAIT"));
+        Log.d(TAG, " screen Rotation " + (isLandscape() ? "LANDSCAPE" : "PORTRAIT"));
         favorite.subscribe();
-//        if (favorite.isAfterRotate()) {
-//            displayMainContent(true);
-//            displayProgressBar(false);
-//            loadDataChange();
-//
-//            if (!favorite.isMorePage())
-//                displayLoadMore(false);
-//            else
-//                displayLoadMore(true);
-//        }else{
-//            favorite.initData();
-//        }
 
     }
 
@@ -325,19 +314,14 @@ public class FragmentIndexFavoriteV2 extends TkpdBaseV4Fragment implements Favor
     }
 
     protected void setListener() {
-        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 int itemPosition = ((GridLayoutManager) layoutManager).findLastVisibleItemPosition();
-                if (isLoadMoreShow() && itemPosition == layoutManager.getItemCount() - 1) {// !isSwipeShow() && RetrofitUtils.isConnected(getActivity()) &&
+                if (isLoadMoreShow() && itemPosition == layoutManager.getItemCount() - 1) {
                     favorite.loadMore();
                 }
-//                else{
-//                    displayLoadMore(false);
-//                    displayRetry(true);
-//                    loadDataChange();
-//                }
             }
         });
         swipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -352,7 +336,7 @@ public class FragmentIndexFavoriteV2 extends TkpdBaseV4Fragment implements Favor
 
     @Override
     public void displayMainContent(boolean isDisplay) {
-        Log.d(TAG, FragmentIndexFavoriteV2.class.getSimpleName() + " main content ingin " + (isDisplay ? "dihidupkan" : "dimatikan"));
+        Log.d(TAG, " main content ingin " + (isDisplay ? "dihidupkan" : "dimatikan"));
         if (isDisplay)
             mainContent.setVisibility(View.VISIBLE);
         else
@@ -361,7 +345,7 @@ public class FragmentIndexFavoriteV2 extends TkpdBaseV4Fragment implements Favor
 
     @Override
     public void displayProgressBar(boolean isDisplay) {
-        Log.d(TAG, FragmentIndexFavoriteV2.class.getSimpleName() + " progress bar ingin " + (isDisplay ? "dihidupkan" : "dimatikan"));
+        Log.d(TAG, " progress bar ingin " + (isDisplay ? "dihidupkan" : "dimatikan"));
         if (isDisplay)
             progressBar.setVisibility(View.VISIBLE);
         else
