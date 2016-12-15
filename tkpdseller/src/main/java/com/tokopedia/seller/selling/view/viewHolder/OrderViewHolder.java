@@ -51,6 +51,8 @@ public class OrderViewHolder extends BaseSellingViewHolder<OrderShippingList> {
         ImageHandler.loadImageCircle2(context, UserAvatar, model.getOrderCustomer().getCustomerImage());
         if(model.getOrderDetail().getDetailCancelRequest() != null && model.getOrderDetail().getDetailCancelRequest().getCancelRequest() == 1){
             buyerRequestCancel.setVisibility(View.VISIBLE);
+        }else{
+            buyerRequestCancel.setVisibility(View.GONE);
         }
     }
 
