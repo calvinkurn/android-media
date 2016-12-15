@@ -12,11 +12,11 @@ import com.tokopedia.inbox.rescenter.shipping.model.ResCenterKurir;
  */
 public interface RetrofitInteractor {
 
-    void unsubscribe();
-
     void getShippingList(@NonNull Context context,
                          @NonNull TKPDMapParam params,
                          @NonNull GetKurirListener listener);
+
+    void unSubscribe();
 
     interface GetKurirListener {
 

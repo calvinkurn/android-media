@@ -40,7 +40,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     }
 
     @Override
-    public void unsubscribe() {
+    public void unSubscribe() {
         compositeSubscription.unsubscribe();
     }
 

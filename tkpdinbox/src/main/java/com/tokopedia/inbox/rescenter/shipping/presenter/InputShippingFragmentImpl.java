@@ -16,7 +16,7 @@ import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsModel;
 import com.tokopedia.inbox.rescenter.shipping.model.ResCenterKurir;
 import com.tokopedia.inbox.rescenter.shipping.interactor.RetrofitInteractor;
 import com.tokopedia.inbox.rescenter.shipping.interactor.RetrofitInteractorImpl;
-import com.tokopedia.inbox.rescenter.shipping.view.InputShippingRefNumView;
+import com.tokopedia.inbox.rescenter.shipping.view.InputShippingFragmentView;
 
 import static com.tokopedia.inbox.rescenter.shipping.fragment.InputShippingFragment.EXTRA_PARAM_MODEL;
 
@@ -30,9 +30,9 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
     private final GlobalCacheManager cacheManager;
     private final RetrofitInteractor retrofit;
-    private final InputShippingRefNumView viewListener;
+    private final InputShippingFragmentView viewListener;
 
-    public InputShippingFragmentImpl(InputShippingRefNumView viewListener) {
+    public InputShippingFragmentImpl(InputShippingFragmentView viewListener) {
         this.viewListener = viewListener;
         this.cacheManager = new GlobalCacheManager();
         this.retrofit = new RetrofitInteractorImpl();
@@ -140,4 +140,10 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
             }
         }
     }
+
+    @Override
+    public void onDestroy() {
+        retrofit.unSubscribe();
+    }
+
 }

@@ -13,13 +13,15 @@ import java.util.List;
 /**
  * Created by hangnadi on 12/13/16.
  */
-public interface InputShippingRefNumView {
+public interface InputShippingFragmentView {
 
     Activity getActivity();
 
     InputShippingParamsModel getParamsModel();
 
     void setParamsModel(InputShippingParamsModel paramsModel);
+
+    void renderAttachmentAdapter();
 
     void renderSpinner(List<ResCenterKurir.Kurir> shippingList);
 
