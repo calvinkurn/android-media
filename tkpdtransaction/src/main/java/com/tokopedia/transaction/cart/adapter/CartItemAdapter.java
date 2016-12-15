@@ -192,6 +192,12 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 cartAction.onChangeShipment(cartData);
             }
         });
+        holder.tvShipment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cartAction.onChangeShipment(cartData);
+            }
+        });
         holder.holderDetailCartToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

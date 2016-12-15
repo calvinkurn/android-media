@@ -9,11 +9,11 @@ import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 /**
  * @author anggaprasetiyo on 11/23/16.
  */
-public class CartBroadcastReceiver extends BroadcastReceiver {
+public class TopPayBroadcastReceiver extends BroadcastReceiver {
     public static final String ACTION_GET_PARAMETER_TOP_PAY
-            = CartBroadcastReceiver.class.getCanonicalName() + ".ACTION_GET_PARAMETER_TOP_PAY";
+            = TopPayBroadcastReceiver.class.getCanonicalName() + ".ACTION_GET_PARAMETER_TOP_PAY";
     public static final String ACTION_GET_THANKS_TOP_PAY
-            = CartBroadcastReceiver.class.getCanonicalName() + ".ACTION_GET_THANKS_TOP_PAY";
+            = TopPayBroadcastReceiver.class.getCanonicalName() + ".ACTION_GET_THANKS_TOP_PAY";
 
     public static final int RESULT_CODE_TOP_PAY_SUCCESS = 1;
     public static final int RESULT_CODE_TOP_PAY_ERROR = 0;
@@ -29,7 +29,7 @@ public class CartBroadcastReceiver extends BroadcastReceiver {
     private ActionTopPayThanksListener topPayGetThanksListener;
     private ActionTopPayListener topPayListener;
 
-    public CartBroadcastReceiver(Object listener) {
+    public TopPayBroadcastReceiver(Object listener) {
         if (listener instanceof ActionTopPayListener) {
             this.topPayListener = (ActionTopPayListener) listener;
         } else if (listener instanceof ActionTopPayThanksListener) {

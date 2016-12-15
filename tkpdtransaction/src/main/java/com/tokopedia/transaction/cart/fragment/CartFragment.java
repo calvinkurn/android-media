@@ -16,7 +16,9 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.Html;
+import android.text.TextWatcher;
 import android.text.util.Linkify;
 import android.view.View;
 import android.widget.CheckBox;
@@ -51,7 +53,7 @@ import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 import com.tokopedia.transaction.cart.presenter.CartPresenter;
 import com.tokopedia.transaction.cart.presenter.ICartPresenter;
-import com.tokopedia.transaction.cart.receivers.CartBroadcastReceiver;
+import com.tokopedia.transaction.cart.receivers.TopPayBroadcastReceiver;
 import com.tokopedia.transaction.utils.LinearLayoutManagerNonScroll;
 
 import java.text.MessageFormat;
@@ -65,7 +67,7 @@ import butterknife.BindView;
  */
 public class CartFragment extends BasePresenterFragment<ICartPresenter> implements ICartView,
         PaymentGatewayFragment.ActionListener, CartItemAdapter.CartAction,
-        CartBroadcastReceiver.ActionTopPayListener {
+        TopPayBroadcastReceiver.ActionTopPayListener {
 
     @BindView(R2.id.pb_main_loading)
     ProgressBar pbMainLoading;
@@ -118,7 +120,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     private CheckoutData.Builder checkoutDataBuilder;
     private TkpdProgressDialog progressDialogNormal;
-    private CartBroadcastReceiver cartBroadcastReceiver;
+    private TopPayBroadcastReceiver topPayBroadcastReceiver;
     private CartItemAdapter cartItemAdapter;
 
     public static Fragment newInstance() {
@@ -183,9 +185,9 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     protected void initialVar() {
-        cartBroadcastReceiver = new CartBroadcastReceiver(this);
-        getActivity().registerReceiver(cartBroadcastReceiver, new IntentFilter(
-                CartBroadcastReceiver.ACTION_GET_PARAMETER_TOP_PAY
+        topPayBroadcastReceiver = new TopPayBroadcastReceiver(this);
+        getActivity().registerReceiver(topPayBroadcastReceiver, new IntentFilter(
+                TopPayBroadcastReceiver.ACTION_GET_PARAMETER_TOP_PAY
         ));
     }
 
@@ -249,6 +251,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void renderButtonCheckVoucherListener() {
         cbUseVoucher.setOnCheckedChangeListener(getOnCheckedUseVoucherOptionListener());
+        etVoucherCode.addTextChangedListener(getWatcherEtVoucherCode());
     }
 
     @Override
@@ -530,7 +533,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void onGetParameterTopPayNoConnection(String message) {
         hideProgressLoading();
-        showToastMessage(message);
+        NetworkErrorHelper.showDialog(getActivity(), getRetryCheckoutClickListener());
     }
 
     @Override
@@ -541,7 +544,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void onDestroy() {
         super.onDestroy();
-        getActivity().unregisterReceiver(cartBroadcastReceiver);
+        getActivity().unregisterReceiver(topPayBroadcastReceiver);
     }
 
     @Override
@@ -657,11 +660,48 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @NonNull
+    private NetworkErrorHelper.RetryClickedListener getRetryCheckoutClickListener() {
+        return new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.processValidationCheckoutData();
+            }
+        };
+    }
+
+    @NonNull
     private NetworkErrorHelper.RetryClickedListener getRetryErrorInitialCartInfoClickListener() {
         return new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 presenter.processGetCartData();
+            }
+        };
+    }
+
+
+    @NonNull
+    private TextWatcher getWatcherEtVoucherCode() {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.toString().isEmpty()) {
+                    renderErrorCheckVoucher(
+                            getString(R.string.label_error_form_voucher_code_empty)
+                    );
+                } else {
+                    renderDisableErrorCheckVoucher();
+                }
             }
         };
     }

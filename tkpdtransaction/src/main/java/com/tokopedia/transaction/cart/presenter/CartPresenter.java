@@ -21,7 +21,7 @@ import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutDropShipperData;
 import com.tokopedia.transaction.cart.model.voucher.VoucherData;
-import com.tokopedia.transaction.cart.services.CartIntentService;
+import com.tokopedia.transaction.cart.services.TopPayIntentService;
 import com.tokopedia.transaction.exception.HttpErrorException;
 import com.tokopedia.transaction.exception.ResponseErrorException;
 
@@ -453,10 +453,10 @@ public class CartPresenter implements ICartPresenter {
                 .build();
 
         Intent intent = new Intent(Intent.ACTION_SYNC, null, view.getContextActivity(),
-                CartIntentService.class);
-        intent.putExtra(CartIntentService.EXTRA_ACTION,
-                CartIntentService.SERVICE_ACTION_GET_PARAMETER_DATA);
-        intent.putExtra(CartIntentService.EXTRA_CHECKOUT_DATA, checkoutData);
+                TopPayIntentService.class);
+        intent.putExtra(TopPayIntentService.EXTRA_ACTION,
+                TopPayIntentService.SERVICE_ACTION_GET_PARAMETER_DATA);
+        intent.putExtra(TopPayIntentService.EXTRA_CHECKOUT_DATA, checkoutData);
         view.executeService(intent);
     }
 

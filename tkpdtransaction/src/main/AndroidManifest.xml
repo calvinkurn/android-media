@@ -52,7 +52,7 @@
             android:name="com.tokopedia.transaction.purchase.services.TxActionIntentService"
             android:exported="false" />
         <service
-            android:name="com.tokopedia.transaction.cart.services.CartIntentService"
+            android:name="com.tokopedia.transaction.cart.services.TopPayIntentService"
             android:exported="false" />
         <service
             android:name="com.tokopedia.transaction.addtocart.services.ATCIntentService"

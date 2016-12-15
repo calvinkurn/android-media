@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
@@ -34,8 +35,8 @@ import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.listener.ITopPayView;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
-import com.tokopedia.transaction.cart.receivers.CartBroadcastReceiver;
-import com.tokopedia.transaction.cart.services.CartIntentService;
+import com.tokopedia.transaction.cart.receivers.TopPayBroadcastReceiver;
+import com.tokopedia.transaction.cart.services.TopPayIntentService;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -47,7 +48,7 @@ import butterknife.BindView;
  */
 
 public class TopPayActivity extends BasePresenterActivity implements ITopPayView,
-        CartBroadcastReceiver.ActionTopPayThanksListener, View.OnKeyListener {
+        TopPayBroadcastReceiver.ActionTopPayThanksListener, View.OnKeyListener {
     private static final String TAG = TopPayActivity.class.getSimpleName();
 
     private static final String EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA";
@@ -68,6 +69,7 @@ public class TopPayActivity extends BasePresenterActivity implements ITopPayView
     private TkpdProgressDialog progressDialogNormal;
     private String paymentId;
     private TopPayParameterData topPayParameterData;
+    private TopPayBroadcastReceiver topPayBroadcastReceiver;
 
     public static Intent createInstance(Context context, TopPayParameterData parameterData) {
         Intent intent = new Intent(context, TopPayActivity.class);
@@ -117,6 +119,10 @@ public class TopPayActivity extends BasePresenterActivity implements ITopPayView
     @Override
     protected void initVar() {
         progressDialogNormal = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
+        topPayBroadcastReceiver = new TopPayBroadcastReceiver(this);
+        registerReceiver(topPayBroadcastReceiver, new IntentFilter(
+                TopPayBroadcastReceiver.ACTION_GET_THANKS_TOP_PAY
+        ));
     }
 
     @Override
@@ -191,6 +197,12 @@ public class TopPayActivity extends BasePresenterActivity implements ITopPayView
     @Override
     public void closeView() {
         this.finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(topPayBroadcastReceiver);
     }
 
     @Override
@@ -342,10 +354,10 @@ public class TopPayActivity extends BasePresenterActivity implements ITopPayView
             return;
         }
         Intent intent = new Intent(Intent.ACTION_SYNC, null, this,
-                CartIntentService.class);
-        intent.putExtra(CartIntentService.EXTRA_ACTION,
-                CartIntentService.SERVICE_ACTION_GET_THANKS_TOP_PAY);
-        intent.putExtra(CartIntentService.EXTRA_PAYMENT_ID, paymentId);
+                TopPayIntentService.class);
+        intent.putExtra(TopPayIntentService.EXTRA_ACTION,
+                TopPayIntentService.SERVICE_ACTION_GET_THANKS_TOP_PAY);
+        intent.putExtra(TopPayIntentService.EXTRA_PAYMENT_ID, paymentId);
         startService(intent);
     }
 
