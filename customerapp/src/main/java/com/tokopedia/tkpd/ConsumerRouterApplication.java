@@ -6,9 +6,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment;
+import com.tokopedia.tkpd.home.ParentIndexHome;
 
 /**
  * Created by normansyahputa on 12/15/16.
@@ -17,10 +17,10 @@ import com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment;
 public class ConsumerRouterApplication extends MainApplication implements SellerModuleRouter, IConsumerModuleRouter {
     @Override
     public void goToHome(Context context) {
-        Intent intent2 = new Intent(context,
-                HomeRouter.getHomeActivityClass());
-        intent2.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        context.startActivity(intent2);
+        Intent intent = new Intent(context,
+                ParentIndexHome.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        context.startActivity(intent);
     }
 
     @Override
