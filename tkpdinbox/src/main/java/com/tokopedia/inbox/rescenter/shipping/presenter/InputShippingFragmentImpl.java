@@ -8,16 +8,18 @@ import android.util.Log;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.database.model.AttachmentResCenterDB;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.shipping.interactor.NetworkParam;
-import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsModel;
-import com.tokopedia.inbox.rescenter.shipping.model.ResCenterKurir;
 import com.tokopedia.inbox.rescenter.shipping.interactor.RetrofitInteractor;
 import com.tokopedia.inbox.rescenter.shipping.interactor.RetrofitInteractorImpl;
+import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsModel;
+import com.tokopedia.inbox.rescenter.shipping.model.ResCenterKurir;
 import com.tokopedia.inbox.rescenter.shipping.view.InputShippingFragmentView;
 
+import static com.tokopedia.inbox.rescenter.shipping.fragment.InputShippingFragment.EXTRA_PARAM_ATTACHMENT;
 import static com.tokopedia.inbox.rescenter.shipping.fragment.InputShippingFragment.EXTRA_PARAM_MODEL;
 
 /**
@@ -41,11 +43,13 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
     @Override
     public void onSaveState(Bundle state) {
         state.putParcelable(EXTRA_PARAM_MODEL, viewListener.getParamsModel());
+        state.putParcelableArrayList(EXTRA_PARAM_ATTACHMENT, viewListener.getAttachmentData());
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
         viewListener.setParamsModel((InputShippingParamsModel) savedState.getParcelable(EXTRA_PARAM_MODEL));
+        viewListener.setAttachmentData(savedState.<AttachmentResCenterDB>getParcelableArrayList(EXTRA_PARAM_ATTACHMENT));
     }
 
     @Override

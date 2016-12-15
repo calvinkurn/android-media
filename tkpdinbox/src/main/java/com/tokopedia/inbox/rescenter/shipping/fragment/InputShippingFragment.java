@@ -24,7 +24,6 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.create.customdialog.BaseUploadImageDialog;
-import com.tokopedia.inbox.rescenter.create.fragment.ChooseSolutionFragment;
 import com.tokopedia.inbox.rescenter.shipping.customadapter.AttachmentAdapter;
 import com.tokopedia.inbox.rescenter.shipping.customadapter.ShippingSpinnerAdapter;
 import com.tokopedia.inbox.rescenter.shipping.customdialog.UploadImageShippingResCenterDialog;
@@ -53,6 +52,7 @@ import permissions.dispatcher.RuntimePermissions;
 public class InputShippingFragment extends BasePresenterFragment<InputShippingFragmentPresenter>
         implements InputShippingFragmentView, AttachmentAdapter.AttachmentAdapterListener {
 
+    public static final String EXTRA_PARAM_ATTACHMENT = "params_attachment";
     public static final String EXTRA_PARAM_MODEL = "params_model";
 
     @BindView(R2.id.ref_number)
@@ -94,6 +94,16 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
     @Override
     public void setParamsModel(InputShippingParamsModel paramsModel) {
         this.paramsModel = paramsModel;
+    }
+
+    @Override
+    public ArrayList<AttachmentResCenterDB> getAttachmentData() {
+        return attachmentData;
+    }
+
+    @Override
+    public void setAttachmentData(ArrayList<AttachmentResCenterDB> attachmentData) {
+        this.attachmentData = attachmentData;
     }
 
     @Override

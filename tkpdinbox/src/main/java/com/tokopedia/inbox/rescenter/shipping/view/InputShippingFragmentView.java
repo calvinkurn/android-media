@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Parcelable;
 
+import com.tokopedia.core.database.model.AttachmentResCenterDB;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsModel;
 import com.tokopedia.inbox.rescenter.shipping.model.ResCenterKurir;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,6 +22,10 @@ public interface InputShippingFragmentView {
     InputShippingParamsModel getParamsModel();
 
     void setParamsModel(InputShippingParamsModel paramsModel);
+
+    ArrayList<AttachmentResCenterDB> getAttachmentData();
+
+    void setAttachmentData(ArrayList<AttachmentResCenterDB> attachmentData);
 
     void renderAttachmentAdapter();
 
