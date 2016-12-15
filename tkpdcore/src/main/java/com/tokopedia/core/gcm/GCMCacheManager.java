@@ -225,4 +225,39 @@ public class GCMCacheManager {
                 ArrayList<String> desc,
                 ArrayList<Integer> code);
     }
+
+    public static void storeRegId(String id, Context context){
+        LocalCacheHandler cache = new LocalCacheHandler(context, "GCM_STORAGE");
+        cache.putString("gcm_id", id);
+        cache.applyEditor();
+    }
+
+    public static String getRegistrationId(Context context) {
+        LocalCacheHandler cache = new LocalCacheHandler(context, "GCM_STORAGE");
+        return cache.getString("gcm_id", "");
+    }
+
+    public static void clearRegistrationId(Context context) {
+        LocalCacheHandler cache = new LocalCacheHandler(context, "GCM_STORAGE");
+        cache.putString("gcm_id", null);
+        cache.applyEditor();
+    }
+
+    public static void storeGCMRegId(String id, Context context){
+        LocalCacheHandler cache = new LocalCacheHandler(context, "GCM_STORAGE");
+        cache.putString("gcm_id_loca", id);
+        cache.applyEditor();
+    }
+
+
+    public static String getGCMRegistrationId(Context context) {
+        LocalCacheHandler cache = new LocalCacheHandler(context, "GCM_STORAGE");
+        return cache.getString("gcm_id_loca", "");
+    }
+
+    public static void clearGCMRegistrationId(Context context) {
+        LocalCacheHandler cache = new LocalCacheHandler(context, "GCM_STORAGE");
+        cache.putString("gcm_id_loca", null);
+        cache.applyEditor();
+    }
 }
