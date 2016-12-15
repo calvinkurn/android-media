@@ -68,21 +68,59 @@
                 android:textSize="@dimen/font_small" />
 
             <TextView
-                android:id="@+id/attachment_text"
+                android:id="@+id/phone_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/detail"
                 android:padding="@dimen/padding_small"
+                android:text="@string/title_phone_optional"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/phone_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/phone_text"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginRight="@dimen/margin_small"
+                android:background="@android:color/white"
+                android:gravity="top"
+                android:padding="@dimen/padding_small"
+                android:textSize="@dimen/font_small" />
+
+            <TextView
+                android:id="@+id/attachment_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/phone_number"
+                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginRight="@dimen/margin_small"
                 android:text="@string/title_attachment"
                 android:textSize="15sp"
                 android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/attachment_note"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginRight="@dimen/margin_small"
+                android:layout_below="@id/attachment_text"
+                android:visibility="gone"
+                tools:visibility="visible"
+                tools:text="Mohon lampirkan bukti resi pengiriman Anda."
+                android:textSize="@dimen/font_small"
+                android:textStyle="italic" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/attachment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/attachment_text"
+                android:layout_below="@id/attachment_note"
                 android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_small"
                 android:layout_marginRight="@dimen/margin_small"
                 android:background="@color/white"
                 android:scrollbars="horizontal" />

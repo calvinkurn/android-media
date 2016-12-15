@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.ui.view.LinearLayoutManager;
@@ -67,14 +68,17 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
     @BindView(R2.id.detail)
     EditText detail;
 
-    @BindView(R2.id.attachment_text)
-    View attachmentText;
+    @BindView(R2.id.attachment_note)
+    TextView attachmentNote;
 
     @BindView(R2.id.main)
     View mainView;
 
     @BindView(R2.id.attachment)
     RecyclerView attachment;
+
+    @BindView(R2.id.phone_number)
+    EditText phoneNumber;
 
     ImageUploadAdapter imageAdapter;
     TkpdProgressDialog progressDialog;
@@ -254,6 +258,12 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
     public void setResult(SolutionResult solutionResult) {
         mainView.setVisibility(View.VISIBLE);
         mainCategory.setText(solutionResult.getSolutions().getName());
+        if (solutionResult.getSolutions().hasAttachment()) {
+            attachmentNote.setText(solutionResult.getSolutions().getNote());
+            attachmentNote.setVisibility(View.VISIBLE);
+        } else {
+            attachmentNote.setVisibility(View.GONE);
+        }
         finishLoading();
     }
 
@@ -296,6 +306,16 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
     public void showErrorValidation(EditText view, String error) {
         view.setError(error);
         view.requestFocus();
+    }
+
+    @Override
+    public String getPhoneNumber() {
+        return phoneNumber.getText().toString();
+    }
+
+    @Override
+    public TextView getAttachmentNote() {
+        return attachmentNote;
     }
 
     @Override

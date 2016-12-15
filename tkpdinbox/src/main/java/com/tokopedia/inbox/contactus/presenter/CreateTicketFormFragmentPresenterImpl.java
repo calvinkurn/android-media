@@ -1,5 +1,7 @@
 package com.tokopedia.inbox.contactus.presenter;
 
+import android.view.View;
+
 import com.tokopedia.core.R;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
@@ -75,12 +77,17 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
         pass.setSolutionId(String.valueOf(viewListener.getArguments().getString(
                 ContactUsActivity.PARAM_SOLUTION_ID)));
         pass.setMessageBody(viewListener.getMessage().getText().toString());
-        pass.setAttachment(viewListener.getAttachment());
+        if (!viewListener.getAttachment().isEmpty())
+            pass.setAttachment(viewListener.getAttachment());
         pass.setName(SessionHandler.getLoginName(viewListener.getActivity()));
         pass.setTag(String.valueOf(viewListener.getArguments().getString(
                 ContactUsActivity.PARAM_TAG)));
-        pass.setOrderId(String.valueOf(viewListener.getArguments().getString(
-                ContactUsActivity.PARAM_ORDER_ID)));
+        if (viewListener.getPhoneNumber().trim().length() > 0)
+            pass.setPhoneNumber(String.valueOf(viewListener.getPhoneNumber()));
+        if (viewListener.getArguments().getString(
+                ContactUsActivity.PARAM_ORDER_ID).length() > 0)
+            pass.setOrderId(String.valueOf(viewListener.getArguments().getString(
+                    ContactUsActivity.PARAM_ORDER_ID)));
         return pass;
     }
 
@@ -91,6 +98,9 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
             return false;
         } else if (viewListener.getMessage().getText().toString().trim().length() < 30) {
             viewListener.showErrorValidation(viewListener.getMessage(), viewListener.getString(R.string.error_detail_too_short));
+            return false;
+        } else if (viewListener.getAttachmentNote().getVisibility() == View.VISIBLE && viewListener.getAttachment().isEmpty()){
+            viewListener.showError(viewListener.getActivity().getString(R.string.error_attachment));
             return false;
         }
         return true;

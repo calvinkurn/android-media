@@ -3,6 +3,7 @@ package com.tokopedia.inbox.contactus.listener;
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.tokopedia.core.inboxreputation.model.ImageUpload;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -39,4 +40,8 @@ public interface CreateTicketFormFragmentView {
     void showErrorEmptyState(String error, NetworkErrorHelper.RetryClickedListener retryClickedListener);
 
     void showErrorValidation(EditText view, String error);
+
+    String getPhoneNumber();
+
+    TextView getAttachmentNote();
 }

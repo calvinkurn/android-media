@@ -5,6 +5,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class Solution {
 
+    @SerializedName("attachment")
+    @Expose
+    private int attachment;
     @SerializedName("breadcrumb")
     @Expose
     private String breadcrumb;
@@ -17,6 +20,24 @@ public class Solution {
     @SerializedName("note")
     @Expose
     private String note;
+
+
+    /**
+     *
+     * @return
+     *     The attachment
+     */
+    public boolean hasAttachment() {
+        return attachment == 1;
+    }
+    /**
+     *
+     * @param attachment
+     *     The attachment
+     */
+    public void setAttachment(int attachment) {
+        this.attachment = attachment;
+    }
 
     /**
      *
