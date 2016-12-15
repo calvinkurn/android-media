@@ -430,9 +430,11 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     public void openWebViewURL(String url) {
-        Intent intent = new Intent(getActivity(), BannerWebView.class);
-        intent.putExtra("url", url);
-        startActivity(intent);
+        if (url!="") {
+            Intent intent = new Intent(getActivity(), BannerWebView.class);
+            intent.putExtra("url", url);
+            startActivity(intent);
+        }
     }
 
 
