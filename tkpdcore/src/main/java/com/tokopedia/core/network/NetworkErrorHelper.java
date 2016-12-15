@@ -108,6 +108,39 @@ public class NetworkErrorHelper {
         }
     }
 
+    public static void showEmptyState(Context context, final View rootview, String titleMessage,
+                                      String subTitleMessage, String titleRetry,
+                                      final RetryClickedListener listener) {
+        try {
+            rootview.findViewById(R.id.main_retry).setVisibility(View.VISIBLE);
+        } catch (NullPointerException e) {
+            LayoutInflater inflater = LayoutInflater.from(context);
+            LinearLayout.LayoutParams params
+                    = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT
+            );
+            params.gravity = Gravity.CENTER;
+            params.weight = 1.0f;
+            View retryLoad = inflater.inflate(R.layout.design_error_network, (ViewGroup) rootview);
+            TextView retryButon = (TextView) retryLoad.findViewById(R.id.button_retry);
+            TextView tvTitleMessage = (TextView) retryLoad.findViewById(R.id.message_retry);
+            TextView tvSubTitleMessage = (TextView) retryLoad.findViewById(R.id.sub_message_retry);
+            tvSubTitleMessage.setText(subTitleMessage);
+            tvTitleMessage.setText(titleMessage);
+            retryButon.setText(titleRetry);
+            if (listener != null) {
+                retryButon.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        rootview.findViewById(R.id.main_retry).setVisibility(View.GONE);
+                        listener.onRetryClicked();
+                    }
+                });
+            }
+        }
+    }
+
     public static void removeEmptyState(View rootview) {
         try {
             rootview.findViewById(R.id.main_retry).setVisibility(View.GONE);
