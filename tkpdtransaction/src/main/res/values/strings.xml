@@ -28,4 +28,5 @@
     <string name="label_error_form_voucher_code_empty">Voucher Kosong</string>
     <string name="label_message_success_update_item_cart_data">Berhasil mengubah keranjang</string>
     <string name="label_message_success_update_cart_insurance">Berhasil mengubah asuransi</string>
+    <string name="label_error_default_top_pay">Proses pembayaran gagal, mohon ulangi lagi</string>
 </resources>

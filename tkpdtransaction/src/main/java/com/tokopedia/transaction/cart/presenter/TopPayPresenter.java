@@ -3,6 +3,8 @@ package com.tokopedia.transaction.cart.presenter;
 import android.content.Intent;
 import android.net.Uri;
 
+import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.cart.listener.ITopPayView;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 import com.tokopedia.transaction.cart.services.TopPayIntentService;
@@ -29,7 +31,7 @@ public class TopPayPresenter implements ITopPayPresenter {
             view.renderWebViewPostUrl(topPayParameterData.getRedirectUrl(), postData);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-            view.showToastMessageWithForceCloseView("Terjadi Kesalahan, Silahkan coba kembali");
+            view.showToastMessageWithForceCloseView(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
         }
     }
 
@@ -60,17 +62,22 @@ public class TopPayPresenter implements ITopPayPresenter {
 
     @Override
     public void processRedirectUrlContainsLoginUrl() {
-        view.showToastMessageWithForceCloseView("Proses pembayaran gagal, mohon ulangi lagi");
+        view.showToastMessageWithForceCloseView(
+                view.getStringFromResource(R.string.label_error_default_top_pay)
+        );
     }
 
     @Override
     public void processVerifyPaymentId(String paymentId) {
         if (paymentId == null) {
-            view.showToastMessageWithForceCloseView("Proses pembayaran gagal, mohon ulangi lagi");
+            view.showToastMessageWithForceCloseView(
+                    view.getStringFromResource(R.string.label_error_default_top_pay)
+            );
             return;
         }
-        Intent intent = new Intent(Intent.ACTION_SYNC, null, view.getContextActivity(),
-                TopPayIntentService.class);
+        Intent intent = new Intent(
+                Intent.ACTION_SYNC, null, view.getContextActivity(), TopPayIntentService.class
+        );
         intent.putExtra(TopPayIntentService.EXTRA_ACTION,
                 TopPayIntentService.SERVICE_ACTION_GET_THANKS_TOP_PAY);
         intent.putExtra(TopPayIntentService.EXTRA_PAYMENT_ID, paymentId);

@@ -12,6 +12,7 @@ import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -50,12 +51,12 @@ import butterknife.BindView;
 public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> implements ITopPayView,
         TopPayBroadcastReceiver.ActionTopPayThanksListener {
     private static final String TAG = TopPayActivity.class.getSimpleName();
+    public static final int REQUEST_CODE = TopPayActivity.class.hashCode();
 
     private static final String EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA";
     private static final String CONTAINS_ACCOUNT_URL = "accounts.tokopedia.com";
     private static final String CONTAINS_LOGIN_URL = "login.pl";
     private static final long FORCE_TIMEOUT = 60000L;
-    public static final int REQUEST_CODE = 1005;
 
     @BindView(R2.id.webview)
     WebView webView;
@@ -228,24 +229,6 @@ public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> impl
     }
 
     @Override
-    public void renderErrorManipulateUriPayment(String message) {
-        View view = findViewById(android.R.id.content);
-        if (view != null) {
-            Snackbar.make(view, message, Snackbar.LENGTH_SHORT).setCallback(
-                    new Snackbar.Callback() {
-                        @Override
-                        public void onDismissed(Snackbar snackbar, int event) {
-                            super.onDismissed(snackbar, event);
-                            closeView();
-                        }
-                    }).show();
-        } else {
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-            closeView();
-        }
-    }
-
-    @Override
     public Activity getContextActivity() {
         return this;
     }
@@ -270,6 +253,11 @@ public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> impl
     @Override
     public void setPaymentId(String paymentId) {
         this.paymentId = paymentId;
+    }
+
+    @Override
+    public String getStringFromResource(@StringRes int resId) {
+        return getString(resId);
     }
 
     @NonNull
@@ -349,9 +337,8 @@ public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> impl
         @Override
         public void onReceivedError(WebView view, WebResourceRequest request,
                                     WebResourceError error) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
                 showError(view, error.getErrorCode());
-            }
             super.onReceivedError(view, request, error);
         }
 
