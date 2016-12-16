@@ -723,6 +723,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             CommonUtils.dumper("LocalTag : CategoryApi");
             String screenName = AppScreen.SCREEN_HOME_CATEGORY;
             ScreenTracking.screenLoca(screenName);
+            ScreenTracking.eventLoca(screenName);
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
