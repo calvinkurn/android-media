@@ -50,8 +50,6 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
-import static android.R.attr.data;
-
 /**
  * Created by Nisie on 2/12/16.
  */
