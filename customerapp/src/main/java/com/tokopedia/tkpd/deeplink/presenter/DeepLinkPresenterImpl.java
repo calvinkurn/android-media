@@ -29,6 +29,7 @@ import com.tokopedia.core.router.home.RechargeRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
+import com.tokopedia.tkpd.IConsumerModuleRouter;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 
@@ -277,8 +278,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         }
         bundle.putBoolean(RechargeRouter.EXTRA_ALLOW_ERROR, true);
 //        RechargeCategoryFragment fragment = RechargeCategoryFragment.newInstance(bundle);
-
-        viewListener.inflateFragmentV4(RechargeRouter.getRechargeCategoryFragment(context), "RECHARGE");
+//        viewListener.inflateFragmentV4(RechargeRouter.getRechargeCategoryFragment(context), "RECHARGE");
+        viewListener.inflateFragmentV4(((IConsumerModuleRouter)this.context.getApplication()).getRechargeCategoryFragment(),
+                "RECHARGE");
     }
 
 

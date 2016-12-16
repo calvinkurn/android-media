@@ -153,6 +153,7 @@ public class ResCenterInboxAdapter extends ResCenterExtendedAdapter {
 
     @Override
     protected void bindNoresultView(NoResultViewHolder holder) {
+        super.bindNoresultView(holder);
         SpannableString stringNoResult = new SpannableString(context.getString(R.string.msg_no_res_center));
 
         String linkStatus = context.getString(R.string.msg_no_res_center1);
@@ -187,5 +188,10 @@ public class ResCenterInboxAdapter extends ResCenterExtendedAdapter {
     public void setList(ArrayList<ResCenterInboxItem> list) {
         this.list = list;
         notifyDataSetChanged();
+    }
+
+    @Override
+    protected int getCurrentTab() {
+        return presenter.getResCenterTabModel().typeFragment;
     }
 }

@@ -47,11 +47,11 @@
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
-        <include layout="@layout/layout_tab_indicator_main_fixed" />
+        <include layout="@layout/layout_tab_indicator_main" />
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.view.ViewPager
+    <com.tokopedia.core.widgets.NonSwipeableViewPager
         android:id="@id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -63,7 +63,7 @@ public class SectionListCategoryAdapter extends RecyclerView.Adapter<SectionList
             }
         });
 
-        if(i % 2 == 0){
+        if(i % 2 != 0 ){
             holder.sparator.setVisibility(View.GONE);
         } else {
             holder.sparator.setVisibility(View.VISIBLE);

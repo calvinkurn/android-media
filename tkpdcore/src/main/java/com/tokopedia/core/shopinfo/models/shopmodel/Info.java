@@ -55,6 +55,9 @@ public class Info {
     @SerializedName("shop_location")
     @Expose
     public String shopLocation;
+    @SerializedName("shop_official_top")
+    @Expose
+    public String shopOfficialTop;
     @SerializedName("shop_is_closed_until")
     @Expose
     public int shopIsClosedUntil;

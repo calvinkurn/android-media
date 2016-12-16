@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.view.View;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.gcm.NotificationModHandler;
@@ -49,7 +50,7 @@ public class ResCenterImpl implements ResCenterPresenter {
                 list.add(new InboxResCenterActivity.Model(TkpdState.InboxResCenter.RESO_MINE, context.getString(R.string.title_my_dispute)));
                 list.add(new InboxResCenterActivity.Model(TkpdState.InboxResCenter.RESO_BUYER, context.getString(R.string.title_buyer_dispute)));
             } else {
-                list.add(new InboxResCenterActivity.Model(TkpdState.InboxResCenter.RESO_ALL, context.getString(R.string.title_all_dispute)));
+                list.add(new InboxResCenterActivity.Model(TkpdState.InboxResCenter.RESO_ALL, context.getString(R.string.title_my_dispute)));
             }
         } else {
             list.add(new InboxResCenterActivity.Model(TkpdState.InboxResCenter.RESO_BUYER, context.getString(R.string.title_buyer_dispute)));
@@ -70,6 +71,15 @@ public class ResCenterImpl implements ResCenterPresenter {
         view.setTabLayout();
         view.setOffScreenPageLimit();
         setTabPosition(context);
+    }
+
+    @Override
+    public void initView() {
+        if (isSellerApp()) {
+            view.getTabLayout().setVisibility(View.GONE);
+        } else {
+            view.getTabLayout().setVisibility(View.VISIBLE);
+        }
     }
 
     private void setTabPosition(Context context) {

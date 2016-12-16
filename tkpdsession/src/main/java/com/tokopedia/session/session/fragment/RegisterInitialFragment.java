@@ -1,5 +1,6 @@
 package com.tokopedia.session.session.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -178,6 +179,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
                         ,getString(R.string.error_download_provider), Snackbar.LENGTH_INDEFINITE)
                         .setAction(getString(R.string.title_try_again), retryDiscover());
                 snackbar.show();
+                loginButton.setEnabled(false);
                 break;
             default:
                 showError(s);
@@ -204,6 +206,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
     @Override
     public void showProvider(List<LoginProviderModel.ProvidersBean> data) {
         listProvider = data;
+        loginButton.setEnabled(true);
         if (listProvider != null && checkHasNoProvider()) {
             presenter.saveProvider(listProvider);
 
@@ -293,6 +296,10 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode){
             case 100:
+                if(resultCode == Activity.RESULT_CANCELED){
+                    KeyboardHandler.DropKeyboard(getActivity(),getView());
+                    break;
+                }
                 Bundle bundle = data.getBundleExtra("bundle");
                 if(bundle.getString("path").contains("error")){
                     snackbar = SnackbarManager.make(getActivity(), bundle.getString("message"), Snackbar.LENGTH_LONG);

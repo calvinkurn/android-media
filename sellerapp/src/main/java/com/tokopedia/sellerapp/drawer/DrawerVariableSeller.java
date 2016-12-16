@@ -1,4 +1,4 @@
-package com.tokopedia.core.drawer;
+package com.tokopedia.sellerapp.drawer;
 
 import android.content.Context;
 import android.content.Intent;
@@ -24,10 +24,10 @@ import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.EtalaseShopEditor;
 import com.tokopedia.core.ManageGeneral;
-import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.drawer.DrawerVariable;
 import com.tokopedia.core.drawer.interactor.NetworkInteractor;
 import com.tokopedia.core.drawer.interactor.NetworkInteractorImpl;
 import com.tokopedia.core.drawer.model.DrawerHeader;
@@ -51,6 +51,9 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.var.ToolbarVariable;
+import com.tokopedia.sellerapp.R;
+import com.tokopedia.sellerapp.gmsubscribe.GMSubscribeActivity;
+import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,7 +99,7 @@ public class DrawerVariableSeller extends DrawerVariable {
         private DrawerItem sellerHome;
         private DrawerItemList shopMenu;
         private DrawerItemList inboxMenu;
-        //        private DrawerItemList gmSubscribeMenu;
+        private DrawerItemList gmSubscribeMenu;
         private List<RecyclerViewItem> data;
 
         public Model() {
@@ -105,7 +108,7 @@ public class DrawerVariableSeller extends DrawerVariable {
             sellerHome = new DrawerItem("Beranda", 0, R.drawable.icon_home, TkpdState.DrawerPosition.SELLER_INDEX_HOME, false);
             shopMenu = new DrawerItemList("Penjualan", 0, R.drawable.icon_penjualan, TkpdState.DrawerPosition.SHOP, true);
             inboxMenu = new DrawerItemList("Kotak Masuk", 0, R.drawable.icon_inbox, TkpdState.DrawerPosition.INBOX, true);
-//            gmSubscribeMenu = new DrawerItemList("Gold Merchant", 0, R.drawable.ic_goldmerchant_drawer, TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE, true);
+            gmSubscribeMenu = new DrawerItemList("Gold Merchant", 0, R.drawable.ic_goldmerchant_drawer, TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE, true);
         }
 
     }
@@ -145,20 +148,19 @@ public class DrawerVariableSeller extends DrawerVariable {
         model = new Model();
         model.shopMenu.list = new ArrayList<>();
         model.inboxMenu.list = new ArrayList<>();
-//        model.gmSubscribeMenu.list = new ArrayList<>();
+        model.gmSubscribeMenu.list = new ArrayList<>();
         adapter = new DrawerSellerAdapter(context, model.data);
         layoutManager = new LinearLayoutManager(context);
         animator = new DefaultItemAnimator();
         initFacade();
         createShopMenu();
         createInboxMenu();
-//        createGoldMerchantMenu();
+        createGoldMerchantMenu();
     }
 
     private void createGoldMerchantMenu() {
-//        String gmString = isGoldMerchant() ? context.getString(R.string.extend_gold_merchant) : context.getString(R.string.upgrade_gold_merchant);
-//        model.gmSubscribeMenu.list.add(new DrawerItem(gmString, 0, 0, TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND, false));
-//        model.gmSubscribeMenu.list.add(new DrawerItem("Transaksi Gold Merchant", 0, 0, TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_TRANSACTION, false));
+        String gmString = isGoldMerchant() ? context.getString(R.string.extend_gold_merchant) : context.getString(R.string.upgrade_gold_merchant);
+        model.gmSubscribeMenu.list.add(new DrawerItem(gmString, 0, 0, TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND, false));
     }
 
     private boolean isGoldMerchant() {
@@ -311,9 +313,9 @@ public class DrawerVariableSeller extends DrawerVariable {
             case TkpdState.DrawerPosition.SHOP:
                 Cache.putBoolean(IS_SHOP_OPENED, isExpand);
                 break;
-//            case TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE:
-//                Cache.putBoolean(IS_GM_SUBSCRIBE_OPENED, isExpand);
-//                break;
+            case TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE:
+                Cache.putBoolean(IS_GM_SUBSCRIBE_OPENED, isExpand);
+                break;
             default:
                 break;
         }
@@ -339,15 +341,12 @@ public class DrawerVariableSeller extends DrawerVariable {
         Boolean isFinish = true;
         Intent intent;
         switch (((DrawerItem) model.data.get(position)).id) {
-//            case TkpdState.DrawerPosition.SELLER_INDEX_HOME:
-//                context.startActivity(new Intent(context, SellerHomeActivity.class));
-//                break;
-//            case TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND:
-//                context.startActivity(new Intent(context, GMSubscribeActivity.class));
-//                break;
-//            case TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_TRANSACTION:
-//                context.startActivity(new Intent(context, GMSubscribeTransactionActivity.class));
-//                break;
+            case TkpdState.DrawerPosition.SELLER_INDEX_HOME:
+                context.startActivity(new Intent(context, SellerHomeActivity.class));
+                break;
+            case TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND:
+                context.startActivity(new Intent(context, GMSubscribeActivity.class));
+                break;
             case TkpdState.DrawerPosition.LOGIN:
             case TkpdState.DrawerPosition.REGISTER:
                 intent = SessionRouter.getLoginActivityIntent(context);
@@ -491,9 +490,9 @@ public class DrawerVariableSeller extends DrawerVariable {
         if (Cache.getBoolean(IS_SHOP_OPENED, false)) {
             expandGroup(getDrawerListPosition(TkpdState.DrawerPosition.SHOP));
         }
-//        if (Cache.getBoolean(IS_GM_SUBSCRIBE_OPENED, false)){
-//            expandGroup(getDrawerListPosition(TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE));
-//        }
+        if (Cache.getBoolean(IS_GM_SUBSCRIBE_OPENED, false)){
+            expandGroup(getDrawerListPosition(TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE));
+        }
     }
 
     private void setSelected() {
@@ -569,7 +568,7 @@ public class DrawerVariableSeller extends DrawerVariable {
     }
 
     private void setCacheGMSubscribeMenu() {
-//        model.gmSubscribeMenu.isExpanded = CacheNotif.getBoolean(IS_GM_SUBSCRIBE_OPENED, false);
+        model.gmSubscribeMenu.isExpanded = CacheNotif.getBoolean(IS_GM_SUBSCRIBE_OPENED, false);
     }
 
     private void setCacheFooter() {
@@ -647,7 +646,7 @@ public class DrawerVariableSeller extends DrawerVariable {
         } else {
             model.data.add(model.header);
             model.data.add(model.sellerHome);
-//            model.data.add(model.gmSubscribeMenu);
+            model.data.add(model.gmSubscribeMenu);
             model.data.add(model.inboxMenu);
             model.data.add(model.shopMenu);
             model.data.add(new DrawerItem("Pengaturan", 0, R.drawable.icon_setting, TkpdState.DrawerPosition.SETTINGS,

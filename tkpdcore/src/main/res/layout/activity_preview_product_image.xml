@@ -34,7 +34,7 @@
             android:padding="@dimen/padding_vs"
             android:layout_gravity="right"
             android:gravity="center|right"
-            android:text="Download Gambar"
+            android:text="@string/preview_picture_download_action"
             android:textColor="@color/white" />
     </LinearLayout>
 

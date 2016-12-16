@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.home.recharge.interactor;
 
-import com.tokopedia.core.database.model.RechargeOperatorModelDBAttrs;
+import com.tokopedia.core.database.model.RechargeOperatorModel;
 import com.tokopedia.core.database.model.category.CategoryData;
 import com.tokopedia.core.database.recharge.operator.OperatorData;
 import com.tokopedia.core.database.recharge.product.Category;
@@ -71,7 +71,7 @@ public interface RechargeDBInteractor {
     }
 
     interface OnGetOperatorByIdListener {
-        void onSuccess(RechargeOperatorModelDBAttrs operator);
+        void onSuccess(RechargeOperatorModel operator);
 
         void onError(Throwable e);
 
@@ -79,7 +79,7 @@ public interface RechargeDBInteractor {
     }
 
     interface OnGetListOperatorByIdsListener {
-        void onSuccessFetchOperators(List<RechargeOperatorModelDBAttrs> operators);
+        void onSuccessFetchOperators(List<RechargeOperatorModel> operators);
 
         void onError(Throwable e);
 
