@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.home.recharge.interactor;
 
 import com.google.gson.reflect.TypeToken;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.database.manager.RechargeOperatorManager;
@@ -8,6 +9,7 @@ import com.tokopedia.core.database.manager.RechargeProductManager;
 import com.tokopedia.core.database.manager.RechargeRecentDataManager;
 import com.tokopedia.core.database.model.RechargeOperatorModel;
 import com.tokopedia.core.database.model.category.CategoryData;
+import com.tokopedia.core.database.recharge.operator.Operator;
 import com.tokopedia.core.database.recharge.operator.OperatorData;
 import com.tokopedia.core.database.recharge.product.Category;
 import com.tokopedia.core.database.recharge.product.Product;
@@ -20,7 +22,9 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 /**
@@ -28,33 +32,40 @@ import rx.schedulers.Schedulers;
  */
 public class RechargeDBInteractorImpl implements RechargeDBInteractor {
 
-    public final static String KEY_CATEGORY = "RECHARGE_CATEGORY";
-    public final static String KEY_STATUS = "RECHARGE_STATUS";
+    private final static String KEY_CATEGORY = "RECHARGE_CATEGORY";
+    private final static String KEY_STATUS = "RECHARGE_STATUS";
+    private final static String KEY_PRODUCT = "RECHARGE_PRODUCT";
+    private final static String KEY_OPERATOR = "RECHARGE_STATUS";
 
 
     @Override
-    public void getListProduct(final OnGetListProduct onGetListProduct, String prefix,
+    public void getListProduct(final OnGetListProduct onGetListProduct, final String prefix,
                                final int categoryId, final Boolean validatePrefix) {
-        Observable.just(prefix)
+
+
+        Observable.zip(getOperatorByPrefix(prefix),
+                getObservableListProduct(),
+                new Func2<Operator, List<Product>, List<Product>>() {
+                    @Override
+                    public List<Product> call(final Operator operator, List<Product> products) {
+                        return Observable.from(products).filter(new Func1<Product, Boolean>() {
+                            @Override
+                            public Boolean call(Product product) {
+                                return product.getRelationships().getCategory().getData().getId() == categoryId
+                                        && product.getRelationships().getOperator().getData().getId() == operator.getId();
+                            }
+                        }).toList().toBlocking().single();
+                    }
+                })
+                .doOnNext(new Action1<List<Product>>() {
+                    @Override
+                    public void call(List<Product> products) {
+                        CommonUtils.dumper(products);
+                    }
+                })
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<String, RechargeOperatorModel>() {
-                    @Override
-                    public RechargeOperatorModel call(String s) {
-                        return new RechargeOperatorManager().getData(s);
-                    }
-                })
-                .map(new Func1<RechargeOperatorModel, List<Product>>() {
-                    @Override
-                    public List<Product> call(RechargeOperatorModel rechargeOperatorModel) {
-                        if (validatePrefix)
-                            return new RechargeProductManager().getListData(categoryId,
-                                    rechargeOperatorModel.operatorId);
-
-                        return new RechargeProductManager().getListDataByCategory(categoryId);
-                    }
-                })
                 .subscribe(new Subscriber<List<Product>>() {
                     @Override
                     public void onCompleted() {
@@ -75,16 +86,23 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
 
     @Override
     public void getListProductForOperator(final OnGetListProductForOperator onGetListProductForOperator, final int categoryId) {
-        Observable.just(true)
+        getObservableListProduct()
+                .flatMap(new Func1<List<Product>, Observable<Product>>() {
+                    @Override
+                    public Observable<Product> call(List<Product> products) {
+                        return Observable.from(products);
+                    }
+                })
+                .filter(new Func1<Product, Boolean>() {
+                    @Override
+                    public Boolean call(Product product) {
+                        return product.getRelationships().getCategory().getData().getId() == categoryId;
+                    }
+                })
+                .toList()
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<Boolean, List<Product>>() {
-                    @Override
-                    public List<Product> call(Boolean b) {
-                        return new RechargeProductManager().getListDataByCategory(categoryId);
-                    }
-                })
                 .subscribe(new Subscriber<List<Product>>() {
                     @Override
                     public void onCompleted() {
@@ -106,6 +124,50 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
     @Override
     public void getListProductDefaultOperator(
             final OnGetListProduct onGetListProduct,final int categoryId, final String operatorId) {
+
+        getObservableListProduct()
+                .flatMap(new Func1<List<Product>, Observable<Product>>() {
+                    @Override
+                    public Observable<Product> call(List<Product> products) {
+                        return Observable.from(products);
+                    }
+                })
+                .filter(new Func1<Product, Boolean>() {
+                    @Override
+                    public Boolean call(Product product) {
+                        return product
+                                .getRelationships()
+                                .getCategory()
+                                .getData()
+                                .getId() == categoryId
+                                &&
+                                product
+                                .getRelationships()
+                                .getOperator()
+                                .getData()
+                                .getId() == Integer.parseInt(operatorId);
+                    }
+                })
+                .toList()
+                .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<Product>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        onGetListProduct.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(List<Product> products) {
+                        onGetListProduct.onSuccess(products);
+                    }
+                });
 
         Observable.just(true)
                 .subscribeOn(Schedulers.newThread())
@@ -246,9 +308,14 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                 .map(new Func1<OperatorData, Boolean>() {
                     @Override
                     public Boolean call(OperatorData operatorData) {
-                        RechargeOperatorManager dbManager = new RechargeOperatorManager();
-                        if (operatorData != null && operatorData.getData() != null)
-                            dbManager.bulkInsert(operatorData.getData());
+                        GlobalCacheManager manager = new GlobalCacheManager();
+                        if (operatorData != null && operatorData.getData() != null) {
+                            manager.setKey(RechargeDBInteractorImpl.KEY_OPERATOR);
+                            manager.setValue(CacheUtil.convertListModelToString(operatorData.getData(),
+                                    new TypeToken<List<Operator>>() {
+                                    }.getType()));
+                            manager.store();
+                        }
 
                         return true;
                     }
@@ -265,9 +332,14 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                 .map(new Func1<ProductData, Boolean>() {
                     @Override
                     public Boolean call(ProductData productData) {
-                        RechargeProductManager dbManager = new RechargeProductManager();
-                        if (productData != null && productData.getData() != null)
-                            dbManager.bulkInsert(productData.getData());
+                        GlobalCacheManager manager = new GlobalCacheManager();
+                        if (productData != null && productData.getData() != null) {
+                            manager.setKey(RechargeDBInteractorImpl.KEY_PRODUCT);
+                            manager.setValue(CacheUtil.convertListModelToString(productData.getData(),
+                                    new TypeToken<List<Product>>() {
+                                    }.getType()));
+                            manager.store();
+                        }
 
                         return true;
                     }
@@ -349,38 +421,59 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
     }
 
     @Override
-    public void getOperatorById(String operatorId, final OnGetOperatorByIdListener listener) {
-        Observable.just(operatorId)
+    public void getOperatorById(final String operatorId, final OnGetOperatorByIdListener listener) {
+        getObservableListOperator()
+                .flatMap(new Func1<List<Operator>, Observable<Operator>>() {
+                    @Override
+                    public Observable<Operator> call(List<Operator> operators) {
+                        return Observable.from(operators);
+                    }
+                })
+                .filter(new Func1<Operator, Boolean>() {
+                    @Override
+                    public Boolean call(Operator operator) {
+                        return operator.getId() == Integer.parseInt(operatorId);
+                    }
+                })
+                .map(new Func1<Operator, RechargeOperatorModel>() {
+                    @Override
+                    public RechargeOperatorModel call(Operator operator) {
+                        RechargeOperatorModel rechargeModel = new RechargeOperatorModel();
+                        rechargeModel.image = operator.getAttributes().getImage();
+                        rechargeModel.maximumLength = operator.getAttributes().getMaximumLength();
+                        rechargeModel.minimumLength = operator.getAttributes().getMinimumLength();
+                        rechargeModel.name = operator.getAttributes().getName();
+                        rechargeModel.nominalText = operator.getAttributes().getRule().getProductText();
+                        rechargeModel.operatorId = operator.getId();
+                        rechargeModel.showPrice = operator.getAttributes().getRule().getShowPrice();
+                        rechargeModel.showProduct = operator.getAttributes().getRule().getShowProduct();
+                        rechargeModel.status = operator.getAttributes().getStatus();
+                        return rechargeModel;
+                    }
+                })
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<String, RechargeOperatorModel>() {
+                .subscribe(new Subscriber<RechargeOperatorModel>() {
                     @Override
-                    public RechargeOperatorModel call(String operatorId) {
-                        return new RechargeOperatorManager().getDataOperator(Integer.valueOf(operatorId));
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        listener.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(RechargeOperatorModel rechargeOperatorModel) {
+                        if (rechargeOperatorModel != null) {
+                            listener.onSuccess(rechargeOperatorModel);
+                        } else {
+                            listener.onEmpty();
+                        }
 
                     }
-                }).subscribe(new Subscriber<RechargeOperatorModel>() {
-            @Override
-            public void onCompleted() {
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                listener.onError(e);
-            }
-
-            @Override
-            public void onNext(RechargeOperatorModel rechargeOperatorModel) {
-                if (rechargeOperatorModel != null) {
-                    listener.onSuccess(rechargeOperatorModel);
-                } else {
-                    listener.onEmpty();
-                }
-
-            }
-        });
-
+                });
     }
 
     @Override
@@ -416,5 +509,51 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
             }
         });
     }
+
+    private Observable<List<Product>> getObservableListProduct() {
+        return Observable.just(true)
+                .map(new Func1<Boolean, List<Product>>() {
+                    @Override
+                    public List<Product> call(Boolean condition) {
+                        GlobalCacheManager manager = new GlobalCacheManager();
+                        return CacheUtil.convertStringToListModel(
+                                manager.getValueString(KEY_PRODUCT),
+                                new TypeToken<List<Product>>() {
+                                }.getType());
+
+                    }
+                });
+    }
+
+    private Observable<List<Operator>> getObservableListOperator() {
+        return Observable.just(true)
+                .map(new Func1<Boolean, List<Operator>>() {
+                    @Override
+                    public List<Operator> call(Boolean condition) {
+                        GlobalCacheManager manager = new GlobalCacheManager();
+                        return CacheUtil.convertStringToListModel(
+                                manager.getValueString(KEY_OPERATOR),
+                                new TypeToken<List<Operator>>() {
+                                }.getType());
+                    }
+                });
+    }
+
+    private Observable<Operator> getOperatorByPrefix(final String prefix) {
+        return getObservableListOperator()
+                .flatMap(new Func1<List<Operator>, Observable<Operator>>() {
+                    @Override
+                    public Observable<Operator> call(List<Operator> operators) {
+                        return Observable.from(operators);
+                    }
+                })
+                .filter(new Func1<Operator, Boolean>() {
+                    @Override
+                    public Boolean call(Operator operator) {
+                        return operator.getAttributes().getPrefix().contains(prefix);
+                    }
+                });
+    }
+
 
 }
