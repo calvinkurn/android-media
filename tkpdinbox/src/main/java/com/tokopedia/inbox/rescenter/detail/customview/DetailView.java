@@ -36,6 +36,8 @@ public class DetailView extends BaseView<Detail, DetailResCenterView> {
     @BindView(R2.id.webview)
     WebView webView;
 
+    private Detail resolutionDetailModel;
+
     public DetailView(Context context) {
         super(context);
     }
@@ -66,6 +68,7 @@ public class DetailView extends BaseView<Detail, DetailResCenterView> {
 
     @Override
     public void renderData(@NonNull DetailResCenterData.Detail data) {
+        this.resolutionDetailModel = data;
         WebSettings webSettings = webView.getSettings();
         webSettings.setBuiltInZoomControls(false);
         webView.setWebViewClient(new MyWebClient());
@@ -164,7 +167,11 @@ public class DetailView extends BaseView<Detail, DetailResCenterView> {
                 listener.showConfirmationDialog(R.string.msg_accept_sol, new ConfirmationDialog.Listener() {
                     @Override
                     public void onSubmitButtonClick() {
-                        listener.actionAcceptResolution(paramID);
+                        if (resolutionDetailModel.getResolutionLast().getLastShowAcceptReturButton() == 1) {
+                            listener.openInputAddress();
+                        } else {
+                            listener.actionAcceptResolution(paramID);
+                        }
                     }
                 });
                 return true;
@@ -180,7 +187,11 @@ public class DetailView extends BaseView<Detail, DetailResCenterView> {
                 listener.showConfirmationDialog(R.string.msg_accept_admin, new ConfirmationDialog.Listener() {
                     @Override
                     public void onSubmitButtonClick() {
-                        listener.actionAcceptAdmin(paramID);
+                        if (resolutionDetailModel.getResolutionLast().getLastShowAcceptReturButton() == 1) {
+                            listener.openInputAddress();
+                        } else {
+                            listener.actionAcceptAdmin(paramID);
+                        }
                     }
                 });
                 return true;
@@ -202,8 +213,6 @@ public class DetailView extends BaseView<Detail, DetailResCenterView> {
             case "upsert_retur_address":
                 if (Uri.parse(url).getQueryParameter("act").equals(String.valueOf(2))) {
                     listener.openEditAddress(url);
-                } else {
-                    listener.openInputAddress();
                 }
                 return true;
             case "detail":
