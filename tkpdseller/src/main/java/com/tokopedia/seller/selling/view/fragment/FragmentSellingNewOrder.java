@@ -222,6 +222,7 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
 
         presenter.getOrderList(isVisibleToUser);
         ScreenTracking.screenLoca(AppScreen.SCREEN_LOCA_NEWORDER);
+        ScreenTracking.eventLoca(AppScreen.SCREEN_LOCA_NEWORDER);
         ScreenTracking.screen(AppScreen.SCREEN_TX_SHOP_NEW_ORDER);
         super.setUserVisibleHint(isVisibleToUser);
     }
