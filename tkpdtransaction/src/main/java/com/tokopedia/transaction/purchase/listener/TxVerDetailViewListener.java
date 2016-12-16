@@ -13,4 +13,6 @@ public interface TxVerDetailViewListener extends ViewListener {
     void renderInvoiceList(List<Detail> detail);
 
     void setResult(int resultCode);
+
+    void renderErrorGetInvoiceData(String message);
 }
