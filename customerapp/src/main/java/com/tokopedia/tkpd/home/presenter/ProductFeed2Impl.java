@@ -373,13 +373,11 @@ public class ProductFeed2Impl implements ProductFeed, DiscoveryListener {
      */
     @Override
     public void setLocalyticFlow(Context context, String screenName) {
-        if (context != null && (screenName != null)){
-            try {
-                ScreenTracking.screenLoca(screenName);
-            }catch (Exception e){
-                CommonUtils.dumper(TAG+" error connecting to GCM Service");
-                TrackingUtils.eventLogAnalytics(ParentIndexHome.class.getSimpleName(), e.getMessage());
-            }
+        try {
+            ScreenTracking.screenLoca(screenName);
+        }catch (Exception e){
+            CommonUtils.dumper(TAG+" error connecting to GCM Service");
+            TrackingUtils.eventLogAnalytics(ParentIndexHome.class.getSimpleName(), e.getMessage());
         }
     }
 
