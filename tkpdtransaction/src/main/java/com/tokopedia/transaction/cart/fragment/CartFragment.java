@@ -66,7 +66,7 @@ import butterknife.BindView;
  * @author anggaprasetiyo on 11/1/16.
  */
 public class CartFragment extends BasePresenterFragment<ICartPresenter> implements ICartView,
-        PaymentGatewayFragment.ActionListener, CartItemAdapter.CartAction,
+        PaymentGatewayFragment.ActionListener, CartItemAdapter.CartItemActionListener,
         TopPayBroadcastReceiver.ActionTopPayListener {
 
     @BindView(R2.id.pb_main_loading)
@@ -401,7 +401,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void renderErrorCartItem(CartItemEditable cartItemEditable) {
-        cartItemAdapter.renderErrorCart(cartItemEditable);
+        cartItemAdapter.refreshCartItem(cartItemEditable);
     }
 
     @Override
@@ -488,7 +488,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void onCancelCart(final CartItem data) {
+    public void onCancelCartItem(final CartItem data) {
         AlertDialog.Builder alertDialog = generateDialogCancelCart(data);
         showDialog(alertDialog.create());
     }
@@ -507,12 +507,12 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void onSubmitEditCart(CartItem cartData, List<ProductEditData> cartProductEditDataList) {
+    public void onSubmitEditCartItem(CartItem cartData, List<ProductEditData> cartProductEditDataList) {
         presenter.processSubmitEditCart(cartData, cartProductEditDataList);
     }
 
     @Override
-    public void onUpdateInsuranceCart(CartItem cartData, boolean useInsurance) {
+    public void onUpdateInsuranceCartItem(CartItem cartData, boolean useInsurance) {
         presenter.processUpdateInsurance(cartData, useInsurance);
     }
 
