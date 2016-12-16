@@ -577,8 +577,8 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
+        setLocalyticFlow();
         if (isVisibleToUser && getActivity() != null && isAdded()) {
-            setLocalyticFlow();
             ScreenTracking.screen(getScreenName());
             sendAppsFlyerData();
             holder.wrapperScrollview.smoothScrollTo(0, 0);
@@ -721,7 +721,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private void setLocalyticFlow() {
         try {
             CommonUtils.dumper("LocalTag : CategoryApi");
-            String screenName = getString(R.string.top_category_page);
+            String screenName = AppScreen.SCREEN_HOME_CATEGORY;
             ScreenTracking.screenLoca(screenName);
         } catch (NullPointerException e) {
             e.printStackTrace();
