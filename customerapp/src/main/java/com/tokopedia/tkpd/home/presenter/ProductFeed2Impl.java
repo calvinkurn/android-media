@@ -372,7 +372,7 @@ public class ProductFeed2Impl implements ProductFeed, DiscoveryListener {
      * Exceptions are the code's way of saying "I can't handle this situation and I'm giving up... you deal with it!", but here you can handle it... so handle it
      */
     @Override
-    public void setLocalyticFlow(Context context, String screenName) {
+    public void setLocalyticFlow(String screenName) {
         try {
             ScreenTracking.screenLoca(screenName);
             ScreenTracking.eventLoca(screenName);
@@ -383,7 +383,7 @@ public class ProductFeed2Impl implements ProductFeed, DiscoveryListener {
     }
 
     @Override
-    public void sendAppsFlyerData(Context context) {
+    public void sendAppsFlyerData() {
         ScreenTracking.sendAFGeneralScreenEvent(Jordan.AF_SCREEN_PRODUCT_FEED);
     }
 

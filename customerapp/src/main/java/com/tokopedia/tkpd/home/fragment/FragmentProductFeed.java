@@ -239,10 +239,15 @@ public class FragmentProductFeed extends TkpdBaseV4Fragment implements ProductFe
     public void setUserVisibleHint(boolean isVisibleToUser) {
         // this is called when user view Fragment inside ViewPager
         // if visible to User then send data localytic
+
+        if(getActivity()!=null)
+        {
+            ScreenTracking.screen(getScreenName());
+            productFeedPresenter.setLocalyticFlow(AppScreen.SCREEN_HOME_FEED);
+            productFeedPresenter.sendAppsFlyerData();
+        }
+
         super.setUserVisibleHint(isVisibleToUser);
-        ScreenTracking.screen(getScreenName());
-        productFeedPresenter.setLocalyticFlow(getActivity(), AppScreen.SCREEN_HOME_FEED);
-        productFeedPresenter.sendAppsFlyerData(getActivity());
     }
 
     @Deprecated
