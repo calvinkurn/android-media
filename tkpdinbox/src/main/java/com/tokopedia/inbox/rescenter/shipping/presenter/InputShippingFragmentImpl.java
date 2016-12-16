@@ -59,7 +59,9 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
         try {
             String json = cacheManager.getValueString(viewListener.getParamsModel().getResolutionID());
             if (json != null) {
-                renderInputShippingForm(convertCacheToModel(json));
+                ResCenterKurir shippingModel = convertCacheToModel(json);
+                renderInputShippingForm(shippingModel);
+                renderPreviousShipping(shippingModel);
                 showLoading(false);
                 showMainPage(true);
             } else {
@@ -98,6 +100,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
                     public void onSuccess(ResCenterKurir kurirList) {
                         storeCacheKurirList(kurirList);
                         renderInputShippingForm(kurirList);
+                        renderPreviousShipping(kurirList);
                         showLoading(false);
                         showMainPage(true);
                     }
@@ -117,6 +120,18 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
                         showMainPage(false);
                     }
                 });
+    }
+
+    private void renderPreviousShipping(ResCenterKurir shippingModel) {
+        if (isInstanceForEdit()) {
+            viewListener.getShippingRefNum().setText(viewListener.getParamsModel().getShippingRefNum());
+
+            for (ResCenterKurir.Kurir kurir : shippingModel.getList()) {
+                if (kurir.getShipmentId().equals(viewListener.getParamsModel().getShippingID())) {
+                    viewListener.getShippingSpinner().setSelection(shippingModel.getList().indexOf(kurir) + 1);
+                }
+            }
+        }
     }
 
     private TKPDMapParam generateGetShippingListParams() {
