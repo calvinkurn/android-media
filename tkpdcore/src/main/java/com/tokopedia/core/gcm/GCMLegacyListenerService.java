@@ -29,6 +29,7 @@ import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.Cart;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.NotificationCenter;
+import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
@@ -548,7 +549,7 @@ public class GCMLegacyListenerService extends GcmListenerService{
 
             ImageHandler.loadImageBitmapNotification(
                     this,
-                    data.getString("url_img"), new OnGetFileListener() {
+                    data.getString("url_img"), new GCMListenerService.OnGetFileListener() {
                         @Override
                         public void onFileReady(File file) {
                             NotificationCompat.BigPictureStyle bigStyle = new NotificationCompat.BigPictureStyle();
@@ -568,7 +569,8 @@ public class GCMLegacyListenerService extends GcmListenerService{
         if (!TextUtils.isEmpty(data.getString("url_icon"))) {
             ImageHandler.loadImageBitmapNotification(
                     this,
-                    data.getString("url_icon"), new OnGetFileListener() {
+                        data.getString("url_icon"),
+                    new GCMListenerService.OnGetFileListener() {
                         @Override
                         public void onFileReady(File file) {
                             mBuilder.setLargeIcon(Bitmap.createScaledBitmap(BitmapFactory.decodeFile(file.getAbsolutePath()), getResources().getDimensionPixelSize(R.dimen.icon_size), getResources().getDimensionPixelSize(R.dimen.icon_size), true));
@@ -739,7 +741,7 @@ public class GCMLegacyListenerService extends GcmListenerService{
         if (!TextUtils.isEmpty(data.getString("url_icon"))) {
             ImageHandler.loadImageBitmapNotification(
                     this,
-                    data.getString("url_icon"), new OnGetFileListener() {
+                    data.getString("url_icon"), new GCMListenerService.OnGetFileListener() {
                         @Override
                         public void onFileReady(File file) {
                             mBuilder.setLargeIcon(Bitmap.createScaledBitmap(BitmapFactory.decodeFile(file.getAbsolutePath()), getResources().getDimensionPixelSize(R.dimen.icon_size), getResources().getDimensionPixelSize(R.dimen.icon_size), true));
@@ -753,7 +755,7 @@ public class GCMLegacyListenerService extends GcmListenerService{
         ImageHandler.loadImageBitmapNotification(
                 getApplicationContext(),
                 data.getString("url_img"),
-                new OnGetFileListener() {
+                new GCMListenerService.OnGetFileListener() {
                     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                     @Override
                     public void onFileReady(File file) {
