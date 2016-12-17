@@ -557,6 +557,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public void onDestroyView() {
         super.onDestroyView();
         presenter.onDestroyView(context);
+        if(videoLayout!=null && videoLayout.isShown()) {
+            videoLayout.destroyVideoLayoutProcess();
+        }
     }
 
     @Override

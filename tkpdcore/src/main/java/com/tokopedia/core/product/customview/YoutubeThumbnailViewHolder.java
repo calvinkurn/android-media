@@ -25,6 +25,7 @@ public class YoutubeThumbnailViewHolder extends RelativeLayout{
     private ProgressBar loadingBar;
     private VideoData videoData;
     private int selectedVideo;
+    private YouTubeThumbnailLoader youTubeThumbnailLoader;
 
     public YoutubeThumbnailViewHolder(Context context, VideoData videoData, int selectedVideo) {
         super(context);
@@ -78,6 +79,7 @@ public class YoutubeThumbnailViewHolder extends RelativeLayout{
             @Override
             public void onInitializationSuccess(YouTubeThumbnailView youTubeThumbnailView,
                                                 final YouTubeThumbnailLoader loader) {
+                youTubeThumbnailLoader = loader;
                 loader.setVideo(youtubeVideoId);
                 mainView.setVisibility(VISIBLE);
                 loader.setOnThumbnailLoadedListener(new YouTubeThumbnailLoader
@@ -115,5 +117,9 @@ public class YoutubeThumbnailViewHolder extends RelativeLayout{
                 getContext().startActivity(intent);
             }
         };
+    }
+
+    public void destroyReleaseProcess() {
+        youTubeThumbnailLoader.release();
     }
 }
