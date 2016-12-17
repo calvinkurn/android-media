@@ -1,8 +1,11 @@
 package com.tokopedia.core.util;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.AttributeSet;
 import android.webkit.WebView;
+
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 
 /**
  * Created by nisie on 11/30/16.
@@ -24,6 +27,15 @@ public class TkpdWebView extends WebView {
     @Override
     public void loadUrl(String url) {
         super.loadUrl(generateUri(url));
+    }
+
+    public void loadAuthUrl(String url) {
+        super.loadUrl(generateUri(url),
+                AuthUtil.generateHeaders(
+                        Uri.parse(url).getPath(),
+                        Uri.parse(generateUri(url)).getQuery(),
+                        "GET",
+                        AuthUtil.KEY.KEY_WSV4));
     }
 
     private String generateUri(String uri) {

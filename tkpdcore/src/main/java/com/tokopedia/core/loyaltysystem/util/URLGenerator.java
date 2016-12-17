@@ -52,7 +52,7 @@ public class URLGenerator {
     }
 
     public static String generateURLContactUs(String url, Context context) {
-        return getBaseUrl() + "/wvlogin?token="
+        return getBaseUrl() + "wvlogin?token="
                 + GCMHandler.getRegistrationId(context)
                 + "&os_type=1"
                 + "&uid=" + SessionHandler.getLoginID(context)
