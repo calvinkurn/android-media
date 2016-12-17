@@ -99,7 +99,8 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     }
 
     @Override
-    public void getCartKeroToken(@NonNull final Context context, @NonNull ProductCartPass data, @NonNull final Destination destination) {
+    public void getCartKeroToken(@NonNull final Context context, @NonNull ProductCartPass data,
+                                 @NonNull final Destination destination) {
         viewListener.showInitLoading();
         Map<String, String> param = new HashMap<>();
         param.put("product_id", data.getProductId());

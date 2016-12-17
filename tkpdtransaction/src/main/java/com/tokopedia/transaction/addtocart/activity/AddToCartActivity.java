@@ -95,7 +95,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     private LocationPass mLocationPass;
     private ProductDetail mProductDetail;
     private List<Shipment> mShipments;
-    private boolean mIsHaveAddress;
     private Observable<Long> incrementObservable = Observable.interval(200, TimeUnit.MILLISECONDS);
 
     private Handler handler = new Handler();
@@ -318,7 +317,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             etQuantity.setEnabled(false);
             btnAddressChange.setEnabled(false);
             btnAddressNew.setEnabled(true);
-            mIsHaveAddress = false;
         } else {
             this.mDestination = data;
             tvAddressName.setText(Html.fromHtml(data.getAddressName()));
@@ -328,7 +326,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             btnAddressChange.setEnabled(true);
             btnAddressNew.setEnabled(true);
             etValueLocation.setText(data.getGeoLocation(this));
-            mIsHaveAddress = true;
         }
     }
 
@@ -586,13 +583,13 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                     break;
                 case ManageAddressConstant.REQUEST_CODE_PARAM_CREATE:
                     Destination addressData = presenter.generateAddressData(data);
-                    this.orderData.setAddress(addressData);
                     startCalculateCartLoading();
-                    if (mIsHaveAddress){
-                        renderFormAddress(addressData);
-                        presenter.calculateKeroAddressShipping(this, orderData);
-                    }else{
+                    if (this.orderData.getAddress() == null || !this.orderData.getAddress().isCompleted()){
                         presenter.getCartKeroToken(this, productCartPass, addressData);
+                    }else{
+                        renderFormAddress(addressData);
+                        this.orderData.setAddress(addressData);
+                        presenter.calculateKeroAddressShipping(this, orderData);
                     }
                     break;
                 case REQUEST_CHOOSE_LOCATION:
@@ -750,7 +747,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         outState.putParcelable("locationPassData", this.mLocationPass);
         outState.putParcelable("productDetailData", this.mProductDetail);
         outState.putParcelableArrayList("shipmentsData", (ArrayList<? extends Parcelable>) this.mShipments);
-        outState.putBoolean("mIsHaveAddress", this.mIsHaveAddress);
     }
 
     @Override
@@ -762,7 +758,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             this.mLocationPass = savedInstanceState.getParcelable("locationPassData");
             this.mProductDetail = savedInstanceState.getParcelable("productDetailData");
             this.mShipments = savedInstanceState.getParcelableArrayList("shipmentsData");
-            this.mIsHaveAddress = savedInstanceState.getBoolean("mIsHaveAddress");
         }
     }
 
