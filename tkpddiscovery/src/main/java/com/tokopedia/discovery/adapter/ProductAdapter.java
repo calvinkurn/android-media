@@ -201,10 +201,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         }
     }
 
-
-    private ViewHolderSearchEmpty createEmptySearch(ViewGroup parent) {
-        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_empty_search_item, parent, false);
-        return new ViewHolderSearchEmpty(inflate);
+    public ViewHolderSearchEmpty createEmptySearch(ViewGroup parent){
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_no_result, parent, false);
+        ImageHandler.loadImageWithId(((ImageView)view.findViewById(R.id.no_result_image)), R.drawable.status_no_result);
+        return new ViewHolderSearchEmpty(view);
     }
 
     private BannerHotListViewHolder onCreateBannerHotList(ViewGroup parent) {

@@ -129,6 +129,7 @@ public class DynamicFilterModel {
     @Parcel
     public static class Filter {
         public static final String TITLE_CATEGORY = "Kategori";
+        public static final String TITLE_SHOP = "Toko";
 
         @SerializedName("title")
         @Expose
@@ -190,6 +191,17 @@ public class DynamicFilterModel {
         public static Filter createCategory() {
             Filter filter = new Filter();
             filter.setTitle(TITLE_CATEGORY);
+            filter.setOptions(new ArrayList<Option>());
+            Search search = new Search();
+            search.setPlaceholder("");
+            search.setSearchable(0);
+            filter.setSearch(search);
+            return filter;
+        }
+
+        public static Filter createShop(){
+            Filter filter = new Filter();
+            filter.setTitle(TITLE_SHOP);
             filter.setOptions(new ArrayList<Option>());
             Search search = new Search();
             search.setPlaceholder("");

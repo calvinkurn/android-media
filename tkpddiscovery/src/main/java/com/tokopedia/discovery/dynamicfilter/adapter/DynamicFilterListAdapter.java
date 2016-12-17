@@ -272,4 +272,5 @@ public class DynamicFilterListAdapter extends ProductAdapter {
 
         return dynamicListModels;
     }
+
 }
