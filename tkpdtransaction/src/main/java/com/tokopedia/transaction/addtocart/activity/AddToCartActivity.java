@@ -586,10 +586,10 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                     break;
                 case ManageAddressConstant.REQUEST_CODE_PARAM_CREATE:
                     Destination addressData = presenter.generateAddressData(data);
-                    renderFormAddress(addressData);
                     this.orderData.setAddress(addressData);
                     startCalculateCartLoading();
                     if (mIsHaveAddress){
+                        renderFormAddress(addressData);
                         presenter.calculateKeroAddressShipping(this, orderData);
                     }else{
                         presenter.getCartKeroToken(this, productCartPass, addressData);
@@ -750,6 +750,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         outState.putParcelable("locationPassData", this.mLocationPass);
         outState.putParcelable("productDetailData", this.mProductDetail);
         outState.putParcelableArrayList("shipmentsData", (ArrayList<? extends Parcelable>) this.mShipments);
+        outState.putBoolean("mIsHaveAddress", this.mIsHaveAddress);
     }
 
     @Override
@@ -761,6 +762,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             this.mLocationPass = savedInstanceState.getParcelable("locationPassData");
             this.mProductDetail = savedInstanceState.getParcelable("productDetailData");
             this.mShipments = savedInstanceState.getParcelableArrayList("shipmentsData");
+            this.mIsHaveAddress = savedInstanceState.getBoolean("mIsHaveAddress");
         }
     }
 
