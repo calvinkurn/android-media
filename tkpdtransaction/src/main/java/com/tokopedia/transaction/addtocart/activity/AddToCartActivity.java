@@ -95,6 +95,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     private LocationPass mLocationPass;
     private ProductDetail mProductDetail;
     private List<Shipment> mShipments;
+    private List<Attribute> mShipmentRateAttrs;
     private Observable<Long> incrementObservable = Observable.interval(200, TimeUnit.MILLISECONDS);
 
     private Handler handler = new Handler();
@@ -370,6 +371,11 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             }
         }
         btnBuy.setEnabled(true);
+
+        this.mShipmentRateAttrs = new ArrayList<>(datas);
+        if (this.mShipmentRateAttrs.size() > 0) {
+            this.mShipmentRateAttrs.remove(0);
+        }
     }
 
     @Override
@@ -747,6 +753,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         outState.putParcelable("locationPassData", this.mLocationPass);
         outState.putParcelable("productDetailData", this.mProductDetail);
         outState.putParcelableArrayList("shipmentsData", (ArrayList<? extends Parcelable>) this.mShipments);
+        outState.putParcelableArrayList("shipmentRateAttrs", (ArrayList<? extends Parcelable>) this.mShipmentRateAttrs);
     }
 
     @Override
@@ -758,6 +765,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             this.mLocationPass = savedInstanceState.getParcelable("locationPassData");
             this.mProductDetail = savedInstanceState.getParcelable("productDetailData");
             this.mShipments = savedInstanceState.getParcelableArrayList("shipmentsData");
+            this.mShipmentRateAttrs = savedInstanceState.getParcelableArrayList("shipmentRateAttrs");
         }
     }
 
@@ -770,6 +778,9 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             hideNetworkError();
             renderFormProductInfo(this.mProductDetail);
             renderFormAddress(this.mDestination);
+            if (this.mShipmentRateAttrs != null) {
+                renderFormShipmentRates(this.mShipmentRateAttrs);
+            }
             hideInitLoading();
         }
     }
