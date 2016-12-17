@@ -46,7 +46,7 @@ publishing {
 }
 
 artifactory {
-    contextUrl = 'http://jenkins.tkpd:8081/artifactory'
+    contextUrl = rootProject.ext.artifactoryUrl
     publish {
         repository {
             repoKey = 'libs-release-local'

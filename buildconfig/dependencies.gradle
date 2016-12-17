@@ -92,7 +92,11 @@ ext {
 
     tkpdDependencies = [
             core : "com.tokopedia.core:core:${tkpdCoreVersion}",
-            inbox : "com.tokopedia.inbox:inbox:${tkpdInboxVersion}"
+            inbox : "com.tokopedia.inbox:inbox:${tkpdInboxVersion}",
+            session : "com.tokopedia.session:session:${tkpdSessionVersion}",
+            transaction : "com.tokopedia.transaction:transaction:${tkpdTransactionVersion}",
+            discovery : "com.tokopedia.discovery:discovery:${tkpdDiscoveryVersion}",
+            seller : "com.tokopedia.seller:seller:${tkpdSellerVersion}"
     ]
 
 }

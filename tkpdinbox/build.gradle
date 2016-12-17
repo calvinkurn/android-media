@@ -13,7 +13,6 @@ publishing {
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
 
-                //Iterate over the compile dependencies (we don't want the test ones), adding a <dependency> node for each
                 configurations.compile.allDependencies.each {
                     if (it.group != null && it.name != null) {
                         def dependencyNode = dependenciesNode.appendNode('dependency')
@@ -28,7 +27,7 @@ publishing {
 }
 
 artifactory {
-    contextUrl = 'http://jenkins.tkpd:8081/artifactory'
+    contextUrl = rootProject.ext.artifactoryUrl
     publish {
         repository {
             repoKey = 'libs-release-local'

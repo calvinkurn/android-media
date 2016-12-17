@@ -1,7 +1,8 @@
-include ':tkpdcore',
-        ':customerapp',
-        ':tkpdinbox',
-        ':tkpddiscovery',
-        ':tkpdtransaction',
-        ':tkpdsession',
-        ':tkpdseller'//, ':sellerapp'
+//include ':tkpdcore'
+include ':customerapp'
+/*include ':tkpdinbox'
+include ':tkpddiscovery'
+include ':tkpdtransaction'
+include ':tkpdsession'
+include ':tkpdseller'
+include ':sellerapp'*/

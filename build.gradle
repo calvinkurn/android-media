@@ -38,6 +38,5 @@ task clean(type: Delete) {
 }
 
 ext {
-        tkpd_core = "com.tokopedia.core:core:0.4"
-        tkpd_inbox = "com.tokopedia.inbox:inbox:0.4"
+     artifactoryUrl = 'http://jenkins.tkpd:8081/artifactory'
 }
