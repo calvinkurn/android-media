@@ -1,6 +1,7 @@
 package com.tokopedia.core.product.dialog;
 
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -106,6 +107,8 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
     }
 
     private void setContent() {
+        getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         showLayout(false);
         cacheInteractor.loadReportTypeFromCache(this);
     }
@@ -248,10 +251,12 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
 
     @Override
     public void downloadReportType() {
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         retrofitInteractor.downloadReportType(getActivity(),productDetailData.getInfo().getProductId(),this);
     }
 
     public void setReportAdapterFromCache(String data) {
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         ReportTypeModel reportTypeModel = new GsonBuilder().create().fromJson(data, ReportTypeModel.class);
         reportTypeList = reportTypeModel.getReportType();
         setReportAdapterFromNetwork(reportTypeList);
@@ -296,5 +301,11 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
 
     public void setListener(ProductDetailFragment productDetailFragment) {
         listener = productDetailFragment;
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 }

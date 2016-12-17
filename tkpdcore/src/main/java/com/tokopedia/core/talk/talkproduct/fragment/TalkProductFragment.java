@@ -15,11 +15,11 @@ import android.widget.ProgressBar;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.talk.talkproduct.activity.TalkAddNew;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.talk.talkproduct.activity.TalkAddNew;
 import com.tokopedia.core.talk.talkproduct.activity.TalkProductActivity;
 import com.tokopedia.core.talk.talkproduct.adapter.TalkProductAdapter;
 import com.tokopedia.core.talk.talkproduct.listener.TalkProductView;
@@ -37,7 +37,6 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by stevenfredian on 4/5/16.

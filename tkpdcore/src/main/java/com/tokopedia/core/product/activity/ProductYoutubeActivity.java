@@ -30,10 +30,10 @@ public class ProductYoutubeActivity extends YouTubeBaseActivity
     @BindView(R2.id.youtube_player_main)
     YouTubePlayerView youTubePlayerView;
 
-    @BindView(R2.id.place_holder)
+    @BindView(R2.id.youtube_activity_place_holder)
     LinearLayout placeHolder;
 
-    @BindView(R2.id.place_holder_scroll_view)
+    @BindView(R2.id.youtube_activity_place_holder_scroll_view)
     ScrollView placeHolderScrollView;
 
     private YouTubePlayer youTubePlayerScreen;
