@@ -591,6 +591,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                     Destination addressData = presenter.generateAddressData(data);
                     startCalculateCartLoading();
                     if (this.orderData.getAddress() == null || !this.orderData.getAddress().isCompleted()){
+                        this.orderData.setAddress(addressData);
                         presenter.getCartKeroToken(this, productCartPass, addressData);
                     }else{
                         renderFormAddress(addressData);
