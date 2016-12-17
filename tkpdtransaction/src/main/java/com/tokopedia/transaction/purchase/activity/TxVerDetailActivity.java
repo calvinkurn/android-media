@@ -10,14 +10,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.GalleryBrowser;
@@ -57,6 +55,9 @@ import permissions.dispatcher.RuntimePermissions;
 public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresenter>
         implements TxVerDetailViewListener, AdapterView.OnItemClickListener {
     private static final String EXTRA_TX_VER_DATA = "EXTRA_TX_VER_DATA";
+
+    public static final String EXTRA_MESSAGE_ERROR_GET_INVOICE = "EXTRA_MESSAGE_ERROR_GET_INVOICE";
+    public static final int RESULT_INVOICE_FAILED = 2;
 
     public static final int REQUEST_EDIT_PAYMENT = 42;
 
@@ -216,6 +217,13 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
     }
 
     @Override
+    public void renderErrorGetInvoiceData(String message) {
+        setResult(RESULT_INVOICE_FAILED,
+                new Intent().putExtra(EXTRA_MESSAGE_ERROR_GET_INVOICE, message));
+        finish();
+    }
+
+    @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Detail data = invoiceAdapter.getItem(position);
         AppUtils.InvoiceDialog(this, data.getUrl(), data.getInvoice());
@@ -247,17 +255,13 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
                     break;
                 case ImageUploadHandler.REQUEST_CODE:
                     String imagePath = null;
-                    if (data != null) {
+                    if (data != null && data.getStringExtra(GalleryBrowser.IMAGE_URL) != null) {
                         imagePath = data.getExtras().getString(GalleryBrowser.IMAGE_URL, null);
                     } else if (imageUploadHandler != null &&
                             imageUploadHandler.getCameraFileloc() != null) {
                         imagePath = imageUploadHandler.getCameraFileloc();
                     }
-                    if (imagePath != null) {
-                        presenter.uploadProofImageWSV4(this, imagePath, txVerData);
-                    } else {
-                        showToastMessage(getString(com.tokopedia.transaction.R.string.message_failed_pick_image));
-                    }
+                    presenter.uploadProofImageWSV4(this, imagePath, txVerData);
                     break;
             }
         }

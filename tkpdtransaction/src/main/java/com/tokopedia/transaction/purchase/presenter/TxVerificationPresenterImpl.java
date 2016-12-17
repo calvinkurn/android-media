@@ -131,6 +131,12 @@ public class TxVerificationPresenterImpl implements TxVerificationPresenter {
 
     @Override
     public void uploadProofImageWSV4(Context context, String imagePath, TxVerData txVerData) {
+        if (imagePath == null || imagePath.isEmpty()) {
+            viewListener.showToastMessage(context.getString(
+                    com.tokopedia.transaction.R.string.message_failed_pick_image)
+            );
+            return;
+        }
         viewListener.showProgressLoading();
         txUploadInteractor.uploadImageProof(context, imagePath, txVerData,
                 new TxUploadInteractor.OnImageProofUpload() {

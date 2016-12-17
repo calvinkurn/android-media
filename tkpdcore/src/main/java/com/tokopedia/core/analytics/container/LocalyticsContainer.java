@@ -361,13 +361,13 @@ public class LocalyticsContainer implements ILocalyticsContainer {
                     @Override
                     public String call(TagEventModel eventModel) {
                         if (eventModel.attributes != null && eventModel.customerValueIncrease != 0) {
-                            CommonUtils.dumper("LocalTag : tag event with clv " + eventModel.eventName);
+                            CommonUtils.dumper("Localytics : tag event with clv " + eventModel.eventName);
                             Localytics.tagEvent(eventModel.eventName, eventModel.attributes, eventModel.customerValueIncrease);
                         } else if (eventModel.attributes != null) {
-                            CommonUtils.dumper("LocalTag : tag event with attribute " + eventModel.eventName);
+                            CommonUtils.dumper("Localytics : tag event with attribute " + eventModel.eventName);
                             Localytics.tagEvent(eventModel.eventName, eventModel.attributes);
                         } else {
-                            CommonUtils.dumper("LocalTag : tag event " + eventModel.eventName);
+                            CommonUtils.dumper("Localytics : tag event " + eventModel.eventName);
                             Localytics.tagEvent(eventModel.eventName);
                         }
                         return null;

@@ -47,8 +47,7 @@ public class TxVerDetailPresenterImpl implements TxVerDetailPresenter {
 
             @Override
             public void onError(String message) {
-                viewListener.showToastMessage(message);
-                viewListener.closeView();
+                viewListener.renderErrorGetInvoiceData(message);
             }
         });
     }
@@ -102,6 +101,12 @@ public class TxVerDetailPresenterImpl implements TxVerDetailPresenter {
 
     @Override
     public void uploadProofImageWSV4(Activity activity, String imagePath, TxVerData txVerData) {
+        if (imagePath == null || imagePath.isEmpty()) {
+            viewListener.showToastMessage(activity.getString(
+                    com.tokopedia.transaction.R.string.message_failed_pick_image)
+            );
+            return;
+        }
         viewListener.showProgressLoading();
         txUploadInteractor.uploadImageProof(activity, imagePath, txVerData,
                 new TxUploadInteractor.OnImageProofUpload() {
