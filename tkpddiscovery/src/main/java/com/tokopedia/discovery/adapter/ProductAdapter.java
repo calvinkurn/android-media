@@ -191,20 +191,16 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
     //[START] This is banner HotList
 
-    public static class ViewHolderSearchEmpty extends RecyclerView.ViewHolder {
-        @BindView(R2.id.text)
-        TextView textView;
 
-        public ViewHolderSearchEmpty(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-    }
-
-    public ViewHolderSearchEmpty createEmptySearch(ViewGroup parent){
+    public RecyclerView.ViewHolder createEmptySearch(ViewGroup parent){
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_no_result, parent, false);
         ImageHandler.loadImageWithId(((ImageView)view.findViewById(R.id.no_result_image)), R.drawable.status_no_result);
-        return new ViewHolderSearchEmpty(view);
+        return new RecyclerView.ViewHolder(view) {
+            @Override
+            public String toString() {
+                return super.toString();
+            }
+        };
     }
 
     private BannerHotListViewHolder onCreateBannerHotList(ViewGroup parent) {
