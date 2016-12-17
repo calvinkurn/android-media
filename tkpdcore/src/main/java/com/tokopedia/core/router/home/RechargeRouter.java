@@ -12,10 +12,10 @@ public class RechargeRouter {
 
 
     private static final java.lang.String FRAGMENT_RECHARGE
-            = "com.tokopedia.core.home.recharge.fragment.RechargeFragment";
+            = "com.tokopedia.tkpd.home.recharge.fragment.RechargeFragment";
 
     private static final java.lang.String FRAGMENT_RECHARGE_CATEGORY =
-            "com.tokopedia.home.recharge.fragment.RechargeCategoryFragment";
+            "com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment";
 
     private static final String ARG_PARAM_CATEGORY = "ARG_PARAM_CATEGORY";
     public static final String ARG_UTM_SOURCE = "ARG_UTM_SOURCE";

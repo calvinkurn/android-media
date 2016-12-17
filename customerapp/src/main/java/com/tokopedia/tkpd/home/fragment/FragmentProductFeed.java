@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -240,11 +239,14 @@ public class FragmentProductFeed extends TkpdBaseV4Fragment implements ProductFe
     public void setUserVisibleHint(boolean isVisibleToUser) {
         // this is called when user view Fragment inside ViewPager
         // if visible to User then send data localytic
-        if (isVisibleToUser&&getActivity()!=null) {
+
+        if(getActivity()!=null)
+        {
             ScreenTracking.screen(getScreenName());
-            productFeedPresenter.setLocalyticFlow(getActivity(), getActivity().getString(R.string.home_product_feed));
-            productFeedPresenter.sendAppsFlyerData(getActivity());
+            productFeedPresenter.setLocalyticFlow(AppScreen.SCREEN_HOME_FEED);
+            productFeedPresenter.sendAppsFlyerData();
         }
+
         super.setUserVisibleHint(isVisibleToUser);
     }
 

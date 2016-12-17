@@ -33,7 +33,7 @@ public class PaymentEditor extends TActivity {
     private ListView PaymentMethods;
     private ListViewPaymentEditor PaymentAdapter;
     private TkpdProgressDialog mProgressDialog;
-    private View rootView;
+    private View mainView;
 
     @Override
     public String getScreenName() {
@@ -46,7 +46,7 @@ public class PaymentEditor extends TActivity {
 
         inflateView(R.layout.activity_payment_editor);
 
-
+        mainView = (View) findViewById(R.id.mainView);
         PaymentMethods = (ListView) findViewById(R.id.listview_payment);
         mProgressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.MAIN_PROGRESS, getWindow().getDecorView().getRootView());
         mProgressDialog.setLoadingViewId(R.id.include_loading);
@@ -106,7 +106,7 @@ public class PaymentEditor extends TActivity {
                             @Override
                             public void onError(Throwable e) {
                                 mProgressDialog.dismiss();
-                                NetworkErrorHelper.showEmptyState(PaymentEditor.this, getWindow().getDecorView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+                                NetworkErrorHelper.showEmptyState(PaymentEditor.this, mainView, new NetworkErrorHelper.RetryClickedListener() {
                                     @Override
                                     public void onRetryClicked() {
                                         mProgressDialog.showDialog();

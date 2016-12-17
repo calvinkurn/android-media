@@ -11,6 +11,9 @@ import android.support.annotation.NonNull;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.inbox.rescenter.detail.fragment.DetailResCenterFragment;
 import com.tokopedia.inbox.rescenter.detail.listener.ResCenterView;
 import com.tokopedia.inbox.rescenter.detail.model.passdata.ActivityParamenterPassData;
@@ -149,5 +152,17 @@ public class ResCenterActivity extends BasePresenterActivity<ResCenterPresenter>
         if (fragment != null) {
             fragment.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isTaskRoot() && GlobalConfig.isSellerApp()) {
+            startActivity(SellerAppRouter.getSellerHomeActivity(this));
+            finish();
+        } else if (isTaskRoot()){
+            startActivity(HomeRouter.getHomeActivity(this));
+            finish();
+        }
+        super.onBackPressed();
     }
 }

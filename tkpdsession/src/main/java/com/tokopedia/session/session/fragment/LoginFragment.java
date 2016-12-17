@@ -162,7 +162,7 @@ public class LoginFragment extends Fragment implements LoginView {
             if(temp.equals(DownloadService.FACEBOOK)){
                 onFacebookClick();
             }else if(temp.equals(DownloadService.GOOGLE)){
-                onGoogleClick();
+                LoginFragmentPermissionsDispatcher.onGooglePlusClickedWithCheck(LoginFragment.this);
             }else if(temp.equals(DownloadService.WEBVIEW)){
                 String url = getArguments().getString("url");
                 String name = getArguments().getString("name");
@@ -360,11 +360,6 @@ public class LoginFragment extends Fragment implements LoginView {
         login.loginFacebook();
     }
 
-    public void onGoogleClick() {
-        showProgress(true);
-        ((GoogleActivity) getActivity()).onSignInClicked();
-    }
-
     @Override
     public void notifyAutoCompleteAdapter() {
         autoCompleteAdapter.notifyDataSetChanged();
@@ -544,6 +539,8 @@ public class LoginFragment extends Fragment implements LoginView {
 
     @Override
     public void showProvider(List<LoginProviderModel.ProvidersBean> data) {
+        accountSignIn.setEnabled(true);
+        registerButton.setEnabled(true);
         listProvider = data;
         if (listProvider != null && checkHasNoProvider()) {
             login.saveProvider(listProvider);
@@ -576,7 +573,7 @@ public class LoginFragment extends Fragment implements LoginView {
                     tv.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            onGoogleClick();
+                            LoginFragmentPermissionsDispatcher.onGooglePlusClickedWithCheck(LoginFragment.this);
                         }
                     });
                 } else {
@@ -618,9 +615,11 @@ public class LoginFragment extends Fragment implements LoginView {
     }
 
     public boolean checkHasNoProvider() {
-        for (int i = linearLayout.getChildCount() - 1; i >= 0; i--) {
-            if (linearLayout.getChildAt(i) instanceof LoginTextView) {
-                return false;
+        if(linearLayout!=null){
+            for (int i = linearLayout.getChildCount() - 1; i >= 0; i--) {
+                if (linearLayout.getChildAt(i) instanceof LoginTextView) {
+                    return false;
+                }
             }
         }
         return true;
@@ -666,6 +665,8 @@ public class LoginFragment extends Fragment implements LoginView {
                 snackbar = SnackbarManager.make(getActivity(), "Gagal mendownload provider", Snackbar.LENGTH_INDEFINITE)
                         .setAction("Coba lagi", retryDiscover());
                 snackbar.show();
+                accountSignIn.setEnabled(false);
+                registerButton.setEnabled(false);
                 break;
             default:
                 snackbar = SnackbarManager.make(getActivity(), text, Snackbar.LENGTH_LONG);
@@ -706,6 +707,10 @@ public class LoginFragment extends Fragment implements LoginView {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case 100:
+                if(resultCode == Activity.RESULT_CANCELED){
+                    KeyboardHandler.DropKeyboard(getActivity(),getView());
+                    break;
+                }
                 Bundle bundle = data.getBundleExtra("bundle");
                 if (bundle.getString("path").contains("error")) {
                     snackbar = SnackbarManager.make(getActivity(), bundle.getString("message"), Snackbar.LENGTH_LONG);

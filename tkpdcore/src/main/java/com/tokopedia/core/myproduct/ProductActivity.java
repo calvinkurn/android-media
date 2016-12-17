@@ -8,6 +8,8 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -80,7 +82,10 @@ import com.tokopedia.core.var.TkpdState;
 
 import org.parceler.Parcels;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -365,7 +370,7 @@ public class ProductActivity extends BaseProductActivity implements
         }
     }
 
-    public String getRealPathFromURI(Context context, Uri contentUri) {
+    public static String getPath(Context context, Uri contentUri) {
 
         String res = "";
         String[] proj = {MediaStore.Images.Media.DATA};
@@ -381,6 +386,33 @@ public class ProductActivity extends BaseProductActivity implements
             return contentUri.getPath();
         }
         return res;
+    }
+
+    public static String getRealPathFromURI(Context context, Uri uri) {
+        InputStream is = null;
+        if (uri.getAuthority() != null) {
+            try {
+                is = context.getContentResolver().openInputStream(uri);
+                Bitmap bmp = BitmapFactory.decodeStream(is);
+                return writeToTempImageAndGetPathUri(context, bmp);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }finally {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;
+    }
+
+    public static String writeToTempImageAndGetPathUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return getPath(inContext, Uri.parse(path));
     }
 
     public String getPathFromGmail(Uri contentUri) {
@@ -634,14 +666,13 @@ public class ProductActivity extends BaseProductActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R2.id.home:
-                Log.d(TAG, messageTAG + " R.id.home !!!");
-                return true;
-            case android.R.id.home:
-                Log.d(TAG, messageTAG + " android.R.id.home !!!");
-                getSupportFragmentManager().popBackStack();
-                return true;
+        if (item.getItemId() == R.id.home) {
+            Log.d(TAG, messageTAG + " R.id.home !!!");
+            return true;
+        } else if (item.getItemId() == android.R.id.home) {
+            Log.d(TAG, messageTAG + " android.R.id.home !!!");
+            getSupportFragmentManager().popBackStack();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

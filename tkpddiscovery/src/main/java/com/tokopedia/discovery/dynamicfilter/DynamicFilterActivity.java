@@ -32,8 +32,10 @@ import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterView;
 
 import org.parceler.Parcels;
 
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -108,11 +110,8 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R2.id.action_close:
-                finish();
-                break;
-        }
+        if (item.getItemId() == R.id.action_close)
+            finish();
         return super.onOptionsItemSelected(item);
     }
 
@@ -201,13 +200,13 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
         intent.putExtra(EXTRA_FILTER_KEY, key);
 
         //for prevent disable reset selected indicator for category harga
-        if(selectedFilter.containsKey("pmax")){
+        if (selectedFilter.containsKey("pmax")) {
             return;
         }
-        if(selectedFilter.containsKey("pmin")){
+        if (selectedFilter.containsKey("pmin")) {
             return;
         }
-        if(selectedFilter.containsKey("wholesale")){
+        if (selectedFilter.containsKey("wholesale")) {
             return;
         }
         intent.putExtra(EXTRA_FILTER_VALUE, false);
@@ -305,6 +304,14 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
         }
 
         return isFormValid;
+    }
+
+    private String getCleanString(String s){
+        Locale local = new Locale("id", "id");
+        String replaceable = String.format("[Rp,.\\s]",
+                NumberFormat.getCurrencyInstance().getCurrency().getSymbol(local));
+        String cleanString = s.toString().replaceAll(replaceable, "");
+        return cleanString;
     }
 
     private boolean isPriceFormValid() {

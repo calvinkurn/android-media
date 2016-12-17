@@ -50,6 +50,7 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.session.session.fragment.ActivationResentFragment;
 import com.tokopedia.session.session.fragment.ForgotPasswordFragment;
 import com.tokopedia.session.session.fragment.LoginFragment;
@@ -336,7 +337,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     @Override
     public void moveToRegisterInitial() {
         Fragment fragment = RegisterInitialFragment.newInstance();
-        moveToFragment(fragment, true, REGISTER_INITIAL, TkpdState.DrawerPosition.REGISTER_INITIAL);
+        moveToFragment(fragment, false, REGISTER_INITIAL, TkpdState.DrawerPosition.REGISTER_INITIAL);
 
         // Change the header
         session.setWhichFragment(TkpdState.DrawerPosition.REGISTER_INITIAL);
@@ -347,7 +348,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     @Override
     public void moveToLogin() {
         Fragment loginFragment = LoginFragment.newInstance("", false, "","","");
-        moveToFragment(loginFragment, true, LOGIN_FRAGMENT_TAG, TkpdState.DrawerPosition.LOGIN);
+        moveToFragment(loginFragment, false, LOGIN_FRAGMENT_TAG, TkpdState.DrawerPosition.LOGIN);
 
         // Change the header
         session.setWhichFragment(TkpdState.DrawerPosition.LOGIN);
@@ -358,12 +359,12 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     @Override
     public void moveToForgotPassword() {
         Log.d(TAG, messageTAG + supportFragmentManager.getBackStackEntryCount());
-        if (supportFragmentManager.getBackStackEntryCount() > 1) {
-            FragmentManager.BackStackEntry first = supportFragmentManager.getBackStackEntryAt(1);
-            supportFragmentManager.popBackStack(first.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        }
+//        if (supportFragmentManager.getBackStackEntryCount() > 1) {
+//            FragmentManager.BackStackEntry first = supportFragmentManager.getBackStackEntryAt(1);
+//            supportFragmentManager.popBackStack(first.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+//        }
         Fragment fragment = new ForgotPasswordFragment();
-        moveToFragment(fragment, true, FORGOT_PASSWORD_TAG, TkpdState.DrawerPosition.FORGOT_PASSWORD);
+        moveToFragment(fragment, false, FORGOT_PASSWORD_TAG, TkpdState.DrawerPosition.FORGOT_PASSWORD);
 
         session.setWhichFragment(TkpdState.DrawerPosition.FORGOT_PASSWORD);
         setToolbarTitle();
@@ -524,24 +525,25 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
 
     @Override
     public void onBackPressed() {
-        if (getFragmentManager().getBackStackEntryCount() > 0) {
-            getFragmentManager().popBackStack();
+        if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
+            getSupportFragmentManager().popBackStack();
         } else {
-            super.onBackPressed();
-        }
+            if(GlobalConfig.isSellerApp()){
 
+            }
+            finish();
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R2.id.home:
-                Log.d(TAG, messageTAG + " R.id.home !!!");
-                return true;
-            case android.R.id.home:
-                Log.d(TAG, messageTAG + " android.R.id.home !!!");
-                getSupportFragmentManager().popBackStack();
-                return true;
+        if (item.getItemId() == R.id.home) {
+            Log.d(TAG, messageTAG + " R.id.home !!!");
+            return true;
+        } else if (item.getItemId() == android.R.id.home) {
+            Log.d(TAG, messageTAG + " android.R.id.home !!!");
+            getSupportFragmentManager().popBackStack();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

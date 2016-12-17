@@ -34,6 +34,8 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
 import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
@@ -265,21 +267,18 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
         return new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch ((item.getItemId())) {
-                    case R2.id.action_confirm:
-                        onConfirm(position);
-                        return true;
-
-                    case R2.id.action_cancel:
-                        onCancel(position);
-                        return true;
-
-                    case R2.id.action_detail_ship:
-                        onOpenDetail(position);
-                        return true;
-
-                    default:
-                        return false;
+                int i = (item.getItemId());
+                if (i == R.id.action_confirm) {
+                    onConfirm(position);
+                    return true;
+                } else if (i == R.id.action_cancel) {
+                    onCancel(position);
+                    return true;
+                } else if (i == R.id.action_detail_ship) {
+                    onOpenDetail(position);
+                    return true;
+                } else {
+                    return false;
                 }
             }
         };
@@ -307,8 +306,10 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
     public void setUserVisibleHint(boolean isVisibleToUser) {
         initPresenter();
         presenter.getShippingList(isVisibleToUser);
-        presenter.checkValidationToSendGoogleAnalytic(isVisibleToUser, getActivity());
         super.setUserVisibleHint(isVisibleToUser);
+        ScreenTracking.screenLoca(AppScreen.SCREEN_LOCA_SHIPPING);
+        ScreenTracking.eventLoca(AppScreen.SCREEN_LOCA_SHIPPING);
+        ScreenTracking.screen(AppScreen.SCREEN_TX_SHOP_CONFIRM_SHIPPING);
     }
 
     @Override
@@ -641,5 +642,15 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
             }
         });
         snackbar.show();
+    }
+
+    @Override
+    public void showFab() {
+        fab.show();
+    }
+
+    @Override
+    public void hideFab() {
+        fab.hide();
     }
 }

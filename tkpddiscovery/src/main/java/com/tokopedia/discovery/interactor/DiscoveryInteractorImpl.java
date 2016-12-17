@@ -27,6 +27,7 @@ import com.tokopedia.discovery.interfaces.DiscoveryListener;
 import com.tokopedia.discovery.model.ErrorContainer;
 
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Response;
 import rx.Subscriber;
@@ -166,6 +167,7 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
         Log.d(TAG, "loadSearchSuggestion query " + querySearch + " unique_id " + unique_id);
         getCompositeSubscription().add(searchSuggestionService.getApi().searchSuggestion(
                 querySearch, unique_id, String.valueOf(count))
+                .debounce(150, TimeUnit.MICROSECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())

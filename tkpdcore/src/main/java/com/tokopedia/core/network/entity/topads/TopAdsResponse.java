@@ -10,7 +10,8 @@ package com.tokopedia.core.network.entity.topads;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.discovery.model.ObjContainer;
-import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.core.var.Badge;
+import com.tokopedia.core.var.Label;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +66,7 @@ public class TopAdsResponse {
             @SerializedName("is_owner")
             public boolean isOwner;
             @SerializedName("badges")
-            public List<ProductItem.Badge> badges;
+            public List<Badge> badges;
         }
 
         public static class Product {
@@ -92,7 +93,7 @@ public class TopAdsResponse {
             @SerializedName("product_wholesale")
             public boolean wholesale;
             @SerializedName("labels")
-            public List<ProductItem.Label> labels;
+            public List<Label> labels;
 
             public static class WholesalePrice {
                 @SerializedName("quantity_min_format")

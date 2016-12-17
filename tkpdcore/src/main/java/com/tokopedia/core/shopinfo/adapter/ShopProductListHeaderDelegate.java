@@ -29,6 +29,7 @@ public class ShopProductListHeaderDelegate {
     private int spinnerLastPos = 0;
     // if selection == -1, no selection request
     private int spinnerSelectedPos = -1;
+    private VHolder vholder;
 
     private class VHolder extends RecyclerView.ViewHolder{
 
@@ -50,6 +51,9 @@ public class ShopProductListHeaderDelegate {
 
     public void setSelectedEtalase(int pos){
         spinnerSelectedPos = pos;
+        if(listener!=null) {
+            listener.onEtalaseClick(pos);
+        }
     }
 
     public void setProductListHeader(ProductHeaderListListener listener){
@@ -62,7 +66,7 @@ public class ShopProductListHeaderDelegate {
     }
 
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int toggleIcon){
-        VHolder vholder = (VHolder) holder;
+        vholder = (VHolder) holder;
         vholder.toggle.setOnClickListener(onToggleView());
         vholder.filterClick.setOnClickListener(onFilterClick());
         vholder.etalase.setOnItemSelectedListener(onEtalaseSelected());

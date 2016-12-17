@@ -47,14 +47,12 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.EtalaseShopEditor;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.deposit.activity.DepositActivity;
-import com.tokopedia.core.drawer.DrawerVariable;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.drawer.DrawerVariableSeller;
+import com.tokopedia.sellerapp.drawer.DrawerVariableSeller;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
@@ -112,7 +110,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
-import static com.tokopedia.core.drawer.DrawerVariableSeller.goToShopNewOrder;
+import static com.tokopedia.sellerapp.drawer.DrawerVariableSeller.goToShopNewOrder;
 import static com.tokopedia.core.drawer.DrawerVariable.startIntent;
 
 public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.GCMHandlerListener,

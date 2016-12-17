@@ -56,6 +56,9 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
         implements TxVerDetailViewListener, AdapterView.OnItemClickListener {
     private static final String EXTRA_TX_VER_DATA = "EXTRA_TX_VER_DATA";
 
+    public static final String EXTRA_MESSAGE_ERROR_GET_INVOICE = "EXTRA_MESSAGE_ERROR_GET_INVOICE";
+    public static final int RESULT_INVOICE_FAILED = 2;
+
     public static final int REQUEST_EDIT_PAYMENT = 42;
 
     private TxVerData txVerData;
@@ -214,6 +217,13 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
     }
 
     @Override
+    public void renderErrorGetInvoiceData(String message) {
+        setResult(RESULT_INVOICE_FAILED,
+                new Intent().putExtra(EXTRA_MESSAGE_ERROR_GET_INVOICE, message));
+        finish();
+    }
+
+    @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Detail data = invoiceAdapter.getItem(position);
         AppUtils.InvoiceDialog(this, data.getUrl(), data.getInvoice());
@@ -245,9 +255,10 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
                     break;
                 case ImageUploadHandler.REQUEST_CODE:
                     String imagePath = null;
-                    if (data != null) {
+                    if (data != null && data.getStringExtra(GalleryBrowser.IMAGE_URL) != null) {
                         imagePath = data.getExtras().getString(GalleryBrowser.IMAGE_URL, null);
-                    } else if (imageUploadHandler.getCameraFileloc() != null) {
+                    } else if (imageUploadHandler != null &&
+                            imageUploadHandler.getCameraFileloc() != null) {
                         imagePath = imageUploadHandler.getCameraFileloc();
                     }
                     presenter.uploadProofImageWSV4(this, imagePath, txVerData);

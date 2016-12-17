@@ -24,4 +24,5 @@ public interface AddAddressPresenter {
 
     void getListDistrict(City city);
 
+    void onDestroyView();
 }
