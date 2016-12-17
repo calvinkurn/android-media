@@ -1,6 +1,6 @@
-//include ':tkpdcore'
 include ':customerapp'
-/*include ':tkpdinbox'
+/*include ':tkpdcore'
+include ':tkpdinbox'
 include ':tkpddiscovery'
 include ':tkpdtransaction'
 include ':tkpdsession'

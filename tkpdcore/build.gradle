@@ -26,7 +26,7 @@ publishing {
         aar(MavenPublication) {
             groupId 'com.tokopedia.core'
             artifactId 'core'
-            version '0.4'
+            version '0.5'
             artifact("$buildDir/outputs/aar/tkpdcore-release.aar")
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')

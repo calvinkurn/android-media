@@ -8,7 +8,7 @@ publishing {
         aar(MavenPublication) {
             groupId 'com.tokopedia.discovery'
             artifactId 'discovery'
-            version '0.1'
+            version '0.2'
             artifact("$buildDir/outputs/aar/tkpddiscovery-release.aar")
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')

@@ -8,7 +8,7 @@ publishing {
         aar(MavenPublication) {
             groupId 'com.tokopedia.seller'
             artifactId 'seller'
-            version '0.1'
+            version '0.2'
             artifact("$buildDir/outputs/aar/tkpdseller-release.aar")
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
