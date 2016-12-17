@@ -1,5 +1,6 @@
 package com.tokopedia.seller.shop.presenter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -541,7 +542,7 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
                         // shop url
                         openShopValidationData.getData().getShopUrl());
                 saveCache(openShopValidationData.getData().getShopId().toString());
-                ShopEditorActivity.finishActivity(bundle, view.getMainContext());
+                ShopEditorActivity.finishActivity(bundle, (Activity) view.getMainContext());
 
             } else {
                 String unknownError = "Kesalahan Tidak Diketahui";
@@ -563,7 +564,7 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
                         // shop url
                         openShopSubmitData.getData().getShopUrl());
                 saveCache(openShopSubmitData.getData().getShopId().toString());
-                ShopEditorActivity.finishActivity(bundle, view.getMainContext());
+                ShopEditorActivity.finishActivity(bundle, (Activity) view.getMainContext());
 
             } else {
                 String unknownError = "Kesalahan Tidak Diketahui";

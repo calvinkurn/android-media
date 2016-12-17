@@ -2,20 +2,14 @@ package com.tokopedia.sellerapp;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.support.v7.app.AppCompatActivity;
 
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TkpdCoreListener;
-import com.tokopedia.core.drawer.DrawerVariable;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
-import com.tokopedia.sellerapp.drawer.DrawerVariableSeller;
 
 /**
  * Created by ricoharisin on 11/11/16.
  */
 
-public class SellerMainApplication extends MainApplication implements TkpdCoreListener {
+public class SellerMainApplication extends SellerRouterApplication {
 
     public static final int SELLER_APPLICATION = 2;
 
@@ -35,10 +29,5 @@ public class SellerMainApplication extends MainApplication implements TkpdCoreLi
             e.printStackTrace();
         }
         super.onCreate();
-    }
-
-    @Override
-    public DrawerVariable getDrawer(AppCompatActivity activity) {
-        return new DrawerVariableSeller(activity);
     }
 }

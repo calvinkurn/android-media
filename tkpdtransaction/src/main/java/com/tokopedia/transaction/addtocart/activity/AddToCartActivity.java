@@ -586,7 +586,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                     renderFormAddress(addressData);
                     this.orderData.setAddress(addressData);
                     startCalculateCartLoading();
-                    presenter.calculateKeroAddressShipping(this, orderData);
+                    presenter.getCartFormData(this, productCartPass);
                     break;
                 case REQUEST_CHOOSE_LOCATION:
                     Bundle bundle = data.getExtras();

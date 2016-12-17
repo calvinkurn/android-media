@@ -2,6 +2,7 @@ package com.tokopedia.inbox.contactus.activity;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -9,6 +10,9 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.inbox.contactus.ContactUsConstant;
 import com.tokopedia.inbox.contactus.fragment.ContactUsFaqFragment;
 import com.tokopedia.inbox.contactus.fragment.ContactUsFaqFragment.ContactUsFaqListener;
@@ -63,16 +67,16 @@ public class ContactUsActivity extends BasePresenterActivity implements
     @Override
     protected void initView() {
 
-        Bundle bundle = getIntent().getExtras();
-        if (bundle == null)
-            bundle = new Bundle();
-        ContactUsFaqFragment fragment = ContactUsFaqFragment.createInstance(bundle);
-        listener = fragment.getBackButtonListener();
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        fragmentTransaction.add(R.id.main_view, fragment, fragment.getClass().getSimpleName());
-        fragmentTransaction.commit();
-
+            Bundle bundle = getIntent().getExtras();
+            if (bundle == null)
+                bundle = new Bundle();
+            ContactUsFaqFragment fragment = ContactUsFaqFragment.createInstance(bundle);
+            listener = fragment.getBackButtonListener();
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            fragmentTransaction.add(R.id.main_view, fragment, fragment.getClass().getSimpleName());
+            fragmentTransaction.commit();
+        }
     }
 
     @Override
@@ -114,6 +118,16 @@ public class ContactUsActivity extends BasePresenterActivity implements
     @Override
     public void onFinishCreateTicket() {
         CommonUtils.UniversalToast(this, getString(R.string.title_contact_finish));
-        finish();
+        if (GlobalConfig.isSellerApp()) {
+            Intent intent = SellerAppRouter.getSellerHomeActivity(this);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+        } else {
+            Intent intent = HomeRouter.getHomeActivity(this);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+        }
     }
 }
