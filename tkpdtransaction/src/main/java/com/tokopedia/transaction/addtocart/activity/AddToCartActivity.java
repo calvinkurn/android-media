@@ -95,6 +95,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     private LocationPass mLocationPass;
     private ProductDetail mProductDetail;
     private List<Shipment> mShipments;
+    private boolean mIsHaveAddress;
     private Observable<Long> incrementObservable = Observable.interval(200, TimeUnit.MILLISECONDS);
 
     private Handler handler = new Handler();
@@ -317,6 +318,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             etQuantity.setEnabled(false);
             btnAddressChange.setEnabled(false);
             btnAddressNew.setEnabled(true);
+            mIsHaveAddress = false;
         } else {
             this.mDestination = data;
             tvAddressName.setText(Html.fromHtml(data.getAddressName()));
@@ -326,6 +328,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             btnAddressChange.setEnabled(true);
             btnAddressNew.setEnabled(true);
             etValueLocation.setText(data.getGeoLocation(this));
+            mIsHaveAddress = true;
         }
     }
 
@@ -586,7 +589,11 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                     renderFormAddress(addressData);
                     this.orderData.setAddress(addressData);
                     startCalculateCartLoading();
-                    presenter.getCartFormData(this, productCartPass);
+                    if (mIsHaveAddress){
+                        presenter.calculateKeroAddressShipping(this, orderData);
+                    }else{
+                        presenter.getCartKeroToken(this, productCartPass, addressData);
+                    }
                     break;
                 case REQUEST_CHOOSE_LOCATION:
                     Bundle bundle = data.getExtras();
