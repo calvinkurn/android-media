@@ -67,16 +67,15 @@ public class ContactUsActivity extends BasePresenterActivity implements
     @Override
     protected void initView() {
 
-            Bundle bundle = getIntent().getExtras();
-            if (bundle == null)
-                bundle = new Bundle();
-            ContactUsFaqFragment fragment = ContactUsFaqFragment.createInstance(bundle);
-            listener = fragment.getBackButtonListener();
-            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            fragmentTransaction.add(R.id.main_view, fragment, fragment.getClass().getSimpleName());
-            fragmentTransaction.commit();
-        }
+        Bundle bundle = getIntent().getExtras();
+        if (bundle == null)
+            bundle = new Bundle();
+        ContactUsFaqFragment fragment = ContactUsFaqFragment.createInstance(bundle);
+        listener = fragment.getBackButtonListener();
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        fragmentTransaction.add(R.id.main_view, fragment, fragment.getClass().getSimpleName());
+        fragmentTransaction.commit();
     }
 
     @Override
