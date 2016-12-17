@@ -165,7 +165,7 @@ public class MsisdnVerificationFragment extends DialogFragment
         params.width = ViewGroup.LayoutParams.MATCH_PARENT;
         params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
-        registerSMSReceiver();
+        smsReceiver.registerSMSReceiver(getActivity());
 
         super.onResume();
     }
@@ -176,12 +176,6 @@ public class MsisdnVerificationFragment extends DialogFragment
             getActivity().unregisterReceiver(smsReceiver);
         super.onPause();
 
-    }
-
-    public void registerSMSReceiver() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("android.provider.Telephony.SMS_RECEIVED");
-        getActivity().registerReceiver(smsReceiver, filter);
     }
 
     private void initialPresenter() {
@@ -212,7 +206,7 @@ public class MsisdnVerificationFragment extends DialogFragment
         sendOtp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MsisdnVerificationFragmentPermissionsDispatcher.onRequestOTPWithCheck(MsisdnVerificationFragment.this);
+                onRequestOTP();
             }
         });
 
@@ -233,7 +227,6 @@ public class MsisdnVerificationFragment extends DialogFragment
         });
     }
 
-    @NeedsPermission(Manifest.permission.READ_SMS)
     public void onRequestOTP() {
         UnifyTracking.eventOTPSend();
         KeyboardHandler.DropKeyboard(getActivity(), sendOtp);
@@ -344,19 +337,15 @@ public class MsisdnVerificationFragment extends DialogFragment
     }
 
     @Override
-    public void onReceiveSMS(String message) {
-        if (message.contains("Tokopedia")) {
-            CommonUtils.dumper("NISNISSMS " + message);
-            String regexString = Pattern.quote("Tokopedia - ") + "(.*?)" + Pattern.quote("adalah");
-            Pattern pattern = Pattern.compile(regexString);
-            Matcher matcher = pattern.matcher(message);
+    public void onReceiveOTP(String otpCode) {
+        MsisdnVerificationFragmentPermissionsDispatcher.processOTPWithCheck(MsisdnVerificationFragment.this
+        ,otpCode);
+    }
 
-            while (matcher.find()) {
-                String otpCode = matcher.group(1).trim();
-                if (otpEditText != null)
-                    otpEditText.setText(otpCode);
-            }
-        }
+    @NeedsPermission(Manifest.permission.READ_SMS)
+    public void processOTP(String otpCode) {
+        if (otpEditText != null)
+            otpEditText.setText(otpCode);
     }
 
     public void setListener(PhoneVerificationUtil.MSISDNListener listener) {
