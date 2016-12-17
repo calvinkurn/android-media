@@ -437,8 +437,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void showProductDetailRetry(String error) {
-        NetworkErrorHelper.showEmptyState(getActivity(), getActivity().findViewById(R.id.root_view),
-                error,
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(),
                 new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
