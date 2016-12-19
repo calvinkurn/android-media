@@ -3,13 +3,16 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="@dimen/top_ads_margin_layout">
+    android:orientation="vertical">
 
     <RadioGroup
         android:id="@+id/radio_group"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingLeft="@dimen/top_ads_margin_layout"
+        android:paddingRight="@dimen/top_ads_margin_layout"
+        android:paddingTop="@dimen/top_ads_margin_layout">
 
         <RadioButton
             android:id="@+id/radio_button_new_group"
@@ -53,4 +56,8 @@
             android:text="@string/label_top_ads_create_promo_not_in_group"/>
     </RadioGroup>
 
+    <Button
+        android:id="@+id/button_submit"
+        style="@style/ButtonGreen"
+        android:text="@string/label_top_ads_choose_credit"/>
 </LinearLayout>

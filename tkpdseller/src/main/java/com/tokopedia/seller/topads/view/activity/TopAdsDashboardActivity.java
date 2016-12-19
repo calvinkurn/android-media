@@ -91,7 +91,7 @@ public class TopAdsDashboardActivity extends BasePresenterActivity {
                     startActivity(intent);
                 } else if (menuItem.getItemId() == R.id.action_add_promo_product) {
                     Intent intent = new Intent(TopAdsDashboardActivity.this, TopAdsNewPromoActivity.class);
-                    intent.putExtra(TopAdsExtraConstant.EXTRA_NEW_PROMO_CHOICE, TopAdsExtraConstant.TYPE_NEW_PROMO_NO_GROUP);
+                    intent.putExtra(TopAdsExtraConstant.EXTRA_NEW_PROMO_CHOICE, TopAdsExtraConstant.TYPE_NEW_PROMO_EXIST_GROUP);
                     startActivity(intent);
                 }
                 return false;

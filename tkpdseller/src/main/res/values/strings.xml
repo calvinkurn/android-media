@@ -17,6 +17,8 @@
     <string name="label_top_ads_items">Items</string>
     <string name="label_top_ads_choose_credit">Pilih</string>
     <string name="label_top_ads_deposit_desc">Saldo TopAds - %s</string>
+    <string name="label_top_ads_next">Selanjutnya</string>
+    <string name="label_top_ads_save">Simpan</string>
 
     <string name="menu_top_ads_add_promo_group">Tambah Promo Group</string>
     <string name="menu_top_ads_add_promo_product">Tambah Promo Produk</string>
@@ -30,5 +32,24 @@
     <string name="label_top_ads_create_promo_new_group">Buat promo grup baru</string>
     <string name="label_top_ads_create_promo_from_exist_group">Promo grup yang ada</string>
     <string name="label_top_ads_create_promo_not_in_group">Tidak masuk ke promo grup</string>
+
+    <!-- Edit Promo -->
+    <string name="label_top_ads_add_product">Tambah Produk</string>
+    <string name="label_top_ads_max_price_hint">Biaya Maks (Rp)</string>
+    <string name="label_top_ads_max_price_description">Sesuaikan biaya anggaran promo anda. Rekomendasi biaya: Rp 50 sampai Rp 200 per klik</string>
+    <string name="label_top_ads_icon">Icon TopAds</string>
+
+    <!-- Edit Promo Budget-->
+    <string name="label_top_ads_budget">Anggaran</string>
+    <string name="label_top_ads_budget_lifetime">Anggaran Seumur Hidup</string>
+    <string name="label_top_ads_budget_per_day">Per Hari</string>
+    <string name="label_top_ads_budget_cost_per_day">Biaya per hari</string>
+
+    <!-- Edit Promo Show Time-->
+    <string name="label_top_ads_show_time">Waktu Tampil</string>
+    <string name="label_top_ads_show_time_automatic">Otomatis</string>
+    <string name="label_top_ads_show_time_configured">Atur tanggal mulai dan berhenti</string>
+    <string name="label_top_ads_show_time_start">Mulai</string>
+    <string name="label_top_ads_show_time_end">Selesai</string>
 
 </resources>

@@ -1,6 +1,7 @@
 package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
@@ -12,15 +13,19 @@ import android.widget.RadioGroup;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
+import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.model.data.DataCredit;
 import com.tokopedia.seller.topads.presenter.TopAdsNewPromoPresenter;
 import com.tokopedia.seller.topads.presenter.TopAdsNewPromoPresenterImpl;
+import com.tokopedia.seller.topads.view.activity.TopAdsEditPromoActivity;
+import com.tokopedia.seller.topads.view.activity.TopAdsPaymentCreditActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsNewPromoFragmentListener;
 
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 public class TopAdsNewPromoFragment extends BasePresenterFragment<TopAdsNewPromoPresenter> implements TopAdsNewPromoFragmentListener {
 
@@ -178,5 +183,11 @@ public class TopAdsNewPromoFragment extends BasePresenterFragment<TopAdsNewPromo
     private void resetView() {
         newGroupNameEditText.setText("");
         existGroupNameEditText.setText("");
+    }
+
+    @OnClick(R2.id.button_submit)
+    void chooseCredit() {
+        Intent intent = new Intent(getActivity(), TopAdsEditPromoActivity.class);
+        startActivity(intent);
     }
 }
