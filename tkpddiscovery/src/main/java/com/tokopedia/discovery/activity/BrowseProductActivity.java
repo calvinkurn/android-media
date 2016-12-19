@@ -110,11 +110,9 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     ProgressBar progressBar;
     private SearchView searchView;
     private String searchQuery;
-    //    private Map<String, String> filters;
     private FragmentManager fragmentManager;
     private SearchInteractor searchInteractor;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
-    //    private DynamicFilterModel.Data filterAttribute;
     private HashMap<Integer, DynamicFilterModel.Data> filterAttributMap = new HashMap<>();
     private HashMap<Integer, Map<String, String>> filtersMap = new HashMap<>();
     private SharedPreferences preferences;
@@ -178,7 +176,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
             deleteFilterAndSortCache();
         } else {
             firstTime = savedInstanceState.getBoolean(EXTRA_FIRST_TIME);
-            browseProductActivityModel = Parcels.unwrap(savedInstanceState.getParcelable(EXTRA_BROWSE_MODEL));
+            browseProductActivityModel = (BrowseProductActivityModel) savedInstanceState.getParcelable(EXTRA_BROWSE_MODEL);
             filterAttributMap = Parcels.unwrap(savedInstanceState.getParcelable(EXTRA_FILTER_MAP_ATTR));
             filtersMap = Parcels.unwrap(savedInstanceState.getParcelable(EXTRA_FILTER_MAP));
             browseProductActivityModel.setFilterOptions(filtersMap.get(browseProductActivityModel.getActiveTab()));
@@ -282,7 +280,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(EXTRA_BROWSE_MODEL, Parcels.wrap(browseProductActivityModel));
+        outState.putParcelable(EXTRA_BROWSE_MODEL, browseProductActivityModel);
         outState.putBoolean(EXTRA_FIRST_TIME, firstTime);
         outState.putParcelable(EXTRA_FILTER_MAP, Parcels.wrap(filtersMap));
         outState.putParcelable(EXTRA_FILTER_MAP_ATTR, Parcels.wrap(filterAttributMap));
@@ -291,7 +289,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        browseProductActivityModel = Parcels.unwrap(savedInstanceState.getParcelable(EXTRA_BROWSE_MODEL));
+        browseProductActivityModel = (BrowseProductActivityModel) savedInstanceState.getParcelable(EXTRA_BROWSE_MODEL);
         afterRestoreSavedInstance = true;
     }
 

@@ -50,9 +50,9 @@ public class YoutubeThumbnailViewHolder extends RelativeLayout{
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.place_holder_youtube_view, this, true);
 
-        mainView = (RelativeLayout) findViewById(R.id.main_view);
+        mainView = (RelativeLayout) findViewById(R.id.video_thumbnail_main_view);
         YouTubeThumbnailView youTubeThumbnailView = (YouTubeThumbnailView) findViewById(R.id.youtube_thumbnail_view);
-        loadingBar = (ProgressBar) findViewById(R.id.loading_bar);
+        loadingBar = (ProgressBar) findViewById(R.id.youtube_thumbnail_loading_bar);
         youTubeThumbnailView.initialize(getContext().getApplicationContext()
                 .getString(R.string.GOOGLE_API_KEY),
                 thumbnailInitializedListener(youtubeVideoId));

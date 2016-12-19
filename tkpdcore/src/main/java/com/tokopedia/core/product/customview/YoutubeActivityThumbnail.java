@@ -44,8 +44,8 @@ public class YoutubeActivityThumbnail extends LinearLayout{
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.place_holder_youtube_vertical_view, this, true);
 
-        youTubeThumbnailView = (YouTubeThumbnailView) findViewById(R.id.youtube_thumbnail_view);
-        loadingBar = (ProgressBar) findViewById(R.id.loading_bar);
+        youTubeThumbnailView = (YouTubeThumbnailView) findViewById(R.id.youtube_activity_thumbnail_view);
+        loadingBar = (ProgressBar) findViewById(R.id.youtube_activity_thumbnail_loading_bar);
     }
 
     public void setListener(ProductYoutubeActivityView parenView) {
