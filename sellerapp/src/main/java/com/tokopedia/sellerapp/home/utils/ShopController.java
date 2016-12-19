@@ -63,7 +63,8 @@ public class ShopController extends BaseController{
         if(gcmHandlerListener == null)
             return;
 
-        gcmHandler.commitGCMProcess(gcmHandlerListener);
+        gcmHandler.commitFCMProcess(gcmHandlerListener);
+        gcmHandler.commitGCMProcess();
     }
 
     public void getShopInfo(String gcmId, String userId,
