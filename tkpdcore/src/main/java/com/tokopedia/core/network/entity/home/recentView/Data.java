@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Data {
 
-    @SerializedName("recent_view")
+    @SerializedName("list")
     private List<RecentView> mRecentView;
 
     public List<RecentView> getRecentView() {

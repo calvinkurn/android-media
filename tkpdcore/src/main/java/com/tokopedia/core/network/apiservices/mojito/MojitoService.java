@@ -17,7 +17,7 @@ public class MojitoService extends BaseService<MojitoApi> {
 
     @Override
     protected String getBaseUrl() {
-        return TkpdBaseURL.MOJITO_STAGING_DOMAIN;
+        return TkpdBaseURL.MOJITO_DOMAIN;
     }
 
     @Override
