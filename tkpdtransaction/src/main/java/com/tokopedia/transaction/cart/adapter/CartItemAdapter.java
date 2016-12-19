@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.cart.adapter;
 
+import android.animation.ObjectAnimator;
 import android.app.Fragment;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -11,6 +12,7 @@ import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,6 +35,9 @@ import com.tokopedia.transaction.cart.model.CartPartialDeliver;
 import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
+import com.tokopedia.transaction.customview.expandablelayout.ExpandableLayoutListenerAdapter;
+import com.tokopedia.transaction.customview.expandablelayout.ExpandableLinearLayout;
+import com.tokopedia.transaction.customview.expandablelayout.Utils;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -50,6 +55,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private final CartItemActionListener cartItemActionListener;
 
     private List<Object> dataList = new ArrayList<>();
+    private SparseBooleanArray expandState = new SparseBooleanArray();
 
     public CartItemAdapter(Fragment hostFragment, CartItemActionListener cartItemActionListener) {
         this.hostFragment = hostFragment;
@@ -71,8 +77,18 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         int i = getItemViewType(position);
         if (i == TYPE_CART_ITEM) {
             final ViewHolder holderItemCart = (ViewHolder) holder;
-            final CartItemEditable itemData = (CartItemEditable) dataList.get(position);
-            bindCartHolder(holderItemCart, itemData);
+            final CartItemEditable cartItemEditable = (CartItemEditable) dataList.get(position);
+            final CartItem cartData = cartItemEditable.getCartItem();
+            final CartProductItemAdapter adapterProduct = new CartProductItemAdapter(hostFragment);
+
+            renderErrorCartItem(holderItemCart, cartData);
+            renderCartProductList(holderItemCart, cartData, adapterProduct);
+            renderDetailCartItem(holderItemCart, cartData);
+            renderInsuranceOption(holderItemCart, cartData);
+            renderEditableMode(holderItemCart, cartItemEditable.isEditMode(), adapterProduct);
+            renderPartialDeliverOption(holderItemCart, cartData);
+            renderDropShipperOption(holderItemCart, cartItemEditable);
+            renderHolderViewListener(holderItemCart, cartData, adapterProduct, position);
         }
     }
 
@@ -88,8 +104,10 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void fillDataList(List<CartItem> dataList) {
-        for (CartItem data : dataList) {
+        for (int i = 0, dataListSize = dataList.size(); i < dataListSize; i++) {
+            CartItem data = dataList.get(i);
             this.dataList.add(new CartItemEditable(data));
+            this.expandState.append(i, false);
         }
         this.notifyDataSetChanged();
     }
@@ -114,25 +132,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    private void bindCartHolder(final ViewHolder holder, final CartItemEditable data) {
-        final CartItem cartData = data.getCartItem();
-        final CartProductItemAdapter adapterProduct = new CartProductItemAdapter(hostFragment);
-
-        renderErrorCartItem(holder, cartData);
-        renderCartProductList(holder, cartData, adapterProduct);
-        renderDetailCartItem(holder, data, cartData);
-        renderInsuranceOption(holder, cartData);
-        renderEditableMode(holder, data, adapterProduct);
-        renderPartialDeliverOption(holder, cartData);
-        renderDropShipperOption(holder, data);
-        renderOnClickListener(holder, cartData, adapterProduct);
-
-        if (data.getErrorType() != CartItemEditable.ERROR_NON) {
-            holder.holderContainer.requestFocus();
-        }
-    }
-
-    private void renderDetailCartItem(ViewHolder holder, CartItemEditable data, CartItem cartData) {
+    private void renderDetailCartItem(ViewHolder holder, CartItem cartData) {
         holder.tvShopName.setText(cartData.getCartShop().getShopName());
         holder.tvInsurancePrice.setText(cartData.getCartInsurancePriceIdr());
         holder.tvShippingCost.setText(cartData.getCartShippingRateIdr());
@@ -144,10 +144,11 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holder.tvShipment.setText(String.format("%s - %s (Ubah)",
                 cartData.getCartShipments().getShipmentName(),
                 cartData.getCartShipments().getShipmentPackageName()));
+        holder.tvAdditionalCost.setText(cartData.getCartTotalLogisticFeeIdr());
     }
 
-    private void renderOnClickListener(final ViewHolder holder, final CartItem cartData,
-                                       final CartProductItemAdapter adapterProduct) {
+    private void renderHolderViewListener(final ViewHolder holder, final CartItem cartData,
+                                          final CartProductItemAdapter adapterProduct, final int position) {
         holder.tvShippingAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -160,15 +161,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 cartItemActionListener.onChangeShipment(cartData);
             }
         });
-        holder.holderDetailCartToggle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                holder.holderDetailCart.setVisibility(
-                        holder.holderDetailCart.getVisibility() == View.VISIBLE
-                                ? View.GONE : View.VISIBLE
-                );
-            }
-        });
+
 
         holder.btnOverflow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -211,6 +204,41 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             }
         });
+
+        holder.holderDetailCart.setInRecyclerView(true);
+        holder.holderDetailCart.setInterpolator(
+                Utils.createInterpolator(Utils.LINEAR_INTERPOLATOR)
+        );
+        holder.holderDetailCart.setExpanded(expandState.get(position));
+        holder.holderDetailCart.setListener(new ExpandableLayoutListenerAdapter() {
+            @Override
+            public void onPreOpen() {
+                createRotateAnimator(holder.ivIconToggleDetail, 0f, 180f).start();
+                expandState.put(position, true);
+            }
+
+            @Override
+            public void onPreClose() {
+                createRotateAnimator(holder.ivIconToggleDetail, 180f, 0f).start();
+                expandState.put(position, false);
+            }
+        });
+
+        holder.ivIconToggleDetail.setRotation(expandState.get(position) ? 180f : 0f);
+        holder.holderDetailCartToggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                holder.holderDetailCart.toggle();
+            }
+        });
+    }
+
+    private ObjectAnimator createRotateAnimator(final View target, final float from,
+                                                final float to) {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(target, "rotation", from, to);
+        animator.setDuration(300);
+        animator.setInterpolator(Utils.createInterpolator(Utils.LINEAR_INTERPOLATOR));
+        return animator;
     }
 
     private void renderCartProductList(ViewHolder holder, final CartItem cartData,
@@ -241,8 +269,9 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    private void renderDropShipperOption(final ViewHolder holder, final CartItemEditable data) {
-        switch (data.getErrorType()) {
+    private void renderDropShipperOption(final ViewHolder holder,
+                                         final CartItemEditable cartItemEditable) {
+        switch (cartItemEditable.getErrorType()) {
             case CartItemEditable.ERROR_DROPSHIPPER_NAME:
                 holder.tilEtDropshiperName.setErrorEnabled(true);
                 holder.tilEtDropshiperName.setError(
@@ -256,18 +285,18 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 );
                 break;
         }
-        final CartItem cartData = data.getCartItem();
+        final CartItem cartData = cartItemEditable.getCartItem();
 
 
-        holder.etDropshiperName.setText(data.getDropShipperName() != null
-                ? data.getDropShipperName() : "");
-        holder.etDropshiperPhone.setText(data.getDropShipperPhone() != null
-                ? data.getDropShipperPhone() : "");
+        holder.etDropshiperName.setText(cartItemEditable.getDropShipperName() != null
+                ? cartItemEditable.getDropShipperName() : "");
+        holder.etDropshiperPhone.setText(cartItemEditable.getDropShipperPhone() != null
+                ? cartItemEditable.getDropShipperPhone() : "");
 
         final TextWatcher textWatcherDropShipperName
-                = getWatcherEtDropShipperName(data, cartData, holder);
+                = getWatcherEtDropShipperName(cartItemEditable, cartData, holder);
         final TextWatcher textWatcherDropShipperPhone
-                = getWatcherEtDropShipperPhone(data, cartData, holder);
+                = getWatcherEtDropShipperPhone(cartItemEditable, cartData, holder);
 
         holder.cbDropshiper.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -291,8 +320,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             }
         });
-        holder.cbDropshiper.setChecked(data.isDropShipper());
-
+        holder.cbDropshiper.setChecked(cartItemEditable.isDropShipper());
     }
 
     private void renderPartialDeliverOption(ViewHolder holder, final CartItem cartData) {
@@ -563,9 +591,9 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     @SuppressWarnings("deprecation")
-    private void renderEditableMode(ViewHolder holder, CartItemEditable data,
+    private void renderEditableMode(ViewHolder holder, boolean isEditMode,
                                     CartProductItemAdapter adapterProduct) {
-        if (data.isEditMode()) {
+        if (isEditMode) {
             holder.holderActionEditor.setVisibility(View.VISIBLE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 holder.holderContainer.setBackground(
@@ -594,7 +622,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             adapterProduct.disableEditMode();
             adapterProduct.notifyDataSetChanged();
         }
-        holder.holderActionEditor.setVisibility(data.isEditMode() ? View.VISIBLE : View.GONE);
+        holder.holderActionEditor.setVisibility(isEditMode ? View.VISIBLE : View.GONE);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -644,11 +672,12 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         TextView tvInsurancePrice;
         @BindView(R2.id.tv_additional_cost)
         TextView tvAdditionalCost;
-        @BindView(R2.id.holder_detail_cart)
-        LinearLayout holderDetailCart;
         @BindView(R2.id.tv_total_price)
         TextView tvTotalPrice;
-
+        @BindView(R2.id.holder_detail_cart)
+        ExpandableLinearLayout holderDetailCart;
+        @BindView(R2.id.iv_icon_detail_cart_toggle)
+        ImageView ivIconToggleDetail;
         @BindView(R2.id.holder_action_editor)
         LinearLayout holderActionEditor;
         @BindView(R2.id.btn_save)

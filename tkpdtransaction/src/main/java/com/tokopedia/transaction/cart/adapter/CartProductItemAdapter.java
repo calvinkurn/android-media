@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.model.CartProductItemEditable;
@@ -210,6 +211,10 @@ class CartProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         });
         holder.etQuantityProduct.setText(item.getTempQuantity());
         holder.etNotesProduct.setText(Html.fromHtml(item.getTempNotes()));
+
+        ImageHandler.loadImageRounded2(
+                hostFragment, holder.ivPicProduct, item.getCartProduct().getProductPic()
+        );
 
     }
 
