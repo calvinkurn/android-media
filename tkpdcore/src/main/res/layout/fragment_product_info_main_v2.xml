@@ -58,6 +58,13 @@
                 android:paddingBottom="@dimen/margin_vs"
                 android:paddingTop="@dimen/margin_vs" />
 
+            <ProgressBar
+                android:id="@id/view_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:visibility="gone" />
+
             <com.tokopedia.core.product.customview.ManageView
                 android:id="@id/view_manage"
                 android:layout_width="match_parent"
@@ -140,11 +147,4 @@
         android:orientation="horizontal"
         android:visibility="visible" />
 
-    <ProgressBar
-        android:id="@id/view_progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:visibility="gone" />
 </RelativeLayout>
