@@ -7,7 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.gmsubscribe.view.GMSubscribeBlockFragment;
@@ -40,6 +40,6 @@ public class GMSubscribeActivity extends TActivity implements GMSubscribeFragmen
 
     @Override
     public void thankYouPageCount() {
-        TrackingUtils.eventGoldMerchantSuccess();
+        UnifyTracking.eventGoldMerchantSuccess();
     }
 }

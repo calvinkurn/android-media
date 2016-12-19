@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.inbox.rescenter.inbox.model.ResCenterCounterPending;
 import com.tokopedia.inbox.rescenter.inbox.model.ResCenterHeader;
 import com.tokopedia.inbox.rescenter.inbox.model.ResCenterInboxItem;
@@ -68,6 +69,7 @@ public class ResCenterInboxAdapter extends ResCenterExtendedAdapter {
         holder.mainView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                UnifyTracking.eventResolutionDetail();
                 presenter.setActionOnItemListClickListener(view.getContext(), resolutionID);
             }
         });
