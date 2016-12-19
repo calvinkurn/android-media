@@ -94,15 +94,15 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
     protected void initVar() {
         tabContents = new ArrayList<>();
         tabContents.add(TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SUMMARY,
-                getString(R.string.title_dashboard_purchase));
+                getString(R.string.title_tab_purchase_summary));
         tabContents.add(TransactionPurchaseRouter.TAB_POSITION_PURCHASE_VERIFICATION,
-                getString(R.string.title_payment_status));
+                getString(R.string.title_tab_purchase_status_payment));
         tabContents.add(TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER,
-                getString(R.string.title_order_status));
+                getString(R.string.title_tab_purchase_status_order));
         tabContents.add(TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVER_ORDER,
-                getString(R.string.title_receive_confirmation));
+                getString(R.string.title_tab_purchase_confirm_deliver));
         tabContents.add(TransactionPurchaseRouter.TAB_POSITION_PURCHASE_ALL_ORDER,
-                getString(R.string.title_transaction_list));
+                getString(R.string.title_tab_purchase_transactions));
     }
 
     @Override

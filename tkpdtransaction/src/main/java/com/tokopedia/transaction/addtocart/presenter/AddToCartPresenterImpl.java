@@ -117,7 +117,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                         viewListener.hideInitLoading();
                         if (isAllowKeroAccess(data)) {
                             calculateKeroRates(context, data);
-                        }else{
+                        } else {
                             viewListener.hideProgressLoading();
                         }
                     }
@@ -511,17 +511,12 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
 
     @Override
     public boolean isAllowKeroAccess(AtcFormData data) {
-        if (data.getShop().getUt() != 0 && !TextUtils.isEmpty(data.getShop().getToken())
+        return data.getShop().getUt() != 0 && !TextUtils.isEmpty(data.getShop().getToken())
                 && !TextUtils.isEmpty(data.getShop().getAvailShippingCode())
                 && !TextUtils.isEmpty(data.getShop().getOriginId() + "")
                 && !TextUtils.isEmpty(data.getShop().getOriginPostal())
                 && !TextUtils.isEmpty(data.getForm().getDestination().getDistrictId())
                 && !TextUtils.isEmpty(data.getForm().getDestination().getPostalCode())
-                && !TextUtils.isEmpty(data.getForm().getProductDetail().getProductWeight())
-                ) {
-            return true;
-        } else {
-            return false;
-        }
+                && !TextUtils.isEmpty(data.getForm().getProductDetail().getProductWeight());
     }
 }

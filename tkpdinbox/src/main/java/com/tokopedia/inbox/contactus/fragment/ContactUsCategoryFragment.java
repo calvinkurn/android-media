@@ -20,6 +20,8 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.customView.ObservableWebView;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.contactus.ContactUsConstant;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
 import com.tokopedia.inbox.contactus.adapter.ContactUsAdapter;
@@ -28,8 +30,6 @@ import com.tokopedia.inbox.contactus.model.contactuscategory.ContactUsCategory;
 import com.tokopedia.inbox.contactus.model.contactuscategory.TicketCategory;
 import com.tokopedia.inbox.contactus.presenter.ContactUsCategoryFragmentPresenter;
 import com.tokopedia.inbox.contactus.presenter.ContactUsCategoryFragmentPresenterImpl;
-import com.tokopedia.core.customView.ObservableWebView;
-import com.tokopedia.core.network.NetworkErrorHelper;
 
 import java.util.ArrayList;
 
@@ -333,7 +333,7 @@ public class ContactUsCategoryFragment extends
             public void onBackPressed() {
                 if (solution.canGoBack()) {
                     solution.goBack();
-                }else{
+                } else {
                     getActivity().finish();
                 }
 

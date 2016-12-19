@@ -606,10 +606,10 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 case ManageAddressConstant.REQUEST_CODE_PARAM_CREATE:
                     Destination addressData = presenter.generateAddressData(data);
                     startCalculateCartLoading();
-                    if (this.orderData.getAddress() == null || !this.orderData.getAddress().isCompleted()){
+                    if (this.orderData.getAddress() == null || !this.orderData.getAddress().isCompleted()) {
                         this.orderData.setAddress(addressData);
                         presenter.getCartKeroToken(this, productCartPass, addressData);
-                    }else{
+                    } else {
                         renderFormAddress(addressData);
                         this.orderData.setAddress(addressData);
                         presenter.calculateKeroAddressShipping(this, orderData);
