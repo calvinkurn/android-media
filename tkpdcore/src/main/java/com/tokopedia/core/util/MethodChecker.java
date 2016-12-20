@@ -6,6 +6,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.ValueCallback;
@@ -54,5 +56,9 @@ public class MethodChecker {
             });
         } else
             CookieManager.getInstance().removeAllCookie();
+    }
+
+    public static Spanned fromHtml(String message) {
+        return Html.fromHtml(message);
     }
 }
