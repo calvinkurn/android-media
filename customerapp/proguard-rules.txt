@@ -279,6 +279,8 @@
 # add exception for dbflow
 -keep class * extends com.raizlabs.android.dbflow.config.DatabaseHolder { *; }
 -keep class com.tokopedia.core.database.model.** { *; }
+-keep class com.tokopedia.core.database.recharge.** { *; }
+
 
 
 #selling
@@ -293,5 +295,9 @@
 -keep class com.tokopedia.core.home.model.** { *; }
 
 -keep class com.tokopedia.core.util.GlobalConfig
+
+-keep class com.tokopedia.core.network.entity.** { *; }
+
+
 
 

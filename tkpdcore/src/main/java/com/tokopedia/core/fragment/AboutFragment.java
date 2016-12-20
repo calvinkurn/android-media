@@ -3,6 +3,7 @@ package com.tokopedia.core.fragment;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -13,6 +14,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.TkpdBasePreferenceFragment;
+import com.tokopedia.core.manage.general.ManageWebViewActivity;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RouterUtils;
@@ -63,18 +65,32 @@ public class AboutFragment extends TkpdBasePreferenceFragment {
         prefTerm.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse("https://www.tokopedia.com/terms.pl"));
-                getActivity().startActivity(i);
+                Intent intent;
+                String termUrl = "https://www.tokopedia.com/terms.pl";
+                if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                    intent = ManageWebViewActivity.getCallingIntent(getActivity(), termUrl,
+                            getString(R.string.manage_terms_and_conditions));
+                } else {
+                    intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(termUrl));
+                }
+                getActivity().startActivity(intent);
                 return false;
             }
         });
         prefPrivacy.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse("https://www.tokopedia.com/privacy.pl"));
-                getActivity().startActivity(i);
+                Intent intent;
+                String privacyUrl = "https://www.tokopedia.com/privacy.pl";
+                if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                    intent = ManageWebViewActivity.getCallingIntent(getActivity(), privacyUrl,
+                            getString(R.string.manage_privacy));
+                }else{
+                    intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(privacyUrl));
+                }
+                getActivity().startActivity(intent);
                 return false;
             }
         });

@@ -143,6 +143,7 @@ public class InboxResCenterImpl implements InboxResCenterPresenter {
 
     @Override
     public void setBeforeInitInboxData() {
+        setNoResultView(false);
         setLoadingView(true);
         listener.setFilterAble(false);
         listener.setPullToRefreshAble(false);
@@ -206,7 +207,6 @@ public class InboxResCenterImpl implements InboxResCenterPresenter {
     @Override
     public void onSuccessGetCache(@NonNull ResCenterInboxData inboxData) {
         setLoadingView(false);
-        setNoResultView(false);
         setNextPageStatus(inboxData.getPaging());
         listener.setRefreshing(true);
         listener.showCache(inboxData.getList());

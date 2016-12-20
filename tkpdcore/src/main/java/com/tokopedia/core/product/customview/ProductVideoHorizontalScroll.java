@@ -11,6 +11,8 @@ import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.tokopedia.core.R;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
 
+import java.util.List;
+
 /**
  * Created by kris on 11/3/16. Tokopedia
  */
@@ -18,6 +20,8 @@ import com.tokopedia.core.product.model.goldmerchant.VideoData;
 public class ProductVideoHorizontalScroll extends HorizontalScrollView {
 
     private LinearLayout placeHolder;
+
+    private List<YoutubeThumbnailViewHolder> youtubeThumbnailList;
 
     public ProductVideoHorizontalScroll(Context context) {
         super(context);
@@ -38,7 +42,7 @@ public class ProductVideoHorizontalScroll extends HorizontalScrollView {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.horizontal_scroll_youtube_view, this, true);
-        placeHolder = (LinearLayout) findViewById(R.id.place_holder);
+        placeHolder = (LinearLayout) findViewById(R.id.youtube_video_place_holder);
     }
 
     public void renderData(VideoData data) {
@@ -53,6 +57,11 @@ public class ProductVideoHorizontalScroll extends HorizontalScrollView {
                         data.getVideo().get(i).getUrl()));
             }
         }
+    }
 
+    public void destroyAllOnGoingYoutubeProcess() {
+        for (int i = 0; i<youtubeThumbnailList.size(); i++) {
+            youtubeThumbnailList.get(i).destroyReleaseProcess();
+        }
     }
 }

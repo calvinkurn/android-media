@@ -864,7 +864,7 @@ Namun tidak perlu khawatir karena staff kami selalu melakukan pengecekan.]]>
     <string name="ORDER_DELIVERED">600</string>
     <string name="ORDER_DELIVERY_FAILURE">630</string>
     <string name="ORDER_DELIVERY_AUTOMATIC">699</string>
-    <string name="title_package_received">Paket diterima</string>
+    <string name="title_package_received">Paket Diterima</string>
     <string name="title_package_not_received">Paket belum diterima</string>
     <string name="dialog_package_received">
  <![CDATA[
@@ -1816,5 +1816,18 @@ di Tokopedia Sekarang!</string>
 
     <string name="title_msisdn">Verifikasi Nomor HP</string>
     <string name="title_try_again_in">Coba lagi dalam :</string>
+    <string name="manage_default_page_title">Pengaturan</string>
+    <string name="manage_terms_and_conditions">Syarat dan Ketentuan</string>
+    <string name="manage_privacy">Kebijakan Privasi</string>
 
+
+
+    <!--START : string related to Product Picture Download -->
+    <string name="download_picture">Mengunduh gambar</string>
+    <string name="download_in_process">Unduh gambar dalam proses</string>
+    <string name="download_failed">Gambar gagal diunduh</string>
+    <string name="download_success">Gambar berhasil diunduh</string>
+    <string name="preview_picture_open_action">BUKA</string>
+    <string name="preview_picture_download_action">Download Gambar</string>
+    <string name="download_error">Terjadi kesalahan pengunduhan gambar</string>
 </resources>

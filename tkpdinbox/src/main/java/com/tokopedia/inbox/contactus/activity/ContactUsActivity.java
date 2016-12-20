@@ -10,7 +10,10 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.inbox.contactus.ContactUsConstant;
 import com.tokopedia.inbox.contactus.fragment.ContactUsCategoryFragment;
 import com.tokopedia.inbox.contactus.fragment.ContactUsFaqFragment;
@@ -29,6 +32,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
 
     public interface BackButtonListener {
         void onBackPressed();
+
         boolean canGoBack();
     }
 
@@ -62,17 +66,18 @@ public class ContactUsActivity extends BasePresenterActivity implements
     @Override
     protected void initView() {
 
-        if (getIntent().getBooleanExtra(PARAM_REDIRECT,false)) {
+        if (getIntent().getBooleanExtra(PARAM_REDIRECT, false)) {
             onGoToCreateTicket();
-        }else{
+        } else {
             Bundle bundle = getIntent().getExtras();
-            if(bundle == null )
+            if (bundle == null)
                 bundle = new Bundle();
             ContactUsFaqFragment fragment = ContactUsFaqFragment.createInstance(bundle);
             listener = fragment.getBackButtonListener();
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             fragmentTransaction.add(R.id.main_view, fragment, fragment.getClass().getSimpleName());
+            fragmentTransaction.addToBackStack(ContactUsFaqFragment.class.getSimpleName());
             fragmentTransaction.commit();
         }
     }
@@ -98,17 +103,18 @@ public class ContactUsActivity extends BasePresenterActivity implements
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.setCustomAnimations(R.animator.slide_in_left, 0, 0, R.animator.slide_out_right);
         transaction.add(R.id.main_view, fragment, "second");
-        transaction.addToBackStack("secondStack");
+        transaction.addToBackStack(ContactUsCategoryFragment.class.getSimpleName());
         transaction.commit();
+
     }
 
     @Override
     public void onBackPressed() {
-        if (getFragmentManager().getBackStackEntryCount() > 0) {
+        if (getFragmentManager().getBackStackEntryCount() > 1) {
             getFragmentManager().popBackStack();
-        }else if (listener!= null && listener.canGoBack()){
+        } else if (listener != null && listener.canGoBack()) {
             listener.onBackPressed();
-        }else{
+        } else {
             super.onBackPressed();
         }
     }
@@ -131,7 +137,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
     public void onOpenContactUsTicketForm(int lastCatId, ArrayList<String> path) {
         Bundle bundle = new Bundle();
         bundle.putInt(PARAM_LAST_CATEGORY_ID, lastCatId);
-        bundle.putStringArrayList(PARAM_PATH,path);
+        bundle.putStringArrayList(PARAM_PATH, path);
         CreateTicketFormFragment fragment = CreateTicketFormFragment.createInstance(bundle);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.setCustomAnimations(R.animator.slide_in_left, 0, 0, R.animator.slide_out_right);
@@ -142,10 +148,17 @@ public class ContactUsActivity extends BasePresenterActivity implements
 
     @Override
     public void onFinishCreateTicket() {
-        CommonUtils.UniversalToast(this,getString(R.string.title_contact_finish));
-        Intent intent = HomeRouter.getHomeActivity(this);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        finish();
+        CommonUtils.UniversalToast(this, getString(R.string.title_contact_finish));
+        if (GlobalConfig.isSellerApp()) {
+            Intent intent = SellerAppRouter.getSellerHomeActivity(this);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+        } else {
+            Intent intent = HomeRouter.getHomeActivity(this);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+        }
     }
 }

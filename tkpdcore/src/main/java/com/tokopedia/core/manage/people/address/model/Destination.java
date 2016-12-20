@@ -304,7 +304,7 @@ public class Destination implements Parcelable {
      * @return The addressStreet
      */
     public String getAddressStreet() {
-        return addressStreet;
+        return Html.fromHtml(addressStreet.replace("\n", "<br/>")).toString();
     }
 
     /**
@@ -359,7 +359,7 @@ public class Destination implements Parcelable {
 
 
     public boolean isCompleted() {
-        return (addressId != null &&!addressId.equals("0") && !cityId.equals("0") && !districtId.equals("0")
+        return (addressId != null && !addressId.equals("0") && !cityId.equals("0") && !districtId.equals("0")
                 && !provinceId.equals("0"));
     }
 

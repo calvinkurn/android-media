@@ -35,6 +35,7 @@ import com.tokopedia.core.ManageShop;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.inboxmessage.activity.SendMessageActivity;
@@ -164,12 +165,20 @@ public class ShopInfoActivity extends TActivity {
 //                updateView();
             }
         }
+
+        sendEventLoca();
     }
 
     public void switchTab(String etalaseId){
-        ProductList productListFragment = (ProductList) adapter.getItem(1);
-        productListFragment.setSelectedEtalase(etalaseId);
-        holder.pager.setCurrentItem(1, true);
+        try {
+            if (!etalaseId.equals("all")) {
+                ProductList productListFragment = (ProductList) adapter.getItem(1);
+                productListFragment.setSelectedEtalase(etalaseId);
+            }
+            holder.pager.setCurrentItem(1, true);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -717,5 +726,9 @@ public class ShopInfoActivity extends TActivity {
 
     public void setToolbarCollapse() {
         holder.appBarLayout.setExpanded(false, true);
+    }
+
+    private void sendEventLoca(){
+        ScreenTracking.eventLoca(AppScreen.SCREEN_VIEWED_SHOP_PAGE);
     }
 }

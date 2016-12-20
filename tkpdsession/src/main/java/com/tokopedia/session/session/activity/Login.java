@@ -1,5 +1,6 @@
 package com.tokopedia.session.session.activity;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -48,6 +49,7 @@ import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.WelcomeActivity;
@@ -72,6 +74,13 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
+
 /**
  * Created by m.normansyah on 04/11/2015.
  * <p/>
@@ -85,6 +94,7 @@ import java.util.List;
  * inside session package :
  * 1. Logout Fragment currently dialog is discard when rotate.
  */
+@RuntimePermissions
 public class Login extends GoogleActivity implements SessionView, GoogleActivity.GoogleListener
             , DownloadResultReceiver.Receiver
             , LoginResultReceiver.Receiver
@@ -172,7 +182,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.login_fragment, fragment, TAG);
         if (isAddtoBackStack)
-            fragmentTransaction.addToBackStack(TAG);
+            fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 
@@ -337,7 +347,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     @Override
     public void moveToRegisterInitial() {
         Fragment fragment = RegisterInitialFragment.newInstance();
-        moveToFragment(fragment, true, REGISTER_INITIAL, TkpdState.DrawerPosition.REGISTER_INITIAL);
+        moveToFragment(fragment, false, REGISTER_INITIAL, TkpdState.DrawerPosition.REGISTER_INITIAL);
 
         // Change the header
         session.setWhichFragment(TkpdState.DrawerPosition.REGISTER_INITIAL);
@@ -348,7 +358,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     @Override
     public void moveToLogin() {
         Fragment loginFragment = LoginFragment.newInstance("", false, "","","");
-        moveToFragment(loginFragment, true, LOGIN_FRAGMENT_TAG, TkpdState.DrawerPosition.LOGIN);
+        moveToFragment(loginFragment, false, LOGIN_FRAGMENT_TAG, TkpdState.DrawerPosition.LOGIN);
 
         // Change the header
         session.setWhichFragment(TkpdState.DrawerPosition.LOGIN);
@@ -359,12 +369,12 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     @Override
     public void moveToForgotPassword() {
         Log.d(TAG, messageTAG + supportFragmentManager.getBackStackEntryCount());
-        if (supportFragmentManager.getBackStackEntryCount() > 1) {
-            FragmentManager.BackStackEntry first = supportFragmentManager.getBackStackEntryAt(1);
-            supportFragmentManager.popBackStack(first.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        }
+//        if (supportFragmentManager.getBackStackEntryCount() > 1) {
+//            FragmentManager.BackStackEntry first = supportFragmentManager.getBackStackEntryAt(1);
+//            supportFragmentManager.popBackStack(first.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+//        }
         Fragment fragment = new ForgotPasswordFragment();
-        moveToFragment(fragment, true, FORGOT_PASSWORD_TAG, TkpdState.DrawerPosition.FORGOT_PASSWORD);
+        moveToFragment(fragment, false, FORGOT_PASSWORD_TAG, TkpdState.DrawerPosition.FORGOT_PASSWORD);
 
         session.setWhichFragment(TkpdState.DrawerPosition.FORGOT_PASSWORD);
         setToolbarTitle();
@@ -559,12 +569,18 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         updateUI(false);
     }
 
+    @NeedsPermission(android.Manifest.permission.GET_ACCOUNTS)
     @Override
     public void updateUI(boolean isSignedIn) {
         if (isSignedIn) {
             Person currentPerson = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
-            String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
-            if (currentPerson != null) {
+            String email;
+            try {
+                email = Plus.AccountApi.getAccountName(mGoogleApiClient);
+            } catch (Exception e) {
+                email = "";
+            }
+            if (currentPerson != null && email !=null && !email.equals("")) {
                 // Show signed-in user's name
                 String name = currentPerson.getDisplayName();
 
@@ -607,6 +623,30 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
 
             // Set button visibility
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        LoginPermissionsDispatcher.onRequestPermissionsResult(Login.this, requestCode, grantResults);
+    }
+
+    @OnPermissionDenied(Manifest.permission.GET_ACCOUNTS)
+    void showDeniedForGetAccounts() {
+        RequestPermissionUtil.onPermissionDenied(this, android.Manifest.permission.GET_ACCOUNTS);
+
+    }
+
+    @OnNeverAskAgain(android.Manifest.permission.GET_ACCOUNTS)
+    void showNeverForGetAccounts() {
+        RequestPermissionUtil.onNeverAskAgain(this, android.Manifest.permission.GET_ACCOUNTS);
+
+    }
+
+    @OnShowRationale(android.Manifest.permission.GET_ACCOUNTS)
+    void showRationaleForGetAccounts(final PermissionRequest request) {
+        RequestPermissionUtil.onShowRationale(this, request, android.Manifest.permission.GET_ACCOUNTS);
     }
 
     @Override

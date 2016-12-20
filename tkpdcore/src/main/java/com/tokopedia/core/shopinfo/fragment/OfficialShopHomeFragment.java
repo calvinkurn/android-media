@@ -29,6 +29,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.fragment.FragmentBannerWebView;
+import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 
@@ -171,8 +172,19 @@ public class OfficialShopHomeFragment extends Fragment {
     private boolean overrideUrl(String url) {
         Uri uri = Uri.parse(url);
         if(uri.getScheme().equals("tokopedia")) {
-            String etalaseId = uri.getLastPathSegment();
-            ((ShopInfoActivity) getActivity()).switchTab(etalaseId);
+            String id = uri.getLastPathSegment();
+            switch (uri.getPathSegments().get(1)) {
+                case "etalase":
+                    ((ShopInfoActivity) getActivity()).switchTab(id);
+                    break;
+                case "product":
+                    Bundle bundle = new Bundle();
+                    Intent intent = new Intent(getActivity(), ProductInfoActivity.class);
+                    bundle.putString("product_id", id);
+                    intent.putExtras(bundle);
+                    getActivity().startActivity(intent);
+                    break;
+            }
         } else if(uri.getScheme().startsWith("http")) {
             Intent intent = new Intent(getActivity(), BannerWebView.class);
             intent.putExtra("url", url);

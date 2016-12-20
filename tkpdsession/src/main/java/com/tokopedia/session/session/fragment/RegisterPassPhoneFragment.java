@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -34,6 +35,7 @@ import com.tokopedia.core.customView.PasswordView;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.session.model.CreatePasswordModel;
 import com.tokopedia.core.session.model.LoginViewModel;
+import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.session.session.presenter.RegisterNew;
 import com.tokopedia.session.session.presenter.RegisterNewImpl;
 import com.tokopedia.session.session.presenter.RegisterNewNextImpl;
@@ -198,8 +200,9 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
             case DownloadService.MAKE_LOGIN:
                 showProgress(false);
                 if (new SessionHandler(getActivity()).isV4Login()) {// go back to home
-                    getActivity().startActivity(new Intent(getActivity(), HomeRouter.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                    getActivity().finish();
+                    if (getActivity() != null && getActivity() instanceof SessionView) {
+                        ((SessionView) getActivity()).destroy();
+                    }
                 }
                 break;
         }
@@ -284,12 +287,11 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
     private void makeItEnabled(TextView tv, boolean status){
         tv.setEnabled(status);
         if(status){
-            try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 tv.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.new_edittext_white));
-            }catch (NoSuchMethodError e){
+            }else{
                 tv.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(),R.drawable.new_edittext_white));
             }
-
         }else{
             tv.setBackgroundColor(Color.parseColor("#EEEEEE"));
         }

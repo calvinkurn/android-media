@@ -10,7 +10,7 @@
     android:layout_marginBottom="@dimen/margin_med">
 
     <com.google.android.youtube.player.YouTubeThumbnailView
-        android:id="@+id/youtube_thumbnail_view"
+        android:id="@id/youtube_activity_thumbnail_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:tint="@color/cardview_shadow_start_color"/>
@@ -22,7 +22,7 @@
         android:background="@drawable/ic_play_circle_outline_48dp"/>
 
     <ProgressBar
-        android:id="@+id/loading_bar"
+        android:id="@id/youtube_activity_thumbnail_loading_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 </RelativeLayout>

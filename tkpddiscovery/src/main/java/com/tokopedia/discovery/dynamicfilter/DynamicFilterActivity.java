@@ -32,8 +32,10 @@ import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterView;
 
 import org.parceler.Parcels;
 
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -302,6 +304,14 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
         }
 
         return isFormValid;
+    }
+
+    private String getCleanString(String s){
+        Locale local = new Locale("id", "id");
+        String replaceable = String.format("[Rp,.\\s]",
+                NumberFormat.getCurrencyInstance().getCurrency().getSymbol(local));
+        String cleanString = s.toString().replaceAll(replaceable, "");
+        return cleanString;
     }
 
     private boolean isPriceFormValid() {

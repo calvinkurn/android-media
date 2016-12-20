@@ -15,7 +15,7 @@
         android:layout_weight="3"/>
 
     <ScrollView
-        android:id="@+id/place_holder_scroll_view"
+        android:id="@id/youtube_activity_place_holder_scroll_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/new_icon_size"
@@ -23,7 +23,7 @@
         android:visibility="gone"
         android:layout_weight="1">
         <LinearLayout
-            android:id="@+id/place_holder"
+            android:id="@id/youtube_activity_place_holder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_small"
