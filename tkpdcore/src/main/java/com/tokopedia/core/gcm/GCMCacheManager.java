@@ -45,14 +45,14 @@ public class GCMCacheManager {
         cache.applyEditor();
     }
 
-    public void resetCache(Bundle data) {
+    void resetCache(Bundle data) {
         if (Integer.parseInt(data.getString("tkp_code")) > 600
                 && Integer.parseInt(data.getString("tkp_code")) < 802) {
             doResetCache(Integer.parseInt(data.getString("tkp_code")));
         }
     }
 
-    public void updateStats(Bundle data){
+    void updateStats(Bundle data){
         LocalCacheHandler updateStats = new LocalCacheHandler(context, TkpdCache.STATUS_UPDATE);
         updateStats.putInt(TkpdCache.Key.STATUS, Integer.parseInt(data.getString("status")));
         updateStats.applyEditor();

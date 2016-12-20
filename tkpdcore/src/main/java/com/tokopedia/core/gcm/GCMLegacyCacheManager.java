@@ -6,7 +6,9 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.prototype.ManageProductCache;
@@ -99,7 +101,7 @@ public class GCMLegacyCacheManager {
                 ShopSettingCache.DeleteCache(ShopSettingCache.CODE_NOTES, context);
                 break;
             case TkpdState.GCMServiceState.GCM_PRODUCT_LIST:
-                ManageProductCache.ClearCache(context;
+                ManageProductCache.ClearCache(context);
                 break;
         }
     }
@@ -177,6 +179,44 @@ public class GCMLegacyCacheManager {
                 return settings.getBoolean("notification_receive_rescenter", true);
         }
         return true;
+    }
+
+    public void processNotifData(Bundle data, String title, String descString, GCMCacheManager.CacheProcessListener listener){
+
+        ArrayList<String> content, desc;
+        ArrayList<Integer> code;
+
+        LocalCacheHandler cache = new LocalCacheHandler(context, TkpdCache.LOCA_GCM_NOTIFICATION);
+        content = cache.getArrayListString(TkpdCache.Key.NOTIFICATION_CONTENT);
+        desc = cache.getArrayListString(TkpdCache.Key.NOTIFICATION_DESC);
+        code = cache.getArrayListInteger(TkpdCache.Key.NOTIFICATION_CODE);
+        try {
+            for (int i = 0; i < code.size(); i++) {
+                if (code.get(i) == Integer.parseInt(data.getString("tkp_code"))) {
+                    content.remove(i);
+                    code.remove(i);
+                    desc.remove(i);
+                }
+            }
+        } catch (Exception e) {
+            Crashlytics.log(Log.ERROR, "PUSH NOTIF - IndexOutOfBounds",
+                    "tkp_code:" + Integer.parseInt(data.getString("tkp_code")) +
+                            " size contentArray " + content.size() +
+                            " size codeArray " + code.size() +
+                            " size Desc " + desc.size());
+            e.printStackTrace();
+        }
+
+        content.add(title);
+        code.add(Integer.parseInt(data.getString("tkp_code")));
+        desc.add(descString);
+
+        cache.putArrayListString(TkpdCache.Key.NOTIFICATION_CONTENT, content);
+        cache.putArrayListString(TkpdCache.Key.NOTIFICATION_DESC, desc);
+        cache.putArrayListInteger(TkpdCache.Key.NOTIFICATION_CODE, code);
+        cache.applyEditor();
+
+        listener.onDataProcessed(content,desc,code);
     }
 
     interface CacheProcessListener{
