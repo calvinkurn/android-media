@@ -1,6 +1,6 @@
 package com.tokopedia.core.gcm.interactor.source;
 
-import com.tokopedia.core.gcm.model.FCMTokenUpdateData;
+import com.tokopedia.core.gcm.model.FCMTokenUpdate;
 import com.tokopedia.core.network.apiservices.notification.NotificationService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -18,11 +18,11 @@ import rx.functions.Func1;
 public class CloudPushNotificationDataSource {
     private static final String KEY_FLAG_IS_SUCCESS = "is_success";
 
-    public Observable<Boolean> updateTokenServer(FCMTokenUpdateData data) {
+    public Observable<Boolean> updateTokenServer(FCMTokenUpdate data) {
         return Observable.just(data)
-                .flatMap(new Func1<FCMTokenUpdateData, Observable<Response<TkpdResponse>>>() {
+                .flatMap(new Func1<FCMTokenUpdate, Observable<Response<TkpdResponse>>>() {
                     @Override
-                    public Observable<Response<TkpdResponse>> call(FCMTokenUpdateData requestData) {
+                    public Observable<Response<TkpdResponse>> call(FCMTokenUpdate requestData) {
                         TKPDMapParam<String, String> param = new TKPDMapParam<>();
                         param.put("device_id_old", requestData.getOldToken());
                         param.put("device_id_new", requestData.getNewToken());

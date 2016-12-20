@@ -12,9 +12,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.localytics.android.Localytics;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.util.PasswordGenerator;
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.util.PasswordGenerator;
 
 import java.io.IOException;
 
@@ -97,7 +95,7 @@ public class GCMHandler {
                                 gcm = GoogleCloudMessaging.getInstance(context);
                             }
                             gcmRegid = gcm.register(SENDER_ID);
-                            GCMCacheManager.storeGCMRegId(gcmRegid, context);
+                            FCMCacheManager.storeGCMRegId(gcmRegid, context);
                             param.statusCode = STATUS_OK;
                             param.statusMessage = "GCM :: Device registered, registration ID=" + gcmRegid;
                             CommonUtils.dumper("GCM :: Device registered, registration ID=" + gcmRegid);
@@ -150,7 +148,7 @@ public class GCMHandler {
                         GCMParam param = new GCMParam();
                         regid = FirebaseInstanceId.getInstance().getToken();
                         if (!TextUtils.isEmpty(regid)) {
-                            GCMCacheManager.storeRegId(regid, context);
+                            FCMCacheManager.storeRegId(regid, context);
                             param.statusCode = STATUS_OK;
                             param.statusMessage = "FCM :: Device registered, registration ID=" + regid;
                             CommonUtils.dumper("FCM :: Device registered, registration ID=" + regid);
@@ -188,11 +186,11 @@ public class GCMHandler {
     }
 
     public static String getRegistrationId(Context context) {
-        return GCMCacheManager.getRegistrationId(context);
+        return FCMCacheManager.getRegistrationId(context);
     }
 
     public static void clearRegistrationId(Context context) {
-        GCMCacheManager.clearRegistrationId(context);
+        FCMCacheManager.clearRegistrationId(context);
     }
 
     public class GCMParam {
@@ -204,8 +202,8 @@ public class GCMHandler {
     private void storeDummyGCMID() {
         regid = PasswordGenerator.getAppId(context);
         gcmRegid = PasswordGenerator.getAppId(context);
-        GCMCacheManager.storeRegId(regid, context);
-        GCMCacheManager.storeGCMRegId(gcmRegid, context);
+        FCMCacheManager.storeRegId(regid, context);
+        FCMCacheManager.storeGCMRegId(gcmRegid, context);
     }
 
 

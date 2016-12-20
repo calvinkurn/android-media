@@ -7,18 +7,18 @@ import android.os.Parcelable;
  * @author  by alvarisi on 12/8/16.
  */
 
-public class FCMTokenUpdateData implements Parcelable{
+public class FCMTokenUpdate implements Parcelable{
     private String mOldToken;
     private String mNewToken;
     private String mOsType;
     private String mAccessToken;
     private String mUserId;
 
-    public FCMTokenUpdateData() {
+    public FCMTokenUpdate() {
     }
 
 
-    protected FCMTokenUpdateData(Parcel in) {
+    protected FCMTokenUpdate(Parcel in) {
         mOldToken = in.readString();
         mNewToken = in.readString();
         mOsType = in.readString();
@@ -26,15 +26,15 @@ public class FCMTokenUpdateData implements Parcelable{
         mUserId = in.readString();
     }
 
-    public static final Creator<FCMTokenUpdateData> CREATOR = new Creator<FCMTokenUpdateData>() {
+    public static final Creator<FCMTokenUpdate> CREATOR = new Creator<FCMTokenUpdate>() {
         @Override
-        public FCMTokenUpdateData createFromParcel(Parcel in) {
-            return new FCMTokenUpdateData(in);
+        public FCMTokenUpdate createFromParcel(Parcel in) {
+            return new FCMTokenUpdate(in);
         }
 
         @Override
-        public FCMTokenUpdateData[] newArray(int size) {
-            return new FCMTokenUpdateData[size];
+        public FCMTokenUpdate[] newArray(int size) {
+            return new FCMTokenUpdate[size];
         }
     };
 

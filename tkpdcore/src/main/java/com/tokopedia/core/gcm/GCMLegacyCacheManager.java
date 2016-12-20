@@ -181,7 +181,7 @@ public class GCMLegacyCacheManager {
         return true;
     }
 
-    public void processNotifData(Bundle data, String title, String descString, GCMCacheManager.CacheProcessListener listener){
+    public void processNotifData(Bundle data, String title, String descString, FCMCacheManager.CacheProcessListener listener){
 
         ArrayList<String> content, desc;
         ArrayList<Integer> code;

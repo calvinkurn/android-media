@@ -478,7 +478,7 @@ public class GCMLegacyListenerService extends GcmListenerService{
         NotificationCompat.InboxStyle inboxStyle;
         NotificationCompat.BigTextStyle bigStyle;
 
-        gcmCache.processNotifData(data, title, desc, new GCMCacheManager.CacheProcessListener() {
+        gcmCache.processNotifData(data, title, desc, new FCMCacheManager.CacheProcessListener() {
             @Override
             public void onDataProcessed(ArrayList<String> content, ArrayList<String> desc, ArrayList<Integer> code) {
                 Content.addAll(content);
@@ -519,7 +519,7 @@ public class GCMLegacyListenerService extends GcmListenerService{
 
             ImageHandler.loadImageBitmapNotification(
                     this,
-                    data.getString("url_img"), new GCMListenerService.OnGetFileListener() {
+                    data.getString("url_img"), new FCMMessagingService.OnGetFileListener() {
                         @Override
                         public void onFileReady(File file) {
                             NotificationCompat.BigPictureStyle bigStyle = new NotificationCompat.BigPictureStyle();
@@ -540,7 +540,7 @@ public class GCMLegacyListenerService extends GcmListenerService{
             ImageHandler.loadImageBitmapNotification(
                     this,
                         data.getString("url_icon"),
-                    new GCMListenerService.OnGetFileListener() {
+                    new FCMMessagingService.OnGetFileListener() {
                         @Override
                         public void onFileReady(File file) {
                             mBuilder.setLargeIcon(Bitmap.createScaledBitmap(BitmapFactory.decodeFile(file.getAbsolutePath()), getResources().getDimensionPixelSize(R.dimen.icon_size), getResources().getDimensionPixelSize(R.dimen.icon_size), true));
@@ -711,7 +711,7 @@ public class GCMLegacyListenerService extends GcmListenerService{
         if (!TextUtils.isEmpty(data.getString("url_icon"))) {
             ImageHandler.loadImageBitmapNotification(
                     this,
-                    data.getString("url_icon"), new GCMListenerService.OnGetFileListener() {
+                    data.getString("url_icon"), new FCMMessagingService.OnGetFileListener() {
                         @Override
                         public void onFileReady(File file) {
                             mBuilder.setLargeIcon(Bitmap.createScaledBitmap(BitmapFactory.decodeFile(file.getAbsolutePath()), getResources().getDimensionPixelSize(R.dimen.icon_size), getResources().getDimensionPixelSize(R.dimen.icon_size), true));
@@ -725,7 +725,7 @@ public class GCMLegacyListenerService extends GcmListenerService{
         ImageHandler.loadImageBitmapNotification(
                 getApplicationContext(),
                 data.getString("url_img"),
-                new GCMListenerService.OnGetFileListener() {
+                new FCMMessagingService.OnGetFileListener() {
                     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                     @Override
                     public void onFileReady(File file) {
