@@ -208,7 +208,7 @@ public class ManageShopNotesFragment extends BasePresenterFragment<ManageShopNot
         adapter.showLoadingFull(false);
         refreshHandler.finishRefresh();
         adapter.showEmpty(false);
-        NetworkErrorHelper.removeEmptyState(getView());
+//        NetworkErrorHelper.removeEmptyState(getView());
     }
 
     @Override
