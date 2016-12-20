@@ -301,6 +301,8 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
+                    if (cartItemActionListener != null)
+                        cartItemActionListener.onDropShipperOptionChecked();
                     updateDropShipperCartName(
                             cartData, holder.etDropshiperName.getText().toString()
                     );
@@ -700,5 +702,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void onSubmitEditCartItem(CartItem cartData, List<ProductEditData> cartProductEditDataList);
 
         void onUpdateInsuranceCartItem(CartItem cartData, boolean useInsurance);
+
+        void onDropShipperOptionChecked();
     }
 }
