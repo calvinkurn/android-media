@@ -10,7 +10,7 @@
         android:text="@string/label_top_ads_icon"/>
 
     <RadioGroup
-        android:id="@+id/radio_group_show_time"
+        android:id="@+id/radio_group_icon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

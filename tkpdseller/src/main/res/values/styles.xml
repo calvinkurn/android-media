@@ -26,7 +26,14 @@
 
     <style name="EditText.Date">
         <item name="android:editable">false</item>
+        <item name="android:focusable">false</item>
+        <item name="android:focusableInTouchMode">false</item>
+        <item name="android:inputType">none</item>
         <item name="android:textColor">@color/green_200</item>
+    </style>
+
+    <style name="EditText.Currency">
+        <item name="android:inputType">number</item>
     </style>
 
     <style name="RadioGroup" parent="Widget.AppCompat.CompoundButton.RadioButton">

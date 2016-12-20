@@ -15,20 +15,22 @@
         android:layout_height="wrap_content">
 
         <RadioButton
-            android:id="@+id/radio_button_new_group"
+            android:id="@+id/radio_button_show_time_automatic"
             style="@style/RadioGroup"
             android:checked="true"
             android:text="@string/label_top_ads_show_time_automatic"/>
 
         <RadioButton
-            android:id="@+id/radio_button_exist_group"
+            android:id="@+id/radio_button_show_time_configured"
             style="@style/RadioGroup"
             android:text="@string/label_top_ads_show_time_configured"/>
 
         <LinearLayout
+            android:id="@+id/layout_show_time_configured"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <TextView
                 style="@style/TextView"

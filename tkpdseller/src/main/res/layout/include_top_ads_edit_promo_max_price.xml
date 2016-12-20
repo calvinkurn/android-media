@@ -12,8 +12,8 @@
 
         <EditText
             android:id="@+id/edit_text_max_price"
+            style="@style/EditText.Currency"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:hint="@string/label_top_ads_max_price_hint"/>
 
     </android.support.design.widget.TextInputLayout>
