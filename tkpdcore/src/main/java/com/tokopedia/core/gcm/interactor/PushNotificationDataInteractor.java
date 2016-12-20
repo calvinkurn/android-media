@@ -1,7 +1,7 @@
 package com.tokopedia.core.gcm.interactor;
 
 import com.tokopedia.core.gcm.interactor.source.CloudPushNotificationDataSource;
-import com.tokopedia.core.gcm.model.FCMTokenUpdate;
+import com.tokopedia.core.gcm.model.FCMTokenUpdateData;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -22,7 +22,7 @@ public class PushNotificationDataInteractor implements IPushNotificationDataInte
     }
 
     @Override
-    public void updateTokenServer(FCMTokenUpdate data, Subscriber<Boolean> subscriber) {
+    public void updateTokenServer(FCMTokenUpdateData data, Subscriber<Boolean> subscriber) {
         this.mCloudPushNotificationDataSource.updateTokenServer(data)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
