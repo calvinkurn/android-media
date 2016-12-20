@@ -14,6 +14,9 @@ public class TkpdCache {
     public static final String INDEX = "INDEX";
     public static final String ETALASE_ADD_PROD = "ETALASE_ADD_PROD";
     public static final String G_CODE = "G_CODE";
+    public static final String LOCA_CODE = "LOCA_CODE";
+    public static final String LOCA_STATUS_UPDATE = "LOCA_STATUS_UPDATE";
+    public static final String LOCA_GCM_NOTIFICATION = "LOCA_GCM_NOTIFICATION";
     public static final String GCM_NOTIFICATION = "GCM_NOTIFICATION";
     public static final String STATUS_UPDATE = "STATUS_UPDATE";
     public static final String LOGIN_ID = "LOGIN_ID";

@@ -19,84 +19,41 @@ import com.tokopedia.core.var.TkpdState;
 import java.util.ArrayList;
 
 /**
- * Created by Herdi_WORK on 13.12.16.
+ * Created by Herdi_WORK on 19.12.16.
  */
 
-public class GCMCacheManager {
+public class GCMLegacyCacheManager {
 
     LocalCacheHandler cache;
     Context context;
 
-    public GCMCacheManager(Context ctx){
-        this(ctx, TkpdCache.G_CODE);
+    public GCMLegacyCacheManager(Context ctx){
+        this(ctx, TkpdCache.LOCA_CODE);
         context = ctx;
     }
 
-    public GCMCacheManager(Context ctx, String cacheCode){
+    public GCMLegacyCacheManager(Context ctx, String cacheCode){
         cache = new LocalCacheHandler(ctx, cacheCode);
         context = ctx;
     }
 
-    public void setCache(Context ctx){
-        if(cache==null)
-            cache = new LocalCacheHandler(ctx, TkpdCache.G_CODE);
-
+    public void setCache() {
+        cache = new LocalCacheHandler(context, TkpdCache.LOCA_CODE);
         cache.setExpire(1);
         cache.applyEditor();
     }
 
-    void resetCache(Bundle data) {
+    public void resetCache(Bundle data) {
         if (Integer.parseInt(data.getString("tkp_code")) > 600
                 && Integer.parseInt(data.getString("tkp_code")) < 802) {
             doResetCache(Integer.parseInt(data.getString("tkp_code")));
         }
     }
 
-    void updateStats(Bundle data){
-        LocalCacheHandler updateStats = new LocalCacheHandler(context, TkpdCache.STATUS_UPDATE);
+    public void updateStats(Bundle data){
+        LocalCacheHandler updateStats = new LocalCacheHandler(context, TkpdCache.LOCA_STATUS_UPDATE);
         updateStats.putInt(TkpdCache.Key.STATUS, Integer.parseInt(data.getString("status")));
         updateStats.applyEditor();
-    }
-
-    public void doResetCache(int code) {
-        switch (code) {
-            case TkpdState.GCMServiceState.GCM_PEOPLE_PROFILE:
-                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_PROFILE, context.getApplicationContext());
-                break;
-            case TkpdState.GCMServiceState.GCM_PEOPLE_NOTIF_SETTING:
-                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_NOTIFICATION, context.getApplicationContext());
-                break;
-            case TkpdState.GCMServiceState.GCM_PEOPLE_PRIVACY_SETTING:
-                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_PRIVACY, context.getApplicationContext());
-                break;
-            case TkpdState.GCMServiceState.GCM_PEOPLE_ADDRESS_SETTING:
-
-                break;
-            case TkpdState.GCMServiceState.GCM_SHOP_INFO:
-                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_SHOP_INFO, context.getApplicationContext());
-                break;
-            case TkpdState.GCMServiceState.GCM_SHOP_PAYMENT:
-                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_PAYMENT, context.getApplicationContext());
-                break;
-            case TkpdState.GCMServiceState.GCM_SHOP_ETALASE:
-                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_ETALASE, context.getApplicationContext());
-                break;
-            case TkpdState.GCMServiceState.GCM_SHOP_NOTES:
-                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_NOTES, context.getApplicationContext());
-                break;
-            case TkpdState.GCMServiceState.GCM_PRODUCT_LIST:
-                ManageProductCache.ClearCache(context.getApplicationContext());
-                break;
-        }
-    }
-
-    public boolean isAllowToHandleNotif(Bundle data) {
-        try {
-            return (!cache.isExpired() || cache.getString(TkpdCache.Key.PREV_CODE) == null || !data.isEmpty() || data.getString("g_id").equals(cache.getString(TkpdCache.Key.PREV_CODE)));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
     }
 
     public Boolean isAllowBell() {
@@ -116,6 +73,48 @@ public class GCMCacheManager {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         return settings.getBoolean("notifications_new_message_vibrate", false);
     }
+
+    private void doResetCache(int code) {
+        switch (code) {
+            case TkpdState.GCMServiceState.GCM_PEOPLE_PROFILE:
+                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_PROFILE, context);
+                break;
+            case TkpdState.GCMServiceState.GCM_PEOPLE_NOTIF_SETTING:
+                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_NOTIFICATION, context);
+                break;
+            case TkpdState.GCMServiceState.GCM_PEOPLE_PRIVACY_SETTING:
+                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_PRIVACY, context);
+                break;
+            case TkpdState.GCMServiceState.GCM_PEOPLE_ADDRESS_SETTING:
+
+                break;
+            case TkpdState.GCMServiceState.GCM_SHOP_INFO:
+                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_SHOP_INFO, context);
+                break;
+            case TkpdState.GCMServiceState.GCM_SHOP_PAYMENT:
+                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_PAYMENT, context);
+                break;
+            case TkpdState.GCMServiceState.GCM_SHOP_ETALASE:
+                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_ETALASE, context);
+                break;
+            case TkpdState.GCMServiceState.GCM_SHOP_NOTES:
+                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_NOTES, context);
+                break;
+            case TkpdState.GCMServiceState.GCM_PRODUCT_LIST:
+                ManageProductCache.ClearCache(context);
+                break;
+        }
+    }
+
+    public boolean isAllowToHandleNotif(Bundle data) {
+        try {
+            return (!cache.isExpired() || cache.getString(TkpdCache.Key.PREV_CODE) == null || !data.isEmpty() || data.getString("g_id").equals(cache.getString(TkpdCache.Key.PREV_CODE)));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
     public Uri getSoundUri() {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
@@ -182,12 +181,12 @@ public class GCMCacheManager {
         return true;
     }
 
-    public void processNotifData(Bundle data, String title, String descString, CacheProcessListener listener){
+    public void processNotifData(Bundle data, String title, String descString, GCMCacheManager.CacheProcessListener listener){
 
         ArrayList<String> content, desc;
         ArrayList<Integer> code;
 
-        LocalCacheHandler cache = new LocalCacheHandler(context, TkpdCache.GCM_NOTIFICATION);
+        LocalCacheHandler cache = new LocalCacheHandler(context, TkpdCache.LOCA_GCM_NOTIFICATION);
         content = cache.getArrayListString(TkpdCache.Key.NOTIFICATION_CONTENT);
         desc = cache.getArrayListString(TkpdCache.Key.NOTIFICATION_DESC);
         code = cache.getArrayListInteger(TkpdCache.Key.NOTIFICATION_CODE);
@@ -222,42 +221,7 @@ public class GCMCacheManager {
 
     interface CacheProcessListener{
         void onDataProcessed(ArrayList<String> content,
-                ArrayList<String> desc,
-                ArrayList<Integer> code);
-    }
-
-    public static void storeRegId(String id, Context context){
-        LocalCacheHandler cache = new LocalCacheHandler(context, "GCM_STORAGE");
-        cache.putString("gcm_id", id);
-        cache.applyEditor();
-    }
-
-    public static String getRegistrationId(Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, "GCM_STORAGE");
-        return cache.getString("gcm_id", "");
-    }
-
-    public static void clearRegistrationId(Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, "GCM_STORAGE");
-        cache.putString("gcm_id", null);
-        cache.applyEditor();
-    }
-
-    public static void storeGCMRegId(String id, Context context){
-        LocalCacheHandler cache = new LocalCacheHandler(context, "GCM_STORAGE");
-        cache.putString("gcm_id_loca", id);
-        cache.applyEditor();
-    }
-
-
-    public static String getGCMRegistrationId(Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, "GCM_STORAGE");
-        return cache.getString("gcm_id_loca", "");
-    }
-
-    public static void clearGCMRegistrationId(Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, "GCM_STORAGE");
-        cache.putString("gcm_id_loca", null);
-        cache.applyEditor();
+                             ArrayList<String> desc,
+                             ArrayList<Integer> code);
     }
 }
