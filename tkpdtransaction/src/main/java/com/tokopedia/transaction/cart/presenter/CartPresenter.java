@@ -1,6 +1,6 @@
 package com.tokopedia.transaction.cart.presenter;
 
-import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
@@ -342,6 +342,7 @@ public class CartPresenter implements ICartPresenter {
         boolean canBeCheckout = true;
 
         CheckoutData.Builder checkoutDataBuilder = view.getCheckoutDataBuilder();
+
         String voucherCode = view.getVoucherCodeCheckoutData();
         boolean isUseVoucher = view.isCheckoutDataUseVoucher();
 
@@ -451,13 +452,16 @@ public class CartPresenter implements ICartPresenter {
                 .lpFlag("1")
                 .step("1")
                 .build();
+        if (checkoutData.getGateway() == null) {
+            view.renderForceShowPaymentGatewaySelection();
+            return;
+        }
 
-        Intent intent = new Intent(Intent.ACTION_SYNC, null, view.getContextActivity(),
-                TopPayIntentService.class);
-        intent.putExtra(TopPayIntentService.EXTRA_ACTION,
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(TopPayIntentService.EXTRA_CHECKOUT_DATA, checkoutData);
+        bundle.putInt(TopPayIntentService.EXTRA_ACTION,
                 TopPayIntentService.SERVICE_ACTION_GET_PARAMETER_DATA);
-        intent.putExtra(TopPayIntentService.EXTRA_CHECKOUT_DATA, checkoutData);
-        view.executeService(intent);
+        view.executeIntentService(bundle, TopPayIntentService.class);
     }
 
     private void processRenderViewCartData(CartData data) {

@@ -1,7 +1,7 @@
 package com.tokopedia.transaction.cart.presenter;
 
-import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.transaction.R;
@@ -75,12 +75,11 @@ public class TopPayPresenter implements ITopPayPresenter {
             );
             return;
         }
-        Intent intent = new Intent(
-                Intent.ACTION_SYNC, null, view.getContextActivity(), TopPayIntentService.class
-        );
-        intent.putExtra(TopPayIntentService.EXTRA_ACTION,
+        Bundle bundle = new Bundle();
+        bundle.putInt(TopPayIntentService.EXTRA_ACTION,
                 TopPayIntentService.SERVICE_ACTION_GET_THANKS_TOP_PAY);
-        intent.putExtra(TopPayIntentService.EXTRA_PAYMENT_ID, paymentId);
-        view.executeService(intent);
+        bundle.putString(TopPayIntentService.EXTRA_PAYMENT_ID, paymentId);
+
+        view.executeIntentService(bundle, TopPayIntentService.class);
     }
 }
