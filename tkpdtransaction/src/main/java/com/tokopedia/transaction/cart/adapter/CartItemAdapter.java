@@ -287,7 +287,6 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
         final CartItem cartData = cartItemEditable.getCartItem();
 
-
         holder.etDropshiperName.setText(cartItemEditable.getDropShipperName() != null
                 ? cartItemEditable.getDropShipperName() : "");
         holder.etDropshiperPhone.setText(cartItemEditable.getDropShipperPhone() != null

@@ -29,4 +29,6 @@
     <string name="label_message_success_update_item_cart_data">Berhasil mengubah keranjang</string>
     <string name="label_message_success_update_cart_insurance">Berhasil mengubah asuransi</string>
     <string name="label_error_default_top_pay">Proses pembayaran gagal, mohon ulangi lagi</string>
+    <string name="label_hint_cart_item_dropshipper_name">Nama Pengirim</string>
+    <string name="label_hint_cart_item_dropshipper_phone">No. Telp pengirim</string>
 </resources>

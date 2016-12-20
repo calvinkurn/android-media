@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
+import android.app.IntentService;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -301,6 +302,11 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
+    public void renderForceShowPaymentGatewaySelection() {
+        btnPaymentMethod.performClick();
+    }
+
+    @Override
     public void renderVisibleErrorPaymentCart(@NonNull String messageError) {
         checkoutDataBuilder.errorPayment(true);
         tvErrorPayment.setText(messageError);
@@ -461,12 +467,8 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public Activity getContextActivity() {
-        return getActivity();
-    }
-
-    @Override
-    public void executeService(Intent intent) {
+    public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
+        Intent intent = new Intent(Intent.ACTION_SYNC, null, getActivity(), clazz).putExtras(bundle);
         getActivity().startService(intent);
     }
 
