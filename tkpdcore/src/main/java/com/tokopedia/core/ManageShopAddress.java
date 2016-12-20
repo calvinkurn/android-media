@@ -37,6 +37,7 @@ import com.tokopedia.core.prototype.ShopSettingCache;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.shoplocation.model.deletelocation.DeleteLocationResponse;
 import com.tokopedia.core.shoplocation.model.getshopaddress.ShopAddress;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 
 import org.json.JSONArray;
@@ -478,8 +479,10 @@ public class ManageShopAddress extends TActivity {
                 // make sure this auto-generated web page URL is correct.
                 // Otherwise, set the URL to null.
                 Uri.parse("http://host/path"),
+                GlobalConfig.isSellerApp() ?
+                        Uri.parse("android-app://com.tokopedia.sellerapp/http/host/path"):
+                        Uri.parse("android-app://com.tokopedia.tkpd/http/host/path")
                 // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://com.tokopedia.tkpd/http/host/path")
         );
         AppIndex.AppIndexApi.start(client, viewAction);
     }
@@ -497,8 +500,10 @@ public class ManageShopAddress extends TActivity {
                 // make sure this auto-generated web page URL is correct.
                 // Otherwise, set the URL to null.
                 Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://com.tokopedia.tkpd/http/host/path")
+
+                GlobalConfig.isSellerApp() ?
+                        Uri.parse("android-app://com.tokopedia.sellerapp/http/host/path"):
+                        Uri.parse("android-app://com.tokopedia.tkpd/http/host/path")
         );
         AppIndex.AppIndexApi.end(client, viewAction);
         client.disconnect();

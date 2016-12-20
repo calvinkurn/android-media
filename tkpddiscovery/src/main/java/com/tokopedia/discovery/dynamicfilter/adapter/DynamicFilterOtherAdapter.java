@@ -1,6 +1,7 @@
 package com.tokopedia.discovery.dynamicfilter.adapter;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -21,7 +22,9 @@ import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.discovery.adapter.ProductAdapter;
 import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterView;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -87,7 +90,7 @@ public class DynamicFilterOtherAdapter extends ProductAdapter {
         super(context, data);
     }
 
-    public static class TextBoxViewHolder extends RecyclerView.ViewHolder {
+    public static class TextBoxViewHolder extends RecyclerView.ViewHolder implements TextWatcher {
 
 
         @BindView(R2.id.text_box_container)
@@ -97,6 +100,8 @@ public class DynamicFilterOtherAdapter extends ProductAdapter {
         EditText textBox;
 
         TextBoxModel textBoxModel;
+        private String current = "";
+        Locale local = new Locale("id", "id");
 
         public TextBoxViewHolder(View itemView) {
             super(itemView);
@@ -122,45 +127,77 @@ public class DynamicFilterOtherAdapter extends ProductAdapter {
                 }
                 textBoxModel.isFirstTime = false;
             }
-            textBox.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            textBox.setRawInputType(Configuration.KEYBOARD_12KEY);
+            textBox.addTextChangedListener(this);
+        }
 
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int i, int i1, int i2) {
+            String rawValue = getCleanString(s.toString());
+            TextBoxViewHolder.this.textBoxModel.text = rawValue;
+            Context context = itemView.getContext();
+            if (context != null && context instanceof DynamicFilterView) {
+                if (!s.toString().equals("")) {
+                    ((DynamicFilterView) context).putSelectedFilter(
+                            TextBoxViewHolder.this.textBoxModel.option.getKey(),
+                            rawValue
+                    );
+                    ((DynamicFilterView) context).saveTextInput(textBoxModel.key, rawValue);
+                } else {
+                    String key = TextBoxViewHolder.this.textBoxModel.option.getKey();
+                    ((DynamicFilterView) context).removeSelecfedFilter(key);
+                    ((DynamicFilterView) context).removeTextInput(textBoxModel.key);
+                }
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (s.toString().startsWith(".")) {
+                Log.e(TAG, "afterTextChanged:  prefix not valid");
+                textBox.setError(MSG_INVALID_AMOUNT);
+            } else {
+                textBox.setError(null);
+            }
+            if (!s.toString().equals(current)) {
+                textBox.removeTextChangedListener(this);
+
+
+
+                double parsed;
+                try {
+                    parsed = Double.parseDouble(getCleanString(s.toString()));
+                } catch (NumberFormatException e) {
+                    parsed = 0.00;
                 }
 
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    TextBoxViewHolder.this.textBoxModel.text = s.toString();
+                NumberFormat formatter = NumberFormat
+                        .getCurrencyInstance(local);
+                formatter.setMaximumFractionDigits(0);
+                formatter.setParseIntegerOnly(true);
+                String formatted = formatter.format((parsed));
 
-                    Context context = itemView.getContext();
-                    if (context != null && context instanceof DynamicFilterView) {
-                        if (!s.toString().equals("")) {
-                            ((DynamicFilterView) context).putSelectedFilter(
-                                    TextBoxViewHolder.this.textBoxModel.option.getKey(),
-                                    s.toString()
-                            );
+                String replace = String.format("[Rp\\s]",
+                        NumberFormat.getCurrencyInstance().getCurrency().getSymbol(local));
+                String clean = formatted.replaceAll(replace, "");
 
-                            ((DynamicFilterView) context).saveTextInput(textBoxModel.key, s.toString());
-                        } else {
-                            String key = TextBoxViewHolder.this.textBoxModel.option.getKey();
-                            ((DynamicFilterView) context).removeSelecfedFilter(key);
-                            ((DynamicFilterView) context).removeTextInput(textBoxModel.key);
-                        }
-                    }
-                }
+                current = formatted;
+                textBox.setText(clean);
+                textBox.setSelection(clean.length());
+                textBox.addTextChangedListener(this);
+            }
+        }
 
-                @Override
-                public void afterTextChanged(Editable s) {
-
-                    if (s.toString().startsWith(".")) {
-                        Log.e(TAG, "afterTextChanged:  prefix not valid");
-                        textBox.setError(MSG_INVALID_AMOUNT);
-                    } else {
-                        textBox.setError(null);
-
-                    }
-                }
-            });
+        private String getCleanString(String s){
+            String replaceable = String.format("[Rp,.\\s]",
+                    NumberFormat.getCurrencyInstance().getCurrency().getSymbol(local));
+            String cleanString = s.toString().replaceAll(replaceable, "");
+            return cleanString;
         }
     }
 

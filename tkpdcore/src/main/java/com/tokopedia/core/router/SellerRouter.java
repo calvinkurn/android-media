@@ -20,6 +20,8 @@ public class SellerRouter {
 
     private static final String ACTIVITY_SHOP_CREATE_EDIT = "com.tokopedia.seller.shop.ShopEditorActivity";
 
+    private static final String ACTIVITY_SPLASH_SCREEN = "com.tokopedia.sellerapp.SplashScreenActivity";
+
     public interface ShopSettingConstant{
         String FRAGMENT_TO_SHOW = "FragmentToShow";
 
@@ -45,5 +47,9 @@ public class SellerRouter {
 
     public static ComponentName getActivitySellingTransactionName(Context context) {
         return RouterUtils.getActivityComponentName(context, ACTIVITY_SELLING_TRANSACTION);
+    }
+
+    public static Intent getAcitivitySplashScreenActivity(Context context) {
+        return RouterUtils.getActivityIntent(context, ACTIVITY_SPLASH_SCREEN);
     }
 }

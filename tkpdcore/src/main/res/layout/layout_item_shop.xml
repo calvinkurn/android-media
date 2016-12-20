@@ -20,8 +20,8 @@
 
         <ImageView
             android:id="@+id/item_shop_gold"
-            android:layout_width="@dimen/large_dp"
-            android:layout_height="@dimen/large_dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"

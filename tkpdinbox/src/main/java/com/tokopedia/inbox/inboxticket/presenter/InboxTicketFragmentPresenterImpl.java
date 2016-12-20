@@ -81,13 +81,14 @@ public class InboxTicketFragmentPresenterImpl implements InboxTicketFragmentPres
             }
 
             @Override
-            public void onNullData() {
+            public void onNullData(String error) {
                 viewListener.finishLoading();
-                if (pagingHandler.getPage() == 1)
+                if (pagingHandler.getPage() == 1 && viewListener.getAdapter().getList().isEmpty()) {
                     viewListener.getAdapter().showEmpty(true);
-                else {
+                } else if (error.equals("")) {
                     showError(viewListener.getString(R.string.default_request_error_null_data));
-                }
+                } else
+                    showError(error);
             }
 
             @Override

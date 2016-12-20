@@ -60,6 +60,8 @@ public class AddAddressPresenterImpl implements AddAddressPresenter, ManageAddre
                 @Override
                 public void onSuccess(String address_id) {
                     viewListener.finishLoading();
+                    if(!address_id.equals(""))
+                        address.setAddressId(address_id);
                     viewListener.finishActivity(address);
                 }
 
