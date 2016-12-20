@@ -47,6 +47,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.EtalaseShopEditor;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
@@ -1053,7 +1054,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
     public void onStart() {
         super.onStart();
         if(appInstalledOrNot(ARG_TRUECALLER_PACKAGE)){
-//            TrackingUtils.eventTrueCaller(SessionHandler.getLoginID(this));
+            UnifyTracking.eventTrueCaller(SessionHandler.getLoginID(this));
         }
     }
     private boolean appInstalledOrNot(String uri) {
