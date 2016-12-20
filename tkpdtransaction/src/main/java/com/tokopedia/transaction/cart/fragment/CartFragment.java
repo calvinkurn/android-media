@@ -34,6 +34,7 @@ import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -269,6 +270,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void renderPaymentGatewayOption(final List<GatewayList> gatewayList) {
+        trackingCartPayment();
         btnPaymentMethod.setOnClickListener(getButtonPaymentMethodClickListener(gatewayList));
     }
 
@@ -467,6 +469,31 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
+    public void trackingCartCheckoutEvent() {
+        UnifyTracking.eventCartCheckout();
+    }
+
+    @Override
+    public void trackingCartPayment() {
+        UnifyTracking.eventCartPayment();
+    }
+
+    @Override
+    public void trackingCartDepositEvent() {
+        UnifyTracking.eventCartDeposit();
+    }
+
+    @Override
+    public void trackingCartDropShipperEvent() {
+        UnifyTracking.eventCartDropshipper();
+    }
+
+    @Override
+    public void trackingCartCancelEvent() {
+        UnifyTracking.eventATCRemove();
+    }
+
+    @Override
     public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
         Intent intent = new Intent(Intent.ACTION_SYNC, null, getActivity(), clazz).putExtras(bundle);
         getActivity().startService(intent);
@@ -477,6 +504,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         if (gateway.getGateway() == 0) {
             holderUseDeposit.setVisibility(View.GONE);
             checkoutDataBuilder.usedDeposit("0");
+            trackingCartDepositEvent();
         } else {
             holderUseDeposit.setVisibility(View.VISIBLE);
         }
@@ -516,6 +544,11 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void onUpdateInsuranceCartItem(CartItem cartData, boolean useInsurance) {
         presenter.processUpdateInsurance(cartData, useInsurance);
+    }
+
+    @Override
+    public void onDropShipperOptionChecked() {
+        trackingCartDropShipperEvent();
     }
 
     @Override
@@ -602,6 +635,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                trackingCartCheckoutEvent();
                 presenter.processValidationCheckoutData();
             }
         };

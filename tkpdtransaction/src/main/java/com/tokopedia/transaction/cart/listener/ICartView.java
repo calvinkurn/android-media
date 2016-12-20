@@ -90,4 +90,14 @@ public interface ICartView extends ViewListener {
     TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
             TKPDMapParam<String, String> originParams
     );
+
+    void trackingCartCheckoutEvent();
+
+    void trackingCartPayment();
+
+    void trackingCartDepositEvent();
+
+    void trackingCartDropShipperEvent();
+
+    void trackingCartCancelEvent();
 }

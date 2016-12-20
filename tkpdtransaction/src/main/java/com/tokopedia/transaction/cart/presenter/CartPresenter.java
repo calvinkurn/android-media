@@ -119,6 +119,7 @@ public class CartPresenter implements ICartPresenter {
                     @Override
                     public void onNext(ResponseTransform<CartData> responseTransform) {
                         view.hideProgressLoading();
+                        view.trackingCartCancelEvent();
                         CartData cartData = responseTransform.getData();
                         String messageSuccess = view.getStringFromResource(
                                 R.string.label_message_success_cancel_cart
@@ -169,6 +170,7 @@ public class CartPresenter implements ICartPresenter {
                     @Override
                     public void onNext(ResponseTransform<CartData> responseTransform) {
                         view.hideProgressLoading();
+                        view.trackingCartCancelEvent();
                         CartData cartData = responseTransform.getData();
                         String messageSuccess = view.getStringFromResource(
                                 R.string.label_message_success_cancel_cart
