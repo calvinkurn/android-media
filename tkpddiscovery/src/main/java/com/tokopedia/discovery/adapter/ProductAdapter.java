@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -193,7 +194,11 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
 
     public RecyclerView.ViewHolder createEmptySearch(ViewGroup parent){
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_no_result, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_empty_hotlist, parent, false);
+        LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.include_no_result);
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) linearLayout.getLayoutParams();
+        lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        linearLayout.setLayoutParams(lp);
         ImageHandler.loadImageWithId(((ImageView)view.findViewById(R.id.no_result_image)), R.drawable.status_no_result);
         return new RecyclerView.ViewHolder(view) {
             @Override
