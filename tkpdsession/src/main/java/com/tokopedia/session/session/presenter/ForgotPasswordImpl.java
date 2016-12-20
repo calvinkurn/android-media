@@ -201,7 +201,7 @@ public class ForgotPasswordImpl implements ForgotPassword {
 
     @Override
     public void saveDataBeforeRotate(Bundle outState) {
-        outState.putParcelable(FORGOT_PASSWORD_VIEW, Parcels.wrap(forgotPasswordViewModel));
+        outState.putParcelable(FORGOT_PASSWORD_VIEW, forgotPasswordViewModel);
 //        outState.putParcelable(FORGOT_PASSWORD, Parcels.wrap(model));
 
         boolean isLoading = forgotPasswordView.checkIsLoading();
@@ -213,7 +213,7 @@ public class ForgotPasswordImpl implements ForgotPassword {
     public void fetchDataAfterRotate(Bundle inState) {
         if (inState != null) {
 //            model = Parcels.unwrap(inState.getParcelable(FORGOT_PASSWORD));
-            forgotPasswordViewModel = Parcels.unwrap(inState.getParcelable(FORGOT_PASSWORD_VIEW));
+            forgotPasswordViewModel = (inState.getParcelable(FORGOT_PASSWORD_VIEW));
             forgotPasswordView.setIsProgressDialog(inState.getBoolean(FORGOT_PASSWORD_SHOW_DIALOG, false));
         }
     }
