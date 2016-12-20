@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsPostModel;
 import com.tokopedia.inbox.rescenter.shipping.model.ResCenterKurir;
 
 /**
@@ -18,6 +19,10 @@ public interface RetrofitInteractor {
 
     void unSubscribe();
 
+    void storeShippingService(@NonNull Context context,
+                              @NonNull InputShippingParamsPostModel params,
+                              @NonNull PostShippingListener listener);
+
     interface GetKurirListener {
 
         void onStart();
@@ -25,6 +30,18 @@ public interface RetrofitInteractor {
         void onSuccess(ResCenterKurir shippingCourier);
 
         void onTimeOut(NetworkErrorHelper.RetryClickedListener listener);
+
+        void onError(String message);
+
+    }
+
+    interface PostShippingListener {
+
+        void onStart();
+
+        void onSuccess();
+
+        void onTimeOut();
 
         void onError(String message);
 

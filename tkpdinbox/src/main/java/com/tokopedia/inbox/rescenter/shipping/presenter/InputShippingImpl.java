@@ -7,7 +7,7 @@ import android.os.Bundle;
 
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.shipping.fragment.InputShippingFragment;
-import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsModel;
+import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsGetModel;
 import com.tokopedia.inbox.rescenter.shipping.view.InputShippingView;
 
 import static com.tokopedia.inbox.rescenter.shipping.activity.InputShippingActivity.EXTRA_PARAM_CONVERSATION_ID;
@@ -27,8 +27,8 @@ public class InputShippingImpl implements InputShippingPresenter {
         this.view.setParamsModel(generateInputParamsModel());
     }
 
-    private InputShippingParamsModel generateInputParamsModel() {
-        InputShippingParamsModel paramsModel = new InputShippingParamsModel();
+    private InputShippingParamsGetModel generateInputParamsModel() {
+        InputShippingParamsGetModel paramsModel = new InputShippingParamsGetModel();
         Bundle bundleExtras = view.getBundleExtras();
         Uri uriData = view.getUriData();
         if (bundleExtras != null) {

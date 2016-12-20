@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * Created by hangnadi on 12/14/16.
  */
 
-public class InputShippingParamsModel implements Parcelable {
+public class InputShippingParamsGetModel implements Parcelable {
 
     private String resolutionID;
 
@@ -62,25 +62,25 @@ public class InputShippingParamsModel implements Parcelable {
         dest.writeString(this.shippingRefNum);
     }
 
-    public InputShippingParamsModel() {
+    public InputShippingParamsGetModel() {
     }
 
-    protected InputShippingParamsModel(Parcel in) {
+    protected InputShippingParamsGetModel(Parcel in) {
         this.resolutionID = in.readString();
         this.conversationID = in.readString();
         this.shippingID = in.readString();
         this.shippingRefNum = in.readString();
     }
 
-    public static final Parcelable.Creator<InputShippingParamsModel> CREATOR = new Parcelable.Creator<InputShippingParamsModel>() {
+    public static final Parcelable.Creator<InputShippingParamsGetModel> CREATOR = new Parcelable.Creator<InputShippingParamsGetModel>() {
         @Override
-        public InputShippingParamsModel createFromParcel(Parcel source) {
-            return new InputShippingParamsModel(source);
+        public InputShippingParamsGetModel createFromParcel(Parcel source) {
+            return new InputShippingParamsGetModel(source);
         }
 
         @Override
-        public InputShippingParamsModel[] newArray(int size) {
-            return new InputShippingParamsModel[size];
+        public InputShippingParamsGetModel[] newArray(int size) {
+            return new InputShippingParamsGetModel[size];
         }
     };
 }

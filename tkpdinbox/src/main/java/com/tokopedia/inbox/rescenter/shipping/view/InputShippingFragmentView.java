@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.database.model.AttachmentResCenterDB;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsModel;
+import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsGetModel;
 import com.tokopedia.inbox.rescenter.shipping.model.ResCenterKurir;
 
 import java.util.ArrayList;
@@ -23,9 +23,9 @@ public interface InputShippingFragmentView {
 
     Activity getActivity();
 
-    InputShippingParamsModel getParamsModel();
+    InputShippingParamsGetModel getParamsModel();
 
-    void setParamsModel(InputShippingParamsModel paramsModel);
+    void setParamsModel(InputShippingParamsGetModel paramsModel);
 
     ArrayList<AttachmentResCenterDB> getAttachmentData();
 
@@ -56,4 +56,10 @@ public interface InputShippingFragmentView {
     void startActivity(Intent intent);
 
     void renderInputShippingRefNum(String text);
+
+    void toastTimeOutMessage();
+
+    void toastErrorMessage(String message);
+
+    void finishAsSuccessResult();
 }

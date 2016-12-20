@@ -17,7 +17,8 @@ import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.shipping.interactor.NetworkParam;
 import com.tokopedia.inbox.rescenter.shipping.interactor.RetrofitInteractor;
 import com.tokopedia.inbox.rescenter.shipping.interactor.RetrofitInteractorImpl;
-import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsModel;
+import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsGetModel;
+import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsPostModel;
 import com.tokopedia.inbox.rescenter.shipping.model.ResCenterKurir;
 import com.tokopedia.inbox.rescenter.shipping.view.InputShippingFragmentView;
 
@@ -50,7 +51,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
     @Override
     public void onRestoreState(Bundle savedState) {
-        viewListener.setParamsModel((InputShippingParamsModel) savedState.getParcelable(EXTRA_PARAM_MODEL));
+        viewListener.setParamsModel((InputShippingParamsGetModel) savedState.getParcelable(EXTRA_PARAM_MODEL));
         viewListener.setAttachmentData(savedState.<AttachmentResCenterDB>getParcelableArrayList(EXTRA_PARAM_ATTACHMENT));
     }
 
@@ -177,34 +178,86 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
     @Override
     public void onConfirrmButtonClick() {
-        if (isValidToSubmit()) {
-
+        InputShippingParamsPostModel params = generatePostParams();
+        if (isValidToSubmit(params)) {
+            doStoreShippingService(params);
         }
     }
 
-    private boolean isValidToSubmit() {
-        String shippingRefNum = viewListener.getShippingRefNum().getText().toString();
-        int selectedShippingPosition = viewListener.getShippingSpinner().getSelectedItemPosition();
+    private InputShippingParamsPostModel generatePostParams() {
+        return new InputShippingParamsPostModel.Builder()
+                .setResolutionID(viewListener.getParamsModel().getResolutionID())
+                .setConversationID(viewListener.getParamsModel().getConversationID())
+                .setShippingNumber(viewListener.getShippingRefNum().getText().toString())
+                .setShippingID(generateShippingID())
+                .build();
+    }
 
+    private String generateShippingID() {
+        try {
+            return getSelectedKurir().getShipmentId();
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    private void doStoreShippingService(InputShippingParamsPostModel params) {
+        retrofit.storeShippingService(viewListener.getActivity(),
+                params,
+                new RetrofitInteractor.PostShippingListener() {
+
+                    @Override
+                    public void onStart() {
+                        showLoading(true);
+                        showMainPage(false);
+                    }
+
+                    @Override
+                    public void onSuccess() {
+                        viewListener.finishAsSuccessResult();
+                        showLoading(false);
+                        showMainPage(true);
+                    }
+
+                    @Override
+                    public void onTimeOut() {
+                        viewListener.toastTimeOutMessage();
+                        showLoading(false);
+                        showMainPage(false);
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        Log.d(TAG, message);
+                        viewListener.toastErrorMessage(message);
+                        showLoading(false);
+                        showMainPage(false);
+                    }
+                });
+    }
+
+    private boolean isValidToSubmit(InputShippingParamsPostModel params) {
         viewListener.getErrorSpinner().setVisibility(View.GONE);
         viewListener.getShippingRefNum().setError(null);
 
-        if (shippingRefNum.replaceAll("\\s+","").length() == 0) {
+        if (params.getShippingNumber().replaceAll("\\s+","").length() == 0) {
             viewListener.getShippingRefNum().setError(viewListener.getActivity().getString(R.string.error_field_required));
             return false;
         }
 
-        if (shippingRefNum.length() < 8 || shippingRefNum.length() > 17) {
+        if (params.getShippingNumber().length() < 8 || params.getShippingNumber().length() > 17) {
             viewListener.getShippingRefNum().setError(viewListener.getActivity().getString(R.string.error_receipt_number));
             return false;
         }
 
-        if (selectedShippingPosition == 0) {
+        if (params.getShippingID().isEmpty()) {
             viewListener.getErrorSpinner().setVisibility(View.VISIBLE);
             return false;
         }
 
-        if (isInstanceForEdit() && isShippingRefNumEditted(shippingRefNum) && isShippingEditted(getSelectedKurir())) {
+        if (isInstanceForEdit()
+                && isShippingRefNumEditted(params.getShippingNumber())
+                && isShippingEditted(params.getShippingID())) {
             viewListener.getShippingRefNum().setError(viewListener.getActivity().getString(R.string.error_update_receipt_number));
             return false;
         }
@@ -220,11 +273,11 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
         return shippingRefNum.equals(viewListener.getParamsModel().getShippingRefNum());
     }
 
-    private boolean isShippingEditted(ResCenterKurir.Kurir selectedKurir) {
-        return !selectedKurir.getShipmentId().equals(viewListener.getParamsModel().getShippingID());
+    private boolean isShippingEditted(String shippingID) {
+        return !shippingID.equals(viewListener.getParamsModel().getShippingID());
     }
 
-    private ResCenterKurir.Kurir getSelectedKurir() {
+    private ResCenterKurir.Kurir getSelectedKurir() throws Exception {
         return (ResCenterKurir.Kurir) viewListener.getShippingSpinner().getItemAtPosition(viewListener.getShippingSpinner().getSelectedItemPosition() - 1);
     }
 }

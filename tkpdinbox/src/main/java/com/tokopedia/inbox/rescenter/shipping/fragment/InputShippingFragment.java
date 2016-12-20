@@ -27,7 +27,7 @@ import com.tokopedia.inbox.rescenter.create.customdialog.BaseUploadImageDialog;
 import com.tokopedia.inbox.rescenter.shipping.customadapter.AttachmentAdapter;
 import com.tokopedia.inbox.rescenter.shipping.customadapter.ShippingSpinnerAdapter;
 import com.tokopedia.inbox.rescenter.shipping.customdialog.UploadImageShippingResCenterDialog;
-import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsModel;
+import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsGetModel;
 import com.tokopedia.inbox.rescenter.shipping.model.ResCenterKurir;
 import com.tokopedia.inbox.rescenter.shipping.presenter.InputShippingFragmentImpl;
 import com.tokopedia.inbox.rescenter.shipping.presenter.InputShippingFragmentPresenter;
@@ -69,11 +69,11 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
     View mainView;
 
     private AttachmentAdapter attachmentAdapter;
-    private InputShippingParamsModel paramsModel;
+    private InputShippingParamsGetModel paramsModel;
     private UploadImageShippingResCenterDialog uploadImageDialog;
     private ArrayList<AttachmentResCenterDB> attachmentData;
 
-    public static Fragment newInstance(InputShippingParamsModel model) {
+    public static Fragment newInstance(InputShippingParamsGetModel model) {
         InputShippingFragment fragment = new InputShippingFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_PARAM_MODEL, model);
@@ -87,12 +87,12 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
     }
 
     @Override
-    public InputShippingParamsModel getParamsModel() {
+    public InputShippingParamsGetModel getParamsModel() {
         return paramsModel;
     }
 
     @Override
-    public void setParamsModel(InputShippingParamsModel paramsModel) {
+    public void setParamsModel(InputShippingParamsGetModel paramsModel) {
         this.paramsModel = paramsModel;
     }
 
@@ -257,6 +257,22 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
         } else {
             showTimeOutMessage(null);
         }
+    }
+
+    @Override
+    public void toastTimeOutMessage() {
+        NetworkErrorHelper.showSnackbar(getActivity());
+    }
+
+    @Override
+    public void toastErrorMessage(String message) {
+        NetworkErrorHelper.showSnackbar(getActivity(), message);
+    }
+
+    @Override
+    public void finishAsSuccessResult() {
+        getActivity().setResult(Activity.RESULT_OK, new Intent());
+        getActivity().finish();
     }
 
     @Override

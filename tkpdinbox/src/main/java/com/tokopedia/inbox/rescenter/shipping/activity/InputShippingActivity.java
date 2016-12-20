@@ -8,7 +8,7 @@ import android.os.Bundle;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsModel;
+import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsGetModel;
 import com.tokopedia.inbox.rescenter.shipping.presenter.InputShippingPresenter;
 import com.tokopedia.inbox.rescenter.shipping.presenter.InputShippingImpl;
 import com.tokopedia.inbox.rescenter.shipping.view.InputShippingView;
@@ -25,7 +25,7 @@ public class InputShippingActivity extends BasePresenterActivity<InputShippingPr
     public static final java.lang.String EXTRA_PARAM_SHIPPING_ID = "shipping_id";
     public static final java.lang.String EXTRA_PARAM_SHIPPING_REFNUM = "shipping_ref";
 
-    private InputShippingParamsModel paramsModel;
+    private InputShippingParamsGetModel paramsModel;
     private Bundle bundleExtras;
     private Uri uriData;
 
@@ -99,12 +99,12 @@ public class InputShippingActivity extends BasePresenterActivity<InputShippingPr
     }
 
     @Override
-    public InputShippingParamsModel getParamsModel() {
+    public InputShippingParamsGetModel getParamsModel() {
         return paramsModel;
     }
 
     @Override
-    public void setParamsModel(InputShippingParamsModel paramsModel) {
+    public void setParamsModel(InputShippingParamsGetModel paramsModel) {
         this.paramsModel = paramsModel;
     }
 
