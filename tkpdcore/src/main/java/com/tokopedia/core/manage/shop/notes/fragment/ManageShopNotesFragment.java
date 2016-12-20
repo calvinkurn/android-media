@@ -207,6 +207,8 @@ public class ManageShopNotesFragment extends BasePresenterFragment<ManageShopNot
     public void finishLoading() {
         adapter.showLoadingFull(false);
         refreshHandler.finishRefresh();
+        adapter.showEmpty(false);
+        NetworkErrorHelper.removeEmptyState(getView());
     }
 
     @Override
@@ -293,6 +295,11 @@ public class ManageShopNotesFragment extends BasePresenterFragment<ManageShopNot
     @Override
     public void setViewEnabled(boolean isEnabled) {
         setHasOptionsMenu(isEnabled);
+    }
+
+    @Override
+    public void showEmpty() {
+        adapter.showEmpty(true);
     }
 
     @Override
