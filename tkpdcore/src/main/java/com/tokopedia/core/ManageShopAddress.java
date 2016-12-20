@@ -311,6 +311,7 @@ public class ManageShopAddress extends TActivity {
     }
 
     private void SetToUIV4(ShopAddress data) {
+        noResult.removeMessage();
         if (data.getList() != null) {
             LocationListView.setVisibility(View.VISIBLE);
             IsAllowShop = data.getIsAllow() + "";
