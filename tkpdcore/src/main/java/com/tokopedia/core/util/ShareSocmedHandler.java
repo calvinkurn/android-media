@@ -378,7 +378,7 @@ public class ShareSocmedHandler {
         if (f.exists() && f.isDirectory()) {
             Log.v("FILES", "EXIST");
             File[] fs = f.listFiles();
-            if (fs.length > 5) // Hapus jika jumlah gambar temporary > 5
+            if (fs != null && fs.length > 5) // Hapus jika jumlah gambar temporary > 5
                 for (File file : fs) {
                     file.delete();
                 }

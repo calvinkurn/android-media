@@ -416,7 +416,7 @@ public class RegisterInitialPresenterImpl extends RegisterInitialPresenter {
         Bundle bundle = data;
         bundle.putBoolean(DownloadService.IS_NEED_LOGIN, false);
 
-        ((SessionView)context).sendDataFromInternet(DownloadService.REGISTER_WEBVIEW, bundle);
+        ((SessionView)context).sendDataFromInternet(DownloadService.LOGIN_WEBVIEW, bundle);
     }
 
     public String getUUID() {
