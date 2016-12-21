@@ -82,10 +82,10 @@ public class DynamicCategoryAdapter extends MultiLevelExpIndListAdapter {
 
             private String getSelectedIds() {
                 StringBuffer buffer = new StringBuffer();
-                Map<String, Boolean> selectedPositionMap = dynamicFilterView.getSelectedPositions();
-                for (String selectedKey : selectedPositionMap.keySet()) {
-                    if (selectedPositionMap.get(selectedKey)) {
-                        buffer.append(selectedKey).append(",");
+                for (ExpIndData data : getData()){
+                    DynamicObject object = (DynamicObject) data;
+                    if(object.isChecked()){
+                        buffer.append(object.getDepId()).append(",");
                     }
                 }
                 if (buffer.length() > 0) {
