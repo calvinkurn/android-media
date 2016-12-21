@@ -8,6 +8,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+
+import com.appsflyer.AppsFlyerConversionListener;
+import com.appsflyer.AppsFlyerLib;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -181,11 +184,13 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             String[] pairs = query.split("&|\\?");
             for (String pair : pairs) {
                 int idx = pair.indexOf("=");
-                try {
-                    queryPairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"),
-                            URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
+                if (idx > 0 && idx + 1 <= pair.length()) {
+                    try {
+                        queryPairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"),
+                                URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -465,7 +470,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     @Override
     public void processAFlistener() {
-        /*AppsFlyerLib.getInstance().registerConversionListener(context, new AppsFlyerConversionListener() {
+        AppsFlyerLib.getInstance().registerConversionListener(context, new AppsFlyerConversionListener() {
             @Override
             public void onInstallConversionDataLoaded(Map<String, String> map) {
 
@@ -490,6 +495,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             public void onAttributionFailure(String s) {
 
             }
-        });*/
+        });
     }
 }
