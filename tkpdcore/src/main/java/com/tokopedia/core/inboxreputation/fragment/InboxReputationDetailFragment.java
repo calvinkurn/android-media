@@ -13,6 +13,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.inboxreputation.InboxReputationConstant;
 import com.tokopedia.core.inboxreputation.adapter.InboxReputationDetailAdapter;
@@ -238,6 +239,7 @@ public class
 
     @Override
     public void onSuccessPostReputation(Bundle resultData) {
+        UnifyTracking.eventReviewCompleteBuyer();
         String smiley = presenter.getSmileyString(resultData.getString(InboxReviewIntentService.EXTRA_SMILEY));
 
         if (adapter.getInboxReputation().getRevieweeScore().equals(HeaderReputationDataBinder.STATUS_BAD)

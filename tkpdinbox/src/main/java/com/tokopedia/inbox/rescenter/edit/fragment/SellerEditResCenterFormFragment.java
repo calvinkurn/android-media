@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.database.model.AttachmentResCenterDB;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -422,6 +423,7 @@ public class SellerEditResCenterFormFragment extends BasePresenterFragment<Selle
 
     @Override
     public void setActivityResult() {
+        UnifyTracking.eventResolutionEditSolution();
         Intent intent = new Intent();
         getActivity().setResult(Activity.RESULT_OK, intent);
     }

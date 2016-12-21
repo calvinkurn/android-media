@@ -165,6 +165,7 @@ public interface AppEventTracking {
         String REGISTER = "Register";
         String INSTALLED = "Installed";
         String SUBSCRIBE = "Subscribe";
+        String ERROR = "Error";
     }
 
     interface EventLabel {
@@ -275,6 +276,15 @@ public interface AppEventTracking {
         String WITHDRAW = "Withdraw";
         String SEND = "Send";
         String VERIFICATION = "Verification";
+        String REVIEW_DETAIL = "Review Detail";
+        String REVIEW_BUYER = "Review Buyer";
+        String EDIT_SOLUTION = "Edit Solution";
+        String COMMENT = "Comment";
+        String COMPLAINT_DETAIL = "Complaint Detail";
+        String DISCUSSION_DETAIL = "Discussion Detail";
+        String CANCEL = "Cancel";
+        String DETAILS = "Details";
+        String ORDER_DETAIL = "Order Detail";
     }
 
     interface SOCIAL_MEDIA {

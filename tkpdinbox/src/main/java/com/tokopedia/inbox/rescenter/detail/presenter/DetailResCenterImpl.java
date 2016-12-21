@@ -11,6 +11,7 @@ import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.database.model.AttachmentResCenterDB;
@@ -383,6 +384,7 @@ public class DetailResCenterImpl implements DetailResCenterPresenter {
                     view.refreshPage();
                     break;
                 case DetailResCenterService.ACTION_REPLY_CONVERSATION:
+                    UnifyTracking.eventResolutionSendSuccess();
                     view.refreshPage();
                     break;
                 case DetailResCenterService.ACTION_INPUT_SHIPPING_REF_NUM:
@@ -418,6 +420,12 @@ public class DetailResCenterImpl implements DetailResCenterPresenter {
                     break;
                 default:
                     view.showToastMessage(errorMessage);
+                    break;
+            }
+
+            switch (typePostData) {
+                case DetailResCenterService.ACTION_REPLY_CONVERSATION:
+                    UnifyTracking.eventResolutionSendError();
                     break;
             }
         }

@@ -26,7 +26,7 @@ publishing {
         aar(MavenPublication) {
             groupId 'com.tokopedia.core'
             artifactId 'core'
-            version '0.5'
+            version '1.2'
             artifact("$buildDir/outputs/aar/tkpdcore-release.aar")
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
@@ -130,7 +130,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'design'
     }
 
-    compile rootProject.ext.miscDependencies.asneCore
+    compile (name:'ASNECore-release', ext:'aar')
     compile rootProject.ext.miscDependencies.asneFacebook
     compile rootProject.ext.miscDependencies.captureActivity
     compile rootProject.ext.miscDependencies.multiDex

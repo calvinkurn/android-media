@@ -8,7 +8,7 @@ publishing {
         aar(MavenPublication) {
             groupId 'com.tokopedia.session'
             artifactId 'session'
-            version '0.2'
+            version '1.0'
             artifact("$buildDir/outputs/aar/tkpdsession-release.aar")
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')

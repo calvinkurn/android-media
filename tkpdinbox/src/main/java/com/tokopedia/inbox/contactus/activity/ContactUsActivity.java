@@ -77,6 +77,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             fragmentTransaction.add(R.id.main_view, fragment, fragment.getClass().getSimpleName());
+            fragmentTransaction.addToBackStack(ContactUsFaqFragment.class.getSimpleName());
             fragmentTransaction.commit();
         }
     }
@@ -102,13 +103,14 @@ public class ContactUsActivity extends BasePresenterActivity implements
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.setCustomAnimations(R.animator.slide_in_left, 0, 0, R.animator.slide_out_right);
         transaction.add(R.id.main_view, fragment, "second");
-        transaction.addToBackStack("secondStack");
+        transaction.addToBackStack(ContactUsCategoryFragment.class.getSimpleName());
         transaction.commit();
+
     }
 
     @Override
     public void onBackPressed() {
-        if (getFragmentManager().getBackStackEntryCount() > 0) {
+        if (getFragmentManager().getBackStackEntryCount() > 1) {
             getFragmentManager().popBackStack();
         } else if (listener != null && listener.canGoBack()) {
             listener.onBackPressed();
