@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.inboxreputation.model.inboxreputation.InboxReputationItem;
@@ -239,6 +240,7 @@ public class InboxReputationAdapter extends BaseLinearRecyclerViewAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventReviewDetail();
                 presenter.onGoToDetailReview(position);
 
             }
