@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.cart.adapter;
 
 import android.app.Fragment;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Html;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.model.CartProductItemEditable;
@@ -43,6 +45,8 @@ class CartProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     interface CartProductAction {
         void onCancelCartProduct(CartProduct cartProduct);
+
+        void onProductCartItemClicked(ProductPass productPass);
     }
 
     CartProductItemAdapter(Fragment hostFragment) {
@@ -212,10 +216,31 @@ class CartProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holder.etQuantityProduct.setText(item.getTempQuantity());
         holder.etNotesProduct.setText(Html.fromHtml(item.getTempNotes()));
 
+        holder.tvNameProduct.setOnClickListener(getOnProductDetailClickListener(cartProduct));
+        holder.ivPicProduct.setOnClickListener(getOnProductDetailClickListener(cartProduct));
+        holder.tvPriceProduct.setOnClickListener(getOnProductDetailClickListener(cartProduct));
         ImageHandler.loadImageRounded2(
                 hostFragment, holder.ivPicProduct, item.getCartProduct().getProductPic()
         );
 
+    }
+
+    @NonNull
+    private View.OnClickListener getOnProductDetailClickListener(final CartProduct cartProduct) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cartProductAction.onProductCartItemClicked(
+                        ProductPass.Builder.aProductPass()
+                                .setProductId(cartProduct.getProductId())
+                                .setProductImage(cartProduct.getProductPic())
+                                .setProductPrice(cartProduct.getProductPriceIdr())
+                                .setProductName(cartProduct.getProductName())
+                                .setProductUri(cartProduct.getProductUrl())
+                                .build()
+                );
+            }
+        };
     }
 
     private void renderEditableMode(ProductItemHolder holder) {

@@ -3,6 +3,7 @@ package com.tokopedia.transaction.cart.activity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -233,10 +234,6 @@ public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> impl
         return this;
     }
 
-    @Override
-    public void executeService(Intent intent) {
-        this.startService(intent);
-    }
 
     @Override
     public void showToastMessageWithForceCloseView(String message) {
@@ -258,6 +255,12 @@ public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> impl
     @Override
     public String getStringFromResource(@StringRes int resId) {
         return getString(resId);
+    }
+
+    @Override
+    public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
+        Intent intent = new Intent(Intent.ACTION_SYNC, null, this, clazz).putExtras(bundle);
+        this.startService(intent);
     }
 
     @NonNull

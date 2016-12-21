@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
+import android.app.IntentService;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -33,10 +34,12 @@ import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
@@ -48,6 +51,7 @@ import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
+import com.tokopedia.transaction.cart.model.cartdata.CartShop;
 import com.tokopedia.transaction.cart.model.cartdata.GatewayList;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
@@ -268,6 +272,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void renderPaymentGatewayOption(final List<GatewayList> gatewayList) {
+        trackingCartPayment();
         btnPaymentMethod.setOnClickListener(getButtonPaymentMethodClickListener(gatewayList));
     }
 
@@ -298,6 +303,11 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void renderCheckoutCartDepositAmount(String depositAmount) {
         checkoutDataBuilder.depositAmount(depositAmount);
+    }
+
+    @Override
+    public void renderForceShowPaymentGatewaySelection() {
+        btnPaymentMethod.performClick();
     }
 
     @Override
@@ -461,12 +471,33 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public Activity getContextActivity() {
-        return getActivity();
+    public void trackingCartCheckoutEvent() {
+        UnifyTracking.eventCartCheckout();
     }
 
     @Override
-    public void executeService(Intent intent) {
+    public void trackingCartPayment() {
+        UnifyTracking.eventCartPayment();
+    }
+
+    @Override
+    public void trackingCartDepositEvent() {
+        UnifyTracking.eventCartDeposit();
+    }
+
+    @Override
+    public void trackingCartDropShipperEvent() {
+        UnifyTracking.eventCartDropshipper();
+    }
+
+    @Override
+    public void trackingCartCancelEvent() {
+        UnifyTracking.eventATCRemove();
+    }
+
+    @Override
+    public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
+        Intent intent = new Intent(Intent.ACTION_SYNC, null, getActivity(), clazz).putExtras(bundle);
         getActivity().startService(intent);
     }
 
@@ -475,6 +506,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         if (gateway.getGateway() == 0) {
             holderUseDeposit.setVisibility(View.GONE);
             checkoutDataBuilder.usedDeposit("0");
+            trackingCartDepositEvent();
         } else {
             holderUseDeposit.setVisibility(View.VISIBLE);
         }
@@ -514,6 +546,21 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void onUpdateInsuranceCartItem(CartItem cartData, boolean useInsurance) {
         presenter.processUpdateInsurance(cartData, useInsurance);
+    }
+
+    @Override
+    public void onCartProductDetailClicked(ProductPass productPass) {
+
+    }
+
+    @Override
+    public void onShopDetailInfoClicked(CartShop cartShop) {
+
+    }
+
+    @Override
+    public void onDropShipperOptionChecked() {
+        trackingCartDropShipperEvent();
     }
 
     @Override
@@ -600,6 +647,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                trackingCartCheckoutEvent();
                 presenter.processValidationCheckoutData();
             }
         };
