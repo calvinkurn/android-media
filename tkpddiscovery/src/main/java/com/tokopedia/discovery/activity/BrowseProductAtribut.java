@@ -3,7 +3,7 @@ package com.tokopedia.discovery.activity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.DataValue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,14 +14,14 @@ import java.util.Map;
  */
 
 public class BrowseProductAtribut implements Parcelable {
-    private HashMap<Integer, DynamicFilterModel.Data> filterAttributMap;
+    private HashMap<Integer, DataValue> filterAttributMap;
 
 
     public BrowseProductAtribut() {
         filterAttributMap = new HashMap<>();
     }
 
-    public HashMap<Integer, DynamicFilterModel.Data> getFilterAttributMap() {
+    public HashMap<Integer, DataValue> getFilterAttributMap() {
         return filterAttributMap;
     }
 
@@ -31,8 +31,8 @@ public class BrowseProductAtribut implements Parcelable {
         this.filterAttributMap = new HashMap<>(size);
         for (int i = 0; i < size; i++) {
             final int key = in.readInt();
-            final DynamicFilterModel.Data value
-                    = in.readParcelable(DynamicFilterModel.Data.class.getClassLoader());
+            final DataValue value
+                    = in.readParcelable(DataValue.class.getClassLoader());
             filterAttributMap.put(key, value);
         }
     }
@@ -45,9 +45,9 @@ public class BrowseProductAtribut implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(filterAttributMap.size());
-        for (Map.Entry<Integer, DynamicFilterModel.Data> entry : filterAttributMap.entrySet()) {
+        for (Map.Entry<Integer, DataValue> entry : filterAttributMap.entrySet()) {
             dest.writeInt(entry.getKey());
-            final DynamicFilterModel.Data value = entry.getValue();
+            final DataValue value = entry.getValue();
             dest.writeParcelable(value, flags);
         }
     }

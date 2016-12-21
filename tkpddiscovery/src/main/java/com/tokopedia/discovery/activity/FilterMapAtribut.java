@@ -15,6 +15,7 @@ public class FilterMapAtribut implements Parcelable {
 
     public FilterMapAtribut() {
         this.filtersMap = new HashMap<>();
+
     }
 
     public HashMap<Integer, FilterMapValue> getFiltersMap() {

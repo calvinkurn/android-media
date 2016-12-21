@@ -19,7 +19,7 @@ import android.widget.LinearLayout;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
@@ -43,7 +43,7 @@ import butterknife.OnClick;
  */
 public class DynamicFilterOtherFragment extends BaseFragment<DynamicFilterOtherPresenter> implements DynamicFilterOtherView {
 
-    public static Fragment newInstance(DynamicFilterModel.Filter filter){
+    public static Fragment newInstance(Filter filter) {
         DynamicFilterOtherFragment dynamicFilterOtherFragment = new DynamicFilterOtherFragment();
         Bundle argument = new Bundle();
         argument.putParcelable(DynamicFilterOtherPresenter.FILTER_DATA, Parcels.wrap(filter));

@@ -40,6 +40,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.discovery.model.Breadcrumb;
+import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.discovery.model.ObjContainer;
@@ -180,13 +181,19 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
             firstTime = savedInstanceState.getBoolean(EXTRA_FIRST_TIME);
             browseProductActivityModel = savedInstanceState.getParcelable(EXTRA_BROWSE_MODEL);
             mBrowseProductAtribut = savedInstanceState.getParcelable(EXTRA_BROWSE_ATRIBUT);
-            mFilterMapAtribut = savedInstanceState.getParcelable(EXTRA_FILTER_MAP);
-            if (mFilterMapAtribut != null && mFilterMapAtribut.getFiltersMap() != null
-                    && mFilterMapAtribut.getFiltersMap().size() > 0) {
+            if (mBrowseProductAtribut == null) mBrowseProductAtribut = new BrowseProductAtribut();
 
+            mFilterMapAtribut = savedInstanceState.getParcelable(EXTRA_FILTER_MAP);
+
+            if (mFilterMapAtribut != null && mFilterMapAtribut.getFiltersMap() != null) {
                 FilterMapAtribut.FilterMapValue filterMapAtribut
                         = mFilterMapAtribut.getFiltersMap().get(browseProductActivityModel.getActiveTab());
-                browseProductActivityModel.setFilterOptions(filterMapAtribut.getValue());
+
+                if (filterMapAtribut != null) {
+                    browseProductActivityModel.setFilterOptions(filterMapAtribut.getValue());
+                } else {
+                    browseProductActivityModel.setFilterOptions(new HashMap<String, String>());
+                }
             }
         }
         if (SessionHandler.isV4Login(this)) {
@@ -454,7 +461,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         return false;
     }
 
-    public void setFilterAttribute(DynamicFilterModel.Data filterAttribute, int activeTab) {
+    public void setFilterAttribute(DataValue filterAttribute, int activeTab) {
         if (checkHasFilterAttrIsNull(activeTab))
 //            filterAttributMap.put(activeTab, filterAttribute);
             mBrowseProductAtribut.getFilterAttributMap().put(activeTab, filterAttribute);
@@ -494,7 +501,9 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         editor.remove(DynamicFilterActivity.FILTER_TEXT_PREF);
         editor.remove(DynamicFilterActivity.FILTER_SELECTED_POS_PREF);
         editor.apply();
-        browseProductActivityModel.setFilterOptions(null);
+        if (browseProductActivityModel != null) {
+            browseProductActivityModel.setFilterOptions(new HashMap<String, String>());
+        }
 
     }
 
@@ -502,7 +511,9 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         deleteFilterCache();
         browseProductActivityModel.setOb("23");
 //        filterAttributMap.clear();
-        mBrowseProductAtribut.getFilterAttributMap().clear();
+        if (mBrowseProductAtribut != null && mBrowseProductAtribut.getFilterAttributMap() != null) {
+            mBrowseProductAtribut.getFilterAttributMap().clear();
+        }
     }
 
     private void resetBrowseProductActivityModel() {
@@ -626,7 +637,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                         fragmentManager.findFragmentById(R.id.container);
                 Intent intent;
 //                DynamicFilterModel.Data filterAttribute = filterAttributMap.get(parentFragment.getActiveTab());
-                DynamicFilterModel.Data filterAttribute
+                DataValue filterAttribute
                         = mBrowseProductAtribut.getFilterAttributMap().get(parentFragment.getActiveTab());
                 switch (position) {
                     case 0:
@@ -704,7 +715,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         }
     }
 
-    private void openSort(DynamicFilterModel.Data filterAttribute, String source, int activeTab, FDest dest) {
+    private void openSort(DataValue filterAttribute, String source, int activeTab, FDest dest) {
         if (filterAttribute != null) {
             if (browseProductActivityModel.getOb() != null) {
                 filterAttribute.setSelectedOb(browseProductActivityModel.getOb());
@@ -719,7 +730,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         }
     }
 
-    private void openFilter(DynamicFilterModel.Data filterAttribute, String source, int activeTab, FDest dest) {
+    private void openFilter(DataValue filterAttribute, String source, int activeTab, FDest dest) {
         Log.d(TAG, "openFilter source " + source);
         List<Breadcrumb> crumb = getProductBreadCrumb();
         if (breadcrumbs == null && crumb != null) {
@@ -761,7 +772,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                         DynamicFilterModel.DynamicFilterContainer dynamicFilterContainer
                                 = (DynamicFilterModel.DynamicFilterContainer) data.getModel2();
 
-                        DynamicFilterModel.Data filterAtrribute = dynamicFilterContainer.body().getData();
+                        DataValue filterAtrribute = dynamicFilterContainer.body().getData();
                         if (filterAtrribute.getSort() != null) {
                             filterAtrribute.setSelected(filterAtrribute.getSort().get(0).getName());
                         }
@@ -816,7 +827,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
             BrowseParentFragment parentFragment = (BrowseParentFragment) fragmentManager.findFragmentByTag(BrowseParentFragment.FRAGMENT_TAG);
             switch (requestCode) {
                 case REQUEST_SORT:
-                    DynamicFilterModel.Data sortData = data.getParcelableExtra(BrowseParentFragment.SORT_EXTRA);
+                    DataValue sortData = data.getParcelableExtra(BrowseParentFragment.SORT_EXTRA);
                     String source = data.getStringExtra(BrowseParentFragment.SOURCE_EXTRA);
 //                    filterAttributMap.put(browseProductActivityModel.getActiveTab(), sortData);
                     mBrowseProductAtribut.getFilterAttributMap().put(browseProductActivityModel.getActiveTab(), sortData);
