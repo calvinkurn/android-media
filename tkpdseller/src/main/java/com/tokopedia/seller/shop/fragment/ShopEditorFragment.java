@@ -24,6 +24,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.session.base.BaseFragment;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.shop.presenter.ShopEditorPresenter;
 import com.tokopedia.seller.shop.presenter.ShopEditorPresenterImpl;
 import com.tokopedia.seller.shop.presenter.ShopEditorView;

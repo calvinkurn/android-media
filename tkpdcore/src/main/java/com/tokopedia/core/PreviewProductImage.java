@@ -179,7 +179,7 @@ public class PreviewProductImage extends TActivity {
         File file = new File(path);
         Intent sintent = new Intent();
         sintent.setAction(Intent.ACTION_VIEW);
-        Uri uri = Uri.fromFile(file);
+        Uri uri = MethodChecker.getUri(getApplicationContext(), file);
         sintent.setDataAndType(uri, "image/*");
         startActivity(sintent);
         PreviewProductImage.this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -284,7 +284,7 @@ public class PreviewProductImage extends TActivity {
                     Intent intent = new Intent();
                     intent.setAction(Intent.ACTION_VIEW);
                     File file = new File(path);
-                    Uri uri = Uri.fromFile(file);
+                    Uri uri = MethodChecker.getUri(getApplicationContext(), file);
                     intent.setDataAndType(uri, "image/*");
 
                     PendingIntent pIntent = PendingIntent.getActivity(PreviewProductImage.this, 0, intent, 0);

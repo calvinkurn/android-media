@@ -350,5 +350,4 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
         adapter.notifyDataSetChanged();
     }
 
-
 }

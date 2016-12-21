@@ -29,6 +29,7 @@ import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.shipping.model.openshopshipping.OpenShopData;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.shop.ShopEditorActivity;
 import com.tokopedia.seller.shop.presenter.ShopCreatePresenter;
 import com.tokopedia.seller.shop.presenter.ShopCreatePresenterImpl;
