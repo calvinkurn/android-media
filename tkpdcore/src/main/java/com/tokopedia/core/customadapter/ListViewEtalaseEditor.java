@@ -248,6 +248,10 @@ public class ListViewEtalaseEditor extends BaseAdapter {
                             @Override
                             public void onError(Throwable e) {
                                 progressdialog.dismiss();
+                                Snackbar snackbarError = SnackbarManager.make(context,
+                                        context.getString(R.string.error_connection_problem),
+                                        Snackbar.LENGTH_LONG);
+                                snackbarError.show();
                                 Log.e(STUART, SHOP_EDITOR + "on error");
                             }
 
