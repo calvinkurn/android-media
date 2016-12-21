@@ -302,7 +302,6 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
         final CartItem cartData = cartItemEditable.getCartItem();
 
-
         holder.etDropshiperName.setText(cartItemEditable.getDropShipperName() != null
                 ? cartItemEditable.getDropShipperName() : "");
         holder.etDropshiperPhone.setText(cartItemEditable.getDropShipperPhone() != null
@@ -317,6 +316,8 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
+                    if (cartItemActionListener != null)
+                        cartItemActionListener.onDropShipperOptionChecked();
                     updateDropShipperCartName(
                             cartData, holder.etDropshiperName.getText().toString()
                     );
@@ -720,5 +721,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void onCartProductDetailClicked(ProductPass productPass);
 
         void onShopDetailInfoClicked(CartShop cartShop);
+
+        void onDropShipperOptionChecked();
     }
 }

@@ -1,7 +1,7 @@
 package com.tokopedia.transaction.cart.listener;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.app.IntentService;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
@@ -39,6 +39,8 @@ public interface ICartView extends ViewListener {
 
     void renderCheckoutCartDepositAmount(String depositAmount);
 
+    void renderForceShowPaymentGatewaySelection();
+
     void renderVisibleErrorPaymentCart(@NonNull String messageError);
 
     void renderInvisibleErrorPaymentCart();
@@ -69,7 +71,7 @@ public interface ICartView extends ViewListener {
 
     void renderErrorDefaultInitialCartInfo(String messageError);
 
-    void executeService(Intent intent);
+    void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz);
 
     void setCheckoutCartToken(String token);
 
@@ -89,7 +91,13 @@ public interface ICartView extends ViewListener {
             TKPDMapParam<String, String> originParams
     );
 
-    Activity getContextActivity();
+    void trackingCartCheckoutEvent();
 
+    void trackingCartPayment();
 
+    void trackingCartDepositEvent();
+
+    void trackingCartDropShipperEvent();
+
+    void trackingCartCancelEvent();
 }
