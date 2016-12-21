@@ -20,6 +20,11 @@ public class DynamicFilterModel {
     @SerializedName("status")
     @Expose
     String status;
+    private static Gson gson;
+
+    public DynamicFilterModel() {
+        gson = new Gson();
+    }
 
     /**
      * @return The processTime
@@ -119,11 +124,6 @@ public class DynamicFilterModel {
         public void setSelected(String selected) {
             this.selected = selected;
         }
-
-        @Override
-        public String toString() {
-            return new Gson().toJson(this);
-        }
     }
 
     @Parcel
@@ -182,10 +182,6 @@ public class DynamicFilterModel {
             this.options = options;
         }
 
-        @Override
-        public String toString() {
-            return new Gson().toJson(this);
-        }
 
         public static Filter createCategory() {
             Filter filter = new Filter();
