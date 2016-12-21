@@ -965,28 +965,30 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
                     boolean primaryCreated = false;
                     for (String imagePathFromImport :
                             multiImagePathFromImport) {
-                        File imagePath = new File(imagePathFromImport);
-                        if (checkFileSize(imagePath)) {
-                            try {
-                                ImageGalleryImpl.Pair<Boolean, String> checkImageResolution = VerificationUtils.checkImageResolution(getActivity(), imagePathFromImport);
-                                if (imagePathFromImport != null && checkImageResolution.getModel1()) {
-                                    if (!primaryCreated) {
-                                        photos.add(getImageModelPrimary(imagePathFromImport, imagePath));
-                                        primaryCreated = true;
+                        if (imagePathFromImport != null) {
+                            File imagePath = new File(imagePathFromImport);
+                            if (checkFileSize(imagePath)) {
+                                try {
+                                    ImageGalleryImpl.Pair<Boolean, String> checkImageResolution = VerificationUtils.checkImageResolution(getActivity(), imagePathFromImport);
+                                    if (checkImageResolution.getModel1()) {
+                                        if (!primaryCreated) {
+                                            photos.add(getImageModelPrimary(imagePathFromImport, imagePath));
+                                            primaryCreated = true;
+                                        } else {
+                                            photos.add(getImageModel(imagePathFromImport, imagePath));
+                                        }
                                     } else {
-                                        photos.add(getImageModel(imagePathFromImport, imagePath));
+                                        errorMessageTemp = checkImageResolution.getModel2();
+                                        Log.e(ImageGalleryView.TAG, messageTAG + checkImageResolution.getModel2());
                                     }
-                                } else {
-                                    errorMessageTemp = checkImageResolution.getModel2();
-                                    Log.e(ImageGalleryView.TAG, messageTAG + checkImageResolution.getModel2());
+                                } catch (MetadataUtil.UnSupportedimageFormatException e) {
+                                    e.printStackTrace();
+                                    errorMessageTemp = e.getMessage();
+                                    Log.e(ImageGalleryView.TAG, messageTAG + e.getMessage());
                                 }
-                            } catch (MetadataUtil.UnSupportedimageFormatException e) {
-                                e.printStackTrace();
-                                errorMessageTemp = e.getMessage();
-                                Log.e(ImageGalleryView.TAG, messageTAG + e.getMessage());
+                            } else {
+                                CommonUtils.UniversalToast(getActivity(), "Gambar Terlalu Besar");
                             }
-                        } else {
-                            CommonUtils.UniversalToast(getActivity(), "Gambar Terlalu Besar");
                         }
                     }
                 }

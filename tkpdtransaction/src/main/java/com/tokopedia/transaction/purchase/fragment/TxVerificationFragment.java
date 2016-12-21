@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -436,11 +435,9 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
         switch (requestCode) {
             case ImageUploadHandler.REQUEST_CODE:
                 String imagePath = null;
-                if (data != null) {
-                    Log.d("URI SEMPAK GALERRY : ", data.getExtras().getString(GalleryBrowser.IMAGE_URL, "ga ada coy"));
-                    imagePath = data.getExtras().getString(GalleryBrowser.IMAGE_URL, "ga ada coy");
-                } else if (imageUploadHandler.getCameraFileloc() != null) {
-                    Log.d("URI SEMPAK CAMERA : ", imageUploadHandler.getCameraFileloc());
+                if (data != null && data.getStringExtra(GalleryBrowser.IMAGE_URL) != null) {
+                    imagePath = data.getExtras().getString(GalleryBrowser.IMAGE_URL, null);
+                } else if (imageUploadHandler != null && imageUploadHandler.getCameraFileloc() != null) {
                     imagePath = imageUploadHandler.getCameraFileloc();
                 }
                 presenter.uploadProofImageWSV4(getActivity(), imagePath, txVerDataToUpload);
@@ -449,7 +446,15 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
                 if (resultCode == ConfirmPaymentActivity.RESULT_FORM_FAILED
                         && data.hasExtra(ConfirmPaymentActivity.EXTRA_MESSAGE_ERROR_GET_FORM)) {
                     NetworkErrorHelper.showSnackbar(getActivity(),
+
                             data.getStringExtra(ConfirmPaymentActivity.EXTRA_MESSAGE_ERROR_GET_FORM));
+                }
+                break;
+            case REQUEST_VERIFICATION_DETAIL:
+                if (resultCode == TxVerDetailActivity.RESULT_INVOICE_FAILED
+                        && data.hasExtra(TxVerDetailActivity.EXTRA_MESSAGE_ERROR_GET_INVOICE)) {
+                    NetworkErrorHelper.showSnackbar(getActivity(),
+                            data.getStringExtra(TxVerDetailActivity.EXTRA_MESSAGE_ERROR_GET_INVOICE));
                 }
                 break;
         }
@@ -492,31 +497,31 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
 
     @OnPermissionDenied(Manifest.permission.CAMERA)
     void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(),Manifest.permission.CAMERA);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CAMERA);
     }
 
     @OnNeverAskAgain(Manifest.permission.CAMERA)
     void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.CAMERA);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CAMERA);
     }
 
     @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
     @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
-    @OnPermissionDenied({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     void showDeniedForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
 
-        RequestPermissionUtil.onPermissionDenied(getActivity(),listPermission);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
     }
 
     @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
@@ -525,6 +530,6 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
 
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),listPermission);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
     }
 }

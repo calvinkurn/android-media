@@ -43,6 +43,15 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventNewOrderDetail(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.NEW_ORDER,
+                AppEventTracking.Category.NEW_ORDER,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.ORDER_DETAIL
+        ).getEvent());
+    }
+
     public static void eventTrackOrder(){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.STATUS,
@@ -93,7 +102,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.MESSAGE,
                 AppEventTracking.Category.MESSAGE,
                 AppEventTracking.Action.SEND,
-                label
+                AppEventTracking.EventLabel.INBOX + "-" + label
         ).getEvent());
     }
 
@@ -121,6 +130,69 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.REVIEW,
                 AppEventTracking.Action.VIEW,
                 label
+        ).getEvent());
+    }
+
+    public static void eventReviewDetail(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.REVIEW,
+                AppEventTracking.Category.REVIEW,
+                AppEventTracking.Action.VIEW,
+                AppEventTracking.EventLabel.REVIEW_DETAIL
+        ).getEvent());
+    }
+
+    public static void eventConfirmShippingDetails(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CONFIRM_SHIPPING,
+                AppEventTracking.Category.SHIPPING,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.DETAILS
+        ).getEvent());
+    }
+
+    public static void eventConfirmShippingCancel(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CONFIRM_SHIPPING,
+                AppEventTracking.Category.SHIPPING,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.CANCEL
+        ).getEvent());
+    }
+
+    public static void eventDiscussionDetail(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.PRODUCT_DISCUSSION,
+                AppEventTracking.Category.PRODUCT_DISCUSSION,
+                AppEventTracking.Action.VIEW,
+                AppEventTracking.EventLabel.DISCUSSION_DETAIL
+        ).getEvent());
+    }
+
+    public static void eventDiscussionSendSuccess(String from){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.PRODUCT_DISCUSSION,
+                AppEventTracking.Category.PRODUCT_DISCUSSION,
+                AppEventTracking.Action.SEND,
+                AppEventTracking.EventLabel.COMMENT + "-" + from
+        ).getEvent());
+    }
+
+    public static void eventDiscussionSendError(String from){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.PRODUCT_DISCUSSION,
+                AppEventTracking.Category.PRODUCT_DISCUSSION,
+                AppEventTracking.Action.ERROR,
+                AppEventTracking.EventLabel.COMMENT + "-" + from
+        ).getEvent());
+    }
+
+    public static void eventResolutionDetail(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION,
+                AppEventTracking.Action.VIEW,
+                AppEventTracking.EventLabel.COMPLAINT_DETAIL
         ).getEvent());
     }
 
@@ -166,6 +238,42 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.CREATE_SHOP,
                 AppEventTracking.Action.CLICK,
                 AppEventTracking.EventLabel.CREATE
+        ).getEvent());
+    }
+
+    public static void eventResolutionSendSuccess(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION,
+                AppEventTracking.Action.SEND,
+                AppEventTracking.EventLabel.COMMENT
+        ).getEvent());
+    }
+
+    public static void eventResolutionSendError(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION,
+                AppEventTracking.Action.ERROR,
+                AppEventTracking.EventLabel.COMMENT
+        ).getEvent());
+    }
+
+    public static void eventResolutionEditSolution(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.EDIT_SOLUTION
+        ).getEvent());
+    }
+
+    public static void eventReviewCompleteBuyer(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.REVIEW,
+                AppEventTracking.Category.REVIEW,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.REVIEW_BUYER
         ).getEvent());
     }
 
@@ -827,5 +935,24 @@ public class UnifyTracking extends TrackingUtils {
         eventVal.put("custom_prop1", "registration");
         eventVal.put("os", "Android");
         getAFEngine().sendTrackEvent(AFInAppEventType.COMPLETE_REGISTRATION, eventVal);
+    }
+
+    public static void eventGoldMerchantSuccess() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.GMSUBSCRIBE,
+                AppEventTracking.Category.GOLD_MERCHANT,
+                AppEventTracking.Action.SUBSCRIBE,
+                AppEventTracking.EventLabel.SUBSCRIBE_SUCCESS
+        ).getEvent());
+    }
+
+
+    public static void eventTrueCaller(String userId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.TRUECALLER,
+                AppEventTracking.Category.TRUECALLER,
+                AppEventTracking.Action.INSTALLED,
+                userId
+        ).getEvent());
     }
 }

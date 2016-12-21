@@ -99,6 +99,37 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     }
 
     @Override
+    public void getCartKeroToken(@NonNull final Context context, @NonNull ProductCartPass data,
+                                 @NonNull final Destination destination) {
+        viewListener.showInitLoading();
+        Map<String, String> param = new HashMap<>();
+        param.put("product_id", data.getProductId());
+        viewListener.disableAllForm();
+        addToCartNetInteractor.getAddToCartForm(context, param,
+                new AddToCartNetInteractor.OnGetCartFormListener() {
+                    @Override
+                    public void onSuccess(AtcFormData data) {
+                        data.getForm().setDestination(destination);
+                        viewListener.hideNetworkError();
+                        viewListener.initialOrderData(data);
+                        viewListener.renderFormProductInfo(data.getForm().getProductDetail());
+                        viewListener.renderFormAddress(data.getForm().getDestination());
+                        viewListener.hideInitLoading();
+                        if (isAllowKeroAccess(data)) {
+                            calculateKeroRates(context, data);
+                        }else{
+                            viewListener.hideProgressLoading();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure() {
+                        viewListener.onCartFailedLoading();
+                    }
+                });
+    }
+
+    @Override
     public void calculateKeroRates(@NonNull Context context, @NonNull final AtcFormData atcFormData) {
         viewListener.disableBuyButton();
         keroNetInteractor.calculateShipping(context, KeroppiParam.paramsKero(atcFormData.getShop(),

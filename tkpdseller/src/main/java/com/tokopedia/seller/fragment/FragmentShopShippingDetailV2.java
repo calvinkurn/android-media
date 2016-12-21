@@ -361,6 +361,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
 
     @OnClick(R2.id.detail_button)
     public void onDetailClick() {
+        UnifyTracking.eventConfirmShippingDetails();
         startActivity(ShippingConfirmationDetail.createInstance(getActivity(), orderShippingList, permission, userId, invoiceUrl, invoicePdf));
     }
 
@@ -440,6 +441,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     }
 
     private void cancelShipping(String remark) {
+        UnifyTracking.eventConfirmShippingCancel();
         bundle = new Bundle();
         ModelParamSelling modelParamSelling = new ModelParamSelling();
         modelParamSelling.setActionType("reject");

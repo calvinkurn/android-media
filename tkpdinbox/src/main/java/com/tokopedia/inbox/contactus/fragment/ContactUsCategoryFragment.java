@@ -333,6 +333,8 @@ public class ContactUsCategoryFragment extends
             public void onBackPressed() {
                 if (solution.canGoBack()) {
                     solution.goBack();
+                }else{
+                    getActivity().finish();
                 }
 
             }

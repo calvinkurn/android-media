@@ -1,5 +1,8 @@
 package com.tokopedia.transaction.addtocart.model.kero;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -7,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * @author Herdi_WORK on 22.09.16.
  */
 
-public class Product {
+public class Product implements Parcelable {
     @SerializedName("shipper_product_id")
     @Expose
     private String shipperProductId;
@@ -32,6 +35,9 @@ public class Product {
     @SerializedName("ut")
     @Expose
     private String ut;
+
+    public Product() {
+    }
 
     /**
      * @return The shipperProductId
@@ -160,4 +166,54 @@ public class Product {
         return shipment;
     }
 
+    protected Product(Parcel in) {
+        shipperProductId = in.readString();
+        shipperProductName = in.readString();
+        shipperProductDesc = in.readString();
+        isShowMap = in.readByte() == 0x00 ? null : in.readInt();
+        price = in.readByte() == 0x00 ? null : in.readInt();
+        formattedPrice = in.readString();
+        checkSum = in.readString();
+        ut = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(shipperProductId);
+        dest.writeString(shipperProductName);
+        dest.writeString(shipperProductDesc);
+        if (isShowMap == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(isShowMap);
+        }
+        if (price == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(price);
+        }
+        dest.writeString(formattedPrice);
+        dest.writeString(checkSum);
+        dest.writeString(ut);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Product> CREATOR = new Parcelable.Creator<Product>() {
+        @Override
+        public Product createFromParcel(Parcel in) {
+            return new Product(in);
+        }
+
+        @Override
+        public Product[] newArray(int size) {
+            return new Product[size];
+        }
+    };
 }
