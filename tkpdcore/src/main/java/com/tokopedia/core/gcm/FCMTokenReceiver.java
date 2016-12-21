@@ -13,10 +13,10 @@ import rx.functions.Action1;
  * @author by alvarisi on 12/13/16.
  */
 
-public class FCMRefreshTokenReceiver implements IFCMRefreshTokenReceiver {
+public class FCMTokenReceiver implements IFCMTokenReceiver {
     private Context mContext;
 
-    public FCMRefreshTokenReceiver(Context context) {
+    public FCMTokenReceiver(Context context) {
         this.mContext = context;
     }
 
