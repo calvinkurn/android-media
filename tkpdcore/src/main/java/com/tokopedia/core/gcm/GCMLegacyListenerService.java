@@ -90,7 +90,7 @@ public class GCMLegacyListenerService extends GcmListenerService{
     }
 
     private void tunnelData(Bundle data) {
-        switch (getCode(data)) {
+        switch (GCMUtils.getCode(data)) {
             case TkpdState.GCMServiceState.GCM_HOT_LIST:
                 // TODO Handle with latest code
 //                createNotification(data, BrowseHotDetail.class);
@@ -159,70 +159,13 @@ public class GCMLegacyListenerService extends GcmListenerService{
         }
     }
 
-
-    private int getCode(Bundle data) {
-        int code;
-        try {
-            code = Integer.parseInt(data.getString("tkp_code"));
-        } catch (Exception e) {
-            code = 0;
-        }
-        return code;
-    }
-
-    private boolean isExcludeFromSellerApp(int tkpCode) {
-        switch (tkpCode) {
-            case TkpdState.GCMServiceState.GCM_REVIEW:
-                return true;
-            case TkpdState.GCMServiceState.GCM_REVIEW_REPLY:
-                return true;
-            case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_BUYER:
-                return true;
-            case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_BUYER:
-                return true;
-            case TkpdState.GCMServiceState.GCM_PURCHASE_ACCEPTED:
-                return true;
-            case TkpdState.GCMServiceState.GCM_PURCHASE_DELIVERED:
-                return true;
-            case TkpdState.GCMServiceState.GCM_PURCHASE_PARTIAL_PROCESSED:
-                return true;
-            case TkpdState.GCMServiceState.GCM_PURCHASE_REJECTED:
-                return true;
-            case TkpdState.GCMServiceState.GCM_PURCHASE_VERIFIED:
-                return true;
-            case TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_REPLY:
-                return true;
-            case TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_AGREE:
-                return true;
-            case TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_BUYER_REPLY:
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    private boolean isDeprecated(int tkpCode) {
-        switch (tkpCode) {
-            case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY:
-                return true;
-            case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY:
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    public boolean isValidForSellerApp(int tkpCode) {
-        return !getApplication().getClass().getSimpleName().equals("SellerMainApplication") && isExcludeFromSellerApp(tkpCode);
-    }
-
     private void sendNotification(Bundle data) {
         int tkpCode = Integer.parseInt(data.getString("tkp_code"));
         /**
          * Use this code to exclude deprecated code which still sent from server
          * if (!CheckSettings(tkpCode) && isValidForSellerApp(tkpCode) && !isDeprecated(tkpCode)) {
          */
-        if (!gcmCache.checkSettings(tkpCode) && isValidForSellerApp(tkpCode)) {
+        if (!gcmCache.checkSettings(tkpCode) && GCMUtils.isValidForSellerApp(tkpCode,getApplication())) {
             return;
         }
 
