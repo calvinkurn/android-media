@@ -1,8 +1,8 @@
 include ':customerapp'
-include ':tkpdcore'
+/*include ':tkpdcore'
 include ':tkpdinbox'
 include ':tkpddiscovery'
 include ':tkpdtransaction'
 include ':tkpdsession'
 include ':tkpdseller'
-include ':sellerapp'
+include ':sellerapp'*/

@@ -28,6 +28,13 @@ allprojects {
                 password = "${artifactory_password}"
             }
         }
+        maven {
+            url "http://jenkins.tkpd:8081/artifactory/libs-snapshot-local"
+            credentials {
+                username = "${artifactory_username}"
+                password = "${artifactory_password}"
+            }
+        }
     }
 }
 
