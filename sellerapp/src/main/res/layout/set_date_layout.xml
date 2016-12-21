@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         app:tabSelectedTextColor="@color/white"
         app:tabTextColor="@android:color/white"
-        android:background="@color/app_common_green"
+        android:background="@color/green_500"
         app:tabIndicatorColor="@color/white"
         app:tabIndicatorHeight="3dp"
         app:tabGravity="fill"

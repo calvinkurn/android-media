@@ -60,7 +60,7 @@ public class LoaderTextView extends TextView implements LoaderView {
         loaderController.setWidthWeight(typedArray.getFloat(R.styleable.loader_view_width_weight, LoaderConstant.MAX_WEIGHT));
         loaderController.setHeightWeight(typedArray.getFloat(R.styleable.loader_view_height_weight, LoaderConstant.MAX_WEIGHT));
         loaderController.setUseGradient(typedArray.getBoolean(R.styleable.loader_view_use_gradient, LoaderConstant.USE_GRADIENT_DEFAULT));
-        loaderController.setGravity(typedArray.getInt(R.styleable.loader_view_gravity, LoaderConstant.DEFAULT_GRAVITY));
+        loaderController.setGravity(typedArray.getInt(R.styleable.loader_view_gravity_, LoaderConstant.DEFAULT_GRAVITY));
         typedArray.recycle();
     }
 

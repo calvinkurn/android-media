@@ -19,6 +19,7 @@ import com.db.chart.tooltip.Tooltip;
 import com.db.chart.view.LineChartView;
 import com.jonas.jgraph.graph.JcoolGraph;
 import com.jonas.jgraph.models.Jchart;
+import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.gmstat.library.LoaderImageView;
 import com.tokopedia.sellerapp.gmstat.library.LoaderTextView;
@@ -33,7 +34,6 @@ import com.tokopedia.sellerapp.gmstat.utils.GMStatNetworkController;
 import com.tokopedia.sellerapp.gmstat.utils.GridDividerItemDecoration;
 import com.tokopedia.sellerapp.gmstat.utils.KMNumbers2;
 import com.tokopedia.sellerapp.gmstat.utils.WilliamChartUtils;
-import com.tokopedia.sellerapp.utils.RxUtils;
 
 import java.security.SecureRandom;
 import java.text.DecimalFormat;

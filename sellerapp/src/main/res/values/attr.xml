@@ -20,7 +20,7 @@
         <attr name="width_weight" format="float" />
         <attr name="height_weight" format="float" />
         <attr name="use_gradient" format="boolean" />
-        <attr name="gravity">
+        <attr name="gravity_">
             <flag name="bottom" value="80" />
             <flag name="center" value="17" />
             <flag name="center_horizontal" value="1" />
