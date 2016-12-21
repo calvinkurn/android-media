@@ -1,16 +1,21 @@
 package com.tokopedia.seller.topads.network.apiservice.api;
 
+import com.tokopedia.seller.topads.model.data.DataRequestSingleAd;
+import com.tokopedia.seller.topads.model.exchange.AdsActionRequest;
 import com.tokopedia.seller.topads.model.exchange.CreditResponse;
 import com.tokopedia.seller.topads.model.exchange.DepositResponse;
 import com.tokopedia.seller.topads.model.exchange.ProductResponse;
+import com.tokopedia.seller.topads.model.exchange.ResponseActionAds;
 import com.tokopedia.seller.topads.model.exchange.ShopResponse;
 import com.tokopedia.seller.topads.model.exchange.StatisticResponse;
 
 import java.util.Map;
 
 import retrofit2.Response;
+import retrofit2.http.Body;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.PATCH;
 import retrofit2.http.QueryMap;
 import rx.Observable;
 import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
@@ -38,4 +43,8 @@ public interface TopAdsManagementApi {
 
     @GET(TopAdsNetworkConstant.PATH_DASHBOARD_CREDIT)
     Observable<Response<CreditResponse>> getDashboardCredit();
+
+    @PATCH(TopAdsNetworkConstant.PATH_ACTION_BULK_AD)
+    Observable<Response<ResponseActionAds>> postActionSingleAds(@Body AdsActionRequest<DataRequestSingleAd> body);
+
 }

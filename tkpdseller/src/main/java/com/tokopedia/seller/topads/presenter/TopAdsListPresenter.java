@@ -12,4 +12,10 @@ public interface TopAdsListPresenter {
     List<Ad> getListTopAds();
 
     void getListTopAdsFromNet();
+
+    void actionDeleteAds(List<Ad> ads);
+
+    void actionOffAds(List<Ad> ads);
+
+    void actionOnAds(List<Ad> ads);
 }

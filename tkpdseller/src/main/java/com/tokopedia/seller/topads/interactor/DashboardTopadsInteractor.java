@@ -3,9 +3,13 @@ package com.tokopedia.seller.topads.interactor;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.topads.model.data.DataCredit;
 import com.tokopedia.seller.topads.model.data.DataDeposit;
+import com.tokopedia.seller.topads.model.data.DataRequestSingleAd;
+import com.tokopedia.seller.topads.model.data.DataResponseActionAds;
 import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.model.data.TotalAd;
+import com.tokopedia.seller.topads.model.exchange.AdsActionRequest;
 import com.tokopedia.seller.topads.model.exchange.CreditResponse;
+import com.tokopedia.seller.topads.model.exchange.ResponseActionAds;
 import com.tokopedia.seller.topads.model.exchange.ShopRequest;
 import com.tokopedia.seller.topads.model.exchange.DepositResponse;
 import com.tokopedia.seller.topads.model.exchange.ProductResponse;
@@ -21,27 +25,23 @@ import java.util.List;
 
 public interface DashboardTopadsInteractor {
 
-    interface Listener<T> {
-        void onSuccess(T t);
+    void getDashboardSummary(StatisticRequest statisticRequest, final ListenerInteractor<Summary> listener);
 
-        void onError(Throwable throwable);
-    }
+    void getDeposit(ShopRequest shopRequest, final ListenerInteractor<DataDeposit> listener);
 
-    void getDashboardSummary(StatisticRequest statisticRequest, final Listener<Summary> listener);
+    void getShopInfo(ShopRequest shopRequest, final ListenerInteractor<ShopModel> listener);
 
-    void getDeposit(ShopRequest shopRequest, final Listener<DataDeposit> listener);
+    void getTotalAd(ShopRequest shopRequest, final ListenerInteractor<TotalAd> listener);
 
-    void getShopInfo(ShopRequest shopRequest, final Listener<ShopModel> listener);
-
-    void getTotalAd(ShopRequest shopRequest, final Listener<TotalAd> listener);
-
-    void getCreditList(final Listener<List<DataCredit>> listener);
+    void getCreditList(final ListenerInteractor<List<DataCredit>> listener);
 
     void unSubscribe();
 
-    void getDashboardProduct(HashMap<String, String> params, Listener<ProductResponse> listener);
+    void getDashboardProduct(HashMap<String, String> params, ListenerInteractor<ProductResponse> listener);
 
-    void getDashboardShop(HashMap<String, String> params, Listener<ShopResponse> listener);
+    void getDashboardShop(HashMap<String, String> params, ListenerInteractor<ShopResponse> listener);
 
-    void getDashboardResponse(HashMap<String, String> params, Listener<DepositResponse> listener);
+    void getDashboardResponse(HashMap<String, String> params, ListenerInteractor<DepositResponse> listener);
+
+    void actionSingleAds(AdsActionRequest<DataRequestSingleAd> adsActionRequest, ListenerInteractor<DataResponseActionAds> listenerInteractor);
 }

@@ -8,9 +8,9 @@ import rx.functions.Action1;
 
 public class SubscribeOnNext<T> implements Action1<T> {
 
-    private DashboardTopadsInteractor.Listener listener;
+    private ListenerInteractor listener;
 
-    public SubscribeOnNext(DashboardTopadsInteractor.Listener listener) {
+    public SubscribeOnNext(ListenerInteractor listener) {
         this.listener = listener;
     }
 

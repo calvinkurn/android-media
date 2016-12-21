@@ -1,5 +1,6 @@
 package com.tokopedia.seller.topads.model.data;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
@@ -10,9 +11,11 @@ import java.util.List;
  */
 public class DataRequestSingleAd {
     @SerializedName("action")
+    @Expose
     String action;
 
     @SerializedName("shop_id")
+    @Expose
     String shopId;
 
     @SerializedName("ads")

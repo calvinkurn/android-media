@@ -6,6 +6,7 @@ import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.topads.interactor.DashboardTopadsInteractor;
 import com.tokopedia.seller.topads.interactor.DashboardTopadsInteractorImpl;
+import com.tokopedia.seller.topads.interactor.ListenerInteractor;
 import com.tokopedia.seller.topads.model.data.DataDeposit;
 import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.model.exchange.ShopRequest;
@@ -42,7 +43,7 @@ public abstract class TopAdsDashboardPresenterImpl implements TopAdsDashboardPre
         statisticRequest.setType(getType());
         statisticRequest.setStartDate(startDate);
         statisticRequest.setEndDate(endDate);
-        dashboardTopadsInteractor.getDashboardSummary(statisticRequest, new DashboardTopadsInteractor.Listener<Summary>() {
+        dashboardTopadsInteractor.getDashboardSummary(statisticRequest, new ListenerInteractor<Summary>() {
             @Override
             public void onSuccess(Summary summary) {
                 if (getDashboardListener() != null) {
@@ -63,7 +64,7 @@ public abstract class TopAdsDashboardPresenterImpl implements TopAdsDashboardPre
     public void populateDeposit() {
         ShopRequest shopRequest = new ShopRequest();
         shopRequest.setShopId(getShopId());
-        dashboardTopadsInteractor.getDeposit(shopRequest, new DashboardTopadsInteractor.Listener<DataDeposit>() {
+        dashboardTopadsInteractor.getDeposit(shopRequest, new ListenerInteractor<DataDeposit>() {
             @Override
             public void onSuccess(DataDeposit dataDeposit) {
                 if (getDashboardListener() != null) {
@@ -84,7 +85,7 @@ public abstract class TopAdsDashboardPresenterImpl implements TopAdsDashboardPre
     public void populateShopInfo() {
         ShopRequest shopRequest = new ShopRequest();
         shopRequest.setShopId(getShopId());
-        dashboardTopadsInteractor.getShopInfo(shopRequest, new DashboardTopadsInteractor.Listener<ShopModel>() {
+        dashboardTopadsInteractor.getShopInfo(shopRequest, new ListenerInteractor<ShopModel>() {
             @Override
             public void onSuccess(ShopModel shopModel) {
                 if (getDashboardListener() != null) {

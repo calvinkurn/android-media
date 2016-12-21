@@ -1,5 +1,6 @@
 package com.tokopedia.seller.topads.model.exchange;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.seller.topads.model.data.DataRequestGroupAd;
 
@@ -9,6 +10,7 @@ import com.tokopedia.seller.topads.model.data.DataRequestGroupAd;
 
 public class AdsActionRequest<T> {
     @SerializedName("data")
+    @Expose
     T data;
 
     public T getData() {
