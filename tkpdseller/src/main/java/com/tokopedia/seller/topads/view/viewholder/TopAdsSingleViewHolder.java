@@ -11,11 +11,8 @@ import android.widget.TextView;
 
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.model.data.Ad;
 
-import org.w3c.dom.Text;
-
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -23,26 +20,26 @@ import butterknife.ButterKnife;
  */
 public class TopAdsSingleViewHolder extends RecyclerView.ViewHolder {
 
-    @Bind(R2.id.title_product)
-    TextView titleProduct;
+    @BindView(R2.id.title_product)
+    public TextView titleProduct;
 
-    @Bind(R2.id.status_active)
-    TextView statusActive;
+    @BindView(R2.id.status_active)
+    public TextView statusActive;
 
-    @Bind(R2.id.promo_price_used)
-    TextView promoPriceUsed;
+    @BindView(R2.id.promo_price_used)
+    public TextView promoPriceUsed;
 
-    @Bind(R2.id.total_price_promo)
-    TextView totalPricePromo;
+    @BindView(R2.id.total_price_promo)
+    public TextView totalPricePromo;
 
-    @Bind(R2.id.price_promo_per_klik)
-    TextView pricePromoPerKlik;
+    @BindView(R2.id.price_promo_per_klik)
+    public TextView pricePromoPerKlik;
 
-    @Bind(R2.id.check_promo)
-    CheckBox checkedPromo;
+    @BindView(R2.id.check_promo)
+    public CheckBox checkedPromo;
 
-    @Bind(R2.id.progressBarPromo)
-    ProgressBar progressBarPromo;
+    @BindView(R2.id.progressBarPromo)
+    public ProgressBar progressBarPromo;
 
     public TopAdsSingleViewHolder(View view) {
         super(view);
@@ -53,11 +50,5 @@ public class TopAdsSingleViewHolder extends RecyclerView.ViewHolder {
         return new TopAdsSingleViewHolder(LayoutInflater.from(context).inflate(R.layout.list_promo_single_topads, parent, false));
     }
 
-    public void bindData(Ad ad) {
-        titleProduct.setText(ad.getProductName());
-        statusActive.setText(ad.getAdStatus());
-        promoPriceUsed.setText(ad.getAdPriceBidFmt());
-        totalPricePromo.setText(ad.getAdPriceDailySpentFmt());
 
-    }
 }

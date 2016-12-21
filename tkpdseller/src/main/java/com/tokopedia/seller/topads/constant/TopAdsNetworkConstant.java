@@ -14,9 +14,15 @@ public class TopAdsNetworkConstant {
     public static final String PATH_DASHBOARD_SHOP = "/v1/dashboard/shop";
     public static final String PATH_DASHBOARD_CREDIT = "/v1/tkpd_products";
 
+    public static final String PATH_ACTION_BULK_AD = "/v2/promo/bulk";
+
     public static final String PARAM_SHOP_ID = "shop_id";
     public static final String PARAM_TYPE = "type";
     public static final String PARAM_START_DATE = "start_date";
     public static final String PARAM_END_DATE = "end_date";
 
+    public static final String ACTION_BULK_DELETE_AD = "delete";
+    public static final String ACTION_BULK_OFF_AD = "toogle_off";
+    public static final String ACTION_BULK_ON_AD = "toogle_on";
+    public static final String ACTION_BULK_MOVE_AD = "move_group";
 }

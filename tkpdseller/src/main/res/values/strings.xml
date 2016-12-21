@@ -28,4 +28,8 @@
     <string name="label_top_ads_deposit_desc">Saldo TopAds - %s</string>
     <string name="title_action_on">On</string>
     <string name="title_action_off">Off</string>
+    <string name="action_filter_date">Filter Tanggal</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

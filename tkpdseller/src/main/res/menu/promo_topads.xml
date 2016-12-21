@@ -3,23 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_delete"
-        app:showAsAction="never"
-        android:title="@string/action_delete" />
+        android:id="@+id/action_filter_date"
+        app:showAsAction="always"
+        android:icon="@mipmap/ic_launcher"
+        android:title="@string/action_filter_date" />
 
     <item
-        android:id="@+id/action_edit"
-        app:showAsAction="never"
-        android:title="@string/title_edit"/>
-
-    <item
-        android:id="@+id/action_on"
-        app:showAsAction="never"
-        android:title="@string/title_action_on"/>
-
-    <item
-        android:id="@+id/action_off"
-        app:showAsAction="never"
-        android:title="@string/title_action_off"/>
-
+        android:icon="@mipmap/ic_launcher"
+        android:id="@+id/action_search"
+        app:showAsAction="always"
+        android:title="@string/action_search"/>
 </menu>

@@ -1,5 +1,6 @@
 package com.tokopedia.seller.topads.model.data;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -7,9 +8,11 @@ import com.google.gson.annotations.SerializedName;
  */
 public class DataRequestSingleAds {
     @SerializedName("ad_id")
+    @Expose
     String adId;
 
     @SerializedName("group_id")
+    @Expose
     String groupId;
 
     public String getAdId() {

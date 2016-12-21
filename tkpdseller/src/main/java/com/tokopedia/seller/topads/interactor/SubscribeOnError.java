@@ -8,9 +8,9 @@ import rx.functions.Action1;
 
 public class SubscribeOnError implements Action1<Throwable> {
 
-    private DashboardTopadsInteractor.Listener listener;
+    private ListenerInteractor listener;
 
-    public SubscribeOnError(DashboardTopadsInteractor.Listener listener) {
+    public SubscribeOnError(ListenerInteractor listener) {
         this.listener = listener;
     }
 

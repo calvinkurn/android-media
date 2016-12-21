@@ -2,28 +2,33 @@ package com.tokopedia.seller.topads.view.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
-import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.model.data.Ad;
+import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
 import com.tokopedia.seller.topads.view.viewholder.TopAdsSingleViewHolder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
  * Created by zulfikarrahman on 11/24/16.
  */
-public class TopAdsListAdapter extends BaseLinearRecyclerViewAdapter {
+public abstract class TopAdsListAdapter<T> extends BaseLinearRecyclerViewAdapter {
+
+    public static final int AD_SINGLE_TYPE = 1;
+    public static final int AD_GROUP_TYPE = 2;
 
     private final Context context;
-    private List<Ad> data = new ArrayList<>();
+    public final TopAdsListPromoViewListener topAdsListPromoViewListener;
+    public List<T> data = new ArrayList<>();
+    public HashMap<Integer, Boolean> checkeds = new HashMap<>();
 
-    public TopAdsListAdapter(Context context, List<Ad> data) {
+    public TopAdsListAdapter(Context context, List<T> data, TopAdsListPromoViewListener topAdsListPromoViewListener) {
         super();
+        this.topAdsListPromoViewListener = topAdsListPromoViewListener;
         this.context = context;
         this.data = data;
     }
@@ -37,7 +42,8 @@ public class TopAdsListAdapter extends BaseLinearRecyclerViewAdapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
-            case TkpdState.RecyclerViewItemAd.AD_TYPE:
+            case AD_GROUP_TYPE:
+            case AD_SINGLE_TYPE:
                 return TopAdsSingleViewHolder.createInstance(context, parent);
             default:
                 return super.onCreateViewHolder(parent, viewType);
@@ -47,9 +53,10 @@ public class TopAdsListAdapter extends BaseLinearRecyclerViewAdapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)) {
-            case TkpdState.RecyclerViewItemAd.AD_TYPE:
+            case AD_GROUP_TYPE:
+            case AD_SINGLE_TYPE:
                 TopAdsSingleViewHolder itemHolder = (TopAdsSingleViewHolder) holder;
-                itemHolder.bindData(data.get(position));
+                bindDataAds(position, itemHolder);
                 break;
             default:
                 super.onBindViewHolder(holder, position);
@@ -66,7 +73,33 @@ public class TopAdsListAdapter extends BaseLinearRecyclerViewAdapter {
         if (isLastItemPosition(position) && (data.isEmpty() || isLoading() || isRetry())) {
             return super.getItemViewType(position);
         } else {
-            return TkpdState.RecyclerViewItemAd.AD_TYPE;
+            return getAdType();
         }
     }
+
+    public void setChecked(int position, boolean isChecked){
+        checkeds.put(position, isChecked);
+        notifyDataSetChanged();
+    }
+
+    public boolean isChecked(int position){
+        return checkeds.containsKey(position) ? checkeds.get(position) : false;
+    }
+
+    public void setData(List<T> data){
+        this.data.addAll(data);
+        notifyDataSetChanged();
+    }
+
+    public void clearData(){
+        this.data.clear();
+        checkeds.clear();
+        notifyDataSetChanged();
+    }
+
+    public abstract int getAdType();
+
+    public abstract void bindDataAds(int position, RecyclerView.ViewHolder viewHolder);
+
+    public abstract List<T> getSelectedAds(List<Integer> selectedPositions);
 }
