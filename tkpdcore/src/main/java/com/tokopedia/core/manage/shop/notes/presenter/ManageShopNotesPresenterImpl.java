@@ -43,9 +43,9 @@ public class ManageShopNotesPresenterImpl implements ManageShopNotesPresenter {
                 viewListener.setViewEnabled(true);
                 viewListener.finishLoading();
                 if(data.getList() != null && data.getList().size() > 0 ){
-                    viewListener.showEmpty();
-                }else{
                     viewListener.setResult(data);
+                }else{
+                    viewListener.showEmpty();
                 }
             }
 
