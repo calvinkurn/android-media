@@ -21,8 +21,8 @@
 
     <ImageView
         android:id="@+id/delete_bank"
-        android:layout_width="@dimen/margin_large"
-        android:layout_height="@dimen/margin_large"
+        android:layout_width="@dimen/img_thumb_bit_small"
+        android:layout_height="@dimen/img_thumb_bit_small"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
@@ -34,8 +34,8 @@
 
     <ImageView
         android:id="@+id/edit_bank"
-        android:layout_width="@dimen/margin_large"
-        android:layout_height="@dimen/margin_large"
+        android:layout_width="@dimen/img_thumb_bit_small"
+        android:layout_height="@dimen/img_thumb_bit_small"
         android:layout_marginEnd="@dimen/margin_small"
         android:layout_marginRight="@dimen/margin_small"
         android:layout_toLeftOf="@id/delete_bank"
@@ -47,8 +47,8 @@
 
     <ImageView
         android:id="@+id/default_bank"
-        android:layout_width="@dimen/margin_large"
-        android:layout_height="@dimen/margin_large"
+        android:layout_width="@dimen/img_thumb_bit_small"
+        android:layout_height="@dimen/img_thumb_bit_small"
         android:layout_marginEnd="@dimen/margin_small"
         android:layout_marginRight="@dimen/margin_small"
         android:layout_toLeftOf="@id/edit_bank"
