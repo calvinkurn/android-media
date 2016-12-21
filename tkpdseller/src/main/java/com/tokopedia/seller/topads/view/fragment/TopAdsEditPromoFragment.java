@@ -1,6 +1,7 @@
 package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
@@ -20,6 +21,8 @@ import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.model.data.DataCredit;
 import com.tokopedia.seller.topads.presenter.TopAdsEditPromoPresenter;
 import com.tokopedia.seller.topads.presenter.TopAdsEditPromoPresenterImpl;
+import com.tokopedia.seller.topads.view.activity.TopAdsAddProductActivity;
+import com.tokopedia.seller.topads.view.activity.TopAdsPaymentCreditActivity;
 import com.tokopedia.seller.topads.view.dialog.TimePickerdialog;
 import com.tokopedia.seller.topads.view.listener.TopAdsEditPromoFragmentListener;
 import com.tokopedia.seller.topads.view.dialog.DatePickerDialog;
@@ -300,8 +303,9 @@ public class TopAdsEditPromoFragment extends BasePresenterFragment<TopAdsEditPro
         return new SimpleDateFormat(formatDate, Locale.ENGLISH).format(date);
     }
 
-    @OnClick(R2.id.recyler_view_product_list)
+    @OnClick(R2.id.button_add_product)
     void addProduct() {
-
+        Intent intent = new Intent(getActivity(), TopAdsAddProductActivity.class);
+        startActivity(intent);
     }
 }

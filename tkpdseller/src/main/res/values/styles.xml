@@ -7,6 +7,10 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
+    <style name="TextView.Title">
+        <item name="android:textSize">@dimen/text_size_xlarge</item>
+    </style>
+
     <style name="TextView.Statistic">
         <item name="android:textSize">@dimen/text_size_xxxlarge</item>
         <item name="android:textColor">@color/green_200</item>
@@ -17,6 +21,11 @@
         <item name="android:textSize">@dimen/text_size_xlarge</item>
         <item name="android:textColor">@color/green_200</item>
         <item name="android:text">@string/top_ads_statistic_info_default_value</item>
+    </style>
+
+    <style name="TextView.Promoted">
+        <item name="android:textSize">@dimen/text_size_small</item>
+        <item name="android:textColor">@color/blue_link</item>
     </style>
 
     <style name="EditText" parent="Widget.AppCompat.EditText">

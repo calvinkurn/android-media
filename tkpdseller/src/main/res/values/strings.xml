@@ -52,4 +52,6 @@
     <string name="label_top_ads_show_time_start">Mulai</string>
     <string name="label_top_ads_show_time_end">Selesai</string>
 
+    <!-- Add product-->
+    <string name="label_top_ads_promoted">Promoted</string>
 </resources>

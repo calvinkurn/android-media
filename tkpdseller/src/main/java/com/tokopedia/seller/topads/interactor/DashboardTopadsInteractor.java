@@ -3,9 +3,11 @@ package com.tokopedia.seller.topads.interactor;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.topads.model.data.DataCredit;
 import com.tokopedia.seller.topads.model.data.DataDeposit;
+import com.tokopedia.seller.topads.model.data.Product;
 import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.model.data.TotalAd;
 import com.tokopedia.seller.topads.model.exchange.CreditResponse;
+import com.tokopedia.seller.topads.model.exchange.SearchProductRequest;
 import com.tokopedia.seller.topads.model.exchange.ShopRequest;
 import com.tokopedia.seller.topads.model.exchange.DepositResponse;
 import com.tokopedia.seller.topads.model.exchange.ProductResponse;
@@ -36,6 +38,8 @@ public interface DashboardTopadsInteractor {
     void getTotalAd(ShopRequest shopRequest, final Listener<TotalAd> listener);
 
     void getCreditList(final Listener<List<DataCredit>> listener);
+
+    void searchProduct(SearchProductRequest searchProductRequest, final Listener<List<Product>> listener);
 
     void unSubscribe();
 

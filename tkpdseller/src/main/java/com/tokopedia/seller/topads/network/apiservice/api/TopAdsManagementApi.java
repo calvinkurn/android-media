@@ -3,6 +3,7 @@ package com.tokopedia.seller.topads.network.apiservice.api;
 import com.tokopedia.seller.topads.model.exchange.CreditResponse;
 import com.tokopedia.seller.topads.model.exchange.DepositResponse;
 import com.tokopedia.seller.topads.model.exchange.ProductResponse;
+import com.tokopedia.seller.topads.model.exchange.SearchProductResponse;
 import com.tokopedia.seller.topads.model.exchange.ShopResponse;
 import com.tokopedia.seller.topads.model.exchange.StatisticResponse;
 
@@ -38,4 +39,7 @@ public interface TopAdsManagementApi {
 
     @GET(TopAdsNetworkConstant.PATH_DASHBOARD_CREDIT)
     Observable<Response<CreditResponse>> getDashboardCredit();
+
+    @GET(TopAdsNetworkConstant.PATH_SEARCH_PRODUCT)
+    Observable<Response<SearchProductResponse>> getSearchProduct(@QueryMap Map<String, String> params);
 }
