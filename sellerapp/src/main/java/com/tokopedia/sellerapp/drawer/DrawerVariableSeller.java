@@ -420,6 +420,9 @@ public class DrawerVariableSeller extends DrawerVariable {
                 session.Logout(context);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.SIGN_OUT);
                 break;
+            case TkpdState.DrawerPosition.SELLER_GM_STAT:
+                CommonUtils.UniversalToast(context, "SELLER GM STAT MENU");
+                break;
             default:
                 break;
         }
@@ -647,6 +650,8 @@ public class DrawerVariableSeller extends DrawerVariable {
             model.data.add(model.header);
             model.data.add(model.sellerHome);
             model.data.add(model.gmSubscribeMenu);
+            model.data.add(new DrawerItem("GM Stat", 0, R.drawable.ic_menu_logout, TkpdState.DrawerPosition.SELLER_GM_STAT,
+                    false));
             model.data.add(model.inboxMenu);
             model.data.add(model.shopMenu);
             model.data.add(new DrawerItem("Pengaturan", 0, R.drawable.icon_setting, TkpdState.DrawerPosition.SETTINGS,
