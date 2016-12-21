@@ -40,9 +40,31 @@
             android:label="@string/title_topads_list"
             android:screenOrientation="portrait"/>
 
+        <activity
+            android:name=".topads.view.activity.TopAdsAddCreditActivity"
+            android:label="@string/title_top_ads_add_credit"
+            android:theme="@style/Theme.Tokopedia3"/>
+
+        <activity
+            android:name=".topads.view.activity.TopAdsPaymentCreditActivity"
+            android:label="@string/title_top_ads_add_credit"
+            android:theme="@style/Theme.Tokopedia3"/>
+
         <service
             android:name=".selling.SellingService"
-            android:exported="false" />
+            android:exported="false"/>
+
+        <activity
+            android:name="com.tokopedia.seller.shop.ShopEditorActivity"
+            android:label="@string/shop_setting"
+            android:theme="@style/ShopAppTheme" />
+        <service
+            android:name="com.tokopedia.seller.selling.SellingService"
+            android:exported="false"/>
+
+        <service android:name=".shop.ShopEditService"
+            android:exported="false"/>
+
     </application>
 
 </manifest>

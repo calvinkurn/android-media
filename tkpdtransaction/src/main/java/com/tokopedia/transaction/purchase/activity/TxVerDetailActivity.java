@@ -10,12 +10,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.GalleryBrowser;
@@ -38,7 +40,7 @@ import com.tokopedia.transaction.purchase.presenter.TxVerDetailPresenterImpl;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -61,23 +63,23 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
     private TxVerData txVerData;
     private TxVerInvoiceAdapter invoiceAdapter;
 
-    @Bind(R2.id.listView1)
+    @BindView(R2.id.listView1)
     ListView lvInvoice;
-    @Bind(R2.id.date)
+    @BindView(R2.id.date)
     TextView tvPaymentDate;
-    @Bind(R2.id.total_invoice)
+    @BindView(R2.id.total_invoice)
     TextView tvAmountPayment;
-    @Bind(R2.id.account_owner)
+    @BindView(R2.id.account_owner)
     TextView tvOwnerAccountBank;
-    @Bind(R2.id.account_number)
+    @BindView(R2.id.account_number)
     TextView tvSysAccountBank;
-    @Bind(R2.id.changePayment)
+    @BindView(R2.id.changePayment)
     View btnEditPayment;
-    @Bind(R2.id.upload_button)
+    @BindView(R2.id.upload_button)
     View btnUploadProof;
-    @Bind(R2.id.transfer_account_information)
+    @BindView(R2.id.transfer_account_information)
     RelativeLayout holderAccountBankInfo;
-    @Bind(R2.id.indomaret_code_detail_label)
+    @BindView(R2.id.indomaret_code_detail_label)
     TextView tvPaymentCode;
 
     private TkpdProgressDialog mProgressDialog;
@@ -247,10 +249,15 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
                     String imagePath = null;
                     if (data != null) {
                         imagePath = data.getExtras().getString(GalleryBrowser.IMAGE_URL, null);
-                    } else if (imageUploadHandler.getCameraFileloc() != null) {
+                    } else if (imageUploadHandler != null &&
+                            imageUploadHandler.getCameraFileloc() != null) {
                         imagePath = imageUploadHandler.getCameraFileloc();
                     }
-                    presenter.uploadProofImageWSV4(this, imagePath, txVerData);
+                    if (imagePath != null) {
+                        presenter.uploadProofImageWSV4(this, imagePath, txVerData);
+                    } else {
+                        showToastMessage(getString(com.tokopedia.transaction.R.string.message_failed_pick_image));
+                    }
                     break;
             }
         }

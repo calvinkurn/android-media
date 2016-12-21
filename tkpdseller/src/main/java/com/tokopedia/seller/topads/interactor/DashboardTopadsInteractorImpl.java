@@ -12,15 +12,18 @@ import com.tokopedia.seller.topads.datasource.TopAdsCacheDataSourceImpl;
 import com.tokopedia.seller.topads.datasource.TopAdsDbDataSource;
 import com.tokopedia.seller.topads.datasource.TopAdsDbDataSourceImpl;
 import com.tokopedia.seller.topads.model.data.Cell;
+import com.tokopedia.seller.topads.model.data.DataCredit;
 import com.tokopedia.seller.topads.model.data.DataDeposit;
 import com.tokopedia.seller.topads.model.data.Summary;
+import com.tokopedia.seller.topads.model.data.TotalAd;
 import com.tokopedia.seller.topads.model.exchange.CreditResponse;
-import com.tokopedia.seller.topads.model.exchange.DepositRequest;
+import com.tokopedia.seller.topads.model.exchange.ShopRequest;
 import com.tokopedia.seller.topads.model.exchange.DepositResponse;
 import com.tokopedia.seller.topads.model.exchange.ProductResponse;
 import com.tokopedia.seller.topads.model.exchange.ShopResponse;
 import com.tokopedia.seller.topads.model.exchange.StatisticRequest;
 import com.tokopedia.seller.topads.model.exchange.StatisticResponse;
+import com.tokopedia.seller.topads.model.exchange.TotalAdResponse;
 import com.tokopedia.seller.topads.network.apiservice.TopAdsManagementService;
 
 import java.util.HashMap;
@@ -93,8 +96,8 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
     }
 
     @Override
-    public void getDeposit(DepositRequest depositRequest, Listener<DataDeposit> listener) {
-        Observable<Response<DepositResponse>> depositObservable = topAdsManagementService.getApi().getDashboardDeposit(depositRequest.getParams());
+    public void getDeposit(ShopRequest shopRequest, Listener<DataDeposit> listener) {
+        Observable<Response<DepositResponse>> depositObservable = topAdsManagementService.getApi().getDashboardDeposit(shopRequest.getParams());
         compositeSubscription.add(depositObservable
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -109,11 +112,9 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
     }
 
     @Override
-    public void getShopInfo(String shopId, Listener<ShopModel> listener) {
+    public void getShopInfo(ShopRequest shopRequest, Listener<ShopModel> listener) {
         ShopService shopService = new ShopService();
-        Map<String, String> shopParamMap = new ArrayMap<>();
-        shopParamMap.put("shop_id", shopId);
-        Observable<Response<TkpdResponse>> observable = shopService.getApi().getShopInfo(AuthUtil.generateParams(context, shopParamMap));
+        Observable<Response<TkpdResponse>> observable = shopService.getApi().getShopInfo(AuthUtil.generateParams(context, shopRequest.getParams()));
         compositeSubscription.add(observable
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -126,6 +127,38 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
                     }
                 })
                 .subscribe(new SubscribeOnNext<ShopModel>(listener), new SubscribeOnError(listener)));
+    }
+
+    @Override
+    public void getTotalAd(ShopRequest shopRequest, Listener<TotalAd> listener) {
+        Observable<Response<TotalAdResponse>> depositObservable = topAdsManagementService.getApi().getDashboardTotalAd(shopRequest.getParams());
+        compositeSubscription.add(depositObservable
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .flatMap(new Func1<Response<TotalAdResponse>, Observable<TotalAd>>() {
+                    @Override
+                    public Observable<TotalAd> call(Response<TotalAdResponse> totalAdResponse) {
+                        return Observable.just(totalAdResponse.body().getData());
+                    }
+                })
+                .subscribe(new SubscribeOnNext<TotalAd>(listener), new SubscribeOnError(listener)));
+    }
+
+    @Override
+    public void getCreditList(Listener<List<DataCredit>> listener) {
+        Observable<Response<CreditResponse>> depositObservable = topAdsManagementService.getApi().getDashboardCredit();
+        compositeSubscription.add(depositObservable
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .flatMap(new Func1<Response<CreditResponse>, Observable<List<DataCredit>>>() {
+                    @Override
+                    public Observable<List<DataCredit>> call(Response<CreditResponse> response) {
+                        return Observable.just(response.body().getData());
+                    }
+                })
+                .subscribe(new SubscribeOnNext<List<DataCredit>>(listener), new SubscribeOnError(listener)));
     }
 
     @Override
@@ -204,34 +237,6 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
 
                     @Override
                     public void onNext(Response<DepositResponse> response) {
-                        if (response.isSuccessful()) {
-                            listener.onSuccess(response.body());
-                        } else {
-                            // TODO Define error
-                        }
-                    }
-                }));
-    }
-
-    @Override
-    public void getDashboardCredit(HashMap<String, String> params, final Listener<CreditResponse> listener) {
-        Observable<Response<CreditResponse>> observable = topAdsManagementService.getApi().getDashboardCredit(params);
-        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Response<CreditResponse>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        listener.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(Response<CreditResponse> response) {
                         if (response.isSuccessful()) {
                             listener.onSuccess(response.body());
                         } else {

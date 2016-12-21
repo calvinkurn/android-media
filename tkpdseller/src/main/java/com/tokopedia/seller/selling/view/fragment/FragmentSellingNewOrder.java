@@ -16,6 +16,8 @@ import android.widget.SearchView;
 import android.widget.Spinner;
 
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
 import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
 import com.tokopedia.seller.selling.view.viewHolder.OrderViewHolder;
@@ -31,7 +33,7 @@ import com.tokopedia.core.util.RefreshHandler;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -50,11 +52,11 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
         return new FragmentSellingNewOrder();
     }
 
-    @Bind(R2.id.order_list)
+    @BindView(R2.id.order_list)
     RecyclerView list;
-    @Bind(R2.id.fab)
+    @BindView(R2.id.fab)
     FloatingActionButton fab;
-    @Bind(R2.id.root)
+    @BindView(R2.id.root)
     View mainView;
     SearchView search;
     Spinner deadline;
@@ -106,6 +108,10 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
                 viewHolder.setOnItemClickListener(new BaseSellingViewHolder.OnItemClickListener() {
                     @Override
                     public void onItemClicked(int position) {
+                        if(adapter.isLoading()) {
+                            getPaging().setPage(getPaging().getPage() - 1);
+                            presenter.finishConnection();
+                        }
                         presenter.moveToDetail(position);
                     }
 
@@ -122,6 +128,12 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
                 return new OrderViewHolder(view);
             }
         };
+    }
+
+    @Override
+    public void onPause() {
+        presenter.finishConnection();
+        super.onPause();
     }
 
     @Override
@@ -209,7 +221,8 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
         initPresenter();
 
         presenter.getOrderList(isVisibleToUser);
-        presenter.checkValidationToSendGoogleAnalytic(isVisibleToUser, getActivity());
+        ScreenTracking.screenLoca(AppScreen.SCREEN_LOCA_NEWORDER);
+        ScreenTracking.screen(AppScreen.SCREEN_TX_SHOP_NEW_ORDER);
         super.setUserVisibleHint(isVisibleToUser);
     }
 
@@ -320,6 +333,16 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
     @Override
     public PagingHandler getPaging() {
         return page;
+    }
+
+    @Override
+    public void hideFab(){
+        fab.hide();
+    }
+
+    @Override
+    public void showFab(){
+        fab.show();
     }
 
     private SearchView.OnQueryTextListener onSearchQuery() {

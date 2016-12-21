@@ -33,7 +33,7 @@ import com.tokopedia.transaction.purchase.utils.FilterUtils;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * @author by Angga.Prasetiyo on 21/04/2016.
@@ -48,9 +48,9 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
     public static final int INSTANCE_STATUS = 1;
     public static final int INSTANCE_RECEIVE = 2;
 
-    @Bind(R2.id.order_list)
+    @BindView(R2.id.order_list)
     LazyListView lvTXList;
-    @Bind(R2.id.fab_filter)
+    @BindView(R2.id.fab_filter)
     FloatingActionButton fabFilter;
     private View loadMoreView;
 
@@ -86,6 +86,11 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
         bundle.putInt(TransactionPurchaseRouter.ARG_PARAM_EXTRA_INSTANCE_TYPE, INSTANCE_RECEIVE);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 
     public static TxListFragment instanceAllOrder(String txFilterID) {
@@ -524,11 +529,9 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
     @Override
     public void onClick(View v) {
         int i = v.getId();
-        switch (i) {
-            case R2.id.fab_filter:
-                bottomSheetFilterDialog.show();
-                break;
-        }
+        if (i == R.id.fab_filter)
+            bottomSheetFilterDialog.show();
+
     }
 
     @Override

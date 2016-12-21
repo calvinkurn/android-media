@@ -16,6 +16,6 @@ public class SubscribeOnError implements Action1<Throwable> {
 
     @Override
     public void call(Throwable throwable) {
-        listener.onSuccess(throwable);
+        listener.onError(throwable);
     }
 }

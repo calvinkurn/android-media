@@ -23,7 +23,7 @@ import com.tokopedia.transaction.purchase.fragment.TxSummaryFragment;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 
 /**
@@ -33,9 +33,9 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
         TxSummaryFragment.OnCenterMenuClickListener, GCMListenerService.NotificationListener,
         PurchaseTabAdapter.Listener, TxListFragment.StateFilterListener {
 
-    @Bind(R2.id.pager)
+    @BindView(R2.id.pager)
     ViewPager viewPager;
-    @Bind(R2.id.indicator)
+    @BindView(R2.id.indicator)
     TabLayout indicator;
 
     public List<String> tabContents;
@@ -61,7 +61,7 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
     @Override
     protected void setupBundlePass(Bundle extras) {
         drawerPosition = extras.getInt(TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION,
-                PurchaseTabAdapter.TAB_POSITION_PURCHASE_SUMMARY);
+                TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SUMMARY);
         stateTxFilterID = extras.getString(TransactionPurchaseRouter.EXTRA_STATE_TX_FILTER,
                 TransactionPurchaseRouter.ALL_STATUS_FILTER_ID);
     }
@@ -93,15 +93,15 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
     @Override
     protected void initVar() {
         tabContents = new ArrayList<>();
-        tabContents.add(PurchaseTabAdapter.TAB_POSITION_PURCHASE_SUMMARY,
+        tabContents.add(TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SUMMARY,
                 getString(R.string.title_dashboard_purchase));
-        tabContents.add(PurchaseTabAdapter.TAB_POSITION_PURCHASE_VERIFICATION,
-                getString(R.string.title_payment_verification));
-        tabContents.add(PurchaseTabAdapter.TAB_POSITION_PURCHASE_STATUS_ORDER,
+        tabContents.add(TransactionPurchaseRouter.TAB_POSITION_PURCHASE_VERIFICATION,
+                getString(R.string.title_payment_status));
+        tabContents.add(TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER,
                 getString(R.string.title_order_status));
-        tabContents.add(PurchaseTabAdapter.TAB_POSITION_PURCHASE_DELIVER_ORDER,
+        tabContents.add(TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVER_ORDER,
                 getString(R.string.title_receive_confirmation));
-        tabContents.add(PurchaseTabAdapter.TAB_POSITION_PURCHASE_ALL_ORDER,
+        tabContents.add(TransactionPurchaseRouter.TAB_POSITION_PURCHASE_ALL_ORDER,
                 getString(R.string.title_transaction_list));
     }
 
@@ -133,19 +133,19 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
 
     private void setDrawerSidePosition(int position) {
         switch (position) {
-            case PurchaseTabAdapter.TAB_POSITION_PURCHASE_SUMMARY:
+            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SUMMARY:
                 drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_TRANSACTION);
                 break;
-            case PurchaseTabAdapter.TAB_POSITION_PURCHASE_VERIFICATION:
-                drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_CONFIRM_PAYMENT);
+            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_VERIFICATION:
+                drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_PAYMENT_STATUS);
                 break;
-            case PurchaseTabAdapter.TAB_POSITION_PURCHASE_STATUS_ORDER:
+            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER:
                 drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_ORDER_STATUS);
                 break;
-            case PurchaseTabAdapter.TAB_POSITION_PURCHASE_DELIVER_ORDER:
+            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVER_ORDER:
                 drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_CONFIRM_SHIPPING);
                 break;
-            case PurchaseTabAdapter.TAB_POSITION_PURCHASE_ALL_ORDER:
+            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_ALL_ORDER:
                 switch (stateTxFilterID) {
                     case TransactionPurchaseRouter.TRANSACTION_CANCELED_FILTER_ID:
                         drawer.setDrawerPosition(

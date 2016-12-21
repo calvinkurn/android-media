@@ -19,10 +19,12 @@ import com.tkpd.library.viewpagerindicator.LinePageIndicator;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.discovery.catalog.listener.ICatalogActionFragment;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.discovery.catalog.adapter.CatalogImageAdapter;
 import com.tokopedia.discovery.catalog.adapter.CatalogSpecAdapterHelper;
 import com.tokopedia.discovery.catalog.listener.CatalogImageTouchListener;
-import com.tokopedia.discovery.catalog.listener.ICatalogActionFragment;
 import com.tokopedia.discovery.catalog.listener.IDetailCatalogView;
 import com.tokopedia.discovery.catalog.model.CatalogImage;
 import com.tokopedia.discovery.catalog.model.CatalogInfo;
@@ -30,14 +32,12 @@ import com.tokopedia.discovery.catalog.model.CatalogReview;
 import com.tokopedia.discovery.catalog.model.CatalogSpec;
 import com.tokopedia.discovery.catalog.presenter.CatalogDetailPresenter;
 import com.tokopedia.discovery.catalog.presenter.ICatalogDetailPresenter;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.product.model.share.ShareData;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -53,39 +53,39 @@ public class CatalogDetailFragment extends BasePresenterFragment<ICatalogDetailP
     private static final String STATE_CATALOG_SPEC_LIST = "STATE_CATALOG_SPEC_LIST";
     private static final String STATE_CATALOG_SHARE_DATA = "STATE_CATALOG_SHARE_DATA";
 
-    @Bind(R2.id.holder_btn_buy)
+    @BindView(R2.id.holder_btn_buy)
     View holderCatalogBtnBuy;
-    @Bind(R2.id.btn_buy)
+    @BindView(R2.id.btn_buy)
     TextView btnBuy;
-    @Bind(R2.id.holder_header_info)
+    @BindView(R2.id.holder_header_info)
     View holderCatalogHeaderInfo;
-    @Bind(R2.id.tv_catalog_name)
+    @BindView(R2.id.tv_catalog_name)
     TextView tvCatalogName;
-    @Bind(R2.id.tv_catalog_price)
+    @BindView(R2.id.tv_catalog_price)
     TextView tvCatalogPrice;
-    @Bind(R2.id.holder_catalog_desc)
+    @BindView(R2.id.holder_catalog_desc)
     View holderCatalogDesc;
-    @Bind(R2.id.expand_text_catalog_desc)
+    @BindView(R2.id.expand_text_catalog_desc)
     ExpandableTextView tvCatalogDesc;
-    @Bind(R2.id.holder_catalog_image)
+    @BindView(R2.id.holder_catalog_image)
     View holderCatalogImage;
-    @Bind(R2.id.vp_catalog_image)
+    @BindView(R2.id.vp_catalog_image)
     ViewPager vpCatalogImage;
-    @Bind(R2.id.indicator)
+    @BindView(R2.id.indicator)
     LinePageIndicator indicator;
-    @Bind(R2.id.holder_catalog_review)
+    @BindView(R2.id.holder_catalog_review)
     View holderReview;
-    @Bind(R2.id.tv_review_desc)
+    @BindView(R2.id.tv_review_desc)
     TextView tvReviewDesc;
-    @Bind(R2.id.tv_review_name)
+    @BindView(R2.id.tv_review_name)
     TextView tvReviewName;
-    @Bind(R2.id.tv_review_score)
+    @BindView(R2.id.tv_review_score)
     TextView tvReviewScore;
-    @Bind(R2.id.iv_review_logo)
+    @BindView(R2.id.iv_review_logo)
     ImageView ivReviewLogo;
-    @Bind(R2.id.holder_catalog_spec)
+    @BindView(R2.id.holder_catalog_spec)
     View holderCatalogSpec;
-    @Bind(R2.id.catalog_spec_list)
+    @BindView(R2.id.catalog_spec_list)
     RecyclerView rvCatalogSpec;
     private String catalogId;
     private ICatalogActionFragment catalogActionFragment;
@@ -111,6 +111,11 @@ public class CatalogDetailFragment extends BasePresenterFragment<ICatalogDetailP
         bundle.putString(ARG_EXTRA_CATALOG_ID, catalogId);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 
     @Override
@@ -389,4 +394,9 @@ public class CatalogDetailFragment extends BasePresenterFragment<ICatalogDetailP
                 && stateCatalogSpecList != null && stateShareData != null;
     }
 
+    @Override
+    public void onDestroyView() {
+        presenter.unsubscribeObservable();
+        super.onDestroyView();
+    }
 }

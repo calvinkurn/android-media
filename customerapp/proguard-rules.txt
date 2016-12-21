@@ -292,4 +292,6 @@
 
 -keep class com.tokopedia.core.home.model.** { *; }
 
+-keep class com.tokopedia.core.util.GlobalConfig
+
 

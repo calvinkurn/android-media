@@ -18,7 +18,7 @@ import com.tokopedia.discovery.catalog.model.SpecChild;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -101,9 +101,9 @@ class CatalogSpecAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     static class SpecChildHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R2.id.tv_label)
+        @BindView(R2.id.tv_label)
         TextView tvLabel;
-        @Bind(R2.id.tv_value)
+        @BindView(R2.id.tv_value)
         TextView tvValue;
 
         SpecChildHolder(View itemView) {
@@ -114,9 +114,9 @@ class CatalogSpecAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     static class SectionHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R2.id.tv_name)
+        @BindView(R2.id.tv_name)
         TextView tvName;
-        @Bind(R2.id.toggle_button_section)
+        @BindView(R2.id.toggle_button_section)
         ToggleButton toggleButton;
 
         SectionHolder(View itemView) {

@@ -8,6 +8,7 @@
     <string name="title_top_ads_dashboard">TopAds</string>
     <string name="title_top_ads_product">Produk</string>
     <string name="title_top_ads_store">Toko</string>
+    <string name="title_top_ads_add_credit">Tambah Kredit Promo</string>
 
     <string name="label_top_ads_impression">Tampil</string>
     <string name="label_top_ads_click">Klik</string>
@@ -15,6 +16,14 @@
     <string name="label_top_ads_conversion">Conversion</string>
     <string name="label_top_ads_average">Rata - Rata</string>
     <string name="label_top_ads_cost">Terpakai</string>
+    <string name="label_top_ads_groups">Groups</string>
+    <string name="label_top_ads_items">Items</string>
+
+    <string name="label_top_ads_choose_credit">Pilih</string>
+
+    <string name="top_ads_statistic_info_default_value">0</string>
+
+    <string name="top_ads_range_date_text">%1$s - %2$s</string>
 
     <string name="label_top_ads_deposit_desc">Saldo TopAds - %s</string>
     <string name="title_action_on">On</string>

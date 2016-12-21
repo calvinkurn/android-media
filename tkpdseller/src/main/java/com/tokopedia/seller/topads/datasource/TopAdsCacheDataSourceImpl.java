@@ -19,10 +19,12 @@ public class TopAdsCacheDataSourceImpl implements TopAdsCacheDataSource {
         localCacheHandler = new LocalCacheHandler(context, LOCAL_CACHE_NAME);
     }
 
+    @Override
     public void updateLastInsertStatistic() {
         localCacheHandler.setExpire(TopAdsConstant.CACHE_EXPIRED_TIME);
     }
 
+    @Override
     public boolean isStatisticDataExpired() {
         return localCacheHandler.isExpired();
     }

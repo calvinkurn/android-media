@@ -23,6 +23,9 @@ import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ListViewHelper;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.app.TkpdBaseV4Fragment;
+import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.seller.OrderHistoryView;
 import com.tokopedia.core.R;
@@ -35,7 +38,6 @@ import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.seller.selling.model.orderShipping.OrderCustomer;
 import com.tokopedia.seller.selling.model.orderShipping.OrderDestination;
 import com.tokopedia.seller.selling.model.orderShipping.OrderDetail;
-import com.tokopedia.seller.selling.model.orderShipping.OrderHistory;
 import com.tokopedia.seller.selling.model.orderShipping.OrderPayment;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShipment;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
@@ -61,7 +63,7 @@ import rx.subscriptions.CompositeSubscription;
  * Created by Tkpd_Eka on 2/24/2015.
  */
 @RuntimePermissions
-public class FragmentShopTxStatusDetailV2 extends Fragment {
+public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment {
 
     public FragmentShopTxStatusDetailV2() {
 
@@ -136,9 +138,14 @@ public class FragmentShopTxStatusDetailV2 extends Fragment {
         setViewData();
         setListener();
         if (getActivity() != null) {
-            ScreenTracking.screen(this);
+            ScreenTracking.screen(getScreenName());
         }
         return rootView;
+    }
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_TX_PEOPLE_DETAIL;
     }
 
     @Override
@@ -258,7 +265,7 @@ public class FragmentShopTxStatusDetailV2 extends Fragment {
     private void setOrderStatus() {
         holder.OrderStatusLayout.removeAllViews();
         for (int i = 0; (i < model.statusList.size() && i < 2); i++) {
-            //holder.OrderStatusLayout.addView(OrderStatusView.createInstance(getActivity(), model.statusList.get(i)).getView());
+            holder.OrderStatusLayout.addView(OrderStatusView.createInstance(getActivity(), model.statusList.get(i)).getView());
         }
     }
 

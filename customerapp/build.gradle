@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'android-apt'
+apply plugin: 'io.fabric'
 
 def getDpiId(String density) {
 
@@ -53,6 +55,15 @@ def archiveAPK(variant, output) {
     }
 }
 
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+    }
+}
+
 
 android {
 
@@ -61,7 +72,7 @@ android {
         defaultVersionName = "2.3.1";
     }
 
-    compileSdkVersion 24
+    compileSdkVersion 23
     buildToolsVersion '25'
     useLibrary 'org.apache.http.legacy'
     sourceSets {
@@ -162,14 +173,24 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(':tkpdinbox')
+    /*compile project(':tkpdinbox')
     compile project(':tkpddiscovery')
-    compile project(':tkpdtransaction')
+    compile project(':tkpdtransaction')*/
     compile project(':tkpdseller')
     compile project(':tkpdsession')
+
+    //testing
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    testCompile "org.mockito:mockito-core:2.0.57-beta"
     testCompile 'junit:junit:4.12'
+
+    compile 'com.github.hotchemi:permissionsdispatcher:2.2.0@aar'
+    apt 'com.github.hotchemi:permissionsdispatcher-processor:2.2.0'
+    compile 'com.jakewharton:butterknife:8.4.0'
+    apt 'com.jakewharton:butterknife-compiler:8.4.0'
+
     compile 'com.android.support:multidex:1.0.1'
+
 }

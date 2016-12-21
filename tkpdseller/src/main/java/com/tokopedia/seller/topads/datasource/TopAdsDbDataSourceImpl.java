@@ -67,17 +67,4 @@ public class TopAdsDbDataSourceImpl implements TopAdsDbDataSource {
                 }
         );
     }
-
-    @Override
-    public Observable<Void> deleteStatisticData() {
-        return Observable.create(
-                new Observable.OnSubscribe<Void>() {
-                    @Override
-                    public void call(Subscriber<? super Void> subscriber) {
-                        new Delete().from(Summary.class).execute();
-                        subscriber.onNext(null);
-                    }
-                }
-        );
-    }
 }

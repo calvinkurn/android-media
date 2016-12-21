@@ -6,6 +6,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.seller.topads.interactor.DashboardTopadsInteractor;
 import com.tokopedia.seller.topads.interactor.DashboardTopadsInteractorImpl;
+import com.tokopedia.seller.topads.model.data.Ad;
 import com.tokopedia.seller.topads.model.exchange.ProductResponse;
 
 import java.util.ArrayList;
@@ -20,17 +21,17 @@ public class TopAdsListPresenterImpl implements TopAdsListPresenter {
     private final TopAdsListView topAdsListView;
     private final Context context;
     private final DashboardTopadsInteractor dashboardTopadsInteractor;
-    private List<RecyclerViewItem> topAdsListItem;
+    private List<Ad> topAdsListItem;
 
     public TopAdsListPresenterImpl(Context context,TopAdsListView topAdsListView) {
         this.topAdsListView = topAdsListView;
         topAdsListItem = new ArrayList<>();
         this.context = context;
-        this.dashboardTopadsInteractor = new DashboardTopadsInteractorImpl();
+        this.dashboardTopadsInteractor = new DashboardTopadsInteractorImpl(context);
     }
 
     @Override
-    public List<RecyclerViewItem> getListTopAds() {
+    public List<Ad> getListTopAds() {
         return topAdsListItem;
     }
 
