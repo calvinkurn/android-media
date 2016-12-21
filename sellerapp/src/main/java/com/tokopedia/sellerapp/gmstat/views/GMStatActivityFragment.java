@@ -382,13 +382,21 @@ public class GMStatActivityFragment extends Fragment {
         initAdapter();
     }
 
-    private final long shopId = 560900;
+//    private final long shopId = 560900;
+    private long shopId;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if(context != null && context instanceof GMStat){
             this.gmstat = (GMStat) context;
+
+            // get shop id
+            try {
+                shopId = Long.parseLong(gmstat.getShopId());
+            }catch (NumberFormatException nfe){
+                throw new RuntimeException(nfe.getMessage()+"\n [need valid shop id]");
+            }
         }
     }
 

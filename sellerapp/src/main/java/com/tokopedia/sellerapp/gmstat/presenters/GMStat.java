@@ -11,4 +11,5 @@ public interface GMStat {
     GMStatNetworkController getGmStatNetworkController();
     ImageHandler getImageHandler();
     boolean isGoldMerchant();
+    String getShopId();
 }

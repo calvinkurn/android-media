@@ -30,8 +30,10 @@ public class GMStatActivity extends AppCompatActivity implements GMStat{
     ImageHandler imageHandler;
 
     public static final String IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT";
+    public static final String SHOP_ID = "SHOP_ID";
     boolean isAfterRotate = false;
     private boolean isGoldMerchant;
+    private String shopId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +60,7 @@ public class GMStatActivity extends AppCompatActivity implements GMStat{
     private void fetchIntent(Bundle extras) {
         if(extras != null){
             isGoldMerchant = extras.getBoolean(IS_GOLD_MERCHANT, false);
+            shopId = extras.getString(SHOP_ID, "");
         }
     }
 
@@ -92,5 +95,10 @@ public class GMStatActivity extends AppCompatActivity implements GMStat{
     @Override
     public boolean isGoldMerchant() {
         return isGoldMerchant;
+    }
+
+    @Override
+    public String getShopId() {
+        return shopId;
     }
 }

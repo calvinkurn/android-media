@@ -74,6 +74,10 @@
             android:label="@string/title_activity_gmstat"
             android:theme="@style/AppTheme">
         </activity>
+        <activity android:name=".gmstat.views.SetDateActivity"
+            android:label="@string/title_activity_gmstat"
+            android:theme="@style/AppTheme"
+            />
     </application>
 
 </manifest>

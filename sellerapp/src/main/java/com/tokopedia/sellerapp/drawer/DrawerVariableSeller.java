@@ -52,6 +52,7 @@ import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.var.ToolbarVariable;
 import com.tokopedia.sellerapp.R;
+import com.tokopedia.sellerapp.gmstat.views.GMStatActivity;
 import com.tokopedia.sellerapp.gmsubscribe.GMSubscribeActivity;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 
@@ -421,7 +422,10 @@ public class DrawerVariableSeller extends DrawerVariable {
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.SIGN_OUT);
                 break;
             case TkpdState.DrawerPosition.SELLER_GM_STAT:
-                CommonUtils.UniversalToast(context, "SELLER GM STAT MENU");
+                intent = new Intent(context, GMStatActivity.class);
+                intent.putExtra(GMStatActivity.SHOP_ID, SessionHandler.getShopID(context));
+                intent.putExtra(GMStatActivity.IS_GOLD_MERCHANT, SessionHandler.isGoldMerchant(context));
+                context.startActivity(intent);
                 break;
             default:
                 break;
