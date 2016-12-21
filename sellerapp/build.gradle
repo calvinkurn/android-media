@@ -147,7 +147,7 @@ android {
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 23
+        targetSdkVersion 24
         multiDexEnabled = true
         applicationId "com.tokopedia.sellerapp"
         resConfigs "en", "id"
