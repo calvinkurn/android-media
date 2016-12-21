@@ -1,15 +1,18 @@
 package com.tokopedia.core.discovery.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import org.parceler.Parcel;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DynamicFilterModel {
+
+public class DynamicFilterModel implements Parcelable {
 
     @SerializedName("process_time")
     @Expose
@@ -63,8 +66,9 @@ public class DynamicFilterModel {
         this.status = status;
     }
 
-    @Parcel
-    public static class Data {
+
+    public static class Data implements Parcelable, Serializable {
+
 
         String selected;
         String selectedOb;
@@ -124,11 +128,48 @@ public class DynamicFilterModel {
         public String toString() {
             return new Gson().toJson(this);
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(android.os.Parcel dest, int flags) {
+            dest.writeString(this.selected);
+            dest.writeString(this.selectedOb);
+            dest.writeList(this.filter);
+            dest.writeList(this.sort);
+        }
+
+        public Data() {
+        }
+
+        protected Data(android.os.Parcel in) {
+            this.selected = in.readString();
+            this.selectedOb = in.readString();
+            this.filter = new ArrayList<Filter>();
+            in.readList(this.filter, Filter.class.getClassLoader());
+            this.sort = new ArrayList<Sort>();
+            in.readList(this.sort, Sort.class.getClassLoader());
+        }
+
+        public static final Parcelable.Creator<Data> CREATOR = new Parcelable.Creator<Data>() {
+            @Override
+            public Data createFromParcel(android.os.Parcel source) {
+                return new Data(source);
+            }
+
+            @Override
+            public Data[] newArray(int size) {
+                return new Data[size];
+            }
+        };
     }
 
-    @Parcel
-    public static class Filter {
+    public static class Filter implements Parcelable, Serializable {
         public static final String TITLE_CATEGORY = "Kategori";
+
 
         @SerializedName("title")
         @Expose
@@ -197,11 +238,44 @@ public class DynamicFilterModel {
             filter.setSearch(search);
             return filter;
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(android.os.Parcel dest, int flags) {
+            dest.writeString(this.title);
+            dest.writeParcelable(this.search, flags);
+            dest.writeList(this.options);
+        }
+
+        public Filter() {
+        }
+
+        protected Filter(android.os.Parcel in) {
+            this.title = in.readString();
+            this.search = in.readParcelable(Search.class.getClassLoader());
+            this.options = new ArrayList<Option>();
+            in.readList(this.options, Option.class.getClassLoader());
+        }
+
+        public static final Parcelable.Creator<Filter> CREATOR = new Parcelable.Creator<Filter>() {
+            @Override
+            public Filter createFromParcel(android.os.Parcel source) {
+                return new Filter(source);
+            }
+
+            @Override
+            public Filter[] newArray(int size) {
+                return new Filter[size];
+            }
+        };
     }
 
 
-    @Parcel
-    public static class Option {
+    public static class Option implements Parcelable, Serializable {
 
         @SerializedName("name")
         @Expose
@@ -215,6 +289,7 @@ public class DynamicFilterModel {
         @SerializedName("input_type")
         @Expose
         String inputType;
+
 
         /**
          * @return The name
@@ -272,10 +347,44 @@ public class DynamicFilterModel {
             this.inputType = inputType;
         }
 
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(android.os.Parcel dest, int flags) {
+            dest.writeString(this.name);
+            dest.writeString(this.key);
+            dest.writeString(this.value);
+            dest.writeString(this.inputType);
+        }
+
+        public Option() {
+        }
+
+        protected Option(android.os.Parcel in) {
+            this.name = in.readString();
+            this.key = in.readString();
+            this.value = in.readString();
+            this.inputType = in.readString();
+        }
+
+        public static final Parcelable.Creator<Option> CREATOR = new Parcelable.Creator<Option>() {
+            @Override
+            public Option createFromParcel(android.os.Parcel source) {
+                return new Option(source);
+            }
+
+            @Override
+            public Option[] newArray(int size) {
+                return new Option[size];
+            }
+        };
     }
 
-    @Parcel
-    public static class Search {
+
+    public static class Search implements Parcelable, Serializable {
 
         @SerializedName("searchable")
         @Expose
@@ -283,6 +392,7 @@ public class DynamicFilterModel {
         @SerializedName("placeholder")
         @Expose
         String placeholder;
+
 
         /**
          * @return The searchable
@@ -312,10 +422,40 @@ public class DynamicFilterModel {
             this.placeholder = placeholder;
         }
 
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(android.os.Parcel dest, int flags) {
+            dest.writeValue(this.searchable);
+            dest.writeString(this.placeholder);
+        }
+
+        public Search() {
+        }
+
+        protected Search(android.os.Parcel in) {
+            this.searchable = (Integer) in.readValue(Integer.class.getClassLoader());
+            this.placeholder = in.readString();
+        }
+
+        public static final Parcelable.Creator<Search> CREATOR = new Parcelable.Creator<Search>() {
+            @Override
+            public Search createFromParcel(android.os.Parcel source) {
+                return new Search(source);
+            }
+
+            @Override
+            public Search[] newArray(int size) {
+                return new Search[size];
+            }
+        };
     }
 
-    @Parcel
-    public static class Sort {
+
+    public static class Sort implements Parcelable, Serializable {
 
         @SerializedName("name")
         @Expose
@@ -386,12 +526,46 @@ public class DynamicFilterModel {
             this.inputType = inputType;
         }
 
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.name);
+            dest.writeString(this.key);
+            dest.writeString(this.value);
+            dest.writeString(this.inputType);
+        }
+
+        public Sort() {
+        }
+
+        protected Sort(Parcel in) {
+            this.name = in.readString();
+            this.key = in.readString();
+            this.value = in.readString();
+            this.inputType = in.readString();
+        }
+
+        public static final Parcelable.Creator<Sort> CREATOR = new Parcelable.Creator<Sort>() {
+            @Override
+            public Sort createFromParcel(Parcel source) {
+                return new Sort(source);
+            }
+
+            @Override
+            public Sort[] newArray(int size) {
+                return new Sort[size];
+            }
+        };
     }
 
     /**
      * use this for listener
      */
-    public static final class DynamicFilterContainer implements ObjContainer<DynamicFilterModel> {
+    public static final class DynamicFilterContainer implements ObjContainer<DynamicFilterModel>, Parcelable {
 
         DynamicFilterModel dynamicFilterModel;
 
@@ -403,6 +577,64 @@ public class DynamicFilterModel {
         public DynamicFilterModel body() {
             return dynamicFilterModel;
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeParcelable(this.dynamicFilterModel, flags);
+        }
+
+        protected DynamicFilterContainer(Parcel in) {
+            this.dynamicFilterModel = in.readParcelable(DynamicFilterModel.class.getClassLoader());
+        }
+
+        public static final Parcelable.Creator<DynamicFilterContainer> CREATOR = new Parcelable.Creator<DynamicFilterContainer>() {
+            @Override
+            public DynamicFilterContainer createFromParcel(Parcel source) {
+                return new DynamicFilterContainer(source);
+            }
+
+            @Override
+            public DynamicFilterContainer[] newArray(int size) {
+                return new DynamicFilterContainer[size];
+            }
+        };
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.processTime);
+        dest.writeParcelable(this.data, flags);
+        dest.writeString(this.status);
+    }
+
+    public DynamicFilterModel() {
+    }
+
+    protected DynamicFilterModel(Parcel in) {
+        this.processTime = in.readString();
+        this.data = in.readParcelable(Data.class.getClassLoader());
+        this.status = in.readString();
+    }
+
+    public static final Parcelable.Creator<DynamicFilterModel> CREATOR = new Parcelable.Creator<DynamicFilterModel>() {
+        @Override
+        public DynamicFilterModel createFromParcel(Parcel source) {
+            return new DynamicFilterModel(source);
+        }
+
+        @Override
+        public DynamicFilterModel[] newArray(int size) {
+            return new DynamicFilterModel[size];
+        }
+    };
 }
