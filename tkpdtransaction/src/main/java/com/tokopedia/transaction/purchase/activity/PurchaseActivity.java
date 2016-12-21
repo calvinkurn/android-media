@@ -6,12 +6,12 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.view.inputmethod.InputMethodManager;
 
-import com.tokopedia.core.gcm.GCMListenerService;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.core.gcm.FCMMessagingService;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.util.SessionHandler;
@@ -30,7 +30,7 @@ import butterknife.BindView;
  * @author by anggaprasetiyo on 8/26/16.
  */
 public class PurchaseActivity extends DrawerPresenterActivity implements
-        TxSummaryFragment.OnCenterMenuClickListener, GCMListenerService.NotificationListener,
+        TxSummaryFragment.OnCenterMenuClickListener, FCMMessagingService.NotificationListener,
         PurchaseTabAdapter.Listener, TxListFragment.StateFilterListener {
 
     @BindView(R2.id.pager)
