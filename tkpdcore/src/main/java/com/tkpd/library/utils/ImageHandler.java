@@ -29,7 +29,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.tokopedia.core.gcm.GCMListenerService;
+import com.tokopedia.core.gcm.FCMMessagingService;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
 
@@ -264,7 +264,7 @@ public class ImageHandler {
 
     }
 
-    public static void loadImageBitmapNotification(Context context, String url, GCMListenerService.OnGetFileListener listener) {
+    public static void loadImageBitmapNotification(Context context, String url, FCMMessagingService.OnGetFileListener listener) {
         FutureTarget<File> futureTarget = Glide.with(context)
                 .load(url)
                 .downloadOnly(210, 100);

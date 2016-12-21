@@ -7,7 +7,7 @@ import android.view.MenuItem;
 
 import com.localytics.android.Localytics;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.gcm.GCMListenerService.NotificationListener;
+import com.tokopedia.core.gcm.FCMMessagingService.NotificationListener;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 

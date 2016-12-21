@@ -121,7 +121,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
-            if (allowSplit()) {
+            if (false) {
                 applicationVariants.all { variant ->
                     variant.outputs.each { output ->
                         String density = output.getFilter(com.android.build.OutputFile.DENSITY);
@@ -162,21 +162,11 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
     }
-    splits {
-        density {
-            enable allowSplit()
-            exclude "tvdpi", "xxxhdpi", "ldpi" //Add or modify the supported density here`
-            compatibleScreens 'small', 'normal', 'large', 'xlarge' //Discouraged to touch this
-        }
-    }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(':tkpdinbox')
     compile project(':tkpddiscovery')
-    compile project(':tkpdtransaction')
-    compile project(':tkpdseller')
     compile project(':tkpdsession')
 
     //testing

@@ -19,20 +19,21 @@ import com.tokopedia.core.var.TkpdState;
 import java.util.ArrayList;
 
 /**
- * Created by Herdi_WORK on 13.12.16.
+ * @author  by Herdi_WORK on 13.12.16.
  */
 
-public class GCMCacheManager {
-
+public class FCMCacheManager {
+    private String NOTIFICATION_CODE = "tkp_code";
+    private static final String GCM_STORAGE = "GCM_STORAGE";
     LocalCacheHandler cache;
     Context context;
 
-    public GCMCacheManager(Context ctx){
+    public FCMCacheManager(Context ctx){
         this(ctx, TkpdCache.G_CODE);
         context = ctx;
     }
 
-    public GCMCacheManager(Context ctx, String cacheCode){
+    public FCMCacheManager(Context ctx, String cacheCode){
         cache = new LocalCacheHandler(ctx, cacheCode);
         context = ctx;
     }
@@ -46,9 +47,9 @@ public class GCMCacheManager {
     }
 
     void resetCache(Bundle data) {
-        if (Integer.parseInt(data.getString("tkp_code")) > 600
-                && Integer.parseInt(data.getString("tkp_code")) < 802) {
-            doResetCache(Integer.parseInt(data.getString("tkp_code")));
+        if (Integer.parseInt(data.getString(NOTIFICATION_CODE)) > 600
+                && Integer.parseInt(data.getString(NOTIFICATION_CODE)) < 802) {
+            doResetCache(Integer.parseInt(data.getString(NOTIFICATION_CODE)));
         }
     }
 
@@ -193,7 +194,7 @@ public class GCMCacheManager {
         code = cache.getArrayListInteger(TkpdCache.Key.NOTIFICATION_CODE);
         try {
             for (int i = 0; i < code.size(); i++) {
-                if (code.get(i) == Integer.parseInt(data.getString("tkp_code"))) {
+                if (code.get(i) == Integer.parseInt(data.getString(NOTIFICATION_CODE))) {
                     content.remove(i);
                     code.remove(i);
                     desc.remove(i);
@@ -201,7 +202,7 @@ public class GCMCacheManager {
             }
         } catch (Exception e) {
             Crashlytics.log(Log.ERROR, "PUSH NOTIF - IndexOutOfBounds",
-                    "tkp_code:" + Integer.parseInt(data.getString("tkp_code")) +
+                    "tkp_code:" + Integer.parseInt(data.getString(NOTIFICATION_CODE)) +
                             " size contentArray " + content.size() +
                             " size codeArray " + code.size() +
                             " size Desc " + desc.size());
@@ -209,7 +210,7 @@ public class GCMCacheManager {
         }
 
         content.add(title);
-        code.add(Integer.parseInt(data.getString("tkp_code")));
+        code.add(Integer.parseInt(data.getString(NOTIFICATION_CODE)));
         desc.add(descString);
 
         cache.putArrayListString(TkpdCache.Key.NOTIFICATION_CONTENT, content);
@@ -227,36 +228,36 @@ public class GCMCacheManager {
     }
 
     public static void storeRegId(String id, Context context){
-        LocalCacheHandler cache = new LocalCacheHandler(context, "GCM_STORAGE");
+        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
         cache.putString("gcm_id", id);
         cache.applyEditor();
     }
 
     public static String getRegistrationId(Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, "GCM_STORAGE");
+        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
         return cache.getString("gcm_id", "");
     }
 
     public static void clearRegistrationId(Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, "GCM_STORAGE");
+        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
         cache.putString("gcm_id", null);
         cache.applyEditor();
     }
 
     public static void storeGCMRegId(String id, Context context){
-        LocalCacheHandler cache = new LocalCacheHandler(context, "GCM_STORAGE");
+        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
         cache.putString("gcm_id_loca", id);
         cache.applyEditor();
     }
 
 
     public static String getGCMRegistrationId(Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, "GCM_STORAGE");
+        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
         return cache.getString("gcm_id_loca", "");
     }
 
     public static void clearGCMRegistrationId(Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, "GCM_STORAGE");
+        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
         cache.putString("gcm_id_loca", null);
         cache.applyEditor();
     }
