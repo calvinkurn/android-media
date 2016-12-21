@@ -173,9 +173,9 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(':tkpdinbox')
+    /*compile project(':tkpdinbox')
     compile project(':tkpddiscovery')
-    compile project(':tkpdtransaction')
+    compile project(':tkpdtransaction')*/
     compile project(':tkpdseller')
     compile project(':tkpdsession')
 

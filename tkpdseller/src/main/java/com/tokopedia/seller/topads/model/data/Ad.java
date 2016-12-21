@@ -2,10 +2,11 @@ package com.tokopedia.seller.topads.model.data;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.var.RecyclerViewItem;
+import com.tokopedia.core.var.TkpdState;
 
 
-public class Ad {
-
+public class Ad extends RecyclerViewItem {
     @SerializedName("ad_id")
     @Expose
     private Integer adId;
@@ -96,6 +97,10 @@ public class Ad {
     @SerializedName("product_uri")
     @Expose
     private String productUri;
+
+    public Ad(){
+        setType(TkpdState.RecyclerViewItemAd.AD_TYPE);
+    }
 
     /**
      * @return The adId

@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">tkpdseller</string>
 
+    <string name="title_topads_list">Produk</string>
+    <string name="title_topads_dashboard">TopAds</string>
+    <string name="title_topads_product">Produk</string>
+    <string name="title_topads_store">Toko</string>
     <string name="title_top_ads_dashboard">TopAds</string>
     <string name="title_top_ads_product">Produk</string>
     <string name="title_top_ads_store">Toko</string>
@@ -22,4 +26,6 @@
     <string name="top_ads_range_date_text">%1$s - %2$s</string>
 
     <string name="label_top_ads_deposit_desc">Saldo TopAds - %s</string>
+    <string name="title_action_on">On</string>
+    <string name="title_action_off">Off</string>
 </resources>

@@ -515,7 +515,6 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
         void onTrack(SellingStatusTxModel model);
     }
 
-
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     public void onStartBarcodeScanner() {
         startActivityForResult(CommonUtils.requestBarcodeScanner(), REQUEST_CODE_BARCODE);
@@ -526,7 +525,6 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         FragmentSellingStatusPermissionsDispatcher.onRequestPermissionsResult(FragmentSellingStatus.this, requestCode, grantResults);
     }
-
 
     @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     void showRationaleForStorageAndCamera(final PermissionRequest request) {
