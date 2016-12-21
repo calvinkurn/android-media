@@ -168,6 +168,7 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':tkpddiscovery')
     compile project(':tkpdsession')
+    compile project(':tkpdseller')
 
     //testing
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
