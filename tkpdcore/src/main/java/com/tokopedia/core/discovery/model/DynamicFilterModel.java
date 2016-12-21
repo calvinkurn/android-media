@@ -20,10 +20,8 @@ public class DynamicFilterModel {
     @SerializedName("status")
     @Expose
     String status;
-    private static Gson gson;
 
     public DynamicFilterModel() {
-        gson = new Gson();
     }
 
     /**
