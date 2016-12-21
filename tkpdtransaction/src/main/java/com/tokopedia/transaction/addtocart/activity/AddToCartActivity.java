@@ -206,7 +206,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     protected void setViewListener() {
         ImageHandler.loadImageRounded2(this, ivProduct, productCartPass.getImageUri());
         this.tvProductName.setText(productCartPass.getProductName());
-        etQuantity.addTextChangedListener(this);
     }
 
     @Override
@@ -781,6 +780,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             }
             hideInitLoading();
         }
+        etQuantity.addTextChangedListener(this);
     }
 
     private void showBuyError(String errorMessage) {
