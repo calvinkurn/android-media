@@ -13,4 +13,10 @@
     <color name="darkness">#66000000</color>
     <color name="lightness">#00000000</color>
     <color name="transparent">#00000000</color>
+
+    <!-- GMStat -->
+    <color name="arrow_down">#ff5722</color>
+    <color name="arrow_up">#42b549</color>
+    <color name="color_separator">#9A9A9A</color>
+
 </resources>

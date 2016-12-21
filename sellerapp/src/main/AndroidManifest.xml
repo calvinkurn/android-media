@@ -69,6 +69,11 @@
             android:value="@string/key_appsflyer" />
 
         <activity android:name=".onboarding.activity.OnboardingSellerActivity"></activity>
+        <activity
+            android:name=".gmstat.views.GMStatActivity"
+            android:label="@string/title_activity_gmstat"
+            android:theme="@style/AppTheme">
+        </activity>
     </application>
 
 </manifest>

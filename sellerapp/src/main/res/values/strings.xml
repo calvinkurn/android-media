@@ -8,4 +8,43 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_gmstat">GMStatActivity</string>
+
+    <string name="title_activity_gmstat">GMStatActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="set_date">Atur Tanggal</string>
+    <string name="title_transaction_success">Transaksi Berhasil</string>
+
+    <!-- untuk tanggal gmstat -->
+    <string-array name="month_names">
+        <item>Januari</item>
+        <item>Februari</item>
+        <item>Maret</item>
+        <item>April</item>
+        <item>Mei</item>
+        <item>Juni</item>
+        <item>Juli</item>
+        <item>Agustus</item>
+        <item>September</item>
+        <item>Oktober</item>
+        <item>November</item>
+        <item>Desember</item>
+    </string-array>
+
+    <!-- untuk tanggal gmstat -->
+    <string-array name="month_names_abrev">
+        <item>jan</item>
+        <item>feb</item>
+        <item>mar</item>
+        <item>apr</item>
+        <item>mei</item>
+        <item>jun</item>
+        <item>jul</item>
+        <item>agu</item>
+        <item>sep</item>
+        <item>okt</item>
+        <item>nov</item>
+        <item>des</item>
+    </string-array>
+
 </resources>
