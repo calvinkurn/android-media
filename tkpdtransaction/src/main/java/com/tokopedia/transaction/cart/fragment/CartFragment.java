@@ -37,6 +37,7 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
@@ -48,6 +49,7 @@ import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
+import com.tokopedia.transaction.cart.model.cartdata.CartShop;
 import com.tokopedia.transaction.cart.model.cartdata.GatewayList;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
@@ -514,6 +516,16 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void onUpdateInsuranceCartItem(CartItem cartData, boolean useInsurance) {
         presenter.processUpdateInsurance(cartData, useInsurance);
+    }
+
+    @Override
+    public void onCartProductDetailClicked(ProductPass productPass) {
+
+    }
+
+    @Override
+    public void onShopDetailInfoClicked(CartShop cartShop) {
+
     }
 
     @Override

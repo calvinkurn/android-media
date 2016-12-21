@@ -31,4 +31,5 @@ public interface ICartPresenter {
     void processGetTickerGTM();
 
     void processValidationCheckoutData();
+
 }

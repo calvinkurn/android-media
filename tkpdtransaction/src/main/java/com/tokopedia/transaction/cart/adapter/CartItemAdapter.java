@@ -27,6 +27,7 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.model.CartInsurance;
@@ -35,6 +36,7 @@ import com.tokopedia.transaction.cart.model.CartPartialDeliver;
 import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
+import com.tokopedia.transaction.cart.model.cartdata.CartShop;
 import com.tokopedia.transaction.customview.expandablelayout.ExpandableLayoutListenerAdapter;
 import com.tokopedia.transaction.customview.expandablelayout.ExpandableLinearLayout;
 import com.tokopedia.transaction.customview.expandablelayout.Utils;
@@ -231,6 +233,13 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 holder.holderDetailCart.toggle();
             }
         });
+
+        holder.tvShopName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cartItemActionListener.onShopDetailInfoClicked(cartData.getCartShop());
+            }
+        });
     }
 
     private ObjectAnimator createRotateAnimator(final View target, final float from,
@@ -248,6 +257,12 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             public void onCancelCartProduct(CartProduct cartProduct) {
                 if (cartItemActionListener != null)
                     cartItemActionListener.onCancelCartProduct(cartData, cartProduct);
+            }
+
+            @Override
+            public void onProductCartItemClicked(ProductPass productPass) {
+                if (cartItemActionListener != null)
+                    cartItemActionListener.onCartProductDetailClicked(productPass);
             }
         });
         adapterProduct.fillDataList(cartData.getCartProducts());
@@ -701,5 +716,9 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void onSubmitEditCartItem(CartItem cartData, List<ProductEditData> cartProductEditDataList);
 
         void onUpdateInsuranceCartItem(CartItem cartData, boolean useInsurance);
+
+        void onCartProductDetailClicked(ProductPass productPass);
+
+        void onShopDetailInfoClicked(CartShop cartShop);
     }
 }
