@@ -21,7 +21,7 @@ import com.google.gson.Gson;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.discovery.model.Breadcrumb;
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.discovery.dynamicfilter.fragments.DynamicFilterCategoryFragment;
 import com.tokopedia.discovery.dynamicfilter.fragments.DynamicFilterListFragment;
 import com.tokopedia.discovery.dynamicfilter.fragments.DynamicFilterOtherFragment;
@@ -117,15 +117,15 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
 
 
     @Override
-    public void setFragmentForFirstTime3(List<DynamicFilterModel.Filter> data) {
-        setFragmentBasedOnData(DynamicFilterModel.Filter.createCategory());
+    public void setFragmentForFirstTime3(List<Filter> data) {
+        setFragmentBasedOnData(Filter.createCategory());
         Fragment dynamicFilterListFragment = DynamicFilterListFragment.newInstance2(data);
         setFragment(dynamicFilterListFragment, DynamicFilterListView.FRAGMENT_TAG, R.id.dynamic_filter_list);
     }
 
     @Override
-    public void setFragmentBasedOnData(DynamicFilterModel.Filter data) {
-        if (data.getTitle().equals(DynamicFilterModel.Filter.TITLE_CATEGORY)) {
+    public void setFragmentBasedOnData(Filter data) {
+        if (data.getTitle().equals(Filter.TITLE_CATEGORY)) {
             DynamicFilterCategoryFragment categoryFragment =
                     DynamicFilterCategoryFragment.newInstance(
                             dynamicFilterPresenter.getBreadCrumb(), dynamicFilterPresenter.getFilterCategory(),
@@ -279,7 +279,7 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
 
     public static void moveTo(FragmentActivity fragmentActivity, Map<String, String> filterList,
                               List<Breadcrumb> productBreadCrumbList,
-                              List<DynamicFilterModel.Filter> filterCategoryList,
+                              List<Filter> filterCategoryList,
                               String currentCategory, String source) {
         if (fragmentActivity != null) {
             Intent intent = new Intent(fragmentActivity, DynamicFilterActivity.class);
