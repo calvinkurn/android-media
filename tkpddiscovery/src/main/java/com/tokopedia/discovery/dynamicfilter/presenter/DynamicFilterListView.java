@@ -1,6 +1,6 @@
 package com.tokopedia.discovery.dynamicfilter.presenter;
 
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.presenter.BaseView;
 
 import java.util.List;
@@ -14,5 +14,5 @@ public interface DynamicFilterListView extends BaseView {
 
     void setupRecyclerView();
 
-    void setupAdapter(List<DynamicFilterModel.Filter> dataList);
+    void setupAdapter(List<Filter> dataList);
 }
