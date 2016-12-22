@@ -35,7 +35,7 @@ public class InboxTicketDetailAdapter extends DataBindAdapter {
         data.getTicketReply().setTicketReplyData(new ArrayList<TicketReplyDatum>());
         headerView = new HeaderTicketDataBinder(this, data, context);
         headerView.setPresenter(presenter);
-        ticketView = new TicketDataBinder(this, new ArrayList<TicketReplyDatum>(), context);
+        ticketView = new TicketDataBinder(this, data.getTicketReply().getTicketReplyData(), context);
     }
 
 
@@ -90,7 +90,12 @@ public class InboxTicketDetailAdapter extends DataBindAdapter {
         return data;
     }
 
-    public TicketDataBinder getTicketView(){
+    public TicketDataBinder getTicketView() {
         return ticketView;
     }
+
+    public HeaderTicketDataBinder getHeaderView() {
+        return headerView;
+    }
+
 }
