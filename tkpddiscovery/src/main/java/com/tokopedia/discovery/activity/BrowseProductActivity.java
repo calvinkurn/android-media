@@ -982,12 +982,10 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                         }
 //                        Map<String, String> filters = filtersMap.get(browseProductActivityModel.getActiveTab());
 //                        Map<String, String> filters = mBrowseProductAtribut.getFiltersMap().get(browseProductActivityModel.getActiveTab());
-                        Map<String, String> filters = mFilterMapAtribut
-                                .getFiltersMap()
-                                .get(browseProductActivityModel.getActiveTab())
-                                .getValue();
+                        Map<String, String> filters;
 
-                        if (filters != null) {
+                        if ( browseProductActivityModel != null ) {
+                            filters = browseProductActivityModel.getFilterOptions();
                             for (Map.Entry<String, String> set : filters.entrySet()) {
                                 if (set.getKey().equals("ob")) {
                                     body.query.ob = set.getValue();
