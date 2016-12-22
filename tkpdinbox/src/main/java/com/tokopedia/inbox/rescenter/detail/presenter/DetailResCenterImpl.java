@@ -40,7 +40,6 @@ import java.util.List;
 public class DetailResCenterImpl implements DetailResCenterPresenter {
 
     private static final String TAG = DetailResCenterImpl.class.getSimpleName();
-    private static final int REQUEST_CODE_SCAN_BARCODE = 4;
     private static final int REQUEST_APPEAL_RESOLUTION = 5;
     private static final int REQUEST_INPUT_SHIPPING = 6;
     private static final int REQUEST_EDIT_SHIPPING = 7;
@@ -91,18 +90,6 @@ public class DetailResCenterImpl implements DetailResCenterPresenter {
     }
 
     @Override
-    public void showScanBarcode(Context context) {
-        Intent intent = new Intent("com.google.zxing.client.android.SCAN");
-        ((Activity) context).startActivityForResult(intent, REQUEST_CODE_SCAN_BARCODE);
-    }
-
-    @Override
-    public void actionEditShippingRefNum() {
-        view.setProgressLoading(true);
-        mListener.actionUpdateShippingRefNum(view.getResolutionID());
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         onActivityResultUploadImage(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
@@ -142,12 +129,6 @@ public class DetailResCenterImpl implements DetailResCenterPresenter {
     public void processReply() {
         view.setProgressLoading(true);
         mListener.replyConversation(view.getResolutionID());
-    }
-
-    @Override
-    public void processChangeSolution() {
-        view.setProgressLoading(true);
-        mListener.changeSolution(view.getResolutionID());
     }
 
     @Override
@@ -291,12 +272,6 @@ public class DetailResCenterImpl implements DetailResCenterPresenter {
     public void actionAcceptAdminSolution() {
         view.setProgressLoading(true);
         mListener.actionAcceptAdminSolution(view.getResolutionID());
-    }
-
-    @Override
-    public void actionInputShippingRefNum() {
-        view.setProgressLoading(true);
-        mListener.actionInputShippingRefNum(view.getResolutionID());
     }
 
     @Override
