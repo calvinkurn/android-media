@@ -457,7 +457,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                     public void onRetryClicked() {
                         presenter.requestProductDetail(context, productPass, INIT_REQUEST, false);
                     }
-                });
+                }).showRetrySnackbar();
     }
 
     @Override

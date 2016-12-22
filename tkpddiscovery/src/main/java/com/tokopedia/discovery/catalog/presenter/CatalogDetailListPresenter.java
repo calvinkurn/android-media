@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.discovery.catalog.interactor.CatalogDataInteractor;
 import com.tokopedia.discovery.catalog.interactor.ICataloDataInteractor;
 import com.tokopedia.discovery.catalog.listener.ICatalogDetailListView;
@@ -113,8 +114,18 @@ public class CatalogDetailListPresenter implements ICatalogDetailListPresenter {
     public void goToProductDetailPage(CatalogDetailItemProduct product) {
         Bundle bundle = new Bundle();
         Intent intent = new Intent(view.getActivity(), ProductInfoActivity.class);
-        bundle.putString("product_id", product.getId());
+        bundle.putParcelable(ProductInfoActivity.EXTRA_PRODUCT_PASS, getProductDataToPass(product));
         intent.putExtras(bundle);
         view.getActivity().startActivity(intent);
     }
+
+    private ProductPass getProductDataToPass(CatalogDetailItemProduct product) {
+        return ProductPass.Builder.aProductPass()
+                .setProductPrice(product.getPrice())
+                .setProductId(product.getId())
+                .setProductName(product.getName())
+                .setProductImage(product.getImageUri())
+                .build();
+    }
+
 }
