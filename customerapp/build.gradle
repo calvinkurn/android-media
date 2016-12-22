@@ -178,7 +178,6 @@ dependencies {
     compile project(':tkpdtransaction')
     compile project(':tkpdseller')
     compile project(':tkpdsession')
-    compile project(':tkpdseller')
 
     //testing
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
