@@ -350,5 +350,9 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
         adapter.notifyDataSetChanged();
     }
 
-
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.onDestroyView();
+    }
 }

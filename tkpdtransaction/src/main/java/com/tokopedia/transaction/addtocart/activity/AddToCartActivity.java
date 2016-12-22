@@ -578,7 +578,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK && data != null) {
             tvErrorShipping.setVisibility(View.GONE);
-            etQuantity.setFocusable(false);
             switch (requestCode) {
                 case REQUEST_CHOOSE_ADDRESS:
                     renderFormAddress(Destination.convertFromBundle(data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS)));
@@ -651,7 +650,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
 
     @OnClick(R2.id.increase_button)
     void actionIncreaseQuantity() {
-        etQuantity.requestFocus();
         if (!etQuantity.getText().toString().isEmpty()
                 && Integer.parseInt(etQuantity.getText().toString()) > 0) {
             etQuantity.setText(String
@@ -661,7 +659,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
 
     @OnClick(R2.id.decrease_button)
     void actionDecreaseQuantity() {
-        etQuantity.requestFocus();
         if (!etQuantity.getText().toString().isEmpty()
                 && Integer.parseInt(etQuantity.getText().toString()) > 1) {
             etQuantity.setText(String
@@ -700,7 +697,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         } else if (orderData.getAddress() == null) {
             showErrorMessage(getString(R.string.error_no_address));
-        } else if (getCurrentFocus() == etQuantity) {
+        } else {
             CommonUtils.dumper("rates/v1 kerorates called aftertextchanged");
             orderData.setWeight(CommonUtils.round((Double.parseDouble(orderData.getInitWeight()) * Double.parseDouble(s.toString())), 2) + "");
             tilAmount.setError(null);

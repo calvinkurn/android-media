@@ -27,10 +27,11 @@ import com.tokopedia.core.tracking.presenter.TrackingFragmentPresenterImpl;
 import butterknife.BindView;
 
 /**
- * Created by Alifa on 10/12/2016.
+ * @author Alifa on 10/12/2016.
  */
 
-public class TrackingFragment extends BasePresenterFragment<TrackingFragmentPresenter> implements TrackingFragmentView {
+public class TrackingFragment extends BasePresenterFragment<TrackingFragmentPresenter> implements
+        TrackingFragmentView {
 
     @BindView(R2.id.mainView)
     View mainView;
@@ -292,7 +293,7 @@ public class TrackingFragment extends BasePresenterFragment<TrackingFragmentPres
                 break;
             default:
                 statusView.setBackgroundResource(R.drawable.bg_yellow_border_yelow);
-                sendingStatus.setText("Status : On Process");
+                sendingStatus.setText(R.string.order_delivered_on_process);
                 break;
         }
         statusView.setPadding(paddingDefault, paddingDefault, paddingDefault, paddingDefault);
