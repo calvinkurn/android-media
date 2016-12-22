@@ -20,6 +20,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.presenter.TopAdsListPresenter;
 import com.tokopedia.seller.topads.presenter.TopAdsListPresenterImpl;
 import com.tokopedia.seller.topads.view.fragment.TopAdsPaymentCreditFragment;
+import com.tokopedia.seller.topads.view.fragment.TopAdsSingleListFragment;
 import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
 import com.tokopedia.seller.topads.view.adapter.TopAdsSingleListAdapter;
 import com.tokopedia.seller.topads.view.adapter.TopAdsListAdapter;
@@ -33,7 +34,7 @@ public class TopAdsSingleListActivity extends TActivity {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_top_ads_payment_credit);
         getFragmentManager().beginTransaction().disallowAddToBackStack()
-                .add(R.id.container, TopAdsPaymentCreditFragment.createInstance(), TopAdsPaymentCreditFragment.class.getSimpleName())
+                .add(R.id.container, TopAdsSingleListFragment.createInstance(), TopAdsSingleListFragment.class.getSimpleName())
                 .commit();
     }
 

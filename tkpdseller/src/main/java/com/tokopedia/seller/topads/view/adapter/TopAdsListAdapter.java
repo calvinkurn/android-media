@@ -1,13 +1,17 @@
 package com.tokopedia.seller.topads.view.adapter;
 
 import android.content.Context;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.ViewGroup;
 
+import com.bignerdranch.android.multiselector.ModalMultiSelectorCallback;
+import com.bignerdranch.android.multiselector.MultiSelector;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
-import com.tokopedia.seller.topads.model.data.Ad;
 import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
-import com.tokopedia.seller.topads.view.viewholder.TopAdsSingleViewHolder;
+import com.tokopedia.seller.topads.view.viewholder.TopAdsViewHolder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,8 +27,44 @@ public abstract class TopAdsListAdapter<T> extends BaseLinearRecyclerViewAdapter
 
     private final Context context;
     public final TopAdsListPromoViewListener topAdsListPromoViewListener;
+    protected MultiSelector multiSelector = new MultiSelector();
     public List<T> data = new ArrayList<>();
     public HashMap<Integer, Boolean> checkeds = new HashMap<>();
+
+    ModalMultiSelectorCallback selectionMode = new ModalMultiSelectorCallback(multiSelector) {
+        @Override
+        public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+            super.onCreateActionMode(actionMode, menu);
+            topAdsListPromoViewListener.setActionMode(actionMode);
+            topAdsListPromoViewListener.setMenuInflater(menu);
+            topAdsListPromoViewListener.disableRefreshPull();
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+            actionMode.setTitle(String.valueOf(multiSelector.getSelectedPositions().size()));
+            return true;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+            if(topAdsListPromoViewListener.getActionOnSelectedMenu(actionMode, menuItem)){
+                finishSelection();
+                return true;
+            }else{
+                return false;
+            }
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode actionMode) {
+            super.onDestroyActionMode(actionMode);
+            topAdsListPromoViewListener.enableRefreshPull();
+            finishSelection();
+        }
+    };
+
 
     public TopAdsListAdapter(Context context, List<T> data, TopAdsListPromoViewListener topAdsListPromoViewListener) {
         super();
@@ -44,7 +84,7 @@ public abstract class TopAdsListAdapter<T> extends BaseLinearRecyclerViewAdapter
         switch (viewType) {
             case AD_GROUP_TYPE:
             case AD_SINGLE_TYPE:
-                return TopAdsSingleViewHolder.createInstance(context, parent);
+                return TopAdsViewHolder.createInstance(context, parent);
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }
@@ -55,7 +95,7 @@ public abstract class TopAdsListAdapter<T> extends BaseLinearRecyclerViewAdapter
         switch (getItemViewType(position)) {
             case AD_GROUP_TYPE:
             case AD_SINGLE_TYPE:
-                TopAdsSingleViewHolder itemHolder = (TopAdsSingleViewHolder) holder;
+                TopAdsViewHolder itemHolder = (TopAdsViewHolder) holder;
                 bindDataAds(position, itemHolder);
                 break;
             default:
@@ -86,6 +126,11 @@ public abstract class TopAdsListAdapter<T> extends BaseLinearRecyclerViewAdapter
         return checkeds.containsKey(position) ? checkeds.get(position) : false;
     }
 
+    private void finishSelection() {
+        multiSelector.clearSelections();
+        clearChecked();
+    }
+
     public void setData(List<T> data){
         this.data.addAll(data);
         notifyDataSetChanged();
@@ -93,6 +138,11 @@ public abstract class TopAdsListAdapter<T> extends BaseLinearRecyclerViewAdapter
 
     public void clearData(){
         this.data.clear();
+        finishSelection();
+        notifyDataSetChanged();
+    }
+
+    public void clearChecked(){
         checkeds.clear();
         notifyDataSetChanged();
     }
@@ -101,5 +151,5 @@ public abstract class TopAdsListAdapter<T> extends BaseLinearRecyclerViewAdapter
 
     public abstract void bindDataAds(int position, RecyclerView.ViewHolder viewHolder);
 
-    public abstract List<T> getSelectedAds(List<Integer> selectedPositions);
+    public abstract List<T> getSelectedAds();
 }

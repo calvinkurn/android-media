@@ -3,32 +3,25 @@ package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
-import android.support.annotation.IntegerRes;
 import android.support.annotation.MenuRes;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.bignerdranch.android.multiselector.ModalMultiSelectorCallback;
-import com.bignerdranch.android.multiselector.MultiSelector;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.presenter.TopAdsListPresenter;
-import com.tokopedia.seller.topads.presenter.TopAdsListPresenterImpl;
-import com.tokopedia.seller.topads.view.activity.TopAdsSingleListActivity;
 import com.tokopedia.seller.topads.view.adapter.TopAdsListAdapter;
-import com.tokopedia.seller.topads.view.adapter.TopAdsSingleListAdapter;
 import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
 
 import butterknife.BindView;
@@ -49,7 +42,6 @@ public abstract class TopAdsListFragment<T extends TopAdsListAdapter, V extends 
 
     protected T adapter;
     private RefreshHandler refresh;
-    protected MultiSelector multiSelector = new MultiSelector();
     private ActionMode actionMode;
 
     public TopAdsListFragment() {
@@ -61,35 +53,6 @@ public abstract class TopAdsListFragment<T extends TopAdsListAdapter, V extends 
         inflater.inflate(R.menu.promo_topads, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
-
-    ModalMultiSelectorCallback selectionMode = new ModalMultiSelectorCallback(multiSelector) {
-        @Override
-        public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
-            super.onCreateActionMode(actionMode, menu);
-            TopAdsListFragment.this.actionMode = actionMode;
-            getActivity().getMenuInflater().inflate(getMenuActionSelected(), menu);
-            refresh.setPullEnabled(false);
-            return true;
-        }
-
-        @Override
-        public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
-            actionMode.setTitle(String.valueOf(multiSelector.getSelectedPositions().size()));
-            return true;
-        }
-
-        @Override
-        public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
-            return getActionOnSelectedMenu(actionMode, menuItem);
-        }
-
-        @Override
-        public void onDestroyActionMode(ActionMode actionMode) {
-            super.onDestroyActionMode(actionMode);
-            refresh.setPullEnabled(true);
-            multiSelector.clearSelections();
-        }
-    };
 
     @Override
     protected boolean isRetainInstance() {
@@ -150,7 +113,7 @@ public abstract class TopAdsListFragment<T extends TopAdsListAdapter, V extends 
 
     @Override
     protected void setActionVar() {
-
+        presenter.getListTopAdsFromNet();
     }
 
     private RefreshHandler.OnRefreshHandlerListener onRefreshListener() {
@@ -162,10 +125,54 @@ public abstract class TopAdsListFragment<T extends TopAdsListAdapter, V extends 
         };
     }
 
+    @Override
+    public void setActionMode(ActionMode actionMode) {
+        this.actionMode = actionMode;
+    }
+
+    @Override
+    public void setMenuInflater(Menu menu) {
+        getActivity().getMenuInflater().inflate(getMenuActionSelected(), menu);
+    }
+
+    @Override
+    public void disableRefreshPull() {
+        refresh.setPullEnabled(false);
+    }
+
+    @Override
+    public void enableRefreshPull() {
+        refresh.setPullEnabled(true);
+    }
+
+    @Override
+    public void startSupportActionMode(ModalMultiSelectorCallback selectionMode) {
+        if(getActivity() instanceof  AppCompatActivity) {
+            ((AppCompatActivity) getActivity()).startSupportActionMode(selectionMode);
+        }else{
+            throw new RuntimeException("activity not support");
+        }
+    }
+
+    @Override
+    public void setTitleMode(String title) {
+        actionMode.setTitle(title);
+    }
+
+    @Override
+    public void finishActionMode() {
+        actionMode.finish();
+    }
+
+    @Override
+    public void moveToDetail(int position) {
+
+    }
+
     public abstract T getAdapter();
 
     @MenuRes
     public abstract int getMenuActionSelected();
 
-    protected abstract boolean getActionOnSelectedMenu(ActionMode actionMode, MenuItem menuItem);
+    public abstract boolean getActionOnSelectedMenu(ActionMode actionMode, MenuItem menuItem);
 }

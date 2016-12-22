@@ -8,14 +8,14 @@ import java.util.List;
 /**
  * Created by zulfikarrahman on 11/24/16.
  */
-public interface TopAdsListPresenter {
-    List<Ad> getListTopAds();
+public interface TopAdsListPresenter<T> {
+    List<T> getListTopAds();
 
     void getListTopAdsFromNet();
 
-    void actionDeleteAds(List<Ad> ads);
+    void actionDeleteAds(List<T> ads);
 
-    void actionOffAds(List<Ad> ads);
+    void actionOffAds(List<T> ads);
 
-    void actionOnAds(List<Ad> ads);
+    void actionOnAds(List<T> ads);
 }

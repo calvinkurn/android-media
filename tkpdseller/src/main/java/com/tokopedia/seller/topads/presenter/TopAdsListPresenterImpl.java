@@ -23,12 +23,12 @@ import java.util.List;
 /**
  * Created by zulfikarrahman on 11/24/16.
  */
-public class TopAdsListPresenterImpl implements TopAdsListPresenter {
+public abstract class TopAdsListPresenterImpl<T> implements TopAdsListPresenter<T> {
 
-    private final TopAdsListPromoViewListener topAdsListPromoViewListener;
-    private final Context context;
-    private final DashboardTopadsInteractor dashboardTopadsInteractor;
-    private List<Ad> topAdsListItem;
+    protected final TopAdsListPromoViewListener topAdsListPromoViewListener;
+    protected final Context context;
+    protected final DashboardTopadsInteractor dashboardTopadsInteractor;
+    protected List<T> topAdsListItem;
 
     public TopAdsListPresenterImpl(Context context,TopAdsListPromoViewListener topAdsListPromoViewListener) {
         this.topAdsListPromoViewListener = topAdsListPromoViewListener;
@@ -38,80 +38,7 @@ public class TopAdsListPresenterImpl implements TopAdsListPresenter {
     }
 
     @Override
-    public List<Ad> getListTopAds() {
+    public List<T> getListTopAds() {
         return topAdsListItem;
     }
-
-    @Override
-    public void getListTopAdsFromNet() {
-        HashMap<String, String> params = new HashMap<>();
-        params.put(TopAdsNetworkConstant.PARAM_SHOP_ID, SessionHandler.getShopID(context));
-        params.put(TopAdsNetworkConstant.PARAM_START_DATE, "");
-        params.put(TopAdsNetworkConstant.PARAM_END_DATE, "");
-        dashboardTopadsInteractor.getDashboardProduct(params, new ListenerInteractor<ProductResponse>(){
-
-            @Override
-            public void onSuccess(ProductResponse productResponse) {
-                if(productResponse != null) {
-                    topAdsListItem.addAll(productResponse.getData());
-                }
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-
-            }
-        });
-    }
-
-    @Override
-    public void actionDeleteAds(List<Ad> ads) {
-        AdsActionRequest<DataRequestSingleAd> adsActionRequest = generateActionRequest(ads, TopAdsNetworkConstant.ACTION_BULK_DELETE_AD);
-        actionBulkAds(adsActionRequest);
-    }
-
-    @Override
-    public void actionOffAds(List<Ad> ads) {
-        AdsActionRequest<DataRequestSingleAd> adsActionRequest = generateActionRequest(ads, TopAdsNetworkConstant.ACTION_BULK_OFF_AD);
-        actionBulkAds(adsActionRequest);
-    }
-
-    @Override
-    public void actionOnAds(List<Ad> ads) {
-        AdsActionRequest<DataRequestSingleAd> adsActionRequest = generateActionRequest(ads, TopAdsNetworkConstant.ACTION_BULK_ON_AD);
-        actionBulkAds(adsActionRequest);
-    }
-
-    @NonNull
-    private void actionBulkAds(AdsActionRequest<DataRequestSingleAd> actionRequest){
-        dashboardTopadsInteractor.actionSingleAds(actionRequest, new ListenerInteractor<DataResponseActionAds>() {
-            @Override
-            public void onSuccess(DataResponseActionAds dataResponseActionAds) {
-
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-
-            }
-        });
-    }
-
-    @NonNull
-    private AdsActionRequest<DataRequestSingleAd> generateActionRequest(List<Ad> ads, String action) {
-        AdsActionRequest<DataRequestSingleAd> adsActionRequest = new AdsActionRequest<>();
-        DataRequestSingleAd dataRequestSingleAd = new DataRequestSingleAd();
-        dataRequestSingleAd.setAction(action);
-        dataRequestSingleAd.setShopId(SessionHandler.getShopID(context));
-        List<DataRequestSingleAds> dataRequestSingleAdses = new ArrayList<>();
-        for(Ad ad : ads){
-            DataRequestSingleAds data = new DataRequestSingleAds();
-            data.setAdId(String.valueOf(ad.getAdId()));
-            dataRequestSingleAdses.add(data);
-        }
-        dataRequestSingleAd.setAds(dataRequestSingleAdses);
-        adsActionRequest.setData(dataRequestSingleAd);
-        return adsActionRequest;
-    }
-
 }
