@@ -275,7 +275,24 @@
                     android:gravity="center"
                     android:layout_gravity="center_horizontal"
                     android:background="@drawable/btn_share_transaparent"
+                    tools:text="Kirim OTP ke Email"
+
                     android:textColor="@color/tkpd_green_onboarding" />
+
+                <TextView
+                    android:id="@+id/send_otp_call"
+                    android:layout_width="@dimen/button_otp"
+                    android:layout_height="@dimen/margin_vl"
+                    android:layout_marginTop="@dimen/margin_large"
+                    android:layout_weight="0.3"
+                    android:gravity="center"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/btn_share_transaparent"
+                    tools:text="Kirim OTP lewat telpon"
+                    android:text="@string/action_send_otp_with_call"
+                    android:textColor="@color/tkpd_green_onboarding"
+                    tools:visibility="visible"
+                    android:visibility="gone"/>
 
             </LinearLayout>
         </LinearLayout>

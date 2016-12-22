@@ -18,6 +18,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.session.model.LoginInterruptModel;
 import com.tokopedia.core.session.model.OTPModel;
 import com.tokopedia.core.session.model.QuestionFormModel;
@@ -44,8 +45,6 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     SecurityQuestion securityQuestion;
     private static final String FORMAT = "%02d:%02d";
 
-
-
     @BindView(R2.id.input_text)
     EditText vAnswer;
     @BindView(R2.id.input_otp)
@@ -68,6 +67,8 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     View vError;
     @BindView(R2.id.send_otp)
     TextView vSendOtp;
+    @BindView(R2.id.send_otp_call)
+    TextView vSendOtpCall;
     @BindView(R2.id.save_but)
     TextView vSaveBut;
     @BindView(R2.id.error_title)
@@ -169,12 +170,25 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
         vSendOtp.setBackground(getResources().getDrawable(R.drawable.btn_transparent_disable));
         vSendOtp.setEnabled(false);
         vSendOtp.setTextColor(getResources().getColor(R.color.grey_600));
+
+        vSendOtpCall.setBackground(getResources().getDrawable(R.drawable.btn_transparent_disable));
+        vSendOtpCall.setEnabled(false);
+        vSendOtpCall.setTextColor(getResources().getColor(R.color.grey_600));
+
         countDownTimer = new CountDownTimer(90000, 1000) {
             public void onTick(long millisUntilFinished) {
-                try{
+                try {
                     vSendOtp.setBackground(getResources().getDrawable(R.drawable.btn_transparent_disable));
                     vSendOtp.setEnabled(false);
-                    vSendOtp.setText(""+String.format(FORMAT,
+                    vSendOtp.setText("" + String.format(FORMAT,
+                            TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(
+                                    TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),
+                            TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
+                                    TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
+
+                    vSendOtpCall.setBackground(getResources().getDrawable(R.drawable.btn_transparent_disable));
+                    vSendOtpCall.setEnabled(false);
+                    vSendOtpCall.setText("" + String.format(FORMAT,
                             TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(
                                     TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),
                             TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
@@ -186,11 +200,16 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
             }
 
             public void onFinish() {
-                try{
+                try {
                     vSendOtp.setTextColor(getResources().getColor(R.color.tkpd_green_onboarding));
                     vSendOtp.setBackground(getResources().getDrawable(R.drawable.btn_share_transaparent));
                     vSendOtp.setText("Kirim ulang OTP");
                     vSendOtp.setEnabled(true);
+
+                    vSendOtpCall.setTextColor(getResources().getColor(R.color.tkpd_green_onboarding));
+                    vSendOtpCall.setBackground(getResources().getDrawable(R.drawable.btn_share_transaparent));
+                    vSendOtpCall.setText("Kirim ulang OTP dengan telpon");
+                    vSendOtpCall.setEnabled(true);
                 } catch (Exception e) {
 
                 }
@@ -202,10 +221,15 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
     @Override
     public void destroyTimer() {
-        if (countDownTimer!=null) {
+        if (countDownTimer != null) {
             countDownTimer.cancel();
             countDownTimer = null;
         }
+    }
+
+    @Override
+    public void showOTPWithCall() {
+        vSendOtpCall.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -230,12 +254,21 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
             }
         });
+
+        vSendOtpCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                securityQuestion.doRequestOtpWithCall();
+
+            }
+        });
     }
 
     private boolean otpIsValid() {
         boolean isValid = true;
         //TODO: OTP validation
-        if(vInputOtp.getText().length() == 0 || vInputOtp.getText().length() > 6 || vInputOtp.getText().length() < 6 ){
+        if (vInputOtp.getText().length() == 0 || vInputOtp.getText().length() > 6 || vInputOtp.getText().length() < 6) {
             isValid = false;
             displayError(true);
             vInputOtp.requestFocus();
@@ -254,9 +287,8 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
         vOtp.setVisibility(View.VISIBLE);
         vSecurity.setVisibility(View.GONE);
         securityQuestion.doRequestOtp();
-        titleOTP.setText("Halo, "+SessionHandler.getTempLoginName(getActivity()));
+        titleOTP.setText("Halo, " + SessionHandler.getTempLoginName(getActivity()));
     }
-
 
 
     @Override
@@ -349,5 +381,25 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     public void setData(int type, Bundle data) {
         if (securityQuestion != null)
             securityQuestion.setData(type, data);
+    }
+
+    public void showError(String message) {
+        displayProgress(false);
+        if (message.equals(""))
+            NetworkErrorHelper.showSnackbar(getActivity());
+        else
+            NetworkErrorHelper.showSnackbar(getActivity(), message);
+    }
+
+    public void onSuccessRequestOTPWithCall(String message) {
+        disableButton();
+        displayProgress(false);
+        SnackbarManager.make(getActivity(), message, Snackbar.LENGTH_LONG).show();
+    }
+
+    public void onSuccessRequestOTP(String message) {
+        disableButton();
+        displayProgress(false);
+        SnackbarManager.make(getActivity(), message, Snackbar.LENGTH_LONG).show();
     }
 }

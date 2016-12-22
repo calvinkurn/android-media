@@ -6,11 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.network.v4.NetworkHandler;
 import com.tokopedia.core.service.DownloadService;
-import com.tokopedia.core.session.presenter.SecurityQuestion;
-import com.tokopedia.core.session.presenter.SecurityQuestionView;
-import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.session.model.LoginInterruptModel;
 import com.tokopedia.core.session.model.OTPModel;
 import com.tokopedia.core.session.model.QuestionFormModel;
@@ -20,15 +16,19 @@ import com.tokopedia.core.util.SessionHandler;
 import org.json.JSONObject;
 import org.parceler.Parcels;
 
+import static com.tokopedia.core.service.constant.DownloadServiceConstant.REQUEST_OTP_MODEL;
+
 /**
  * Created by m.normansyah on 05/11/2015.
  * modified by m.normansyah on 21/11/2015 - move download or upload to DownloadService
  */
 public class SecurityQuestionImpl implements SecurityQuestion {
     public static final int SWITCH_REQUEST_OTP = 2;
+    private static final String EXTRA_BUNDLE = "EXTRA_BUNDLE";
+    private int ACTION_REQUEST_OTP = 101;
+    private int ACTION_REQUEST_OTP_WITH_CALL = 102;
     SecurityQuestionView view;
     Context mContext;
-    NetworkHandler[] networkHandler;
     SessionHandler sessionHandler;
 
     SecurityQuestionViewModel viewModel;
@@ -42,7 +42,6 @@ public class SecurityQuestionImpl implements SecurityQuestion {
     @Override
     public void initInstances(Context context) {
         mContext = context;
-        networkHandler = new NetworkHandler[networkHandlerSize];
         sessionHandler = new SessionHandler(context);
         if(!isAfterRotate())// if not after rotate
         {
@@ -114,21 +113,12 @@ public class SecurityQuestionImpl implements SecurityQuestion {
 
 
                 break;
-            case REQUEST_OTP_TYPE:
-                security2 = (Integer)object[0];
-                securityQuestionViewModel = new SecurityQuestionViewModel();
-                securityQuestionViewModel.setSecurity2(security2);
-                bundle = new Bundle();
-                bundle.putParcelable(DownloadService.REQUEST_OTP_MODEL, Parcels.wrap(securityQuestionViewModel));
-                bundle.putBoolean(DownloadService.IS_NEED_LOGIN, isNeedLogin);
-                ((SessionView)mContext).sendDataFromInternet(DownloadService.REQUEST_OTP, bundle);
-                break;
             case REQUEST_OTP_PHONE_TYPE:
                 String phone = (String)object[0];
                 securityQuestionViewModel = new SecurityQuestionViewModel();
                 securityQuestionViewModel.setPhone(phone);
                 bundle = new Bundle();
-                bundle.putParcelable(DownloadService.REQUEST_OTP_MODEL, Parcels.wrap(securityQuestionViewModel));
+                bundle.putParcelable(REQUEST_OTP_MODEL, Parcels.wrap(securityQuestionViewModel));
                 bundle.putBoolean(DownloadService.IS_NEED_LOGIN, isNeedLogin);
                 ((SessionView)mContext).sendDataFromInternet(DownloadService.REQUEST_OTP, bundle);
                 break;
@@ -205,16 +195,20 @@ public class SecurityQuestionImpl implements SecurityQuestion {
 
     @Override
     public void doRequestOtp() {
-        fetchDataFromInternet(REQUEST_OTP_TYPE, new Object[]{viewModel.getSecurity2()});
+
+        view.displayProgress(true);
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_BUNDLE, String.valueOf(viewModel.getSecurity2()));
+        ((SessionView)mContext).sendDataFromInternet(ACTION_REQUEST_OTP, bundle);
+        view.showOTPWithCall();
     }
 
     @Override
-    public void doRequestOtpWithPhone(String phoneNumber) {
-        Log.d("alifa", "doRequestOtpWithPhone: "+phoneNumber);
-        if (phoneNumber!=null)
-            fetchDataFromInternet(REQUEST_OTP_PHONE_TYPE, new Object[]{phoneNumber});
-        else
-            fetchDataFromInternet(REQUEST_OTP_TYPE, new Object[]{viewModel.getSecurity2()});
+    public void doRequestOtpWithCall() {
+        view.displayProgress(true);
+
+        Bundle bundle = new Bundle();
+        ((SessionView)mContext).sendDataFromInternet(ACTION_REQUEST_OTP_WITH_CALL, bundle);
     }
 
     @Override
@@ -297,7 +291,7 @@ public class SecurityQuestionImpl implements SecurityQuestion {
                 view.setModel(questionFormModel);
                 break;
             case DownloadService.REQUEST_OTP:
-                OTPModel otpModel = Parcels.unwrap(data.getParcelable(DownloadService.REQUEST_OTP_MODEL));
+                OTPModel otpModel = Parcels.unwrap(data.getParcelable(REQUEST_OTP_MODEL));
                 view.requestOTP(otpModel);
                 view.displayProgress(false);
                 view.disableButton();
@@ -353,4 +347,5 @@ public class SecurityQuestionImpl implements SecurityQuestion {
     public void updateModel(QuestionFormModel model) {
         questionFormModel = model;
     }
+
 }

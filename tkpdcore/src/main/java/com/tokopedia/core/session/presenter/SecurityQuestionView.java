@@ -41,4 +41,6 @@ public interface SecurityQuestionView extends BaseView {
     void disableButton();
 
     void destroyTimer();
+
+    void showOTPWithCall();
 }
