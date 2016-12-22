@@ -17,7 +17,6 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.database.model.AttachmentResCenterDB;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.inbox.rescenter.detail.dialog.InputShippingRefNumDialog;
 import com.tokopedia.inbox.rescenter.detail.dialog.UploadImageDialog;
 import com.tokopedia.inbox.rescenter.detail.facade.NetworkParam;
 import com.tokopedia.inbox.rescenter.detail.fragment.DetailResCenterFragment;
@@ -43,6 +42,8 @@ public class DetailResCenterImpl implements DetailResCenterPresenter {
     private static final String TAG = DetailResCenterImpl.class.getSimpleName();
     private static final int REQUEST_CODE_SCAN_BARCODE = 4;
     private static final int REQUEST_APPEAL_RESOLUTION = 5;
+    private static final int REQUEST_INPUT_SHIPPING = 6;
+    private static final int REQUEST_EDIT_SHIPPING = 7;
     private static final String CURRENT_DATA = "CURRENT_DATA";
     private static final String CURRENT_DATA_PASS = "CURRENT_DATA_PASS";
 
@@ -103,24 +104,38 @@ public class DetailResCenterImpl implements DetailResCenterPresenter {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_APPEAL_RESOLUTION) {
-            if (resultCode == Activity.RESULT_OK) {
-                view.refreshPage();
+        onActivityResultUploadImage(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case REQUEST_APPEAL_RESOLUTION:
+                    view.refreshPage();
+                    break;
+                case REQUEST_EDIT_SHIPPING:
+                    view.refreshPage();
+                    break;
+                case REQUEST_INPUT_SHIPPING:
+                    view.refreshPage();
+                    break;
+                default:
+                    break;
             }
-        } else {
-            uploadImageDialog.onResult(requestCode, resultCode, data, new UploadImageDialog.UploadImageDialogListener() {
-                @Override
-                public void onSuccess(List<AttachmentResCenterDB> data) {
-                    view.showAttachment(data);
-                    view.setAttachmentArea(true);
-                }
-
-                @Override
-                public void onFailed() {
-
-                }
-            });
         }
+    }
+
+    private void onActivityResultUploadImage(int requestCode, int resultCode, Intent data) {
+        uploadImageDialog.onResult(requestCode, resultCode, data,
+                new UploadImageDialog.UploadImageDialogListener() {
+                    @Override
+                    public void onSuccess(List<AttachmentResCenterDB> data) {
+                        view.showAttachment(data);
+                        view.setAttachmentArea(true);
+                    }
+
+                    @Override
+                    public void onFailed() {
+
+                    }
+                });
     }
 
     @Override
@@ -250,19 +265,20 @@ public class DetailResCenterImpl implements DetailResCenterPresenter {
         String conversationID = Uri.parse(url).getQueryParameter("conv_id");
         String shippingID = Uri.parse(url).getQueryParameter("ship_id");
         String shippingRefNum = Uri.parse(url).getQueryParameter("ship_ref");
-        view.startActivity(
+        view.startActivityForResult(
                 InputShippingActivity.createEditPageIntent(context,
                         view.getResolutionID(),
                         conversationID,
                         shippingID,
                         shippingRefNum
-                )
+                ),
+                REQUEST_EDIT_SHIPPING
         );
     }
 
     @Override
     public void onNewShippingClickListener(Context context) {
-        view.startActivity(InputShippingActivity.createNewPageIntent(context, view.getResolutionID()));
+        view.startActivityForResult(InputShippingActivity.createNewPageIntent(context, view.getResolutionID()), REQUEST_INPUT_SHIPPING);
     }
 
     @Override
