@@ -21,13 +21,14 @@ import com.tokopedia.core.var.TkpdCache;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Toped10 on 7/28/2016.
  */
 public class FragmentSellingTxCenter extends BaseFragment<PeopleTxCenter> implements PeopleTxCenterView {
-    @Bind(R2.id.menu_list)
+    public static final String TYPE = "type";
+    @BindView(R2.id.menu_list)
     ListView TitleMenuListView;
 
     private RefreshHandler Refresh;
@@ -44,7 +45,7 @@ public class FragmentSellingTxCenter extends BaseFragment<PeopleTxCenter> implem
     public static FragmentSellingTxCenter createInstance(String type) {
         FragmentSellingTxCenter fragment = new FragmentSellingTxCenter();
         Bundle bundle = new Bundle();
-        bundle.putString("type", type);
+        bundle.putString(TYPE, type);
         fragment.setArguments(bundle);
         return fragment;
     }

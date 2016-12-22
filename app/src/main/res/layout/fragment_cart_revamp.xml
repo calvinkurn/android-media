@@ -33,7 +33,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_small"
                 android:layout_marginTop="@dimen/margin_small"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -128,7 +129,7 @@
                         android:padding="@dimen/padding_vs"
                         android:textColor="@color/black"
                         android:textStyle="bold"
-                        android:visibility="visible" />
+                        android:visibility="gone" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -260,6 +261,33 @@
                         android:padding="@dimen/margin_vs"
                         android:text="Tidak dikenakan biaya"
                         android:visibility="visible" />
+
+                    <LinearLayout
+                        android:id="@+id/holder_use_deposit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/payment_label"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_currency_rp"
+                            android:textColor="@color/label_color"
+                            android:textSize="@dimen/fonts"
+                            android:textStyle="bold"
+                            android:visibility="visible" />
+
+                        <EditText
+                            android:id="@+id/et_use_deposit"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/title_use_tokopedia_balance"
+                            android:inputType="number"
+                            android:textSize="@dimen/fonts"
+                            android:visibility="visible" />
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/btn_checkout"

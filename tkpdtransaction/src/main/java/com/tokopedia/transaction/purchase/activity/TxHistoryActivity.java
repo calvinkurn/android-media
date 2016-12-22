@@ -5,16 +5,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ListView;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.transaction.purchase.adapter.HistoryListAdapter;
 import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.purchase.adapter.HistoryListAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -31,13 +32,18 @@ public class TxHistoryActivity extends TActivity {
         return intent;
     }
 
-    @Bind(R2.id.order_status)
+    @BindView(R2.id.order_status)
     ListView listView;
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_ORDER_HISTORY_DETAIL;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        inflateView(R.layout.activity_order_history_view);
+        inflateView(R.layout.activity_transaction_history_tx_module);
         ButterKnife.bind(this);
         HistoryListAdapter adapter = new HistoryListAdapter(this);
         listView.setAdapter(adapter);

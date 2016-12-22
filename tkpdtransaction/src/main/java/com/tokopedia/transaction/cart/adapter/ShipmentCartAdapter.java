@@ -13,21 +13,22 @@ import com.tokopedia.transaction.cart.model.calculateshipment.Shipment;
 import java.util.ArrayList;
 
 /**
- * @author  by alvarisi on 11/11/16.
+ * @author by alvarisi on 11/11/16.
  */
 
 public class ShipmentCartAdapter extends ArrayAdapter<Shipment> {
     private ArrayList<Shipment> mShipments;
+
     private static class ViewHolder {
         TextView shipment;
     }
 
-    public static ShipmentCartAdapter newInstance(Context context){
+    public static ShipmentCartAdapter newInstance(Context context) {
         ArrayList<Shipment> shipments = new ArrayList<>();
         return new ShipmentCartAdapter(context, shipments);
     }
 
-    private ShipmentCartAdapter(Context context, ArrayList<Shipment> shipments){
+    private ShipmentCartAdapter(Context context, ArrayList<Shipment> shipments) {
         super(context, android.R.layout.simple_spinner_dropdown_item, shipments);
         this.mShipments = shipments;
     }
@@ -52,7 +53,7 @@ public class ShipmentCartAdapter extends ArrayAdapter<Shipment> {
         return convertView;
     }
 
-    public void setAdapterData(ArrayList<Shipment> shipments){
+    public void setAdapterData(ArrayList<Shipment> shipments) {
         this.mShipments.clear();
         this.mShipments.addAll(shipments);
         notifyDataSetChanged();

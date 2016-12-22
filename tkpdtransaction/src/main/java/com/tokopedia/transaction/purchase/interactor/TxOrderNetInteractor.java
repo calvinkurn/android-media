@@ -3,6 +3,7 @@ package com.tokopedia.transaction.purchase.interactor;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.purchase.model.ConfirmationData;
 import com.tokopedia.transaction.purchase.model.response.cancelform.CancelFormData;
 import com.tokopedia.transaction.purchase.model.response.formconfirmpayment.FormConfPaymentData;
@@ -73,6 +74,9 @@ public interface TxOrderNetInteractor {
     void getEditPaymentForm(@NonNull Context context, @NonNull Map<String, String> params,
                             EditPaymentFormListener listener);
 
+    void requestCancelOrder(@NonNull TKPDMapParam<String, String> params,
+                            RequestCancelOrderListener listener);
+
     void unSubscribeObservable();
 
     interface PaymentActionListener {
@@ -92,6 +96,8 @@ public interface TxOrderNetInteractor {
 
         void onError(String message);
 
+        void onNoConnection(String message);
+
         void onEmptyData();
     }
 
@@ -100,6 +106,8 @@ public interface TxOrderNetInteractor {
 
         void onError(String message);
 
+        void onNoConnection(String message);
+
         void onEmptyData();
     }
 
@@ -107,6 +115,8 @@ public interface TxOrderNetInteractor {
         void onSuccess(JSONObject data, OrderListData dataObj);
 
         void onError(String message);
+
+        void onNoConnection(String message);
 
         void onEmptyData();
     }
@@ -118,13 +128,13 @@ public interface TxOrderNetInteractor {
     }
 
     interface OnGetPaymentConfirmationList {
-        void onSuccess(JSONObject data, TxConfListData dataObj);
+        void onSuccess(TxConfListData dataObj);
 
         void onError(String message);
 
         void onEmptyData();
 
-        void onTimeout(String message);
+        void onNoConnection(String message);
     }
 
 
@@ -156,6 +166,8 @@ public interface TxOrderNetInteractor {
 
         void onError(String message);
 
+        void onNoConnection(String message);
+
         void onEmptyData();
     }
 
@@ -184,6 +196,16 @@ public interface TxOrderNetInteractor {
 
     interface EditPaymentFormListener {
         void onSuccess(FormEditPaymentData data);
+
+        void onError(String message);
+
+        void onTimeout(String message);
+
+        void onNoConnection(String message);
+    }
+
+    interface RequestCancelOrderListener {
+        void onSuccess(String message);
 
         void onError(String message);
 

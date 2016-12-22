@@ -33,7 +33,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by nisie on 8/12/16.
@@ -48,52 +48,52 @@ public class ContactUsCategoryFragment extends
         void onOpenContactUsTicketForm(int lastCatId, ArrayList<String> path);
     }
 
-    @Bind(R2.id.new_user)
+    @BindView(R2.id.new_user)
     ImageView typeNewUser;
 
-    @Bind(R2.id.seller)
+    @BindView(R2.id.seller)
     ImageView typeSeller;
 
-    @Bind(R2.id.buyer)
+    @BindView(R2.id.buyer)
     ImageView typeBuyer;
 
-    @Bind(R2.id.other)
+    @BindView(R2.id.other)
     ImageView typeOther;
 
-    @Bind(R2.id.new_user_text)
+    @BindView(R2.id.new_user_text)
     TextView textNewUser;
 
-    @Bind(R2.id.seller_text)
+    @BindView(R2.id.seller_text)
     TextView textSeller;
 
-    @Bind(R2.id.buyer_text)
+    @BindView(R2.id.buyer_text)
     TextView textBuyer;
 
-    @Bind(R2.id.other_text)
+    @BindView(R2.id.other_text)
     TextView textOther;
 
-    @Bind(R2.id.step_1)
+    @BindView(R2.id.step_1)
     View step1;
 
-    @Bind(R2.id.step_2)
+    @BindView(R2.id.step_2)
     View step2;
 
-    @Bind(R2.id.step_3)
+    @BindView(R2.id.step_3)
     View step3;
 
-    @Bind(R2.id.problem_list)
+    @BindView(R2.id.problem_list)
     LinearLayout problemList;
 
-    @Bind(R2.id.please_contact_us)
+    @BindView(R2.id.please_contact_us)
     View pleaseContactUs;
 
-    @Bind(R2.id.scroll)
+    @BindView(R2.id.scroll)
     ScrollView mainView;
 
-    @Bind(R2.id.finish_message)
+    @BindView(R2.id.finish_message)
     View finishMessage;
 
-    @Bind(R2.id.solution)
+    @BindView(R2.id.solution)
     ObservableWebView solution;
 
     TkpdProgressDialog progressDialog;
@@ -236,6 +236,11 @@ public class ContactUsCategoryFragment extends
         animators.setDuration(500L);
         animators.play(yTranslate);
         animators.start();
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 
     @Override

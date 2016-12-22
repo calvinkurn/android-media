@@ -18,11 +18,13 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customadapter.LazyListView;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.activity.ConfirmPaymentActivity;
 import com.tokopedia.transaction.purchase.adapter.TxConfAdapter;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
@@ -31,14 +33,12 @@ import com.tokopedia.transaction.purchase.model.response.txconfirmation.TxConfDa
 import com.tokopedia.transaction.purchase.presenter.TxConfirmationPresenter;
 import com.tokopedia.transaction.purchase.presenter.TxConfirmationPresenterImpl;
 import com.tokopedia.transaction.purchase.receiver.TxListUIReceiver;
-import com.tokopedia.core.util.PagingHandler;
-import com.tokopedia.core.util.RefreshHandler;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * TxConfirmationFragment
@@ -50,7 +50,7 @@ public class TxConfirmationFragment extends BasePresenterFragment<TxConfirmation
         AdapterView.OnItemClickListener, TxListUIReceiver.ActionListener {
     public static final int REQUEST_CONFIRMATION_DETAIL = 0;
 
-    @Bind(R2.id.order_list)
+    @BindView(R2.id.order_list)
     LazyListView lvTXConf;
 
     private View loadMoreView;
@@ -66,6 +66,10 @@ public class TxConfirmationFragment extends BasePresenterFragment<TxConfirmation
     private Set<TxConfData> txConfDataSelected = new HashSet<>();
     private TxListUIReceiver txUIReceiver;
 
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
 
     public static TxConfirmationFragment createInstance() {
         return new TxConfirmationFragment();
@@ -113,7 +117,7 @@ public class TxConfirmationFragment extends BasePresenterFragment<TxConfirmation
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_tx_payment_conf;
+        return R.layout.fragment_transaction_confirmation_tx_module;
     }
 
     @SuppressLint("InflateParams")
@@ -293,6 +297,46 @@ public class TxConfirmationFragment extends BasePresenterFragment<TxConfirmation
     }
 
     @Override
+    public void showNoConnectionLoadMoreData(String message) {
+        isLoading = false;
+        lvTXConf.removeFooterView(loadMoreView);
+        isLoadMoreTerminated = true;
+        if (getView() != null) NetworkErrorHelper.createSnackbarWithAction(getActivity(), message,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        getData(TxOrderNetInteractor.TypeRequest.LOAD_MORE);
+                    }
+                }).showRetrySnackbar();
+    }
+
+    @Override
+    public void showNoConnectionPullRefresh(String message) {
+        isLoading = false;
+        refreshHandler.finishRefresh();
+        refreshHandler.setPullEnabled(true);
+        if (getView() != null) NetworkErrorHelper.showSnackbar(getActivity(), message);
+    }
+
+    @Override
+    public void showNoConnectionResetData(String message) {
+        isLoading = false;
+        lvTXConf.removeFooterView(loadMoreView);
+        refreshHandler.finishRefresh();
+        refreshHandler.setPullEnabled(true);
+        lvTXConf.removeNoResult();
+        if (getView() != null) {
+            NetworkErrorHelper.showEmptyState(getActivity(), getView(),
+                    new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            refreshHandler.startRefresh();
+                        }
+                    });
+        }
+    }
+
+    @Override
     public void showEmptyData(int typeRequest) {
 
         if (getView() != null) {
@@ -397,13 +441,12 @@ public class TxConfirmationFragment extends BasePresenterFragment<TxConfirmation
 
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-        switch (item.getItemId()) {
-            case R2.id.action_confirm:
-                presenter.processMultiConfirmPayment(getActivity(), txConfDataSelected);
-                return true;
-            case R2.id.action_cancel:
-                presenter.processMultipleCancelPayment(getActivity(), txConfDataSelected);
-                return true;
+        if (item.getItemId() == R.id.action_confirm) {
+            presenter.processMultiConfirmPayment(getActivity(), txConfDataSelected);
+            return true;
+        } else if (item.getItemId() == R.id.action_cancel) {
+            presenter.processMultipleCancelPayment(getActivity(), txConfDataSelected);
+            return true;
         }
         return false;
     }

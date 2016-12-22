@@ -20,24 +20,25 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.AppUtils;
+import com.tokopedia.core.util.ImageUploadHandler;
+import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.adapter.TxVerInvoiceAdapter;
 import com.tokopedia.transaction.purchase.listener.TxVerDetailViewListener;
 import com.tokopedia.transaction.purchase.model.response.txverification.TxVerData;
 import com.tokopedia.transaction.purchase.model.response.txverinvoice.Detail;
 import com.tokopedia.transaction.purchase.presenter.TxVerDetailPresenter;
 import com.tokopedia.transaction.purchase.presenter.TxVerDetailPresenterImpl;
-import com.tokopedia.core.util.AppUtils;
-import com.tokopedia.core.util.ImageUploadHandler;
-import com.tokopedia.core.util.RequestPermissionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -60,23 +61,23 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
     private TxVerData txVerData;
     private TxVerInvoiceAdapter invoiceAdapter;
 
-    @Bind(R2.id.listView1)
+    @BindView(R2.id.listView1)
     ListView lvInvoice;
-    @Bind(R2.id.date)
+    @BindView(R2.id.date)
     TextView tvPaymentDate;
-    @Bind(R2.id.total_invoice)
+    @BindView(R2.id.total_invoice)
     TextView tvAmountPayment;
-    @Bind(R2.id.account_owner)
+    @BindView(R2.id.account_owner)
     TextView tvOwnerAccountBank;
-    @Bind(R2.id.account_number)
+    @BindView(R2.id.account_number)
     TextView tvSysAccountBank;
-    @Bind(R2.id.changePayment)
+    @BindView(R2.id.changePayment)
     View btnEditPayment;
-    @Bind(R2.id.upload_button)
+    @BindView(R2.id.upload_button)
     View btnUploadProof;
-    @Bind(R2.id.transfer_account_information)
+    @BindView(R2.id.transfer_account_information)
     RelativeLayout holderAccountBankInfo;
-    @Bind(R2.id.indomaret_code_detail_label)
+    @BindView(R2.id.indomaret_code_detail_label)
     TextView tvPaymentCode;
 
     private TkpdProgressDialog mProgressDialog;
@@ -94,6 +95,11 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
     }
 
     @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_PAYMENT_VERIFICATION_DETAIL;
+    }
+
+    @Override
     protected void setupBundlePass(Bundle extras) {
         txVerData = extras.getParcelable(EXTRA_TX_VER_DATA);
     }
@@ -105,7 +111,7 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_people_payment_verification_detail;
+        return R.layout.activity_transaction_verification_detail_tx_module;
     }
 
     @Override
@@ -222,7 +228,8 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == ImageGallery.RESULT_CODE || resultCode == Activity.RESULT_OK) {
+        if (resultCode == ImageGallery.RESULT_CODE || resultCode == Activity.RESULT_OK
+                || resultCode == ConfirmPaymentActivity.RESULT_FORM_FAILED) {
             switch (requestCode) {
                 case REQUEST_EDIT_PAYMENT:
                     if (resultCode == RESULT_OK) {
@@ -311,31 +318,31 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
 
     @OnPermissionDenied(Manifest.permission.CAMERA)
     void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(this,Manifest.permission.CAMERA);
+        RequestPermissionUtil.onPermissionDenied(this, Manifest.permission.CAMERA);
     }
 
     @OnNeverAskAgain(Manifest.permission.CAMERA)
     void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(this,Manifest.permission.CAMERA);
+        RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.CAMERA);
     }
 
     @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(this,Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onPermissionDenied(this, Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
     @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(this,Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
-    @OnPermissionDenied({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     void showDeniedForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
 
-        RequestPermissionUtil.onPermissionDenied(this,listPermission);
+        RequestPermissionUtil.onPermissionDenied(this, listPermission);
     }
 
     @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
@@ -344,6 +351,6 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
 
-        RequestPermissionUtil.onNeverAskAgain(this,listPermission);
+        RequestPermissionUtil.onNeverAskAgain(this, listPermission);
     }
 }

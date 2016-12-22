@@ -15,22 +15,23 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.TokopediaBankAccount;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.listener.TxConfDetailViewListener;
 import com.tokopedia.transaction.purchase.model.response.txconfirmation.TxConfData;
 import com.tokopedia.transaction.purchase.model.response.txlist.OrderData;
 import com.tokopedia.transaction.purchase.model.response.txlist.OrderProduct;
 import com.tokopedia.transaction.purchase.presenter.TxConfDetailPresenter;
 import com.tokopedia.transaction.purchase.presenter.TxConfDetailPresenterImpl;
-import com.tokopedia.core.util.TokopediaBankAccount;
 
 import java.text.MessageFormat;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -43,25 +44,25 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
 
     public static final int REQUEST_CONFIRMATION = 1;
 
-    @Bind(R2.id.total_tx)
+    @BindView(R2.id.total_tx)
     TextView tvTotalTx;
-    @Bind(R2.id.tx_date)
+    @BindView(R2.id.tx_date)
     TextView tvDateTx;
-    @Bind(R2.id.due_date)
+    @BindView(R2.id.due_date)
     TextView tvDueDateTx;
-    @Bind(R2.id.total_item)
+    @BindView(R2.id.total_item)
     TextView tvTotalItem;
-    @Bind(R2.id.total_item_price)
+    @BindView(R2.id.total_item_price)
     TextView tvTotalItemPrice;
-    @Bind(R2.id.deposit_used)
+    @BindView(R2.id.deposit_used)
     TextView tvDepositUsed;
-    @Bind(R2.id.lv_cart)
+    @BindView(R2.id.lv_cart)
     LinearLayout lvContainer;
-    @Bind(R2.id.check_account)
+    @BindView(R2.id.check_account)
     View btnSysAccountInfo;
-    @Bind(R2.id.cancel_button)
+    @BindView(R2.id.cancel_button)
     View btnCancel;
-    @Bind(R2.id.confirm_button)
+    @BindView(R2.id.confirm_button)
     View btnConfirm;
 
     private TxConfData txConfData;
@@ -89,8 +90,13 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
     }
 
     @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_TX_P_CONFIRM_DETAIL;
+    }
+
+    @Override
     protected int getLayoutId() {
-        return R.layout.activity_transaction_payment_confirmation_detail;
+        return R.layout.activity_transaction_confirmation_detail_tx_module;
     }
 
     @Override
@@ -147,6 +153,7 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
             holder.tvSubTotal.setText(data.getOrderDetail().getDetailProductPriceIdr());
             holder.tvShippingCost.setText(data.getOrderDetail().getDetailShippingPriceIdr());
             holder.tvInsurancePrice.setText(data.getOrderDetail().getDetailInsurancePriceIdr());
+            holder.tvAdditionalCostPrice.setText(data.getOrderDetail().getDetailTotalAddFeeIdr());
             holder.tvInsurance.setText(!data.getOrderDetail().getDetailInsurancePrice().equals("0")
                     || data.getOrderDetail().getDetailForceInsurance().equals("1")
                     ? getString(R.string.yes) : getString(R.string.No));
@@ -268,45 +275,47 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
     }
 
     public class HolderCartItem {
-        @Bind(R2.id.listview_prod)
+        @BindView(R2.id.listview_prod)
         LinearLayout containerProduct;
-        @Bind(R2.id.shop_name)
+        @BindView(R2.id.shop_name)
         TextView tvShopName;
-        @Bind(R2.id.total_price)
+        @BindView(R2.id.total_price)
         TextView tvTotalPrice;
-        @Bind(R2.id.shipping_address)
+        @BindView(R2.id.shipping_address)
         TextView tvShippingAddress;
-        @Bind(R2.id.shipping_agency)
+        @BindView(R2.id.shipping_agency)
         TextView tvShippingAgency;
-        @Bind(R2.id.total_weight)
+        @BindView(R2.id.total_weight)
         TextView tvTotalWeight;
-        @Bind(R2.id.sub_total)
+        @BindView(R2.id.sub_total)
         TextView tvSubTotal;
-        @Bind(R2.id.shipping_cost)
+        @BindView(R2.id.shipping_cost)
         TextView tvShippingCost;
-        @Bind(R2.id.insurance_price)
+        @BindView(R2.id.insurance_price)
         TextView tvInsurancePrice;
-        @Bind(R2.id.edit)
+        @BindView(R2.id.additional_cost)
+        TextView tvAdditionalCostPrice;
+        @BindView(R2.id.edit)
         ImageView btnEdit;
-        @Bind(R2.id.delete)
+        @BindView(R2.id.delete)
         ImageView btnDelete;
-        @Bind(R2.id.error1)
+        @BindView(R2.id.error1)
         TextView tvError1;
-        @Bind(R2.id.error2)
+        @BindView(R2.id.error2)
         TextView tvError2;
-        @Bind(R2.id.detail_info)
+        @BindView(R2.id.detail_info)
         View viewDetailInfo;
-        @Bind(R2.id.detail_info_but)
+        @BindView(R2.id.detail_info_but)
         View btnDetailInfo;
-        @Bind(R2.id.error_area)
+        @BindView(R2.id.error_area)
         View viewError;
-        @Bind(R2.id.main_view)
+        @BindView(R2.id.main_view)
         View viewMain;
-        @Bind(R2.id.insurance)
+        @BindView(R2.id.insurance)
         TextView tvInsurance;
-        @Bind(R2.id.remaining_stock)
+        @BindView(R2.id.remaining_stock)
         TextView btnChosen;
-        @Bind(R2.id.chevron_sign)
+        @BindView(R2.id.chevron_sign)
         ImageView ivChevron;
 
         public HolderCartItem(View view) {
@@ -315,21 +324,21 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
     }
 
     class HolderProductCartItem {
-        @Bind(R2.id.img)
+        @BindView(R2.id.img)
         ImageView ivPic;
-        @Bind(R2.id.name)
+        @BindView(R2.id.name)
         TextView tvName;
-        @Bind(R2.id.price)
+        @BindView(R2.id.price)
         TextView tvPrice;
-        @Bind(R2.id.weight)
+        @BindView(R2.id.weight)
         TextView tvWeight;
-        @Bind(R2.id.price_total)
+        @BindView(R2.id.price_total)
         TextView tvPriceTotal;
-        @Bind(R2.id.error_msg)
+        @BindView(R2.id.error_msg)
         TextView tvError;
-        @Bind(R2.id.notes)
+        @BindView(R2.id.notes)
         TextView tvNotes;
-        @Bind(R2.id.qty)
+        @BindView(R2.id.qty)
         TextView tvQty;
 
         public HolderProductCartItem(View view) {

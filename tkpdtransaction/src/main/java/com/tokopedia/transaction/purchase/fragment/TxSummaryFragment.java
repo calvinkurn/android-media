@@ -6,22 +6,20 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.router.TransactionRouter;
-import com.tokopedia.transaction.purchase.activity.PurchaseActivity;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
+import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.adapter.TxSummaryAdapter;
 import com.tokopedia.transaction.purchase.listener.TxSummaryViewListener;
 import com.tokopedia.transaction.purchase.model.TxSummaryItem;
 import com.tokopedia.transaction.purchase.presenter.TxSummaryPresenter;
 import com.tokopedia.transaction.purchase.presenter.TxSummaryPresenterImpl;
-import com.tokopedia.transaction.purchase.utils.FilterUtils;
-import com.tokopedia.core.util.RefreshHandler;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * TxSummaryFragment
@@ -35,7 +33,7 @@ public class TxSummaryFragment extends BasePresenterFragment<TxSummaryPresenter>
     public static int INSTANCE_TYPE_PURCHASE = 1;
     public static int INSTANCE_TYPE_SALES = 2;
 
-    @Bind(R2.id.menu_list)
+    @BindView(R2.id.menu_list)
     ListView lvSummary;
     private TxSummaryAdapter summaryAdapter;
     private int instanceType;
@@ -47,6 +45,11 @@ public class TxSummaryFragment extends BasePresenterFragment<TxSummaryPresenter>
         summaryAdapter.notifyDataSetChanged();
         refreshHandler.setPullEnabled(true);
         refreshHandler.finishRefresh();
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 
     @Override
@@ -119,7 +122,7 @@ public class TxSummaryFragment extends BasePresenterFragment<TxSummaryPresenter>
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_people_tx_center;
+        return R.layout.fragment_transaction_summary_tx_module;
     }
 
     @Override
@@ -162,27 +165,34 @@ public class TxSummaryFragment extends BasePresenterFragment<TxSummaryPresenter>
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (instanceType == INSTANCE_TYPE_PURCHASE) {
-            switch (position) {
-                case 0:
-                    listener.OnMenuClick(TransactionRouter.TAB_TX_CONFIRMATION,
-                            TransactionRouter.ALL_STATUS_FILTER_ID);
+
+        if (instanceType == INSTANCE_TYPE_PURCHASE && summaryAdapter != null) {
+            final TxSummaryItem item = summaryAdapter.getItem(position);
+            if (item == null) return;
+            switch (item.getIndex()) {
+                case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_VERIFICATION:
+                    listener.OnMenuClick(
+                            TransactionPurchaseRouter.TAB_POSITION_PURCHASE_VERIFICATION,
+                            TransactionPurchaseRouter.ALL_STATUS_FILTER_ID
+                    );
                     break;
-                case 1:
-                    listener.OnMenuClick(TransactionRouter.TAB_TX_VERIFICATION,
-                            TransactionRouter.ALL_STATUS_FILTER_ID);
+                case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER:
+                    listener.OnMenuClick(
+                            TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER,
+                            TransactionPurchaseRouter.ALL_STATUS_FILTER_ID
+                    );
                     break;
-                case 2:
-                    listener.OnMenuClick(TransactionRouter.TAB_TX_STATUS,
-                            TransactionRouter.ALL_STATUS_FILTER_ID);
+                case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVER_ORDER:
+                    listener.OnMenuClick(
+                            TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVER_ORDER,
+                            TransactionPurchaseRouter.ALL_STATUS_FILTER_ID
+                    );
                     break;
-                case 3:
-                    listener.OnMenuClick(TransactionRouter.TAB_TX_DELIVER,
-                            TransactionRouter.ALL_STATUS_FILTER_ID);
-                    break;
-                case 4:
-                    listener.OnMenuClick(TransactionRouter.TAB_TX_ALL,
-                            TransactionRouter.TRANSACTION_CANCELED_FILTER_ID);
+                case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_ALL_ORDER:
+                    listener.OnMenuClick(
+                            TransactionPurchaseRouter.TAB_POSITION_PURCHASE_ALL_ORDER,
+                            TransactionPurchaseRouter.TRANSACTION_CANCELED_FILTER_ID
+                    );
                     break;
             }
         }

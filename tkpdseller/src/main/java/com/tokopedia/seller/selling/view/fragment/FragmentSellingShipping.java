@@ -48,7 +48,7 @@ import com.tokopedia.core.util.RefreshHandler;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -57,10 +57,12 @@ import butterknife.OnClick;
  */
 public class FragmentSellingShipping extends BaseFragment<Shipping> implements ShippingView {
 
-    @Bind(R2.id.order_list)
+    @BindView(R2.id.order_list)
     RecyclerView recyclerView;
-    @Bind(R2.id.fab)
+    @BindView(R2.id.fab)
     FloatingActionButton fab;
+    @BindView(R2.id.root)
+    View rootView;
     private View filterView;
     SearchView search;
     Spinner dueDate;
@@ -79,8 +81,8 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
     private BaseSellingAdapter adapter;
     private MultiSelector multiSelector = new MultiSelector();
     public ActionMode actionMode;
-    private boolean inhibit_spinner_shipping = true;
-    private boolean inhibit_spinner_duedate = true;
+    private boolean inhibitSpinnerShipping = true;
+    private boolean inhibitSpinnerDuedate = true;
     private boolean shouldRefreshList = false;
 
 
@@ -160,7 +162,7 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
         setRetainInstance(true);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         page = new PagingHandler();
-        adapter = new BaseSellingAdapter<ShippingImpl.Model, ShippingViewHolder>(ShippingImpl.Model.class, R.layout.selling_shipping_list_item, ShippingViewHolder.class) {
+        adapter = new BaseSellingAdapter<ShippingImpl.Model, ShippingViewHolder>(ShippingImpl.Model.class, getActivity(), R.layout.selling_shipping_list_item, ShippingViewHolder.class) {
             @Override
             protected void populateViewHolder(final ShippingViewHolder viewHolder, final ShippingImpl.Model model, int position) {
                 viewHolder.bindDataModel(getActivity(), model);
@@ -171,6 +173,10 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
                     @Override
                     public void onItemClicked(int position) {
                         if (!multiSelector.tapSelection(viewHolder)) {
+                            if (adapter.isLoading()) {
+                                getPaging().setPage(getPaging().getPage() - 1);
+                                presenter.onFinishConnection();
+                            }
                             moveToDetail(position);
                         } else {
                             presenter.updateListDataChecked(position, multiSelector.isSelected(position, viewHolder.getItemId()));
@@ -259,21 +265,18 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
         return new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch ((item.getItemId())) {
-                    case R2.id.action_confirm:
-                        onConfirm(position);
-                        return true;
-
-                    case R2.id.action_cancel:
-                        onCancel(position);
-                        return true;
-
-                    case R2.id.action_detail_ship:
-                        onOpenDetail(position);
-                        return true;
-
-                    default:
-                        return false;
+                int i = (item.getItemId());
+                if (i == R.id.action_confirm) {
+                    onConfirm(position);
+                    return true;
+                } else if (i == R.id.action_cancel) {
+                    onCancel(position);
+                    return true;
+                } else if (i == R.id.action_detail_ship) {
+                    onOpenDetail(position);
+                    return true;
+                } else {
+                    return false;
                 }
             }
         };
@@ -312,9 +315,9 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
 
     @Override
     public void disableFilter() {
-        search.clearFocus();
-        search.setEnabled(false);
-        search.setInputType(InputType.TYPE_NULL);
+//        search.clearFocus();
+//        search.setEnabled(false);
+//        search.setInputType(InputType.TYPE_NULL);
         shippingService.setEnabled(false);
         dueDate.setEnabled(false);
     }
@@ -365,6 +368,16 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
     @Override
     public void finishRefresh() {
         refresh.finishRefresh();
+    }
+
+    @Override
+    public void addEmptyView() {
+        adapter.setIsDataEmpty(true);
+    }
+
+    @Override
+    public void removeEmpty() {
+        adapter.setIsDataEmpty(false);
     }
 
     @Override
@@ -423,6 +436,12 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        initRefreshView();
+        initView();
+        super.onViewCreated(view, savedInstanceState);
+    }
+
     public void initView() {
         filterView = getActivity().getLayoutInflater().inflate(R.layout.filter_layout_selling_shipping, null);
         search = ButterKnife.findById(filterView, R.id.search);
@@ -460,8 +479,8 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 //to avoid called itemselected when oncreate
-                if (inhibit_spinner_duedate) {
-                    inhibit_spinner_duedate = false;
+                if (inhibitSpinnerDuedate) {
+                    inhibitSpinnerDuedate = false;
                 } else {
                     presenter.doRefresh();
                 }
@@ -476,8 +495,8 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 //to avoid called itemselected when oncreate
-                if (inhibit_spinner_shipping) {
-                    inhibit_spinner_shipping = false;
+                if (inhibitSpinnerShipping) {
+                    inhibitSpinnerShipping = false;
                 } else {
                     presenter.doRefresh();
                 }
@@ -491,9 +510,8 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
         search.setOnQueryTextListener(onSearchListener());
     }
 
-    @Override
     public void initRefreshView() {
-        refresh = new RefreshHandler(getActivity(), getView(), onRefreshListener());
+        refresh = new RefreshHandler(getActivity(), rootView, onRefreshListener());
     }
 
     private SearchView.OnQueryTextListener onSearchListener() {
@@ -535,7 +553,7 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
     @Override
     public void onResume() {
         super.onResume();
-        if(shouldRefreshList) {
+        if (shouldRefreshList) {
             shouldRefreshList = false;
             refresh.setRefreshing(true);
             refresh.setIsRefreshing(true);
@@ -547,7 +565,7 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            switch (requestCode){
+            switch (requestCode) {
                 case REQUEST_CODE_BARCODE:
                     presenter.updateRefNumBarcode(getBarcodePosition, CommonUtils.getBarcode(data));
                     break;
@@ -560,6 +578,7 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
 
     @Override
     public void onPause() {
+        presenter.onFinishConnection();
         refresh.setRefreshing(false);
         super.onPause();
     }

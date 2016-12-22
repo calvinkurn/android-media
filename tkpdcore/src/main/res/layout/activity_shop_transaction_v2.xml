@@ -1,0 +1,32 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include layout="@layout/layout_tab_indicator_main" />
+
+        <TextView
+            android:id="@+id/seller_ticker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/padding_vs"
+            android:background="@drawable/bg_yellow_border_yelow"
+            android:maxLines="3"
+            android:padding="@dimen/padding_small"
+            android:scrollbars = "vertical"
+            android:fadeScrollbars="false"
+            android:visibility="gone" />
+
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+
+</RelativeLayout>

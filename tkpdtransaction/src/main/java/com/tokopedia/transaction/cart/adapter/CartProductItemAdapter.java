@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.cart.adapter;
 
 import android.app.Fragment;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Html;
@@ -12,8 +13,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.product.model.passdata.ProductPass;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.model.CartProductItemEditable;
 import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
@@ -21,7 +24,7 @@ import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -29,44 +32,46 @@ import butterknife.ButterKnife;
  */
 
 class CartProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private static final int TYPE_PRODUCT_ITEM = R.layout.cart_product_item_holder;
+    private static final int TYPE_PRODUCT_ITEM = R.layout.holder_item_product_cart_tx_module;
     private final Fragment hostFragment;
 
     private List<Object> dataList = new ArrayList<>();
     private boolean editMode;
     private CartProductAction cartProductAction;
 
-    public void setCartProductAction(CartProductAction cartProductAction) {
+    void setCartProductAction(CartProductAction cartProductAction) {
         this.cartProductAction = cartProductAction;
     }
 
-    public interface CartProductAction {
+    interface CartProductAction {
         void onCancelCartProduct(CartProduct cartProduct);
+
+        void onProductCartItemClicked(ProductPass productPass);
     }
 
-    public CartProductItemAdapter(Fragment hostFragment) {
+    CartProductItemAdapter(Fragment hostFragment) {
         this.hostFragment = hostFragment;
     }
 
-    public void fillDataList(List<CartProduct> dataList) {
+    void fillDataList(List<CartProduct> dataList) {
         for (CartProduct data : dataList) {
             this.dataList.add(new CartProductItemEditable(data));
         }
         this.notifyDataSetChanged();
     }
 
-    public void disableEditMode() {
+    void disableEditMode() {
         resetEditState();
         editMode = false;
         this.notifyDataSetChanged();
     }
 
-    public void enableEditMode() {
+    void enableEditMode() {
         editMode = true;
         this.notifyDataSetChanged();
     }
 
-    public List<ProductEditData> getCartProductEditDataList() throws IllegalAccessException {
+    List<ProductEditData> getCartProductEditDataList() throws IllegalAccessException {
         if (editMode) {
             List<ProductEditData> productEditDatas = new ArrayList<>();
             for (int i = 0; i < dataList.size(); i++) {
@@ -169,6 +174,33 @@ class CartProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private void bindProductItemHolder(ProductItemHolder holder, final CartProductItemEditable item) {
         renderEditableMode(holder);
+
+        final CartProduct cartProduct = item.getCartProduct();
+
+        if (item.getCartProduct().getProductErrorMsg() != null
+                && !item.getCartProduct().getProductErrorMsg().isEmpty()
+                && !item.getCartProduct().getProductErrorMsg().equalsIgnoreCase("0")) {
+            holder.tvError.setText(item.getCartProduct().getProductErrorMsg());
+            holder.tvError.setVisibility(View.VISIBLE);
+        } else {
+            holder.tvError.setVisibility(View.GONE);
+        }
+
+        if (cartProduct.getProductPreorder() != null
+                && cartProduct.getProductPreorder().getStatus() == 1) {
+            holder.tvPreorderLabel.setVisibility(View.VISIBLE);
+            holder.tvPreorderPeriod.setVisibility(View.VISIBLE);
+            holder.tvPreorderPeriod.setText(
+                    hostFragment.getString(
+                            R.string.hint_preorder_text).replace(
+                            "YYY", cartProduct.getProductPreorder().getProcessTime()
+                    )
+            );
+        } else {
+            holder.tvPreorderLabel.setVisibility(View.GONE);
+            holder.tvPreorderPeriod.setVisibility(View.GONE);
+        }
+
         holder.tvNameProduct.setText(item.getCartProduct().getProductName());
         holder.tvPriceProduct.setText(item.getCartProduct().getProductTotalPriceIdr());
         holder.tvWeightProduct.setText(item.getCartProduct().getProductTotalWeight());
@@ -184,6 +216,31 @@ class CartProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holder.etQuantityProduct.setText(item.getTempQuantity());
         holder.etNotesProduct.setText(Html.fromHtml(item.getTempNotes()));
 
+        holder.tvNameProduct.setOnClickListener(getOnProductDetailClickListener(cartProduct));
+        holder.ivPicProduct.setOnClickListener(getOnProductDetailClickListener(cartProduct));
+        holder.tvPriceProduct.setOnClickListener(getOnProductDetailClickListener(cartProduct));
+        ImageHandler.loadImageRounded2(
+                hostFragment, holder.ivPicProduct, item.getCartProduct().getProductPic()
+        );
+
+    }
+
+    @NonNull
+    private View.OnClickListener getOnProductDetailClickListener(final CartProduct cartProduct) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cartProductAction.onProductCartItemClicked(
+                        ProductPass.Builder.aProductPass()
+                                .setProductId(cartProduct.getProductId())
+                                .setProductImage(cartProduct.getProductPic())
+                                .setProductPrice(cartProduct.getProductPriceIdr())
+                                .setProductName(cartProduct.getProductName())
+                                .setProductUri(cartProduct.getProductUrl())
+                                .build()
+                );
+            }
+        };
     }
 
     private void renderEditableMode(ProductItemHolder holder) {
@@ -215,25 +272,25 @@ class CartProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     static class ProductItemHolder extends RecyclerView.ViewHolder {
-        @Bind(R2.id.tv_error)
+        @BindView(R2.id.tv_error)
         TextView tvError;
-        @Bind(R2.id.tv_preorder_label)
+        @BindView(R2.id.tv_preorder_label)
         TextView tvPreorderLabel;
-        @Bind(R2.id.btn_delete)
+        @BindView(R2.id.btn_delete)
         ImageView btnDelete;
-        @Bind(R2.id.iv_pic_product)
+        @BindView(R2.id.iv_pic_product)
         ImageView ivPicProduct;
-        @Bind(R2.id.tv_name_product)
+        @BindView(R2.id.tv_name_product)
         TextView tvNameProduct;
-        @Bind(R2.id.tv_price_product)
+        @BindView(R2.id.tv_price_product)
         TextView tvPriceProduct;
-        @Bind(R2.id.tv_weight_product)
+        @BindView(R2.id.tv_weight_product)
         TextView tvWeightProduct;
-        @Bind(R2.id.tv_preorder_period)
+        @BindView(R2.id.tv_preorder_period)
         TextView tvPreorderPeriod;
-        @Bind(R2.id.et_quantity_product)
+        @BindView(R2.id.et_quantity_product)
         EditText etQuantityProduct;
-        @Bind(R2.id.et_notes_product)
+        @BindView(R2.id.et_notes_product)
         EditText etNotesProduct;
 
         ProductItemHolder(View itemView) {

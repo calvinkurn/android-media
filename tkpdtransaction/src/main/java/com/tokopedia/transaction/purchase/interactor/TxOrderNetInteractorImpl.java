@@ -3,11 +3,12 @@ package com.tokopedia.transaction.purchase.interactor;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.core.R;
 import com.tokopedia.core.network.apiservices.transaction.TXOrderActService;
 import com.tokopedia.core.network.apiservices.transaction.TXOrderService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.purchase.model.ConfirmationData;
 import com.tokopedia.transaction.purchase.model.response.cancelform.CancelFormData;
 import com.tokopedia.transaction.purchase.model.response.formconfirmpayment.FormConfPaymentData;
@@ -59,7 +60,14 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
 
             @Override
             public void onError(Throwable e) {
-                listener.onFailed(context.getString(R.string.default_request_error_timeout));
+                e.printStackTrace();
+                if (e instanceof UnknownHostException) {
+                    listener.onFailed(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
+                } else if (e instanceof SocketTimeoutException) {
+                    listener.onFailed(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                } else {
+                    listener.onFailed(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
             }
 
             @Override
@@ -74,10 +82,10 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
                         else listener.onFailed(response.body().getErrorMessages().get(0));
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        listener.onFailed(context.getString(R.string.default_request_error_timeout));
+                        listener.onFailed(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                     }
                 } else {
-                    listener.onFailed(context.getString(R.string.default_request_error_timeout));
+                    listener.onFailed(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
         };
@@ -103,11 +111,11 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (e instanceof UnknownHostException) {
-                    listener.onNoConnection("");
+                    listener.onNoConnection(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
                 } else if (e instanceof SocketTimeoutException) {
-                    listener.onTimeout(context.getString(R.string.default_request_error_timeout));
+                    listener.onTimeout(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                 } else {
-                    listener.onError(context.getString(R.string.default_request_error_unknown));
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
 
@@ -124,8 +132,7 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
                         onError(e);
                     }
                 } else {
-                    listener.onError(context.getString
-                            (R.string.default_request_error_unknown));
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
         };
@@ -152,11 +159,11 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (e instanceof UnknownHostException) {
-                    listener.onNoConnection("");
+                    listener.onNoConnection(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
                 } else if (e instanceof SocketTimeoutException) {
-                    listener.onTimeout(context.getString(R.string.default_request_error_timeout));
+                    listener.onTimeout(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                 } else {
-                    listener.onError(context.getString(R.string.default_request_error_unknown));
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
 
@@ -174,7 +181,7 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
                         onError(e);
                     }
                 } else {
-                    listener.onError(context.getString(R.string.default_request_error_unknown));
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
         };
@@ -200,11 +207,11 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (e instanceof UnknownHostException) {
-                    listener.onNoConnection("");
+                    listener.onNoConnection(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
                 } else if (e instanceof SocketTimeoutException) {
-                    listener.onTimeout(context.getString(R.string.default_request_error_timeout));
+                    listener.onTimeout(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                 } else {
-                    listener.onError(context.getString(R.string.default_request_error_unknown));
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
 
@@ -216,7 +223,7 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
                 } else {
                     listener.onError(response.body().isError() && !response.body().getErrorMessages().isEmpty()
                             ? response.body().getErrorMessages().get(0)
-                            : context.getString(R.string.default_request_error_unknown));
+                            : ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
         };
@@ -241,11 +248,11 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (e instanceof UnknownHostException) {
-                    listener.onNoConnection("");
+                    listener.onNoConnection(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
                 } else if (e instanceof SocketTimeoutException) {
-                    listener.onTimeout(context.getString(R.string.default_request_error_timeout));
+                    listener.onTimeout(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                 } else {
-                    listener.onError(context.getString(R.string.default_request_error_unknown));
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
 
@@ -257,7 +264,7 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
                 } else {
                     listener.onError(response.body().isError() && !response.body().getErrorMessages().isEmpty()
                             ? response.body().getErrorMessages().get(0)
-                            : context.getString(R.string.default_request_error_unknown));
+                            : ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
         };
@@ -266,6 +273,57 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber));
     }
+
+    @Override
+    public void requestCancelOrder(@NonNull TKPDMapParam<String, String> params,
+                                   final RequestCancelOrderListener listener) {
+        Observable<Response<TkpdResponse>> observable = txOrderActService.getApi()
+                .requestCancelOrder(params);
+
+        Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                if (e instanceof UnknownHostException) {
+                    listener.onNoConnection(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
+                } else if (e instanceof SocketTimeoutException) {
+                    listener.onTimeout(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                } else {
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
+            }
+
+            @Override
+            public void onNext(Response<TkpdResponse> tkpdResponse) {
+                if (tkpdResponse.isSuccessful()) {
+                    try {
+                        if (tkpdResponse.body().getJsonData().getInt("is_success") == 1) {
+                            listener.onSuccess(tkpdResponse.body().getStatusMessages().get(0));
+                        } else {
+                            listener.onError(tkpdResponse.body().getErrorMessages().get(0));
+                        }
+                    } catch (Exception e) {
+                        onError(e);
+                    }
+                } else {
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
+            }
+        };
+
+        compositeSubscription.add(
+                observable.subscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(subscriber)
+        );
+    }
+
 
     @Override
     public void getCancelPaymentForm(final Context context, final Map<String, String> params,
@@ -283,18 +341,11 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
             @Override
             public void onError(Throwable e) {
                 if (e instanceof UnknownHostException) {
-//                    DialogNoConnection.createShow(context,
-//                            new DialogNoConnection.ActionListener() {
-//                                @Override
-//                                public void onRetryClicked() {
-//                                    getCancelPaymentForm(context, params, listener);
-//                                }
-//                            });
-                    listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
                 } else if (e instanceof SocketTimeoutException) {
-                    listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                 } else {
-                    listener.onError("Terjadi kesalahan, mohon ulangi beberapa saat lagi");
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
 
@@ -304,7 +355,7 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
                         && !response.body().isNullData()) {
                     listener.onSuccess(response.body().convertDataObj(CancelFormData.class));
                 } else {
-                    listener.onError("Terjadi kesalahan, mohon ulangi beberapa saat lagi");
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
         };
@@ -330,18 +381,11 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
             @Override
             public void onError(Throwable e) {
                 if (e instanceof UnknownHostException) {
-//                    DialogNoConnection.createShow(context,
-//                            new DialogNoConnection.ActionListener() {
-//                                @Override
-//                                public void onRetryClicked() {
-//                                    cancelPayment(context, params, listener);
-//                                }
-//                            });
-                    listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
                 } else if (e instanceof SocketTimeoutException) {
-                    listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                 } else {
-                    listener.onError("Terjadi kesalahan, mohon ulangi beberapa saat lagi");
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
 
@@ -361,9 +405,8 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
                     }
                 } else if (response.body().isError() && !response.body().getErrorMessages().isEmpty()) {
                     listener.onError(response.body().getErrorMessages().get(0));
-
                 } else {
-                    listener.onError(context.getString(R.string.default_request_error_unknown));
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
         };
@@ -391,18 +434,11 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (e instanceof UnknownHostException) {
-//                    DialogNoConnection.createShow(context,
-//                            new DialogNoConnection.ActionListener() {
-//                                @Override
-//                                public void onRetryClicked() {
-//                                    getOrderStatusList(context, params, listener);
-//                                }
-//                            });
-                    listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                    listener.onNoConnection(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
                 } else if (e instanceof SocketTimeoutException) {
-                    listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                 } else {
-                    listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
 
@@ -419,7 +455,7 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
                                 response.body().convertDataObj(OrderListData.class));
                     }
                 } else {
-                    listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
         };
@@ -448,18 +484,11 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (e instanceof UnknownHostException) {
-//                    DialogNoConnection.createShow(context,
-//                            new DialogNoConnection.ActionListener() {
-//                                @Override
-//                                public void onRetryClicked() {
-//                                    getPaymentConfirmationList(context, params, listener);
-//                                }
-//                            });
-                    listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                    listener.onNoConnection(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
                 } else if (e instanceof SocketTimeoutException) {
-                    listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                 } else {
-                    listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
 
@@ -472,11 +501,12 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
                             || data.getTxConfDataList().isEmpty()) {
                         listener.onEmptyData();
                     } else {
-                        listener.onSuccess(response.body().getJsonData(),
-                                response.body().convertDataObj(TxConfListData.class));
+                        listener.onSuccess(
+                                response.body().convertDataObj(TxConfListData.class)
+                        );
                     }
                 } else {
-                    listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
         };
@@ -505,18 +535,11 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
             @Override
             public void onError(Throwable e) {
                 if (e instanceof UnknownHostException) {
-//                    DialogNoConnection.createShow(context,
-//                            new DialogNoConnection.ActionListener() {
-//                                @Override
-//                                public void onRetryClicked() {
-//                                    getPaymentVerificationList(context, params, listener);
-//                                }
-//                            });
-                    listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                    listener.onNoConnection(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
                 } else if (e instanceof SocketTimeoutException) {
-                    listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                 } else {
-                    listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
 
@@ -532,7 +555,7 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
                         listener.onSuccess(data);
                     }
                 } else {
-                    listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
         };
@@ -555,7 +578,13 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
 
             @Override
             public void onError(Throwable e) {
-                listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                if (e instanceof UnknownHostException) {
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
+                } else if (e instanceof SocketTimeoutException) {
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                } else {
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
             }
 
             @Override
@@ -573,10 +602,10 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                        listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                     }
                 } else {
-                    listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
         };
@@ -599,7 +628,13 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
 
             @Override
             public void onError(Throwable e) {
-                listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                if (e instanceof UnknownHostException) {
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
+                } else if (e instanceof SocketTimeoutException) {
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                } else {
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
             }
 
             @Override
@@ -608,7 +643,10 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
                     TxVerInvoiceData data = response.body().convertDataObj(TxVerInvoiceData.class);
                     listener.onSuccess(data);
                 } else {
-                    listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                    listener.onError((response.body().getErrorMessages() != null
+                            && !response.body().getErrorMessages().isEmpty())
+                            ? response.body().getErrorMessages().get(0)
+                            : ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
         };
@@ -633,20 +671,12 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
                 if (e instanceof UnknownHostException) {
-//                    DialogNoConnection.createShow(context,
-//                            new DialogNoConnection.ActionListener() {
-//                                @Override
-//                                public void onRetryClicked() {
-//                                    getOrderReceiveList(context, params, listener);
-//                                }
-//                            });
-                    listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                    listener.onNoConnection(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
                 } else if (e instanceof SocketTimeoutException) {
-                    listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                 } else {
-                    listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
 
@@ -663,7 +693,10 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
                                 response.body().convertDataObj(OrderListData.class));
                     }
                 } else {
-                    listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                    listener.onError((response.body().getErrorMessages() != null
+                            && !response.body().getErrorMessages().isEmpty())
+                            ? response.body().getErrorMessages().get(0)
+                            : ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
         };
@@ -691,18 +724,11 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (e instanceof UnknownHostException) {
-//                    DialogNoConnection.createShow(context,
-//                            new DialogNoConnection.ActionListener() {
-//                                @Override
-//                                public void onRetryClicked() {
-//                                    getOrderTxList(context, params, listener);
-//                                }
-//                            });
-                    listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                    listener.onNoConnection(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
                 } else if (e instanceof SocketTimeoutException) {
-                    listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                 } else {
-                    listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
 
@@ -719,7 +745,10 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
                                 response.body().convertDataObj(OrderListData.class));
                     }
                 } else {
-                    listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                    listener.onError((response.body().getErrorMessages() != null
+                            && !response.body().getErrorMessages().isEmpty())
+                            ? response.body().getErrorMessages().get(0)
+                            : ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
         };
@@ -748,18 +777,11 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (e instanceof UnknownHostException) {
-//                    DialogNoConnection.createShow(context,
-//                            new DialogNoConnection.ActionListener() {
-//                                @Override
-//                                public void onRetryClicked() {
-//                                    confirmFinishDeliver(context, params, listener);
-//                                }
-//                            });
-                    listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
                 } else if (e instanceof SocketTimeoutException) {
-                    listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                 } else {
-                    listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
 
@@ -775,12 +797,12 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
                         if (!tkpdResponseResponse.body().getErrorMessages().get(0).isEmpty()) {
                             listener.onError(tkpdResponseResponse.body().getErrorMessages().get(0));
                         } else {
-                            listener.onError(context.getString(R.string.msg_connection_timeout));
+                            listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                         }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    listener.onError(context.getString(R.string.msg_connection_timeout));
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
 
             }
@@ -810,18 +832,11 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (e instanceof UnknownHostException) {
-//                    DialogNoConnection.createShow(context,
-//                            new DialogNoConnection.ActionListener() {
-//                                @Override
-//                                public void onRetryClicked() {
-//                                    confirmDeliver(context, params, listener);
-//                                }
-//                            });
-                    listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
                 } else if (e instanceof SocketTimeoutException) {
-                    listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                 } else {
-                    listener.onError(context.getString(R.string.msg_connection_timeout_toast));
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
 
@@ -837,12 +852,12 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
                         if (!tkpdResponseResponse.body().getErrorMessages().get(0).isEmpty()) {
                             listener.onError(tkpdResponseResponse.body().getErrorMessages().get(0));
                         } else {
-                            listener.onError(context.getString(R.string.msg_connection_timeout));
+                            listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                         }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    listener.onError(context.getString(R.string.msg_connection_timeout));
+                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
         };

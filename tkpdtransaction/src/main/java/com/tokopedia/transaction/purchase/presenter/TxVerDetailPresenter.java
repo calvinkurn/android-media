@@ -3,8 +3,8 @@ package com.tokopedia.transaction.purchase.presenter;
 import android.app.Activity;
 import android.content.Context;
 
-import com.tokopedia.transaction.purchase.model.response.txverification.TxVerData;
 import com.tokopedia.core.util.UploadImageReVamp;
+import com.tokopedia.transaction.purchase.model.response.txverification.TxVerData;
 
 /**
  * Created by Angga.Prasetiyo on 13/06/2016.

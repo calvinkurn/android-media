@@ -21,7 +21,6 @@ public class HttpErrorException extends IOException {
         super("HTTP Error ==> Error code : " + errorCode + "\n" + detailMessage);
     }
 
-
     public HttpErrorException(String detailMessage) {
         super(detailMessage);
     }

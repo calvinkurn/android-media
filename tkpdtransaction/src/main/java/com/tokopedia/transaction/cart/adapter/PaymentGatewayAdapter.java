@@ -8,15 +8,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.fragment.PaymentGatewayFragment;
 import com.tokopedia.transaction.cart.model.cartdata.GatewayList;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -35,7 +35,7 @@ public class PaymentGatewayAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public PaymentGatewayAdapter(PaymentGatewayFragment fragment, List<GatewayList> gatewayLists) {
         this.fragment = fragment;
         this.gatewayLists = gatewayLists;
-        this.actionListener = (ActionListener) fragment;
+        this.actionListener = fragment;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class PaymentGatewayAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         viewHolder.tvName.setText(item != null ? item.getGatewayName() : "");
         ImageHandler.LoadImage(viewHolder.ivLogo, item != null ? item.getGatewayImage() : "");
         viewHolder.tvFee.setText(item != null ? item.getGatewayDesc() : "");
-        viewHolder.tvName.setOnClickListener(new View.OnClickListener() {
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 actionListener.onSelectedPaymentGateway(item);
@@ -61,7 +61,7 @@ public class PaymentGatewayAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public int getItemViewType(int position) {
-        return R.layout.simple_payment_listview;
+        return R.layout.holder_item_payment_gateway_tx_module;
     }
 
     @Override
@@ -70,11 +70,11 @@ public class PaymentGatewayAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R2.id.img)
+        @BindView(R2.id.img)
         ImageView ivLogo;
-        @Bind(R2.id.name)
+        @BindView(R2.id.name)
         TextView tvName;
-        @Bind(R2.id.payment_fee)
+        @BindView(R2.id.payment_fee)
         TextView tvFee;
 
         public ViewHolder(View itemView) {

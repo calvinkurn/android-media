@@ -19,6 +19,8 @@ public class CheckoutData implements Parcelable {
     private String token;
     private String partialString;
     private String usedDeposit;
+    private boolean errorPayment;
+    private String errorPaymentMessage;
     private List<CheckoutDropShipperData> dropShipperDataList;
     private String voucherCode;
 
@@ -31,6 +33,8 @@ public class CheckoutData implements Parcelable {
         setToken(builder.token);
         setPartialString(builder.partialString);
         setUsedDeposit(builder.usedDeposit);
+        setErrorPayment(builder.errorPayment);
+        setErrorPaymentMessage(builder.errorPaymentMessage);
         setDropShipperDataList(builder.dropShipperDataList);
         setVoucherCode(builder.voucherCode);
     }
@@ -118,6 +122,21 @@ public class CheckoutData implements Parcelable {
         this.usedDeposit = usedDeposit;
     }
 
+    public boolean isErrorPayment() {
+        return errorPayment;
+    }
+
+    public void setErrorPayment(boolean errorPayment) {
+        this.errorPayment = errorPayment;
+    }
+
+    public String getErrorPaymentMessage() {
+        return errorPaymentMessage;
+    }
+
+    public void setErrorPaymentMessage(String errorPaymentMessage) {
+        this.errorPaymentMessage = errorPaymentMessage;
+    }
 
     public static final class Builder {
         private String lpFlag = "1";
@@ -128,6 +147,8 @@ public class CheckoutData implements Parcelable {
         private String token;
         private String partialString;
         private String usedDeposit;
+        private boolean errorPayment;
+        private String errorPaymentMessage;
         private List<CheckoutDropShipperData> dropShipperDataList;
         private String voucherCode;
 
@@ -170,7 +191,17 @@ public class CheckoutData implements Parcelable {
         }
 
         public Builder usedDeposit(String val) {
-            usedDeposit = val;
+            usedDeposit = val.isEmpty() ? "0" : val;
+            return this;
+        }
+
+        public Builder errorPayment(boolean val) {
+            errorPayment = val;
+            return this;
+        }
+
+        public Builder errorPaymentMessage(String val) {
+            errorPaymentMessage = val;
             return this;
         }
 
@@ -205,6 +236,8 @@ public class CheckoutData implements Parcelable {
         dest.writeString(this.token);
         dest.writeString(this.partialString);
         dest.writeString(this.usedDeposit);
+        dest.writeByte(this.errorPayment ? (byte) 1 : (byte) 0);
+        dest.writeString(this.errorPaymentMessage);
         dest.writeTypedList(this.dropShipperDataList);
         dest.writeString(this.voucherCode);
     }
@@ -218,12 +251,13 @@ public class CheckoutData implements Parcelable {
         this.token = in.readString();
         this.partialString = in.readString();
         this.usedDeposit = in.readString();
+        this.errorPayment = in.readByte() != 0;
+        this.errorPaymentMessage = in.readString();
         this.dropShipperDataList = in.createTypedArrayList(CheckoutDropShipperData.CREATOR);
         this.voucherCode = in.readString();
     }
 
-    public static final Parcelable.Creator<CheckoutData> CREATOR
-            = new Parcelable.Creator<CheckoutData>() {
+    public static final Creator<CheckoutData> CREATOR = new Creator<CheckoutData>() {
         @Override
         public CheckoutData createFromParcel(Parcel source) {
             return new CheckoutData(source);

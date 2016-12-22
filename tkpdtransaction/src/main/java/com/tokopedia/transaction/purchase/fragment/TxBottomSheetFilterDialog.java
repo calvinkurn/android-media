@@ -14,8 +14,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.DatePickerUtil;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.model.AllTxFilter;
 import com.tokopedia.transaction.purchase.model.TxFilterItem;
 import com.tokopedia.transaction.purchase.utils.FilterUtils;
@@ -24,9 +24,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 
 /**
  * Custom dialog for filter
@@ -37,19 +38,20 @@ public class TxBottomSheetFilterDialog implements AdapterView.OnItemSelectedList
 
     private final Activity activity;
     private final BottomSheetDialog dialog;
+    private final Unbinder unbinder;
     private AllTxFilter allTxFilter;
     private List<TxFilterItem> txFilterItemList = new ArrayList<>();
     private ArrayAdapter<TxFilterItem> adapter;
 
-    @Bind(R2.id.filter)
+    @BindView(R2.id.filter)
     Spinner spnFilter;
-    @Bind(R2.id.search)
+    @BindView(R2.id.search)
     EditText searchField;
-    @Bind(R2.id.start_date)
+    @BindView(R2.id.start_date)
     TextView tvStartDate;
-    @Bind(R2.id.end_date)
+    @BindView(R2.id.end_date)
     TextView tvEndDate;
-    @Bind(R2.id.search_button)
+    @BindView(R2.id.search_button)
     TextView tvSearchSubmit;
 
 
@@ -69,8 +71,8 @@ public class TxBottomSheetFilterDialog implements AdapterView.OnItemSelectedList
         this.allTxFilter = allTxFilter;
         this.onFilterListener = onFilterListener;
         this.dialog = new BottomSheetDialog(activity);
-        this.dialog.setContentView(R.layout.layout_filter_payment_transaction);
-        ButterKnife.bind(this, this.dialog);
+        this.dialog.setContentView(R.layout.dialog_transaction_filter_tx_module);
+        unbinder = ButterKnife.bind(this, this.dialog);
         initViewContent(allTxFilter);
         this.dialog.setOnDismissListener(this);
         this.dialog.setOnCancelListener(this);
@@ -173,7 +175,7 @@ public class TxBottomSheetFilterDialog implements AdapterView.OnItemSelectedList
 
     public void dismiss() {
         dialog.dismiss();
-        ButterKnife.unbind(dialog);
+        unbinder.unbind();
     }
 
     public void setStateFilterSelection(String txFilterID) {

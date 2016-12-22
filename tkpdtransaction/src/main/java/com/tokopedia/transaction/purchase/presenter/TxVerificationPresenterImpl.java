@@ -2,6 +2,8 @@ package com.tokopedia.transaction.purchase.presenter;
 
 import android.content.Context;
 
+import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.util.UploadImageReVamp;
 import com.tokopedia.transaction.purchase.activity.ConfirmPaymentActivity;
 import com.tokopedia.transaction.purchase.activity.TxVerDetailActivity;
 import com.tokopedia.transaction.purchase.fragment.TxVerificationFragment;
@@ -12,8 +14,6 @@ import com.tokopedia.transaction.purchase.interactor.TxUploadInteractorImpl;
 import com.tokopedia.transaction.purchase.listener.TxVerViewListener;
 import com.tokopedia.transaction.purchase.model.response.txverification.TxVerData;
 import com.tokopedia.transaction.purchase.model.response.txverification.TxVerListData;
-import com.tokopedia.core.util.PagingHandler;
-import com.tokopedia.core.util.UploadImageReVamp;
 
 import org.json.JSONObject;
 
@@ -68,6 +68,21 @@ public class TxVerificationPresenterImpl implements TxVerificationPresenter {
                     }
 
                     @Override
+                    public void onNoConnection(String message) {
+                        switch (typeRequest) {
+                            case TxOrderNetInteractor.TypeRequest.INITIAL:
+                                viewListener.showNoConnectionResetData(message);
+                                break;
+                            case TxOrderNetInteractor.TypeRequest.PULL_REFRESH:
+                                viewListener.showNoConnectionPullRefresh(message);
+                                break;
+                            case TxOrderNetInteractor.TypeRequest.LOAD_MORE:
+                                viewListener.showNoConnectionLoadMoreData(message);
+                                break;
+                        }
+                    }
+
+                    @Override
                     public void onEmptyData() {
                         viewListener.showEmptyData(typeRequest);
                     }
@@ -77,7 +92,7 @@ public class TxVerificationPresenterImpl implements TxVerificationPresenter {
 
     @Override
     public void processEditPayment(Context context, TxVerData data) {
-       viewListener.navigateToActivityRequest(ConfirmPaymentActivity.instanceEdit(context,
+        viewListener.navigateToActivityRequest(ConfirmPaymentActivity.instanceEdit(context,
                 data.getPaymentId()),
                 TxVerDetailActivity.REQUEST_EDIT_PAYMENT);
         // viewListener.navigateToActivityRequest(intent, 1);

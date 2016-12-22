@@ -1,11 +1,16 @@
 package com.tokopedia.seller.selling.presenter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.R2;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.ValidationTextUtil;
 import com.tokopedia.seller.facade.FacadeShopTransaction;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.seller.selling.model.SellingStatusTxModel;
@@ -13,6 +18,7 @@ import com.tokopedia.core.service.constant.DownloadServiceConstant;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.subscriptions.CompositeSubscription;
@@ -25,32 +31,16 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
     private FacadeShopTransaction facade;
     private CompositeSubscription _subscriptions = new CompositeSubscription();
     private static final String TAG = SellingStatusTransactionImpl.class.getSimpleName();
-    private PagingHandler mPaging;
-    private String search;
-    private String filter;
-    private String startDate;
-    private String endDate;
     private Type type;
 
-    public SellingStatusTransactionImpl(SellingStatusTransactionView view) {
-        super(view);
-        mPaging = new PagingHandler();
-    }
+    private boolean isLoading;
 
-    @Override
-    public void loadMore(Context context) {
-        view.setPullEnabled(false);
-        if (mPaging.CheckNextPage()) {
-            mPaging.nextPage();
-            switch (type) {
-                case STATUS:
-                    facade.getStatusV4(mPaging, search, this);
-                    break;
-                case TRANSACTION:
-                    facade.getTxListV4(mPaging, search, filter, startDate, endDate, this);
-                    break;
-            }
-        }
+    public List<SellingStatusTxModel> listDatas = new ArrayList<>();
+    private Context context;
+
+    public SellingStatusTransactionImpl(SellingStatusTransactionView view, Type type) {
+        super(view);
+        this.type = type;
     }
 
     @Override
@@ -60,8 +50,132 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
     }
 
     @Override
-    public PagingHandler getPaging() {
-        return mPaging;
+    public void getStatusTransactionList(boolean isVisibleToUser, Type type) {
+        this.type = type;
+        if (isVisibleToUser && isDataEmpty() && !isLoading) {
+            switch (type) {
+                case STATUS:
+                    getStatusList();
+                    break;
+                case TRANSACTION:
+                    getTransactionList();
+                    break;
+            }
+        }
+    }
+
+    private void getStatusList() {
+        view.setRefreshPullEnable(false);
+        isLoading = true;
+        requestGetStatusList();
+    }
+
+    private void getTransactionList() {
+        view.setRefreshPullEnable(false);
+        isLoading = true;
+        requestGetTransactionList();
+    }
+
+    private void requestGetTransactionList() {
+        facade.setCompositeSubscription(_subscriptions);
+        facade.getTxListV4(view.getPaging(), view.getQuery(), view.getFilter(), view.getStartDate(), view.getEndDate(), this);
+    }
+
+    public void requestGetStatusList() {
+        facade.setCompositeSubscription(_subscriptions);
+        facade.getStatusV4(view.getPaging(), view.getQuery(), this);
+    }
+
+    private boolean isDataEmpty() {
+        try {
+            return (view.getPaging().getPage() == 1 && !isLoading && listDatas.size() == 0);
+        } catch (Exception e) {
+            return false;
+        }
+
+    }
+
+    @Override
+    public void onQuerySubmit(String query) {
+        if (!isLoading && view.getUserVisible()) {
+            if (ValidationTextUtil.isValidSalesQuery(query)) {
+                view.hideFilterView();
+                onRefreshStatusTransaction();
+            } else {
+                showToastMessage(context.getString(R2.string.keyword_min_3_char));
+            }
+        }
+    }
+
+    @Override
+    public void refreshOnFilter() {
+        if(!isLoading && view.getUserVisible()) {
+            onRefreshStatusTransaction();
+            view.hideFilterView();
+        }
+    }
+
+    private void showToastMessage(String message) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+    }
+
+    public void onRefreshStatusTransaction() {
+        if (!isLoading) {
+            view.removeRetry();
+            doRefresh();
+        }
+    }
+
+    @Override
+    public void onQueryChange(String newText) {
+        if (newText.length() == 0)
+            doRefresh();
+    }
+
+    private void doRefresh() {
+        view.getPaging().resetPage();
+        if (!view.getRefreshing()) {
+            view.addLoadingFooter();
+            clearData();
+        }
+        switch (type){
+            case STATUS:
+                getStatusList();
+                break;
+            case TRANSACTION:
+                getTransactionList();
+                break;
+        }
+    }
+
+    private void clearData() {
+        listDatas.clear();
+        view.notifyDataSetChanged(listDatas);
+    }
+
+    @Override
+    public void onRefreshView() {
+        onRefreshStatusTransaction();
+    }
+
+    @Override
+    public void onScrollList(boolean isLastItemVisible) {
+        if (!isLoading && isLastItemVisible && view.getPaging().CheckNextPage()) {
+            onLoadNextPage();
+        }
+    }
+
+    private void onLoadNextPage() {
+        view.addLoadingFooter();
+        view.getPaging().nextPage();
+        switch (type) {
+            case STATUS:
+                getStatusList();
+                break;
+            case TRANSACTION:
+                getTransactionList();
+                break;
+        }
     }
 
     @Override
@@ -76,66 +190,88 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
 
     @Override
     public void initData(@NonNull Context context) {
+        view.initListener();
         if (!isAfterRotate) {
-            view.setupRecyclerView();
+            if (isAllowLoading()) {
+                addLoading();
+            }
+            initData();
         }
     }
 
-    @Override
-    public void callNetworkTransaction(Context context, String search, String filter, String startDate, String endDate) {
-        Log.d(TAG, "callNetworkTransaction");
-        facade.setCompositeSubscription(_subscriptions);
-        this.type = Type.TRANSACTION;
-        this.search = search;
-        this.filter = filter;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        mPaging.resetPage();
-        facade.getTxListV4(mPaging, search, filter, startDate, endDate, this);
+    private void initData() {
+        if (view.getUserVisible() && isDataEmpty() && !isLoading) {
+            switch (type) {
+                case STATUS:
+                    getStatusList();
+                    break;
+                case TRANSACTION:
+                    getTransactionList();
+                    break;
+            }
+        }
     }
 
-    @Override
-    public void callNetworkStatus(Context context, String search) {
-        Log.d(TAG, "callNetworkStatus");
-        facade.setCompositeSubscription(_subscriptions);
-        this.type = Type.STATUS;
-        this.search = search;
-        mPaging.resetPage();
-        facade.getStatusV4(mPaging, search, this);
+    private boolean isAllowLoading() {
+        return (isDataEmpty() || isLoading);
+    }
+
+    private void addLoading() {
+        view.addLoadingFooter();
     }
 
     @Override
     public void OnSuccess(List<SellingStatusTxModel> model, OrderShippingData Result) {
-        CommonUtils.dumper(TAG + " : size " + model.size());
-        //mPaging.setNewParameter(Result);
-        if (mPaging.CheckNextPage()) {
-            view.displayLoadMore(true);
-        } else {
-            view.displayLoadMore(false);
-        }
-        view.setPullEnabled(true);
-        view.onCallStatusLoadMore(model);
+        if (view.getPaging().getPage() == 1)
+            clearData();
+        view.getPaging().setNewParameter(Result.getPaging());
+        finishConnection();
+        listDatas.addAll(model);
+        view.notifyDataSetChanged(listDatas);
+        view.setRefreshPullEnable(true);
     }
 
     @Override
     public void OnNoResult() {
-        Log.d(TAG, "OnNoResult");
-        mPaging.setHasNext(false);
-        view.setPullEnabled(true);
-        view.onNoResult();
+        finishConnection();
+        if (view.getPaging().getPage() == 1) {
+            clearData();
+            view.addEmptyView();
+        }
+        view.getPaging().setHasNext(false);
+        view.setRefreshPullEnable(true);
+        view.removeRetry();
     }
 
     @Override
     public void OnError() {
-        Log.e(TAG, "OnError");
-        view.setPullEnabled(true);
-        view.onNetworkError(DownloadServiceConstant.INVALID_TYPE, "ERROR FETCH ORDER DATA");
+        finishConnection();
+        if (listDatas.size() == 0) {
+            view.addRetry();
+        } else {
+            NetworkErrorHelper.showSnackbar((Activity) context);
+        }
+        view.setRefreshPullEnable(true);
     }
 
     @Override
     public void onNetworkTimeOut() {
-        view.setPullEnabled(true);
-        view.onNetworkError(DownloadServiceConstant.INVALID_TYPE, "ERROR NETWORK TIMEOUT");
+        finishConnection();
+        if (listDatas.size() == 0) {
+            view.addRetry();
+        } else {
+            NetworkErrorHelper.showSnackbar((Activity) context);
+        }
+        view.setRefreshPullEnable(true);
+    }
+
+    @Override
+    public void finishConnection() {
+        view.finishRefresh();
+        view.removeRetry();
+        isLoading = false;
+        view.removeLoading();
+        view.removeEmpty();
     }
 
     @Override
@@ -160,10 +296,10 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
 
     @Override
     public void initDataInstance(Context context) {
-        if (!isAfterRotate) {
-            view.initAdapter();
-        }
+        this.context = context;
         facade = FacadeShopTransaction.createInstance(context);
+        view.initHandlerAndAdapter();
+        checkValidationToSendGoogleAnalytic(view.getUserVisible(), context);
     }
 
     @Override

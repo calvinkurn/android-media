@@ -19,9 +19,32 @@
             android:screenOrientation="portrait"
             android:label="@string/title_activity_shop_transaction_new"
             android:name=".selling.view.activity.ActivitySellingTransaction"/>
+        <activity
+            android:name="com.tokopedia.seller.OrderHistoryView"
+            android:label="@string/title_activity_order_history_view"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ShippingConfirmationDetail"
+            android:label="@string/title_activity_shipping_confirmation_detail"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ShippingConfirmationProdConf"
+            android:label="@string/title_activity_shipping_confirmation_prod_conf"
+            android:screenOrientation="portrait" />
         <service
             android:name=".selling.SellingService"
             android:exported="false" />
+
+        <activity
+            android:name="com.tokopedia.seller.shop.ShopEditorActivity"
+            android:label="@string/shop_setting"
+            android:theme="@style/ShopAppTheme" />
+        <service
+            android:name="com.tokopedia.seller.selling.SellingService"
+            android:exported="false"/>
+
+        <service android:name=".shop.ShopEditService"
+            android:exported="false"/>
 
     </application>
 

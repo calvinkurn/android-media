@@ -17,13 +17,16 @@ import android.widget.ScrollView;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity.BackButtonListener;
 import com.tokopedia.core.var.TkpdUrl;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
+import static com.tokopedia.core.analytics.container.GTMContainer.getContainer;
 import static com.tokopedia.inbox.contactus.ContactUsConstant.PARAM_URL;
 
 /**
@@ -31,13 +34,15 @@ import static com.tokopedia.inbox.contactus.ContactUsConstant.PARAM_URL;
  */
 public class ContactUsFaqFragment extends BasePresenterFragment {
 
-    @Bind(R2.id.scroll_view)
+    private static final String GTM_CONTACTUS_URL = "url_contactus";
+
+    @BindView(R2.id.scroll_view)
     ScrollView mainView;
 
-    @Bind(R2.id.webview)
+    @BindView(R2.id.webview)
     WebView webView;
 
-    @Bind(R2.id.progressbar)
+    @BindView(R2.id.progressbar)
     ProgressBar progressBar;
 
     ContactUsFaqListener listener;
@@ -61,11 +66,19 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
     }
 
     @Override
-    protected void onFirstTimeLaunched() {
+    protected String getScreenName() {
+        return null;
+    }
 
-        if(getArguments().getString(PARAM_URL,"").equals(""))
-            url = TkpdUrl.CONTACT_US_FAQ + "&app_version=" + BuildConfig.VERSION_CODE;
-        else
+    @Override
+    protected void onFirstTimeLaunched() {
+        String url;
+        if (getArguments().getString(PARAM_URL, "").equals("")) {
+            if (!GTMContainer.getContainer().getString(GTM_CONTACTUS_URL).equals(""))
+                url = GTMContainer.getContainer().getString(GTM_CONTACTUS_URL) + "&app_version=" + GlobalConfig.VERSION_CODE;
+            else
+                url = TkpdUrl.CONTACT_US_FAQ + "&app_version=" + GlobalConfig.VERSION_CODE;
+        } else
             url = getArguments().getString(PARAM_URL);
 
         webView.loadUrl(url);
@@ -178,13 +191,13 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            if(mainView!=null)
+            if (mainView != null)
                 mainView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mainView.smoothScrollTo(0, 0);
-                }
-            }, 300);
+                    @Override
+                    public void run() {
+                        mainView.smoothScrollTo(0, 0);
+                    }
+                }, 300);
         }
 
         @Override
@@ -206,7 +219,7 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if(progressBar != null)
+        if (progressBar != null)
             progressBar.setIndeterminate(false);
     }
 

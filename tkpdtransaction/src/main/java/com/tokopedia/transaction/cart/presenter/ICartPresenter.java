@@ -1,14 +1,10 @@
 package com.tokopedia.transaction.cart.presenter;
 
-import android.app.Activity;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
+import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
-import com.tokopedia.transaction.cart.model.cartdata.TransactionList;
-import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
-import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 
 import java.util.List;
 
@@ -18,20 +14,22 @@ import java.util.List;
  */
 
 public interface ICartPresenter {
-    void processGetCartData(@NonNull Activity activity);
+    void processGetCartData();
 
-    void processCancelCart(@NonNull Activity activity, @NonNull TransactionList data);
+    void processCancelCart(@NonNull CartItem cartData);
 
-    void processCancelCartProduct(@NonNull Activity activity, @NonNull TransactionList cartData,
+    void processCancelCartProduct(@NonNull CartItem cartData,
                                   @NonNull CartProduct cartProductData);
 
-    void processSubmitEditCart(Activity activity, TransactionList cartData,
-                               List<ProductEditData> cartProductEditDataList);
+    void processSubmitEditCart(@NonNull CartItem cartData,
+                               @NonNull List<ProductEditData> cartProductEditDataList);
 
-    void processUpdateInsurance(Activity activity, TransactionList cartData, boolean useInsurance);
+    void processUpdateInsurance(@NonNull CartItem cartData, boolean useInsurance);
 
-    void processCheckoutCart(Activity activity, CheckoutData.Builder checkoutDataBuilder,
-                             List<CartItemEditable> cartItemEditables);
+    void processCheckVoucherCode();
 
-    void processStep2PaymentCart(Activity activity, TopPayParameterData data);
+    void processGetTickerGTM();
+
+    void processValidationCheckoutData();
+
 }

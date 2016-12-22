@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -204,27 +204,27 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R2.id.image)
+        @BindView(R2.id.image)
         ImageView imageView;
-        @Bind(R2.id.checkbox)
+        @BindView(R2.id.checkbox)
         CheckBox checkBox;
-        @Bind(R2.id.title)
+        @BindView(R2.id.title)
         TextView titleTxt;
-        @Bind(R2.id.price)
+        @BindView(R2.id.price)
         TextView priceTxt;
-        @Bind(R2.id.weight)
+        @BindView(R2.id.weight)
         TextView weightTxt;
-        @Bind(R2.id.label_stock_empty)
+        @BindView(R2.id.label_stock_empty)
         TextView labelEmptyStock;
-        @Bind(R2.id.edit_description)
+        @BindView(R2.id.edit_description)
         ImageButton editDesc;
-        @Bind(R2.id.edit_price)
+        @BindView(R2.id.edit_price)
         ImageButton editPrice;
-        @Bind(R2.id.description)
+        @BindView(R2.id.description)
         TextView descTxt;
-        @Bind(R2.id.container_description)
+        @BindView(R2.id.container_description)
         LinearLayout containerDesc;
-        @Bind(R2.id.container_price)
+        @BindView(R2.id.container_price)
         LinearLayout containerPrice;
         Context context;
 

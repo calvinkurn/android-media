@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.purchase.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -15,22 +16,21 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.OneOnClick;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.customView.TextViewCopyable;
-import com.tokopedia.core.router.TransactionRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
+import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.fragment.TxListFragment;
 import com.tokopedia.transaction.purchase.model.response.txlist.OrderData;
-import com.tokopedia.core.var.TkpdState;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * TxListAdapter
- * Created by Angga.Prasetiyo on 21/04/2016.
+ * @author Angga.Prasetiyo on 21/04/2016.
  */
 public class TxListAdapter extends ArrayAdapter<OrderData> {
     private final LayoutInflater inflater;
@@ -59,18 +59,21 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
     }
 
     public TxListAdapter(Context context, int instanceType, ActionListener actionListener) {
-        super(context, R.layout.listview_tx_order_stats, new ArrayList<OrderData>());
+        super(context, R.layout.holder_item_transaction_list_tx_module, new ArrayList<OrderData>());
         this.context = context;
         this.actionListener = actionListener;
         this.inflater = LayoutInflater.from(context);
         this.instanceType = instanceType;
     }
 
+    @NonNull
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
         final ViewHolder holder;
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.listview_tx_order_stats, parent, false);
+            convertView = inflater.inflate(
+                    R.layout.holder_item_transaction_list_tx_module, parent, false
+            );
             holder = new ViewHolder(convertView);
             convertView.setTag(holder);
         } else {
@@ -198,7 +201,7 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
     private int getMenuId(OrderData item) {
         int MenuID = 0;
         switch (instanceType) {
-            case TransactionRouter.INSTANCE_ALL:
+            case TransactionPurchaseRouter.INSTANCE_ALL:
 
                 break;
             case TxListFragment.INSTANCE_RECEIVE:
@@ -236,35 +239,35 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
 
 
     class ViewHolder {
-        @Bind(R2.id.tv_preorder)
+        @BindView(R2.id.tv_preorder)
         TextView tvPreOrder;
-        @Bind(R2.id.shop_avatar)
+        @BindView(R2.id.shop_avatar)
         ImageView imgShopAvatar;
-        @Bind(R2.id.but_overflow)
+        @BindView(R2.id.but_overflow)
         View btnOverflow;
-        @Bind(R2.id.shop_name)
+        @BindView(R2.id.shop_name)
         TextView tvShopName;
-        @Bind(R2.id.invoice_text)
+        @BindView(R2.id.invoice_text)
         TextView tvInvoice;
-        @Bind(R2.id.date)
+        @BindView(R2.id.date)
         TextView tvDate;
-        @Bind(R2.id.upload_button)
+        @BindView(R2.id.upload_button)
         TextView tvUploadTx;
-        @Bind(R2.id.status)
+        @BindView(R2.id.status)
         TextView tvStatus;
-        @Bind(R2.id.confirm_layout)
+        @BindView(R2.id.confirm_layout)
         LinearLayout linConfirmLayout;
-        @Bind(R2.id.receive_button)
+        @BindView(R2.id.receive_button)
         TextView tvReceiveButton;
-        @Bind(R2.id.reject_button)
+        @BindView(R2.id.reject_button)
         TextView tvRejectButton;
-        @Bind(R2.id.track_button)
+        @BindView(R2.id.track_button)
         TextView tvTrackButton;
-        @Bind(R2.id.main_view)
+        @BindView(R2.id.main_view)
         View mainView;
-        @Bind(R2.id.ref_area)
+        @BindView(R2.id.ref_area)
         View refAreaView;
-        @Bind(R2.id.reference_num)
+        @BindView(R2.id.reference_num)
         TextViewCopyable tvRefNum;
 
         public ViewHolder(View view) {
@@ -275,30 +278,29 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
     private class OnMenuPopupClicked implements PopupMenu.OnMenuItemClickListener {
         private final OrderData orderData;
 
-        public OnMenuPopupClicked(OrderData item) {
+        OnMenuPopupClicked(OrderData item) {
             this.orderData = item;
         }
 
         @Override
         public boolean onMenuItemClick(MenuItem item) {
-            switch (item.getItemId()) {
-                case R2.id.action_track:
-                    actionListener.actionTrackOrder(orderData);
-                    return true;
-                case R2.id.action_confirm_package:
-                    actionListener.actionConfirmDeliver(orderData);
-                    return true;
-                case R2.id.action_upload:
-                    actionListener.actionUploadTx(orderData);
-                    return true;
-                case R2.id.action_open_dispute:
-                    actionListener.actionDispute(orderData, 0);
-                    return true;
-                case R2.id.action_show_complain:
-                    actionListener.actionShowComplain(orderData);
-                    return true;
-                default:
-                    return false;
+            if (item.getItemId() == R.id.action_track) {
+                actionListener.actionTrackOrder(orderData);
+                return true;
+            } else if (item.getItemId() == R.id.action_confirm_package) {
+                actionListener.actionConfirmDeliver(orderData);
+                return true;
+            } else if (item.getItemId() == R.id.action_upload) {
+                actionListener.actionUploadTx(orderData);
+                return true;
+            } else if (item.getItemId() == R.id.action_open_dispute) {
+                actionListener.actionDispute(orderData, 0);
+                return true;
+            } else if (item.getItemId() == R.id.action_show_complain) {
+                actionListener.actionShowComplain(orderData);
+                return true;
+            } else {
+                return false;
             }
         }
     }

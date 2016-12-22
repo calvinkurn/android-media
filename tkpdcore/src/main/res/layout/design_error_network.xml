@@ -1,0 +1,53 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_retry"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:background="@color/tkpd_bg_color"
+    android:padding="@dimen/padding_small">
+
+    <!-- Untuk onRetry satu halaman -->
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginBottom="@dimen/margin_med"
+        android:layout_marginTop="@dimen/margin_vs"
+        android:gravity="center_horizontal"
+        android:src="@drawable/ic_error_network"/>
+
+    <TextView
+        android:id="@+id/message_retry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_margin="@dimen/margin_vs"
+        android:text="@string/msg_network_error_1"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_large"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/sub_message_retry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_margin="@dimen/margin_vs"
+        android:text="@string/msg_network_error_2"
+        android:textColor="@color/grey_400"
+        android:textSize="@dimen/text_size_medium"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/button_retry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_margin="@dimen/margin_med"
+        android:text="@string/title_try_again_caps"
+        android:textColor="@color/tkpd_main_green"
+        android:textStyle="bold" />
+
+</LinearLayout>

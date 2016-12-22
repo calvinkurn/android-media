@@ -1,7 +1,7 @@
 package com.tokopedia.transaction.cart.model.cancelcart;
 
 
-import com.tokopedia.transaction.cart.model.cartdata.CartModel;
+import com.tokopedia.transaction.cart.model.cartdata.CartData;
 
 /**
  * Created by Angga.Prasetiyo on 30/05/2016.
@@ -11,7 +11,7 @@ public class CancelCartData {
 
     private boolean isSuccessCancel;
     private boolean isSuccessRefresh;
-    private CartModel cartData;
+    private CartData cartData;
     private String messageCancelCart = "";
     private String messageRefreshCart = "";
 
@@ -31,11 +31,11 @@ public class CancelCartData {
         isSuccessRefresh = successRefresh;
     }
 
-    public CartModel getCartData() {
+    public CartData getCartData() {
         return cartData;
     }
 
-    public void setCartData(CartModel cartData) {
+    public void setCartData(CartData cartData) {
         this.cartData = cartData;
     }
 

@@ -19,11 +19,15 @@ import android.widget.AdapterView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.GalleryBrowser;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customadapter.LazyListView;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.ImageUploadHandler;
+import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.activity.ConfirmPaymentActivity;
 import com.tokopedia.transaction.purchase.activity.TxVerDetailActivity;
 import com.tokopedia.transaction.purchase.adapter.TxVerAdapter;
@@ -33,15 +37,11 @@ import com.tokopedia.transaction.purchase.model.response.txverification.TxVerDat
 import com.tokopedia.transaction.purchase.presenter.TxVerificationPresenter;
 import com.tokopedia.transaction.purchase.presenter.TxVerificationPresenterImpl;
 import com.tokopedia.transaction.purchase.receiver.TxListUIReceiver;
-import com.tokopedia.core.util.ImageUploadHandler;
-import com.tokopedia.core.util.PagingHandler;
-import com.tokopedia.core.util.RefreshHandler;
-import com.tokopedia.core.util.RequestPermissionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -61,7 +61,7 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
     public static final int REQUEST_VERIFICATION_DETAIL = 2;
     private static final String TAG = TxVerificationFragment.class.getSimpleName();
 
-    @Bind(R2.id.order_list)
+    @BindView(R2.id.order_list)
     LazyListView lvTXVerification;
 
     private View loadMoreView;
@@ -78,6 +78,11 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
 
     public static TxVerificationFragment createInstance() {
         return new TxVerificationFragment();
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 
     @Override
@@ -122,7 +127,7 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_tx_payment_verification;
+        return R.layout.fragment_transaction_verification_list_tx_module;
     }
 
     @SuppressLint("InflateParams")
@@ -214,7 +219,46 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
         lvTXVerification.removeFooterView(loadMoreView);
         refreshHandler.finishRefresh();
         refreshHandler.setPullEnabled(true);
-        Log.d(TAG, "showFailedResetData() called with: " + "message = [" + message + "]");
+        if (getView() != null)
+            NetworkErrorHelper.showEmptyState(getActivity(),
+                    getView(),
+                    new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            refreshHandler.startRefresh();
+                        }
+                    });
+    }
+
+    @Override
+    public void showNoConnectionLoadMoreData(String message) {
+        isLoading = false;
+        lvTXVerification.removeFooterView(loadMoreView);
+        isLoadMoreTerminated = true;
+        if (getView() != null) NetworkErrorHelper.createSnackbarWithAction(getActivity(), message,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        getData(TxOrderNetInteractor.TypeRequest.LOAD_MORE);
+
+                    }
+                }).showRetrySnackbar();
+    }
+
+    @Override
+    public void showNoConnectionPullRefresh(String message) {
+        isLoading = false;
+        refreshHandler.finishRefresh();
+        refreshHandler.setPullEnabled(true);
+        if (getView() != null) NetworkErrorHelper.showSnackbar(getActivity(), message);
+    }
+
+    @Override
+    public void showNoConnectionResetData(String message) {
+        isLoading = false;
+        lvTXVerification.removeFooterView(loadMoreView);
+        refreshHandler.finishRefresh();
+        refreshHandler.setPullEnabled(true);
         if (getView() != null)
             NetworkErrorHelper.showEmptyState(getActivity(),
                     getView(),
@@ -448,31 +492,31 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
 
     @OnPermissionDenied(Manifest.permission.CAMERA)
     void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(),Manifest.permission.CAMERA);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CAMERA);
     }
 
     @OnNeverAskAgain(Manifest.permission.CAMERA)
     void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.CAMERA);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CAMERA);
     }
 
     @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
     @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
-    @OnPermissionDenied({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     void showDeniedForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
 
-        RequestPermissionUtil.onPermissionDenied(getActivity(),listPermission);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
     }
 
     @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
@@ -481,6 +525,6 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
 
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),listPermission);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
     }
 }

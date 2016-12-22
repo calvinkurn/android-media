@@ -12,6 +12,7 @@ import android.view.WindowManager;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.seller.fragment.FragmentShopNewOrderDetailV2;
 import com.tokopedia.seller.fragment.FragmentShopShippingDetailV2;
@@ -28,7 +29,7 @@ import com.tokopedia.core.service.DownloadService;
 
 import org.parceler.Parcels;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -36,7 +37,7 @@ import butterknife.ButterKnife;
  */
 public class SellingDetailActivity extends TkpdActivity implements  DownloadResultReceiver.Receiver {
 
-    @Bind(R2.id.toolbar)
+    @BindView(R2.id.toolbar)
     Toolbar toolbar;
 
     public enum Type {
@@ -45,6 +46,12 @@ public class SellingDetailActivity extends TkpdActivity implements  DownloadResu
         STATUS,
         TRANSACTION
     }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_SHOP_SELLING_DETAIL;
+    }
+
     private FragmentManager fragmentManager;
     public static final String DATA_EXTRA2 = "DATA_EXTRA2";
     public static final String TYPE_EXTRA = "TYPE_EXTRA";
@@ -157,23 +164,20 @@ public class SellingDetailActivity extends TkpdActivity implements  DownloadResu
                             break;
                     }
                     break;
-                case DownloadService.STATUS_ERROR:
-                    switch (resultData.getInt(DownloadService.NETWORK_ERROR_FLAG, DownloadService.INVALID_NETWORK_ERROR_FLAG)) {
-                        case NetworkConfig.BAD_REQUEST_NETWORK_ERROR:
-                            ((BaseView) fragment).onNetworkError(type, " BAD_REQUEST_NETWORK_ERROR !!!");
-                            break;
-                        case NetworkConfig.INTERNAL_SERVER_ERROR:
-                            ((BaseView) fragment).onNetworkError(type, " INTERNAL_SERVER_ERROR !!!");
-                            break;
-                        case NetworkConfig.FORBIDDEN_NETWORK_ERROR:
-                            ((BaseView) fragment).onNetworkError(type, " FORBIDDEN_NETWORK_ERROR !!!");
-                            break;
-                        case DownloadService.INVALID_NETWORK_ERROR_FLAG:
-                        default:
-                            String messageError = resultData.getString(DownloadService.MESSAGE_ERROR_FLAG, DownloadService.INVALID_MESSAGE_ERROR);
-                            if (!messageError.equals(DownloadService.INVALID_MESSAGE_ERROR)) {
+                case SellingService.STATUS_ERROR:
+                    switch (resultData.getInt(SellingService.NETWORK_ERROR_FLAG, SellingService.INVALID_NETWORK_ERROR_FLAG)) {
+                        case SellingService.MESSAGE_ERROR_FLAG_RESPONSE:
+                            String messageError = resultData.getString(SellingService.MESSAGE_ERROR_FLAG, SellingService.INVALID_MESSAGE_ERROR);
+                            if (!messageError.equals(SellingService.INVALID_MESSAGE_ERROR)) {
                                 ((BaseView) fragment).onMessageError(type, messageError);
                             }
+                            break;
+                        case NetworkConfig.BAD_REQUEST_NETWORK_ERROR:
+                        case NetworkConfig.INTERNAL_SERVER_ERROR:
+                        case NetworkConfig.FORBIDDEN_NETWORK_ERROR:
+                        case SellingService.INVALID_NETWORK_ERROR_FLAG:
+                        default:
+                            ((BaseView) fragment).onNetworkError(type, getString(R.string.error_connection_problem));
                     }
                     break;
             }// end of status download service

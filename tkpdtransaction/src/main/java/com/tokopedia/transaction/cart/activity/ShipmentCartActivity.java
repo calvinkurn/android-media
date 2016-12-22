@@ -9,6 +9,7 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.cart.fragment.ShipmentCartFragment;
 import com.tokopedia.transaction.cart.model.cartdata.TransactionList;
+import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 
 
 /**
@@ -18,9 +19,9 @@ import com.tokopedia.transaction.cart.model.cartdata.TransactionList;
 public class ShipmentCartActivity extends BasePresenterActivity {
     public static final int INTENT_REQUEST_CODE = BasePresenterActivity.class.hashCode();
     private static final String EXTRA_CART_DATA = "EXTRA_CART__DATA";
-    private TransactionList cartData;
+    private CartItem cartData;
 
-    public static Intent createInstance(Context context, TransactionList cartData) {
+    public static Intent createInstance(Context context, CartItem cartData) {
         Intent intent = new Intent(context, ShipmentCartActivity.class);
         intent.putExtra(EXTRA_CART_DATA, cartData);
         return intent;
@@ -43,7 +44,7 @@ public class ShipmentCartActivity extends BasePresenterActivity {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_shipment_cart;
+        return R.layout.activity_shipment_cart_tx_module;
     }
 
     @Override
@@ -65,5 +66,10 @@ public class ShipmentCartActivity extends BasePresenterActivity {
     @Override
     protected void setActionVar() {
 
+    }
+
+    @Override
+    public String getScreenName() {
+        return null;
     }
 }

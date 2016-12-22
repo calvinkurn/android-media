@@ -8,7 +8,7 @@ import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartWrapper;
 
 /**
  * @author anggaprasetiyo on 11/2/16.
- * modified by alvarisi
+ *         modified by alvarisi
  */
 
 public interface IShipmentCartPresenter {

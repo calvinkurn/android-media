@@ -1,6 +1,35 @@
 <resources>
     <string name="app_name">tkpdtransaction</string>
+    <string name="default_success_message_request_cancel_order">Berhasil mengajukan pembatalan pesanan</string>
+    <string name="label_title_dialog_request_cancel_order">Pengajuan Pembatalan Pesanan</string>
+    <string name="label_sub_title_dialog_request_cancel_order">Apakah Anda yakin akan meminta penjual untuk membatalkan pesanan ini?</string>
+    <string name="title_btn_alert_dialog_adjust">Ajukan</string>
+    <string name="title_btn_alert_dialog_cancel">Batal</string>
+    <string name="hint_dialog_alert_request_cancel_order_et_reason">Alasan</string>
+    <string name="label_error_request_cancel_order_reason_empty">Alasan pembatalan harus diisi</string>
+    <string name="label_error_request_cancel_order_reason_to_short">Alasan pembatalan terlalu pendek, minimum 10 karakter</string>
+
+    <string name="label_error_reason_must_fill">Alasan harus diisi</string>
     <string name="shipment_no_courier_available">Agen kurir tidak tersedia</string>
     <string name="courier_not_available">Alamat tidak didukung agen pengirim.</string>
     <string name="shipment_data_not_complete">Data tidak lengkap.</string>
+    <string name="label_title_empty_cart">Keranjang belanja Anda Kosong.</string>
+    <string name="label_title_error_default_initial_cart_data">Terjadi Kesalahan</string>
+    <string name="label_title_error_timeout_initial_cart_data">Koneksi Timeout</string>
+    <string name="label_title_error_no_connection_initial_cart_data">Koneksi Internet</string>
+    <string name="label_title_button_retry">COBA LAGI</string>
+    <string name="label_sub_title_empty_cart">Yuk belanja di situs resmi jual beli online, aman dan nyaman.</string>
+    <string name="label_btn_action_empty_cart">CARI SEKARANG</string>
+    <string name="label_message_success_cancel_cart">Berhasil menghapus item keranjang</string>
+    <string name="label_message_error_cannot_checkout">Keranjang tidak dapat diproses, mohon periksa kembali keranjang Anda.</string>
+    <string name="label_message_default_voucher_desc_result">"Anda mendapatkan voucher\nRp. "</string>
+    <string name="label_error_form_dropshipper_name_empty">Nama pengirim harus diisi</string>
+    <string name="label_error_form_dropshipper_phone_empty">Telepon pengirim harus diisi</string>
+    <string name="label_error_form_voucher_code_empty">Voucher Kosong</string>
+    <string name="label_message_success_update_item_cart_data">Berhasil mengubah keranjang</string>
+    <string name="label_message_success_update_cart_insurance">Berhasil mengubah asuransi</string>
+    <string name="label_error_default_top_pay">Proses pembayaran gagal, mohon ulangi lagi</string>
+    <string name="label_tag_product_item_cart_preorder">Preorder</string>
+    <string name="label_hint_cart_item_dropshipper_name">Nama Pengirim</string>
+    <string name="label_hint_cart_item_dropshipper_phone">No. Telp pengirim</string>
 </resources>

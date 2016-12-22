@@ -1,0 +1,897 @@
+package com.tokopedia.transaction.addtocart.activity;
+
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Parcelable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
+import android.text.Editable;
+import android.text.Html;
+import android.text.TextWatcher;
+import android.text.util.Linkify;
+import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.geolocation.activity.GeolocationActivity;
+import com.tokopedia.core.geolocation.model.LocationPass;
+import com.tokopedia.core.manage.people.address.ManageAddressConstant;
+import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
+import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.network.retrofit.utils.DialogNoConnection;
+import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
+import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.addtocart.listener.AddToCartViewListener;
+import com.tokopedia.transaction.addtocart.model.Insurance;
+import com.tokopedia.transaction.addtocart.model.OrderData;
+import com.tokopedia.transaction.addtocart.model.kero.Attribute;
+import com.tokopedia.transaction.addtocart.model.kero.Product;
+import com.tokopedia.transaction.addtocart.model.responseatcform.AtcFormData;
+import com.tokopedia.transaction.addtocart.model.responseatcform.Destination;
+import com.tokopedia.transaction.addtocart.model.responseatcform.ProductDetail;
+import com.tokopedia.transaction.addtocart.model.responseatcform.Shipment;
+import com.tokopedia.transaction.addtocart.presenter.AddToCartPresenter;
+import com.tokopedia.transaction.addtocart.presenter.AddToCartPresenterImpl;
+import com.tokopedia.transaction.addtocart.receiver.ATCResultReceiver;
+import com.tokopedia.transaction.addtocart.services.ATCIntentService;
+
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import butterknife.BindView;
+import butterknife.OnClick;
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
+/**
+ * @author Angga.Prasetiyo on 11/03/2016.
+ */
+public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
+        implements AddToCartViewListener, AdapterView.OnItemSelectedListener,
+        TextWatcher, ATCResultReceiver.Receiver {
+    public static final String EXTRA_ADDRESS_DATA = "EXTRA_ADDRESS_DATA";
+    public static final String EXTRA_LATITUDE = "latitude";
+    public static final String EXTRA_LONGITUDE = "longitude";
+    public static final int REQUEST_CHOOSE_ADDRESS = 0;
+    public static final int REQUEST_CREATE_NEW_ADDRESS = 1;
+    public static final int REQUEST_CHOOSE_LOCATION = 2;
+
+    private ProductCartPass productCartPass;
+    private TkpdProgressDialog progressDialog;
+    private TkpdProgressDialog progressInitDialog;
+    private OrderData orderData;
+    private Destination mDestination;
+    private LocationPass mLocationPass;
+    private ProductDetail mProductDetail;
+    private List<Shipment> mShipments;
+    private Observable<Long> incrementObservable = Observable.interval(200, TimeUnit.MILLISECONDS);
+
+    private Handler handler = new Handler();
+
+    @BindView(R2.id.tv_ticker_gtm)
+    TextView tvTickerGTM;
+    @BindView(R2.id.add_to_cart_coordinatlayout)
+    CoordinatorLayout cartCoordinatLayout;
+    @BindView(R2.id.iv_pic)
+    ImageView ivProduct;
+    @BindView(R2.id.tv_name)
+    TextView tvProductName;
+    @BindView(R2.id.tv_preorder)
+    TextView tvPreOrder;
+    @BindView(R2.id.tv_preorder_info)
+    TextView tvPreOrderInfo;
+    @BindView(R2.id.et_form_qty)
+    EditText etQuantity;
+    @BindView(R2.id.sp_form_insurance)
+    Spinner spInsurance;
+    @BindView(R2.id.et_form_notes)
+    EditText etRemark;
+    @BindView(R2.id.tv_address_detail)
+    TextView tvAddressDetail;
+    @BindView(R2.id.tv_address_name)
+    TextView tvAddressName;
+    @BindView(R2.id.btn_choose_address)
+    TextView btnAddressChange;
+    @BindView(R2.id.btn_add_address)
+    TextView btnAddressNew;
+    @BindView(R2.id.sp_shipment)
+    Spinner spShippingAgency;
+    @BindView(R2.id.sp_shipment_package)
+    Spinner spShippingService;
+    @BindView(R2.id.tv_price_product)
+    TextView tvProductPrice;
+    @BindView(R2.id.tv_price_shipping)
+    TextView tvShippingPrice;
+    @BindView(R2.id.layout_product_price)
+    RelativeLayout viewProductPrice;
+    @BindView(R2.id.layout_shipping_price)
+    RelativeLayout viewShippingPrice;
+    @BindView(R2.id.pb_price)
+    ProgressBar pbLoadingPrice;
+    @BindView(R2.id.tv_error_shipping)
+    TextView tvErrorShipping;
+    @BindView(R2.id.btn_buy)
+    TextView btnBuy;
+    @BindView(R2.id.product_view)
+    LinearLayout viewProduct;
+    @BindView(R2.id.layout_value_geo_location)
+    View viewAssignLocation;
+    @BindView(R2.id.layout_geo_location)
+    View viewFieldLocation;
+    @BindView(R2.id.et_geo_location)
+    EditText etValueLocation;
+    @BindView(R2.id.til_form_qty)
+    TextInputLayout tilAmount;
+    @BindView(R2.id.til_form_notes)
+    TextInputLayout tilRemark;
+    @BindView(R2.id.container)
+    LinearLayout container;
+    @BindView(R2.id.increase_button)
+    View increaseButton;
+    @BindView(R2.id.decrease_button)
+    View decreaseButton;
+    @BindView(R2.id.calculate_cart_progress_bar)
+    View calculateCartProgressBar;
+
+    private ATCResultReceiver atcReceiver;
+    private Subscription subscription;
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_ADD_TO_CART;
+    }
+
+    @Override
+    protected void setupURIPass(Uri data) {
+
+    }
+
+    @Override
+    protected void setupBundlePass(Bundle extras) {
+        this.productCartPass = extras.getParcelable(TransactionAddToCartRouter.EXTRA_PRODUCT_CART);
+    }
+
+    @Override
+    protected void initialPresenter() {
+        presenter = new AddToCartPresenterImpl(this);
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_add_to_cart_tx_module;
+    }
+
+    @Override
+    protected void initView() {
+        progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
+        progressInitDialog = new TkpdProgressDialog(this, TkpdProgressDialog.MAIN_PROGRESS);
+        increaseButton.setOnTouchListener(onIncrementButtonTouchListener());
+        decreaseButton.setOnTouchListener(onDecrementButtonTouchListener());
+    }
+
+    @Override
+    protected void setViewListener() {
+        ImageHandler.loadImageRounded2(this, ivProduct, productCartPass.getImageUri());
+        this.tvProductName.setText(productCartPass.getProductName());
+        etQuantity.addTextChangedListener(this);
+    }
+
+    @Override
+    protected void initVar() {
+        atcReceiver = new ATCResultReceiver(new Handler());
+        atcReceiver.setReceiver(this);
+    }
+
+    @Override
+    protected void setActionVar() {
+    }
+
+    @Override
+    public void navigateToActivityRequest(Intent intent, int requestCode) {
+        this.startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    public void navigateToActivity(Intent intent) {
+        this.startActivity(intent);
+    }
+
+    @Override
+    public void showProgressLoading() {
+        progressDialog.showDialog();
+    }
+
+    @Override
+    public void hideProgressLoading() {
+        progressDialog.dismiss();
+        calculateCartProgressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showToastMessage(String message) {
+        CommonUtils.UniversalToast(this, message);
+    }
+
+    @Override
+    public void showDialog(Dialog dialog) {
+        if (!dialog.isShowing()) dialog.show();
+    }
+
+    @Override
+    public void dismissDialog(Dialog dialog) {
+        if (dialog.isShowing()) dialog.dismiss();
+    }
+
+    @Override
+    public void closeView() {
+        this.finish();
+    }
+
+
+    @Override
+    public void initialOrderData(AtcFormData data) {
+        this.orderData = OrderData.createFromATCForm(data, productCartPass);
+    }
+
+    @Override
+    public void renderFormProductInfo(ProductDetail data) {
+        this.mProductDetail = data;
+        presenter.processGetGTMTicker();
+        List<Insurance> insurances = Insurance.createList(getResources()
+                .getStringArray(R.array.insurance_option));
+        ArrayAdapter<Insurance> insuranceAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, insurances);
+        insuranceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spInsurance.setAdapter(insuranceAdapter);
+        spInsurance.setOnItemSelectedListener(this);
+        switch (data.getProductMustInsurance()) {
+            case 1:
+                spInsurance.setSelection(0);
+                spInsurance.setEnabled(false);
+                break;
+            default:
+                spInsurance.setSelection(1);
+                spInsurance.setEnabled(true);
+                break;
+        }
+        if (data.getProductPreorder() != null
+                && data.getProductPreorder().getPreorderStatus() == 1) {
+            tvPreOrder.setVisibility(View.VISIBLE);
+            tvPreOrderInfo.setVisibility(View.VISIBLE);
+            tvPreOrderInfo.setText(MessageFormat.format("{0}{1} {2}",
+                    String.valueOf(tvPreOrderInfo.getText()),
+                    data.getProductPreorder().getPreorderProcessTime(),
+                    data.getProductPreorder().getPreorderProcessTimeTypeString()));
+            btnBuy.setText(getString(R.string.title_pre_order));
+        } else {
+            tvPreOrder.setVisibility(View.GONE);
+            tvPreOrderInfo.setVisibility(View.GONE);
+            btnBuy.setText(getString(R.string.title_buy));
+        }
+        tvProductName.setText(data.getProductName());
+        etQuantity.setText(
+                (orderData == null ? data.getProductMinOrder()
+                        : String.valueOf(orderData.getQuantity()))
+        );
+        etQuantity.setEnabled(true);
+        etRemark.setEnabled(true);
+        tvProductPrice.setText(data.getProductPrice());
+    }
+
+    @Override
+    public void renderFormAddress(Destination data) {
+        if (data == null || !data.isCompleted()) {
+            tvAddressName.setText(getString(R.string.error_no_address_title));
+            tvAddressDetail.setText(getString(R.string.error_no_address));
+            etValueLocation.setEnabled(false);
+            etQuantity.setEnabled(false);
+            btnAddressChange.setEnabled(false);
+            btnAddressNew.setEnabled(true);
+        } else {
+            this.mDestination = data;
+            tvAddressName.setText(Html.fromHtml(data.getAddressName()));
+            tvAddressDetail.setText(Html.fromHtml(data.getAddressDetail()));
+            etValueLocation.setEnabled(true);
+            etQuantity.setEnabled(true);
+            btnAddressChange.setEnabled(true);
+            btnAddressNew.setEnabled(true);
+            etValueLocation.setText(data.getGeoLocation(this));
+        }
+    }
+
+    @Override
+    public void renderFormShipment(List<Shipment> datas) {
+        finishCalculateCartLoading();
+        datas.add(0, Shipment.createSelectionInfo(getString(R.string.atc_selection_shipment_info)));
+        ArrayAdapter<Shipment> agencyAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, datas);
+        agencyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spShippingAgency.setAdapter(agencyAdapter);
+        spShippingAgency.setEnabled(true);
+        spShippingAgency.setOnItemSelectedListener(this);
+        spShippingService.setOnItemSelectedListener(this);
+        spShippingService.setEnabled(true);
+        for (int i = 0; i < datas.size(); i++) {
+            if (datas.get(i).getShipmentId().equals(orderData.getShipment())) {
+                spShippingAgency.setSelection(i);
+            }
+        }
+        this.mShipments = new ArrayList<>(datas);
+        if (this.mShipments.size() > 0) {
+            this.mShipments.remove(0);
+        }
+    }
+
+    @Override
+    public void renderFormShipmentRates(List<Attribute> datas) {
+        finishCalculateCartLoading();
+        datas.add(0, Attribute.createSelectionInfo(getString(R.string.atc_selection_shipment_info)));
+        ArrayAdapter<Attribute> agencyAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, datas);
+        agencyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spShippingAgency.setAdapter(agencyAdapter);
+        spShippingAgency.setEnabled(true);
+        spShippingAgency.setOnItemSelectedListener(this);
+        spShippingService.setOnItemSelectedListener(this);
+        spShippingService.setEnabled(true);
+        for (int i = 0; i < datas.size(); i++) {
+            if (datas.get(i).getShipperId().equals(orderData.getShipment())) {
+                spShippingAgency.setSelection(i);
+            }
+        }
+        btnBuy.setEnabled(true);
+    }
+
+    @Override
+    public void hideNetworkError() {
+        container.setVisibility(View.VISIBLE);
+        View mainView = findViewById(R.id.main_scroll);
+        if (mainView != null) mainView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showTickerGTM(String message) {
+        tvTickerGTM.setText(Html.fromHtml(message));
+        tvTickerGTM.setVisibility(View.VISIBLE);
+        tvTickerGTM.setAutoLinkMask(0);
+        Linkify.addLinks(tvTickerGTM, Linkify.WEB_URLS);
+
+    }
+
+    @Override
+    public void hideTickerGTM() {
+        tvTickerGTM.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void renderProductPrice(String price) {
+        this.orderData.setPriceTotal(price);
+        tvProductPrice.setText(price);
+    }
+
+    @Override
+    public void disableAllForm() {
+        etQuantity.setEnabled(false);
+        etRemark.setEnabled(false);
+        etValueLocation.setEnabled(false);
+        spShippingAgency.setEnabled(false);
+        spShippingService.setEnabled(false);
+        btnAddressChange.setEnabled(false);
+        btnAddressNew.setEnabled(false);
+    }
+
+    @Override
+    public void disableBuyButton() {
+        CommonUtils.dumper("buyrel disabled button called");
+        btnBuy.setEnabled(false);
+    }
+
+    @Override
+    public void enableBuyButton() {
+        finishCalculateCartLoading();
+        CommonUtils.dumper("buyrel enabled button called");
+        btnBuy.setEnabled(true);
+    }
+
+    @Override
+    public void showErrorMessage(String message) {
+        View view = findViewById(android.R.id.content);
+        if (view != null) Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show();
+        else Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showCalculateProductErrorMessage(String errorMessage) {
+        SnackbarRetry snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(this,
+                errorMessage,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.calculateProduct(AddToCartActivity.this, orderData);
+                    }
+                });
+        snackbarRetry.showRetrySnackbar();
+    }
+
+    @Override
+    public void showCalculateShippingErrorMessage() {
+        SnackbarRetry snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(this,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.calculateAllPrices(AddToCartActivity.this, orderData);
+                    }
+                });
+        snackbarRetry.showRetrySnackbar();
+    }
+
+    @Override
+    public void showCalculateAddressShippingError() {
+        finishCalculateCartLoading();
+        SnackbarRetry snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(this,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.calculateKeroAddressShipping(AddToCartActivity.this, orderData);
+                    }
+                });
+        snackbarRetry.showRetrySnackbar();
+    }
+
+    @Override
+    public void showUpdateAddressShippingError(String messageError) {
+        finishCalculateCartLoading();
+        SnackbarRetry snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(this, messageError,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.updateAddressShipping(AddToCartActivity.this, orderData);
+                    }
+                });
+        snackbarRetry.showRetrySnackbar();
+    }
+
+    @Override
+    public void retryNoConnection(DialogNoConnection.ActionListener listener) {
+        DialogNoConnection.createShow(this, listener);
+    }
+
+    @Override
+    public void showInitLoading() {
+        parentView.setVisibility(View.GONE);
+        progressInitDialog.showDialog();
+    }
+
+
+    @Override
+    public void hideInitLoading() {
+        parentView.setVisibility(View.VISIBLE);
+        progressInitDialog.dismiss();
+    }
+
+    @Override
+    public void onCartFailedLoading() {
+        hideInitLoading();
+        View mainView = findViewById(R.id.main_scroll);
+        if (mainView != null) mainView.setVisibility(View.GONE);
+        NetworkErrorHelper.showEmptyState(this, parentView,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.getCartFormData(AddToCartActivity.this, productCartPass);
+                    }
+                });
+    }
+
+    @Override
+    public String getGoogleMapLocation() {
+        if (etValueLocation.isShown()) {
+            return etValueLocation.getText().toString();
+        }
+        return "";
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if (parent.getAdapter().getItem(position) instanceof Attribute) {
+            List<Product> list = ((Attribute) parent.getAdapter()
+                    .getItem(position)).getProducts();
+            if (((Attribute) parent.getAdapter().getItem(position)).getProducts().size() != 1
+                    && (list.size() < 1
+                    || !((Attribute) parent.getAdapter()
+                    .getItem(position)).getProducts().get(0).getShipperProductId().equals("0"))) {
+                list.add(0, Product.createSelectionInfo(
+                        getString(R.string.atc_selection_shipment_package_info)));
+            }
+            ArrayAdapter<Product> serviceAdapter = new ArrayAdapter<>(AddToCartActivity.this,
+                    android.R.layout.simple_spinner_item, list);
+            serviceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spShippingService.setAdapter(serviceAdapter);
+            orderData.setShipment(((Attribute) parent.getAdapter()
+                    .getItem(position)).getShipperId());
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).getShipperProductId().equals(orderData.getShipmentPackage())) {
+                    spShippingService.setSelection(i);
+                }
+            }
+            tvErrorShipping.setVisibility(View.GONE);
+        } else if (parent.getAdapter().getItem(position) instanceof Product) {
+            orderData.setShipmentPackage(((Product) parent.getAdapter()
+                    .getItem(position)).getShipperProductId());
+            tvShippingPrice.setText(MessageFormat.format("{0}", ((Product)
+                    parent.getAdapter().getItem(position)).getFormattedPrice()));
+            tvErrorShipping.setVisibility(View.GONE);
+            if (((Product) parent.getAdapter().getItem(position)).getIsShowMap() == 1) {
+                viewFieldLocation.setVisibility(View.VISIBLE);
+                if (!(etValueLocation.getText().length() > 0)) {
+                    Snackbar.make(
+                            cartCoordinatLayout,
+                            getString(R.string.message_gojek_shipping_package),
+                            Snackbar.LENGTH_LONG
+                    ).show();
+                }
+            } else {
+                viewFieldLocation.setVisibility(View.GONE);
+            }
+        } else if (parent.getAdapter().getItem(position) instanceof Insurance) {
+            orderData.setInsurance(((Insurance) parent.getAdapter().getItem(position)).isInsurance()
+                    ? Insurance.INSURANCE : Insurance.NOT_INSURANCE);
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            tvErrorShipping.setVisibility(View.GONE);
+            etQuantity.setFocusable(false);
+            switch (requestCode) {
+                case REQUEST_CHOOSE_ADDRESS:
+                    renderFormAddress(
+                            (Destination)
+                                    data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS)
+                    );
+                    this.orderData.setAddress(
+                            (Destination)
+                                    data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS)
+                    );
+                    startCalculateCartLoading();
+                    presenter.calculateKeroAddressShipping(this, orderData);
+                    CommonUtils.dumper("rates/v1 kerorates called request choose address");
+                    break;
+                case ManageAddressConstant.REQUEST_CODE_PARAM_CREATE:
+                    Destination addressData = presenter.generateAddressData(data);
+                    renderFormAddress(addressData);
+                    this.orderData.setAddress(addressData);
+                    startCalculateCartLoading();
+                    presenter.calculateKeroAddressShipping(this, orderData);
+                    break;
+                case REQUEST_CHOOSE_LOCATION:
+                    Bundle bundle = data.getExtras();
+                    LocationPass locationPass = bundle.getParcelable(
+                            GeolocationActivity.EXTRA_EXISTING_LOCATION
+                    );
+                    if (locationPass != null) {
+                        this.orderData.getAddress().setLatitude(locationPass.getLatitude());
+                        this.orderData.getAddress().setLongitude(locationPass.getLongitude());
+                        renderFormAddress(orderData.getAddress());
+                        startCalculateCartLoading();
+                        presenter.updateAddressShipping(this, orderData);
+                        this.mLocationPass = locationPass;
+                    }
+                    break;
+            }
+        }
+    }
+
+    @OnClick({R2.id.layout_value_geo_location, R2.id.et_geo_location})
+    void actionGeoLocation() {
+        presenter.processChooseGeoLocation(this, orderData);
+    }
+
+    @OnClick(R2.id.btn_choose_address)
+    void actionChangeAddress() {
+        UnifyTracking.eventATCChangeAddress();
+        Intent intent2 = new Intent(this, ChooseAddressActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(ChooseAddressActivity.REQUEST_CODE_PARAM_ADDRESS,
+                this.orderData.getAddress().getAddressId());
+        intent2.putExtras(bundle);
+        navigateToActivityRequest(intent2, REQUEST_CHOOSE_ADDRESS);
+    }
+
+    @OnClick(R2.id.btn_add_address)
+    void actionAddNewAddress() {
+        presenter.sendToGTM(this);
+        Intent intent1 = new Intent(this, AddAddressActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(ManageAddressConstant.IS_EDIT, false);
+        intent1.putExtras(bundle);
+        startActivityForResult(intent1, ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
+    }
+
+    @OnClick(R2.id.btn_buy)
+    void actionBuy() {
+        if (presenter.isValidOrder(this, orderData)) {
+            presenter.addToCartService(this, atcReceiver, createFinalOrderData());
+            presenter.sendAppsFlyerATC(this, orderData);
+        }
+    }
+
+    @OnClick(R2.id.increase_button)
+    void actionIncreaseQuantity() {
+        etQuantity.requestFocus();
+        if (!etQuantity.getText().toString().isEmpty()
+                && Integer.parseInt(etQuantity.getText().toString()) > 0) {
+            etQuantity.setText(String
+                    .valueOf(Integer.parseInt(etQuantity.getText().toString()) + 1));
+        } else etQuantity.setText("1");
+    }
+
+    @OnClick(R2.id.decrease_button)
+    void actionDecreaseQuantity() {
+        etQuantity.requestFocus();
+        if (!etQuantity.getText().toString().isEmpty()
+                && Integer.parseInt(etQuantity.getText().toString()) > 1) {
+            etQuantity.setText(String
+                    .valueOf(Integer.parseInt(etQuantity.getText().toString()) - 1));
+        } else etQuantity.setText("1");
+    }
+
+    private OrderData createFinalOrderData() {
+        OrderData finalOrder = this.orderData;
+        finalOrder.setNotes(etRemark.getText().toString());
+        return finalOrder;
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        if (subscription == null || subscription.isUnsubscribed()) quantityChangedEvent(s);
+    }
+
+    private void quantityChangedEvent(Editable s) {
+        orderData.setQuantity(s.length() == 0 ?
+                0 : Integer.parseInt(etQuantity.getText().toString()));
+        if (orderData.getQuantity() < orderData.getMinOrder()) {
+            tilAmount.setError(getString(R.string.error_min_order)
+                    + " " + orderData.getMinOrder());
+            if (etQuantity.requestFocus())
+                getWindow().setSoftInputMode(
+                        WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE
+                );
+        } else if (orderData.getAddress() == null) {
+            showErrorMessage(getString(R.string.error_no_address));
+        } else if (getCurrentFocus() == etQuantity) {
+            CommonUtils.dumper("rates/v1 kerorates called aftertextchanged");
+            orderData.setWeight(
+                    CommonUtils.round(
+                            (Double.parseDouble(
+                                    orderData.getInitWeight()) * Double.parseDouble(s.toString())
+                            ), 2
+                    ) + ""
+            );
+            tilAmount.setError(null);
+            tilAmount.setErrorEnabled(false);
+            presenter.calculateAllPrices(AddToCartActivity.this, orderData);
+            presenter.calculateProduct(AddToCartActivity.this, orderData);
+        }
+    }
+
+    @Override
+    public void onReceiveResult(int resultCode, Bundle resultData) {
+        switch (resultCode) {
+            case ATCIntentService.RESULT_ADD_TO_CART_ERROR:
+                showBuyError(resultData.getString(ATCIntentService.EXTRA_MESSAGE));
+                break;
+            case ATCIntentService.RESULT_ADD_TO_CART_SUCCESS:
+                hideProgressLoading();
+                presenter.sendAnalyticsATCSuccess(this, productCartPass, createFinalOrderData());
+                presenter.processAddToCartSuccess(this,
+                        resultData.getString(ATCIntentService.EXTRA_MESSAGE));
+                presenter.setCacheCart(this);
+                break;
+            case ATCIntentService.RESULT_ADD_TO_CART_RUNNING:
+                showProgressLoading();
+                break;
+            case ATCIntentService.RESULT_ADD_TO_CART_TIMEOUT:
+                showBuyError(getString(R.string.msg_connection_timeout_toast));
+                break;
+            case ATCIntentService.RESULT_ADD_TO_CART_NO_CONNECTION:
+                showBuyError(getString(R.string.msg_no_connection));
+                break;
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.onViewDestroyed();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("orderData", this.orderData);
+        outState.putParcelable("destinationData", this.mDestination);
+        outState.putParcelable("locationPassData", this.mLocationPass);
+        outState.putParcelable("productDetailData", this.mProductDetail);
+        outState.putParcelableArrayList(
+                "shipmentsData", (ArrayList<? extends Parcelable>) this.mShipments
+        );
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            this.orderData = savedInstanceState.getParcelable("orderData");
+            this.mDestination = savedInstanceState.getParcelable("destinationData");
+            this.mLocationPass = savedInstanceState.getParcelable("locationPassData");
+            this.mProductDetail = savedInstanceState.getParcelable("productDetailData");
+            this.mShipments = savedInstanceState.getParcelableArrayList("shipmentsData");
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (this.orderData == null) {
+            presenter.getCartFormData(this, productCartPass);
+        } else {
+            hideNetworkError();
+            renderFormProductInfo(this.mProductDetail);
+            renderFormAddress(this.mDestination);
+            hideInitLoading();
+        }
+    }
+
+    private void showBuyError(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(this, errorMessage);
+        progressDialog.dismiss();
+    }
+
+    private void startCalculateCartLoading() {
+        calculateCartProgressBar.setVisibility(View.VISIBLE);
+        tvShippingPrice.setVisibility(View.GONE);
+    }
+
+    private void finishCalculateCartLoading() {
+        calculateCartProgressBar.setVisibility(View.GONE);
+        tvShippingPrice.setVisibility(View.VISIBLE);
+    }
+
+    private Subscriber<Long> increaseQuantitySubscriber() {
+        return new Subscriber<Long>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Long timeCounter) {
+                if (timeCounter > .8) actionIncreaseQuantity();
+            }
+        };
+    }
+
+    private Subscriber<Long> decreaseQuantitySubscriber() {
+        return new Subscriber<Long>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Long timerCounter) {
+                if (timerCounter > .8) actionDecreaseQuantity();
+            }
+        };
+    }
+
+    private Observable<Long> incrementCounterSubscription() {
+        return incrementObservable.subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    private View.OnTouchListener onIncrementButtonTouchListener() {
+        return new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    if (subscription != null) subscription.unsubscribe();
+                    subscription = incrementCounterSubscription().subscribe(
+                            increaseQuantitySubscriber()
+                    );
+                    CommonUtils.dumper("SUBSCRIBE");
+                } else if (motionEvent.getAction() == MotionEvent.ACTION_CANCEL ||
+                        motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    if (subscription != null) {
+                        subscription.unsubscribe();
+                    }
+                }
+                return false;
+            }
+        };
+    }
+
+    private View.OnTouchListener onDecrementButtonTouchListener() {
+        return new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    if (subscription != null) subscription.unsubscribe();
+                    subscription = incrementCounterSubscription()
+                            .subscribe(decreaseQuantitySubscriber());
+                } else if (motionEvent.getAction() == MotionEvent.ACTION_CANCEL ||
+                        motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    if (subscription != null) {
+                        subscription.unsubscribe();
+                    }
+                }
+                return false;
+            }
+        };
+    }
+}
