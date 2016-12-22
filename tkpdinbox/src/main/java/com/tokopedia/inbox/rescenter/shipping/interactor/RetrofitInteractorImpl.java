@@ -23,7 +23,6 @@ import com.tokopedia.inbox.rescenter.shipping.model.ActionResponseData;
 import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsPostModel;
 import com.tokopedia.inbox.rescenter.shipping.model.NewUploadResCenterImageData;
 import com.tokopedia.inbox.rescenter.shipping.model.ResCenterKurir;
-import com.tokopedia.inbox.rescenter.utils.LocalCacheManager;
 import com.tokopedia.inbox.rescenter.utils.UploadImageResCenter;
 
 import java.io.File;
@@ -224,9 +223,18 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                                                     AuthUtil.generateParamsNetwork(context, NetworkParam.paramInputShippingSubmit(passData))),
                                             new Func2<InputShippingParamsPostModel, Response<TkpdResponse>, InputShippingParamsPostModel>() {
                                                 @Override
-                                                public InputShippingParamsPostModel call(InputShippingParamsPostModel passData, Response<TkpdResponse> response) {
-
-                                                    return null;
+                                                public InputShippingParamsPostModel call(InputShippingParamsPostModel passData, Response<TkpdResponse> tkpdResponse) {
+                                                    ActionResponseData result = tkpdResponse.body().convertDataObj(ActionResponseData.class);
+                                                    if (result.isSuccess()) {
+                                                        passData.setStatusInputShipping(true);
+                                                        return passData;
+                                                    } else {
+                                                        String errorMessage = "";
+                                                        for (int i = 0; i < tkpdResponse.body().getErrorMessages().size(); i++) {
+                                                            errorMessage += tkpdResponse.body().getErrorMessages().get(i);
+                                                        }
+                                                        throw new RuntimeException(errorMessage);
+                                                    }
                                                 }
                                             });
                                 }
@@ -243,6 +251,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
 
                             @Override
                             public void onError(Throwable e) {
+                                Log.d(TAG, "onError: " + e.getMessage());
                                 if (e instanceof IOException) {
                                     listener.onTimeOut();
                                 } else {
@@ -252,7 +261,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
 
                             @Override
                             public void onNext(InputShippingParamsPostModel passData) {
-                                LocalCacheManager.AttachmentShippingResCenter.Builder(passData.getResolutionID()).clearAll();
+                                Log.d(TAG, "onNext: ");
                                 listener.onSuccess();
                             }
                         })

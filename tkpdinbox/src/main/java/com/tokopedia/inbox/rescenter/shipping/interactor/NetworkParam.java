@@ -62,23 +62,21 @@ public class NetworkParam {
         JSONObject reviewPhotos = new JSONObject();
         try {
             for (AttachmentResCenterDB image : attachmentList) {
-                JSONObject photoObj = new JSONObject();
-                photoObj.put(image.imageUUID, generateObject(image));
+                reviewPhotos.put(image.imageUUID, generateObject(image));
             }
+            return reviewPhotos.toString();
         } catch (JSONException e) {
-            e.printStackTrace();
+            return "";
         }
-
-        return reviewPhotos.toString();
     }
 
-    private static String generateObject(AttachmentResCenterDB image) throws JSONException {
+    private static JSONObject generateObject(AttachmentResCenterDB image) throws JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("image_id", image.imageUUID);
         jsonObject.put("file_x", "80");
         jsonObject.put("file_y", "80");
         jsonObject.put("is_temp", "1");
-        return jsonObject.toString();
+        return jsonObject;
     }
 
     public static TKPDMapParam<String, String> paramInputShippingSubmit(InputShippingParamsPostModel passData) {
@@ -87,18 +85,6 @@ public class NetworkParam {
         params.put("post_key", passData.getPostKey());
         params.put("file_uploaded", getFileUploaded(passData));
         return params;
-    }
-
-    private static String getFileUploaded2(InputShippingParamsPostModel passData) {
-        String allPhoto = "";
-        for (int i = 0; i < passData.getAttachmentList().size(); i++) {
-            if (i == passData.getAttachmentList().size() - 1) {
-                allPhoto += passData.getAttachmentList().get(i).imageUUID + ":" + passData.getAttachmentList().get(i).picObj;
-            } else {
-                allPhoto += passData.getAttachmentList().get(i).imageUUID + ":" + passData.getAttachmentList().get(i).picObj + "~";
-            }
-        }
-        return allPhoto;
     }
 
     private static String getFileUploaded(InputShippingParamsPostModel passData) {

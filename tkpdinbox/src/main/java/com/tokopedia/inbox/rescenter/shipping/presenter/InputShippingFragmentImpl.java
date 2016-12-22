@@ -21,6 +21,7 @@ import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsGetModel;
 import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsPostModel;
 import com.tokopedia.inbox.rescenter.shipping.model.ResCenterKurir;
 import com.tokopedia.inbox.rescenter.shipping.view.InputShippingFragmentView;
+import com.tokopedia.inbox.rescenter.utils.LocalCacheManager;
 
 import static com.tokopedia.inbox.rescenter.shipping.fragment.InputShippingFragment.EXTRA_PARAM_ATTACHMENT;
 import static com.tokopedia.inbox.rescenter.shipping.fragment.InputShippingFragment.EXTRA_PARAM_MODEL;
@@ -215,6 +216,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
                     @Override
                     public void onSuccess() {
+                        clearAttachment();
                         viewListener.finishAsSuccessResult();
                         showLoading(false);
                         showMainPage(true);
@@ -235,6 +237,10 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
                         showMainPage(true);
                     }
                 });
+    }
+
+    private void clearAttachment() {
+        LocalCacheManager.AttachmentShippingResCenter.Builder(viewListener.getParamsModel().getResolutionID()).clearAll();
     }
 
     private boolean isValidToSubmit(InputShippingParamsPostModel params) {
