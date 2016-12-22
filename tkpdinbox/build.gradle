@@ -70,9 +70,8 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    compile (rootProject.ext.tkpdDependencies.core) {
-        changing = true
-    };
+    //compile rootProject.ext.tkpdDependencies.core;
+    compile project(':tkpdcore')
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
