@@ -739,7 +739,13 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         if (filterAttribute != null && breadcrumbs != null) {
 //            Map<String, String> filters = filtersMap.get(source);
 //            Map<String, String> filters = mBrowseProductAtribut.getFiltersMap().get(source);
-            Map<String, String> filters = mFilterMapAtribut.getFiltersMap().get(source).getValue();
+
+            Map<String, String> filters;
+            if (mFilterMapAtribut != null && mFilterMapAtribut.getFiltersMap() != null) {
+                filters = mFilterMapAtribut.getFiltersMap().get(source).getValue();
+            } else {
+                filters = new HashMap<>();
+            }
             DynamicFilterActivity.moveTo(BrowseProductActivity.this,
                     filters, breadcrumbs,
                     filterAttribute.getFilter(),
