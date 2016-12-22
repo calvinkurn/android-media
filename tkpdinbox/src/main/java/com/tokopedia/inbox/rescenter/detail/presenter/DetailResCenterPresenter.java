@@ -17,13 +17,9 @@ public interface DetailResCenterPresenter {
 
     void onFirstTimeLaunched(@NonNull Fragment fragment, @NonNull ActivityParamenterPassData activityParamenterPassData);
 
-    void processChangeSolution();
-
     void processReply();
 
     void onButtonSendClick(Context context, String param);
-
-    void actionEditShippingRefNum();
 
     void onActivityResult(int requestCode, int resultCode, Intent data);
 
@@ -37,8 +33,6 @@ public interface DetailResCenterPresenter {
 
     void onButtonAttachmentClick(Context context);
 
-    void showScanBarcode(Context context);
-
     void onNewShippingClickListener(Context context);
 
     void actionAcceptSolution();
@@ -46,8 +40,6 @@ public interface DetailResCenterPresenter {
     void actionReportResolution();
 
     void actionAcceptAdminSolution();
-
-    void actionInputShippingRefNum();
 
     void actionFinishReturSolution();
 
