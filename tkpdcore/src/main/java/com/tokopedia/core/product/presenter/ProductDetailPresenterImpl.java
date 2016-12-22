@@ -21,6 +21,7 @@ import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -613,6 +614,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     private void requestAddWishList(final Context context, final Integer productId) {
         viewListener.loadingWishList();
         UnifyTracking.eventPDPWishlit();
+        TrackingUtils.eventLoca(AppScreen.EVENT_ADDED_WISHLIST);
         retrofitInteractor.addToWishList(context, productId,
                 new RetrofitInteractor.AddWishListListener() {
                     @Override
