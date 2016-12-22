@@ -742,7 +742,11 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
 
             Map<String, String> filters;
             if (mFilterMapAtribut != null && mFilterMapAtribut.getFiltersMap() != null) {
-                filters = mFilterMapAtribut.getFiltersMap().get(source).getValue();
+                if (mFilterMapAtribut.getFiltersMap().get(source) != null) {
+                    filters = mFilterMapAtribut.getFiltersMap().get(source).getValue();
+                } else {
+                    filters = new HashMap<>();
+                }
             } else {
                 filters = new HashMap<>();
             }
