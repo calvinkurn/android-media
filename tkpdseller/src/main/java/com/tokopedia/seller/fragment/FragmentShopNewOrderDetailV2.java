@@ -34,6 +34,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MultiPaneActivity;
+import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.seller.customadapter.ListViewShopTxDetailProdListV2;
 import com.tokopedia.seller.selling.view.activity.SellingDetailActivity;
 import com.tokopedia.core.network.v4.NetworkConfig;
@@ -419,7 +420,7 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         holder.ProductListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startActivity(ProductInfoActivity.createInstance(getActivity(), order.getOrderProducts().get(position).getProductId().toString()));
+                startActivity(ProductInfoActivity.createInstance(getActivity(), getProductDataToPass(position)));
             }
         });
         ListViewHelper.getListViewSize(holder.ProductListView);
@@ -798,6 +799,15 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
             e.printStackTrace();
         }
         return list;
+    }
+
+    private ProductPass getProductDataToPass(int position) {
+        return ProductPass.Builder.aProductPass()
+                .setProductPrice(order.getOrderProducts().get(position).getProductPrice())
+                .setProductId(order.getOrderProducts().get(position).getProductId())
+                .setProductName(order.getOrderProducts().get(position).getProductName())
+                .setProductImage(order.getOrderProducts().get(position).getProductPicture())
+                .build();
     }
 
 }

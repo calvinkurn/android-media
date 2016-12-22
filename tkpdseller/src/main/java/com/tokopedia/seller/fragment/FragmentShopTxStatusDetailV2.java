@@ -25,6 +25,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ListViewHelper;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
+import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.seller.OrderHistoryView;
@@ -275,7 +276,7 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment {
         holder.ProductListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startActivity(ProductInfoActivity.createInstance(getActivity(), order.getOrderProducts().get(position).getProductId().toString()));
+                startActivity(ProductInfoActivity.createInstance(getActivity(), getProductDataToPass(position)));
             }
         });
         ListViewHelper.getListViewSize(holder.ProductListView);
@@ -536,5 +537,14 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment {
         listPermission.add(Manifest.permission.CAMERA);
 
         RequestPermissionUtil.onNeverAskAgain(getActivity(),listPermission);
+    }
+
+    private ProductPass getProductDataToPass(int position) {
+        return ProductPass.Builder.aProductPass()
+                .setProductPrice(order.getOrderProducts().get(position).getProductPrice())
+                .setProductId(order.getOrderProducts().get(position).getProductId())
+                .setProductName(order.getOrderProducts().get(position).getProductName())
+                .setProductImage(order.getOrderProducts().get(position).getProductPicture())
+                .build();
     }
 }
