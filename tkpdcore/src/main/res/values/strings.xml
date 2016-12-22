@@ -1830,4 +1830,5 @@ di Tokopedia Sekarang!</string>
     <string name="preview_picture_open_action">BUKA</string>
     <string name="preview_picture_download_action">Download Gambar</string>
     <string name="download_error">Terjadi kesalahan pengunduhan gambar</string>
+    <string name="order_delivered_on_process">Status : On Process</string>
 </resources>

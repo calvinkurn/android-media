@@ -30,6 +30,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
@@ -373,6 +374,7 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
 
     @Override
     public void successReply(String string) {
+        UnifyTracking.eventDiscussionSendSuccess(from);
         SnackbarManager.make(getActivity(), string
                 , Snackbar.LENGTH_SHORT).show();
         sendBut.setEnabled(true);
@@ -402,6 +404,7 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
 
     @Override
     public void errorReply(String error) {
+        UnifyTracking.eventDiscussionSendError(from);
         revertTalk();
         comment.setText(content);
         SnackbarManager.make(getActivity(), error, Snackbar.LENGTH_LONG).show();

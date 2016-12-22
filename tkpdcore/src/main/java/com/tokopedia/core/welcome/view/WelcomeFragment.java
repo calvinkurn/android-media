@@ -415,7 +415,7 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        WelcomeFragmentPermissionsDispatcher.onRequestPermissionsResult(WelcomeFragment.this,requestCode, grantResults);
+        WelcomeFragmentPermissionsDispatcher.onRequestPermissionsResult(WelcomeFragment.this,requestCode, grantResults);
     }
 
     @OnShowRationale(Manifest.permission.GET_ACCOUNTS)

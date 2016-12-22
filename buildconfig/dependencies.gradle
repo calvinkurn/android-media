@@ -7,12 +7,12 @@ ext {
     okHttpVersion = '3.4.1'
     glideVersion = '3.7.0'
     permissionDispatcherVersion = '2.2.0'
-    tkpdCoreVersion = '0.5'
-    tkpdInboxVersion = '0.5'
-    tkpdSessionVersion = '0.2'
-    tkpdSellerVersion = '0.2'
-    tkpdTransactionVersion = '0.2'
-    tkpdDiscoveryVersion = '0.2'
+    tkpdCoreVersion =  'latest.integration'
+    tkpdInboxVersion = 'latest.integration'
+    tkpdSessionVersion = 'latest.integration'
+    tkpdSellerVersion = 'latest.integration'
+    tkpdTransactionVersion = 'latest.integration'
+    tkpdDiscoveryVersion = 'latest.integration'
 
     networkDependencies = [
             retrofit : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -77,8 +77,6 @@ ext {
     ]
 
     miscDependencies = [
-            asneCore : "com.github.asne:asne-core:0.3.3@aar",
-            asneFacebook : "com.github.asne:asne-facebook:0.3.3@aar",
             captureActivity : "info.vividcode.android.zxing:capture-activity:2.3.0-1.2",
             simpleFb : "com.sromku:simple-fb:4.1.1",
             parcelerApi : "org.parceler:parceler-api:1.1.6",

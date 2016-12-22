@@ -296,5 +296,10 @@ public class ShopTalkPresenterImpl implements ShopTalkPresenter {
 
     }
 
+    @Override
+    public void onDestroyView() {
+        networkInteractor.unSubscribeObservable();
+    }
+
 
 }
