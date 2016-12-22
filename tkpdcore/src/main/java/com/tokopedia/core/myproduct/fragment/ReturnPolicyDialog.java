@@ -158,6 +158,11 @@ public class ReturnPolicyDialog extends DialogFragment {
         showProgressBar();
         //[END] display progressbar
 
+        if(returnPolicyContent.getText().toString().trim().isEmpty()){
+            returnPolicyContent.setError(getString(R.string.empty_returnable_note));
+            return;
+        }
+
         if (data != null) {
             //[START] Old code just dismiss return policy
 //            dismiss();

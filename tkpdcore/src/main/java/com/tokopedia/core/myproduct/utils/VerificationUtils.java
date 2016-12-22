@@ -61,6 +61,10 @@ public class VerificationUtils {
             return new Pair<>(false, context.getString(R.string.error_empty_new_etalase_name));
         }
 
+        if (etalaseName.trim().length() < 3){
+            return new Pair<>(false, context.getString(R.string.etalase_less_than_three_char));
+        }
+
         return new Pair<>(true, null);
     }
 
@@ -364,6 +368,11 @@ public class VerificationUtils {
                 switch (currency){
                     case "Rp":
                         String priceText = text[1].replace(",","").replace(".", "");
+                        if(priceText.equals("")){
+                            resBoolean = false;
+                            resString = context.getString(R.string.error_empty_price);
+                            return new Pair<>(resBoolean, resString);
+                        }
                         if(Double.parseDouble(priceText) == 100){
                             resBoolean = false;
                             resString = context.getString(R.string.error_minimum_price_wholesale);
@@ -372,6 +381,11 @@ public class VerificationUtils {
                         break;
                     case "US$":
                         priceText = text[1].replace(",","");
+                        if(priceText.equals("")){
+                            resBoolean = false;
+                            resString = context.getString(R.string.error_empty_price);
+                            return new Pair<>(resBoolean, resString);
+                        }
                         if(Double.parseDouble(priceText) == 1){
                             resBoolean = false;
                             resString = context.getString(R.string.error_minimum_price_wholesale);

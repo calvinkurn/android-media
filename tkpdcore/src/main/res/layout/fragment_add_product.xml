@@ -428,8 +428,7 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/prompt_etalase_name"
                             android:inputType="textMultiLine"
-                            android:maxLines="5"
-                            android:scrollbars="vertical"
+                            android:maxLines="1"
                             android:textSize="@dimen/new_text_size_input" />
                     </android.support.design.widget.TextInputLayout>
                 </com.tkpd.library.ui.expandablelayout.ExpandableRelativeLayout>

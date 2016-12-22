@@ -1830,4 +1830,6 @@ di Tokopedia Sekarang!</string>
     <string name="preview_picture_open_action">BUKA</string>
     <string name="preview_picture_download_action">Download Gambar</string>
     <string name="download_error">Terjadi kesalahan pengunduhan gambar</string>
+    <string name="empty_returnable_note">Kebijakan Pengembalian Barang Harus Diisi</string>
+    <string name="etalase_less_than_three_char">Nama etalase tidak boleh kurang dari tiga huruf</string>
 </resources>

@@ -86,6 +86,7 @@ public class WholesaleLayout extends RelativeLayout implements WholesaleAdapterI
         layoutParams.addRule(ABOVE, R.id.button_add_wholesale);
         layoutParams.addRule(TEXT_ALIGNMENT_CENTER, TRUE);
         recyclerView.setLayoutParams(layoutParams);
+        recyclerView.setVerticalScrollBarEnabled(true);
         adapter = new WholesaleAdapterImpl(this, 0, PriceUtils.CURRENCY_RUPIAH);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
