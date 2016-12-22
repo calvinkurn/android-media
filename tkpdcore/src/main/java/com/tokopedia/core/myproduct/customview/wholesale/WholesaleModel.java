@@ -4,9 +4,11 @@ package com.tokopedia.core.myproduct.customview.wholesale;
  * Created by sebastianuskh on 12/5/16.
  */
 public class WholesaleModel {
+    /** Main value : qty one, two, and price */
     private int qtyOne = 0;
     private int qtyTwo = 0;
     private double qtyPrice = 0;
+    /** put the wholesale so we can easily give the error to the view */
     private WholesaleViewHolder viewHolder;
 
     public WholesaleModel(){}

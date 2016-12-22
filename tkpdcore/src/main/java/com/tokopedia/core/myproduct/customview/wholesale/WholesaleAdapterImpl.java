@@ -53,16 +53,17 @@ public class WholesaleAdapterImpl extends RecyclerView.Adapter<WholesaleViewHold
         return data.size();
     }
 
-    public void addItem(){
+    public boolean addItem(){
         if(getItemCount() == MAX_WHOLESALE_PRICE){
             listener.throwShomething("Jumlah maksimum harga grosir sudah tercapai");
-            return;
+            return false;
         }
         checkError();
         if(!checkIfErrorExist()){
             data.add(new WholesaleModel());
             notifyDataSetChanged();
         }
+        return false;
     }
 
     @Override

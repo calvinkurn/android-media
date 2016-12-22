@@ -83,6 +83,7 @@ public class WholesaleViewHolderImpl extends RecyclerView.ViewHolder implements 
         this.currency = currency;
     }
 
+    @Override
     public void bindView(WholesaleAdapter listener, int position, WholesaleModel wholesaleModel) {
         this.listener = listener;
         this.position = position;

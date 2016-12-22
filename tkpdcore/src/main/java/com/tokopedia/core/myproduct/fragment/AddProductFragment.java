@@ -16,6 +16,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -369,7 +370,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
     TextDeleteAdapter etalaseAdapter;
 
     @BindView(R2.id.add_product_parent)
-    ScrollView addProductParent;
+    NestedScrollView addProductParent;
 
 
     @BindView(R2.id.add_product_desc)

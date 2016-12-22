@@ -15,4 +15,6 @@ public interface WholesaleViewHolder {
     CharSequence getQtyTwoError();
 
     CharSequence getQtyPriceError();
+
+    void bindView(WholesaleAdapter listener, int position, WholesaleModel wholesaleModel);
 }
