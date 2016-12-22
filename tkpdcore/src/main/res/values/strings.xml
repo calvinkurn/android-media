@@ -1830,5 +1830,5 @@ di Tokopedia Sekarang!</string>
     <string name="preview_picture_open_action">BUKA</string>
     <string name="preview_picture_download_action">Download Gambar</string>
     <string name="download_error">Terjadi kesalahan pengunduhan gambar</string>
-    <string name="action_send_otp_with_call">Kirim OTP melalui telepon</string>
+    <string name="action_send_otp_with_call">Atau kirim OTP melalui telepon</string>
 </resources>

@@ -195,7 +195,6 @@ public class SecurityQuestionImpl implements SecurityQuestion {
 
     @Override
     public void doRequestOtp() {
-        view.showOTPWithCall();
         view.displayProgress(true);
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_BUNDLE, String.valueOf(viewModel.getSecurity2()));
