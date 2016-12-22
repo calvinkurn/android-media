@@ -25,8 +25,6 @@ import com.tokopedia.core.Cart;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.NotificationCenter;
 import com.tokopedia.core.R;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
@@ -46,13 +44,8 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
@@ -62,6 +55,7 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_IMAGE;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_TITLE;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_UPDATE_APPS_TITLE;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_URL;
+import static com.tokopedia.core.gcm.Constants.EXTRA_PLAYSTORE_URL;
 
 /**
  * @author by hangnadi on 9/7/15.
@@ -70,7 +64,6 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_URL;
  */
 public class FCMMessagingService extends FirebaseMessagingService {
     private FCMCacheManager cacheManager;
-    private NotificationListener listener;
     private long[] pattern = {500, 500, 500, 500, 500, 500, 500, 500, 500};
     INotificationAnalyticsReceiver mNotificationAnalyticsReceiver;
 
@@ -125,9 +118,9 @@ public class FCMMessagingService extends FirebaseMessagingService {
                 if (SessionHandler.isV4Login(this)) createNotification(data, Cart.class);
                 break;
             case TkpdState.GCMServiceState.GCM_WISHLIST:
-                if (SessionHandler.isV4Login(this))
-//                    createNotification(data, SimpleHomeActivity.class);
+                if (SessionHandler.isV4Login(this)) {
                     createNotification(data, SimpleHomeRouter.getSimpleHomeActivityClass());
+                }
                 break;
             case TkpdState.GCMServiceState.GCM_VERIFICATION:
                 if (SessionHandler.isV4Login(this)) {
@@ -140,14 +133,19 @@ public class FCMMessagingService extends FirebaseMessagingService {
                 }
                 break;
             default:
-                if (SessionHandler.isV4Login(this) && SessionHandler.getLoginID(this).equals(data.getString("to_user_id"))) {
-                    resetData(data);
-                    if (MainApplication.currentActivity() == null && Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE)) < 500) {
+                if (SessionHandler.isV4Login(this)
+                        && SessionHandler.getLoginID(this).equals(data.getString("to_user_id"))) {
+
+                    resetNotificationStatus(data);
+
+                    if (MainApplication.currentActivity() == null
+                            && Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE)) < 500) {
                         sendNotification(data);
                     } else {
-                        listener = (NotificationListener) MainApplication.currentActivity();
+                        NotificationListener listener = (NotificationListener) MainApplication.currentActivity();
                         if (listener != null) {
-                            if (Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE)) == TkpdState.GCMServiceState.GCM_CART_UPDATE) {
+                            if (Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE))
+                                    == TkpdState.GCMServiceState.GCM_CART_UPDATE) {
                                 listener.onRefreshCart(data.getInt("is_cart_exists", 0));
                             } else {
                                 sendNotification(data);
@@ -174,127 +172,111 @@ public class FCMMessagingService extends FirebaseMessagingService {
             return;
         }
 
-        Class<?> resultclass = null;
-        String title = null;
-        String ticker = null;
-        String desc = null;
+        Class<?> targetClass = null;
+        String title;
+        String ticker;
+        String description;
         Intent intent = null;
         Bundle bundle = new Bundle();
         ComponentName componentName = null;
         switch (Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE))) {
             case TkpdState.GCMServiceState.GCM_MESSAGE:
-                resultclass = InboxMessageActivity.class;
-                //bundle.putInt("notif_call", NotificationCode);
-                title = data.getString("counter") + " " + this.getString(R.string.title_new_message);
+                targetClass = InboxMessageActivity.class;
+                title = String.format("%s %s", data.getString("counter"), this.getString(R.string.title_new_message));
                 ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-                desc = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+                description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
                 break;
             case TkpdState.GCMServiceState.GCM_TALK:
-                resultclass = InboxTalkActivity.class;
-                //bundle.putInt("notif_call", NotificationCode);
-                title = data.getString("counter") + " " + this.getString(R.string.title_new_talk);
+                targetClass = InboxTalkActivity.class;
+                title = String.format("%s %s", data.getString("counter"), this.getString(R.string.title_new_talk));
                 ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-                desc = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+                description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
                 break;
             case TkpdState.GCMServiceState.GCM_REVIEW:
-                resultclass = InboxReputationActivity.class;
-                //bundle.putInt("notif_call", NotificationCode);
-                title = data.getString("counter") + " " + this.getString(R.string.title_new_review);
+                targetClass = InboxReputationActivity.class;
+                title = String.format("%s %s", data.getString("counter"), this.getString(R.string.title_new_review));
                 ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-                desc = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+                description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
                 break;
             case TkpdState.GCMServiceState.GCM_REVIEW_EDIT:
-                resultclass = InboxReputationActivity.class;
-                //bundle.putInt("notif_call", NotificationCode);
+                targetClass = InboxReputationActivity.class;
                 title = this.getString(R.string.title_edit_review);
                 ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-                desc = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+                description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
                 break;
             case TkpdState.GCMServiceState.GCM_REVIEW_REPLY:
-                resultclass = InboxReputationActivity.class;
-                //bundle.putInt("notif_call", NotificationCode);
+                targetClass = InboxReputationActivity.class;
                 title = this.getString(R.string.title_reply_review);
                 ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-                desc = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+                description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
                 break;
             case TkpdState.GCMServiceState.GCM_TICKET:
                 componentName = InboxRouter.getInboxticketActivityComponentName(this);
                 intent = InboxRouter.getInboxTicketActivityIntent(this);
-                //bundle.putInt("notif_call", NotificationCode);
                 title = this.getString(R.string.title_new_ticket);
                 ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-                desc = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+                description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
                 break;
             case TkpdState.GCMServiceState.GCM_RES_CENTER:
                 intent = InboxRouter.getInboxResCenterActivityIntent(this);
                 title = this.getString(R.string.title_new_rescenter);
                 ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-                desc = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+                description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
                 break;
             case TkpdState.GCMServiceState.GCM_NEWORDER:
-//                resultclass = ShopTransactionV2.class;
                 componentName = SellerRouter.getActivitySellingTransactionName(this);
                 intent = SellerRouter.getActivitySellingTransaction(this);
-                //bundle.putInt("notif_call", NotificationCode);
-                title = data.getString("counter") + " " + this.getString(R.string.title_new_order);
-                desc = getString(R.string.msg_new_order);
+                title = String.format("%s %s", data.getString("counter"), this.getString(R.string.title_new_order));
+                description = getString(R.string.msg_new_order);
                 ticker = getString(R.string.msg_new_order);
                 break;
             case TkpdState.GCMServiceState.GCM_PROMO:
                 title = data.getString(ARG_NOTIFICATION_TITLE);
-                desc = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+                description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
                 ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-//                resultclass = ParentIndexHome.class;
-                resultclass = HomeRouter.getHomeActivityClass();
+                targetClass = HomeRouter.getHomeActivityClass();
                 break;
             case TkpdState.GCMServiceState.GCM_GENERAL:
                 title = data.getString(ARG_NOTIFICATION_TITLE);
-                desc = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+                description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
                 ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-//                resultclass = ParentIndexHome.class;
-                resultclass = HomeRouter.getHomeActivityClass();
+                targetClass = HomeRouter.getHomeActivityClass();
                 break;
             case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY:
-                resultclass = InboxReputationActivity.class;
-                //bundle.putInt("notif_call", NotificationCode);
+                targetClass = InboxReputationActivity.class;
                 title = this.getString(R.string.title_get_reputation);
                 ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-                desc = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+                description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
                 break;
             case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY:
-                resultclass = InboxReputationActivity.class;
-                //bundle.putInt("notif_call", NotificationCode);
+                targetClass = InboxReputationActivity.class;
                 title = this.getString(R.string.title_get_edit_reputation);
                 ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-                desc = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+                description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
                 break;
             case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_BUYER:
-                resultclass = InboxReputationActivity.class;
-                //bundle.putInt("notif_call", NotificationCode);
+                targetClass = InboxReputationActivity.class;
                 title = this.getString(R.string.title_get_reputation);
                 ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-                desc = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+                description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
                 break;
             case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_BUYER:
-                resultclass = InboxReputationActivity.class;
-                //bundle.putInt("notif_call", NotificationCode);
+                targetClass = InboxReputationActivity.class;
                 title = this.getString(R.string.title_get_edit_reputation);
                 ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-                desc = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+                description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
                 break;
             case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_SELLER:
-                resultclass = InboxReputationActivity.class;
-                //bundle.putInt("notif_call", NotificationCode);
+                targetClass = InboxReputationActivity.class;
                 title = this.getString(R.string.title_get_reputation);
                 ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-                desc = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+                description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
                 break;
             case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_SELLER:
-                resultclass = InboxReputationActivity.class;
-                //bundle.putInt("notif_call", NotificationCode);
+                targetClass = InboxReputationActivity.class;
                 title = this.getString(R.string.title_get_edit_reputation);
                 ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-                desc = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+                description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
                 break;
             case TkpdState.GCMServiceState.GCM_PURCHASE_VERIFIED:
                 componentName = TransactionPurchaseRouter.getPurchaseActivityComponentName(this);
@@ -303,7 +285,7 @@ public class FCMMessagingService extends FirebaseMessagingService {
                         TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER);
                 title = this.getString(R.string.title_notif_purchase_confirmed);
                 ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-                desc = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+                description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
                 break;
             case TkpdState.GCMServiceState.GCM_PURCHASE_ACCEPTED:
                 componentName = TransactionPurchaseRouter.getPurchaseActivityComponentName(this);
@@ -312,7 +294,7 @@ public class FCMMessagingService extends FirebaseMessagingService {
                         TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER);
                 title = this.getString(R.string.title_notif_purchase_accepted);
                 ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-                desc = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+                description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
                 break;
             case TkpdState.GCMServiceState.GCM_PURCHASE_PARTIAL_PROCESSED:
                 componentName = TransactionPurchaseRouter.getPurchaseActivityComponentName(this);
@@ -321,7 +303,7 @@ public class FCMMessagingService extends FirebaseMessagingService {
                         TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER);
                 title = this.getString(R.string.title_notif_purchase_partial_accepted);
                 ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-                desc = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+                description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
                 break;
             case TkpdState.GCMServiceState.GCM_PURCHASE_REJECTED:
                 componentName = TransactionPurchaseRouter.getPurchaseActivityComponentName(this);
@@ -332,7 +314,7 @@ public class FCMMessagingService extends FirebaseMessagingService {
                         TransactionPurchaseRouter.TRANSACTION_CANCELED_FILTER_ID);
                 title = this.getString(R.string.title_notif_purchase_rejected);
                 ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-                desc = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+                description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
                 break;
             case TkpdState.GCMServiceState.GCM_PURCHASE_DELIVERED:
                 componentName = TransactionPurchaseRouter.getPurchaseActivityComponentName(this);
@@ -341,7 +323,7 @@ public class FCMMessagingService extends FirebaseMessagingService {
                         TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVER_ORDER);
                 title = this.getString(R.string.title_notif_purchase_delivered);
                 ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-                desc = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+                description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
                 break;
             case TkpdState.GCMServiceState.GCM_PURCHASE_DISPUTE:
                 componentName = InboxRouter.getInboxResCenterActivityComponentName(this);
@@ -350,7 +332,7 @@ public class FCMMessagingService extends FirebaseMessagingService {
                         TkpdState.InboxResCenter.RESO_BUYER);
                 title = this.getString(R.string.title_notif_rescenter);
                 ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-                desc = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+                description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
                 break;
             case TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_REPLY:
                 componentName = InboxRouter.getInboxResCenterActivityComponentName(this);
@@ -359,7 +341,7 @@ public class FCMMessagingService extends FirebaseMessagingService {
                         TkpdState.InboxResCenter.RESO_BUYER);
                 title = this.getString(R.string.title_notif_rescenter);
                 ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-                desc = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+                description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
                 break;
             case TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_REPLY:
                 componentName = InboxRouter.getInboxResCenterActivityComponentName(this);
@@ -368,7 +350,7 @@ public class FCMMessagingService extends FirebaseMessagingService {
                         TkpdState.InboxResCenter.RESO_MINE);
                 title = this.getString(R.string.title_notif_rescenter);
                 ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-                desc = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+                description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
                 break;
             case TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_AGREE:
                 componentName = InboxRouter.getInboxResCenterActivityComponentName(this);
@@ -377,7 +359,7 @@ public class FCMMessagingService extends FirebaseMessagingService {
                         TkpdState.InboxResCenter.RESO_MINE);
                 title = this.getString(R.string.title_notif_rescenter);
                 ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-                desc = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+                description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
                 break;
             case TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_AGREE:
                 componentName = InboxRouter.getInboxResCenterActivityComponentName(this);
@@ -386,7 +368,7 @@ public class FCMMessagingService extends FirebaseMessagingService {
                         TkpdState.InboxResCenter.RESO_BUYER);
                 title = this.getString(R.string.title_notif_rescenter);
                 ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-                desc = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+                description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
                 break;
             case TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_BUYER_REPLY:
                 componentName = InboxRouter.getInboxResCenterActivityComponentName(this);
@@ -395,7 +377,7 @@ public class FCMMessagingService extends FirebaseMessagingService {
                         TkpdState.InboxResCenter.RESO_MINE);
                 title = this.getString(R.string.title_notif_rescenter);
                 ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-                desc = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+                description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
                 break;
             case TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_SELLER_REPLY:
                 componentName = InboxRouter.getInboxResCenterActivityComponentName(this);
@@ -404,22 +386,31 @@ public class FCMMessagingService extends FirebaseMessagingService {
                         TkpdState.InboxResCenter.RESO_BUYER);
                 title = this.getString(R.string.title_notif_rescenter);
                 ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-                desc = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+                description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
                 break;
             default:
                 return;
         }
         if (intent == null) {
-            intent = new Intent(this, resultclass);
+            intent = new Intent(this, targetClass);
         }
-        createNotification(intent, resultclass, title, ticker, desc, bundle, data, componentName);
+        createNotification(intent, targetClass, title, ticker, description, bundle, data, componentName);
     }
 
-    private void createNotification(Intent intent, Class<?> resultclass, String title, String ticker, String desc,
-                                    Bundle bundle, final Bundle data, ComponentName componentName) {
-        NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-        final ArrayList<String> Content = new ArrayList<>(), Desc = new ArrayList<>();
-        final ArrayList<Integer> Code = new ArrayList<>();
+    private void sendMarketingPromoCode(Bundle data) {
+        sendNotification(data);
+    }
+
+    private void sendGeneralNotification(Bundle data) {
+        sendNotification(data);
+    }
+
+    private void createNotification(Intent intent, Class<?> targetClass, String title, String ticker,
+                                    String desc, Bundle bundle, final Bundle data, ComponentName componentName) {
+        NotificationManager mNotificationManager =
+                (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        final ArrayList<String> contents = new ArrayList<>(), descriptions = new ArrayList<>();
+        final ArrayList<Integer> codes = new ArrayList<>();
         final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(getDrawableIcon())
                 .setAutoCancel(true);
@@ -429,20 +420,21 @@ public class FCMMessagingService extends FirebaseMessagingService {
         cacheManager.processNotifData(data, title, desc, new FCMCacheManager.CacheProcessListener() {
             @Override
             public void onDataProcessed(ArrayList<String> content, ArrayList<String> desc, ArrayList<Integer> code) {
-                Content.addAll(content);
-                Code.addAll(code);
-                Desc.addAll(desc);
+                contents.addAll(content);
+                codes.addAll(code);
+                descriptions.addAll(desc);
             }
         });
 
-        if (Code.size() == 1) {
+        if (codes.size() == 1) {
             bigStyle = new NotificationCompat.BigTextStyle();
             mBuilder.setContentTitle(title);
             mBuilder.setContentText(desc);
             bigStyle.bigText(desc);
             mBuilder.setStyle(bigStyle);
             mBuilder.setTicker(ticker);
-        } else if (Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE)) == TkpdState.GCMServiceState.GCM_PROMO || Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE)) == TkpdState.GCMServiceState.GCM_GENERAL) {
+        } else if (Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE)) == TkpdState.GCMServiceState.GCM_PROMO
+                || Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE)) == TkpdState.GCMServiceState.GCM_GENERAL) {
             bigStyle = new NotificationCompat.BigTextStyle();
             mBuilder.setContentTitle(title);
             mBuilder.setContentText(desc);
@@ -450,12 +442,12 @@ public class FCMMessagingService extends FirebaseMessagingService {
             mBuilder.setStyle(bigStyle);
             mBuilder.setTicker(ticker);
         } else {
-            resultclass = NotificationCenter.class;
+            targetClass = NotificationCenter.class;
             bundle.putInt("notif_call", 0);
             inboxStyle = new NotificationCompat.InboxStyle();
             inboxStyle.setBigContentTitle(getString(R.string.title_new_notif_general));
-            for (int i = 0; i < Content.size(); i++) {
-                inboxStyle.addLine(Content.get(i));
+            for (int i = 0; i < contents.size(); i++) {
+                inboxStyle.addLine(contents.get(i));
             }
             mBuilder.setContentTitle(getString(R.string.title_new_notif_general));
             mBuilder.setContentText(desc);
@@ -463,16 +455,23 @@ public class FCMMessagingService extends FirebaseMessagingService {
             mBuilder.setTicker(ticker);
         }
 
-
         if (!TextUtils.isEmpty(data.getString(ARG_NOTIFICATION_IMAGE))) {
-
             ImageHandler.loadImageBitmapNotification(
                     this,
                     data.getString(ARG_NOTIFICATION_IMAGE), new OnGetFileListener() {
                         @Override
                         public void onFileReady(File file) {
-                            NotificationCompat.BigPictureStyle bigStyle = new NotificationCompat.BigPictureStyle();
-                            bigStyle.bigPicture(Bitmap.createScaledBitmap(BitmapFactory.decodeFile(file.getAbsolutePath()), getResources().getDimensionPixelSize(R.dimen.notif_width), getResources().getDimensionPixelSize(R.dimen.notif_height), true));
+                            NotificationCompat.BigPictureStyle bigStyle =
+                                    new NotificationCompat.BigPictureStyle();
+
+                            bigStyle.bigPicture(
+                                    Bitmap.createScaledBitmap(
+                                            BitmapFactory.decodeFile(file.getAbsolutePath()),
+                                            getResources().getDimensionPixelSize(R.dimen.notif_width),
+                                            getResources().getDimensionPixelSize(R.dimen.notif_height),
+                                            true
+                                    )
+                            );
                             bigStyle.setBigContentTitle(data.getString(ARG_NOTIFICATION_TITLE));
                             bigStyle.setSummaryText(data.getString(ARG_NOTIFICATION_DESCRIPTION));
 
@@ -489,7 +488,14 @@ public class FCMMessagingService extends FirebaseMessagingService {
                     data.getString(ARG_NOTIFICATION_ICON), new OnGetFileListener() {
                         @Override
                         public void onFileReady(File file) {
-                            mBuilder.setLargeIcon(Bitmap.createScaledBitmap(BitmapFactory.decodeFile(file.getAbsolutePath()), getResources().getDimensionPixelSize(R.dimen.icon_size), getResources().getDimensionPixelSize(R.dimen.icon_size), true));
+                            mBuilder.setLargeIcon(
+                                    Bitmap.createScaledBitmap(
+                                            BitmapFactory.decodeFile(file.getAbsolutePath()),
+                                            getResources().getDimensionPixelSize(R.dimen.icon_size),
+                                            getResources().getDimensionPixelSize(R.dimen.icon_size),
+                                            true
+                                    )
+                            );
                         }
                     }
             );
@@ -497,11 +503,11 @@ public class FCMMessagingService extends FirebaseMessagingService {
             mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), getDrawableLargeIcon()));
         }
 
-
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("from_notif", true);
         intent.putExtra("unread", false);
-        if (Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE)) == TkpdState.GCMServiceState.GCM_PROMO || Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE)) == TkpdState.GCMServiceState.GCM_GENERAL) {
+        if (Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE)) == TkpdState.GCMServiceState.GCM_PROMO
+                || Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE)) == TkpdState.GCMServiceState.GCM_GENERAL) {
             Bundle dataLocalytics = this.mNotificationAnalyticsReceiver.buildAnalyticNotificationData(data);
             intent.putExtras(dataLocalytics);
         } else {
@@ -517,12 +523,11 @@ public class FCMMessagingService extends FirebaseMessagingService {
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         if (componentName != null) {
             stackBuilder.addParentStack(componentName);
-        } else if (resultclass != null) {
-            stackBuilder.addParentStack(resultclass);
+        } else if (targetClass != null) {
+            stackBuilder.addParentStack(targetClass);
         }
         stackBuilder.addNextIntent(intent);
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
-        //PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
         mBuilder.setContentIntent(resultPendingIntent);
         Notification notif = mBuilder.build();
         if (cacheManager.isVibrate() && cacheManager.isAllowBell())
@@ -530,28 +535,21 @@ public class FCMMessagingService extends FirebaseMessagingService {
         mNotificationManager.notify(100, notif);
     }
 
-    private void sendMarketingPromoCode(Bundle data) {
-        sendNotification(data);
-    }
-
-    private void sendGeneralNotification(Bundle data) {
-        sendNotification(data);
-    }
-
     private void createNotification(Bundle data, Class<?> intentClass) {
         if (!cacheManager.checkSettings(Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE)))) {
             return;
         }
         if (data.getString(ARG_NOTIFICATION_IMAGE) != null) {
-            createImageNotification(data, intentClass);
+            createAndShowImageNotification(data, intentClass);
         } else {
-            createTextNotification(data, intentClass);
+            createAndShowTextNotification(data, intentClass);
         }
     }
 
-    private void createTextNotification(Bundle data, Class<?> intentClass) {
+    private void createAndShowTextNotification(Bundle data, Class<?> intentClass) {
         try {
-            NotificationManager mNotificationManager = (NotificationManager) getBaseContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationManager mNotificationManager =
+                    (NotificationManager) getBaseContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
                     .setSmallIcon(getDrawableIcon())
@@ -575,7 +573,9 @@ public class FCMMessagingService extends FirebaseMessagingService {
             Intent intent = createIntent(intentClass, data);
 
             if (data.getInt("keylogin1", -99) != -99) {
-                intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, data.getInt("keylogin1"));
+                intent.putExtra(
+                        com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, data.getInt("keylogin1")
+                );
                 intent.putExtra(SessionView.MOVE_TO_CART_KEY, data.getInt("keylogin2"));
             }
 
@@ -591,7 +591,6 @@ public class FCMMessagingService extends FirebaseMessagingService {
         } catch (NullPointerException e) {
             CommonUtils.dumper("NotifTag : Null Value" + e.toString());
         }
-
     }
 
     private Intent createIntent(Class<?> intentClass, Bundle data) {
@@ -647,9 +646,11 @@ public class FCMMessagingService extends FirebaseMessagingService {
         return intent;
     }
 
-    private void createImageNotification(final Bundle data, final Class<?> intentClass) throws NullPointerException {
+    private void createAndShowImageNotification(final Bundle data, final Class<?> intentClass)
+            throws NullPointerException {
 
-        final NotificationManager mNotificationManager = (NotificationManager) getBaseContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        final NotificationManager mNotificationManager =
+                (NotificationManager) getBaseContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
         final Notification.Builder mBuilder = new Notification.Builder(getBaseContext())
                 .setSmallIcon(getDrawableIcon())
@@ -662,7 +663,14 @@ public class FCMMessagingService extends FirebaseMessagingService {
                     data.getString(ARG_NOTIFICATION_ICON), new OnGetFileListener() {
                         @Override
                         public void onFileReady(File file) {
-                            mBuilder.setLargeIcon(Bitmap.createScaledBitmap(BitmapFactory.decodeFile(file.getAbsolutePath()), getResources().getDimensionPixelSize(R.dimen.icon_size), getResources().getDimensionPixelSize(R.dimen.icon_size), true));
+                            mBuilder.setLargeIcon(
+                                    Bitmap.createScaledBitmap(
+                                            BitmapFactory.decodeFile(file.getAbsolutePath()),
+                                            getResources().getDimensionPixelSize(R.dimen.icon_size),
+                                            getResources().getDimensionPixelSize(R.dimen.icon_size),
+                                            true
+                                    )
+                            );
                         }
                     }
             );
@@ -678,7 +686,13 @@ public class FCMMessagingService extends FirebaseMessagingService {
                     @Override
                     public void onFileReady(File file) {
                         Notification.BigPictureStyle bigStyle = new Notification.BigPictureStyle();
-                        bigStyle.bigPicture(Bitmap.createScaledBitmap(BitmapFactory.decodeFile(file.getAbsolutePath()), getResources().getDimensionPixelSize(R.dimen.notif_width), getResources().getDimensionPixelSize(R.dimen.notif_height), true));
+                        bigStyle.bigPicture(
+                                Bitmap.createScaledBitmap(
+                                        BitmapFactory.decodeFile(file.getAbsolutePath()),
+                                        getResources().getDimensionPixelSize(R.dimen.notif_width),
+                                        getResources().getDimensionPixelSize(R.dimen.notif_height),
+                                        true)
+                        );
                         bigStyle.setSummaryText(data.getString(ARG_NOTIFICATION_DESCRIPTION));
 
                         mBuilder.setContentTitle(data.getString(ARG_NOTIFICATION_TITLE));
@@ -696,28 +710,36 @@ public class FCMMessagingService extends FirebaseMessagingService {
                         Intent intent = createIntent(intentClass, data);
 
                         if (data.getInt("keylogin1", -99) != -99) {
-                            intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, data.getInt("keylogin1"));
+                            intent.putExtra(
+                                    com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY,
+                                    data.getInt("keylogin1")
+                            );
                             intent.putExtra(SessionView.MOVE_TO_CART_KEY, data.getInt("keylogin2"));
                         }
 
                         TaskStackBuilder stackBuilder = TaskStackBuilder.create(getBaseContext());
                         stackBuilder.addParentStack(intentClass);
                         stackBuilder.addNextIntent(intent);
-                        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
+                        PendingIntent resultPendingIntent =
+                                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
                         mBuilder.setContentIntent(resultPendingIntent);
                         Notification notif = mBuilder.build();
+
                         if (cacheManager.isVibrate() && cacheManager.isAllowBell())
                             notif.defaults |= Notification.DEFAULT_VIBRATE;
-                        mNotificationManager.notify(Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE)), notif);
+                        mNotificationManager.notify(
+                                Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE)),
+                                notif
+                        );
                     }
                 }
         );
-
     }
 
     private void sendUpdateAppsNotification(Bundle data) {
         if (MainApplication.getCurrentVersion(this) < Integer.parseInt(data.getString("app_version", "0"))) {
-            NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationManager mNotificationManager =
+                    (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
                     .setSmallIcon(getDrawableIcon())
@@ -737,7 +759,7 @@ public class FCMMessagingService extends FirebaseMessagingService {
             }
 
             Intent notificationIntent = new Intent(Intent.ACTION_VIEW);
-            notificationIntent.setData(Uri.parse("market://details?shopId=com.tokopedia.tkpd"));
+            notificationIntent.setData(Uri.parse(EXTRA_PLAYSTORE_URL));
 
             PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
             mBuilder.setContentIntent(contentIntent);
@@ -764,7 +786,7 @@ public class FCMMessagingService extends FirebaseMessagingService {
             return R.drawable.qc_launcher;
     }
 
-    private void resetData(Bundle data) {
+    private void resetNotificationStatus(Bundle data) {
         if (SessionHandler.getLoginID(this).equals(data.getString("to_user_id"))) {
             switch (Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE))) {
                 case TkpdState.GCMServiceState.GCM_DRAWER_UPDATE:
@@ -783,5 +805,4 @@ public class FCMMessagingService extends FirebaseMessagingService {
     public interface OnGetFileListener {
         void onFileReady(File file);
     }
-
 }

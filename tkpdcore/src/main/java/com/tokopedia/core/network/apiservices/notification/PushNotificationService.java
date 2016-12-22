@@ -1,8 +1,7 @@
 package com.tokopedia.core.network.apiservices.notification;
 
-import com.tokopedia.core.network.apiservices.notification.apis.NotificationApi;
+import com.tokopedia.core.network.apiservices.notification.apis.PushNotificationApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.retrofit.services.BaseService;
 import com.tokopedia.core.network.retrofit.services.BearerService;
 
 import retrofit2.Retrofit;
@@ -11,8 +10,8 @@ import retrofit2.Retrofit;
  * @author  by alvarisi on 12/8/16.
  */
 
-public class NotificationService extends BearerService<NotificationApi> {
-    public NotificationService(String Oauth){
+public class PushNotificationService extends BearerService<PushNotificationApi> {
+    public PushNotificationService(String Oauth){
         this.mToken = Oauth;
     }
 
@@ -28,11 +27,11 @@ public class NotificationService extends BearerService<NotificationApi> {
 
     @Override
     protected void initApiService(Retrofit retrofit) {
-        this.mApi = retrofit.create(NotificationApi.class);
+        this.mApi = retrofit.create(PushNotificationApi.class);
     }
 
     @Override
-    public NotificationApi getApi() {
+    public PushNotificationApi getApi() {
         return this.mApi;
     }
 }

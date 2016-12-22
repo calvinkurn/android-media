@@ -60,9 +60,8 @@ class GCMUtils {
     }
 
     static boolean isValidForSellerApp(int tkpCode, Application app) {
-
-        return !app.getClass().getSimpleName().equals("SellerMainApplication") && GCMUtils.isExcludeFromSellerApp(tkpCode);
-
+        return !app.getClass().getSimpleName().equals("SellerMainApplication")
+                && GCMUtils.isExcludeFromSellerApp(tkpCode);
     }
 
     static int getCode(Bundle data) {

@@ -1,7 +1,7 @@
 package com.tokopedia.core.gcm.interactor.source;
 
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
-import com.tokopedia.core.network.apiservices.notification.NotificationService;
+import com.tokopedia.core.network.apiservices.notification.PushNotificationService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
@@ -28,7 +28,7 @@ public class CloudPushNotificationDataSource {
                         param.put("device_id_new", requestData.getNewToken());
                         param.put("os_type", requestData.getOsType());
                         param.put("user_id", requestData.getUserId());
-                        NotificationService service = new NotificationService(requestData.getAccessToken());
+                        PushNotificationService service = new PushNotificationService(requestData.getAccessToken());
                         return service.getApi().updateToken(param);
                     }
                 })
