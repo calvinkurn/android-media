@@ -28,9 +28,7 @@ import android.widget.Toast;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
-import com.google.android.gms.common.api.Api;
 import com.google.gson.Gson;
-import com.jakewharton.rxbinding.widget.RxTextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
@@ -176,7 +174,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
             deleteFilterAndSortCache();
         } else {
             firstTime = savedInstanceState.getBoolean(EXTRA_FIRST_TIME);
-            browseProductActivityModel = (BrowseProductActivityModel) savedInstanceState.getParcelable(EXTRA_BROWSE_MODEL);
+            browseProductActivityModel = savedInstanceState.getParcelable(EXTRA_BROWSE_MODEL);
             filterAttributMap = Parcels.unwrap(savedInstanceState.getParcelable(EXTRA_FILTER_MAP_ATTR));
             filtersMap = Parcels.unwrap(savedInstanceState.getParcelable(EXTRA_FILTER_MAP));
             browseProductActivityModel.setFilterOptions(filtersMap.get(browseProductActivityModel.getActiveTab()));
@@ -289,7 +287,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        browseProductActivityModel = (BrowseProductActivityModel) savedInstanceState.getParcelable(EXTRA_BROWSE_MODEL);
+        browseProductActivityModel = savedInstanceState.getParcelable(EXTRA_BROWSE_MODEL);
         afterRestoreSavedInstance = true;
     }
 
