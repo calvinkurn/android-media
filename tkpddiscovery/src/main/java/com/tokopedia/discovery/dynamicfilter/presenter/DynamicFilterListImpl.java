@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.Filter;
 
 import org.parceler.Parcels;
 
@@ -16,7 +16,7 @@ import java.util.List;
 public class DynamicFilterListImpl extends DynamicFilterList {
 
     List<String> titleList;
-    private List<DynamicFilterModel.Filter> dataList;
+    private List<Filter> dataList;
 
     public DynamicFilterListImpl(DynamicFilterListView view) {
         super(view);
