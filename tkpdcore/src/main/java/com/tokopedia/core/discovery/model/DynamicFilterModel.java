@@ -120,9 +120,6 @@ public class DynamicFilterModel implements Parcelable {
         dest.writeString(this.status);
     }
 
-    public DynamicFilterModel() {
-    }
-
     protected DynamicFilterModel(Parcel in) {
         this.processTime = in.readString();
         this.data = in.readParcelable(DataValue.class.getClassLoader());
