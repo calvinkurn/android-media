@@ -17,13 +17,13 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.inboxmessage.fragment.SendMessageFragment;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.product.listener.ProductDetailView;
-import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ShopBadge;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.SessionHandler;
 
 import java.util.List;
@@ -185,7 +185,7 @@ public class ShopInfoView extends BaseView<ProductDetailData, ProductDetailView>
         @Override
         public void onClick(View v) {
             Bundle bundle = new Bundle();
-            bundle.putParcelable(ProductInfoActivity.EXTRA_PRODUCT_PASS,
+            bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_PASS,
                     ProductPass.Builder.aProductPass()
                             .setProductPrice(data.getProductPrice())
                             .setProductId(data.getProductId())

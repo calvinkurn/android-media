@@ -17,9 +17,10 @@ import com.tokopedia.core.myproduct.service.ProductService;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.product.fragment.ProductDetailFragment;
 import com.tokopedia.core.product.listener.ProductInfoView;
-import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
 
 import java.util.List;
@@ -87,7 +88,7 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
     private ProductPass generateProductPass(Bundle bundleData, Uri uriData) {
         ProductPass productPass;
         if (bundleData != null) {
-            productPass = bundleData.getParcelable(ProductInfoActivity.EXTRA_PRODUCT_PASS);
+            productPass = bundleData.getParcelable(ProductDetailRouter.EXTRA_PRODUCT_PASS);
             if (productPass == null) {
                 productPass = ProductPass.Builder.aProductPass()
                         .setProductId(bundleData.getString("product_id", ""))

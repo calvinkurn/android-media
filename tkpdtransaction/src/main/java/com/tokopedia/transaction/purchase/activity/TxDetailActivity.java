@@ -25,7 +25,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.customView.OrderStatusView;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
-import com.tokopedia.core.product.model.passdata.ProductPass;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.adapter.TxProductListAdapter;

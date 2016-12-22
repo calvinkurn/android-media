@@ -27,7 +27,7 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.tokopedia.core.product.model.passdata.ProductPass;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.model.CartInsurance;

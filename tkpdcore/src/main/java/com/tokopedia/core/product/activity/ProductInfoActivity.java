@@ -23,20 +23,19 @@ import com.tokopedia.core.product.fragment.ProductDetailFragment;
 import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
 import com.tokopedia.core.product.intentservice.ProductInfoResultReceiver;
 import com.tokopedia.core.product.listener.ProductInfoView;
-import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.product.presenter.ProductInfoPresenter;
 import com.tokopedia.core.product.presenter.ProductInfoPresenterImpl;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
 
 public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresenter> implements
-        ProductInfoView,
-        ProductDetailFragment.OnFragmentInteractionListener,
-        DownloadResultSender,
-        ProductInfoResultReceiver.Receiver{
-    public static final String EXTRA_PRODUCT_PASS = "EXTRA_PRODUCT_PASS";
-    public static final String EXTRA_PRODUCT_ID = "product_id";
+        ProductInfoView, ProductDetailFragment.OnFragmentInteractionListener,
+        DownloadResultSender, ProductInfoResultReceiver.Receiver {
+    //  public static final String EXTRA_PRODUCT_PASS = "EXTRA_PRODUCT_PASS";
+    //  public static final String EXTRA_PRODUCT_ID = "product_id";
     public static final String SHARE_DATA = "SHARE_DATA";
 
     private Uri uriData;
@@ -53,7 +52,7 @@ public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresen
     public static Intent createInstance(Context context, @NonNull String productId) {
         Intent intent = new Intent(context, ProductInfoActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(EXTRA_PRODUCT_ID, productId);
+        bundle.putString(ProductDetailRouter.EXTRA_PRODUCT_ID, productId);
         intent.putExtras(bundle);
         return intent;
     }
@@ -61,11 +60,12 @@ public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresen
     public static Intent createInstance(Context context, @NonNull ProductPass productPass) {
         Intent intent = new Intent(context, ProductInfoActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(EXTRA_PRODUCT_PASS, productPass);
+        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_PASS, productPass);
         intent.putExtras(bundle);
         return intent;
     }
-    public static Intent createInstance(Context context, @NonNull ShareData shareData){
+
+    public static Intent createInstance(Context context, @NonNull ShareData shareData) {
         Intent intent = new Intent(context, ProductInfoActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(SHARE_DATA, shareData);
@@ -76,11 +76,12 @@ public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresen
     /**
      * Author : Sebast
      * Adding this for uploading product from product share activity
+     *
      * @param context
      * @param bundle
      * @return
      */
-    public static Intent createInstance(Context context, @NonNull Bundle bundle){
+    public static Intent createInstance(Context context, @NonNull Bundle bundle) {
         Intent intent = new Intent(context, ProductInfoActivity.class);
         intent.putExtras(bundle);
         return intent;
@@ -232,13 +233,13 @@ public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresen
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
         Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
-        if(fragment!=null){
+        if (fragment != null) {
             switch (resultCode) {
                 case ProductInfoIntentService.STATUS_SUCCESS_REPORT_PRODUCT:
-                    onReceiveResultSuccess(fragment,resultData,resultCode);
+                    onReceiveResultSuccess(fragment, resultData, resultCode);
                     break;
                 case ProductInfoIntentService.STATUS_ERROR_REPORT_PRODUCT:
-                    onReceiveResultError(fragment, resultData,resultCode);
+                    onReceiveResultError(fragment, resultData, resultCode);
                     break;
             }
         }
@@ -249,7 +250,7 @@ public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresen
     }
 
     private void onReceiveResultSuccess(Fragment fragment, Bundle resultData, int resultCode) {
-        ((ProductDetailFragment) fragment).onSuccessAction(resultData,resultCode);
+        ((ProductDetailFragment) fragment).onSuccessAction(resultData, resultCode);
     }
 
     @Override
@@ -257,7 +258,7 @@ public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresen
         /* Starting Download Service */
         addProductReceiver = new DownloadResultReceiver(new Handler());
         addProductReceiver.setReceiver(getAddProductReceiver());
-        switch (type){
+        switch (type) {
             case ProductService.EDIT_PRODUCT:
             case ProductService.ADD_PRODUCT:
             case ProductServiceConstant.ADD_PRODUCT_WITHOUT_IMAGE:
@@ -266,7 +267,7 @@ public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresen
             case ProductService.ADD_RETURNABLE_NOTE_ADD_PRODUCT:
                 ProductService.startDownload(this, addProductReceiver, data, type);
                 break;
-            default :
+            default:
                 throw new UnsupportedOperationException("please pass type when want to process it !!!");
         }
     }
@@ -277,7 +278,7 @@ public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresen
             public void onReceiveResult(int resultCode, Bundle resultData) {
                 int type = resultData.getInt(ProductService.TYPE, ProductService.INVALID_TYPE);
                 Fragment fragment = null;
-                switch(type){
+                switch (type) {
                     case ProductService.ADD_PRODUCT:
                     case ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
                         fragment = getFragmentManager().findFragmentByTag(ProductShareFragment.TAG);
@@ -287,20 +288,20 @@ public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresen
                 }
 
                 //check if Fragment implement necessary interface
-                if(fragment!=null && fragment instanceof ProductShareFragment){
+                if (fragment != null && fragment instanceof ProductShareFragment) {
                     switch (resultCode) {
                         case ProductService.STATUS_RUNNING:
-                            switch(type) {
+                            switch (type) {
                                 case ProductService.ADD_PRODUCT:
                                 case ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
-                                    if(fragment instanceof ProductShareFragment){
-                                        ((ProductShareFragment)fragment).addingProduct(true);
+                                    if (fragment instanceof ProductShareFragment) {
+                                        ((ProductShareFragment) fragment).addingProduct(true);
                                     }
                                     break;
                             }
                             break;
                         case ProductService.STATUS_FINISHED:
-                            switch(type){
+                            switch (type) {
                                 case ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
                                 case ProductService.ADD_PRODUCT:
                                     ((ProductShareFragment) fragment).setData(type, resultData);
@@ -309,7 +310,7 @@ public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresen
                             }
                             break;
                         case ProductService.STATUS_ERROR:
-                            switch(type){
+                            switch (type) {
                                 case ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
                                 case ProductService.ADD_PRODUCT:
                                     ((ProductShareFragment) fragment).onError(type, resultData);

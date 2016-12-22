@@ -39,8 +39,9 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.activity.ShipmentCartActivity;
@@ -550,12 +551,13 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void onCartProductDetailClicked(ProductPass productPass) {
-
+        startActivity(ProductDetailRouter.createInstanceProductDetailInfoActivity(
+                getActivity(), productPass
+        ));
     }
 
     @Override
     public void onShopDetailInfoClicked(CartShop cartShop) {
-
     }
 
     @Override

@@ -15,9 +15,9 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.product.adapter.ImagePagerAdapter;
 import com.tokopedia.core.product.listener.ProductDetailView;
-import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ProductImage;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 
 import java.util.ArrayList;
 import java.util.List;
