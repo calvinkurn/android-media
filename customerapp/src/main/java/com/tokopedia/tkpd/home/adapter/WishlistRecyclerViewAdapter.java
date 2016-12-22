@@ -13,6 +13,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
@@ -81,6 +83,7 @@ public class WishlistRecyclerViewAdapter extends RecyclerView.Adapter<WishlistRe
             @Override
             public void onClick(View view) {
                 UnifyTracking.eventFavoriteView(item.getName());
+                TrackingUtils.eventLoca(AppScreen.SCREEN_VIEWED_WISHLIST_PAGE);
 
                 Bundle bundle = new Bundle();
                 Intent intent = new Intent(context, ProductInfoActivity.class);
