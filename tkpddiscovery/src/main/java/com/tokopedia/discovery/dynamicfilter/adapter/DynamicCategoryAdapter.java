@@ -7,7 +7,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.discovery.dynamicfilter.adapter.MultiLevelExpIndListAdapter;
@@ -15,6 +14,7 @@ import com.tokopedia.core.discovery.model.DynamicObject;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterView;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -31,12 +31,13 @@ public class DynamicCategoryAdapter extends MultiLevelExpIndListAdapter {
      * This is called when the user click on an item or group.
      */
     private final View.OnClickListener mListener;
-
+    private ArrayList<String> listIds;
     private final DynamicFilterView dynamicFilterView;
 
     public DynamicCategoryAdapter(DynamicFilterView dynamicFilterView, View.OnClickListener mListener) {
         this.dynamicFilterView = dynamicFilterView;
         this.mListener = mListener;
+        this.listIds = new ArrayList<>();
     }
 
     @Override
@@ -56,49 +57,19 @@ public class DynamicCategoryAdapter extends MultiLevelExpIndListAdapter {
         final DynamicObject dynamicObject = (DynamicObject) getItemAt(position);
         parentViewHolder.setDynamicObject(dynamicObject);
         parentViewHolder.dynamicParentViewHolderText.setText(dynamicObject.getParentText());
-        parentViewHolder.dynamicParentViewHolder.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        parentViewHolder.dynamicParentViewHolder.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                parentViewHolder.getDynamicObject().setChecked(isChecked);
-                Context context = parentViewHolder.itemView.getContext();
-                if (context != null && context instanceof DynamicFilterView) {
-                    checkFilter(isChecked, ((DynamicFilterView) context));
-                }
-            }
-
-            private void checkFilter(boolean checked, DynamicFilterView dynamicFilterView) {
-                if (checked) {
-                    dynamicFilterView.saveCheckedPosition(dynamicObject.getKey(), true);
-                } else {
-                    dynamicFilterView.removeCheckedPosition(dynamicObject.getKey());
-                }
-                String selectedIds = getSelectedIds();
-                if (TextUtils.isEmpty(selectedIds)) {
-                    dynamicFilterView.removeSelecfedFilter(BrowseApi.SC);
-                } else {
-                    dynamicFilterView.putSelectedFilter(BrowseApi.SC, selectedIds);
-                }
-            }
-
-            private String getSelectedIds() {
-                StringBuffer buffer = new StringBuffer();
-                for (ExpIndData data : getData()){
-                    DynamicObject object = (DynamicObject) data;
-                    if(object.isChecked()){
-                        buffer.append(object.getDepId()).append(",");
-                    }
-                }
-                if (buffer.length() > 0) {
-                    return buffer.substring(0, buffer.length() - 1);
-                } else {
-                    return buffer.toString();
-                }
+            public void onClick(View view) {
+                setCheckedView(parentViewHolder, dynamicObject);
             }
         });
         if (dynamicFilterView != null) {
             Boolean isChecked = dynamicFilterView.getCheckedPosition(dynamicObject.getKey());
             if (isChecked != null && isChecked) {
                 parentViewHolder.dynamicParentViewHolder.setChecked(true);
+                if(listIds.contains(dynamicObject.getDepId()))
+                    listIds.remove(dynamicObject.getDepId());
+                listIds.add(dynamicObject.getDepId());
             } else {
                 parentViewHolder.dynamicParentViewHolder.setChecked(false);
             }
@@ -127,7 +98,7 @@ public class DynamicCategoryAdapter extends MultiLevelExpIndListAdapter {
                 parentViewHolder.dynamicParentViewHolderText.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        parentViewHolder.dynamicParentViewHolder.setChecked(!parentViewHolder.dynamicParentViewHolder.isChecked());
+                        setCheckedView(parentViewHolder, dynamicObject);
                     }
                 });
             }
@@ -137,12 +108,52 @@ public class DynamicCategoryAdapter extends MultiLevelExpIndListAdapter {
             parentViewHolder.dynamicParentViewHolderText.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    parentViewHolder.dynamicParentViewHolder.setChecked(!parentViewHolder.dynamicParentViewHolder.isChecked());
+                    setCheckedView(parentViewHolder, dynamicObject);
                 }
             });
         }
     }
 
+    private void setCheckedView(DynamicViewHolder parentViewHolder, DynamicObject dynamicObject){
+        boolean isChecked = !parentViewHolder.dynamicParentViewHolder.isChecked();
+        parentViewHolder.dynamicParentViewHolder.setChecked(isChecked);
+        dynamicObject.setChecked(isChecked);
+        Context context = parentViewHolder.itemView.getContext();
+        if (context != null && context instanceof DynamicFilterView) {
+            checkFilter(parentViewHolder.dynamicParentViewHolder.isChecked(), ((DynamicFilterView) context), dynamicObject);
+        }
+    }
+
+    private void checkFilter(boolean checked, DynamicFilterView dynamicFilterView, DynamicObject dynamicObject) {
+        if (checked) {
+            dynamicFilterView.saveCheckedPosition(dynamicObject.getKey(), true);
+            if(listIds.contains(dynamicObject.getDepId())){
+                listIds.remove(dynamicObject.getDepId());
+            }
+            listIds.add(dynamicObject.getDepId());
+        } else {
+            dynamicFilterView.removeCheckedPosition(dynamicObject.getKey());
+            listIds.remove(dynamicObject.getDepId());
+        }
+        String selectedIds = generateSelectedDepIds(listIds);
+        if (TextUtils.isEmpty(selectedIds)) {
+            dynamicFilterView.removeSelecfedFilter(BrowseApi.SC);
+        } else {
+            dynamicFilterView.putSelectedFilter(BrowseApi.SC, selectedIds);
+        }
+    }
+
+    private String generateSelectedDepIds(ArrayList<String> selectedIds) {
+        StringBuffer buffer = new StringBuffer();
+        for (String s : selectedIds){
+            buffer.append(s).append(",");
+        }
+        if (buffer.length() > 0) {
+            return buffer.substring(0, buffer.length() - 1);
+        } else {
+            return buffer.toString();
+        }
+    }
 
     public void reset() {
         notifyItemRangeChanged(0, getItemCount());
