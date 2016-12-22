@@ -189,6 +189,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
                 .setResolutionID(viewListener.getParamsModel().getResolutionID())
                 .setConversationID(viewListener.getParamsModel().getConversationID())
                 .setShippingNumber(viewListener.getShippingRefNum().getText().toString())
+                .setAttachmentList(viewListener.getAttachmentData())
                 .setShippingID(generateShippingID())
                 .build();
     }
@@ -223,7 +224,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
                     public void onTimeOut() {
                         viewListener.toastTimeOutMessage();
                         showLoading(false);
-                        showMainPage(false);
+                        showMainPage(true);
                     }
 
                     @Override
@@ -231,7 +232,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
                         Log.d(TAG, message);
                         viewListener.toastErrorMessage(message);
                         showLoading(false);
-                        showMainPage(false);
+                        showMainPage(true);
                     }
                 });
     }

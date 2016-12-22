@@ -168,9 +168,6 @@ public class DetailResCenterService extends IntentService implements DetailResCe
                 case ACTION_REPLY_CONVERSATION:
                     processObservableReplySolution(resCenterPass);
                     break;
-                case ACTION_INPUT_SHIPPING_REF_NUM:
-                    processObservableInputShippingRefNum(resCenterPass);
-                    break;
                 case ACTION_UPDATE_SHIPPING_REF_NUM:
                     processObservableUpdateShippingRefNum(resCenterPass);
                     break;
@@ -329,23 +326,6 @@ public class DetailResCenterService extends IntentService implements DetailResCe
                 .finishResolutionReturn(AuthUtil.generateParams(getApplicationContext(), NetworkParam.finishReturSolution(actionParameterPassData)))
                 .subscribeOn(Schedulers.newThread())
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(getDefaultSubscriber());
-    }
-
-    private void processObservableInputShippingRefNum(ActionParameterPassData actionParameterPassData) {
-        LocalCacheManager.ReturnPackage cache = LocalCacheManager.ReturnPackage
-                .Builder(resolutionID)
-                .getCache();
-
-        actionParameterPassData.setShipmentID(cache.getShippingID());
-        actionParameterPassData.setShippingRefNum(cache.getShippingRefNum());
-
-        ResCenterActService resCenterActService = new ResCenterActService();
-        resCenterActService
-                .getApi()
-                .inputResiResolution(AuthUtil.generateParams(getApplicationContext(), NetworkParam.inputShippingRefNum(actionParameterPassData)))
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getDefaultSubscriber());
     }
 

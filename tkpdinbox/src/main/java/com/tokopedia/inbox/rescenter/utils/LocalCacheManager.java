@@ -490,6 +490,83 @@ public class LocalCacheManager {
         }
     }
 
+    public static class AttachmentShippingResCenter {
+
+        private String resolutionId;
+        private String imageLocalPath;
+        private String imageUrl;
+        private String imageUUID;
+
+
+        public AttachmentShippingResCenter() {
+        }
+
+        public static AttachmentShippingResCenter Builder(String resolutionID) {
+            AttachmentShippingResCenter foo = new AttachmentShippingResCenter();
+            foo.resolutionId = resolutionID;
+            return foo;
+        }
+
+        public String getImageLocalPath() {
+            return imageLocalPath;
+        }
+
+        public AttachmentShippingResCenter setImageLocalPath(String imageLocalPath) {
+            this.imageLocalPath = imageLocalPath;
+            return this;
+        }
+
+        public String getImageUrl() {
+            return imageUrl;
+        }
+
+        public AttachmentShippingResCenter setImageUrl(String imageUrl) {
+            this.imageUrl = imageUrl;
+            return this;
+        }
+
+        public String getImageUUID() {
+            return imageUUID;
+        }
+
+        public AttachmentShippingResCenter setImageUUID(String imageUUID) {
+            this.imageUUID = imageUUID;
+            return this;
+        }
+
+        public void save() {
+            AttachmentResCenterDB db = new AttachmentResCenterDB();
+            db.resolutionID = resolutionId;
+            db.imagePath = getImageLocalPath();
+            db.imageUrl = getImageUrl();
+            db.imageUUID = getImageUUID();
+            db.modulName = AttachmentResCenterDB.MODULE_SHIPPING_RESCENTER;
+            db.save();
+        }
+
+        public List<AttachmentResCenterDB> getCache() {
+            List<AttachmentResCenterDB> mList = SQLite.select().from(AttachmentResCenterDB.class)
+                    .where(AttachmentResCenterDB_Table.resolutionID.is(resolutionId))
+                    .and(AttachmentResCenterDB_Table.modulName.is(AttachmentResCenterDB.MODULE_SHIPPING_RESCENTER))
+                    .queryList();
+            return mList;
+        }
+
+        public void clearAll() {
+            for (AttachmentResCenterDB data : getCache()) {
+                data.delete();
+            }
+        }
+
+        public void remove(AttachmentResCenterDB attachmentReplyResCenterDB) {
+            SQLite.delete().from(AttachmentResCenterDB.class)
+                    .where(AttachmentResCenterDB_Table.resolutionID.is(resolutionId))
+                    .and(AttachmentResCenterDB_Table.modulName.is(AttachmentResCenterDB.MODULE_SHIPPING_RESCENTER))
+                    .and(AttachmentResCenterDB_Table.id.is(attachmentReplyResCenterDB.getId()))
+                    .execute();
+        }
+    }
+
     public static class Filter {
 
         public String inboxTabID;

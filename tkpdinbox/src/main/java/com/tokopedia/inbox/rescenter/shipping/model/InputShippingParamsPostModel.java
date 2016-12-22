@@ -20,6 +20,9 @@ public class InputShippingParamsPostModel implements Parcelable {
     private List<AttachmentResCenterDB> attachmentList;
     private String serverID;
     private String uploadHost;
+    private String postKey;
+    private String token;
+    private boolean statusInputShipping;
 
     public String getResolutionID() {
         return resolutionID;
@@ -78,6 +81,30 @@ public class InputShippingParamsPostModel implements Parcelable {
     }
 
     public InputShippingParamsPostModel() {
+    }
+
+    public String getPostKey() {
+        return postKey;
+    }
+
+    public void setPostKey(String postKey) {
+        this.postKey = postKey;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public boolean isStatusInputShipping() {
+        return statusInputShipping;
+    }
+
+    public void setStatusInputShipping(boolean statusInputShipping) {
+        this.statusInputShipping = statusInputShipping;
     }
 
     public static class Builder {
@@ -140,6 +167,8 @@ public class InputShippingParamsPostModel implements Parcelable {
         dest.writeTypedList(this.attachmentList);
         dest.writeString(this.serverID);
         dest.writeString(this.uploadHost);
+        dest.writeString(this.postKey);
+        dest.writeString(this.token);
     }
 
     protected InputShippingParamsPostModel(Parcel in) {
@@ -150,6 +179,8 @@ public class InputShippingParamsPostModel implements Parcelable {
         this.attachmentList = in.createTypedArrayList(AttachmentResCenterDB.CREATOR);
         this.serverID = in.readString();
         this.uploadHost = in.readString();
+        this.postKey = in.readString();
+        this.token = in.readString();
     }
 
     public static final Creator<InputShippingParamsPostModel> CREATOR = new Creator<InputShippingParamsPostModel>() {

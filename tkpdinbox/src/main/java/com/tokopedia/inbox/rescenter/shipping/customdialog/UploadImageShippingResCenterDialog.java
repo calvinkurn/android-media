@@ -13,6 +13,8 @@ import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.create.customdialog.BaseUploadImageDialog;
 import com.tokopedia.inbox.rescenter.utils.LocalCacheManager;
 
+import java.util.UUID;
+
 /**
  * Created by hangnadi on 12/15/16.
  */
@@ -20,32 +22,36 @@ import com.tokopedia.inbox.rescenter.utils.LocalCacheManager;
 public class UploadImageShippingResCenterDialog extends BaseUploadImageDialog {
 
     private final String resolutionID;
-    private final LocalCacheManager.AttachmentEditResCenter cache;
+    private final LocalCacheManager.AttachmentShippingResCenter cache;
 
     public UploadImageShippingResCenterDialog(Fragment fragment, String resolutionID) {
         this.fragment = fragment;
         this.resolutionID = resolutionID;
         this.context = fragment.getActivity();
-        this.cache = LocalCacheManager.AttachmentEditResCenter.Builder(resolutionID);
+        this.cache = LocalCacheManager.AttachmentShippingResCenter.Builder(resolutionID);
     }
 
     public UploadImageShippingResCenterDialog(Activity activity, String resolutionID) {
         this.activity = activity;
         this.resolutionID = resolutionID;
         this.context = activity;
-        this.cache = LocalCacheManager.AttachmentEditResCenter.Builder(resolutionID);
+        this.cache = LocalCacheManager.AttachmentShippingResCenter.Builder(resolutionID);
     }
 
     @Override
     protected void processImageDataFromCamera(String cameraFileLoc, UploadImageDialogListener listener) {
-        cache.setImageLocalPath(cameraFileLoc).save();
-        listener.onSuccess(LocalCacheManager.AttachmentEditResCenter.Builder(resolutionID).getCache());
+        cache.setImageLocalPath(cameraFileLoc)
+                .setImageUUID(UUID.randomUUID().toString())
+                .save();
+        listener.onSuccess(LocalCacheManager.AttachmentShippingResCenter.Builder(resolutionID).getCache());
     }
 
     @Override
     protected void processImageDataFromGallery(Intent intent, UploadImageDialogListener listener) {
-        cache.setImageLocalPath(intent.getStringExtra(ImageGallery.EXTRA_URL)).save();
-        listener.onSuccess(LocalCacheManager.AttachmentEditResCenter.Builder(resolutionID).getCache());
+        cache.setImageLocalPath(intent.getStringExtra(ImageGallery.EXTRA_URL))
+                .setImageUUID(UUID.randomUUID().toString())
+                .save();
+        listener.onSuccess(LocalCacheManager.AttachmentShippingResCenter.Builder(resolutionID).getCache());
     }
 
     public interface onRemoveAttachmentListener {

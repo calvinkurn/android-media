@@ -19,9 +19,11 @@ import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.util.ImageUploadHandler;
-import com.tokopedia.inbox.rescenter.detail.model.actionresponsedata.UploadResCenterImageData;
+import com.tokopedia.inbox.rescenter.shipping.model.ActionResponseData;
 import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsPostModel;
+import com.tokopedia.inbox.rescenter.shipping.model.NewUploadResCenterImageData;
 import com.tokopedia.inbox.rescenter.shipping.model.ResCenterKurir;
+import com.tokopedia.inbox.rescenter.utils.LocalCacheManager;
 import com.tokopedia.inbox.rescenter.utils.UploadImageResCenter;
 
 import java.io.File;
@@ -147,103 +149,140 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     public void storeShippingService(@NonNull final Context context,
                                      @NonNull final InputShippingParamsPostModel params,
                                      @NonNull final PostShippingListener listener) {
-        compositeSubscription.add(Observable.just(params)
-                .flatMap(new Func1<InputShippingParamsPostModel, Observable<InputShippingParamsPostModel>>() {
-                    @Override
-                    public Observable<InputShippingParamsPostModel> call(InputShippingParamsPostModel inputModel) {
-                        if (inputModel.getAttachmentList().size() == 0) {
-                            /**
-                             * No need generatehost if no uploading attachment
-                             * just return the parameter
-                             * bypass until step 3
-                             */
-                            return Observable.just(inputModel);
-                        } else {
-                            GenerateHostActService generateHostActService = new GenerateHostActService();
-                            Observable<GeneratedHost> generateHost = generateHostActService.getApi().generateHost(AuthUtil.generateParams(context, NetworkParam.generateHost()));
-                            return Observable.zip(Observable.just(inputModel), generateHost, new Func2<InputShippingParamsPostModel, GeneratedHost, InputShippingParamsPostModel>() {
-                                @Override
-                                public InputShippingParamsPostModel call(InputShippingParamsPostModel inputModel, GeneratedHost generatedHost) {
-                                    if (generatedHost != null) {
-                                        inputModel.setServerID(String.valueOf(generatedHost.getServerId()));
-                                        inputModel.setUploadHost(generatedHost.getUploadHost());
-                                        return inputModel;
-                                    } else {
-                                        throw new RuntimeException("ERROR GENERATE HOST");
-                                    }
+        listener.onStart();
+
+        compositeSubscription.add(
+                Observable.just(params)
+                        .flatMap(new Func1<InputShippingParamsPostModel, Observable<InputShippingParamsPostModel>>() {
+                            @Override
+                            public Observable<InputShippingParamsPostModel> call(InputShippingParamsPostModel passData) {
+                                Log.d(TAG, "flatMap1");
+                                if (!(passData.getAttachmentList() == null || passData.getAttachmentList().isEmpty())) {
+                                    return Observable.zip(
+                                            Observable.just(passData),
+                                            resCenterActService.getApi()
+                                                    .inputResiResolutionValidation(AuthUtil.generateParamsNetwork(
+                                                            context,
+                                                            NetworkParam.paramInputShippingValidation(passData)
+                                                    )),
+                                            new Func2<InputShippingParamsPostModel, Response<TkpdResponse>, InputShippingParamsPostModel>() {
+                                                @Override
+                                                public InputShippingParamsPostModel call(InputShippingParamsPostModel passData, Response<TkpdResponse> tkpdResponse) {
+                                                    ActionResponseData result = tkpdResponse.body().convertDataObj(ActionResponseData.class);
+                                                    if (result.isSuccess()) {
+                                                        passData.setStatusInputShipping(result.getPostKey() == null || result.getPostKey().isEmpty());
+                                                        passData.setPostKey(result.getPostKey());
+                                                        passData.setToken(result.getToken());
+                                                        return passData;
+                                                    } else {
+                                                        String errorMessage = "";
+                                                        for (int i = 0; i < tkpdResponse.body().getErrorMessages().size(); i++) {
+                                                            errorMessage += tkpdResponse.body().getErrorMessages().get(i);
+                                                        }
+                                                        throw new RuntimeException(errorMessage);
+                                                    }
+                                                }
+                                            }
+                                    );
+                                } else {
+                                    return Observable.just(passData);
                                 }
-                            });
-                        }
-                    }
-                })
-                .flatMap(new Func1<InputShippingParamsPostModel, Observable<InputShippingParamsPostModel>>() {
-                    @Override
-                    public Observable<InputShippingParamsPostModel> call(InputShippingParamsPostModel inputModel) {
-                        if (inputModel.getAttachmentList().size() == 0) {
-                            /**
-                             * No need generatehost if no uploading attachment
-                             * just return the parameter
-                             * bypass until step 3
-                             */
-                            return Observable.just(inputModel);
-                        } else {
-                            return getObservableUploadingFile(context, inputModel);
-                        }
-                    }
-                })
-                .flatMap(new Func1<InputShippingParamsPostModel, Observable<InputShippingParamsPostModel>>() {
-                    @Override
-                    public Observable<InputShippingParamsPostModel> call(InputShippingParamsPostModel inputModel) {
-                        return getObservableInputShippingnValidation(inputModel);
-                    }
-                })
-                .flatMap(new Func1<InputShippingParamsPostModel, Observable<InputShippingParamsPostModel>>() {
-                    @Override
-                    public Observable<InputShippingParamsPostModel> call(InputShippingParamsPostModel inputModel) {
-//                        if (inputModel.getByPassFlag()) {
-//                            /**
-//                             * No need replyConversationSubmit if already returned response data
-//                             * just return the parameter
-//                             * bypass until step 6
-//                             */
-//                            return Observable.just(inputModel);
-//                        } else {
-//                            return getObservableReplyConversationSubmit(inputModel);
-//                        }
-                        return null;
-                    }
-                })
-                .subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new rx.Subscriber<InputShippingParamsPostModel>() {
-                    @Override
-                    public void onCompleted() {
+                            }
+                        })
+                        .flatMap(new Func1<InputShippingParamsPostModel, Observable<InputShippingParamsPostModel>>() {
+                            @Override
+                            public Observable<InputShippingParamsPostModel> call(InputShippingParamsPostModel passData) {
+                                Log.d(TAG, "flatMap2");
+                                if (passData.getAttachmentList() == null || passData.getAttachmentList().isEmpty()) {
+                                    return Observable.just(passData);
+                                } else {
+                                    return getObservableGenerateHost(context, passData);
+                                }
+                            }
+                        })
+                        .flatMap(new Func1<InputShippingParamsPostModel, Observable<InputShippingParamsPostModel>>() {
+                            @Override
+                            public Observable<InputShippingParamsPostModel> call(InputShippingParamsPostModel passData) {
+                                Log.d(TAG, "flatMap3");
+                                if (passData.getAttachmentList() == null || passData.getAttachmentList().isEmpty()) {
+                                    return Observable.just(passData);
+                                } else {
+                                    return getObservableUploadingFile(context, passData);
+                                }
+                            }
+                        })
+                        .flatMap(new Func1<InputShippingParamsPostModel, Observable<InputShippingParamsPostModel>>() {
+                            @Override
+                            public Observable<InputShippingParamsPostModel> call(InputShippingParamsPostModel passData) {
+                                Log.d(TAG, "flatMap4");
+                                if (passData.getAttachmentList() == null || passData.getAttachmentList().isEmpty()) {
+                                    return Observable.just(passData);
+                                } else {
+                                    return Observable.zip(
+                                            Observable.just(passData),
+                                            resCenterActService.getApi().inputResiResolutionSubmit(
+                                                    AuthUtil.generateParamsNetwork(context, NetworkParam.paramInputShippingSubmit(passData))),
+                                            new Func2<InputShippingParamsPostModel, Response<TkpdResponse>, InputShippingParamsPostModel>() {
+                                                @Override
+                                                public InputShippingParamsPostModel call(InputShippingParamsPostModel passData, Response<TkpdResponse> response) {
 
-                    }
+                                                    return null;
+                                                }
+                                            });
+                                }
+                            }
+                        })
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(new Subscriber<InputShippingParamsPostModel>() {
+                            @Override
+                            public void onCompleted() {
 
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d(TAG, e.getMessage());
-                    }
+                            }
 
-                    @Override
-                    public void onNext(InputShippingParamsPostModel data) {
-                        Log.d(TAG + "-step6", String.valueOf(data));
-                    }
-                })
+                            @Override
+                            public void onError(Throwable e) {
+                                if (e instanceof IOException) {
+                                    listener.onTimeOut();
+                                } else {
+                                    listener.onError(e.getMessage());
+                                }
+                            }
+
+                            @Override
+                            public void onNext(InputShippingParamsPostModel passData) {
+                                LocalCacheManager.AttachmentShippingResCenter.Builder(passData.getResolutionID()).clearAll();
+                                listener.onSuccess();
+                            }
+                        })
         );
     }
 
-    private Observable<InputShippingParamsPostModel> getObservableInputShippingnValidation(InputShippingParamsPostModel inputModel) {
-        return null;
+    private Observable<InputShippingParamsPostModel> getObservableGenerateHost(Context context, InputShippingParamsPostModel passData) {
+        GenerateHostActService generateHostActService = new GenerateHostActService();
+        Observable<GeneratedHost> generateHost = generateHostActService.getApi().generateHost(AuthUtil.generateParams(context, NetworkParam.generateHost()));
+        return Observable.zip(Observable.just(passData), generateHost, new Func2<InputShippingParamsPostModel, GeneratedHost, InputShippingParamsPostModel>() {
+            @Override
+            public InputShippingParamsPostModel call(InputShippingParamsPostModel passData, GeneratedHost generatedHost) {
+                if (generatedHost != null) {
+                    passData.setServerID(String.valueOf(generatedHost.getServerId()));
+                    passData.setUploadHost(generatedHost.getUploadHost());
+                    return passData;
+                } else {
+                    throw new RuntimeException("ERROR GENERATE HOST");
+                }
+            }
+        });
     }
 
-    private Observable<InputShippingParamsPostModel> getObservableUploadingFile(Context context, InputShippingParamsPostModel inputModel) {
-        return Observable.zip(Observable.just(inputModel), doUploadFile(context, inputModel), new Func2<InputShippingParamsPostModel, List<AttachmentResCenterDB>, InputShippingParamsPostModel>() {
+
+    private Observable<InputShippingParamsPostModel> getObservableUploadingFile(Context context, InputShippingParamsPostModel passData) {
+        return Observable.zip(Observable.just(passData), doUploadFile(context, passData), new Func2<InputShippingParamsPostModel, List<AttachmentResCenterDB>, InputShippingParamsPostModel>() {
             @Override
             public InputShippingParamsPostModel call(InputShippingParamsPostModel inputModel, List<AttachmentResCenterDB> attachmentResCenterDBs) {
-                return null;
+                inputModel.setAttachmentList(attachmentResCenterDBs);
+                return inputModel;
             }
         });
     }
@@ -254,10 +293,12 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                 .flatMap(new Func1<AttachmentResCenterDB, Observable<AttachmentResCenterDB>>() {
                     @Override
                     public Observable<AttachmentResCenterDB> call(AttachmentResCenterDB attachmentResCenterDB) {
-                        NetworkCalculator networkCalculator = new NetworkCalculator(NetworkConfig.POST, context,
-                                "http://" + inputModel.getUploadHost())
+                        String uploadUrl = "http://" + inputModel.getUploadHost();
+                        NetworkCalculator networkCalculator = new NetworkCalculator(NetworkConfig.POST, context, uploadUrl)
                                 .setIdentity()
-                                .addParam("server_id", String.valueOf(inputModel.getServerID()))
+                                .addParam("id", attachmentResCenterDB.imageUUID)
+                                .addParam("token", inputModel.getToken())
+                                .addParam("web_service", "1")
                                 .compileAllParam()
                                 .finish();
 
@@ -267,17 +308,27 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                         } catch (IOException e) {
                             throw new RuntimeException(context.getString(com.tokopedia.core.R.string.error_upload_image));
                         }
-                        RequestBody userId = RequestBody.create(MediaType.parse("text/plain"), networkCalculator.getContent().get(NetworkCalculator.USER_ID));
-                        RequestBody deviceId = RequestBody.create(MediaType.parse("text/plain"), networkCalculator.getContent().get(NetworkCalculator.DEVICE_ID));
-                        RequestBody hash = RequestBody.create(MediaType.parse("text/plain"), networkCalculator.getContent().get(NetworkCalculator.HASH));
-                        RequestBody deviceTime = RequestBody.create(MediaType.parse("text/plain"), networkCalculator.getContent().get(NetworkCalculator.DEVICE_TIME));
-                        RequestBody fileToUpload = RequestBody.create(MediaType.parse("image/*"), file);
-                        RequestBody serverId = RequestBody.create(MediaType.parse("text/plain"), networkCalculator.getContent().get("server_id"));
+                        RequestBody userId = RequestBody.create(MediaType.parse("text/plain"),
+                                networkCalculator.getContent().get(NetworkCalculator.USER_ID));
+                        RequestBody deviceId = RequestBody.create(MediaType.parse("text/plain"),
+                                networkCalculator.getContent().get(NetworkCalculator.DEVICE_ID));
+                        RequestBody hash = RequestBody.create(MediaType.parse("text/plain"),
+                                networkCalculator.getContent().get(NetworkCalculator.HASH));
+                        RequestBody deviceTime = RequestBody.create(MediaType.parse("text/plain"),
+                                networkCalculator.getContent().get(NetworkCalculator.DEVICE_TIME));
+                        RequestBody fileToUpload = RequestBody.create(MediaType.parse("image/*"),
+                                file);
+                        RequestBody imageId = RequestBody.create(MediaType.parse("text/plain"),
+                                networkCalculator.getContent().get("id"));
+                        RequestBody token = RequestBody.create(MediaType.parse("text/plain"),
+                                networkCalculator.getContent().get("token"));
+                        RequestBody web_service = RequestBody.create(MediaType.parse("text/plain"),
+                                networkCalculator.getContent().get("web_service"));
 
                         Log.d(TAG + "(step 2):host", inputModel.getUploadHost());
-                        final Observable<UploadResCenterImageData> upload = RetrofitUtils.createRetrofit(networkCalculator.getUrl())
+                        final Observable<NewUploadResCenterImageData> upload = RetrofitUtils.createRetrofit(networkCalculator.getUrl())
                                 .create(UploadImageResCenter.class)
-                                .uploadImage(
+                                .uploadImageNew(
                                         networkCalculator.getHeader().get(NetworkCalculator.CONTENT_MD5),// 1
                                         networkCalculator.getHeader().get(NetworkCalculator.DATE),// 2
                                         networkCalculator.getHeader().get(NetworkCalculator.AUTHORIZATION),// 3
@@ -287,21 +338,22 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                                         hash,
                                         deviceTime,
                                         fileToUpload,
-                                        serverId
+                                        imageId,
+                                        token,
+                                        web_service
                                 );
 
-                        return Observable.zip(Observable.just(attachmentResCenterDB), upload, new Func2<AttachmentResCenterDB, UploadResCenterImageData, AttachmentResCenterDB>() {
+                        return Observable.zip(Observable.just(attachmentResCenterDB), upload, new Func2<AttachmentResCenterDB, NewUploadResCenterImageData, AttachmentResCenterDB>() {
                             @Override
-                            public AttachmentResCenterDB call(AttachmentResCenterDB attachmentResCenterDB, UploadResCenterImageData uploadResCenterImageData) {
-                                if (uploadResCenterImageData != null) {
-                                    if (uploadResCenterImageData.getData() != null) {
-                                        Log.d(TAG, "call: " + uploadResCenterImageData.getData().toString());
-                                        attachmentResCenterDB.imageUrl = uploadResCenterImageData.getData().getFileUrl();
-                                        Log.d(TAG + "(step2):url", uploadResCenterImageData.getData().getFileUrl());
+                            public AttachmentResCenterDB call(AttachmentResCenterDB attachmentResCenterDB, NewUploadResCenterImageData responseData) {
+                                if (responseData != null) {
+                                    if (responseData.getData() != null) {
+                                        attachmentResCenterDB.picSrc = responseData.getData().getPicSrc();
+                                        attachmentResCenterDB.picObj = responseData.getData().getPicObj();
                                         attachmentResCenterDB.save();
                                         return attachmentResCenterDB;
                                     } else {
-                                        throw new RuntimeException(uploadResCenterImageData.getMessageError().get(0));
+                                        throw new RuntimeException(responseData.getMessageError());
                                     }
                                 } else {
                                     throw new RuntimeException("upload error");
