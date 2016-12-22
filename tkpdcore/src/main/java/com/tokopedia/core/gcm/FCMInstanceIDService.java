@@ -41,7 +41,7 @@ public class FCMInstanceIDService extends FirebaseInstanceIdService implements I
             if (!localToken.equals(token)) {
                 SessionHandler sessionHandler = new SessionHandler(getApplicationContext());
                 if (sessionHandler.isV4Login()) {
-                    IFCMRefreshTokenReceiver fcmRefreshTokenReceiver = new FCMRefreshTokenReceiver(getBaseContext());
+                    IFCMTokenReceiver fcmRefreshTokenReceiver = new FCMTokenReceiver(getBaseContext());
                     FCMTokenUpdate tokenUpdate = new FCMTokenUpdate();
                     tokenUpdate.setOldToken(localToken);
                     tokenUpdate.setNewToken(token);
