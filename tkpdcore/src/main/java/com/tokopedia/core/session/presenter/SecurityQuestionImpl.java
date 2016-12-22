@@ -35,7 +35,7 @@ public class SecurityQuestionImpl implements SecurityQuestion {
     QuestionFormModel questionFormModel;
     int errorCount;
 
-    public SecurityQuestionImpl(SecurityQuestionView view){
+    public SecurityQuestionImpl(SecurityQuestionView view) {
         this.view = view;
     }
 
@@ -43,7 +43,7 @@ public class SecurityQuestionImpl implements SecurityQuestion {
     public void initInstances(Context context) {
         mContext = context;
         sessionHandler = new SessionHandler(context);
-        if(!isAfterRotate())// if not after rotate
+        if (!isAfterRotate())// if not after rotate
         {
             viewModel = new SecurityQuestionViewModel();
         }
@@ -51,7 +51,7 @@ public class SecurityQuestionImpl implements SecurityQuestion {
 
     @Override
     public void getDataAfterRotate(Bundle bundle) {
-        if(bundle!=null) {
+        if (bundle != null) {
 //            questionFormModel = Parcels.unwrap(bundle.getParcelable("QuestionFormModel"));
             viewModel = Parcels.unwrap(bundle.getParcelable("SecurityQuestionViewModel"));
 //            otpModel = Parcels.unwrap(bundle.getParcelable("OTPModel"));
@@ -71,34 +71,34 @@ public class SecurityQuestionImpl implements SecurityQuestion {
 
     @Override
     public boolean isAfterRotate() {
-        return viewModel!=null&& questionFormModel!=null&&questionFormModel.getExample()!=null;//&&otpModel!=null&&loginInterruptModel!=null&& questionFormModel!=null&&questionFormModel.getExample()!=null
+        return viewModel != null && questionFormModel != null && questionFormModel.getExample() != null;//&&otpModel!=null&&loginInterruptModel!=null&& questionFormModel!=null&&questionFormModel.getExample()!=null
     }
 
     @Override
     public void fetchDataFromInternet(int type, Object object[]) {
         boolean isNeedLogin = true;
-        switch (type){
+        switch (type) {
             case SECURITY_QUESTION_TYPE:
-                int security1 = (Integer)object[0];
-                int security2 = (Integer)object[1];
+                int security1 = (Integer) object[0];
+                int security2 = (Integer) object[1];
                 SecurityQuestionViewModel securityQuestionViewModel = new SecurityQuestionViewModel();
                 securityQuestionViewModel.setSecurity1(security1);
                 securityQuestionViewModel.setSecurity2(security2);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(DownloadService.SECURITY_QUESTION_GET_MODEL, Parcels.wrap(securityQuestionViewModel));
                 bundle.putBoolean(DownloadService.IS_NEED_LOGIN, isNeedLogin);
-                ((SessionView)mContext).sendDataFromInternet(DownloadService.SECURITY_QUESTION_GET, bundle);
+                ((SessionView) mContext).sendDataFromInternet(DownloadService.SECURITY_QUESTION_GET, bundle);
                 break;
             case ANSWER_SECURITY_QUESTION_TYPE:
-                String answer = (String)object[0];
+                String answer = (String) object[0];
                 String question = "";
-                if(object[1]==null){
+                if (object[1] == null) {
                     question += questionFormModel.getQuestion();
-                }else {
+                } else {
                     question = (String) object[1];
                 }
-                security1 = (Integer)object[2];
-                security2 = (Integer)object[3];
+                security1 = (Integer) object[2];
+                security2 = (Integer) object[3];
 
                 securityQuestionViewModel = new SecurityQuestionViewModel();
                 securityQuestionViewModel.setvAnswer(answer);
@@ -109,18 +109,18 @@ public class SecurityQuestionImpl implements SecurityQuestion {
                 bundle = new Bundle();
                 bundle.putParcelable(DownloadService.ANSWER_QUESTION_MODEL, Parcels.wrap(securityQuestionViewModel));
                 bundle.putBoolean(DownloadService.IS_NEED_LOGIN, isNeedLogin);
-                ((SessionView)mContext).sendDataFromInternet(DownloadService.ANSWER_SECURITY_QUESTION, bundle);
+                ((SessionView) mContext).sendDataFromInternet(DownloadService.ANSWER_SECURITY_QUESTION, bundle);
 
 
                 break;
             case REQUEST_OTP_PHONE_TYPE:
-                String phone = (String)object[0];
+                String phone = (String) object[0];
                 securityQuestionViewModel = new SecurityQuestionViewModel();
                 securityQuestionViewModel.setPhone(phone);
                 bundle = new Bundle();
                 bundle.putParcelable(REQUEST_OTP_MODEL, Parcels.wrap(securityQuestionViewModel));
                 bundle.putBoolean(DownloadService.IS_NEED_LOGIN, isNeedLogin);
-                ((SessionView)mContext).sendDataFromInternet(DownloadService.REQUEST_OTP, bundle);
+                ((SessionView) mContext).sendDataFromInternet(DownloadService.REQUEST_OTP, bundle);
                 break;
         }
     }
@@ -133,10 +133,10 @@ public class SecurityQuestionImpl implements SecurityQuestion {
     @Override
     public int determineQuestionType(int question, String title) {
 //        if(title.contains("OTP")) {
-            if (question == 1)
-                return QuestionFormModel.OTP_No_HP_TYPE;
-            else if(question == 2)
-                return QuestionFormModel.OTP_Email_TYPE;
+        if (question == 1)
+            return QuestionFormModel.OTP_No_HP_TYPE;
+        else if (question == 2)
+            return QuestionFormModel.OTP_Email_TYPE;
 //        }else if(title.contains("Masukkan nomor")){
 //            if(question ==1)
 //                return QuestionFormModel.ANSWER_NO_HP_TYPE;
@@ -164,16 +164,16 @@ public class SecurityQuestionImpl implements SecurityQuestion {
 
     @Override
     public boolean isSecurityQuestion() {
-        if(questionFormModel!=null)
-            return questionFormModel.getType()==QuestionFormModel.ANSWER_NO_REKENING_TYPE||questionFormModel.getType()==QuestionFormModel.ANSWER_NO_HP_TYPE;
+        if (questionFormModel != null)
+            return questionFormModel.getType() == QuestionFormModel.ANSWER_NO_REKENING_TYPE || questionFormModel.getType() == QuestionFormModel.ANSWER_NO_HP_TYPE;
         else
             return false;
     }
 
     @Override
     public boolean isOtp() {
-        if(questionFormModel!=null)
-            return questionFormModel.getType()==QuestionFormModel.OTP_No_HP_TYPE||questionFormModel.getType()==QuestionFormModel.OTP_Email_TYPE;
+        if (questionFormModel != null)
+            return questionFormModel.getType() == QuestionFormModel.OTP_No_HP_TYPE || questionFormModel.getType() == QuestionFormModel.OTP_Email_TYPE;
         else
             return false;
     }
@@ -189,18 +189,17 @@ public class SecurityQuestionImpl implements SecurityQuestion {
 
         fetchDataFromInternet(ANSWER_SECURITY_QUESTION_TYPE
                 , new Object[]{
-                answer, null, viewModel.getSecurity1(), viewModel.getSecurity2()
-        });
+                        answer, null, viewModel.getSecurity1(), viewModel.getSecurity2()
+                });
     }
 
     @Override
     public void doRequestOtp() {
-
+        view.showOTPWithCall();
         view.displayProgress(true);
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_BUNDLE, String.valueOf(viewModel.getSecurity2()));
-        ((SessionView)mContext).sendDataFromInternet(ACTION_REQUEST_OTP, bundle);
-        view.showOTPWithCall();
+        ((SessionView) mContext).sendDataFromInternet(ACTION_REQUEST_OTP, bundle);
     }
 
     @Override
@@ -208,7 +207,7 @@ public class SecurityQuestionImpl implements SecurityQuestion {
         view.displayProgress(true);
 
         Bundle bundle = new Bundle();
-        ((SessionView)mContext).sendDataFromInternet(ACTION_REQUEST_OTP_WITH_CALL, bundle);
+        ((SessionView) mContext).sendDataFromInternet(ACTION_REQUEST_OTP_WITH_CALL, bundle);
     }
 
     @Override
@@ -222,7 +221,7 @@ public class SecurityQuestionImpl implements SecurityQuestion {
             viewModel.setSecurity2(Security2);
             viewModel.setUserID(UserID);
 
-            Log.d(TAG, messageTAG + " getDataFromArgument :  "+viewModel);
+            Log.d(TAG, messageTAG + " getDataFromArgument :  " + viewModel);
         }
     }
 
@@ -238,8 +237,7 @@ public class SecurityQuestionImpl implements SecurityQuestion {
 
     @Override
     public String getOtpSendString() {
-        switch(determineQuestionType(questionFormModel.getQuestion(), questionFormModel.getTitle()))
-        {
+        switch (determineQuestionType(questionFormModel.getQuestion(), questionFormModel.getTitle())) {
             case QuestionFormModel.ANSWER_NO_HP_TYPE:
             case QuestionFormModel.ANSWER_NO_REKENING_TYPE:
                 return null;
@@ -262,29 +260,29 @@ public class SecurityQuestionImpl implements SecurityQuestion {
 
     @Override
     public void initDataAfterRotate() {
-        if(questionFormModel!=null) {
+        if (questionFormModel != null) {
             view.setModel(questionFormModel);
         }
-        if(viewModel!=null) {
+        if (viewModel != null) {
             view.setAnswerSecurity(viewModel.getvAnswer());
             view.setAnswerOTP(viewModel.getvInputOtp());
         }
-        if(viewModel.isErrorDisplay()){
+        if (viewModel.isErrorDisplay()) {
             view.displayError(true);
-        }else{
+        } else {
             view.displayError(false);
         }
-        if(SessionHandler.isV4Login(mContext)){
-            ((AppCompatActivity)mContext).finish();
+        if (SessionHandler.isV4Login(mContext)) {
+            ((AppCompatActivity) mContext).finish();
         }
-        if(viewModel.isLoading()){
+        if (viewModel.isLoading()) {
             view.displayProgress(viewModel.isLoading());
         }
     }
 
     @Override
     public void setData(int type, Bundle data) {
-        switch(type){
+        switch (type) {
             case DownloadService.SECURITY_QUESTION_GET:
                 questionFormModel = Parcels.unwrap(data.getParcelable(DownloadService.SECURITY_QUESTION_GET_MODEL));
                 questionFormModel.setType(determineQuestionType(questionFormModel.getQuestion(), questionFormModel.getTitle()));
@@ -297,8 +295,8 @@ public class SecurityQuestionImpl implements SecurityQuestion {
                 view.disableButton();
                 break;
             case DownloadService.ANSWER_SECURITY_QUESTION:
-                if(data.getParcelable(DownloadService.ANSWER_SECURITY_QUESTION_FALSE_MODEL)!=null){
-                    if(++errorCount== SWITCH_REQUEST_OTP){
+                if (data.getParcelable(DownloadService.ANSWER_SECURITY_QUESTION_FALSE_MODEL) != null) {
+                    if (++errorCount == SWITCH_REQUEST_OTP) {
                         viewModel.setIsErrorDisplay(false);
                         view.displayError(false);
                         questionFormModel = new QuestionFormModel();
@@ -307,13 +305,13 @@ public class SecurityQuestionImpl implements SecurityQuestion {
                         questionFormModel.setQuestion(2);
                         viewModel.setSecurity2(2);
                         view.setModel(questionFormModel);
-                    }else{
+                    } else {
                         viewModel.setIsErrorDisplay(true);
                         view.displayError(true);
                     }
-                }else{
+                } else {
                     LoginInterruptModel loginInterruptModel = Parcels.unwrap(data.getParcelable(DownloadService.ANSWER_QUESTION_MODEL));
-                    if(mContext!=null && mContext instanceof SessionView) {
+                    if (mContext != null && mContext instanceof SessionView) {
                         view.destroyTimer();
                         ((SessionView) mContext).destroy();
                     }
@@ -327,17 +325,17 @@ public class SecurityQuestionImpl implements SecurityQuestion {
 
     @Override
     public void updateViewModel(int type, Object... data) {
-        switch (type){
+        switch (type) {
             case SecurityQuestionViewModel.IS_SECURITY_LOADING_TYPE:
-                boolean isSecurityLoadingShow = (boolean)data[0];
+                boolean isSecurityLoadingShow = (boolean) data[0];
                 viewModel.setIsLoading(isSecurityLoadingShow);
                 break;
             case SecurityQuestionViewModel.IS_ERROR_SHOWN:
-                boolean is = (boolean)data[0];
+                boolean is = (boolean) data[0];
                 viewModel.setIsErrorDisplay(is);
                 break;
             case SecurityQuestionViewModel.SEC_2:
-                int in = (int)data[0];
+                int in = (int) data[0];
                 viewModel.setSecurity2(in);
                 break;
         }

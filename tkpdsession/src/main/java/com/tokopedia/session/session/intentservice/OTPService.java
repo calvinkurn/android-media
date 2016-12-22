@@ -37,6 +37,7 @@ public class OTPService extends IntentService {
     int STATUS_ERROR = 2;
 
     OTPRetrofitInteractor networkInteractor;
+    private Map<String, String> paramRequestOTPWithPhone;
 
     public OTPService() {
         super(INTENT_NAME);
@@ -81,7 +82,7 @@ public class OTPService extends IntentService {
 
         networkInteractor.requestOTPWithCall(getBaseContext(),
                 AuthUtil.generateParams(getApplicationContext(),
-                        new HashMap<String, String>(),
+                        getParamRequestOTPWithPhone(),
                         SessionHandler.getTempLoginSession(getApplicationContext())),
                 new OTPRetrofitInteractor.RequestOTPWithCallListener() {
                     @Override
@@ -151,7 +152,6 @@ public class OTPService extends IntentService {
                         public void onTimeout() {
                             resultData.putString(EXTRA_ERROR, getString(R.string.msg_connection_timeout));
                             receiver.send(STATUS_ERROR, resultData);
-
                         }
 
                         @Override
@@ -191,6 +191,12 @@ public class OTPService extends IntentService {
     public Map<String, String> getParamRequestOTP(String userCheckQuestion2) {
         HashMap<String, String> param = new HashMap<>();
         param.put("user_check_question_2", userCheckQuestion2);
+        return param;
+    }
+
+    public Map<String, String> getParamRequestOTPWithPhone() {
+        HashMap<String, String> param = new HashMap<>();
+        param.put("mode", "call");
         return param;
     }
 }

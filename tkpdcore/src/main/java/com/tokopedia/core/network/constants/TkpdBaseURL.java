@@ -267,6 +267,8 @@ public interface  TkpdBaseURL {
         String PATH_REMOVE_WISHLIST_PRODUCT = "remove_wishlist_product.pl";
 
         String PATH_IS_ALREADY_WISHLIST_PRODUCT = "is_already_wishlist_product.pl";
+        String PATH_OTP_WITH_CALL = "otp";
+        String URL_OTP_WITH_CALL = "https://private-f08f3-otpapp.apiary-mock.com/";
     }
 
     interface Shop {
