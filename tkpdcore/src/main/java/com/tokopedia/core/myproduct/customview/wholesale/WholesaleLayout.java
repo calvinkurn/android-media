@@ -87,6 +87,7 @@ public class WholesaleLayout extends RelativeLayout implements WholesaleAdapterI
         layoutParams.addRule(TEXT_ALIGNMENT_CENTER, TRUE);
         recyclerView.setLayoutParams(layoutParams);
         recyclerView.setVerticalScrollBarEnabled(true);
+        recyclerView.setVerticalScrollbarPosition(SCROLLBAR_POSITION_RIGHT);
         adapter = new WholesaleAdapterImpl(this, 0, PriceUtils.CURRENCY_RUPIAH);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -102,7 +103,7 @@ public class WholesaleLayout extends RelativeLayout implements WholesaleAdapterI
         layoutParams.addRule(ALIGN_PARENT_BOTTOM, TRUE);
         layoutParams.addRule(TEXT_ALIGNMENT_CENTER, TRUE);
         button.setLayoutParams(layoutParams);
-        button.setText("Tambah Wholesale");
+        button.setText("Tambah Harga Grosir");
         button.setId(R.id.button_add_wholesale);
         button.setOnClickListener(new OnClickListener() {
             @Override
