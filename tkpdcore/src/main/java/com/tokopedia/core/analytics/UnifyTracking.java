@@ -954,4 +954,13 @@ public class UnifyTracking extends TrackingUtils {
                 userId
         ).getEvent());
     }
+
+    public static void eventClickCatalog(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CATALOG,
+                AppEventTracking.Category.CATALOG,
+                AppEventTracking.Action.CLICK,
+                label
+        ).getEvent());
+    }
 }

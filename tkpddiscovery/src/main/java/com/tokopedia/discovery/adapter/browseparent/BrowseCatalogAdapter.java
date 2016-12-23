@@ -17,9 +17,11 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customwidget.SquareImageView;
 import com.tokopedia.core.network.entity.discovery.CatalogModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
@@ -125,6 +127,8 @@ public class BrowseCatalogAdapter extends ProductAdapter {
 //            bundle.putString("ctg_id", catalogModel.catalogId);
 //            intent.putExtras(bundle);
 //            context.startActivity(intent);
+            UnifyTracking.eventClickCatalog(catalogModel.getCatalogName());
+            CommonUtils.dumper("GAv4 locasearched Clicked Catalog "+catalogModel.getCatalogName());
             context.startActivity(DetailProductRouter.getCatalogDetailActivity(context, catalogModel.getCatalogId()));
         }
     }
