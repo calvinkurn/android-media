@@ -25,7 +25,7 @@
             android:layout_marginLeft="8dp"
             android:paddingTop="3dp"
             android:layout_height="wrap_content"
-            android:text="DATA TRANSAKSI"/>
+            android:text="Data Transaksi"/>
 
     </LinearLayout>
 

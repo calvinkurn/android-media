@@ -1,5 +1,7 @@
 package com.tokopedia.sellerapp.gmstat.views;
 
+import android.graphics.drawable.Drawable;
+import android.support.v7.widget.AppCompatDrawableManager;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -17,6 +19,7 @@ import java.util.List;
 
 import butterknife.BindArray;
 import butterknife.BindColor;
+import butterknife.BindDrawable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -60,6 +63,12 @@ public class DataTransactionViewHelper {
     @BindColor(R.color.grey_400)
     int gredyColor;
 
+//    @BindDrawable(R.drawable.ic_rectangle_down)
+    Drawable icRectagleDown;
+
+//    @BindDrawable(R.drawable.ic_rectangle_up)
+    Drawable icRectagleUp;
+
     private View itemView;
     private boolean isGoldMerchant;
 
@@ -71,6 +80,11 @@ public class DataTransactionViewHelper {
         this.itemView = itemView;
         this.isGoldMerchant = isGoldMerchant;
         ButterKnife.bind(this, itemView);
+
+        icRectagleDown = AppCompatDrawableManager.get().getDrawable(itemView.getContext(),
+                R.drawable.ic_rectangle_down);
+        icRectagleUp = AppCompatDrawableManager.get().getDrawable(itemView.getContext(),
+                R.drawable.ic_rectangle_up);
         for(int i=0;i<mLabels.length;i++){
             mLabels[i] = "";
         }
@@ -117,10 +131,12 @@ public class DataTransactionViewHelper {
             percentage.setTextColor(arrowUp);
             isDefault = true;
         }else if(diffSuccessTrans < 0){// down here
-            imageHandler.loadImage(transactionCountIcon, R.mipmap.arrow_down_percentage);
+//            imageHandler.loadImage(transactionCountIcon, R.mipmap.arrow_down_percentage);
+            transactionCountIcon.setImageDrawable(icRectagleDown);
             percentage.setTextColor(arrowDown);
         }else{// up here
-            imageHandler.loadImage(transactionCountIcon, R.mipmap.arrow_up_percentage);
+//            imageHandler.loadImage(transactionCountIcon, R.mipmap.arrow_up_percentage);
+            transactionCountIcon.setImageDrawable(icRectagleUp);
             percentage.setTextColor(arrowUp);
         }
 

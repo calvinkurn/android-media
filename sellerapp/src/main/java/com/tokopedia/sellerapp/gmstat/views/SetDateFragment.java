@@ -306,8 +306,11 @@ public class SetDateFragment extends Fragment {
 
     public static class CustomViewHolder extends RecyclerView.ViewHolder{
 
-        @BindArray(R.array.month_names)
-        String[] monthNames;
+//        @BindArray(R.array.month_names)
+//        String[] monthNames;
+
+        @BindArray(R.array.month_names_abrev)
+        String[] monthNamesAbrev;
 
         @BindView(R.id.custom_header)
         TextView customHeader;
@@ -353,7 +356,7 @@ public class SetDateFragment extends Fragment {
                     String month = ((monthOfYear < 10)?("0"+(monthOfYear+1)):monthOfYear+1+"");
                     String day = ((dayOfMonth < 10)?("0"+dayOfMonth):dayOfMonth+"");
                     String data = year+""+month+""+day;
-                    customDate.setText(getDateWithYear(Integer.parseInt(data), monthNames));
+                    customDate.setText(getDateWithYear(Integer.parseInt(data), monthNamesAbrev));
 
                     startOrEndPeriodModel.startDate = newDate.getTimeInMillis();
                 }
@@ -369,7 +372,7 @@ public class SetDateFragment extends Fragment {
                     String day = ((dayOfMonth < 10)?("0"+dayOfMonth):dayOfMonth+"");
                     String data = year+""+month+""+day;
                     Log.d("MNORMANSYAH", "data : "+data);
-                    customDate.setText(getDateWithYear(Integer.parseInt(data), monthNames));
+                    customDate.setText(getDateWithYear(Integer.parseInt(data), monthNamesAbrev));
 
                     startOrEndPeriodModel.endDate = newDate.getTimeInMillis();
                 }
@@ -383,7 +386,7 @@ public class SetDateFragment extends Fragment {
             if(startOrEndPeriodModel.isEndDate) {
                 String endDate = startOrEndPeriodModel.getEndDate();
                 String[] split = endDate.split(" ");
-                customDate.setText(getDateWithYear(Integer.parseInt(reverseDate(split)), monthNames));
+                customDate.setText(getDateWithYear(Integer.parseInt(reverseDate(split)), monthNamesAbrev));
 
                 Calendar cal = Calendar.getInstance();
                 cal.setTimeInMillis(startOrEndPeriodModel.endDate);
@@ -393,7 +396,7 @@ public class SetDateFragment extends Fragment {
             if(startOrEndPeriodModel.isStartDate) {
                 String startDate = startOrEndPeriodModel.getStartDate();
                 String[] split = startDate.split(" ");
-                customDate.setText(getDateWithYear(Integer.parseInt(reverseDate(split)), monthNames));
+                customDate.setText(getDateWithYear(Integer.parseInt(reverseDate(split)), monthNamesAbrev));
 
                 Calendar cal = Calendar.getInstance();
                 cal.setTimeInMillis(startOrEndPeriodModel.startDate);
@@ -419,8 +422,11 @@ public class SetDateFragment extends Fragment {
         private PeriodRangeModel periodRangeModel;
         PeriodListener periodListener;
 
-        @BindArray(R.array.month_names)
-        String[] monthNames;
+//        @BindArray(R.array.month_names)
+//        String[] monthNames;
+
+        @BindArray(R.array.month_names_abrev)
+        String[] monthNamesAbrev;
 
         public void setPeriodListener(PeriodListener periodListener) {
             this.periodListener = periodListener;
@@ -469,12 +475,12 @@ public class SetDateFragment extends Fragment {
             }
 
             if(split.length  >1 ){
-                String res = String.format("%s-%s", getDateWithYear(split[0], monthNames), getDateWithYear(split[1], monthNames));
+                String res = String.format("%s-%s", getDateWithYear(split[0], monthNamesAbrev), getDateWithYear(split[1], monthNamesAbrev));
                 periodDate.setText(res);
             }
 
             if(split.length  ==1 ){
-                String res = String.format("%s", getDateWithYear(split[0], monthNames));
+                String res = String.format("%s", getDateWithYear(split[0], monthNamesAbrev));
                 periodDate.setText(res);
             }
         }

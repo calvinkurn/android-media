@@ -28,7 +28,7 @@
 
     <TextView
         android:layout_marginRight="@dimen/gmstat_padding_item_left_right"
-        android:text="DATA PRODUK"
+        android:text="Data Produk"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/data_product_title"

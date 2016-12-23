@@ -21,8 +21,8 @@
 
         <com.tokopedia.sellerapp.gmstat.library.LoaderImageView
             android:layout_alignParentLeft="true"
-            android:layout_width="19.5dp"
-            android:layout_height="19.5dp"
+            android:layout_width="22dp"
+            android:layout_height="24dp"
             app:srcCompat="@mipmap/ic_icon_calendar_02"
             android:layout_centerVertical="true"
             android:id="@+id/calendar_icon"
@@ -42,6 +42,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
+                android:textColor="#42b549"
                 android:text="26 Jul 2016 - 25 Des 2016"
                 app:use_gradient="true"
                 app:width_weight="0.6"

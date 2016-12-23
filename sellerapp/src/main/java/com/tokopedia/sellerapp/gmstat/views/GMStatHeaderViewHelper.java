@@ -1,6 +1,8 @@
 package com.tokopedia.sellerapp.gmstat.views;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.support.v7.widget.AppCompatDrawableManager;
 import android.view.View;
 
 import com.tokopedia.sellerapp.R;
@@ -14,6 +16,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindArray;
+import butterknife.BindDrawable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -25,8 +28,11 @@ import static com.tokopedia.sellerapp.gmstat.views.GMStatActivityFragment.getDat
 
 public class GMStatHeaderViewHelper {
 
-    @BindArray(R.array.month_names)
-    String[] monthNames;
+    @BindArray(R.array.month_names_abrev)
+    String[] monthNamesAbrev;
+
+//    @BindArray(R.array.month_names)
+//    String[] monthNames;
 
     @BindView(R.id.calendar_range)
     LoaderTextView calendarRange;
@@ -37,9 +43,12 @@ public class GMStatHeaderViewHelper {
     @BindView(R.id.calendar_icon)
     LoaderImageView calendarIcon;
 
+
     public static final int MOVE_TO_SET_DATE = 1;
+    private View itemView;
 
     public GMStatHeaderViewHelper(View itemView){
+        this.itemView = itemView;
         ButterKnife.bind(this, itemView);
 
         calendarRange.resetLoader();
@@ -56,14 +65,16 @@ public class GMStatHeaderViewHelper {
         if(dateGraph == null || dateGraph.size() <=0)
             return;
 
-        String startDate = getDateWithYear(dateGraph.get(0), monthNames);
+        String startDate = getDateWithYear(dateGraph.get(0), monthNamesAbrev);
 
         int lastIndex = (dateGraph.size()>7)?6:dateGraph.size()-1;
-        String endDate = getDateWithYear(dateGraph.get(lastIndex), monthNames);
+        String endDate = getDateWithYear(dateGraph.get(lastIndex), monthNamesAbrev);
 
         calendarRange.setText(startDate+" - "+endDate);
 
-        calendarArrowIcon.setImageResource(R.mipmap.page_1);
+        Drawable setDateNext = AppCompatDrawableManager.get().getDrawable(itemView.getContext()
+                , R.drawable.ic_set_date_next);
+        calendarArrowIcon.setImageDrawable(setDateNext);
         calendarIcon.setImageResource(R.mipmap.ic_icon_calendar_02);
 
 
@@ -79,7 +90,7 @@ public class GMStatHeaderViewHelper {
             cal.setTimeInMillis(sDate);
             DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
             startDate = dateFormat.format(cal.getTime());
-            startDate = getDateWithYear(Integer.parseInt(startDate), monthNames);
+            startDate = getDateWithYear(Integer.parseInt(startDate), monthNamesAbrev);
         }
 
         String endDate = null;
@@ -88,7 +99,7 @@ public class GMStatHeaderViewHelper {
             cal.setTimeInMillis(eDate);
             DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
             endDate = dateFormat.format(cal.getTime());
-            endDate = getDateWithYear(Integer.parseInt(endDate), monthNames);
+            endDate = getDateWithYear(Integer.parseInt(endDate), monthNamesAbrev);
         }
 
         calendarRange.setText(startDate+" - "+endDate);

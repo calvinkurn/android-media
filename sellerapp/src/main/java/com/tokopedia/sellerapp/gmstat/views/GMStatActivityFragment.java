@@ -2,8 +2,10 @@ package com.tokopedia.sellerapp.gmstat.views;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatDrawableManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -49,6 +51,7 @@ import java.util.TreeMap;
 
 import butterknife.BindArray;
 import butterknife.BindColor;
+import butterknife.BindDrawable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -69,8 +72,8 @@ public class GMStatActivityFragment extends Fragment {
     @BindArray(R.array.month_names_abrev)
     String[] monthNamesAbrev;
 
-    @BindArray(R.array.month_names)
-    String[] monthNames;
+//    @BindArray(R.array.month_names)
+//    String[] monthNames;
 
     @BindView(R.id.gross_income_graph2)
     LineChartView grossIncomeGraph2;
@@ -147,7 +150,7 @@ public class GMStatActivityFragment extends Fragment {
             baseGMModels.add(grossIncome);
 
             List<Integer> dateGraph = getTransactionGraph.getDateGraph();
-            List<String> dates = getDates(dateGraph, GMStatActivityFragment.this.monthNames);
+            List<String> dates = getDates(dateGraph, GMStatActivityFragment.this.monthNamesAbrev);
             if(dates != null) {
                 grossIncome.textDescription = dates.get(0)+" - "+dates.get(1);
             }
@@ -692,11 +695,22 @@ public class GMStatActivityFragment extends Fragment {
         @BindColor(R.color.grey_400)
         int gredyColor;
 
+//        @BindDrawable(R.drawable.ic_rectangle_down)
+        Drawable icRectagleDown;
+
+//        @BindDrawable(R.drawable.ic_rectangle_up)
+        Drawable icRectagleUp;
+
         public GMStat gmStat;
 
         public CommonGMVH(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+
+            icRectagleDown = AppCompatDrawableManager.get().getDrawable(itemView.getContext(),
+                    R.drawable.ic_rectangle_down);
+            icRectagleUp = AppCompatDrawableManager.get().getDrawable(itemView.getContext(),
+                    R.drawable.ic_rectangle_up);
         }
 
         public void bind(CommomGMModel commomGMModel){
@@ -716,12 +730,14 @@ public class GMStatActivityFragment extends Fragment {
                 isDefault = true;
             }else if(commomGMModel.percentage < 0){// down here
                 arrowIcon.setVisibility(View.VISIBLE);
-                gmStat.getImageHandler().loadImage(arrowIcon, R.mipmap.arrow_down_percentage);
+                arrowIcon.setImageDrawable(icRectagleDown);
+//                gmStat.getImageHandler().loadImage(arrowIcon, R.mipmap.arrow_down_percentage);
                 percentage.setTextColor(arrowDown);
                 isDefault = true;
             }else{// up here
                 arrowIcon.setVisibility(View.VISIBLE);
-                gmStat.getImageHandler().loadImage(arrowIcon, R.mipmap.arrow_up_percentage);
+                arrowIcon.setImageDrawable(icRectagleUp);
+//                gmStat.getImageHandler().loadImage(arrowIcon, R.mipmap.arrow_up_percentage);
                 percentage.setTextColor(arrowUp);
                 isDefault = true;
             }

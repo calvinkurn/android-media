@@ -1,5 +1,7 @@
 package com.tokopedia.sellerapp.gmstat.views;
 
+import android.graphics.drawable.Drawable;
+import android.support.v7.widget.AppCompatDrawableManager;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,6 +14,7 @@ import com.tokopedia.sellerapp.home.utils.ImageHandler;
 import java.text.DecimalFormat;
 
 import butterknife.BindColor;
+import butterknife.BindDrawable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -51,11 +54,22 @@ public class BuyerDataViewHelper {
     @BindColor(R.color.grey_400)
     int gredyColor;
 
+//    @BindDrawable(R.drawable.ic_rectangle_down)
+    Drawable icRectagleDown;
+
+//    @BindDrawable(R.drawable.ic_rectangle_up)
+    Drawable icRectagleUp;
+
     private View itemView;
 
     public BuyerDataViewHelper(View itemView){
         this.itemView = itemView;
         ButterKnife.bind(this, itemView);
+
+        icRectagleDown = AppCompatDrawableManager.get().getDrawable(itemView.getContext(),
+                R.drawable.ic_rectangle_down);
+        icRectagleUp = AppCompatDrawableManager.get().getDrawable(itemView.getContext(),
+                R.drawable.ic_rectangle_up);
     }
 
     public void bindData(GetBuyerData getBuyerData, ImageHandler imageHandler) {
@@ -84,11 +98,13 @@ public class BuyerDataViewHelper {
             isDefault = true;
         }
         else if(percentage < 0){// down here
-            imageHandler.loadImage(buyerCountIcon, R.mipmap.arrow_down_percentage);
+            buyerCountIcon.setImageDrawable(icRectagleDown);
+//            imageHandler.loadImage(buyerCountIcon, R.mipmap.arrow_down_percentage);
             percentageBuyer.setTextColor(arrowDown);
             isDefault = true;
         }else{// up here
-            imageHandler.loadImage(buyerCountIcon, R.mipmap.arrow_up_percentage);
+            buyerCountIcon.setImageDrawable(icRectagleUp);
+//            imageHandler.loadImage(buyerCountIcon, R.mipmap.arrow_up_percentage);
             percentageBuyer.setTextColor(arrowUp);
             isDefault = true;
         }
