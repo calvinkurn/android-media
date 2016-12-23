@@ -7,6 +7,6 @@ import com.tokopedia.core.drawer.DrawerVariable;
 /**
  * Created by sebastianuskh on 12/8/16.
  */
-public interface TkpdCoreListener {
+public interface TkpdCoreRouter {
     DrawerVariable getDrawer(AppCompatActivity activity);
 }

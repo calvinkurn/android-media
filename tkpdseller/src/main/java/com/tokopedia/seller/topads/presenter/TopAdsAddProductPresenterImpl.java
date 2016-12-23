@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.topads.interactor.DashboardTopadsInteractor;
 import com.tokopedia.seller.topads.interactor.DashboardTopadsInteractorImpl;
+import com.tokopedia.seller.topads.interactor.ListenerInteractor;
 import com.tokopedia.seller.topads.model.data.DataCredit;
 import com.tokopedia.seller.topads.model.data.Product;
 import com.tokopedia.seller.topads.model.exchange.SearchProductRequest;
@@ -39,7 +40,7 @@ public class TopAdsAddProductPresenterImpl implements TopAdsAddProductPresenter 
         searchProductRequest.setShopId(getShopId());
         searchProductRequest.setKeyword(keyword);
         searchProductRequest.setStart(start);
-        dashboardTopadsInteractor.searchProduct(searchProductRequest, new DashboardTopadsInteractor.Listener<List<Product>>() {
+        dashboardTopadsInteractor.searchProduct(searchProductRequest, new ListenerInteractor<List<Product>>() {
             @Override
             public void onSuccess(List<Product> productList) {
                 listener.onProductListLoaded(productList);

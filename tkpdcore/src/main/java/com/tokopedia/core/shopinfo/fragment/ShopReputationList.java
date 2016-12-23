@@ -98,14 +98,18 @@ public class ShopReputationList extends V2BaseFragment {
     }
 
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        this.isVisibleToUser = isVisibleToUser;
-        if (isVisibleToUser && listReputation.size() == 0 && !adapter.hasNoResult() && page == 1 && !facadeGetRep.isFetching()) {
-            this.isVisibleToUser = isVisibleToUser;
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (listReputation.size() == 0 && !adapter.hasNoResult() && page == 1 && !facadeGetRep.isFetching()) {
             adapter.setLoading();
             facadeGetRep.getShopReputation(Integer.toString(page));
         }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        this.isVisibleToUser = isVisibleToUser;
     }
 
     private void initFacade() {

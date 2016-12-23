@@ -307,6 +307,7 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
         presenter.getShippingList(isVisibleToUser);
         super.setUserVisibleHint(isVisibleToUser);
         ScreenTracking.screenLoca(AppScreen.SCREEN_LOCA_SHIPPING);
+        ScreenTracking.eventLoca(AppScreen.SCREEN_LOCA_SHIPPING);
         ScreenTracking.screen(AppScreen.SCREEN_TX_SHOP_CONFIRM_SHIPPING);
     }
 

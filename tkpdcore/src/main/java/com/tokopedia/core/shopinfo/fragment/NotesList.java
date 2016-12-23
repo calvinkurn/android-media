@@ -47,7 +47,6 @@ public class NotesList extends V2BaseFragment {
         facadeGetNote = new GetShopNote(getActivity());
         facadeGetNote.setOnGetNoteListListener(onGetNoteListListener());
         facadeGetNote.setCompositeSubscription(compositeSubscription);
-//        facadeGetNote.getNoteList(getActivity().getIntent().getExtras().getString(ShopInfoActivity.SHOP_ID, ""), getActivity().getIntent().getExtras().getString(ShopInfoActivity.SHOP_DOMAIN, ""));
         facadeGetNote.getNoteListV4(getActivity().getIntent().getExtras().getString(ShopInfoActivity.SHOP_ID, ""), getActivity().getIntent().getExtras().getString(ShopInfoActivity.SHOP_DOMAIN, ""));
     }
 
@@ -59,9 +58,6 @@ public class NotesList extends V2BaseFragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if(!noResult && isVisibleToUser && noteList.size()==0) {
-            getNoteList();
-        }
     }
 
     @Override
@@ -84,6 +80,14 @@ public class NotesList extends V2BaseFragment {
             adapter.setNoResult();
 
         compositeSubscription = RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if(!noResult && noteList.size()==0) {
+            getNoteList();
+        }
     }
 
     @Override

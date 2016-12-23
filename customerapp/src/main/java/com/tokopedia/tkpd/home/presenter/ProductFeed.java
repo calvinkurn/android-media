@@ -89,16 +89,14 @@ public interface ProductFeed {
 
     /**
      * send Data to Localitycs
-     * @param context
      * @param screenName
      */
-    void setLocalyticFlow(Context context, String screenName);
+    void setLocalyticFlow(String screenName);
 
     /**
      * send Data to Appsflyer
-     * @param context
      */
-    void sendAppsFlyerData(Context context);
+    void sendAppsFlyerData();
 
     /**
      * do some activities in onSavedInstanceState

@@ -6,7 +6,13 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.View;
+import android.webkit.CookieManager;
+import android.webkit.ValueCallback;
+
+import com.tkpd.library.utils.CommonUtils;
 
 /**
  * Created by nisie on 10/28/16.
@@ -40,4 +46,19 @@ public class MethodChecker {
     }
 
 
+    public static void removeAllCookies() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            CookieManager.getInstance().removeAllCookies(new ValueCallback<Boolean>() {
+                @Override
+                public void onReceiveValue(Boolean value) {
+                    CommonUtils.dumper("Success Clear Cookie");
+                }
+            });
+        } else
+            CookieManager.getInstance().removeAllCookie();
+    }
+
+    public static Spanned fromHtml(String message) {
+        return Html.fromHtml(message);
+    }
 }

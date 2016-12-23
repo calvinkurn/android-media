@@ -17,7 +17,7 @@
     <dimen name="page_with_pad">290dp</dimen>
     <dimen name="margin_vs">5dp</dimen>
     <dimen name="margin_ms">8dp</dimen>
-    <dimen name="margin_vvs">3.3dp</dimen>
+    <dimen name="margin_vvs">2dp</dimen>
     <dimen name="margin_small">10dp</dimen>
     <dimen name="margin_med">20dp</dimen>
     <dimen name="margin_large">30dp</dimen>
@@ -25,7 +25,7 @@
     <dimen name="padding_vs">5dp</dimen>
     <dimen name="padding_small">10dp</dimen>
     <dimen name="med_dp">20dp</dimen>
-    <dimen name="large_dp">30dp</dimen>
+    <dimen name="large_dp">22dp</dimen>
 
     <dimen name="half_screen">160dp</dimen>
     <dimen name="half_screen_pad">160dp</dimen>
@@ -136,7 +136,7 @@
     <dimen name="text_size_xxxlarge">30sp</dimen>
 
     <dimen name="keyline_1">16dp</dimen>
-    <dimen name="promo_image_height">150dp</dimen>
+    <dimen name="promo_image_height">175dp</dimen>
 
     <dimen name="setting_button">24dp</dimen>
 

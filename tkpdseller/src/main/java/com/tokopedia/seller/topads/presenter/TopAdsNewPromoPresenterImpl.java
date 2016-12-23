@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.seller.topads.interactor.DashboardTopadsInteractor;
 import com.tokopedia.seller.topads.interactor.DashboardTopadsInteractorImpl;
+import com.tokopedia.seller.topads.interactor.ListenerInteractor;
 import com.tokopedia.seller.topads.model.data.DataCredit;
 import com.tokopedia.seller.topads.view.listener.TopAdsAddCreditFragmentListener;
 import com.tokopedia.seller.topads.view.listener.TopAdsNewPromoFragmentListener;
@@ -27,7 +28,7 @@ public class TopAdsNewPromoPresenterImpl implements TopAdsNewPromoPresenter {
 
     @Override
     public void populateGroupNameList() {
-        dashboardTopadsInteractor.getCreditList(new DashboardTopadsInteractor.Listener<List<DataCredit>>() {
+        dashboardTopadsInteractor.getCreditList(new ListenerInteractor<List<DataCredit>>() {
             @Override
             public void onSuccess(List<DataCredit> creditList) {
                 listener.onGroupNameListLoaded(creditList);

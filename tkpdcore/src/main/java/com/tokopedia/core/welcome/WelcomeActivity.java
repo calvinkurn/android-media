@@ -27,6 +27,10 @@ public class WelcomeActivity extends AppCompatActivity {
             fragmentTransaction.commit();
         }
 
+        if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean("EXIT", false)) {
+            finish();
+        }
+
         simplefacebook = SimpleFacebook.getInstance(this);
     }
 

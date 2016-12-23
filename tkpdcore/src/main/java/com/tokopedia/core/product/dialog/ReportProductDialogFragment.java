@@ -1,6 +1,7 @@
 package com.tokopedia.core.product.dialog;
 
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -50,7 +51,7 @@ import butterknife.OnItemSelected;
 /**
  * Created by stevenfredian on 7/4/16.
  */
-public class ReportProductDialogFragment extends DialogFragment implements ReportProductDialogView{
+public class ReportProductDialogFragment extends DialogFragment implements ReportProductDialogView {
 
     ProductDetailData productDetailData;
 
@@ -106,6 +107,8 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
     }
 
     private void setContent() {
+        getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         showLayout(false);
         cacheInteractor.loadReportTypeFromCache(this);
     }
@@ -157,7 +160,7 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
             redirectText.setVisibility(View.VISIBLE);
             String link = reportChose.getReportUrl();
             setRedirect(reportTypeName.getItem(reportTypeSpinner.getSelectedItemPosition()), false, link);
-        }else {
+        } else {
             wrapper.setVisibility(View.VISIBLE);
             reportButton.setVisibility(View.VISIBLE);
             redirectText.setVisibility(View.GONE);
@@ -171,8 +174,8 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
         SpannableString stringNoResult = new SpannableString(string.replace(caseReplace, item));
 
         String linkStatus = "link ini";
-        if(link.equals("https://www.tokopedia.com/contact-us.pl")){
-            status=true;
+        if (link.equals("https://www.tokopedia.com/contact-us.pl")) {
+            status = true;
         }
 
         Intent intent = InboxRouter.getContactUsActivityIntent(getActivity());
@@ -248,10 +251,12 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
 
     @Override
     public void downloadReportType() {
-        retrofitInteractor.downloadReportType(getActivity(),productDetailData.getInfo().getProductId(),this);
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        retrofitInteractor.downloadReportType(getActivity(), productDetailData.getInfo().getProductId(), this);
     }
 
     public void setReportAdapterFromCache(String data) {
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         ReportTypeModel reportTypeModel = new GsonBuilder().create().fromJson(data, ReportTypeModel.class);
         reportTypeList = reportTypeModel.getReportType();
         setReportAdapterFromNetwork(reportTypeList);
@@ -259,7 +264,7 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
 
     @Override
     public void showError(String errorString) {
-        SnackbarManager.make(getActivity(),errorString, Snackbar.LENGTH_LONG).show();
+        SnackbarManager.make(getActivity(), errorString, Snackbar.LENGTH_LONG).show();
         dismiss();
     }
 
@@ -283,11 +288,11 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
     }
 
     private void showLayout(boolean status) {
-        if(status) {
+        if (status) {
             mainLayout.setVisibility(View.VISIBLE);
             actionLayout.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
-        }else {
+        } else {
             mainLayout.setVisibility(View.GONE);
             actionLayout.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
@@ -296,5 +301,18 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
 
     public void setListener(ProductDetailFragment productDetailFragment) {
         listener = productDetailFragment;
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (getActivity() != null)
+            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        retrofitInteractor.unSubscribeObservable();
     }
 }

@@ -14,6 +14,7 @@ import com.tokopedia.seller.topads.datasource.TopAdsDbDataSourceImpl;
 import com.tokopedia.seller.topads.model.data.Cell;
 import com.tokopedia.seller.topads.model.data.DataCredit;
 import com.tokopedia.seller.topads.model.data.DataDeposit;
+import com.tokopedia.seller.topads.model.data.DataRequestGroupAd;
 import com.tokopedia.seller.topads.model.data.DataRequestSingleAd;
 import com.tokopedia.seller.topads.model.data.DataResponseActionAds;
 import com.tokopedia.seller.topads.model.data.Product;
@@ -170,7 +171,7 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
     }
 
     @Override
-    public void searchProduct(SearchProductRequest searchProductRequest, Listener<List<Product>> listener) {
+    public void searchProduct(SearchProductRequest searchProductRequest, ListenerInteractor<List<Product>> listener) {
         Observable<Response<SearchProductResponse>> depositObservable = topAdsManagementService.getApi().getSearchProduct(searchProductRequest.getParams());
         compositeSubscription.add(depositObservable
                 .subscribeOn(Schedulers.newThread())
@@ -186,7 +187,7 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
     }
 
     @Override
-    public void getDashboardProduct(HashMap<String, String> params, final Listener<ProductResponse> listener) {
+    public void getListProductAds(HashMap<String, String> params, final ListenerInteractor<ProductResponse> listener) {
         Observable<Response<ProductResponse>> observable = topAdsManagementService.getApi()
                 .getDashboardProduct(params);
         compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
@@ -313,6 +314,11 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
                     }
                 })
                 .subscribe(new SubscribeOnNext<DataResponseActionAds>(listenerInteractor), new SubscribeOnError(listenerInteractor)));
+    }
+
+    @Override
+    public void actionGroupAds(AdsActionRequest<DataRequestGroupAd> adsActionRequest, ListenerInteractor<DataResponseActionAds> listenerInteractor) {
+
     }
 
     @Override

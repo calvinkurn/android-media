@@ -15,7 +15,7 @@ import android.widget.Button;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.discovery.dynamicfilter.DynamicFilterActivity;
@@ -49,7 +49,7 @@ public class DynamicFilterListFragment extends BaseFragment<DynamicFilterList> i
         return null;
     }
 
-    public static Fragment newInstance2(List<DynamicFilterModel.Filter> data) {
+    public static Fragment newInstance2(List<Filter> data) {
         Bundle argument = new Bundle();
         argument.putParcelable(DynamicFilterList.DATA_LIST, Parcels.wrap(data));
 
@@ -144,7 +144,7 @@ public class DynamicFilterListFragment extends BaseFragment<DynamicFilterList> i
     }
 
     @Override
-    public void setupAdapter(List<DynamicFilterModel.Filter> dataList) {
+    public void setupAdapter(List<Filter> dataList) {
         dynamicFilterListAdapter = new DynamicFilterListAdapter(getActivity(), new ArrayList<RecyclerViewItem>(DynamicFilterListAdapter.convertTo2(dataList)));
         dynamicFilterListAdapter.activatePosition(0);
         linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);

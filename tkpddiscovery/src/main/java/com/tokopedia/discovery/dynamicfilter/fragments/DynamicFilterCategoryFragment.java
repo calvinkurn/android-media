@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
@@ -16,8 +15,8 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.discovery.model.Breadcrumb;
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.discovery.model.DynamicObject;
+import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.discovery.dynamicfilter.DynamicFilterActivity;
 import com.tokopedia.discovery.dynamicfilter.adapter.DynamicCategoryAdapter;
@@ -26,6 +25,7 @@ import com.tokopedia.discovery.dynamicfilter.presenter.CategoryPresenterImpl;
 import com.tokopedia.discovery.dynamicfilter.presenter.CategoryView;
 import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterPresenter;
 import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterView;
+import com.tokopedia.discovery.util.NpaLinearLayoutManager;
 
 import org.parceler.Parcels;
 
@@ -58,7 +58,7 @@ public class DynamicFilterCategoryFragment extends BaseFragment<CategoryPresente
     };
 
 
-    public static DynamicFilterCategoryFragment newInstance(List<Breadcrumb> breadCrumb, List<DynamicFilterModel.Filter> filterList,
+    public static DynamicFilterCategoryFragment newInstance(List<Breadcrumb> breadCrumb, List<Filter> filterList,
                                                             String currentCategory) {
 
         DynamicFilterCategoryFragment dynamicFilterCategoryFragment = new DynamicFilterCategoryFragment();
@@ -143,8 +143,7 @@ public class DynamicFilterCategoryFragment extends BaseFragment<CategoryPresente
     @Override
     public void setupRecyclerView() {
         // Set the layout manager to a LinearLayout manager for vertical list
-        dynamicFilterCategory.setLayoutManager(new LinearLayoutManager(getActivity()));
-//        dynamicFilterCategory.addItemDecoration(new DividerItemDecoration(getActivity()));
+        dynamicFilterCategory.setLayoutManager(new NpaLinearLayoutManager(getActivity()));
         dynamicFilterCategory.setHasFixedSize(true);
         dynamicFilterCategory.setAdapter(dynamicCategoryAdapter);
     }

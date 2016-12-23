@@ -42,6 +42,7 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.retrofit.utils.DialogForceLogout;
 import com.tokopedia.core.network.retrofit.utils.DialogNoConnection;
+import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.SessionRouter;
@@ -141,7 +142,7 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
         }
 
         if (GlobalConfig.isSellerApp()) {
-            drawer = ((TkpdCoreListener)getApplication()).getDrawer(this);
+            drawer = ((TkpdCoreRouter)getApplication()).getDrawer(this);
         } else {
             drawer = new DrawerVariable(this);
         }
@@ -564,9 +565,15 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
                     public void onDialogClicked() {
                         SessionHandler sessionHandler = new SessionHandler(getBaseContext());
                         sessionHandler.forceLogout();
-                        Intent intent = new Intent(getBaseContext(), SplashScreen.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
+                        if(GlobalConfig.isSellerApp()){
+                            Intent intent = SellerRouter.getAcitivitySplashScreenActivity(getBaseContext());
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                        }else {
+                            Intent intent = new Intent(getBaseContext(), SplashScreen.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                        }
                     }
                 });
     }

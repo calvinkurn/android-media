@@ -30,7 +30,6 @@
     <string name="top_ads_statistic_info_default_value">0</string>
     <string name="top_ads_range_date_text">%1$s - %2$s</string>
 
-    <string name="label_top_ads_deposit_desc">Saldo TopAds - %s</string>
     <string name="title_action_on">On</string>
     <string name="title_action_off">Off</string>
     <string name="action_filter_date">Filter Tanggal</string>

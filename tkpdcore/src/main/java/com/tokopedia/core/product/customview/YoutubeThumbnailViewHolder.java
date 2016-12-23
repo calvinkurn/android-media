@@ -25,6 +25,7 @@ public class YoutubeThumbnailViewHolder extends RelativeLayout{
     private ProgressBar loadingBar;
     private VideoData videoData;
     private int selectedVideo;
+    private YouTubeThumbnailLoader youTubeThumbnailLoader;
 
     public YoutubeThumbnailViewHolder(Context context, VideoData videoData, int selectedVideo) {
         super(context);
@@ -50,9 +51,9 @@ public class YoutubeThumbnailViewHolder extends RelativeLayout{
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.place_holder_youtube_view, this, true);
 
-        mainView = (RelativeLayout) findViewById(R.id.main_view);
+        mainView = (RelativeLayout) findViewById(R.id.video_thumbnail_main_view);
         YouTubeThumbnailView youTubeThumbnailView = (YouTubeThumbnailView) findViewById(R.id.youtube_thumbnail_view);
-        loadingBar = (ProgressBar) findViewById(R.id.loading_bar);
+        loadingBar = (ProgressBar) findViewById(R.id.youtube_thumbnail_loading_bar);
         youTubeThumbnailView.initialize(getContext().getApplicationContext()
                 .getString(R.string.GOOGLE_API_KEY),
                 thumbnailInitializedListener(youtubeVideoId));
@@ -78,6 +79,7 @@ public class YoutubeThumbnailViewHolder extends RelativeLayout{
             @Override
             public void onInitializationSuccess(YouTubeThumbnailView youTubeThumbnailView,
                                                 final YouTubeThumbnailLoader loader) {
+                youTubeThumbnailLoader = loader;
                 loader.setVideo(youtubeVideoId);
                 mainView.setVisibility(VISIBLE);
                 loader.setOnThumbnailLoadedListener(new YouTubeThumbnailLoader
@@ -115,5 +117,9 @@ public class YoutubeThumbnailViewHolder extends RelativeLayout{
                 getContext().startActivity(intent);
             }
         };
+    }
+
+    public void destroyReleaseProcess() {
+        youTubeThumbnailLoader.release();
     }
 }

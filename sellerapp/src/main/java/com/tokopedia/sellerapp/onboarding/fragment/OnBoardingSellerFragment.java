@@ -17,7 +17,6 @@ import com.tokopedia.core.onboarding.fragment.OnBoardingFragment;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.sellerapp.R;
-import com.tokopedia.session.session.activity.Login;
 
 public class OnBoardingSellerFragment extends OnBoardingFragment {
 
@@ -116,7 +115,7 @@ public class OnBoardingSellerFragment extends OnBoardingFragment {
     }
 
     private View inflateEndingView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_onboarding_intro_ending, container, false);
+        View v = inflater.inflate(R.layout.fragment_onboarding_intro_ending_seller, container, false);
         TextView t = (TextView) v.findViewById(R.id.title);
         TextView subTitleTextView = (TextView) v.findViewById(R.id.sub_title);
         TextView d = (TextView) v.findViewById(R.id.description);
@@ -157,7 +156,7 @@ public class OnBoardingSellerFragment extends OnBoardingFragment {
     }
 
     private View inflateDefaultView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_onboarding_intro, container, false);
+        View v = inflater.inflate(R.layout.fragment_onboarding_intro_seller, container, false);
         TextView t = (TextView) v.findViewById(R.id.title);
         TextView subTitleTextView = (TextView) v.findViewById(R.id.sub_title);
         TextView d = (TextView) v.findViewById(R.id.description);
