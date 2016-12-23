@@ -28,7 +28,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.Breadcrumb;
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
@@ -242,7 +242,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     }
 
     @Override
-    public void setDynamicFilterAtrribute(DynamicFilterModel.Data filterAtrribute, int activeTab) {
+    public void setDynamicFilterAtrribute(DataValue filterAtrribute, int activeTab) {
         Log.d(TAG, filterAtrribute.toString());
         if (filterAtrribute.getSort() != null) {
             filterAtrribute.setSelected(filterAtrribute.getSort().get(0).getName());

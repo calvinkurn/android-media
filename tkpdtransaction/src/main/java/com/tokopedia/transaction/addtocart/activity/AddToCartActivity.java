@@ -95,6 +95,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     private LocationPass mLocationPass;
     private ProductDetail mProductDetail;
     private List<Shipment> mShipments;
+    private List<Attribute> mShipmentRateAttrs;
     private Observable<Long> incrementObservable = Observable.interval(200, TimeUnit.MILLISECONDS);
 
     private Handler handler = new Handler();
@@ -370,6 +371,11 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             }
         }
         btnBuy.setEnabled(true);
+
+        this.mShipmentRateAttrs = new ArrayList<>(datas);
+        if (this.mShipmentRateAttrs.size() > 0) {
+            this.mShipmentRateAttrs.remove(0);
+        }
     }
 
     @Override
@@ -572,7 +578,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK && data != null) {
             tvErrorShipping.setVisibility(View.GONE);
-            etQuantity.setFocusable(false);
             switch (requestCode) {
                 case REQUEST_CHOOSE_ADDRESS:
                     renderFormAddress(Destination.convertFromBundle(data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS)));
@@ -583,10 +588,15 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                     break;
                 case ManageAddressConstant.REQUEST_CODE_PARAM_CREATE:
                     Destination addressData = presenter.generateAddressData(data);
-                    renderFormAddress(addressData);
-                    this.orderData.setAddress(addressData);
                     startCalculateCartLoading();
-                    presenter.getCartFormData(this, productCartPass);
+                    if (this.orderData.getAddress() == null || !this.orderData.getAddress().isCompleted()){
+                        this.orderData.setAddress(addressData);
+                        presenter.getCartKeroToken(this, productCartPass, addressData);
+                    }else{
+                        renderFormAddress(addressData);
+                        this.orderData.setAddress(addressData);
+                        presenter.calculateKeroAddressShipping(this, orderData);
+                    }
                     break;
                 case REQUEST_CHOOSE_LOCATION:
                     Bundle bundle = data.getExtras();
@@ -640,7 +650,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
 
     @OnClick(R2.id.increase_button)
     void actionIncreaseQuantity() {
-        etQuantity.requestFocus();
         if (!etQuantity.getText().toString().isEmpty()
                 && Integer.parseInt(etQuantity.getText().toString()) > 0) {
             etQuantity.setText(String
@@ -650,7 +659,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
 
     @OnClick(R2.id.decrease_button)
     void actionDecreaseQuantity() {
-        etQuantity.requestFocus();
         if (!etQuantity.getText().toString().isEmpty()
                 && Integer.parseInt(etQuantity.getText().toString()) > 1) {
             etQuantity.setText(String
@@ -689,7 +697,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         } else if (orderData.getAddress() == null) {
             showErrorMessage(getString(R.string.error_no_address));
-        } else if (getCurrentFocus() == etQuantity) {
+        } else {
             CommonUtils.dumper("rates/v1 kerorates called aftertextchanged");
             orderData.setWeight(CommonUtils.round((Double.parseDouble(orderData.getInitWeight()) * Double.parseDouble(s.toString())), 2) + "");
             tilAmount.setError(null);
@@ -743,6 +751,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         outState.putParcelable("locationPassData", this.mLocationPass);
         outState.putParcelable("productDetailData", this.mProductDetail);
         outState.putParcelableArrayList("shipmentsData", (ArrayList<? extends Parcelable>) this.mShipments);
+        outState.putParcelableArrayList("shipmentRateAttrs", (ArrayList<? extends Parcelable>) this.mShipmentRateAttrs);
     }
 
     @Override
@@ -754,6 +763,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             this.mLocationPass = savedInstanceState.getParcelable("locationPassData");
             this.mProductDetail = savedInstanceState.getParcelable("productDetailData");
             this.mShipments = savedInstanceState.getParcelableArrayList("shipmentsData");
+            this.mShipmentRateAttrs = savedInstanceState.getParcelableArrayList("shipmentRateAttrs");
         }
     }
 
@@ -766,6 +776,9 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             hideNetworkError();
             renderFormProductInfo(this.mProductDetail);
             renderFormAddress(this.mDestination);
+            if (this.mShipmentRateAttrs != null) {
+                renderFormShipmentRates(this.mShipmentRateAttrs);
+            }
             hideInitLoading();
         }
     }

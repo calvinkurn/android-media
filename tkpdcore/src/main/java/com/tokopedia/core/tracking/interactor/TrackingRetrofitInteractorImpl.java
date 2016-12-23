@@ -23,12 +23,11 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
- * Created by Alifa on 10/12/2016.
+ * @author Alifa on 10/12/2016.
  */
 
 public class TrackingRetrofitInteractorImpl implements TrackingRetrofitInteractor {
 
-    private static final String TAG = TrackingRetrofitInteractorImpl.class.getSimpleName();
     private final CompositeSubscription compositeSubscription;
     private final TrackingOderService service;
     private boolean isRequesting = false;
@@ -40,8 +39,11 @@ public class TrackingRetrofitInteractorImpl implements TrackingRetrofitInteracto
 
 
     @Override
-    public void getDataTracking(final @NonNull Context context, final @NonNull TKPDMapParam<String, String> params, final @NonNull TrackingListener listener) {
-        Observable<Response<TkpdResponse>> observable = service.getApi().trackOrder(AuthUtil.generateParamsNetwork(context,params));
+    public void getDataTracking(final @NonNull Context context,
+                                final @NonNull TKPDMapParam<String, String> params,
+                                final @NonNull TrackingListener listener) {
+        Observable<Response<TkpdResponse>> observable
+                = service.getApi().trackOrder(AuthUtil.generateParamsNetwork(context, params));
         Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
             @Override
             public void onCompleted() {
@@ -121,7 +123,8 @@ public class TrackingRetrofitInteractorImpl implements TrackingRetrofitInteracto
 
     @Override
     public void unsubscribe() {
-        compositeSubscription.unsubscribe();
+        if (compositeSubscription.hasSubscriptions())
+            compositeSubscription.unsubscribe();
     }
 
     @Override

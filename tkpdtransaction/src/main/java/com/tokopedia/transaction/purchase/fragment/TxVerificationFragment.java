@@ -437,7 +437,7 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
                 String imagePath = null;
                 if (data != null && data.getStringExtra(GalleryBrowser.IMAGE_URL) != null) {
                     imagePath = data.getExtras().getString(GalleryBrowser.IMAGE_URL, null);
-                } else if (imageUploadHandler.getCameraFileloc() != null) {
+                } else if (imageUploadHandler != null && imageUploadHandler.getCameraFileloc() != null) {
                     imagePath = imageUploadHandler.getCameraFileloc();
                 }
                 presenter.uploadProofImageWSV4(getActivity(), imagePath, txVerDataToUpload);
@@ -446,6 +446,7 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
                 if (resultCode == ConfirmPaymentActivity.RESULT_FORM_FAILED
                         && data.hasExtra(ConfirmPaymentActivity.EXTRA_MESSAGE_ERROR_GET_FORM)) {
                     NetworkErrorHelper.showSnackbar(getActivity(),
+
                             data.getStringExtra(ConfirmPaymentActivity.EXTRA_MESSAGE_ERROR_GET_FORM));
                 }
                 break;
