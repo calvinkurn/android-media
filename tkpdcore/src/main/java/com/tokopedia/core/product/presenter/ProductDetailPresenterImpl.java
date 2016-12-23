@@ -726,6 +726,12 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         viewListener.hideProgressLoading();
                         viewListener.onNullData();
                     }
+
+                    @Override
+                    public void onReportServerProblem() {
+                        viewListener.hideProgressLoading();
+                        viewListener.showFullScreenError();
+                    }
                 });
     }
 

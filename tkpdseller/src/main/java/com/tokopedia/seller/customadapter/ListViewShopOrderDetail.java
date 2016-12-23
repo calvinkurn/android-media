@@ -102,7 +102,8 @@ public class ListViewShopOrderDetail extends BaseAdapter{
 				Intent intent = new Intent(context, ProductInfoActivity.class);
 				Bundle bundle = new Bundle();
 				bundle.putString(PRODUCT_URI, data.ProductUrlList);
-				bundle.putParcelable(PRODUCT_ID, getProductDataToPass(data));
+				bundle.putParcelable(ProductInfoActivity.EXTRA_PRODUCT_PASS,
+						getProductDataToPass(data));
 				intent.putExtras(bundle);
 				context.startActivity(intent);
 			}

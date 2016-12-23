@@ -272,4 +272,6 @@ public interface ProductDetailView extends ViewListener {
     void showTickerGTM(String message);
 
     void hideTickerGTM();
+
+    void showFullScreenError();
 }

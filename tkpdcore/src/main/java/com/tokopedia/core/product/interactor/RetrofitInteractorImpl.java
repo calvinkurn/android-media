@@ -106,7 +106,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
             }
 
             @Override
-            public void onNext(Response<TkpdResponse> response) {
+            public void onNext(final Response<TkpdResponse> response) {
                 if (response.isSuccessful()) {
                     if (!response.body().isError()) {
                         listener.onSuccess(response.body().convertDataObj(ProductDetailData.class));
@@ -125,7 +125,9 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
 
                         @Override
                         public void onTimeout() {
-                            listener.onTimeout(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                            if (response.code() != 500)
+                                listener.onTimeout(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                            else listener.onReportServerProblem();
                         }
 
                         @Override

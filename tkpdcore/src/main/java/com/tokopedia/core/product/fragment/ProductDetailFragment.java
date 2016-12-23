@@ -742,4 +742,11 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         };
     }
 
+    @Override
+    public void showFullScreenError() {
+        NetworkErrorHelper.showEmptyState(getActivity(),
+                getActivity().findViewById(R.id.root_view),
+                initializationErrorListener());
+    }
+
 }

@@ -66,6 +66,8 @@ public interface RetrofitInteractor {
         void onError(String error);
 
         void onNullData();
+
+        void onReportServerProblem();
     }
 
     interface OtherProductListener {
