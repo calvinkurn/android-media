@@ -32,7 +32,7 @@ public class GetProductGraph {
     private Double diffTrans;
     @SerializedName("DiffConv")
     @Expose
-    private Integer diffConv;
+    private Double diffConv;
     @SerializedName("DiffView")
     @Expose
     private Double diffView;
@@ -159,7 +159,7 @@ public class GetProductGraph {
      * @return
      * The diffConv
      */
-    public Integer getDiffConv() {
+    public Double getDiffConv() {
         return diffConv;
     }
 
@@ -168,7 +168,7 @@ public class GetProductGraph {
      * @param diffConv
      * The DiffConv
      */
-    public void setDiffConv(Integer diffConv) {
+    public void setDiffConv(Double diffConv) {
         this.diffConv = diffConv;
     }
 

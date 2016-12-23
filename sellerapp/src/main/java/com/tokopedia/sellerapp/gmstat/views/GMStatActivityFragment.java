@@ -62,6 +62,7 @@ import static com.tokopedia.sellerapp.gmstat.views.GMStatHeaderViewHelper.getDat
  */
 public class GMStatActivityFragment extends Fragment {
 
+    public static final double NoDataAvailable = -2147483600;
     private static final String TAG = "GMStatActivityFragment";
     CompositeSubscription compositeSubscription = new CompositeSubscription();
 
@@ -688,6 +689,9 @@ public class GMStatActivityFragment extends Fragment {
         @BindColor(R.color.arrow_up)
         int arrowUp;
 
+        @BindColor(R.color.grey_400)
+        int gredyColor;
+
         public GMStat gmStat;
 
         public CommonGMVH(View itemView) {
@@ -701,23 +705,38 @@ public class GMStatActivityFragment extends Fragment {
 
 
             // image for arrow is here
-            if(commomGMModel.percentage < 0){// down here
+            boolean isDefault = false;
+            if(commomGMModel.percentage == NoDataAvailable*100){
+                arrowIcon.setVisibility(View.GONE);
+                percentage.setTextColor(gredyColor);
+                isDefault = false;
+            }else if(commomGMModel.percentage == 0){
+                arrowIcon.setVisibility(View.GONE);
+                percentage.setTextColor(arrowUp);
+                isDefault = true;
+            }else if(commomGMModel.percentage < 0){// down here
                 arrowIcon.setVisibility(View.VISIBLE);
                 gmStat.getImageHandler().loadImage(arrowIcon, R.mipmap.arrow_down_percentage);
                 percentage.setTextColor(arrowDown);
-            }else if(commomGMModel.percentage == 0){
-                arrowIcon.setVisibility(View.GONE);
+                isDefault = true;
             }else{// up here
                 arrowIcon.setVisibility(View.VISIBLE);
                 gmStat.getImageHandler().loadImage(arrowIcon, R.mipmap.arrow_up_percentage);
                 percentage.setTextColor(arrowUp);
+                isDefault = true;
             }
 
-            DecimalFormat formatter = new DecimalFormat("#0.00");
-            double d = commomGMModel.percentage;
-            String text = "";
-            System.out.println(text = formatter.format(d));
-            percentage.setText(text+"%");
+
+
+            if(isDefault) {
+                DecimalFormat formatter = new DecimalFormat("#0.00");
+                double d = commomGMModel.percentage;
+                String text = "";
+                System.out.println(text = formatter.format(d));
+                percentage.setText(text + "%");
+            }else{
+                percentage.setText("Tidak ada data");
+            }
         }
     }
 
@@ -827,7 +846,7 @@ public class GMStatActivityFragment extends Fragment {
                 NumberFormat currencyFormatter = NumberFormat.getNumberInstance(locale);
                 System.out.println(text = (currencyFormatter.format(successTrans)));
 //                text = successTrans+"";
-            }else if(successTrans > 1_000_000){
+            }else if(successTrans >= 1_000_000){
                 text = KMNumbers2.formatNumbers(successTrans);
             }
             //[START] This is obsolete

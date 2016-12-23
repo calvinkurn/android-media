@@ -59,6 +59,9 @@ public class GMStatActivity extends AppCompatActivity implements GMStat{
     private String shopId;
     private DrawerVariableSeller drawer;
 
+    private final long shop_id_staging = 560900;
+//    private final long shop_id_staging = 67726;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,8 +111,11 @@ public class GMStatActivity extends AppCompatActivity implements GMStat{
 
     private void fetchIntent(Bundle extras) {
         if(extras != null){
-            isGoldMerchant = extras.getBoolean(IS_GOLD_MERCHANT, false);
-            shopId = extras.getString(SHOP_ID, "");
+//            isGoldMerchant = extras.getBoolean(IS_GOLD_MERCHANT, false);
+//            shopId = extras.getString(SHOP_ID, "");
+
+            isGoldMerchant = true;
+            shopId = shop_id_staging+"";
         }
     }
 

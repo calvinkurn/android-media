@@ -20,6 +20,7 @@ import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.tokopedia.sellerapp.gmstat.views.GMStatActivityFragment.NoDataAvailable;
 import static com.tokopedia.sellerapp.gmstat.views.PopularProductViewHelper.getFormattedString;
 
 /**
@@ -55,6 +56,9 @@ public class DataTransactionViewHelper {
 
     @BindView(R.id.transaction_data_container_non_gold_merchant)
     LinearLayout transactionDataContainerNonGoldMerchant;
+
+    @BindColor(R.color.grey_400)
+    int gredyColor;
 
     private View itemView;
     private boolean isGoldMerchant;
@@ -101,9 +105,18 @@ public class DataTransactionViewHelper {
         transactionCount.setText(getFormattedString(getTransactionGraph.getSuccessTrans())+"");
 
         // percentage is missing and icon is missing too
-        Double diffSuccessTrans = getTransactionGraph.getDiffSuccessTrans();
+        Double diffSuccessTrans = getTransactionGraph.getDiffSuccessTrans()*100;
         // image for arrow is here
-        if(diffSuccessTrans < 0){// down here
+        boolean isDefault = false;
+        if(diffSuccessTrans == NoDataAvailable*100){
+            transactionCountIcon.setVisibility(View.INVISIBLE);
+            percentage.setTextColor(gredyColor);
+            isDefault = false;
+        }else if(diffSuccessTrans == 0){
+            transactionCountIcon.setVisibility(View.INVISIBLE);
+            percentage.setTextColor(arrowUp);
+            isDefault = true;
+        }else if(diffSuccessTrans < 0){// down here
             imageHandler.loadImage(transactionCountIcon, R.mipmap.arrow_down_percentage);
             percentage.setTextColor(arrowDown);
         }else{// up here
@@ -111,11 +124,15 @@ public class DataTransactionViewHelper {
             percentage.setTextColor(arrowUp);
         }
 
-        DecimalFormat formatter = new DecimalFormat("#0.00");
-        double d = diffSuccessTrans;
-        String text = "";
-        System.out.println(text = formatter.format(d));
-        percentage.setText(text+"%");
+        if(isDefault){
+            DecimalFormat formatter = new DecimalFormat("#0.00");
+            double d = diffSuccessTrans;
+            String text = "";
+            System.out.println(text = formatter.format(d));
+            percentage.setText(text+"%");
+        }else{
+            percentage.setText("Tidak ada data");
+        }
     }
 
     private List<NExcel> joinDateAndGrossGraph(List<Integer> dateGraph, List<Integer> successTransGrpah){

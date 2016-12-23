@@ -113,7 +113,7 @@ public class WiliamChartUtils_ {
         LineSet dataset = new LineSet(mLabels, mValues);
 
 //        if (mIsLineDashed) dataset.setDashed(mLineDashType);
-        dataset.setSmooth(mIsLineSmooth)
+        dataset.setSmooth(LineSet.SMOOTH_QUAD)
                 .setThickness(Tools.fromDpToPx(mLineThickness))
                 .setColor(mLineColorId);
 

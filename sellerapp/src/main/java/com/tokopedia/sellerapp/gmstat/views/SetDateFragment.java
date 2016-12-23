@@ -232,12 +232,23 @@ public class SetDateFragment extends Fragment {
                         }
                     }
                 }
-                PeriodAdapter.this.notifyDataSetChanged();
+
+                if (mRecyclerView != null && !mRecyclerView.isComputingLayout()) {
+                    PeriodAdapter.this.notifyDataSetChanged();
+                }
             }
         };
 
         public PeriodAdapter(){
             basePeriodModels = new ArrayList<>();
+        }
+
+        private RecyclerView mRecyclerView;
+
+        @Override
+        public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+            super.onAttachedToRecyclerView(recyclerView);
+            mRecyclerView = recyclerView;
         }
 
         @Override
@@ -436,7 +447,16 @@ public class SetDateFragment extends Fragment {
                 checkBoxPeriod.setChecked(false);
             }
 
-            periodHeader.setText(periodRangeModel.headerText);
+            if(periodRangeModel.range == 1 && periodRangeModel.isRange == false){
+                periodHeader.setText("Kemarin");
+            }else if(periodRangeModel.isRange = true){
+                if(periodRangeModel.range==7){
+                    periodHeader.setText("7 hari terakhir");
+                }else if(periodRangeModel.range == 31){
+                    periodHeader.setText("30 hari terakhir");
+                }
+            }
+//            periodHeader.setText(periodRangeModel.headerText);
 
             String description = periodRangeModel.getDescription();
             Log.d("MNORMANSYAH", "description : "+description);

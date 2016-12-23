@@ -15,6 +15,7 @@ import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.tokopedia.sellerapp.gmstat.views.GMStatActivityFragment.NoDataAvailable;
 import static com.tokopedia.sellerapp.gmstat.views.PopularProductViewHelper.getFormattedString;
 
 /**
@@ -47,6 +48,9 @@ public class BuyerDataViewHelper {
     @BindColor(R.color.arrow_up)
     int arrowUp;
 
+    @BindColor(R.color.grey_400)
+    int gredyColor;
+
     private View itemView;
 
     public BuyerDataViewHelper(View itemView){
@@ -69,19 +73,35 @@ public class BuyerDataViewHelper {
 
         double percentage = getBuyerData.getDiffTotal() * 100D;
         // image for arrow is here
-        if(percentage < 0){// down here
+        boolean isDefault = false;
+        if(percentage == NoDataAvailable*100){
+            buyerCountIcon.setVisibility(View.INVISIBLE);
+            percentageBuyer.setTextColor(gredyColor);
+            isDefault = false;
+        }else if(percentage == 0){
+            buyerCountIcon.setVisibility(View.INVISIBLE);
+            percentageBuyer.setTextColor(arrowUp);
+            isDefault = true;
+        }
+        else if(percentage < 0){// down here
             imageHandler.loadImage(buyerCountIcon, R.mipmap.arrow_down_percentage);
             percentageBuyer.setTextColor(arrowDown);
+            isDefault = true;
         }else{// up here
             imageHandler.loadImage(buyerCountIcon, R.mipmap.arrow_up_percentage);
             percentageBuyer.setTextColor(arrowUp);
+            isDefault = true;
         }
 
-        DecimalFormat formatter = new DecimalFormat("#0.00");
-        double d = percentage;
-        String text = "";
-        System.out.println(text = formatter.format(d));
-        percentageBuyer.setText(text+"%");
+        if(isDefault){
+            DecimalFormat formatter = new DecimalFormat("#0.00");
+            double d = percentage;
+            String text = "";
+            System.out.println(text = formatter.format(d));
+            percentageBuyer.setText(text+"%");
+        }else{
+            percentageBuyer.setText("Tidak ada data");
+        }
 
         // set icon up or down or netral
     }
