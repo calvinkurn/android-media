@@ -2,6 +2,7 @@ package com.tokopedia.sellerapp.gmstat.views;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
+import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.gmstat.models.GetKeyword;
 
@@ -50,6 +52,22 @@ public class MarketInsightViewHelper {
         ButterKnife.bind(this, view);
     }
 
+    /**
+     * set category for footer
+     * @param hadesV1Models non null and non empty dataset
+     */
+    public void bindDataCategory(List<HadesV1Model> hadesV1Models){
+        if(hadesV1Models==null||hadesV1Models.size()<=0)
+            return;
+
+        HadesV1Model.Category category = hadesV1Models.get(0).getData().getCategories().get(0);
+
+        String categoryBold = String.format("\"<b>%s</b>\"", category.getName());
+//        String footerText = String.format("Kata kunci ini berdasarkan kategori dari \"%s\"", category.getName());
+//        marketInsightFooter_.setText(footerText);
+        marketInsightFooter_.setText(Html.fromHtml("Kata kunci ini berdasarkan kategori dari "+categoryBold+" "));
+    }
+
     public void bindData(List<GetKeyword> getKeywords){
         if(getKeywords==null||getKeywords.size()<=0)
             return;
@@ -64,7 +82,6 @@ public class MarketInsightViewHelper {
         marketInsightRecyclerView.setAdapter(marketInsightAdapter);
 
         // hit hades for detail category
-
 
         if(isGoldMerchant){
             marketInsightNonGoldMerchant.setVisibility(View.GONE);

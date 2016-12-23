@@ -232,6 +232,7 @@ public class SetDateFragment extends Fragment {
                         }
                     }
                 }
+                PeriodAdapter.this.notifyDataSetChanged();
             }
         };
 

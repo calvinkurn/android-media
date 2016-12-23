@@ -20,6 +20,7 @@ import com.db.chart.tooltip.Tooltip;
 import com.db.chart.view.LineChartView;
 import com.jonas.jgraph.graph.JcoolGraph;
 import com.jonas.jgraph.models.Jchart;
+import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.gmstat.library.LoaderImageView;
@@ -249,6 +250,11 @@ public class GMStatActivityFragment extends Fragment {
             marketInsightViewHelper.bindData(getKeywords);
             marketInsightReal.setVisibility(View.VISIBLE);
             marketInsightLoading2.hideLoading();
+        }
+
+        @Override
+        public void onSuccessGetCategory(List<HadesV1Model> hadesV1Models) {
+            marketInsightViewHelper.bindDataCategory(hadesV1Models);
         }
 
         @Override

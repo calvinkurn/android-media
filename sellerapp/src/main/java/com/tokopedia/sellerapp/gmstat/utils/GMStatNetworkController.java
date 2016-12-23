@@ -5,6 +5,8 @@ import android.content.res.AssetManager;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.tokopedia.core.discovery.dynamicfilter.facade.HadesNetwork;
+import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
 import com.tokopedia.sellerapp.BuildConfig;
 import com.tokopedia.sellerapp.gmstat.apis.GMStatApi;
 import com.tokopedia.sellerapp.gmstat.models.GetBuyerData;
@@ -36,6 +38,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.functions.Func2;
+import rx.functions.Func3;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -227,12 +230,23 @@ public class GMStatNetworkController extends BaseNetworkController {
         return getShopCategory(shopId)
                 .flatMap(new Func1<Response<GetShopCategory>, Observable<KeywordModel>>() {
                     @Override
-                    public Observable<KeywordModel> call(Response<GetShopCategory> response) {
+                    public Observable<KeywordModel> call(final Response<GetShopCategory> response) {
                         if(response.isSuccessful()){
                             KeywordModel keywordModel =
                                     new KeywordModel();
                             keywordModel.getShopCategory = response.body();
                             keywordModel.getShopCategoryResponse = response;
+
+                            Observable<List<Response<HadesV1Model>>> getCategories = Observable.from(response.body().getShopCategory()).flatMap(
+                                    new Func1<Integer, Observable<Response<HadesV1Model>>>() {
+                                        @Override
+                                        public Observable<Response<HadesV1Model>> call(Integer integer) {
+                                            Observable<Response<HadesV1Model>> hades
+                                                    = HadesNetwork.fetchDepartment(integer, -1, HadesNetwork.TREE);
+                                            return Observable.just(hades.toBlocking().first());
+                                        }
+                                    }
+                            ).toList();
 
                             Observable<List<Response<GetKeyword>>> getKeywords
                                     = Observable.from(response.body().getShopCategory())
@@ -246,9 +260,25 @@ public class GMStatNetworkController extends BaseNetworkController {
                                     })
                                     .toList();
 
-                            return Observable.zip(getKeywords, Observable.just(keywordModel), new Func2<List<Response<GetKeyword>>, KeywordModel, KeywordModel>() {
+//                            return Observable.zip(getKeywords, Observable.just(keywordModel), new Func2<List<Response<GetKeyword>>, KeywordModel, KeywordModel>() {
+//                                @Override
+//                                public KeywordModel call(List<Response<GetKeyword>> responses, KeywordModel keywordModel) {
+//                                    keywordModel.getKeywords = new ArrayList<GetKeyword>();
+//                                    for (Response<GetKeyword> response : responses) {
+//                                        if(response.isSuccessful()) {
+//                                            keywordModel.getKeywords.add(response.body());
+//                                        }
+//                                    }
+//
+//                                    keywordModel.getResponseList = responses;
+//
+//                                    return keywordModel;
+//                                }
+//                            });
+
+                            return Observable.zip(getKeywords, getCategories, Observable.just(keywordModel), new Func3<List<Response<GetKeyword>>, List<Response<HadesV1Model>>, KeywordModel, KeywordModel>() {
                                 @Override
-                                public KeywordModel call(List<Response<GetKeyword>> responses, KeywordModel keywordModel) {
+                                public KeywordModel call(List<Response<GetKeyword>> responses, List<Response<HadesV1Model>> responses2, KeywordModel keywordModel) {
                                     keywordModel.getKeywords = new ArrayList<GetKeyword>();
                                     for (Response<GetKeyword> response : responses) {
                                         if(response.isSuccessful()) {
@@ -258,6 +288,12 @@ public class GMStatNetworkController extends BaseNetworkController {
 
                                     keywordModel.getResponseList = responses;
 
+                                    List<HadesV1Model> hadesV1Models = new ArrayList<HadesV1Model>();
+                                    for (Response<HadesV1Model> hadesV1ModelResponse : responses2) {
+                                        hadesV1Models.add(hadesV1ModelResponse.body());
+                                    }
+
+                                    keywordModel.hadesv1Models = hadesV1Models;
                                     return keywordModel;
                                 }
                             });
@@ -283,6 +319,7 @@ public class GMStatNetworkController extends BaseNetworkController {
 
         public Response<GetShopCategory> getShopCategoryResponse;
         public List<Response<GetKeyword>> getResponseList;
+        public List<HadesV1Model> hadesv1Models;
     }
 
     public void fetchData(final GetGMStat getGMStat, AssetManager assetManager){
@@ -439,6 +476,8 @@ public class GMStatNetworkController extends BaseNetworkController {
 
                                         List<GetKeyword> getKeywords = keywordModel.getKeywords;
                                         getGMStat.onSuccessGetKeyword(getKeywords);
+
+                                        getGMStat.onSuccessGetCategory(keywordModel.hadesv1Models);
                                     }
                                 }
                         )
@@ -543,6 +582,8 @@ public class GMStatNetworkController extends BaseNetworkController {
 
                                         List<GetKeyword> getKeywords = keywordModel.getKeywords;
                                         getGMStat.onSuccessGetKeyword(getKeywords);
+
+                                        getGMStat.onSuccessGetCategory(keywordModel.hadesv1Models);
                                     }
                                 }
                         )
@@ -619,6 +660,7 @@ public class GMStatNetworkController extends BaseNetworkController {
         void onSuccessPopularProduct(GetPopularProduct getPopularProduct);
         void onSuccessBuyerData(GetBuyerData getBuyerData);
         void onSuccessGetKeyword(List<GetKeyword> getKeywords);
+        void onSuccessGetCategory(List<HadesV1Model> hadesV1Models);
         void onComplete();
     }
 
