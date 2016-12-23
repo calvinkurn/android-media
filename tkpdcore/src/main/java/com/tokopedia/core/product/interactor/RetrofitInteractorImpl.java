@@ -701,7 +701,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                                 Log.e("DownloadReportType", e.getLocalizedMessage());
                                 String errorString;
                                 if (e instanceof SocketTimeoutException) {
-                                    errorString = ErrorNetMessage.MESSAGE_ERRgitOR_TIMEOUT;
+                                    errorString = ErrorNetMessage.MESSAGE_ERROR_TIMEOUT;
                                 } else if (e instanceof UnknownHostException) {
                                     errorString = ErrorNetMessage.MESSAGE_ERROR_DEFAULT;
                                 } else {
