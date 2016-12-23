@@ -21,7 +21,7 @@
             android:label="Filter"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3"
-            android:windowSoftInputMode="adjustPan|adjustResize"/>
+            android:windowSoftInputMode="adjustResize"/>
 
         <activity
             android:name="com.tokopedia.discovery.activity.SortProductActivity"
