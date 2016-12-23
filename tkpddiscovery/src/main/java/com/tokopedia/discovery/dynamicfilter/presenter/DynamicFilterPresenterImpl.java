@@ -3,7 +3,7 @@ package com.tokopedia.discovery.dynamicfilter.presenter;
 import android.content.Intent;
 
 import com.tokopedia.core.discovery.model.Breadcrumb;
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.Filter;
 
 import org.parceler.Parcels;
 
@@ -17,7 +17,7 @@ public class DynamicFilterPresenterImpl implements DynamicFilterPresenter {
     private static final String TAG = DynamicFilterPresenterImpl.class.getSimpleName();
     WeakReference<DynamicFilterView> view;
     private List<Breadcrumb> breadcrumbs;
-    private List<DynamicFilterModel.Filter> filterList;
+    private List<Filter> filterList;
     private String currentCategory;
 
 
@@ -31,7 +31,7 @@ public class DynamicFilterPresenterImpl implements DynamicFilterPresenter {
             // set which activity should be moved after login process done
             List<Breadcrumb> bcr = Parcels.unwrap(
                     intent.getParcelableExtra(EXTRA_PRODUCT_BREADCRUMB_LIST));
-            List<DynamicFilterModel.Filter> filterList = Parcels.unwrap(
+            List<Filter> filterList = Parcels.unwrap(
                     intent.getParcelableExtra(EXTRA_FILTER_CATEGORY_LIST));
 
             currentCategory = intent.getStringExtra(EXTRA_CURRENT_CATEGORY);
@@ -43,9 +43,9 @@ public class DynamicFilterPresenterImpl implements DynamicFilterPresenter {
                 this.filterList = filterList;
             }
             if (!intent.getStringExtra(EXTRA_FILTER_SOURCE).equals("search_shop") &&
-                    !filterList.get(0).getTitle().equals(DynamicFilterModel.Filter.TITLE_CATEGORY)) {
+                    !filterList.get(0).getTitle().equals(Filter.TITLE_CATEGORY)) {
 
-                filterList.add(0, DynamicFilterModel.Filter.createCategory());
+                filterList.add(0, Filter.createCategory());
             }
             view.get().setFragmentForFirstTime3(filterList);
         }
@@ -57,7 +57,7 @@ public class DynamicFilterPresenterImpl implements DynamicFilterPresenter {
     }
 
     @Override
-    public List<DynamicFilterModel.Filter> getFilterCategory() {
+    public List<Filter> getFilterCategory() {
         return filterList;
     }
 

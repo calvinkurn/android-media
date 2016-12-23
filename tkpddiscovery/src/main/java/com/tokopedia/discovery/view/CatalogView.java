@@ -1,6 +1,6 @@
 package com.tokopedia.discovery.view;
 
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
 import com.tokopedia.core.network.entity.discovery.CatalogModel;
 import com.tokopedia.core.presenter.BaseView;
@@ -22,5 +22,6 @@ public interface CatalogView extends BaseView {
     int getDataSize();
     void onCallNetwork();
     BrowseCatalogModel getDataModel();
-    void setDynamicFilterAtrribute(DynamicFilterModel.Data filterAtrribute, int activeTab);
+
+    void setDynamicFilterAtrribute(DataValue filterAtrribute, int activeTab);
 }
