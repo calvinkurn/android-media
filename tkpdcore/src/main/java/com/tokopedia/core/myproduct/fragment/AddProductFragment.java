@@ -1380,9 +1380,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
             if (tempPic.getWidth() > 2048 || tempPic.getHeight() > 2048) {
                 tempPicToUpload = new ImageHandler().ResizeBitmap(tempPic, 2048);
             }
-            // else if(tempPic.getWidth() < 300 || tempPic.getHeight() < 100){
-            // tempPicToUpload = ih.ResizeBitmap(tempPic, 300);
-            // }
             else {
                 tempPicToUpload = tempPic;
             }

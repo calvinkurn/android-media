@@ -98,4 +98,22 @@ public class InboxTicketDetailAdapter extends DataBindAdapter {
         return headerView;
     }
 
+    public void addReply(TicketReplyDatum ticketReply) {
+
+        if (getData().getTicketReply().getTicketReplyData().size() >= 2) {
+            getTicketView().getData().remove(0);
+            getHeaderView().getData().getTicketReply().getTicketReplyData().remove(0);
+            getData().getTicketReply().getTicketReplyData().remove(0);
+        }
+
+        getTicketView().getData().add(ticketReply);
+        getHeaderView().getData().getTicketReply().getTicketReplyData().add(ticketReply);
+        getData().getTicketReply().getTicketReplyData().add(ticketReply);
+
+    }
+
+    public void updateView() {
+        headerView.notifyDataSetChanged();
+        ticketView.notifyDataSetChanged();
+    }
 }

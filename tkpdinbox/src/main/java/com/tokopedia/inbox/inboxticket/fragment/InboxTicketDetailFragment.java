@@ -382,25 +382,12 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
     public void onSuccessReply(TicketReplyDatum ticketReply) {
         comment.setText("");
         KeyboardHandler.DropKeyboard(getActivity(), comment);
-
-        if (adapter.getTicketView().getData().size() < 2) {
-            adapter.getTicketView().getData().add(ticketReply);
-            adapter.getData().getTicketReply().getTicketReplyData().add(ticketReply);
-        } else {
-            adapter.getTicketView().getData().remove(0);
-            adapter.getHeaderView().getData().getTicketReply().getTicketReplyData().remove(0);
-            adapter.getData().getTicketReply().getTicketReplyData().remove(0);
-            adapter.getTicketView().getData().add(ticketReply);
-            adapter.getHeaderView().getData().getTicketReply().getTicketReplyData().add(ticketReply);
-            adapter.getData().getTicketReply().getTicketReplyData().add(ticketReply);
-
-        }
-
-        adapter.getHeaderView().notifyDataSetChanged();
-        adapter.getTicketView().notifyDataSetChanged();
+        adapter.addReply(ticketReply);
+        adapter.updateView();
         imageAdapter.getList().clear();
         imageAdapter.notifyDataSetChanged();
         listImage.setVisibility(View.GONE);
+        attachButton.setVisibility(View.VISIBLE);
     }
 
     @Override

@@ -112,7 +112,7 @@ public class ManagePeopleBankFragmentPresenterImpl implements ManagePeopleBankFr
             @Override
             public void onNetworkError(String message) {
                 viewListener.finishLoading();
-                showError("", new NetworkErrorHelper.RetryClickedListener() {
+                showError(new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
                         getListBank();
