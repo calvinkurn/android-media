@@ -29,11 +29,13 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.listener.ITopPayView;
@@ -182,6 +184,7 @@ public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> impl
 
     @Override
     public void onGetThanksTopPaySuccess(String message) {
+        presenter.clearNotificationCart();
         hideProgressLoading();
         showToastMessage(message);
         navigateToActivity(TransactionPurchaseRouter.createIntentTxSummary(this));
@@ -255,6 +258,11 @@ public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> impl
     public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
         Intent intent = new Intent(Intent.ACTION_SYNC, null, this, clazz).putExtras(bundle);
         this.startService(intent);
+    }
+
+    @Override
+    public LocalCacheHandler getLocalCacheHandlerNotification() {
+        return new LocalCacheHandler(this, TkpdCache.NOTIFICATION_DATA);
     }
 
     @NonNull

@@ -3,7 +3,9 @@ package com.tokopedia.transaction.cart.presenter;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.cart.listener.ITopPayView;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
@@ -81,5 +83,12 @@ public class TopPayPresenter implements ITopPayPresenter {
         bundle.putString(TopPayIntentService.EXTRA_PAYMENT_ID, paymentId);
 
         view.executeIntentService(bundle, TopPayIntentService.class);
+    }
+
+    @Override
+    public void clearNotificationCart() {
+        LocalCacheHandler cache = view.getLocalCacheHandlerNotification();
+        cache.putInt(TkpdCache.Key.IS_HAS_CART, 0);
+        cache.applyEditor();
     }
 }

@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.product.listener.ViewListener;
 
 /**
@@ -20,4 +21,6 @@ public interface ITopPayView extends ViewListener {
     String getStringFromResource(@StringRes int resId);
 
     void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz);
+
+    LocalCacheHandler getLocalCacheHandlerNotification();
 }
