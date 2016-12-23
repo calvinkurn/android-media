@@ -111,11 +111,13 @@ public class GMStatActivity extends AppCompatActivity implements GMStat{
 
     private void fetchIntent(Bundle extras) {
         if(extras != null){
-//            isGoldMerchant = extras.getBoolean(IS_GOLD_MERCHANT, false);
-//            shopId = extras.getString(SHOP_ID, "");
+            isGoldMerchant = extras.getBoolean(IS_GOLD_MERCHANT, false);
+            shopId = extras.getString(SHOP_ID, "");
 
-            isGoldMerchant = true;
-            shopId = shop_id_staging+"";
+            //[START] This is staging version
+//            isGoldMerchant = true;
+//            shopId = shop_id_staging+"";
+            //[END] This is staging version
         }
     }
 
