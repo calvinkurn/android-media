@@ -1,5 +1,50 @@
 apply plugin: 'com.android.library'
 apply plugin: 'android-apt'
+apply plugin: 'com.jfrog.artifactory'
+apply plugin: 'maven-publish'
+
+publishing {
+    publications {
+        aar(MavenPublication) {
+            groupId 'com.tokopedia.inbox'
+            artifactId 'inbox'
+            version '1.0-SNAPSHOT'
+            artifact("$buildDir/outputs/aar/tkpdinbox-release.aar")
+            pom.withXml {
+                def dependenciesNode = asNode().appendNode('dependencies')
+
+                configurations.compile.allDependencies.each {
+                    if (it.group != null && it.name != null) {
+                        def dependencyNode = dependenciesNode.appendNode('dependency')
+                        dependencyNode.appendNode('groupId', it.group)
+                        dependencyNode.appendNode('artifactId', it.name)
+                        dependencyNode.appendNode('version', it.version)
+                    }
+                }
+            }
+        }
+    }
+}
+
+artifactory {
+    contextUrl = rootProject.ext.artifactoryUrl
+    publish {
+        repository {
+            repoKey = 'libs-snapshot-local'
+
+            username = artifactory_username
+            password = artifactory_password
+        }
+        defaults {
+            publications('aar')
+            publishArtifacts = true
+
+            properties = ['qa.level': 'basic', 'q.os': 'android', 'dev.team': 'core']
+            publishPom = true
+        }
+    }
+}
+
 
 android {
     compileSdkVersion 23
@@ -25,12 +70,14 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
+    //compile rootProject.ext.tkpdDependencies.core;
     compile project(':tkpdcore')
 
-    compile'com.github.hotchemi:permissionsdispatcher:2.2.0@aar'
-    apt 'com.github.hotchemi:permissionsdispatcher-processor:2.2.0'
-    compile 'com.jakewharton:butterknife:8.4.0'
-    apt 'com.jakewharton:butterknife-compiler:8.4.0'
+    compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
+    apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+
+    compile rootProject.ext.butterKnifeDependencies.butterKnife
+    apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
