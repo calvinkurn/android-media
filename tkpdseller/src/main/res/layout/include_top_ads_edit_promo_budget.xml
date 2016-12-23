@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        style="@style/TextView"
+        android:text="@string/label_top_ads_budget"/>
+
+    <RadioGroup
+        android:id="@+id/radio_group_budget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/radio_button_budget_life_time"
+            style="@style/RadioGroup"
+            android:checked="true"
+            android:text="@string/label_top_ads_budget_lifetime"/>
+
+        <RadioButton
+            android:id="@+id/radio_button_budget_per_day"
+            style="@style/RadioGroup"
+            android:text="@string/label_top_ads_budget_per_day"/>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_budget_per_day"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/edit_text_budget_per_day"
+                style="@style/EditText.Currency"
+                android:layout_width="match_parent"
+                android:hint="@string/label_top_ads_budget_cost_per_day"/>
+
+        </android.support.design.widget.TextInputLayout>
+    </RadioGroup>
+</LinearLayout>

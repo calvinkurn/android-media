@@ -6,6 +6,7 @@ import com.tokopedia.seller.topads.model.exchange.CreditResponse;
 import com.tokopedia.seller.topads.model.exchange.DepositResponse;
 import com.tokopedia.seller.topads.model.exchange.ProductResponse;
 import com.tokopedia.seller.topads.model.exchange.ResponseActionAds;
+import com.tokopedia.seller.topads.model.exchange.SearchProductResponse;
 import com.tokopedia.seller.topads.model.exchange.ShopResponse;
 import com.tokopedia.seller.topads.model.exchange.StatisticResponse;
 
@@ -47,4 +48,6 @@ public interface TopAdsManagementApi {
     @PATCH(TopAdsNetworkConstant.PATH_ACTION_BULK_AD)
     Observable<Response<ResponseActionAds>> postActionSingleAds(@Body AdsActionRequest<DataRequestSingleAd> body);
 
+    @GET(TopAdsNetworkConstant.PATH_SEARCH_PRODUCT)
+    Observable<Response<SearchProductResponse>> getSearchProduct(@QueryMap Map<String, String> params);
 }
