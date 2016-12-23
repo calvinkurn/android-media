@@ -50,7 +50,7 @@ public class WilliamChartUtils {
     private static AxisRenderer.LabelPosition mYLabelPosition;
     private static int mLabelColorId;
     private static int mAxisColorId;
-    private static ChartView.GridType mGridType = ChartView.GridType.VERTICAL;
+    private static ChartView.GridType mGridType = ChartView.GridType.NONE;
     private static String mLabelFormat = "";
     private static int mEasingId;
     private static BaseEasingMethod mEasing;
@@ -184,7 +184,8 @@ public class WilliamChartUtils {
                 .setYAxis(mHasYAxis)
                 .setYLabels(mYLabelPosition)
                 .setLabelsColor(mLabelColorId)
-                .setAxisColor(mAxisColorId);
+                .setAxisColor(mAxisColorId)
+                .setxDataGrid(true);
 
         if (mGridType != null) chart.setGrid(mGridType, mGridPaint);
 
