@@ -174,11 +174,11 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
 
-    /*compile rootProject.ext.tkpdDependencies.inbox
-    compile rootProject.ext.tkpdDependencies.discovery
-    compile rootProject.ext.tkpdDependencies.transaction
-    compile rootProject.ext.tkpdDependencies.seller
-    compile rootProject.ext.tkpdDependencies.session*/
+    /*compile (rootProject.ext.tkpdDependencies.inbox)
+    compile (rootProject.ext.tkpdDependencies.discovery)
+    compile (rootProject.ext.tkpdDependencies.transaction)
+    compile (rootProject.ext.tkpdDependencies.seller)
+    compile (rootProject.ext.tkpdDependencies.session) */
     compile project(':tkpddiscovery')
     compile project(':tkpdtransaction')
     compile project(':tkpdseller')
