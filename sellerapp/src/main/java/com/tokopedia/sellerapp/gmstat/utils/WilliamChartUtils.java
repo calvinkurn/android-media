@@ -99,12 +99,13 @@ public class WilliamChartUtils {
         mYLabelPosition = AxisRenderer.LabelPosition.OUTSIDE;
         mEasingId = 0;
         mOverlapFactor = 1;
-        mOverlapOrder = mEqualOrder;
+//        int[] mEqualOrder = new
+//        mOverlapOrder = mEqualOrder;
         mStartX = 0f;
         mStartY = 1f;
     }
 
-    private final static int[] mEqualOrder = {0, 1, 2, 3, 4, 5, 6};
+    private int[] mEqualOrder = {0, 1, 2, 3, 4, 5, 6};
 
     public WilliamChartUtils setmLabels(String[] mLabels) {
         this.mLabels = mLabels;
@@ -113,6 +114,15 @@ public class WilliamChartUtils {
 
     public WilliamChartUtils setmValues(float[] mValues) {
         this.mValues = mValues;
+
+        if(mValues.length != mEqualOrder.length)
+        {
+            mEqualOrder = new int[mValues.length];
+            for(int i=0;i<mEqualOrder.length;i++){
+                mEqualOrder[i] = i;
+            }
+        }
+        mOverlapOrder = mEqualOrder;
         return this;
     }
 

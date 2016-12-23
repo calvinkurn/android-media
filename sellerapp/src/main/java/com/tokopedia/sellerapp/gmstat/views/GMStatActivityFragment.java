@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.db.chart.renderer.StringFormatRenderer;
@@ -100,6 +101,9 @@ public class GMStatActivityFragment extends Fragment {
     @BindView(R.id.market_insight_real)
     View marketInsightReal;
 
+    @BindView(R.id.parent_fragment_gmstat)
+    LinearLayout parentFragmentGmStat;
+
     @BindView(R.id.nchart)
     NChart nChart;
     private GridLayoutManager gridLayoutManager;
@@ -120,8 +124,11 @@ public class GMStatActivityFragment extends Fragment {
 
     private GMStat gmstat;
     private Unbinder unbind;
+    private long sDate = -1, eDate = -1;
 
     PopularProductViewHelper popularProductViewHelper;
+
+    boolean isFetchData = false, isFirstTime = false;
 
     GMStatNetworkController.GetGMStat gmStatListener = new GMStatNetworkController.GetGMStat() {
         @Override
@@ -182,6 +189,7 @@ public class GMStatActivityFragment extends Fragment {
             //[END] try used willam chart
 
             gmStatWidgetAdapter.addAll(baseGMModels);
+            gmStatWidgetAdapter.notifyDataSetChanged();
 
             dataTransactionViewHelper.bindData(getTransactionGraph);
             transactionDataLoading.hideLoading();
@@ -197,16 +205,16 @@ public class GMStatActivityFragment extends Fragment {
             List<BaseGMModel> baseGMModels = new ArrayList<>();
             SuccessfulTransaction successfulTransaction
                     = new SuccessfulTransaction(getProductGraph.getSuccessTrans());
-            successfulTransaction.percentage = getProductGraph.getDiffTrans();
+            successfulTransaction.percentage = getProductGraph.getDiffTrans()*100;
 
             ProdSeen prodSeen = new ProdSeen(getProductGraph.getProductView());
-            prodSeen.percentage = getProductGraph.getDiffSold();
+            prodSeen.percentage = getProductGraph.getDiffView()*100;
 
             ProdSold prodSold = new ProdSold(getProductGraph.getProductSold());
-            prodSold.percentage = getProductGraph.getDiffSold();
+            prodSold.percentage = getProductGraph.getDiffSold()*100;
 
-            ConvRate convRate = new ConvRate(getProductGraph.getConversionRate());
-            convRate.percentage = getProductGraph.getDiffConv();
+            ConvRate convRate = new ConvRate(getProductGraph.getConversionRate()*100);
+            convRate.percentage = getProductGraph.getDiffConv()*100;
 
             baseGMModels.add(successfulTransaction);
             baseGMModels.add(prodSeen);
@@ -214,8 +222,12 @@ public class GMStatActivityFragment extends Fragment {
             baseGMModels.add(convRate);
             gmStatWidgetAdapter.clear();
             gmStatWidgetAdapter.addAll(baseGMModels);
+//            gmStatWidgetAdapter = new GMStatWidgetAdapter(baseGMModels, gmstat);
 
-            initAdapter(gmStatWidgetAdapter);
+            if(!isFirstTime) {
+                initAdapter(gmStatWidgetAdapter);
+                isFirstTime = !isFirstTime;
+            }
         }
 
         @Override
@@ -241,8 +253,10 @@ public class GMStatActivityFragment extends Fragment {
 
         @Override
         public void onComplete() {
-            gmStatWidgetAdapter.clear();
-            gmStatWidgetAdapter.notifyDataSetChanged();
+            if(!isFirstTime) {
+                gmStatWidgetAdapter.clear();
+                gmStatWidgetAdapter.notifyDataSetChanged();
+            }
         }
 
         @Override
@@ -406,6 +420,7 @@ public class GMStatActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        isFirstTime = false;
         View rootView = inflater.inflate(R.layout.fragment_gmstat, container, false);
         this.unbind = ButterKnife.bind(this, rootView);
 //        gmStatWidgetAdapter = new GMStatWidgetAdapter();
@@ -512,11 +527,16 @@ public class GMStatActivityFragment extends Fragment {
     }
 
     public void fetchData() {
+        if(isFetchData) {
+            isFetchData = !isFetchData;
+            gmstat.getGmStatNetworkController().fetchData(shopId, sDate, eDate, compositeSubscription, gmStatListener);
+        }else{
 //        gmStatWidgetAdapter.clear();
 //        gmstat.getGmStatNetworkController().fetchData(gmStatListener, getActivity().getAssets());
-        //[START] real network
-        gmstat.getGmStatNetworkController().fetchData(shopId, compositeSubscription, gmStatListener);
-        //[END] real network
+            //[START] real network
+            gmstat.getGmStatNetworkController().fetchData(shopId, compositeSubscription, gmStatListener);
+            //[END] real network
+        }
 
         initTempGrossIncomeGraph();
 
@@ -525,12 +545,16 @@ public class GMStatActivityFragment extends Fragment {
     }
 
     public void fetchData(long sDate, long eDate){
+        isFetchData = true;
+        this.sDate = sDate;
+        this.eDate = eDate;
+        gmstatHeaderViewHelper.bindDate(sDate, eDate);
 //        gmStatWidgetAdapter.clear();
         //[START] real network
-        gmstat.getGmStatNetworkController().fetchData(shopId, sDate, eDate, compositeSubscription, gmStatListener);
+//        gmstat.getGmStatNetworkController().fetchData(shopId, sDate, eDate, compositeSubscription, gmStatListener);
         //[END] real network
 //        gmstat.getGmStatNetworkController().fetchData(gmStatListener, getActivity().getAssets());
-        initTempGrossIncomeGraph();
+//        initTempGrossIncomeGraph();
     }
 
     @Override
@@ -672,9 +696,13 @@ public class GMStatActivityFragment extends Fragment {
 
             // image for arrow is here
             if(commomGMModel.percentage < 0){// down here
+                arrowIcon.setVisibility(View.VISIBLE);
                 gmStat.getImageHandler().loadImage(arrowIcon, R.mipmap.arrow_down_percentage);
                 percentage.setTextColor(arrowDown);
+            }else if(commomGMModel.percentage == 0){
+                arrowIcon.setVisibility(View.GONE);
             }else{// up here
+                arrowIcon.setVisibility(View.VISIBLE);
                 gmStat.getImageHandler().loadImage(arrowIcon, R.mipmap.arrow_up_percentage);
                 percentage.setTextColor(arrowUp);
             }

@@ -81,7 +81,7 @@ public class BuyerDataViewHelper {
         double d = percentage;
         String text = "";
         System.out.println(text = formatter.format(d));
-        percentageBuyer.setText(text);
+        percentageBuyer.setText(text+"%");
 
         // set icon up or down or netral
     }

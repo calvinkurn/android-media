@@ -338,10 +338,12 @@ public class SetDateFragment extends Fragment {
                 public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                     Calendar newDate = Calendar.getInstance();
                     newDate.set(year, monthOfYear, dayOfMonth);
-                    String month = ((monthOfYear < 10)?("0"+monthOfYear):monthOfYear+"");
+                    String month = ((monthOfYear < 10)?("0"+(monthOfYear+1)):monthOfYear+1+"");
                     String day = ((dayOfMonth < 10)?("0"+dayOfMonth):dayOfMonth+"");
                     String data = year+""+month+""+day;
                     customDate.setText(getDateWithYear(Integer.parseInt(data), monthNames));
+
+                    startOrEndPeriodModel.startDate = newDate.getTimeInMillis();
                 }
 
             },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
@@ -351,11 +353,13 @@ public class SetDateFragment extends Fragment {
                 public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                     Calendar newDate = Calendar.getInstance();
                     newDate.set(year, monthOfYear, dayOfMonth);
-                    String month = ((monthOfYear < 10)?("0"+monthOfYear):monthOfYear+"");
+                    String month = ((monthOfYear < 10)?("0"+(monthOfYear+1)):monthOfYear+1+"");
                     String day = ((dayOfMonth < 10)?("0"+dayOfMonth):dayOfMonth+"");
                     String data = year+""+month+""+day;
                     Log.d("MNORMANSYAH", "data : "+data);
                     customDate.setText(getDateWithYear(Integer.parseInt(data), monthNames));
+
+                    startOrEndPeriodModel.endDate = newDate.getTimeInMillis();
                 }
 
             },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
@@ -368,11 +372,21 @@ public class SetDateFragment extends Fragment {
                 String endDate = startOrEndPeriodModel.getEndDate();
                 String[] split = endDate.split(" ");
                 customDate.setText(getDateWithYear(Integer.parseInt(reverseDate(split)), monthNames));
+
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeInMillis(startOrEndPeriodModel.endDate);
+
+                toDatePickerDialog.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
             }
             if(startOrEndPeriodModel.isStartDate) {
                 String startDate = startOrEndPeriodModel.getStartDate();
                 String[] split = startDate.split(" ");
                 customDate.setText(getDateWithYear(Integer.parseInt(reverseDate(split)), monthNames));
+
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeInMillis(startOrEndPeriodModel.startDate);
+
+                fromDatePickerDialog.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
             }
         }
     }
@@ -486,11 +500,11 @@ public class SetDateFragment extends Fragment {
             DateFormat dateFormat = new SimpleDateFormat("dd MM yyyy");
             if(isRange) {
                 Calendar sDate = calculateCalendar(YESTERDAY);
-                startDate = sDate.getTimeInMillis();
+                endDate = sDate.getTimeInMillis();
                 String yesterday = dateFormat.format(sDate.getTime());
 
                 Calendar eDate = calculateCalendar(-range);
-                endDate = eDate.getTimeInMillis();
+                startDate = eDate.getTimeInMillis();
                 String startDate = dateFormat.format(eDate.getTime());
 
                 return headerText = String.format(formatText, startDate, yesterday);

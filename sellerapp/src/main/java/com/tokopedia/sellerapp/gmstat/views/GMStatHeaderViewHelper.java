@@ -7,7 +7,10 @@ import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.gmstat.library.LoaderImageView;
 import com.tokopedia.sellerapp.gmstat.library.LoaderTextView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindArray;
@@ -67,6 +70,28 @@ public class GMStatHeaderViewHelper {
         calendarRange.stopLoading();
         calendarArrowIcon.stopLoading();
         calendarIcon.stopLoading();
+    }
+
+    public void bindDate(long sDate, long eDate){
+        String startDate = null;
+        if(sDate != -1){
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(sDate);
+            DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+            startDate = dateFormat.format(cal.getTime());
+            startDate = getDateWithYear(Integer.parseInt(startDate), monthNames);
+        }
+
+        String endDate = null;
+        if(eDate != -1){
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(eDate);
+            DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+            endDate = dateFormat.format(cal.getTime());
+            endDate = getDateWithYear(Integer.parseInt(endDate), monthNames);
+        }
+
+        calendarRange.setText(startDate+" - "+endDate);
     }
 
     public static List<String> getDates(List<Integer> dateGraph, String[] monthNames){

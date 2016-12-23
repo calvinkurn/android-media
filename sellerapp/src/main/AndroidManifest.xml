@@ -72,11 +72,11 @@
         <activity
             android:name=".gmstat.views.GMStatActivity"
             android:label="@string/title_activity_gmstat"
-            android:theme="@style/AppTheme">
+            android:theme="@style/Theme.Tokopedia3">
         </activity>
         <activity android:name=".gmstat.views.SetDateActivity"
-            android:label="@string/title_activity_gmstat"
-            android:theme="@style/AppTheme"
+            android:label="@string/set_date"
+            android:theme="@style/Theme.Tokopedia3"
             />
     </application>
 

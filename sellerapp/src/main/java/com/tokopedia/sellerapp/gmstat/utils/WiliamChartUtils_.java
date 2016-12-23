@@ -87,7 +87,7 @@ public class WiliamChartUtils_ {
         mStartY = 1f;
     }
 
-    private final static int[] mEqualOrder = {0, 1, 2, 3, 4, 5, 6};
+    private static int[] mEqualOrder = {0, 1, 2, 3, 4, 5, 6};
 
     public static void setmLabels(String[] mLabels) {
         WiliamChartUtils_.mLabels = mLabels;
@@ -95,6 +95,15 @@ public class WiliamChartUtils_ {
 
     public static void setmValues(float[] mValues) {
         WiliamChartUtils_.mValues = mValues;
+
+        if(mValues.length != mEqualOrder.length)
+        {
+            mEqualOrder = new int[mValues.length];
+            for(int i=0;i<mEqualOrder.length;i++){
+                mEqualOrder[i] = i;
+            }
+        }
+        mOverlapOrder = mEqualOrder;
     }
 
     public ChartView buildLineChart(LineChartView chart) {

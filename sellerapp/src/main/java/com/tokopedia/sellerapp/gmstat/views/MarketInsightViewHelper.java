@@ -65,6 +65,7 @@ public class MarketInsightViewHelper {
 
         // hit hades for detail category
 
+
         if(isGoldMerchant){
             marketInsightNonGoldMerchant.setVisibility(View.GONE);
         }

@@ -9,6 +9,7 @@
     tools:showIn="@layout/activity_gmstat">
 
     <LinearLayout
+        android:id="@+id/parent_fragment_gmstat"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
