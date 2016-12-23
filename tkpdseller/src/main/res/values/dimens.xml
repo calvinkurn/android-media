@@ -4,4 +4,6 @@
     <!-- General Dimens -->
     <dimen name="top_ads_dashboard_margin_cards">20dp</dimen>
     <dimen name="top_ads_dashboard_padding_cards">15dp</dimen>
+    <dimen name="top_ads_dashboard_margin_bottom_space">50dp</dimen>
+    <dimen name="top_ads_margin_layout">20dp</dimen>
 </resources>

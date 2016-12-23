@@ -7,6 +7,10 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
+    <style name="TextView.Title">
+        <item name="android:textSize">@dimen/text_size_xlarge</item>
+    </style>
+
     <style name="TextView.Statistic">
         <item name="android:textSize">@dimen/text_size_xxxlarge</item>
         <item name="android:textColor">@color/green_200</item>
@@ -17,6 +21,46 @@
         <item name="android:textSize">@dimen/text_size_xlarge</item>
         <item name="android:textColor">@color/green_200</item>
         <item name="android:text">@string/top_ads_statistic_info_default_value</item>
+    </style>
+
+    <style name="TextView.Promoted">
+        <item name="android:textSize">@dimen/text_size_small</item>
+        <item name="android:textColor">@color/blue_link</item>
+    </style>
+
+    <style name="EditText" parent="Widget.AppCompat.EditText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="EditText.Date">
+        <item name="android:editable">false</item>
+        <item name="android:focusable">false</item>
+        <item name="android:focusableInTouchMode">false</item>
+        <item name="android:inputType">none</item>
+        <item name="android:textColor">@color/green_200</item>
+    </style>
+
+    <style name="EditText.Currency">
+        <item name="android:inputType">number</item>
+    </style>
+
+    <style name="RadioGroup" parent="Widget.AppCompat.CompoundButton.RadioButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">20dp</item>
+    </style>
+
+    <style name="FabSpeedDial">
+        <item name="android:id">@id/fab_speed_dial</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="fabBackgroundTint">@color/green_500</item>
+        <item name="fabGravity">bottom_end</item>
+        <item name="miniFabBackgroundTint">@color/mini_fab_title_background_tint</item>
+        <item name="miniFabDrawableTint">@android:color/white</item>
+        <item name="miniFabTitleTextColor">@android:color/white</item>
+        <item name="touchGuardDrawable">@drawable/background_blur</item>
     </style>
 
     <style name="CardView.TopAds">

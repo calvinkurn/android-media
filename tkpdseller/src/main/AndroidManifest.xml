@@ -47,13 +47,23 @@
 
         <activity
             android:name=".topads.view.activity.TopAdsAddCreditActivity"
-            android:label="@string/title_top_ads_add_credit"
-            android:theme="@style/Theme.Tokopedia3"/>
+            android:label="@string/title_top_ads_add_credit"/>
 
         <activity
             android:name=".topads.view.activity.TopAdsPaymentCreditActivity"
-            android:label="@string/title_top_ads_add_credit"
-            android:theme="@style/Theme.Tokopedia3"/>
+            android:label="@string/title_top_ads_add_credit"/>
+
+        <activity
+            android:name=".topads.view.activity.TopAdsNewPromoActivity"
+            android:label="@string/title_top_ads_new_promo"/>
+
+        <activity
+            android:name=".topads.view.activity.TopAdsEditPromoActivity"
+            android:label="@string/title_top_ads_new_promo"/>
+
+        <activity
+            android:name=".topads.view.activity.TopAdsAddProductActivity"
+            android:label="@string/title_top_ads_product"/>
 
         <service
             android:name=".selling.SellingService"
@@ -62,12 +72,14 @@
         <activity
             android:name="com.tokopedia.seller.shop.ShopEditorActivity"
             android:label="@string/shop_setting"
-            android:theme="@style/ShopAppTheme" />
+            android:theme="@style/ShopAppTheme"/>
+
         <service
             android:name="com.tokopedia.seller.selling.SellingService"
             android:exported="false"/>
 
-        <service android:name=".shop.ShopEditService"
+        <service
+            android:name=".shop.ShopEditService"
             android:exported="false"/>
 
     </application>

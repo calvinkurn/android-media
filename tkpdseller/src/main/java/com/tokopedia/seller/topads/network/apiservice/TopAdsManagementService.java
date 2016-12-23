@@ -20,7 +20,7 @@ public class TopAdsManagementService extends AuthService<TopAdsManagementApi> {
 
     @Override
     protected String getBaseUrl() {
-        return TkpdBaseURL.TOPADS_DOMAIN;
+        return TkpdBaseURL.TOPADS_STAGING_DOMAIN;
     }
 
     @Override

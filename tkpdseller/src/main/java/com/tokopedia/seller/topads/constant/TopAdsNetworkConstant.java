@@ -9,6 +9,7 @@ public class TopAdsNetworkConstant {
     public static final String PATH_DASHBOARD_STATISTIC = "/v1.1/dashboard/statistics";
     public static final String PATH_DASHBOARD_DEPOSIT = "/v1.1/dashboard/deposit";
     public static final String PATH_DASHBOARD_TOTAL_AD = "/v1.1/dashboard/total_ad";
+    public static final String PATH_SEARCH_PRODUCT = "/v1.1/dashboard/search_products";
 
     public static final String PATH_DASHBOARD_PRODUCT = "v1.1/dashboard/products";
     public static final String PATH_DASHBOARD_GROUP = "v1.1/dashboard/groups";
@@ -21,6 +22,11 @@ public class TopAdsNetworkConstant {
     public static final String PARAM_TYPE = "type";
     public static final String PARAM_START_DATE = "start_date";
     public static final String PARAM_END_DATE = "end_date";
+    public static final String PARAM_KEYWORD = "keyword";
+    public static final String PARAM_ETALASE = "etalase";
+    public static final String PARAM_SORT_BY = "sort_by";
+    public static final String PARAM_START = "start";
+    public static final String PARAM_ROWS = "rows";
 
     public static final String ACTION_BULK_DELETE_AD = "delete";
     public static final String ACTION_BULK_OFF_AD = "toogle_off";

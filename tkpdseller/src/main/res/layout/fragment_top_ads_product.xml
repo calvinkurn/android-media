@@ -30,6 +30,7 @@
             android:id="@+id/layout_top_ads_product_item_summary"
             layout="@layout/include_top_ads_product_list_summary"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/top_ads_dashboard_margin_bottom_space"/>
     </LinearLayout>
 </ScrollView>

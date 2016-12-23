@@ -6,12 +6,14 @@ import com.tokopedia.seller.topads.model.data.DataDeposit;
 import com.tokopedia.seller.topads.model.data.DataRequestGroupAd;
 import com.tokopedia.seller.topads.model.data.DataRequestSingleAd;
 import com.tokopedia.seller.topads.model.data.DataResponseActionAds;
+import com.tokopedia.seller.topads.model.data.Product;
 import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.model.data.TotalAd;
 import com.tokopedia.seller.topads.model.exchange.AdsActionRequest;
 import com.tokopedia.seller.topads.model.exchange.CreditResponse;
 import com.tokopedia.seller.topads.model.exchange.GroupAdResponse;
 import com.tokopedia.seller.topads.model.exchange.ResponseActionAds;
+import com.tokopedia.seller.topads.model.exchange.SearchProductRequest;
 import com.tokopedia.seller.topads.model.exchange.ShopRequest;
 import com.tokopedia.seller.topads.model.exchange.DepositResponse;
 import com.tokopedia.seller.topads.model.exchange.ProductResponse;
@@ -36,6 +38,8 @@ public interface DashboardTopadsInteractor {
     void getTotalAd(ShopRequest shopRequest, final ListenerInteractor<TotalAd> listener);
 
     void getCreditList(final ListenerInteractor<List<DataCredit>> listener);
+
+    void searchProduct(SearchProductRequest searchProductRequest, final Listener<List<Product>> listener);
 
     void unSubscribe();
 

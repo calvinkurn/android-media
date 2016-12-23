@@ -16,12 +16,15 @@ import com.tokopedia.seller.topads.model.data.DataCredit;
 import com.tokopedia.seller.topads.model.data.DataDeposit;
 import com.tokopedia.seller.topads.model.data.DataRequestSingleAd;
 import com.tokopedia.seller.topads.model.data.DataResponseActionAds;
+import com.tokopedia.seller.topads.model.data.Product;
 import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.model.data.TotalAd;
 import com.tokopedia.seller.topads.model.exchange.AdsActionRequest;
 import com.tokopedia.seller.topads.model.exchange.CreditResponse;
 import com.tokopedia.seller.topads.model.exchange.GroupAdResponse;
 import com.tokopedia.seller.topads.model.exchange.ResponseActionAds;
+import com.tokopedia.seller.topads.model.exchange.SearchProductRequest;
+import com.tokopedia.seller.topads.model.exchange.SearchProductResponse;
 import com.tokopedia.seller.topads.model.exchange.ShopRequest;
 import com.tokopedia.seller.topads.model.exchange.DepositResponse;
 import com.tokopedia.seller.topads.model.exchange.ProductResponse;
@@ -74,7 +77,7 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
                 .flatMap(new Func1<Summary, Observable<Summary>>() {
                     @Override
                     public Observable<Summary> call(Summary summary) {
-                        if (!topAdsCacheDataSource.isStatisticDataExpired() || summary != null) {
+                        if (!topAdsCacheDataSource.isStatisticDataExpired() && summary != null) {
                             return Observable.just(summary);
                         }
                         Observable<Response<StatisticResponse>> statisticApiObservable = topAdsManagementService.getApi().getDashboardStatistic(statisticRequest.getParams());
@@ -167,7 +170,23 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
     }
 
     @Override
-    public void getListProductAds(HashMap<String, String> params, final ListenerInteractor<ProductResponse> listener) {
+    public void searchProduct(SearchProductRequest searchProductRequest, Listener<List<Product>> listener) {
+        Observable<Response<SearchProductResponse>> depositObservable = topAdsManagementService.getApi().getSearchProduct(searchProductRequest.getParams());
+        compositeSubscription.add(depositObservable
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .flatMap(new Func1<Response<SearchProductResponse>, Observable<List<Product>>>() {
+                    @Override
+                    public Observable<List<Product>> call(Response<SearchProductResponse> response) {
+                        return Observable.just(response.body().getProductList());
+                    }
+                })
+                .subscribe(new SubscribeOnNext<List<Product>>(listener), new SubscribeOnError(listener)));
+    }
+
+    @Override
+    public void getDashboardProduct(HashMap<String, String> params, final Listener<ProductResponse> listener) {
         Observable<Response<ProductResponse>> observable = topAdsManagementService.getApi()
                 .getDashboardProduct(params);
         compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
