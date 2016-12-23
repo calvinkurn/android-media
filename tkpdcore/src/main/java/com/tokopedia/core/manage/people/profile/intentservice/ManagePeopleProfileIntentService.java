@@ -175,7 +175,7 @@ public class ManagePeopleProfileIntentService extends IntentService {
                                             peopleProfilePass.setSuccess(true);
                                             return peopleProfilePass;
                                         } else {
-                                            throw new RuntimeException(response.body().getErrorMessages().toString());
+                                            throw new RuntimeException(response.body().getErrorMessages().get(0));
                                         }
                                     } else {
                                         throw new RuntimeException(String.valueOf(response.code()));
@@ -201,7 +201,7 @@ public class ManagePeopleProfileIntentService extends IntentService {
                                     if (temp.isSuccess()) {
                                         peopleProfilePass.setSuccess(true);
                                     } else {
-                                        throw new RuntimeException(response.body().getErrorMessages().toString());
+                                        throw new RuntimeException(response.body().getErrorMessages().get(0));
                                     }
                                 } else {
                                     throw new RuntimeException(String.valueOf(response.code()));
