@@ -1,6 +1,5 @@
 package com.tokopedia.transaction.cart.listener;
 
-import android.app.Activity;
 import android.app.IntentService;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
@@ -13,8 +12,6 @@ import com.tokopedia.core.product.listener.ViewListener;
 
 public interface ITopPayView extends ViewListener {
     void renderWebViewPostUrl(String url, byte[] postData);
-
-    Activity getContextActivity();
 
     void showToastMessageWithForceCloseView(String message);
 

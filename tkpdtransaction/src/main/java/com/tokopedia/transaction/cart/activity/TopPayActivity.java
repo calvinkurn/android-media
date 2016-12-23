@@ -1,7 +1,6 @@
 package com.tokopedia.transaction.cart.activity;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.IntentService;
 import android.content.Context;
@@ -227,11 +226,6 @@ public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> impl
     @Override
     public void renderWebViewPostUrl(String url, byte[] postData) {
         webView.postUrl(url, postData);
-    }
-
-    @Override
-    public Activity getContextActivity() {
-        return this;
     }
 
 
