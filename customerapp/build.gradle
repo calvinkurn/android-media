@@ -179,11 +179,11 @@ repositories{
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-//    compile project(':tkpdinbox')
-//    compile project(':tkpddiscovery')
-//    compile project(':tkpdtransaction')
+    compile project(':tkpdinbox')
+    compile project(':tkpddiscovery')
+    compile project(':tkpdtransaction')
     compile project(':tkpdseller')
-//    compile project(':tkpdsession')
+    compile project(':tkpdsession')
 
     compile (name:'tkpddiscovery-debug',ext:'aar')
     compile (name:'tkpdinbox-debug',ext:'aar')
