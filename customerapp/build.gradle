@@ -171,12 +171,6 @@ android {
     }
 }
 
-repositories{
-    flatDir{
-        dirs 'libs'
-    }
-}
-
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':tkpdinbox')
@@ -184,11 +178,6 @@ dependencies {
     compile project(':tkpdtransaction')
     compile project(':tkpdseller')
     compile project(':tkpdsession')
-
-    compile (name:'tkpddiscovery-debug',ext:'aar')
-    compile (name:'tkpdinbox-debug',ext:'aar')
-    compile (name:'tkpdsession-debug',ext:'aar')
-    compile (name:'tkpdtransaction-debug',ext:'aar')
 
     //testing
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
