@@ -1,7 +1,11 @@
 package com.tokopedia.tkpd.home.recharge.interactor;
 
+import android.util.Log;
+
+import com.fernandocejas.frodo.annotation.RxLogObservable;
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.database.CacheDuration;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.database.manager.RechargeOperatorManager;
@@ -16,9 +20,11 @@ import com.tokopedia.core.database.recharge.product.Product;
 import com.tokopedia.core.database.recharge.product.ProductData;
 import com.tokopedia.core.database.recharge.recentNumber.RecentData;
 import com.tokopedia.core.database.recharge.status.Status;
+import com.tokopedia.core.network.apiservices.recharge.RechargeService;
 
 import java.util.List;
 
+import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -36,6 +42,11 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
     private final static String KEY_STATUS = "RECHARGE_STATUS";
     private final static String KEY_PRODUCT = "RECHARGE_PRODUCT";
     private final static String KEY_OPERATOR = "RECHARGE_STATUS";
+    private RechargeService rechargeService;
+
+    public RechargeDBInteractorImpl() {
+        rechargeService = new RechargeService();
+    }
 
 
     @Override
@@ -198,25 +209,16 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                 });
     }
 
-
     @Override
-    public void getCategory(final OnGetCategory onGetCategory) {
-        Observable.just(true)
-                .subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<Boolean, List<Category>>() {
+    public void getCategoryData(final OnGetCategory onGetCategory) {
+        Observable.concat(getObservableDbCategory(), getObservableNetworkCategory())
+                .first(new Func1<CategoryData, Boolean>() {
                     @Override
-                    public List<Category> call(Boolean aBoolean) {
-                        GlobalCacheManager manager = new GlobalCacheManager();
-                        return CacheUtil.convertStringToListModel(
-                                manager.getValueString(KEY_CATEGORY),
-                                new TypeToken<List<Category>>() {
-                                }.getType());
-
+                    public Boolean call(CategoryData categoryData) {
+                        return categoryData != null;
                     }
                 })
-                .subscribe(new Subscriber<List<Category>>() {
+                .subscribe(new Subscriber<CategoryData>() {
                     @Override
                     public void onCompleted() {
 
@@ -228,9 +230,9 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                     }
 
                     @Override
-                    public void onNext(List<Category> categories) {
-                        if (categories != null) {
-                            onGetCategory.onSuccess(categories);
+                    public void onNext(CategoryData categoryData) {
+                        if (categoryData != null) {
+                            onGetCategory.onSuccess(categoryData);
                         } else {
                             onGetCategory.onEmpty();
                         }
@@ -510,31 +512,24 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
         });
     }
 
+    @RxLogObservable
     private Observable<List<Product>> getObservableListProduct() {
-        return Observable.just(true)
-                .map(new Func1<Boolean, List<Product>>() {
+        return Observable.concat(getObservableDbListProduct(), getObservableNetworkListProduct())
+                .first(new Func1<List<Product>, Boolean>() {
                     @Override
-                    public List<Product> call(Boolean condition) {
-                        GlobalCacheManager manager = new GlobalCacheManager();
-                        return CacheUtil.convertStringToListModel(
-                                manager.getValueString(KEY_PRODUCT),
-                                new TypeToken<List<Product>>() {
-                                }.getType());
-
+                    public Boolean call(List<Product> products) {
+                        return products != null && !products.isEmpty();
                     }
                 });
     }
 
+    @RxLogObservable
     private Observable<List<Operator>> getObservableListOperator() {
-        return Observable.just(true)
-                .map(new Func1<Boolean, List<Operator>>() {
+        return Observable.concat(getObservableDbListOperator(), getObservableNetworkListOperator())
+                .first(new Func1<List<Operator>, Boolean>() {
                     @Override
-                    public List<Operator> call(Boolean condition) {
-                        GlobalCacheManager manager = new GlobalCacheManager();
-                        return CacheUtil.convertStringToListModel(
-                                manager.getValueString(KEY_OPERATOR),
-                                new TypeToken<List<Operator>>() {
-                                }.getType());
+                    public Boolean call(List<Operator> operators) {
+                        return operators != null && !operators.isEmpty();
                     }
                 });
     }
@@ -555,5 +550,140 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                 });
     }
 
+    @RxLogObservable
+    private Observable<CategoryData> getObservableNetworkCategory() {
+        return rechargeService.getApi().getCategory()
+                .doOnNext(new Action1<Response<CategoryData>>() {
+                    @Override
+                    public void call(Response<CategoryData> categoryDataResponse) {
+                        CategoryData categoryData = categoryDataResponse.body();
+                        GlobalCacheManager manager = new GlobalCacheManager();
+                        if (categoryData != null) {
+                            manager.setKey(RechargeDBInteractorImpl.KEY_CATEGORY);
+                            manager.setValue(CacheUtil.convertListModelToString(categoryData.getData(),
+                                    new TypeToken<List<com.tokopedia.core.database.model.category.Category>>() {
+                                    }.getType()));
+                            manager.setCacheDuration(10*60);
+                            manager.store();
+                        }
+                    }
+                })
+                .flatMap(new Func1<Response<CategoryData>, Observable<CategoryData>>() {
+                    @Override
+                    public Observable<CategoryData> call(Response<CategoryData> categoryDataResponse) {
+                        Log.i("CATEGORY RECHARGE", "GET RECHARGE CATEGORY NETWORK");
+                        Log.i("CATEGORY RECHARGE", categoryDataResponse.toString());
+                        return Observable.just(categoryDataResponse.body());
+                    }
+                });
+    }
+
+    @RxLogObservable
+    private Observable<CategoryData> getObservableDbCategory() {
+        return Observable.just(true)
+                .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<Boolean, List<com.tokopedia.core.database.model.category.Category>>() {
+                    @Override
+                    public List<com.tokopedia.core.database.model.category.Category> call(Boolean aBoolean) {
+                        GlobalCacheManager manager = new GlobalCacheManager();
+                        List<com.tokopedia.core.database.model.category.Category> categories = CacheUtil.convertStringToListModel(
+                                manager.getValueString(KEY_CATEGORY),
+                                new TypeToken<List<com.tokopedia.core.database.model.category.Category>>() {
+                                }.getType());
+                        return categories;
+
+                    }
+                })
+                .flatMap(new Func1<List<com.tokopedia.core.database.model.category.Category>, Observable<CategoryData>>() {
+                    @Override
+                    public Observable<CategoryData> call(List<com.tokopedia.core.database.model.category.Category> categories) {
+                        Log.i("CATEGORY RECHARGE", "GET RECHARGE CATEGORY DB");
+                        CategoryData categoryData = new CategoryData();
+                        categoryData.setData(categories);
+                        return Observable.just(categoryData);
+                    }
+                });
+    }
+
+    private Observable<List<Product>> getObservableNetworkListProduct() {
+        return rechargeService.getApi().getProduct()
+                .doOnNext(new Action1<Response<ProductData>>() {
+                    @Override
+                    public void call(Response<ProductData> productDataResponse) {
+                        ProductData productData = productDataResponse.body();
+                        GlobalCacheManager manager = new GlobalCacheManager();
+                        if (productData != null && productData.getData() != null) {
+                            manager.setKey(RechargeDBInteractorImpl.KEY_PRODUCT);
+                            manager.setValue(CacheUtil.convertListModelToString(productData.getData(),
+                                    new TypeToken<List<Product>>() {
+                                    }.getType()));
+                            manager.setCacheDuration(60*10);
+                            manager.store();
+                        }
+                    }
+                })
+                .flatMap(new Func1<Response<ProductData>, Observable<List<Product>>>() {
+                    @Override
+                    public Observable<List<Product>> call(Response<ProductData> productDataResponse) {
+                        return Observable.just(productDataResponse.body().getData());
+                    }
+                });
+    }
+
+    private Observable<List<Product>> getObservableDbListProduct() {
+        return Observable.just(true)
+                .map(new Func1<Boolean, List<Product>>() {
+                    @Override
+                    public List<Product> call(Boolean condition) {
+                        GlobalCacheManager manager = new GlobalCacheManager();
+                        return CacheUtil.convertStringToListModel(
+                                manager.getValueString(KEY_PRODUCT),
+                                new TypeToken<List<Product>>() {
+                                }.getType());
+
+                    }
+                });
+    }
+
+    private Observable<List<Operator>> getObservableDbListOperator() {
+        return Observable.just(true)
+                .map(new Func1<Boolean, List<Operator>>() {
+                    @Override
+                    public List<Operator> call(Boolean condition) {
+                        GlobalCacheManager manager = new GlobalCacheManager();
+                        return CacheUtil.convertStringToListModel(
+                                manager.getValueString(KEY_OPERATOR),
+                                new TypeToken<List<Operator>>() {
+                                }.getType());
+                    }
+                });
+    }
+
+    private Observable<List<Operator>> getObservableNetworkListOperator() {
+        return rechargeService.getApi().getOperator()
+                .doOnNext(new Action1<Response<OperatorData>>() {
+                    @Override
+                    public void call(Response<OperatorData> operatorDataResponse) {
+                        OperatorData operatorData = operatorDataResponse.body();
+                        GlobalCacheManager manager = new GlobalCacheManager();
+                        if (operatorData != null && operatorData.getData() != null) {
+                            manager.setKey(RechargeDBInteractorImpl.KEY_OPERATOR);
+                            manager.setValue(CacheUtil.convertListModelToString(operatorData.getData(),
+                                    new TypeToken<List<Operator>>() {
+                                    }.getType()));
+                            manager.setCacheDuration(60*10);
+                            manager.store();
+                        }
+                    }
+                })
+                .flatMap(new Func1<Response<OperatorData>, Observable<List<Operator>>>() {
+                    @Override
+                    public Observable<List<Operator>> call(Response<OperatorData> operatorDataResponse) {
+                        return Observable.just(operatorDataResponse.body().getData());
+                    }
+                });
+    }
 
 }

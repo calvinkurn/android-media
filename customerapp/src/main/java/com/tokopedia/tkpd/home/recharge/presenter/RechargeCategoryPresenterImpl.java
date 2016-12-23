@@ -32,12 +32,12 @@ import java.util.List;
  * @author kulomady 05 on 7/13/2016.
  */
 public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter,
-        RechargeNetworkInteractor.OnGetCategoryListener,
         RechargeNetworkInteractor.OnGetOperatorListener,
         RechargeNetworkInteractor.OnGetProductListener,
         RechargeNetworkInteractor.OnGetStatusListener,
         RechargeNetworkInteractor.OnGetRecentNumbersListener,
-        RechargeNetworkInteractor.OnGetRecentOrderListener {
+        RechargeNetworkInteractor.OnGetRecentOrderListener,
+        RechargeDBInteractor.OnGetCategory {
 
     static final String RECHARGE_CACHE_KEY = "PrimaryRechargeCache";
     final static String KEY_CATEGORY = "RECHARGE_CATEGORY";
@@ -94,10 +94,17 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter,
     @Override
     public void onSuccess(CategoryData data) {
         categoryData = data;
-        storeNewDataToCache(KEY_CATEGORY, CacheUtil.convertListModelToString(categoryData.getData(),
-                new TypeToken<List<Category>>() {
-                }.getType()));
-        this.rechargeNetworkInteractor.getAllOperator(this);
+        finishPrepareRechargeModule();
+    }
+
+    @Override
+    public void onError(Throwable e) {
+
+    }
+
+    @Override
+    public void onEmpty() {
+
     }
 
     @Override
@@ -124,7 +131,7 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter,
         } else if (!isVersionMatch(data)) {
             view.failedRenderDataRechargeCategory();
         } else {
-            compareStatus(data);
+            getRechargeCategory();
         }
     }
 
@@ -157,51 +164,15 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter,
         this.view.renderErrorNetwork();
     }
 
-    private void compareStatus(final Status newStatus) {
-        if (isAlreadyHaveDataOnCache(KEY_STATUS)) {
-            if (!getDataOnCache(KEY_STATUS)
-                    .equals(CacheUtil.convertModelToString(newStatus, Status.class))) {
-                startFetchNewRechargeModule();
-                storeNewDataToCache(KEY_STATUS, CacheUtil.convertModelToString(newStatus, Status.class));
-            } else {
-                getCategoryFromCache();
-            }
-        } else {
-            startFetchNewRechargeModule();
-            storeNewDataToCache(KEY_STATUS, CacheUtil.convertModelToString(newStatus, Status.class));
-        }
-
+    private void getRechargeCategory() {
+        rechargeDBInteractor.getCategoryData(this);
     }
 
-    private void startFetchNewRechargeModule() {
-        this.rechargeNetworkInteractor.getAllCategory(this);
-    }
-
-    @SuppressWarnings("unchecked")
-    private void getCategoryFromCache() {
-        if (isAlreadyHaveDataOnCache(KEY_CATEGORY)) {
-            categoryData = new CategoryData();
-            categoryData.setData((List<Category>) (Object) CacheUtil.convertStringToListModel(
-                    getDataOnCache(KEY_CATEGORY),
-                    new TypeToken<List<Category>>() {
-                    }.getType()));
-            finishPrepareRechargeModule();
-        } else {
-            startFetchNewRechargeModule();
-        }
-    }
 
     private void finishPrepareRechargeModule() {
         if (activity != null && view != null) {
-            if (categoryData != null && !categoryData.getData().isEmpty()) {
-                List<Category> categories = new ArrayList<>();
-                for (Category category : categoryData.getData()) {
-                    if (category.getAttributes().getStatus() != STATE_CATEGORY_NON_ACTIVE) {
-                        categories.add(category);
-                    }
-                }
-                Collections.sort(categories, new CategoryComparator());
-                categoryData.setData(categories);
+            if (categoryData != null) {
+                Collections.sort(categoryData.getData(), new CategoryComparator());
                 view.renderDataRechargeCategory(categoryData);
             } else {
                 view.failedRenderDataRechargeCategory();

@@ -22,7 +22,7 @@ public interface RechargeDBInteractor {
 
     void getListProductDefaultOperator(OnGetListProduct onGetListProduct, int categoryId, String operatorId);
 
-    void getCategory(OnGetCategory onGetCategory);
+    void getCategoryData(OnGetCategory onGetCategory);
 
     void getStatus(OnGetStatus onGetStatus);
 
@@ -55,7 +55,7 @@ public interface RechargeDBInteractor {
     }
 
     interface OnGetCategory {
-        void onSuccess(List<Category> listCategory);
+        void onSuccess(CategoryData categoryData);
 
         void onError(Throwable e);
 
