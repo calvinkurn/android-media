@@ -129,9 +129,22 @@ public class WholesaleAdapterImpl extends RecyclerView.Adapter<WholesaleViewHold
     }
 
     @Override
+    public void removeAllWholesaleItem() {
+        for(int i = 0; i < data.size(); i ++){
+            removeWholesaleItem(i);
+        }
+    }
+
+    @Override
     public void removeWholesaleItem(int position){
+        /** remove the text watcher listener */
+        data.get(position).getViewHolder().removeQtyOneTextWatcher();
+        data.get(position).getViewHolder().removeQtyTwoTextWatcher();
+        data.get(position).getViewHolder().removeQtyPriceTextWatcher();
+
         data.remove(position);
         notifyDataSetChanged();
+
     }
 
     @Override
@@ -163,12 +176,6 @@ public class WholesaleAdapterImpl extends RecyclerView.Adapter<WholesaleViewHold
     @Override
     public void setData(List<WholesaleModel> datas) {
         data = datas;
-        notifyDataSetChanged();
-    }
-
-    @Override
-    public void clearAll() {
-        data.clear();
         notifyDataSetChanged();
     }
 

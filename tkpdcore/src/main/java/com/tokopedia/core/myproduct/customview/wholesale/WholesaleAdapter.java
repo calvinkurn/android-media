@@ -20,5 +20,5 @@ public interface WholesaleAdapter {
 
     void setData(List<WholesaleModel> datas);
 
-    void clearAll();
+    void removeAllWholesaleItem();
 }

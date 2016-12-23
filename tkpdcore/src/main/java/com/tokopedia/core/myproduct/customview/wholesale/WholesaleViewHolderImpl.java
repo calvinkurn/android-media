@@ -3,6 +3,7 @@ package com.tokopedia.core.myproduct.customview.wholesale;
 import android.renderscript.Double2;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 
@@ -42,35 +43,71 @@ public class WholesaleViewHolderImpl extends RecyclerView.ViewHolder implements 
 
     private boolean onPriceEdit = false;
 
-    @OnTextChanged(value = R2.id.wholesale_item_qty_one, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
-    void qtyOneChanged(Editable editable){
-        listener.onUpdateData(QTY_ONE, position, String.valueOf(editable));
-    }
+    TextWatcher qtyOneTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-    @OnTextChanged(value = R2.id.wholesale_item_qty_two, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
-    void qtyTwoChanged(Editable editable){
-        listener.onUpdateData(QTY_TWO, position, String.valueOf(editable));
-    }
-
-    @OnTextChanged(value = R2.id.wholesale_item_qty_price, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
-    void qtyPriceChanged(Editable editable){
-        if(onPriceEdit)
-            return;
-        onPriceEdit = true;
-        String rawString = "";
-        switch (currency) {
-            case PriceUtils.CURRENCY_RUPIAH:
-                CurrencyFormatHelper.SetToRupiah(qtyPrice);
-                rawString = CurrencyFormatter.getRawString(editable.toString());
-                break;
-            case PriceUtils.CURRENCY_DOLLAR:
-                CurrencyFormatHelper.SetToDollar(qtyPrice);
-                rawString = CurrencyFormatter.getRawString(editable.toString());
-                break;
         }
-        listener.onUpdateData(QTY_PRICE, position, rawString);
-        onPriceEdit = false;
-    }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            listener.onUpdateData(QTY_ONE, position, String.valueOf(s));
+        }
+    };
+
+    TextWatcher qtyTwoTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            listener.onUpdateData(QTY_TWO, position, String.valueOf(s));
+        }
+    };
+
+    TextWatcher qtyPriceTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if(onPriceEdit)
+                return;
+            onPriceEdit = true;
+            String rawString = "";
+            switch (currency) {
+                case PriceUtils.CURRENCY_RUPIAH:
+                    CurrencyFormatHelper.SetToRupiah(qtyPrice);
+                    rawString = CurrencyFormatter.getRawString(s.toString());
+                    break;
+                case PriceUtils.CURRENCY_DOLLAR:
+                    CurrencyFormatHelper.SetToDollar(qtyPrice);
+                    rawString = CurrencyFormatter.getRawString(s.toString());
+                    break;
+            }
+            listener.onUpdateData(QTY_PRICE, position, rawString);
+            onPriceEdit = false;
+        }
+    };
 
     @OnClick(R2.id.button_delete_wholesale)
     void deleteWholesale(){
@@ -91,7 +128,29 @@ public class WholesaleViewHolderImpl extends RecyclerView.ViewHolder implements 
             this.qtyOne.setText(String.format("%d", wholesaleModel.getQtyOne()));
             this.qtyTwo.setText(String.format("%d", wholesaleModel.getQtyTwo()));
             this.qtyPrice.setText(String.format("%.00f", wholesaleModel.getQtyPrice()));
+            /** add listener after first time we add the initial value so it will not checked at the first time */
+            this.qtyOne.addTextChangedListener(qtyOneTextWatcher);
+            this.qtyTwo.addTextChangedListener(qtyTwoTextWatcher);
+            this.qtyPrice.addTextChangedListener(qtyPriceTextWatcher);
         }
+    }
+
+    @Override
+    public void removeQtyOneTextWatcher() {
+        this.qtyOne.removeTextChangedListener(qtyOneTextWatcher);
+        this.qtyOne.setError(null);
+    }
+
+    @Override
+    public void removeQtyTwoTextWatcher() {
+        this.qtyTwo.removeTextChangedListener(qtyTwoTextWatcher);
+        this.qtyTwo.setError(null);
+    }
+
+    @Override
+    public void removeQtyPriceTextWatcher() {
+        this.qtyPrice.removeTextChangedListener(qtyPriceTextWatcher);
+        this.qtyPrice.setError(null);
     }
 
     @Override

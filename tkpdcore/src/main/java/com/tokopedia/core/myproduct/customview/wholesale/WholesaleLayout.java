@@ -68,17 +68,14 @@ public class WholesaleLayout extends RelativeLayout implements WholesaleAdapterI
         this.adapter.setData(datas);
     }
 
-    public void setCurrencyUnit(int currency){
-        adapter.setCurrency(currency);
-    }
-
-    public void setPrice(double price) {
-        adapter.setMainPrice(price);
+    public void setupParams(List<WholesaleModel> models) {
+        adapter.setData(models);
     }
 
     @NonNull
     private RecyclerView getRecyclerView() {
-        RecyclerView recyclerView = new RecyclerView(getContext());
+//        RecyclerView recyclerView = new RecyclerView(getContext());
+        RecyclerView recyclerView = (RecyclerView) LayoutInflater.from(getContext()).inflate(R.layout.recyclerview_wholesale, this, false);
         LayoutParams layoutParams = new LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -86,8 +83,6 @@ public class WholesaleLayout extends RelativeLayout implements WholesaleAdapterI
         layoutParams.addRule(ABOVE, R.id.button_add_wholesale);
         layoutParams.addRule(TEXT_ALIGNMENT_CENTER, TRUE);
         recyclerView.setLayoutParams(layoutParams);
-        recyclerView.setVerticalScrollBarEnabled(true);
-        recyclerView.setVerticalScrollbarPosition(SCROLLBAR_POSITION_RIGHT);
         adapter = new WholesaleAdapterImpl(this, 0, PriceUtils.CURRENCY_RUPIAH);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -103,7 +98,8 @@ public class WholesaleLayout extends RelativeLayout implements WholesaleAdapterI
         layoutParams.addRule(ALIGN_PARENT_BOTTOM, TRUE);
         layoutParams.addRule(TEXT_ALIGNMENT_CENTER, TRUE);
         button.setLayoutParams(layoutParams);
-        button.setText("Tambah Harga Grosir");
+        button.setText(getContext().getString(R.string.add_wholesale_price));
+        button.setAllCaps(false);
         button.setId(R.id.button_add_wholesale);
         button.setOnClickListener(new OnClickListener() {
             @Override
@@ -124,15 +120,11 @@ public class WholesaleLayout extends RelativeLayout implements WholesaleAdapterI
         return adapter.getDatas();
     }
 
-    public void setDatas(List<WholesaleModel> models) {
-        adapter.setData(models);
-    }
-
-    public void clearAll() {
-        adapter.clearAll();
-    }
-
     public boolean checkIfErrorExist() {
         return adapter.checkIfErrorExist();
+    }
+
+    public void removeAllWholesale() {
+        adapter.removeAllWholesaleItem();
     }
 }

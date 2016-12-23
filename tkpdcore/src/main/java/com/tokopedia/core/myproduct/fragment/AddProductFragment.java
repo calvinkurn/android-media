@@ -39,7 +39,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -1792,7 +1791,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
                         model.getWholeSalePrice()
                 ));
             }
-            wholesaleLayout.setDatas(models);
+            wholesaleLayout.setupParams(models);
         }
         mSimpleFacebook = SimpleFacebook.getInstance(getActivity());
         dismissErrorProductName();
@@ -1885,7 +1884,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
                     return;
                 }
                 if (selectedCurrencyDesc != null && !item.getLabel().equals(selectedCurrencyDesc)) {
-                    wholesaleLayout.clearAll();
+                    wholesaleLayout.removeAllWholesale();
                 }
                 selectedCurrency = selectedIndex;
                 selectedCurrencyDesc = item.getLabel();
@@ -2099,6 +2098,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
 //        Log.d(TAG, messageTAG + s + " [] " + start + " [] " + before + " [] " + count + " [] " + addProductCurrency.getSelectedItem().toString());
         Log.d(TAG, messageTAG + s + " [] " + start + " [] " + before + " [] " + count + " [] " + selectedCurrencyDesc);
         priceTextFormatter(s.toString());
+        wholesaleLayout.removeAllWholesale();
     }
 
     private void priceTextFormatter(String s) {
@@ -2124,8 +2124,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
             dismissPriceError();
             Double price = addProductPrice.getText().toString().isEmpty()? 0 : Double.parseDouble(CurrencyFormatter.getRawString(addProductPrice.getText().toString()));
             int currency = (selectedCurrencyDesc == null || selectedCurrencyDesc.equals("Rp") ? PriceUtils.CURRENCY_RUPIAH : PriceUtils.CURRENCY_DOLLAR);
-            wholesaleLayout.setCurrencyUnit(currency);
-            wholesaleLayout.setPrice(price);
+            wholesaleLayout.setupParams(price, currency);
         }
     }
 
