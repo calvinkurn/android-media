@@ -1,10 +1,10 @@
 package com.tokopedia.transaction.cart.listener;
 
-import android.app.Activity;
 import android.app.IntentService;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.product.listener.ViewListener;
 
 /**
@@ -14,8 +14,6 @@ import com.tokopedia.core.product.listener.ViewListener;
 public interface ITopPayView extends ViewListener {
     void renderWebViewPostUrl(String url, byte[] postData);
 
-    Activity getContextActivity();
-
     void showToastMessageWithForceCloseView(String message);
 
     void setPaymentId(String paymentId);
@@ -23,4 +21,6 @@ public interface ITopPayView extends ViewListener {
     String getStringFromResource(@StringRes int resId);
 
     void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz);
+
+    LocalCacheHandler getLocalCacheHandlerNotification();
 }
