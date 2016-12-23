@@ -34,6 +34,10 @@ public class TopAdsProductAdapter extends BaseLinearRecyclerViewAdapter {
         this.data = new ArrayList<>();
     }
 
+    public void clearData() {
+        data = new ArrayList<>();
+    }
+
     public void addProductList(List<Product> productList) {
         data.addAll(productList);
     }

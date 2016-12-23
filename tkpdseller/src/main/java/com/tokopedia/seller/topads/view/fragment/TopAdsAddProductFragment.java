@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -20,7 +23,7 @@ import java.util.List;
 
 import butterknife.BindView;
 
-public class TopAdsAddProductFragment extends BasePresenterFragment<TopAdsAddProductPresenter> implements TopAdsAddProductFragmentListener {
+public class TopAdsAddProductFragment extends BasePresenterFragment<TopAdsAddProductPresenter> implements TopAdsAddProductFragmentListener, SearchView.OnQueryTextListener {
 
     private static String TAG = TopAdsAddProductFragment.class.getSimpleName();
 
@@ -30,6 +33,7 @@ public class TopAdsAddProductFragment extends BasePresenterFragment<TopAdsAddPro
     private LinearLayoutManager layoutManager;
     private RecyclerView.OnScrollListener onScrollListener;
     private TopAdsProductAdapter adapter;
+    private SearchView searchView;
 
     public static TopAdsAddProductFragment createInstance() {
         TopAdsAddProductFragment fragment = new TopAdsAddProductFragment();
@@ -83,6 +87,7 @@ public class TopAdsAddProductFragment extends BasePresenterFragment<TopAdsAddPro
 
     @Override
     protected void initView(View view) {
+        setHasOptionsMenu(true);
         adapter = new TopAdsProductAdapter();
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
@@ -123,6 +128,9 @@ public class TopAdsAddProductFragment extends BasePresenterFragment<TopAdsAddPro
         adapter.showEmpty(false);
         adapter.showRetry(false);
         adapter.addProductList(productList);
+        if (adapter.getDataCount() <= 0) {
+            adapter.showEmpty(true);
+        }
     }
 
     @Override
@@ -130,10 +138,34 @@ public class TopAdsAddProductFragment extends BasePresenterFragment<TopAdsAddPro
         adapter.showLoadingFull(false);
         adapter.showEmpty(false);
         adapter.showRetry(false);
-
     }
 
     private void loadProduct() {
-        presenter.searchProduct("", adapter.getDataCount());
+        String keyword = "";
+        if (searchView != null) {
+            keyword = searchView.getQuery().toString();
+        }
+        presenter.searchProduct(keyword, adapter.getDataCount());
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_top_ads_add_product, menu);
+        searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+        searchView.setIconifiedByDefault(false);
+        searchView.setOnQueryTextListener(this);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        adapter.clearData();
+        loadProduct();
+        return true;
     }
 }
