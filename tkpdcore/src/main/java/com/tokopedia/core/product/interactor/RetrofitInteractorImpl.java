@@ -683,12 +683,12 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     @Override
     public void downloadReportType(final Context context, Integer productId, final ReportProductDialogView viewListener) {
         ProductService productService = new ProductService();
-        final CompositeSubscription compositeSubscription = new CompositeSubscription();
         compositeSubscription.add(
                 productService.getApi()
                         .getProductReportType(AuthUtil.generateParams(context,
                                 NetworkParam.paramDownloadReportType(productId)))
                         .subscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Subscriber<Response<TkpdResponse>>() {
                             @Override
@@ -701,7 +701,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                                 Log.e("DownloadReportType", e.getLocalizedMessage());
                                 String errorString;
                                 if (e instanceof SocketTimeoutException) {
-                                    errorString = ErrorNetMessage.MESSAGE_ERROR_TIMEOUT;
+                                    errorString = ErrorNetMessage.MESSAGE_ERRgitOR_TIMEOUT;
                                 } else if (e instanceof UnknownHostException) {
                                     errorString = ErrorNetMessage.MESSAGE_ERROR_DEFAULT;
                                 } else {
