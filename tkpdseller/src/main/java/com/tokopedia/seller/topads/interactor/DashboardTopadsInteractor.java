@@ -3,12 +3,14 @@ package com.tokopedia.seller.topads.interactor;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.topads.model.data.DataCredit;
 import com.tokopedia.seller.topads.model.data.DataDeposit;
+import com.tokopedia.seller.topads.model.data.DataRequestGroupAd;
 import com.tokopedia.seller.topads.model.data.DataRequestSingleAd;
 import com.tokopedia.seller.topads.model.data.DataResponseActionAds;
 import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.model.data.TotalAd;
 import com.tokopedia.seller.topads.model.exchange.AdsActionRequest;
 import com.tokopedia.seller.topads.model.exchange.CreditResponse;
+import com.tokopedia.seller.topads.model.exchange.GroupAdResponse;
 import com.tokopedia.seller.topads.model.exchange.ResponseActionAds;
 import com.tokopedia.seller.topads.model.exchange.ShopRequest;
 import com.tokopedia.seller.topads.model.exchange.DepositResponse;
@@ -37,11 +39,15 @@ public interface DashboardTopadsInteractor {
 
     void unSubscribe();
 
-    void getDashboardProduct(HashMap<String, String> params, ListenerInteractor<ProductResponse> listener);
+    void getListProductAds(HashMap<String, String> params, ListenerInteractor<ProductResponse> listener);
+
+    void getListGroupAds(HashMap<String, String> params, ListenerInteractor<GroupAdResponse> listener);
 
     void getDashboardShop(HashMap<String, String> params, ListenerInteractor<ShopResponse> listener);
 
     void getDashboardResponse(HashMap<String, String> params, ListenerInteractor<DepositResponse> listener);
 
     void actionSingleAds(AdsActionRequest<DataRequestSingleAd> adsActionRequest, ListenerInteractor<DataResponseActionAds> listenerInteractor);
+
+    void actionGroupAds(AdsActionRequest<DataRequestGroupAd> adsActionRequest, ListenerInteractor<DataResponseActionAds> listenerInteractor);
 }

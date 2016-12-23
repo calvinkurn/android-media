@@ -84,7 +84,7 @@ public abstract class TopAdsListAdapter<T> extends BaseLinearRecyclerViewAdapter
         switch (viewType) {
             case AD_GROUP_TYPE:
             case AD_SINGLE_TYPE:
-                return TopAdsViewHolder.createInstance(context, parent);
+                return TopAdsViewHolder.createInstance(context, parent, multiSelector);
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }

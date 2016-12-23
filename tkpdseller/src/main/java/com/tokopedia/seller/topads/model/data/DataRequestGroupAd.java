@@ -18,7 +18,7 @@ public class DataRequestGroupAd {
     @Expose
     String shopId;
 
-    @SerializedName("ads")
+    @SerializedName("groups")
     List<DataRequestGroupAds> ads = new ArrayList<>();
 
     public String getAction() {

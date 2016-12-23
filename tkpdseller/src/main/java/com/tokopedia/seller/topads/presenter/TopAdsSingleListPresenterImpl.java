@@ -12,7 +12,6 @@ import com.tokopedia.seller.topads.model.data.DataRequestSingleAds;
 import com.tokopedia.seller.topads.model.data.DataResponseActionAds;
 import com.tokopedia.seller.topads.model.exchange.AdsActionRequest;
 import com.tokopedia.seller.topads.model.exchange.ProductResponse;
-import com.tokopedia.seller.topads.view.fragment.TopAdsSingleListFragment;
 import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
 
 import java.util.ArrayList;
@@ -33,7 +32,7 @@ public class TopAdsSingleListPresenterImpl extends TopAdsListPresenterImpl<Ad> i
         params.put(TopAdsNetworkConstant.PARAM_SHOP_ID, SessionHandler.getShopID(context));
         params.put(TopAdsNetworkConstant.PARAM_START_DATE, "");
         params.put(TopAdsNetworkConstant.PARAM_END_DATE, "");
-        dashboardTopadsInteractor.getDashboardProduct(params, new ListenerInteractor<ProductResponse>(){
+        dashboardTopadsInteractor.getListProductAds(params, new ListenerInteractor<ProductResponse>(){
 
             @Override
             public void onSuccess(ProductResponse productResponse) {

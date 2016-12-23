@@ -20,6 +20,7 @@ import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.model.data.TotalAd;
 import com.tokopedia.seller.topads.model.exchange.AdsActionRequest;
 import com.tokopedia.seller.topads.model.exchange.CreditResponse;
+import com.tokopedia.seller.topads.model.exchange.GroupAdResponse;
 import com.tokopedia.seller.topads.model.exchange.ResponseActionAds;
 import com.tokopedia.seller.topads.model.exchange.ShopRequest;
 import com.tokopedia.seller.topads.model.exchange.DepositResponse;
@@ -166,7 +167,7 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
     }
 
     @Override
-    public void getDashboardProduct(HashMap<String, String> params, final ListenerInteractor<ProductResponse> listener) {
+    public void getListProductAds(HashMap<String, String> params, final ListenerInteractor<ProductResponse> listener) {
         Observable<Response<ProductResponse>> observable = topAdsManagementService.getApi()
                 .getDashboardProduct(params);
         compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
@@ -185,6 +186,35 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
 
                     @Override
                     public void onNext(Response<ProductResponse> response) {
+                        if (response.isSuccessful()) {
+                            listener.onSuccess(response.body());
+                        } else {
+                            // TODO Define error
+                        }
+                    }
+                }));
+    }
+
+    @Override
+    public void getListGroupAds(HashMap<String, String> params, final ListenerInteractor<GroupAdResponse> listener) {
+        Observable<Response<GroupAdResponse>> observable = topAdsManagementService.getApi()
+                .getDashboardGroup(params);
+        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Response<GroupAdResponse>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        listener.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(Response<GroupAdResponse> response) {
                         if (response.isSuccessful()) {
                             listener.onSuccess(response.body());
                         } else {

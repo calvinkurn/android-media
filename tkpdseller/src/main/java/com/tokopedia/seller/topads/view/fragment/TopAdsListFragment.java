@@ -43,6 +43,7 @@ public abstract class TopAdsListFragment<T extends TopAdsListAdapter, V extends 
     protected T adapter;
     private RefreshHandler refresh;
     private ActionMode actionMode;
+    private LinearLayoutManager layoutManager;
 
     public TopAdsListFragment() {
         // Required empty public constructor
@@ -101,8 +102,18 @@ public abstract class TopAdsListFragment<T extends TopAdsListAdapter, V extends 
 
     @Override
     protected void setViewListener() {
-        listProduct.setLayoutManager(new LinearLayoutManager(getActivity()));
+        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        listProduct.setLayoutManager(layoutManager);
         listProduct.setAdapter(adapter);
+        listProduct.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int lastItemPosition = layoutManager.findLastVisibleItemPosition();
+                int visibleItem = layoutManager.getItemCount() - 1;
+                presenter.loadMore(lastItemPosition, visibleItem);
+            }
+        });
     }
 
     @Override

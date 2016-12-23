@@ -18,4 +18,6 @@ public interface TopAdsListPresenter<T> {
     void actionOffAds(List<T> ads);
 
     void actionOnAds(List<T> ads);
+
+    void loadMore(int lastItemPosition, int visibleItem);
 }

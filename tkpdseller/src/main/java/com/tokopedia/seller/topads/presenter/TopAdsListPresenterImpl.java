@@ -3,6 +3,7 @@ package com.tokopedia.seller.topads.presenter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.interactor.DashboardTopadsInteractor;
@@ -29,16 +30,36 @@ public abstract class TopAdsListPresenterImpl<T> implements TopAdsListPresenter<
     protected final Context context;
     protected final DashboardTopadsInteractor dashboardTopadsInteractor;
     protected List<T> topAdsListItem;
+    protected PagingHandler pagingHandler;
 
     public TopAdsListPresenterImpl(Context context,TopAdsListPromoViewListener topAdsListPromoViewListener) {
         this.topAdsListPromoViewListener = topAdsListPromoViewListener;
         topAdsListItem = new ArrayList<>();
         this.context = context;
         this.dashboardTopadsInteractor = new DashboardTopadsInteractorImpl(context);
+        pagingHandler = new PagingHandler();
     }
 
     @Override
     public List<T> getListTopAds() {
         return topAdsListItem;
     }
+
+    @Override
+    public void loadMore(int lastItemPosition, int visibleItem) {
+        if(hasNextPage() && isLastItemPosition(lastItemPosition, visibleItem)){
+            pagingHandler.nextPage();
+            getListTopAdsFromNet();
+        }
+    }
+
+    private boolean hasNextPage() {
+        return false;
+    }
+
+    private boolean isLastItemPosition(int lastItemPosition, int visibleItem) {
+        return lastItemPosition == visibleItem;
+    }
+
+
 }

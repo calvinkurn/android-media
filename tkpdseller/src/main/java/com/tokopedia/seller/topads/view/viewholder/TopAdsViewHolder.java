@@ -8,6 +8,7 @@ import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bignerdranch.android.multiselector.MultiSelector;
 import com.bignerdranch.android.multiselector.SwappingHolder;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.R;
@@ -49,8 +50,12 @@ public class TopAdsViewHolder extends SwappingHolder {
         ButterKnife.bind(this, view);
     }
 
-    public static TopAdsViewHolder createInstance(Context context, ViewGroup parent){
-        return new TopAdsViewHolder(LayoutInflater.from(context).inflate(R.layout.list_promo_single_topads, parent, false));
+    public TopAdsViewHolder(View view, MultiSelector multiSelector){
+        super(view, multiSelector);
+    }
+
+    public static TopAdsViewHolder createInstance(Context context, ViewGroup parent, MultiSelector multiSelector){
+        return new TopAdsViewHolder(LayoutInflater.from(context).inflate(R.layout.list_promo_single_topads, parent, false), multiSelector);
     }
 
 
