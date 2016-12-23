@@ -37,6 +37,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_group_list">Group</string>
 
     <!-- New Promo -->
     <string name="label_top_ads_group_name">Nama Group</string>

@@ -1,7 +1,9 @@
 package com.tokopedia.seller.topads.presenter;
 
+import com.tokopedia.seller.topads.model.data.Ad;
+
 /**
  * Created by zulfikarrahman on 12/16/16.
  */
-public interface TopAdsSingleListPresenter extends TopAdsListPresenter {
+public interface TopAdsSingleListPresenter extends TopAdsListPresenter<Ad>{
 }

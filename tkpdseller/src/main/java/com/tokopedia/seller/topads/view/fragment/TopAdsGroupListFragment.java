@@ -5,20 +5,18 @@ import android.support.v7.view.ActionMode;
 import android.view.MenuItem;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.presenter.TopAdsListPresenterImpl;
-import com.tokopedia.seller.topads.presenter.TopAdsSingleListPresenter;
-import com.tokopedia.seller.topads.presenter.TopAdsSingleListPresenterImpl;
-import com.tokopedia.seller.topads.view.adapter.TopAdsSingleListAdapter;
+import com.tokopedia.seller.topads.presenter.TopAdsGroupListPresenter;
+import com.tokopedia.seller.topads.presenter.TopAdsGroupListPresenterImpl;
+import com.tokopedia.seller.topads.view.adapter.TopAdsGroupListAdapter;
 
 /**
- * Created by zulfikarrahman on 12/16/16.
+ * Created by zulfikarrahman on 12/22/16.
  */
 
-public class TopAdsSingleListFragment extends TopAdsListFragment<TopAdsSingleListAdapter, TopAdsSingleListPresenter> {
-
+public class TopAdsGroupListFragment extends TopAdsListFragment<TopAdsGroupListAdapter, TopAdsGroupListPresenter> {
     @Override
-    public TopAdsSingleListAdapter getAdapter() {
-        return new TopAdsSingleListAdapter(getActivity(), presenter.getListTopAds(), this);
+    public TopAdsGroupListAdapter getAdapter() {
+        return new TopAdsGroupListAdapter(context, presenter.getListTopAds(), this);
     }
 
     @Override
@@ -46,11 +44,11 @@ public class TopAdsSingleListFragment extends TopAdsListFragment<TopAdsSingleLis
 
     @Override
     protected void initialPresenter() {
-        presenter = new TopAdsSingleListPresenterImpl(context, this);
+        presenter = new TopAdsGroupListPresenterImpl(context, this);
     }
 
     public static Fragment createInstance() {
-        TopAdsSingleListFragment fragment = new TopAdsSingleListFragment();
+        TopAdsGroupListFragment fragment = new TopAdsGroupListFragment();
         return fragment;
     }
 }
