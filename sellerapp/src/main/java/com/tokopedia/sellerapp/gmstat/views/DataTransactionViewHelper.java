@@ -23,6 +23,7 @@ import butterknife.BindDrawable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.tokopedia.core.talkview.fragment.TalkViewFragment.dpToPx;
 import static com.tokopedia.sellerapp.gmstat.views.GMStatActivityFragment.NoDataAvailable;
 import static com.tokopedia.sellerapp.gmstat.views.PopularProductViewHelper.getFormattedString;
 
@@ -154,7 +155,8 @@ public class DataTransactionViewHelper {
         williamChartUtils.setmLabels(mLabels);
         williamChartUtils.setmValues(mValues);
 
-        williamChartUtils.buildChart(williamChartUtils.buildLineChart(transactionChart));
+        int bottomMargin = 5;
+        williamChartUtils.buildChart(williamChartUtils.buildLineChart(transactionChart, (int) dpToPx(itemView.getContext(), bottomMargin)));
         //[END] try used willam chart
     }
 

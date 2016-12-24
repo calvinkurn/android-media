@@ -98,7 +98,7 @@
                 android:id="@+id/transaction_chart"
                 android:layout_width="0dp"
                 android:layout_weight="0.7"
-                android:layout_height="91.3dp"
+                android:layout_height="101.3dp"
                 />
             <!--<com.tokopedia.sellerapp.gmstat.views.NChart-->
             <!--android:id="@+id/transaction_chart"-->

@@ -106,7 +106,7 @@ public class WiliamChartUtils_ {
         mOverlapOrder = mEqualOrder;
     }
 
-    public ChartView buildLineChart(LineChartView chart) {
+    public ChartView buildLineChart(LineChartView chart , int bottomMargin) {
 
         chart.reset();
 
@@ -119,6 +119,9 @@ public class WiliamChartUtils_ {
 
         dataset.setDotsRadius(Tools.fromDpToPx(mPointsSize)).setDotsColor(mPointColorId);
         chart.addData(dataset);
+        chart.setTopMargin(0);
+        chart.setRightMargin(0);
+        chart.setBottomMargin(bottomMargin);
 
         return chart;
     }

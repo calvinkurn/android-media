@@ -13,6 +13,7 @@ import com.tokopedia.sellerapp.home.utils.ImageHandler;
 
 import java.text.DecimalFormat;
 
+import butterknife.BindArray;
 import butterknife.BindColor;
 import butterknife.BindDrawable;
 import butterknife.BindView;
@@ -62,6 +63,9 @@ public class BuyerDataViewHelper {
 
     private View itemView;
 
+    @BindArray(R.array.gender)
+    String[] gender;
+
     public BuyerDataViewHelper(View itemView){
         this.itemView = itemView;
         ButterKnife.bind(this, itemView);
@@ -73,15 +77,30 @@ public class BuyerDataViewHelper {
     }
 
     public void bindData(GetBuyerData getBuyerData, ImageHandler imageHandler) {
-        double malePercentage = (double)getBuyerData.getMaleBuyer() / (double)getBuyerData.getTotalBuyer();
-        double malePercent = Math.floor((malePercentage * 100) + 0.5);
-        malePie.setText(String.format("%.2f%% Pria", malePercent));
+        if(getBuyerData.getTotalBuyer()==0 &&
+                (getBuyerData.getMaleBuyer()==0 || getBuyerData.getFemaleBuyer()==0)){
+            malePie.setText(String.format("%.2f%% Pria", "0"));
+            femalePie.setText(String.format("%.2f%%", "0"));
+        }else{
+            double malePercentage = (double)getBuyerData.getMaleBuyer() / (double)getBuyerData.getTotalBuyer();
+            double malePercent = Math.floor((malePercentage * 100) + 0.5);
 
-        double femalePercentage = (double)getBuyerData.getFemaleBuyer() /  (double)getBuyerData.getTotalBuyer();
-        double femalePercent = Math.floor((femalePercentage * 100) + 0.5);
-        femalePie.setText(String.format("%.2f%%", femalePercent));
-        buyerDataPieChart.setProgress((float) femalePercentage);
+            double femalePercentage = (double)getBuyerData.getFemaleBuyer() /  (double)getBuyerData.getTotalBuyer();
+            double femalePercent = Math.floor((femalePercentage * 100) + 0.5);
 
+            String biggerGender = "";
+            if(malePercent >= femalePercent){
+                biggerGender += gender[0];
+                malePie.setText(String.format("%.2f%% %s", malePercent, biggerGender));
+                femalePie.setText(String.format("%.2f%%", femalePercent));
+                buyerDataPieChart.setProgress((float) femalePercentage);
+            }else{
+                biggerGender += gender[1];
+                malePie.setText(String.format("%.2f%% %s", femalePercent, biggerGender));
+                femalePie.setText(String.format("%.2f%%", malePercent));
+                buyerDataPieChart.setProgress((float) malePercent);
+            }
+        }
 
         buyerCount.setText(getFormattedString(getBuyerData.getTotalBuyer())+"");
 
