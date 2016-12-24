@@ -97,25 +97,6 @@ public class DataTransactionViewHelper {
     }
 
     public void bindData(GetTransactionGraph getTransactionGraph){
-        List<NExcel> nExcels = joinDateAndGrossGraph(getTransactionGraph.getDateGraph(), getTransactionGraph.getSuccessTransGraph());
-//        if(nExcels!= null) {
-//            transactionChart.cmdFill(nExcels);
-//        }
-        //[]START] try used willam chart
-        int i = 0;
-        mLabels = new String[nExcels.size()];
-        mValues = new float[nExcels.size()];
-        for (NExcel nExcel : nExcels) {
-            mLabels[i] = nExcel.getXmsg(); //getDateRaw(nExcel.getXmsg(), monthNamesAbrev);
-            mValues[i] = nExcel.getUpper();
-            i++;
-        }
-        williamChartUtils.setmLabels(mLabels);
-        williamChartUtils.setmValues(mValues);
-
-        williamChartUtils.buildChart(williamChartUtils.buildLineChart(transactionChart));
-        //[END] try used willam chart
-
         transactionCount.setText(getFormattedString(getTransactionGraph.getSuccessTrans())+"");
 
         // percentage is missing and icon is missing too
@@ -153,6 +134,28 @@ public class DataTransactionViewHelper {
         }else{
             percentage.setText("Tidak ada data");
         }
+
+        List<NExcel> nExcels = joinDateAndGrossGraph(getTransactionGraph.getDateGraph(), getTransactionGraph.getSuccessTransGraph());
+        if(nExcels == null)
+            return;
+
+//        if(nExcels!= null) {
+//            transactionChart.cmdFill(nExcels);
+//        }
+        //[]START] try used willam chart
+        int i = 0;
+        mLabels = new String[nExcels.size()];
+        mValues = new float[nExcels.size()];
+        for (NExcel nExcel : nExcels) {
+            mLabels[i] = nExcel.getXmsg(); //getDateRaw(nExcel.getXmsg(), monthNamesAbrev);
+            mValues[i] = nExcel.getUpper();
+            i++;
+        }
+        williamChartUtils.setmLabels(mLabels);
+        williamChartUtils.setmValues(mValues);
+
+        williamChartUtils.buildChart(williamChartUtils.buildLineChart(transactionChart));
+        //[END] try used willam chart
     }
 
     private List<NExcel> joinDateAndGrossGraph(List<Integer> dateGraph, List<Integer> successTransGrpah){

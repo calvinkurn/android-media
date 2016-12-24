@@ -287,7 +287,7 @@ public class GMStatActivityFragment extends Fragment {
 
     private List<NExcel> joinDateAndGrossGraph(List<Integer> dateGraph, List<Integer> grossGraph){
         List<NExcel> nExcels = new ArrayList<>();
-        if(dateGraph == null || grossGraph == null)
+        if(dateGraph == null || grossGraph == null || dateGraph.isEmpty() || grossGraph.isEmpty())
             return null;
 
         int lowerSize = 0 ;
@@ -743,8 +743,6 @@ public class GMStatActivityFragment extends Fragment {
                 percentage.setTextColor(arrowUp);
                 isDefault = true;
             }
-
-
 
             if(isDefault) {
                 DecimalFormat formatter = new DecimalFormat("#0.00");
