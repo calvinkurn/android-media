@@ -122,22 +122,26 @@ public class DataTransactionViewHelper {
         Double diffSuccessTrans = getTransactionGraph.getDiffSuccessTrans()*100;
         // image for arrow is here
         boolean isDefault = false;
-        if(diffSuccessTrans == NoDataAvailable*100){
-            transactionCountIcon.setVisibility(View.INVISIBLE);
-            percentage.setTextColor(gredyColor);
-            isDefault = false;
-        }else if(diffSuccessTrans == 0){
+        if(diffSuccessTrans == 0){
             transactionCountIcon.setVisibility(View.INVISIBLE);
             percentage.setTextColor(arrowUp);
             isDefault = true;
         }else if(diffSuccessTrans < 0){// down here
+            if(diffSuccessTrans == NoDataAvailable*100){
+                transactionCountIcon.setVisibility(View.INVISIBLE);
+                percentage.setTextColor(gredyColor);
+                isDefault = false;
+            }else{
 //            imageHandler.loadImage(transactionCountIcon, R.mipmap.arrow_down_percentage);
-            transactionCountIcon.setImageDrawable(icRectagleDown);
-            percentage.setTextColor(arrowDown);
+                transactionCountIcon.setImageDrawable(icRectagleDown);
+                percentage.setTextColor(arrowDown);
+                isDefault = true;
+            }
         }else{// up here
 //            imageHandler.loadImage(transactionCountIcon, R.mipmap.arrow_up_percentage);
             transactionCountIcon.setImageDrawable(icRectagleUp);
             percentage.setTextColor(arrowUp);
+            isDefault = true;
         }
 
         if(isDefault){
@@ -145,7 +149,7 @@ public class DataTransactionViewHelper {
             double d = diffSuccessTrans;
             String text = "";
             System.out.println(text = formatter.format(d));
-            percentage.setText(text+"%");
+            percentage.setText(text.replace("-","")+"%");
         }else{
             percentage.setText("Tidak ada data");
         }

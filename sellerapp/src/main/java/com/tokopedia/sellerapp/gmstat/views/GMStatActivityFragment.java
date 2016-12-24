@@ -720,20 +720,22 @@ public class GMStatActivityFragment extends Fragment {
 
             // image for arrow is here
             boolean isDefault = false;
-            if(commomGMModel.percentage == NoDataAvailable*100){
-                arrowIcon.setVisibility(View.GONE);
-                percentage.setTextColor(gredyColor);
-                isDefault = false;
-            }else if(commomGMModel.percentage == 0){
+            if(commomGMModel.percentage == 0){
                 arrowIcon.setVisibility(View.GONE);
                 percentage.setTextColor(arrowUp);
                 isDefault = true;
             }else if(commomGMModel.percentage < 0){// down here
-                arrowIcon.setVisibility(View.VISIBLE);
-                arrowIcon.setImageDrawable(icRectagleDown);
+                if(commomGMModel.percentage == NoDataAvailable*100){
+                    arrowIcon.setVisibility(View.GONE);
+                    percentage.setTextColor(gredyColor);
+                    isDefault = false;
+                }else{
+                    arrowIcon.setVisibility(View.VISIBLE);
+                    arrowIcon.setImageDrawable(icRectagleDown);
 //                gmStat.getImageHandler().loadImage(arrowIcon, R.mipmap.arrow_down_percentage);
-                percentage.setTextColor(arrowDown);
-                isDefault = true;
+                    percentage.setTextColor(arrowDown);
+                    isDefault = true;
+                }
             }else{// up here
                 arrowIcon.setVisibility(View.VISIBLE);
                 arrowIcon.setImageDrawable(icRectagleUp);
@@ -749,7 +751,7 @@ public class GMStatActivityFragment extends Fragment {
                 double d = commomGMModel.percentage;
                 String text = "";
                 System.out.println(text = formatter.format(d));
-                percentage.setText(text + "%");
+                percentage.setText(text.replace("-","") + "%");
             }else{
                 percentage.setText("Tidak ada data");
             }

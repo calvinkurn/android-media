@@ -88,20 +88,21 @@ public class BuyerDataViewHelper {
         double percentage = getBuyerData.getDiffTotal() * 100D;
         // image for arrow is here
         boolean isDefault = false;
-        if(percentage == NoDataAvailable*100){
-            buyerCountIcon.setVisibility(View.INVISIBLE);
-            percentageBuyer.setTextColor(gredyColor);
-            isDefault = false;
-        }else if(percentage == 0){
+        if(percentage == 0){
             buyerCountIcon.setVisibility(View.INVISIBLE);
             percentageBuyer.setTextColor(arrowUp);
             isDefault = true;
-        }
-        else if(percentage < 0){// down here
-            buyerCountIcon.setImageDrawable(icRectagleDown);
+        }else if(percentage < 0){// down here
+            if(percentage == NoDataAvailable*100){
+                buyerCountIcon.setVisibility(View.INVISIBLE);
+                percentageBuyer.setTextColor(gredyColor);
+                isDefault = false;
+            }else{
+                buyerCountIcon.setImageDrawable(icRectagleDown);
 //            imageHandler.loadImage(buyerCountIcon, R.mipmap.arrow_down_percentage);
-            percentageBuyer.setTextColor(arrowDown);
-            isDefault = true;
+                percentageBuyer.setTextColor(arrowDown);
+                isDefault = true;
+            }
         }else{// up here
             buyerCountIcon.setImageDrawable(icRectagleUp);
 //            imageHandler.loadImage(buyerCountIcon, R.mipmap.arrow_up_percentage);
@@ -114,7 +115,7 @@ public class BuyerDataViewHelper {
             double d = percentage;
             String text = "";
             System.out.println(text = formatter.format(d));
-            percentageBuyer.setText(text+"%");
+            percentageBuyer.setText(text.replace("-","")+"%");
         }else{
             percentageBuyer.setText("Tidak ada data");
         }
