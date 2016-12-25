@@ -394,7 +394,32 @@ public class GMStatActivityFragment extends Fragment {
         gmStatRecyclerView.setAdapter(gmStatWidgetAdapter);
     }
 
-//    protected void initEmptyAdapter(final GMStatWidgetAdapter gmStatWidgetAdapter){
+    protected void resetToLoading(){
+        resetEmptyAdapter();
+        gmstatHeaderViewHelper.resetToLoading();
+        initChartLoading();
+        initPopularLoading();
+        initTransactionDataLoading();
+        initMarketInsightLoading();
+        initMarketInsightLoading2();
+    }
+
+    /**
+     * reset 4 box to loading state
+     */
+    private void resetEmptyAdapter() {
+        gmStatWidgetAdapter.clear();
+
+        List<BaseGMModel> loadingBases = new ArrayList<>();
+        for(int i=0;i<4;i++)
+            loadingBases.add(new LoadingGMModel());
+
+        loadingBases.add(new LoadingGMTwoModel());
+        gmStatWidgetAdapter.addAll(loadingBases);
+        gmStatWidgetAdapter.notifyDataSetChanged();
+    }
+
+    //    protected void initEmptyAdapter(final GMStatWidgetAdapter gmStatWidgetAdapter){
     protected void initEmptyAdapter(){
         List<BaseGMModel> loadingBases = new ArrayList<>();
         for(int i=0;i<4;i++)
@@ -539,6 +564,7 @@ public class GMStatActivityFragment extends Fragment {
     public void fetchData() {
         if(isFetchData) {
             isFetchData = !isFetchData;
+            resetToLoading();
             gmstat.getGmStatNetworkController().fetchData(shopId, sDate, eDate, compositeSubscription, gmStatListener);
         }else{
 //        gmStatWidgetAdapter.clear();

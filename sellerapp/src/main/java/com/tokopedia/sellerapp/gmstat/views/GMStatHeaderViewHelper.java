@@ -51,6 +51,10 @@ public class GMStatHeaderViewHelper {
         this.itemView = itemView;
         ButterKnife.bind(this, itemView);
 
+        resetToLoading();
+    }
+
+    public void resetToLoading(){
         calendarRange.resetLoader();
         calendarArrowIcon.resetLoader();
         calendarIcon.resetLoader();
