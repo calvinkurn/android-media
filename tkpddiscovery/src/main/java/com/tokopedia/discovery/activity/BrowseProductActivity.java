@@ -848,15 +848,13 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                     sendSortGTM(browseProductActivityModel.getOb());
                     break;
                 case DynamicFilterView.REQUEST_CODE:
-                    Map<String, String> filters =
+                    FilterMapAtribut.FilterMapValue filterMapValue =
                             data.getParcelableExtra(DynamicFilterView.EXTRA_FILTERS);
-
-                    FilterMapAtribut.FilterMapValue filterMapValue = new FilterMapAtribut.FilterMapValue();
-                    filterMapValue.setValue((HashMap<String, String>) filters);
-                    mFilterMapAtribut.getFiltersMap().put(browseProductActivityModel.getActiveTab(), filterMapValue);
-                    browseProductActivityModel.setFilterOptions(filters);
-                    Log.d(TAG, "filter option " + filters);
-                    sendFilterGTM(filters);
+                    mFilterMapAtribut.getFiltersMap()
+                            .put(browseProductActivityModel.getActiveTab(), filterMapValue);
+                    browseProductActivityModel.setFilterOptions(filterMapValue.getValue());
+                    Log.d(TAG, "filter option " + filterMapValue.getValue());
+                    sendFilterGTM(filterMapValue.getValue());
                     break;
             }
             setFragment(BrowseParentFragment.newInstance(browseProductActivityModel, parentFragment.getActiveTab()), BrowseParentFragment.FRAGMENT_TAG);

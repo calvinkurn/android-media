@@ -2,6 +2,7 @@ package com.tokopedia.discovery.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -59,7 +60,8 @@ public class SortProductActivity extends TActivity {
         setContentView(R.layout.activity_product_sort);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-        data = Parcels.unwrap(getIntent().getParcelableExtra(BrowseProductActivity.EXTRA_DATA));
+//        data = Parcels.unwrap(getIntent().getParcelableExtra(BrowseProductActivity.EXTRA_DATA));
+        data = getIntent().getExtras().getParcelable(BrowseProductActivity.EXTRA_DATA);
         source = getIntent().getStringExtra(BrowseProductRouter.EXTRA_SOURCE);
         adapter = new ListAdapter(data.getSort(), new OnItemClickListener() {
             @Override
@@ -67,7 +69,7 @@ public class SortProductActivity extends TActivity {
                 data.setSelected(sort);
                 data.setSelectedOb(ob);
                 Intent intent = new Intent(SORT_ACTION_INTENT);
-                intent.putExtra(BrowseParentFragment.SORT_EXTRA, Parcels.wrap(data));
+                intent.putExtra(BrowseParentFragment.SORT_EXTRA, (Parcelable) data);
                 intent.putExtra(BrowseParentFragment.SOURCE_EXTRA, source);
                 setResult(RESULT_OK, intent);
                 finish();

@@ -1,3 +1,11 @@
+apply plugin: 'com.android.library'
+apply plugin: 'io.fabric'
+apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'android-apt'
+apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'com.jfrog.artifactory'
+apply plugin: 'maven-publish'
+
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
@@ -12,20 +20,57 @@ buildscript {
     }
 }
 
-apply plugin: 'com.android.library'
-apply plugin: 'io.fabric'
-apply plugin: 'com.neenbedankt.android-apt'
-apply plugin: 'com.google.gms.google-services'
-apply plugin: 'android-apt'
-apply plugin: 'com.jakewharton.butterknife'
+
+publishing {
+    publications {
+        aar(MavenPublication) {
+            groupId 'com.tokopedia.core'
+            artifactId 'core'
+            version '1.0-SNAPSHOT'
+            artifact("$buildDir/outputs/aar/tkpdcore-release.aar")
+            pom.withXml {
+                def dependenciesNode = asNode().appendNode('dependencies')
+
+                //Iterate over the compile dependencies (we don't want the test ones), adding a <dependency> node for each
+                configurations.compile.allDependencies.each {
+                    if (it.group != null && it.name != null) {
+                        def dependencyNode = dependenciesNode.appendNode('dependency')
+                        dependencyNode.appendNode('groupId', it.group)
+                        dependencyNode.appendNode('artifactId', it.name)
+                        dependencyNode.appendNode('version', it.version)
+                    }
+                }
+            }
+        }
+    }
+}
+
+artifactory {
+    contextUrl = rootProject.ext.artifactoryUrl
+    publish {
+        repository {
+            repoKey = 'libs-snapshot-local'
+
+            username = artifactory_username
+            password = artifactory_password
+        }
+        defaults {
+            publications('aar')
+            publishArtifacts = true
+
+            properties = ['qa.level': 'basic', 'q.os': 'android', 'dev.team': 'core']
+            publishPom = true
+        }
+    }
+}
+
+
 
 repositories {
     flatDir {
         dirs 'libs'
     }
 }
-
-final SUPPORT_GOOGLE_LIBRARY = '23.3.0'
 
 apt {
     arguments {
@@ -36,71 +81,73 @@ apt {
 
 dependencies {
     compile fileTree(include: '*.jar', dir: 'libs')
-    compile 'com.bignerdranch.android:recyclerview-multiselect:0.2@aar'
-    compile 'com.github.gorbin.asne.core:asne-core:0.4@aar'
-    compile 'com.github.asne:asne-facebook:0.3.3@aar'
-    compile 'info.vividcode.android.zxing:capture-activity:2.3.0-1.2'
-    compile('com.crashlytics.sdk.android:crashlytics:2.2.2@aar') {
+
+    compile(rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
-    compile "com.android.support:recyclerview-v7:${SUPPORT_GOOGLE_LIBRARY}"
-    compile "com.android.support:support-v4:${SUPPORT_GOOGLE_LIBRARY}"
-    compile "com.android.support:appcompat-v7:${SUPPORT_GOOGLE_LIBRARY}"
-    compile "com.android.support:support-v13:${SUPPORT_GOOGLE_LIBRARY}"
-    compile "com.android.support:design:${SUPPORT_GOOGLE_LIBRARY}"
-    compile "com.android.support:cardview-v7:${SUPPORT_GOOGLE_LIBRARY}"
-    compile 'com.google.android.gms:play-services-plus:9.0.0'
-    compile 'com.google.android.gms:play-services-base:9.0.0'
-    compile 'com.google.android.gms:play-services-appindexing:9.0.0'
-    compile 'com.google.android.gms:play-services-analytics:9.0.0'
-    compile 'com.google.android.gms:play-services-gcm:9.0.0'
-    compile 'com.google.android.gms:play-services-location:9.0.0'
-    compile 'com.google.android.gms:play-services-maps:9.0.0'
-    compile 'com.android.support:multidex:1.0.1'
-    compile 'com.mcxiaoke.volley:library-aar:1.0.1'
-    compile 'com.github.anrwatchdog:anrwatchdog:1.1.+'
-    apt "com.github.Raizlabs.DBFlow:dbflow-processor:3.0.1"
-    compile 'com.github.Raizlabs.DBFlow:dbflow-core:3.0.1'
-    compile 'com.github.Raizlabs.DBFlow:dbflow:3.0.1'
-    compile 'com.jakewharton:butterknife:8.4.0'
-    apt 'com.jakewharton:butterknife-compiler:8.4.0'
-    compile 'org.parceler:parceler-api:1.1.6'
-    compile 'com.google.code.gson:gson:2.4'
-    apt "org.parceler:parceler:1.1.6"
-    compile 'com.sromku:simple-fb:4.1.1'
-    compile 'com.github.paolorotolo:appintro:3.4.0'
-    compile 'io.reactivex:rxandroid:1.0.1'
-    compile 'io.reactivex:rxjava:1.0.16'
-    compile 'io.reactivex:rxjava-math:1.0.0'
-    compile 'com.jakewharton.rxbinding:rxbinding:0.2.0'
-    compile 'com.jakewharton.timber:timber:2.4.2'
-    compile 'com.squareup.retrofit2:retrofit:2.1.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
-    compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
-    compile 'com.squareup.okhttp3:okhttp:3.4.1'
-    compile 'com.squareup.okhttp3:logging-interceptor:3.4.1'
-    compile 'com.github.bumptech.glide:glide:3.7.0'
-    compile 'com.nineoldandroids:library:2.4.0'
-    compile 'com.github.ksoichiro:android-observablescrollview:1.5.1'
-    compile('com.github.ganfra:material-spinner:1.1.1') {
-        exclude group: 'com.nineoldandroids', module: 'library'
-        exclude group: 'com.android.support', module: 'appcompat-v7'
-    }
-    compile('com.aurelhubert:ahbottomnavigation:1.4.0') {
+    compile rootProject.ext.serviceDependencies.hockeyApp
+    compile rootProject.ext.serviceDependencies.anrWatchDogs
+
+    compile rootProject.ext.supportLibDependencies.recyclerViewV7
+    compile rootProject.ext.supportLibDependencies.supportV4
+    compile rootProject.ext.supportLibDependencies.appCompactV7
+    compile rootProject.ext.supportLibDependencies.supportV13
+    compile rootProject.ext.supportLibDependencies.design
+    compile rootProject.ext.supportLibDependencies.cardViewV7
+
+    compile rootProject.ext.playServicesDependencies.plus
+    compile rootProject.ext.playServicesDependencies.base
+    compile rootProject.ext.playServicesDependencies.appIndexing
+    compile rootProject.ext.playServicesDependencies.analytics
+    compile rootProject.ext.playServicesDependencies.gcm
+    compile rootProject.ext.playServicesDependencies.location
+    compile rootProject.ext.playServicesDependencies.maps
+
+    apt rootProject.ext.dbDependencies.dbFlowProcessor
+    compile rootProject.ext.dbDependencies.dbFlowCore
+    compile rootProject.ext.dbDependencies.dbFlow
+
+    compile rootProject.ext.butterKnifeDependencies.butterKnife
+    apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
+
+    compile rootProject.ext.networkDependencies.volley
+    compile rootProject.ext.networkDependencies.retrofit
+    compile rootProject.ext.networkDependencies.converterGson
+    compile rootProject.ext.networkDependencies.adapterRxJava
+    compile rootProject.ext.networkDependencies.okHttp
+    compile rootProject.ext.networkDependencies.loggingInterceptor
+    compile rootProject.ext.networkDependencies.glide
+
+    compile rootProject.ext.analyticsDependencies.appsflyer
+    compile rootProject.ext.analyticsDependencies.localytics
+
+    compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
+    apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+
+    compile rootProject.ext.viewDependencies.recyclerMultiSelect
+    compile rootProject.ext.viewDependencies.appIntro
+    compile (rootProject.ext.viewDependencies.ahBottomNavigation){
         exclude group: 'com.android.support', module: 'design'
     }
-    compile 'com.appsflyer:af-android-sdk:4.6.1@aar'
-    compile 'com.localytics.android:library:4.0+'
-    compile 'net.hockeyapp.android:HockeySDK:4.0.0'
-    compile 'com.github.hotchemi:permissionsdispatcher:2.2.0@aar'
-    apt 'com.github.hotchemi:permissionsdispatcher-processor:2.2.0'
-    compile files('libs/YouTubeAndroidPlayerApi.jar')
+
+    compile rootProject.ext.miscDependencies.captureActivity
+    compile rootProject.ext.miscDependencies.multiDex
+    compile rootProject.ext.miscDependencies.parcelerApi
+    apt rootProject.ext.miscDependencies.parceler
+    compile rootProject.ext.miscDependencies.gson
+    compile rootProject.ext.miscDependencies.simpleFb
+    compile rootProject.ext.miscDependencies.rxAndroid
+    compile rootProject.ext.miscDependencies.rxJava
+    compile rootProject.ext.miscDependencies.rxJavaMath
+
 }
+
+apply plugin: 'com.google.gms.google-services'
 
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion '25.0.0'
+    compileSdkVersion 23
+    buildToolsVersion '24.0.2'
     useLibrary 'org.apache.http.legacy'
     sourceSets {
 
