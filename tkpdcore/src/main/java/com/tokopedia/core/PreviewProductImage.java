@@ -18,7 +18,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,16 +28,16 @@ import android.widget.TextView;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.ui.widget.TouchViewPager;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.customadapter.TouchImageAdapter;
 import com.tokopedia.core.customadapter.TouchImageAdapter.OnImageStateChange;
-import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.RequestPermissionUtil;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -177,11 +176,14 @@ public class PreviewProductImage extends TActivity {
 
     private void openImageDownloaded(String path) {
         File file = new File(path);
-        Intent sintent = new Intent();
-        sintent.setAction(Intent.ACTION_VIEW);
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
         Uri uri = MethodChecker.getUri(getApplicationContext(), file);
-        sintent.setDataAndType(uri, "image/*");
-        startActivity(sintent);
+        intent.setDataAndType(uri, "image/*");
+        intent.addFlags(
+                Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+        );
+        startActivity(intent);
         PreviewProductImage.this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
@@ -286,6 +288,7 @@ public class PreviewProductImage extends TActivity {
                     File file = new File(path);
                     Uri uri = MethodChecker.getUri(getApplicationContext(), file);
                     intent.setDataAndType(uri, "image/*");
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
                     PendingIntent pIntent = PendingIntent.getActivity(PreviewProductImage.this, 0, intent, 0);
 
