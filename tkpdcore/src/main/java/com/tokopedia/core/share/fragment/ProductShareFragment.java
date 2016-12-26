@@ -198,7 +198,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
                 if (!messageError.equals(ProductService.INVALID_MESSAGE_ERROR)) {
                     progressBar.setVisibility(View.GONE);
                     errorImage.setVisibility(View.VISIBLE);
-                    loadingAddProduct.setText(messageError + "/n" +getString(R.string.error_failed_add_product));
+                    loadingAddProduct.setText(messageError + "\n" +getString(R.string.error_failed_add_product));
                     loadingAddProduct.setVisibility(View.VISIBLE);
                     setIconShareVisibility(View.GONE);
                     setVisibilityTitle(View.GONE);
