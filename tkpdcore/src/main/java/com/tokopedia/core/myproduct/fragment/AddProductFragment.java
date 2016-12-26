@@ -1276,9 +1276,16 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
                 if (path != null && checkImageResolution.getModel1()) {
                     //[START] save to db for images
                     ImageModel newPhoto = getImageModel(path, photo);
-
                     ImageModel oldPhoto = photos.get(position);
-                    photos.set(position, newPhoto);
+
+                    int positionToFillImage = position;
+                    for(int i=photos.size()-1; i>=0; i--){
+                        ImageModel imageModel = photos.get(i);
+                        if(imageModel.getPath() == null){
+                            positionToFillImage = i;
+                        }
+                    }
+                    photos.set(positionToFillImage, newPhoto);
 
                     //[START] recreate the adapter
                     photoAdapter = new PhotoAdapter(photos);
@@ -1289,7 +1296,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
 
                     if (addProductType.equals(AddProductType.EDIT)) {
                         producteditHelper.deleteImage(oldPhoto, position);
-                        producteditHelper.addImage(newPhoto, position);
+                        producteditHelper.addImage(newPhoto, positionToFillImage);
                     }
                 } else {
                     Snackbar.make(parentView, checkImageResolution.getModel2(), Snackbar.LENGTH_LONG).show();
