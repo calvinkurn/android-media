@@ -1,5 +1,6 @@
 package com.tokopedia.sellerapp.gmstat.views;
 
+import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -61,10 +62,10 @@ public class PopularProductViewHelper {
     public void bindData(GetPopularProduct getPopularProduct, ImageHandler imageHandler){
         this.getPopularProduct = getPopularProduct;
 
-        dataProductTitle.setText("DATA PRODUK");
+        dataProductTitle.setText("Data Produk");
         textPopularProduct.setText("Produk terlaris");
         imageHandler.loadImage(imagePopularProduct, getPopularProduct.getImageLink());
-        popularProductDescription.setText(getPopularProduct.getProductName());
+        popularProductDescription.setText(Html.fromHtml(getPopularProduct.getProductName()));
         long sold = getPopularProduct.getSold();
         String text = getFormattedString(sold);
 //        numberOfSelling.setText(toKFormat(getPopularProduct.getSold()));
@@ -74,7 +75,7 @@ public class PopularProductViewHelper {
 
     public static String getFormattedString(long value) {
         String text = "";
-        if( value < 1_000_000){
+        if( value <= 1_000_000){
             Locale locale = new Locale("in", "ID");
             NumberFormat currencyFormatter = NumberFormat.getNumberInstance(locale);
             System.out.println(text = (currencyFormatter.format(value)));

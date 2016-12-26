@@ -17,7 +17,7 @@ public class GetTransactionGraph {
     private Integer deliveredProduct;
     @SerializedName("GrossRevenue")
     @Expose
-    private Integer grossRevenue;
+    private Long grossRevenue;
     @SerializedName("NetRevenue")
     @Expose
     private Integer netRevenue;
@@ -139,11 +139,11 @@ public class GetTransactionGraph {
         this.deliveredProduct = deliveredProduct;
     }
 
-    public Integer getGrossRevenue() {
+    public Long getGrossRevenue() {
         return grossRevenue;
     }
 
-    public void setGrossRevenue(Integer grossRevenue) {
+    public void setGrossRevenue(Long grossRevenue) {
         this.grossRevenue = grossRevenue;
     }
 
@@ -403,4 +403,45 @@ public class GetTransactionGraph {
         this.pAdsSGraph = pAdsSGraph;
     }
 
+    @Override
+    public String toString() {
+        return "GetTransactionGraph{" +
+                "successTrans=" + successTrans +
+                ", newOrder=" + newOrder +
+                ", deliveredProduct=" + deliveredProduct +
+                ", grossRevenue=" + grossRevenue +
+                ", netRevenue=" + netRevenue +
+                ", rejectedAmount=" + rejectedAmount +
+                ", shippingCost=" + shippingCost +
+                ", cpcProduct=" + cpcProduct +
+                ", cpcShop=" + cpcShop +
+                ", diffSuccessTrans=" + diffSuccessTrans +
+                ", diffNewOrder=" + diffNewOrder +
+                ", diffDeliveredProduct=" + diffDeliveredProduct +
+                ", diffGrossRevenue=" + diffGrossRevenue +
+                ", diffNetRevenue=" + diffNetRevenue +
+                ", diffRejectedAmount=" + diffRejectedAmount +
+                ", diffShippingCost=" + diffShippingCost +
+                ", diffCpcShop=" + diffCpcShop +
+                ", diffCpcProd=" + diffCpcProd +
+                ", dateGraph=" + dateGraph +
+                ", successTransGraph=" + successTransGraph +
+                ", rejectedSumGraph=" + rejectedSumGraph +
+                ", grossGraph=" + grossGraph +
+                ", netGraph=" + netGraph +
+                ", rejectedAmtGraph=" + rejectedAmtGraph +
+                ", shippingGraph=" + shippingGraph +
+                ", adsPGraph=" + adsPGraph +
+                ", adsSGraph=" + adsSGraph +
+                ", pDateGraph=" + pDateGraph +
+                ", pSuccessTransGraph=" + pSuccessTransGraph +
+                ", pRejectedSumGraph=" + pRejectedSumGraph +
+                ", pGrossGraph=" + pGrossGraph +
+                ", pNetGraph=" + pNetGraph +
+                ", pRejectedAmtGraph=" + pRejectedAmtGraph +
+                ", pShippingGraph=" + pShippingGraph +
+                ", pAdsPGraph=" + pAdsPGraph +
+                ", pAdsSGraph=" + pAdsSGraph +
+                '}';
+    }
 }

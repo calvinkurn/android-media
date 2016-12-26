@@ -17,13 +17,13 @@ public class GetProductGraph {
 
     @SerializedName("SuccessTrans")
     @Expose
-    private Integer successTrans;
+    private Long successTrans;
     @SerializedName("ProductView")
     @Expose
-    private Integer productView;
+    private Long productView;
     @SerializedName("ProductSold")
     @Expose
-    private Integer productSold;
+    private Long productSold;
     @SerializedName("ConversionRate")
     @Expose
     private Double conversionRate;
@@ -69,7 +69,7 @@ public class GetProductGraph {
      * @return
      * The successTrans
      */
-    public Integer getSuccessTrans() {
+    public Long getSuccessTrans() {
         return successTrans;
     }
 
@@ -78,7 +78,7 @@ public class GetProductGraph {
      * @param successTrans
      * The SuccessTrans
      */
-    public void setSuccessTrans(Integer successTrans) {
+    public void setSuccessTrans(Long successTrans) {
         this.successTrans = successTrans;
     }
 
@@ -87,7 +87,7 @@ public class GetProductGraph {
      * @return
      * The productView
      */
-    public Integer getProductView() {
+    public Long getProductView() {
         return productView;
     }
 
@@ -96,7 +96,7 @@ public class GetProductGraph {
      * @param productView
      * The ProductView
      */
-    public void setProductView(Integer productView) {
+    public void setProductView(Long productView) {
         this.productView = productView;
     }
 
@@ -105,7 +105,7 @@ public class GetProductGraph {
      * @return
      * The productSold
      */
-    public Integer getProductSold() {
+    public Long getProductSold() {
         return productSold;
     }
 
@@ -114,7 +114,7 @@ public class GetProductGraph {
      * @param productSold
      * The ProductSold
      */
-    public void setProductSold(Integer productSold) {
+    public void setProductSold(Long productSold) {
         this.productSold = productSold;
     }
 
