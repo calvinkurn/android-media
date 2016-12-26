@@ -934,6 +934,11 @@ public class ProductService extends IntentService implements ProductServiceConst
                                 notificationService.updateNotificationError(eIntent, errorMessage);
                             }
 
+                            //[START] hapus etalase tambah baru - kena FOREIGN KEY CONSTRAINT
+                            List<EtalaseDB> etalase = DbManagerImpl.getInstance().removeEtalaseDb(-2);
+                            Log.d(TAG, messageTAG+" hapus etalase-tambah-baru : "+etalase);
+                            //[END] hapus etalase tambah baru - kena FOREIGN KEY CONSTRAINT
+
                             Bundle resultData = new Bundle();
                             resultData.putInt(TYPE, ADD_PRODUCT);
                             resultData.putString(MESSAGE_ERROR_FLAG, CommonUtils.generateMessageError(getApplicationContext(), e.getMessage()));
