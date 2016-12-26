@@ -5,6 +5,7 @@ apply plugin: 'android-apt'
 apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
+apply plugin: 'maven'
 
 buildscript {
     repositories {
@@ -189,4 +190,17 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_7
     }
 
+}
+/* Untuk upload ke local maven*/
+def localRepoURL = 'file://' + new File(System.getProperty('user.home')).getAbsolutePath() + '/.m2/repository'
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: localRepoURL)
+            pom.version = '1.0-DEVELOPMENT-LOCALMVN'
+            pom.groupId = 'com.tokopedia.core'
+            pom.artifactId = 'tkpdcore'
+        }
+    }
 }
