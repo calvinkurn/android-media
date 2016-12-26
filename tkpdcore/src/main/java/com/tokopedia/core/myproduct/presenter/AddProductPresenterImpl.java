@@ -356,9 +356,13 @@ public class AddProductPresenterImpl implements AddProductPresenter
             productDescription = productDescription.replace(deleteThis2WithText, "").trim();
         }
 
+
+        productDescription = productDescription.replaceAll("(\r\n|\n)", "<br />");
+
         if (productDescription.equals("0")) {
             productDescription = "";
         }
+
         // [https://phab.tokopedia.com/T6924 BUG] Edit Product - Display Tag HTML
         addProductView.setProductDesc(Html.fromHtml(productDescription).toString());
         // [BUG] Edit Product - Display Tag HTML

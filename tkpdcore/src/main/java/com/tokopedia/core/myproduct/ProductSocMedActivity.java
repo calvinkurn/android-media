@@ -342,6 +342,7 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
         bundle.putBoolean(ManageProduct.SNACKBAR_CREATE,true);
         intent.putExtras(bundle);
         startActivity(intent);
+        finish();
     }
 
     private boolean checkAllPictureUploadedAndMoveToNextProduct(int position) {
