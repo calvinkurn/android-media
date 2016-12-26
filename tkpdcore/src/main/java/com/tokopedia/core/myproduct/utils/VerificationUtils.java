@@ -8,6 +8,7 @@ import static com.tkpd.library.utils.CommonUtils.checkNotNull;
 import static com.tokopedia.core.myproduct.model.constant.ImageModelType.SELECTED;
 import static com.tokopedia.core.myproduct.presenter.ImageGalleryImpl.Pair;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.myproduct.adapter.WholesaleAdapter;
 import com.tokopedia.core.myproduct.model.ImageModel;
@@ -339,7 +340,7 @@ public class VerificationUtils {
         boolean resBoolean = false;
         String resString = null;
         String productName = text[0];
-        if (TextUtils.isEmpty(productName)) {
+        if (TextUtils.isEmpty(productName) || CommonUtils.checkStringNotEmpty(productName)) {
             resString = context.getString(R.string.error_empty_product_name);
             resBoolean = false;
         }else if(productName.length()>70){
