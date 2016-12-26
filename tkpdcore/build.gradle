@@ -146,8 +146,8 @@ apply plugin: 'com.google.gms.google-services'
 
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion '24.0.2'
+    compileSdkVersion 24
+    buildToolsVersion '25.0.2'
     useLibrary 'org.apache.http.legacy'
     sourceSets {
 
