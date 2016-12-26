@@ -767,12 +767,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
             isLoading = savedInstanceState.getBoolean(SAVED_LOADING, false);// 18
             List<SimpleTextModel> simpleTextModels = Parcels.unwrap(savedInstanceState.getParcelable(SAVED_RETURN_POLICY_LIST));// 19
             textToDisplay = new ArrayList<>();
-            if (checkNotNull(simpleTextModels))// 20
-            {
-                for (SimpleTextModel simpleTextModel : simpleTextModels) {
-                    textToDisplay.add(simpleTextModel.getText());
-                }
-            }
+            checkAvailibilityOfShopNote();
 
             conditions = Parcels.unwrap(savedInstanceState.getParcelable(SAVED_CONDITIONS));// 21
             insurances = Parcels.unwrap(savedInstanceState.getParcelable(SAVED_INSURANCES));// 22
