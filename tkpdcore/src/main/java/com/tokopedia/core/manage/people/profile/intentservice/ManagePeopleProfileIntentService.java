@@ -112,12 +112,12 @@ public class ManagePeopleProfileIntentService extends IntentService {
                                 @Override
                                 public PeopleProfilePass call(PeopleProfilePass peopleProfilePass, GeneratedHost generatedHost) {
                                     Log.d(TAG + "-step1", String.valueOf(generatedHost));
-                                    if (generatedHost != null) {
+                                    if (generatedHost.getMessageError() == null || generatedHost.getMessageError().isEmpty()) {
                                         peopleProfilePass.setServerID(String.valueOf(generatedHost.getServerId()));
                                         peopleProfilePass.setUploadHost(generatedHost.getUploadHost());
                                         return peopleProfilePass;
                                     } else {
-                                        throw new RuntimeException("");
+                                        throw new RuntimeException(generatedHost.getMessageError().get(0));
                                     }
                                 }
                             });
