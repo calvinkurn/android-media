@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentActivity;
 import android.widget.Filter;
 import android.widget.Filterable;
 
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.discovery.dynamicfilter.adapter.DynamicFilterOtherAdapter;
 
@@ -20,12 +20,12 @@ import java.util.List;
  * Created by noiz354 on 7/12/16.
  */
 public class DynamicFilterOtherPresenterImpl extends DynamicFilterOtherPresenter implements Filterable {
-    DynamicFilterModel.Filter dynamicFilter;
+    com.tokopedia.core.discovery.model.Filter dynamicFilter;
     private Filter filter;
     private int maxListItem = 25;
     private int dataSize = 0;
     private static final String TAG = DynamicFilterOtherPresenterImpl.class.getSimpleName();
-    private List<DynamicFilterModel.Option> options;
+    private List<Option> options;
 
     public DynamicFilterOtherPresenterImpl(DynamicFilterOtherView view) {
         super(view);
@@ -55,7 +55,7 @@ public class DynamicFilterOtherPresenterImpl extends DynamicFilterOtherPresenter
                 view.setupAdapter(viewItems);
                 view.setIsLoading(true);
             } else {
-                for (DynamicFilterModel.Option option : options) {
+                for (Option option : options) {
                     viewItems.add(DynamicFilterOtherAdapter.convertTo(option));
                 }
                 view.setupAdapter(viewItems);
@@ -116,7 +116,7 @@ public class DynamicFilterOtherPresenterImpl extends DynamicFilterOtherPresenter
     @Override
     public Filter getFilter() {
         if (filter == null)
-            filter = new DataFilter<DynamicFilterModel.Option>(options);
+            filter = new DataFilter<Option>(options);
         return filter;
     }
 
@@ -137,7 +137,7 @@ public class DynamicFilterOtherPresenterImpl extends DynamicFilterOtherPresenter
             if (filterSeq != null && filterSeq.length() > 0) {
                 ArrayList<T> filter = new ArrayList<T>();
                 for (T object : sourceObjects) {
-                    DynamicFilterModel.Option option = (DynamicFilterModel.Option) object;
+                    Option option = (Option) object;
                     if (option.getName().toLowerCase().contains(filterSeq)) {
                         filter.add(object);
                     }
@@ -156,7 +156,7 @@ public class DynamicFilterOtherPresenterImpl extends DynamicFilterOtherPresenter
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            options = (ArrayList<DynamicFilterModel.Option>) results.values;
+            options = (ArrayList<Option>) results.values;
             List<RecyclerViewItem> viewItems = new ArrayList<>();
             if (options.size() > maxListItem) {
                 for (int i = 0; i < maxListItem; i++) {

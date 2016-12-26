@@ -18,6 +18,7 @@ allprojects {
     repositories {
         jcenter()
         mavenCentral()
+        mavenLocal()
         maven { url "https://www.jitpack.io" }
         maven { url 'https://maven.fabric.io/public' }
         maven { url 'http://maven.localytics.com/public' }
