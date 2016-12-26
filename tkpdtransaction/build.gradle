@@ -1,7 +1,18 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
+    }
+}
+
 apply plugin: 'com.android.library'
 apply plugin: 'android-apt'
+apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
+apply plugin: 'maven'
 
 publishing {
     publications {
@@ -91,4 +102,18 @@ dependencies {
     compile rootProject.ext.butterKnifeDependencies.butterKnife
     apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
+}
+
+/* Untuk upload ke local maven*/
+def localRepoURL = 'file://' + new File(System.getProperty('user.home')).getAbsolutePath() + '/.m2/repository'
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: localRepoURL)
+            pom.version = '1.0-DEVELOPMENT-LOCALMVN'
+            pom.groupId = 'com.tokopedia.transaction'
+            pom.artifactId = 'tkpdtransaction'
+        }
+    }
 }
