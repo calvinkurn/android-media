@@ -110,9 +110,9 @@ public class AuthUtil {
         finalHeader.put(HEADER_CONTENT_MD5, contentMD5);
         finalHeader.put(HEADER_DATE, date);
         finalHeader.put(HEADER_AUTHORIZATION, "TKPD Tokopedia:" + signature.trim());
-        finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
+        finalHeader.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
         finalHeader.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
-        finalHeader.put(HEADER_X_TKPD_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
+        finalHeader.put(HEADER_X_TKPD_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
 
         return finalHeader;
     }
@@ -133,9 +133,9 @@ public class AuthUtil {
         finalHeader.put(HEADER_AUTHORIZATION, "TKPD Tokopedia:" + signature.trim());
         finalHeader.put(HEADER_USER_ID, SessionHandler.getLoginID(MainApplication.getAppContext()));
         finalHeader.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
-        finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
+        finalHeader.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
         finalHeader.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
-        finalHeader.put(HEADER_X_TKPD_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
+        finalHeader.put(HEADER_X_TKPD_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
 
         return finalHeader;
     }
@@ -157,9 +157,9 @@ public class AuthUtil {
             finalHeader.put(HEADER_AUTHORIZATION, authKey);
         }
         finalHeader.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
-        finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
+        finalHeader.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
         finalHeader.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
-        finalHeader.put(HEADER_X_TKPD_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
+        finalHeader.put(HEADER_X_TKPD_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
         return finalHeader;
     }
 
