@@ -23,7 +23,7 @@ public class HorizontalRecentViewList extends RecyclerViewItem implements Parcel
             for (int i = 0; i < product.size(); i++) {
                 if (product.get(i) instanceof RecentView) {
                     RecentView productItem = (RecentView) product.get(i);
-                    productItem.setShopName(Html.fromHtml(productItem.getProductName()).toString());
+                    productItem.setShopName(Html.fromHtml(productItem.getShopName()).toString());
                     mRecentViewList.add(productItem);
                 }
             }
