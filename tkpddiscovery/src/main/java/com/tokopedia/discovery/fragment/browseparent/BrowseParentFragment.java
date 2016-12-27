@@ -30,8 +30,10 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.Breadcrumb;
 import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
+import com.tokopedia.core.network.entity.discovery.CatalogModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.session.base.BaseFragment;
@@ -109,7 +111,8 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
                         }
                     case 1:
                         if (fragment instanceof CatalogFragment) {
-                            return ((CatalogFragment) fragment).getDataModel().result.breadcrumb;
+                            BrowseCatalogModel catalogModel = ((CatalogFragment) fragment).getDataModel();
+                            return catalogModel.result.breadcrumb;
                         }
                     default:
                         return new ArrayList<Breadcrumb>();
