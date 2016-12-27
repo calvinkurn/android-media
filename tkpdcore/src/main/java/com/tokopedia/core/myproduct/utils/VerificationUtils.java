@@ -11,6 +11,7 @@ import static com.tokopedia.core.myproduct.presenter.ImageGalleryImpl.Pair;
 import com.drew.lang.StringUtil;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
+import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.myproduct.adapter.WholesaleAdapter;
 import com.tokopedia.core.myproduct.model.ImageModel;
 import com.tokopedia.core.myproduct.model.TextDeleteModel;
@@ -65,6 +66,10 @@ public class VerificationUtils {
 
         if (etalaseName.trim().length() < 3){
             return new Pair<>(false, context.getString(R.string.etalase_less_than_three_char));
+        }
+
+        if(!DbManagerImpl.getInstance().isEtalaseEmpty(etalaseName)){
+            return new Pair<>(false, context.getString(R.string.error_etalase_exist));
         }
 
         return new Pair<>(true, null);
