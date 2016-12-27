@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.TextPaint;
@@ -388,7 +389,7 @@ public class AppealResCenterFragment extends BasePresenterFragment<AppealResCent
 
     @Override
     public void showTimeOut(NetworkErrorHelper.RetryClickedListener clickedListener) {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), clickedListener);
+        NetworkErrorHelper.showSnackbar(getActivity());
     }
 
     @Override

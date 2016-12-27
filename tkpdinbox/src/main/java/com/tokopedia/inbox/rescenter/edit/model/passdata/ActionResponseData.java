@@ -38,7 +38,7 @@ public class ActionResponseData implements Parcelable {
     }
 
     public boolean isSuccess() {
-        return getSuccess() == 1;
+        return getSuccess() != null && getSuccess() == 1;
     }
 
     public String getResolutionID() {
