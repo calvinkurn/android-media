@@ -15,11 +15,11 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.bignerdranch.android.multiselector.ModalMultiSelectorCallback;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.presenter.TopAdsListPresenter;
 import com.tokopedia.seller.topads.view.adapter.TopAdsListAdapter;
 import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;

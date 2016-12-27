@@ -30,10 +30,12 @@ public class TopAdsGroupListAdapter extends TopAdsListAdapter<GroupAd> {
     public void bindDataAds(final int position, RecyclerView.ViewHolder viewHolder) {
         GroupAd groupAd = data.get(position);
         final TopAdsViewHolder topAdsViewHolder = (TopAdsViewHolder) viewHolder;
-        topAdsViewHolder.titleProduct.setText(groupAd.getGroupName());
-        topAdsViewHolder.statusActive.setText(String.valueOf(groupAd.getGroupStatus()));
-        topAdsViewHolder.promoPriceUsed.setText(groupAd.getGroupPriceBidFmt());
-        topAdsViewHolder.totalPricePromo.setText(groupAd.getGroupPriceDailyFmt());
+        if (groupAd != null) {
+            topAdsViewHolder.titleProduct.setText(groupAd.getGroupName());
+            topAdsViewHolder.statusActive.setText(String.valueOf(groupAd.getGroupStatus()));
+            topAdsViewHolder.promoPriceUsed.setText(groupAd.getGroupPriceBidFmt());
+            topAdsViewHolder.totalPricePromo.setText(groupAd.getGroupPriceDailyFmt());
+        }
         topAdsViewHolder.checkedPromo.setChecked(isChecked(position));
         topAdsViewHolder.checkedPromo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
