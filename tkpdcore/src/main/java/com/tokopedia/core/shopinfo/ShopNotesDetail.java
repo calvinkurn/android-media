@@ -16,6 +16,7 @@ import com.tokopedia.core.manage.shop.notes.model.ShopNote;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.shopinfo.facades.GetShopNote;
 import com.tokopedia.core.shopinfo.models.NoteModel;
+import com.tokopedia.core.util.MethodChecker;
 
 import rx.subscriptions.CompositeSubscription;
 
@@ -127,6 +128,6 @@ public class ShopNotesDetail extends TActivity {
         holder.titleBar.setVisibility(View.VISIBLE);
         holder.title.setText(Html.fromHtml(model.title));
         holder.date.setText(model.update);
-        holder.content.setText(Html.fromHtml(model.content));
+        holder.content.setText(MethodChecker.fromHtml(model.content.replace("\n","<br />")));
     }
 }
