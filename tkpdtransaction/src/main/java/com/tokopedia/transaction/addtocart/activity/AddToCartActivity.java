@@ -31,6 +31,7 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
@@ -506,6 +507,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     @Override
     public void onCartFailedLoading() {
         hideInitLoading();
+        KeyboardHandler.hideSoftKeyboard(this);
         findViewById(R.id.main_scroll).setVisibility(View.GONE);
         NetworkErrorHelper.showEmptyState(this, parentView,
                 new NetworkErrorHelper.RetryClickedListener() {
