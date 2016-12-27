@@ -74,7 +74,6 @@ public class ButtonShareView extends BaseView<ProductDetailData, ProductDetailVi
             ShareData shareData = ShareData.Builder.aShareData()
                     .setName(data.getInfo().getProductName())
                     .setDescription(data.getInfo().getProductDescription())
-                    .setBitmap(bitmap)
                     .setImgUri(data.getProductImages().get(0).getImageSrc())
                     .setPrice(data.getInfo().getProductPrice())
                     .setUri(data.getInfo().getProductUrl())

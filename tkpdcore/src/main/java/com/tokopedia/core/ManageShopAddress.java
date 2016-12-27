@@ -311,7 +311,8 @@ public class ManageShopAddress extends TActivity {
     }
 
     private void SetToUIV4(ShopAddress data) {
-        if (data.getList() != null) {
+        noResult.removeMessage();
+        if (data.getList() != null && data.getList().size() > 0) {
             LocationListView.setVisibility(View.VISIBLE);
             IsAllowShop = data.getIsAllow() + "";
             LocationId.clear();
@@ -353,7 +354,7 @@ public class ManageShopAddress extends TActivity {
                 LocationDistrictId.add(Location.getLocationDistrictId());
                 LocationPostList.add(Location.getLocationPostalCode());
             }
-        } else if (LocationId.size() == 0) {
+        } else {
             LocationListView.setVisibility(View.GONE);
             noResult.showMessage();
         }
