@@ -64,6 +64,9 @@ public class City extends BaseModel implements DatabaseConstant, Convert<ListCit
         }
     };
 
+    public City() {
+    }
+
     public void associateProvince(Province province) {
         provinceForeignKeyContainer =
                 new ForeignKeyContainer<>(FlowManager.getContainerAdapter(Province.class)

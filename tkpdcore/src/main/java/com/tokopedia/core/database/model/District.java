@@ -43,6 +43,9 @@ public class District extends BaseModel implements DatabaseConstant, Convert<Lis
 
     private City districtCity;
 
+    public District() {
+    }
+
     public void associateCity(City city) {
         districtForeignKeyContainer =
                 new ForeignKeyContainer<>(FlowManager.getContainerAdapter(City.class)

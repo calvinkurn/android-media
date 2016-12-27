@@ -38,6 +38,9 @@ public class Province extends BaseModel implements DatabaseConstant, Convert<Lis
     @PrimaryKey(autoincrement = true)
     public long Id;
 
+    public Province() {
+    }
+
     @Override
     public long getId() {
         return Id;
