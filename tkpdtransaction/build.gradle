@@ -3,12 +3,16 @@ apply plugin: 'android-apt'
 apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
 
+def getArtifactVersionCode() {
+    return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
+}
+
 publishing {
     publications {
         aar(MavenPublication) {
             groupId 'com.tokopedia.transaction'
             artifactId 'transaction'
-            version '1.0-SNAPSHOT'
+            version getArtifactVersionCode()
             artifact("$buildDir/outputs/aar/tkpdtransaction-release.aar")
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
@@ -30,7 +34,7 @@ artifactory {
     contextUrl = rootProject.ext.artifactoryUrl
     publish {
         repository {
-            repoKey = 'libs-snapshot-local'
+            repoKey = 'libs-release-local'
 
             username = artifactory_username
             password = artifactory_password
