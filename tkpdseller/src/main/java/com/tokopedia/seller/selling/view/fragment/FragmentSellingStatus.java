@@ -26,6 +26,8 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.PagingHandler;
@@ -111,8 +113,10 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
         initPresenter();
 
         presenter.getStatusTransactionList(isVisibleToUser, SellingStatusTransactionImpl.Type.STATUS);
-        presenter.checkValidationToSendGoogleAnalytic(isVisibleToUser, getActivity());
         super.setUserVisibleHint(isVisibleToUser);
+        ScreenTracking.screenLoca(AppScreen.SCREEN_LOCA_SHIPPINGSTATUS);
+        ScreenTracking.eventLoca(AppScreen.SCREEN_LOCA_SHIPPINGSTATUS);
+        ScreenTracking.screen(AppScreen.SCREEN_TX_SHOP_SHIPPING_STATUS);
     }
 
 
@@ -161,6 +165,16 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
     @Override
     public String getEndDate() {
         return "";
+    }
+
+    @Override
+    public void showFab() {
+        fab.show();
+    }
+
+    @Override
+    public void hideFab() {
+        fab.hide();
     }
 
     @Override
@@ -419,16 +433,14 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
             @Override
             public void onSuccess(String refNum) {
                 progressDialog.dismiss();
-                adapter.clearData();
-                presenter.getStatusTransactionList(getUserVisibleHint(), SellingStatusTransactionImpl.Type.STATUS);
+                presenter.refreshOnFilter();
             }
 
             @Override
             public void onFailed(String errorMsg) {
                 CommonUtils.UniversalToast(getActivity(), errorMsg);
                 progressDialog.dismiss();
-                adapter.clearData();
-                presenter.getStatusTransactionList(getUserVisibleHint(), SellingStatusTransactionImpl.Type.STATUS);
+                presenter.refreshOnFilter();
             }
         };
     }
@@ -477,17 +489,14 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
         return new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R2.id.action_edit:
-                        listener.onEditRef(model);
-                        return true;
-
-                    case R2.id.action_track:
-                        listener.onTrack(model);
-                        return true;
-
-                    default:
-                        return false;
+                if (item.getItemId() == R.id.action_edit) {
+                    listener.onEditRef(model);
+                    return true;
+                } else if (item.getItemId() == R.id.action_track) {
+                    listener.onTrack(model);
+                    return true;
+                } else {
+                    return false;
                 }
             }
 

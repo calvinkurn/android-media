@@ -2,6 +2,7 @@ package com.tokopedia.inbox.rescenter.detail.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
@@ -35,6 +36,10 @@ public class InputShippingRefNumDialog {
     private View scanButton;
     private ShippingSpinnerAdapter shippingAdapter;
     private LocalCacheManager.ReturnPackage cache;
+
+    public ResCenterKurir.Kurir getSelectedKurir() {
+        return (ResCenterKurir.Kurir) shippingSpinner.getItemAtPosition(shippingSpinner.getSelectedItemPosition() - 1);
+    }
 
     public interface Listener {
         void onSubmitButtonClick();
@@ -80,7 +85,7 @@ public class InputShippingRefNumDialog {
 
         for (ResCenterKurir.Kurir kurir : resCenterKurirList.getList()) {
             if (kurir.getShipmentId().equals(cache.getShippingID())) {
-                shippingSpinner.setSelection(resCenterKurirList.getList().indexOf(kurir));
+                shippingSpinner.setSelection(resCenterKurirList.getList().indexOf(kurir) + 1);
             }
         }
 
@@ -115,32 +120,34 @@ public class InputShippingRefNumDialog {
                 errorShippingSpinner.setVisibility(View.GONE);
                 referenceNumber.setError(null);
 
-                boolean valid = true;
                 if (referenceNumber.getText().toString().replaceAll("\\s+","").length() == 0) {
-                    valid = false;
                     referenceNumber.setError(context.getString(R.string.error_field_required));
+                    return;
                 }
-                if (referenceNumber.getText().toString().equals(cache.getShippingRefNum())) {
-                    valid = false;
-                    referenceNumber.setError(context.getString(R.string.error_update_receipt_number));
-                }
+
                 if (referenceNumber.length() < 8 || referenceNumber.length() > 17) {
-                    valid = false;
                     referenceNumber.setError(context.getString(R.string.error_receipt_number));
+                    return;
                 }
+
                 if (shippingSpinner.getSelectedItemPosition() == 0) {
-                    valid = false;
                     errorShippingSpinner.setVisibility(View.VISIBLE);
+                    return;
                 }
-                if (valid) {
-                    LocalCacheManager.ReturnPackage.Builder(resolutionID)
-                            .getCache()
-                            .setShippingID(((ResCenterKurir.Kurir) shippingSpinner.getItemAtPosition(shippingSpinner.getSelectedItemPosition() - 1)).getShipmentId())
-                            .setShippingRefNum(referenceNumber.getText().toString())
-                            .save();
-                    listener.onSubmitButtonClick();
-                    dialog.dismiss();
+
+                if (referenceNumber.getText().toString().equals(cache.getShippingRefNum()) &&
+                        getSelectedKurir().getShipmentId().equals(cache.getShippingID())) {
+                    referenceNumber.setError(context.getString(R.string.error_update_receipt_number));
+                    return;
                 }
+
+                LocalCacheManager.ReturnPackage.Builder(resolutionID)
+                        .getCache()
+                        .setShippingID(((ResCenterKurir.Kurir) shippingSpinner.getItemAtPosition(shippingSpinner.getSelectedItemPosition() - 1)).getShipmentId())
+                        .setShippingRefNum(referenceNumber.getText().toString())
+                        .save();
+                listener.onSubmitButtonClick();
+                dialog.dismiss();
             }
         });
         return this;

@@ -18,6 +18,8 @@ public interface AddToCartPresenter {
 
     void getCartFormData(@NonNull Context context, @NonNull ProductCartPass data);
 
+    void getCartKeroToken(@NonNull Context context, @NonNull ProductCartPass data, @NonNull Destination destination);
+
     void calculateProduct(@NonNull Context context, @NonNull OrderData orderData);
 
     void calculateKeroRates(@NonNull Context context, @NonNull AtcFormData atcFormData);
@@ -57,4 +59,6 @@ public interface AddToCartPresenter {
     void onViewDestroyed();
 
     void processGetGTMTicker();
+
+    boolean isAllowKeroAccess(AtcFormData data);
 }

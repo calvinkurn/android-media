@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
@@ -125,6 +126,7 @@ public class TrackingUtils extends TrackingConfig {
         getAFEngine().sendTrackEvent(AFInAppEventType.CONTENT_VIEW, listViewEvent);
     }
 
+
     public static void eventLocaNotificationCallback(Intent intent){
         getLocaEngine().sendNotificationCallback(intent);
     }
@@ -181,5 +183,7 @@ public class TrackingUtils extends TrackingConfig {
     public static double getDouble(String key) {
         return getGTMEngine().getDouble(key);
     }
+
+
 }
 

@@ -254,13 +254,13 @@ public class ShopEditor extends TActivity {
                         myAlertDialog.setPositiveButton(getString(R.string.title_gallery), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                ShopEditorPermissionsDispatcher.actionImagePickerWithCheck(ShopEditor.this);
+//                                ShopEditorPermissionsDispatcher.actionImagePickerWithCheck(ShopEditor.this);
                             }
                         });
                         myAlertDialog.setNegativeButton(getString(R.string.title_camera), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                ShopEditorPermissionsDispatcher.actionCameraWithCheck(ShopEditor.this);
+//                                ShopEditorPermissionsDispatcher.actionCameraWithCheck(ShopEditor.this);
                             }
                         });
                         Dialog dialog = myAlertDialog.create();
@@ -585,8 +585,8 @@ public class ShopEditor extends TActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        ShopEditorPermissionsDispatcher.onRequestPermissionsResult(ShopEditor.this,
-                requestCode, grantResults);
+//        ShopEditorPermissionsDispatcher.onRequestPermissionsResult(ShopEditor.this,
+//                requestCode, grantResults);
     }
     @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     void showRationaleForStorageAndCamera(final PermissionRequest request) {

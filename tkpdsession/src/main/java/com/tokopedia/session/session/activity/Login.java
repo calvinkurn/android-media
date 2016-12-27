@@ -1,11 +1,14 @@
 package com.tokopedia.session.session.activity;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PersistableBundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -28,15 +31,28 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.Cart;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.fragment.FragmentSecurityQuestion;
+import com.tokopedia.core.msisdn.activity.MsisdnActivity;
 import com.tokopedia.core.network.v4.NetworkConfig;
+import com.tokopedia.core.onboarding.OnboardingActivity;
 import com.tokopedia.core.presenter.BaseView;
+import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.constant.DownloadServiceConstant;
+import com.tokopedia.core.session.model.CreatePasswordModel;
+import com.tokopedia.core.session.model.LoginFacebookViewModel;
+import com.tokopedia.core.session.model.LoginGoogleModel;
+import com.tokopedia.core.session.presenter.Session;
+import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.session.session.fragment.ActivationResentFragment;
 import com.tokopedia.session.session.fragment.ForgotPasswordFragment;
 import com.tokopedia.session.session.fragment.LoginFragment;
@@ -44,29 +60,26 @@ import com.tokopedia.session.session.fragment.RegisterInitialFragment;
 import com.tokopedia.session.session.fragment.RegisterNewNextFragment;
 import com.tokopedia.session.session.fragment.RegisterNewViewFragment;
 import com.tokopedia.session.session.fragment.RegisterPassPhoneFragment;
+import com.tokopedia.session.session.google.GoogleActivity;
 import com.tokopedia.session.session.intentservice.LoginResultReceiver;
 import com.tokopedia.session.session.intentservice.LoginService;
 import com.tokopedia.session.session.intentservice.RegisterResultReceiver;
 import com.tokopedia.session.session.intentservice.RegisterService;
 import com.tokopedia.session.session.intentservice.ResetPasswordResultReceiver;
 import com.tokopedia.session.session.intentservice.ResetPasswordService;
-import com.tokopedia.core.session.model.CreatePasswordModel;
-import com.tokopedia.core.session.model.LoginFacebookViewModel;
-import com.tokopedia.core.session.presenter.Session;
-import com.tokopedia.session.session.presenter.SessionImpl;
-import com.tokopedia.core.session.presenter.SessionView;
-import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.service.DownloadService;
-import com.tokopedia.session.session.google.GoogleActivity;
-import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.session.session.model.LoginModel;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.session.session.presenter.SessionImpl;
 
 import org.parceler.Parcels;
 
 import java.util.List;
+
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 
 /**
  * Created by m.normansyah on 04/11/2015.
@@ -81,6 +94,7 @@ import java.util.List;
  * inside session package :
  * 1. Logout Fragment currently dialog is discard when rotate.
  */
+@RuntimePermissions
 public class Login extends GoogleActivity implements SessionView, GoogleActivity.GoogleListener
             , DownloadResultReceiver.Receiver
             , LoginResultReceiver.Receiver
@@ -199,15 +213,26 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         Log.d(getClass().getSimpleName(), "moveTo " + type);
         switch (type) {
             case MOVE_TO_CART_TYPE:
-                if (SessionHandler.isV4Login(this)) {
-                    startActivity(new Intent(this, Cart.class));
-                } else {
-                    Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
-                    intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOME);
+                if (GlobalConfig.isSellerApp() && !SessionHandler.isMsisdnVerified()) {
+                    Intent intent = new Intent(this, MsisdnActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
+                } else {
+                    if (SessionHandler.isV4Login(this)) {
+                        startActivity(new Intent(this, Cart.class));
+                    } else {
+                        Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
+                        intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOME);
+                        startActivity(intent);
+                    }
                 }
                 break;
             case HOME:
+                if (GlobalConfig.isSellerApp() && !SessionHandler.isMsisdnVerified()) {
+                    Intent intent = new Intent(this, MsisdnActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                } else{
                 if (SessionHandler.isV4Login(this)) {
                     Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
                     intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
@@ -218,30 +243,52 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                     intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
                             HomeRouter.INIT_STATE_FRAGMENT_HOME);
                     startActivity(intent);
-                }
+                }}
                 break;
 
-//            case SELLER_HOME:
-//                if(SessionHandler.isV4Login(this)) {
-//                    if (SessionHandler.isFirstTimeUser(this) || !SessionHandler.isUserSeller(this)) {
-//                        //  Launch app intro
-//                        Intent intent = new Intent(this, OnboardingActivity.class);
-//                        startActivity(intent);
-//                        return;
-//                    }
-//
-//                    Intent intent = null;
-//                    if (SessionHandler.isUserSeller(this)) {
-//                        intent = new Intent(this, SellerHomeActivity.class);
-//                    } else {
-//                        intent = moveToCreateShop(this);
-//                    }
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                    intent.putExtra(ParentIndexHome.EXTRA_INIT_FRAGMENT,
-//                            ParentIndexHome.INIT_STATE_FRAGMENT_FEED);
-//                    startActivity(intent);
-//                }
-//                break;
+            case SELLER_HOME:
+                if(SessionHandler.isV4Login(this)) {
+                    if (SessionHandler.isFirstTimeUser(this) || !SessionHandler.isUserSeller(this)) {
+                        //  Launch app intro
+                        Intent intent = SellerAppRouter.getSellerOnBoardingActivity(this);
+                        startActivity(intent);
+                        return;
+                    }
+
+                    Intent intent = null;
+                    if (SessionHandler.isUserSeller(this)) {
+                        intent = SellerAppRouter.getSellerHomeActivity(this);
+                    } else {
+                        intent = moveToCreateShop(this);
+                    }
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
+                            HomeRouter.INIT_STATE_FRAGMENT_FEED);
+                    startActivity(intent);
+                }
+                break;
+        }
+    }
+    @NonNull
+    public static Intent moveToCreateShop(Context context) {
+        if(context == null)
+            return null;
+
+        if(SessionHandler.isMsisdnVerified()) {
+            Intent intent;
+            intent = SellerRouter.getAcitivityShopCreateEdit(context);
+            intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
+                    SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            return intent;
+        }else{
+            // TODO move to msisdn activity
+            /*Intent intent;
+            intent = new Intent(context, MsisdnActivity.class);
+            intent.putExtra(MsisdnActivity.SOURCE, Login.class.getSimpleName());
+            return intent;*/
+
+            return null;
         }
     }
 
@@ -300,7 +347,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     @Override
     public void moveToRegisterInitial() {
         Fragment fragment = RegisterInitialFragment.newInstance();
-        moveToFragment(fragment, true, REGISTER_INITIAL, TkpdState.DrawerPosition.REGISTER_INITIAL);
+        moveToFragment(fragment, false, REGISTER_INITIAL, TkpdState.DrawerPosition.REGISTER_INITIAL);
 
         // Change the header
         session.setWhichFragment(TkpdState.DrawerPosition.REGISTER_INITIAL);
@@ -311,7 +358,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     @Override
     public void moveToLogin() {
         Fragment loginFragment = LoginFragment.newInstance("", false, "","","");
-        moveToFragment(loginFragment, true, LOGIN_FRAGMENT_TAG, TkpdState.DrawerPosition.LOGIN);
+        moveToFragment(loginFragment, false, LOGIN_FRAGMENT_TAG, TkpdState.DrawerPosition.LOGIN);
 
         // Change the header
         session.setWhichFragment(TkpdState.DrawerPosition.LOGIN);
@@ -322,12 +369,12 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     @Override
     public void moveToForgotPassword() {
         Log.d(TAG, messageTAG + supportFragmentManager.getBackStackEntryCount());
-        if (supportFragmentManager.getBackStackEntryCount() > 1) {
-            FragmentManager.BackStackEntry first = supportFragmentManager.getBackStackEntryAt(1);
-            supportFragmentManager.popBackStack(first.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        }
+//        if (supportFragmentManager.getBackStackEntryCount() > 1) {
+//            FragmentManager.BackStackEntry first = supportFragmentManager.getBackStackEntryAt(1);
+//            supportFragmentManager.popBackStack(first.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+//        }
         Fragment fragment = new ForgotPasswordFragment();
-        moveToFragment(fragment, true, FORGOT_PASSWORD_TAG, TkpdState.DrawerPosition.FORGOT_PASSWORD);
+        moveToFragment(fragment, false, FORGOT_PASSWORD_TAG, TkpdState.DrawerPosition.FORGOT_PASSWORD);
 
         session.setWhichFragment(TkpdState.DrawerPosition.FORGOT_PASSWORD);
         setToolbarTitle();
@@ -443,7 +490,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         session.setWhichFragment(TkpdState.DrawerPosition.SECURITY_QUESTION);
         setToolbarTitle();
         invalidateOptionsMenu();
-    }
+   }
 
     @Override
     public void destroy() {
@@ -488,24 +535,25 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
 
     @Override
     public void onBackPressed() {
-        if (getFragmentManager().getBackStackEntryCount() > 0) {
-            getFragmentManager().popBackStack();
+        if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
+            getSupportFragmentManager().popBackStack();
         } else {
-            super.onBackPressed();
-        }
+            if(GlobalConfig.isSellerApp()){
 
+            }
+            finish();
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R2.id.home:
-                Log.d(TAG, messageTAG + " R.id.home !!!");
-                return true;
-            case android.R.id.home:
-                Log.d(TAG, messageTAG + " android.R.id.home !!!");
-                getSupportFragmentManager().popBackStack();
-                return true;
+        if (item.getItemId() == R.id.home) {
+            Log.d(TAG, messageTAG + " R.id.home !!!");
+            return true;
+        } else if (item.getItemId() == android.R.id.home) {
+            Log.d(TAG, messageTAG + " android.R.id.home !!!");
+            getSupportFragmentManager().popBackStack();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -521,12 +569,18 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         updateUI(false);
     }
 
+    @NeedsPermission(android.Manifest.permission.GET_ACCOUNTS)
     @Override
     public void updateUI(boolean isSignedIn) {
         if (isSignedIn) {
             Person currentPerson = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
-            String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
-            if (currentPerson != null) {
+            String email;
+            try {
+                email = Plus.AccountApi.getAccountName(mGoogleApiClient);
+            } catch (Exception e) {
+                email = "";
+            }
+            if (currentPerson != null && email !=null && !email.equals("")) {
                 // Show signed-in user's name
                 String name = currentPerson.getDisplayName();
 
@@ -569,6 +623,30 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
 
             // Set button visibility
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        LoginPermissionsDispatcher.onRequestPermissionsResult(Login.this, requestCode, grantResults);
+    }
+
+    @OnPermissionDenied(Manifest.permission.GET_ACCOUNTS)
+    void showDeniedForGetAccounts() {
+        RequestPermissionUtil.onPermissionDenied(this, android.Manifest.permission.GET_ACCOUNTS);
+
+    }
+
+    @OnNeverAskAgain(android.Manifest.permission.GET_ACCOUNTS)
+    void showNeverForGetAccounts() {
+        RequestPermissionUtil.onNeverAskAgain(this, android.Manifest.permission.GET_ACCOUNTS);
+
+    }
+
+    @OnShowRationale(android.Manifest.permission.GET_ACCOUNTS)
+    void showRationaleForGetAccounts(final PermissionRequest request) {
+        RequestPermissionUtil.onShowRationale(this, request, android.Manifest.permission.GET_ACCOUNTS);
     }
 
     @Override
@@ -824,8 +902,8 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
 
     @Override
     public void showError(String text) {
-        if(text!=null){
-            SnackbarManager.make(this,text, Snackbar.LENGTH_LONG).show();
+        if (text != null) {
+            SnackbarManager.make(this, text, Snackbar.LENGTH_LONG).show();
         }
     }
 }

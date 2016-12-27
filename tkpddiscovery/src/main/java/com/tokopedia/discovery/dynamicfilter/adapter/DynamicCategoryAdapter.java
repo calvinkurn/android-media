@@ -41,7 +41,6 @@ public class DynamicCategoryAdapter extends MultiLevelExpIndListAdapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v;
         RecyclerView.ViewHolder viewHolder;
         int resource = R.layout.dynamic_parent_view_holder_layout;
         View view = LayoutInflater.from(parent.getContext()).inflate(resource, parent, false);

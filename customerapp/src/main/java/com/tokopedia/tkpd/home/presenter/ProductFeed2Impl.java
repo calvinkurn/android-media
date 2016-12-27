@@ -380,19 +380,18 @@ public class ProductFeed2Impl implements ProductFeed, DiscoveryListener {
      * Exceptions are the code's way of saying "I can't handle this situation and I'm giving up... you deal with it!", but here you can handle it... so handle it
      */
     @Override
-    public void setLocalyticFlow(Context context, String screenName) {
-        if (context != null && (screenName != null)){
-            try {
-                ScreenTracking.screenLoca(screenName);
-            }catch (Exception e){
-                CommonUtils.dumper(TAG+" error connecting to GCM Service");
-                TrackingUtils.eventLogAnalytics(ParentIndexHome.class.getSimpleName(), e.getMessage());
-            }
+    public void setLocalyticFlow(String screenName) {
+        try {
+            ScreenTracking.screenLoca(screenName);
+            ScreenTracking.eventLoca(screenName);
+        }catch (Exception e){
+            CommonUtils.dumper(TAG+" error connecting to GCM Service");
+            TrackingUtils.eventLogAnalytics(ParentIndexHome.class.getSimpleName(), e.getMessage());
         }
     }
 
     @Override
-    public void sendAppsFlyerData(Context context) {
+    public void sendAppsFlyerData() {
         ScreenTracking.sendAFGeneralScreenEvent(Jordan.AF_SCREEN_PRODUCT_FEED);
     }
 

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.view.Window;
 
 import com.appsflyer.AFInAppEventParameterName;
@@ -83,8 +84,42 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                         viewListener.renderFormProductInfo(data.getForm().getProductDetail());
                         viewListener.renderFormAddress(data.getForm().getDestination());
                         viewListener.hideInitLoading();
-                        if (data.getForm().getDestination() != null)
+                        if (isAllowKeroAccess(data)) {
                             calculateKeroRates(context, data);
+                        }else{
+                            viewListener.hideProgressLoading();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure() {
+                        viewListener.onCartFailedLoading();
+                    }
+                });
+    }
+
+    @Override
+    public void getCartKeroToken(@NonNull final Context context, @NonNull ProductCartPass data,
+                                 @NonNull final Destination destination) {
+        viewListener.showInitLoading();
+        Map<String, String> param = new HashMap<>();
+        param.put("product_id", data.getProductId());
+        viewListener.disableAllForm();
+        addToCartNetInteractor.getAddToCartForm(context, param,
+                new AddToCartNetInteractor.OnGetCartFormListener() {
+                    @Override
+                    public void onSuccess(AtcFormData data) {
+                        data.getForm().setDestination(destination);
+                        viewListener.hideNetworkError();
+                        viewListener.initialOrderData(data);
+                        viewListener.renderFormProductInfo(data.getForm().getProductDetail());
+                        viewListener.renderFormAddress(data.getForm().getDestination());
+                        viewListener.hideInitLoading();
+                        if (isAllowKeroAccess(data)) {
+                            calculateKeroRates(context, data);
+                        }else{
+                            viewListener.hideProgressLoading();
+                        }
                     }
 
                     @Override
@@ -97,7 +132,6 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     @Override
     public void calculateKeroRates(@NonNull Context context, @NonNull final AtcFormData atcFormData) {
         viewListener.disableBuyButton();
-        CommonUtils.dumper("rates/v1 kerorates called calculateKeroRates");
         keroNetInteractor.calculateShipping(context, KeroppiParam.paramsKero(atcFormData.getShop(),
                 atcFormData.getForm().getDestination(), atcFormData.getForm().getProductDetail()),
                 new KeroNetInteractor.CalculationListener() {
@@ -106,21 +140,25 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                         viewListener.renderFormShipmentRates(filterAvailableKeroShipment(
                                 rates.getAttributes(), atcFormData.getForm().getShipment())
                         );
+                        viewListener.enableBuyButton();
                     }
 
                     @Override
                     public void onFailed(String error) {
                         viewListener.showErrorMessage(error);
+                        viewListener.enableBuyButton();
                     }
 
                     @Override
                     public void onTimeout(String timeoutError) {
                         viewListener.showErrorMessage(timeoutError);
+                        viewListener.enableBuyButton();
                     }
 
                     @Override
                     public void onNoConnection() {
                         viewListener.onCartFailedLoading();
+                        viewListener.enableBuyButton();
                     }
                 });
     }
@@ -206,8 +244,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
 
     @Override
     public Destination generateAddressData(Intent data) {
-        Destination destination = data.getExtras().getParcelable(ManageAddressConstant.EXTRA_ADDRESS);
-        return destination;
+        return Destination.convertFromBundle(data.getExtras().getParcelable(ManageAddressConstant.EXTRA_ADDRESS));
     }
 
     @Override
@@ -467,6 +504,22 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
             viewListener.showTickerGTM(message);
         } else {
             viewListener.hideTickerGTM();
+        }
+    }
+
+    @Override
+    public boolean isAllowKeroAccess(AtcFormData data) {
+        if (data.getShop().getUt() != 0 && !TextUtils.isEmpty(data.getShop().getToken())
+                && !TextUtils.isEmpty(data.getShop().getAvailShippingCode())
+                && !TextUtils.isEmpty(data.getShop().getOriginId() + "")
+                && !TextUtils.isEmpty(data.getShop().getOriginPostal())
+                && !TextUtils.isEmpty(data.getForm().getDestination().getDistrictId())
+                && !TextUtils.isEmpty(data.getForm().getDestination().getPostalCode())
+                && !TextUtils.isEmpty(data.getForm().getProductDetail().getProductWeight())
+                ) {
+            return true;
+        } else {
+            return false;
         }
     }
 }

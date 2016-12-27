@@ -529,17 +529,16 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
     @Override
     public void onClick(View v) {
         int i = v.getId();
-        switch (i) {
-            case R2.id.fab_filter:
-                bottomSheetFilterDialog.show();
-                break;
-        }
+        if (i == R.id.fab_filter)
+            bottomSheetFilterDialog.show();
+
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         presenter.onDestroyView();
+        bottomSheetFilterDialog.unbindDialog();
         getActivity().unregisterReceiver(txUIReceiver);
     }
 

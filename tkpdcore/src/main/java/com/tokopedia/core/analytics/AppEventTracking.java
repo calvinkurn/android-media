@@ -88,7 +88,10 @@ public interface AppEventTracking {
         String LOGIN_ERROR = "loginError";
         String REGISTER_LOGIN = "registerLogin";
         String LOGIN_CLICK = "clickLogin";
+        String TRUECALLER = "installedTrueCaller";
         String GMSUBSCRIBE = "subscribeGoldMerchant";
+        String DEPOSIT = "clickSaldo";
+        String OTP = "clickOTP";
     }
 
     interface Category {
@@ -131,7 +134,10 @@ public interface AppEventTracking {
         String ADD_PRODUCT = "Add Product";
         String HAMBURGER = "Hamburger Icon";
         String SALES = "Sales";
+        String TRUECALLER = "TrueCaller";
         String GOLD_MERCHANT = "Gold Merchant";
+        String DEPOSIT = "Saldo";
+        String OTP = "OTP";
     }
 
     interface Action {
@@ -157,7 +163,9 @@ public interface AppEventTracking {
         String LOGIN = "Login Success";
         String LOGIN_ERROR = "Login Error";
         String REGISTER = "Register";
+        String INSTALLED = "Installed";
         String SUBSCRIBE = "Subscribe";
+        String ERROR = "Error";
     }
 
     interface EventLabel {
@@ -264,6 +272,19 @@ public interface AppEventTracking {
         String REGISTER = "Register";
         String CTA = "CTA";
         String SUBSCRIBE_SUCCESS = "Subscribe Success";
+        String TOPUP = "TopUp";
+        String WITHDRAW = "Withdraw";
+        String SEND = "Send";
+        String VERIFICATION = "Verification";
+        String REVIEW_DETAIL = "Review Detail";
+        String REVIEW_BUYER = "Review Buyer";
+        String EDIT_SOLUTION = "Edit Solution";
+        String COMMENT = "Comment";
+        String COMPLAINT_DETAIL = "Complaint Detail";
+        String DISCUSSION_DETAIL = "Discussion Detail";
+        String CANCEL = "Cancel";
+        String DETAILS = "Details";
+        String ORDER_DETAIL = "Order Detail";
     }
 
     interface SOCIAL_MEDIA {

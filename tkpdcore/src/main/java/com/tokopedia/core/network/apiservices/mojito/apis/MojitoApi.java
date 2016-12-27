@@ -2,7 +2,6 @@ package com.tokopedia.core.network.apiservices.mojito.apis;
 
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.entity.homeMenu.HomeCategoryMenuItem;
 import com.tokopedia.core.network.entity.wishlist.WishlistData;
 
 import retrofit2.Response;
@@ -27,7 +26,7 @@ public interface MojitoApi {
     @Headers({
             "X-Device: android"})
     @GET(TkpdBaseURL.Mojito.API_HOME_CATEGORY_MENU)
-    Observable<Response<HomeCategoryMenuItem>> getHomeCategoryMenu();
+    Observable<Response<String>> getHomeCategoryMenu();
 
 
 }

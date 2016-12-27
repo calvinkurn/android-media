@@ -30,6 +30,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
@@ -148,16 +149,15 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                getActivity().onBackPressed();
-                return true;
-            case R2.id.action_refresh:
-                if (!isRequest) {
-                    swipe.setRefreshing(true);
-                    refresh();
-                }
-                break;
+        if (item.getItemId() == android.R.id.home) {
+            getActivity().onBackPressed();
+            return true;
+        } else if (item.getItemId() == R.id.action_refresh) {
+            if (!isRequest) {
+                swipe.setRefreshing(true);
+                refresh();
+            }
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -374,6 +374,7 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
 
     @Override
     public void successReply(String string) {
+        UnifyTracking.eventDiscussionSendSuccess(from);
         SnackbarManager.make(getActivity(), string
                 , Snackbar.LENGTH_SHORT).show();
         sendBut.setEnabled(true);
@@ -403,6 +404,7 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
 
     @Override
     public void errorReply(String error) {
+        UnifyTracking.eventDiscussionSendError(from);
         revertTalk();
         comment.setText(content);
         SnackbarManager.make(getActivity(), error, Snackbar.LENGTH_LONG).show();
@@ -576,23 +578,20 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 DialogFragment dialog;
-                switch (item.getItemId()) {
-                    case R2.id.action_delete:
-                    case R2.id.action_delete_talk:
-                        dialog = DeleteTalkDialog.createInstance(deleteListener());
-                        dialog.show(getFragmentManager(), DeleteTalkDialog.FRAGMENT_TAG);
-                        return true;
-                    case R2.id.action_follow:
-                    case R2.id.action_unfollow:
-                        dialog = FollowTalkDialog.createInstance(followListener(), isFollow);
-                        dialog.show(getFragmentManager(), FollowTalkDialog.FRAGMENT_TAG);
-                        return true;
-                    case R2.id.action_report:
-                        dialog = ReportTalkDialog.createInstance(reportListener());
-                        dialog.show(getFragmentManager(), ReportTalkDialog.FRAGMENT_TAG);
-                        return true;
-                    default:
-                        return false;
+                if (item.getItemId() == R.id.action_delete || item.getItemId() == R.id.action_delete_talk) {
+                    dialog = DeleteTalkDialog.createInstance(deleteListener());
+                    dialog.show(getFragmentManager(), DeleteTalkDialog.FRAGMENT_TAG);
+                    return true;
+                } else if (item.getItemId() == R.id.action_follow || item.getItemId() == R.id.action_unfollow) {
+                    dialog = FollowTalkDialog.createInstance(followListener(), isFollow);
+                    dialog.show(getFragmentManager(), FollowTalkDialog.FRAGMENT_TAG);
+                    return true;
+                } else if (item.getItemId() == R.id.action_report) {
+                    dialog = ReportTalkDialog.createInstance(reportListener());
+                    dialog.show(getFragmentManager(), ReportTalkDialog.FRAGMENT_TAG);
+                    return true;
+                } else {
+                    return false;
                 }
             }
         });

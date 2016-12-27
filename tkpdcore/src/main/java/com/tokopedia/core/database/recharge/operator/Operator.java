@@ -17,7 +17,7 @@ public class Operator {
     private String type;
 
     /**
-     * 
+     *
      * @return
      *     The attributes
      */
@@ -26,7 +26,7 @@ public class Operator {
     }
 
     /**
-     * 
+     *
      * @param attributes
      *     The attributes
      */
@@ -35,7 +35,7 @@ public class Operator {
     }
 
     /**
-     * 
+     *
      * @return
      *     The id
      */
@@ -44,7 +44,7 @@ public class Operator {
     }
 
     /**
-     * 
+     *
      * @param id
      *     The id
      */
@@ -53,7 +53,7 @@ public class Operator {
     }
 
     /**
-     * 
+     *
      * @return
      *     The type
      */
@@ -62,7 +62,7 @@ public class Operator {
     }
 
     /**
-     * 
+     *
      * @param type
      *     The type
      */

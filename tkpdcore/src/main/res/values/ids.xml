@@ -104,4 +104,20 @@
     <item type="id" name="avpa_view_tag_key"/>
     <item name="tv_expandable_text" type="id" />
     <item name="iv_expand_collapse" type="id" />
+    <item name="icon_search_history" type="id" />
+    <item name="icon_search_popular" type="id" />
+    <item name="icon_search_hotlist" type="id" />
+    <item name="icon_search_sugestion" type="id" />
+
+    <!--ids for PDP youtube-->
+    <item name="product_video_horizontal_scroll" type="id" />
+    <item name="youtube_video_place_holder" type="id" />
+    <item name="youtube_thumbnail_view" type="id"/>
+    <item name="youtube_thumbnail_loading_bar" type="id"/>
+    <item name="youtube_activity_place_holder_scroll_view" type="id"/>
+    <item name="youtube_activity_place_holder" type="id"/>
+    <item name="youtube_activity_thumbnail_loading_bar" type="id"/>
+    <item name="youtube_activity_thumbnail_view" type="id"/>
+    <item name="video_thumbnail_main_view" type="id"/>
+
 </resources>

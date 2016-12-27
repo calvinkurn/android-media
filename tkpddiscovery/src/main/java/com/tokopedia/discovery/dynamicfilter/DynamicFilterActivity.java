@@ -21,7 +21,8 @@ import com.google.gson.Gson;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.discovery.model.Breadcrumb;
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.Filter;
+import com.tokopedia.discovery.activity.FilterMapAtribut;
 import com.tokopedia.discovery.dynamicfilter.fragments.DynamicFilterCategoryFragment;
 import com.tokopedia.discovery.dynamicfilter.fragments.DynamicFilterListFragment;
 import com.tokopedia.discovery.dynamicfilter.fragments.DynamicFilterOtherFragment;
@@ -32,8 +33,10 @@ import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterView;
 
 import org.parceler.Parcels;
 
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -108,26 +111,22 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R2.id.action_close:
-                finish();
-                break;
-        }
+        if (item.getItemId() == R.id.action_close)
+            finish();
         return super.onOptionsItemSelected(item);
     }
 
 
     @Override
-    public void setFragmentForFirstTime3(List<DynamicFilterModel.Filter> data) {
-        setFragmentBasedOnData(DynamicFilterModel.Filter.createCategory());
+    public void setFragmentForFirstTime3(List<Filter> data) {
+        setFragmentBasedOnData(Filter.createCategory());
         Fragment dynamicFilterListFragment = DynamicFilterListFragment.newInstance2(data);
-        setFragment(dynamicFilterListFragment,
-                DynamicFilterListView.FRAGMENT_TAG, R.id.dynamic_filter_list);
+        setFragment(dynamicFilterListFragment, DynamicFilterListView.FRAGMENT_TAG, R.id.dynamic_filter_list);
     }
 
     @Override
-    public void setFragmentBasedOnData(DynamicFilterModel.Filter data) {
-        if (data.getTitle().equals(DynamicFilterModel.Filter.TITLE_CATEGORY)) {
+    public void setFragmentBasedOnData(Filter data) {
+        if (data.getTitle().equals(Filter.TITLE_CATEGORY)) {
             DynamicFilterCategoryFragment categoryFragment =
                     DynamicFilterCategoryFragment.newInstance(
                             dynamicFilterPresenter.getBreadCrumb(), dynamicFilterPresenter.getFilterCategory(),
@@ -202,13 +201,13 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
         intent.putExtra(EXTRA_FILTER_KEY, key);
 
         //for prevent disable reset selected indicator for category harga
-        if(selectedFilter.containsKey("pmax")){
+        if (selectedFilter.containsKey("pmax")) {
             return;
         }
-        if(selectedFilter.containsKey("pmin")){
+        if (selectedFilter.containsKey("pmin")) {
             return;
         }
-        if(selectedFilter.containsKey("wholesale")){
+        if (selectedFilter.containsKey("wholesale")) {
             return;
         }
         intent.putExtra(EXTRA_FILTER_VALUE, false);
@@ -226,7 +225,9 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
         if (saveFilterSelectionPosition() && saveFilterSelection() && saveFilterText()) {
             if (isFormValid()) {
                 Intent intent = new Intent();
-                intent.putExtra(EXTRA_FILTERS, Parcels.wrap(selectedFilter));
+                FilterMapAtribut.FilterMapValue filterMapValue = new FilterMapAtribut.FilterMapValue();
+                filterMapValue.setValue(selectedFilter);
+                intent.putExtra(EXTRA_FILTERS, filterMapValue);
                 setResult(RESULT_OK, intent);
                 finish();
             } else {
@@ -281,7 +282,7 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
 
     public static void moveTo(FragmentActivity fragmentActivity, Map<String, String> filterList,
                               List<Breadcrumb> productBreadCrumbList,
-                              List<DynamicFilterModel.Filter> filterCategoryList,
+                              List<Filter> filterCategoryList,
                               String currentCategory, String source) {
         if (fragmentActivity != null) {
             Intent intent = new Intent(fragmentActivity, DynamicFilterActivity.class);
@@ -306,6 +307,14 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
         }
 
         return isFormValid;
+    }
+
+    private String getCleanString(String s){
+        Locale local = new Locale("id", "id");
+        String replaceable = String.format("[Rp,.\\s]",
+                NumberFormat.getCurrencyInstance().getCurrency().getSymbol(local));
+        String cleanString = s.toString().replaceAll(replaceable, "");
+        return cleanString;
     }
 
     private boolean isPriceFormValid() {

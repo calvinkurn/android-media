@@ -77,34 +77,34 @@ public class TheirMessageDataBinder extends DataBinder<TheirMessageDataBinder.Vi
 
         @Override
         public boolean onMenuItemClick(MenuItem menuItem) {
-            switch (menuItem.getItemId()) {
-                case R2.id.action_copy:
-                    ClipboardManager clipboard = (ClipboardManager) itemView.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData clip = ClipData.newPlainText("label", message.getText());
-                    clipboard.setPrimaryClip(clip);
-                    return true;
-                case R2.id.action_report:
-                    if (!(nav.equals(MESSAGE_TRASH) || list.get(getAdapterPosition()).getUserLabelId() == 1)) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                        builder.setMessage(R.string.dialog_spam);
-                        builder.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                presenter.flagSpam(getAdapterPosition(), list.get(getAdapterPosition()));
-                            }
-                        });
-                        builder.setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                        AlertDialog dialog = builder.create();
-                        dialog.show();
-                    }
-                    return true;
-                default:
-                    return false;
+            int i = menuItem.getItemId();
+            if (i == R.id.action_copy) {
+                ClipboardManager clipboard = (ClipboardManager) itemView.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("label", message.getText());
+                clipboard.setPrimaryClip(clip);
+                return true;
+            } else if (i == R.id.action_report) {
+                if (!(nav.equals(MESSAGE_TRASH) || list.get(getAdapterPosition()).getUserLabelId() == 1)) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setMessage(R.string.dialog_spam);
+                    builder.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            presenter.flagSpam(getAdapterPosition(), list.get(getAdapterPosition()));
+                        }
+                    });
+                    builder.setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
+                return true;
+            } else {
+                return false;
             }
         }
     }

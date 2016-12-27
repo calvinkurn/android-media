@@ -1,5 +1,6 @@
 package com.tokopedia.core.product.fragment;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -40,10 +41,12 @@ import com.tokopedia.core.product.customview.RatingView;
 import com.tokopedia.core.product.customview.ShopInfoView;
 import com.tokopedia.core.product.customview.TalkReviewView;
 import com.tokopedia.core.product.customview.TransactionSuccessView;
+import com.tokopedia.core.product.customview.VideoLayout;
 import com.tokopedia.core.product.customview.WholesaleView;
 import com.tokopedia.core.product.dialog.ReportProductDialogFragment;
 import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
 import com.tokopedia.core.product.listener.ProductDetailView;
+import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productother.ProductOther;
@@ -52,16 +55,24 @@ import com.tokopedia.core.product.presenter.ProductDetailPresenter;
 import com.tokopedia.core.product.presenter.ProductDetailPresenterImpl;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.util.AppIndexHandler;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
 
 import java.util.List;
 
 import butterknife.BindView;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 
 /**
  * ProductDetailFragment
  * Created by Angga.Prasetiyo on 22/10/2015.
  */
+@RuntimePermissions
 public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPresenter>
         implements ProductDetailView {
     public static final int REQUEST_CODE_SHOP_INFO = 998;
@@ -76,6 +87,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private static final String ARG_FROM_DEEPLINK = "ARG_FROM_DEEPLINK";
     public static final String STATE_DETAIL_PRODUCT = "STATE_DETAIL_PRODUCT";
     public static final String STATE_OTHER_PRODUCTS = "STATE_OTHER_PRODUCTS";
+    public static final String STATE_VIDEO = "STATE_VIDEO";
     private static final String TAG = ProductDetailFragment.class.getSimpleName();
 
     @BindView(R2.id.tv_ticker_gtm)
@@ -116,10 +128,13 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     FreeReturnView freeReturnView;
     @BindView(R2.id.view_transaction_success)
     TransactionSuccessView transactionSuccess;
+    @BindView(R2.id.video_layout)
+    VideoLayout videoLayout;
 
     private ProductPass productPass;
     private ProductDetailData productData;
     private List<ProductOther> productOthers;
+    private VideoData videoData;
     private AppIndexHandler appIndexHandler;
     private ProgressDialog loading;
 
@@ -207,7 +222,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         loading = new ProgressDialog(context);
         loading.setCancelable(false);
         loading.setMessage("Loading");
-        if(presenter!=null)
+        if (presenter != null)
             presenter.initRetrofitInteractor();
         else
             initialPresenter();
@@ -279,6 +294,11 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onProductShareClicked(@NonNull ShareData data) {
+        ProductDetailFragmentPermissionsDispatcher.shareProductWithCheck(ProductDetailFragment.this, data);
+    }
+
+    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+    public void shareProduct(ShareData data) {
         interactionListener.shareProductInfo(data);
     }
 
@@ -340,11 +360,10 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         this.newShopView.renderData(successResult);
         this.buttonShareView.renderData(successResult);
         this.interactionListener.onProductDetailLoaded(successResult);
-        this.presenter.sendAnalytics(context, successResult);
+        this.presenter.sendAnalytics(successResult);
         this.presenter.sendAppsFlyerData(context, successResult, AFInAppEventType.CONTENT_VIEW);
         this.presenter.startIndexingApp(appIndexHandler, successResult);
         this.refreshMenu();
-
     }
 
     @Override
@@ -419,6 +438,13 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     @Override
+    public void loadVideo(VideoData data) {
+        videoLayout.setVisibility(View.VISIBLE);
+        this.videoLayout.renderData(data);
+        videoData = data;
+    }
+
+    @Override
     public void refreshMenu() {
         getActivity().invalidateOptionsMenu();
     }
@@ -428,11 +454,11 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         NetworkErrorHelper.showEmptyState(getActivity(), getActivity().findViewById(R.id.root_view),
                 error,
                 new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                presenter.requestProductDetail(context, productPass, INIT_REQUEST, false);
-            }
-        });
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.requestProductDetail(context, productPass, INIT_REQUEST, false);
+                    }
+                });
     }
 
     @Override
@@ -458,11 +484,11 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void onNullData() {
         Boolean isFromDeeplink = getArguments().getBoolean(ARG_FROM_DEEPLINK, false);
-        if(isFromDeeplink){
+        if (isFromDeeplink) {
             ProductPass pass = (ProductPass) getArguments().get(ARG_PARAM_PRODUCT_PASS_DATA);
             webViewHandleListener = (DeepLinkWebViewHandleListener) getActivity();
             webViewHandleListener.catchToWebView(pass != null ? pass.getProductUri() : "");
-        }else{
+        } else {
             showToastMessage("Produk tidak ditemukan!");
             closeView();
         }
@@ -471,7 +497,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void showReportDialog() {
-        fragment = ReportProductDialogFragment.createInstance(productData,recentBundle);
+        fragment = ReportProductDialogFragment.createInstance(productData, recentBundle);
         fragment.setListener(this);
         fragment.show(getFragmentManager(), "ReportProductDialogFragment");
     }
@@ -545,6 +571,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public void onDestroyView() {
         super.onDestroyView();
         presenter.onDestroyView(context);
+        if (videoLayout != null && videoLayout.isShown()) {
+            videoLayout.destroyVideoLayoutProcess();
+        }
     }
 
     @Override
@@ -581,6 +610,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         Log.d(TAG, "onSaveState");
         presenter.saveStateProductDetail(outState, STATE_DETAIL_PRODUCT, productData);
         presenter.saveStateProductOthers(outState, STATE_OTHER_PRODUCTS, productOthers);
+        presenter.saveStateVideoData(outState, STATE_VIDEO, videoData);
     }
 
     @Override
@@ -591,16 +621,15 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                getActivity().onBackPressed();
-                return true;
-            case R2.id.action_wishlist:
-                presenter.processWishList(context, productData);
-                return true;
-            case R2.id.action_report:
-                presenter.reportProduct(context);
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            getActivity().onBackPressed();
+            return true;
+        } else if (item.getItemId() == R.id.action_wishlist) {
+            presenter.processWishList(context, productData);
+            return true;
+        } else if (item.getItemId() == R.id.action_report) {
+            presenter.reportProduct(context);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -613,7 +642,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d(ProductDetailFragment.class.getSimpleName(), "onActivityResult requestCode "+requestCode+" resultCode "+resultCode);
+        Log.d(ProductDetailFragment.class.getSimpleName(), "onActivityResult requestCode " + requestCode + " resultCode " + resultCode);
         switch (requestCode) {
             case REQUEST_CODE_EDIT_PRODUCT:
                 presenter.processResultEdit(resultCode, data);
@@ -659,19 +688,18 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     public void onSuccessAction(Bundle resultData, int resultCode) {
-        if(fragment!=null) fragment.dismiss();
-        recentBundle=null;
+        if (fragment != null) fragment.dismiss();
+        recentBundle = null;
         SnackbarManager.make(getActivity(),
                 resultData.getString(ProductInfoIntentService.EXTRA_RESULT),
                 Snackbar.LENGTH_LONG).show();
     }
 
     public void onErrorAction(Bundle resultData, int resultCode) {
-        if(fragment!=null){
+        if (fragment != null) {
             recentBundle = resultData.getBundle(ProductInfoIntentService.EXTRA_BUNDLE);
             fragment.onErrorAction(resultData.getString(ProductInfoIntentService.EXTRA_RESULT));
-        }
-        else {
+        } else {
             SnackbarManager.make(getActivity(),
                     resultData.getString(ProductInfoIntentService.EXTRA_RESULT),
                     Snackbar.LENGTH_LONG).show();
@@ -680,6 +708,28 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     public void setRecentBundle(Bundle recentBundle) {
         this.recentBundle = recentBundle;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        ProductDetailFragmentPermissionsDispatcher.onRequestPermissionsResult(ProductDetailFragment.this,
+                requestCode, grantResults);
+    }
+
+    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showRationaleForStorage(final PermissionRequest request) {
+        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showDeniedForStorage() {
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showNeverAskForStorage() {
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
 }

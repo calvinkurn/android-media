@@ -210,7 +210,7 @@ public class FragmentIndexFavoriteV2 extends TkpdBaseV4Fragment implements Favor
         initIntentExtra();
         if (getActivity() instanceof ParentIndexHome) {
             if (((ParentIndexHome) getActivity()).getViewPager() != null) {
-                if (!isDataExist() && ((ParentIndexHome)getActivity()).getViewPager().getCurrentItem() == 2) {
+                if (!isDataExist() && ((ParentIndexHome) getActivity()).getViewPager().getCurrentItem() == 2) {
                     favorite.initData();
                     Log.d("NISNISNIS", "IMPRESSION ON CREATE");
                 }

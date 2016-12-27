@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -39,6 +40,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.discovery.model.Breadcrumb;
+import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.discovery.model.ObjContainer;
@@ -70,7 +72,6 @@ import com.tokopedia.discovery.presenter.DiscoveryActivityPresenter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -87,14 +88,13 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.tokopedia.core.router.CustomerRouter.IS_DEEP_LINK_SEARCH;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.AD_SRC;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_DISCOVERY_ALIAS;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEARCH_TERM;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRA_SOURCE;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.FRAGMENT_ID;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.VALUES_INVALID_FRAGMENT_ID;
-
-import static com.tokopedia.core.router.CustomerRouter.IS_DEEP_LINK_SEARCH;
 
 /**
  * Created by Erry on 6/30/2016.
@@ -104,17 +104,16 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
 
     private static final String TAG = BrowseProductActivity.class.getSimpleName();
     private static final String KEY_GTM = "GTMFilterData";
+    private static final String EXTRA_BROWSE_ATRIBUT = "EXTRA_BROWSE_ATRIBUT";
     @BindView(R2.id.progressBar)
     ProgressBar progressBar;
     private SearchView searchView;
     private String searchQuery;
-    //    private Map<String, String> filters;
     private FragmentManager fragmentManager;
     private SearchInteractor searchInteractor;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
-    //    private DynamicFilterModel.Data filterAttribute;
-    private HashMap<Integer, DynamicFilterModel.Data> filterAttributMap = new HashMap<>();
-    private HashMap<Integer, Map<String, String>> filtersMap = new HashMap<>();
+    private BrowseProductAtribut mBrowseProductAtribut;
+    private FilterMapAtribut mFilterMapAtribut;
     private SharedPreferences preferences;
     private List<Breadcrumb> breadcrumbs;
     private boolean afterRestoreSavedInstance;
@@ -126,12 +125,12 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         return AppScreen.SCREEN_BROWSE_PRODUCT_FROM_SEARCH;
     }
 
-    public void sendHotlist(String selected, String keyword) {
+    public void sendHotlist(String selected) {
         fetchHotListHeader(selected);
+        browseProductActivityModel.setQ("");
         browseProductActivityModel.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT);
         browseProductActivityModel.alias = selected;
     }
-
 
 
     public enum FDest {
@@ -172,14 +171,28 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         keepActivitySettings = Settings.System.getInt(getContentResolver(), Settings.Global.ALWAYS_FINISH_ACTIVITIES, 0);
         if (savedInstanceState == null) {
             browseProductActivityModel = new BrowseProductActivityModel();
+            mBrowseProductAtribut = new BrowseProductAtribut();
+            mFilterMapAtribut = new FilterMapAtribut();
             fetchIntent();
             deleteFilterAndSortCache();
         } else {
             firstTime = savedInstanceState.getBoolean(EXTRA_FIRST_TIME);
-            browseProductActivityModel = Parcels.unwrap(savedInstanceState.getParcelable(EXTRA_BROWSE_MODEL));
-            filterAttributMap = Parcels.unwrap(savedInstanceState.getParcelable(EXTRA_FILTER_MAP_ATTR));
-            filtersMap = Parcels.unwrap(savedInstanceState.getParcelable(EXTRA_FILTER_MAP));
-            browseProductActivityModel.setFilterOptions(filtersMap.get(browseProductActivityModel.getActiveTab()));
+            browseProductActivityModel = savedInstanceState.getParcelable(EXTRA_BROWSE_MODEL);
+            mBrowseProductAtribut = savedInstanceState.getParcelable(EXTRA_BROWSE_ATRIBUT);
+            if (mBrowseProductAtribut == null) mBrowseProductAtribut = new BrowseProductAtribut();
+
+            mFilterMapAtribut = savedInstanceState.getParcelable(EXTRA_FILTER_MAP);
+
+            if (mFilterMapAtribut != null && mFilterMapAtribut.getFiltersMap() != null) {
+                FilterMapAtribut.FilterMapValue filterMapAtribut
+                        = mFilterMapAtribut.getFiltersMap().get(browseProductActivityModel.getActiveTab());
+
+                if (filterMapAtribut != null) {
+                    browseProductActivityModel.setFilterOptions(filterMapAtribut.getValue());
+                } else {
+                    browseProductActivityModel.setFilterOptions(new HashMap<String, String>());
+                }
+            }
         }
         if (SessionHandler.isV4Login(this)) {
             String userId = SessionHandler.getLoginID(this);
@@ -229,7 +242,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                 };
             }
         })
-                .debounce(400, TimeUnit.MILLISECONDS)
+                .debounce(150, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -280,16 +293,18 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(EXTRA_BROWSE_MODEL, Parcels.wrap(browseProductActivityModel));
+        outState.putParcelable(EXTRA_BROWSE_MODEL, browseProductActivityModel);
         outState.putBoolean(EXTRA_FIRST_TIME, firstTime);
-        outState.putParcelable(EXTRA_FILTER_MAP, Parcels.wrap(filtersMap));
-        outState.putParcelable(EXTRA_FILTER_MAP_ATTR, Parcels.wrap(filterAttributMap));
+        outState.putParcelable(EXTRA_BROWSE_ATRIBUT, mBrowseProductAtribut);
+        outState.putParcelable(EXTRA_FILTER_MAP, mFilterMapAtribut);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        browseProductActivityModel = Parcels.unwrap(savedInstanceState.getParcelable(EXTRA_BROWSE_MODEL));
+        browseProductActivityModel = savedInstanceState.getParcelable(EXTRA_BROWSE_MODEL);
+        mBrowseProductAtribut = savedInstanceState.getParcelable(EXTRA_BROWSE_ATRIBUT);
+        mFilterMapAtribut = savedInstanceState.getParcelable(EXTRA_FILTER_MAP);
         afterRestoreSavedInstance = true;
     }
 
@@ -347,7 +362,6 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                 (SearchView.SearchAutoComplete) searchView.findViewById(R.id.search_src_text);
         mSearchSrcTextView.setTextColor(getResources().getColor(R.color.white));
         mSearchSrcTextView.setHintTextColor(getResources().getColor(R.color.white));
-
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         MenuItemCompat.setOnActionExpandListener(searchItem, this);
         MenuItemCompat.setActionView(searchItem, searchView);
@@ -387,12 +401,11 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                break;
-            case R2.id.action_search:
-                return false;
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+
+        } else if (item.getItemId() == R.id.action_search) {
+            return false;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -436,7 +449,9 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     @Override
     public boolean onQueryTextChange(String newText) {
         this.searchQuery = newText;
-        if (!newText.isEmpty() && fragmentManager.findFragmentById(R.id.container) instanceof BrowseParentFragment && !browseProductActivityModel.isSearchDeeplink()) {
+        if (!newText.isEmpty() && fragmentManager.findFragmentById(R.id.container)
+                instanceof BrowseParentFragment && !browseProductActivityModel.isSearchDeeplink()) {
+
             setFragment(SearchHistoryFragment.newInstance(newText), SearchHistoryFragment.FRAGMENT_TAG);
         } else {
             queryListener.onQueryChanged(newText);
@@ -444,14 +459,16 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         return false;
     }
 
-    public void setFilterAttribute(DynamicFilterModel.Data filterAttribute, int activeTab) {
+    public void setFilterAttribute(DataValue filterAttribute, int activeTab) {
         if (checkHasFilterAttrIsNull(activeTab))
-            filterAttributMap.put(activeTab, filterAttribute);
+//            filterAttributMap.put(activeTab, filterAttribute);
+            mBrowseProductAtribut.getFilterAttributMap().put(activeTab, filterAttribute);
     }
 
     @Override
     public boolean checkHasFilterAttrIsNull(int activeTab) {
-        return filterAttributMap.get(activeTab) == null;
+//        return filterAttributMap.get(activeTab) == null;
+        return mBrowseProductAtribut.getFilterAttributMap().get(activeTab) == null;
     }
 
 
@@ -482,14 +499,19 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         editor.remove(DynamicFilterActivity.FILTER_TEXT_PREF);
         editor.remove(DynamicFilterActivity.FILTER_SELECTED_POS_PREF);
         editor.apply();
-        browseProductActivityModel.setFilterOptions(null);
+        if (browseProductActivityModel != null) {
+            browseProductActivityModel.setFilterOptions(new HashMap<String, String>());
+        }
 
     }
 
     public void deleteFilterAndSortCache() {
         deleteFilterCache();
         browseProductActivityModel.setOb("23");
-        filterAttributMap.clear();
+//        filterAttributMap.clear();
+        if (mBrowseProductAtribut != null && mBrowseProductAtribut.getFilterAttributMap() != null) {
+            mBrowseProductAtribut.getFilterAttributMap().clear();
+        }
     }
 
     private void resetBrowseProductActivityModel() {
@@ -612,7 +634,8 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                 BrowseParentFragment parentFragment = (BrowseParentFragment)
                         fragmentManager.findFragmentById(R.id.container);
                 Intent intent;
-                DynamicFilterModel.Data filterAttribute = filterAttributMap.get(parentFragment.getActiveTab());
+                DataValue filterAttribute
+                        = mBrowseProductAtribut.getFilterAttributMap().get(parentFragment.getActiveTab());
                 switch (position) {
                     case 0:
                         if (parentFragment.getActiveFragment() instanceof ShopFragment) {
@@ -689,13 +712,13 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         }
     }
 
-    private void openSort(DynamicFilterModel.Data filterAttribute, String source, int activeTab, FDest dest) {
+    private void openSort(DataValue filterAttribute, String source, int activeTab, FDest dest) {
         if (filterAttribute != null) {
             if (browseProductActivityModel.getOb() != null) {
                 filterAttribute.setSelectedOb(browseProductActivityModel.getOb());
             }
             Intent intent = new Intent(BrowseProductActivity.this, SortProductActivity.class);
-            intent.putExtra(EXTRA_DATA, Parcels.wrap(filterAttribute));
+            intent.putExtra(EXTRA_DATA, (Parcelable) filterAttribute);
             intent.putExtra(EXTRA_SOURCE, source);
             startActivityForResult(intent, REQUEST_SORT);
             overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);
@@ -704,14 +727,23 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         }
     }
 
-    private void openFilter(DynamicFilterModel.Data filterAttribute, String source, int activeTab, FDest dest) {
+    private void openFilter(DataValue filterAttribute, String source, int activeTab, FDest dest) {
         Log.d(TAG, "openFilter source " + source);
         List<Breadcrumb> crumb = getProductBreadCrumb();
         if (breadcrumbs == null && crumb != null) {
             breadcrumbs = crumb;
         }
         if (filterAttribute != null && breadcrumbs != null) {
-            Map<String, String> filters = filtersMap.get(source);
+            Map<String, String> filters;
+            if (mFilterMapAtribut != null && mFilterMapAtribut.getFiltersMap() != null) {
+                if (mFilterMapAtribut.getFiltersMap().get(source) != null) {
+                    filters = mFilterMapAtribut.getFiltersMap().get(source).getValue();
+                } else {
+                    filters = new HashMap<>();
+                }
+            } else {
+                filters = new HashMap<>();
+            }
             DynamicFilterActivity.moveTo(BrowseProductActivity.this,
                     filters, breadcrumbs,
                     filterAttribute.getFilter(),
@@ -744,7 +776,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                         DynamicFilterModel.DynamicFilterContainer dynamicFilterContainer
                                 = (DynamicFilterModel.DynamicFilterContainer) data.getModel2();
 
-                        DynamicFilterModel.Data filterAtrribute = dynamicFilterContainer.body().getData();
+                        DataValue filterAtrribute = dynamicFilterContainer.body().getData();
                         if (filterAtrribute.getSort() != null) {
                             filterAtrribute.setSelected(filterAtrribute.getSort().get(0).getName());
                         }
@@ -766,8 +798,12 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
             discoveryInteractor.getDynamicAttribute(this, BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG, browseProductActivityModel.getDepartmentId());
         } else if (source.contains("shop")) {
             discoveryInteractor.getDynamicAttribute(this, BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP, browseProductActivityModel.getDepartmentId());
-        } else if (source.contains("directory")) {
+        } else if (source.contains("directory") && activeTab == 0) {
+            Log.d(TAG,"get dynamic filter product");
             discoveryInteractor.getDynamicAttribute(this, BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY, browseProductActivityModel.getDepartmentId());
+        } else if (source.contains("directory") && activeTab == 1) {
+            Log.d(TAG,"get dynamic filter catalog");
+            discoveryInteractor.getDynamicAttribute(this, BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG, browseProductActivityModel.getDepartmentId());
         } else {
             discoveryInteractor.getDynamicAttribute(this, BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT, browseProductActivityModel.getDepartmentId());
         }
@@ -795,9 +831,10 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
             BrowseParentFragment parentFragment = (BrowseParentFragment) fragmentManager.findFragmentByTag(BrowseParentFragment.FRAGMENT_TAG);
             switch (requestCode) {
                 case REQUEST_SORT:
-                    DynamicFilterModel.Data sortData = Parcels.unwrap(data.getParcelableExtra(BrowseParentFragment.SORT_EXTRA));
+                    DataValue sortData = data.getParcelableExtra(BrowseParentFragment.SORT_EXTRA);
                     String source = data.getStringExtra(BrowseParentFragment.SOURCE_EXTRA);
-                    filterAttributMap.put(browseProductActivityModel.getActiveTab(), sortData);
+//                    filterAttributMap.put(browseProductActivityModel.getActiveTab(), sortData);
+                    mBrowseProductAtribut.getFilterAttributMap().put(browseProductActivityModel.getActiveTab(), sortData);
                     String newOb = sortData.getSelectedOb();
                     if (browseProductActivityModel.getActiveTab() == 1) {
                         browseProductActivityModel.setObCatalog(newOb);
@@ -811,14 +848,13 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                     sendSortGTM(browseProductActivityModel.getOb());
                     break;
                 case DynamicFilterView.REQUEST_CODE:
-                    Map<String, String> filters = Parcels.unwrap(
-                            data.getParcelableExtra(DynamicFilterView.EXTRA_FILTERS)
-                    );
-
-                    filtersMap.put(browseProductActivityModel.getActiveTab(), filters);
-                    browseProductActivityModel.setFilterOptions(filters);
-                    Log.d(TAG, "filter option " + filters);
-                    sendFilterGTM(filters);
+                    FilterMapAtribut.FilterMapValue filterMapValue =
+                            data.getParcelableExtra(DynamicFilterView.EXTRA_FILTERS);
+                    mFilterMapAtribut.getFiltersMap()
+                            .put(browseProductActivityModel.getActiveTab(), filterMapValue);
+                    browseProductActivityModel.setFilterOptions(filterMapValue.getValue());
+                    Log.d(TAG, "filter option " + filterMapValue.getValue());
+                    sendFilterGTM(filterMapValue.getValue());
                     break;
             }
             setFragment(BrowseParentFragment.newInstance(browseProductActivityModel, parentFragment.getActiveTab()), BrowseParentFragment.FRAGMENT_TAG);
@@ -934,8 +970,10 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                         if (browseProductActivityModel.getOb() != null) {
                             body.query.ob = browseProductActivityModel.getOb();
                         }
-                        Map<String, String> filters = filtersMap.get(browseProductActivityModel.getActiveTab());
-                        if (filters != null) {
+                        Map<String, String> filters;
+
+                        if ( browseProductActivityModel != null ) {
+                            filters = browseProductActivityModel.getFilterOptions();
                             for (Map.Entry<String, String> set : filters.entrySet()) {
                                 if (set.getKey().equals("ob")) {
                                     body.query.ob = set.getValue();
@@ -963,7 +1001,14 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                             editor.apply();
                         }
                         Log.d(TAG, "Hotlist query " + body.query.toString());
-                        filtersMap.put(browseProductActivityModel.getActiveTab(), filters);
+
+                        FilterMapAtribut.FilterMapValue filterMapValue
+                                = new FilterMapAtribut.FilterMapValue();
+                        filterMapValue.setValue((HashMap<String, String>) filters);
+                        mFilterMapAtribut.getFiltersMap()
+                                .put(browseProductActivityModel.getActiveTab(), filterMapValue);
+
+
                         browseProductActivityModel.setFilterOptions(filters);
                         browseProductActivityModel.setOb(body.query.ob);
                         browseProductActivityModel.setHotListBannerModel(body);
@@ -1055,6 +1100,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         bottomNavigation.restoreBottomNavigation(true);
     }
 
+
     public BrowseProductRouter.GridType getGridType() {
         return gridType;
     }
@@ -1062,4 +1108,6 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     private interface QueryListener {
         void onQueryChanged(String query);
     }
+
+
 }

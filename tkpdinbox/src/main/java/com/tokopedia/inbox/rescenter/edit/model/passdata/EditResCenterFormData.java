@@ -754,6 +754,8 @@ public class EditResCenterFormData implements Parcelable {
         private List<PossibleSolution> possibleSolution;
         @SerializedName("trouble_list")
         private List<TroubleData> troubleList;
+        @SerializedName("trouble_list_fr")
+        private List<TroubleData> troubleListFreeReturn;
 
         public Integer getAttachment() {
             return attachment;
@@ -811,6 +813,17 @@ public class EditResCenterFormData implements Parcelable {
             this.troubleList = troubleList;
         }
 
+        public List<TroubleData> getTroubleListFreeReturn() {
+            return troubleListFreeReturn;
+        }
+
+        public void setTroubleListFreeReturn(List<TroubleData> troubleListFreeReturn) {
+            this.troubleListFreeReturn = troubleListFreeReturn;
+        }
+
+        public TroubleCategoryData() {
+        }
+
         @Override
         public int describeContents() {
             return 0;
@@ -823,11 +836,9 @@ public class EditResCenterFormData implements Parcelable {
             dest.writeValue(this.productRelated);
             dest.writeString(this.categoryTroubleId);
             dest.writeString(this.categoryTroubleText);
-            dest.writeList(this.possibleSolution);
-            dest.writeList(this.troubleList);
-        }
-
-        public TroubleCategoryData() {
+            dest.writeTypedList(this.possibleSolution);
+            dest.writeTypedList(this.troubleList);
+            dest.writeTypedList(this.troubleListFreeReturn);
         }
 
         protected TroubleCategoryData(Parcel in) {
@@ -836,10 +847,9 @@ public class EditResCenterFormData implements Parcelable {
             this.productRelated = (Integer) in.readValue(Integer.class.getClassLoader());
             this.categoryTroubleId = in.readString();
             this.categoryTroubleText = in.readString();
-            this.possibleSolution = new ArrayList<PossibleSolution>();
-            in.readList(this.possibleSolution, PossibleSolution.class.getClassLoader());
-            this.troubleList = new ArrayList<TroubleData>();
-            in.readList(this.troubleList, TroubleData.class.getClassLoader());
+            this.possibleSolution = in.createTypedArrayList(PossibleSolution.CREATOR);
+            this.troubleList = in.createTypedArrayList(TroubleData.CREATOR);
+            this.troubleListFreeReturn = in.createTypedArrayList(TroubleData.CREATOR);
         }
 
         public static final Creator<TroubleCategoryData> CREATOR = new Creator<TroubleCategoryData>() {

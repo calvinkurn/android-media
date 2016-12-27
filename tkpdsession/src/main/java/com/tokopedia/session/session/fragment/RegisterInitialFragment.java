@@ -1,5 +1,7 @@
 package com.tokopedia.session.session.fragment;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -30,6 +32,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.base.BaseFragment;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.session.session.google.GoogleActivity;
 import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.core.session.model.LoginProviderModel;
@@ -45,11 +48,17 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 
 /**
  * Created by stevenfredian on 10/18/16.
  */
-
+@RuntimePermissions
 public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresenter>
                                         implements RegisterInitialView{
 
@@ -178,6 +187,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
                         ,getString(R.string.error_download_provider), Snackbar.LENGTH_INDEFINITE)
                         .setAction(getString(R.string.title_try_again), retryDiscover());
                 snackbar.show();
+                loginButton.setEnabled(false);
                 break;
             default:
                 showError(s);
@@ -204,6 +214,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
     @Override
     public void showProvider(List<LoginProviderModel.ProvidersBean> data) {
         listProvider = data;
+        loginButton.setEnabled(true);
         if (listProvider != null && checkHasNoProvider()) {
             presenter.saveProvider(listProvider);
 
@@ -235,7 +246,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
                     tv.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            onGoogleClick();
+                            RegisterInitialFragmentPermissionsDispatcher.onGoogleClickWithCheck(RegisterInitialFragment.this);
                         }
                     });
                 } else {
@@ -274,7 +285,8 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
         );
     }
 
-    private void onGoogleClick() {
+    @NeedsPermission(Manifest.permission.GET_ACCOUNTS)
+    public void onGoogleClick() {
         ((GoogleActivity) getActivity()).onSignInClicked();
         storeCacheGTM(AppEventTracking.GTMCacheKey.REGISTER_TYPE,
                 AppEventTracking.GTMCacheValue.GMAIL);
@@ -293,6 +305,10 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode){
             case 100:
+                if(resultCode == Activity.RESULT_CANCELED){
+                    KeyboardHandler.DropKeyboard(getActivity(),getView());
+                    break;
+                }
                 Bundle bundle = data.getBundleExtra("bundle");
                 if(bundle.getString("path").contains("error")){
                     snackbar = SnackbarManager.make(getActivity(), bundle.getString("message"), Snackbar.LENGTH_LONG);
@@ -354,5 +370,26 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
     private void storeCacheGTM(String key, String value) {
         cacheGTM.putString(key, value);
         cacheGTM.applyEditor();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        RegisterInitialFragmentPermissionsDispatcher.onRequestPermissionsResult(RegisterInitialFragment.this,requestCode, grantResults);
+    }
+
+    @OnShowRationale(Manifest.permission.GET_ACCOUNTS)
+    void showRationaleForGetAccounts(final PermissionRequest request) {
+        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.GET_ACCOUNTS);
+    }
+
+    @OnPermissionDenied(Manifest.permission.GET_ACCOUNTS)
+    void showDeniefForGetAccounts() {
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.GET_ACCOUNTS);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.GET_ACCOUNTS)
+    void showNeverAskForGetAccounts() {
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.GET_ACCOUNTS);
     }
 }
