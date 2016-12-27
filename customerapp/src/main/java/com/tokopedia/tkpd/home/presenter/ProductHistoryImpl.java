@@ -169,6 +169,10 @@ public class ProductHistoryImpl implements ProductHistory {
                         if (productHistoryView.isPullToRefresh()) {
                             productHistoryView.displayPull(false);
                         }
+                        if (cache!=null && cache.getProdHistoryCache() != null) {
+                            setData(cache.getProdHistoryCache());
+                        }
+
                     }
 
                     @Override
@@ -224,12 +228,8 @@ public class ProductHistoryImpl implements ProductHistory {
 
     @Override
     public void fetchDataFromCache(final Context context) {
-        if (cache.getProdHistoryCache() != null) {
-            setData(cache.getProdHistoryCache());
-        } else {
-            productHistoryView.displayPull(true);
-            fetchDataFromInternet(context);
-        }
+        productHistoryView.displayPull(true);
+        fetchDataFromInternet(context);
 
 //        productHistoryView.displayPull(true);
 //        new android.os.Handler().postDelayed(new Runnable() {
