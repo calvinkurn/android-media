@@ -63,4 +63,12 @@ public class FCMTokenUpdateEntity implements Parcelable {
             return new FCMTokenUpdateEntity[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "FCMTokenUpdateEntity{" +
+                "token='" + token + '\'' +
+                ", isSuccess=" + isSuccess +
+                '}';
+    }
 }
