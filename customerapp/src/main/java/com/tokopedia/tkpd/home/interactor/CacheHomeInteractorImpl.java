@@ -275,7 +275,9 @@ public class CacheHomeInteractorImpl implements CacheHomeInteractor {
         RecentViewData result = null;
         try {
             result = gson.fromJson(new GlobalCacheManager().getValueString(TkpdCache.Key.RECENT_PRODUCT_ALL), RecentViewData.class);
-        }catch(Exception e){}
+        }catch(Exception e){
+            result = new RecentViewData();
+        }
 
         return result;
     }

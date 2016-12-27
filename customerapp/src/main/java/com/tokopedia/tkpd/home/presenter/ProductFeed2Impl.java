@@ -428,7 +428,6 @@ public class ProductFeed2Impl implements ProductFeed, DiscoveryListener {
         String userId = SessionHandler.getLoginID(mContext);
         _subscriptions.add(
                 mMojitoAuthService.getApi().getRecentViews(userId)
-
                         .map(new Func1<Response<RecentViewData>, ProductFeedTransformData>() {
                             @Override
                             public ProductFeedTransformData call(Response<RecentViewData> response) {
