@@ -164,11 +164,11 @@ public class FCMMessagingService extends FirebaseMessagingService {
 
     private void sendNotification(Bundle data) {
         int tkpCode = Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE));
-        /**
-         * Use this code to exclude deprecated code which still sent from server
-         * if (!CheckSettings(tkpCode) && isValidForSellerApp(tkpCode) && !isDeprecated(tkpCode)) {
-         */
-        if (!cacheManager.checkSettings(tkpCode) && GCMUtils.isValidForSellerApp(tkpCode, getApplication())) {
+
+        if (!cacheManager.checkLocalNotificationAppSettings(tkpCode)) {
+            return;
+        }
+        if (!GCMUtils.isValidForSellerApp(tkpCode, getApplication())){
             return;
         }
 
@@ -536,7 +536,7 @@ public class FCMMessagingService extends FirebaseMessagingService {
     }
 
     private void createNotification(Bundle data, Class<?> intentClass) {
-        if (!cacheManager.checkSettings(Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE)))) {
+        if (!cacheManager.checkLocalNotificationAppSettings(Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE)))) {
             return;
         }
         if (data.getString(ARG_NOTIFICATION_IMAGE) != null) {
@@ -768,7 +768,7 @@ public class FCMMessagingService extends FirebaseMessagingService {
                 notif.defaults |= Notification.DEFAULT_VIBRATE;
             mNotificationManager.notify(TkpdState.GCMServiceState.GCM_UPDATE_NOTIFICATION, notif);
 
-            cacheManager.updateStats(data);
+            cacheManager.updateUpdateAppStatus(data);
         }
     }
 

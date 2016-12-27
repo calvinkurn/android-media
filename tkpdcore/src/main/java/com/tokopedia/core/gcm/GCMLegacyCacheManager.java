@@ -50,7 +50,7 @@ public class GCMLegacyCacheManager {
         }
     }
 
-    public void updateStats(Bundle data){
+    public void updateUpdateAppStatus(Bundle data){
         LocalCacheHandler updateStats = new LocalCacheHandler(context, TkpdCache.LOCA_STATUS_UPDATE);
         updateStats.putInt(TkpdCache.Key.STATUS, Integer.parseInt(data.getString("status")));
         updateStats.applyEditor();

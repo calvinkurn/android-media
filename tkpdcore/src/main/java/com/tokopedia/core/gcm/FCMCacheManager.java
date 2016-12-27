@@ -53,7 +53,7 @@ public class FCMCacheManager {
         }
     }
 
-    void updateStats(Bundle data){
+    void updateUpdateAppStatus(Bundle data){
         LocalCacheHandler updateStats = new LocalCacheHandler(context, TkpdCache.STATUS_UPDATE);
         updateStats.putInt(TkpdCache.Key.STATUS, Integer.parseInt(data.getString("status")));
         updateStats.applyEditor();
@@ -128,7 +128,7 @@ public class FCMCacheManager {
         }
     }
 
-    public boolean checkSettings(int code) {
+    public boolean checkLocalNotificationAppSettings(int code) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         switch (code) {
             case TkpdState.GCMServiceState.GCM_MESSAGE:

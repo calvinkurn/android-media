@@ -13,6 +13,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 
 import com.google.android.gms.gcm.GcmListenerService;
 import com.tkpd.library.utils.CommonUtils;
@@ -738,7 +740,7 @@ public class GCMLegacyListenerService extends GcmListenerService{
             if (gcmCache.isVibrate() && gcmCache.isAllowBell()) notif.defaults |= Notification.DEFAULT_VIBRATE;
             mNotificationManager.notify(TkpdState.GCMServiceState.GCM_UPDATE_NOTIFICATION, notif);
 
-            gcmCache.updateStats(data);
+            gcmCache.updateUpdateAppStatus(data);
         }
     }
 

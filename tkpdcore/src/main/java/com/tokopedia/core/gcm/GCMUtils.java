@@ -3,6 +3,7 @@ package com.tokopedia.core.gcm;
 import android.app.Application;
 import android.os.Bundle;
 
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 
 import java.util.Map;
@@ -60,8 +61,11 @@ class GCMUtils {
     }
 
     static boolean isValidForSellerApp(int tkpCode, Application app) {
-        return !app.getClass().getSimpleName().equals("SellerMainApplication")
-                && GCMUtils.isExcludeFromSellerApp(tkpCode);
+        if (GlobalConfig.isSellerApp()
+                && GCMUtils.isExcludeFromSellerApp(tkpCode)){
+            return false;
+        }
+        return true;
     }
 
     static int getCode(Bundle data) {

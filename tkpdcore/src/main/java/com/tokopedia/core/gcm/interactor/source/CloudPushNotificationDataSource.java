@@ -1,5 +1,6 @@
 package com.tokopedia.core.gcm.interactor.source;
 
+import com.tokopedia.core.gcm.interactor.entity.FCMTokenUpdateEntity;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
 import com.tokopedia.core.network.apiservices.notification.PushNotificationService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -18,7 +19,7 @@ import rx.functions.Func1;
 public class CloudPushNotificationDataSource {
     private static final String KEY_FLAG_IS_SUCCESS = "is_success";
 
-    public Observable<Boolean> updateTokenServer(FCMTokenUpdate data) {
+    public Observable<FCMTokenUpdateEntity> updateTokenServer(final FCMTokenUpdate data) {
         return Observable.just(data)
                 .flatMap(new Func1<FCMTokenUpdate, Observable<Response<TkpdResponse>>>() {
                     @Override
@@ -32,20 +33,20 @@ public class CloudPushNotificationDataSource {
                         return service.getApi().updateToken(param);
                     }
                 })
-                .map(new Func1<Response<TkpdResponse>, Boolean>() {
+                .map(new Func1<Response<TkpdResponse>, FCMTokenUpdateEntity>() {
                     @Override
-                    public Boolean call(Response<TkpdResponse> response) {
+                    public FCMTokenUpdateEntity call(Response<TkpdResponse> response) {
+                        FCMTokenUpdateEntity entity = new FCMTokenUpdateEntity();
+                        entity.setToken(data.getNewToken());
                         if (response.isSuccessful()) {
                             TkpdResponse tkpdResponse = response.body();
                             if (tkpdResponse.isError()) {
-                                if (!tkpdResponse.getErrorMessages().isEmpty()) {
-                                    return false;
-                                } else {
-                                    return false;
-                                }
+                                entity.setSuccess(false);
+                                return entity;
                             }
                             if (tkpdResponse.isNullData()) {
-                                return false;
+                                entity.setSuccess(false);
+                                return entity;
                             }
                             if (!response.body().getJsonData().isNull(KEY_FLAG_IS_SUCCESS)) {
                                 try {
@@ -53,16 +54,20 @@ public class CloudPushNotificationDataSource {
                                             .getInt(KEY_FLAG_IS_SUCCESS);
                                     switch (status) {
                                         case 1:
-                                            return true;
+                                            entity.setSuccess(true);
+                                            return entity;
                                         default:
-                                            return false;
+                                            entity.setSuccess(false);
+                                            return entity;
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
-                                    return false;
+                                    entity.setSuccess(false);
+                                    return entity;
                                 }
                             }
-                            return false;
+                            entity.setSuccess(false);
+                            return entity;
                         } else {
                             throw new RuntimeException("error");
                         }

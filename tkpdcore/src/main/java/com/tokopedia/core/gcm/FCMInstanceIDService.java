@@ -23,7 +23,7 @@ public class FCMInstanceIDService extends FirebaseInstanceIdService implements I
     @Override
     public void onTokenRefresh() {
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        CommonUtils.dumper(TAG + "RefreshedToken: " + refreshedToken);
+        CommonUtils.dumper(TAG + " RefreshedToken: " + refreshedToken);
         updateLocalyticsPushRegistrationID(refreshedToken);
         propagateIDtoServer(refreshedToken);
     }
@@ -37,7 +37,7 @@ public class FCMInstanceIDService extends FirebaseInstanceIdService implements I
     public void propagateIDtoServer(String token) {
         if (!TextUtils.isEmpty(token)) {
             String localToken = GCMHandler.getRegistrationId(getApplicationContext());
-            Log.d(TAG, "RefreshedToken: " + token + ", localToken: " + localToken);
+            CommonUtils.dumper(TAG + " RefreshedToken: " + token + ", localToken: " + localToken);
             if (!localToken.equals(token)) {
                 SessionHandler sessionHandler = new SessionHandler(getApplicationContext());
                 if (sessionHandler.isV4Login()) {
@@ -45,7 +45,7 @@ public class FCMInstanceIDService extends FirebaseInstanceIdService implements I
                     FCMTokenUpdate tokenUpdate = new FCMTokenUpdate();
                     tokenUpdate.setOldToken(localToken);
                     tokenUpdate.setNewToken(token);
-                    tokenUpdate.setOsType(String.valueOf(2));
+                    tokenUpdate.setOsType(String.valueOf(1));
                     tokenUpdate.setAccessToken(sessionHandler.getAccessToken(this));
                     tokenUpdate.setUserId(sessionHandler.getLoginID());
                     fcmRefreshTokenReceiver.onTokenReceive(Observable.just(tokenUpdate));

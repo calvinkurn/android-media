@@ -3,7 +3,9 @@ package com.tokopedia.core.gcm.intentservices;
 import android.app.IntentService;
 import android.content.Intent;
 
+import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.interactor.PushNotificationDataInteractor;
+import com.tokopedia.core.gcm.interactor.entity.FCMTokenUpdateEntity;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
 
 import rx.Subscriber;
@@ -38,7 +40,7 @@ public class PushNotificationIntentService extends IntentService {
         mInteractor.updateTokenServer(data, new UpdateClientIdSubscriber());
     }
 
-    private class UpdateClientIdSubscriber extends Subscriber<Boolean> {
+    private class UpdateClientIdSubscriber extends Subscriber<FCMTokenUpdateEntity> {
         @Override
         public void onCompleted() {
 
@@ -50,8 +52,10 @@ public class PushNotificationIntentService extends IntentService {
         }
 
         @Override
-        public void onNext(Boolean s) {
-
+        public void onNext(FCMTokenUpdateEntity entity) {
+            if (entity.getSuccess()) {
+                FCMCacheManager.storeRegId(entity.getToken(), getBaseContext());
+            }
         }
     }
 }
