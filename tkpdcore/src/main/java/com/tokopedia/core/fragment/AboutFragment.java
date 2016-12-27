@@ -97,7 +97,7 @@ public class AboutFragment extends TkpdBasePreferenceFragment {
         prefShare.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                String urlPlayStore = "http://play.google.com/store/apps/details?shopId=" + getActivity().getApplication().getPackageName();
+                String urlPlayStore = "https://play.google.com/store/apps/details?id=" + getActivity().getApplication().getPackageName();
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
                 sendIntent.putExtra(Intent.EXTRA_TEXT, getActivity().getResources().getString(R.string.msg_share_apps) + "\n" + urlPlayStore);
