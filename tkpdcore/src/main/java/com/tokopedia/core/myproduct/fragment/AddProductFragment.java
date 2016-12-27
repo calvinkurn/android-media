@@ -767,7 +767,8 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
             isLoading = savedInstanceState.getBoolean(SAVED_LOADING, false);// 18
             List<SimpleTextModel> simpleTextModels = Parcels.unwrap(savedInstanceState.getParcelable(SAVED_RETURN_POLICY_LIST));// 19
             textToDisplay = new ArrayList<>();
-            checkAvailibilityOfShopNote();
+            addProduct.checkNoteAvailibility(getActivity(), false);
+
 
             conditions = Parcels.unwrap(savedInstanceState.getParcelable(SAVED_CONDITIONS));// 21
             insurances = Parcels.unwrap(savedInstanceState.getParcelable(SAVED_INSURANCES));// 22
@@ -1942,7 +1943,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
 
     @Override
     public void checkAvailibilityOfShopNote() {
-        addProduct.checkNoteAvailibility(getActivity());
+        addProduct.checkNoteAvailibility(getActivity(), true);
 
     }
 

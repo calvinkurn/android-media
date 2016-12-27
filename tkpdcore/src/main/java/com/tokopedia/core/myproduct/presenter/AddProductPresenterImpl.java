@@ -176,13 +176,13 @@ public class AddProductPresenterImpl implements AddProductPresenter
     }
 
     @Override
-    public void checkNoteAvailibility(Context context) {
+    public void checkNoteAvailibility(Context context, boolean isShouldFetchData) {
         GlobalCacheManager globalCacheManager = new GlobalCacheManager();
         try {
             String valueString = globalCacheManager.getValueString(TkpdCache.Key.SHOP_NOTE_LIST);
             if (checkNotNull(valueString) && !valueString.equals("")) {
                 GetShopNoteModel.Data data = globalCacheManager.getConvertObjData(TkpdCache.Key.SHOP_NOTE_LIST, GetShopNoteModel.Data.class);
-                processShopNote(data);
+                processShopNote(data, isShouldFetchData);
             } else {
                 checkNoteAvailibityNetwork(context);
             }
@@ -683,7 +683,7 @@ public class AddProductPresenterImpl implements AddProductPresenter
                 globalCacheManager.setKey(TkpdCache.Key.SHOP_NOTE_LIST).setValue(jsonObject.toString()).store();
 
                 GetShopNoteModel.Data data = gson.fromJson(jsonObject.toString(), GetShopNoteModel.Data.class);
-                processShopNote(data);
+                processShopNote(data, true);
             } else {
                 addProductView.showMessageError(response.getErrorMessages());
             }
@@ -695,7 +695,7 @@ public class AddProductPresenterImpl implements AddProductPresenter
         }
     }
 
-    private void processShopNote(GetShopNoteModel.Data data) {
+    private void processShopNote(GetShopNoteModel.Data data, boolean isShouldFetchData) {
         GetShopNoteModel.ShopNoteModel returnPolicy = null;
         if (data.getShopNoteModels() != null) {
             for (GetShopNoteModel.ShopNoteModel shopNoteModel : data.getShopNoteModels()) {
@@ -719,7 +719,10 @@ public class AddProductPresenterImpl implements AddProductPresenter
             addProductView.initReturnableSpinnerFromResource();
             addProductView.getMyShopInfo();
         }
-        addProductView.fetchProductData();
+
+        if(isShouldFetchData) {
+            addProductView.fetchProductData();
+        }
     }
 
     @Override
