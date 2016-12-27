@@ -769,7 +769,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
             textToDisplay = new ArrayList<>();
             addProduct.checkNoteAvailibility(getActivity(), false);
 
-
             conditions = Parcels.unwrap(savedInstanceState.getParcelable(SAVED_CONDITIONS));// 21
             insurances = Parcels.unwrap(savedInstanceState.getParcelable(SAVED_INSURANCES));// 22
             etalaseModels = Parcels.unwrap(savedInstanceState.getParcelable(SAVED_ETALASE_MODELS));// 23
