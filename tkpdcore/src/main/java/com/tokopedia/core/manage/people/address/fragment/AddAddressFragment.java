@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
@@ -40,6 +41,7 @@ import com.tokopedia.core.manage.people.address.presenter.AddAddressPresenter;
 import com.tokopedia.core.manage.people.address.presenter.AddAddressPresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -132,6 +134,10 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     TkpdProgressDialog mProgressDialog;
     Boolean isEdit = false;
 
+    List<Province> mProvinces;
+    List<City> mCities;
+    List<District> mDistricts;
+
     public static AddAddressFragment createInstance(Bundle extras) {
         AddAddressFragment fragment = new AddAddressFragment();
         Bundle bundle = new Bundle();
@@ -148,7 +154,11 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     @Override
     protected void onFirstTimeLaunched() {
         isEdit = getArguments().getBoolean(IS_EDIT, false);
-        presenter.getListProvince();
+        if (this.mProvinces != null && this.mProvinces.size() > 0){
+            setProvince(this.mProvinces);
+        }else {
+            presenter.getListProvince();
+        }
     }
 
     private void setEditParam(Destination address) {
@@ -169,12 +179,18 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
     @Override
     public void onSaveState(Bundle state) {
-
+        state.putParcelableArrayList("provincesData", (ArrayList<? extends Parcelable>) this.mProvinces);
+        state.putParcelableArrayList("citiesData", (ArrayList<? extends Parcelable>) this.mCities);
+        state.putParcelableArrayList("districtsData", (ArrayList<? extends Parcelable>) this.mDistricts);
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
-
+        if (savedState != null) {
+            this.mProvinces = savedState.getParcelableArrayList("provincesData");
+            this.mCities = savedState.getParcelableArrayList("citiesData");
+            this.mDistricts = savedState.getParcelableArrayList("districtsData");
+        }
     }
 
     @Override
@@ -481,6 +497,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
             spinnerProvince.setSelection(provinceAdapter.getPositionFromName(addressModel.getProvinceName()));
             presenter.getListCity(provinceAdapter.getList().get(spinnerProvince.getSelectedItemPosition() - 1));
         }
+        this.mProvinces = new ArrayList<>(provinces);
     }
 
     @Override
@@ -560,6 +577,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
             if (subDistrictAdapter.getPositionFromName(addressModel.getDistrictName()) > 0)
                 isEdit = false;
         }
+        this.mDistricts = new ArrayList<>(districts);
     }
 
     @Override
@@ -573,6 +591,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
             spinnerRegency.setSelection(regencyAdapter.getPositionFromName(addressModel.getCityName()));
             presenter.getListDistrict(regencyAdapter.getList().get(spinnerRegency.getSelectedItemPosition() - 1));
         }
+        this.mCities = new ArrayList<>(cities);
     }
 
     @Override

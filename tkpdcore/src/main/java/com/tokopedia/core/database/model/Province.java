@@ -1,5 +1,8 @@
 package com.tokopedia.core.database.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.ContainerKey;
@@ -24,7 +27,7 @@ import java.util.List;
  */
 @ModelContainer
 @Table(database = DbFlowDatabase.class, insertConflict = ConflictAction.REPLACE, updateConflict = ConflictAction.REPLACE)
-public class Province extends BaseModel implements DatabaseConstant, Convert<ListProvince.Province, Province>{
+public class Province extends BaseModel implements DatabaseConstant, Convert<ListProvince.Province, Province>, Parcelable{
 
     public static final String PROVINCE_ID = "province_id";
     public static final String PROVINCE_NAME = "province_name";
@@ -51,6 +54,27 @@ public class Province extends BaseModel implements DatabaseConstant, Convert<Lis
     public long expiredTime = 0;
 
     List<City> cities;
+
+
+
+    protected Province(Parcel in) {
+        Id = in.readLong();
+        provinceId = in.readString();
+        provinceName = in.readString();
+        expiredTime = in.readLong();
+    }
+
+    public static final Creator<Province> CREATOR = new Creator<Province>() {
+        @Override
+        public Province createFromParcel(Parcel in) {
+            return new Province(in);
+        }
+
+        @Override
+        public Province[] newArray(int size) {
+            return new Province[size];
+        }
+    };
 
     public String getProvinceId() {
         return provinceId;
@@ -127,5 +151,18 @@ public class Province extends BaseModel implements DatabaseConstant, Convert<Lis
                 ", provinceName='" + provinceName + '\'' +
                 ", expiredTime=" + expiredTime +
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(Id);
+        dest.writeString(provinceId);
+        dest.writeString(provinceName);
+        dest.writeLong(expiredTime);
     }
 }
