@@ -2,7 +2,6 @@ package com.tokopedia.tkpd.home.recharge.interactor;
 
 import android.util.Log;
 
-import com.fernandocejas.frodo.annotation.RxLogObservable;
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.database.CacheDuration;
@@ -22,7 +21,9 @@ import com.tokopedia.core.database.recharge.recentNumber.RecentData;
 import com.tokopedia.core.database.recharge.status.Status;
 import com.tokopedia.core.network.apiservices.recharge.RechargeService;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -215,7 +216,7 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                 .first(new Func1<CategoryData, Boolean>() {
                     @Override
                     public Boolean call(CategoryData categoryData) {
-                        return categoryData != null;
+                        return categoryData != null && !categoryData.getData().isEmpty();
                     }
                 })
                 .subscribe(new Subscriber<CategoryData>() {
@@ -511,8 +512,7 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
             }
         });
     }
-
-    @RxLogObservable
+    
     private Observable<List<Product>> getObservableListProduct() {
         return Observable.concat(getObservableDbListProduct(), getObservableNetworkListProduct())
                 .first(new Func1<List<Product>, Boolean>() {
@@ -523,7 +523,6 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                 });
     }
 
-    @RxLogObservable
     private Observable<List<Operator>> getObservableListOperator() {
         return Observable.concat(getObservableDbListOperator(), getObservableNetworkListOperator())
                 .first(new Func1<List<Operator>, Boolean>() {
@@ -550,7 +549,7 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                 });
     }
 
-    @RxLogObservable
+    
     private Observable<CategoryData> getObservableNetworkCategory() {
         return rechargeService.getApi().getCategory()
                 .doOnNext(new Action1<Response<CategoryData>>() {
@@ -571,14 +570,12 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                 .flatMap(new Func1<Response<CategoryData>, Observable<CategoryData>>() {
                     @Override
                     public Observable<CategoryData> call(Response<CategoryData> categoryDataResponse) {
-                        Log.i("CATEGORY RECHARGE", "GET RECHARGE CATEGORY NETWORK");
-                        Log.i("CATEGORY RECHARGE", categoryDataResponse.toString());
+                        Log.i("OBSERVABLE", "network enter : "+categoryDataResponse);
                         return Observable.just(categoryDataResponse.body());
                     }
                 });
     }
 
-    @RxLogObservable
     private Observable<CategoryData> getObservableDbCategory() {
         return Observable.just(true)
                 .subscribeOn(Schedulers.newThread())
@@ -587,19 +584,24 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                 .map(new Func1<Boolean, List<com.tokopedia.core.database.model.category.Category>>() {
                     @Override
                     public List<com.tokopedia.core.database.model.category.Category> call(Boolean aBoolean) {
-                        GlobalCacheManager manager = new GlobalCacheManager();
-                        List<com.tokopedia.core.database.model.category.Category> categories = CacheUtil.convertStringToListModel(
-                                manager.getValueString(KEY_CATEGORY),
-                                new TypeToken<List<com.tokopedia.core.database.model.category.Category>>() {
-                                }.getType());
-                        return categories;
+                        try {
+                            GlobalCacheManager manager = new GlobalCacheManager();
+                            return CacheUtil.convertStringToListModel(
+                                    manager.getValueString(KEY_CATEGORY),
+                                    new TypeToken<List<com.tokopedia.core.database.model.category.Category>>() {
+                                    }.getType());
+
+                        } catch (Exception e) {
+                            return new ArrayList<com.tokopedia.core.database.model.category.Category>();
+                        }
+
 
                     }
                 })
                 .flatMap(new Func1<List<com.tokopedia.core.database.model.category.Category>, Observable<CategoryData>>() {
                     @Override
                     public Observable<CategoryData> call(List<com.tokopedia.core.database.model.category.Category> categories) {
-                        Log.i("CATEGORY RECHARGE", "GET RECHARGE CATEGORY DB");
+                        //Log.i("OBSERVABLE", "db enter : "+categories);
                         CategoryData categoryData = new CategoryData();
                         categoryData.setData(categories);
                         return Observable.just(categoryData);
