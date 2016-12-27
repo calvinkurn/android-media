@@ -19,27 +19,27 @@ import com.tokopedia.core.var.TkpdState;
 import java.util.ArrayList;
 
 /**
- * @author  by Herdi_WORK on 13.12.16.
+ * @author by Herdi_WORK on 13.12.16.
  */
 
 public class FCMCacheManager {
     private String NOTIFICATION_CODE = "tkp_code";
     private static final String GCM_STORAGE = "GCM_STORAGE";
-    LocalCacheHandler cache;
-    Context context;
+    private LocalCacheHandler cache;
+    private Context context;
 
-    public FCMCacheManager(Context ctx){
+    FCMCacheManager(Context ctx) {
         this(ctx, TkpdCache.G_CODE);
         context = ctx;
     }
 
-    public FCMCacheManager(Context ctx, String cacheCode){
+    private FCMCacheManager(Context ctx, String cacheCode) {
         cache = new LocalCacheHandler(ctx, cacheCode);
         context = ctx;
     }
 
-    public void setCache(Context ctx){
-        if(cache==null)
+    public void setCache(Context ctx) {
+        if (cache == null)
             cache = new LocalCacheHandler(ctx, TkpdCache.G_CODE);
 
         cache.setExpire(1);
@@ -53,13 +53,13 @@ public class FCMCacheManager {
         }
     }
 
-    void updateUpdateAppStatus(Bundle data){
+    void updateUpdateAppStatus(Bundle data) {
         LocalCacheHandler updateStats = new LocalCacheHandler(context, TkpdCache.STATUS_UPDATE);
         updateStats.putInt(TkpdCache.Key.STATUS, Integer.parseInt(data.getString("status")));
         updateStats.applyEditor();
     }
 
-    public void doResetCache(int code) {
+    private void doResetCache(int code) {
         switch (code) {
             case TkpdState.GCMServiceState.GCM_PEOPLE_PROFILE:
                 ShopSettingCache.DeleteCache(ShopSettingCache.CODE_PROFILE, context.getApplicationContext());
@@ -91,16 +91,17 @@ public class FCMCacheManager {
         }
     }
 
-    public boolean isAllowToHandleNotif(Bundle data) {
+    boolean isAllowToHandleNotif(Bundle data) {
         try {
-            return (!cache.isExpired() || cache.getString(TkpdCache.Key.PREV_CODE) == null || !data.isEmpty() || data.getString("g_id").equals(cache.getString(TkpdCache.Key.PREV_CODE)));
+            return (!cache.isExpired() || cache.getString(TkpdCache.Key.PREV_CODE) == null ||
+                    !data.isEmpty() || data.getString("g_id", "").equals(cache.getString(TkpdCache.Key.PREV_CODE)));
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    public Boolean isAllowBell() {
+    Boolean isAllowBell() {
         long prevTime = cache.getLong(TkpdCache.Key.PREV_TIME);
         long currTIme = System.currentTimeMillis();
         CommonUtils.dumper("prev time: " + prevTime);
@@ -113,12 +114,12 @@ public class FCMCacheManager {
         return false;
     }
 
-    public Boolean isVibrate() {
+    Boolean isVibrate() {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         return settings.getBoolean("notifications_new_message_vibrate", false);
     }
 
-    public Uri getSoundUri() {
+    Uri getSoundUri() {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         String StringSoundUri = settings.getString("notifications_new_message_ringtone", null);
         if (StringSoundUri != null) {
@@ -128,7 +129,7 @@ public class FCMCacheManager {
         }
     }
 
-    public boolean checkLocalNotificationAppSettings(int code) {
+    boolean checkLocalNotificationAppSettings(int code) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         switch (code) {
             case TkpdState.GCMServiceState.GCM_MESSAGE:
@@ -179,11 +180,12 @@ public class FCMCacheManager {
                 return settings.getBoolean("notification_receive_rescenter", true);
             case TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_BUYER_REPLY:
                 return settings.getBoolean("notification_receive_rescenter", true);
+            default:
+                return true;
         }
-        return true;
     }
 
-    public void processNotifData(Bundle data, String title, String descString, CacheProcessListener listener){
+    void processNotifData(Bundle data, String title, String descString, CacheProcessListener listener) {
 
         ArrayList<String> content, desc;
         ArrayList<Integer> code;
@@ -218,16 +220,16 @@ public class FCMCacheManager {
         cache.putArrayListInteger(TkpdCache.Key.NOTIFICATION_CODE, code);
         cache.applyEditor();
 
-        listener.onDataProcessed(content,desc,code);
+        listener.onDataProcessed(content, desc, code);
     }
 
-    interface CacheProcessListener{
+    interface CacheProcessListener {
         void onDataProcessed(ArrayList<String> content,
-                ArrayList<String> desc,
-                ArrayList<Integer> code);
+                             ArrayList<String> desc,
+                             ArrayList<Integer> code);
     }
 
-    public static void storeRegId(String id, Context context){
+    public static void storeRegId(String id, Context context) {
         LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
         cache.putString("gcm_id", id);
         cache.applyEditor();
@@ -238,13 +240,13 @@ public class FCMCacheManager {
         return cache.getString("gcm_id", "");
     }
 
-    public static void clearRegistrationId(Context context) {
+    static void clearRegistrationId(Context context) {
         LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
         cache.putString("gcm_id", null);
         cache.applyEditor();
     }
 
-    public static void storeGCMRegId(String id, Context context){
+    static void storeGCMRegId(String id, Context context) {
         LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
         cache.putString("gcm_id_loca", id);
         cache.applyEditor();
