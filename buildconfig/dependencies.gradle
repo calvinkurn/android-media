@@ -7,12 +7,12 @@ ext {
     okHttpVersion = '3.4.1'
     glideVersion = '3.7.0'
     permissionDispatcherVersion = '2.2.0'
-    tkpdCoreVersion =  'latest.integration'
-    tkpdInboxVersion = 'latest.integration'
-    tkpdSessionVersion = 'latest.integration'
-    tkpdSellerVersion = 'latest.integration'
-    tkpdTransactionVersion = 'latest.integration'
-    tkpdDiscoveryVersion = 'latest.integration'
+    tkpdCoreVersion =  '1.+'
+    tkpdInboxVersion = '1.+'
+    tkpdSessionVersion = '1.+'
+    tkpdSellerVersion = '1.+'
+    tkpdTransactionVersion = '1.+'
+    tkpdDiscoveryVersion = '1.+'
 
     networkDependencies = [
             retrofit : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
