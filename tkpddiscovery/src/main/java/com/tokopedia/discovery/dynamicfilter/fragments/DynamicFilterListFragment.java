@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,7 +16,7 @@ import android.widget.Button;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.discovery.dynamicfilter.DynamicFilterActivity;
@@ -49,7 +50,7 @@ public class DynamicFilterListFragment extends BaseFragment<DynamicFilterList> i
         return null;
     }
 
-    public static Fragment newInstance2(List<DynamicFilterModel.Filter> data) {
+    public static Fragment newInstance2(List<Filter> data) {
         Bundle argument = new Bundle();
         argument.putParcelable(DynamicFilterList.DATA_LIST, Parcels.wrap(data));
 
@@ -144,9 +145,10 @@ public class DynamicFilterListFragment extends BaseFragment<DynamicFilterList> i
     }
 
     @Override
-    public void setupAdapter(List<DynamicFilterModel.Filter> dataList) {
+    public void setupAdapter(List<Filter> dataList) {
         dynamicFilterListAdapter = new DynamicFilterListAdapter(getActivity(), new ArrayList<RecyclerViewItem>(DynamicFilterListAdapter.convertTo2(dataList)));
         dynamicFilterListAdapter.activatePosition(0);
+        performClickFirstItem();
         linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
     }
 
@@ -164,5 +166,18 @@ public class DynamicFilterListFragment extends BaseFragment<DynamicFilterList> i
         getActivity().sendBroadcast(new Intent(DynamicFilterActivity.ACTION_RESET_FILTER));
     }
 
+    public void performClickFirstItem() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    DynamicFilterListAdapter.DynamicViewHolder holder = (DynamicFilterListAdapter.DynamicViewHolder) dynamicFilterList.findViewHolderForAdapterPosition(0);
+                    holder.dynamicFilterClick();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, 300);
+    }
 
 }

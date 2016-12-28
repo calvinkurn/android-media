@@ -12,8 +12,10 @@ import android.widget.ImageView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.myproduct.model.ImageModel;
 import com.tokopedia.core.myproduct.model.constant.ImageModelType;
+import com.tokopedia.core.util.MethodChecker;
 
 import static com.tokopedia.core.myproduct.model.constant.ImageModelType.UNSELECTED;
 import static com.tokopedia.core.myproduct.model.constant.ImageModelType.SELECTED;
@@ -30,9 +32,9 @@ import butterknife.OnClick;
 /**
  * Created by noiz354 on 4/8/16.
  */
-public class SmallPhotoAdapter extends RecyclerView.Adapter<SmallPhotoAdapter.ViewHolder>{
+public class SmallPhotoAdapter extends RecyclerView.Adapter<SmallPhotoAdapter.ViewHolder> {
 
-    public interface SmallPhotoAdapterTouch{
+    public interface SmallPhotoAdapterTouch {
         void movePosition(int position);
     }
 
@@ -40,7 +42,7 @@ public class SmallPhotoAdapter extends RecyclerView.Adapter<SmallPhotoAdapter.Vi
 
     SmallPhotoAdapterTouch smallPhotoAdapterTouch;
 
-    public SmallPhotoAdapter(List<ImageModel> datas){
+    public SmallPhotoAdapter(List<ImageModel> datas) {
         this.datas = datas;
     }
 
@@ -49,20 +51,20 @@ public class SmallPhotoAdapter extends RecyclerView.Adapter<SmallPhotoAdapter.Vi
         View itemLayoutView = itemLayoutView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.picture_small_gallery_item, parent, false);
 
-        if(viewType == SELECTED.getType()+ACTIVE.getType()){
+        if (viewType == SELECTED.getType() + ACTIVE.getType()) {
             // centang hidupkan
             ViewStub selected = (ViewStub) itemLayoutView.findViewById(R.id.small_selected);
             selected.inflate();
-        }else if(viewType == UNSELECTED.getType()+ACTIVE.getType()){
+        } else if (viewType == UNSELECTED.getType() + ACTIVE.getType()) {
             // do nothing
-        }else if(viewType == SELECTED.getType()+INACTIVE.getType()){
+        } else if (viewType == SELECTED.getType() + INACTIVE.getType()) {
             // centang hidupkan
             ViewStub selected = (ViewStub) itemLayoutView.findViewById(R.id.small_selected);
             selected.inflate();
             // hidupkan masking
             ViewStub smallInActive = (ViewStub) itemLayoutView.findViewById(R.id.small_inactive);
             smallInActive.inflate();
-        }else{
+        } else {
             // hidupkan masking
             ViewStub smallInActive = (ViewStub) itemLayoutView.findViewById(R.id.small_inactive);
             smallInActive.inflate();
@@ -84,8 +86,8 @@ public class SmallPhotoAdapter extends RecyclerView.Adapter<SmallPhotoAdapter.Vi
 
     @Override
     public int getItemViewType(int position) {
-        int count  = 0;
-        for (int viewType : datas.get(position).getTypes()){
+        int count = 0;
+        for (int viewType : datas.get(position).getTypes()) {
             count += viewType;
         }
         return count;
@@ -99,7 +101,7 @@ public class SmallPhotoAdapter extends RecyclerView.Adapter<SmallPhotoAdapter.Vi
         this.smallPhotoAdapterTouch = smallPhotoAdapterTouch;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R2.id.border_small_imageview_layout)
         FrameLayout borderSmallImageViewLayout;
@@ -126,18 +128,18 @@ public class SmallPhotoAdapter extends RecyclerView.Adapter<SmallPhotoAdapter.Vi
         }
 
         public void bindView(ImageModel imageModel, int position
-                , SmallPhotoAdapterTouch smallPhotoAdapterTouch){
+                , SmallPhotoAdapterTouch smallPhotoAdapterTouch) {
 
             setSmallPhotoAdapterTouch(smallPhotoAdapterTouch);
             this.imageModel = imageModel;
             this.position = position;
 
-            if(imageModel.getPath()==null)
+            if (imageModel.getPath() == null)
                 pictureSmallGalleryImageView.setImageResource(imageModel.getResId());
-            else if(!PhotoAdapter.isValidURL(imageModel.getPath()))// assumed from file path
+            else if (!PhotoAdapter.isValidURL(imageModel.getPath()))// assumed from file path
                 ImageHandler.loadImageFit2(itemView.getContext()
-                        ,pictureSmallGalleryImageView
-                        , Uri.fromFile(new File(imageModel.getPath())).toString());
+                        , pictureSmallGalleryImageView
+                        , MethodChecker.getUri(MainApplication.getAppContext(), new File(imageModel.getPath())).toString());
             else {// assumed from url
                 ImageHandler.loadImageFit2(itemView.getContext(),
                         pictureSmallGalleryImageView, imageModel.getPath());
@@ -145,13 +147,13 @@ public class SmallPhotoAdapter extends RecyclerView.Adapter<SmallPhotoAdapter.Vi
         }
 
         @OnClick(R2.id.border_small_imageview_layout)
-        public void HolderClick(){
-            if(getSmallPhotoAdapterTouch() != null)
+        public void HolderClick() {
+            if (getSmallPhotoAdapterTouch() != null)
                 getSmallPhotoAdapterTouch().movePosition(position);
         }
     }
 
-    public void changePicture(int position, ImageModel imageModel){
+    public void changePicture(int position, ImageModel imageModel) {
         imageModel.clearAll();
         imageModel.setType(ImageModelType.UNSELECTED.getType());
         imageModel.setType(ImageModelType.ACTIVE.getType());

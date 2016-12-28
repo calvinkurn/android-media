@@ -624,6 +624,10 @@ public interface TkpdBaseURL {
         String GET_PRODUCT_VIDEO = "/v1/product/video/";
     }
 
+    interface FCM{
+        String UPDATE_FCM = "/api/gcm/update";
+    }
+
     interface ContactUs {
         String URL_CONTACT_US = WEB_DOMAIN + "contact-us";
 

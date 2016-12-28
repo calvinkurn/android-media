@@ -170,7 +170,7 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
         return new ImageUploadAdapter.ProductImageListener() {
             @Override
             public void onImageDeleted(int size) {
-                if(size == 0){
+                if (size == 0) {
                     listImage.setVisibility(View.GONE);
                 }
                 attachButton.setVisibility(View.VISIBLE);
@@ -220,6 +220,7 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
     public void actionImagePicker() {
         presenter.actionImagePicker();
     }
+
     @Override
     protected void initialVar() {
 
@@ -372,7 +373,7 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
         listImage.setVisibility(View.VISIBLE);
         if (imageAdapter.getList().size() == 5) {
             attachButton.setVisibility(View.GONE);
-        }else{
+        } else {
             attachButton.setVisibility(View.VISIBLE);
         }
     }
@@ -381,22 +382,12 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
     public void onSuccessReply(TicketReplyDatum ticketReply) {
         comment.setText("");
         KeyboardHandler.DropKeyboard(getActivity(), comment);
-        attachButton.setVisibility(View.VISIBLE);
-
-        if (adapter.getTicketView().getData().size() < 2) {
-            adapter.getTicketView().getData().add(ticketReply);
-            adapter.getData().getTicketReply().getTicketReplyData().add(ticketReply);
-        } else {
-            adapter.getTicketView().getData().remove(0);
-            adapter.getData().getTicketReply().getTicketReplyData().remove(0);
-            adapter.getTicketView().getData().add(ticketReply);
-            adapter.getData().getTicketReply().getTicketReplyData().add(ticketReply);
-        }
-
-        adapter.getTicketView().notifyDataSetChanged();
+        adapter.addReply(ticketReply);
+        adapter.updateView();
         imageAdapter.getList().clear();
         imageAdapter.notifyDataSetChanged();
         listImage.setVisibility(View.GONE);
+        attachButton.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -455,31 +446,31 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
 
     @OnPermissionDenied(Manifest.permission.CAMERA)
     void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(),Manifest.permission.CAMERA);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CAMERA);
     }
 
     @OnNeverAskAgain(Manifest.permission.CAMERA)
     void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.CAMERA);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CAMERA);
     }
 
     @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
     @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
-    @OnPermissionDenied({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     void showDeniedForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
 
-        RequestPermissionUtil.onPermissionDenied(getActivity(),listPermission);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
     }
 
     @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
@@ -488,6 +479,6 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
 
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),listPermission);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
     }
 }

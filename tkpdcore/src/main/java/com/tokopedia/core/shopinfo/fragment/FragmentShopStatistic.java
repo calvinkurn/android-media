@@ -20,6 +20,7 @@ import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.shopinfo.activity.ShopFavoritedActivity;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShipmentPackage;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.core.util.MethodChecker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -161,9 +162,9 @@ public class FragmentShopStatistic extends V2BaseFragment {
         ImageHandler.loadImageRounded2(getActivity(), holder.OwnerPicture, model.owner.ownerImage);
 //        ImageHandler.LoadImageRounded(holder.OwnerPicture, model.owner.ownerImage);
 
-        holder.ShopName.setText(Html.fromHtml(model.info.shopName).toString());
-        holder.ShopTag.setText(Html.fromHtml(model.info.shopTagline).toString());
-        holder.ShopDesc.setText(Html.fromHtml(model.info.shopDescription).toString());
+        holder.ShopName.setText(MethodChecker.fromHtml(model.info.shopName).toString());
+        holder.ShopTag.setText(MethodChecker.fromHtml(model.info.shopTagline).toString());
+        holder.ShopDesc.setText(MethodChecker.fromHtml(model.info.shopDescription).toString());
         holder.LastLogin.setText(model.info.shopOwnerLastLogin);
         holder.SoldItems.setText(model.stats.shopItemSold);
         holder.Favorited.setText(model.info.shopTotalFavorit + "");
@@ -177,8 +178,8 @@ public class FragmentShopStatistic extends V2BaseFragment {
         holder.TtlProd.setText(model.stats.shopTotalProduct);
         holder.reputationPoint.setText(model.stats.shopReputationScore + " Poin");
         if (model.address.size() > 0) {
-            holder.DetailShopName.setText(Html.fromHtml(model.address.get(0).locationAddressName).toString());
-            holder.ShopAddress.setText(Html.fromHtml(model.address.get(0).locationAddress).toString() + "\n" + Html.fromHtml(model.address.get(0).locationArea).toString());
+            holder.DetailShopName.setText(MethodChecker.fromHtml(model.address.get(0).locationAddressName).toString());
+            holder.ShopAddress.setText(MethodChecker.fromHtml(model.address.get(0).locationAddress).toString() + "\n" + MethodChecker.fromHtml(model.address.get(0).locationArea).toString());
             holder.ShopEmail.setText(model.address.get(0).locationEmail);
             holder.ShopPhone.setText(model.address.get(0).locationPhone);
             holder.ShopFax.setText(model.address.get(0).locationFax);

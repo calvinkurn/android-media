@@ -3,7 +3,7 @@ package com.tokopedia.discovery.dynamicfilter.presenter;
 import android.content.Intent;
 
 import com.tokopedia.core.discovery.model.Breadcrumb;
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.Filter;
 
 import java.util.List;
 
@@ -32,7 +32,7 @@ public interface DynamicFilterPresenter {
 
     List<Breadcrumb> getBreadCrumb();
 
-    List<DynamicFilterModel.Filter> getFilterCategory();
+    List<Filter> getFilterCategory();
 
     String getCurrentCategory();
 }

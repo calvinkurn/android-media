@@ -72,7 +72,7 @@ android {
         defaultVersionName = "2.3.1";
     }
 
-    compileSdkVersion 23
+    compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion '25'
     useLibrary 'org.apache.http.legacy'
     sourceSets {
@@ -146,8 +146,8 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 23
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled = true
         applicationId "com.tokopedia.tkpd"
         resConfigs "en", "id"
@@ -173,23 +173,29 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(':tkpdinbox')
+
+    /*compile (rootProject.ext.tkpdDependencies.inbox)
+    compile (rootProject.ext.tkpdDependencies.discovery)
+    compile (rootProject.ext.tkpdDependencies.transaction)
+    compile (rootProject.ext.tkpdDependencies.seller)
+    compile (rootProject.ext.tkpdDependencies.session)*/
     compile project(':tkpddiscovery')
     compile project(':tkpdtransaction')
     compile project(':tkpdseller')
     compile project(':tkpdsession')
+    compile project(':tkpdinbox')
 
-    //testing
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testCompile "org.mockito:mockito-core:2.0.57-beta"
     testCompile 'junit:junit:4.12'
 
-    compile 'com.github.hotchemi:permissionsdispatcher:2.2.0@aar'
-    apt 'com.github.hotchemi:permissionsdispatcher-processor:2.2.0'
-    compile 'com.jakewharton:butterknife:8.4.0'
-    apt 'com.jakewharton:butterknife-compiler:8.4.0'
+    compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
+    apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+
+    compile rootProject.ext.butterKnifeDependencies.butterKnife
+    apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
     compile 'com.android.support:multidex:1.0.1'
 

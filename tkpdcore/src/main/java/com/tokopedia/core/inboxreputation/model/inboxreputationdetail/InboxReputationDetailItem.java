@@ -9,6 +9,7 @@ import android.text.Spanned;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.inboxreputation.model.ImageUpload;
+import com.tokopedia.core.util.MethodChecker;
 
 import java.util.ArrayList;
 
@@ -160,7 +161,7 @@ public class InboxReputationDetailItem implements Parcelable {
      * @return The productName
      */
     public String getProductName() {
-        return Html.fromHtml(productName).toString();
+        return MethodChecker.fromHtml(productName).toString();
     }
 
     /**
@@ -258,7 +259,7 @@ public class InboxReputationDetailItem implements Parcelable {
      * @return The reviewMessage
      */
     public Spanned getReviewMessage() {
-        return Html.fromHtml(reviewMessage);
+        return MethodChecker.fromHtml(reviewMessage);
     }
 
     /**
@@ -356,7 +357,7 @@ public class InboxReputationDetailItem implements Parcelable {
      * @return The shopName
      */
     public String getShopName() {
-        return Html.fromHtml(shopName).toString();
+        return MethodChecker.fromHtml(shopName).toString();
     }
 
     /**
