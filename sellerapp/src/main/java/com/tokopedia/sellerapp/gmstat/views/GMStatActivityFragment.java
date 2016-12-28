@@ -122,6 +122,7 @@ public class GMStatActivityFragment extends Fragment {
     private TransactionDataLoading transactionDataLoading;
     private MarketInsightLoading marketInsightLoading;
     private MarketInsightLoading2 marketInsightLoading2;
+    private View rootView;
 
     @OnClick(R.id.header_gmstat)
     public void onClickHeaderGMStat(){
@@ -282,6 +283,7 @@ public class GMStatActivityFragment extends Fragment {
             displayDefaultValue();
 
             if(e != null){
+                snackBar = new SnackBar();
                 if(snackBar != null){
                     String textMessage ="Kesalahan tidak diketahui";
                     if(e instanceof UnknownHostException){
@@ -289,7 +291,7 @@ public class GMStatActivityFragment extends Fragment {
                     }else if(e instanceof ShopNetworkController.MessageErrorException){
                         textMessage = "Terjadi kesalahan koneksi. \nSilahkan coba kembali";
                     }
-                    snackBar.view(marketInsightReal)
+                    snackBar.view(rootView)
                             .text(textMessage, "COBA KEMBALI")
                             .textColors(Color.WHITE,Color.GREEN)
                             .backgroundColor(Color.BLACK)
@@ -300,7 +302,6 @@ public class GMStatActivityFragment extends Fragment {
 //                                    Toast.makeText(
 //                                            GMStatActivityFragment.this.getActivity()
 //                                            ,"Bye bye snackbar Toast is back",Toast.LENGTH_SHORT).show();
-                                    isFetchData = true;
                                     fetchData();
                                 }
                             })
@@ -491,7 +492,7 @@ public class GMStatActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         isFirstTime = false;
-        View rootView = inflater.inflate(R.layout.fragment_gmstat, container, false);
+        rootView = inflater.inflate(R.layout.fragment_gmstat, container, false);
         this.unbind = ButterKnife.bind(this, rootView);
 //        gmStatWidgetAdapter = new GMStatWidgetAdapter();
         initNumberFormatter();
