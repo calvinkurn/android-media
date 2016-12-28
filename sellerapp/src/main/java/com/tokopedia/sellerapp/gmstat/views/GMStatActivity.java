@@ -14,8 +14,12 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.var.ToolbarVariable;
+import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.SellerMainApplication;
 import com.tokopedia.sellerapp.drawer.DrawerVariableSeller;
@@ -34,7 +38,7 @@ import static com.tokopedia.sellerapp.gmstat.views.GMStatHeaderViewHelper.MOVE_T
 import static com.tokopedia.sellerapp.gmstat.views.SetDateFragment.END_DATE;
 import static com.tokopedia.sellerapp.gmstat.views.SetDateFragment.START_DATE;
 
-public class GMStatActivity extends AppCompatActivity implements GMStat{
+public class GMStatActivity extends AppCompatActivity implements GMStat, SessionHandler.onLogoutListener {
 
     @Inject
     GMStatNetworkController gmStatNetworkController;
@@ -158,5 +162,20 @@ public class GMStatActivity extends AppCompatActivity implements GMStat{
     @Override
     public String getShopId() {
         return shopId;
+    }
+
+    @Override
+    public void onLogout(Boolean success) {
+        if (success) {
+            finish();
+            Intent intent;
+            if (GlobalConfig.isSellerApp()) {
+                intent = new Intent(this, WelcomeActivity.class);
+            } else {
+                intent = HomeRouter.getHomeActivity(this);
+            }
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        }
     }
 }
