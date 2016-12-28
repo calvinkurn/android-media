@@ -57,7 +57,7 @@ public class TrackingFragmentPresenterImpl implements TrackingFragmentPresenter 
                     @Override
                     public void onError(String error) {
                         viewListener.finishLoading();
-                        viewListener.showErrorMessage();
+                        viewListener.showErrorMessage(error);
 
                     }
 

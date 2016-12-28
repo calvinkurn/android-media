@@ -196,10 +196,10 @@ public class TrackingFragment extends BasePresenterFragment<TrackingFragmentPres
     }
 
     @Override
-    public void showErrorMessage() {
+    public void showErrorMessage(String errorMessage) {
         mainView.setVisibility(View.GONE);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(MethodChecker.fromHtml(getString(R.string.error_520_tracking)));
+        builder.setMessage(errorMessage);
         Dialog dialog = builder.create();
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.show();
