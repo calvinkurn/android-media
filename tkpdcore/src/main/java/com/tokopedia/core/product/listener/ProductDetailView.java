@@ -253,7 +253,7 @@ public interface ProductDetailView extends ViewListener {
      */
     void refreshMenu();
 
-    void showProductDetailRetry(String errorMessage);
+    void showProductDetailRetry();
 
     void showProductOthersRetry();
 

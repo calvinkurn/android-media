@@ -710,14 +710,14 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     }
 
                     @Override
-                    public void onTimeout(String message) {
-                        viewListener.showProductDetailRetry(message);
+                    public void onTimeout() {
+                        viewListener.showProductDetailRetry();
                         viewListener.hideProgressLoading();
                     }
 
                     @Override
                     public void onError(String error) {
-                        viewListener.showProductDetailRetry(error);
+                        viewListener.showProductDetailRetry();
                         viewListener.hideProgressLoading();
                     }
 

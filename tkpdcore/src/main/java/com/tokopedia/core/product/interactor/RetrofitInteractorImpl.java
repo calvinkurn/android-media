@@ -67,6 +67,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     private final AceSearchService aceSearchService;
     private final MojitoAuthService mojitoAuthService;
     private final ProductVideoService productVideoService;
+    private final int SERVER_ERROR_CODE = 500;
 
     public RetrofitInteractorImpl() {
         this.productService = new ProductService();
@@ -99,7 +100,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                 if (e instanceof UnknownHostException) {
                     listener.onError(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
                 } else if (e instanceof SocketTimeoutException) {
-                    listener.onTimeout(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                    listener.onTimeout();
                 } else {
                     listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
@@ -125,8 +126,8 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
 
                         @Override
                         public void onTimeout() {
-                            if (response.code() != 500)
-                                listener.onTimeout(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                            if (response.code() != SERVER_ERROR_CODE)
+                                listener.onTimeout();
                             else listener.onReportServerProblem();
                         }
 
