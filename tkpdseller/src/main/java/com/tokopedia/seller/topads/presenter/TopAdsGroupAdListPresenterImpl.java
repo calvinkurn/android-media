@@ -22,9 +22,9 @@ import java.util.List;
  * Created by zulfikarrahman on 12/22/16.
  */
 
-public class TopAdsGroupListPresenterImpl extends TopAdsListPresenterImpl<GroupAd> implements TopAdsGroupListPresenter {
+public class TopAdsGroupAdListPresenterImpl extends TopAdsAdListPresenterImpl<GroupAd> implements TopAdsGroupAdListPresenter {
 
-    public TopAdsGroupListPresenterImpl(Context context, TopAdsListPromoViewListener topAdsListPromoViewListener) {
+    public TopAdsGroupAdListPresenterImpl(Context context, TopAdsListPromoViewListener topAdsListPromoViewListener) {
         super(context, topAdsListPromoViewListener);
     }
 
@@ -37,13 +37,13 @@ public class TopAdsGroupListPresenterImpl extends TopAdsListPresenterImpl<GroupA
         dashboardTopadsInteractor.getListGroupAds(searchAdRequest, new ListenerInteractor<List<GroupAd>>() {
 
             @Override
-            public void onSuccess(List<GroupAd> groupAdList) {
-                
+            public void onSuccess(List<GroupAd> adList) {
+                topAdsListPromoViewListener.onSearchAdLoaded(adList);
             }
 
             @Override
             public void onError(Throwable throwable) {
-
+                topAdsListPromoViewListener.onLoadSearchAdError();
             }
         });
     }

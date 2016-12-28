@@ -1,8 +1,8 @@
 package com.tokopedia.seller.topads.view.adapter;
 
-import android.content.Context;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,9 +12,8 @@ import android.widget.CompoundButton;
 import com.bignerdranch.android.multiselector.ModalMultiSelectorCallback;
 import com.bignerdranch.android.multiselector.MultiSelector;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.model.data.Ad;
-import com.tokopedia.seller.topads.model.data.GroupAd;
-import com.tokopedia.seller.topads.model.data.Product;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsViewHolder;
 
 import java.util.ArrayList;
@@ -24,7 +23,7 @@ import java.util.List;
 /**
  * Created by zulfikarrahman on 11/24/16.
  */
-public class TopAdsListAdapter<T extends Ad> extends BaseLinearRecyclerViewAdapter {
+public class TopAdsAdListAdapter<T extends Ad> extends BaseLinearRecyclerViewAdapter {
 
     public static final int AD_TYPE = 1;
 
@@ -33,9 +32,11 @@ public class TopAdsListAdapter<T extends Ad> extends BaseLinearRecyclerViewAdapt
     private MultiSelector multiSelector;
     private HashMap<Integer, Boolean> checkedList;
 
-    public TopAdsListAdapter() {
+    public TopAdsAdListAdapter() {
         super();
         this.data = new ArrayList<>();
+        multiSelector = new MultiSelector();
+        checkedList = new HashMap<>();
     }
 
     @Override
@@ -47,7 +48,7 @@ public class TopAdsListAdapter<T extends Ad> extends BaseLinearRecyclerViewAdapt
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case AD_TYPE:
-                return new TopAdsViewHolder(parent.getContext(), parent, multiSelector);
+                return new TopAdsViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.listview_top_ads_ad, parent, false), multiSelector);
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }
@@ -69,12 +70,7 @@ public class TopAdsListAdapter<T extends Ad> extends BaseLinearRecyclerViewAdapt
     public void bindDataAds(final int position, RecyclerView.ViewHolder viewHolder) {
         Ad ad = data.get(position);
         final TopAdsViewHolder topAdsViewHolder = (TopAdsViewHolder) viewHolder;
-        if (ad != null) {
-            topAdsViewHolder.titleProduct.setText(ad.getName());
-            topAdsViewHolder.statusActive.setText(String.valueOf(ad.getStatus()));
-            topAdsViewHolder.promoPriceUsed.setText(ad.getPriceBidFmt());
-            topAdsViewHolder.totalPricePromo.setText(ad.getPriceDailyFmt());
-        }
+        topAdsViewHolder.bindObject(ad);
         topAdsViewHolder.checkedPromo.setChecked(isChecked(position));
         topAdsViewHolder.checkedPromo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

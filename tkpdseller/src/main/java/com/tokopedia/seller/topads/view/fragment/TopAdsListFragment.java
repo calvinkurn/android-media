@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.MenuRes;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,17 +14,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.bignerdranch.android.multiselector.ModalMultiSelectorCallback;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
-import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
-import com.tokopedia.seller.topads.presenter.TopAdsListPresenter;
-import com.tokopedia.seller.topads.view.adapter.TopAdsListAdapter;
+import com.tokopedia.seller.topads.presenter.TopAdsAdListPresenter;
+import com.tokopedia.seller.topads.view.adapter.TopAdsAdListAdapter;
 import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
 
 import java.text.SimpleDateFormat;
@@ -38,7 +35,7 @@ import butterknife.BindView;
 /**
  * A simple {@link Fragment} subclass.
  */
-public abstract class TopAdsListFragment<T extends TopAdsListPresenter> extends BasePresenterFragment<T> implements TopAdsListPromoViewListener {
+public abstract class TopAdsListFragment<T extends TopAdsAdListPresenter> extends BasePresenterFragment<T> implements TopAdsListPromoViewListener {
 
     @BindView(R2.id.list_product)
     RecyclerView listProduct;
@@ -52,7 +49,7 @@ public abstract class TopAdsListFragment<T extends TopAdsListPresenter> extends 
     protected Date startDate;
     protected Date endDate;
 
-    protected TopAdsListAdapter adapter;
+    protected TopAdsAdListAdapter adapter;
     private RefreshHandler refresh;
     private ActionMode actionMode;
     private LinearLayoutManager layoutManager;
@@ -132,7 +129,7 @@ public abstract class TopAdsListFragment<T extends TopAdsListPresenter> extends 
     protected void initialVar() {
         initialDate();
         refresh = new RefreshHandler(getActivity(), mainView, onRefreshListener());
-        adapter = new TopAdsListAdapter();
+        adapter = new TopAdsAdListAdapter();
     }
 
     private void initialDate() {

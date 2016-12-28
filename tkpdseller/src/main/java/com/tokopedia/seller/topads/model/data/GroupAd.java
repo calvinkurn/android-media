@@ -77,7 +77,7 @@ public class GroupAd implements Ad {
     @Expose
     private String labelOf;
 
-    @SerializedName("product_name")
+    @SerializedName("group_name")
     @Expose
     private String name;
 

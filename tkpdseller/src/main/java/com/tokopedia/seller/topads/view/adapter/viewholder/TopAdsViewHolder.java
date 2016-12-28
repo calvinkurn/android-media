@@ -46,20 +46,16 @@ public class TopAdsViewHolder extends SwappingHolder {
     @BindView(R2.id.mainView)
     public View mainView;
 
-    public TopAdsViewHolder(View view) {
-        super(view);
-        ButterKnife.bind(this, view);
-    }
-
     public void bindObject(Ad ad) {
         titleProduct.setText(ad.getName());
         statusActive.setText(ad.getStatusDesc());
-        promoPriceUsed.setText(ad.getPriceDailyFmt());
+        promoPriceUsed.setText(promoPriceUsed.getContext().getString(R.string.top_ads_bid_format_text, ad.getPriceBidFmt(), ad.getLabelPerClick()));
         totalPricePromo.setText(ad.getPriceDailySpentFmt());
         progressBarPromo.setProgress(2);
     }
 
-    public TopAdsViewHolder(Context context, ViewGroup parent, MultiSelector multiSelector){
-        super(LayoutInflater.from(context).inflate(R.layout.list_promo_single_topads, parent, false), multiSelector);
+    public TopAdsViewHolder(View view, MultiSelector multiSelector){
+        super(view, multiSelector);
+        ButterKnife.bind(this, view);
     }
 }

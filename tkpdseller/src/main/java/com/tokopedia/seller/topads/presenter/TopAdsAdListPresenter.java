@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Created by zulfikarrahman on 11/24/16.
  */
-public interface TopAdsListPresenter<T> {
+public interface TopAdsAdListPresenter<T> {
     void getListTopAdsFromNet(Date startDate, Date endDate);
 
     void actionDeleteAds(List<T> ads);

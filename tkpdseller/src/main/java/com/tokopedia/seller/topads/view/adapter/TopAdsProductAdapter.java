@@ -50,8 +50,7 @@ public class TopAdsProductAdapter extends BaseLinearRecyclerViewAdapter {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         switch (viewType) {
             case VIEW_PRODUCT:
-                return new ViewHolder(LayoutInflater.from(viewGroup.getContext())
-                        .inflate(R.layout.listview_top_ads_product, viewGroup, false));
+                return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.listview_top_ads_product, viewGroup, false));
             default:
                 return super.onCreateViewHolder(viewGroup, viewType);
         }

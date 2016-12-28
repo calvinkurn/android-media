@@ -5,14 +5,14 @@ import android.support.v7.view.ActionMode;
 import android.view.MenuItem;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.presenter.TopAdsGroupListPresenter;
-import com.tokopedia.seller.topads.presenter.TopAdsGroupListPresenterImpl;
+import com.tokopedia.seller.topads.presenter.TopAdsGroupAdListPresenter;
+import com.tokopedia.seller.topads.presenter.TopAdsGroupAdListPresenterImpl;
 
 /**
  * Created by zulfikarrahman on 12/22/16.
  */
 
-public class TopAdsGroupListFragment extends TopAdsListFragment<TopAdsGroupListPresenter> {
+public class TopAdsGroupListFragment extends TopAdsListFragment<TopAdsGroupAdListPresenter> {
 
     @Override
     public int getMenuActionSelected() {
@@ -39,7 +39,7 @@ public class TopAdsGroupListFragment extends TopAdsListFragment<TopAdsGroupListP
 
     @Override
     protected void initialPresenter() {
-        presenter = new TopAdsGroupListPresenterImpl(context, this);
+        presenter = new TopAdsGroupAdListPresenterImpl(context, this);
     }
 
     public static Fragment createInstance() {

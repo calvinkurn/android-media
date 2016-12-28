@@ -33,37 +33,37 @@
     <string name="title_action_on">On</string>
     <string name="title_action_off">Off</string>
     <string name="action_filter_date">Filter Tanggal</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_group_list">Group</string>
 
-    <!-- New Promo -->
+    <!-- Top Ads ad list -->
+    <string name="top_ads_bid_format_text">%1$s - %2$s</string>
+
+    <!-- Top Ads New Promo -->
     <string name="label_top_ads_group_name">Nama Group</string>
     <string name="label_top_ads_choose_group">Pilih Group</string>
     <string name="label_top_ads_create_promo_new_group">Buat promo grup baru</string>
     <string name="label_top_ads_create_promo_from_exist_group">Promo grup yang ada</string>
     <string name="label_top_ads_create_promo_not_in_group">Tidak masuk ke promo grup</string>
 
-    <!-- Edit Promo -->
+    <!-- Top Ads Edit Promo -->
     <string name="label_top_ads_add_product">Tambah Produk</string>
     <string name="label_top_ads_max_price_hint">Biaya Maks (Rp)</string>
     <string name="label_top_ads_max_price_description">Sesuaikan biaya anggaran promo anda. Rekomendasi biaya: Rp 50 sampai Rp 200 per klik</string>
     <string name="label_top_ads_icon">Icon TopAds</string>
 
-    <!-- Edit Promo Budget-->
+    <!-- Top Ads Edit Promo Budget-->
     <string name="label_top_ads_budget">Anggaran</string>
     <string name="label_top_ads_budget_lifetime">Anggaran Seumur Hidup</string>
     <string name="label_top_ads_budget_per_day">Per Hari</string>
     <string name="label_top_ads_budget_cost_per_day">Biaya per hari</string>
 
-    <!-- Edit Promo Show Time-->
+    <!-- Top Ads Edit Promo Show Time-->
     <string name="label_top_ads_show_time">Waktu Tampil</string>
     <string name="label_top_ads_show_time_automatic">Otomatis</string>
     <string name="label_top_ads_show_time_configured">Atur tanggal mulai dan berhenti</string>
     <string name="label_top_ads_show_time_start">Mulai</string>
     <string name="label_top_ads_show_time_end">Selesai</string>
 
-    <!-- Add product-->
+    <!-- Top Ads Add product-->
     <string name="label_top_ads_promoted">Promoted</string>
 </resources>

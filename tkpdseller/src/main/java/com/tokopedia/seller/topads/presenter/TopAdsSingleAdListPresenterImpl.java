@@ -12,19 +12,17 @@ import com.tokopedia.seller.topads.model.data.DataRequestSingleAds;
 import com.tokopedia.seller.topads.model.data.DataResponseActionAds;
 import com.tokopedia.seller.topads.model.request.AdsActionRequest;
 import com.tokopedia.seller.topads.model.request.SearchAdRequest;
-import com.tokopedia.seller.topads.model.response.PageDataResponse;
 import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 /**
  * Created by zulfikarrahman on 12/16/16.
  */
-public class TopAdsSingleListPresenterImpl extends TopAdsListPresenterImpl<SingleAd> implements TopAdsSingleListPresenter {
-    public TopAdsSingleListPresenterImpl(Context context, TopAdsListPromoViewListener topadsListPromoViewListener) {
+public class TopAdsSingleAdListPresenterImpl extends TopAdsAdListPresenterImpl<SingleAd> implements TopAdsSingleAdListPresenter {
+    public TopAdsSingleAdListPresenterImpl(Context context, TopAdsListPromoViewListener topadsListPromoViewListener) {
         super(context, topadsListPromoViewListener);
     }
 
