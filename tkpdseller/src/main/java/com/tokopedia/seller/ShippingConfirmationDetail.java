@@ -23,6 +23,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.customadapter.ListViewOrderStatus;
 import com.tokopedia.seller.customadapter.ListViewShopOrderDetail;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
@@ -213,7 +214,7 @@ ShippingConfirmationDetail extends TActivity {
     private void setDataToViewV4() {
 
         OrderPayment orderPayment = orderData.getOrderPayment();
-        PaymentMethod.setText(Html.fromHtml(getString(R.string.title_payment_method) + " : <b>" + orderPayment.getPaymentGatewayName() + "</b>"));
+        PaymentMethod.setText(MethodChecker.fromHtml(getString(R.string.title_payment_method) + " : <b>" + orderPayment.getPaymentGatewayName() + "</b>"));
         Deadline.setText(orderPayment.getPaymentShippingDueDate());
 
         OrderCustomer orderCustomer = orderData.getOrderCustomer();
@@ -245,7 +246,7 @@ ShippingConfirmationDetail extends TActivity {
             phoneTokopedia = getString(R.string.title_phone) + " : " + receiverPhone;
         }
 
-        String destinationDetail = Html.fromHtml(orderDestination.getReceiverName() + "<br>" + orderDestination.getAddressStreet().replace("<br/>", "\n").replace("<br>", "\n")
+        String destinationDetail = MethodChecker.fromHtml(orderDestination.getReceiverName() + "<br>" + orderDestination.getAddressStreet().replace("<br/>", "\n").replace("<br>", "\n")
                 + "<br>" + orderDestination.getAddressDistrict() + " " + orderDestination.getAddressCity() + ", " + orderDestination.getAddressPostal()
                 + "<br>" + orderDestination.getAddressProvince() + "<br>" + phoneTokopedia).toString();
         destinationDetail = destinationDetail.replaceAll("&#39;", "'");
@@ -264,8 +265,8 @@ ShippingConfirmationDetail extends TActivity {
         }
 
         OrderShop orderShop = orderData.getOrderShop();
-        String pickupAddress = Html.fromHtml(orderShop.getAddressStreet())
-                + "\n" + Html.fromHtml(orderShop.getAddressCity()).toString() + ", " + Html.fromHtml(orderShop.getAddressPostal())
+        String pickupAddress = MethodChecker.fromHtml(orderShop.getAddressStreet())
+                + "\n" + MethodChecker.fromHtml(orderShop.getAddressCity()).toString() + ", " + MethodChecker.fromHtml(orderShop.getAddressPostal())
                 + "\n" + orderShop.getAddressProvince()
                 + "\n" + getString(R.string.title_phone) + ":" + orderShop.getShipperPhone();
         pickupLocationDetail.setText(pickupAddress);
@@ -327,7 +328,7 @@ ShippingConfirmationDetail extends TActivity {
 //			JSONObject destination = new JSONObject(order.getString("dest"));
 //			JSONObject shipping = new JSONObject(order.getString("shipping"));
 //			JSONObject shop = new JSONObject(order.getString("shop"));
-//			PaymentMethod.setText(Html.fromHtml(getString(R.string.title_payment_method) + " : <b>"+ payment.getString("pg_name")+"</b>"));
+//			PaymentMethod.setText(MethodChecker.fromHtml(getString(R.string.title_payment_method) + " : <b>"+ payment.getString("pg_name")+"</b>"));
 //			Invoice.setText(orderdata.getString("invoice"));
 //			BuyerName.setText(customer.getString("cust_name"));
 //			if (!orderdata.isNull("dropship_name")) {
@@ -361,12 +362,12 @@ ShippingConfirmationDetail extends TActivity {
 //				phoneTokopedia = getString(R.string.title_phone) + " : " +destination.getString("phone");
 //			}
 //
-//			String destinationDetail = Html.fromHtml(destination.getString("receiver_name") + "<br>" + destination.getString("address_name").replace("<br/>", "\n").replace("<br>", "\n")
+//			String destinationDetail = MethodChecker.fromHtml(destination.getString("receiver_name") + "<br>" + destination.getString("address_name").replace("<br/>", "\n").replace("<br>", "\n")
 //					+ "<br>" + destination.getString("district") + " " + destination.getString("city") + ", " + destination.getString("postal")
 //					+ "<br>" + destination.getString("province") + "<br>" + phoneTokopedia).toString();
 //			String shippingID = shipping.getString("shipping_id");
-//			String pickupAddress = Html.fromHtml(shop.optString("addr_street", ""))
-//					+ "\n" + Html.fromHtml(shop.optString("city", "")).toString() + ", " + Html.fromHtml(shop.optString("postal_code", ""))
+//			String pickupAddress = MethodChecker.fromHtml(shop.optString("addr_street", ""))
+//					+ "\n" + MethodChecker.fromHtml(shop.optString("city", "")).toString() + ", " + MethodChecker.fromHtml(shop.optString("postal_code", ""))
 //					+ "\n" + shop.optString("province")
 //					+ "\n" + getString(R.string.title_phone) + ":" + shop.optString("phone", "");
 //			pickupLocationDetail.setText(pickupAddress);

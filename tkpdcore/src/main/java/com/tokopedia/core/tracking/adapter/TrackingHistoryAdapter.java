@@ -12,6 +12,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.core.tracking.model.tracking.TrackHistory;
+import com.tokopedia.core.util.MethodChecker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,11 +80,11 @@ public class TrackingHistoryAdapter extends BaseLinearRecyclerViewAdapter {
 
     private void bindHistory(final ViewHolder holder, final int position) {
         if (list.get(position).getStatus()!=null)
-            holder.status.setText(Html.fromHtml(list.get(position).getStatus()));
+            holder.status.setText(MethodChecker.fromHtml(list.get(position).getStatus()));
         if (list.get(position).getCity()!=null)
-            holder.city.setText(Html.fromHtml(list.get(position).getCity()));
+            holder.city.setText(MethodChecker.fromHtml(list.get(position).getCity()));
         if (list.get(position).getDate()!=null)
-            holder.time.setText(Html.fromHtml(list.get(position).getDate()));
+            holder.time.setText(MethodChecker.fromHtml(list.get(position).getDate()));
     }
 
     @Override

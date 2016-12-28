@@ -18,9 +18,11 @@ import com.bignerdranch.android.multiselector.MultiSelector;
 import com.bignerdranch.android.multiselector.SwappingHolder;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.myproduct.fragment.ImageGalleryFragment;
 import com.tokopedia.core.myproduct.model.ImageModel;
 import com.tokopedia.core.myproduct.presenter.ImageGalleryView;
+import com.tokopedia.core.util.MethodChecker;
 
 import java.io.File;
 import java.util.List;
@@ -30,21 +32,20 @@ import static com.tkpd.library.utils.CommonUtils.checkNotNull;
 /**
  * Created by m.normansyah on 12/6/15.
  */
-public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapter.ViewHolder>
-{
+public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapter.ViewHolder> {
 
     List<ImageModel> datas;
     MultiSelector multiSelector;
     int limit;
-    public static final int UNLIMITED_SELECTION =  -1;
+    public static final int UNLIMITED_SELECTION = -1;
     private CountTitle countTitle;
     private ActionMode actionMode;
 
-    public ImageGalleryAdapter(List<ImageModel> datas, MultiSelector multiSelector){
-        this(datas,multiSelector,UNLIMITED_SELECTION);
+    public ImageGalleryAdapter(List<ImageModel> datas, MultiSelector multiSelector) {
+        this(datas, multiSelector, UNLIMITED_SELECTION);
     }
 
-    public ImageGalleryAdapter(List<ImageModel> datas, MultiSelector multiSelector, int limit){
+    public ImageGalleryAdapter(List<ImageModel> datas, MultiSelector multiSelector, int limit) {
         this.datas = datas;
         this.multiSelector = multiSelector;
         this.limit = limit;
@@ -76,11 +77,10 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
     }
 
     public class ViewHolder extends SwappingHolder
-            implements View.OnClickListener, View.OnLongClickListener
-    {
+            implements View.OnClickListener, View.OnLongClickListener {
         ImageModel imageModel;
         ImageView mImageView;
-//        RelativeLayout mBorder;
+        //        RelativeLayout mBorder;
         WindowManager wm;
 
         public ViewHolder(View itemView) {
@@ -94,12 +94,12 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
             itemView.setOnLongClickListener(this);
         }
 
-        public void bindView(ImageModel imageModel){
+        public void bindView(ImageModel imageModel) {
             this.imageModel = imageModel;
             int imageWidth = (int) (getScreenWidth() - 4) / 3;
             mImageView.setLayoutParams(new FrameLayout.LayoutParams(imageWidth, imageWidth));
             ImageHandler.loadImageFit2(itemView.getContext(), mImageView,
-                    Uri.fromFile(new File(imageModel.getPath())).toString());
+                    MethodChecker.getUri(MainApplication.getAppContext(), new File(imageModel.getPath())).toString());
 //            ImageHandler.LoadImageCustom(Uri.fromFile(new File(imageModel.getPath())).toString())
 //                    .fit()
 //                    .centerCrop().into(mImageView);
@@ -108,7 +108,7 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
 
         public int getScreenWidth() {
             Point size = new Point();
-            Display display	 = wm.getDefaultDisplay();
+            Display display = wm.getDefaultDisplay();
             display.getSize(size);
             return size.x;
         }
@@ -125,17 +125,17 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
 
             if (!multiSelector.tapSelection(this)) {
 
-                if(itemView.getContext()!=null&& itemView.getContext() instanceof ImageGalleryView){
-                    ((ImageGalleryView)itemView.getContext()).sendResultImageGallery(imageModel.getPath());
+                if (itemView.getContext() != null && itemView.getContext() instanceof ImageGalleryView) {
+                    ((ImageGalleryView) itemView.getContext()).sendResultImageGallery(imageModel.getPath());
                 }
-            }else{
-                if(limit!=UNLIMITED_SELECTION&&multiSelector.getSelectedPositions().size()>limit){
+            } else {
+                if (limit != UNLIMITED_SELECTION && multiSelector.getSelectedPositions().size() > limit) {
                     multiSelector.tapSelection(this);
                     Toast.makeText(itemView.getContext(), itemView.getContext().getString(R.string.maximum_instoped_limit), Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if(checkNotNull(countTitle)){
-                    actionMode.setTitle(multiSelector.getSelectedPositions().size()+"");
+                if (checkNotNull(countTitle)) {
+                    actionMode.setTitle(multiSelector.getSelectedPositions().size() + "");
                     countTitle.onTitleChanged(multiSelector.getSelectedPositions().size());
                 }
             }
@@ -144,14 +144,14 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
         @Override
         public boolean onLongClick(View v) {
 //            Toast.makeText(itemView.getContext(), "onLongClick !!", Toast.LENGTH_SHORT).show();
-            ImageGalleryView imageGalleryView = (ImageGalleryView)itemView.getContext();
+            ImageGalleryView imageGalleryView = (ImageGalleryView) itemView.getContext();
             actionMode = imageGalleryView.showActionMode(imageGalleryView.getMultiSelectorCallback(ImageGalleryFragment.FRAGMENT_TAG));
             multiSelector.setSelected(this, true);
             return true;
         }
     }
 
-    public interface CountTitle{
+    public interface CountTitle {
         void onTitleChanged(int size);
     }
 }

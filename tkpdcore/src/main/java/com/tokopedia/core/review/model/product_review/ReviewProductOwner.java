@@ -7,6 +7,7 @@ import android.text.Html;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.util.MethodChecker;
 
 public class ReviewProductOwner implements Parcelable{
 
@@ -82,7 +83,7 @@ public class ReviewProductOwner implements Parcelable{
      *     The userShopName
      */
     public String getUserShopName() {
-        return Html.fromHtml(userShopName).toString();
+        return MethodChecker.fromHtml(userShopName).toString();
     }
 
     /**

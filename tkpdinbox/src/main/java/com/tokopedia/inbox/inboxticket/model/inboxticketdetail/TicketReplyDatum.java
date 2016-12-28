@@ -5,6 +5,7 @@ import android.text.Html;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.util.MethodChecker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -240,7 +241,7 @@ public class TicketReplyDatum {
      * @return The ticketDetailMessage
      */
     public String getTicketDetailMessage() {
-        return ticketDetailMessage!= null && ticketDetailMessage.equals("0") ? "" : Html.fromHtml(ticketDetailMessage).toString();
+        return ticketDetailMessage!= null && ticketDetailMessage.equals("0") ? "" : MethodChecker.fromHtml(ticketDetailMessage).toString();
     }
 
     /**

@@ -16,6 +16,7 @@ import com.tkpd.library.utils.OneOnClick;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.product.model.passdata.ProductPass;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.transaction.purchase.model.response.txlist.OrderProduct;
 
 import java.text.MessageFormat;
@@ -56,7 +57,13 @@ public class TxProductListAdapter extends ArrayAdapter<OrderProduct> {
             holder = (ViewHolder) convertView.getTag();
         }
         final OrderProduct item = getItem(position);
-        holder.tvProductName.setText(Html.fromHtml(item.getProductName()));
+        holder.tvProductName.setText(MethodChecker.fromHtml(item.getProductName()));
+        holder.tvNotes.setText(
+                MethodChecker.fromHtml(
+                        item.getProductNotes().length() == 0 ?
+                                "-" : item.getProductNotes()
+                )
+        );
         holder.tvProductPrice.setText(
                 MessageFormat.format(
                         "{0} {1}",

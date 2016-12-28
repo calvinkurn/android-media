@@ -6,7 +6,6 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
@@ -17,10 +16,9 @@ import com.tkpd.library.utils.data.DataManagerImpl;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.manager.CategoryDatabaseManager;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.gcm.GCMHandler.GCMHandlerListener;
+import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.LoginBypassModel;
 import com.tokopedia.core.util.PasswordGenerator;
@@ -112,7 +110,8 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
 
     private void getGCMid() {
 	    GCMHandler gcm = new GCMHandler(this);
-        gcm.commitGCMProcess(getGCMHandlerListener());
+        gcm.commitFCMProcess(getGCMHandlerListener());
+        gcm.commitGCMProcess();
     }
 
     public void finishSplashScreen() {

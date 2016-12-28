@@ -20,6 +20,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.R;
 import com.tokopedia.core.facade.FacadeSendFormDialog;
 import com.tokopedia.core.prototype.ProductCache;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.TkpdUrl;
 
 import java.util.ArrayList;
@@ -99,7 +100,7 @@ public class ReturnFormDialog extends DialogFragment{
         viewHolder.dismissButton = (TextView) rootView.findViewById(R.id.dismiss_return_policy_form);
         viewHolder.dismissLayout = (LinearLayout) rootView.findViewById(R.id.policy_form_dismiss);
         viewHolder.saveLayout = (LinearLayout) rootView.findViewById(R.id.policy_form_save);
-        viewHolder.editPolicyContent.setText(Html.fromHtml(policyContent));
+        viewHolder.editPolicyContent.setText(MethodChecker.fromHtml(policyContent));
         viewHolder.editPolicyContent.requestFocus();
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
     }

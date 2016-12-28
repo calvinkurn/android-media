@@ -29,6 +29,7 @@ import com.tokopedia.core.manage.people.address.model.AddressModel;
 import com.tokopedia.core.manage.people.address.presenter.ManagePeopleAddressFragmentImpl;
 import com.tokopedia.core.manage.people.address.presenter.ManagePeopleAddressFragmentPresenter;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RefreshHandler;
 
 import java.util.ArrayList;
@@ -301,7 +302,7 @@ public class ManagePeopleAddressFragment extends BasePresenterFragment<ManagePeo
     @Override
     public void showDialogConfirmation(String message, DialogInterface.OnClickListener onPositiveClickListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(Html.fromHtml(message))
+        builder.setMessage(MethodChecker.fromHtml(message))
                 .setPositiveButton(R.string.title_yes, onPositiveClickListener)
                 .setNegativeButton(R.string.title_no, new DialogInterface.OnClickListener() {
                     @Override

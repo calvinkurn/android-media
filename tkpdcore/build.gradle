@@ -6,6 +6,10 @@ apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
 
+def getArtifactVersionCode() {
+    return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
+}
+
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
@@ -26,7 +30,7 @@ publishing {
         aar(MavenPublication) {
             groupId 'com.tokopedia.core'
             artifactId 'core'
-            version '1.6-SNAPSHOT'
+            version getArtifactVersionCode()
             artifact("$buildDir/outputs/aar/tkpdcore-release.aar")
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
@@ -49,7 +53,7 @@ artifactory {
     contextUrl = rootProject.ext.artifactoryUrl
     publish {
         repository {
-            repoKey = 'libs-snapshot-local'
+            repoKey = 'libs-release-local'
 
             username = artifactory_username
             password = artifactory_password
@@ -100,6 +104,7 @@ dependencies {
     compile rootProject.ext.playServicesDependencies.appIndexing
     compile rootProject.ext.playServicesDependencies.analytics
     compile rootProject.ext.playServicesDependencies.gcm
+    compile rootProject.ext.playServicesDependencies.firebase
     compile rootProject.ext.playServicesDependencies.location
     compile rootProject.ext.playServicesDependencies.maps
 
@@ -146,8 +151,8 @@ apply plugin: 'com.google.gms.google-services'
 
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion '24.0.2'
+    compileSdkVersion 24
+    buildToolsVersion '25.0.0'
     useLibrary 'org.apache.http.legacy'
     sourceSets {
 

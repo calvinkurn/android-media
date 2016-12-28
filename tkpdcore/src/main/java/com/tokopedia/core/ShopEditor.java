@@ -55,6 +55,7 @@ import com.tokopedia.core.shop.model.shopinfo.Data;
 import com.tokopedia.core.shop.model.shopinfo.Image;
 import com.tokopedia.core.shop.model.shopinfo.Info;
 import com.tokopedia.core.shopinfo.models.shopinfo.UpdateShopInfo;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.UploadImageReVamp;
@@ -467,7 +468,7 @@ public class ShopEditor extends TActivity {
         IsAllowShop = data.getIsAllow().toString();
         Info info = data.getInfo();
         ClosedDetail closedDetail = data.getClosedDetail();
-        mShopNameText.setText(Html.fromHtml(info.getShopName()));
+        mShopNameText.setText(MethodChecker.fromHtml(info.getShopName()));
         Image mShopAvaObj = data.getImage();
         if (mShopAvaObj.getLogo() != null)
             mShopAvaUri = mShopAvaObj.getLogo();
@@ -476,13 +477,13 @@ public class ShopEditor extends TActivity {
         } else {
             mBtnSend.setVisibility(View.VISIBLE);
         }
-        mShopSloganText.setText(Html.fromHtml(info.getShopTagline()));
-        mShopDescText.setText(Html.fromHtml(info.getShopDescription()));
+        mShopSloganText.setText(MethodChecker.fromHtml(info.getShopTagline()));
+        mShopDescText.setText(MethodChecker.fromHtml(info.getShopDescription()));
         if (CommonUtils.checkNullForZeroJson(closedDetail.getNote())) {
-            mShopClosedNoteText.setText(Html.fromHtml(closedDetail.getNote()));
+            mShopClosedNoteText.setText(MethodChecker.fromHtml(closedDetail.getNote()));
         }
         if (CommonUtils.checkNullForZeroJson(closedDetail.getUntil())) {
-            mShopClosedUntilText.setText(Html.fromHtml(closedDetail.getUntil()));
+            mShopClosedUntilText.setText(MethodChecker.fromHtml(closedDetail.getUntil()));
         }
         //Log.i("ini kok", mShopAvaUri);
         String mSpinnerVal = null;
