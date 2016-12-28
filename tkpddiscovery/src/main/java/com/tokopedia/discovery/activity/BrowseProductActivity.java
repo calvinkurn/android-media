@@ -729,10 +729,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
 
     private void openFilter(DataValue filterAttribute, String source, int activeTab, FDest dest) {
         Log.d(TAG, "openFilter source " + source);
-        List<Breadcrumb> crumb = getProductBreadCrumb();
-        if (breadcrumbs == null && crumb != null) {
-            breadcrumbs = crumb;
-        }
+        breadcrumbs = getProductBreadCrumb();
         if (filterAttribute != null && breadcrumbs != null) {
             Map<String, String> filters;
             if (mFilterMapAtribut != null && mFilterMapAtribut.getFiltersMap() != null) {

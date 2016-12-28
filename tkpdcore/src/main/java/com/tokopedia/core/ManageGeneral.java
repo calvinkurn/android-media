@@ -9,7 +9,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 
-import com.tokopedia.core.GCMListenerService.NotificationListener;
+import com.tokopedia.core.gcm.FCMMessagingService.NotificationListener;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -147,6 +148,7 @@ public class DynamicFilterListFragment extends BaseFragment<DynamicFilterList> i
     public void setupAdapter(List<Filter> dataList) {
         dynamicFilterListAdapter = new DynamicFilterListAdapter(getActivity(), new ArrayList<RecyclerViewItem>(DynamicFilterListAdapter.convertTo2(dataList)));
         dynamicFilterListAdapter.activatePosition(0);
+        performClickFirstItem();
         linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
     }
 
@@ -164,5 +166,18 @@ public class DynamicFilterListFragment extends BaseFragment<DynamicFilterList> i
         getActivity().sendBroadcast(new Intent(DynamicFilterActivity.ACTION_RESET_FILTER));
     }
 
+    public void performClickFirstItem() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    DynamicFilterListAdapter.DynamicViewHolder holder = (DynamicFilterListAdapter.DynamicViewHolder) dynamicFilterList.findViewHolderForAdapterPosition(0);
+                    holder.dynamicFilterClick();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, 300);
+    }
 
 }

@@ -8,6 +8,7 @@ import com.tokopedia.core.manage.shop.notes.interactor.ManageShopNotesRetrofitIn
 import com.tokopedia.core.manage.shop.notes.listener.ManageShopNotesView;
 import com.tokopedia.core.manage.shop.notes.model.ShopNote;
 import com.tokopedia.core.manage.shop.notes.model.ShopNotesResult;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
 
 import java.util.HashMap;
@@ -41,7 +42,11 @@ public class ManageShopNotesPresenterImpl implements ManageShopNotesPresenter {
             public void onSuccess(@NonNull ShopNotesResult data) {
                 viewListener.setViewEnabled(true);
                 viewListener.finishLoading();
-                viewListener.setResult(data);
+                if(data.getList() != null && data.getList().size() > 0 ){
+                    viewListener.setResult(data);
+                }else{
+                    viewListener.showEmpty();
+                }
             }
 
             @Override

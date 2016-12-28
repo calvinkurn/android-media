@@ -164,7 +164,7 @@ public class RetryHandler {
 
 			if (State == LIST_VIEW_RETRY_HEADER) {
 				Toast.makeText(context,
-						Html.fromHtml(context.getString(R.string.msg_connection_timeout_toast)),
+						MethodChecker.fromHtml(context.getString(R.string.msg_connection_timeout_toast)),
 						Toast.LENGTH_LONG).show();
 			}
 

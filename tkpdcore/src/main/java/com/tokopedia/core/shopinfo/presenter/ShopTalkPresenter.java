@@ -21,5 +21,5 @@ public interface ShopTalkPresenter {
 
     void loadMore();
 
-    void onDestroyView();
+    void unsubscribe();
 }

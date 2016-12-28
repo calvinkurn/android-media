@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.home.model;
 
-import com.tokopedia.core.home.model.HorizontalProductList;
+import com.tokopedia.core.home.model.HorizontalRecentViewList;
 import com.tokopedia.core.network.entity.home.GetListFaveShopId;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.var.ProductItem;
@@ -17,7 +17,7 @@ public class ProductFeedTransformData {
 
     // this is the data
     String shopId;
-    HorizontalProductList horizontalProductList;
+    HorizontalRecentViewList horizontalProductList;
     List<ProductItem> listProductItems;
     PagingHandler.PagingHandlerModel pagingHandlerModel;
     GetListFaveShopId getListFaveShopId;
@@ -26,7 +26,7 @@ public class ProductFeedTransformData {
 
     public ProductFeedTransformData(Map<String, String> header,
                                     Map<String, String> content,
-                                    HorizontalProductList horizontalProductList) {
+                                    HorizontalRecentViewList horizontalProductList) {
 
         this.header = header;
         this.content = content;
@@ -41,11 +41,11 @@ public class ProductFeedTransformData {
         this.pagingHandlerModel = pagingHandlerModel;
     }
 
-    public HorizontalProductList getHorizontalProductList() {
+    public HorizontalRecentViewList getHorizontalProductList() {
         return horizontalProductList;
     }
 
-    public void setHorizontalProductList(HorizontalProductList horizontalProductList) {
+    public void setHorizontalProductList(HorizontalRecentViewList horizontalProductList) {
         this.horizontalProductList = horizontalProductList;
     }
 

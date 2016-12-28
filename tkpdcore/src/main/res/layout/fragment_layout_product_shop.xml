@@ -19,7 +19,7 @@
             android:layout_centerVertical="true"
             app:iconifiedByDefault="false"
             app:queryBackground="@color/transparent"
-            app:queryHint="@string/title_search"></android.support.v7.widget.SearchView>
+            app:queryHint="@string/title_search" />
 
 
         <View

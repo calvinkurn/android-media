@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.selling.orderReject.ConfirmRejectOrderActivity;
 import com.tokopedia.seller.selling.orderReject.adapter.ProductListAdapter;
 
@@ -76,7 +77,7 @@ public class ConstrainRejectedDialog extends DialogFragment {
         super.onActivityCreated(savedInstanceState);
         String title = getArguments().getString(ConfirmRejectOrderActivity.REASON);
         type = (ProductListAdapter.Type) getArguments().getSerializable(ConfirmRejectOrderActivity.TYPE);
-        titleTxt.setText(Html.fromHtml("Alasan Penolakan: <b>"+title+"<b>"));
+        titleTxt.setText(MethodChecker.fromHtml("Alasan Penolakan: <b>"+title+"<b>"));
         confirmBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -24,6 +24,7 @@ import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ShopBadge;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 
 import java.util.List;
@@ -91,7 +92,7 @@ public class ShopInfoView extends BaseView<ProductDetailData, ProductDetailView>
 
     @Override
     public void renderData(@NonNull final ProductDetailData data) {
-        tvShopName.setText(Html.fromHtml(data.getShopInfo().getShopName()));
+        tvShopName.setText(MethodChecker.fromHtml(data.getShopInfo().getShopName()));
         tvShopLoc.setText(data.getShopInfo().getShopLocation());
         tvReputationPoint.setText(String.format("%d %s", data.getShopInfo().getShopReputation(),
                 getContext().getString(R.string.title_poin)));

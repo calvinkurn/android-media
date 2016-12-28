@@ -159,26 +159,29 @@ public class UploadPhotoTask extends AsyncTask<byte[], String, String> {
     }
 
     public static File writeImageToTkpdPath(byte[] buffer) {
-        File directory = new File(FileUtils.getFolderPathForUpload(Environment.getExternalStorageDirectory().getAbsolutePath()));
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
-        File photo = new File(directory.getAbsolutePath() + "/image.jpg");
+        if (buffer != null) {
+            File directory = new File(FileUtils.getFolderPathForUpload(Environment.getExternalStorageDirectory().getAbsolutePath()));
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+            File photo = new File(directory.getAbsolutePath() + "/image.jpg");
 
-        if (photo.exists()) {
-            photo.delete();
-        }
+            if (photo.exists()) {
+                photo.delete();
+            }
 
-        try {
-            FileOutputStream fos = new FileOutputStream(photo.getPath());
+            try {
+                FileOutputStream fos = new FileOutputStream(photo.getPath());
 
-            fos.write(buffer);
-            fos.close();
-        } catch (java.io.IOException e) {
-            Log.e("PictureDemo", "Exception in photoCallback", e);
-            return null;
+                fos.write(buffer);
+                fos.close();
+            } catch (java.io.IOException e) {
+                Log.e("PictureDemo", "Exception in photoCallback", e);
+                return null;
+            }
+            return photo;
         }
-        return photo;
+        return null;
     }
 
     @Override
