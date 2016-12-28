@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface WholesaleAdapter {
 
-    void onUpdateData(int type, int position, String value);
+    void onUpdateData(int type, int position, String value, boolean isShouldCheckError);
 
     void removeWholesaleItem(int position);
 

@@ -67,7 +67,7 @@ public class WholesaleAdapterImpl extends RecyclerView.Adapter<WholesaleViewHold
     }
 
     @Override
-    public void onUpdateData(int type, int position, String value) {
+    public void onUpdateData(int type, int position, String value, boolean isShouldCheckError) {
 
         WholesaleModel model = data.get(position);
         if(value.equals("")) value = "0";
@@ -85,8 +85,10 @@ public class WholesaleAdapterImpl extends RecyclerView.Adapter<WholesaleViewHold
         }
 
         Log.d(TAG, "print data position : " + position + "\n Datas : " + data.get(position).toString());
-        checkError();
 
+        if(isShouldCheckError) {
+            checkError();
+        }
     }
 
     private void checkError() {
