@@ -13,6 +13,9 @@ ext {
     tkpdSellerVersion = '1.+'
     tkpdTransactionVersion = '1.+'
     tkpdDiscoveryVersion = '1.+'
+    compileSdkVersion = 24
+    minSdkVersion = 15
+    targetSdkVersion = 24
 
     networkDependencies = [
             retrofit : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
