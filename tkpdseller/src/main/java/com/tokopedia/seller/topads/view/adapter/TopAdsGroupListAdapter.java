@@ -6,8 +6,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 
 import com.tokopedia.seller.topads.model.data.GroupAd;
-import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
-import com.tokopedia.seller.topads.view.viewholder.TopAdsViewHolder;
+import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +16,8 @@ import java.util.List;
  */
 
 public class TopAdsGroupListAdapter extends TopAdsListAdapter<GroupAd> {
-    public TopAdsGroupListAdapter(Context context, List<GroupAd> data, TopAdsListPromoViewListener topAdsListPromoViewListener) {
-        super(context, data, topAdsListPromoViewListener);
+    public TopAdsGroupListAdapter(Context context, List<GroupAd> data) {
+        super(context, data);
     }
 
     @Override
@@ -31,10 +30,10 @@ public class TopAdsGroupListAdapter extends TopAdsListAdapter<GroupAd> {
         GroupAd groupAd = data.get(position);
         final TopAdsViewHolder topAdsViewHolder = (TopAdsViewHolder) viewHolder;
         if (groupAd != null) {
-            topAdsViewHolder.titleProduct.setText(groupAd.getGroupName());
-            topAdsViewHolder.statusActive.setText(String.valueOf(groupAd.getGroupStatus()));
-            topAdsViewHolder.promoPriceUsed.setText(groupAd.getGroupPriceBidFmt());
-            topAdsViewHolder.totalPricePromo.setText(groupAd.getGroupPriceDailyFmt());
+            topAdsViewHolder.titleProduct.setText(groupAd.getName());
+            topAdsViewHolder.statusActive.setText(String.valueOf(groupAd.getStatus()));
+            topAdsViewHolder.promoPriceUsed.setText(groupAd.getPriceBidFmt());
+            topAdsViewHolder.totalPricePromo.setText(groupAd.getPriceDailyFmt());
         }
         topAdsViewHolder.checkedPromo.setChecked(isChecked(position));
         topAdsViewHolder.checkedPromo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -42,10 +41,10 @@ public class TopAdsGroupListAdapter extends TopAdsListAdapter<GroupAd> {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 setChecked(position, isChecked);
                 if (multiSelector.getSelectedPositions().size() == 0) {
-                    topAdsListPromoViewListener.finishActionMode();
+//                    topAdsListPromoViewListener.finishActionMode();
                     multiSelector.refreshAllHolders();
                 } else {
-                    topAdsListPromoViewListener.setTitleMode(multiSelector.getSelectedPositions().size() + "");
+//                    topAdsListPromoViewListener.setTitleMode(multiSelector.getSelectedPositions().size() + "");
                 }
             }
         });
@@ -53,13 +52,13 @@ public class TopAdsGroupListAdapter extends TopAdsListAdapter<GroupAd> {
             @Override
             public boolean onLongClick(View v) {
                 if (multiSelector.getSelectedPositions().size() == 0) {
-                    topAdsListPromoViewListener.startSupportActionMode(selectionMode);
+//                    topAdsListPromoViewListener.startSupportActionMode(selectionMode);
                     multiSelector.setSelected(topAdsViewHolder, true);
                 } else {
                     multiSelector.tapSelection(position, topAdsViewHolder.getItemId());
-                    topAdsListPromoViewListener.setTitleMode(multiSelector.getSelectedPositions().size() + "");
+//                    topAdsListPromoViewListener.setTitleMode(multiSelector.getSelectedPositions().size() + "");
                     if (multiSelector.getSelectedPositions().size() == 0) {
-                        topAdsListPromoViewListener.finishActionMode();
+//                        topAdsListPromoViewListener.finishActionMode();
                         multiSelector.refreshAllHolders();
                     }
                 }
@@ -75,14 +74,14 @@ public class TopAdsGroupListAdapter extends TopAdsListAdapter<GroupAd> {
                         getPaging().setPage(getPaging().getPage() - 1);
                         presenter.onFinishConnection();
                     }*/
-                    topAdsListPromoViewListener.moveToDetail(position);
+//                    topAdsListPromoViewListener.moveToDetail(position);
                 } else {
                     setChecked(position, multiSelector.isSelected(position, topAdsViewHolder.getItemId()));
                     if (multiSelector.getSelectedPositions().size() == 0) {
-                        topAdsListPromoViewListener.finishActionMode();
+//                        topAdsListPromoViewListener.finishActionMode();
                         multiSelector.refreshAllHolders();
                     } else {
-                        topAdsListPromoViewListener.setTitleMode(multiSelector.getSelectedPositions().size() + "");
+//                        topAdsListPromoViewListener.setTitleMode(multiSelector.getSelectedPositions().size() + "");
                     }
                 }
             }

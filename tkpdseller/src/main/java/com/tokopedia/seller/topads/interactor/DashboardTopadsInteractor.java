@@ -1,7 +1,7 @@
 package com.tokopedia.seller.topads.interactor;
 
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.seller.topads.model.data.Ad;
+import com.tokopedia.seller.topads.model.data.SingleAd;
 import com.tokopedia.seller.topads.model.data.DataCredit;
 import com.tokopedia.seller.topads.model.data.DataDeposit;
 import com.tokopedia.seller.topads.model.data.DataRequestGroupAd;
@@ -41,11 +41,11 @@ public interface DashboardTopadsInteractor {
 
     void unSubscribe();
 
-    void getListProductAds(HashMap<String, String> params, ListenerInteractor<PageDataResponse<List<Ad>>> listener);
+    void getListProductAds(HashMap<String, String> params, ListenerInteractor<PageDataResponse<List<SingleAd>>> listener);
 
     void getListGroupAds(HashMap<String, String> params, ListenerInteractor<PageDataResponse<List<GroupAd>>> listener);
 
-    void getDashboardShop(HashMap<String, String> params, ListenerInteractor<DataResponse<Ad>> listener);
+    void getDashboardShop(HashMap<String, String> params, ListenerInteractor<DataResponse<SingleAd>> listener);
 
     void getDashboardResponse(HashMap<String, String> params, ListenerInteractor<DataResponse<DataDeposit>> listener);
 

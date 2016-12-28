@@ -91,7 +91,7 @@ public class TopAdsGroupListPresenterImpl extends TopAdsListPresenterImpl<GroupA
         List<DataRequestGroupAds> dataRequestGroupAdses = new ArrayList<>();
         for(GroupAd ad : ads){
             DataRequestGroupAds data = new DataRequestGroupAds();
-            data.setGroupId(String.valueOf(ad.getGroupId()));
+            data.setGroupId(String.valueOf(ad.getId()));
             dataRequestGroupAdses.add(data);
         }
         dataRequestGroupAd.setAds(dataRequestGroupAdses);

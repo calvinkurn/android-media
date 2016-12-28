@@ -4,6 +4,7 @@ package com.tokopedia.seller.topads.view.fragment;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.MenuRes;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
@@ -23,6 +24,8 @@ import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.presenter.TopAdsListPresenter;
 import com.tokopedia.seller.topads.view.adapter.TopAdsListAdapter;
 import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
+
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -136,54 +139,40 @@ public abstract class TopAdsListFragment<T extends TopAdsListAdapter, V extends 
         };
     }
 
-    @Override
-    public void setActionMode(ActionMode actionMode) {
-        this.actionMode = actionMode;
-    }
-
-    @Override
-    public void setMenuInflater(Menu menu) {
-        getActivity().getMenuInflater().inflate(getMenuActionSelected(), menu);
-    }
-
-    @Override
-    public void disableRefreshPull() {
-        refresh.setPullEnabled(false);
-    }
-
-    @Override
-    public void enableRefreshPull() {
-        refresh.setPullEnabled(true);
-    }
-
-    @Override
-    public void startSupportActionMode(ModalMultiSelectorCallback selectionMode) {
-        if(getActivity() instanceof  AppCompatActivity) {
-            ((AppCompatActivity) getActivity()).startSupportActionMode(selectionMode);
-        }else{
-            throw new RuntimeException("activity not support");
-        }
-    }
-
-    @Override
-    public void setTitleMode(String title) {
-        actionMode.setTitle(title);
-    }
-
-    @Override
-    public void finishActionMode() {
-        actionMode.finish();
-    }
-
-    @Override
-    public void moveToDetail(int position) {
-
-    }
-
     public abstract T getAdapter();
 
     @MenuRes
     public abstract int getMenuActionSelected();
 
     public abstract boolean getActionOnSelectedMenu(ActionMode actionMode, MenuItem menuItem);
+
+    @Override
+    public void onSearchAdLoaded(@NonNull List adList) {
+
+    }
+
+    @Override
+    public void onLoadSearchAdError() {
+
+    }
+
+    @Override
+    public void onTurnOnAdSuccess() {
+
+    }
+
+    @Override
+    public void onTurnOnAdFailed() {
+
+    }
+
+    @Override
+    public void onTurnOffAdSuccess() {
+
+    }
+
+    @Override
+    public void onTurnOffAdFailed() {
+
+    }
 }

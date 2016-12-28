@@ -1,7 +1,7 @@
 package com.tokopedia.seller.topads.network.apiservice.api;
 
 import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
-import com.tokopedia.seller.topads.model.data.Ad;
+import com.tokopedia.seller.topads.model.data.SingleAd;
 import com.tokopedia.seller.topads.model.data.DataCredit;
 import com.tokopedia.seller.topads.model.data.DataDeposit;
 import com.tokopedia.seller.topads.model.data.DataRequestSingleAd;
@@ -39,10 +39,10 @@ public interface TopAdsManagementApi {
     Observable<Response<DataResponse<TotalAd>>> getDashboardTotalAd(@QueryMap Map<String, String> params);
 
     @GET(TopAdsNetworkConstant.PATH_DASHBOARD_PRODUCT)
-    Observable<Response<PageDataResponse<List<Ad>>>> getDashboardProduct(@QueryMap Map<String, String> params);
+    Observable<Response<PageDataResponse<List<SingleAd>>>> getDashboardProduct(@QueryMap Map<String, String> params);
 
     @GET(TopAdsNetworkConstant.PATH_DASHBOARD_SHOP)
-    Observable<Response<DataResponse<Ad>>> getDashboardShop(@QueryMap Map<String, String> params);
+    Observable<Response<DataResponse<SingleAd>>> getDashboardShop(@QueryMap Map<String, String> params);
 
     @GET(TopAdsNetworkConstant.PATH_DASHBOARD_CREDIT)
     Observable<Response<DataResponse<List<DataCredit>>>> getDashboardCredit();

@@ -18,7 +18,7 @@ public class TopAdsSingleListFragment extends TopAdsListFragment<TopAdsSingleLis
 
     @Override
     public TopAdsSingleListAdapter getAdapter() {
-        return new TopAdsSingleListAdapter(getActivity(), presenter.getListTopAds(), this);
+        return new TopAdsSingleListAdapter(getActivity(), presenter.getListTopAds());
     }
 
     @Override

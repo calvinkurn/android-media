@@ -5,10 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.CompoundButton;
 
-import com.tokopedia.seller.topads.model.data.Ad;
-import com.tokopedia.seller.topads.model.data.GroupAd;
-import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
-import com.tokopedia.seller.topads.view.viewholder.TopAdsViewHolder;
+import com.tokopedia.seller.topads.model.data.SingleAd;
+import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,10 +15,10 @@ import java.util.List;
  * Created by zulfikarrahman on 12/14/16.
  */
 
-public class TopAdsSingleListAdapter extends TopAdsListAdapter<Ad> {
+public class TopAdsSingleListAdapter extends TopAdsListAdapter<SingleAd> {
 
-    public TopAdsSingleListAdapter(Context context, List<Ad> data, TopAdsListPromoViewListener topAdsListPromoViewListener) {
-        super(context, data, topAdsListPromoViewListener);
+    public TopAdsSingleListAdapter(Context context, List<SingleAd> data) {
+        super(context, data);
     }
 
     @Override
@@ -30,21 +28,21 @@ public class TopAdsSingleListAdapter extends TopAdsListAdapter<Ad> {
 
     @Override
     public void bindDataAds(final int position, final RecyclerView.ViewHolder viewHolder) {
-        Ad ad = data.get(position);
+        SingleAd ad = data.get(position);
         final TopAdsViewHolder topAdsViewHolder = (TopAdsViewHolder) viewHolder;
-        topAdsViewHolder.titleProduct.setText(ad.getProductName());
-        topAdsViewHolder.statusActive.setText(String.valueOf(ad.getAdStatus()));
-        topAdsViewHolder.promoPriceUsed.setText(ad.getAdPriceBidFmt());
-        topAdsViewHolder.totalPricePromo.setText(ad.getAdPriceDailySpentFmt());
+        topAdsViewHolder.titleProduct.setText(ad.getName());
+        topAdsViewHolder.statusActive.setText(String.valueOf(ad.getStatus()));
+        topAdsViewHolder.promoPriceUsed.setText(ad.getPriceBidFmt());
+        topAdsViewHolder.totalPricePromo.setText(ad.getPriceDailySpentFmt());
         topAdsViewHolder.checkedPromo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 setChecked(position, isChecked);
                 if (multiSelector.getSelectedPositions().size() == 0) {
-                    topAdsListPromoViewListener.finishActionMode();
+//                    topAdsListPromoViewListener.finishActionMode();
                     multiSelector.refreshAllHolders();
                 } else {
-                    topAdsListPromoViewListener.setTitleMode(multiSelector.getSelectedPositions().size() + "");
+//                    topAdsListPromoViewListener.setTitleMode(multiSelector.getSelectedPositions().size() + "");
                 }
             }
         });
@@ -52,13 +50,13 @@ public class TopAdsSingleListAdapter extends TopAdsListAdapter<Ad> {
             @Override
             public boolean onLongClick(View v) {
                 if (multiSelector.getSelectedPositions().size() == 0) {
-                    topAdsListPromoViewListener.startSupportActionMode(selectionMode);
+//                    topAdsListPromoViewListener.startSupportActionMode(selectionMode);
                     multiSelector.setSelected(topAdsViewHolder, true);
                 } else {
                     multiSelector.tapSelection(position, topAdsViewHolder.getItemId());
-                    topAdsListPromoViewListener.setTitleMode(multiSelector.getSelectedPositions().size() + "");
+//                    topAdsListPromoViewListener.setTitleMode(multiSelector.getSelectedPositions().size() + "");
                     if (multiSelector.getSelectedPositions().size() == 0) {
-                        topAdsListPromoViewListener.finishActionMode();
+//                        topAdsListPromoViewListener.finishActionMode();
                         multiSelector.refreshAllHolders();
                     }
                 }
@@ -74,14 +72,14 @@ public class TopAdsSingleListAdapter extends TopAdsListAdapter<Ad> {
                         getPaging().setPage(getPaging().getPage() - 1);
                         presenter.onFinishConnection();
                     }*/
-                    topAdsListPromoViewListener.moveToDetail(position);
+//                    topAdsListPromoViewListener.moveToDetail(position);
                 } else {
                     setChecked(position, multiSelector.isSelected(position, topAdsViewHolder.getItemId()));
                     if (multiSelector.getSelectedPositions().size() == 0) {
-                        topAdsListPromoViewListener.finishActionMode();
+//                        topAdsListPromoViewListener.finishActionMode();
                         multiSelector.refreshAllHolders();
                     } else {
-                        topAdsListPromoViewListener.setTitleMode(multiSelector.getSelectedPositions().size() + "");
+//                        topAdsListPromoViewListener.setTitleMode(multiSelector.getSelectedPositions().size() + "");
                     }
                 }
             }
@@ -89,8 +87,8 @@ public class TopAdsSingleListAdapter extends TopAdsListAdapter<Ad> {
     }
 
     @Override
-    public List<Ad> getSelectedAds() {
-        List<Ad> selectedAds = new ArrayList<>();
+    public List<SingleAd> getSelectedAds() {
+        List<SingleAd> selectedAds = new ArrayList<>();
         for(int position : multiSelector.getSelectedPositions()){
             selectedAds.add(data.get(position));
         }

@@ -10,8 +10,7 @@ import android.view.ViewGroup;
 import com.bignerdranch.android.multiselector.ModalMultiSelectorCallback;
 import com.bignerdranch.android.multiselector.MultiSelector;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
-import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
-import com.tokopedia.seller.topads.view.viewholder.TopAdsViewHolder;
+import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsViewHolder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +25,6 @@ public abstract class TopAdsListAdapter<T> extends BaseLinearRecyclerViewAdapter
     public static final int AD_GROUP_TYPE = 2;
 
     private final Context context;
-    public final TopAdsListPromoViewListener topAdsListPromoViewListener;
     protected MultiSelector multiSelector = new MultiSelector();
     public List<T> data = new ArrayList<>();
     public HashMap<Integer, Boolean> checkeds = new HashMap<>();
@@ -35,9 +33,6 @@ public abstract class TopAdsListAdapter<T> extends BaseLinearRecyclerViewAdapter
         @Override
         public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
             super.onCreateActionMode(actionMode, menu);
-            topAdsListPromoViewListener.setActionMode(actionMode);
-            topAdsListPromoViewListener.setMenuInflater(menu);
-            topAdsListPromoViewListener.disableRefreshPull();
             return true;
         }
 
@@ -49,26 +44,19 @@ public abstract class TopAdsListAdapter<T> extends BaseLinearRecyclerViewAdapter
 
         @Override
         public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
-            if(topAdsListPromoViewListener.getActionOnSelectedMenu(actionMode, menuItem)){
-                finishSelection();
-                return true;
-            }else{
-                return false;
-            }
+            return false;
         }
 
         @Override
         public void onDestroyActionMode(ActionMode actionMode) {
             super.onDestroyActionMode(actionMode);
-            topAdsListPromoViewListener.enableRefreshPull();
             finishSelection();
         }
     };
 
 
-    public TopAdsListAdapter(Context context, List<T> data, TopAdsListPromoViewListener topAdsListPromoViewListener) {
+    public TopAdsListAdapter(Context context, List<T> data) {
         super();
-        this.topAdsListPromoViewListener = topAdsListPromoViewListener;
         this.context = context;
         this.data = data;
     }
@@ -84,7 +72,7 @@ public abstract class TopAdsListAdapter<T> extends BaseLinearRecyclerViewAdapter
         switch (viewType) {
             case AD_GROUP_TYPE:
             case AD_SINGLE_TYPE:
-                return TopAdsViewHolder.createInstance(context, parent, multiSelector);
+                return new TopAdsViewHolder(context, parent, multiSelector);
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }

@@ -1,6 +1,7 @@
 package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Fragment;
+import android.support.annotation.NonNull;
 import android.support.v7.view.ActionMode;
 import android.view.MenuItem;
 
@@ -9,6 +10,8 @@ import com.tokopedia.seller.topads.presenter.TopAdsGroupListPresenter;
 import com.tokopedia.seller.topads.presenter.TopAdsGroupListPresenterImpl;
 import com.tokopedia.seller.topads.view.adapter.TopAdsGroupListAdapter;
 
+import java.util.List;
+
 /**
  * Created by zulfikarrahman on 12/22/16.
  */
@@ -16,7 +19,7 @@ import com.tokopedia.seller.topads.view.adapter.TopAdsGroupListAdapter;
 public class TopAdsGroupListFragment extends TopAdsListFragment<TopAdsGroupListAdapter, TopAdsGroupListPresenter> {
     @Override
     public TopAdsGroupListAdapter getAdapter() {
-        return new TopAdsGroupListAdapter(context, presenter.getListTopAds(), this);
+        return new TopAdsGroupListAdapter(context, presenter.getListTopAds());
     }
 
     @Override

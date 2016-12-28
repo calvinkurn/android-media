@@ -1,8 +1,5 @@
 package com.tokopedia.seller.topads.presenter;
 
-import com.tokopedia.core.var.RecyclerViewItem;
-import com.tokopedia.seller.topads.model.data.Ad;
-
 import java.util.List;
 
 /**

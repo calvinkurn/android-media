@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.interactor.ListenerInteractor;
-import com.tokopedia.seller.topads.model.data.Ad;
+import com.tokopedia.seller.topads.model.data.SingleAd;
 import com.tokopedia.seller.topads.model.data.DataRequestSingleAd;
 import com.tokopedia.seller.topads.model.data.DataRequestSingleAds;
 import com.tokopedia.seller.topads.model.data.DataResponseActionAds;
@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Created by zulfikarrahman on 12/16/16.
  */
-public class TopAdsSingleListPresenterImpl extends TopAdsListPresenterImpl<Ad> implements TopAdsSingleListPresenter {
+public class TopAdsSingleListPresenterImpl extends TopAdsListPresenterImpl<SingleAd> implements TopAdsSingleListPresenter {
     public TopAdsSingleListPresenterImpl(Context context, TopAdsListPromoViewListener topadsListPromoViewListener) {
         super(context, topadsListPromoViewListener);
     }
@@ -32,10 +32,10 @@ public class TopAdsSingleListPresenterImpl extends TopAdsListPresenterImpl<Ad> i
         params.put(TopAdsNetworkConstant.PARAM_SHOP_ID, SessionHandler.getShopID(context));
         params.put(TopAdsNetworkConstant.PARAM_START_DATE, "");
         params.put(TopAdsNetworkConstant.PARAM_END_DATE, "");
-        dashboardTopadsInteractor.getListProductAds(params, new ListenerInteractor<PageDataResponse<List<Ad>>>(){
+        dashboardTopadsInteractor.getListProductAds(params, new ListenerInteractor<PageDataResponse<List<SingleAd>>>(){
 
             @Override
-            public void onSuccess(PageDataResponse<List<Ad>> productResponse) {
+            public void onSuccess(PageDataResponse<List<SingleAd>> productResponse) {
                 if(productResponse != null) {
                     topAdsListItem.addAll(productResponse.getData());
                 }
@@ -50,19 +50,19 @@ public class TopAdsSingleListPresenterImpl extends TopAdsListPresenterImpl<Ad> i
 
 
     @Override
-    public void actionDeleteAds(List<Ad> ads) {
+    public void actionDeleteAds(List<SingleAd> ads) {
         AdsActionRequest<DataRequestSingleAd> adsActionRequest = generateActionRequest(ads, TopAdsNetworkConstant.ACTION_BULK_DELETE_AD);
         actionBulkAds(adsActionRequest);
     }
 
     @Override
-    public void actionOffAds(List<Ad> ads) {
+    public void actionOffAds(List<SingleAd> ads) {
         AdsActionRequest<DataRequestSingleAd> adsActionRequest = generateActionRequest(ads, TopAdsNetworkConstant.ACTION_BULK_OFF_AD);
         actionBulkAds(adsActionRequest);
     }
 
     @Override
-    public void actionOnAds(List<Ad> ads) {
+    public void actionOnAds(List<SingleAd> ads) {
         AdsActionRequest<DataRequestSingleAd> adsActionRequest = generateActionRequest(ads, TopAdsNetworkConstant.ACTION_BULK_ON_AD);
         actionBulkAds(adsActionRequest);
     }
@@ -83,15 +83,15 @@ public class TopAdsSingleListPresenterImpl extends TopAdsListPresenterImpl<Ad> i
     }
 
     @NonNull
-    private AdsActionRequest<DataRequestSingleAd> generateActionRequest(List<Ad> ads, String action) {
+    private AdsActionRequest<DataRequestSingleAd> generateActionRequest(List<SingleAd> ads, String action) {
         AdsActionRequest<DataRequestSingleAd> adsActionRequest = new AdsActionRequest<>();
         DataRequestSingleAd dataRequestSingleAd = new DataRequestSingleAd();
         dataRequestSingleAd.setAction(action);
         dataRequestSingleAd.setShopId(SessionHandler.getShopID(context));
         List<DataRequestSingleAds> dataRequestSingleAdses = new ArrayList<>();
-        for(Ad ad : ads){
+        for(SingleAd ad : ads){
             DataRequestSingleAds data = new DataRequestSingleAds();
-            data.setAdId(String.valueOf(ad.getAdId()));
+            data.setAdId(String.valueOf(ad.getId()));
             dataRequestSingleAdses.add(data);
         }
         dataRequestSingleAd.setAds(dataRequestSingleAdses);
