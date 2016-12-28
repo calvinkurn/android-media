@@ -115,12 +115,13 @@ public class WholesaleViewHolderImpl extends RecyclerView.ViewHolder implements 
         this.listener = listener;
         this.position = position;
         if(wholesaleModel != null) {
-            String rawString = setPriceCurrency(String.format("%.00f", wholesaleModel.getQtyPrice()));
-            listener.onUpdateData(QTY_PRICE, position, rawString, false);
-
             this.qtyOne.setText(String.format("%d", wholesaleModel.getQtyOne()));
             this.qtyTwo.setText(String.format("%d", wholesaleModel.getQtyTwo()));
             this.qtyPrice.setText(String.format("%.00f", wholesaleModel.getQtyPrice()));
+
+            String rawString = setPriceCurrency(String.format("%.00f", wholesaleModel.getQtyPrice()));
+            listener.onUpdateData(QTY_PRICE, position, rawString, false);
+
             /** add listener after first time we add the initial value so it will not checked at the first time */
             this.qtyOne.addTextChangedListener(qtyOneTextWatcher);
             this.qtyTwo.addTextChangedListener(qtyTwoTextWatcher);
