@@ -62,6 +62,13 @@ public class WholesaleLayout extends RelativeLayout implements WholesaleAdapterI
         adapter.setCurrency(currency);
     }
 
+    public void setupParams(double mainPrice, int currency, boolean shouldUpdateChange){
+        setupParams(mainPrice, currency);
+        if(shouldUpdateChange) {
+            adapter.notifyDataSetChanged();
+        }
+    }
+
     public void setupParams(double mainPrice, int currency, List<WholesaleModel> datas){
         adapter.setMainPrice(mainPrice);
         adapter.setCurrency(currency);

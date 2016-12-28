@@ -2105,7 +2105,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
 //        Log.d(TAG, messageTAG + s + " [] " + start + " [] " + before + " [] " + count + " [] " + addProductCurrency.getSelectedItem().toString());
         Log.d(TAG, messageTAG + s + " [] " + start + " [] " + before + " [] " + count + " [] " + selectedCurrencyDesc);
         priceTextFormatter(s.toString());
-        wholesaleLayout.removeAllWholesale();
+//        wholesaleLayout.removeAllWholesale();
     }
 
     private void priceTextFormatter(String s) {
@@ -2131,7 +2131,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
             dismissPriceError();
             Double price = addProductPrice.getText().toString().isEmpty()? 0 : Double.parseDouble(CurrencyFormatter.getRawString(addProductPrice.getText().toString()));
             int currency = (selectedCurrencyDesc == null || selectedCurrencyDesc.equals("Rp") ? PriceUtils.CURRENCY_RUPIAH : PriceUtils.CURRENCY_DOLLAR);
-            wholesaleLayout.setupParams(price, currency);
+            wholesaleLayout.setupParams(price, currency, true);
         }
     }
 
