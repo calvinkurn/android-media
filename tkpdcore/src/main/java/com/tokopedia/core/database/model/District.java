@@ -1,5 +1,8 @@
 package com.tokopedia.core.database.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.ContainerKey;
@@ -26,7 +29,9 @@ import java.util.List;
  */
 @ModelContainer
 @Table(database = DbFlowDatabase.class, insertConflict = ConflictAction.REPLACE, updateConflict = ConflictAction.REPLACE)
-public class District extends BaseModel implements DatabaseConstant, Convert<ListDistricts.Districts, District>{
+public class District extends BaseModel implements DatabaseConstant, Convert<ListDistricts.Districts, District>,
+        Parcelable
+{
     public static final String DISTRICT_CITY_ID = "district_city_id";
     public static final String DISTRICT_ID = "district_id";
     public static final String DISTRICT_NAME = "district_name";
@@ -37,6 +42,9 @@ public class District extends BaseModel implements DatabaseConstant, Convert<Lis
     ForeignKeyContainer<City> districtForeignKeyContainer;
 
     private City districtCity;
+
+    public District() {
+    }
 
     public void associateCity(City city) {
         districtForeignKeyContainer =
@@ -130,4 +138,38 @@ public class District extends BaseModel implements DatabaseConstant, Convert<Lis
     public ListDistricts.Districts toNetwork(District district) {
         throw new RuntimeException("dont yet implemented");
     }
+
+    protected District(Parcel in) {
+        districtCity = in.readParcelable(City.class.getClassLoader());
+        districtId = in.readString();
+        districtName = in.readString();
+        districtJneCode = in.readString();
+        Id = in.readLong();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(districtCity, flags);
+        dest.writeString(districtId);
+        dest.writeString(districtName);
+        dest.writeString(districtJneCode);
+        dest.writeLong(Id);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<District> CREATOR = new Creator<District>() {
+        @Override
+        public District createFromParcel(Parcel in) {
+            return new District(in);
+        }
+
+        @Override
+        public District[] newArray(int size) {
+            return new District[size];
+        }
+    };
 }

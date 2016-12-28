@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.OneOnClick;
 import com.tokopedia.core.R;
@@ -57,8 +58,20 @@ public class TxProductListAdapter extends ArrayAdapter<OrderProduct> {
         }
         final OrderProduct item = getItem(position);
         holder.tvProductName.setText(MethodChecker.fromHtml(item.getProductName()));
-        holder.tvProductPrice.setText(item.getProductPrice());
-        holder.tvNotes.setText(MethodChecker.fromHtml(item.getProductNotes().length()==0 ? "-" : item.getProductNotes()));
+        holder.tvNotes.setText(
+                MethodChecker.fromHtml(
+                        item.getProductNotes().length() == 0 ?
+                                "-" : item.getProductNotes()
+                )
+        );
+        holder.tvProductPrice.setText(
+                MessageFormat.format(
+                        "{0} {1}",
+                        context.getString(R.string.title_rupiah),
+                        item.getProductPrice()
+                )
+        );
+        holder.tvNotes.setText(Html.fromHtml(item.getProductNotes().length()==0 ? "-" : item.getProductNotes()));
         holder.tvDeliverQty.setText(MessageFormat.format(" x {0} {1}",
                 item.getOrderDeliverQuantity(), context.getString(R.string.title_item)));
         holder.tvTotalPrice.setText(item.getOrderSubtotalPriceIdr());
