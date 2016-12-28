@@ -154,14 +154,16 @@ public class ReturnPolicyDialog extends DialogFragment {
 
     @OnClick(R2.id.return_policy_add)
     public void addReturnPolicy() {
-        //[START] display progressbar
-        showProgressBar();
-        //[END] display progressbar
 
-        if(returnPolicyContent.getText().toString().trim().isEmpty()){
+        String textReturnPolicy = returnPolicyContent.getText().toString();
+        if(textReturnPolicy != null && textReturnPolicy.trim().isEmpty()){
             returnPolicyContent.setError(getString(R.string.empty_returnable_note));
             return;
         }
+
+        //[START] display progressbar
+        showProgressBar();
+        //[END] display progressbar
 
         if (data != null) {
             //[START] Old code just dismiss return policy
