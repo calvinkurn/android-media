@@ -1382,22 +1382,22 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         Bitmap tempPic = BitmapFactory.decodeFile(path, options);
         ByteArrayOutputStream bao = new ByteArrayOutputStream();
         Bitmap tempPicToUpload = null;
-        try {
-            tempPic = new ImageHandler().RotatedBitmap(tempPic, path);
-        } catch (IOException e1) {
-            e1.printStackTrace();
+        if (tempPic != null) {
+            try {
+                tempPic = new ImageHandler().RotatedBitmap(tempPic, path);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+            if (tempPic.getWidth() > 2048 || tempPic.getHeight() > 2048) {
+                tempPicToUpload = new ImageHandler().ResizeBitmap(tempPic, 2048);
+            }
+            else {
+                tempPicToUpload = tempPic;
+            }
+            tempPicToUpload.compress(Bitmap.CompressFormat.JPEG, 70, bao);
+            return bao.toByteArray();
         }
-        if (tempPic.getWidth() > 2048 || tempPic.getHeight() > 2048) {
-            tempPicToUpload = new ImageHandler().ResizeBitmap(tempPic, 2048);
-        }
-        // else if(tempPic.getWidth() < 300 || tempPic.getHeight() < 100){
-        // tempPicToUpload = ih.ResizeBitmap(tempPic, 300);
-        // }
-        else {
-            tempPicToUpload = tempPic;
-        }
-        tempPicToUpload.compress(Bitmap.CompressFormat.JPEG, 70, bao);
-        return bao.toByteArray();
+        return null;
     }
 
     @Override
@@ -2249,7 +2249,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
     @Override
     public void saveCatalogs(ArrayList<CatalogDataModel.Catalog> catalogs) {
         Log.d(TAG, messageTAG + " : " + catalogs);
-        if(!catalogs.isEmpty() && !catalogs.get(0).getCatalogName().equals(NO_CATALOG_OPTION)) {
+        if (!catalogs.isEmpty() && !catalogs.get(0).getCatalogName().equals(NO_CATALOG_OPTION)) {
             CatalogDataModel.Catalog noCatalogOption = new CatalogDataModel.Catalog();
             noCatalogOption.setCatalogName(NO_CATALOG_OPTION);
             catalogs.add(0, noCatalogOption);
@@ -2540,7 +2540,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
             }
 
             EtalaseDB etalaseDB = DbManagerImpl.getInstance().getEtalase("-2");
-            if(etalaseDB == null){
+            if (etalaseDB == null) {
                 etalaseDB = new EtalaseDB(-2, addProductAddToNewEtalase.getText().toString(), -2);
                 etalaseDB.save();
             } else {
@@ -2689,7 +2689,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         // 14. catalog
         Long catalogId = -1L;
         String selectedCatalog = addProductCatalog.getSelectedItem();
-        if(selectedCatalog.equals(getActivity().getString(R.string.no_catalog_selected))||catalogs==null){
+        if (selectedCatalog.equals(getActivity().getString(R.string.no_catalog_selected)) || catalogs == null) {
             inputAddProductModel.setCatalog(-1);
         } else {
             for (CatalogDataModel.Catalog catalog : catalogs) {
@@ -2774,7 +2774,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         }
     }
 
-    private void togglePreorder(){
+    private void togglePreorder() {
         addProductPreOderContent.toggle();
         addProductPreOderContent.getViewTreeObserver()
                 .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -2787,7 +2787,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                             addProductPreOderContent.getViewTreeObserver()
                                     .removeOnGlobalLayoutListener(this);
-                        }else{
+                        } else {
                             addProductPreOderContent.getViewTreeObserver()
                                     .removeGlobalOnLayoutListener(this);
                         }
@@ -2817,7 +2817,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                                 wholeSaleContainer.getViewTreeObserver()
                                         .removeOnGlobalLayoutListener(this);
-                            }else{
+                            } else {
                                 wholeSaleContainer.getViewTreeObserver()
                                         .removeGlobalOnLayoutListener(this);
                             }

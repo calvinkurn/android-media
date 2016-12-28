@@ -98,12 +98,7 @@ public class ProductHistoryFragment extends Fragment implements ProductHistoryVi
     public void onResume() {
         super.onResume();
         productHistory.setLocalyticFlow(getActivity(), getString(R.string.home_history_product));
-        if(productHistory.isAfterRotation()){
-//            displayPull(true);
-            productHistory.setData();
-        }else{
-            productHistory.fetchDataFromCache(getActivity());
-        }
+        productHistory.fetchDataFromCache(getActivity());
     }
 
     @Override

@@ -44,6 +44,7 @@ import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ProductPreOrder;
 import com.tokopedia.core.product.model.productdetail.ProductWholesalePrice;
 import com.tokopedia.core.rxjava.RxUtils;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.TkpdCache;
 
 import org.json.JSONException;
@@ -364,7 +365,7 @@ public class AddProductPresenterImpl implements AddProductPresenter
         }
 
         // [https://phab.tokopedia.com/T6924 BUG] Edit Product - Display Tag HTML
-        addProductView.setProductDesc(Html.fromHtml(productDescription).toString());
+        addProductView.setProductDesc(MethodChecker.fromHtml(productDescription).toString());
         // [BUG] Edit Product - Display Tag HTML
 
         // set kategori 3
@@ -883,7 +884,7 @@ public class AddProductPresenterImpl implements AddProductPresenter
                     addProductView.setProductPreOrder(preOrder.getPreorderProcessTime());
 
                 String deleteThis = "[Preorder %s Hari]";
-                String productName = Html.fromHtml(data.getProduct().getProductName()).toString();
+                String productName = MethodChecker.fromHtml(data.getProduct().getProductName()).toString();
                 String deleteThisWithText = String.format(deleteThis, preOrder.getPreorderProcessTime());
                 if (productName.contains(deleteThisWithText)) {
                     productName = productName.replace(deleteThisWithText, "");
@@ -904,7 +905,7 @@ public class AddProductPresenterImpl implements AddProductPresenter
                     productDescription = "";
                 }
                 // [https://phab.tokopedia.com/T6924 BUG] Edit Product - Display Tag HTML
-                addProductView.setProductDesc(Html.fromHtml(productDescription).toString());
+                addProductView.setProductDesc(MethodChecker.fromHtml(productDescription).toString());
                 // [BUG] Edit Product - Display Tag HTML
 
                 // set kategori 3

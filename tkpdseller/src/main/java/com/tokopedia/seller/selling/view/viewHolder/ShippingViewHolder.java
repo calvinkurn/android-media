@@ -13,6 +13,7 @@ import com.bignerdranch.android.multiselector.MultiSelector;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.selling.presenter.ShippingImpl;
 
 import butterknife.BindView;
@@ -118,8 +119,8 @@ public class ShippingViewHolder extends BaseSellingViewHolder<ShippingImpl.Model
     }
 
     private void setViewData(ShippingImpl.Model model, Context context) {
-        vReceiver.setText(Html.fromHtml(model.ReceiverName));
-        vInsertReceiver.setText(Html.fromHtml(model.ReceiverName));
+        vReceiver.setText(MethodChecker.fromHtml(model.ReceiverName));
+        vInsertReceiver.setText(MethodChecker.fromHtml(model.ReceiverName));
         vDest.setText(model.Dest);
         vInsertDest.setText(model.Dest);
         vShipping.setText(model.Shipping);

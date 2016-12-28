@@ -6,6 +6,7 @@ import android.text.Html;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.util.MethodChecker;
 
 /**
  * Created by Angga.Prasetiyo on 13/11/2015.
@@ -66,7 +67,7 @@ public class Etalase implements Parcelable {
 
     @Override
     public String toString() {
-        return Html.fromHtml(etalaseName).toString();
+        return MethodChecker.fromHtml(etalaseName).toString();
     }
 
     protected Etalase(Parcel in) {

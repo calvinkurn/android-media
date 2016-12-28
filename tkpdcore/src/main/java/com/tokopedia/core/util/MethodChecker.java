@@ -3,14 +3,20 @@ package com.tokopedia.core.util;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewCompat;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.ValueCallback;
 
 import com.tkpd.library.utils.CommonUtils;
+
+import java.io.File;
 
 /**
  * Created by nisie on 10/28/16.
@@ -54,5 +60,23 @@ public class MethodChecker {
             });
         } else
             CookieManager.getInstance().removeAllCookie();
+    }
+
+    public static Uri getUri(Context context, File outputMediaFile) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", outputMediaFile);
+        } else {
+            return Uri.fromFile(outputMediaFile);
+        }
+    }
+
+    public static Spanned fromHtml(String text) {
+        Spanned result;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            result = Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            result = Html.fromHtml(text);
+        }
+        return result;
     }
 }

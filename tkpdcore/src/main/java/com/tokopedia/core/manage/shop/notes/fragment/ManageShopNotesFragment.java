@@ -207,6 +207,8 @@ public class ManageShopNotesFragment extends BasePresenterFragment<ManageShopNot
     public void finishLoading() {
         adapter.showLoadingFull(false);
         refreshHandler.finishRefresh();
+        adapter.showEmpty(false);
+        NetworkErrorHelper.removeEmptyState(getView());
     }
 
     @Override
@@ -250,6 +252,7 @@ public class ManageShopNotesFragment extends BasePresenterFragment<ManageShopNot
         showSnackBar(getString(R.string.success_delete_shop_note));
         adapter.getList().remove(position);
         adapter.notifyDataSetChanged();
+        presenter.onRefresh();
     }
 
     private void showSnackBar(String message) {
@@ -293,6 +296,12 @@ public class ManageShopNotesFragment extends BasePresenterFragment<ManageShopNot
     @Override
     public void setViewEnabled(boolean isEnabled) {
         setHasOptionsMenu(isEnabled);
+    }
+
+    @Override
+    public void showEmpty() {
+        adapter.showEmpty(true);
+        shopNotes.setVisibility(View.VISIBLE);
     }
 
     @Override

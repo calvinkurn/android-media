@@ -19,7 +19,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
 import com.tokopedia.core.network.entity.discovery.CatalogModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
@@ -322,7 +322,7 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
     }
 
     @Override
-    public void setDynamicFilterAtrribute(DynamicFilterModel.Data filterAtrribute, int activeTab) {
+    public void setDynamicFilterAtrribute(DataValue filterAtrribute, int activeTab) {
         if (filterAtrribute.getSort() != null) {
             filterAtrribute.setSelected(filterAtrribute.getSort().get(0).getName());
         }

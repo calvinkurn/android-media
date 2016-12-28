@@ -6,6 +6,7 @@ import android.text.Html;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.util.MethodChecker;
 
 /**
  * Created by Angga.Prasetiyo on 21/04/2016.
@@ -114,11 +115,11 @@ public class OrderDestination implements Parcelable {
     }
 
     public String getDetailDestination() {
-        return Html.fromHtml(receiverName)
+        return MethodChecker.fromHtml(receiverName)
                 + "\n"
-                + Html.fromHtml(addressStreet)
+                + MethodChecker.fromHtml(addressStreet)
                 + "\n"
-                + Html.fromHtml(addressDistrict)
+                + MethodChecker.fromHtml(addressDistrict)
                 + ", "
                 + addressCity
                 + ", "

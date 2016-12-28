@@ -10,6 +10,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.inboxreputation.model.ImageUpload;
 import com.tokopedia.core.inboxreputation.model.inboxreputationdetail.ReviewImageList;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.RecyclerViewItem;
 
 import java.util.ArrayList;
@@ -251,7 +252,7 @@ public class ReviewProductModel extends RecyclerViewItem implements Parcelable{
      *     The reviewMessage
      */
     public Spanned getReviewMessage() {
-        return Html.fromHtml(reviewMessage);
+        return MethodChecker.fromHtml(reviewMessage);
     }
 
     /**

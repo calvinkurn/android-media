@@ -46,6 +46,7 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.network.retrofit.utils.DialogNoConnection;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.transaction.addtocart.listener.AddToCartViewListener;
 import com.tokopedia.transaction.addtocart.model.Insurance;
 import com.tokopedia.transaction.addtocart.model.OrderData;
@@ -320,8 +321,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             btnAddressNew.setEnabled(true);
         } else {
             this.mDestination = data;
-            tvAddressName.setText(Html.fromHtml(data.getAddressName()));
-            tvAddressDetail.setText(Html.fromHtml(data.getAddressDetail()));
+            tvAddressName.setText(MethodChecker.fromHtml(data.getAddressName()));
+            tvAddressDetail.setText(MethodChecker.fromHtml(data.getAddressDetail()));
             etValueLocation.setEnabled(true);
             etQuantity.setEnabled(true);
             btnAddressChange.setEnabled(true);
@@ -386,7 +387,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
 
     @Override
     public void showTickerGTM(String message) {
-        tvTickerGTM.setText(Html.fromHtml(message));
+        tvTickerGTM.setText(MethodChecker.fromHtml(message));
         tvTickerGTM.setVisibility(View.VISIBLE);
         tvTickerGTM.setAutoLinkMask(0);
         Linkify.addLinks(tvTickerGTM, Linkify.WEB_URLS);
@@ -578,7 +579,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK && data != null) {
             tvErrorShipping.setVisibility(View.GONE);
-            etQuantity.setFocusable(false);
             switch (requestCode) {
                 case REQUEST_CHOOSE_ADDRESS:
                     renderFormAddress(Destination.convertFromBundle(data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS)));
@@ -651,7 +651,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
 
     @OnClick(R2.id.increase_button)
     void actionIncreaseQuantity() {
-        etQuantity.requestFocus();
         if (!etQuantity.getText().toString().isEmpty()
                 && Integer.parseInt(etQuantity.getText().toString()) > 0) {
             etQuantity.setText(String
@@ -661,7 +660,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
 
     @OnClick(R2.id.decrease_button)
     void actionDecreaseQuantity() {
-        etQuantity.requestFocus();
         if (!etQuantity.getText().toString().isEmpty()
                 && Integer.parseInt(etQuantity.getText().toString()) > 1) {
             etQuantity.setText(String
@@ -700,7 +698,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         } else if (orderData.getAddress() == null) {
             showErrorMessage(getString(R.string.error_no_address));
-        } else if (getCurrentFocus() == etQuantity) {
+        } else {
             CommonUtils.dumper("rates/v1 kerorates called aftertextchanged");
             orderData.setWeight(CommonUtils.round((Double.parseDouble(orderData.getInitWeight()) * Double.parseDouble(s.toString())), 2) + "");
             tilAmount.setError(null);

@@ -40,4 +40,6 @@ public interface ManageShopNotesView {
     void showRefreshing();
 
     void setViewEnabled(boolean isEnabled);
+
+    void showEmpty();
 }

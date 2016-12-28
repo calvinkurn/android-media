@@ -78,7 +78,7 @@ public class ImageUploadHandler {
     }
 
     private Uri getOutputMediaFileUri() {
-        return Uri.fromFile(getOutputMediaFile());
+        return MethodChecker.getUri(context, getOutputMediaFile());
     }
 
     private File getOutputMediaFile() {
