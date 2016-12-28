@@ -135,6 +135,8 @@ public class WholesaleAdapterImpl extends RecyclerView.Adapter<WholesaleViewHold
         for(int i = 0; i < data.size(); i ++){
             removeWholesaleItem(i);
         }
+        data.clear();
+        notifyDataSetChanged();
     }
 
     @Override
