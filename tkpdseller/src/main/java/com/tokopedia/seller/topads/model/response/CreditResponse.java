@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.model.exchange;
+package com.tokopedia.seller.topads.model.response;
 
 /**
  * Created by zulfikarrahman on 11/4/16.

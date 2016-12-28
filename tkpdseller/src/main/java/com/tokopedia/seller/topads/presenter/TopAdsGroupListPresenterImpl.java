@@ -6,16 +6,12 @@ import android.support.annotation.NonNull;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.interactor.ListenerInteractor;
-import com.tokopedia.seller.topads.model.data.Ad;
 import com.tokopedia.seller.topads.model.data.DataRequestGroupAd;
 import com.tokopedia.seller.topads.model.data.DataRequestGroupAds;
-import com.tokopedia.seller.topads.model.data.DataRequestSingleAd;
-import com.tokopedia.seller.topads.model.data.DataRequestSingleAds;
 import com.tokopedia.seller.topads.model.data.DataResponseActionAds;
 import com.tokopedia.seller.topads.model.data.GroupAd;
-import com.tokopedia.seller.topads.model.exchange.AdsActionRequest;
-import com.tokopedia.seller.topads.model.exchange.GroupAdResponse;
-import com.tokopedia.seller.topads.model.exchange.ProductResponse;
+import com.tokopedia.seller.topads.model.request.AdsActionRequest;
+import com.tokopedia.seller.topads.model.response.GroupAdResponse;
 import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
 
 import java.util.ArrayList;

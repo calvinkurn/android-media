@@ -1,36 +1,26 @@
-package com.tokopedia.seller.topads.model.exchange;
+package com.tokopedia.seller.topads.model.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.seller.topads.model.data.DataDeposit;
+import com.tokopedia.seller.topads.model.data.TotalAd;
 
 /**
  * Created by zulfikarrahman on 11/4/16.
  */
 
 
-public class DepositResponse {
+public class TotalAdResponse {
 
     @SerializedName("data")
     @Expose
-    private DataDeposit data;
+    private TotalAd data;
 
-    /**
-     *
-     * @return
-     * The data
-     */
-    public DataDeposit getData() {
+    public TotalAd getData() {
         return data;
     }
 
-    /**
-     *
-     * @param data
-     * The data
-     */
-    public void setData(DataDeposit data) {
+    public void setData(TotalAd data) {
         this.data = data;
     }
-
 }

@@ -1,7 +1,6 @@
 package com.tokopedia.seller.topads.interactor;
 
 import android.content.Context;
-import android.support.v4.util.ArrayMap;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -20,24 +19,23 @@ import com.tokopedia.seller.topads.model.data.DataResponseActionAds;
 import com.tokopedia.seller.topads.model.data.Product;
 import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.model.data.TotalAd;
-import com.tokopedia.seller.topads.model.exchange.AdsActionRequest;
-import com.tokopedia.seller.topads.model.exchange.CreditResponse;
-import com.tokopedia.seller.topads.model.exchange.GroupAdResponse;
-import com.tokopedia.seller.topads.model.exchange.ResponseActionAds;
-import com.tokopedia.seller.topads.model.exchange.SearchProductRequest;
-import com.tokopedia.seller.topads.model.exchange.SearchProductResponse;
-import com.tokopedia.seller.topads.model.exchange.ShopRequest;
-import com.tokopedia.seller.topads.model.exchange.DepositResponse;
-import com.tokopedia.seller.topads.model.exchange.ProductResponse;
-import com.tokopedia.seller.topads.model.exchange.ShopResponse;
-import com.tokopedia.seller.topads.model.exchange.StatisticRequest;
-import com.tokopedia.seller.topads.model.exchange.StatisticResponse;
-import com.tokopedia.seller.topads.model.exchange.TotalAdResponse;
+import com.tokopedia.seller.topads.model.request.AdsActionRequest;
+import com.tokopedia.seller.topads.model.response.CreditResponse;
+import com.tokopedia.seller.topads.model.response.GroupAdResponse;
+import com.tokopedia.seller.topads.model.response.ActionAdsResponse;
+import com.tokopedia.seller.topads.model.request.SearchProductRequest;
+import com.tokopedia.seller.topads.model.response.SearchProductResponse;
+import com.tokopedia.seller.topads.model.request.ShopRequest;
+import com.tokopedia.seller.topads.model.response.DepositResponse;
+import com.tokopedia.seller.topads.model.response.ProductResponse;
+import com.tokopedia.seller.topads.model.response.ShopResponse;
+import com.tokopedia.seller.topads.model.request.StatisticRequest;
+import com.tokopedia.seller.topads.model.response.StatisticResponse;
+import com.tokopedia.seller.topads.model.response.TotalAdResponse;
 import com.tokopedia.seller.topads.network.apiservice.TopAdsManagementService;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -302,14 +300,14 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
 
     @Override
     public void actionSingleAds(AdsActionRequest<DataRequestSingleAd> adsActionRequest, ListenerInteractor<DataResponseActionAds> listenerInteractor) {
-        Observable<Response<ResponseActionAds>> actionAdsObservable = topAdsManagementService.getApi().postActionSingleAds(adsActionRequest);
+        Observable<Response<ActionAdsResponse>> actionAdsObservable = topAdsManagementService.getApi().postActionSingleAds(adsActionRequest);
         compositeSubscription.add(actionAdsObservable
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())
-                .flatMap(new Func1<Response<ResponseActionAds>, Observable<DataResponseActionAds>>() {
+                .flatMap(new Func1<Response<ActionAdsResponse>, Observable<DataResponseActionAds>>() {
                     @Override
-                    public Observable<DataResponseActionAds> call(Response<ResponseActionAds> responseActionAdsResponse) {
+                    public Observable<DataResponseActionAds> call(Response<ActionAdsResponse> responseActionAdsResponse) {
                         return Observable.just(responseActionAdsResponse.body().getData());
                     }
                 })

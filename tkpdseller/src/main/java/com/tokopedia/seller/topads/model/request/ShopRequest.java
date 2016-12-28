@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.model.exchange;
+package com.tokopedia.seller.topads.model.request;
 
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;

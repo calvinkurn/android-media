@@ -1,19 +1,19 @@
-package com.tokopedia.seller.topads.model.exchange;
+package com.tokopedia.seller.topads.model.response;
 
-import java.util.ArrayList;
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.seller.topads.model.data.Ad;
+import com.tokopedia.seller.topads.model.data.GroupAd;
 import com.tokopedia.seller.topads.model.data.Meta;
 import com.tokopedia.seller.topads.model.data.Page;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Created by zulfikarrahman on 11/4/16.
+ * Created by zulfikarrahman on 12/14/16.
  */
 
-public class ProductResponse {
-
+public class GroupAdResponse {
     @SerializedName("meta")
     @Expose
     private Meta meta;
@@ -22,7 +22,7 @@ public class ProductResponse {
     private Page page;
     @SerializedName("data")
     @Expose
-    private List<Ad> data = new ArrayList<Ad>();
+    private List<GroupAd> data = new ArrayList<>();
 
     /**
      *
@@ -65,7 +65,7 @@ public class ProductResponse {
      * @return
      * The data
      */
-    public List<Ad> getData() {
+    public List<GroupAd> getData() {
         return data;
     }
 
@@ -74,8 +74,9 @@ public class ProductResponse {
      * @param data
      * The data
      */
-    public void setData(List<Ad> data) {
+    public void setData(List<GroupAd> data) {
         this.data = data;
     }
+
 
 }

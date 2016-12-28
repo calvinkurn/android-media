@@ -2,9 +2,8 @@ package com.tokopedia.seller.topads.datasource;
 
 import com.tokopedia.seller.topads.model.data.Cell;
 import com.tokopedia.seller.topads.model.data.Summary;
-import com.tokopedia.seller.topads.model.exchange.StatisticRequest;
+import com.tokopedia.seller.topads.model.request.StatisticRequest;
 
-import java.util.Date;
 import java.util.List;
 
 import rx.Observable;

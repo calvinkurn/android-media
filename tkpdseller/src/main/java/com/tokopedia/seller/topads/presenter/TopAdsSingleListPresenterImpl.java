@@ -10,8 +10,8 @@ import com.tokopedia.seller.topads.model.data.Ad;
 import com.tokopedia.seller.topads.model.data.DataRequestSingleAd;
 import com.tokopedia.seller.topads.model.data.DataRequestSingleAds;
 import com.tokopedia.seller.topads.model.data.DataResponseActionAds;
-import com.tokopedia.seller.topads.model.exchange.AdsActionRequest;
-import com.tokopedia.seller.topads.model.exchange.ProductResponse;
+import com.tokopedia.seller.topads.model.request.AdsActionRequest;
+import com.tokopedia.seller.topads.model.response.ProductResponse;
 import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
 
 import java.util.ArrayList;

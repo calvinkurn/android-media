@@ -92,7 +92,7 @@ public abstract class TopAdsListFragment<T extends TopAdsListAdapter, V extends 
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.activity_top_ads_list;
+        return R.layout.fragment_top_ads_list;
     }
 
     @Override

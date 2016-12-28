@@ -1,27 +1,26 @@
 package com.tokopedia.seller.topads.network.apiservice.api;
 
 import com.tokopedia.seller.topads.model.data.DataRequestSingleAd;
-import com.tokopedia.seller.topads.model.exchange.AdsActionRequest;
-import com.tokopedia.seller.topads.model.exchange.CreditResponse;
-import com.tokopedia.seller.topads.model.exchange.DepositResponse;
-import com.tokopedia.seller.topads.model.exchange.GroupAdResponse;
-import com.tokopedia.seller.topads.model.exchange.ProductResponse;
-import com.tokopedia.seller.topads.model.exchange.ResponseActionAds;
-import com.tokopedia.seller.topads.model.exchange.SearchProductResponse;
-import com.tokopedia.seller.topads.model.exchange.ShopResponse;
-import com.tokopedia.seller.topads.model.exchange.StatisticResponse;
+import com.tokopedia.seller.topads.model.request.AdsActionRequest;
+import com.tokopedia.seller.topads.model.response.CreditResponse;
+import com.tokopedia.seller.topads.model.response.DepositResponse;
+import com.tokopedia.seller.topads.model.response.GroupAdResponse;
+import com.tokopedia.seller.topads.model.response.ProductResponse;
+import com.tokopedia.seller.topads.model.response.ActionAdsResponse;
+import com.tokopedia.seller.topads.model.response.SearchProductResponse;
+import com.tokopedia.seller.topads.model.response.ShopResponse;
+import com.tokopedia.seller.topads.model.response.StatisticResponse;
 
 import java.util.Map;
 
 import retrofit2.Response;
 import retrofit2.http.Body;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.PATCH;
 import retrofit2.http.QueryMap;
 import rx.Observable;
 import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
-import com.tokopedia.seller.topads.model.exchange.TotalAdResponse;
+import com.tokopedia.seller.topads.model.response.TotalAdResponse;
 
 /**
  * Created by zulfikarrahman on 11/4/16.
@@ -47,7 +46,7 @@ public interface TopAdsManagementApi {
     Observable<Response<CreditResponse>> getDashboardCredit();
 
     @PATCH(TopAdsNetworkConstant.PATH_ACTION_BULK_AD)
-    Observable<Response<ResponseActionAds>> postActionSingleAds(@Body AdsActionRequest<DataRequestSingleAd> body);
+    Observable<Response<ActionAdsResponse>> postActionSingleAds(@Body AdsActionRequest<DataRequestSingleAd> body);
 
     @GET(TopAdsNetworkConstant.PATH_DASHBOARD_GROUP)
     Observable<Response<GroupAdResponse>> getDashboardGroup(@QueryMap Map<String, String> params);
