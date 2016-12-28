@@ -51,6 +51,9 @@ import butterknife.BindView;
  */
 public class AddAddressFragment extends BasePresenterFragment<AddAddressPresenter>
         implements AddAddressFragmentView, ManageAddressConstant {
+    private final String ARG_STATE_PROVINCE = "provincesData";
+    private final String ARG_STATE_CITY = "citiesData";
+    private final String ARG_STATE_DISTRICT = "districtsData";
 
     @BindView(R2.id.receiver_name_layout)
     TextInputLayout receiverNameLayout;
@@ -154,11 +157,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     @Override
     protected void onFirstTimeLaunched() {
         isEdit = getArguments().getBoolean(IS_EDIT, false);
-        if (this.mProvinces != null && this.mProvinces.size() > 0){
-            setProvince(this.mProvinces);
-        }else {
-            presenter.getListProvince();
-        }
+        presenter.getListProvince();
     }
 
     private void setEditParam(Destination address) {
@@ -179,17 +178,26 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
     @Override
     public void onSaveState(Bundle state) {
-        state.putParcelableArrayList("provincesData", (ArrayList<? extends Parcelable>) this.mProvinces);
-        state.putParcelableArrayList("citiesData", (ArrayList<? extends Parcelable>) this.mCities);
-        state.putParcelableArrayList("districtsData", (ArrayList<? extends Parcelable>) this.mDistricts);
+        state.putParcelableArrayList(ARG_STATE_PROVINCE, (ArrayList<? extends Parcelable>) this.mProvinces);
+        state.putParcelableArrayList(ARG_STATE_CITY, (ArrayList<? extends Parcelable>) this.mCities);
+        state.putParcelableArrayList(ARG_STATE_DISTRICT, (ArrayList<? extends Parcelable>) this.mDistricts);
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
         if (savedState != null) {
-            this.mProvinces = savedState.getParcelableArrayList("provincesData");
-            this.mCities = savedState.getParcelableArrayList("citiesData");
-            this.mDistricts = savedState.getParcelableArrayList("districtsData");
+            this.mProvinces = savedState.getParcelableArrayList(ARG_STATE_PROVINCE);
+            this.mCities = savedState.getParcelableArrayList(ARG_STATE_CITY);
+            this.mDistricts = savedState.getParcelableArrayList(ARG_STATE_DISTRICT);
+            if (this.mProvinces != null && this.mProvinces.size() > 0){
+                setProvince(this.mProvinces);
+            }
+            if (this.mCities != null && this.mCities.size() > 0){
+                setCity(this.mCities);
+            }
+            if (this.mDistricts != null && this.mDistricts.size() > 0){
+                setDistrict(this.mDistricts);
+            }
         }
     }
 
