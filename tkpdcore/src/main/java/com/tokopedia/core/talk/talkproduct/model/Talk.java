@@ -7,6 +7,7 @@ import android.text.Spanned;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.RecyclerViewItem;
 
 public class Talk extends RecyclerViewItem implements Parcelable {
@@ -85,7 +86,7 @@ public class Talk extends RecyclerViewItem implements Parcelable {
     }
 
     public Spanned getTalkMessageSpanned() {
-        return Html.fromHtml(talkMessage);
+        return MethodChecker.fromHtml(talkMessage);
     }
 
     /**
@@ -139,7 +140,7 @@ public class Talk extends RecyclerViewItem implements Parcelable {
      *     The talkProductName
      */
     public String getTalkProductName() {
-        return Html.fromHtml(talkProductName).toString();
+        return MethodChecker.fromHtml(talkProductName).toString();
     }
 
     /**

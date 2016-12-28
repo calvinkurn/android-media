@@ -37,6 +37,7 @@ import com.tokopedia.core.network.entity.discovery.CatalogModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.session.base.BaseFragment;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.browseparent.BrowserSectionsPagerAdapter;
 import com.tokopedia.discovery.model.NetworkParam;
@@ -172,7 +173,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     private void showTickerGTM(String message) {
         if (discoveryTicker != null) {
             if (message != null) {
-                discoveryTicker.setText(Html.fromHtml(message));
+                discoveryTicker.setText(MethodChecker.fromHtml(message));
                 discoveryTicker.setVisibility(View.VISIBLE);
                 discoveryTicker.setAutoLinkMask(0);
                 Linkify.addLinks(discoveryTicker, Linkify.WEB_URLS);

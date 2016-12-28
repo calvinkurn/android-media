@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
+import com.tokopedia.core.util.MethodChecker;
 
 import java.util.ArrayList;
 
@@ -70,8 +71,8 @@ public class ListViewPaymentEditor extends BaseAdapter{
 		} else 
 			holder=(ViewHolder)convertView.getTag();
 		imagehandler.LoadImage(holder.PaymentIcon, PaymentIconUri.get(position));
-		holder.PaymentInfo.setText(Html.fromHtml(PaymentInfo.get(position).replaceAll("\\*", "")));
-		holder.PaymentInfo.setText(Html.fromHtml(PaymentInfo.get(position).replaceAll("Baca syarat dan ketentuannya disini", "")));
+		holder.PaymentInfo.setText(MethodChecker.fromHtml(PaymentInfo.get(position).replaceAll("\\*", "")));
+		holder.PaymentInfo.setText(MethodChecker.fromHtml(PaymentInfo.get(position).replaceAll("Baca syarat dan ketentuannya disini", "")));
 		holder.PaymentInfo.setMovementMethod(LinkMovementMethod.getInstance());
 
 		return convertView;

@@ -5,6 +5,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.Html;
 
+import com.tokopedia.core.util.MethodChecker;
+
 /**
  * Created by Angga.Prasetiyo on 11/12/2015.
  */
@@ -113,7 +115,7 @@ public class ShareData implements Parcelable {
         if (getType() != null){
             return (this.textContent != null) ? (this.textContent + "\n" + renderShareUri()) : renderShareUri();
         }
-        return String.valueOf(Html.fromHtml("Jual " + name + " hanya " + price + ", lihat gambar klik " + uri + "\n"));
+        return String.valueOf(MethodChecker.fromHtml("Jual " + name + " hanya " + price + ", lihat gambar klik " + uri + "\n"));
     }
 
     public void setTextContent(String textContent) {

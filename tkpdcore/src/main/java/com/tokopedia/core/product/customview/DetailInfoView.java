@@ -16,6 +16,7 @@ import com.tokopedia.core.product.listener.ProductDetailView;
 import com.tokopedia.core.product.model.productdetail.ProductBreadcrumb;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.util.MethodChecker;
 
 import java.util.List;
 
@@ -110,7 +111,7 @@ public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailVie
             }
         }
         for (int i = 0; i < length; i++) {
-            tvCategories.get(i).setText(Html.fromHtml(productDepartments.get(i).getDepartmentName()));
+            tvCategories.get(i).setText(MethodChecker.fromHtml(productDepartments.get(i).getDepartmentName()));
             tvCategories.get(i).setOnClickListener(new CategoryClick(productDepartments.get(i)));
             tvCategories.get(i).setVisibility(VISIBLE);
         }
@@ -124,7 +125,7 @@ public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailVie
                 && !data.getInfo().getProductCatalogName().equals("0")
                 && !data.getInfo().getProductCatalogUrl().equals("0")) {
             catalogView.setVisibility(VISIBLE);
-            tvCatalog.setText(Html.fromHtml(data.getInfo().getProductCatalogName()));
+            tvCatalog.setText(MethodChecker.fromHtml(data.getInfo().getProductCatalogName()));
             tvCatalog.setOnClickListener(new CatalogClick(data));
         } else {
             catalogView.setVisibility(GONE);
@@ -137,7 +138,7 @@ public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailVie
         tvMinOrder.setText(data.getInfo().getProductMinOrder().replace(".",""));
         tvInsurance.setText(data.getInfo().getProductInsurance());
         if (data.getInfo().getProductEtalase() != null) {
-            tvEtalase.setText(Html.fromHtml(data.getInfo().getProductEtalase()));
+            tvEtalase.setText(MethodChecker.fromHtml(data.getInfo().getProductEtalase()));
             tvEtalase.setOnClickListener(new EtalaseClick(data));
         }
         tvCondition.setText(data.getInfo().getProductCondition());
@@ -195,7 +196,7 @@ public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailVie
         @Override
         public void onClick(View v) {
             Bundle bundle = new Bundle();
-            bundle.putString("etalase_name", Html.fromHtml(data.getInfo().getProductEtalase()).toString());
+            bundle.putString("etalase_name", MethodChecker.fromHtml(data.getInfo().getProductEtalase()).toString());
             bundle.putString("etalase_id", data.getInfo().getProductEtalaseId());
             bundle.putString("shop_id", data.getShopInfo().getShopId());
             listener.onProductEtalaseClicked(bundle);

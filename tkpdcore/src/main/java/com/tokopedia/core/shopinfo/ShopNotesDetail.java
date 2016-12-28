@@ -126,8 +126,8 @@ public class ShopNotesDetail extends TActivity {
         holder.progress.setVisibility(View.GONE);
         holder.content.setVisibility(View.VISIBLE);
         holder.titleBar.setVisibility(View.VISIBLE);
-        holder.title.setText(Html.fromHtml(model.title));
+        holder.title.setText(MethodChecker.fromHtml(model.title));
         holder.date.setText(model.update);
-        holder.content.setText(MethodChecker.fromHtml(model.content.replace("\n","<br />")));
+        holder.content.setText(MethodChecker.fromHtml(model.content));
     }
 }

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.session.forgotpassword.listener.ForgotPasswordFragmentView;
 import com.tokopedia.session.forgotpassword.presenter.ForgotPasswordFragmentPresenter;
 import com.tokopedia.session.forgotpassword.presenter.ForgotPasswordFragmentPresenterImpl;
@@ -101,9 +102,9 @@ public class ForgotPasswordFragment extends BasePresenterFragment<ForgotPassword
     @Override
     protected void initView(View view) {
         String sourceString = "Belum punya akun?";
-        registerButton1.setText(Html.fromHtml(sourceString));
+        registerButton1.setText(MethodChecker.fromHtml(sourceString));
         String sourceString2 = "&nbsp; <u><b>Daftar Sekarang</b></u>";
-        registerButton2.setText(Html.fromHtml(sourceString2));
+        registerButton2.setText(MethodChecker.fromHtml(sourceString2));
     }
 
     @Override

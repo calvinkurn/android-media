@@ -619,7 +619,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
                     sellerHomeTransactionView.init(shopModel);
                 }
 
-                sellerHomeShopname.setText(Html.fromHtml(shopModel.info.shopName));
+                sellerHomeShopname.setText(MethodChecker.fromHtml(shopModel.info.shopName));
                 sellerHomeShopPlace.setText(shopModel.info.shopLocation);
 
                 imageHandler.loadImage(sellerHomeShopCover, shopModel.info.shopCover);

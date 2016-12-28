@@ -7,6 +7,7 @@ import android.text.Html;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.util.MethodChecker;
 
 public class ShopNote implements Parcelable {
 
@@ -79,7 +80,7 @@ public class ShopNote implements Parcelable {
      * @return The noteTitle
      */
     public String getNoteTitle() {
-        return Html.fromHtml(noteTitle).toString();
+        return MethodChecker.fromHtml(noteTitle).toString();
     }
 
     /**
