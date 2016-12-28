@@ -3,13 +3,12 @@ package com.tokopedia.seller.topads.model.data;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * Created by zulfikarrahman on 12/14/16.
+ * Created by Nathaniel on 12/28/2016.
  */
-public class DataRequestGroupAd {
+
+public class BulkAction {
+
     @SerializedName("action")
     @Expose
     String action;
@@ -17,9 +16,6 @@ public class DataRequestGroupAd {
     @SerializedName("shop_id")
     @Expose
     String shopId;
-
-    @SerializedName("groups")
-    List<DataRequestGroupAds> ads = new ArrayList<>();
 
     public String getAction() {
         return action;
@@ -35,13 +31,5 @@ public class DataRequestGroupAd {
 
     public void setShopId(String shopId) {
         this.shopId = shopId;
-    }
-
-    public List<DataRequestGroupAds> getAds() {
-        return ads;
-    }
-
-    public void setAds(List<DataRequestGroupAds> ads) {
-        this.ads = ads;
     }
 }

@@ -10,19 +10,18 @@ import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.topads.datasource.TopAdsCacheDataSourceImpl;
 import com.tokopedia.seller.topads.datasource.TopAdsDbDataSource;
 import com.tokopedia.seller.topads.datasource.TopAdsDbDataSourceImpl;
-import com.tokopedia.seller.topads.model.data.SingleAd;
+import com.tokopedia.seller.topads.model.data.GroupAdBulkAction;
+import com.tokopedia.seller.topads.model.data.ProductAdBulkAction;
 import com.tokopedia.seller.topads.model.data.Cell;
 import com.tokopedia.seller.topads.model.data.DataCredit;
 import com.tokopedia.seller.topads.model.data.DataDeposit;
-import com.tokopedia.seller.topads.model.data.DataRequestGroupAd;
-import com.tokopedia.seller.topads.model.data.DataRequestSingleAd;
-import com.tokopedia.seller.topads.model.data.DataResponseActionAds;
 import com.tokopedia.seller.topads.model.data.DataStatistic;
 import com.tokopedia.seller.topads.model.data.GroupAd;
 import com.tokopedia.seller.topads.model.data.Product;
+import com.tokopedia.seller.topads.model.data.SingleAd;
 import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.model.data.TotalAd;
-import com.tokopedia.seller.topads.model.request.AdsActionRequest;
+import com.tokopedia.seller.topads.model.request.DataRequest;
 import com.tokopedia.seller.topads.model.request.SearchAdRequest;
 import com.tokopedia.seller.topads.model.request.SearchProductRequest;
 import com.tokopedia.seller.topads.model.request.ShopRequest;
@@ -295,25 +294,26 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
     }
 
     @Override
-    public void actionSingleAds(AdsActionRequest<DataRequestSingleAd> adsActionRequest, ListenerInteractor<DataResponseActionAds> listenerInteractor) {
-        Observable<Response<DataResponse<DataResponseActionAds>>> actionAdsObservable = topAdsManagementService.getApi().postActionSingleAds(adsActionRequest);
+    public void actionSingleAds(DataRequest<ProductAdBulkAction> dataRequest, ListenerInteractor<ProductAdBulkAction> listenerInteractor) {
+        Observable<Response<DataResponse<ProductAdBulkAction>>> actionAdsObservable = topAdsManagementService.getApi().postActionSingleAds(dataRequest);
         compositeSubscription.add(actionAdsObservable
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())
-                .flatMap(new Func1<Response<DataResponse<DataResponseActionAds>>, Observable<DataResponseActionAds>>() {
+                .flatMap(new Func1<Response<DataResponse<ProductAdBulkAction>>, Observable<ProductAdBulkAction>>() {
                     @Override
-                    public Observable<DataResponseActionAds> call(Response<DataResponse<DataResponseActionAds>> responseActionAdsResponse) {
+                    public Observable<ProductAdBulkAction> call(Response<DataResponse<ProductAdBulkAction>> responseActionAdsResponse) {
                         return Observable.just(responseActionAdsResponse.body().getData());
                     }
                 })
-                .subscribe(new SubscribeOnNext<DataResponseActionAds>(listenerInteractor), new SubscribeOnError(listenerInteractor)));
+                .subscribe(new SubscribeOnNext<ProductAdBulkAction>(listenerInteractor), new SubscribeOnError(listenerInteractor)));
     }
 
     @Override
-    public void actionGroupAds(AdsActionRequest<DataRequestGroupAd> adsActionRequest, ListenerInteractor<DataResponseActionAds> listenerInteractor) {
+    public void actionGroupAds(DataRequest<GroupAdBulkAction> dataRequest, ListenerInteractor<GroupAdBulkAction> listenerInteractor) {
 
     }
+
 
     @Override
     public void unSubscribe() {

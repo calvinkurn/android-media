@@ -6,11 +6,10 @@ import android.support.annotation.NonNull;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.interactor.ListenerInteractor;
-import com.tokopedia.seller.topads.model.data.DataRequestGroupAd;
-import com.tokopedia.seller.topads.model.data.DataRequestGroupAds;
-import com.tokopedia.seller.topads.model.data.DataResponseActionAds;
+import com.tokopedia.seller.topads.model.data.GroupAdBulkAction;
 import com.tokopedia.seller.topads.model.data.GroupAd;
-import com.tokopedia.seller.topads.model.request.AdsActionRequest;
+import com.tokopedia.seller.topads.model.data.GroupAdAction;
+import com.tokopedia.seller.topads.model.request.DataRequest;
 import com.tokopedia.seller.topads.model.request.SearchAdRequest;
 import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
 
@@ -50,27 +49,27 @@ public class TopAdsGroupAdListPresenterImpl extends TopAdsAdListPresenterImpl<Gr
 
     @Override
     public void actionDeleteAds(List<GroupAd> ads) {
-        AdsActionRequest<DataRequestGroupAd> adsActionRequest = generateActionRequest(ads, TopAdsNetworkConstant.ACTION_BULK_DELETE_AD);
-        actionBulkAds(adsActionRequest);
+        DataRequest<GroupAdBulkAction> dataRequest = generateActionRequest(ads, TopAdsNetworkConstant.ACTION_BULK_DELETE_AD);
+        actionBulkAds(dataRequest);
     }
 
     @Override
     public void actionOffAds(List<GroupAd> ads) {
-        AdsActionRequest<DataRequestGroupAd> adsActionRequest = generateActionRequest(ads, TopAdsNetworkConstant.ACTION_BULK_OFF_AD);
-        actionBulkAds(adsActionRequest);
+        DataRequest<GroupAdBulkAction> dataRequest = generateActionRequest(ads, TopAdsNetworkConstant.ACTION_BULK_OFF_AD);
+        actionBulkAds(dataRequest);
     }
 
     @Override
     public void actionOnAds(List<GroupAd> ads) {
-        AdsActionRequest<DataRequestGroupAd> adsActionRequest = generateActionRequest(ads, TopAdsNetworkConstant.ACTION_BULK_ON_AD);
-        actionBulkAds(adsActionRequest);
+        DataRequest<GroupAdBulkAction> dataRequest = generateActionRequest(ads, TopAdsNetworkConstant.ACTION_BULK_ON_AD);
+        actionBulkAds(dataRequest);
     }
 
     @NonNull
-    private void actionBulkAds(AdsActionRequest<DataRequestGroupAd> actionRequest) {
-        dashboardTopadsInteractor.actionGroupAds(actionRequest, new ListenerInteractor<DataResponseActionAds>() {
+    private void actionBulkAds(DataRequest<GroupAdBulkAction> actionRequest) {
+        dashboardTopadsInteractor.actionGroupAds(actionRequest, new ListenerInteractor<GroupAdBulkAction>() {
             @Override
-            public void onSuccess(DataResponseActionAds dataResponseActionAds) {
+            public void onSuccess(GroupAdBulkAction dataResponseActionAds) {
 
             }
 
@@ -82,19 +81,19 @@ public class TopAdsGroupAdListPresenterImpl extends TopAdsAdListPresenterImpl<Gr
     }
 
     @NonNull
-    private AdsActionRequest<DataRequestGroupAd> generateActionRequest(List<GroupAd> ads, String action) {
-        AdsActionRequest<DataRequestGroupAd> adsActionRequest = new AdsActionRequest<>();
-        DataRequestGroupAd dataRequestGroupAd = new DataRequestGroupAd();
+    private DataRequest<GroupAdBulkAction> generateActionRequest(List<GroupAd> ads, String action) {
+        DataRequest<GroupAdBulkAction> dataRequest = new DataRequest<>();
+        GroupAdBulkAction dataRequestGroupAd = new GroupAdBulkAction();
         dataRequestGroupAd.setAction(action);
         dataRequestGroupAd.setShopId(SessionHandler.getShopID(context));
-        List<DataRequestGroupAds> dataRequestGroupAdses = new ArrayList<>();
+        List<GroupAdAction> dataRequestGroupAdses = new ArrayList<>();
         for (GroupAd ad : ads) {
-            DataRequestGroupAds data = new DataRequestGroupAds();
-            data.setGroupId(String.valueOf(ad.getId()));
+            GroupAdAction data = new GroupAdAction();
+            data.setId(ad.getId());
             dataRequestGroupAdses.add(data);
         }
-        dataRequestGroupAd.setAds(dataRequestGroupAdses);
-        adsActionRequest.setData(dataRequestGroupAd);
-        return adsActionRequest;
+        dataRequestGroupAd.setAdList(dataRequestGroupAdses);
+        dataRequest.setData(dataRequestGroupAd);
+        return dataRequest;
     }
 }
