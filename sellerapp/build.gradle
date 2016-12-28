@@ -87,7 +87,6 @@ android {
             aidl.srcDirs = ['src/main/java']
             renderscript.srcDirs = ['src/main/java']
             res.srcDirs = ['src/main/res']
-            assets.srcDirs = ['assets']
         }
 
         instrumentTest.setRoot('tests')

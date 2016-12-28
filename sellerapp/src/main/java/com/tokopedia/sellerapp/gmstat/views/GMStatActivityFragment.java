@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.db.chart.renderer.StringFormatRenderer;
 import com.db.chart.tooltip.Tooltip;
@@ -38,7 +39,9 @@ import com.tokopedia.sellerapp.gmstat.utils.GMStatNetworkController;
 import com.tokopedia.sellerapp.gmstat.utils.GridDividerItemDecoration;
 import com.tokopedia.sellerapp.gmstat.utils.KMNumbers2;
 import com.tokopedia.sellerapp.gmstat.utils.WilliamChartUtils;
+import com.tokopedia.sellerapp.home.utils.ShopNetworkController;
 
+import java.net.UnknownHostException;
 import java.security.SecureRandom;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -275,6 +278,35 @@ public class GMStatActivityFragment extends Fragment {
         public void onError(Throwable e) {
             getProductGraph.setText(e.getLocalizedMessage());
             getTransactionGraph.setText(e.getLocalizedMessage());
+
+            displayDefaultValue();
+
+            if(e != null){
+                if(snackBar != null){
+                    String textMessage ="Kesalahan tidak diketahui";
+                    if(e instanceof UnknownHostException){
+                        textMessage = "Tidak ada koneksi. \nSilahkan coba kembali";
+                    }else if(e instanceof ShopNetworkController.MessageErrorException){
+                        textMessage = "Terjadi kesalahan koneksi. \nSilahkan coba kembali";
+                    }
+                    snackBar.view(marketInsightReal)
+                            .text(textMessage, "COBA KEMBALI")
+                            .textColors(Color.WHITE,Color.GREEN)
+                            .backgroundColor(Color.BLACK)
+                            .duration(SnackBar.SnackBarDuration.INDEFINITE)
+                            .setOnClickListener(true, new OnActionClickListener() {
+                                @Override
+                                public void onClick(View view) {
+//                                    Toast.makeText(
+//                                            GMStatActivityFragment.this.getActivity()
+//                                            ,"Bye bye snackbar Toast is back",Toast.LENGTH_SHORT).show();
+                                    isFetchData = true;
+                                    fetchData();
+                                }
+                            })
+                            .show();
+                }
+            }
         }
 
         @Override
@@ -286,6 +318,7 @@ public class GMStatActivityFragment extends Fragment {
     private BuyerDataViewHelper buyerDataViewHelper;
     private GMStatHeaderViewHelper gmstatHeaderViewHelper;
     private WilliamChartUtils williamChartUtils;
+    private SnackBar snackBar;
 
     private List<NExcel> joinDateAndGrossGraph(List<Integer> dateGraph, List<Integer> grossGraph){
         List<NExcel> nExcels = new ArrayList<>();
@@ -560,7 +593,12 @@ public class GMStatActivityFragment extends Fragment {
     public void onResume() {
         super.onResume();
         compositeSubscription = RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
+        snackBar = new SnackBar();
         fetchData();
+    }
+
+    public void displayDefaultValue(){
+        gmstat.getGmStatNetworkController().fetchDataEmptyState(gmStatListener, getActivity().getAssets());
     }
 
     public void fetchData() {
@@ -598,6 +636,7 @@ public class GMStatActivityFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        snackBar = null;
         RxUtils.unsubscribeIfNotNull(compositeSubscription);
     }
 

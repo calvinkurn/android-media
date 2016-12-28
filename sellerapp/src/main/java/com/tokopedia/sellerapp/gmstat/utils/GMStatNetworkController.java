@@ -330,6 +330,38 @@ public class GMStatNetworkController extends BaseNetworkController {
         public List<HadesV1Model> hadesv1Models;
     }
 
+    public void fetchDataEmptyState(final GetGMStat getGMStat, AssetManager assetManager){
+
+        GetProductGraph body = gson.fromJson(readJson("get_product_graph_empty_state.json", assetManager), GetProductGraph.class);
+        getGMStat.onSuccessProductnGraph(body);
+
+        GetTransactionGraph body2 = gson.fromJson(readJson("get_transaction_graph_empty_state.json", assetManager), GetTransactionGraph.class);
+        getGMStat.onSuccessTransactionGraph(body2);
+
+
+        GetPopularProduct body3 = gson.fromJson(readJson("popular_product_empty_state.json", assetManager), GetPopularProduct.class);
+        getGMStat.onSuccessPopularProduct(body3);
+
+
+        GetBuyerData body4 = gson.fromJson(readJson("buyer_graph_empty_state.json", assetManager), GetBuyerData.class);
+        getGMStat.onSuccessBuyerData(body4);
+
+
+        KeywordModel keywordModel = new KeywordModel();
+        keywordModel.getShopCategory = gson.fromJson(readJson("shop_category_empty.json", assetManager), GetShopCategory.class);
+
+        if(keywordModel.getShopCategory == null || keywordModel.getShopCategory.getShopCategory() == null || keywordModel.getShopCategory.getShopCategory().isEmpty()) {
+            getGMStat.onSuccessGetShopCategory(keywordModel.getShopCategory);
+            return;
+        }
+
+
+        List<GetKeyword> getKeywords = new ArrayList<>();
+        getKeywords.add(gson.fromJson(readJson("search_keyword.json", assetManager), GetKeyword.class));
+        keywordModel.getKeywords = getKeywords;
+        getGMStat.onSuccessGetKeyword(getKeywords);
+    }
+
     public void fetchData(final GetGMStat getGMStat, AssetManager assetManager){
 
         GetProductGraph body = gson.fromJson(readJson("product_graph.json", assetManager), GetProductGraph.class);
@@ -437,6 +469,7 @@ public class GMStatNetworkController extends BaseNetworkController {
                                         if(BuildConfig.DEBUG){
                                             Log.e(TAG, "error : "+e);
                                         }
+                                        getGMStat.onError(e);
                                     }
 
                                     @Override
@@ -546,6 +579,7 @@ public class GMStatNetworkController extends BaseNetworkController {
                                         if(BuildConfig.DEBUG){
                                             Log.e(TAG, "error : "+e);
                                         }
+                                        getGMStat.onError(e);
                                     }
 
                                     @Override
