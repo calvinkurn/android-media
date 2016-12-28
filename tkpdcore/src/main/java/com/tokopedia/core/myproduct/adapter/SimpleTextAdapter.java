@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.tokopedia.core.R;
 import com.tokopedia.core.myproduct.fragment.ChooserFragment;
 import com.tokopedia.core.myproduct.model.SimpleTextModel;
+import com.tokopedia.core.util.MethodChecker;
 
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class SimpleTextAdapter extends RecyclerView.Adapter<SimpleTextAdapter.Vi
     public void onBindViewHolder(final ViewHolder holder, int position) {
         if(empty == 1 && position == 0){
             String emptyString = "Tidak ada hasil";
-            Spannable WordtoSpan = new SpannableString(Html.fromHtml(emptyString));
+            Spannable WordtoSpan = new SpannableString(MethodChecker.fromHtml(emptyString));
             WordtoSpan.setSpan(new ForegroundColorSpan(Color.GRAY),0, emptyString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             holder.mContentView.setText(WordtoSpan);
         } else {
@@ -53,19 +54,19 @@ public class SimpleTextAdapter extends RecyclerView.Adapter<SimpleTextAdapter.Vi
                 holder.mItem = mValues.get(position);
                 holder.mIdView.setText(mValues.get(position).getText());
 
-                Spannable WordtoSpan = new SpannableString(Html.fromHtml(mValues.get(position).getText()));
+                Spannable WordtoSpan = new SpannableString(MethodChecker.fromHtml(mValues.get(position).getText()));
                 int start = mValues.get(position).getText().toLowerCase().indexOf(query.toLowerCase());
                 //int end = mValues.get(position).getText().toLowerCase().indexOf(query.charAt(query.length() - 1)) + 1;
                 if (start != -1) {
                     WordtoSpan.setSpan(new ForegroundColorSpan(Color.GRAY), start, start + query.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     holder.mContentView.setText(WordtoSpan);
                 } else {
-                    holder.mContentView.setText(Html.fromHtml(mValues.get(position).getText()));
+                    holder.mContentView.setText(MethodChecker.fromHtml(mValues.get(position).getText()));
                 }
             } else {
                 holder.mItem = mValues.get(position);
                 holder.mIdView.setText(mValues.get(position).getText());
-                holder.mContentView.setText(Html.fromHtml(mValues.get(position).getText()));
+                holder.mContentView.setText(MethodChecker.fromHtml(mValues.get(position).getText()));
             }
 
             holder.mView.setOnClickListener(new View.OnClickListener() {

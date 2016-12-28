@@ -17,13 +17,13 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.customadapter.ImageUpload;
 import com.tokopedia.core.customadapter.ImageUploadAdapter;
-import com.tokopedia.inbox.inboxticket.model.inboxticketdetail.InboxTicketDetail;
-import com.tokopedia.inbox.inboxticket.presenter.InboxTicketDetailFragmentPresenter;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
 import com.tokopedia.core.util.LabelUtils;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.inbox.inboxticket.model.inboxticketdetail.InboxTicketDetail;
+import com.tokopedia.inbox.inboxticket.presenter.InboxTicketDetailFragmentPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -200,5 +200,9 @@ public class HeaderTicketDataBinder extends DataBinder<HeaderTicketDataBinder.Vi
 
     public void setData(InboxTicketDetail data) {
         this.data = data;
+    }
+
+    public InboxTicketDetail getData() {
+        return data;
     }
 }

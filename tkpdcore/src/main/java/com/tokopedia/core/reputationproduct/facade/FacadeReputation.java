@@ -9,6 +9,7 @@ import com.tokopedia.core.reputationproduct.ReputationProduct;
 import com.tokopedia.core.reputationproduct.adapter.ListViewReputationAdapter;
 import com.tokopedia.core.network.NetworkHandler;
 import com.tokopedia.core.review.model.product_review.ReviewProductModel;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RatingStatsUtils;
 import com.tokopedia.core.var.TkpdUrl;
 
@@ -60,7 +61,7 @@ public class FacadeReputation {
                 model.shopReputation = getScoreMedal(ReviewContent);
                 model.typeMedal = getMedalType(ReviewContent);
                 model.levelMedal = getMedalLevel(ReviewContent);
-                model.shopName = Html.fromHtml(ReviewContent.getString("shop_name")).toString();
+                model.shopName = MethodChecker.fromHtml(ReviewContent.getString("shop_name")).toString();
                 model.shopAvatarUrl = ReviewContent.getString("shop_img_uri");
                 model.shopId = ReviewContent.getString("shop_id");
                 model.productId = ReviewContent.optString("product_id", "");
@@ -89,7 +90,7 @@ public class FacadeReputation {
 
                 if (!ReviewContent.isNull("response")) {
                     JSONObject Response = new JSONObject(ReviewContent.getString("response"));
-                    model.responseMessage = Html.fromHtml(Response.getString("response_msg")).toString();
+                    model.responseMessage = MethodChecker.fromHtml(Response.getString("response_msg")).toString();
                     model.responseDate = Response.getString("response_time_fmt");
                     model.counterResponse = 1;
                 } else {

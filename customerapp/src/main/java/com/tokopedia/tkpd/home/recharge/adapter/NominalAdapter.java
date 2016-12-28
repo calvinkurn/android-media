@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.R;
 
 import com.tokopedia.core.database.recharge.product.Attributes;
@@ -79,7 +80,7 @@ public class NominalAdapter extends ArrayAdapter<Product> {
     private void renderNominalDetail(NormalViewHolder holder, Attributes productAttributes) {
         String nominalDetail = productAttributes.getDetail();
         if (nominalDetail != null && nominalDetail.length() > 0) {
-            holder.nominalDetailTextView.setText(Html.fromHtml(nominalDetail));
+            holder.nominalDetailTextView.setText(MethodChecker.fromHtml(nominalDetail));
             holder.nominalDetailTextView.setVisibility(View.VISIBLE);
         } else {
             holder.nominalDetailTextView.setVisibility(View.GONE);

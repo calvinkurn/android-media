@@ -2,6 +2,7 @@ package com.tokopedia.core.home.model;
 
 import android.text.Html;
 
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
@@ -25,7 +26,7 @@ public class HorizontalProductList extends RecyclerViewItem{
             for(int i=0;i<product.size();i++){
                 if(product.get(i) instanceof ProductItem){
                     ProductItem productItem = (ProductItem) product.get(i);
-                    productItem.setShop(Html.fromHtml(productItem.getShop()).toString());
+                    productItem.setShop(MethodChecker.fromHtml(productItem.getShop()).toString());
                     listProduct.add(productItem);
                 }
             }

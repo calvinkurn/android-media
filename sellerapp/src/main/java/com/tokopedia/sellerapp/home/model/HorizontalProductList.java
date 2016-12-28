@@ -27,7 +27,7 @@ public class HorizontalProductList extends RecyclerViewItem {
         for(int i=0;i<product.size();i++){
             if(product.get(i) instanceof ProductItem){
                 ProductItem productItem = (ProductItem) product.get(i);
-                productItem.setShop(Html.fromHtml(productItem.getShop()).toString());
+                productItem.setShop(MethodChecker.fromHtml(productItem.getShop()).toString());
                 listProduct.add(productItem);
             }
         }

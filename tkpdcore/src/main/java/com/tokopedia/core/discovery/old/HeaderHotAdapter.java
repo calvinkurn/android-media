@@ -20,6 +20,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.util.MethodChecker;
 
 public class HeaderHotAdapter extends PagerAdapter {
 	private Context context;
@@ -62,7 +63,7 @@ public class HeaderHotAdapter extends PagerAdapter {
 	    } else if (position == 1) {
 	    	desc.setBackgroundColor(0xB3000000);
 			if(descText!=null) {
-				desc.setText(Html.fromHtml(descText));
+				desc.setText(MethodChecker.fromHtml(descText));
 			}
 	    	int dp = (int) context.getResources().getDimension(R.dimen.padding_small);
 	    	desc.setPadding(dp, dp, dp, dp);
