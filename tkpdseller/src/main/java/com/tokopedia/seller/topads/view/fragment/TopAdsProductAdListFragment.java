@@ -12,7 +12,7 @@ import com.tokopedia.seller.topads.presenter.TopAdsSingleAdListPresenterImpl;
  * Created by zulfikarrahman on 12/16/16.
  */
 
-public class TopAdsSingleListFragment extends TopAdsListFragment<TopAdsSingleAdListPresenter> {
+public class TopAdsProductAdListFragment extends TopAdsListFragment<TopAdsSingleAdListPresenter> {
 
     @Override
     public int getMenuActionSelected() {
@@ -43,7 +43,7 @@ public class TopAdsSingleListFragment extends TopAdsListFragment<TopAdsSingleAdL
     }
 
     public static Fragment createInstance() {
-        TopAdsSingleListFragment fragment = new TopAdsSingleListFragment();
+        TopAdsProductAdListFragment fragment = new TopAdsProductAdListFragment();
         return fragment;
     }
 }

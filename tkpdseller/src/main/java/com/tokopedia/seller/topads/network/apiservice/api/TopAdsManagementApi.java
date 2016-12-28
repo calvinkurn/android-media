@@ -7,7 +7,7 @@ import com.tokopedia.seller.topads.model.data.DataDeposit;
 import com.tokopedia.seller.topads.model.data.DataStatistic;
 import com.tokopedia.seller.topads.model.data.GroupAd;
 import com.tokopedia.seller.topads.model.data.Product;
-import com.tokopedia.seller.topads.model.data.SingleAd;
+import com.tokopedia.seller.topads.model.data.ProductAd;
 import com.tokopedia.seller.topads.model.data.TotalAd;
 import com.tokopedia.seller.topads.model.request.DataRequest;
 import com.tokopedia.seller.topads.model.response.DataResponse;
@@ -38,10 +38,10 @@ public interface TopAdsManagementApi {
     Observable<Response<DataResponse<TotalAd>>> getDashboardTotalAd(@QueryMap Map<String, String> params);
 
     @GET(TopAdsNetworkConstant.PATH_DASHBOARD_PRODUCT)
-    Observable<Response<PageDataResponse<List<SingleAd>>>> getDashboardProduct(@QueryMap Map<String, String> params);
+    Observable<Response<PageDataResponse<List<ProductAd>>>> getDashboardProduct(@QueryMap Map<String, String> params);
 
     @GET(TopAdsNetworkConstant.PATH_DASHBOARD_SHOP)
-    Observable<Response<DataResponse<SingleAd>>> getDashboardShop(@QueryMap Map<String, String> params);
+    Observable<Response<DataResponse<ProductAd>>> getDashboardShop(@QueryMap Map<String, String> params);
 
     @GET(TopAdsNetworkConstant.PATH_DASHBOARD_CREDIT)
     Observable<Response<DataResponse<List<DataCredit>>>> getDashboardCredit();

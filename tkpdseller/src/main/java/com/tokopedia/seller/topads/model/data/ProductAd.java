@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 
-public class SingleAd implements Ad {
+public class ProductAd implements Ad {
 
     @SerializedName("ad_id")
     @Expose

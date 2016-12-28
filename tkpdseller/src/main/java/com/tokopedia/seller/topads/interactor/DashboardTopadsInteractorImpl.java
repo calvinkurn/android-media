@@ -18,7 +18,7 @@ import com.tokopedia.seller.topads.model.data.DataDeposit;
 import com.tokopedia.seller.topads.model.data.DataStatistic;
 import com.tokopedia.seller.topads.model.data.GroupAd;
 import com.tokopedia.seller.topads.model.data.Product;
-import com.tokopedia.seller.topads.model.data.SingleAd;
+import com.tokopedia.seller.topads.model.data.ProductAd;
 import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.model.data.TotalAd;
 import com.tokopedia.seller.topads.model.request.DataRequest;
@@ -181,13 +181,13 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
     }
 
     @Override
-    public void getListProductAds(HashMap<String, String> params, final ListenerInteractor<PageDataResponse<List<SingleAd>>> listener) {
-        Observable<Response<PageDataResponse<List<SingleAd>>>> observable = topAdsManagementService.getApi()
+    public void getListProductAds(HashMap<String, String> params, final ListenerInteractor<PageDataResponse<List<ProductAd>>> listener) {
+        Observable<Response<PageDataResponse<List<ProductAd>>>> observable = topAdsManagementService.getApi()
                 .getDashboardProduct(params);
         compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Response<PageDataResponse<List<SingleAd>>>>() {
+                .subscribe(new Subscriber<Response<PageDataResponse<List<ProductAd>>>>() {
                     @Override
                     public void onCompleted() {
 
@@ -199,7 +199,7 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
                     }
 
                     @Override
-                    public void onNext(Response<PageDataResponse<List<SingleAd>>> response) {
+                    public void onNext(Response<PageDataResponse<List<ProductAd>>> response) {
                         if (response.isSuccessful()) {
                             listener.onSuccess(response.body());
                         } else {
@@ -238,12 +238,12 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
     }
 
     @Override
-    public void getDashboardShop(HashMap<String, String> params, final ListenerInteractor<DataResponse<SingleAd>> listener) {
-        Observable<Response<DataResponse<SingleAd>>> observable = topAdsManagementService.getApi().getDashboardShop(params);
+    public void getDashboardShop(HashMap<String, String> params, final ListenerInteractor<DataResponse<ProductAd>> listener) {
+        Observable<Response<DataResponse<ProductAd>>> observable = topAdsManagementService.getApi().getDashboardShop(params);
         compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Response<DataResponse<SingleAd>>>() {
+                .subscribe(new Subscriber<Response<DataResponse<ProductAd>>>() {
                     @Override
                     public void onCompleted() {
 
@@ -255,7 +255,7 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
                     }
 
                     @Override
-                    public void onNext(Response<DataResponse<SingleAd>> response) {
+                    public void onNext(Response<DataResponse<ProductAd>> response) {
                         if (response.isSuccessful()) {
                             listener.onSuccess(response.body());
                         } else {

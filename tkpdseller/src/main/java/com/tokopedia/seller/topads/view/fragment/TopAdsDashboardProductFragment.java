@@ -10,7 +10,7 @@ import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.model.data.TotalAd;
 import com.tokopedia.seller.topads.presenter.TopAdsDashboardProductPresenterImpl;
-import com.tokopedia.seller.topads.view.activity.TopAdsGroupListActivity;
+import com.tokopedia.seller.topads.view.activity.TopAdsGroupAdListActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardProductFragmentListener;
 
 import java.text.SimpleDateFormat;
@@ -76,7 +76,7 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
 
     @OnClick(R2.id.layout_top_ads_product_group_summary)
     void onProductGroupClicked() {
-        Intent intent = new Intent(getActivity(), TopAdsGroupListActivity.class);
+        Intent intent = new Intent(getActivity(), TopAdsGroupAdListActivity.class);
         intent.putExtra(TopAdsNetworkConstant.PARAM_START_DATE, new SimpleDateFormat(TopAdsConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(startDate));
         intent.putExtra(TopAdsNetworkConstant.PARAM_END_DATE, new SimpleDateFormat(TopAdsConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(endDate));
         startActivity(intent);

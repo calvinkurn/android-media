@@ -11,7 +11,7 @@ import com.tokopedia.seller.topads.view.fragment.TopAdsPaymentCreditFragment;
  * Created by zulfikarrahman on 12/22/16.
  */
 
-public class TopAdsGroupListActivity extends TActivity {
+public class TopAdsGroupAdListActivity extends TActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
