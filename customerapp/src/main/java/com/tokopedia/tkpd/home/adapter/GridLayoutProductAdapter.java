@@ -243,14 +243,25 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ProductItem product = (ProductItem) data.get(position);
-                UnifyTracking.eventWishlistView(product.getName());
+                if(data.get(position) instanceof ProductItem) {
+                    ProductItem product = (ProductItem) data.get(position);
+                    UnifyTracking.eventWishlistView(product.getName());
 
-                Bundle bundle = new Bundle();
-                Intent intent = new Intent(context, ProductInfoActivity.class);
-                bundle.putString("product_id", product.id);
-                intent.putExtras(bundle);
-                context.startActivity(intent);
+                    Bundle bundle = new Bundle();
+                    Intent intent = new Intent(context, ProductInfoActivity.class);
+                    bundle.putString("product_id", product.id);
+                    intent.putExtras(bundle);
+                    context.startActivity(intent);
+                } else if (data.get(position) instanceof RecentView) {
+                    RecentView product = (RecentView) data.get(position);
+                    UnifyTracking.eventWishlistView(product.getProductName());
+
+                    Bundle bundle = new Bundle();
+                    Intent intent = new Intent(context, ProductInfoActivity.class);
+                    bundle.putString("product_id", String.valueOf(product.getProductId()));
+                    intent.putExtras(bundle);
+                    context.startActivity(intent);
+                }
             }
         };
     }
