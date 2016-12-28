@@ -92,7 +92,7 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
                 AppEventTracking.SOCIAL_MEDIA.TWITTER
         );
         data.setSource(AppEventTracking.SOCIAL_MEDIA.TWITTER);
-        if (data.getImgUri()!=null){
+       if (data.getImgUri()!=null){
             ShareSocmedHandler.ShareSpecificUri(activity, TkpdState.PackageName.Twitter,
                     TkpdState.PackageName.TYPE_IMAGE, data.getTextContent(),
                     data.renderShareUri(), data.getImgUri(), TkpdState.PackageName

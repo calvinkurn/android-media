@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -192,20 +193,20 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
     //[START] This is banner HotList
 
-    public static class ViewHolderSearchEmpty extends RecyclerView.ViewHolder {
-        @BindView(R2.id.text)
-        TextView textView;
 
-        public ViewHolderSearchEmpty(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-    }
-
-
-    private ViewHolderSearchEmpty createEmptySearch(ViewGroup parent) {
-        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_empty_search_item, parent, false);
-        return new ViewHolderSearchEmpty(inflate);
+    public RecyclerView.ViewHolder createEmptySearch(ViewGroup parent){
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_empty_hotlist, parent, false);
+        LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.include_no_result);
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) linearLayout.getLayoutParams();
+        lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        linearLayout.setLayoutParams(lp);
+        ImageHandler.loadImageWithId(((ImageView)view.findViewById(R.id.no_result_image)), R.drawable.status_no_result);
+        return new RecyclerView.ViewHolder(view) {
+            @Override
+            public String toString() {
+                return super.toString();
+            }
+        };
     }
 
     private BannerHotListViewHolder onCreateBannerHotList(ViewGroup parent) {

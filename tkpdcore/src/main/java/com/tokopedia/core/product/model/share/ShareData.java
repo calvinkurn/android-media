@@ -1,6 +1,5 @@
 package com.tokopedia.core.product.model.share;
 
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -163,7 +162,6 @@ public class ShareData implements Parcelable {
         private String uri;
         private String description;
         private String imgUri;
-        private Bitmap bitmap;
         private String type;
         private String textContent;
         private String source;
@@ -200,11 +198,6 @@ public class ShareData implements Parcelable {
             return this;
         }
 
-        public Builder setBitmap(Bitmap bitmap) {
-            this.bitmap = bitmap;
-            return this;
-        }
-
         public Builder setType(String type) {
             this.type = type;
             return this;
@@ -221,7 +214,7 @@ public class ShareData implements Parcelable {
         }
 
         public Builder but() {
-            return aShareData().setName(name).setPrice(price).setUri(uri).setDescription(description).setImgUri(imgUri).setBitmap(bitmap);
+            return aShareData().setName(name).setPrice(price).setUri(uri).setDescription(description).setImgUri(imgUri);
         }
 
         public ShareData build() {

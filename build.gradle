@@ -23,7 +23,7 @@ allprojects {
         maven { url 'https://maven.fabric.io/public' }
         maven { url 'http://maven.localytics.com/public' }
         maven {
-            url "http://jenkins.tkpd:8081/artifactory/libs-snapshot-local"
+            url "http://jenkins.tkpd:8081/artifactory/libs-release-local"
             credentials {
                 username = "${artifactory_username}"
                 password = "${artifactory_password}"
