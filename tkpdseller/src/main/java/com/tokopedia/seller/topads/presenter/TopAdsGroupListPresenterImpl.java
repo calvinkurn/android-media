@@ -11,11 +11,11 @@ import com.tokopedia.seller.topads.model.data.DataRequestGroupAds;
 import com.tokopedia.seller.topads.model.data.DataResponseActionAds;
 import com.tokopedia.seller.topads.model.data.GroupAd;
 import com.tokopedia.seller.topads.model.request.AdsActionRequest;
-import com.tokopedia.seller.topads.model.response.PageDataResponse;
+import com.tokopedia.seller.topads.model.request.SearchAdRequest;
 import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -23,23 +23,22 @@ import java.util.List;
  */
 
 public class TopAdsGroupListPresenterImpl extends TopAdsListPresenterImpl<GroupAd> implements TopAdsGroupListPresenter {
+
     public TopAdsGroupListPresenterImpl(Context context, TopAdsListPromoViewListener topAdsListPromoViewListener) {
         super(context, topAdsListPromoViewListener);
     }
 
     @Override
-    public void getListTopAdsFromNet() {
-        HashMap<String, String> params = new HashMap<>();
-        params.put(TopAdsNetworkConstant.PARAM_SHOP_ID, SessionHandler.getShopID(context));
-        params.put(TopAdsNetworkConstant.PARAM_START_DATE, "");
-        params.put(TopAdsNetworkConstant.PARAM_END_DATE, "");
-        dashboardTopadsInteractor.getListGroupAds(params, new ListenerInteractor<PageDataResponse<List<GroupAd>>>(){
+    public void getListTopAdsFromNet(Date startDate, Date endDate) {
+        SearchAdRequest searchAdRequest = new SearchAdRequest();
+        searchAdRequest.setStartDate(startDate);
+        searchAdRequest.setEndDate(endDate);
+        searchAdRequest.setShopId(getShopId());
+        dashboardTopadsInteractor.getListGroupAds(searchAdRequest, new ListenerInteractor<List<GroupAd>>() {
 
             @Override
-            public void onSuccess(PageDataResponse<List<GroupAd>> groupAdResponse) {
-                if(groupAdResponse != null) {
-                    topAdsListItem.addAll(groupAdResponse.getData());
-                }
+            public void onSuccess(List<GroupAd> groupAdList) {
+                
             }
 
             @Override
@@ -68,7 +67,7 @@ public class TopAdsGroupListPresenterImpl extends TopAdsListPresenterImpl<GroupA
     }
 
     @NonNull
-    private void actionBulkAds(AdsActionRequest<DataRequestGroupAd> actionRequest){
+    private void actionBulkAds(AdsActionRequest<DataRequestGroupAd> actionRequest) {
         dashboardTopadsInteractor.actionGroupAds(actionRequest, new ListenerInteractor<DataResponseActionAds>() {
             @Override
             public void onSuccess(DataResponseActionAds dataResponseActionAds) {
@@ -89,7 +88,7 @@ public class TopAdsGroupListPresenterImpl extends TopAdsListPresenterImpl<GroupA
         dataRequestGroupAd.setAction(action);
         dataRequestGroupAd.setShopId(SessionHandler.getShopID(context));
         List<DataRequestGroupAds> dataRequestGroupAdses = new ArrayList<>();
-        for(GroupAd ad : ads){
+        for (GroupAd ad : ads) {
             DataRequestGroupAds data = new DataRequestGroupAds();
             data.setGroupId(String.valueOf(ad.getId()));
             dataRequestGroupAdses.add(data);

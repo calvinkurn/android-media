@@ -12,6 +12,7 @@ import com.tokopedia.seller.topads.model.data.Product;
 import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.model.data.TotalAd;
 import com.tokopedia.seller.topads.model.request.AdsActionRequest;
+import com.tokopedia.seller.topads.model.request.SearchAdRequest;
 import com.tokopedia.seller.topads.model.request.SearchProductRequest;
 import com.tokopedia.seller.topads.model.request.ShopRequest;
 import com.tokopedia.seller.topads.model.request.StatisticRequest;
@@ -43,7 +44,7 @@ public interface DashboardTopadsInteractor {
 
     void getListProductAds(HashMap<String, String> params, ListenerInteractor<PageDataResponse<List<SingleAd>>> listener);
 
-    void getListGroupAds(HashMap<String, String> params, ListenerInteractor<PageDataResponse<List<GroupAd>>> listener);
+    void getListGroupAds(SearchAdRequest searchAdRequest, ListenerInteractor<List<GroupAd>> listener);
 
     void getDashboardShop(HashMap<String, String> params, ListenerInteractor<DataResponse<SingleAd>> listener);
 

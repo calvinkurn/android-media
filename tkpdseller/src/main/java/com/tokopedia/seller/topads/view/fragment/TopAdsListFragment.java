@@ -21,18 +21,24 @@ import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
+import com.tokopedia.seller.topads.constant.TopAdsConstant;
+import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.presenter.TopAdsListPresenter;
 import com.tokopedia.seller.topads.view.adapter.TopAdsListAdapter;
 import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public abstract class TopAdsListFragment<T extends TopAdsListAdapter, V extends TopAdsListPresenter> extends BasePresenterFragment<V> implements TopAdsListPromoViewListener {
+public abstract class TopAdsListFragment<T extends TopAdsListPresenter> extends BasePresenterFragment<T> implements TopAdsListPromoViewListener {
 
     @BindView(R2.id.list_product)
     RecyclerView listProduct;
@@ -43,7 +49,10 @@ public abstract class TopAdsListFragment<T extends TopAdsListAdapter, V extends 
     @BindView(R2.id.mainView)
     View mainView;
 
-    protected T adapter;
+    protected Date startDate;
+    protected Date endDate;
+
+    protected TopAdsListAdapter adapter;
     private RefreshHandler refresh;
     private ActionMode actionMode;
     private LinearLayoutManager layoutManager;
@@ -114,20 +123,30 @@ public abstract class TopAdsListFragment<T extends TopAdsListAdapter, V extends 
                 super.onScrolled(recyclerView, dx, dy);
                 int lastItemPosition = layoutManager.findLastVisibleItemPosition();
                 int visibleItem = layoutManager.getItemCount() - 1;
-                presenter.loadMore(lastItemPosition, visibleItem);
+                presenter.loadMore(startDate, endDate, lastItemPosition, visibleItem);
             }
         });
     }
 
     @Override
     protected void initialVar() {
+        initialDate();
         refresh = new RefreshHandler(getActivity(), mainView, onRefreshListener());
-        adapter = getAdapter();
+        adapter = new TopAdsListAdapter();
+    }
+
+    private void initialDate() {
+        try {
+            startDate = new SimpleDateFormat(TopAdsConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).parse(getActivity().getIntent().getStringExtra(TopAdsNetworkConstant.PARAM_START_DATE));
+            endDate = new SimpleDateFormat(TopAdsConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).parse(getActivity().getIntent().getStringExtra(TopAdsNetworkConstant.PARAM_END_DATE));
+        } catch (Exception e) {
+
+        }
     }
 
     @Override
     protected void setActionVar() {
-        presenter.getListTopAdsFromNet();
+        presenter.getListTopAdsFromNet(startDate, endDate);
     }
 
     private RefreshHandler.OnRefreshHandlerListener onRefreshListener() {
@@ -139,8 +158,6 @@ public abstract class TopAdsListFragment<T extends TopAdsListAdapter, V extends 
         };
     }
 
-    public abstract T getAdapter();
-
     @MenuRes
     public abstract int getMenuActionSelected();
 
@@ -148,7 +165,7 @@ public abstract class TopAdsListFragment<T extends TopAdsListAdapter, V extends 
 
     @Override
     public void onSearchAdLoaded(@NonNull List adList) {
-
+        adapter.addData(adList);
     }
 
     @Override

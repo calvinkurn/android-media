@@ -12,6 +12,7 @@ import com.bignerdranch.android.multiselector.MultiSelector;
 import com.bignerdranch.android.multiselector.SwappingHolder;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
+import com.tokopedia.seller.topads.model.data.Ad;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,8 +34,8 @@ public class TopAdsViewHolder extends SwappingHolder {
     @BindView(R2.id.total_price_promo)
     public TextView totalPricePromo;
 
-    @BindView(R2.id.price_promo_per_klik)
-    public TextView pricePromoPerKlik;
+    @BindView(R2.id.price_promo_per_click)
+    public TextView pricePromoPerClick;
 
     @BindView(R2.id.check_promo)
     public CheckBox checkedPromo;
@@ -48,6 +49,14 @@ public class TopAdsViewHolder extends SwappingHolder {
     public TopAdsViewHolder(View view) {
         super(view);
         ButterKnife.bind(this, view);
+    }
+
+    public void bindObject(Ad ad) {
+        titleProduct.setText(ad.getName());
+        statusActive.setText(ad.getStatusDesc());
+        promoPriceUsed.setText(ad.getPriceDailyFmt());
+        totalPricePromo.setText(ad.getPriceDailySpentFmt());
+        progressBarPromo.setProgress(2);
     }
 
     public TopAdsViewHolder(Context context, ViewGroup parent, MultiSelector multiSelector){

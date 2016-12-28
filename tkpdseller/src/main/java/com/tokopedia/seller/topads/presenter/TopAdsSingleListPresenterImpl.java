@@ -11,10 +11,12 @@ import com.tokopedia.seller.topads.model.data.DataRequestSingleAd;
 import com.tokopedia.seller.topads.model.data.DataRequestSingleAds;
 import com.tokopedia.seller.topads.model.data.DataResponseActionAds;
 import com.tokopedia.seller.topads.model.request.AdsActionRequest;
+import com.tokopedia.seller.topads.model.request.SearchAdRequest;
 import com.tokopedia.seller.topads.model.response.PageDataResponse;
 import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -27,25 +29,25 @@ public class TopAdsSingleListPresenterImpl extends TopAdsListPresenterImpl<Singl
     }
 
     @Override
-    public void getListTopAdsFromNet() {
-        HashMap<String, String> params = new HashMap<>();
-        params.put(TopAdsNetworkConstant.PARAM_SHOP_ID, SessionHandler.getShopID(context));
-        params.put(TopAdsNetworkConstant.PARAM_START_DATE, "");
-        params.put(TopAdsNetworkConstant.PARAM_END_DATE, "");
-        dashboardTopadsInteractor.getListProductAds(params, new ListenerInteractor<PageDataResponse<List<SingleAd>>>(){
-
-            @Override
-            public void onSuccess(PageDataResponse<List<SingleAd>> productResponse) {
-                if(productResponse != null) {
-                    topAdsListItem.addAll(productResponse.getData());
-                }
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-
-            }
-        });
+    public void getListTopAdsFromNet(Date startDate, Date endDate) {
+        SearchAdRequest searchAdRequest = new SearchAdRequest();
+        searchAdRequest.setStartDate(startDate);
+        searchAdRequest.setEndDate(endDate);
+        searchAdRequest.setShopId(getShopId());
+//        dashboardTopadsInteractor.getListProductAds(searchAdRequest, new ListenerInteractor<PageDataResponse<List<SingleAd>>>(){
+//
+//            @Override
+//            public void onSuccess(PageDataResponse<List<SingleAd>> productResponse) {
+//                if(productResponse != null) {
+//                    topAdsListItem.addAll(productResponse.getData());
+//                }
+//            }
+//
+//            @Override
+//            public void onError(Throwable throwable) {
+//
+//            }
+//        });
     }
 
 

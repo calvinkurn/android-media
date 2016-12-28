@@ -23,6 +23,7 @@ import com.tokopedia.seller.topads.model.data.Product;
 import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.model.data.TotalAd;
 import com.tokopedia.seller.topads.model.request.AdsActionRequest;
+import com.tokopedia.seller.topads.model.request.SearchAdRequest;
 import com.tokopedia.seller.topads.model.request.SearchProductRequest;
 import com.tokopedia.seller.topads.model.request.ShopRequest;
 import com.tokopedia.seller.topads.model.request.StatisticRequest;
@@ -210,9 +211,8 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
     }
 
     @Override
-    public void getListGroupAds(HashMap<String, String> params, final ListenerInteractor<PageDataResponse<List<GroupAd>>> listener) {
-        Observable<Response<PageDataResponse<List<GroupAd>>>> observable = topAdsManagementService.getApi()
-                .getDashboardGroup(params);
+    public void getListGroupAds(SearchAdRequest searchAdRequest, final ListenerInteractor<List<GroupAd>> listener) {
+        Observable<Response<PageDataResponse<List<GroupAd>>>> observable = topAdsManagementService.getApi().getDashboardGroup(searchAdRequest.getParams());
         compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -230,7 +230,7 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
                     @Override
                     public void onNext(Response<PageDataResponse<List<GroupAd>>> response) {
                         if (response.isSuccessful()) {
-                            listener.onSuccess(response.body());
+                            listener.onSuccess(response.body().getData());
                         } else {
                             // TODO Define error
                         }
