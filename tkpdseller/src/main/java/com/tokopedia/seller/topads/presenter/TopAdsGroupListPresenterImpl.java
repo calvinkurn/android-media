@@ -11,7 +11,7 @@ import com.tokopedia.seller.topads.model.data.DataRequestGroupAds;
 import com.tokopedia.seller.topads.model.data.DataResponseActionAds;
 import com.tokopedia.seller.topads.model.data.GroupAd;
 import com.tokopedia.seller.topads.model.request.AdsActionRequest;
-import com.tokopedia.seller.topads.model.response.GroupAdResponse;
+import com.tokopedia.seller.topads.model.response.PageDataResponse;
 import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
 
 import java.util.ArrayList;
@@ -33,10 +33,10 @@ public class TopAdsGroupListPresenterImpl extends TopAdsListPresenterImpl<GroupA
         params.put(TopAdsNetworkConstant.PARAM_SHOP_ID, SessionHandler.getShopID(context));
         params.put(TopAdsNetworkConstant.PARAM_START_DATE, "");
         params.put(TopAdsNetworkConstant.PARAM_END_DATE, "");
-        dashboardTopadsInteractor.getListGroupAds(params, new ListenerInteractor<GroupAdResponse>(){
+        dashboardTopadsInteractor.getListGroupAds(params, new ListenerInteractor<PageDataResponse<List<GroupAd>>>(){
 
             @Override
-            public void onSuccess(GroupAdResponse groupAdResponse) {
+            public void onSuccess(PageDataResponse<List<GroupAd>> groupAdResponse) {
                 if(groupAdResponse != null) {
                     topAdsListItem.addAll(groupAdResponse.getData());
                 }
