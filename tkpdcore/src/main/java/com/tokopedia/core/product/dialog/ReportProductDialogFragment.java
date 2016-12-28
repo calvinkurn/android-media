@@ -309,4 +309,10 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
         if (getActivity() != null)
             getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        retrofitInteractor.unSubscribeObservable();
+    }
 }

@@ -163,7 +163,7 @@ public class Ticker {
         }
 
         public Spanned getMessage() {
-            return Html.fromHtml(message);
+            return MethodChecker.fromHtml(message);
         }
 
         public void setMessage(String message) {

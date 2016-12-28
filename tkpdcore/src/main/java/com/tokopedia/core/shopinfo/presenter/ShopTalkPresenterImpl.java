@@ -296,5 +296,9 @@ public class ShopTalkPresenterImpl implements ShopTalkPresenter {
 
     }
 
+    @Override
+    public void unsubscribe() {
+        networkInteractor.unSubscribeObservable();
+    }
 
 }

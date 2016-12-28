@@ -631,4 +631,8 @@ public interface  TkpdBaseURL {
     interface GoldMerchant{
         String GET_PRODUCT_VIDEO = "/v1/product/video/";
     }
+
+    interface FCM{
+        String UPDATE_FCM = "/api/gcm/update";
+    }
 }

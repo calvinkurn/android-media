@@ -51,6 +51,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.util.MethodChecker;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -276,11 +277,7 @@ public class FabSpeedDial extends LinearLayout implements View.OnClickListener {
             touchGuard.setVisibility(GONE);
 
             if (touchGuardDrawable != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    touchGuard.setBackground(touchGuardDrawable);
-                } else {
-                    touchGuard.setBackgroundDrawable(touchGuardDrawable);
-                }
+                MethodChecker.setBackground(touchGuard, touchGuardDrawable);
             }
 
             if (parent instanceof FrameLayout) {

@@ -21,6 +21,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.myproduct.presenter.ImageGalleryImpl;
 import com.tokopedia.core.myproduct.utils.VerificationUtils;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.selling.model.orderShipping.OrderProduct;
 import com.tokopedia.seller.selling.orderReject.adapter.ProductListAdapter;
 import com.tokopedia.seller.selling.orderReject.model.ModelEditPrice;
@@ -126,7 +127,7 @@ public class EditPriceDialog extends DialogFragment {
         position = getArguments().getInt(ProductListAdapter.POSITION);
         isStockChange = getArguments().getBoolean(ProductListAdapter.STOCK_CHANGE_CONDITION, false);
         checkBox.setChecked(isStockChange);
-        titleTxt.setText(Html.fromHtml("Nama produk: <b>"+title+"<b>"));
+        titleTxt.setText(MethodChecker.fromHtml("Nama produk: <b>"+title+"<b>"));
         price.setText(orderProduct.getProductNormalPrice());
         weight.setText(orderProduct.getProductWeight());
 

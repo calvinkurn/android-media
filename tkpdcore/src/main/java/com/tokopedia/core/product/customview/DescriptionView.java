@@ -13,6 +13,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.product.listener.ProductDetailView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.util.MethodChecker;
 
 import butterknife.BindView;
 
@@ -93,7 +94,7 @@ public class DescriptionView extends BaseView<ProductDetailData, ProductDetailVi
         setVisibility(VISIBLE);
         tvDesc.setAutoLinkMask(0);
         Linkify.addLinks(tvDesc, Linkify.WEB_URLS);
-        tvDesc.setText(Html.fromHtml(tvDesc.getText().toString()));
+        tvDesc.setText(MethodChecker.fromHtml(tvDesc.getText().toString()));
     }
 
     private class ClickToggle implements OnClickListener {

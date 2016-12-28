@@ -2,7 +2,7 @@ package com.tokopedia.discovery.view;
 
 import android.support.v4.util.ArrayMap;
 
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.discovery.presenter.DiscoveryActivityPresenter;
@@ -23,7 +23,8 @@ public interface BrowseProductParentView extends BaseView {
     void setNetworkStateError();
     void setLoadingProgress(boolean isLoading);
     void redirectUrl(BrowseProductModel productModel);
-    void setDynamicFilterAtrribute(DynamicFilterModel.Data filterAtrribute, int activeTab);
+
+    void setDynamicFilterAtrribute(DataValue filterAtrribute, int activeTab);
     void setCurrentTabs(int pos);
     String getProductShareUrl();
     void setSource(String source);

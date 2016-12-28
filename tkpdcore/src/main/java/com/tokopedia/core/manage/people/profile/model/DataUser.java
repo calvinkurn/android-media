@@ -6,6 +6,7 @@ import android.text.Html;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.util.MethodChecker;
 
 public class DataUser implements Parcelable {
 
@@ -52,7 +53,7 @@ public class DataUser implements Parcelable {
      *     The hobby
      */
     public String getHobby() {
-        return Html.fromHtml(hobby).toString();
+        return MethodChecker.fromHtml(hobby).toString();
     }
 
     /**
@@ -88,7 +89,7 @@ public class DataUser implements Parcelable {
      *     The userMessenger
      */
     public String getUserMessenger() {
-        return Html.fromHtml(userMessenger).toString();
+        return MethodChecker.fromHtml(userMessenger).toString();
     }
 
     /**
@@ -142,7 +143,7 @@ public class DataUser implements Parcelable {
      *     The fullName
      */
     public String getFullName() {
-        return Html.fromHtml(fullName).toString();
+        return MethodChecker.fromHtml(fullName).toString();
     }
 
     /**

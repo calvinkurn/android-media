@@ -9,6 +9,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
+import com.tokopedia.core.util.MethodChecker;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -304,7 +305,7 @@ public class Destination implements Parcelable {
      * @return The addressStreet
      */
     public String getAddressStreet() {
-        return Html.fromHtml(addressStreet.replace("\n", "<br/>")).toString();
+        return MethodChecker.fromHtml(addressStreet.replace("\n", "<br/>")).toString();
     }
 
     /**
@@ -343,8 +344,8 @@ public class Destination implements Parcelable {
     }
 
     public String getAddressDetail() {
-        return Html.fromHtml(receiverName)
-                + "<br>" + Html.fromHtml(addressStreet)
+        return MethodChecker.fromHtml(receiverName)
+                + "<br>" + MethodChecker.fromHtml(addressStreet)
                 + "<br>" + districtName
                 + ", " + cityName
                 + ", " + postalCode

@@ -40,6 +40,7 @@ import com.tokopedia.core.inboxreputation.presenter.InboxReputationFormFragmentP
 import com.tokopedia.core.inboxreputation.presenter.InboxReputationFormFragmentPresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 
 import java.util.ArrayList;
@@ -135,7 +136,7 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
 
     @Override
     protected void initView(View view) {
-        productName.setText(Html.fromHtml(inboxReputationDetail.getProductName()));
+        productName.setText(MethodChecker.fromHtml(inboxReputationDetail.getProductName()));
         ImageHandler.LoadImage(productAvatar, inboxReputationDetail.getProductImageUrl());
         adapter = ImageUploadAdapter.createAdapter(getActivity().getApplicationContext());
         adapter.setCanUpload(true);
