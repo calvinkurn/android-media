@@ -55,6 +55,12 @@ def archiveAPK(variant, output) {
     }
 }
 
+assemble {
+    onlyIf {
+        !project.hasProperty('isArtifact')
+    }
+}
+
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }

@@ -39,3 +39,16 @@ task clean(type: Delete) {
 ext {
      artifactoryUrl = 'http://jenkins.tkpd:8081/artifactory'
 }
+
+afterEvaluate {
+    tasks.withType(PublishToMavenRepository).all { publishTask ->
+        publishTask.onlyIf { task ->
+            if (project.plugins.hasPlugin('com.android.application')) {
+                task.enabled = false
+                task.group = null
+                return false
+            }
+            return true
+        }
+    }
+}
