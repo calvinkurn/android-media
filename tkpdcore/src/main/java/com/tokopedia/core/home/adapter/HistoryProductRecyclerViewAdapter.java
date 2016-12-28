@@ -120,12 +120,17 @@ public class HistoryProductRecyclerViewAdapter extends RecyclerView.Adapter<Hist
 
 
     private void setBadges(ViewHolder holder, RecentView data) {
-        if (data.getBadges() != null && holder.badgesContainer.getChildCount() == 0)
-            for (Badge badges : data.getBadges()) {
+        if (holder.badgesContainer !=null && holder.badgesContainer.getChildCount() != 0) {
+            holder.badgesContainer.removeAllViews();
+        }
+        if (data.getBadges() != null) {
+            for (Badge badges : data.getBadges())  {
                 View view = LayoutInflater.from(context).inflate(R.layout.badge_layout_small, null);
                 ImageView imageBadge = (ImageView) view.findViewById(R.id.badge);
                 holder.badgesContainer.addView(view);
                 LuckyShopImage.loadImage(imageBadge, badges.getImageUrl());
             }
+        }
+
     }
 }
