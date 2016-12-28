@@ -14,6 +14,7 @@ import android.util.Log;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
+import com.tokopedia.core.util.MethodChecker;
 
 import java.io.File;
 import java.util.UUID;
@@ -51,7 +52,7 @@ public class UploadImageDialog {
     }
 
     private Uri getOutputMediaFileUri() {
-        return Uri.fromFile(getOutputMediaFile());
+        return MethodChecker.getUri(context, getOutputMediaFile());
     }
 
     private void startActivity(Intent intent, int requestCode) {

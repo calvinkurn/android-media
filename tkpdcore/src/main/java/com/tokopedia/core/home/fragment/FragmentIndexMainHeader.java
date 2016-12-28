@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.home.adapter.HistoryProductRecyclerViewAdapter;
-import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.core.network.entity.home.recentView.RecentView;
 
 import java.util.List;
 
@@ -96,7 +96,7 @@ public class FragmentIndexMainHeader {
         return this;
     }
 
-    public FragmentIndexMainHeader addData(List<ProductItem> listProduct){
+    public FragmentIndexMainHeader addData(List<RecentView> listProduct) {
         if(++step!=STEP_3)
             throw new RuntimeException("initView(int layoutId)");
         this.data.setListProduct(listProduct);
@@ -185,13 +185,13 @@ public class FragmentIndexMainHeader {
     }
 
     private class Data{
-        private List<ProductItem> listProduct;
+        private List<RecentView> listProduct;
 
-        public List<ProductItem> getListProduct() {
+        public List<RecentView> getListProduct() {
             return listProduct;
         }
 
-        public void setListProduct(List<ProductItem> listProduct) {
+        public void setListProduct(List<RecentView> listProduct) {
             this.listProduct = listProduct;
         }
     }

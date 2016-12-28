@@ -20,6 +20,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.customadapter.SpinnerWithImage;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.util.MethodChecker;
 
 import java.util.ArrayList;
 
@@ -148,11 +149,11 @@ public class ReviewForm extends TActivity {
 		if (mProdName == null) {
 			mProductLayout.setVisibility(View.GONE);
 		} else {
-			mProdNameTV.setText(Html.fromHtml(mProdName));
+			mProdNameTV.setText(MethodChecker.fromHtml(mProdName));
 		}
 		mUserView.setText(mUsername);
 		if(isEdit){
-			mWriteMessage.setText(Html.fromHtml(mMessage));
+			mWriteMessage.setText(MethodChecker.fromHtml(mMessage));
 			mTimeView.setText(mCreateTime);
 		}
 		

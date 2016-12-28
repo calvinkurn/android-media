@@ -29,6 +29,7 @@ import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.shipping.model.openshopshipping.OpenShopData;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.shop.ShopEditorActivity;
 import com.tokopedia.seller.shop.presenter.ShopCreatePresenter;
 import com.tokopedia.seller.shop.presenter.ShopCreatePresenterImpl;
@@ -106,7 +107,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
             imageText.setVisibility(View.GONE);
             ImageHandler.loadImageFit2(getActivity()
                     , shopAvatar
-                    , Uri.fromFile(new File(imagePath)).toString());
+                    , MethodChecker.getUri(getActivity(), new File(imagePath)).toString());
             presenter.saveShopAvatarUrl(imagePath);
         }
     }

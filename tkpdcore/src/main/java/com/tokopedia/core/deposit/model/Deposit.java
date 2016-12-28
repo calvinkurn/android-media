@@ -5,6 +5,7 @@ import android.text.Html;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.util.MethodChecker;
 
 public class Deposit {
 
@@ -207,7 +208,7 @@ public class Deposit {
      *     The depositNotes
      */
     public String getDepositNotes() {
-        return Html.fromHtml(depositNotes).toString();
+        return MethodChecker.fromHtml(depositNotes).toString();
     }
 
     /**

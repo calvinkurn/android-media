@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.home.interactor;
 
-import com.tokopedia.core.network.entity.home.ProductFeedData;
 import com.tokopedia.core.network.entity.home.WishlistData;
+import com.tokopedia.core.network.entity.home.recentView.RecentViewData;
 import com.tokopedia.core.var.ShopItem;
 import com.tokopedia.tkpd.home.model.FavoriteTransformData;
 import com.tokopedia.tkpd.home.model.HorizontalShopList;
@@ -20,8 +20,10 @@ public interface CacheHomeInteractor {
     void setProductFeedCache(ProductFeedTransformData productFeedTransformData);
     void getFavoriteCache(GetFavoriteCacheListener listener);
     void setFavoriteCache(FavoriteTransformData favoriteTransformData);
-    void setProdHistoryCache(ProductFeedData productFeedData);
-    ProductFeedData getProdHistoryCache();
+
+    void setProdHistoryCache(RecentViewData productFeedData);
+
+    RecentViewData getProdHistoryCache();
     void setWishListCache(WishlistData wishlistData);
     WishlistData getWishListCache();
 

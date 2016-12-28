@@ -10,6 +10,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.product.listener.ProductDetailView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.util.MethodChecker;
 
 import butterknife.BindView;
 
@@ -52,7 +53,7 @@ public class LastUpdateView extends BaseView<ProductDetailData, ProductDetailVie
 
     @Override
     public void renderData(@NonNull ProductDetailData data) {
-        tvLastUpdate.setText(Html.fromHtml(getContext().getString(R.string.title_last_update_price)
+        tvLastUpdate.setText(MethodChecker.fromHtml(getContext().getString(R.string.title_last_update_price)
                 + " "
                 + data.getInfo().getProductLastUpdate()));
         setVisibility(VISIBLE);

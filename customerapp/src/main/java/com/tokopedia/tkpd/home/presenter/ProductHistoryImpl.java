@@ -6,12 +6,11 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.entity.home.ProductFeedData;
-import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
-import com.tokopedia.core.network.v4.NetworkConfig;
+import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
+import com.tokopedia.core.network.entity.home.recentView.RecentViewData;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractor;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractorImpl;
@@ -41,6 +40,8 @@ public class ProductHistoryImpl implements ProductHistory {
 
     PagingHandler mPaging;
 
+    private final MojitoAuthService mojitoService;
+
     ProductFeedService productFeedService;
 
     CompositeSubscription compositeSubscription = new CompositeSubscription();
@@ -52,6 +53,7 @@ public class ProductHistoryImpl implements ProductHistory {
         mPaging = new PagingHandler();
         productFeedService = new ProductFeedService();
         cache = new CacheHomeInteractorImpl();
+        mojitoService = new MojitoAuthService();
     }
 
     @Override
@@ -147,24 +149,14 @@ public class ProductHistoryImpl implements ProductHistory {
 
     @Override
     public void fetchDataFromInternet(Context context) {
-        NetworkCalculator lastSeenCalculator = new NetworkCalculator(NetworkConfig.GET, context,
-                TkpdBaseURL.Etc.URL_HOME + TkpdBaseURL.Etc.PATH_GET_RECENT_VIEW_PRODUCT)
-                .setIdentity()
-                .compileAllParam()
-                .finish();
-        compositeSubscription.add(productFeedService.getApi().getLastSeenProduct(
-                NetworkCalculator.getContentMd5(lastSeenCalculator),//
-                NetworkCalculator.getDate(lastSeenCalculator),
-                NetworkCalculator.getAuthorization(lastSeenCalculator),
-                NetworkCalculator.getxMethod(lastSeenCalculator),
-                NetworkCalculator.getUserId(context),
-                NetworkCalculator.getDeviceId(context),
-                NetworkCalculator.getHash(lastSeenCalculator),
-                NetworkCalculator.getDeviceTime(lastSeenCalculator))
+        String userId = SessionHandler.getLoginID(context);
+        compositeSubscription.add(mojitoService.getApi()
+                .getRecentViews(userId)
+
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<Response<ProductFeedData>>() {
+                .subscribe(new Subscriber<Response<RecentViewData>>() {
                     @Override
                     public void onCompleted() {
                         if (productHistoryView.isPullToRefresh()) {
@@ -177,16 +169,20 @@ public class ProductHistoryImpl implements ProductHistory {
                         if (productHistoryView.isPullToRefresh()) {
                             productHistoryView.displayPull(false);
                         }
+                        if (cache!=null && cache.getProdHistoryCache() != null) {
+                            setData(cache.getProdHistoryCache());
+                        }
+
                     }
 
                     @Override
-                    public void onNext(Response<ProductFeedData> response) {
-
-                        Log.d("MNORMANSYAH", "onResponse : " + productHistoryView.isPullToRefresh());
+                    public void onNext(Response<RecentViewData> response) {
+                        Log.d(TAG, "onNext() called with: response = [" + response + "]"
+                                + productHistoryView.isPullToRefresh());
 
                         if (response.isSuccessful()) {
-                            ProductFeedData productFeedData = response.body();
-                            if (productFeedData.getMessageError() == null) {
+                            RecentViewData productFeedData = response.body();
+                            if (productFeedData != null) {
                                 setData(productFeedData);
 
                                 if (mPaging.getPage() == 1)
@@ -198,13 +194,13 @@ public class ProductHistoryImpl implements ProductHistory {
     }
 
     @Override
-    public void setData(ProductFeedData productFeedData) {
+    public void setData(RecentViewData recentViewData) {
         if (productHistoryView.isPullToRefresh()) {
             data.clear();
         }
         productHistoryView.displayPull(false);
 
-        data.addAll(productFeedData.getData().getList());
+        data.addAll(recentViewData.getData().getRecentView());
         mPaging.setHasNext(false);// PagingHandler.CheckHasNext(productFeedData.getData().getPagingHandlerModel())
 
         if (mPaging.CheckNextPage()) {
@@ -232,12 +228,8 @@ public class ProductHistoryImpl implements ProductHistory {
 
     @Override
     public void fetchDataFromCache(final Context context) {
-        if (cache.getProdHistoryCache() != null) {
-            setData(cache.getProdHistoryCache());
-        } else {
-            productHistoryView.displayPull(true);
-            fetchDataFromInternet(context);
-        }
+        productHistoryView.displayPull(true);
+        fetchDataFromInternet(context);
 
 //        productHistoryView.displayPull(true);
 //        new android.os.Handler().postDelayed(new Runnable() {

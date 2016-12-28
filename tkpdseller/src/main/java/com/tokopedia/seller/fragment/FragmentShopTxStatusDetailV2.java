@@ -27,6 +27,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.OrderHistoryView;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -196,22 +197,22 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment {
         OrderDestination destination = order.getOrderDestination();
         OrderShipment shipping = order.getOrderShipment();
         OrderShop shop = order.getOrderShop();
-        holder.PaymentMethod.setText(Html.fromHtml(getString(R.string.title_payment_method) + " : <b>" + payment.getPaymentGatewayName() + "</b>"));
+        holder.PaymentMethod.setText(MethodChecker.fromHtml(getString(R.string.title_payment_method) + " : <b>" + payment.getPaymentGatewayName() + "</b>"));
         holder.Invoice.setText(orderdata.getDetailInvoice());
         if (CommonUtils.checkNullForZeroJson(orderdata.getDetailDropshipName())) {
-            holder.SenderName.setText(Html.fromHtml(orderdata.getDetailDropshipName()));
+            holder.SenderName.setText(MethodChecker.fromHtml(orderdata.getDetailDropshipName()));
             holder.SenderPhone.setText(orderdata.getDetailDropshipTelp());
             holder.SenderForm.setVisibility(View.VISIBLE);
         } else {
             holder.SenderForm.setVisibility(View.GONE);
         }
-        holder.BuyerName.setText(Html.fromHtml(customer.getCustomerName()));
+        holder.BuyerName.setText(MethodChecker.fromHtml(customer.getCustomerName()));
         holder.AdditionalCost.setText(orderdata.getDetailTotalAddFeeIdr());
         holder.ShippingCost.setText(orderdata.getDetailShippingPriceIdr());
         holder.Quantity.setText(orderdata.getDetailQuantity() + " item (" + orderdata.getDetailTotalWeight() + " kg)");
         holder.GrandTotal.setText(orderdata.getDetailOpenAmountIdr());
         setRefNum(model.refNum);
-        holder.Destination.setText(Html.fromHtml(shipping.getShipmentName() + " - " + shipping.getShipmentProduct()));
+        holder.Destination.setText(MethodChecker.fromHtml(shipping.getShipmentName() + " - " + shipping.getShipmentProduct()));
         holder.Transaction.setText(payment.getPaymentVerifyDate());
         String phoneTokopedia;
         if (destination.getReceiverPhoneIsTokopedia() == 1) {
@@ -219,12 +220,12 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment {
         } else {
             phoneTokopedia = getString(R.string.title_phone) + " : " + destination.getReceiverPhone();
         }
-        String vDest = Html.fromHtml(destination.getReceiverName()).toString() + "\n" + Html.fromHtml(destination.getAddressStreet().replace("<br/>", "\n").replace("<br>", "\n")).toString()
+        String vDest = MethodChecker.fromHtml(destination.getReceiverName()).toString() + "\n" + MethodChecker.fromHtml(destination.getAddressStreet().replace("<br/>", "\n").replace("<br>", "\n")).toString()
                 + "\n" + destination.getAddressDistrict() + " " + destination.getAddressCity() + ", " + destination.getAddressPostal()
                 + "\n" + destination.getAddressProvince() + "\n" + phoneTokopedia;
         String shippingID = shipping.getShipmentId();
-        String pickupAddress = Html.fromHtml(shop.getAddressStreet())
-                + "\n" + Html.fromHtml(shop.getAddressCity()).toString() + ", " + Html.fromHtml(shop.getAddressPostal())
+        String pickupAddress = MethodChecker.fromHtml(shop.getAddressStreet())
+                + "\n" + MethodChecker.fromHtml(shop.getAddressCity()).toString() + ", " + MethodChecker.fromHtml(shop.getAddressPostal())
                 + "\n" + shop.getAddressProvince()
                 + "\n" + getString(R.string.title_phone) + ":" + shop.getShipperPhone();
         holder.pickupLocationDetail.setText(pickupAddress);
@@ -236,8 +237,8 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment {
             holder.viewPickupLocationCourier.setVisibility(View.GONE);
         }
         vDest = vDest.replaceAll("&#39;", "'");
-        holder.deliveryLocationDetail.setText(Html.fromHtml(vDest));
-        holder.DestinationDetail.setText(Html.fromHtml(vDest));
+        holder.deliveryLocationDetail.setText(MethodChecker.fromHtml(vDest));
+        holder.DestinationDetail.setText(MethodChecker.fromHtml(vDest));
         holder.Track.setVisibility(View.GONE);
         holder.EditRef.setVisibility(View.GONE);
         if (validatingOrderData(orderdata) && holder.RefNumber.length() > 0) {
@@ -427,7 +428,7 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment {
 
     private void setRefNum(String refNum) {
         if (refNum.length() > 0)
-            holder.RefNumber.setText(Html.fromHtml(getString(R.string.title_reference_number)
+            holder.RefNumber.setText(MethodChecker.fromHtml(getString(R.string.title_reference_number)
                     + " : <b>" + refNum + "</b>"));
     }
 
