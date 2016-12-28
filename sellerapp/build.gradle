@@ -72,7 +72,7 @@ android {
         defaultVersionName = "1.0.4";
     }
 
-    compileSdkVersion 24
+    compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion '25'
     useLibrary 'org.apache.http.legacy'
     sourceSets {
@@ -146,8 +146,8 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 24
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled = true
         applicationId "com.tokopedia.sellerapp"
         resConfigs "en", "id"

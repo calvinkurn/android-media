@@ -72,7 +72,7 @@ android {
         defaultVersionName = "2.3.1";
     }
 
-    compileSdkVersion 24
+    compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion '25'
     useLibrary 'org.apache.http.legacy'
     sourceSets {
@@ -146,8 +146,8 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 24
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled = true
         applicationId "com.tokopedia.tkpd"
         resConfigs "en", "id"
@@ -162,13 +162,13 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
     }
-    splits {
-        density {
-            enable allowSplit()
-            exclude "tvdpi", "xxxhdpi", "ldpi" //Add or modify the supported density here`
-            compatibleScreens 'small', 'normal', 'large', 'xlarge' //Discouraged to touch this
-        }
-    }
+//    splits {
+//        density {
+//            enable allowSplit()
+//            exclude "tvdpi", "xxxhdpi", "ldpi" //Add or modify the supported density here`
+//            compatibleScreens 'small', 'normal', 'large', 'xlarge' //Discouraged to touch this
+//        }
+//    }
 }
 
 dependencies {
