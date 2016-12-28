@@ -366,7 +366,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
         super.onDestroyView();
         presenter.unSubscribeFacade();
         KeyboardHandler.DropKeyboard(getActivity(),getView());
-        snackbar.dismiss();
+        if(snackbar!=null && snackbar.isShown()) snackbar.dismiss();
     }
 
     private void storeCacheGTM(String key, String value) {
