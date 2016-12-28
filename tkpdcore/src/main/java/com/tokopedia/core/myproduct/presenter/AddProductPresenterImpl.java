@@ -433,7 +433,7 @@ public class AddProductPresenterImpl implements AddProductPresenter
             ProductWholesalePrice productWholesalePrice = new ProductWholesalePrice();
             productWholesalePrice.setWholesaleMin(produk.getWholesalePriceDBs().get(i).getMin() + "");
             productWholesalePrice.setWholesaleMax(produk.getWholesalePriceDBs().get(i).getMax() + "");
-            productWholesalePrice.setWholesalePrice(produk.getWholesalePriceDBs().get(i).getPriceWholesale() + "");
+            productWholesalePrice.setWholesalePrice(String.format("%.00f", produk.getWholesalePriceDBs().get(i).getPriceWholesale()));
             wholesalePrice.add(productWholesalePrice);
         }
 
