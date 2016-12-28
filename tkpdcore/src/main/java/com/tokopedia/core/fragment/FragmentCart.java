@@ -634,7 +634,7 @@ public class FragmentCart extends TkpdFragment implements CartInterfaces.Fragmen
                 startActivity(BrowseProductRouter.getDefaultBrowseIntent(getActivity()));
             }
         });
-        GetCartInfoRetrofit();
+        GetCartInfoRetrofit(true);
         setLocalyticFlow();
         return view;
     }
@@ -1314,7 +1314,11 @@ public class FragmentCart extends TkpdFragment implements CartInterfaces.Fragmen
         lvContainer.invalidate();
     }
 
-    public void GetCartInfoRetrofit() {
+    public void GetCartInfoRetrofit(boolean initial) {
+        if (initial) {
+            MainView.setVisibility(View.GONE);
+            progressdialog.showDialog();
+        }
         resetCartItemVar();
         cartRetrofitInteractor.getCartInfo(getActivity(),
                 new HashMap<String, String>(),
@@ -1597,7 +1601,7 @@ public class FragmentCart extends TkpdFragment implements CartInterfaces.Fragmen
                                 new NetworkErrorHelper.RetryClickedListener() {
                                     @Override
                                     public void onRetryClicked() {
-                                        GetCartInfoRetrofit();
+                                        GetCartInfoRetrofit(false);
                                     }
                                 }
                         );
@@ -1611,7 +1615,7 @@ public class FragmentCart extends TkpdFragment implements CartInterfaces.Fragmen
                                 new NetworkErrorHelper.RetryClickedListener() {
                                     @Override
                                     public void onRetryClicked() {
-                                        GetCartInfoRetrofit();
+                                        GetCartInfoRetrofit(false);
                                     }
                                 }
                         );
@@ -1625,7 +1629,7 @@ public class FragmentCart extends TkpdFragment implements CartInterfaces.Fragmen
                                 new NetworkErrorHelper.RetryClickedListener() {
                                     @Override
                                     public void onRetryClicked() {
-                                        GetCartInfoRetrofit();
+                                        GetCartInfoRetrofit(false);
                                     }
                                 }
                         );
@@ -1639,7 +1643,7 @@ public class FragmentCart extends TkpdFragment implements CartInterfaces.Fragmen
                                 new NetworkErrorHelper.RetryClickedListener() {
                                     @Override
                                     public void onRetryClicked() {
-                                        GetCartInfoRetrofit();
+                                        GetCartInfoRetrofit(false);
                                     }
                                 }
                         );
@@ -1821,7 +1825,7 @@ public class FragmentCart extends TkpdFragment implements CartInterfaces.Fragmen
                                             cache.applyEditor();
                                         }
                                         dialogInterface.dismiss();
-                                        GetCartInfoRetrofit();
+                                        GetCartInfoRetrofit(false);
                                     }
                                 });
                         myAlertDialog.show();
@@ -2038,7 +2042,7 @@ public class FragmentCart extends TkpdFragment implements CartInterfaces.Fragmen
                                 if (popupMenu != null) {
                                     popupMenu.dismiss();
                                 }
-                                GetCartInfoRetrofit();
+                                GetCartInfoRetrofit(false);
                             }
 
                         });
@@ -2076,7 +2080,7 @@ public class FragmentCart extends TkpdFragment implements CartInterfaces.Fragmen
         interactor.updateCart(context, maps, new PaymentNetInteractor.OnUpdateCart() {
                     @Override
                     public void onSuccess(String message) {
-                        GetCartInfoRetrofit();
+                        GetCartInfoRetrofit(false);
                     }
 
                     @Override
@@ -2108,7 +2112,7 @@ public class FragmentCart extends TkpdFragment implements CartInterfaces.Fragmen
                     @Override
                     public void onSuccess(String message) {
                         CancelEdit();
-                        GetCartInfoRetrofit();
+                        GetCartInfoRetrofit(false);
                     }
 
                     @Override
@@ -2768,7 +2772,7 @@ public class FragmentCart extends TkpdFragment implements CartInterfaces.Fragmen
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (data != null && resultCode == Activity.RESULT_OK) {
-            GetCartInfoRetrofit();
+            GetCartInfoRetrofit(false);
         }
     }
 
