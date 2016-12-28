@@ -825,8 +825,14 @@ public class ProductService extends IntentService implements ProductServiceConst
         // parse here
         EditProductPictureModel editProductPic = null;
         if (checkNotNull(delete)) {
-            TkpdResponse body = delete.body();
-            editProductPic = gson.fromJson(body.getStrResponse(), EditProductPictureModel.class);
+            if(delete.isSuccessful()) {
+                TkpdResponse body = delete.body();
+                editProductPic = gson.fromJson(body.getStrResponse(), EditProductPictureModel.class);
+            }else{
+                throw new RuntimeException(getString(R.string.error_connection_problem));
+            }
+        }else{
+            throw new RuntimeException(getString(R.string.error_connection_problem));
         }
         return editProductPic;
     }
