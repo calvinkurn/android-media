@@ -13,7 +13,7 @@ public class GetPopularProduct {
     private Integer productId;
     @SerializedName("Sold")
     @Expose
-    private Integer sold;
+    private Long sold;
     @SerializedName("View")
     @Expose
     private Integer view;
@@ -59,7 +59,7 @@ public class GetPopularProduct {
      * @return
      * The sold
      */
-    public Integer getSold() {
+    public Long getSold() {
         return sold;
     }
 
@@ -68,7 +68,7 @@ public class GetPopularProduct {
      * @param sold
      * The Sold
      */
-    public void setSold(Integer sold) {
+    public void setSold(Long sold) {
         this.sold = sold;
     }
 

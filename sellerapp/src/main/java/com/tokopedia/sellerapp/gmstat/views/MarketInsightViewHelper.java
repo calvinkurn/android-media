@@ -10,16 +10,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.gmstat.models.GetKeyword;
+import com.tokopedia.sellerapp.gmstat.models.GetShopCategory;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by normansyahputa on 11/23/16.
@@ -39,8 +42,19 @@ public class MarketInsightViewHelper {
     @BindView(R.id.market_insight_footer_)
     TextView marketInsightFooter_;
 
+    @BindView(R.id.market_insight_gold_merchant)
+    LinearLayout marketInsightGoldMerchant;
+
     @BindView(R.id.market_insight_non_gold_merchant)
     LinearLayout marketInsightNonGoldMerchant;
+
+    @BindView(R.id.market_insight_empty_state)
+    LinearLayout marketInsightEmptyState;
+
+    @OnClick(R.id.add_product_market_insight)
+    public void addProductMarketInsight(){
+        Toast.makeText(view.getContext(), "Tambah Produk", Toast.LENGTH_LONG).show();
+    }
 
     private View view;
     private boolean isGoldMerchant;
@@ -62,15 +76,37 @@ public class MarketInsightViewHelper {
 
         HadesV1Model.Category category = hadesV1Models.get(0).getData().getCategories().get(0);
 
-        String categoryBold = String.format("\"<b>%s</b>\"", category.getName());
+        String categoryBold = String.format("\"<i><b>%s</b></i>\"", category.getName());
 //        String footerText = String.format("Kata kunci ini berdasarkan kategori dari \"%s\"", category.getName());
 //        marketInsightFooter_.setText(footerText);
         marketInsightFooter_.setText(Html.fromHtml("Kata kunci ini berdasarkan kategori dari "+categoryBold+" "));
     }
 
     public void bindData(List<GetKeyword> getKeywords){
-        if(getKeywords==null||getKeywords.size()<=0)
+        if(getKeywords==null||getKeywords.size()<=0) {
+            displayEmptyState();
             return;
+        }
+
+        //[START] check whether all is empty
+        int isNotEmpty = 0;
+        for (GetKeyword getKeyword : getKeywords) {
+            if(getKeyword.getSearchKeyword() == null || getKeyword.getSearchKeyword().isEmpty())
+                isNotEmpty++;
+        }
+
+        // if all keyword empty
+        if(isNotEmpty == getKeywords.size()) {
+            displayEmptyState();
+            return;
+        }
+
+        // remove null or empty
+        for(int i=0;i<getKeywords.size();i++){
+            if(getKeywords.get(i) == null || getKeywords.get(i).getSearchKeyword() == null || getKeywords.get(i).getSearchKeyword().isEmpty())
+                getKeywords.remove(i);
+        }
+
 
         GetKeyword getKeyword = getKeywords.get(0);
 
@@ -84,7 +120,25 @@ public class MarketInsightViewHelper {
         // hit hades for detail category
 
         if(isGoldMerchant){
+            marketInsightGoldMerchant.setVisibility(View.VISIBLE);
             marketInsightNonGoldMerchant.setVisibility(View.GONE);
+            marketInsightEmptyState.setVisibility(View.GONE);
+        }else{
+            marketInsightGoldMerchant.setVisibility(View.VISIBLE);
+            marketInsightNonGoldMerchant.setVisibility(View.VISIBLE);
+            marketInsightEmptyState.setVisibility(View.GONE);
+        }
+    }
+
+    public void displayEmptyState() {
+        marketInsightGoldMerchant.setVisibility(View.GONE);
+        marketInsightNonGoldMerchant.setVisibility(View.GONE);
+        marketInsightEmptyState.setVisibility(View.VISIBLE);
+    }
+
+    public void bindData(GetShopCategory getShopCategory) {
+        if(getShopCategory == null || getShopCategory.getShopCategory() == null || getShopCategory.getShopCategory().isEmpty()){
+            displayEmptyState();
         }
     }
 
@@ -106,8 +160,7 @@ public class MarketInsightViewHelper {
         @Override
         public MarketInsightViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View inflate = LayoutInflater.from(parent.getContext()).inflate(
-                    R.layout.market_insight_item_layout, parent, false
-            );
+                    R.layout.market_insight_item_layout, parent, false);
             return new MarketInsightViewHolder(inflate);
         }
 

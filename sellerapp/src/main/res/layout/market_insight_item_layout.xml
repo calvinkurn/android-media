@@ -24,7 +24,7 @@
     <ImageView
         android:layout_width="7.1dp"
         android:layout_height="7.1dp"
-        app:srcCompat="@drawable/com_facebook_profile_picture_blank_portrait"
+        app:srcCompat="@drawable/ic_search_icon"
         android:layout_toLeftOf="@id/market_insight_number"
         android:id="@+id/zoom_icon" />
 

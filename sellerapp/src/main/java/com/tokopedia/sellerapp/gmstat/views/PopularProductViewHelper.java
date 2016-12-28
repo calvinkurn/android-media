@@ -3,7 +3,9 @@ package com.tokopedia.sellerapp.gmstat.views;
 import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.sellerapp.R;
@@ -46,6 +48,12 @@ public class PopularProductViewHelper {
     TextView xSold;
     private GetPopularProduct getPopularProduct;
 
+    @BindView(R.id.footer_popular_product)
+    TextView footerPopularProduct;
+
+    @BindView(R.id.popular_product_empty_state)
+    LinearLayout popularProductEmptyState;
+
     @OnClick({R.id.image_popular_product, R.id.text_popular_product})
     public void gotoProductDetail(){
         if(getPopularProduct == null)
@@ -57,10 +65,17 @@ public class PopularProductViewHelper {
     public PopularProductViewHelper(View itemView){
         ButterKnife.bind(this, itemView);
         this.itemView = itemView;
+
+        String categoryBold = String.format("\"<i><b>%s</b></i>\"", "Data dalam 30 hari terakhir");
+        footerPopularProduct.setText(Html.fromHtml(categoryBold));
     }
 
     public void bindData(GetPopularProduct getPopularProduct, ImageHandler imageHandler){
         this.getPopularProduct = getPopularProduct;
+        if(getPopularProduct == null || getPopularProduct.getProductId() == 0){
+            popularProductEmptyState.setVisibility(View.VISIBLE);
+            return;
+        }
 
         dataProductTitle.setText("Data Produk");
         textPopularProduct.setText("Produk terlaris");
@@ -75,12 +90,12 @@ public class PopularProductViewHelper {
 
     public static String getFormattedString(long value) {
         String text = "";
-        if( value <= 1_000_000){
+        if( value < 1_000_000){
             Locale locale = new Locale("in", "ID");
             NumberFormat currencyFormatter = NumberFormat.getNumberInstance(locale);
             System.out.println(text = (currencyFormatter.format(value)));
 //                text = successTrans+"";
-        }else if(value > 1_000_000){
+        }else if(value >= 1_000_000){
             text = KMNumbers2.formatNumbers(value);
         }
         return text;

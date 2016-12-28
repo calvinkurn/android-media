@@ -66,6 +66,9 @@ public class BuyerDataViewHelper {
     @BindArray(R.array.gender)
     String[] gender;
 
+    @BindView(R.id.header_pie_buyer_data)
+    TextView headerPieBuyerData;
+
     public BuyerDataViewHelper(View itemView){
         this.itemView = itemView;
         ButterKnife.bind(this, itemView);
@@ -77,11 +80,25 @@ public class BuyerDataViewHelper {
     }
 
     public void bindData(GetBuyerData getBuyerData, ImageHandler imageHandler) {
+
+        /* this is empty state */
         if(getBuyerData.getTotalBuyer()==0 &&
                 (getBuyerData.getMaleBuyer()==0 || getBuyerData.getFemaleBuyer()==0)){
-            malePie.setText(String.format("%.2f%% Pria", "0"));
-            femalePie.setText(String.format("%.2f%%", "0"));
+            buyerCount.setText(getFormattedString(getBuyerData.getTotalBuyer())+"");
+            femalePie.setTextColor(gredyColor);
+            femalePie.setText("0 %");
+            malePie.setVisibility(View.GONE);
+            percentageBuyer.setText("Tidak ada data");
+            percentageBuyer.setTextColor(gredyColor);
+            buyerCountIcon.setVisibility(View.INVISIBLE);
+            headerPieBuyerData.setVisibility(View.GONE);
+//            malePie.setText(String.format("%.2f%% Pria", 0.0f));
+//            femalePie.setText(String.format("%.2f%%", 0.0f));
+
+            return;
         }else{
+            femalePie.setTextColor(arrowDown);
+
             double malePercentage = (double)getBuyerData.getMaleBuyer() / (double)getBuyerData.getTotalBuyer();
             double malePercent = Math.floor((malePercentage * 100) + 0.5);
 

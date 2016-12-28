@@ -17,7 +17,7 @@ public class GetBuyerData {
 
     @SerializedName("TotalBuyer")
     @Expose
-    private Integer totalBuyer;
+    private Long totalBuyer;
     @SerializedName("MaleBuyer")
     @Expose
     private Integer maleBuyer;
@@ -78,7 +78,7 @@ public class GetBuyerData {
      * @return
      * The totalBuyer
      */
-    public Integer getTotalBuyer() {
+    public Long getTotalBuyer() {
         return totalBuyer;
     }
 
@@ -87,7 +87,7 @@ public class GetBuyerData {
      * @param totalBuyer
      * The TotalBuyer
      */
-    public void setTotalBuyer(Integer totalBuyer) {
+    public void setTotalBuyer(Long totalBuyer) {
         this.totalBuyer = totalBuyer;
     }
 

@@ -8,7 +8,7 @@ public class GetTransactionGraph {
 
     @SerializedName("SuccessTrans")
     @Expose
-    private Integer successTrans;
+    private Long successTrans;
     @SerializedName("NewOrder")
     @Expose
     private Integer newOrder;
@@ -115,11 +115,11 @@ public class GetTransactionGraph {
     @Expose
     private List<Integer> pAdsSGraph = null;
 
-    public Integer getSuccessTrans() {
+    public Long getSuccessTrans() {
         return successTrans;
     }
 
-    public void setSuccessTrans(Integer successTrans) {
+    public void setSuccessTrans(Long successTrans) {
         this.successTrans = successTrans;
     }
 

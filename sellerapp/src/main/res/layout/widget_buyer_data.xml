@@ -117,6 +117,7 @@
                 android:layout_toRightOf="@id/buyer_data_pie_chart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/data_buyer_container_inner"
                 android:orientation="vertical">
 
                 <TextView
@@ -124,8 +125,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#ff5722"
-                    android:textSize="24sp"/>
+                    android:textSize="24sp"
+                    android:text="0 %" />
                 <TextView
+                    android:id="@+id/header_pie_buyer_data"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Wanita"

@@ -138,7 +138,9 @@ public class GMStatActivityFragment extends Fragment {
     GMStatNetworkController.GetGMStat gmStatListener = new GMStatNetworkController.GetGMStat() {
         @Override
         public void onSuccessGetShopCategory(GetShopCategory getShopCategory) {
-
+            marketInsightReal.setVisibility(View.VISIBLE);
+            marketInsightLoading2.hideLoading();
+            marketInsightViewHelper.bindData(getShopCategory);
         }
 
         @Override

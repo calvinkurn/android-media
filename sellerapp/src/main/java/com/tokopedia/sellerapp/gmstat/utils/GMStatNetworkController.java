@@ -237,6 +237,14 @@ public class GMStatNetworkController extends BaseNetworkController {
                             keywordModel.getShopCategory = response.body();
                             keywordModel.getShopCategoryResponse = response;
 
+                            if(keywordModel.getShopCategory == null || keywordModel.getShopCategory.getShopCategory() == null
+                                    || keywordModel.getShopCategory.getShopCategory().isEmpty())
+                            {
+                                keywordModel.getResponseList = new ArrayList<Response<GetKeyword>>();
+                                keywordModel.hadesv1Models = new ArrayList<HadesV1Model>();
+                                return Observable.just(keywordModel);
+                            }
+
                             Observable<List<Response<HadesV1Model>>> getCategories = Observable.from(response.body().getShopCategory()).flatMap(
                                     new Func1<Integer, Observable<Response<HadesV1Model>>>() {
                                         @Override
@@ -474,6 +482,9 @@ public class GMStatNetworkController extends BaseNetworkController {
                                         GetShopCategory getShopCategory = keywordModel.getShopCategory;
                                         getGMStat.onSuccessGetShopCategory(getShopCategory);
 
+                                        if(getShopCategory == null || getShopCategory.getShopCategory() == null || getShopCategory.getShopCategory().isEmpty())
+                                            return;
+
                                         List<GetKeyword> getKeywords = keywordModel.getKeywords;
                                         getGMStat.onSuccessGetKeyword(getKeywords);
 
@@ -579,6 +590,9 @@ public class GMStatNetworkController extends BaseNetworkController {
                                         KeywordModel keywordModel = (KeywordModel) responses.get(4);
                                         GetShopCategory getShopCategory = keywordModel.getShopCategory;
                                         getGMStat.onSuccessGetShopCategory(getShopCategory);
+
+                                        if(getShopCategory == null || getShopCategory.getShopCategory() == null || getShopCategory.getShopCategory().isEmpty())
+                                            return;
 
                                         List<GetKeyword> getKeywords = keywordModel.getKeywords;
                                         getGMStat.onSuccessGetKeyword(getKeywords);

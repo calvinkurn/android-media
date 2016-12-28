@@ -24,6 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_marginLeft="8dp"
             android:paddingTop="3dp"
+            android:textColor="#42b549"
             android:layout_height="wrap_content"
             android:text="Data Transaksi"/>
 
@@ -69,7 +70,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/buyer_number_header"
-                    android:text="999,9jt"
+                    android:text="0"
                     android:layout_marginBottom="20dp"
                     android:textColor="#B2000000"
                     android:textSize="24sp"/>

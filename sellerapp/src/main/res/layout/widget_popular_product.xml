@@ -99,4 +99,52 @@
         android:layout_alignBottom="@+id/number_of_selling"
         android:layout_toRightOf="@+id/number_of_selling"
         android:layout_toEndOf="@+id/number_of_selling" />
+
+    <TextView
+        android:text="Data dalam 30 hari terakhir"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="11sp"
+        android:layout_below="@+id/image_popular_product"
+        android:layout_alignLeft="@+id/image_popular_product"
+        android:layout_alignStart="@+id/image_popular_product"
+        android:id="@+id/footer_popular_product" />
+
+    <LinearLayout
+        android:id="@+id/popular_product_empty_state"
+        android:layout_width="match_parent"
+        android:layout_height="149dp"
+        android:orientation="vertical"
+        android:background="#f9f9f9"
+        android:gravity="center"
+        android:visibility="gone"
+        android:layout_below="@id/separator_1"
+        >
+
+        <ImageView
+            android:layout_width="113dp"
+            android:layout_height="54dp"
+            app:srcCompat="@drawable/icon_g_m_seller_app_produk_empty_03_04"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textSize="16sp"
+            android:text="Tidak ada data produk pada periode ini"
+            android:textColor="#61000000"
+            android:gravity="center"
+            />
+
+        <TextView
+            android:id="@+id/add_product_popular_product"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#42b549"
+            android:layout_marginTop="13dp"
+            android:text="Tambah Produk"
+            android:textSize="20sp"/>
+
+    </LinearLayout>
+
 </RelativeLayout>

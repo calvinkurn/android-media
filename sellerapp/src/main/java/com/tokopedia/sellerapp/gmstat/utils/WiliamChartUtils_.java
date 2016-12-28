@@ -62,6 +62,9 @@ public class WiliamChartUtils_ {
         }
     };
 
+    private static final int GREEN_COLOR = Color.rgb(66,181,73);
+    private static final int GREY_COLOR = Color.rgb(189,189,189);
+
 
     public WiliamChartUtils_(String[] mLabels, float[] mValues){
         if(mLabels == null)
@@ -106,7 +109,13 @@ public class WiliamChartUtils_ {
         mOverlapOrder = mEqualOrder;
     }
 
-    public ChartView buildLineChart(LineChartView chart , int bottomMargin) {
+    public ChartView buildLineChart(LineChartView chart, int bottomMargin, boolean emptyState) {
+
+        if(emptyState){
+            mLineColorId = GREY_COLOR;
+        }else{
+            mLineColorId = GREEN_COLOR;
+        }
 
         chart.reset();
 

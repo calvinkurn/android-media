@@ -1,7 +1,10 @@
 package com.tokopedia.sellerapp.gmstat.views;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.AppCompatDrawableManager;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,11 +22,9 @@ import java.util.List;
 
 import butterknife.BindArray;
 import butterknife.BindColor;
-import butterknife.BindDrawable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.tokopedia.core.talkview.fragment.TalkViewFragment.dpToPx;
 import static com.tokopedia.sellerapp.gmstat.views.GMStatActivityFragment.NoDataAvailable;
 import static com.tokopedia.sellerapp.gmstat.views.PopularProductViewHelper.getFormattedString;
 
@@ -98,6 +99,19 @@ public class DataTransactionViewHelper {
     }
 
     public void bindData(GetTransactionGraph getTransactionGraph){
+        /* empty state */
+        if(getTransactionGraph == null || getTransactionGraph.getSuccessTrans() == 0){
+
+            transactionCountIcon.setVisibility(View.INVISIBLE);
+            percentage.setTextColor(gredyColor);
+            percentage.setText("Tidak ada data");
+
+
+            displayGraphic(getTransactionGraph, true);
+            return;
+        }
+
+        /* non empty state */
         transactionCount.setText(getFormattedString(getTransactionGraph.getSuccessTrans())+"");
 
         // percentage is missing and icon is missing too
@@ -136,6 +150,10 @@ public class DataTransactionViewHelper {
             percentage.setText("Tidak ada data");
         }
 
+        displayGraphic(getTransactionGraph, false);
+    }
+
+    public void displayGraphic(GetTransactionGraph getTransactionGraph, boolean emptyState) {
         List<NExcel> nExcels = joinDateAndGrossGraph(getTransactionGraph.getDateGraph(), getTransactionGraph.getSuccessTransGraph());
         if(nExcels == null)
             return;
@@ -156,7 +174,7 @@ public class DataTransactionViewHelper {
         williamChartUtils.setmValues(mValues);
 
         int bottomMargin = 5;
-        williamChartUtils.buildChart(williamChartUtils.buildLineChart(transactionChart, (int) dpToPx(itemView.getContext(), bottomMargin)));
+        williamChartUtils.buildChart(williamChartUtils.buildLineChart(transactionChart, (int) dpToPx(itemView.getContext(), bottomMargin), emptyState));
         //[END] try used willam chart
     }
 
@@ -180,5 +198,10 @@ public class DataTransactionViewHelper {
         }
 
         return nExcels;
+    }
+
+    public static float dpToPx(Context context, float valueInDp) {
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, valueInDp, metrics);
     }
 }
