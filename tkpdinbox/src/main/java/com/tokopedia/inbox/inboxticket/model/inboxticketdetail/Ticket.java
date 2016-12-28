@@ -5,6 +5,7 @@ import android.text.Html;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.util.MethodChecker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -150,7 +151,7 @@ public class Ticket {
      * @return The ticketFirstMessage
      */
     public String getTicketFirstMessage() {
-        return ticketFirstMessage == null ? "" : Html.fromHtml(ticketFirstMessage).toString();
+        return ticketFirstMessage == null ? "" : MethodChecker.fromHtml(ticketFirstMessage).toString();
     }
 
     /**

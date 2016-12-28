@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.product.model.passdata.ProductPass;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.selling.model.shopconfirmationdetail.ShippingConfirmDetModel;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.R;
@@ -83,10 +84,10 @@ public class ListViewShopOrderDetail extends BaseAdapter{
 
 		final ShippingConfirmDetModel.Data data = (ShippingConfirmDetModel.Data)getItem(position);
 		//holder.NotesName.setText(NotesListString.get(position));
-		holder.ProductName.setText(Html.fromHtml(data.NameList).toString());
+		holder.ProductName.setText(MethodChecker.fromHtml(data.NameList).toString());
 		holder.ProductPrice.setText(data.PriceList);
 		if(!data.MessageList.equals("null") && CommonUtils.checkNullForZeroJson(data.MessageList))
-			holder.Message.setText(Html.fromHtml(data.MessageList));
+			holder.Message.setText(MethodChecker.fromHtml(data.MessageList));
 		else
 			holder.Message.setText("-");
 		holder.TotalOrder.setText(" x " + data.TtlOrderList + " " + context.getString(R.string.title_item));

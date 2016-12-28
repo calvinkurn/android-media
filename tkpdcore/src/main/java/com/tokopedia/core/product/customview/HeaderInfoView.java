@@ -12,6 +12,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.product.listener.ProductDetailView;
 import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.util.MethodChecker;
 
 import butterknife.BindView;
 
@@ -71,7 +72,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
 
     @Override
     public void renderData(@NonNull ProductDetailData data) {
-        tvName.setText(Html.fromHtml(data.getInfo().getProductName()));
+        tvName.setText(MethodChecker.fromHtml(data.getInfo().getProductName()));
         tvPrice.setText(data.getInfo().getProductPrice());
         titleViewed.setVisibility(VISIBLE);
         titleSold.setVisibility(VISIBLE);

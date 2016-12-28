@@ -37,6 +37,7 @@ import com.tokopedia.core.shopinfo.facades.GetShopProductRetrofit;
 import com.tokopedia.core.shopinfo.models.GetShopProductParam;
 import com.tokopedia.core.shopinfo.models.etalasemodel.EtalaseModel;
 import com.tokopedia.core.shopinfo.models.productmodel.ProductModel;
+import com.tokopedia.core.util.MethodChecker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -317,11 +318,11 @@ public class ProductList extends V2BaseFragment {
             int totalEtalase = etalaseModel.list.size();
             int totalOtherEtalase = etalaseModel.listOther.size();
             for (int i = 0; i < totalOtherEtalase; i++) {
-                etalaseNameList.add(Html.fromHtml(etalaseModel.listOther.get(i).etalaseName).toString());
+                etalaseNameList.add(MethodChecker.fromHtml(etalaseModel.listOther.get(i).etalaseName).toString());
                 etalaseIdList.add(etalaseModel.listOther.get(i).etalaseId);
             }
             for (int i = 0; i < totalEtalase; i++) {
-                etalaseNameList.add(Html.fromHtml(etalaseModel.list.get(i).etalaseName).toString());
+                etalaseNameList.add(MethodChecker.fromHtml(etalaseModel.list.get(i).etalaseName).toString());
                 etalaseIdList.add(etalaseModel.list.get(i).etalaseId);
             }
         } else {

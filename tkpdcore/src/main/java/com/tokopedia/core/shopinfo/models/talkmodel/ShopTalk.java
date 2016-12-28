@@ -8,6 +8,7 @@ import android.text.Spanned;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.util.MethodChecker;
 
 public class ShopTalk implements Parcelable {
 
@@ -191,7 +192,7 @@ public class ShopTalk implements Parcelable {
      * @return The talkMessage
      */
     public String getTalkMessage() {
-        return Html.fromHtml(talkMessage).toString();
+        return MethodChecker.fromHtml(talkMessage).toString();
     }
 
     /**
@@ -247,7 +248,7 @@ public class ShopTalk implements Parcelable {
      * @return The talkProductName
      */
     public String getTalkProductName() {
-        return Html.fromHtml(talkProductName).toString();
+        return MethodChecker.fromHtml(talkProductName).toString();
     }
 
     /**
@@ -373,7 +374,7 @@ public class ShopTalk implements Parcelable {
      * @return The talkUserName
      */
     public String getTalkUserName() {
-        return Html.fromHtml(talkUserName).toString();
+        return MethodChecker.fromHtml(talkUserName).toString();
     }
 
     /**
@@ -412,7 +413,7 @@ public class ShopTalk implements Parcelable {
     }
 
     public Spanned getTalkMessageSpanned() {
-        return Html.fromHtml(talkMessage);
+        return MethodChecker.fromHtml(talkMessage);
     }
 
     public int getPosition() {

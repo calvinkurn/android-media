@@ -35,6 +35,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MultiPaneActivity;
 import com.tokopedia.core.product.model.passdata.ProductPass;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.customadapter.ListViewShopTxDetailProdListV2;
 import com.tokopedia.seller.selling.view.activity.SellingDetailActivity;
 import com.tokopedia.core.network.v4.NetworkConfig;
@@ -65,6 +66,7 @@ import com.tokopedia.core.var.TkpdState;
 
 import org.parceler.Parcels;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -344,12 +346,12 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
 //            if(Build.VERSION.SDK_INT >= 24) {
 //                holder.buyerRequestCancel.setText("\"" + Html.fromHtml(orderDetail.getDetailCancelRequest().getReason(), Html.) + "\"");
 //            }else{
-                holder.buyerRequestCancel.setText("\"" + Html.fromHtml(orderDetail.getDetailCancelRequest().getReason()) + "\"");
+                holder.buyerRequestCancel.setText("\"" + MethodChecker.fromHtml(orderDetail.getDetailCancelRequest().getReason()) + "\"");
 //            }
             holder.dateRequestCancel.setText(orderDetail.getDetailCancelRequest().getReasonTime());
         }
 
-        holder.BuyerName.setText(Html.fromHtml(customer.getCustomerName()));
+        holder.BuyerName.setText(MethodChecker.fromHtml(customer.getCustomerName()));
         userId = customer.getCustomerId();
         holder.AdditionalCost.setText(orderDetail.getDetailAdditionalFeeIdr());
         if (!orderDetail.getDetailInsurancePrice().equals("0") && orderDetail.getDetailInsurancePrice() != null
@@ -368,7 +370,7 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
             phoneTokopedia = getString(R.string.title_phone) + " " + destination.getReceiverPhone();
         model = new Model();
         model.shippingID = shipping.getShipmentId();
-        model.pickupAddress = Html.fromHtml(shop.getAddressStreet()
+        model.pickupAddress = MethodChecker.fromHtml(shop.getAddressStreet()
                 + "<br/>" + shop.getAddressCity() + ", " + shop.getAddressPostal()
                 + "<br/>" + shop.getAddressProvince()
                 + "<br/>" + getString(R.string.title_phone) + ":" + shop.getShipperPhone()
@@ -376,7 +378,7 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         model.shippingName = shipping.getShipmentName();
         model.shippingProduct = shipping.getShipmentProduct();
         holder.Destination.setText(model.shippingName + " - " + model.shippingProduct);
-        String vDest = Html.fromHtml(
+        String vDest = MethodChecker.fromHtml(
                 destination.getReceiverName()
                         + "<br/>" + destination.getAddressStreet()
                         + "<br/>" + destination.getAddressDistrict() + " " + destination.getAddressCity() + ", " + destination.getAddressPostal()
@@ -661,9 +663,9 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         TextView msg = (TextView) promptsView.findViewById(R.id.msg);
         Spanned textError;
         //if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-        //  textError = Html.fromHtml(error, Html.FROM_HTML_MODE_LEGACY);
+          //  textError = MethodChecker.fromHtml(error, Html.FROM_HTML_MODE_LEGACY);
         //} else {
-        textError = Html.fromHtml(error);
+        textError = MethodChecker.fromHtml(error);
         //}
         msg.setText(textError);
         dialog.setView(promptsView);
@@ -788,11 +790,11 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
                 model.ProductUrl = product.getProductUrl();
                 model.ProductIdList = product.getProductId().toString();
                 model.ImageUrl = product.getProductPicture();
-                model.Name = Html.fromHtml(product.getProductName()).toString();
+                model.Name = MethodChecker.fromHtml(product.getProductName()).toString();
                 model.Price = product.getProductPrice();
                 model.TotalOrder = product.getProductQuantity().toString();
                 model.TotalPrice = product.getOrderSubtotalPriceIdr();
-                model.Message = CommonUtils.checkNullForZeroJson(product.getProductNotes()) ? Html.fromHtml(product.getProductNotes()).toString() : "";
+                model.Message = CommonUtils.checkNullForZeroJson(product.getProductNotes()) ? MethodChecker.fromHtml(product.getProductNotes()).toString() : "";
                 list.add(model);
             }
         } catch (Exception e) {

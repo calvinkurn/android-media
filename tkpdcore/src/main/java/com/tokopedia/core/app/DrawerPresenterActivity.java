@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.GCMListenerService.NotificationListener;
+import com.tokopedia.core.gcm.FCMMessagingService.NotificationListener;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 

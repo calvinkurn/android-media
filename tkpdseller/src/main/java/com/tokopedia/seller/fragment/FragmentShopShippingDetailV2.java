@@ -37,6 +37,7 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.product.model.passdata.ProductPass;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.ShippingConfirmationDetail;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -288,9 +289,9 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
 
     private void setViewDataV4() {
         OrderDetail orderDetail = orderShippingList.getOrderDetail();
-        totalItem.setText(Html.fromHtml(getString(R.string.title_total_item) + ": <b>" + orderDetail.getDetailQuantity() + " ( " + orderDetail.getDetailTotalWeight() + "kg )</b>"));
+        totalItem.setText(MethodChecker.fromHtml(getString(R.string.title_total_item) + ": <b>" + orderDetail.getDetailQuantity() + " ( " + orderDetail.getDetailTotalWeight() + "kg )</b>"));
         invoice.setText(orderDetail.getDetailInvoice());
-        value.setText(Html.fromHtml(getString(R.string.title_transaction_value) + " : <b>" + orderDetail.getDetailOpenAmountIdr() + "</b>"));
+        value.setText(MethodChecker.fromHtml(getString(R.string.title_transaction_value) + " : <b>" + orderDetail.getDetailOpenAmountIdr() + "</b>"));
 
         if (CommonUtils.checkNullForZeroJson(orderDetail.getDetailDropshipName())
                 && CommonUtils.checkNullForZeroJson(orderDetail.getDetailDropshipTelp())) {
@@ -317,8 +318,8 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
         }
 
         OrderDestination orderDestination = orderShippingList.getOrderDestination();
-        receiverName.setText(Html.fromHtml(orderDestination.getReceiverName()));
-        String vDest = Html.fromHtml(orderDestination.getAddressStreet()).toString()
+        receiverName.setText(MethodChecker.fromHtml(orderDestination.getReceiverName()));
+        String vDest = MethodChecker.fromHtml(orderDestination.getAddressStreet()).toString()
                 + "\n" + orderDestination.getAddressDistrict() + "    " + orderDestination.getAddressCity() + ", " + orderDestination.getAddressPostal()
                 + "\n" + orderDestination.getAddressProvince() + "\n" + getString(R.string.title_phone) + " : " + orderDestination.getReceiverPhone();
         vDest = vDest.replaceAll("&#39;", "'");
@@ -327,8 +328,8 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
         deliveryLocationDetail.setText(vDest);
 
         OrderShop orderShop = orderShippingList.getOrderShop();
-        pickupAddress = Html.fromHtml(orderShop.getAddressStreet())
-                + "\n" + Html.fromHtml(orderShop.getAddressCity()).toString() + ", " + Html.fromHtml(orderShop.getAddressPostal())
+        pickupAddress = MethodChecker.fromHtml(orderShop.getAddressStreet())
+                + "\n" + MethodChecker.fromHtml(orderShop.getAddressCity()).toString() + ", " + MethodChecker.fromHtml(orderShop.getAddressPostal())
                 + "\n" + orderShop.getAddressProvince()
                 + "\n" + getString(R.string.title_phone) + ":" + orderShop.getShipperPhone();
 

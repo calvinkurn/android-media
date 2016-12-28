@@ -12,6 +12,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.customadapter.ListViewOrderStatus;
 import com.tokopedia.seller.selling.model.shopconfirmationdetail.*;
 
@@ -118,9 +119,9 @@ public class OrderHistoryView extends TActivity {
                 } else {
                     state = Status.getString("state_seller").replace("<br>", "\n").replace("<br/>", "\n");
                 }
-                state = Html.fromHtml(state).toString();
+                state = MethodChecker.fromHtml(state).toString();
                 StateList.add(state);
-                CommentList.add(Html.fromHtml(Status.getString("comments")).toString());
+                CommentList.add(MethodChecker.fromHtml(Status.getString("comments")).toString());
                 if (StatusList.length() == 1) break;
             }
         } catch (JSONException e) {
@@ -151,7 +152,7 @@ public class OrderHistoryView extends TActivity {
                 } else {
                     state = Status.getString("history_seller_status").replace("<br>", "\n").replace("<br/>", "\n");
                 }
-                state = Html.fromHtml(state).toString();
+                state = MethodChecker.fromHtml(state).toString();
                 StateList.add(state);
                 if (preOrder != null) {
                     if (preOrder.getInt("preorder_status") == 1 && Status.getInt("history_order_status") == 400) {
@@ -164,7 +165,7 @@ public class OrderHistoryView extends TActivity {
                     }
                 } else {
                     CommentList.add(Status.getString("history_comments").equals("0") ? ""
-                            : Html.fromHtml(Status.getString("history_comments")).toString());
+                            : MethodChecker.fromHtml(Status.getString("history_comments")).toString());
                 }
                 if (StatusList.length() == 1) break;
             }
@@ -210,9 +211,9 @@ public class OrderHistoryView extends TActivity {
                 } else {
                     state = Status.getHistorySellerStatus().replace("<br>", "\n").replace("<br/>", "\n");
                 }
-                state = Html.fromHtml(state).toString();
+                state = MethodChecker.fromHtml(state).toString();
                 StateList.add(state);
-                CommentList.add(Html.fromHtml(Status.getHistoryComments()).toString());
+                CommentList.add(MethodChecker.fromHtml(Status.getHistoryComments()).toString());
                 if (StatusList.size() == 1) break;
             }
     }
@@ -239,10 +240,10 @@ public class OrderHistoryView extends TActivity {
                 } else {
                     state = Status.getHistorySellerStatus().replace("<br>", "\n").replace("<br/>", "\n");
                 }
-                state = Html.fromHtml(state).toString();
+                state = MethodChecker.fromHtml(state).toString();
                 StateList.add(state);
 //                CommentList.add(Status.getHistoryComments().equals("0") ? ""
-//                        : Html.fromHtml(Status.getHistoryComments()).toString());
+//                        : MethodChecker.fromHtml(Status.getHistoryComments()).toString());
                 try {
                     if (preOrder != null) {
                         if (preOrder.getInt("preorder_status") == 1 && Integer.parseInt(Status.getHistoryOrderStatus()) == 400) {
@@ -255,7 +256,7 @@ public class OrderHistoryView extends TActivity {
                         }
                     } else {
                         CommentList.add(Status.getHistoryComments().equals("0") ? ""
-                                : Html.fromHtml(Status.getHistoryComments()).toString());
+                                : MethodChecker.fromHtml(Status.getHistoryComments()).toString());
                     }
                 }catch(JSONException jse){
                     jse.printStackTrace();

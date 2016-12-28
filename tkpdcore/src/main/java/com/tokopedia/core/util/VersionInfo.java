@@ -49,7 +49,7 @@ public class VersionInfo {
         String joinString = context.getString(R.string.link_term_condition) +
                 "<br>" + context.getString(R.string.link_privacy_policy);
         TextView textTermAndPolicy = (TextView) view.findViewById(R.id.term_policy);
-        textTermAndPolicy.setText(Html.fromHtml(joinString));
+        textTermAndPolicy.setText(MethodChecker.fromHtml(joinString));
         textTermAndPolicy.setClickable(true);
         textTermAndPolicy.setMovementMethod(LinkMovementMethod.getInstance());
     }

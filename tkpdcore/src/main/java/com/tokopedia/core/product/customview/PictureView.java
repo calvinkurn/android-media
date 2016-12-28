@@ -18,6 +18,7 @@ import com.tokopedia.core.product.listener.ProductDetailView;
 import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ProductImage;
+import com.tokopedia.core.util.MethodChecker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,8 +110,8 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
         public void onItemImageClicked(ProductImage productImage, int position) {
             Bundle bundle = new Bundle();
             bundle.putStringArrayList("fileloc", imagePagerAdapter.getImageURIPaths());
-            bundle.putString("product_name", Html.fromHtml(data.getInfo().getProductName()).toString());
-            bundle.putString("product_price", Html.fromHtml(data.getInfo().getProductPrice()).toString());
+            bundle.putString("product_name", MethodChecker.fromHtml(data.getInfo().getProductName()).toString());
+            bundle.putString("product_price", MethodChecker.fromHtml(data.getInfo().getProductPrice()).toString());
             bundle.putStringArrayList("image_desc", imagePagerAdapter.getImageDescs());
             bundle.putInt("img_pos", position);
             listener.onProductPictureClicked(bundle);
