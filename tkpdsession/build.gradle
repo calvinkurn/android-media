@@ -67,12 +67,12 @@ buildscript {
 
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion "25.0.0"
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 24
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
 

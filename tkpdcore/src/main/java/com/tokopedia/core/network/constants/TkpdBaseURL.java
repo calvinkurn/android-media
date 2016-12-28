@@ -4,7 +4,6 @@ package com.tokopedia.core.network.constants;
  * Created by Angga.Prasetiyo on 07/12/2015.
  */
 public interface  TkpdBaseURL {
-
     String LIVE_DOMAIN = "https://ws.tokopedia.com/";
     String STAGE_DOMAIN = "https://ws-staging.tokopedia.com/";
     String ALPHA_DOMAIN = "https://ws-alpha.tokopedia.com/";
@@ -565,6 +564,8 @@ public interface  TkpdBaseURL {
         String PATH_WISHLIST = "wishlist";
 
         String API_HOME_CATEGORY_MENU = "/api/v1/layout/category";
+        String PATH_USER_RECENT_VIEW = "users/";
+        String PATH_RECENT_VIEW = "/recentview/products/v1";
     }
 
 

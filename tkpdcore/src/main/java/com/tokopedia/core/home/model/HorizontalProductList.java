@@ -69,7 +69,7 @@ public class HorizontalProductList extends RecyclerViewItem{
     @Override
     public String toString() {
         return "HorizontalProductList{" +
-                "listProduct=" + listProduct +
+                "mRecentViewList=" + listProduct +
                 '}';
     }
 
