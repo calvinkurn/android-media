@@ -2636,7 +2636,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         // 7. get harga grosir - compile ketika disini doang - kosongkan terlebih dahulu,
         Log.d(TAG, messageTAG + wholesaleLayout.getDatas());
         if(wholesaleLayout.checkIfErrorExist()){
-            Snackbar.make(parentView, "Terjadi kesalahan pada harga grosir", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(parentView, R.string.addproduct_wholesale_priceError, Snackbar.LENGTH_LONG).show();
             return null;
         }
         List<WholeSaleAdapterModel> datas = new ArrayList<>();

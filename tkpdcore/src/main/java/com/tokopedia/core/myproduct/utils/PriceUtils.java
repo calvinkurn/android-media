@@ -1,7 +1,10 @@
 package com.tokopedia.core.myproduct.utils;
 
+import android.content.Context;
 import android.util.Log;
 import android.util.Pair;
+
+import com.tokopedia.core.R;
 
 /**
  * Created by sebastianuskh on 12/7/16.
@@ -13,7 +16,7 @@ public class PriceUtils {
     public static final int CURRENCY_DOLLAR = 200;
     private static final String TAG = "Price Utils";
 
-    public static Pair<Boolean, String> validatePrice(int currency, double price){
+    public static Pair<Boolean, String> validatePrice(int currency, double price, Context context){
         boolean resBoolean = false;
         String resString = null;
 
@@ -22,11 +25,11 @@ public class PriceUtils {
                 case CURRENCY_RUPIAH:
                     if(price < 100){
                         resBoolean = false;
-                        resString = "Harga harus lebih besar dari Rp 100";
+                        resString = context.getString(R.string.addproduct_wholesale_priceShouldBigger100);
                         return new Pair<>(resBoolean, resString);}
                     if(price > 100_000_000){
                         resBoolean = false;
-                        resString = "Harga harus lebih kecil dari Rp 100.000.000";
+                        resString = context.getString(R.string.addproduct_wholesale_priceShouldLower100);
                         return new Pair<>(resBoolean, resString);}
                     if (price >= 100 && price <= 100_000_000){
                         resBoolean= true;
@@ -36,12 +39,12 @@ public class PriceUtils {
                 case CURRENCY_DOLLAR:
                     if(price < 1){
                         resBoolean = false;
-                        resString = "Harga harus lebih besar dari $1";
+                        resString = context.getString(R.string.addproduct_wholesale_priceShouldBigger1Dollar);
                         return new Pair<>(resBoolean, resString);
                     }
                     if(price > 7500){
                         resBoolean = false;
-                        resString = "Harga harus lebih kecil dari $7500";
+                        resString = context.getString(R.string.addproduct_wholesale_priceShouldLowerDollar);
                         return new Pair<>(resBoolean, resString);
                     }
                     if(price >= 1 && price <= 7500){
@@ -51,13 +54,13 @@ public class PriceUtils {
                     break;
                 default:
                     resBoolean = false;
-                    resString = "Mata uang harus dipilih";
+                    resString = context.getString(R.string.addproduct_wholesale_currencyError);
                     return new Pair<>(resBoolean, resString);
             }
         }catch(NumberFormatException nfe){
             Log.e(TAG, nfe.getLocalizedMessage());
             resBoolean = false;
-            resString = "Terjadi kesalahan";
+            resString = context.getString(R.string.error_problem);
             return new Pair<>(resBoolean, resString);
         }
         return null;

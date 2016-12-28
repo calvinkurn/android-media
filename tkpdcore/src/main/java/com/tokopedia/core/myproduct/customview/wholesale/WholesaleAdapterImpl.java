@@ -1,5 +1,6 @@
 package com.tokopedia.core.myproduct.customview.wholesale;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.Pair;
@@ -28,12 +29,14 @@ public class WholesaleAdapterImpl extends RecyclerView.Adapter<WholesaleViewHold
     private final WholesaleAdapterListener listener;
     private double mainPrice;
     private int currency;
+    private Context context;
 
-    public WholesaleAdapterImpl(WholesaleAdapterListener listener, double mainPrice, int currency){
+    public WholesaleAdapterImpl(WholesaleAdapterListener listener, double mainPrice, int currency, Context context){
         this.data = new ArrayList<>();
         this.listener = listener;
         this.mainPrice = mainPrice;
         this.currency = currency;
+        this.context = context;
     }
 
     @Override
@@ -55,7 +58,7 @@ public class WholesaleAdapterImpl extends RecyclerView.Adapter<WholesaleViewHold
 
     public boolean addItem(){
         if(getItemCount() == MAX_WHOLESALE_PRICE){
-            listener.throwShomething("Jumlah maksimum harga grosir sudah tercapai");
+            listener.throwShomething(context.getString(R.string.wholesale_max_price_error));
             return false;
         }
         checkError();
@@ -97,7 +100,7 @@ public class WholesaleAdapterImpl extends RecyclerView.Adapter<WholesaleViewHold
             if(data.get(i).getViewHolder() != null) {
 
                 if (data.get(i).getQtyOne() >= data.get(i).getQtyTwo()) {
-                    data.get(i).getViewHolder().onQtyTwoError("Jumlah barang harus lebih besar dari jumlah barang pertama");
+                    data.get(i).getViewHolder().onQtyTwoError(context.getString(R.string.addproduct_wholesale_itemTotalError));
                 } else {
                     data.get(i).getViewHolder().onQtyTwoError(null);
                 }
@@ -110,17 +113,17 @@ public class WholesaleAdapterImpl extends RecyclerView.Adapter<WholesaleViewHold
                     comparingPrice = data.get(i - 1).getQtyPrice();
                     qtyBefore = data.get(i - 1).getQtyTwo();
                 }
-                Pair<Boolean, String> pair = PriceUtils.validatePrice(currency, data.get(i).getQtyPrice());
+                Pair<Boolean, String> pair = PriceUtils.validatePrice(currency, data.get(i).getQtyPrice(), context);
                 if (!pair.first) {
                     data.get(i).getViewHolder().onQtyPriceError(pair.second);
                 } else if (data.get(i).getQtyPrice() >= comparingPrice) {
-                    data.get(i).getViewHolder().onQtyPriceError("Harga harus lebih rendah dari harga sebelumnya");
+                    data.get(i).getViewHolder().onQtyPriceError(context.getString(R.string.addproduct_wholesale_priceMoreBiggerError));
                 } else {
                     data.get(i).getViewHolder().onQtyPriceError(null);
                 }
 
                 if (data.get(i).getQtyOne() <= qtyBefore) {
-                    data.get(i).getViewHolder().onQtyOneError("Jumlah barang harus lebih besar dari jumlah barang sebelumnya");
+                    data.get(i).getViewHolder().onQtyOneError(context.getString(R.string.addproduct_wholesale_itemTotalError));
                 } else {
                     data.get(i).getViewHolder().onQtyOneError(null);
                 }
