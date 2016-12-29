@@ -43,6 +43,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.customView.PasswordView;
@@ -144,6 +145,8 @@ public class LoginFragment extends Fragment implements LoginView {
         login.initLoginInstance(mContext);
         login.fetchDataAfterRotate(savedInstanceState);
         login.fetchIntenValues(getArguments());
+
+        UserAuthenticationAnalytics.setActiveLogin();
 
         if (savedInstanceState != null)
             Log.d(TAG, LoginFragment.class.getSimpleName() + " : get testing data : " + (anTestInt = savedInstanceState.getInt(TEST_INT_KEY)));
@@ -358,6 +361,7 @@ public class LoginFragment extends Fragment implements LoginView {
 
     public void onFacebookClick() {
         login.loginFacebook();
+        UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.FACEBOOK);
     }
 
     @Override
@@ -595,6 +599,7 @@ public class LoginFragment extends Fragment implements LoginView {
 
     @NeedsPermission(Manifest.permission.GET_ACCOUNTS)
     public void onGooglePlusClicked() {
+        UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.GMAIL);
         showProgress(true);
         ((GoogleActivity) getActivity()).onSignInClicked();
     }
@@ -637,7 +642,7 @@ public class LoginFragment extends Fragment implements LoginView {
         newFragment.show(getFragmentManager().beginTransaction(), "dialog");
         getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-
+        UserAuthenticationAnalytics.setActiveAuthenticationMedium(name);
     }
 
     @Override

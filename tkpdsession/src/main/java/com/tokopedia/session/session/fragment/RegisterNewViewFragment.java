@@ -50,6 +50,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.customView.PasswordView;
@@ -653,5 +654,6 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
     public void onStart() {
         super.onStart();
         ScreenTracking.screen(getScreenName());
+        UserAuthenticationAnalytics.setActiveRegister();
     }
 }

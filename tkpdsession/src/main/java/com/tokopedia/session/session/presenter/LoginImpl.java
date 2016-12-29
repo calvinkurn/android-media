@@ -19,6 +19,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.service.DownloadService;
@@ -247,8 +248,10 @@ public class LoginImpl implements Login {
         switch (action) {
             case LoginModel.EmailType:
                 getToken(action,(LoginViewModel)data[0]);
+                UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.EMAIL);
                 break;
             case LoginModel.GoogleType:
+                UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.GMAIL);
                 LoginGoogleModel loginGoogleModel = (LoginGoogleModel) data[0];
                 loginGoogleModel.setUuid(getUUID());
 
@@ -259,6 +262,7 @@ public class LoginImpl implements Login {
                 ((SessionView) mContext).sendDataFromInternet(DownloadService.LOGIN_GOOGLE, bundle);
                 break;
             case LoginModel.FacebookType:
+                UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.FACEBOOK);
                 LoginFacebookViewModel loginFacebookViewModel = (LoginFacebookViewModel) data[0];
                 loginFacebookViewModel.setUuid(getUUID());
                 bundle = new Bundle();

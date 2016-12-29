@@ -29,6 +29,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.base.BaseFragment;
@@ -71,7 +72,6 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
 
     List<LoginProviderModel.ProvidersBean> listProvider;
     private Snackbar snackbar;
-    LocalCacheHandler cacheGTM;
 
     public static Fragment newInstance(){
         return new RegisterInitialFragment();
@@ -83,11 +83,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
         View parentView = super.onCreateView(inflater, container, savedInstanceState);
         initView();
         showProgress(false);
-
-        cacheGTM = new LocalCacheHandler(getActivity(), AppEventTracking.GTM_CACHE);
-        cacheGTM.putString(AppEventTracking.GTMCacheKey.SESSION_STATE,
-                AppEventTracking.GTMCacheValue.REGISTER);
-        cacheGTM.applyEditor();
+        UserAuthenticationAnalytics.setActiveRegister();
 
         return parentView;
     }
@@ -98,8 +94,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                storeCacheGTM(AppEventTracking.GTMCacheKey.REGISTER_TYPE,
-                        AppEventTracking.GTMCacheValue.EMAIL);
+                UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.EMAIL);
                 ((SessionView) getActivity()).moveToRegister();
             }
         });
@@ -273,31 +268,26 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
         newFragment.show(getFragmentManager().beginTransaction(), "dialog");
         getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-        storeCacheGTM(AppEventTracking.GTMCacheKey.REGISTER_TYPE,
-                name);
+        UserAuthenticationAnalytics.setActiveAuthenticationMedium(name);
     }
 
 
     public void startLoginWithGoogle(String type, LoginGoogleModel loginGoogleModel) {
         presenter.startLoginWithGoogle(getActivity(), type, loginGoogleModel);
-        storeCacheGTM(AppEventTracking.GTMCacheKey.REGISTER_TYPE,
-                AppEventTracking.GTMCacheValue.GMAIL
-        );
+        UserAuthenticationAnalytics.setActiveAuthenticationMedium( AppEventTracking.GTMCacheValue.GMAIL);
     }
 
     @NeedsPermission(Manifest.permission.GET_ACCOUNTS)
     public void onGoogleClick() {
         ((GoogleActivity) getActivity()).onSignInClicked();
-        storeCacheGTM(AppEventTracking.GTMCacheKey.REGISTER_TYPE,
-                AppEventTracking.GTMCacheValue.GMAIL);
+        UserAuthenticationAnalytics.setActiveAuthenticationMedium( AppEventTracking.GTMCacheValue.GMAIL);
     }
 
     private void onFacebookClick() {
         showProgress(true);
         presenter.loginFacebook(getActivity());
         CommonUtils.dumper("LocalTag : TYPE : FACEBOOK");
-        storeCacheGTM(AppEventTracking.GTMCacheKey.REGISTER_TYPE,
-                AppEventTracking.GTMCacheValue.FACEBOOK);
+        UserAuthenticationAnalytics.setActiveAuthenticationMedium( AppEventTracking.GTMCacheValue.FACEBOOK);
     }
 
     @Override
@@ -365,11 +355,6 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
         super.onDestroyView();
         presenter.unSubscribeFacade();
         KeyboardHandler.DropKeyboard(getActivity(),getView());
-    }
-
-    private void storeCacheGTM(String key, String value) {
-        cacheGTM.putString(key, value);
-        cacheGTM.applyEditor();
     }
 
     @Override
