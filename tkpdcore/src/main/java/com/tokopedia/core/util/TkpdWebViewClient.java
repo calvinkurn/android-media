@@ -48,22 +48,10 @@ public abstract class TkpdWebViewClient extends WebViewClient {
         return onOverrideUrl(uri);
     }
 
-    //    @TargetApi(Build.VERSION_CODES.N)
-//    @Override
-//    public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-//        return onOverrideUrl(request.getUrl());
-//    }
-
-    public static Uri generateUri(Uri uri) {
-        String url = String.valueOf(uri);
-        url = "?flag_app=1&&device=android&app_version=" + GlobalConfig.VERSION_CODE;
-        return Uri.parse(url);
-    }
-
-    public static String generateUri(String uri) {
-        String url = String.valueOf(uri);
-        url = "?flag_app=1&&device=android&app_version=" + GlobalConfig.VERSION_CODE;
-        return url;
+        @TargetApi(Build.VERSION_CODES.N)
+    @Override
+    public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+        return onOverrideUrl(request.getUrl());
     }
 
     protected abstract boolean onOverrideUrl(Uri url);

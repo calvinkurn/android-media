@@ -1,13 +1,16 @@
 package com.tokopedia.core.util;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
+import android.provider.Telephony;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewCompat;
+import android.telephony.SmsMessage;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.View;
@@ -78,5 +81,14 @@ public class MethodChecker {
             result = Html.fromHtml(text);
         }
         return result;
+    }
+
+    public static SmsMessage createSmsFromPdu(Intent intent, byte[] pdu) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            SmsMessage[] msgs = Telephony.Sms.Intents.getMessagesFromIntent(intent);
+            return msgs[0];
+        } else {
+            return SmsMessage.createFromPdu(pdu);
+        }
     }
 }
