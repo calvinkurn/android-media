@@ -199,9 +199,11 @@ public class TrackingFragment extends BasePresenterFragment<TrackingFragmentPres
     public void showErrorMessage(String errorMessage) {
         mainView.setVisibility(View.GONE);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        if (errorMessage.isEmpty())
+        builder.setMessage(MethodChecker.fromHtml(getString(R.string.error_520_tracking)));
+        //TODO after WS Fixed their error message notification
+/*        if (errorMessage.isEmpty())
             builder.setMessage(MethodChecker.fromHtml(getString(R.string.error_520_tracking)));
-        else builder.setMessage(errorMessage);
+        else builder.setMessage(errorMessage);*/
         Dialog dialog = builder.create();
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.show();
