@@ -105,8 +105,6 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
                         .setProductName(productItem.getName())
                         .setProductImage(productItem.getImgUri())
                         .build();
-
-                CommonUtils.dumper("PORING 2 " + productPass.getProductImage());
             }
         } else {
             List<String> uriSegments = uriData.getPathSegments();
