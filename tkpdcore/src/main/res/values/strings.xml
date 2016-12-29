@@ -1374,7 +1374,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_still_need_help">Masih Memerlukan Bantuan?</string>
     <string name="title_choose_problem">Pilih Masalah</string>
     <string name="title_choose_detail_problem">Pilih Detail Masalah</string>
-    <string name="title_problem_category">Kategori Masalah</string>
+    <string name="title_problem_category">Masalah :</string>
     <string name="title_problem_detail">Keterangan Masalah Anda</string>
     <string name="title_invoice_no">No Invoice</string>
     <string name="title_invoice_no_and_user_name">No Invoice / Nama Penerima</string>
@@ -1820,8 +1820,6 @@ di Tokopedia Sekarang!</string>
     <string name="manage_terms_and_conditions">Syarat dan Ketentuan</string>
     <string name="manage_privacy">Kebijakan Privasi</string>
 
-
-
     <!--START : string related to Product Picture Download -->
     <string name="download_picture">Mengunduh gambar</string>
     <string name="download_in_process">Unduh gambar dalam proses</string>
@@ -1833,6 +1831,7 @@ di Tokopedia Sekarang!</string>
     <string name="empty_returnable_note">Kebijakan Pengembalian Barang Harus Diisi</string>
     <string name="etalase_less_than_three_char">Nama etalase tidak boleh kurang dari tiga huruf</string>
     <string name="order_delivered_on_process">Status : On Process</string>
+
     <string name="wholesale_max_price_error">Jumlah maksimum harga grosir sudah tercapai</string>
     <string name="addproduct_wholesale_itemTotalError">Jumlah barang harus lebih besar dari jumlah barang pertama</string>
     <string name="addproduct_wholesale_priceMoreBiggerError">Harga harus lebih rendah dari harga sebelumnya</string>
@@ -1843,4 +1842,9 @@ di Tokopedia Sekarang!</string>
     <string name="addproduct_wholesale_priceShouldBigger1Dollar">Harga harus lebih besar dari $1</string>
     <string name="addproduct_wholesale_priceShouldLowerDollar">Harga harus lebih kecil dari $7500</string>
     <string name="addproduct_wholesale_currencyError">Mata uang harus dipilih</string>
-</resources>
+
+    <string name="notification_error_ssl_cert_invalid">Invalid SSL Certificate. Apakah anda ingin melanjutkan?</string>
+    <string name="title_email_address">Alamat Email</string>
+    <string name="title_phone_optional">Nomor Telepon (Optional)</string>
+    <string name="error_attachment">Mohon tambahkan lampiran.</string>
+    </resources>
