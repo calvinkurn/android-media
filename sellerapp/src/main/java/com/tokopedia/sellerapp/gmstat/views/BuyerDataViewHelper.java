@@ -90,7 +90,7 @@ public class BuyerDataViewHelper {
             malePie.setVisibility(View.GONE);
             percentageBuyer.setText("Tidak ada data");
             percentageBuyer.setTextColor(gredyColor);
-            buyerCountIcon.setVisibility(View.INVISIBLE);
+            buyerCountIcon.setVisibility(View.GONE);
             headerPieBuyerData.setVisibility(View.GONE);
 //            malePie.setText(String.format("%.2f%% Pria", 0.0f));
 //            femalePie.setText(String.format("%.2f%%", 0.0f));
@@ -108,14 +108,16 @@ public class BuyerDataViewHelper {
             String biggerGender = "";
             if(malePercent >= femalePercent){
                 biggerGender += gender[0];
-                malePie.setText(String.format("%.2f%% %s", malePercent, biggerGender));
-                femalePie.setText(String.format("%.2f%%", femalePercent));
-                buyerDataPieChart.setProgress((float) femalePercentage);
-            }else{
-                biggerGender += gender[1];
-                malePie.setText(String.format("%.2f%% %s", femalePercent, biggerGender));
+                headerPieBuyerData.setText(biggerGender);
+                malePie.setText(String.format("%.2f%% %s", femalePercent, gender[1]));
                 femalePie.setText(String.format("%.2f%%", malePercent));
                 buyerDataPieChart.setProgress((float) malePercent);
+            }else{
+                biggerGender += gender[1];
+                headerPieBuyerData.setText(biggerGender);
+                malePie.setText(String.format("%.2f%% %s", malePercent, gender[0]));
+                femalePie.setText(String.format("%.2f%%", femalePercent));
+                buyerDataPieChart.setProgress((float) femalePercent);
             }
         }
 
@@ -125,12 +127,12 @@ public class BuyerDataViewHelper {
         // image for arrow is here
         boolean isDefault = false;
         if(percentage == 0){
-            buyerCountIcon.setVisibility(View.INVISIBLE);
+            buyerCountIcon.setVisibility(View.GONE);
             percentageBuyer.setTextColor(arrowUp);
             isDefault = true;
         }else if(percentage < 0){// down here
             if(percentage == NoDataAvailable*100){
-                buyerCountIcon.setVisibility(View.INVISIBLE);
+                buyerCountIcon.setVisibility(View.GONE);
                 percentageBuyer.setTextColor(gredyColor);
                 isDefault = false;
             }else{

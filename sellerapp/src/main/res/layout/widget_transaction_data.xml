@@ -74,26 +74,33 @@
                     android:layout_marginBottom="20dp"
                     android:textColor="#B2000000"
                     android:textSize="24sp"/>
-                <ImageView
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:paddingTop="3dp"
-                    app:srcCompat="@mipmap/arrow_up_percentage"
-                    android:layout_below="@+id/transaction_count"
-                    android:id="@+id/transaction_count_icon" />
 
-                <TextView
-                    android:text="20%"
-                    android:textSize="12sp"
-                    android:layout_marginLeft="3dp"
-                    android:textColor="#42b549"
+                <LinearLayout
+                    android:id="@+id/transaction_data_percentage_container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignTop="@id/transaction_count_icon"
-                    android:layout_toRightOf="@+id/transaction_count_icon"
-                    android:layout_toEndOf="@+id/transaction_count_icon"
-                    android:id="@+id/percentage" />
+                    android:orientation="horizontal"
+                    android:layout_below="@+id/transaction_count">
+                    <ImageView
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:paddingTop="3dp"
+                        app:srcCompat="@mipmap/arrow_up_percentage"
+                        android:layout_below="@+id/transaction_count"
+                        android:id="@+id/transaction_count_icon" />
 
+                    <TextView
+                        android:text="20%"
+                        android:textSize="12sp"
+                        android:layout_marginLeft="3dp"
+                        android:textColor="#42b549"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignTop="@id/transaction_count_icon"
+                        android:layout_toRightOf="@+id/transaction_count_icon"
+                        android:layout_toEndOf="@+id/transaction_count_icon"
+                        android:id="@+id/percentage" />
+                </LinearLayout>
             </RelativeLayout>
             <com.db.chart.view.LineChartView
                 android:id="@+id/transaction_chart"

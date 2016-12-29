@@ -94,15 +94,25 @@ public class DataTransactionViewHelper {
         this.imageHandler = imageHandler;
 
         if(isGoldMerchant){
+            transactionDataContainerGoldMerchant.setVisibility(View.VISIBLE);
             transactionDataContainerNonGoldMerchant.setVisibility(View.GONE);
         }
     }
 
     public void bindData(GetTransactionGraph getTransactionGraph){
+
+        /* non gold merchant */
+        if(!isGoldMerchant){
+            transactionDataContainerGoldMerchant.setVisibility(View.GONE);
+            transactionDataContainerNonGoldMerchant.setVisibility(View.VISIBLE);
+
+            return;
+        }
+
         /* empty state */
         if(getTransactionGraph == null || getTransactionGraph.getSuccessTrans() == 0){
 
-            transactionCountIcon.setVisibility(View.INVISIBLE);
+            transactionCountIcon.setVisibility(View.GONE);
             percentage.setTextColor(gredyColor);
             percentage.setText("Tidak ada data");
 
@@ -119,12 +129,12 @@ public class DataTransactionViewHelper {
         // image for arrow is here
         boolean isDefault = false;
         if(diffSuccessTrans == 0){
-            transactionCountIcon.setVisibility(View.INVISIBLE);
+            transactionCountIcon.setVisibility(View.GONE);
             percentage.setTextColor(arrowUp);
             isDefault = true;
         }else if(diffSuccessTrans < 0){// down here
             if(diffSuccessTrans == NoDataAvailable*100){
-                transactionCountIcon.setVisibility(View.INVISIBLE);
+                transactionCountIcon.setVisibility(View.GONE);
                 percentage.setTextColor(gredyColor);
                 isDefault = false;
             }else{

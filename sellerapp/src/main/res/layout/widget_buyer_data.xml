@@ -68,25 +68,33 @@
                 android:layout_below="@id/buyer_number_header"
                 android:textColor="#B2000000"
                 android:textSize="24sp"/>
-            <ImageView
-                android:layout_width="12dp"
-                android:layout_height="12dp"
-                android:paddingTop="3dp"
-                app:srcCompat="@mipmap/arrow_up_percentage"
-                android:layout_below="@+id/buyer_count"
-                android:id="@+id/buyer_count_icon" />
-
-            <TextView
-                android:text="20%"
-                android:textSize="12sp"
-                android:layout_marginLeft="3dp"
-                android:textColor="#42b549"
+            <LinearLayout
+                android:id="@+id/buyer_data_percentage_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignTop="@id/buyer_count_icon"
-                android:layout_toRightOf="@+id/buyer_count_icon"
-                android:layout_toEndOf="@+id/buyer_count_icon"
-                android:id="@+id/percentage_buyer" />
+                android:orientation="horizontal"
+                android:layout_below="@+id/buyer_count">
+
+                <ImageView
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:paddingTop="3dp"
+                    app:srcCompat="@mipmap/arrow_up_percentage"
+                    android:layout_below="@+id/buyer_count"
+                    android:id="@+id/buyer_count_icon" />
+
+                <TextView
+                    android:text="20%"
+                    android:textSize="12sp"
+                    android:layout_marginLeft="3dp"
+                    android:textColor="#42b549"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@id/buyer_count_icon"
+                    android:layout_toRightOf="@+id/buyer_count_icon"
+                    android:layout_toEndOf="@+id/buyer_count_icon"
+                    android:id="@+id/percentage_buyer" />
+            </LinearLayout>
 
         </RelativeLayout>
 
@@ -104,12 +112,12 @@
                 android:layout_height="80dp"
                 android:layout_marginRight="15dp"
                 app:donut_max="1"
-                app:donut_finished_color="#ff5722"
+                app:donut_finished_color="#cecece"
                 app:donut_finished_stroke_width="10dp"
-                android:backgroundTint="#ff5722"
+                android:backgroundTint="#cecece"
                 android:backgroundTintMode="add"
                 app:donut_show_text="false"
-                app:donut_unfinished_color="#cecece"
+                app:donut_unfinished_color="#ff5722"
                 app:donut_unfinished_stroke_width="10dp" />
 
             <LinearLayout

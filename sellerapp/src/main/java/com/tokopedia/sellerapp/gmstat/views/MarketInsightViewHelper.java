@@ -18,6 +18,7 @@ import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.gmstat.models.GetKeyword;
 import com.tokopedia.sellerapp.gmstat.models.GetShopCategory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -83,6 +84,15 @@ public class MarketInsightViewHelper {
     }
 
     public void bindData(List<GetKeyword> getKeywords){
+        if(isGoldMerchant){
+            marketInsightGoldMerchant.setVisibility(View.VISIBLE);
+            marketInsightNonGoldMerchant.setVisibility(View.GONE);
+            marketInsightEmptyState.setVisibility(View.GONE);
+        }else{
+            displayNonGoldMerchant();
+            return;
+        }
+
         if(getKeywords==null||getKeywords.size()<=0) {
             displayEmptyState();
             return;
@@ -116,18 +126,30 @@ public class MarketInsightViewHelper {
                 view.getContext(), LinearLayoutManager.VERTICAL, false));
         marketInsightAdapter = new MarketInsightAdapter(searchKeyword);
         marketInsightRecyclerView.setAdapter(marketInsightAdapter);
+    }
 
-        // hit hades for detail category
+    public void displayNonGoldMerchant() {
+        marketInsightGoldMerchant.setVisibility(View.VISIBLE);
+        marketInsightNonGoldMerchant.setVisibility(View.VISIBLE);
+        marketInsightEmptyState.setVisibility(View.GONE);
 
-        if(isGoldMerchant){
-            marketInsightGoldMerchant.setVisibility(View.VISIBLE);
-            marketInsightNonGoldMerchant.setVisibility(View.GONE);
-            marketInsightEmptyState.setVisibility(View.GONE);
-        }else{
-            marketInsightGoldMerchant.setVisibility(View.VISIBLE);
-            marketInsightNonGoldMerchant.setVisibility(View.VISIBLE);
-            marketInsightEmptyState.setVisibility(View.GONE);
+
+        // init dummy data
+        List<GetKeyword.SearchKeyword> searchKeyword = new ArrayList<>();
+        for(int i=0;i<3;i++){
+            GetKeyword.SearchKeyword searchKeyword1 = new GetKeyword.SearchKeyword();
+            searchKeyword1.setFrequency(1000);
+            searchKeyword1.setKeyword("kaos");
+            searchKeyword.add(searchKeyword1);
         }
+
+        String categoryBold = String.format("\"<i><b>%s</b></i>\"", "kaos");
+        marketInsightFooter_.setText(Html.fromHtml("Kata kunci ini berdasarkan kategori dari "+categoryBold+" "));
+
+        marketInsightRecyclerView.setLayoutManager(new LinearLayoutManager(
+                view.getContext(), LinearLayoutManager.VERTICAL, false));
+        marketInsightAdapter = new MarketInsightAdapter(searchKeyword);
+        marketInsightRecyclerView.setAdapter(marketInsightAdapter);
     }
 
     public void displayEmptyState() {
@@ -138,7 +160,11 @@ public class MarketInsightViewHelper {
 
     public void bindData(GetShopCategory getShopCategory) {
         if(getShopCategory == null || getShopCategory.getShopCategory() == null || getShopCategory.getShopCategory().isEmpty()){
-            displayEmptyState();
+            if(isGoldMerchant)
+                displayEmptyState();
+            else{
+                displayNonGoldMerchant();
+            }
         }
     }
 

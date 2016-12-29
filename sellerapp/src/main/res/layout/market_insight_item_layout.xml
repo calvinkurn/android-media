@@ -22,8 +22,8 @@
         android:id="@+id/market_insight_number" />
 
     <ImageView
-        android:layout_width="7.1dp"
-        android:layout_height="7.1dp"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
         app:srcCompat="@drawable/ic_search_icon"
         android:layout_toLeftOf="@id/market_insight_number"
         android:id="@+id/zoom_icon" />
@@ -34,7 +34,7 @@
         android:layout_marginBottom="10dp"
         android:layout_marginTop="6dp"
         android:layout_below="@id/market_insight_keyword"
-        app:rcBackgroundColor="#1E000000"
+        app:rcBackgroundColor="@android:color/transparent"
         app:rcBackgroundPadding="2dp"
         app:rcMax="100"
         app:rcProgress="90"
