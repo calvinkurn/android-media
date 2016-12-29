@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -35,7 +36,7 @@ import butterknife.BindView;
 /**
  * A simple {@link Fragment} subclass.
  */
-public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> extends BasePresenterFragment<T> implements TopAdsListPromoViewListener {
+public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> extends BasePresenterFragment<T> implements TopAdsListPromoViewListener, SearchView.OnQueryTextListener {
 
     @BindView(R2.id.list_product)
     RecyclerView listProduct;
@@ -48,23 +49,18 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
 
     protected Date startDate;
     protected Date endDate;
+    protected String keyword;
+    protected int status;
+    protected int page;
 
     protected TopAdsAdListAdapter adapter;
     private RefreshHandler refresh;
     private ActionMode actionMode;
     private LinearLayoutManager layoutManager;
-    protected String keyword;
-    protected int status;
-    protected int page;
+    private SearchView searchView;
 
     public TopAdsAdListFragment() {
         // Required empty public constructor
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.promo_topads, menu);
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -135,20 +131,24 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         });
     }
 
-    protected abstract void searchAd();
-
     @Override
     protected void initialVar() {
         initialDate();
         refresh = new RefreshHandler(getActivity(), mainView, new RefreshHandler.OnRefreshHandlerListener() {
             @Override
             public void onRefresh(View view) {
-                page = 0;
-                searchAd();
+                searchAd(0);
             }
         });
         adapter = new TopAdsAdListAdapter();
     }
+
+    private void searchAd(int page) {
+        this.page = page;
+        searchAd();
+    }
+
+    protected abstract void searchAd();
 
     private void initialDate() {
         try {
@@ -159,10 +159,45 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         }
     }
 
-    @MenuRes
-    public abstract int getMenuActionSelected();
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
 
-    public abstract boolean getActionOnSelectedMenu(ActionMode actionMode, MenuItem menuItem);
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        if (searchView != null) {
+            keyword = searchView.getQuery().toString();
+        }
+        searchAd(0);
+        return true;
+    }
+
+    public int getMenuActionSelected() {
+        return R.menu.promo_topads_action;
+    }
+
+    public boolean getActionOnSelectedMenu(ActionMode actionMode, MenuItem menuItem) {
+        int itemId = menuItem.getItemId();
+        if(itemId == R.id.action_edit){
+            return true;
+        }else if (itemId == R.id.action_off){
+            presenter.turnOffAdList(adapter.getSelectedAds());
+            return true;
+        }else if(itemId == R.id.action_on){
+            presenter.turnOnAddList(adapter.getSelectedAds());
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.promo_topads, menu);
+        searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+        searchView.setOnQueryTextListener(this);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
 
     @Override
     public void onSearchAdLoaded(@NonNull List adList) {
