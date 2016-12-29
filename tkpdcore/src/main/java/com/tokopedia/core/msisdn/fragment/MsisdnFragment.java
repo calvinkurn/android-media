@@ -1,5 +1,6 @@
 package com.tokopedia.core.msisdn.fragment;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.PhoneVerificationUtil;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 
 import java.util.Locale;
@@ -37,11 +39,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import butterknife.BindView;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 
 /**
  * Created by nisie on 11/7/16.
  */
 
+@RuntimePermissions
 public class MsisdnFragment extends BasePresenterFragment<MsisdnVerificationFragmentPresenter>
         implements MsisdnVerificationFragmentView, IncomingSms.ReceiveSMSListener, MSISDNConstant {
 
@@ -80,11 +89,17 @@ public class MsisdnFragment extends BasePresenterFragment<MsisdnVerificationFrag
     private PhoneVerificationUtil.MSISDNListener listener;
     CountDownTimer countDownTimer;
     PhoneVerificationUtil phoneVerificationUtil;
+    IncomingSms smsReceiver;
 
     public static MsisdnFragment createInstance() {
         MsisdnFragment fragment = new MsisdnFragment();
         fragment.setArguments(new Bundle());
         return fragment;
+    }
+
+    public MsisdnFragment() {
+        this.smsReceiver = new IncomingSms();
+        this.smsReceiver.setListener(this);
     }
 
     @Override
@@ -402,22 +417,14 @@ public class MsisdnFragment extends BasePresenterFragment<MsisdnVerificationFrag
     }
 
     @Override
-    public void onReceiveSMS(String message) {
-        if (message.contains("Verifikasi Nomor Handphone")) {
-            CommonUtils.dumper("NISNISSMS " + message);
-            String regexString = Pattern.quote("kode") + "(.*?)" + Pattern.quote("sebelum");
+    public void onReceiveOTP(String otpCode) {
+        MsisdnFragmentPermissionsDispatcher.processOTPWithCheck(MsisdnFragment.this, otpCode);
+    }
 
-
-            Pattern pattern = Pattern.compile(regexString);
-            Matcher matcher = pattern.matcher(message);
-
-
-            while (matcher.find()) {
-                String otpCode = matcher.group(1).trim();
-                if (vInputOtp != null)
-                    vInputOtp.setText(otpCode);
-            }
-        }
+    @NeedsPermission(Manifest.permission.READ_SMS)
+    public void processOTP(String otpCode) {
+        if (vInputOtp != null)
+            vInputOtp.setText(otpCode);
     }
 
     public void setListener(PhoneVerificationUtil.MSISDNListener listener) {
@@ -427,5 +434,40 @@ public class MsisdnFragment extends BasePresenterFragment<MsisdnVerificationFrag
     public PhoneVerificationUtil.MSISDNListener getListener() {
         return listener;
     }
+
+    @Override
+    public void onPause() {
+        if (smsReceiver != null)
+            getActivity().unregisterReceiver(smsReceiver);
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        smsReceiver.registerSMSReceiver(getActivity());
+        super.onResume();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        MsisdnFragmentPermissionsDispatcher.onRequestPermissionsResult(MsisdnFragment.this, requestCode, grantResults);
+    }
+
+    @OnShowRationale(Manifest.permission.READ_SMS)
+    void showRationaleForStorageAndCamera(final PermissionRequest request) {
+        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.READ_SMS);
+    }
+
+    @OnPermissionDenied(Manifest.permission.READ_SMS)
+    void showDeniedForCamera() {
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_SMS);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.READ_SMS)
+    void showNeverAskForCamera() {
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_SMS);
+    }
+
 
 }

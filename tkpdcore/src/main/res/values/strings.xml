@@ -1754,7 +1754,7 @@ di Tokopedia Sekarang!</string>
     <string name="need_permission_contacts">Aplikasi ini membutuhkan izin untuk mengakses Kontak. Perbolehkan Android meminta izin?</string>
     <string name="need_permission_location">Aplikasi ini membutuhkan izin untuk mengakses Lokasi. Perbolehkan Android meminta izin?</string>
     <string name="need_permission_get_accounts">Aplikasi ini membutuhkan izin untuk mengakses akun. Perbolehkan Android meminta izin?</string>
-
+    <string name="need_permission_SMS">Aplikasi ini membutuhkan izin untuk membaca SMS OTP untuk verifikasi. Perbolehkan Android meminta izin?</string>
 
     <string name="permission_camera_denied">Anda tidak memberikan izin akses untuk Kamera.</string>
     <string name="permission_storage_denied">Anda tidak memberikan izin akses untuk Media Penyimpanan.</string>
@@ -1762,6 +1762,7 @@ di Tokopedia Sekarang!</string>
     <string name="permission_contacts_denied">Anda tidak memberikan izin akses untuk Kontak.</string>
     <string name="permission_location_denied">Anda tidak memberikan izin akses untuk Lokasi.</string>
     <string name="permission_get_accounts_denied">Anda tidak memberikan izin akses untuk mengambil akun.</string>
+    <string name="permission_sms_denied">Anda tidak memberikan izin akses untuk membaca sms.</string>
 
     <string name="permission_camera_neverask">Anda tidak memberikan izin akses untuk Kamera. Anda bisa memberikan izin melalui Pengaturan.</string>
     <string name="permission_storage_neverask">Anda tidak memberikan izin akses untuk Media Penyimpanan. Anda bisa memberikan izin melalui Pengaturan.</string>
@@ -1769,6 +1770,8 @@ di Tokopedia Sekarang!</string>
     <string name="permission_contacts_neverask">Anda tidak memberikan izin akses untuk Kontak. Anda bisa memberikan izin melalui Pengaturan.</string>
     <string name="permission_location_neverask">Anda tidak memberikan izin akses untuk Lokasi. Anda bisa memberikan izin melalui Pengaturan.</string>
     <string name="permission_get_accounts_neverask">Anda tidak memberikan izin akses untuk mengambil akun. Anda bisa memberikan izin melalui Pengaturan.</string>
+    <string name="permission_sms_neverask">Anda tidak memberikan izin akses untuk membaca sms. Anda bisa memberikan izin melalui Pengaturan.</string>
+
 
     <string name="template_people_total_fav_shop">XYZ Toko Favoritku</string>
     <string name="message_success_people_unfav">Sukses menghapus toko favorit</string>
