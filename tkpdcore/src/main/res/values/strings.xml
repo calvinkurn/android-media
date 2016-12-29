@@ -1830,4 +1830,17 @@ di Tokopedia Sekarang!</string>
     <string name="preview_picture_open_action">BUKA</string>
     <string name="preview_picture_download_action">Download Gambar</string>
     <string name="download_error">Terjadi kesalahan pengunduhan gambar</string>
+    <string name="empty_returnable_note">Kebijakan Pengembalian Barang Harus Diisi</string>
+    <string name="etalase_less_than_three_char">Nama etalase tidak boleh kurang dari tiga huruf</string>
+    <string name="order_delivered_on_process">Status : On Process</string>
+    <string name="wholesale_max_price_error">Jumlah maksimum harga grosir sudah tercapai</string>
+    <string name="addproduct_wholesale_itemTotalError">Jumlah barang harus lebih besar dari jumlah barang pertama</string>
+    <string name="addproduct_wholesale_priceMoreBiggerError">Harga harus lebih rendah dari harga sebelumnya</string>
+    <string name="addproduct_wholesale_priceError">Terjadi kesalahan pada harga grosir</string>
+    <string name="addproduct_wholesale_priceShouldBigger100">Harga harus lebih besar dari Rp 100</string>
+    <string name="addproduct_wholesale_priceShouldLower100">Harga harus lebih kecil dari Rp 100.000.000</string>
+    <string name="error_problem">Terjadi kesalahan</string>
+    <string name="addproduct_wholesale_priceShouldBigger1Dollar">Harga harus lebih besar dari $1</string>
+    <string name="addproduct_wholesale_priceShouldLowerDollar">Harga harus lebih kecil dari $7500</string>
+    <string name="addproduct_wholesale_currencyError">Mata uang harus dipilih</string>
 </resources>

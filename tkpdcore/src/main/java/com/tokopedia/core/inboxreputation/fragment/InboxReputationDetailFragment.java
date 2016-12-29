@@ -250,6 +250,8 @@ public class
         adapter.notifyDataSetChanged();
         setActionEnabled(true);
         dismissProgressDialog();
+
+        presenter.refreshList(true);
         setActivityResult();
     }
 

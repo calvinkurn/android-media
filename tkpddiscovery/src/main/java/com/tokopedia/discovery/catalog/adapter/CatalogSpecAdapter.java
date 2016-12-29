@@ -12,6 +12,7 @@ import android.widget.ToggleButton;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.discovery.catalog.listener.ICatalogSpecSectionChanged;
 import com.tokopedia.discovery.catalog.model.SpecChild;
 
@@ -83,7 +84,7 @@ class CatalogSpecAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             for (int i = 0, specValSize = specVal.size(); i < specValSize; i++) {
                 String string = specVal.get(i);
                 if (i == specValSize - 1) stringBuilder.append(string);
-                else stringBuilder.append(Html.fromHtml(string)).append("\n");
+                else stringBuilder.append(MethodChecker.fromHtml(string)).append("\n");
             }
             specChildHolder.tvValue.setText(stringBuilder.toString());
         }

@@ -15,7 +15,8 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.Filter;
+import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.discovery.adapter.ProductAdapter;
 import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterView;
@@ -87,7 +88,7 @@ public class DynamicFilterListAdapter extends ProductAdapter {
     public void setActiveIndicator(String key, boolean active) {
         for (RecyclerViewItem item : getData()) {
             DynamicListModel model = (DynamicListModel) item;
-            for (DynamicFilterModel.Option o : model.filter.getOptions()) {
+            for (Option o : model.filter.getOptions()) {
                 if (o.getKey().equals(key)) {
                     model.setHasFilter(active);
                 }
@@ -224,7 +225,7 @@ public class DynamicFilterListAdapter extends ProductAdapter {
         String title;
         boolean active;
         boolean hasFilter;
-        DynamicFilterModel.Filter filter;
+        Filter filter;
 
         public DynamicListModel() {
             setType(DYNAMIC_FILTER_MODEL);
@@ -240,7 +241,7 @@ public class DynamicFilterListAdapter extends ProductAdapter {
             this.active = active;
         }
 
-        public DynamicListModel(DynamicFilterModel.Filter filter) {
+        public DynamicListModel(Filter filter) {
             this(filter.getTitle(), false);
             this.filter = filter;
         }
@@ -264,12 +265,13 @@ public class DynamicFilterListAdapter extends ProductAdapter {
         return dynamicListModels;
     }
 
-    public static List<DynamicListModel> convertTo2(List<DynamicFilterModel.Filter> temp) {
+    public static List<DynamicListModel> convertTo2(List<Filter> temp) {
         List<DynamicListModel> dynamicListModels = new ArrayList<>();
-        for (DynamicFilterModel.Filter t : temp) {
+        for (Filter t : temp) {
             dynamicListModels.add(new DynamicListModel(t));
         }
 
         return dynamicListModels;
     }
+
 }

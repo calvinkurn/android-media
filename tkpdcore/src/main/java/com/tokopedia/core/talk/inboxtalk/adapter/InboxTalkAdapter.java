@@ -38,6 +38,7 @@ import com.tokopedia.core.talkview.method.DeleteTalkDialog;
 import com.tokopedia.core.talkview.method.FollowTalkDialog;
 import com.tokopedia.core.talkview.method.ReportTalkDialog;
 import com.tokopedia.core.util.LabelUtils;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.TokenHandler;
 import com.tokopedia.core.util.ToolTipUtils;
@@ -206,8 +207,8 @@ public class InboxTalkAdapter extends BaseRecyclerViewAdapter {
 //			ImageHandler.LoadImageCircle(holder.UserImageView, UserImgUri.get(position));
             holder.UserImageView.setOnClickListener(goToPeople(talk.getTalkUserId()));
         }
-        holder.UserView.setText(Html.fromHtml(talk.getTalkUserName()));
-        holder.pProdName.setText(Html.fromHtml(String.valueOf(talk.getTalkProductName())));
+        holder.UserView.setText(MethodChecker.fromHtml(talk.getTalkUserName()));
+        holder.pProdName.setText(MethodChecker.fromHtml(String.valueOf(talk.getTalkProductName())));
 
         holder.RepRate.setText(String.format("%s%%", talk.getTalkUserReputation().getPositivePercentage()));
 
@@ -242,7 +243,7 @@ public class InboxTalkAdapter extends BaseRecyclerViewAdapter {
             ButterKnife.apply(holder.textViews, CHANGE_COLOR, status);
         }
         label.giveSquareLabel(talk.getTalkUserLabel());
-        holder.MessageView.setText(Html.fromHtml(talk.getTalkMessage()));
+        holder.MessageView.setText(MethodChecker.fromHtml(talk.getTalkMessage()));
 
 
         holder.TotalCommentView.setText(talk.getTalkTotalComment());

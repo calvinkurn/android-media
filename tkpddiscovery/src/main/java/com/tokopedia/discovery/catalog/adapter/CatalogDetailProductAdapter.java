@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.discovery.catalog.model.CatalogDetailItemProduct;
 import com.tokopedia.discovery.catalog.presenter.ICatalogDetailListPresenter;
 
@@ -59,7 +60,7 @@ class CatalogDetailProductAdapter extends
     public void onBindViewHolder(final ProductItemHolder holder, int position) {
         CatalogDetailItemProduct catalogDetailItemProduct = this.catalogDetailItemProductList.get(position);
 
-        holder.productName.setText(Html.fromHtml(catalogDetailItemProduct.getName()));
+        holder.productName.setText(MethodChecker.fromHtml(catalogDetailItemProduct.getName()));
         if (catalogDetailItemProduct.getCondition() != null
                 && catalogDetailItemProduct.getCondition() == 1) {
             holder.productCondition.setText(mContext.getString(R.string.title_new));

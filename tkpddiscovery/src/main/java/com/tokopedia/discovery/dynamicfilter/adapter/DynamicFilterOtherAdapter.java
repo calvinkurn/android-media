@@ -17,7 +17,7 @@ import android.widget.Filter;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.discovery.adapter.ProductAdapter;
 import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterView;
@@ -298,14 +298,14 @@ public class DynamicFilterOtherAdapter extends ProductAdapter {
     public static class TextBoxModel extends RecyclerViewItem {
         public String text;
         public String key;
-        private DynamicFilterModel.Option option;
+        private Option option;
         public boolean isFirstTime = true;
 
         public TextBoxModel() {
             setType(Constant.TEXT_BOX_MODEL_TYPE);
         }
 
-        public TextBoxModel(DynamicFilterModel.Option option) {
+        public TextBoxModel(Option option) {
             this();
             if (option.getName().contains("Harga Maximum")) {
                 option.setName("Harga Maksimum");
@@ -321,14 +321,14 @@ public class DynamicFilterOtherAdapter extends ProductAdapter {
     public static class CheckBoxModel extends RecyclerViewItem {
         private boolean isChecked = false;
         public String key;
-        private DynamicFilterModel.Option option;
+        private Option option;
         public boolean isFirstTime = true;
 
         public CheckBoxModel() {
             setType(Constant.CHECK_BOX_MODEL_TYPE);
         }
 
-        public CheckBoxModel(DynamicFilterModel.Option option) {
+        public CheckBoxModel(Option option) {
             this();
             String formatText = "%s_%s_%s";
             String format = String.format(formatText, option.getName(), option.getKey(), option.getValue());
@@ -345,7 +345,7 @@ public class DynamicFilterOtherAdapter extends ProductAdapter {
         return inputType.equals(Constant.TEXT_BOX);
     }
 
-    public static RecyclerViewItem convertTo(DynamicFilterModel.Option option) {
+    public static RecyclerViewItem convertTo(Option option) {
         if (isCheckbox(option.getInputType())) {
             return new CheckBoxModel(option);
         } else if (isTextBox(option.getInputType())) {
