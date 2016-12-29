@@ -51,7 +51,7 @@ public class TrackingFragmentPresenterImpl implements TrackingFragmentPresenter 
                     @Override
                     public void onTimeout(String message) {
                         viewListener.finishLoading();
-                        viewListener.showErrorMessage();
+                        viewListener.showErrorMessage(message);
                     }
 
                     @Override
@@ -64,7 +64,7 @@ public class TrackingFragmentPresenterImpl implements TrackingFragmentPresenter 
                     @Override
                     public void onNullData() {
                         viewListener.finishLoading();
-                        viewListener.showErrorMessage();
+                        viewListener.showErrorMessage("");
                     }
 
                     @Override
@@ -80,7 +80,7 @@ public class TrackingFragmentPresenterImpl implements TrackingFragmentPresenter 
             viewListener.updateHeaderView(data);
             viewListener.renderTrackingData(data);
         } else {
-            viewListener.showErrorMessage();
+            viewListener.showErrorMessage("");
         }
     }
 

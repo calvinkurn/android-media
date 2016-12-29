@@ -101,8 +101,6 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View mainView = inflater.inflate(R.layout.fragment_shop_shipping, container, false);
         initiateVariables(mainView);
-        getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         hideAllView();
         setHasOptionsMenu(isEditShipping());
         return mainView;
@@ -151,6 +149,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     private void initiateVariables(View mainView){
         mapMode = getArguments().getInt(MAP_MODE);
         mainProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.MAIN_PROGRESS);
+        mainProgressDialog.setCancelable(true);
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         editShippingPresenter = new EditShippingPresenterImpl(this);
         inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -232,7 +231,6 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     @Override
     public void finishStartingFragment() {
         mainProgressDialog.dismiss();
-        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 
     @Override
