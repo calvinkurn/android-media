@@ -9,8 +9,8 @@ import com.tokopedia.seller.topads.interactor.DashboardTopadsInteractorImpl;
 import com.tokopedia.seller.topads.interactor.ListenerInteractor;
 import com.tokopedia.seller.topads.model.data.DataDeposit;
 import com.tokopedia.seller.topads.model.data.Summary;
-import com.tokopedia.seller.topads.model.exchange.ShopRequest;
-import com.tokopedia.seller.topads.model.exchange.StatisticRequest;
+import com.tokopedia.seller.topads.model.request.ShopRequest;
+import com.tokopedia.seller.topads.model.request.StatisticRequest;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardFragmentListener;
 
 import java.util.Date;

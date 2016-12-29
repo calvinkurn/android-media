@@ -1,22 +1,22 @@
 package com.tokopedia.seller.topads.interactor;
 
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.seller.topads.model.data.GroupAdBulkAction;
+import com.tokopedia.seller.topads.model.data.ProductAd;
+import com.tokopedia.seller.topads.model.data.ProductAdBulkAction;
 import com.tokopedia.seller.topads.model.data.DataCredit;
 import com.tokopedia.seller.topads.model.data.DataDeposit;
-import com.tokopedia.seller.topads.model.data.DataRequestGroupAd;
-import com.tokopedia.seller.topads.model.data.DataRequestSingleAd;
-import com.tokopedia.seller.topads.model.data.DataResponseActionAds;
+import com.tokopedia.seller.topads.model.data.GroupAd;
 import com.tokopedia.seller.topads.model.data.Product;
 import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.model.data.TotalAd;
-import com.tokopedia.seller.topads.model.exchange.AdsActionRequest;
-import com.tokopedia.seller.topads.model.exchange.DepositResponse;
-import com.tokopedia.seller.topads.model.exchange.GroupAdResponse;
-import com.tokopedia.seller.topads.model.exchange.ProductResponse;
-import com.tokopedia.seller.topads.model.exchange.SearchProductRequest;
-import com.tokopedia.seller.topads.model.exchange.ShopRequest;
-import com.tokopedia.seller.topads.model.exchange.ShopResponse;
-import com.tokopedia.seller.topads.model.exchange.StatisticRequest;
+import com.tokopedia.seller.topads.model.request.DataRequest;
+import com.tokopedia.seller.topads.model.request.SearchAdRequest;
+import com.tokopedia.seller.topads.model.request.SearchProductRequest;
+import com.tokopedia.seller.topads.model.request.ShopRequest;
+import com.tokopedia.seller.topads.model.request.StatisticRequest;
+import com.tokopedia.seller.topads.model.response.DataResponse;
+import com.tokopedia.seller.topads.model.response.PageDataResponse;
 
 import java.util.HashMap;
 import java.util.List;
@@ -41,15 +41,15 @@ public interface DashboardTopadsInteractor {
 
     void unSubscribe();
 
-    void getListProductAds(HashMap<String, String> params, ListenerInteractor<ProductResponse> listener);
+    void getListProductAds(HashMap<String, String> params, ListenerInteractor<PageDataResponse<List<ProductAd>>> listener);
 
-    void getListGroupAds(HashMap<String, String> params, ListenerInteractor<GroupAdResponse> listener);
+    void getListGroupAds(SearchAdRequest searchAdRequest, ListenerInteractor<List<GroupAd>> listener);
 
-    void getDashboardShop(HashMap<String, String> params, ListenerInteractor<ShopResponse> listener);
+    void getDashboardShop(HashMap<String, String> params, ListenerInteractor<DataResponse<ProductAd>> listener);
 
-    void getDashboardResponse(HashMap<String, String> params, ListenerInteractor<DepositResponse> listener);
+    void getDashboardResponse(HashMap<String, String> params, ListenerInteractor<DataResponse<DataDeposit>> listener);
 
-    void actionSingleAds(AdsActionRequest<DataRequestSingleAd> adsActionRequest, ListenerInteractor<DataResponseActionAds> listenerInteractor);
+    void actionSingleAds(DataRequest<ProductAdBulkAction> dataRequest, ListenerInteractor<ProductAdBulkAction> listenerInteractor);
 
-    void actionGroupAds(AdsActionRequest<DataRequestGroupAd> adsActionRequest, ListenerInteractor<DataResponseActionAds> listenerInteractor);
+    void actionGroupAds(DataRequest<GroupAdBulkAction> dataRequest, ListenerInteractor<GroupAdBulkAction> listenerInteractor);
 }

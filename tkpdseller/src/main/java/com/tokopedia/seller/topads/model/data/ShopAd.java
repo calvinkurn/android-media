@@ -4,48 +4,48 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by zulfikarrahman on 12/14/16.
+ * Created by Nathaniel on 12/28/2016.
  */
 
-public class GroupAd implements Ad {
+public class ShopAd implements Ad {
 
-    @SerializedName("group_id")
+    @SerializedName("ad_id")
     @Expose
     private int id;
-    @SerializedName("group_status")
+    @SerializedName("ad_status")
     @Expose
     private int status;
-    @SerializedName("group_status_desc")
+    @SerializedName("ad_status_desc")
     @Expose
     private String statusDesc;
-    @SerializedName("group_status_toogle")
+    @SerializedName("ad_status_toogle")
     @Expose
     private int statusToogle;
-    @SerializedName("group_price_bid_fmt")
+    @SerializedName("ad_price_bid_fmt")
     @Expose
     private String priceBidFmt;
-    @SerializedName("group_price_daily_fmt")
+    @SerializedName("ad_price_daily_fmt")
     @Expose
     private String priceDailyFmt;
-    @SerializedName("group_price_daily_spent_fmt")
+    @SerializedName("ad_price_daily_spent_fmt")
     @Expose
     private String priceDailySpentFmt;
-    @SerializedName("group_price_daily_bar")
+    @SerializedName("ad_price_daily_bar")
     @Expose
     private String priceDailyBar;
-    @SerializedName("group_editable")
+    @SerializedName("ad_editable")
     @Expose
     private int editable;
-    @SerializedName("group_start_date")
+    @SerializedName("ad_start_date")
     @Expose
     private String startDate;
-    @SerializedName("group_start_time")
+    @SerializedName("ad_start_time")
     @Expose
     private String startTime;
-    @SerializedName("group_end_date")
+    @SerializedName("ad_end_date")
     @Expose
     private String endDate;
-    @SerializedName("group_end_time")
+    @SerializedName("ad_end_time")
     @Expose
     private String endTime;
 
@@ -77,25 +77,20 @@ public class GroupAd implements Ad {
     @Expose
     private String labelOf;
 
-    @SerializedName("group_name")
+    @SerializedName("shop_name")
     @Expose
     private String name;
 
-    @SerializedName("group_moderated")
+    @SerializedName("shop_id")
     @Expose
-    private int adModerated;
-    @SerializedName("group_moderated_reason")
+    private int shopId;
+    @SerializedName("shop_uri")
     @Expose
-    private String adModeratedReason;
-
-    @SerializedName("total_item")
-    @Expose
-    private int totalItem;
-
+    private String shopUri;
 
     @Override
-    public String getPriceDailySpentFmt() {
-        return priceDailySpentFmt;
+    public String getPriceDailyFmt() {
+        return priceDailyFmt;
     }
 
     @Override
@@ -124,8 +119,8 @@ public class GroupAd implements Ad {
     }
 
     @Override
-    public String getPriceDailyFmt() {
-        return priceDailyFmt;
+    public String getPriceDailySpentFmt() {
+        return priceDailySpentFmt;
     }
 
     @Override
@@ -207,15 +202,11 @@ public class GroupAd implements Ad {
         return name;
     }
 
-    public int getAdModerated() {
-        return adModerated;
+    public int getShopId() {
+        return shopId;
     }
 
-    public String getAdModeratedReason() {
-        return adModeratedReason;
-    }
-
-    public int getTotalItem() {
-        return totalItem;
+    public String getShopUri() {
+        return shopUri;
     }
 }

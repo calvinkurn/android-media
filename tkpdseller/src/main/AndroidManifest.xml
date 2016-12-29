@@ -36,12 +36,12 @@
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".topads.view.activity.TopAdsSingleListActivity"
+            android:name=".topads.view.activity.TopAdsProductAdListActivity"
             android:label="@string/title_topads_list"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".topads.view.activity.TopAdsGroupListActivity"
+            android:name=".topads.view.activity.TopAdsGroupAdListActivity"
             android:label="@string/title_group_list"
             android:screenOrientation="portrait"/>
 

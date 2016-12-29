@@ -3,49 +3,46 @@ package com.tokopedia.seller.topads.model.data;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by zulfikarrahman on 12/14/16.
- */
 
-public class GroupAd implements Ad {
+public class ProductAd implements Ad {
 
-    @SerializedName("group_id")
+    @SerializedName("ad_id")
     @Expose
     private int id;
-    @SerializedName("group_status")
+    @SerializedName("ad_status")
     @Expose
     private int status;
-    @SerializedName("group_status_desc")
+    @SerializedName("ad_status_desc")
     @Expose
     private String statusDesc;
-    @SerializedName("group_status_toogle")
+    @SerializedName("ad_status_toogle")
     @Expose
     private int statusToogle;
-    @SerializedName("group_price_bid_fmt")
+    @SerializedName("ad_price_bid_fmt")
     @Expose
     private String priceBidFmt;
-    @SerializedName("group_price_daily_fmt")
+    @SerializedName("ad_price_daily_fmt")
     @Expose
     private String priceDailyFmt;
-    @SerializedName("group_price_daily_spent_fmt")
+    @SerializedName("ad_price_daily_spent_fmt")
     @Expose
     private String priceDailySpentFmt;
-    @SerializedName("group_price_daily_bar")
+    @SerializedName("ad_price_daily_bar")
     @Expose
     private String priceDailyBar;
-    @SerializedName("group_editable")
+    @SerializedName("ad_editable")
     @Expose
     private int editable;
-    @SerializedName("group_start_date")
+    @SerializedName("ad_start_date")
     @Expose
     private String startDate;
-    @SerializedName("group_start_time")
+    @SerializedName("ad_start_time")
     @Expose
     private String startTime;
-    @SerializedName("group_end_date")
+    @SerializedName("ad_end_date")
     @Expose
     private String endDate;
-    @SerializedName("group_end_time")
+    @SerializedName("ad_end_time")
     @Expose
     private String endTime;
 
@@ -77,25 +74,36 @@ public class GroupAd implements Ad {
     @Expose
     private String labelOf;
 
-    @SerializedName("group_name")
+    @SerializedName("product_name")
     @Expose
     private String name;
 
-    @SerializedName("group_moderated")
+    @SerializedName("ad_moderated")
     @Expose
     private int adModerated;
-    @SerializedName("group_moderated_reason")
+    @SerializedName("ad_moderated_reason")
     @Expose
     private String adModeratedReason;
 
-    @SerializedName("total_item")
+    @SerializedName("item_id")
     @Expose
-    private int totalItem;
-
+    private int itemId;
+    @SerializedName("product_uri")
+    @Expose
+    private String productUri;
+    @SerializedName("product_active")
+    @Expose
+    private int productActive;
+    @SerializedName("group_name")
+    @Expose
+    private String groupName;
+    @SerializedName("group_id")
+    @Expose
+    private int groupId;
 
     @Override
-    public String getPriceDailySpentFmt() {
-        return priceDailySpentFmt;
+    public String getStatTotalImpression() {
+        return statTotalImpression;
     }
 
     @Override
@@ -126,6 +134,11 @@ public class GroupAd implements Ad {
     @Override
     public String getPriceDailyFmt() {
         return priceDailyFmt;
+    }
+
+    @Override
+    public String getPriceDailySpentFmt() {
+        return priceDailySpentFmt;
     }
 
     @Override
@@ -165,11 +178,6 @@ public class GroupAd implements Ad {
     @Override
     public String getStatTotalSpent() {
         return statTotalSpent;
-    }
-
-    @Override
-    public String getStatTotalImpression() {
-        return statTotalImpression;
     }
 
     @Override
@@ -215,7 +223,23 @@ public class GroupAd implements Ad {
         return adModeratedReason;
     }
 
-    public int getTotalItem() {
-        return totalItem;
+    public int getItemId() {
+        return itemId;
+    }
+
+    public String getProductUri() {
+        return productUri;
+    }
+
+    public int getProductActive() {
+        return productActive;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public int getGroupId() {
+        return groupId;
     }
 }

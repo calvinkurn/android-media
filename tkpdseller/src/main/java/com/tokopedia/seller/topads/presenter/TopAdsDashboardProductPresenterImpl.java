@@ -2,11 +2,9 @@ package com.tokopedia.seller.topads.presenter;
 
 import android.content.Context;
 
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.seller.topads.interactor.DashboardTopadsInteractor;
 import com.tokopedia.seller.topads.interactor.ListenerInteractor;
 import com.tokopedia.seller.topads.model.data.TotalAd;
-import com.tokopedia.seller.topads.model.exchange.ShopRequest;
+import com.tokopedia.seller.topads.model.request.ShopRequest;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardFragmentListener;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardProductFragmentListener;
 

@@ -27,6 +27,9 @@ public class TopAdsNetworkConstant {
     public static final String PARAM_SORT_BY = "sort_by";
     public static final String PARAM_START = "start";
     public static final String PARAM_ROWS = "rows";
+    public static final String PARAM_STATUS = "status";
+    public static final String PARAM_GROUP = "group";
+    public static final String PARAM_PAGE = "page";
 
     public static final String ACTION_BULK_DELETE_AD = "delete";
     public static final String ACTION_BULK_OFF_AD = "toogle_off";

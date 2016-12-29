@@ -15,6 +15,9 @@ public class TotalAd {
     @SerializedName("total_product_ad")
     @Expose
     private int totalProductAd;
+    @SerializedName("total_product_group_ad")
+    @Expose
+    private int totalProductGroupAd;
 
     public int getTotalShopAd() {
         return totalShopAd;
@@ -30,5 +33,13 @@ public class TotalAd {
 
     public void setTotalProductAd(int totalProductAd) {
         this.totalProductAd = totalProductAd;
+    }
+
+    public int getTotalProductGroupAd() {
+        return totalProductGroupAd;
+    }
+
+    public void setTotalProductGroupAd(int totalProductGroupAd) {
+        this.totalProductGroupAd = totalProductGroupAd;
     }
 }

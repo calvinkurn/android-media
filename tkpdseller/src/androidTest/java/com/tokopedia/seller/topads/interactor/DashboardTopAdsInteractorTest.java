@@ -3,18 +3,12 @@ package com.tokopedia.seller.topads.interactor;
 import android.support.test.filters.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.tkpd.library.utils.Logger;
 import com.tokopedia.seller.BaseAndroidJUnitTest;
-import com.tokopedia.seller.topads.model.data.DataCredit;
-import com.tokopedia.seller.topads.model.exchange.CreditResponse;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
