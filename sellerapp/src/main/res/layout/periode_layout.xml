@@ -3,6 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="40dp">
 
+    <View
+        android:clickable="true"
+        android:background="@android:color/transparent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/overlay_set_date"/>
+
     <CheckBox
         android:button="@drawable/set_date_radio_button"
         android:text=""

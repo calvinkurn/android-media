@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.sellerapp.R;
@@ -118,6 +119,8 @@ public class SetDateFragment extends Fragment {
         RecyclerView periodRecyclerView;
         private Unbinder unbinder;
         private PeriodAdapter periodAdapter;
+        @BindView(R.id.period_linlay)
+        LinearLayout periodLinLay;
 
         @OnClick(R.id.save_date)
         public void saveDate(){
@@ -133,6 +136,9 @@ public class SetDateFragment extends Fragment {
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.period_layout, container, false);
             unbinder = ButterKnife.bind(this, rootView);
+
+            periodLinLay.setVisibility(View.GONE);
+            periodRecyclerView.setVisibility(View.VISIBLE);
             periodAdapter = new PeriodAdapter();
 
             List<BasePeriodModel> basePeriodModels = new ArrayList<>();
@@ -158,6 +164,98 @@ public class SetDateFragment extends Fragment {
         }
     }
 
+
+    public static class PeriodChooseViewHelper {
+
+        private View itemView;
+        private int position;
+
+        public PeriodChooseViewHelper(View itemView, int position){
+            this.itemView = itemView;
+            this.position = position;
+            ButterKnife.bind(this, itemView);
+        }
+
+        @BindView(R.id.checkbox_period)
+        CheckBox checkBoxPeriod;
+
+        @BindView(R.id.period_header)
+        TextView periodHeader;
+
+        @BindView(R.id.period_date)
+        TextView periodDate;
+        private PeriodRangeModel periodRangeModel;
+        PeriodListener periodListener;
+
+//        @BindArray(R.array.month_names)
+//        String[] monthNames;
+
+        @BindArray(R.array.month_names_abrev)
+        String[] monthNamesAbrev;
+
+        public void setPeriodListener(PeriodListener periodListener) {
+            this.periodListener = periodListener;
+        }
+
+        @OnClick({R.id.overlay_set_date, R.id.period_date, R.id.period_header})
+        public void onCheckForOther(){
+            checkBoxPeriod.setChecked(!checkBoxPeriod.isChecked());
+            onCheckBoxPeriod(!checkBoxPeriod.isChecked());
+        }
+
+//        @OnCheckedChanged(R.id.checkbox_period)
+        public void onCheckBoxPeriod(boolean checked){
+            periodRangeModel.isChecked = checked;
+            if(periodListener != null){
+                periodListener.updateCheck(checked, position);
+            }
+        }
+
+        public void resetToFalse(){
+            checkBoxPeriod.setChecked(false);
+        }
+
+        public void bindData(PeriodRangeModel periodRangeModel){
+            this.periodRangeModel = periodRangeModel;
+            if(periodRangeModel.isChecked){
+                checkBoxPeriod.setChecked(true);
+            }else{
+                checkBoxPeriod.setChecked(false);
+            }
+
+            if(periodRangeModel.range == 1 && periodRangeModel.isRange == false){
+                periodHeader.setText("Kemarin");
+            }else if(periodRangeModel.isRange = true){
+                if(periodRangeModel.range==7){
+                    periodHeader.setText("7 hari terakhir");
+                }else if(periodRangeModel.range == 31){
+                    periodHeader.setText("30 hari terakhir");
+                }
+            }
+//            periodHeader.setText(periodRangeModel.headerText);
+
+            String description = periodRangeModel.getDescription();
+            Log.d("MNORMANSYAH", "description : "+description);
+            String[] range = description.split("-");
+            int[] split = new int[range.length];
+            int i=0;
+            for(i=0;i<range.length;i++){
+                String[] split1 = range[i].split(" ");
+                split[i] = Integer.parseInt(reverseDate(split1));
+            }
+
+            if(split.length  >1 ){
+                String res = String.format("%s-%s", getDateWithYear(split[0], monthNamesAbrev), getDateWithYear(split[1], monthNamesAbrev));
+                periodDate.setText(res);
+            }
+
+            if(split.length  ==1 ){
+                String res = String.format("%s", getDateWithYear(split[0], monthNamesAbrev));
+                periodDate.setText(res);
+            }
+        }
+    }
+
     public static class PeriodFragment extends Fragment {
         @BindView(R.id.period_recyclerview)
         RecyclerView periodRecyclerView;
@@ -167,11 +265,15 @@ public class SetDateFragment extends Fragment {
         @BindView(R.id.save_date)
         Button saveDate;
 
+        @BindView(R.id.period_linlay)
+        LinearLayout periodLinLay;
+        List<PeriodChooseViewHelper> periodChooseViewHelpers;
+
         @OnClick(R.id.save_date)
         public void saveDate(){
             if(getActivity() != null && getActivity() instanceof SetDate){
-                for(int i=0;i<periodAdapter.getBasePeriodModels().size();i++){
-                    PeriodRangeModel prm = (PeriodRangeModel) periodAdapter.getBasePeriodModels().get(i);
+                for(int i=0;i<basePeriodModels.size();i++){
+                    PeriodRangeModel prm = (PeriodRangeModel) basePeriodModels.get(i);
                     if(prm.isChecked){
                         long sDate = prm.startDate;
                         long eDate = prm.endDate;
@@ -182,14 +284,41 @@ public class SetDateFragment extends Fragment {
             }
         }
 
+        List<BasePeriodModel> basePeriodModels;
+
+        PeriodListener periodListener = new PeriodListener() {
+            @Override
+            public void updateCheck(boolean checked, int index) {
+
+                for(int i=0;i<basePeriodModels.size();i++){
+                    if(index != i){
+                        if(basePeriodModels.get(i) instanceof PeriodRangeModel ){
+                            PeriodRangeModel prm = (PeriodRangeModel) basePeriodModels.get(i);
+                            prm.isChecked = false;
+                            basePeriodModels.set(i, prm);
+
+                            periodChooseViewHelpers.get(i).resetToFalse();
+                        }
+                    }else{
+                        if(basePeriodModels.get(i) instanceof PeriodRangeModel ){
+                            PeriodRangeModel prm = (PeriodRangeModel) basePeriodModels.get(i);
+                            prm.isChecked = true;
+                            basePeriodModels.set(i, prm);
+                        }
+                    }
+                }
+            }
+        };
+
         @Nullable
         @Override
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.period_layout, container, false);
             unbinder = ButterKnife.bind(this, rootView);
+            //[START] old code
             periodAdapter = new PeriodAdapter();
 
-            List<BasePeriodModel> basePeriodModels = new ArrayList<>();
+            basePeriodModels = new ArrayList<>();
             PeriodRangeModel e = new PeriodRangeModel(false, 1);
             e.headerText = "Kemarin";
             basePeriodModels.add(e);
@@ -204,6 +333,17 @@ public class SetDateFragment extends Fragment {
 
             periodRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
             periodRecyclerView.setAdapter(periodAdapter);
+            //[END] old code
+
+            periodChooseViewHelpers = new ArrayList<>();
+            for (int i=0;i<basePeriodModels.size();i++){
+                View view = LayoutInflater.from(container.getContext()).inflate(R.layout.periode_layout, periodLinLay, false);
+                PeriodChooseViewHelper periodChooseViewHelper = new PeriodChooseViewHelper(view, i);
+                periodChooseViewHelper.bindData((PeriodRangeModel) basePeriodModels.get(i));
+                periodChooseViewHelper.setPeriodListener(periodListener);
+                periodChooseViewHelpers.add(periodChooseViewHelper);
+                periodLinLay.addView(view);
+            }
             return rootView;
         }
 
@@ -362,6 +502,9 @@ public class SetDateFragment extends Fragment {
                 }
 
             },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+            Calendar minDate = Calendar.getInstance();
+            minDate.set(2015, 6, 25);
+            fromDatePickerDialog.getDatePicker().setMinDate(minDate.getTimeInMillis());
 
             toDatePickerDialog = new DatePickerDialog(this.itemView.getContext(), new DatePickerDialog.OnDateSetListener() {
 
@@ -410,6 +553,7 @@ public class SetDateFragment extends Fragment {
         void updateCheck(boolean checked, int index);
     }
 
+    @Deprecated
     public static class BasePeriodViewHolder extends RecyclerView.ViewHolder{
         @BindView(R.id.checkbox_period)
         CheckBox checkBoxPeriod;
