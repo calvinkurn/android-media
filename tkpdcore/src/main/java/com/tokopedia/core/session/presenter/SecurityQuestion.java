@@ -51,8 +51,6 @@ public interface SecurityQuestion {
 
     void doRequestOtp();
 
-    void doRequestOtpWithPhone(String phoneNumber);
-
     void getDataFromArgument(Bundle savedInstanceState);
 
     void saveAnswer(String text);
@@ -78,4 +76,7 @@ public interface SecurityQuestion {
     void updateViewModel(int type, Object... data);
 
     void updateModel(QuestionFormModel model);
+
+    void doRequestOtpWithCall();
+
 }

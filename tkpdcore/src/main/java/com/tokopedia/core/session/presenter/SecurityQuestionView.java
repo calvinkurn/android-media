@@ -22,11 +22,7 @@ public interface SecurityQuestionView extends BaseView {
 
     void requestOTP(OTPModel model);
 
-    void finishSecurityQuestion(LoginInterruptModel loginInterruptModel);
-
     void initListener();
-
-    void showViewSecurity();
 
     void showViewOtp();
 
@@ -41,4 +37,5 @@ public interface SecurityQuestionView extends BaseView {
     void disableButton();
 
     void destroyTimer();
+
 }

@@ -1847,4 +1847,5 @@ di Tokopedia Sekarang!</string>
     <string name="title_email_address">Alamat Email</string>
     <string name="title_phone_optional">Nomor Telepon (Optional)</string>
     <string name="error_attachment">Mohon tambahkan lampiran.</string>
-    </resources>
+    <string name="action_send_otp_with_call">Atau kirim OTP melalui telepon</string>
+</resources>
