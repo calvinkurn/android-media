@@ -35,7 +35,7 @@ import butterknife.BindView;
 /**
  * A simple {@link Fragment} subclass.
  */
-public abstract class TopAdsListFragment<T extends TopAdsAdListPresenter> extends BasePresenterFragment<T> implements TopAdsListPromoViewListener {
+public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> extends BasePresenterFragment<T> implements TopAdsListPromoViewListener {
 
     @BindView(R2.id.list_product)
     RecyclerView listProduct;
@@ -53,8 +53,11 @@ public abstract class TopAdsListFragment<T extends TopAdsAdListPresenter> extend
     private RefreshHandler refresh;
     private ActionMode actionMode;
     private LinearLayoutManager layoutManager;
+    protected String keyword;
+    protected int status;
+    protected int page;
 
-    public TopAdsListFragment() {
+    public TopAdsAdListFragment() {
         // Required empty public constructor
     }
 
@@ -110,25 +113,40 @@ public abstract class TopAdsListFragment<T extends TopAdsAdListPresenter> extend
     }
 
     @Override
+    protected void setActionVar() {
+        searchAd();
+    }
+
+    @Override
     protected void setViewListener() {
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         listProduct.setLayoutManager(layoutManager);
         listProduct.setAdapter(adapter);
         listProduct.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
                 int lastItemPosition = layoutManager.findLastVisibleItemPosition();
                 int visibleItem = layoutManager.getItemCount() - 1;
-                presenter.loadMore(startDate, endDate, lastItemPosition, visibleItem);
+                if (lastItemPosition == visibleItem) {
+                    searchAd();
+                }
             }
         });
     }
 
+    protected abstract void searchAd();
+
     @Override
     protected void initialVar() {
         initialDate();
-        refresh = new RefreshHandler(getActivity(), mainView, onRefreshListener());
+        refresh = new RefreshHandler(getActivity(), mainView, new RefreshHandler.OnRefreshHandlerListener() {
+            @Override
+            public void onRefresh(View view) {
+                page = 0;
+                searchAd();
+            }
+        });
         adapter = new TopAdsAdListAdapter();
     }
 
@@ -141,20 +159,6 @@ public abstract class TopAdsListFragment<T extends TopAdsAdListPresenter> extend
         }
     }
 
-    @Override
-    protected void setActionVar() {
-        presenter.getListTopAdsFromNet(startDate, endDate);
-    }
-
-    private RefreshHandler.OnRefreshHandlerListener onRefreshListener() {
-        return new RefreshHandler.OnRefreshHandlerListener() {
-            @Override
-            public void onRefresh(View view) {
-
-            }
-        };
-    }
-
     @MenuRes
     public abstract int getMenuActionSelected();
 
@@ -162,7 +166,13 @@ public abstract class TopAdsListFragment<T extends TopAdsAdListPresenter> extend
 
     @Override
     public void onSearchAdLoaded(@NonNull List adList) {
+        if (page == 0) {
+            adapter.clearData();
+        }
         adapter.addData(adList);
+        if (swipeToRefresh.isRefreshing()) {
+            swipeToRefresh.setRefreshing(false);
+        }
     }
 
     @Override

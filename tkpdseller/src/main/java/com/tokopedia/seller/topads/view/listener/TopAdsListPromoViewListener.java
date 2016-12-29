@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.bignerdranch.android.multiselector.ModalMultiSelectorCallback;
+import com.tokopedia.seller.topads.model.data.Ad;
 import com.tokopedia.seller.topads.model.data.DataCredit;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 /**
  * Created by zulfikarrahman on 11/24/16.
  */
-public interface TopAdsListPromoViewListener<T> {
+public interface TopAdsListPromoViewListener<T extends Ad> {
 
     void onSearchAdLoaded(@NonNull List<T> adList);
 

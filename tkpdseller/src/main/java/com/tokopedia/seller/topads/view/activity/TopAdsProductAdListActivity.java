@@ -19,6 +19,6 @@ public class TopAdsProductAdListActivity extends TActivity {
 
     @Override
     public String getScreenName() {
-        return "TopAdsProductAdListActivity";
+        return null;
     }
 }

@@ -12,7 +12,7 @@ import com.tokopedia.seller.topads.presenter.TopAdsGroupAdListPresenterImpl;
  * Created by zulfikarrahman on 12/22/16.
  */
 
-public class TopAdsGroupListFragment extends TopAdsListFragment<TopAdsGroupAdListPresenter> {
+public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupAdListPresenter> {
 
     @Override
     public int getMenuActionSelected() {
@@ -22,16 +22,13 @@ public class TopAdsGroupListFragment extends TopAdsListFragment<TopAdsGroupAdLis
     @Override
     public boolean getActionOnSelectedMenu(ActionMode actionMode, MenuItem menuItem) {
         int itemId = menuItem.getItemId();
-        if (itemId == R.id.action_delete) {
-            presenter.actionDeleteAds(adapter.getSelectedAds());
-            return true;
-        }else if(itemId == R.id.action_edit){
+        if(itemId == R.id.action_edit){
             return true;
         }else if (itemId == R.id.action_off){
-            presenter.actionOffAds(adapter.getSelectedAds());
+            presenter.turnOffAdList(adapter.getSelectedAds());
             return true;
         }else if(itemId == R.id.action_on){
-            presenter.actionOnAds(adapter.getSelectedAds());
+            presenter.turnOnAddList(adapter.getSelectedAds());
             return true;
         }
         return false;
@@ -42,8 +39,13 @@ public class TopAdsGroupListFragment extends TopAdsListFragment<TopAdsGroupAdLis
         presenter = new TopAdsGroupAdListPresenterImpl(context, this);
     }
 
+    @Override
+    protected void searchAd() {
+        presenter.searchAd(startDate, endDate, keyword, status, page);
+    }
+
     public static Fragment createInstance() {
-        TopAdsGroupListFragment fragment = new TopAdsGroupListFragment();
+        TopAdsGroupAdListFragment fragment = new TopAdsGroupAdListFragment();
         return fragment;
     }
 }

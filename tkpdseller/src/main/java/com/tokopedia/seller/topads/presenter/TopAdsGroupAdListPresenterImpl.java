@@ -28,11 +28,14 @@ public class TopAdsGroupAdListPresenterImpl extends TopAdsAdListPresenterImpl<Gr
     }
 
     @Override
-    public void getListTopAdsFromNet(Date startDate, Date endDate) {
+    public void searchAd(Date startDate, Date endDate, String keyword, int status, int page) {
         SearchAdRequest searchAdRequest = new SearchAdRequest();
+        searchAdRequest.setShopId(getShopId());
         searchAdRequest.setStartDate(startDate);
         searchAdRequest.setEndDate(endDate);
-        searchAdRequest.setShopId(getShopId());
+        searchAdRequest.setKeyword(keyword);
+        searchAdRequest.setStatus(status);
+        searchAdRequest.setPage(page);
         dashboardTopadsInteractor.getListGroupAds(searchAdRequest, new ListenerInteractor<List<GroupAd>>() {
 
             @Override
@@ -48,20 +51,14 @@ public class TopAdsGroupAdListPresenterImpl extends TopAdsAdListPresenterImpl<Gr
     }
 
     @Override
-    public void actionDeleteAds(List<GroupAd> ads) {
-        DataRequest<GroupAdBulkAction> dataRequest = generateActionRequest(ads, TopAdsNetworkConstant.ACTION_BULK_DELETE_AD);
+    public void turnOffAdList(List<GroupAd> adList) {
+        DataRequest<GroupAdBulkAction> dataRequest = generateActionRequest(adList, TopAdsNetworkConstant.ACTION_BULK_OFF_AD);
         actionBulkAds(dataRequest);
     }
 
     @Override
-    public void actionOffAds(List<GroupAd> ads) {
-        DataRequest<GroupAdBulkAction> dataRequest = generateActionRequest(ads, TopAdsNetworkConstant.ACTION_BULK_OFF_AD);
-        actionBulkAds(dataRequest);
-    }
-
-    @Override
-    public void actionOnAds(List<GroupAd> ads) {
-        DataRequest<GroupAdBulkAction> dataRequest = generateActionRequest(ads, TopAdsNetworkConstant.ACTION_BULK_ON_AD);
+    public void turnOnAddList(List<GroupAd> adList) {
+        DataRequest<GroupAdBulkAction> dataRequest = generateActionRequest(adList, TopAdsNetworkConstant.ACTION_BULK_ON_AD);
         actionBulkAds(dataRequest);
     }
 

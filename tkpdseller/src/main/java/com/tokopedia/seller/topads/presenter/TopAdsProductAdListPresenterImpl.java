@@ -20,17 +20,22 @@ import java.util.List;
 /**
  * Created by zulfikarrahman on 12/16/16.
  */
-public class TopAdsSingleAdListPresenterImpl extends TopAdsAdListPresenterImpl<ProductAd> implements TopAdsSingleAdListPresenter {
-    public TopAdsSingleAdListPresenterImpl(Context context, TopAdsListPromoViewListener topadsListPromoViewListener) {
+public class TopAdsProductAdListPresenterImpl extends TopAdsAdListPresenterImpl<ProductAd> implements TopAdsProductAdListPresenter {
+
+    public TopAdsProductAdListPresenterImpl(Context context, TopAdsListPromoViewListener topadsListPromoViewListener) {
         super(context, topadsListPromoViewListener);
     }
 
     @Override
-    public void getListTopAdsFromNet(Date startDate, Date endDate) {
+    public void searchAd(Date startDate, Date endDate, String keyword, int status, int group, int page) {
         SearchAdRequest searchAdRequest = new SearchAdRequest();
+        searchAdRequest.setShopId(getShopId());
         searchAdRequest.setStartDate(startDate);
         searchAdRequest.setEndDate(endDate);
-        searchAdRequest.setShopId(getShopId());
+        searchAdRequest.setKeyword(keyword);
+        searchAdRequest.setStatus(status);
+        searchAdRequest.setGroup(group);
+        searchAdRequest.setPage(page);
 //        dashboardTopadsInteractor.getListProductAds(searchAdRequest, new ListenerInteractor<PageDataResponse<List<ProductAd>>>(){
 //
 //            @Override
@@ -47,22 +52,15 @@ public class TopAdsSingleAdListPresenterImpl extends TopAdsAdListPresenterImpl<P
 //        });
     }
 
-
     @Override
-    public void actionDeleteAds(List<ProductAd> ads) {
-        DataRequest<ProductAdBulkAction> dataRequest = generateActionRequest(ads, TopAdsNetworkConstant.ACTION_BULK_DELETE_AD);
+    public void turnOffAdList(List<ProductAd> adList) {
+        DataRequest<ProductAdBulkAction> dataRequest = generateActionRequest(adList, TopAdsNetworkConstant.ACTION_BULK_OFF_AD);
         actionBulkAds(dataRequest);
     }
 
     @Override
-    public void actionOffAds(List<ProductAd> ads) {
-        DataRequest<ProductAdBulkAction> dataRequest = generateActionRequest(ads, TopAdsNetworkConstant.ACTION_BULK_OFF_AD);
-        actionBulkAds(dataRequest);
-    }
-
-    @Override
-    public void actionOnAds(List<ProductAd> ads) {
-        DataRequest<ProductAdBulkAction> dataRequest = generateActionRequest(ads, TopAdsNetworkConstant.ACTION_BULK_ON_AD);
+    public void turnOnAddList(List<ProductAd> adList) {
+        DataRequest<ProductAdBulkAction> dataRequest = generateActionRequest(adList, TopAdsNetworkConstant.ACTION_BULK_ON_AD);
         actionBulkAds(dataRequest);
     }
 
