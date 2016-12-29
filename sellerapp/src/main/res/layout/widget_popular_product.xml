@@ -34,7 +34,7 @@
         android:id="@+id/data_product_title"
         android:paddingTop="4dp"
         android:layout_marginLeft="8dp"
-        android:textColor="#418bdf"
+        android:textColor="#B3000000"
         android:textSize="14sp"
         android:layout_alignTop="@+id/data_product_icon"
         android:layout_toRightOf="@+id/data_product_icon"

@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:paddingTop="3dp"
-            android:textColor="#ff5722"
+            android:textColor="#B3000000"
             android:text="Data Pembeli"/>
     </LinearLayout>
 

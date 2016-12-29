@@ -4,6 +4,7 @@
     android:layout_height="40dp">
 
     <CheckBox
+        android:button="@drawable/set_date_radio_button"
         android:text=""
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,11 +20,12 @@
         android:layout_height="wrap_content"
         android:text="Kemarin"
         android:textColor="#61000000"
-        android:textSize="16sp"
+        android:textSize="14sp"
         android:layout_toRightOf="@id/checkbox_period"
         android:layout_marginLeft="9dp"
         android:layout_marginStart="9dp"/>
     <TextView
+        android:textSize="16sp"
         android:id="@+id/period_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

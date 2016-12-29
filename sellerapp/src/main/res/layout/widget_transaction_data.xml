@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_marginLeft="8dp"
             android:paddingTop="3dp"
-            android:textColor="#42b549"
+            android:textColor="#B3000000"
             android:layout_height="wrap_content"
             android:text="Data Transaksi"/>
 
