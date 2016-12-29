@@ -18,7 +18,15 @@ public interface AddProductPresenter {
     void fetchDepartmentParent(Context context);
     void fetchEtalase(Context context);
     void clearEtalaseCache(Context context);
-    void checkNoteAvailibility(Context context);
+
+    /**
+     * untuk check ketersediaan note di database atau di network
+     * @param context
+     * @param isShouldFetchData flag untuk menandakan apakah action dibarengin dengan fetch edit
+     *                          data dari network maupun dari database
+     */
+    void checkNoteAvailibility(Context context, boolean isShouldFetchData);
+
     void clearNoteAvailibility();
     void getMyShopInfo(Context context);
     void getReturnPolicyDetail(Context context, MyShopInfoModel.Info info, GetShopNoteModel.ShopNoteModel returnPolicy);
