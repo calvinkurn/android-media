@@ -35,4 +35,7 @@ public interface SearchApi {
 
     @GET(TkpdBaseURL.Ace.PATH_CATALOG)
     Observable<CatalogDataModel> getCatalog(@QueryMap Map<String, String> params);
+
+    @GET(TkpdBaseURL.Ace.PATH_TOP_PICKS)
+    Observable<Response<String>> getTopPicks(@QueryMap Map<String, String> params);
 }
