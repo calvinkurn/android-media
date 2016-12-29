@@ -19,6 +19,7 @@ import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.entity.home.recentView.Badge;
 import com.tokopedia.core.network.entity.home.recentView.RecentView;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.ProductItem;
 
@@ -97,7 +98,8 @@ public class HistoryProductRecyclerViewAdapter extends RecyclerView.Adapter<Hist
                     UnifyTracking.eventFeedRecent(data.get(position).getProductName());
                     Bundle bundle = new Bundle();
                     Intent intent = new Intent(context, ProductInfoActivity.class);
-                    bundle.putParcelable(ProductInfoActivity.EXTRA_PRODUCT_ITEM, data.get(position));
+                    bundle.putParcelable(ProductInfoActivity.EXTRA_PRODUCT_PASS,
+                            getProductDataToPass(data.get(position)));
                     intent.putExtras(bundle);
                     context.startActivity(intent);
                 }
@@ -134,5 +136,14 @@ public class HistoryProductRecyclerViewAdapter extends RecyclerView.Adapter<Hist
             }
         }
 
+    }
+
+    private ProductPass getProductDataToPass(RecentView recentView) {
+        return ProductPass.Builder.aProductPass()
+                .setProductPrice(recentView.getProductPrice())
+                .setProductId(recentView.getProductId().toString())
+                .setProductName(recentView.getProductName())
+                .setProductImage(recentView.getProductImage())
+                .build();
     }
 }

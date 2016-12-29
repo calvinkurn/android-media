@@ -115,7 +115,7 @@ public class ListViewShopOrderDetail extends BaseAdapter{
 	private ProductPass getProductDataToPass(ShippingConfirmDetModel.Data data) {
 		return ProductPass.Builder.aProductPass()
 				.setProductPrice(data.PriceList)
-				.setProductId(data.ProductId)
+				.setProductId(data.ProductIdList)
 				.setProductName(data.NameList)
 				.setProductImage(data.ImageUrlList)
 				.build();
