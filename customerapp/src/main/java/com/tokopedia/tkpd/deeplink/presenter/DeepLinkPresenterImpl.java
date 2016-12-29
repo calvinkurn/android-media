@@ -183,11 +183,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         if (!TextUtils.isEmpty(query)) {
             String[] pairs = query.split("&|\\?");
             for (String pair : pairs) {
-                int idx = pair.indexOf("=");
-                if (idx > 0 && idx + 1 <= pair.length()) {
+                int indexKey = pair.indexOf("=");
+                if (indexKey > 0 && indexKey + 1 <= pair.length()) {
                     try {
-                        queryPairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"),
-                                URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
+                        queryPairs.put(URLDecoder.decode(pair.substring(0, indexKey), "UTF-8"),
+                                URLDecoder.decode(pair.substring(indexKey + 1), "UTF-8"));
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
