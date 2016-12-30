@@ -3,16 +3,13 @@ package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.MenuRes;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -36,7 +33,10 @@ import butterknife.BindView;
 /**
  * A simple {@link Fragment} subclass.
  */
-public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> extends BasePresenterFragment<T> implements TopAdsListPromoViewListener, SearchView.OnQueryTextListener {
+public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> extends BasePresenterFragment<T> implements
+        TopAdsListPromoViewListener, SearchView.OnQueryTextListener, TopAdsAdListAdapter.Callback, TopAdsAdListActionMode.Callback {
+
+    private static final int START_PAGE = 1;
 
     @BindView(R2.id.list_product)
     RecyclerView listProduct;
@@ -52,12 +52,13 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     protected String keyword;
     protected int status;
     protected int page;
+    protected int totalItem;
 
     protected TopAdsAdListAdapter adapter;
     private RefreshHandler refresh;
-    private ActionMode actionMode;
     private LinearLayoutManager layoutManager;
     private SearchView searchView;
+    private TopAdsAdListActionMode actionMode;
 
     public TopAdsAdListFragment() {
         // Required empty public constructor
@@ -124,8 +125,8 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
                 super.onScrollStateChanged(recyclerView, newState);
                 int lastItemPosition = layoutManager.findLastVisibleItemPosition();
                 int visibleItem = layoutManager.getItemCount() - 1;
-                if (lastItemPosition == visibleItem) {
-                    searchAd();
+                if (lastItemPosition == visibleItem && adapter.getItemCount() < totalItem) {
+                    searchAd(page + 1);
                 }
             }
         });
@@ -134,6 +135,8 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     @Override
     protected void initialVar() {
         initialDate();
+        page = START_PAGE;
+        totalItem = Integer.MAX_VALUE;
         refresh = new RefreshHandler(getActivity(), mainView, new RefreshHandler.OnRefreshHandlerListener() {
             @Override
             public void onRefresh(View view) {
@@ -141,6 +144,8 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
             }
         });
         adapter = new TopAdsAdListAdapter();
+        adapter.setCallback(this);
+        adapter.showLoadingFull(true);
     }
 
     private void searchAd(int page) {
@@ -173,22 +178,29 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         return true;
     }
 
-    public int getMenuActionSelected() {
-        return R.menu.promo_topads_action;
+    @Override
+    public void onChecked(int position, boolean checked) {
+        if (adapter.getSelectedList().size() > 0 && actionMode == null) {
+            actionMode = new TopAdsAdListActionMode();
+            actionMode.setCallback(this);
+            getActivity().startActionMode(actionMode);
+        }
     }
 
-    public boolean getActionOnSelectedMenu(ActionMode actionMode, MenuItem menuItem) {
-        int itemId = menuItem.getItemId();
-        if(itemId == R.id.action_edit){
-            return true;
-        }else if (itemId == R.id.action_off){
-            presenter.turnOffAdList(adapter.getSelectedAds());
-            return true;
-        }else if(itemId == R.id.action_on){
-            presenter.turnOnAddList(adapter.getSelectedAds());
-            return true;
-        }
-        return false;
+    @Override
+    public void onActionTurnOn() {
+
+    }
+
+    @Override
+    public void onActionTurnOff() {
+        actionMode = null;
+    }
+
+    @Override
+    public void onActionModeDestroyed() {
+        actionMode = null;
+        adapter.clearCheckedList();
     }
 
     @Override
@@ -200,38 +212,63 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     }
 
     @Override
-    public void onSearchAdLoaded(@NonNull List adList) {
+    public void onSearchAdLoaded(@NonNull List adList, int totalItem) {
+        this.totalItem = totalItem;
         if (page == 0) {
             adapter.clearData();
         }
         adapter.addData(adList);
-        if (swipeToRefresh.isRefreshing()) {
-            swipeToRefresh.setRefreshing(false);
-        }
+        hideLoading();
+        checkEmptyDate(true);
     }
 
     @Override
     public void onLoadSearchAdError() {
-
+        hideLoading();
+        checkEmptyDate(false);
     }
 
     @Override
     public void onTurnOnAdSuccess() {
-
+        hideLoading();
+        checkEmptyDate(true);
     }
 
     @Override
     public void onTurnOnAdFailed() {
-
+        hideLoading();
+        checkEmptyDate(false);
     }
 
     @Override
     public void onTurnOffAdSuccess() {
-
+        hideLoading();
+        checkEmptyDate(true);
     }
 
     @Override
     public void onTurnOffAdFailed() {
+        hideLoading();
+        checkEmptyDate(false);
+    }
 
+    private void checkEmptyDate(boolean success) {
+        if (adapter.getDataSize() > 0) {
+            return;
+        }
+        if (success) {
+            adapter.showEmpty(true);
+        } else {
+            adapter.showRetry(true);
+        }
+    }
+
+    private void hideLoading() {
+        adapter.showLoadingFull(false);
+        adapter.showEmpty(false);
+        adapter.showRetry(false);
+        if (swipeToRefresh.isRefreshing()) {
+            swipeToRefresh.setRefreshing(false);
+        }
     }
 }

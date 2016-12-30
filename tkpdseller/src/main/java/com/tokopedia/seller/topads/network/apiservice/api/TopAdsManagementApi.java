@@ -37,9 +37,6 @@ public interface TopAdsManagementApi {
     @GET(TopAdsNetworkConstant.PATH_DASHBOARD_TOTAL_AD)
     Observable<Response<DataResponse<TotalAd>>> getDashboardTotalAd(@QueryMap Map<String, String> params);
 
-    @GET(TopAdsNetworkConstant.PATH_DASHBOARD_PRODUCT)
-    Observable<Response<PageDataResponse<List<ProductAd>>>> getDashboardProduct(@QueryMap Map<String, String> params);
-
     @GET(TopAdsNetworkConstant.PATH_DASHBOARD_SHOP)
     Observable<Response<DataResponse<ProductAd>>> getDashboardShop(@QueryMap Map<String, String> params);
 
@@ -49,9 +46,12 @@ public interface TopAdsManagementApi {
     @PATCH(TopAdsNetworkConstant.PATH_ACTION_BULK_AD)
     Observable<Response<DataResponse<ProductAdBulkAction>>> postActionSingleAds(@Body DataRequest<ProductAdBulkAction> body);
 
+    @GET(TopAdsNetworkConstant.PATH_DASHBOARD_PRODUCT)
+    Observable<Response<PageDataResponse<List<ProductAd>>>> searchProductAd(@QueryMap Map<String, String> params);
+
     @GET(TopAdsNetworkConstant.PATH_DASHBOARD_GROUP)
-    Observable<Response<PageDataResponse<List<GroupAd>>>> getDashboardGroup(@QueryMap Map<String, String> params);
+    Observable<Response<PageDataResponse<List<GroupAd>>>> searchGroupAd(@QueryMap Map<String, String> params);
 
     @GET(TopAdsNetworkConstant.PATH_SEARCH_PRODUCT)
-    Observable<Response<DataResponse<List<Product>>>> getSearchProduct(@QueryMap Map<String, String> params);
+    Observable<Response<DataResponse<List<Product>>>> searchProduct(@QueryMap Map<String, String> params);
 }

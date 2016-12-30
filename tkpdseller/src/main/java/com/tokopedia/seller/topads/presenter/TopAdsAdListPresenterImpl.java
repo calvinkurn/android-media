@@ -18,13 +18,11 @@ public abstract class TopAdsAdListPresenterImpl<T extends Ad> implements TopAdsA
 
     protected final TopAdsListPromoViewListener topAdsListPromoViewListener;
     protected final Context context;
-    protected final DashboardTopadsInteractor dashboardTopadsInteractor;
     protected PagingHandler pagingHandler;
 
     public TopAdsAdListPresenterImpl(Context context, TopAdsListPromoViewListener topAdsListPromoViewListener) {
         this.topAdsListPromoViewListener = topAdsListPromoViewListener;
         this.context = context;
-        this.dashboardTopadsInteractor = new DashboardTopadsInteractorImpl(context);
         pagingHandler = new PagingHandler();
     }
 
