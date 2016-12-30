@@ -35,7 +35,7 @@ public class TopPicksItemAdapter  extends RecyclerView.Adapter<TopPicksItemAdapt
     @Override
     public TopPicksItemRowHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         @SuppressLint("InflateParams") View v = LayoutInflater.from(
-                viewGroup.getContext()).inflate(R.layout.item_home_category, null
+                viewGroup.getContext()).inflate(R.layout.item_top_picks_title, null
         );
         v.setMinimumWidth(homeMenuWidth);
         return new TopPicksItemRowHolder(v);
@@ -43,31 +43,33 @@ public class TopPicksItemAdapter  extends RecyclerView.Adapter<TopPicksItemAdapt
 
     @Override
     public void onBindViewHolder(final TopPicksItemRowHolder holder, final int i) {
-
-        final Item singleItem = toppick.getItem().get(i);
-
         holder.linWrapper.getLayoutParams().width = homeMenuWidth;
-
-        holder.tvTitle.setText(singleItem.getName());
-
-        ImageHandler.LoadImage(holder.itemImage,singleItem.getImageUrl());
-
-        holder.view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                itemClickedListener.onItemClicked(singleItem, holder.getAdapterPosition());
-               /* if (singleItem.getType().equals(CategoryItemModel.TYPE.CATEGORY)) {
-                    categoryClickedListener.onCategoryClicked(singleItem, holder.getAdapterPosition());
-                } else {
-                    gimmicClickedListener.onGimmicClicked(singleItem);
-                }*/
-            }
-        });
-
         if(i % 2 != 0 ){
             holder.sparator.setVisibility(View.GONE);
         } else {
             holder.sparator.setVisibility(View.VISIBLE);
+        }
+
+        if (i==0) {
+          //  holder.tvTitle.setText(toppick.getName());
+            ImageHandler.LoadImage(holder.itemImage,toppick.getImageUrl());
+            holder.view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //itemClickedListener.onItemClicked(singleItem, holder.getAdapterPosition());
+                }
+            });
+        } else {
+            final Item singleItem = toppick.getItem().get(i-1);
+           // holder.tvTitle.setText(singleItem.getName());
+            ImageHandler.LoadImage(holder.itemImage,singleItem.getImageUrl());
+
+            holder.view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //itemClickedListener.onItemClicked(singleItem, holder.getAdapterPosition());
+                }
+            });
         }
 
     }
@@ -91,13 +93,13 @@ public class TopPicksItemAdapter  extends RecyclerView.Adapter<TopPicksItemAdapt
 
     @Override
     public int getItemCount() {
-        return (null != toppick ? toppick.getItem().size() : 0);
+        return (null != toppick ? (toppick.getItem().size()+1) : 0);
     }
 
 
     class TopPicksItemRowHolder extends RecyclerView.ViewHolder {
 
-        TextView tvTitle;
+       // TextView tvTitle;
 
         ImageView itemImage;
         LinearLayout linWrapper;
@@ -108,7 +110,7 @@ public class TopPicksItemAdapter  extends RecyclerView.Adapter<TopPicksItemAdapt
             super(view);
             this.view = view;
             this.sparator = view.findViewById(R.id.sparator);
-            this.tvTitle = (TextView) view.findViewById(R.id.tvTitle);
+           // this.tvTitle = (TextView) view.findViewById(R.id.tvTitle);
             this.itemImage = (ImageView) view.findViewById(R.id.itemImage);
 
             this.linWrapper = (LinearLayout) view.findViewById(R.id.linWrapper);
