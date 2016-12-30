@@ -23,7 +23,7 @@ allprojects {
         maven { url 'https://maven.fabric.io/public' }
         maven { url 'http://maven.localytics.com/public' }
         maven {
-            url "http://jenkins.tkpd:8081/artifactory/libs-release-local"
+            url "${artifactory_url}"+"/libs-release-local";
             credentials {
                 username = "${artifactory_username}"
                 password = "${artifactory_password}"
@@ -41,7 +41,7 @@ task wrapper(type: Wrapper) {
 }
 
 ext {
-     artifactoryUrl = 'http://jenkins.tkpd:8081/artifactory'
+     artifactoryUrl = "${artifactory_url}"
 }
 
 afterEvaluate {
