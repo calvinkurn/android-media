@@ -305,7 +305,7 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
     }
 
     private boolean isHasPictures(ContactUsPass pass) {
-        return pass.getAttachment().size() > 0;
+        return pass.getAttachment()!= null && pass.getAttachment().size() > 0;
     }
 
     @Override
