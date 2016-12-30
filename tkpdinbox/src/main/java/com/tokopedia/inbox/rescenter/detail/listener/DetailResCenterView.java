@@ -6,7 +6,6 @@ import android.os.Bundle;
 import com.tokopedia.core.database.model.AttachmentResCenterDB;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.rescenter.detail.dialog.ConfirmationDialog;
-import com.tokopedia.inbox.rescenter.detail.dialog.InputShippingRefNumDialog;
 import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.DetailResCenterData;
 import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.ResCenterTrackShipping;
 
@@ -36,8 +35,6 @@ public interface DetailResCenterView {
     void showTrackingDialog(ResCenterTrackShipping.TrackShipping trackShipping);
 
     void showInvalidTrackingDialog();
-
-    void showInputShippingRefNumDialog(String resolutionID, InputShippingRefNumDialog.Listener listener);
 
     void finishActivity();
 

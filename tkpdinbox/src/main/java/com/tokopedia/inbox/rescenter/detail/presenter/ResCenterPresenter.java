@@ -18,13 +18,9 @@ public interface ResCenterPresenter {
 
     void replyConversation(Context context, String resolutionID, DetailResCenterReceiver mReceiver);
 
-    void actionUpdateShippingRefNum(Context context, String resolutionID, DetailResCenterReceiver mReceiver);
-
     void actionAcceptSolution(Context context, String resolutionID, DetailResCenterReceiver mReceiver);
 
     void actionAcceptAdminSolution(Context context, String resolutionID, DetailResCenterReceiver mReceiver);
-
-    void actionInputShippingRefNum(Context context, String resolutionID, DetailResCenterReceiver mReceiver);
 
     void actionFinishReturSolution(Context context, String resolutionID, DetailResCenterReceiver mReceiver);
 

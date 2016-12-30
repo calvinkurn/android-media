@@ -304,12 +304,6 @@ public class DetailResCenterImpl implements DetailResCenterPresenter {
                     UnifyTracking.eventResolutionSendSuccess();
                     view.refreshPage();
                     break;
-                case DetailResCenterService.ACTION_INPUT_SHIPPING_REF_NUM:
-                    view.refreshPage();
-                    break;
-                case DetailResCenterService.ACTION_UPDATE_SHIPPING_REF_NUM:
-                    view.refreshPage();
-                    break;
                 case DetailResCenterService.ACTION_ACCEPT_ADMIN_SOLUTION:
                     view.refreshPage();
                     break;

@@ -7,8 +7,6 @@ import com.tokopedia.core.database.model.InboxResCenterFilterDB;
 import com.tokopedia.core.database.model.InboxResCenterFilterDB_Table;
 import com.tokopedia.core.database.model.ReplyConversationDB;
 import com.tokopedia.core.database.model.ReplyConversationDB_Table;
-import com.tokopedia.core.database.model.ReturnPackageDB;
-import com.tokopedia.core.database.model.ReturnPackageDB_Table;
 import com.tokopedia.core.database.model.StateResCenterDetailDB;
 import com.tokopedia.core.database.model.StateResCenterDetailDB_Table;
 
@@ -181,76 +179,6 @@ public class LocalCacheManager {
 
         public void clear() {
             SQLite.delete().from(StateResCenterDetailDB.class).where(StateResCenterDetailDB_Table.resolutionID.is(resolutionID)).execute();
-        }
-    }
-
-    @Deprecated
-    public static class ReturnPackage {
-        private String resolutionID;
-        private String conversationID;
-        private String shippingID;
-        private String shippingRefNum;
-
-        public ReturnPackage() {
-        }
-
-        public static ReturnPackage Builder(String resolutionID) {
-            ReturnPackage foo = new ReturnPackage();
-            foo.resolutionID = resolutionID;
-            return foo;
-        }
-
-        public ReturnPackage setConversationID(String conversationID) {
-            this.conversationID = conversationID;
-            return this;
-        }
-
-        public ReturnPackage setShippingID(String shippingID) {
-            this.shippingID = shippingID;
-            return this;
-        }
-
-        public ReturnPackage setShippingRefNum(String shippingRefNum) {
-            if (shippingRefNum != null) {
-                this.shippingRefNum = shippingRefNum;
-            }
-            return this;
-        }
-
-        public String getConversationID() {
-            return conversationID;
-        }
-
-        public String getShippingID() {
-            return shippingID;
-        }
-
-        public String getShippingRefNum() {
-            return shippingRefNum;
-        }
-
-        public void save() {
-            ReturnPackageDB db = new ReturnPackageDB();
-            db.resolutionID = resolutionID;
-            db.conversationID = conversationID;
-            db.shippingID = shippingID;
-            db.shippingRefNum = shippingRefNum;
-            db.save();
-        }
-
-        public ReturnPackage getCache() {
-            ReturnPackageDB cache = SQLite.select().from(ReturnPackageDB.class).where(ReturnPackageDB_Table.resolutionID.is(resolutionID)).querySingle();
-            if (cache == null) {
-                return this;
-            }
-            setShippingID(cache.shippingID);
-            setShippingRefNum(cache.shippingRefNum);
-            setConversationID(cache.conversationID);
-            return this;
-        }
-
-        public void clear() {
-            SQLite.delete().from(ReturnPackageDB.class).where(ReturnPackageDB_Table.resolutionID.is(resolutionID)).execute();
         }
     }
 

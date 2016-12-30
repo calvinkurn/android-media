@@ -84,26 +84,6 @@ public class DetailResCenterService extends IntentService implements DetailResCe
         context.startService(intent);
     }
 
-    public static void startActionInputShippingRefNum(@NonNull Context context,
-                                                      @NonNull String resolutionID,
-                                                      @NonNull DetailResCenterReceiver mReceiver) {
-        Intent intent = new Intent(context, DetailResCenterService.class);
-        intent.putExtra(EXTRA_PARAM_ACTION_TYPE, ACTION_INPUT_SHIPPING_REF_NUM);
-        intent.putExtra(EXTRA_PARAM_RESOLUTION_ID, resolutionID);
-        intent.putExtra(EXTRA_PARAM_RECEIVER, mReceiver);
-        context.startService(intent);
-    }
-
-    public static void startActionUpdateShippingRefNum(@NonNull Context context,
-                                                       @NonNull String resolutionID,
-                                                       @NonNull DetailResCenterReceiver mReceiver) {
-        Intent intent = new Intent(context, DetailResCenterService.class);
-        intent.putExtra(EXTRA_PARAM_ACTION_TYPE, ACTION_UPDATE_SHIPPING_REF_NUM);
-        intent.putExtra(EXTRA_PARAM_RESOLUTION_ID, resolutionID);
-        intent.putExtra(EXTRA_PARAM_RECEIVER, mReceiver);
-        context.startService(intent);
-    }
-
     public static void startActionFinishReturSolution(@NonNull Context context,
                                                       @NonNull String resolutionID,
                                                       @NonNull DetailResCenterReceiver mReceiver) {
@@ -232,14 +212,6 @@ public class DetailResCenterService extends IntentService implements DetailResCe
                 if (response.isSuccessful()) {
                     if (!response.body().isError()) {
                         switch (typeAction) {
-                            case ACTION_INPUT_SHIPPING_REF_NUM:
-                                LocalCacheManager.ReturnPackage.Builder(resolutionID)
-                                        .clear();
-                                break;
-                            case ACTION_UPDATE_SHIPPING_REF_NUM:
-                                LocalCacheManager.ReturnPackage.Builder(resolutionID)
-                                        .clear();
-                                break;
                             case ACTION_ACCEPT_ADMIN_SOLUTION:
                                 // nothing spesific at the end develop, join in default section
                                 break;
