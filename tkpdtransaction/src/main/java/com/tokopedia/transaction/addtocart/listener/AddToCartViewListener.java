@@ -22,7 +22,7 @@ public interface AddToCartViewListener extends ViewListener {
 
     void renderFormAddress(Destination data);
 
-    @SuppressWarnings("Unused")
+    @SuppressWarnings("unused")
     void renderFormShipment(List<Shipment> datas);
 
     void renderFormShipmentRates(List<Attribute> datas);
@@ -41,10 +41,12 @@ public interface AddToCartViewListener extends ViewListener {
 
     void showCalculateShippingErrorMessage();
 
+    @SuppressWarnings("unused")
     void showCalculateAddressShippingError();
 
     void showUpdateAddressShippingError(String messageError);
 
+    @SuppressWarnings("unused")
     void retryNoConnection(DialogNoConnection.ActionListener listener);
 
     void showInitLoading();
