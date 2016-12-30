@@ -925,6 +925,18 @@ public class UnifyTracking extends TrackingUtils {
         getLocaEngine().sendEventLoggedOut(attrs);
     }
 
+    public static void eventViewATC(){
+        eventLoca(AppScreen.SCREEN_VIEWED_ADD_TO_CART);
+    }
+
+    public static void eventViewFavStore(){
+        eventLoca(AppScreen.SCREEN_VIEWED_FAV_STORE);
+    }
+
+    public static void eventViewWishlit(){
+        eventLoca(AppScreen.SCREEN_VIEWED_WISHLIST);
+    }
+
     public static void deleteProfileAttrLoca(){
         getLocaEngine().deleteProfileAttribute("profile : last date has product in cart");
     }
