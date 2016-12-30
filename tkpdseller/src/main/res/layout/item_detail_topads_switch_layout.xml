@@ -1,0 +1,42 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/border"
+    android:padding="@dimen/topads_detail_padding_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/container_value"
+        android:id="@+id/title_item"
+        android:layout_alignParentLeft="true"
+        android:textSize="16sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_centerVertical="true"
+        android:id="@+id/container_value"
+        android:orientation="horizontal"
+        android:layout_marginLeft="5dp"
+        android:layout_alignParentRight="true"
+        android:gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="@string/label_non_active_topads"
+            android:layout_marginRight="10dp"
+            android:id="@+id/desc_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"/>
+
+        <android.support.v7.widget.SwitchCompat
+            android:checked="false"
+            android:id="@+id/switch_active_ads"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+</RelativeLayout>

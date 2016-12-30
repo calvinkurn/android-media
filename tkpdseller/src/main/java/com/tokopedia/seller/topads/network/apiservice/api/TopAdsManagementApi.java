@@ -54,4 +54,8 @@ public interface TopAdsManagementApi {
 
     @GET(TopAdsNetworkConstant.PATH_SEARCH_PRODUCT)
     Observable<Response<DataResponse<List<Product>>>> getSearchProduct(@QueryMap Map<String, String> params);
+
+    @GET(TopAdsNetworkConstant.PATH_DETAIL_PRODUCT_AD)
+    Observable<Response<PageDataResponse<List<ProductAd>>>> getDetailProductAd();
+
 }

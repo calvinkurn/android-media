@@ -66,4 +66,11 @@
 
     <!-- Top Ads Add product-->
     <string name="label_top_ads_promoted">Promoted</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Top Ads Detail product-->
+    <string name="label_non_active_topads">Tidak Aktif</string>
+    <string name="label_active_topads">Aktif</string>
 </resources>

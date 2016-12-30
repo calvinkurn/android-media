@@ -1,9 +1,12 @@
 package com.tokopedia.seller.topads.interactor;
 
+import com.tokopedia.seller.topads.model.data.GroupAd;
 import com.tokopedia.seller.topads.model.data.ProductAdBulkAction;
 import com.tokopedia.seller.topads.model.data.ProductAd;
 import com.tokopedia.seller.topads.model.request.DataRequest;
 import com.tokopedia.seller.topads.model.request.SearchAdRequest;
+import com.tokopedia.seller.topads.model.response.DataResponse;
+import com.tokopedia.seller.topads.model.response.PageDataResponse;
 
 import java.util.List;
 
@@ -16,4 +19,6 @@ public interface TopAdsProductAdInteractor {
     void searchAd(SearchAdRequest searchAdRequest, final ListenerInteractor<List<ProductAd>> listener);
 
     void bulkAction(DataRequest<ProductAdBulkAction> bulkActionDataRequest, final ListenerInteractor<ProductAdBulkAction> listener);
+
+    void getDetailProductAd(ListenerInteractor<List<ProductAd>> listenerInteractor);
 }
