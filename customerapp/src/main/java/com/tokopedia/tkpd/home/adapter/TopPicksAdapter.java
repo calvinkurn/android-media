@@ -25,7 +25,7 @@ import java.util.List;
  * Created by Alifa on 12/29/2016.
  */
 
-public class TopPicksAdapter extends
+public class  TopPicksAdapter extends
         RecyclerView.Adapter<TopPicksAdapter.ItemRowHolder> {
 
     private final Context mContext;
@@ -61,20 +61,19 @@ public class TopPicksAdapter extends
     @Override
     public void onBindViewHolder(TopPicksAdapter.ItemRowHolder itemRowHolder, int i) {
         final String sectionName = dataList.get(i).getName();
-        List<Item> singleSectionItems = dataList.get(i).getItem();
         itemRowHolder.itemTitle.setText(sectionName);
-       /* SectionListCategoryAdapter itemListDataAdapter = new SectionListCategoryAdapter(
-                singleSectionItems,
+        TopPicksItemAdapter itemAdapter = new TopPicksItemAdapter(
+                dataList.get(i),
                 homeMenuWidth);
-        itemListDataAdapter.setCategoryClickedListener(onCategoryClickedListener);
-        itemListDataAdapter.setGimmicClickedListener(onGimmicClickedListener);
+        //TODO
+        //itemAdapter.setCategoryClickedListener(onCategoryClickedListener);
 
         itemRowHolder.recycler_view_list.setHasFixedSize(true);
         itemRowHolder.recycler_view_list.setLayoutManager(
                 new NonScrollGridLayoutManager(mContext, 2,
                         GridLayoutManager.VERTICAL, false));
         itemRowHolder.recycler_view_list.addItemDecoration(new DividerItemDecoration(mContext));
-        itemRowHolder.recycler_view_list.setAdapter(itemListDataAdapter);*/
+        itemRowHolder.recycler_view_list.setAdapter(itemAdapter);
     }
 
     @Override

@@ -42,6 +42,7 @@ public class TopPicksPresenterImpl implements TopPicksPresenter, ErrorListener {
     public void fetchTopPicks(boolean isFromRetry) {
         Subscriber<Response<String>> subscriber = getSubcribption();
         Map<String, String> param = new HashMap<>();
+        param.put("random","true");
         param.put("count", String.valueOf(1));
         param.put("item", String.valueOf(3));
         param.put("device", "android");
