@@ -11,6 +11,7 @@ import com.tokopedia.core.home.model.HorizontalProductList;
 import com.tokopedia.core.home.model.HorizontalRecentViewList;
 import com.tokopedia.core.network.entity.home.GetListFaveShopId;
 import com.tokopedia.core.network.entity.home.WishlistData;
+import com.tokopedia.core.network.entity.home.recentView.RecentView;
 import com.tokopedia.core.network.entity.home.recentView.RecentViewData;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.PagingHandler;
@@ -59,14 +60,19 @@ public class CacheHomeInteractorImpl implements CacheHomeInteractor {
                         Type type = new TypeToken<List<ProductItem>>() {
                         }.getType();
 
+                        Type typeHistory = new TypeToken<List<RecentView>>() {
+                        }.getType();
+
                         ProductFeedTransformData productFeedTransformData
                                 = new ProductFeedTransformData();
                         List<ProductItem> listFeed = CacheUtil.convertStringToListModel(cacheFeed.getValueString(TkpdCache.Key.PRODUCT_FEED), type);
-                        List<ProductItem> listHistory = CacheUtil.convertStringToListModel(cacheHistory.getValueString(TkpdCache.Key.RECENT_PRODUCT), type);
+                        List<RecentView> listHistory = CacheUtil.convertStringToListModel(cacheHistory.getValueString(TkpdCache.Key.RECENT_PRODUCT), typeHistory);
 
+                        HorizontalRecentViewList recentViewList = new HorizontalRecentViewList();
+                        recentViewList.setRecentViewList(listHistory);
                         productFeedTransformData.setListProductItems(listFeed);
                         productFeedTransformData.setGetListFaveShopId((GetListFaveShopId) CacheUtil.convertStringToModel(new GlobalCacheManager().getValueString(TkpdCache.Key.FAV_SHOP), new TypeToken<GetListFaveShopId>() {}.getType()));
-                        productFeedTransformData.setHorizontalProductList(new HorizontalRecentViewList(listHistory));
+                        productFeedTransformData.setHorizontalProductList(recentViewList);
 
                         return productFeedTransformData;
                     }
@@ -109,7 +115,7 @@ public class CacheHomeInteractorImpl implements CacheHomeInteractor {
                         GlobalCacheManager cacheHistory = new GlobalCacheManager();
                         cacheHistory.setKey(TkpdCache.Key.RECENT_PRODUCT);
                         cacheHistory.setValue(CacheUtil.convertListModelToString(productFeedTransformData.getHorizontalProductList().getRecentViewList(),
-                                new TypeToken<List<ProductItem>>() {
+                                new TypeToken<List<RecentView>>() {
                                 }.getType()));
                         cacheHistory.setCacheDuration(600);
                         cacheHistory.store();
