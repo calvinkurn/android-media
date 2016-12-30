@@ -91,7 +91,7 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
         if (bundleData != null) {
             productPass = bundleData.getParcelable(ProductDetailRouter.EXTRA_PRODUCT_PASS);
             ProductItem productItem = bundleData
-                    .getParcelable(ProductInfoActivity.EXTRA_PRODUCT_ITEM);
+                    .getParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM);
             if (productPass == null && productItem == null) {
                 productPass = ProductPass.Builder.aProductPass()
                         .setProductId(bundleData.getString("product_id", ""))
