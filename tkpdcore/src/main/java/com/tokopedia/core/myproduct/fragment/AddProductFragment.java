@@ -104,8 +104,8 @@ import com.tokopedia.core.myproduct.model.editProductForm.EditProductForm;
 import com.tokopedia.core.myproduct.presenter.AddProductPresenter;
 import com.tokopedia.core.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.core.myproduct.presenter.AddProductView;
-import com.tokopedia.core.myproduct.presenter.ImageGalleryImpl;
-import com.tokopedia.core.myproduct.presenter.ImageGalleryView;
+import com.tokopedia.core.newgallery.presenter.ImageGalleryImpl;
+import com.tokopedia.core.newgallery.presenter.ImageGalleryView;
 import com.tokopedia.core.myproduct.presenter.ProductSocMedPresenter;
 import com.tokopedia.core.myproduct.presenter.ProductView;
 import com.tokopedia.core.myproduct.service.ProductService;
@@ -150,7 +150,7 @@ import rx.schedulers.Schedulers;
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
 import static com.tkpd.library.utils.CommonUtils.checkNotNull;
 import static com.tkpd.library.utils.CommonUtils.generateMessageError;
-import static com.tokopedia.core.myproduct.presenter.ImageGalleryImpl.Pair;
+import static com.tokopedia.core.newgallery.presenter.ImageGalleryImpl.Pair;
 
 /**
  * Created by m.normansyah on 03/12/2015.

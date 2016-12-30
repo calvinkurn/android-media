@@ -21,7 +21,7 @@ import com.tokopedia.core.myproduct.utils.VerificationUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.tokopedia.core.myproduct.presenter.ImageGalleryImpl.Pair;
+import static com.tokopedia.core.newgallery.presenter.ImageGalleryImpl.Pair;
 
 /**
  * Created by m.normansyah on 10/12/2015.

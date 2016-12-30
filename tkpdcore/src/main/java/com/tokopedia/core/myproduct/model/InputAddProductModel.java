@@ -24,18 +24,17 @@ import com.tokopedia.core.database.model.WholesalePriceDB;
 import com.tokopedia.core.database.model.WholesalePriceDB_Table;
 import com.tokopedia.core.myproduct.model.editProductForm.EditProductForm;
 import com.tokopedia.core.myproduct.model.editproduct.EditProductModel;
-import com.tokopedia.core.myproduct.presenter.ImageGalleryImpl;
+import com.tokopedia.core.newgallery.presenter.ImageGalleryImpl;
 import com.tokopedia.core.myproduct.utils.ProductEditHelper;
 import com.tokopedia.core.network.apiservices.upload.apis.GeneratedHostActApi;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
-import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
 import static com.tkpd.library.utils.CommonUtils.checkNotNull;
-import static com.tokopedia.core.myproduct.presenter.ImageGalleryImpl.Pair;
+import static com.tokopedia.core.newgallery.presenter.ImageGalleryImpl.Pair;
 
 /**
  * Created by m.normansyah on 28/12/2015.

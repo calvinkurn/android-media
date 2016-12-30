@@ -19,9 +19,9 @@ import com.bignerdranch.android.multiselector.MultiSelector;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.myproduct.ProductActivity;
-import com.tokopedia.core.myproduct.adapter.ImageGalleryAdapter;
+import com.tokopedia.core.newgallery.adapter.ImageGalleryAdapter;
 import com.tokopedia.core.myproduct.model.ImageModel;
-import com.tokopedia.core.myproduct.presenter.ImageGalleryView;
+import com.tokopedia.core.newgallery.presenter.ImageGalleryView;
 
 import org.parceler.Parcels;
 

@@ -1,6 +1,5 @@
-package com.tokopedia.core.myproduct.adapter;
+package com.tokopedia.core.newgallery.adapter;
 
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +12,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.myproduct.model.FolderModel;
-import com.tokopedia.core.myproduct.presenter.ImageGalleryView;
+import com.tokopedia.core.newgallery.presenter.ImageGalleryView;
 import com.tokopedia.core.util.MethodChecker;
 
 import java.io.File;

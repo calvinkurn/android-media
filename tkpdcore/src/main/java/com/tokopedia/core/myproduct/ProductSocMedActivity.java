@@ -28,7 +28,8 @@ import com.tokopedia.core.instoped.model.InstagramMediaModelParc;
 import com.tokopedia.core.myproduct.dialog.DialogFragmentImageAddProduct;
 import com.tokopedia.core.myproduct.fragment.ImageChooserDialog;
 import com.tokopedia.core.myproduct.model.NoteDetailModel;
-import com.tokopedia.core.myproduct.presenter.ImageGalleryImpl;
+import com.tokopedia.core.newgallery.GalleryActivity;
+import com.tokopedia.core.newgallery.presenter.ImageGalleryImpl;
 import com.tokopedia.core.myproduct.service.ProductServiceConstant;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
@@ -510,7 +511,7 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
                 } else {
                     int emptyPicture = 6 - ((AddProductFragment)fragment).countPicture();
                     Log.i(TAG, messageTAG + " max photo will get : " + emptyPicture);
-                    ProductActivity.moveToImageGallery(this, position);
+                    GalleryActivity.moveToImageGallery(this, position);
                 }
                 break;
             case DialogFragmentImageAddProduct.ADD_DESCRIPTION:

@@ -1,4 +1,4 @@
-package com.tokopedia.core.myproduct.presenter;
+package com.tokopedia.core.newgallery.presenter;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.provider.MediaStore;
 
 import com.tokopedia.core.myproduct.model.FolderModel;
+import com.tokopedia.core.myproduct.presenter.ImageGallery;
+import com.tokopedia.core.newgallery.presenter.ImageGalleryView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +24,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by m.normansyah on 03/12/2015.
  */
-public class ImageGalleryImpl implements ImageGallery{
+public class ImageGalleryImpl implements ImageGallery {
     public static final String FILE_PATH = "file://";
     ImageGalleryView imageGalleryView;
     public ImageGalleryImpl(ImageGalleryView imageGalleryView){

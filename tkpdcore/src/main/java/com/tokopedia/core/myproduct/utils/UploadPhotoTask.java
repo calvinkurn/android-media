@@ -8,7 +8,7 @@ import com.tokopedia.core.database.model.PictureDB;
 import com.tokopedia.core.myproduct.api.UploadImageProduct;
 import com.tokopedia.core.myproduct.model.GenerateHostModel;
 import com.tokopedia.core.myproduct.model.UploadProductImageData;
-import com.tokopedia.core.myproduct.presenter.ImageGalleryImpl;
+import com.tokopedia.core.newgallery.presenter.ImageGalleryImpl;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.network.v4.NetworkConfig;

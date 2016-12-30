@@ -11,7 +11,7 @@ import com.drew.metadata.png.PngDirectory;
 import java.io.File;
 import java.io.IOException;
 
-import static com.tokopedia.core.myproduct.presenter.ImageGalleryImpl.Pair;
+import static com.tokopedia.core.newgallery.presenter.ImageGalleryImpl.Pair;
 
 /**
  * Created by m.normansyah on 18/12/2015.

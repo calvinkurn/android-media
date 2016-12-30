@@ -27,6 +27,7 @@ import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
 import com.tokopedia.core.instoped.InstagramAuth;
 import com.tokopedia.core.myproduct.ProductActivity;
+import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.RetryHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
@@ -138,7 +139,7 @@ public class FragmentProductFeed extends TkpdBaseV4Fragment
                         onAddInstagram();
                         break;
                     case R.id.action_gallery:
-                        ProductActivity.moveToImageGalleryCamera(getActivity(), 0, false, 5);
+                        GalleryActivity.moveToImageGalleryCamera(getActivity(), 0, false, 5);
                         break;
                     case R.id.action_camera:
                         onAddGallery();
@@ -473,7 +474,7 @@ public class FragmentProductFeed extends TkpdBaseV4Fragment
     }
 
     private void onAddGallery() {
-        ProductActivity.moveToImageGalleryCamera(getActivity(), 0, true, -1);
+        GalleryActivity.moveToImageGalleryCamera(getActivity(), 0, true, -1);
     }
 
     private void onAddInstagram() {

@@ -1,4 +1,4 @@
-package com.tokopedia.core.myproduct.presenter;
+package com.tokopedia.core.newgallery.presenter;
 
 import android.content.Intent;
 import android.support.v4.app.Fragment;
@@ -6,6 +6,7 @@ import android.support.v7.view.ActionMode;
 
 import com.tokopedia.core.myproduct.model.FolderModel;
 import com.tokopedia.core.myproduct.model.ImageModel;
+import com.tokopedia.core.myproduct.presenter.MultiSelectInterface;
 
 import java.util.List;
 

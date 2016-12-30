@@ -96,6 +96,7 @@ import com.tokopedia.core.myproduct.presenter.NetworkInteractorImpl;
 import com.tokopedia.core.myproduct.service.ProductService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.v4.NetworkConfig;
+import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.prototype.ProductCache;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -388,12 +389,12 @@ public class ManageProduct extends TkpdActivity implements
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void onAddFromGallery() {
-        ProductActivity.moveToImageGalleryCamera(ManageProduct.this, 0, false, 5);
+        GalleryActivity.moveToImageGalleryCamera(ManageProduct.this, 0, false, 5);
     }
 
     @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
     public void onAddFromCamera() {
-        ProductActivity.moveToImageGalleryCamera(this, 0, true, -1);
+        GalleryActivity.moveToImageGalleryCamera(this, 0, true, -1);
     }
 
     private void checkLogin() {

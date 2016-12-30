@@ -7,8 +7,9 @@ import android.util.Log;
 
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.myproduct.ProductActivity;
-import com.tokopedia.core.myproduct.presenter.ImageGalleryImpl;
-import com.tokopedia.core.myproduct.presenter.ImageGalleryView;
+import com.tokopedia.core.newgallery.GalleryActivity;
+import com.tokopedia.core.newgallery.presenter.ImageGalleryImpl;
+import com.tokopedia.core.newgallery.presenter.ImageGalleryView;
 import com.tokopedia.core.myproduct.utils.MetadataUtil;
 import com.tokopedia.core.myproduct.utils.VerificationUtils;
 
@@ -18,7 +19,7 @@ import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
 import static com.tkpd.library.utils.CommonUtils.checkNotNull;
 import static com.tokopedia.core.myproduct.ProductActivity.ADD_PRODUCT_IMAGE_LOCATION;
 import static com.tokopedia.core.myproduct.ProductActivity.ADD_PRODUCT_IMAGE_LOCATION_DEFAULT;
-import static com.tokopedia.core.myproduct.presenter.ImageGalleryView.messageTAG;
+import static com.tokopedia.core.newgallery.presenter.ImageGalleryView.messageTAG;
 import static com.tokopedia.core.myproduct.presenter.ProductView.IMAGE_URL;
 
 /**
@@ -33,7 +34,7 @@ public class ImageGalleryEntry{
      */
     public static void moveToImageGallery(AppCompatActivity appCompatActivity, int position){
         if(checkNotNull(appCompatActivity))
-            ProductActivity.moveToImageGallery(appCompatActivity, position);
+            GalleryActivity.moveToImageGallery(appCompatActivity, position);
     }
 
     /**
@@ -43,7 +44,7 @@ public class ImageGalleryEntry{
      */
     public static void moveToImageGallery(AppCompatActivity appCompatActivity, int position, int maxSelection){
         if(checkNotNull(appCompatActivity))
-            ProductActivity.moveToImageGallery(appCompatActivity, position, maxSelection);
+            GalleryActivity.moveToImageGallery(appCompatActivity, position, maxSelection);
     }
 
     /**
@@ -52,7 +53,7 @@ public class ImageGalleryEntry{
      */
     public static void moveToImageGalleryCamera(AppCompatActivity appCompatActivity){
         if(checkNotNull(appCompatActivity))
-            ProductActivity.moveToImageGalleryCamera(appCompatActivity, 0, true, -1);
+            GalleryActivity.moveToImageGalleryCamera(appCompatActivity, 0, true, -1);
     }
 
     /**

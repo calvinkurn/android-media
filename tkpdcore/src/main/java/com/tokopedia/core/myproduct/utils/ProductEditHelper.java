@@ -12,7 +12,6 @@ import com.tokopedia.core.myproduct.model.editProductForm.EditProductForm;
 import com.tokopedia.core.myproduct.presenter.AddProductView;
 import com.tokopedia.core.myproduct.presenter.NetworkInteractor;
 import com.tokopedia.core.myproduct.service.ProductService;
-import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ProductWholesalePrice;
 
 import org.parceler.Parcel;
@@ -28,7 +27,7 @@ import java.util.Set;
 
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
 import static com.tkpd.library.utils.CommonUtils.checkNotNull;
-import static com.tokopedia.core.myproduct.presenter.ImageGalleryImpl.Pair;
+import static com.tokopedia.core.newgallery.presenter.ImageGalleryImpl.Pair;
 
 /**
  * Created by noiz354 on 5/27/16.

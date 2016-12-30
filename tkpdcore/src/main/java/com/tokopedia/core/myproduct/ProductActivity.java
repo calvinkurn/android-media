@@ -61,8 +61,6 @@ import com.tokopedia.core.myproduct.model.NoteDetailModel;
 import com.tokopedia.core.myproduct.model.SimpleTextModel;
 import com.tokopedia.core.myproduct.presenter.AddProductView;
 import com.tokopedia.core.myproduct.presenter.ImageGallery;
-import com.tokopedia.core.myproduct.presenter.ImageGalleryImpl;
-import com.tokopedia.core.myproduct.presenter.ImageGalleryView;
 import com.tokopedia.core.myproduct.presenter.ProductSocMedPresenter;
 import com.tokopedia.core.myproduct.presenter.ProductView;
 import com.tokopedia.core.myproduct.service.ProductService;
@@ -70,6 +68,9 @@ import com.tokopedia.core.myproduct.service.ProductServiceConstant;
 import com.tokopedia.core.myproduct.utils.AddProductType;
 import com.tokopedia.core.myproduct.utils.UploadPhotoTask;
 import com.tokopedia.core.network.v4.NetworkConfig;
+import com.tokopedia.core.newgallery.GalleryActivity;
+import com.tokopedia.core.newgallery.presenter.ImageGalleryImpl;
+import com.tokopedia.core.newgallery.presenter.ImageGalleryView;
 import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.product.interactor.CacheInteractor;
@@ -808,24 +809,6 @@ public class ProductActivity extends BaseProductActivity implements
         simplefacebook.onActivityResult(requestCode, resultCode, data);
     }
 
-    /**
-     * Call this to get image from image gallery
-     *
-     * @param context non null object
-     */
-    public static void moveToImageGallery(AppCompatActivity context, int position) {
-        moveToImageGalleryCamera(context, position, false, -1);
-    }
-
-    /**
-     * Call this to get image from image gallery and can select more that one.
-     *
-     * @param context non null object
-     */
-    public static void moveToImageGallery(AppCompatActivity context, int position, int maxSelection) {
-        moveToImageGalleryCamera(context, position, false, maxSelection);
-    }
-
     public static Intent moveToEditFragment(Context context, boolean isEdit, String productId) {
         Bundle bundle = new Bundle();
         bundle.putBoolean("is_edit", true);
@@ -854,27 +837,6 @@ public class ProductActivity extends BaseProductActivity implements
         Intent addProduct = new Intent(context, ProductActivity.class);
         addProduct.putExtras(bundle);
         return addProduct;
-    }
-
-    /**
-     * Call this to get image from image gallery
-     * and force open camera.
-     *
-     * @param context non null object
-     */
-    public static void moveToImageGalleryCamera(Activity context, int position, boolean forceOpenCamera, int maxImageSelection){
-        Intent imageGallery = new Intent(context, ProductActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putInt(ADD_PRODUCT_IMAGE_LOCATION, position);
-        bundle.putString(ProductActivity.FRAGMENT_TO_SHOW, ImageGalleryAlbumFragment.FRAGMENT_TAG);
-        bundle.putBoolean(FORCE_OPEN_CAMERA, forceOpenCamera);
-        bundle.putInt(MAX_IMAGE_SELECTION, maxImageSelection);
-        imageGallery.putExtras(bundle);
-
-        //[START] This one is old one
-//        Intent imageGallery = new Intent(context, GalleryBrowser.class);
-        //[END] This one is old one
-        context.startActivityForResult(imageGallery, com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY);
     }
 
     @Override
@@ -1069,7 +1031,7 @@ public class ProductActivity extends BaseProductActivity implements
                 } else {
                     int emptyPicture = 6 - ((AddProductFragment)fragment).countPicture();
                     Log.i(TAG, messageTAG + " max photo will get : " + emptyPicture);
-                    ProductActivity.moveToImageGallery(this, position, emptyPicture);
+                    GalleryActivity.moveToImageGallery(this, position, emptyPicture);
                 }
                 break;
             case DialogFragmentImageAddProduct.ADD_DESCRIPTION:

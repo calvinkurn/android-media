@@ -6,10 +6,8 @@ import android.util.Log;
 
 import static com.tkpd.library.utils.CommonUtils.checkNotNull;
 import static com.tokopedia.core.myproduct.model.constant.ImageModelType.SELECTED;
-import static com.tokopedia.core.myproduct.presenter.ImageGalleryImpl.Pair;
+import static com.tokopedia.core.newgallery.presenter.ImageGalleryImpl.Pair;
 
-import com.drew.lang.StringUtil;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.myproduct.adapter.WholesaleAdapter;

@@ -26,6 +26,7 @@ import com.tokopedia.core.myproduct.ProductActivity;
 import com.tokopedia.core.myproduct.ProductSocMedActivity;
 import com.tokopedia.core.myproduct.dialog.DialogFragmentImageAddProduct;
 import com.tokopedia.core.myproduct.model.ImageModel;
+import com.tokopedia.core.newgallery.GalleryActivity;
 
 import java.io.File;
 import java.net.URI;
@@ -144,7 +145,7 @@ public class PhotoAdapter  extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         public void onClick(View v) {
             if(imageModel.getPath() == null) {
                 int defaultNumber = ImageModel.calculateDefaults(datas);
-                ProductActivity.moveToImageGallery((AppCompatActivity) itemView.getContext(), position, defaultNumber);
+                GalleryActivity.moveToImageGallery((AppCompatActivity) itemView.getContext(), position, defaultNumber);
             }else {
                 if(itemView.getContext() instanceof DialogFragmentImageAddProduct.DFIAListener){
                     if(itemView.getContext() != null

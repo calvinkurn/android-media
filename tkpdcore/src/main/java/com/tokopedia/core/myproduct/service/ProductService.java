@@ -101,7 +101,7 @@ import rx.schedulers.Schedulers;
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
 import static com.tkpd.library.utils.CommonUtils.checkErrorMessageEmpty;
 import static com.tkpd.library.utils.CommonUtils.checkNotNull;
-import static com.tokopedia.core.myproduct.presenter.ImageGalleryImpl.Pair;
+import static com.tokopedia.core.newgallery.presenter.ImageGalleryImpl.Pair;
 
 /**
  * @author m.normansyah

@@ -13,7 +13,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.PictureDB;
-import com.tokopedia.core.myproduct.presenter.ImageGalleryImpl;
+import com.tokopedia.core.newgallery.presenter.ImageGalleryImpl;
 import com.tokopedia.core.myproduct.utils.VerificationUtils;
 
 import butterknife.BindView;
