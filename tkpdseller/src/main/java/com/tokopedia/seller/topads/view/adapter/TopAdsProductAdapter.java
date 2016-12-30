@@ -42,7 +42,7 @@ public class TopAdsProductAdapter extends BaseLinearRecyclerViewAdapter {
         data.addAll(productList);
     }
 
-    public int getDataCount() {
+    public int getDataSize() {
         return data.size();
     }
 

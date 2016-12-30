@@ -128,7 +128,7 @@ public class TopAdsAddProductFragment extends BasePresenterFragment<TopAdsAddPro
         adapter.showEmpty(false);
         adapter.showRetry(false);
         adapter.addProductList(productList);
-        if (adapter.getDataCount() <= 0) {
+        if (adapter.getDataSize() <= 0) {
             adapter.showEmpty(true);
         }
     }
@@ -145,7 +145,7 @@ public class TopAdsAddProductFragment extends BasePresenterFragment<TopAdsAddPro
         if (searchView != null) {
             keyword = searchView.getQuery().toString();
         }
-        presenter.searchProduct(keyword, adapter.getDataCount());
+        presenter.searchProduct(keyword, adapter.getDataSize());
     }
 
     @Override

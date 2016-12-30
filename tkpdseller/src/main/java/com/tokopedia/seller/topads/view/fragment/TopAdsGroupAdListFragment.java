@@ -15,26 +15,6 @@ import com.tokopedia.seller.topads.presenter.TopAdsGroupAdListPresenterImpl;
 public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupAdListPresenter> {
 
     @Override
-    public int getMenuActionSelected() {
-        return R.menu.promo_topads_action;
-    }
-
-    @Override
-    public boolean getActionOnSelectedMenu(ActionMode actionMode, MenuItem menuItem) {
-        int itemId = menuItem.getItemId();
-        if(itemId == R.id.action_edit){
-            return true;
-        }else if (itemId == R.id.action_off){
-            presenter.turnOffAdList(adapter.getSelectedAds());
-            return true;
-        }else if(itemId == R.id.action_on){
-            presenter.turnOnAddList(adapter.getSelectedAds());
-            return true;
-        }
-        return false;
-    }
-
-    @Override
     protected void initialPresenter() {
         presenter = new TopAdsGroupAdListPresenterImpl(context, this);
     }
