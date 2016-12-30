@@ -183,11 +183,8 @@ public class ProductFeed2Impl implements ProductFeed, DiscoveryListener {
             public void onSuccess(ProductFeedTransformData productFeedTransformData) {
 
                 List<RecyclerViewItem> result = new ArrayList<RecyclerViewItem>();
-                HistoryProductListItem historyProductListItem
-                        = new HistoryProductListItem(
-                        productFeedTransformData.getHorizontalProductList().getRecentViewList()
-                );
-                result.add(historyProductListItem);
+                List<RecentView> listProduct = productFeedTransformData.getHorizontalProductList().getRecentViewList();
+                result.add(new HistoryProductListItem(listProduct));
                 GetListFaveShopId getListFaveShopId = productFeedTransformData.getGetListFaveShopId();
                 if (getListFaveShopId != null)
                     listFaveShopId = getListFaveShopId.getData();
