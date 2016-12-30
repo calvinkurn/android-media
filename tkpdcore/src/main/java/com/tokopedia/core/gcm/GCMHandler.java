@@ -132,7 +132,6 @@ public class GCMHandler {
                                 registerGCM();
                             } else {
                                 TrackingUtils.eventError(context.getClass().toString(), gcmParam.statusMessage);
-                                storeDummyGCMID();
                             }
                         }
                     }
@@ -203,7 +202,6 @@ public class GCMHandler {
         regid = PasswordGenerator.getAppId(context);
         gcmRegid = PasswordGenerator.getAppId(context);
         FCMCacheManager.storeRegId(regid, context);
-        FCMCacheManager.storeGCMRegId(gcmRegid, context);
     }
 
 
