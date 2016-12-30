@@ -23,7 +23,7 @@ allprojects {
         maven { url 'https://maven.fabric.io/public' }
         maven { url 'http://maven.localytics.com/public' }
         maven {
-            url "http://jenkins.tkpd:8081/artifactory/libs-snapshot-local"
+            url "http://jenkins.tkpd:8081/artifactory/libs-release-local"
             credentials {
                 username = "${artifactory_username}"
                 password = "${artifactory_password}"
@@ -38,4 +38,17 @@ task clean(type: Delete) {
 
 ext {
      artifactoryUrl = 'http://jenkins.tkpd:8081/artifactory'
+}
+
+afterEvaluate {
+    tasks.withType(PublishToMavenRepository).all { publishTask ->
+        publishTask.onlyIf { task ->
+            if (project.plugins.hasPlugin('com.android.application')) {
+                task.enabled = false
+                task.group = null
+                return false
+            }
+            return true
+        }
+    }
 }

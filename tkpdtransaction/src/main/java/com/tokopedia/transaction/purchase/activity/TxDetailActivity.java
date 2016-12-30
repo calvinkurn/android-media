@@ -185,7 +185,7 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
             holderFormSender.setVisibility(View.GONE);
         }
         tvInvoiceNumber.setText(orderData.getOrderDetail().getDetailInvoice());
-        tvShopName.setText(Html.fromHtml(orderData.getOrderShop().getShopName()));
+        tvShopName.setText(MethodChecker.fromHtml(orderData.getOrderShop().getShopName()));
         tvAdditionalCost.setText(orderData.getOrderDetail().getDetailTotalAddFeeIdr());
         tvShippingCost.setText(orderData.getOrderDetail().getDetailShippingPriceIdr());
         tvQuantity.setText(MessageFormat.format("{0} Barang",
@@ -193,7 +193,7 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
         tvGrandTotal.setText(orderData.getOrderDetail().getDetailOpenAmountIdr());
         tvTransactionDate.setText(orderData.getOrderDetail().getDetailOrderDate());
         tvDestination.setText(MessageFormat.format("{0} {1}",
-                Html.fromHtml(orderData.getOrderShipment().getShipmentName() + " -"),
+                MethodChecker.fromHtml(orderData.getOrderShipment().getShipmentName() + " -"),
                 orderData.getOrderShipment().getShipmentProduct()));
         tvDestinationDetail.setText(orderData.getOrderDestination().getDetailDestination()
                 .replace("&amp;", "&"));

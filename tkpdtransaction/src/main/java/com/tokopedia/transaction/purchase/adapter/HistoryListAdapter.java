@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
+import com.tokopedia.core.util.MethodChecker;
 
 import java.util.ArrayList;
 
@@ -65,9 +66,9 @@ public class HistoryListAdapter extends ArrayAdapter<OrderHistory> {
         holder.tvComment.setVisibility(item.getHistoryComments().equals("0")
                 ? View.GONE : View.VISIBLE);
 
-        holder.tvActor.setText(Html.fromHtml(item.getHistoryActionBy()));
-        holder.tvDate.setText(Html.fromHtml(item.getHistoryStatusDateFull()));
-        holder.tvStatus.setText(Html.fromHtml(item.getHistoryBuyerStatus()));
+        holder.tvActor.setText(MethodChecker.fromHtml(item.getHistoryActionBy()));
+        holder.tvDate.setText(MethodChecker.fromHtml(item.getHistoryStatusDateFull()));
+        holder.tvStatus.setText(MethodChecker.fromHtml(item.getHistoryBuyerStatus()));
 
         return convertView;
     }

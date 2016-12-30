@@ -15,7 +15,8 @@ def getAPKArchiveFolder(variant) {
 }
 
 def allowSplit() {
-    return !project.hasProperty('tkpdBuildType');
+    return gradle.startParameter.taskNames.contains("assembleRelease") &&
+            !project.hasProperty('tkpdBuildType');
 }
 
 def allowDistribution() {
@@ -55,6 +56,12 @@ def archiveAPK(variant, output) {
     }
 }
 
+assemble {
+    onlyIf {
+        !project.hasProperty('isArtifact')
+    }
+}
+
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
@@ -72,7 +79,7 @@ android {
         defaultVersionName = "2.3.1";
     }
 
-    compileSdkVersion 23
+    compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion '25'
     useLibrary 'org.apache.http.legacy'
     sourceSets {
@@ -145,9 +152,17 @@ android {
         }
     }
 
+    splits {
+        density {
+            enable allowSplit()
+            exclude "tvdpi", "xxxhdpi", "ldpi" //Add or modify the supported density here`
+            compatibleScreens 'small', 'normal', 'large', 'xlarge' //Discouraged to touch this
+        }
+    }
+
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 23
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled = true
         applicationId "com.tokopedia.tkpd"
         resConfigs "en", "id"
@@ -162,27 +177,33 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
     }
-    splits {
-        density {
-            enable false
-            exclude "tvdpi", "xxxhdpi", "ldpi" //Add or modify the supported density here`
-            compatibleScreens 'small', 'normal', 'large', 'xlarge' //Discouraged to touch this
-        }
-    }
+
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
 
-    /*compile (rootProject.ext.tkpdDependencies.inbox)
-    compile (rootProject.ext.tkpdDependencies.discovery)
-    compile (rootProject.ext.tkpdDependencies.transaction)
-    compile (rootProject.ext.tkpdDependencies.seller)
-    compile (rootProject.ext.tkpdDependencies.session) */
+    /*compile (rootProject.ext.tkpdDependencies.inbox) {
+        exclude group: 'com.tokopedia.core'
+    }
+    compile (rootProject.ext.tkpdDependencies.discovery) {
+        exclude group: 'com.tokopedia.core'
+    }
+    compile (rootProject.ext.tkpdDependencies.transaction) {
+        exclude group: 'com.tokopedia.core'
+    }
+    compile (rootProject.ext.tkpdDependencies.seller) {
+        exclude group: 'com.tokopedia.core'
+    }
+    compile (rootProject.ext.tkpdDependencies.session) {
+        exclude group: 'com.tokopedia.core'
+    }
+    compile (rootProject.ext.tkpdDependencies.core)*/
     compile project(':tkpddiscovery')
     compile project(':tkpdtransaction')
     compile project(':tkpdseller')
     compile project(':tkpdsession')
+    compile project(':tkpdinbox')
 
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'

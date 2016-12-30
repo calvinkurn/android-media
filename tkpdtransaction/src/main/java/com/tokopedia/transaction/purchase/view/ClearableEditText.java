@@ -41,7 +41,7 @@ public class ClearableEditText extends AppCompatEditText
 
     private void init(final Context context) {
         @SuppressLint("PrivateResource")
-        final Drawable drawable = ContextCompat.getDrawable(context, R.drawable.abc_ic_clear_mtrl_alpha);
+        final Drawable drawable = ContextCompat.getDrawable(context, R.drawable.ic_clear);
         final Drawable wrappedDrawable = DrawableCompat.wrap(drawable); //Wrap the drawable so that it can be tinted pre Lollipop
         DrawableCompat.setTint(wrappedDrawable, getCurrentHintTextColor());
         mClearTextIcon = wrappedDrawable;

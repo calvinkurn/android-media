@@ -253,7 +253,7 @@ public interface ProductDetailView extends ViewListener {
      */
     void refreshMenu();
 
-    void showProductDetailRetry(String errorMessage);
+    void showProductDetailRetry();
 
     void showProductOthersRetry();
 
@@ -272,4 +272,6 @@ public interface ProductDetailView extends ViewListener {
     void showTickerGTM(String message);
 
     void hideTickerGTM();
+
+    void showFullScreenError();
 }

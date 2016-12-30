@@ -11,11 +11,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.OneOnClick;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.transaction.purchase.model.response.txlist.OrderProduct;
 
 import java.text.MessageFormat;
@@ -59,10 +61,19 @@ public class TxProductListAdapter extends ArrayAdapter<OrderProduct> {
             holder = (ViewHolder) convertView.getTag();
         }
         final OrderProduct item = getItem(position);
-        holder.tvProductName.setText(Html.fromHtml(item.getProductName()));
-        holder.tvProductPrice.setText(item.getProductPrice());
+        holder.tvProductName.setText(MethodChecker.fromHtml(item.getProductName()));
         holder.tvNotes.setText(
-                Html.fromHtml(item.getProductNotes().length() == 0 ? "-" : item.getProductNotes())
+                MethodChecker.fromHtml(
+                        item.getProductNotes().length() == 0 ?
+                                "-" : item.getProductNotes()
+                )
+        );
+        holder.tvProductPrice.setText(
+                MessageFormat.format(
+                        "{0} {1}",
+                        context.getString(R.string.title_rupiah),
+                        item.getProductPrice()
+                )
         );
         holder.tvDeliverQty.setText(MessageFormat.format(" x {0} {1}",
                 item.getOrderDeliverQuantity(), context.getString(R.string.title_item)));

@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
+import com.tokopedia.core.util.MethodChecker;
 
 public class OrderStatusView {
 
@@ -59,12 +60,12 @@ public class OrderStatusView {
                 mActor.setBackgroundColor(context.getResources().getColor(R.color.tkpd_dark_green));
                 break;
         }
-        mComments.setText(Html.fromHtml(CommentList));
+        mComments.setText(MethodChecker.fromHtml(CommentList));
         mComments.setVisibility(CommentList == null || CommentList.equals("null")
                 || CommentList.equals("0") ? View.GONE : View.VISIBLE);
-        mActor.setText(Html.fromHtml(ActorList));
-        mDate.setText(Html.fromHtml(DateList));
-        mState.setText(Html.fromHtml(StateList));
+        mActor.setText(MethodChecker.fromHtml(ActorList));
+        mDate.setText(MethodChecker.fromHtml(DateList));
+        mState.setText(MethodChecker.fromHtml(StateList));
     }
 
     public View getView() {

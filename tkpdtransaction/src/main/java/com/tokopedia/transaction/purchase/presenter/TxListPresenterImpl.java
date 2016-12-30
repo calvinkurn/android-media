@@ -22,6 +22,7 @@ import com.tokopedia.core.onboarding.ConstantOnBoarding;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.AppUtils;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.UploadImageHandler;
 import com.tokopedia.transaction.purchase.activity.TxDetailActivity;
@@ -329,7 +330,7 @@ public class TxListPresenterImpl implements TxListPresenter {
     public void processOpenDispute(final Context context, final OrderData data, int state) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(
-                Html.fromHtml(
+                MethodChecker.fromHtml(
                         context.getString(R.string.dialog_package_not_rcv)
                                 .replace("XXX", data.getOrderShop().getShopName())
                 )
@@ -424,7 +425,7 @@ public class TxListPresenterImpl implements TxListPresenter {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(context.getString(R.string.label_title_dialog_order_received));
         builder.setMessage(
-                Html.fromHtml(context.getString(R.string.dialog_package_received).replace(
+                MethodChecker.fromHtml(context.getString(R.string.dialog_package_received).replace(
                         "xx_shop_name_xx", orderData.getOrderShop().getShopName()
                 ))
         );
@@ -464,7 +465,7 @@ public class TxListPresenterImpl implements TxListPresenter {
     private Dialog generateDialogFreeReturn(final Context context, final OrderData orderData) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(context.getString(R.string.label_title_dialog_order_received_free_return));
-        builder.setMessage(Html.fromHtml(orderData.getOrderDetail().getDetailFreeReturnMsg()));
+        builder.setMessage(MethodChecker.fromHtml(orderData.getOrderDetail().getDetailFreeReturnMsg()));
         builder.setNeutralButton(context.getString(R.string.title_open_dispute),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {

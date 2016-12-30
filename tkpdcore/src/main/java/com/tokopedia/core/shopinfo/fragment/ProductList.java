@@ -29,6 +29,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.V2BaseFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.adapter.ShopProductListAdapter;
 import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
@@ -36,6 +37,7 @@ import com.tokopedia.core.shopinfo.facades.GetShopProductRetrofit;
 import com.tokopedia.core.shopinfo.models.GetShopProductParam;
 import com.tokopedia.core.shopinfo.models.etalasemodel.EtalaseModel;
 import com.tokopedia.core.shopinfo.models.productmodel.ProductModel;
+import com.tokopedia.core.util.MethodChecker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -316,11 +318,11 @@ public class ProductList extends V2BaseFragment {
             int totalEtalase = etalaseModel.list.size();
             int totalOtherEtalase = etalaseModel.listOther.size();
             for (int i = 0; i < totalOtherEtalase; i++) {
-                etalaseNameList.add(Html.fromHtml(etalaseModel.listOther.get(i).etalaseName).toString());
+                etalaseNameList.add(MethodChecker.fromHtml(etalaseModel.listOther.get(i).etalaseName).toString());
                 etalaseIdList.add(etalaseModel.listOther.get(i).etalaseId);
             }
             for (int i = 0; i < totalEtalase; i++) {
-                etalaseNameList.add(Html.fromHtml(etalaseModel.list.get(i).etalaseName).toString());
+                etalaseNameList.add(MethodChecker.fromHtml(etalaseModel.list.get(i).etalaseName).toString());
                 etalaseIdList.add(etalaseModel.list.get(i).etalaseId);
             }
         } else {
@@ -375,7 +377,8 @@ public class ProductList extends V2BaseFragment {
 
             @Override
             public void onProductClick(int pos) {
-                Intent intent = ProductInfoActivity.createInstance(getActivity(), Integer.toString(productModel.list.get(pos).productId));
+                Intent intent = ProductInfoActivity.createInstance(getActivity(),
+                        getProductDataToPass(pos));
                 getActivity().startActivity(intent);
             }
 
@@ -555,5 +558,14 @@ public class ProductList extends V2BaseFragment {
 
     private void removeLoading() {
         adapter.removeLoading();
+    }
+
+    private ProductPass getProductDataToPass(int position) {
+        return ProductPass.Builder.aProductPass()
+                .setProductPrice(productModel.list.get(position).productPrice)
+                .setProductId(productModel.list.get(position).productId)
+                .setProductName(productModel.list.get(position).productName)
+                .setProductImage(productModel.list.get(position).productImage)
+                .build();
     }
 }

@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.text.Html;
 
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.util.MethodChecker;
 
 import java.util.List;
 
@@ -117,7 +118,7 @@ public class PeopleFavoritedShopData implements Parcelable {
         private String shopTotalSold;
 
         public String getShopName() {
-            return Html.fromHtml(shopName).toString();
+            return MethodChecker.fromHtml(shopName).toString();
         }
 
         public void setShopName(String shopName) {

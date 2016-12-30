@@ -47,22 +47,7 @@ public class TkpdResponse {
             e.printStackTrace();
             return null;
         }
-        try {
-            if (!jsonResponse.isNull("data")) {
-                jsonData = jsonResponse.getJSONObject("data");
-            } else {
-                jsonData = null;
-            }
 
-            isNullData = jsonData == null;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            jsonData = null;
-        }
-        if (jsonData == null) {
-            isError = true;
-            msgError.add("Data Tidak Ditemukan");
-        }
 
         try {
             if (!jsonResponse.isNull("message_error")) {
@@ -79,6 +64,23 @@ public class TkpdResponse {
             }
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+
+        try {
+            if (!jsonResponse.isNull("data")) {
+                jsonData = jsonResponse.getJSONObject("data");
+            } else {
+                jsonData = null;
+            }
+
+            isNullData = jsonData == null;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            jsonData = null;
+        }
+        if (jsonData == null) {
+            isError = true;
+            if (msgError.isEmpty()) msgError.add("Data Tidak Ditemukan");
         }
 
         try {

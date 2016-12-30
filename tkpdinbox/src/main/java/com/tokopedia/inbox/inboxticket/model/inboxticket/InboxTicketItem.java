@@ -5,6 +5,7 @@ import android.text.Html;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.util.MethodChecker;
 
 import java.util.ArrayList;
 
@@ -232,7 +233,7 @@ public class InboxTicketItem {
      * @return The ticketTitle
      */
     public String getTicketTitle() {
-        return Html.fromHtml(ticketTitle).toString();
+        return MethodChecker.fromHtml(ticketTitle).toString();
     }
 
     /**
