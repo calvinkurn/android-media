@@ -4,11 +4,12 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.tokopedia.core.network.apiservices.user.ApiaryService;
+import com.tokopedia.core.network.apiservices.user.OTPOnCallService;
 import com.tokopedia.core.network.apiservices.user.InterruptActService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.core.util.SessionHandler;
 
 import org.json.JSONException;
 
@@ -34,13 +35,10 @@ public class OTPRetrofitInteractorImpl implements OTPRetrofitInteractor {
 
     private final CompositeSubscription compositeSubscription;
     private final InterruptActService interruptActService;
-    private final ApiaryService apiaryService;
-
 
     public OTPRetrofitInteractorImpl() {
         this.interruptActService = new InterruptActService();
         this.compositeSubscription = new CompositeSubscription();
-        this.apiaryService = new ApiaryService();
     }
 
     @Override
@@ -123,7 +121,11 @@ public class OTPRetrofitInteractorImpl implements OTPRetrofitInteractor {
     public void requestOTPWithCall(@NonNull Context context,
                                    @NonNull Map<String, String> params,
                                    @NonNull final OTPRetrofitInteractor.RequestOTPWithCallListener listener) {
-        Observable<Response<TkpdResponse>> observable = apiaryService.getApi().requestOTPWithCall(params);
+        OTPOnCallService otpOnCallS = new OTPOnCallService(new SessionHandler(context).getAccessToken(context));
+
+        Observable<Response<TkpdResponse>> observable = otpOnCallS.getApi().requestOTPWithCall(
+                SessionHandler.getTempLoginSession(context),
+                params);
 
         Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
             @Override
@@ -135,6 +137,7 @@ public class OTPRetrofitInteractorImpl implements OTPRetrofitInteractor {
                 Log.e(TAG, e.toString());
                 if (e instanceof UnknownHostException) {
                     listener.onNoConnection();
+
                 } else if (e instanceof SocketTimeoutException) {
                     listener.onTimeout();
                 } else {
@@ -147,10 +150,14 @@ public class OTPRetrofitInteractorImpl implements OTPRetrofitInteractor {
             public void onNext(Response<TkpdResponse> response) {
                 if (response.isSuccessful()) {
                     if (!response.body().isError()) {
-                        listener.onSuccess(response.body().getStatusMessages().toString().replace("[","").replace("]",""));
+                        listener.onSuccess(response.body().getStatusMessages().toString().replace("[", "").replace("]", ""));
                     } else {
-                        if (response.body().isNullData()) listener.onNullData();
-                        else listener.onError(response.body().getErrorMessages().get(0));
+                        if (!response.body().getStatusMessages().isEmpty())
+                            listener.onSuccess(response.body().getStatusMessages().toString().replace("[", "").replace("]", ""));
+                        else if (!response.body().getErrorMessages().isEmpty())
+                            listener.onError(response.body().getErrorMessages().toString().replace("[", "").replace("]", ""));
+                        else
+                            listener.onNullData();
                     }
                 } else {
                     new ErrorHandler(new ErrorListener() {
@@ -174,6 +181,7 @@ public class OTPRetrofitInteractorImpl implements OTPRetrofitInteractor {
                         public void onBadRequest() {
                             listener.onError("Network Bad Request Error!");
                         }
+
 
                         @Override
                         public void onForbidden() {

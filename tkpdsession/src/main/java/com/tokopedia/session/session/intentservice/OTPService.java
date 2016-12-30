@@ -82,7 +82,7 @@ public class OTPService extends IntentService {
 
         networkInteractor.requestOTPWithCall(getBaseContext(),
                 AuthUtil.generateParams(getApplicationContext(),
-                        getParamRequestOTPWithPhone(),
+                        getParamRequestOTPWithCall(),
                         SessionHandler.getTempLoginSession(getApplicationContext())),
                 new OTPRetrofitInteractor.RequestOTPWithCallListener() {
                     @Override
@@ -194,7 +194,7 @@ public class OTPService extends IntentService {
         return param;
     }
 
-    public Map<String, String> getParamRequestOTPWithPhone() {
+    public Map<String, String> getParamRequestOTPWithCall() {
         HashMap<String, String> param = new HashMap<>();
         param.put("mode", "call");
         return param;
