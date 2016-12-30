@@ -17,5 +17,6 @@ function copyEnvVarsToGradleProperties {
         echo "Writing ARTIFACTORY CREDENTIALS to gradle.properties..."
         echo "artifactory_username=apps" >> $GRADLE_PROPERTIES
 	echo "artifactory_password=tokopedia789" >> $GRADLE_PROPERTIES
+	gradle wrapper --gradle-version 2.14.1
     fi
 }
