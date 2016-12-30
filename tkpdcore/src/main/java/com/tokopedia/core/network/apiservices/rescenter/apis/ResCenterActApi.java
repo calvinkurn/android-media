@@ -39,8 +39,12 @@ public interface ResCenterActApi {
     Observable<Response<TkpdResponse>> createResolutionValidation(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.ResCenter.PATH_EDIT_RESI_RESOLUTION)
-    Observable<Response<TkpdResponse>> editResiResolution(@FieldMap Map<String, String> params);
+    @POST(TkpdBaseURL.ResCenter.PATH_EDIT_RESI_RESOLUTION_VALIDATION)
+    Observable<Response<TkpdResponse>> editResiResolutionValidation(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_EDIT_RESI_RESOLUTION_SUBMIT)
+    Observable<Response<TkpdResponse>> editResiResolutionSubmit(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.ResCenter.PATH_FINISH_RES_RETURN)

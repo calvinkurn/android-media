@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsPostModel;
+import com.tokopedia.inbox.rescenter.shipping.model.ShippingParamsPostModel;
 import com.tokopedia.inbox.rescenter.shipping.model.ResCenterKurir;
 
 /**
@@ -20,8 +20,12 @@ public interface RetrofitInteractor {
     void unSubscribe();
 
     void storeShippingService(@NonNull Context context,
-                              @NonNull InputShippingParamsPostModel params,
+                              @NonNull ShippingParamsPostModel params,
                               @NonNull PostShippingListener listener);
+
+    void editShippingService(@NonNull Context context,
+                             @NonNull ShippingParamsPostModel params,
+                             @NonNull PostShippingListener listener);
 
     interface GetKurirListener {
 

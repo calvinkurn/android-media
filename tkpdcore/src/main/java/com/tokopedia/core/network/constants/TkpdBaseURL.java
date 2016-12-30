@@ -398,9 +398,11 @@ public interface  TkpdBaseURL {
         String PATH_CANCEL_RESOLUTION = "cancel_resolution.pl";
         String PATH_CREATE_RES_SUBMIT = "create_resolution_submit.pl";
         String PATH_CREATE_RES_VALIDATION = "create_resolution_validation_new.pl";
-        String PATH_EDIT_RESI_RESOLUTION = "edit_resi_resolution.pl";
+        String PATH_EDIT_RESI_RESOLUTION_VALIDATION = "edit_resi_resolution_validation.pl";
+        String PATH_EDIT_RESI_RESOLUTION_SUBMIT = "edit_resi_resolution_submit.pl";
         String PATH_FINISH_RES_RETURN = "finish_resolution_retur.pl";
-        String PATH_INPUT_RESI_RESOLUTION = "input_resi_resolution.pl";
+        String PATH_INPUT_RESI_RESOLUTION_VALIDATION = "input_resi_resolution_validation.pl";
+        String PATH_INPUT_RESI_RESOLUTION_SUBMIT = "input_resi_resolution_submit.pl";
         String PATH_INPUT_ADDRESS_RESOLUTION = "input_address_resolution.pl";
         String PATH_EDIT_ADDRESS_RESOLUTION = "edit_address_resolution.pl";
         String PATH_REJECT_ADMIN_RES_SUBMIT = "reject_admin_resolution_submit.pl";

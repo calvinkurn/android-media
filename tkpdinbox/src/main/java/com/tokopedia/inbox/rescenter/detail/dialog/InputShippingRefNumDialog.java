@@ -21,6 +21,7 @@ import java.util.List;
 /**
  * Created by hangnadi on 3/4/16.
  */
+@Deprecated
 public class InputShippingRefNumDialog {
 
     private final Context context;

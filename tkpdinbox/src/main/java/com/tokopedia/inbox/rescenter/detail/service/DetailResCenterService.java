@@ -168,9 +168,6 @@ public class DetailResCenterService extends IntentService implements DetailResCe
                 case ACTION_REPLY_CONVERSATION:
                     processObservableReplySolution(resCenterPass);
                     break;
-                case ACTION_UPDATE_SHIPPING_REF_NUM:
-                    processObservableUpdateShippingRefNum(resCenterPass);
-                    break;
                 case ACTION_ACCEPT_ADMIN_SOLUTION:
                     processObservableAcceptAdminSolution(resCenterPass);
                     break;
@@ -334,24 +331,6 @@ public class DetailResCenterService extends IntentService implements DetailResCe
         resCenterActService
                 .getApi()
                 .acceptAdminResolution(AuthUtil.generateParams(getApplicationContext(), NetworkParam.acceptAdminSolution(actionParameterPassData)))
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(getDefaultSubscriber());
-    }
-
-    private void processObservableUpdateShippingRefNum(ActionParameterPassData actionParameterPassData) {
-        LocalCacheManager.ReturnPackage cache = LocalCacheManager.ReturnPackage
-                .Builder(resolutionID)
-                .getCache();
-
-        actionParameterPassData.setConversationID(cache.getConversationID());
-        actionParameterPassData.setShipmentID(cache.getShippingID());
-        actionParameterPassData.setShippingRefNum(cache.getShippingRefNum());
-
-        ResCenterActService resCenterActService = new ResCenterActService();
-        resCenterActService
-                .getApi()
-                .editResiResolution(AuthUtil.generateParams(getApplicationContext(), NetworkParam.updateShippingRefNum(actionParameterPassData)))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getDefaultSubscriber());

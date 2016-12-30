@@ -11,7 +11,7 @@ import java.util.List;
  * Created by hangnadi on 12/19/16.
  */
 
-public class InputShippingParamsPostModel implements Parcelable {
+public class ShippingParamsPostModel implements Parcelable {
 
     private String resolutionID;
     private String conversationID;
@@ -80,7 +80,7 @@ public class InputShippingParamsPostModel implements Parcelable {
         this.uploadHost = uploadHost;
     }
 
-    public InputShippingParamsPostModel() {
+    public ShippingParamsPostModel() {
     }
 
     public String getPostKey() {
@@ -142,8 +142,8 @@ public class InputShippingParamsPostModel implements Parcelable {
             return this;
         }
 
-        public InputShippingParamsPostModel build() {
-            InputShippingParamsPostModel postModel = new InputShippingParamsPostModel();
+        public ShippingParamsPostModel build() {
+            ShippingParamsPostModel postModel = new ShippingParamsPostModel();
             postModel.setShippingID(shippingID);
             postModel.setConversationID(conversationID);
             postModel.setResolutionID(resolutionID);
@@ -171,7 +171,7 @@ public class InputShippingParamsPostModel implements Parcelable {
         dest.writeString(this.token);
     }
 
-    protected InputShippingParamsPostModel(Parcel in) {
+    protected ShippingParamsPostModel(Parcel in) {
         this.resolutionID = in.readString();
         this.conversationID = in.readString();
         this.shippingNumber = in.readString();
@@ -183,15 +183,15 @@ public class InputShippingParamsPostModel implements Parcelable {
         this.token = in.readString();
     }
 
-    public static final Creator<InputShippingParamsPostModel> CREATOR = new Creator<InputShippingParamsPostModel>() {
+    public static final Creator<ShippingParamsPostModel> CREATOR = new Creator<ShippingParamsPostModel>() {
         @Override
-        public InputShippingParamsPostModel createFromParcel(Parcel source) {
-            return new InputShippingParamsPostModel(source);
+        public ShippingParamsPostModel createFromParcel(Parcel source) {
+            return new ShippingParamsPostModel(source);
         }
 
         @Override
-        public InputShippingParamsPostModel[] newArray(int size) {
-            return new InputShippingParamsPostModel[size];
+        public ShippingParamsPostModel[] newArray(int size) {
+            return new ShippingParamsPostModel[size];
         }
     };
 }

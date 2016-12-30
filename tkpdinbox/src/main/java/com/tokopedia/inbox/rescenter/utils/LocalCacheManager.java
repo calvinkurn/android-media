@@ -184,6 +184,7 @@ public class LocalCacheManager {
         }
     }
 
+    @Deprecated
     public static class ReturnPackage {
         private String resolutionID;
         private String conversationID;

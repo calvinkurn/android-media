@@ -10,6 +10,7 @@ import com.tokopedia.core.database.DbFlowDatabase;
 /**
  * Created by hangnadi on 3/4/16.
  */
+@Deprecated
 @Table(database = DbFlowDatabase.class, insertConflict = ConflictAction.REPLACE, updateConflict = ConflictAction.REPLACE)
 public class ReturnPackageDB extends BaseModel {
 

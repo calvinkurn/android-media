@@ -18,7 +18,7 @@ import com.tokopedia.inbox.rescenter.shipping.interactor.NetworkParam;
 import com.tokopedia.inbox.rescenter.shipping.interactor.RetrofitInteractor;
 import com.tokopedia.inbox.rescenter.shipping.interactor.RetrofitInteractorImpl;
 import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsGetModel;
-import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsPostModel;
+import com.tokopedia.inbox.rescenter.shipping.model.ShippingParamsPostModel;
 import com.tokopedia.inbox.rescenter.shipping.model.ResCenterKurir;
 import com.tokopedia.inbox.rescenter.shipping.view.InputShippingFragmentView;
 import com.tokopedia.inbox.rescenter.utils.LocalCacheManager;
@@ -179,14 +179,16 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
     @Override
     public void onConfirrmButtonClick() {
-        InputShippingParamsPostModel params = generatePostParams();
-        if (isValidToSubmit(params)) {
+        ShippingParamsPostModel params = generatePostParams();
+        if (isInstanceForEdit()) {
+            doEditShippingService(params);
+        } else {
             doStoreShippingService(params);
         }
     }
 
-    private InputShippingParamsPostModel generatePostParams() {
-        return new InputShippingParamsPostModel.Builder()
+    private ShippingParamsPostModel generatePostParams() {
+        return new ShippingParamsPostModel.Builder()
                 .setResolutionID(viewListener.getParamsModel().getResolutionID())
                 .setConversationID(viewListener.getParamsModel().getConversationID())
                 .setShippingNumber(viewListener.getShippingRefNum().getText().toString())
@@ -203,8 +205,54 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
         }
     }
 
-    private void doStoreShippingService(InputShippingParamsPostModel params) {
+    private void doStoreShippingService(ShippingParamsPostModel params) {
+
+        if (!isValidToSubmit(params)) {
+            return;
+        }
+
         retrofit.storeShippingService(viewListener.getActivity(),
+                params,
+                new RetrofitInteractor.PostShippingListener() {
+
+                    @Override
+                    public void onStart() {
+                        showLoading(true);
+                        showMainPage(false);
+                    }
+
+                    @Override
+                    public void onSuccess() {
+                        clearAttachment();
+                        viewListener.finishAsSuccessResult();
+                        showLoading(false);
+                        showMainPage(true);
+                    }
+
+                    @Override
+                    public void onTimeOut() {
+                        viewListener.toastTimeOutMessage();
+                        showLoading(false);
+                        showMainPage(true);
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        Log.d(TAG, message);
+                        viewListener.toastErrorMessage(message);
+                        showLoading(false);
+                        showMainPage(true);
+                    }
+                });
+    }
+
+    private void doEditShippingService(ShippingParamsPostModel params) {
+
+        if (!isValidToSubmit(params)) {
+            return;
+        }
+
+        retrofit.editShippingService(viewListener.getActivity(),
                 params,
                 new RetrofitInteractor.PostShippingListener() {
 
@@ -243,7 +291,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
         LocalCacheManager.AttachmentShippingResCenter.Builder(viewListener.getParamsModel().getResolutionID()).clearAll();
     }
 
-    private boolean isValidToSubmit(InputShippingParamsPostModel params) {
+    private boolean isValidToSubmit(ShippingParamsPostModel params) {
         viewListener.getErrorSpinner().setVisibility(View.GONE);
         viewListener.getShippingRefNum().setError(null);
 

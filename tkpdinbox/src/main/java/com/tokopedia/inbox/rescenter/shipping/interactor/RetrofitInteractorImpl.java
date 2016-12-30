@@ -20,7 +20,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.inbox.rescenter.shipping.model.ActionResponseData;
-import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsPostModel;
+import com.tokopedia.inbox.rescenter.shipping.model.ShippingParamsPostModel;
 import com.tokopedia.inbox.rescenter.shipping.model.NewUploadResCenterImageData;
 import com.tokopedia.inbox.rescenter.shipping.model.ResCenterKurir;
 import com.tokopedia.inbox.rescenter.utils.UploadImageResCenter;
@@ -146,15 +146,15 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
 
     @Override
     public void storeShippingService(@NonNull final Context context,
-                                     @NonNull final InputShippingParamsPostModel params,
+                                     @NonNull final ShippingParamsPostModel params,
                                      @NonNull final PostShippingListener listener) {
         listener.onStart();
 
         compositeSubscription.add(
                 Observable.just(params)
-                        .flatMap(new Func1<InputShippingParamsPostModel, Observable<InputShippingParamsPostModel>>() {
+                        .flatMap(new Func1<ShippingParamsPostModel, Observable<ShippingParamsPostModel>>() {
                             @Override
-                            public Observable<InputShippingParamsPostModel> call(InputShippingParamsPostModel passData) {
+                            public Observable<ShippingParamsPostModel> call(ShippingParamsPostModel passData) {
                                 Log.d(TAG, "flatMap1");
                                 if (!(passData.getAttachmentList() == null || passData.getAttachmentList().isEmpty())) {
                                     return Observable.zip(
@@ -164,9 +164,9 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                                                             context,
                                                             NetworkParam.paramInputShippingValidation(passData)
                                                     )),
-                                            new Func2<InputShippingParamsPostModel, Response<TkpdResponse>, InputShippingParamsPostModel>() {
+                                            new Func2<ShippingParamsPostModel, Response<TkpdResponse>, ShippingParamsPostModel>() {
                                                 @Override
-                                                public InputShippingParamsPostModel call(InputShippingParamsPostModel passData, Response<TkpdResponse> tkpdResponse) {
+                                                public ShippingParamsPostModel call(ShippingParamsPostModel passData, Response<TkpdResponse> tkpdResponse) {
                                                     ActionResponseData result = tkpdResponse.body().convertDataObj(ActionResponseData.class);
                                                     if (result.isSuccess()) {
                                                         passData.setStatusInputShipping(result.getPostKey() == null || result.getPostKey().isEmpty());
@@ -188,9 +188,9 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                                 }
                             }
                         })
-                        .flatMap(new Func1<InputShippingParamsPostModel, Observable<InputShippingParamsPostModel>>() {
+                        .flatMap(new Func1<ShippingParamsPostModel, Observable<ShippingParamsPostModel>>() {
                             @Override
-                            public Observable<InputShippingParamsPostModel> call(InputShippingParamsPostModel passData) {
+                            public Observable<ShippingParamsPostModel> call(ShippingParamsPostModel passData) {
                                 Log.d(TAG, "flatMap2");
                                 if (passData.getAttachmentList() == null || passData.getAttachmentList().isEmpty()) {
                                     return Observable.just(passData);
@@ -199,9 +199,9 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                                 }
                             }
                         })
-                        .flatMap(new Func1<InputShippingParamsPostModel, Observable<InputShippingParamsPostModel>>() {
+                        .flatMap(new Func1<ShippingParamsPostModel, Observable<ShippingParamsPostModel>>() {
                             @Override
-                            public Observable<InputShippingParamsPostModel> call(InputShippingParamsPostModel passData) {
+                            public Observable<ShippingParamsPostModel> call(ShippingParamsPostModel passData) {
                                 Log.d(TAG, "flatMap3");
                                 if (passData.getAttachmentList() == null || passData.getAttachmentList().isEmpty()) {
                                     return Observable.just(passData);
@@ -210,9 +210,9 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                                 }
                             }
                         })
-                        .flatMap(new Func1<InputShippingParamsPostModel, Observable<InputShippingParamsPostModel>>() {
+                        .flatMap(new Func1<ShippingParamsPostModel, Observable<ShippingParamsPostModel>>() {
                             @Override
-                            public Observable<InputShippingParamsPostModel> call(InputShippingParamsPostModel passData) {
+                            public Observable<ShippingParamsPostModel> call(ShippingParamsPostModel passData) {
                                 Log.d(TAG, "flatMap4");
                                 if (passData.getAttachmentList() == null || passData.getAttachmentList().isEmpty()) {
                                     return Observable.just(passData);
@@ -221,9 +221,9 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                                             Observable.just(passData),
                                             resCenterActService.getApi().inputResiResolutionSubmit(
                                                     AuthUtil.generateParamsNetwork(context, NetworkParam.paramInputShippingSubmit(passData))),
-                                            new Func2<InputShippingParamsPostModel, Response<TkpdResponse>, InputShippingParamsPostModel>() {
+                                            new Func2<ShippingParamsPostModel, Response<TkpdResponse>, ShippingParamsPostModel>() {
                                                 @Override
-                                                public InputShippingParamsPostModel call(InputShippingParamsPostModel passData, Response<TkpdResponse> tkpdResponse) {
+                                                public ShippingParamsPostModel call(ShippingParamsPostModel passData, Response<TkpdResponse> tkpdResponse) {
                                                     ActionResponseData result = tkpdResponse.body().convertDataObj(ActionResponseData.class);
                                                     if (result.isSuccess()) {
                                                         passData.setStatusInputShipping(true);
@@ -243,7 +243,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.newThread())
-                        .subscribe(new Subscriber<InputShippingParamsPostModel>() {
+                        .subscribe(new Subscriber<ShippingParamsPostModel>() {
                             @Override
                             public void onCompleted() {
 
@@ -260,7 +260,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                             }
 
                             @Override
-                            public void onNext(InputShippingParamsPostModel passData) {
+                            public void onNext(ShippingParamsPostModel passData) {
                                 Log.d(TAG, "onNext: ");
                                 listener.onSuccess();
                             }
@@ -268,12 +268,12 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
         );
     }
 
-    private Observable<InputShippingParamsPostModel> getObservableGenerateHost(Context context, InputShippingParamsPostModel passData) {
+    private Observable<ShippingParamsPostModel> getObservableGenerateHost(Context context, ShippingParamsPostModel passData) {
         GenerateHostActService generateHostActService = new GenerateHostActService();
         Observable<GeneratedHost> generateHost = generateHostActService.getApi().generateHost(AuthUtil.generateParams(context, NetworkParam.generateHost()));
-        return Observable.zip(Observable.just(passData), generateHost, new Func2<InputShippingParamsPostModel, GeneratedHost, InputShippingParamsPostModel>() {
+        return Observable.zip(Observable.just(passData), generateHost, new Func2<ShippingParamsPostModel, GeneratedHost, ShippingParamsPostModel>() {
             @Override
-            public InputShippingParamsPostModel call(InputShippingParamsPostModel passData, GeneratedHost generatedHost) {
+            public ShippingParamsPostModel call(ShippingParamsPostModel passData, GeneratedHost generatedHost) {
                 if (generatedHost != null) {
                     passData.setServerID(String.valueOf(generatedHost.getServerId()));
                     passData.setUploadHost(generatedHost.getUploadHost());
@@ -286,17 +286,17 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     }
 
 
-    private Observable<InputShippingParamsPostModel> getObservableUploadingFile(Context context, InputShippingParamsPostModel passData) {
-        return Observable.zip(Observable.just(passData), doUploadFile(context, passData), new Func2<InputShippingParamsPostModel, List<AttachmentResCenterDB>, InputShippingParamsPostModel>() {
+    private Observable<ShippingParamsPostModel> getObservableUploadingFile(Context context, ShippingParamsPostModel passData) {
+        return Observable.zip(Observable.just(passData), doUploadFile(context, passData), new Func2<ShippingParamsPostModel, List<AttachmentResCenterDB>, ShippingParamsPostModel>() {
             @Override
-            public InputShippingParamsPostModel call(InputShippingParamsPostModel inputModel, List<AttachmentResCenterDB> attachmentResCenterDBs) {
+            public ShippingParamsPostModel call(ShippingParamsPostModel inputModel, List<AttachmentResCenterDB> attachmentResCenterDBs) {
                 inputModel.setAttachmentList(attachmentResCenterDBs);
                 return inputModel;
             }
         });
     }
 
-    private Observable<List<AttachmentResCenterDB>> doUploadFile(final Context context, final InputShippingParamsPostModel inputModel) {
+    private Observable<List<AttachmentResCenterDB>> doUploadFile(final Context context, final ShippingParamsPostModel inputModel) {
         return Observable
                 .from(inputModel.getAttachmentList())
                 .flatMap(new Func1<AttachmentResCenterDB, Observable<AttachmentResCenterDB>>() {
@@ -373,5 +373,129 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                     }
                 })
                 .toList();
+    }
+
+    @Override
+    public void editShippingService(@NonNull final Context context,
+                                     @NonNull final ShippingParamsPostModel params,
+                                     @NonNull final PostShippingListener listener) {
+        listener.onStart();
+
+        compositeSubscription.add(
+                Observable.just(params)
+                        .flatMap(new Func1<ShippingParamsPostModel, Observable<ShippingParamsPostModel>>() {
+                            @Override
+                            public Observable<ShippingParamsPostModel> call(ShippingParamsPostModel passData) {
+                                Log.d(TAG, "flatMap1");
+                                if (!(passData.getAttachmentList() == null || passData.getAttachmentList().isEmpty())) {
+                                    return Observable.zip(
+                                            Observable.just(passData),
+                                            resCenterActService.getApi()
+                                                    .editResiResolutionValidation(AuthUtil.generateParamsNetwork(
+                                                            context,
+                                                            NetworkParam.paramEditShippingValidation(passData)
+                                                    )),
+                                            new Func2<ShippingParamsPostModel, Response<TkpdResponse>, ShippingParamsPostModel>() {
+                                                @Override
+                                                public ShippingParamsPostModel call(ShippingParamsPostModel passData, Response<TkpdResponse> tkpdResponse) {
+                                                    ActionResponseData result = tkpdResponse.body().convertDataObj(ActionResponseData.class);
+                                                    if (result.isSuccess()) {
+                                                        passData.setStatusInputShipping(result.getPostKey() == null || result.getPostKey().isEmpty());
+                                                        passData.setPostKey(result.getPostKey());
+                                                        passData.setToken(result.getToken());
+                                                        return passData;
+                                                    } else {
+                                                        String errorMessage = "";
+                                                        for (int i = 0; i < tkpdResponse.body().getErrorMessages().size(); i++) {
+                                                            errorMessage += tkpdResponse.body().getErrorMessages().get(i);
+                                                        }
+                                                        throw new RuntimeException(errorMessage);
+                                                    }
+                                                }
+                                            }
+                                    );
+                                } else {
+                                    return Observable.just(passData);
+                                }
+                            }
+                        })
+                        .flatMap(new Func1<ShippingParamsPostModel, Observable<ShippingParamsPostModel>>() {
+                            @Override
+                            public Observable<ShippingParamsPostModel> call(ShippingParamsPostModel passData) {
+                                Log.d(TAG, "flatMap2");
+                                if (passData.getAttachmentList() == null || passData.getAttachmentList().isEmpty()) {
+                                    return Observable.just(passData);
+                                } else {
+                                    return getObservableGenerateHost(context, passData);
+                                }
+                            }
+                        })
+                        .flatMap(new Func1<ShippingParamsPostModel, Observable<ShippingParamsPostModel>>() {
+                            @Override
+                            public Observable<ShippingParamsPostModel> call(ShippingParamsPostModel passData) {
+                                Log.d(TAG, "flatMap3");
+                                if (passData.getAttachmentList() == null || passData.getAttachmentList().isEmpty()) {
+                                    return Observable.just(passData);
+                                } else {
+                                    return getObservableUploadingFile(context, passData);
+                                }
+                            }
+                        })
+                        .flatMap(new Func1<ShippingParamsPostModel, Observable<ShippingParamsPostModel>>() {
+                            @Override
+                            public Observable<ShippingParamsPostModel> call(ShippingParamsPostModel passData) {
+                                Log.d(TAG, "flatMap4");
+                                if (passData.getAttachmentList() == null || passData.getAttachmentList().isEmpty()) {
+                                    return Observable.just(passData);
+                                } else {
+                                    return Observable.zip(
+                                            Observable.just(passData),
+                                            resCenterActService.getApi().editResiResolutionSubmit(
+                                                    AuthUtil.generateParamsNetwork(context, NetworkParam.paramEditShippingSubmit(passData))),
+                                            new Func2<ShippingParamsPostModel, Response<TkpdResponse>, ShippingParamsPostModel>() {
+                                                @Override
+                                                public ShippingParamsPostModel call(ShippingParamsPostModel passData, Response<TkpdResponse> tkpdResponse) {
+                                                    ActionResponseData result = tkpdResponse.body().convertDataObj(ActionResponseData.class);
+                                                    if (result.isSuccess()) {
+                                                        passData.setStatusInputShipping(true);
+                                                        return passData;
+                                                    } else {
+                                                        String errorMessage = "";
+                                                        for (int i = 0; i < tkpdResponse.body().getErrorMessages().size(); i++) {
+                                                            errorMessage += tkpdResponse.body().getErrorMessages().get(i);
+                                                        }
+                                                        throw new RuntimeException(errorMessage);
+                                                    }
+                                                }
+                                            });
+                                }
+                            }
+                        })
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(new Subscriber<ShippingParamsPostModel>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Log.d(TAG, "onError: " + e.getMessage());
+                                if (e instanceof IOException) {
+                                    listener.onTimeOut();
+                                } else {
+                                    listener.onError(e.getMessage());
+                                }
+                            }
+
+                            @Override
+                            public void onNext(ShippingParamsPostModel passData) {
+                                Log.d(TAG, "onNext: ");
+                                listener.onSuccess();
+                            }
+                        })
+        );
     }
 }

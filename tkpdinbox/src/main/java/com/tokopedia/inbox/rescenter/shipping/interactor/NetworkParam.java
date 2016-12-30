@@ -2,7 +2,7 @@ package com.tokopedia.inbox.rescenter.shipping.interactor;
 
 import com.tokopedia.core.database.model.AttachmentResCenterDB;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsPostModel;
+import com.tokopedia.inbox.rescenter.shipping.model.ShippingParamsPostModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,7 +29,7 @@ public class NetworkParam {
         return params;
     }
 
-    public static TKPDMapParam<String, String> paramInputShippingValidation(InputShippingParamsPostModel passData) {
+    public static TKPDMapParam<String, String> paramInputShippingValidation(ShippingParamsPostModel passData) {
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
         params.put("resolution_id", passData.getResolutionID());
         params.put("shipping_ref", passData.getShippingNumber());
@@ -79,7 +79,7 @@ public class NetworkParam {
         return jsonObject;
     }
 
-    public static TKPDMapParam<String, String> paramInputShippingSubmit(InputShippingParamsPostModel passData) {
+    public static TKPDMapParam<String, String> paramInputShippingSubmit(ShippingParamsPostModel passData) {
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
         params.put("resolution_id", passData.getResolutionID());
         params.put("post_key", passData.getPostKey());
@@ -87,7 +87,7 @@ public class NetworkParam {
         return params;
     }
 
-    private static String getFileUploaded(InputShippingParamsPostModel passData) {
+    private static String getFileUploaded(ShippingParamsPostModel passData) {
         try {
             JSONObject jsonObject = new JSONObject();
             for (AttachmentResCenterDB attachment: passData.getAttachmentList()) {
@@ -97,5 +97,26 @@ public class NetworkParam {
         } catch (JSONException e) {
             return "";
         }
+    }
+
+    public static TKPDMapParam<String, String> paramEditShippingValidation(ShippingParamsPostModel passData) {
+        TKPDMapParam<String, String> params = new TKPDMapParam<>();
+        params.put("resolution_id", passData.getResolutionID());
+        params.put("conversation_id", passData.getConversationID());
+        params.put("shipping_ref", passData.getShippingNumber());
+        params.put("shipment_id", passData.getShippingID());
+        params.put("has_resi_photo", String.valueOf(passData.getAttachmentList() == null || passData.getAttachmentList().isEmpty() ? 0 : 1));
+        params.put("resi_photo_all", getPhotos(passData.getAttachmentList()));
+        params.put("resi_pic_obj", getPhotosObj(passData.getAttachmentList()));
+        return params;
+    }
+
+    public static TKPDMapParam<String, String> paramEditShippingSubmit(ShippingParamsPostModel passData) {
+        TKPDMapParam<String, String> params = new TKPDMapParam<>();
+        params.put("resolution_id", passData.getResolutionID());
+        params.put("conversation_id", passData.getConversationID());
+        params.put("post_key", passData.getPostKey());
+        params.put("file_uploaded", getFileUploaded(passData));
+        return params;
     }
 }
