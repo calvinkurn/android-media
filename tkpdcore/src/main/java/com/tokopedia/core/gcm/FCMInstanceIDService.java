@@ -49,6 +49,8 @@ public class FCMInstanceIDService extends FirebaseInstanceIdService implements I
                     tokenUpdate.setAccessToken(sessionHandler.getAccessToken(this));
                     tokenUpdate.setUserId(sessionHandler.getLoginID());
                     fcmRefreshTokenReceiver.onTokenReceive(Observable.just(tokenUpdate));
+                } else {
+                    FCMCacheManager.storeRegId(token, getBaseContext());
                 }
             }
         }
