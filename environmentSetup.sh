@@ -8,6 +8,9 @@ function copyEnvVarsToGradleProperties {
     if [ ! -f "$GRADLE_PROPERTIES" ]; then
         echo "Gradle Properties does not exist"
 
+	echo "Creating gradle folder"
+	mkdir $HOME/.gradle
+
         echo "Creating Gradle Properties file..."
         touch $GRADLE_PROPERTIES
 
