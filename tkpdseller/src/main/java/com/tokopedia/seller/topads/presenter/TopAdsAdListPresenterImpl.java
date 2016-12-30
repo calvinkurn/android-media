@@ -30,12 +30,4 @@ public abstract class TopAdsAdListPresenterImpl<T extends Ad> implements TopAdsA
         SessionHandler session = new SessionHandler(context);
         return session.getShopID();
     }
-
-    private boolean hasNextPage() {
-        return false;
-    }
-
-    private boolean isLastItemPosition(int lastItemPosition, int visibleItem) {
-        return lastItemPosition == visibleItem;
-    }
 }

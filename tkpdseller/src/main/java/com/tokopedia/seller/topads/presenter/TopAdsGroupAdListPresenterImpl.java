@@ -11,6 +11,7 @@ import com.tokopedia.seller.topads.interactor.TopAdsGroupAdInteractorImpl;
 import com.tokopedia.seller.topads.model.data.GroupAdBulkAction;
 import com.tokopedia.seller.topads.model.data.GroupAd;
 import com.tokopedia.seller.topads.model.data.GroupAdAction;
+import com.tokopedia.seller.topads.model.data.ProductAdBulkAction;
 import com.tokopedia.seller.topads.model.request.DataRequest;
 import com.tokopedia.seller.topads.model.request.SearchAdRequest;
 import com.tokopedia.seller.topads.model.response.PageDataResponse;
@@ -58,26 +59,31 @@ public class TopAdsGroupAdListPresenterImpl extends TopAdsAdListPresenterImpl<Gr
     @Override
     public void turnOffAdList(List<GroupAd> adList) {
         DataRequest<GroupAdBulkAction> dataRequest = generateActionRequest(adList, TopAdsNetworkConstant.ACTION_BULK_OFF_AD);
-        actionBulkAds(dataRequest);
+        groupAdInteractor.bulkAction(dataRequest, new ListenerInteractor<GroupAdBulkAction>() {
+            @Override
+            public void onSuccess(GroupAdBulkAction dataResponseActionAds) {
+                topAdsListPromoViewListener.onTurnOnAdSuccess();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                topAdsListPromoViewListener.onTurnOnAdFailed();
+            }
+        });
     }
 
     @Override
     public void turnOnAddList(List<GroupAd> adList) {
         DataRequest<GroupAdBulkAction> dataRequest = generateActionRequest(adList, TopAdsNetworkConstant.ACTION_BULK_ON_AD);
-        actionBulkAds(dataRequest);
-    }
-
-    @NonNull
-    private void actionBulkAds(DataRequest<GroupAdBulkAction> actionRequest) {
-        groupAdInteractor.bulkAction(actionRequest, new ListenerInteractor<GroupAdBulkAction>() {
+        groupAdInteractor.bulkAction(dataRequest, new ListenerInteractor<GroupAdBulkAction>() {
             @Override
             public void onSuccess(GroupAdBulkAction dataResponseActionAds) {
-
+                topAdsListPromoViewListener.onTurnOnAdSuccess();
             }
 
             @Override
             public void onError(Throwable throwable) {
-
+                topAdsListPromoViewListener.onTurnOnAdFailed();
             }
         });
     }
@@ -97,5 +103,12 @@ public class TopAdsGroupAdListPresenterImpl extends TopAdsAdListPresenterImpl<Gr
         dataRequestGroupAd.setAdList(dataRequestGroupAdses);
         dataRequest.setData(dataRequestGroupAd);
         return dataRequest;
+    }
+
+    @Override
+    public void onDestroy() {
+        if (groupAdInteractor != null) {
+            groupAdInteractor.unSubscribe();
+        }
     }
 }

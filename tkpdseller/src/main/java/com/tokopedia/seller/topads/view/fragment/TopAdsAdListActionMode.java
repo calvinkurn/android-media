@@ -22,15 +22,21 @@ public class TopAdsAdListActionMode implements ActionMode.Callback {
     }
 
     private Callback callback;
+    private ActionMode actionMode;
 
     public void setCallback(Callback callback) {
         this.callback = callback;
+    }
+
+    public void setTitle(String title) {
+        actionMode.setTitle(title);
     }
 
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
         MenuInflater inflater = mode.getMenuInflater();
         inflater.inflate(R.menu.promo_topads_action, menu);
+        this.actionMode = mode;
         return true;
     }
 

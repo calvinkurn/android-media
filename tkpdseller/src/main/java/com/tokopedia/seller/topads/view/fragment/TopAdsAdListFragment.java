@@ -12,8 +12,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 
+import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
@@ -59,6 +62,9 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     private LinearLayoutManager layoutManager;
     private SearchView searchView;
     private TopAdsAdListActionMode actionMode;
+    private SnackbarRetry snackBarRetry;
+
+    protected abstract void searchAd();
 
     public TopAdsAdListFragment() {
         // Required empty public constructor
@@ -153,8 +159,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         searchAd();
     }
 
-    protected abstract void searchAd();
-
     private void initialDate() {
         try {
             startDate = new SimpleDateFormat(TopAdsConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).parse(getActivity().getIntent().getStringExtra(TopAdsNetworkConstant.PARAM_START_DATE));
@@ -184,23 +188,30 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
             actionMode = new TopAdsAdListActionMode();
             actionMode.setCallback(this);
             getActivity().startActionMode(actionMode);
+            swipeToRefresh.setEnabled(false);
         }
+        if (actionMode != null) {
+            actionMode.setTitle(String.valueOf(adapter.getSelectedList().size()));
+        }
+        hideSnackBarRetry();
     }
 
     @Override
     public void onActionTurnOn() {
-
+        presenter.turnOnAddList(adapter.getSelectedList());
     }
 
     @Override
     public void onActionTurnOff() {
-        actionMode = null;
+        presenter.turnOffAdList(adapter.getSelectedList());
     }
 
     @Override
     public void onActionModeDestroyed() {
         actionMode = null;
         adapter.clearCheckedList();
+        swipeToRefresh.setEnabled(true);
+        hideSnackBarRetry();
     }
 
     @Override
@@ -213,46 +224,64 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
 
     @Override
     public void onSearchAdLoaded(@NonNull List adList, int totalItem) {
-        this.totalItem = totalItem;
         if (page == 0) {
             adapter.clearData();
+            this.totalItem = totalItem;
         }
         adapter.addData(adList);
         hideLoading();
-        checkEmptyDate(true);
+        checkEmptyData(true);
     }
 
     @Override
     public void onLoadSearchAdError() {
         hideLoading();
-        checkEmptyDate(false);
+        checkEmptyData(false);
+        showSnackBarRetry(new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                searchAd();
+            }
+        });
     }
 
     @Override
     public void onTurnOnAdSuccess() {
         hideLoading();
-        checkEmptyDate(true);
+        checkEmptyData(true);
     }
 
     @Override
     public void onTurnOnAdFailed() {
         hideLoading();
-        checkEmptyDate(false);
+        checkEmptyData(false);
+        showSnackBarRetry(new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                onActionTurnOn();
+            }
+        });
     }
 
     @Override
     public void onTurnOffAdSuccess() {
         hideLoading();
-        checkEmptyDate(true);
+        checkEmptyData(true);
     }
 
     @Override
     public void onTurnOffAdFailed() {
         hideLoading();
-        checkEmptyDate(false);
+        checkEmptyData(false);
+        showSnackBarRetry(new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                onActionTurnOff();
+            }
+        });
     }
 
-    private void checkEmptyDate(boolean success) {
+    private void checkEmptyData(boolean success) {
         if (adapter.getDataSize() > 0) {
             return;
         }
@@ -270,5 +299,26 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         if (swipeToRefresh.isRefreshing()) {
             swipeToRefresh.setRefreshing(false);
         }
+        hideSnackBarRetry();
+    }
+
+    private void showSnackBarRetry(NetworkErrorHelper.RetryClickedListener listener) {
+        if (snackBarRetry == null) {
+            snackBarRetry = new SnackbarRetry(SnackbarManager.make(getActivity(), getResources().getString(com.tokopedia.core.R.string.msg_network_error), -2), listener);
+            snackBarRetry.showRetrySnackbar();
+        }
+    }
+
+    private void hideSnackBarRetry() {
+        if (snackBarRetry != null) {
+            snackBarRetry.hideRetrySnackbar();
+            snackBarRetry = null;
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroy();
     }
 }

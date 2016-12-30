@@ -12,4 +12,6 @@ public interface TopAdsAdListPresenter<T extends Ad> {
     void turnOffAdList(List<T> adList);
 
     void turnOnAddList(List<T> adList);
+
+    void onDestroy();
 }

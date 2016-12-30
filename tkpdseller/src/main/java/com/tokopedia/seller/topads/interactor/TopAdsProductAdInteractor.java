@@ -17,4 +17,6 @@ public interface TopAdsProductAdInteractor {
     void searchAd(SearchAdRequest searchAdRequest, final ListenerInteractor<PageDataResponse<List<ProductAd>>> listener);
 
     void bulkAction(DataRequest<ProductAdBulkAction> bulkActionDataRequest, final ListenerInteractor<ProductAdBulkAction> listener);
+
+    void unSubscribe();
 }

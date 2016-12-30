@@ -295,7 +295,7 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
 
     @Override
     public void actionSingleAds(DataRequest<ProductAdBulkAction> dataRequest, ListenerInteractor<ProductAdBulkAction> listenerInteractor) {
-        Observable<Response<DataResponse<ProductAdBulkAction>>> actionAdsObservable = topAdsManagementService.getApi().postActionSingleAds(dataRequest);
+        Observable<Response<DataResponse<ProductAdBulkAction>>> actionAdsObservable = topAdsManagementService.getApi().bulkActionProductAd(dataRequest);
         compositeSubscription.add(actionAdsObservable
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())

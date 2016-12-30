@@ -1,6 +1,7 @@
 package com.tokopedia.seller.topads.network.apiservice.api;
 
 import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
+import com.tokopedia.seller.topads.model.data.GroupAdBulkAction;
 import com.tokopedia.seller.topads.model.data.ProductAdBulkAction;
 import com.tokopedia.seller.topads.model.data.DataCredit;
 import com.tokopedia.seller.topads.model.data.DataDeposit;
@@ -43,9 +44,6 @@ public interface TopAdsManagementApi {
     @GET(TopAdsNetworkConstant.PATH_DASHBOARD_CREDIT)
     Observable<Response<DataResponse<List<DataCredit>>>> getDashboardCredit();
 
-    @PATCH(TopAdsNetworkConstant.PATH_ACTION_BULK_AD)
-    Observable<Response<DataResponse<ProductAdBulkAction>>> postActionSingleAds(@Body DataRequest<ProductAdBulkAction> body);
-
     @GET(TopAdsNetworkConstant.PATH_DASHBOARD_PRODUCT)
     Observable<Response<PageDataResponse<List<ProductAd>>>> searchProductAd(@QueryMap Map<String, String> params);
 
@@ -54,4 +52,10 @@ public interface TopAdsManagementApi {
 
     @GET(TopAdsNetworkConstant.PATH_SEARCH_PRODUCT)
     Observable<Response<DataResponse<List<Product>>>> searchProduct(@QueryMap Map<String, String> params);
+
+    @PATCH(TopAdsNetworkConstant.PATH_BULK_ACTION_PRODUCT_AD)
+    Observable<Response<DataResponse<ProductAdBulkAction>>> bulkActionProductAd(@Body DataRequest<ProductAdBulkAction> body);
+
+    @PATCH(TopAdsNetworkConstant.PATH_BULK_ACTION_GROUP_AD)
+    Observable<Response<DataResponse<GroupAdBulkAction>>> bulkActionGroupAd(@Body DataRequest<GroupAdBulkAction> body);
 }

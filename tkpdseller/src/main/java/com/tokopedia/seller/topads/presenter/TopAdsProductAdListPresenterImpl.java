@@ -59,26 +59,31 @@ public class TopAdsProductAdListPresenterImpl extends TopAdsAdListPresenterImpl<
     @Override
     public void turnOffAdList(List<ProductAd> adList) {
         DataRequest<ProductAdBulkAction> dataRequest = generateActionRequest(adList, TopAdsNetworkConstant.ACTION_BULK_OFF_AD);
-        actionBulkAds(dataRequest);
+        productAdInteractor.bulkAction(dataRequest, new ListenerInteractor<ProductAdBulkAction>() {
+            @Override
+            public void onSuccess(ProductAdBulkAction dataResponseActionAds) {
+                topAdsListPromoViewListener.onTurnOffAdSuccess();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                topAdsListPromoViewListener.onTurnOffAdFailed();
+            }
+        });
     }
 
     @Override
     public void turnOnAddList(List<ProductAd> adList) {
         DataRequest<ProductAdBulkAction> dataRequest = generateActionRequest(adList, TopAdsNetworkConstant.ACTION_BULK_ON_AD);
-        actionBulkAds(dataRequest);
-    }
-
-    @NonNull
-    private void actionBulkAds(DataRequest<ProductAdBulkAction> actionRequest) {
-        productAdInteractor.bulkAction(actionRequest, new ListenerInteractor<ProductAdBulkAction>() {
+        productAdInteractor.bulkAction(dataRequest, new ListenerInteractor<ProductAdBulkAction>() {
             @Override
             public void onSuccess(ProductAdBulkAction dataResponseActionAds) {
-
+                topAdsListPromoViewListener.onTurnOnAdSuccess();
             }
 
             @Override
             public void onError(Throwable throwable) {
-
+                topAdsListPromoViewListener.onTurnOnAdFailed();
             }
         });
     }
@@ -100,4 +105,10 @@ public class TopAdsProductAdListPresenterImpl extends TopAdsAdListPresenterImpl<
         return dataRequest;
     }
 
+    @Override
+    public void onDestroy() {
+        if (productAdInteractor != null) {
+            productAdInteractor.unSubscribe();
+        }
+    }
 }

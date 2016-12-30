@@ -2,6 +2,7 @@ package com.tokopedia.seller.topads.interactor;
 
 import android.content.Context;
 
+import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.datasource.TopAdsCacheDataSourceImpl;
 import com.tokopedia.seller.topads.datasource.TopAdsDbDataSource;
 import com.tokopedia.seller.topads.datasource.TopAdsDbDataSourceImpl;
@@ -9,10 +10,12 @@ import com.tokopedia.seller.topads.model.data.GroupAd;
 import com.tokopedia.seller.topads.model.data.GroupAdBulkAction;
 import com.tokopedia.seller.topads.model.request.DataRequest;
 import com.tokopedia.seller.topads.model.request.SearchAdRequest;
+import com.tokopedia.seller.topads.model.response.DataResponse;
 import com.tokopedia.seller.topads.model.response.PageDataResponse;
 import com.tokopedia.seller.topads.network.apiservice.TopAdsManagementService;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -49,8 +52,8 @@ public class TopAdsGroupAdInteractorImpl implements TopAdsGroupAdInteractor {
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(new Func1<Response<PageDataResponse<List<GroupAd>>>, Observable<PageDataResponse<List<GroupAd>>>>() {
                     @Override
-                    public Observable<PageDataResponse<List<GroupAd>>> call(Response<PageDataResponse<List<GroupAd>>> depositResponseResponse) {
-                        return Observable.just(depositResponseResponse.body());
+                    public Observable<PageDataResponse<List<GroupAd>>> call(Response<PageDataResponse<List<GroupAd>>> response) {
+                        return Observable.just(response.body());
                     }
                 })
                 .subscribe(new SubscribeOnNext<PageDataResponse<List<GroupAd>>>(listener), new SubscribeOnError(listener)));
@@ -58,6 +61,21 @@ public class TopAdsGroupAdInteractorImpl implements TopAdsGroupAdInteractor {
 
     @Override
     public void bulkAction(DataRequest<GroupAdBulkAction> bulkActionDataRequest, ListenerInteractor<GroupAdBulkAction> listener) {
+        Observable<Response<DataResponse<GroupAdBulkAction>>> observable = topAdsManagementService.getApi().bulkActionGroupAd(bulkActionDataRequest);
+        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<Response<DataResponse<GroupAdBulkAction>>, Observable<GroupAdBulkAction>>() {
+                    @Override
+                    public Observable<GroupAdBulkAction> call(Response<DataResponse<GroupAdBulkAction>> response) {
+                        return Observable.just(response.body().getData());
+                    }
+                })
+                .subscribe(new SubscribeOnNext<GroupAdBulkAction>(listener), new SubscribeOnError(listener)));
+    }
 
+    @Override
+    public void unSubscribe() {
+        compositeSubscription.unsubscribe();
     }
 }
