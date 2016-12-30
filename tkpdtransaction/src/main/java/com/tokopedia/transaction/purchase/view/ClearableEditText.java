@@ -42,7 +42,7 @@ public class ClearableEditText extends AppCompatEditText
     private void init(final Context context) {
         @SuppressLint("PrivateResource")
         final Drawable drawable = ContextCompat.getDrawable(context, R.drawable.ic_clear);
-        final Drawable wrappedDrawable = DrawableCompat.wrap(drawable); //Wrap the drawable so that it can be tinted pre Lollipop
+        final Drawable wrappedDrawable = DrawableCompat.wrap(drawable);
         DrawableCompat.setTint(wrappedDrawable, getCurrentHintTextColor());
         mClearTextIcon = wrappedDrawable;
 
@@ -83,7 +83,8 @@ public class ClearableEditText extends AppCompatEditText
     @Override
     public boolean onTouch(final View view, final MotionEvent motionEvent) {
         final int x = (int) motionEvent.getX();
-        if (mClearTextIcon.isVisible() && x > getWidth() - getPaddingRight() - mClearTextIcon.getIntrinsicWidth()) {
+        if (mClearTextIcon.isVisible()
+                && x > getWidth() - getPaddingRight() - mClearTextIcon.getIntrinsicWidth()) {
             if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 setText("");
             }
@@ -93,7 +94,8 @@ public class ClearableEditText extends AppCompatEditText
     }
 
     @Override
-    public final void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
+    public final void onTextChanged(final CharSequence s, final int start,
+                                    final int before, final int count) {
         if (isFocused()) {
             setClearIconVisible(s.length() > 0);
         }

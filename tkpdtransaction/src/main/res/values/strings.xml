@@ -38,4 +38,10 @@
     <string name="title_tab_purchase_status_order">STATUS PEMESANAN</string>
     <string name="title_tab_purchase_confirm_deliver">KONFIRMASI PENERIMAAN</string>
     <string name="title_tab_purchase_transactions">TRANSAKSI</string>
+    <string name="label_title_prefix_preorder_period_time_info">"Lama waktu proses produk : "</string>
+    <string name="label_history_transaction_actor_tokopedia">Tokopedia</string>
+    <string name="label_history_transaction_actor_system_tracker">System-Tracker</string>
+    <string name="label_history_transaction_actor_buyer">Buyer</string>
+    <string name="label_history_transaction_actor_seller">Seller</string>
+    <string name="label_error_upload_image">Gagal Mengupload gambar, silahkan coba lagi</string>
 </resources>

@@ -3,16 +3,15 @@ package com.tokopedia.transaction.purchase.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.transaction.purchase.model.response.txconfirmation.TxConfData;
 
 import java.util.ArrayList;
@@ -50,7 +49,7 @@ public class TxConfAdapter extends ArrayAdapter<TxConfData> {
     }
 
     @Override
-    public void addAll(Collection<? extends TxConfData> collection) {
+    public void addAll(@NonNull Collection<? extends TxConfData> collection) {
         txConfDataList.addAll(collection);
         notifyDataSetChanged();
     }
@@ -87,6 +86,7 @@ public class TxConfAdapter extends ArrayAdapter<TxConfData> {
             holder = (ViewHolder) convertView.getTag();
         }
         final TxConfData item = getItem(position);
+        if (item == null) return convertView;
         holder.tvShopName.setText(MethodChecker.fromHtml(item.getConfirmation().getShopList()));
         holder.tvCreateDate.setText(item.getConfirmation().getCreateTime());
         holder.tvDueDate.setText(item.getConfirmation().getPayDueDate());

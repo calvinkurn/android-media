@@ -8,8 +8,7 @@ import com.tokopedia.transaction.purchase.model.response.formconfirmpayment.Form
 import com.tokopedia.transaction.purchase.model.response.formconfirmpayment.FormEditPaymentData;
 
 /**
- * ConfirmPaymentViewListener
- * Created by Angga.Prasetiyo on 20/06/2016.
+ * @author Angga.Prasetiyo on 20/06/2016.
  */
 public interface ConfirmPaymentViewListener extends ViewListener {
     void renderFormConfirmation(FormConfPaymentData data);

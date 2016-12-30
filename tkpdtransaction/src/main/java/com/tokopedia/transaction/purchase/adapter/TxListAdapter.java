@@ -2,7 +2,6 @@ package com.tokopedia.transaction.purchase.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -10,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
@@ -256,8 +254,6 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
         TextView tvUploadTx;
         @BindView(R2.id.status)
         TextView tvStatus;
-        @BindView(R2.id.confirm_layout)
-        LinearLayout linConfirmLayout;
         @BindView(R2.id.receive_button)
         TextView tvReceiveButton;
         @BindView(R2.id.reject_button)

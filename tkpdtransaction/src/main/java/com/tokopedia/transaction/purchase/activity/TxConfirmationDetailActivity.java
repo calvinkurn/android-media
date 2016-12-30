@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -59,12 +58,6 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
     TextView tvDepositUsed;
     @BindView(R2.id.lv_cart)
     LinearLayout lvContainer;
-    @BindView(R2.id.check_account)
-    View btnSysAccountInfo;
-    @BindView(R2.id.cancel_button)
-    View btnCancel;
-    @BindView(R2.id.confirm_button)
-    View btnConfirm;
 
     private TxConfData txConfData;
     private TkpdProgressDialog mProgressDialog;
@@ -300,18 +293,10 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
         ImageView btnEdit;
         @BindView(R2.id.delete)
         ImageView btnDelete;
-        @BindView(R2.id.error1)
-        TextView tvError1;
-        @BindView(R2.id.error2)
-        TextView tvError2;
         @BindView(R2.id.detail_info)
         View viewDetailInfo;
         @BindView(R2.id.detail_info_but)
         View btnDetailInfo;
-        @BindView(R2.id.error_area)
-        View viewError;
-        @BindView(R2.id.main_view)
-        View viewMain;
         @BindView(R2.id.insurance)
         TextView tvInsurance;
         @BindView(R2.id.remaining_stock)
@@ -319,7 +304,7 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
         @BindView(R2.id.chevron_sign)
         ImageView ivChevron;
 
-        public HolderCartItem(View view) {
+        HolderCartItem(View view) {
             ButterKnife.bind(this, view);
         }
     }
@@ -335,14 +320,12 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
         TextView tvWeight;
         @BindView(R2.id.price_total)
         TextView tvPriceTotal;
-        @BindView(R2.id.error_msg)
-        TextView tvError;
         @BindView(R2.id.notes)
         TextView tvNotes;
         @BindView(R2.id.qty)
         TextView tvQty;
 
-        public HolderProductCartItem(View view) {
+        HolderProductCartItem(View view) {
             ButterKnife.bind(this, view);
         }
     }

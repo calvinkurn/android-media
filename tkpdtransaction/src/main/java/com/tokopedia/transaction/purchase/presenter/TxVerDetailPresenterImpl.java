@@ -20,10 +20,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Angga.Prasetiyo on 13/06/2016.
+ * @author Angga.Prasetiyo on 13/06/2016.
  */
 public class TxVerDetailPresenterImpl implements TxVerDetailPresenter {
-    private static final String TAG = TxVerDetailPresenterImpl.class.getSimpleName();
     private final TxVerDetailViewListener viewListener;
     private final TxOrderNetInteractor netInteractor;
     private TxUploadInteractor txUploadInteractor;

@@ -22,8 +22,7 @@ import java.util.List;
 import butterknife.BindView;
 
 /**
- * TxSummaryFragment
- * Created by Angga.Prasetiyo on 07/04/2016.
+ * @author Angga.Prasetiyo on 07/04/2016.
  */
 public class TxSummaryFragment extends BasePresenterFragment<TxSummaryPresenter> implements
         AdapterView.OnItemClickListener, TxSummaryViewListener,

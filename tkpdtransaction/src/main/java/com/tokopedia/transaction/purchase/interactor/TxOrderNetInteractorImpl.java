@@ -32,8 +32,7 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
- * TxOrderNetInteractorImpl
- * Created by Angga.Prasetiyo on 11/04/2016.
+ * @author Angga.Prasetiyo on 11/04/2016.
  */
 public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
 
@@ -126,7 +125,9 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
                         if (tkpdResponse.body().getJsonData().getInt("is_success") == 0) {
                             listener.onError(tkpdResponse.body().getErrorMessages().get(0));
                         } else {
-                            listener.onSuccess(tkpdResponse.body().convertDataObj(ConfirmationData.class));
+                            listener.onSuccess(
+                                    tkpdResponse.body().convertDataObj(ConfirmationData.class)
+                            );
                         }
                     } catch (Exception e) {
                         onError(e);
@@ -193,7 +194,8 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
     }
 
     @Override
-    public void getConfirmPaymentForm(@NonNull final Context context, @NonNull Map<String, String> params,
+    public void getConfirmPaymentForm(@NonNull final Context context,
+                                      @NonNull Map<String, String> params,
                                       final ConfirmPaymentFormListener listener) {
         Observable<Response<TkpdResponse>> observable = txOrderService.getApi()
                 .getConfirmPaymentForm(AuthUtil.generateParams(context, params));
@@ -221,9 +223,11 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
                         && !response.body().isNullData()) {
                     listener.onSuccess(response.body().convertDataObj(FormConfPaymentData.class));
                 } else {
-                    listener.onError(response.body().isError() && !response.body().getErrorMessages().isEmpty()
-                            ? response.body().getErrorMessages().get(0)
-                            : ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                    listener.onError(
+                            response.body().isError()
+                                    && !response.body().getErrorMessages().isEmpty()
+                                    ? response.body().getErrorMessages().get(0)
+                                    : ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
         };
@@ -234,7 +238,8 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
     }
 
     @Override
-    public void getEditPaymentForm(@NonNull final Context context, @NonNull Map<String, String> params,
+    public void getEditPaymentForm(@NonNull final Context context,
+                                   @NonNull Map<String, String> params,
                                    final EditPaymentFormListener listener) {
         Observable<Response<TkpdResponse>> observable = txOrderService.getApi()
                 .getEditPaymentForm(AuthUtil.generateParams(context, params));
@@ -262,7 +267,8 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
                         && !response.body().isNullData()) {
                     listener.onSuccess(response.body().convertDataObj(FormEditPaymentData.class));
                 } else {
-                    listener.onError(response.body().isError() && !response.body().getErrorMessages().isEmpty()
+                    listener.onError(response.body().isError()
+                            && !response.body().getErrorMessages().isEmpty()
                             ? response.body().getErrorMessages().get(0)
                             : ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
@@ -403,7 +409,8 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
                         e.printStackTrace();
                         listener.onError(response.body().getErrorMessages().get(0));
                     }
-                } else if (response.body().isError() && !response.body().getErrorMessages().isEmpty()) {
+                } else if (response.body().isError()
+                        && !response.body().getErrorMessages().isEmpty()) {
                     listener.onError(response.body().getErrorMessages().get(0));
                 } else {
                     listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
@@ -424,7 +431,8 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
         final Observable<Response<TkpdResponse>> observable = txOrderService.getApi()
                 .getTXOrderStatus(AuthUtil.generateParams(context, params));
 
-        final Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
+        final Subscriber<Response<TkpdResponse>> subscriber
+                = new Subscriber<Response<TkpdResponse>>() {
             @Override
             public void onCompleted() {
 

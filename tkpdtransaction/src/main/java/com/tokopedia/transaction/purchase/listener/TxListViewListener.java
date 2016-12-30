@@ -6,8 +6,7 @@ import com.tokopedia.transaction.purchase.model.response.txlist.OrderData;
 import java.util.List;
 
 /**
- * TxListViewListener
- * Created by Angga.Prasetiyo on 21/04/2016.
+ * @author Angga.Prasetiyo on 21/04/2016.
  */
 public interface TxListViewListener extends ViewListener {
     void renderDataList(List<OrderData> orderDataList, boolean hasNext, int typeRequest);
@@ -30,5 +29,4 @@ public interface TxListViewListener extends ViewListener {
 
     void resetData();
 
-    void showMessageResiNumberCopied(String message);
 }

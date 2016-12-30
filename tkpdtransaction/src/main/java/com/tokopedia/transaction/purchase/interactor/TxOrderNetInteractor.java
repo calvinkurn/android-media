@@ -18,7 +18,7 @@ import org.json.JSONObject;
 import java.util.Map;
 
 /**
- * Created by Angga.Prasetiyo on 11/04/2016.
+ * @author Angga.Prasetiyo on 11/04/2016.
  */
 public interface TxOrderNetInteractor {
 
@@ -28,7 +28,8 @@ public interface TxOrderNetInteractor {
         int PULL_REFRESH = 2;
     }
 
-    void getCancelPaymentForm(Context context, Map<String, String> params, OnCancelPaymentForm listener);
+    void getCancelPaymentForm(Context context, Map<String, String> params,
+                              OnCancelPaymentForm listener);
 
     void cancelPayment(Context context, Map<String, String> params, OnCancelPayment listener);
 

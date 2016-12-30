@@ -41,8 +41,7 @@ import java.util.Set;
 import butterknife.BindView;
 
 /**
- * TxConfirmationFragment
- * Created by Angga.Prasetiyo on 13/05/2016.
+ * @author Angga.Prasetiyo on 13/05/2016.
  */
 public class TxConfirmationFragment extends BasePresenterFragment<TxConfirmationPresenter>
         implements TxConfViewListener, LazyListView.LazyLoadListener,

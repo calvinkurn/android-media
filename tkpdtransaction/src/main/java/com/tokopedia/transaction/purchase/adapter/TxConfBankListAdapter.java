@@ -29,8 +29,10 @@ public class TxConfBankListAdapter extends ArrayAdapter<Bank> {
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) convertView = inflater.inflate(resourceId, parent, false);
-        if (convertView instanceof TextView)
-            ((TextView) convertView).setText(getItem(position).getBankName());
+        if (convertView instanceof TextView) {
+            Bank item = getItem(position);
+            ((TextView) convertView).setText(item != null ? item.getBankName() : "");
+        }
         return convertView;
     }
 }

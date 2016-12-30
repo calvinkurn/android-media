@@ -131,6 +131,30 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
         ScreenTracking.screenLoca(screenName);
     }
 
+    @Override
+    public void OnMenuClick(int position, String stateTxFilter) {
+        this.stateTxFilterID = stateTxFilter;
+        this.viewPager.setCurrentItem(position);
+    }
+
+    @Override
+    public String getFilterCaseAllTransaction() {
+        return stateTxFilterID;
+    }
+
+    @Override
+    public String getStateTxFilterID() {
+        return stateTxFilterID;
+    }
+
+    @Override
+    protected void initView() {
+        super.initView();
+        if (getIntent().getExtras() != null && getIntent().getExtras()
+                .getBoolean(TransactionPurchaseRouter.EXTRA_UPDATE_BALANCE, false))
+            drawer.updateBalance();
+    }
+
     private void setDrawerSidePosition(int position) {
         switch (position) {
             case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SUMMARY:
@@ -163,30 +187,6 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
                 drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_TRANSACTION);
                 break;
         }
-    }
-
-    @Override
-    public void OnMenuClick(int position, String stateTxFilter) {
-        this.stateTxFilterID = stateTxFilter;
-        this.viewPager.setCurrentItem(position);
-    }
-
-    @Override
-    public String getFilterCaseAllTransaction() {
-        return stateTxFilterID;
-    }
-
-    @Override
-    public String getStateTxFilterID() {
-        return stateTxFilterID;
-    }
-
-    @Override
-    protected void initView() {
-        super.initView();
-        if (getIntent().getExtras() != null && getIntent().getExtras()
-                .getBoolean(TransactionPurchaseRouter.EXTRA_UPDATE_BALANCE, false))
-            drawer.updateBalance();
     }
 
     private class OnTabPageChangeListener extends TabLayout.TabLayoutOnPageChangeListener {

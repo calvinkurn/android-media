@@ -6,8 +6,7 @@ import com.tokopedia.transaction.purchase.model.response.txconfirmation.TxConfDa
 import java.util.List;
 
 /**
- * TxConfViewListener
- * Created by Angga.Prasetiyo on 13/05/2016.
+ * @author by Angga.Prasetiyo on 13/05/2016.
  */
 public interface TxConfViewListener extends ViewListener {
     void renderDataList(List<TxConfData> orderDataList, boolean hasNext, int typeRequest);

@@ -96,7 +96,8 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
     public static TxListFragment instanceAllOrder(String txFilterID) {
         TxListFragment fragment = new TxListFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(TransactionPurchaseRouter.ARG_PARAM_EXTRA_INSTANCE_TYPE, TransactionPurchaseRouter.INSTANCE_ALL);
+        bundle.putInt(TransactionPurchaseRouter.ARG_PARAM_EXTRA_INSTANCE_TYPE,
+                TransactionPurchaseRouter.INSTANCE_ALL);
         bundle.putString(TransactionPurchaseRouter.ARG_PARAM_EXTRA_INSTANCE_FILTER, txFilterID);
         fragment.setArguments(bundle);
         return fragment;
@@ -143,9 +144,13 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
 
     @Override
     protected void setupArguments(Bundle arguments) {
-        this.typeInstance = arguments.getInt(TransactionPurchaseRouter.ARG_PARAM_EXTRA_INSTANCE_TYPE);
-        this.txFilterID = arguments.getString(TransactionPurchaseRouter.ARG_PARAM_EXTRA_INSTANCE_FILTER,
-                TransactionPurchaseRouter.ALL_STATUS_FILTER_ID);
+        this.typeInstance = arguments.getInt(
+                TransactionPurchaseRouter.ARG_PARAM_EXTRA_INSTANCE_TYPE
+        );
+        this.txFilterID = arguments.getString(
+                TransactionPurchaseRouter.ARG_PARAM_EXTRA_INSTANCE_FILTER,
+                TransactionPurchaseRouter.ALL_STATUS_FILTER_ID
+        );
         this.instanceFromNotification = arguments.getBoolean(
                 TransactionPurchaseRouter.ARG_PARAM_EXTRA_INSTANCE_FROM_NOTIFICATION, false);
     }
@@ -195,27 +200,6 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
         fabFilter.setOnClickListener(this);
     }
 
-    private void getData(int typeRequest) {
-        fabFilter.hide();
-        if (getView() != null) NetworkErrorHelper.hideEmptyState(getView());
-        switch (typeInstance) {
-            case TransactionPurchaseRouter.INSTANCE_ALL:
-                isLoading = true;
-                presenter.getAllOrderData(
-                        getActivity(), pagingHandler.getPage(), allTxFilter, typeRequest
-                );
-                break;
-            case INSTANCE_RECEIVE:
-                isLoading = true;
-                presenter.getDeliverOrderData(getActivity(), pagingHandler.getPage(), typeRequest);
-                break;
-            case INSTANCE_STATUS:
-                isLoading = true;
-                presenter.getStatusOrderData(getActivity(), pagingHandler.getPage(), typeRequest);
-                break;
-        }
-    }
-
     @Override
     protected void initialVar() {
         txListAdapter = new TxListAdapter(getActivity(), typeInstance, this);
@@ -229,13 +213,6 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
     @Override
     protected void setActionVar() {
         initialData();
-    }
-
-    private void initialData() {
-        if (getUserVisibleHint() && !isLoading && getActivity() != null
-                && (txListAdapter == null || txListAdapter.getCount() == 0)) {
-            refreshHandler.startRefresh();
-        }
     }
 
     @Override
@@ -277,7 +254,7 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
 
     @Override
     public void closeView() {
-
+        getActivity().finish();
     }
 
     @Override
@@ -462,11 +439,6 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
     }
 
     @Override
-    public void showMessageResiNumberCopied(String message) {
-        showToastMessage(message);
-    }
-
-    @Override
     public void actionToDetail(OrderData data) {
         presenter.processToDetailOrder(getActivity(), data, typeInstance);
     }
@@ -554,13 +526,42 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
         resetData();
     }
 
-    public interface StateFilterListener {
-        String getStateTxFilterID();
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         presenter.onActivityResult(getActivity(), requestCode, resultCode, data);
     }
+
+    private void initialData() {
+        if (getUserVisibleHint() && !isLoading && getActivity() != null
+                && (txListAdapter == null || txListAdapter.getCount() == 0)) {
+            refreshHandler.startRefresh();
+        }
+    }
+
+    private void getData(int typeRequest) {
+        fabFilter.hide();
+        if (getView() != null) NetworkErrorHelper.hideEmptyState(getView());
+        switch (typeInstance) {
+            case TransactionPurchaseRouter.INSTANCE_ALL:
+                isLoading = true;
+                presenter.getAllOrderData(
+                        getActivity(), pagingHandler.getPage(), allTxFilter, typeRequest
+                );
+                break;
+            case INSTANCE_RECEIVE:
+                isLoading = true;
+                presenter.getDeliverOrderData(getActivity(), pagingHandler.getPage(), typeRequest);
+                break;
+            case INSTANCE_STATUS:
+                isLoading = true;
+                presenter.getStatusOrderData(getActivity(), pagingHandler.getPage(), typeRequest);
+                break;
+        }
+    }
+
+    public interface StateFilterListener {
+        String getStateTxFilterID();
+    }
 }
+

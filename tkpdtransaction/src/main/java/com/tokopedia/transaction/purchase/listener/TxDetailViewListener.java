@@ -5,8 +5,7 @@ import android.content.Intent;
 import com.tokopedia.core.product.listener.ViewListener;
 
 /**
- * TxConfViewListener
- * Created by Angga.Prasetiyo on 28/04/2016.
+ * @author Angga.Prasetiyo on 28/04/2016.
  */
 public interface TxDetailViewListener extends ViewListener {
 

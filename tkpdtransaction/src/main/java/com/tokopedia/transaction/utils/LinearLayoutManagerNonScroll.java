@@ -7,7 +7,6 @@ import android.support.v7.widget.LinearLayoutManager;
 /**
  * @author anggaprasetiyo on 12/5/16.
  */
-
 public class LinearLayoutManagerNonScroll extends LinearLayoutManager {
 
     public LinearLayoutManagerNonScroll(Context context) {

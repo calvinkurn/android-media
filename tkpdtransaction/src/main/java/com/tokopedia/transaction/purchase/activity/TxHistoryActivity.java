@@ -19,8 +19,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * TxHistoryActivity
- * Created by Angga.Prasetiyo on 02/05/2016.
+ * @author Angga.Prasetiyo on 02/05/2016.
  */
 public class TxHistoryActivity extends TActivity {
     private static final String EXTRA_ORDER_HISTORIES = "EXTRA_ORDER_HISTORIES";

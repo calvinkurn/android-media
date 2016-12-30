@@ -3,7 +3,6 @@ package com.tokopedia.transaction.purchase.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,13 +10,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.OneOnClick;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.transaction.purchase.model.response.txlist.OrderProduct;
 
 import java.text.MessageFormat;
@@ -61,6 +59,7 @@ public class TxProductListAdapter extends ArrayAdapter<OrderProduct> {
             holder = (ViewHolder) convertView.getTag();
         }
         final OrderProduct item = getItem(position);
+        if (item == null) return convertView;
         holder.tvProductName.setText(MethodChecker.fromHtml(item.getProductName()));
         holder.tvNotes.setText(
                 MethodChecker.fromHtml(
@@ -84,10 +83,10 @@ public class TxProductListAdapter extends ArrayAdapter<OrderProduct> {
             @Override
             public void oneOnClick(View view) {
                 listener.actionToProductInfo(ProductPass.Builder.aProductPass()
-                        .setProductId(getItem(position).getProductId())
-                        .setProductName(getItem(position).getProductName())
-                        .setProductImage(getItem(position).getProductPicture())
-                        .setProductPrice(getItem(position).getProductPrice())
+                        .setProductId(item.getProductId())
+                        .setProductName(item.getProductName())
+                        .setProductImage(item.getProductPicture())
+                        .setProductPrice(item.getProductPrice())
                         .build());
             }
         });

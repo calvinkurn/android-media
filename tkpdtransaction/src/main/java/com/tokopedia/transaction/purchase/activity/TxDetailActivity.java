@@ -406,8 +406,8 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
 
     @NonNull
     private DialogInterface.OnShowListener getRequestCancelOrderAlertDialogPositiveButtonListener(
-            final TextInputLayout tilEtReason, final EditText etReason, final AlertDialog alertDialog
-    ) {
+            final TextInputLayout tilEtReason, final EditText etReason,
+            final AlertDialog alertDialog) {
         return new DialogInterface.OnShowListener() {
             @Override
             public void onShow(final DialogInterface dialog) {
@@ -462,7 +462,7 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
                 .getHistoryOrderStatus()) == 400) {
             orderData.getOrderHistory().get(historyIndex)
                     .setHistoryComments(
-                            "Lama waktu proses produk : "
+                            getString(R.string.label_title_prefix_preorder_period_time_info)
                                     + orderData.getOrderDetail().getDetailPreorder()
                                     .getPreorderProcessTime()
                                     + " "

@@ -6,8 +6,7 @@ import com.tokopedia.transaction.purchase.model.response.txverification.TxVerDat
 import java.util.List;
 
 /**
- * TxVerViewListener
- * Created by Angga.Prasetiyo on 24/05/2016.
+ * @author Angga.Prasetiyo on 24/05/2016.
  */
 public interface TxVerViewListener extends ViewListener {
 

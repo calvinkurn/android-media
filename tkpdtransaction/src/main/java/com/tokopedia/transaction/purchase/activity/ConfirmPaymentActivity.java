@@ -105,18 +105,12 @@ public class ConfirmPaymentActivity extends BasePresenterActivity<ConfirmPayment
     EditText tvChooseAccountBank;
     @BindView(R2.id.msg_success)
     TextView tvSuccessMessage;
-    @BindView(R2.id.submit_but)
-    TextView btnSubmit;
     @BindView(R2.id.total_payment)
     TextView tvTotalPayment;
     @BindView(R2.id.total_payment_success)
     TextView tvSuccessTotalPayment;
     @BindView(R2.id.title_conf_payment)
     TextView tvLabelTotalPayment;
-    @BindView(R2.id.tokopedia_deposit)
-    TextView tvSuccessTokopediaDeposit;
-    @BindView(R2.id.remaining_tokopedia_deposit)
-    TextView tvRemainingTokopediaDeposit;
     @BindView(R2.id.check_account)
     View btnSysAccountInfo;
     @BindView(R2.id.account_owner)
@@ -525,15 +519,19 @@ public class ConfirmPaymentActivity extends BasePresenterActivity<ConfirmPayment
     @Override
     public void requestFocusError(View view) {
         if (view.requestFocus())
-            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+            getWindow().setSoftInputMode(
+                    WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE
+            );
     }
 
     @Override
     public void renderConfirmationSuccess(ConfirmationData data) {
         tvLabelTotalPayment.setText(getString(R.string.title_confirmed_payment));
         tvSuccessTotalPayment.setText(data.getPaymentDetail().getPaymentAmt());
-        tvSuccessMessage.setText(MessageFormat.format("{0} {1}", getString(R.string.msg_payment_success),
-                data.getPaymentDetail().getPaymentMethodName()));
+        tvSuccessMessage.setText(
+                MessageFormat.format("{0} {1}", getString(R.string.msg_payment_success),
+                        data.getPaymentDetail().getPaymentMethodName())
+        );
         viewPaymentSuccess.setVisibility(View.VISIBLE);
         viewFormPayment.setVisibility(View.GONE);
         presenter.setLocalyticsFlow(this, data);
@@ -693,7 +691,7 @@ public class ConfirmPaymentActivity extends BasePresenterActivity<ConfirmPayment
 
         private final int resId;
 
-        public InputWatcher(int id) {
+        InputWatcher(int id) {
             resId = id;
         }
 

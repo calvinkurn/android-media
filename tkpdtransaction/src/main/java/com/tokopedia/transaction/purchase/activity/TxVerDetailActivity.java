@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.purchase.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -9,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.view.Window;
@@ -48,17 +50,14 @@ import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
 /**
- * TxVerDetailActivity
- * Created by Angga.Prasetiyo on 13/06/2016.
+ * @author Angga.Prasetiyo on 13/06/2016.
  */
 @RuntimePermissions
 public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresenter>
         implements TxVerDetailViewListener, AdapterView.OnItemClickListener {
     private static final String EXTRA_TX_VER_DATA = "EXTRA_TX_VER_DATA";
-
     public static final String EXTRA_MESSAGE_ERROR_GET_INVOICE = "EXTRA_MESSAGE_ERROR_GET_INVOICE";
     public static final int RESULT_INVOICE_FAILED = 2;
-
     public static final int REQUEST_EDIT_PAYMENT = 42;
 
     private TxVerData txVerData;
@@ -226,7 +225,9 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Detail data = invoiceAdapter.getItem(position);
-        AppUtils.InvoiceDialog(this, data.getUrl(), data.getInvoice());
+        AppUtils.InvoiceDialog(
+                this, data != null ? data.getUrl() : "", data != null ? data.getInvoice() : ""
+        );
     }
 
     @Override
@@ -248,14 +249,18 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
                     } else if (resultCode == ConfirmPaymentActivity.RESULT_FORM_FAILED) {
                         if (data.hasExtra(ConfirmPaymentActivity.EXTRA_MESSAGE_ERROR_GET_FORM)) {
                             NetworkErrorHelper.showSnackbar(this,
-                                    data.getStringExtra(ConfirmPaymentActivity.EXTRA_MESSAGE_ERROR_GET_FORM)
+                                    data.getStringExtra(
+                                            ConfirmPaymentActivity.EXTRA_MESSAGE_ERROR_GET_FORM
+                                    )
                             );
                         }
                     }
                     break;
                 case ImageUploadHandler.REQUEST_CODE:
                     String imagePath = null;
+                    //noinspection deprecation
                     if (data != null && data.getStringExtra(GalleryBrowser.IMAGE_URL) != null) {
+                        //noinspection deprecation
                         imagePath = data.getExtras().getString(GalleryBrowser.IMAGE_URL, null);
                     } else if (imageUploadHandler != null &&
                             imageUploadHandler.getCameraFileloc() != null) {
@@ -280,13 +285,17 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
         myAlertDialog.setPositiveButton(getString(R.string.title_gallery), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                TxVerDetailActivityPermissionsDispatcher.onActionImagePickerWithCheck(TxVerDetailActivity.this);
+                TxVerDetailActivityPermissionsDispatcher.onActionImagePickerWithCheck(
+                        TxVerDetailActivity.this
+                );
             }
         });
         myAlertDialog.setNegativeButton(getString(R.string.title_camera), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                TxVerDetailActivityPermissionsDispatcher.onActionCameraWithCheck(TxVerDetailActivity.this);
+                TxVerDetailActivityPermissionsDispatcher.onActionCameraWithCheck(
+                        TxVerDetailActivity.this
+                );
 
             }
         });
@@ -295,24 +304,28 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
         dialog.show();
     }
 
+    @SuppressLint("InlinedApi")
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     public void onActionCamera() {
         imageUploadHandler.actionCamera();
     }
 
+    @SuppressLint("InlinedApi")
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void onActionImagePicker() {
         imageUploadHandler.actionImagePicker();
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                           int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         TxVerDetailActivityPermissionsDispatcher.onRequestPermissionsResult(
-                TxVerDetailActivity.this, requestCode, grantResults);
+                TxVerDetailActivity.this, requestCode, grantResults
+        );
     }
 
+    @SuppressLint("InlinedApi")
     @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     void showRationaleForStorageAndCamera(final PermissionRequest request) {
         List<String> listPermission = new ArrayList<>();
@@ -322,9 +335,12 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
         RequestPermissionUtil.onShowRationale(this, request, listPermission);
     }
 
+    @SuppressLint("InlinedApi")
     @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showRationaleForStorage(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(this, request, Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onShowRationale(
+                this, request, Manifest.permission.READ_EXTERNAL_STORAGE
+        );
     }
 
     @OnPermissionDenied(Manifest.permission.CAMERA)
@@ -337,16 +353,19 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
         RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.CAMERA);
     }
 
+    @SuppressLint("InlinedApi")
     @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showDeniedForStorage() {
         RequestPermissionUtil.onPermissionDenied(this, Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
+    @SuppressLint("InlinedApi")
     @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showNeverAskForStorage() {
         RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
+    @SuppressLint("InlinedApi")
     @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     void showDeniedForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
@@ -356,6 +375,7 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
         RequestPermissionUtil.onPermissionDenied(this, listPermission);
     }
 
+    @SuppressLint("InlinedApi")
     @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     void showNeverAskForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();

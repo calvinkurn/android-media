@@ -3,7 +3,6 @@ package com.tokopedia.transaction.purchase.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +10,9 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
-import com.tokopedia.core.util.MethodChecker;
 
 import java.util.ArrayList;
 
@@ -34,6 +33,7 @@ public class HistoryListAdapter extends ArrayAdapter<OrderHistory> {
         this.context = context;
     }
 
+    @SuppressWarnings("deprecation")
     @NonNull
     @SuppressLint({"InflateParams", "NewApi"})
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
@@ -48,16 +48,24 @@ public class HistoryListAdapter extends ArrayAdapter<OrderHistory> {
             holder = (ViewHolder) convertView.getTag();
         }
         final OrderHistory item = getItem(position);
-        if (item.getHistoryActionBy().equalsIgnoreCase("Tokopedia")
-                || item.getHistoryActionBy().equalsIgnoreCase("System-Tracker"))
+        if (item == null) return convertView;
+        if (item.getHistoryActionBy().equalsIgnoreCase(
+                context.getString(R.string.label_history_transaction_actor_tokopedia)
+        ) || item.getHistoryActionBy().equalsIgnoreCase(
+                context.getString(R.string.label_history_transaction_actor_system_tracker)
+        ))
             holder.tvActor.setBackgroundColor(
                     context.getResources().getColor(R.color.tkpd_dark_gray)
             );
-        else if (item.getHistoryActionBy().equalsIgnoreCase("Buyer"))
+        else if (item.getHistoryActionBy().equalsIgnoreCase(
+                context.getString(R.string.label_history_transaction_actor_buyer)
+        ))
             holder.tvActor.setBackgroundColor(
                     context.getResources().getColor(R.color.tkpd_dark_orange)
             );
-        else if (item.getHistoryActionBy().equalsIgnoreCase("Seller"))
+        else if (item.getHistoryActionBy().equalsIgnoreCase(
+                context.getString(R.string.label_history_transaction_actor_seller)
+        ))
             holder.tvActor.setBackgroundColor(
                     context.getResources().getColor(R.color.tkpd_dark_green)
             );
@@ -65,7 +73,6 @@ public class HistoryListAdapter extends ArrayAdapter<OrderHistory> {
         holder.tvComment.setText(item.getHistoryComments().replaceAll("<br/>\\p{Space}+", "\n"));
         holder.tvComment.setVisibility(item.getHistoryComments().equals("0")
                 ? View.GONE : View.VISIBLE);
-
         holder.tvActor.setText(MethodChecker.fromHtml(item.getHistoryActionBy()));
         holder.tvDate.setText(MethodChecker.fromHtml(item.getHistoryStatusDateFull()));
         holder.tvStatus.setText(MethodChecker.fromHtml(item.getHistoryBuyerStatus()));
