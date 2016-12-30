@@ -14,6 +14,7 @@ public class ProductDetailRouter {
     private final static String PRODUCT_DETAIL_INFO_ACTIVITY
             = "com.tokopedia.core.product.activity.ProductInfoActivity";
     public static final String EXTRA_PRODUCT_PASS = "EXTRA_PRODUCT_PASS";
+    public static final String EXTRA_PRODUCT_ITEM = "EXTRA_PRODUCT_ITEM";
     public static final String EXTRA_PRODUCT_ID = "product_id";
 
     public static Intent createInstanceProductDetailInfoActivity(Context context, ProductPass data) {
