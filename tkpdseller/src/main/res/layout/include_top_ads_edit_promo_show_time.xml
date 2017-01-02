@@ -16,13 +16,13 @@
 
         <RadioButton
             android:id="@+id/radio_button_show_time_automatic"
-            style="@style/RadioGroup"
+            style="@style/RadioButton"
             android:checked="true"
             android:text="@string/label_top_ads_show_time_automatic"/>
 
         <RadioButton
             android:id="@+id/radio_button_show_time_configured"
-            style="@style/RadioGroup"
+            style="@style/RadioButton"
             android:text="@string/label_top_ads_show_time_configured"/>
 
         <LinearLayout

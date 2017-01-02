@@ -16,7 +16,7 @@
 
         <RadioButton
             android:id="@+id/radio_button_new_group"
-            style="@style/RadioGroup"
+            style="@style/RadioButton"
             android:text="@string/label_top_ads_create_promo_new_group"/>
 
         <android.support.design.widget.TextInputLayout
@@ -34,7 +34,7 @@
 
         <RadioButton
             android:id="@+id/radio_button_exist_group"
-            style="@style/RadioGroup"
+            style="@style/RadioButton"
             android:text="@string/label_top_ads_create_promo_from_exist_group"/>
 
         <android.support.design.widget.TextInputLayout
@@ -52,7 +52,7 @@
 
         <RadioButton
             android:id="@+id/radio_button_no_group"
-            style="@style/RadioGroup"
+            style="@style/RadioButton"
             android:text="@string/label_top_ads_create_promo_not_in_group"/>
     </RadioGroup>
 

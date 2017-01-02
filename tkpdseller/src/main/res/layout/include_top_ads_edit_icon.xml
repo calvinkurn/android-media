@@ -16,15 +16,15 @@
 
         <RadioButton
             android:id="@+id/radio_button_sticker_speaker"
-            style="@style/RadioGroup"/>
+            style="@style/RadioButton"/>
 
         <RadioButton
             android:id="@+id/radio_button_sticker_thumb"
-            style="@style/RadioGroup"/>
+            style="@style/RadioButton"/>
 
         <RadioButton
             android:id="@+id/radio_button_sticker_fire"
-            style="@style/RadioGroup"/>
+            style="@style/RadioButton"/>
 
     </RadioGroup>
 </LinearLayout>

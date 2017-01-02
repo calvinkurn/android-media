@@ -245,6 +245,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     public void onTurnOnAdSuccess() {
         hideLoading();
         checkEmptyData(true);
+        onBulkUpdateSuccess();
     }
 
     @Override
@@ -263,6 +264,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     public void onTurnOffAdSuccess() {
         hideLoading();
         checkEmptyData(true);
+        onBulkUpdateSuccess();
     }
 
     @Override
@@ -275,6 +277,13 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
                 onActionTurnOff();
             }
         });
+    }
+
+    private void onBulkUpdateSuccess() {
+        if (actionMode != null) {
+            actionMode.finish();
+        }
+        searchAd(0);
     }
 
     private void checkEmptyData(boolean success) {

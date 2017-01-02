@@ -32,6 +32,10 @@ public class TopAdsAdListActionMode implements ActionMode.Callback {
         actionMode.setTitle(title);
     }
 
+    public void finish() {
+        actionMode.finish();
+    }
+
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
         MenuInflater inflater = mode.getMenuInflater();

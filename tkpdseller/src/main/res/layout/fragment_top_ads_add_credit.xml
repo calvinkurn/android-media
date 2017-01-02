@@ -13,7 +13,8 @@
     </android.support.v7.widget.RecyclerView>
 
     <Button
-        android:id="@+id/button_choose_credit"
+        android:id="@+id/button_submit"
         style="@style/ButtonGreen"
+        android:enabled="false"
         android:text="@string/label_top_ads_choose_credit"/>
 </LinearLayout>
