@@ -122,6 +122,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
 
     @Override
     protected void setViewListener() {
+        swipeToRefresh.setEnabled(false);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         listProduct.setLayoutManager(layoutManager);
         listProduct.setAdapter(adapter);
@@ -131,7 +132,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
                 super.onScrollStateChanged(recyclerView, newState);
                 int lastItemPosition = layoutManager.findLastVisibleItemPosition();
                 int visibleItem = layoutManager.getItemCount() - 1;
-                if (lastItemPosition == visibleItem && adapter.getItemCount() < totalItem) {
+                if (lastItemPosition == visibleItem && adapter.getDataSize() < totalItem) {
                     searchAd(page + 1);
                 }
             }
@@ -146,7 +147,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         refresh = new RefreshHandler(getActivity(), mainView, new RefreshHandler.OnRefreshHandlerListener() {
             @Override
             public void onRefresh(View view) {
-                searchAd(0);
+                searchAd(START_PAGE);
             }
         });
         adapter = new TopAdsAdListAdapter();
@@ -174,7 +175,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         if (searchView != null) {
             keyword = searchView.getQuery().toString();
         }
-        searchAd(0);
+        searchAd(START_PAGE);
         return true;
     }
 
@@ -220,7 +221,8 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
 
     @Override
     public void onSearchAdLoaded(@NonNull List adList, int totalItem) {
-        if (page == 0) {
+        swipeToRefresh.setEnabled(true);
+        if (page == START_PAGE) {
             adapter.clearData();
             this.totalItem = totalItem;
         }
@@ -233,12 +235,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     public void onLoadSearchAdError() {
         hideLoading();
         checkEmptyData(false);
-        showSnackBarRetry(new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                searchAd();
-            }
-        });
     }
 
     @Override
@@ -283,17 +279,24 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         if (actionMode != null) {
             actionMode.finish();
         }
-        searchAd(0);
+        searchAd(START_PAGE);
     }
 
-    private void checkEmptyData(boolean success) {
+    private void checkEmptyData(boolean loadSuccess) {
         if (adapter.getDataSize() > 0) {
             return;
         }
-        if (success) {
+        if (loadSuccess) {
             adapter.showEmpty(true);
         } else {
-            adapter.showRetry(true);
+            swipeToRefresh.setEnabled(false);
+            NetworkErrorHelper.showEmptyState(getActivity(), getView(), new NetworkErrorHelper.RetryClickedListener() {
+                @Override
+                public void onRetryClicked() {
+                    hideLoading();
+                    searchAd(START_PAGE);
+                }
+            });
         }
     }
 
