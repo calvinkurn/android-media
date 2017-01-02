@@ -4,21 +4,25 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.IntRange;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.db.chart.renderer.StringFormatRenderer;
+import com.db.chart.renderer.XRenderer;
 import com.db.chart.tooltip.Tooltip;
 import com.db.chart.view.LineChartView;
 import com.jonas.jgraph.graph.JcoolGraph;
@@ -61,6 +65,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.tokopedia.sellerapp.gmstat.views.DataTransactionViewHelper.dpToPx;
 import static com.tokopedia.sellerapp.gmstat.views.GMStatHeaderViewHelper.getDates;
 
 /**
@@ -111,6 +116,12 @@ public class GMStatActivityFragment extends Fragment {
 
     @BindView(R.id.parent_fragment_gmstat)
     LinearLayout parentFragmentGmStat;
+
+    @BindView(R.id.gross_income_graph_container)
+    HorizontalScrollView grossIncomeGraphContainer;
+
+    @BindView(R.id.gross_income_graph_container2)
+    LinearLayout grossIncomeGraphContainer2;
 
     @BindView(R.id.nchart)
     NChart nChart;
@@ -175,6 +186,7 @@ public class GMStatActivityFragment extends Fragment {
 
             //[]START] try used willam chart
             displayChart();
+            resizeChart(nExcels.size());
             int i = 0;
             mLabels = new String[nExcels.size()];
             mValues = new float[nExcels.size()];
@@ -183,10 +195,31 @@ public class GMStatActivityFragment extends Fragment {
                 mValues[i] = nExcel.getUpper();
                 i++;
             }
+//            int[] indexToDisplay = new int[10_000];
+            final List<Integer> indexToDisplay = new ArrayList<>();
+            int divide = mValues.length/10;
+            for(int j=1;j<=divide-1;j++){
+                indexToDisplay.add((j*10)-1);
+            }
             williamChartUtils
                     .setmLabels(mLabels)
-                    .setmValues(mValues)
-                    .setDotDrawable(getResources().getDrawable(R.drawable.gm_stat_graph_dot))
+                    .setmValues(mValues, new XRenderer.XRendererListener() {
+                        @Override
+                        public boolean filterX(@IntRange(from = 0L) int i) {
+                            if(i==0 || mValues.length-1 == i)
+                                return true;
+
+                            if(mValues.length <= 15){
+                                return true;
+                            }
+
+                            if(indexToDisplay.contains(i))
+                                return true;
+
+                            return false;
+                        }
+                    })
+                    .setDotDrawable(getResources().getDrawable(R.drawable.oval_2_copy_6))
                     .setTooltip(new Tooltip(getContext(),
                             R.layout.gm_stat_tooltip,
                             R.id.gm_stat_tooltip_textview,
@@ -206,7 +239,10 @@ public class GMStatActivityFragment extends Fragment {
             transactionDataLoading.hideLoading();
             transactionData.setVisibility(View.VISIBLE);
 
-            gmstatHeaderViewHelper.bindData(dateGraph);
+            if(sDate == -1 && eDate == -1)
+                gmstatHeaderViewHelper.bindData(dateGraph);
+            else
+                gmstatHeaderViewHelper.bindDate(sDate, eDate);
         }
 
         @Override
@@ -302,6 +338,7 @@ public class GMStatActivityFragment extends Fragment {
 //                                    Toast.makeText(
 //                                            GMStatActivityFragment.this.getActivity()
 //                                            ,"Bye bye snackbar Toast is back",Toast.LENGTH_SHORT).show();
+                                    isFetchData = true;
                                     fetchData();
                                 }
                             })
@@ -343,14 +380,26 @@ public class GMStatActivityFragment extends Fragment {
         return nExcels;
     }
 
-    public static String getDateWithYear(Integer date, String[] monthNames){
+    public static String getDateWithYear(int date, String[] monthNames){
         List<String> dateRaw = getDateRaw(date);
         String year = dateRaw.get(2);
         String month = dateRaw.get(1);
         month = monthNames[Integer.parseInt(month)-1];
 
         String day = dateRaw.get(0);
-        Log.d(TAG, "bulan "+month+" tanggal "+day);
+        Log.d(TAG, "bulan "+month+" tanggal "+day+" rawDate "+date);
+
+        return day + " "+ month+" "+year;
+    }
+
+    public static String getDateWithYear(String date, String[] monthNames){
+        List<String> dateRaw = getDateRaw(date);
+        String year = dateRaw.get(2);
+        String month = dateRaw.get(1);
+        month = monthNames[Integer.parseInt(month)-1];
+
+        String day = dateRaw.get(0);
+        Log.d(TAG, "bulan "+month+" tanggal "+day+" rawDate "+date);
 
         return day + " "+ month+" "+year;
     }
@@ -370,12 +419,23 @@ public class GMStatActivityFragment extends Fragment {
         return split[0]+" "+monthNames[Integer.parseInt(split[1])-1];
     }
 
-    private static List<String> getDateRaw(Integer date){
+    private static List<String> getDateRaw(String s){
         List<String> result = new ArrayList<>();
-        String s = date.toString();
         String year = s.substring(0, 4);
         String month = s.substring(4, 6);
         String day = s.substring(6);
+        Log.d(TAG, "getDateRaw : "+s+ " day "+day+" int "+s);
+        result.add(day);result.add(month);result.add(year);
+        return result;
+    }
+
+    private static List<String> getDateRaw(int date){
+        List<String> result = new ArrayList<>();
+        String s = Integer.toString((int)date);
+        String year = s.substring(0, 4);
+        String month = s.substring(4, 6);
+        String day = s.substring(6);
+        Log.d(TAG, "getDateRaw : "+s+ " day "+day+" int "+date);
         result.add(day);result.add(month);result.add(year);
         return result;
     }
@@ -501,7 +561,7 @@ public class GMStatActivityFragment extends Fragment {
         popularProductViewHelper = new PopularProductViewHelper(rootView);
         dataTransactionViewHelper = new DataTransactionViewHelper(rootView, gmstat.getImageHandler(), gmstat.isGoldMerchant());
         buyerDataViewHelper = new BuyerDataViewHelper(rootView);
-        gmstatHeaderViewHelper = new GMStatHeaderViewHelper(rootView);
+        gmstatHeaderViewHelper = new GMStatHeaderViewHelper(rootView, gmstat.isGoldMerchant());
         marketInsightViewHelper = new MarketInsightViewHelper(rootView, gmstat.isGoldMerchant());
         popularProductLoading = new PopularProductLoading(rootView);
         transactionDataLoading = new TransactionDataLoading(rootView);
@@ -544,14 +604,51 @@ public class GMStatActivityFragment extends Fragment {
     }
 
     private void initChartLoading() {
-        grossIncomeGraph2.setVisibility(View.GONE);
+//        grossIncomeGraph2.setVisibility(View.GONE);
+//        grossIncomeGraph2Loading.setVisibility(View.VISIBLE);
+//        grossIncomeGraph2Loading.resetLoader();
+
+        grossIncomeGraphContainer.setVisibility(View.GONE);
         grossIncomeGraph2Loading.setVisibility(View.VISIBLE);
         grossIncomeGraph2Loading.resetLoader();
     }
 
     private void displayChart(){
-        grossIncomeGraph2.setVisibility(View.VISIBLE);
+        grossIncomeGraphContainer.setVisibility(View.VISIBLE);
         grossIncomeGraph2Loading.setVisibility(View.GONE);
+    }
+
+    /**
+     * limitation of william chart ( for big width it cannot draw, effectively for size of 15 )
+     * https://github.com/diogobernardino/WilliamChart/issues/152
+     * @param numChart
+     */
+    private void resizeChart(int numChart){
+        Log.d(TAG, "resizeChart "+numChart);
+//        double newSizeRatio = ((double) numChart) / 7;
+//        if(newSizeRatio<1){
+//            // do nothing
+//        }else{
+//            float v = dpToPx(getActivity(), 360);
+//            ViewGroup.LayoutParams params = grossIncomeGraph2.getLayoutParams();
+//            params.width = (int) (v*newSizeRatio);
+////            grossIncomeGraph2.requestLayout();
+//            grossIncomeGraph2.setLayoutParams(params);
+//        }
+
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        int width = (int) dpToPx(getActivity(), 360); //displaymetrics.widthPixels;
+        /* set  only 8 values in  Window width rest are on sroll or dynamically change the width of linechart
+         is  window width/8 * total values returns you the total width of linechart with scrolling and set it in
+         layout Params of linechart .*/
+        double newSizeRatio = ((double) numChart) / 7;
+//        if (width < (numChart * width / 8)) {
+        if(newSizeRatio > 1){
+            grossIncomeGraph2.setLayoutParams(new LinearLayout.LayoutParams((int) dpToPx(getActivity(), 680),grossIncomeGraph2.getLayoutParams().height));//(int) (newSizeRatio * width / 2)
+        } else {
+            grossIncomeGraph2.setLayoutParams(new LinearLayout.LayoutParams(width, grossIncomeGraph2.getLayoutParams().height));
+        }
     }
 
     /**
@@ -607,7 +704,7 @@ public class GMStatActivityFragment extends Fragment {
             isFetchData = !isFetchData;
             resetToLoading();
             gmstat.getGmStatNetworkController().fetchData(shopId, sDate, eDate, compositeSubscription, gmStatListener);
-        }else{
+        }else if(!isFirstTime){
 //        gmStatWidgetAdapter.clear();
 //        gmstat.getGmStatNetworkController().fetchData(gmStatListener, getActivity().getAssets());
             //[START] real network

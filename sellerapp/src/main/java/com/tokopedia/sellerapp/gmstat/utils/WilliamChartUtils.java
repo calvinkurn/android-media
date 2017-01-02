@@ -22,6 +22,7 @@ import com.db.chart.animation.easing.QuintEase;
 import com.db.chart.animation.easing.SineEase;
 import com.db.chart.model.LineSet;
 import com.db.chart.renderer.AxisRenderer;
+import com.db.chart.renderer.XRenderer;
 import com.db.chart.tooltip.Tooltip;
 import com.db.chart.view.ChartView;
 import com.db.chart.view.LineChartView;
@@ -69,6 +70,7 @@ public class WilliamChartUtils {
     };
     private Drawable dotDrawable;
     private Tooltip tooltip;
+    private XRenderer.XRendererListener xRendererListener;
 
     public WilliamChartUtils setDotDrawable(Drawable dotDrawable) {
         this.dotDrawable = dotDrawable;
@@ -112,8 +114,9 @@ public class WilliamChartUtils {
         return this;
     }
 
-    public WilliamChartUtils setmValues(float[] mValues) {
+    public WilliamChartUtils setmValues(float[] mValues, XRenderer.XRendererListener xRendererListener) {
         this.mValues = mValues;
+        this.xRendererListener = xRendererListener;
 
         if(mValues.length != mEqualOrder.length)
         {
@@ -129,6 +132,7 @@ public class WilliamChartUtils {
     public LineChartView buildLineChart(LineChartView chart) {
 
         chart.reset();
+        chart.resetYRndr();
 
         LineSet dataset = new LineSet(mLabels, mValues);
 
@@ -185,7 +189,8 @@ public class WilliamChartUtils {
                 .setYLabels(mYLabelPosition)
                 .setLabelsColor(mLabelColorId)
                 .setAxisColor(mAxisColorId)
-                .setxDataGrid(true);
+                .setxDataGrid(true)
+                .setXRendererListener(xRendererListener);
 
         if (mGridType != null) chart.setGrid(mGridType, mGridPaint);
 

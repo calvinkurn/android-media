@@ -3,6 +3,7 @@ package com.tokopedia.sellerapp.gmstat.views;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.AppCompatDrawableManager;
+import android.util.Log;
 import android.view.View;
 
 import com.tokopedia.sellerapp.R;
@@ -20,6 +21,7 @@ import butterknife.BindDrawable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.tokopedia.sellerapp.gmstat.views.GMStatActivity.IS_GOLD_MERCHANT;
 import static com.tokopedia.sellerapp.gmstat.views.GMStatActivityFragment.getDateWithYear;
 
 /**
@@ -46,9 +48,12 @@ public class GMStatHeaderViewHelper {
 
     public static final int MOVE_TO_SET_DATE = 1;
     private View itemView;
+    private boolean isGmStat;
+    boolean isFirstTime = true;
 
-    public GMStatHeaderViewHelper(View itemView){
+    public GMStatHeaderViewHelper(View itemView, boolean isGmStat){
         this.itemView = itemView;
+        this.isGmStat = isGmStat;
         ButterKnife.bind(this, itemView);
 
         resetToLoading();
@@ -103,7 +108,9 @@ public class GMStatHeaderViewHelper {
             cal.setTimeInMillis(eDate);
             DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
             endDate = dateFormat.format(cal.getTime());
-            endDate = getDateWithYear(Integer.parseInt(endDate), monthNamesAbrev);
+            int end = Integer.parseInt(endDate);
+            Log.d("MNORMANSYAH", "endDate "+endDate+" int "+Integer.parseInt(endDate)+" end "+end);
+            endDate = getDateWithYear(endDate, monthNamesAbrev);
         }
 
         calendarRange.setText(startDate+" - "+endDate);
@@ -127,6 +134,7 @@ public class GMStatHeaderViewHelper {
 
     public void onClick(GMStatActivityFragment gmStatActivityFragment){
         Intent moveToSetDate = new Intent(gmStatActivityFragment.getActivity(), SetDateActivity.class);
+        moveToSetDate.putExtra(IS_GOLD_MERCHANT, isGmStat);
         gmStatActivityFragment.getActivity().startActivityForResult(moveToSetDate, MOVE_TO_SET_DATE);
     }
 }

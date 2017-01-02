@@ -118,6 +118,7 @@ public class WiliamChartUtils_ {
         }
 
         chart.reset();
+        chart.resetYRndr();
 
         LineSet dataset = new LineSet(mLabels, mValues);
 

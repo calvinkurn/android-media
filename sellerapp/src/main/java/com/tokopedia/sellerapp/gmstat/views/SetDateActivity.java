@@ -14,6 +14,7 @@ import android.view.WindowManager;
 
 import com.tokopedia.sellerapp.R;
 
+import static com.tokopedia.sellerapp.gmstat.views.GMStatActivity.IS_GOLD_MERCHANT;
 import static com.tokopedia.sellerapp.gmstat.views.GMStatHeaderViewHelper.MOVE_TO_SET_DATE;
 
 /**
@@ -22,9 +23,15 @@ import static com.tokopedia.sellerapp.gmstat.views.GMStatHeaderViewHelper.MOVE_T
 
 public class SetDateActivity extends AppCompatActivity implements SetDateFragment.SetDate {
 
+    private boolean isGoldMerchant;
+    private boolean isAfterRotate;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(!isAfterRotate) {
+            fetchIntent(getIntent().getExtras());
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             getWindow().setStatusBarColor(getResources().getColor(R.color.green_600));
@@ -45,9 +52,14 @@ public class SetDateActivity extends AppCompatActivity implements SetDateFragmen
                         .setAction("Action", null).show();
             }
         });
+        isAfterRotate = savedInstanceState == null ? false : true;
     }
 
-
+    private void fetchIntent(Bundle extras) {
+        if(extras != null){
+            isGoldMerchant = extras.getBoolean(IS_GOLD_MERCHANT, false);
+        }
+    }
     @Override
     public void returnStartAndEndDate(long startDate, long endDate) {
         Intent intent = new Intent();
@@ -55,6 +67,11 @@ public class SetDateActivity extends AppCompatActivity implements SetDateFragmen
         intent.putExtra(SetDateFragment.END_DATE, endDate);
         setResult(MOVE_TO_SET_DATE, intent);
         finish();
+    }
+
+    @Override
+    public boolean isGMStat() {
+        return isGoldMerchant;
     }
 
     @Override

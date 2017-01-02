@@ -49,19 +49,31 @@
             android:layout_below="@+id/gmstat_recyclerview"
             android:id="@+id/chart_container"
             android:layout_width="match_parent"
-            android:layout_height="240dp"
+            android:layout_height="260dp"
             android:paddingLeft="@dimen/gmstat_padding_item_left_right"
             android:paddingRight="@dimen/gmstat_padding_item_left_right"
             android:paddingBottom="@dimen/gmstat_padding_item_left_right"
             android:layout_marginBottom="@dimen/gmstat_margin_bottom"
             android:background="@android:color/white"
             android:orientation="vertical">
-            <com.db.chart.view.LineChartView
-                android:id="@+id/gross_income_graph2"
+
+            <HorizontalScrollView
+                android:id="@+id/gross_income_graph_container"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@id/gmstat_recyclerview"
-                />
+                android:layout_height="match_parent">
+                <LinearLayout
+                    android:id="@+id/gross_income_graph_container2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <com.db.chart.view.LineChartView
+                        android:id="@+id/gross_income_graph2"
+                        android:layout_width="match_parent"
+                        android:layout_height="240dp"
+                        />
+                </LinearLayout>
+            </HorizontalScrollView>
+
             <com.tokopedia.sellerapp.gmstat.library.LoaderImageView
                 android:id="@+id/gross_income_graph2_loading"
                 android:layout_width="match_parent"

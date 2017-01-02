@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +43,7 @@ import rx.functions.Func3;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.tokopedia.sellerapp.gmstat.views.SetDateFragment.StartOrEndPeriodModel.YESTERDAY;
 import static com.tokopedia.sellerapp.home.utils.ShopNetworkController.onResponseError;
 
 /**
@@ -114,7 +116,17 @@ public class GMStatNetworkController extends BaseNetworkController {
     }
 
     public Observable<Response<GetPopularProduct>> getPopularProduct(long shopId){
-        return gmstatApi.getPopulatProduct(getGMStatParam(shopId, DEFAULT_SDATE, DEFAULT_EDATE));
+
+//        Calendar dayOne = Calendar.getInstance();
+//        dayOne.set(dayOne.get(Calendar.YEAR), dayOne.get(Calendar.MONTH), 1);
+
+        Calendar dayOne = Calendar.getInstance();
+        dayOne.add(Calendar.DATE, -30);
+
+        Calendar yesterday = Calendar.getInstance();
+        yesterday.add(Calendar.DATE, YESTERDAY);
+
+        return gmstatApi.getPopulatProduct(getGMStatParam(shopId, dayOne.getTimeInMillis(), yesterday.getTimeInMillis()));
     }
 
     public Observable<Response<GetBuyerData>> getBuyerData(long shopId, long sDate, long eDate){
@@ -437,7 +449,7 @@ public class GMStatNetworkController extends BaseNetworkController {
                                 return Observable.just(error1000);
                             }
                         }),
-                        getPopularProduct(shopId, sDate, eDate).onErrorResumeNext(new Func1<Throwable, Observable<? extends Response<GetPopularProduct>>>() {
+                        getPopularProduct(shopId).onErrorResumeNext(new Func1<Throwable, Observable<? extends Response<GetPopularProduct>>>() {
                             @Override
                             public Observable<? extends Response<GetPopularProduct>> call(Throwable throwable) {
                                 Response<GetPopularProduct> error1000 = (Response<GetPopularProduct>) getError1000();

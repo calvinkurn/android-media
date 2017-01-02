@@ -31,7 +31,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindArray;
 import butterknife.BindView;
@@ -48,8 +50,19 @@ import static com.tokopedia.sellerapp.gmstat.views.SetDateFragment.StartOrEndPer
  */
 
 public class SetDateFragment extends Fragment {
+    private SetDate setDate;
+
     public interface SetDate{
         void returnStartAndEndDate(long startDate, long endDate);
+        boolean isGMStat();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if(context != null && context instanceof SetDate){
+            setDate = (SetDate) context;
+        }
     }
 
     @BindView(R.id.sliding_tabs)
@@ -69,7 +82,7 @@ public class SetDateFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.set_date_layout, container, false);
         bind = ButterKnife.bind(this, rootView);
-        setDatePagerAdapter = new SetDatePagerAdapter(getActivity().getSupportFragmentManager(), getActivity());
+        setDatePagerAdapter = new SetDatePagerAdapter(getActivity().getSupportFragmentManager(), getActivity(), setDate.isGMStat());
         setDateViewPager.setAdapter(setDatePagerAdapter);
         slidingTabs.setupWithViewPager(setDateViewPager);
         return rootView;
@@ -85,14 +98,18 @@ public class SetDateFragment extends Fragment {
         final int PAGE_COUNT = 2;
         private String tabTitles[] = new String[] { "PERIODE", "KUSTOM" };
         private Context context;
+        private boolean isGM;
 
-        public SetDatePagerAdapter(FragmentManager fm, Context context) {
+        public SetDatePagerAdapter(FragmentManager fm, Context context, boolean isGM) {
             super(fm);
             this.context = context;
+            this.isGM = isGM;
         }
 
         @Override
         public int getCount() {
+            if(!isGM)
+                return 1;
             return PAGE_COUNT;
         }
 
@@ -379,6 +396,49 @@ public class SetDateFragment extends Fragment {
             }
         };
 
+        long sDate = -1, eDate = -1;
+
+        DateValidationListener dateValidationListener = new DateValidationListener() {
+            @Override
+            public boolean validDate(long sDate, long eDate) {
+                return false;
+            }
+
+            @Override
+            public boolean addSDate(long sDate) {
+                if(PeriodAdapter.this.sDate == -1) {
+                    PeriodAdapter.this.sDate = sDate;
+                    return true;
+                }
+
+                return exceedSixtyDays(sDate, eDate);
+            }
+
+            @Override
+            public boolean addEDate(long eDate) {
+                if(PeriodAdapter.this.eDate == -1) {
+                    PeriodAdapter.this.eDate = eDate;
+                    return true;
+                }
+
+                return exceedSixtyDays(sDate, eDate);
+            }
+        };
+
+
+
+        public boolean exceedSixtyDays(long sDate, long eDate){
+            Date date1 = new Date(sDate);
+            Date date2 = new Date(eDate);
+            long diff = date2.getTime() - date1.getTime();
+            long convert = diff/ (24*60*60*1000);
+            System.out.println("Days: " +convert);
+            if(convert > 60 || diff <= 0)
+                return false;
+            else
+                return true;
+        }
+
         public PeriodAdapter(){
             basePeriodModels = new ArrayList<>();
         }
@@ -414,7 +474,9 @@ public class SetDateFragment extends Fragment {
                     bpvh.bindData((PeriodRangeModel) basePeriodModels.get(position));
                     break;
                 case StartOrEndPeriodModel.TYPE:
-                    ((CustomViewHolder)holder).bindData((StartOrEndPeriodModel) basePeriodModels.get(position));
+                    CustomViewHolder customViewHolder = (CustomViewHolder) holder;
+                    customViewHolder.setDateValidationListener(dateValidationListener);
+                    customViewHolder.bindData((StartOrEndPeriodModel) basePeriodModels.get(position));
                     break;
             }
         }
@@ -461,6 +523,12 @@ public class SetDateFragment extends Fragment {
         @BindView(R.id.custom_drop_down)
         ImageView customDropDown;
 
+        DateValidationListener dateValidationListener;
+
+        public void setDateValidationListener(DateValidationListener dateValidationListener) {
+            this.dateValidationListener = dateValidationListener;
+        }
+
         private DatePickerDialog fromDatePickerDialog;
         private DatePickerDialog toDatePickerDialog;
         private StartOrEndPeriodModel startOrEndPeriodModel;
@@ -493,12 +561,19 @@ public class SetDateFragment extends Fragment {
                 public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                     Calendar newDate = Calendar.getInstance();
                     newDate.set(year, monthOfYear, dayOfMonth);
-                    String month = ((monthOfYear < 10)?("0"+(monthOfYear+1)):monthOfYear+1+"");
+                    Log.d("MNORMANSYAH", "year : "+year+" monthOfYear "+monthOfYear+ " dayOfMonth "+dayOfMonth);
+                    String month = ((monthOfYear+1 < 10)?("0"+(monthOfYear+1)):(monthOfYear+1)+"");
                     String day = ((dayOfMonth < 10)?("0"+dayOfMonth):dayOfMonth+"");
                     String data = year+""+month+""+day;
-                    customDate.setText(getDateWithYear(Integer.parseInt(data), monthNamesAbrev));
+                    Log.d("MNORMANSYAH", "data : "+data);
 
-                    startOrEndPeriodModel.startDate = newDate.getTimeInMillis();
+                    if(dateValidationListener.addSDate(newDate.getTimeInMillis())) {
+                        startOrEndPeriodModel.startDate = newDate.getTimeInMillis();
+                        customDate.setText(getDateWithYear(Integer.parseInt(data), monthNamesAbrev));
+                    }else{
+                        // maximal 60 hari
+                    }
+
                 }
 
             },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
@@ -511,13 +586,15 @@ public class SetDateFragment extends Fragment {
                 public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                     Calendar newDate = Calendar.getInstance();
                     newDate.set(year, monthOfYear, dayOfMonth);
-                    String month = ((monthOfYear < 10)?("0"+(monthOfYear+1)):monthOfYear+1+"");
+                    String month = ((monthOfYear+1 < 10)?("0"+(monthOfYear+1)):(monthOfYear+1)+"");
                     String day = ((dayOfMonth < 10)?("0"+dayOfMonth):dayOfMonth+"");
                     String data = year+""+month+""+day;
                     Log.d("MNORMANSYAH", "data : "+data);
-                    customDate.setText(getDateWithYear(Integer.parseInt(data), monthNamesAbrev));
 
-                    startOrEndPeriodModel.endDate = newDate.getTimeInMillis();
+                    if(dateValidationListener.addEDate(newDate.getTimeInMillis())){
+                        startOrEndPeriodModel.endDate = newDate.getTimeInMillis();
+                        customDate.setText(getDateWithYear(Integer.parseInt(data), monthNamesAbrev));
+                    }
                 }
 
             },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
@@ -531,22 +608,34 @@ public class SetDateFragment extends Fragment {
                 String[] split = endDate.split(" ");
                 customDate.setText(getDateWithYear(Integer.parseInt(reverseDate(split)), monthNamesAbrev));
 
+                dateValidationListener.addEDate(startOrEndPeriodModel.endDate);
                 Calendar cal = Calendar.getInstance();
                 cal.setTimeInMillis(startOrEndPeriodModel.endDate);
 
                 toDatePickerDialog.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+
+                cal = Calendar.getInstance();
+                cal.add(Calendar.DATE, YESTERDAY);
+                toDatePickerDialog.getDatePicker().setMaxDate(cal.getTimeInMillis());
             }
             if(startOrEndPeriodModel.isStartDate) {
                 String startDate = startOrEndPeriodModel.getStartDate();
                 String[] split = startDate.split(" ");
                 customDate.setText(getDateWithYear(Integer.parseInt(reverseDate(split)), monthNamesAbrev));
 
+                dateValidationListener.addSDate(startOrEndPeriodModel.startDate);
                 Calendar cal = Calendar.getInstance();
                 cal.setTimeInMillis(startOrEndPeriodModel.startDate);
 
                 fromDatePickerDialog.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
             }
         }
+    }
+
+    public interface DateValidationListener{
+        boolean validDate(long sDate, long eDate);
+        boolean addSDate(long sDate);
+        boolean addEDate(long eDate);
     }
 
     public interface PeriodListener{
@@ -699,6 +788,7 @@ public class SetDateFragment extends Fragment {
 
         public static final int TYPE = 2;
         public static final int YESTERDAY = -1;
+        public static final int SEVEN_AGO = -8;
         public static final int SIXTY_DAYS_AGO = -61;
         /**
          * isEndDate 60 hari sebelum hari ini
@@ -727,7 +817,7 @@ public class SetDateFragment extends Fragment {
         public String getStartDate(){
             if(isStartDate) {
                 Calendar cal = Calendar.getInstance();
-                cal.add(Calendar.DATE, SIXTY_DAYS_AGO);
+                cal.add(Calendar.DATE, SEVEN_AGO);
                 startDate = cal.getTimeInMillis();
                 System.out.println("Yesterday's date = " + cal.getTime());
                 DateFormat dateFormat = new SimpleDateFormat("dd MM yyyy");
