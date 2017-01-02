@@ -18,25 +18,6 @@
             android:id="@+id/header_gmstat"
             layout="@layout/widget_header_gmstat"/>
 
-        <TextView
-            android:id="@+id/get_product_graph"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/header_gmstat"
-            android:textColor="@android:color/black"
-            android:text="DEFAULT PRODUCT"
-            android:textSize="17dp"
-            android:visibility="gone"/>
-        <TextView
-            android:id="@+id/get_transaction_graph"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/get_product_graph"
-            android:textColor="@android:color/black"
-            android:text="DEFAULT TRANSACTION"
-            android:textSize="17dp"
-            android:visibility="gone"/>
-
         <android.support.v7.widget.RecyclerView
             android:id="@+id/gmstat_recyclerview"
             android:background="@android:color/white"
@@ -84,25 +65,6 @@
                 android:visibility="gone"
                 />
         </LinearLayout>
-
-        <com.tokopedia.sellerapp.gmstat.views.NChart
-            android:id="@+id/nchart"
-            android:layout_width="match_parent"
-            android:layout_height="240dp"
-            android:visibility="gone"
-            android:layout_below="@id/gmstat_recyclerview"/>
-
-        <com.jonas.jgraph.graph.JcoolGraph
-            android:id="@+id/gross_income_graph"
-            android:layout_width="match_parent"
-            android:layout_height="240dp"
-            android:clickable="true"
-            android:paddingRight="5dp"
-            app:graphstyle="line"
-            app:showymsg="true"
-            android:layout_below="@id/nchart"
-            android:visibility="gone"
-            />
 
         <android.support.v7.widget.CardView
             android:layout_margin="@dimen/gmstat_margin_bottom"

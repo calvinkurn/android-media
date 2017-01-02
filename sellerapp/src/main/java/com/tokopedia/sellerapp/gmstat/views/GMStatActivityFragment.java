@@ -24,8 +24,6 @@ import com.db.chart.renderer.StringFormatRenderer;
 import com.db.chart.renderer.XRenderer;
 import com.db.chart.tooltip.Tooltip;
 import com.db.chart.view.LineChartView;
-import com.jonas.jgraph.graph.JcoolGraph;
-import com.jonas.jgraph.models.Jchart;
 import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.sellerapp.R;
@@ -86,15 +84,6 @@ public class GMStatActivityFragment extends Fragment {
     @BindView(R.id.gross_income_graph2)
     LineChartView grossIncomeGraph2;
 
-    @BindView(R.id.gross_income_graph)
-    JcoolGraph grossIncomeGraph;
-
-    @BindView(R.id.get_product_graph)
-    TextView getProductGraph;
-
-    @BindView(R.id.get_transaction_graph)
-    TextView getTransactionGraph;
-
     @BindView(R.id.gmstat_recyclerview)
     RecyclerView gmStatRecyclerView;
     GMStatWidgetAdapter gmStatWidgetAdapter;
@@ -126,8 +115,6 @@ public class GMStatActivityFragment extends Fragment {
     @BindDrawable(R.drawable.oval_2_copy_6)
     Drawable oval2Copy6;
 
-    @BindView(R.id.nchart)
-    NChart nChart;
     private GridLayoutManager gridLayoutManager;
     private MarketInsightViewHelper marketInsightViewHelper;
     private float[] mValues = new float[10];
@@ -163,7 +150,6 @@ public class GMStatActivityFragment extends Fragment {
 
         @Override
         public void onSuccessTransactionGraph(GetTransactionGraph getTransactionGraph) {
-            GMStatActivityFragment.this.getTransactionGraph.setText(getTransactionGraph.getCpcProduct());
 
             GrossIncome grossIncome = new GrossIncome(getTransactionGraph.getGrossRevenue());
             List<BaseGMModel> baseGMModels = new ArrayList<>();
@@ -176,16 +162,6 @@ public class GMStatActivityFragment extends Fragment {
             }
             List<Integer> grossGraph = getTransactionGraph.getGrossGraph();
             List<NExcel> nExcels = joinDateAndGrossGraph(dateGraph, grossGraph);
-
-            if(nExcels != null){
-                nChart.cmdFill(nExcels);
-            }
-
-            //[START] JCoolGraph is buggy
-            grossIncomeGraph.setScrollAble(true);
-            grossIncomeGraph.setVisibleNums(7);
-            grossIncomeGraph.postInvalidate();
-            //[START] JCoolGraph is buggy
 
             if(nExcels != null){
                 //[]START] try used willam chart
@@ -251,7 +227,6 @@ public class GMStatActivityFragment extends Fragment {
 
         @Override
         public void onSuccessProductnGraph(GetProductGraph getProductGraph) {
-            GMStatActivityFragment.this.getProductGraph.setText(getProductGraph.getDiffView()+"");
 
             List<BaseGMModel> baseGMModels = new ArrayList<>();
             SuccessfulTransaction successfulTransaction
@@ -317,9 +292,6 @@ public class GMStatActivityFragment extends Fragment {
 
         @Override
         public void onError(Throwable e) {
-            getProductGraph.setText(e.getLocalizedMessage());
-            getTransactionGraph.setText(e.getLocalizedMessage());
-
             displayDefaultValue();
 
             snackBar = new SnackBar();
@@ -545,7 +517,6 @@ public class GMStatActivityFragment extends Fragment {
         isFirstTime = false;
         rootView = inflater.inflate(R.layout.fragment_gmstat, container, false);
         this.unbind = ButterKnife.bind(this, rootView);
-//        gmStatWidgetAdapter = new GMStatWidgetAdapter();
         initNumberFormatter();
         initEmptyAdapter();
         initChartLoading();
@@ -566,7 +537,6 @@ public class GMStatActivityFragment extends Fragment {
             mLabels[i] = "";
         }
         grossGraphChartConfig = new GrossGraphChartConfig(mLabels, mValues);
-        initTempGrossIncomeGraph();
         return rootView;
     }
 
@@ -595,10 +565,6 @@ public class GMStatActivityFragment extends Fragment {
     }
 
     private void initChartLoading() {
-//        grossIncomeGraph2.setVisibility(View.GONE);
-//        grossIncomeGraph2Loading.setVisibility(View.VISIBLE);
-//        grossIncomeGraph2Loading.resetLoader();
-
         grossIncomeGraphContainer.setVisibility(View.GONE);
         grossIncomeGraph2Loading.setVisibility(View.VISIBLE);
         grossIncomeGraph2Loading.resetLoader();
@@ -620,39 +586,17 @@ public class GMStatActivityFragment extends Fragment {
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         int width = (int) dpToPx(getActivity(), 360); //displaymetrics.widthPixels;
-        /* set  only 8 values in  Window width rest are on sroll or dynamically change the width of linechart
-         is  window width/8 * total values returns you the total width of linechart with scrolling and set it in
-         layout Params of linechart .*/
+        /*
+            set only 8 values in  Window width rest are on sroll or dynamically change the width of linechart
+            is  window width/8 * total values returns you the total width of linechart with scrolling and set it in
+            layout Params of linechart .
+        */
         double newSizeRatio = ((double) numChart) / 7;
-//        if (width < (numChart * width / 8)) {
         if(newSizeRatio > 1){
             grossIncomeGraph2.setLayoutParams(new LinearLayout.LayoutParams((int) dpToPx(getActivity(), 680),grossIncomeGraph2.getLayoutParams().height));//(int) (newSizeRatio * width / 2)
         } else {
             grossIncomeGraph2.setLayoutParams(new LinearLayout.LayoutParams(width, grossIncomeGraph2.getLayoutParams().height));
         }
-    }
-
-    /**
-     * This temporray prevent {@link JcoolGraph} from crashing.
-     */
-    private void initTempGrossIncomeGraph(){
-        int chartNum = 10;
-        List<Jchart> lines = new ArrayList<>();
-        for(int i = 0; i<chartNum; i++) {
-            lines.add(new Jchart(new SecureRandom().nextInt(50)+15, Color.parseColor("#42b549")));
-        }
-        lines.get(1).setUpper(0);
-        lines.get(new SecureRandom().nextInt(chartNum-1)).setLower(10);
-        lines.get(chartNum-2).setUpper(0);
-        grossIncomeGraph.setLinePointRadio((int)grossIncomeGraph.getLineWidth());
-        grossIncomeGraph.setNormalColor(Color.parseColor("#42b549"));
-        grossIncomeGraph.feedData(lines);
-        ( (View)grossIncomeGraph.getParent() ).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-                grossIncomeGraph.postInvalidate();
-            }
-        });
     }
 
     @Override
@@ -677,8 +621,6 @@ public class GMStatActivityFragment extends Fragment {
             gmstat.getGmStatNetworkController().fetchData(shopId, compositeSubscription, gmStatListener);
             //[END] real network
         }
-
-        initTempGrossIncomeGraph();
     }
 
     public void fetchData(long sDate, long eDate){
