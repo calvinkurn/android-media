@@ -54,6 +54,7 @@
 
         </LinearLayout>
             <TextView
+                android:id="@+id/title_viewed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="end"
@@ -64,7 +65,8 @@
                 android:layout_marginStart="@dimen/margin_small"
                 android:text="@string/title_viewed"
                 android:textColor="@color/time_color"
-                android:textSize="@dimen/fonts" />
+                android:textSize="@dimen/fonts"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@id/tv_viewed"
@@ -79,6 +81,7 @@
                 tools:ignore="HardcodedText" />
 
             <TextView
+                android:id="@+id/title_sold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -87,7 +90,8 @@
                 android:layout_marginRight="@dimen/margin_vs"
                 android:text="@string/title_terjual"
                 android:textColor="@color/time_color"
-                android:textSize="@dimen/fonts" />
+                android:textSize="@dimen/fonts"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@id/tv_brought"

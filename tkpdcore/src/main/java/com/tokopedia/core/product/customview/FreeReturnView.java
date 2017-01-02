@@ -81,7 +81,6 @@ public class FreeReturnView extends BaseView<ProductDetailData, ProductDetailVie
             Spannable sp = (Spannable)textFreeReturn.getText();
             URLSpan[] urls=sp.getSpans(0, textFreeReturn.getText().length(), URLSpan.class);
             SpannableStringBuilder style=new SpannableStringBuilder(textFreeReturn.getText());
-            style.clearSpans();
             for(final URLSpan url : urls){
                 style.setSpan(new ClickableSpan() {
                     @Override

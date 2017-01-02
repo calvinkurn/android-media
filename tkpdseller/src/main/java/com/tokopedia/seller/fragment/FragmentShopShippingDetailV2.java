@@ -36,6 +36,7 @@ import com.tkpd.library.utils.SimpleSpinnerAdapter;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.ShippingConfirmationDetail;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -346,7 +347,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
         productListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startActivity(ProductInfoActivity.createInstance(getActivity(), orderShippingList.getOrderProducts().get(position).getProductId().toString()));
+                startActivity(ProductInfoActivity.createInstance(getActivity(), getProductDataToPass(position)));
             }
         });
         ListViewHelper.getListViewSize(productListView);
@@ -747,6 +748,15 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
         listPermission.add(Manifest.permission.CAMERA);
 
         RequestPermissionUtil.onNeverAskAgain(getActivity(),listPermission);
+    }
+
+    private ProductPass getProductDataToPass(int position) {
+        return ProductPass.Builder.aProductPass()
+                .setProductPrice(orderShippingList.getOrderProducts().get(position).getProductPrice())
+                .setProductId(orderShippingList.getOrderProducts().get(position).getProductId())
+                .setProductName(orderShippingList.getOrderProducts().get(position).getProductName())
+                .setProductImage(orderShippingList.getOrderProducts().get(position).getProductPicture())
+                .build();
     }
 
 }

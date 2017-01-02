@@ -451,15 +451,16 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     @Override
-    public void showProductDetailRetry(String error) {
-        NetworkErrorHelper.showEmptyState(getActivity(), getActivity().findViewById(R.id.root_view),
-                error,
-                new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        presenter.requestProductDetail(context, productPass, INIT_REQUEST, false);
-                    }
-                });
+    public void showProductDetailRetry() {
+        if(productPass !=null && !productPass.getProductName().isEmpty()){
+            NetworkErrorHelper.createSnackbarWithAction(getActivity(),
+                    initializationErrorListener()).showRetrySnackbar();
+        } else {
+            NetworkErrorHelper.showEmptyState(getActivity(),
+                    getActivity().findViewById(R.id.root_view),
+                    initializationErrorListener());
+        }
+
     }
 
     @Override
@@ -731,6 +732,22 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showNeverAskForStorage() {
         RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    private NetworkErrorHelper.RetryClickedListener initializationErrorListener() {
+        return new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.requestProductDetail(context, productPass, INIT_REQUEST, false);
+            }
+        };
+    }
+
+    @Override
+    public void showFullScreenError() {
+        NetworkErrorHelper.showEmptyState(getActivity(),
+                getActivity().findViewById(R.id.root_view),
+                initializationErrorListener());
     }
 
 }

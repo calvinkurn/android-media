@@ -61,11 +61,13 @@ public interface RetrofitInteractor {
 
         void onSuccess(@NonNull ProductDetailData data);
 
-        void onTimeout(String message);
+        void onTimeout();
 
         void onError(String error);
 
         void onNullData();
+
+        void onReportServerProblem();
     }
 
     interface OtherProductListener {

@@ -18,6 +18,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.network.v4.NetworkConfig;
+import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.inbox.rescenter.detail.model.actionresponsedata.UploadResCenterImageData;
 import com.tokopedia.inbox.rescenter.edit.facade.NetworkParam;
 import com.tokopedia.inbox.rescenter.edit.model.passdata.ActionResponseData;
@@ -26,7 +27,6 @@ import com.tokopedia.inbox.rescenter.edit.model.passdata.EditResCenterFormData;
 import com.tokopedia.inbox.rescenter.edit.model.responsedata.ActionParameterPassData;
 import com.tokopedia.inbox.rescenter.utils.LocalCacheManager;
 import com.tokopedia.inbox.rescenter.utils.UploadImageResCenter;
-import com.tokopedia.core.util.ImageUploadHandler;
 
 import java.io.File;
 import java.io.IOException;

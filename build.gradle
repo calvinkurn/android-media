@@ -23,7 +23,7 @@ allprojects {
         maven { url 'https://maven.fabric.io/public' }
         maven { url 'http://maven.localytics.com/public' }
         maven {
-            url "http://jenkins.tkpd:8081/artifactory/libs-release-local"
+            url "${artifactory_url}"+"/libs-release-local";
             credentials {
                 username = "${artifactory_username}"
                 password = "${artifactory_password}"
@@ -36,6 +36,23 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.14.1'
+}
+
 ext {
-     artifactoryUrl = 'http://jenkins.tkpd:8081/artifactory'
+     artifactoryUrl = "${artifactory_url}"
+}
+
+afterEvaluate {
+    tasks.withType(PublishToMavenRepository).all { publishTask ->
+        publishTask.onlyIf { task ->
+            if (project.plugins.hasPlugin('com.android.application')) {
+                task.enabled = false
+                task.group = null
+                return false
+            }
+            return true
+        }
+    }
 }

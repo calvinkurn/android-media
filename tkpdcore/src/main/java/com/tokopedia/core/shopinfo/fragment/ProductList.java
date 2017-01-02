@@ -29,6 +29,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.V2BaseFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.adapter.ShopProductListAdapter;
 import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
@@ -376,7 +377,8 @@ public class ProductList extends V2BaseFragment {
 
             @Override
             public void onProductClick(int pos) {
-                Intent intent = ProductInfoActivity.createInstance(getActivity(), Integer.toString(productModel.list.get(pos).productId));
+                Intent intent = ProductInfoActivity.createInstance(getActivity(),
+                        getProductDataToPass(pos));
                 getActivity().startActivity(intent);
             }
 
@@ -556,5 +558,14 @@ public class ProductList extends V2BaseFragment {
 
     private void removeLoading() {
         adapter.removeLoading();
+    }
+
+    private ProductPass getProductDataToPass(int position) {
+        return ProductPass.Builder.aProductPass()
+                .setProductPrice(productModel.list.get(position).productPrice)
+                .setProductId(productModel.list.get(position).productId)
+                .setProductName(productModel.list.get(position).productName)
+                .setProductImage(productModel.list.get(position).productImage)
+                .build();
     }
 }

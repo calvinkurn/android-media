@@ -28,6 +28,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.URLParser;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
@@ -677,10 +678,11 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         public void onClick() {
             Bundle bundle = new Bundle();
             Intent intent = new Intent(context, ProductInfoActivity.class);
-            bundle.putString("product_id", data.id);
+            bundle.putParcelable(ProductInfoActivity.EXTRA_PRODUCT_ITEM, data);
             intent.putExtras(bundle);
             context.startActivity(intent);
         }
+
     }
 
     public static class ViewHolderProductGrid extends RecyclerView.ViewHolder {

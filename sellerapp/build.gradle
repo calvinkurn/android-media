@@ -180,15 +180,27 @@ repositories {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
 
-    /*compile (rootProject.ext.tkpdDependencies.inbox)
-    compile (rootProject.ext.tkpdDependencies.discovery)
-    compile (rootProject.ext.tkpdDependencies.transaction)
-    compile (rootProject.ext.tkpdDependencies.seller)
-    compile (rootProject.ext.tkpdDependencies.session) */
+    /*compile (rootProject.ext.tkpdDependencies.inbox) {
+        exclude group: 'com.tokopedia.core'
+    }
+    compile (rootProject.ext.tkpdDependencies.discovery) {
+        exclude group: 'com.tokopedia.core'
+    }
+    compile (rootProject.ext.tkpdDependencies.transaction) {
+        exclude group: 'com.tokopedia.core'
+    }
+    compile (rootProject.ext.tkpdDependencies.seller) {
+        exclude group: 'com.tokopedia.core'
+    }
+    compile (rootProject.ext.tkpdDependencies.session) {
+        exclude group: 'com.tokopedia.core'
+    }
+    compile (rootProject.ext.tkpdDependencies.core)*/
     compile project(':tkpddiscovery')
     compile project(':tkpdtransaction')
     compile project(':tkpdseller')
     compile project(':tkpdsession')
+    compile project(':tkpdinbox')
 
     compile('de.hdodenhof:circleimageview:2.1.0') {
         exclude group: 'com.android.support', module: 'support-annotations'
