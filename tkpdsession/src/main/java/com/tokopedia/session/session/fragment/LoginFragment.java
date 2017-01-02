@@ -43,6 +43,8 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.customView.LoginTextView;
@@ -182,7 +184,7 @@ public class LoginFragment extends Fragment implements LoginView {
     public void onResume() {
         super.onResume();
         login.initData();
-        login.sendGTMScreen(getActivity());
+        ScreenTracking.screen(AppScreen.SCREEN_LOGIN);
         UnifyTracking.eventViewLoginPage();
         mEmailView.addTextChangedListener(watcher(wrapperEmail));
         mPasswordView.addTextChangedListener(watcher(wrapperPassword));
@@ -313,7 +315,7 @@ public class LoginFragment extends Fragment implements LoginView {
                         model.setPassword(mPasswordView.getText().toString());
                         model.setIsEmailClick(true);
                         login.sendDataFromInternet(LoginModel.EmailType, model);
-                        login.sendCTAAction();
+                        UnifyTracking.eventCTAAction();
                     }
                 }
             }
@@ -454,12 +456,12 @@ public class LoginFragment extends Fragment implements LoginView {
             setWrapperError(wrapperPassword, getString(R.string.error_field_required));
             focusPair.setView(mPasswordView);
             focusPair.setIsFocus(true);
-            login.sendGTMLoginError(AppEventTracking.EventLabel.PASSWORD);
+            UnifyTracking.eventLoginError(AppEventTracking.EventLabel.PASSWORD);
         } else if (password.length() < 4) {
             setWrapperError(wrapperPassword, getString(R.string.error_incorrect_password));
             focusPair.setView(mPasswordView);
             focusPair.setIsFocus(true);
-            login.sendGTMLoginError(AppEventTracking.EventLabel.PASSWORD);
+            UnifyTracking.eventLoginError(AppEventTracking.EventLabel.PASSWORD);
         }
 
         // Check for a valid email address.
@@ -467,12 +469,12 @@ public class LoginFragment extends Fragment implements LoginView {
             setWrapperError(wrapperEmail, getString(R.string.error_field_required));
             focusPair.setView(mEmailView);
             focusPair.setIsFocus(true);
-            login.sendGTMLoginError(AppEventTracking.EventLabel.EMAIL);
+            UnifyTracking.eventLoginError(AppEventTracking.EventLabel.EMAIL);
         } else if (!CommonUtils.EmailValidation(email)) {
             setWrapperError(wrapperEmail, getString(R.string.error_invalid_email));
             focusPair.setView(mEmailView);
             focusPair.setIsFocus(true);
-            login.sendGTMLoginError(AppEventTracking.EventLabel.EMAIL);
+            UnifyTracking.eventLoginError(AppEventTracking.EventLabel.EMAIL);
         }
 
         return focusPair;

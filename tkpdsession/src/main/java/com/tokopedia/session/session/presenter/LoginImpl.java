@@ -143,31 +143,6 @@ public class LoginImpl implements Login {
     public void unSubscribe() {
         facade.unSubscribe();
     }
-
-    @Override
-    public void sendGTMScreen(Context context) {
-        Nishikino.init(context).startAnalytics().sendScreen(AppScreen.SCREEN_LOGIN);
-    }
-
-    @Override
-    public void sendCTAAction() {
-        Nishikino.init(mContext).startAnalytics()
-                .sendButtonClick(
-                        AppEventTracking.Event.LOGIN_CLICK,
-                        AppEventTracking.Category.LOGIN,
-                        AppEventTracking.Action.CLICK,
-                        AppEventTracking.EventLabel.CTA);
-    }
-    @Override
-    public void sendGTMLoginError(String label) {
-        Nishikino.init(mContext).startAnalytics()
-                .sendButtonClick(
-                        AppEventTracking.Event.LOGIN_ERROR,
-                        AppEventTracking.Category.LOGIN,
-                        AppEventTracking.Action.LOGIN_ERROR,
-                        label);
-    }
-    
     
     public void downloadProviderLogin() {
         facade.downloadProvider(loginView.getActivity(), new LoginInteractor.DiscoverLoginListener() {

@@ -127,10 +127,4 @@ public interface Login {
     void getProvider();
 
     void unSubscribe();
-
-    void sendGTMScreen(Context context);
-
-    void sendCTAAction();
-
-    void sendGTMLoginError(String label);
 }

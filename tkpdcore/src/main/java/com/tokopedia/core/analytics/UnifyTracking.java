@@ -868,6 +868,24 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventCTAAction(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.LOGIN_CLICK,
+                AppEventTracking.Category.LOGIN,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.CTA
+        ).getEvent());
+    }
+
+    public static void eventLoginError(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.LOGIN_ERROR,
+                AppEventTracking.Category.LOGIN,
+                AppEventTracking.Action.LOGIN_ERROR,
+                label
+        ).getEvent());
+    }
+
     public static  void eventAppsFlyerViewListingSearch(java.util.List<ProductItem> model, String keyword){
         JSONArray afProdIds = new JSONArray();
         ArrayList<String> prodIdArray = new ArrayList<>();
