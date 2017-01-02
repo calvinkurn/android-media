@@ -18,7 +18,7 @@ import java.util.Date;
 /**
  * Created by Nisie on 5/9/16.
  */
-public abstract class TopAdsDashboardPresenterImpl implements TopAdsDashboardPresenter {
+public abstract class TopAdsDashboardPresenterImpl extends TopAdsDatePickerPresenterImpl implements TopAdsDashboardPresenter {
 
     protected DashboardTopadsInteractor dashboardTopadsInteractor;
     private Context context;
@@ -28,6 +28,7 @@ public abstract class TopAdsDashboardPresenterImpl implements TopAdsDashboardPre
     public abstract TopAdsDashboardFragmentListener getDashboardListener();
 
     public TopAdsDashboardPresenterImpl(Context context) {
+        super(context);
         this.context = context;
         dashboardTopadsInteractor = new DashboardTopadsInteractorImpl(context);
     }

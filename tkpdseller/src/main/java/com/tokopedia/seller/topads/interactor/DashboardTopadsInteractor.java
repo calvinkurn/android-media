@@ -18,6 +18,7 @@ import com.tokopedia.seller.topads.model.request.StatisticRequest;
 import com.tokopedia.seller.topads.model.response.DataResponse;
 import com.tokopedia.seller.topads.model.response.PageDataResponse;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -26,6 +27,14 @@ import java.util.List;
  */
 
 public interface DashboardTopadsInteractor {
+
+    void resetDate();
+
+    void saveDate(Date startDate, Date endDate);
+
+    Date getStartDate(Date defaultDate);
+
+    Date getEndDate(Date defaultDate);
 
     void getDashboardSummary(StatisticRequest statisticRequest, final ListenerInteractor<Summary> listener);
 

@@ -160,12 +160,8 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     }
 
     private void initialDate() {
-        try {
-            startDate = new SimpleDateFormat(TopAdsConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).parse(getActivity().getIntent().getStringExtra(TopAdsNetworkConstant.PARAM_START_DATE));
-            endDate = new SimpleDateFormat(TopAdsConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).parse(getActivity().getIntent().getStringExtra(TopAdsNetworkConstant.PARAM_END_DATE));
-        } catch (Exception e) {
-
-        }
+        startDate = presenter.getStartDate();
+        endDate = presenter.getEndDate();
     }
 
     @Override

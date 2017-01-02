@@ -30,6 +30,7 @@ import com.tokopedia.seller.topads.model.response.DataResponse;
 import com.tokopedia.seller.topads.model.response.PageDataResponse;
 import com.tokopedia.seller.topads.network.apiservice.TopAdsManagementService;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -60,6 +61,26 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
         topAdsManagementService = new TopAdsManagementService();
         topAdsDbDataSource = new TopAdsDbDataSourceImpl();
         topAdsCacheDataSource = new TopAdsCacheDataSourceImpl(context);
+    }
+
+    @Override
+    public void resetDate() {
+        topAdsCacheDataSource.resetDate();
+    }
+
+    @Override
+    public void saveDate(Date startDate, Date endDate) {
+        topAdsCacheDataSource.saveDate(startDate, endDate);
+    }
+
+    @Override
+    public Date getStartDate(Date defaultDate) {
+        return topAdsCacheDataSource.getStartDate(defaultDate);
+    }
+
+    @Override
+    public Date getEndDate(Date defaultDate) {
+        return topAdsCacheDataSource.getEndDate(defaultDate);
     }
 
     @Override

@@ -4,23 +4,20 @@ import android.content.Context;
 
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.topads.interactor.DashboardTopadsInteractor;
-import com.tokopedia.seller.topads.interactor.DashboardTopadsInteractorImpl;
 import com.tokopedia.seller.topads.model.data.Ad;
 import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
-
-import java.util.Date;
 
 /**
  * Created by zulfikarrahman on 11/24/16.
  */
-public abstract class TopAdsAdListPresenterImpl<T extends Ad> implements TopAdsAdListPresenter<T> {
+public abstract class TopAdsAdListPresenterImpl<T extends Ad> extends TopAdsDatePickerPresenterImpl implements TopAdsAdListPresenter<T> {
 
     protected final TopAdsListPromoViewListener topAdsListPromoViewListener;
     protected final Context context;
     protected PagingHandler pagingHandler;
 
     public TopAdsAdListPresenterImpl(Context context, TopAdsListPromoViewListener topAdsListPromoViewListener) {
+        super(context);
         this.topAdsListPromoViewListener = topAdsListPromoViewListener;
         this.context = context;
         pagingHandler = new PagingHandler();

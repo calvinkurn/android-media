@@ -16,6 +16,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.model.data.DataDeposit;
 import com.tokopedia.seller.topads.model.data.Summary;
+import com.tokopedia.seller.topads.presenter.TopAdsDashboardPresenter;
 import com.tokopedia.seller.topads.view.activity.TopAdsAddCreditActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardFragmentListener;
 
@@ -27,7 +28,7 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public abstract class TopAdsDashboardFragment<T> extends BasePresenterFragment<T> implements TopAdsDashboardFragmentListener {
+public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter> extends BasePresenterFragment<T> implements TopAdsDashboardFragmentListener {
 
     private static String TAG = TopAdsDashboardFragment.class.getSimpleName();
 
@@ -143,34 +144,22 @@ public abstract class TopAdsDashboardFragment<T> extends BasePresenterFragment<T
 
     @Override
     protected void setActionVar() {
+        presenter.resetDate();
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadData();
     }
 
     private void initialLayout() {
-        Calendar startCalendar = Calendar.getInstance();
-        Calendar endCalendar = Calendar.getInstance();
-        startCalendar.add(Calendar.DAY_OF_YEAR, -7);
-        startDate = startCalendar.getTime();
-        endDate = endCalendar.getTime();
-        updateRangeDate();
         updateInfoText(impressionInfoLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_impression)));
         updateInfoText(clickInfoLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_click)));
         updateInfoText(ctrInfoLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_ctr)));
         updateInfoText(conversionInfoLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_conversion)));
         updateInfoText(averageMainInfoLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_average)));
         updateInfoText(costInfoLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_cost)));
-    }
-
-    protected void updateRangeDate() {
-        rangeDateDescTextView.setText(getString(R.string.top_ads_range_date_text, getStartDateText(), getEndDateText()));
-    }
-
-    private String getStartDateText() {
-        return new SimpleDateFormat(RANGE_DATE_FORMAT, Locale.ENGLISH).format(startDate);
-    }
-
-    private String getEndDateText() {
-        return new SimpleDateFormat(RANGE_DATE_FORMAT, Locale.ENGLISH).format(endDate);
     }
 
     private void updateSummaryLayout(Summary summary) {
@@ -184,6 +173,21 @@ public abstract class TopAdsDashboardFragment<T> extends BasePresenterFragment<T
 
     protected void updateInfoText(View layout, int resourceId, String value) {
         ((TextView) layout.findViewById(resourceId)).setText(value);
+    }
+
+    protected void loadData() {
+        startDate = presenter.getStartDate();
+        endDate = presenter.getEndDate();
+        updateRangeDate();
+        presenter.populateSummary(startDate, endDate);
+        presenter.populateDeposit();
+        presenter.populateShopInfo();
+    }
+
+    protected void updateRangeDate() {
+        rangeDateDescTextView.setText(getString(R.string.top_ads_range_date_text,
+                new SimpleDateFormat(RANGE_DATE_FORMAT, Locale.ENGLISH).format(startDate),
+                new SimpleDateFormat(RANGE_DATE_FORMAT, Locale.ENGLISH).format(endDate)));
     }
 
     @OnClick(R2.id.image_button_add_deposit)
