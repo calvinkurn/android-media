@@ -1,6 +1,5 @@
 package com.tokopedia.sellerapp.gmstat.views;
 
-import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -10,7 +9,7 @@ import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.gmstat.models.GetPopularProduct;
-import com.tokopedia.sellerapp.gmstat.utils.KMNumbers2;
+import com.tokopedia.sellerapp.gmstat.utils.KMNumbers;
 import com.tokopedia.sellerapp.home.utils.ImageHandler;
 
 import java.text.NumberFormat;
@@ -77,15 +76,15 @@ public class PopularProductViewHelper {
             return;
         }
 
-        dataProductTitle.setText("Data Produk");
-        textPopularProduct.setText("Produk terlaris");
+        dataProductTitle.setText(R.string.data_product_title);
+        textPopularProduct.setText(R.string.popular_product_title);
         imageHandler.loadImage(imagePopularProduct, getPopularProduct.getImageLink());
         popularProductDescription.setText(MethodChecker.fromHtml(getPopularProduct.getProductName()));
         long sold = getPopularProduct.getSold();
         String text = getFormattedString(sold);
 //        numberOfSelling.setText(toKFormat(getPopularProduct.getSold()));
         numberOfSelling.setText(text);
-        xSold.setText("x Terjual");
+        xSold.setText(R.string.number_of_selled);
     }
 
     public static String getFormattedString(long value) {
@@ -96,7 +95,7 @@ public class PopularProductViewHelper {
             System.out.println(text = (currencyFormatter.format(value)));
 //                text = successTrans+"";
         }else if(value >= 1_000_000){
-            text = KMNumbers2.formatNumbers(value);
+            text = KMNumbers.formatNumbers(value);
         }
         return text;
     }

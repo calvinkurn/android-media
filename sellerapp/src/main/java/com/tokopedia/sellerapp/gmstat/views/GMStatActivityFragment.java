@@ -40,7 +40,7 @@ import com.tokopedia.sellerapp.gmstat.models.GetTransactionGraph;
 import com.tokopedia.sellerapp.gmstat.presenters.GMStat;
 import com.tokopedia.sellerapp.gmstat.utils.GMStatNetworkController;
 import com.tokopedia.sellerapp.gmstat.utils.GridDividerItemDecoration;
-import com.tokopedia.sellerapp.gmstat.utils.KMNumbers2;
+import com.tokopedia.sellerapp.gmstat.utils.KMNumbers;
 import com.tokopedia.sellerapp.gmstat.utils.GrossGraphChartConfig;
 import com.tokopedia.sellerapp.home.utils.ShopNetworkController;
 
@@ -69,6 +69,7 @@ import static com.tokopedia.sellerapp.gmstat.views.GMStatHeaderViewHelper.getDat
 
 /**
  * A placeholder fragment containing a simple view.
+ * created by norman 02/01/2017
  */
 public class GMStatActivityFragment extends Fragment {
 
@@ -162,7 +163,7 @@ public class GMStatActivityFragment extends Fragment {
 
         @Override
         public void onSuccessTransactionGraph(GetTransactionGraph getTransactionGraph) {
-            GMStatActivityFragment.this.getTransactionGraph.setText(getTransactionGraph.getCpcProduct()+"");
+            GMStatActivityFragment.this.getTransactionGraph.setText(getTransactionGraph.getCpcProduct());
 
             GrossIncome grossIncome = new GrossIncome(getTransactionGraph.getGrossRevenue());
             List<BaseGMModel> baseGMModels = new ArrayList<>();
@@ -227,7 +228,7 @@ public class GMStatActivityFragment extends Fragment {
                                 new StringFormatRenderer() {
                                     @Override
                                     public String formatString(String s) {
-                                        return KMNumbers2.formatNumbers(Float.valueOf(s));
+                                        return KMNumbers.formatNumbers(Float.valueOf(s));
                                     }
                                 }))
                         .buildChart(grossGraphChartConfig.buildLineChart(grossIncomeGraph2));
@@ -336,9 +337,6 @@ public class GMStatActivityFragment extends Fragment {
                     .setOnClickListener(true, new OnActionClickListener() {
                         @Override
                         public void onClick(View view) {
-//                                    Toast.makeText(
-//                                            GMStatActivityFragment.this.getActivity()
-//                                            ,"Bye bye snackbar Toast is back",Toast.LENGTH_SHORT).show();
                             isFetchData = true;
                             fetchData();
                         }
@@ -440,8 +438,6 @@ public class GMStatActivityFragment extends Fragment {
 
     protected void initAdapter() {
         gridLayoutManager = new GridLayoutManager(getActivity(), 2);
-//        gmStatRecyclerView.setLayoutManager(new LinearLayoutManager(
-//                GMStatActivityFragment.this.getActivity(), LinearLayoutManager.VERTICAL, false));
         gmStatRecyclerView.setLayoutManager(gridLayoutManager);
         GridDividerItemDecoration gridDividerItemDecoration = new GridDividerItemDecoration(getContext());
         gmStatRecyclerView.addItemDecoration(gridDividerItemDecoration);
@@ -466,8 +462,6 @@ public class GMStatActivityFragment extends Fragment {
 
     protected void initAdapter(final GMStatWidgetAdapter gmStatWidgetAdapter) {
         gridLayoutManager = new GridLayoutManager(getActivity(), 2);
-//        gmStatRecyclerView.setLayoutManager(new LinearLayoutManager(
-//                GMStatActivityFragment.this.getActivity(), LinearLayoutManager.VERTICAL, false));
         gmStatRecyclerView.setLayoutManager(gridLayoutManager);
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
@@ -513,7 +507,6 @@ public class GMStatActivityFragment extends Fragment {
         gmStatWidgetAdapter.notifyDataSetChanged();
     }
 
-    //    protected void initEmptyAdapter(final GMStatWidgetAdapter gmStatWidgetAdapter){
     protected void initEmptyAdapter(){
         List<BaseGMModel> loadingBases = new ArrayList<>();
         for(int i=0;i<4;i++)
@@ -578,7 +571,7 @@ public class GMStatActivityFragment extends Fragment {
     }
 
     private void initNumberFormatter() {
-        KMNumbers2.overrideSuffixes(1000000L, "jt");
+        KMNumbers.overrideSuffixes(1000000L, "jt");
     }
 
     private void initMarketInsightLoading2() {
@@ -623,16 +616,6 @@ public class GMStatActivityFragment extends Fragment {
      */
     private void resizeChart(int numChart){
         Log.d(TAG, "resizeChart "+numChart);
-//        double newSizeRatio = ((double) numChart) / 7;
-//        if(newSizeRatio<1){
-//            // do nothing
-//        }else{
-//            float v = dpToPx(getActivity(), 360);
-//            ViewGroup.LayoutParams params = grossIncomeGraph2.getLayoutParams();
-//            params.width = (int) (v*newSizeRatio);
-////            grossIncomeGraph2.requestLayout();
-//            grossIncomeGraph2.setLayoutParams(params);
-//        }
 
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
@@ -656,25 +639,12 @@ public class GMStatActivityFragment extends Fragment {
         int chartNum = 10;
         List<Jchart> lines = new ArrayList<>();
         for(int i = 0; i<chartNum; i++) {
-
             lines.add(new Jchart(new SecureRandom().nextInt(50)+15, Color.parseColor("#42b549")));
-            //            lines.add(new Jchart(10,new SecureRandom().nextInt(50) + 15,"test", Color.parseColor("#b8e986")));
         }
-//        for(Jchart line : lines) {
-//            line.setStandedHeight(100);
-//        }
-        //        lines.get(new SecureRandom().nextInt(chartNum-1)).setUpper(0);
         lines.get(1).setUpper(0);
         lines.get(new SecureRandom().nextInt(chartNum-1)).setLower(10);
         lines.get(chartNum-2).setUpper(0);
-//        grossIncomeGraph.setScrollAble(true);
-//        mLineChar.setLineMode();
         grossIncomeGraph.setLinePointRadio((int)grossIncomeGraph.getLineWidth());
-//        mLineChar.setLineMode(JcoolGraph.LineMode.LINE_DASH_0);
-//        mLineChar.setLineStyle(JcoolGraph.LineStyle.LINE_BROKEN);
-
-        //        mLineChar.setYaxisValues("test","测试","text");
-        //        mLineChar.setSelectedMode(BaseGraph.SelectedMode.SELECETD_MSG_SHOW_TOP);
         grossIncomeGraph.setNormalColor(Color.parseColor("#42b549"));
         grossIncomeGraph.feedData(lines);
         ( (View)grossIncomeGraph.getParent() ).setOnClickListener(new View.OnClickListener() {
@@ -703,17 +673,12 @@ public class GMStatActivityFragment extends Fragment {
             resetToLoading();
             gmstat.getGmStatNetworkController().fetchData(shopId, sDate, eDate, compositeSubscription, gmStatListener);
         }else if(!isFirstTime){
-//        gmStatWidgetAdapter.clear();
-//        gmstat.getGmStatNetworkController().fetchData(gmStatListener, getActivity().getAssets());
             //[START] real network
             gmstat.getGmStatNetworkController().fetchData(shopId, compositeSubscription, gmStatListener);
             //[END] real network
         }
 
         initTempGrossIncomeGraph();
-
-//        gmstat.getGmStatNetworkController().getTransactionGraph(shopId, compositeSubscription, gmStatListener);
-//        gmstat.getGmStatNetworkController().getProductGraph(shopId, compositeSubscription, gmStatListener);
     }
 
     public void fetchData(long sDate, long eDate){
@@ -721,12 +686,10 @@ public class GMStatActivityFragment extends Fragment {
         this.sDate = sDate;
         this.eDate = eDate;
         gmstatHeaderViewHelper.bindDate(sDate, eDate);
-//        gmStatWidgetAdapter.clear();
-        //[START] real network
-//        gmstat.getGmStatNetworkController().fetchData(shopId, sDate, eDate, compositeSubscription, gmStatListener);
-        //[END] real network
+
+        //[START] dummy data
 //        gmstat.getGmStatNetworkController().fetchData(gmStatListener, getActivity().getAssets());
-//        initTempGrossIncomeGraph();
+        //[END] dummy data
     }
 
     @Override
@@ -914,9 +877,9 @@ public class GMStatActivityFragment extends Fragment {
                 double d = commomGMModel.percentage;
                 String text;
                 System.out.println(text = formatter.format(d));
-                percentage.setText(text.replace("-","") + "%");
+                percentage.setText(String.format("%s%%", text.replace("-", "")));
             }else{
-                percentage.setText("Tidak ada data");
+                percentage.setText(R.string.no_data);
             }
         }
     }
@@ -1028,7 +991,7 @@ public class GMStatActivityFragment extends Fragment {
                 System.out.println(text = (currencyFormatter.format(successTrans)));
 //                text = successTrans+"";
             }else if(successTrans >= 1_000_000){
-                text = KMNumbers2.formatNumbers(successTrans);
+                text = KMNumbers.formatNumbers(successTrans);
             }
             //[START] This is obsolete
 //            double l = successTrans / 1000D;

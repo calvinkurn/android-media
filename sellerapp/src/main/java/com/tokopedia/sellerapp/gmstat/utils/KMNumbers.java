@@ -8,7 +8,7 @@ import java.util.TreeMap;
 /**
  * Created by normansyahputa on 12/16/16.
  */
-public final class KMNumbers2 {
+public final class KMNumbers {
 
     public static final NavigableMap<Long, String> suffixes = new TreeMap<>();
     public static final String FORMAT = "%.1f%c";

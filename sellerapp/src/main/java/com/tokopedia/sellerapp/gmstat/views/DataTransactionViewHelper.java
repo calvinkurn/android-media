@@ -114,7 +114,7 @@ public class DataTransactionViewHelper {
 
             transactionCountIcon.setVisibility(View.GONE);
             percentage.setTextColor(gredyColor);
-            percentage.setText("Tidak ada data");
+            percentage.setText(R.string.no_data);
 
 
             displayGraphic(getTransactionGraph, true);
@@ -122,7 +122,7 @@ public class DataTransactionViewHelper {
         }
 
         /* non empty state */
-        transactionCount.setText(getFormattedString(getTransactionGraph.getSuccessTrans())+"");
+        transactionCount.setText(getFormattedString(getTransactionGraph.getSuccessTrans()));
 
         // percentage is missing and icon is missing too
         Double diffSuccessTrans = getTransactionGraph.getDiffSuccessTrans()*100;
@@ -155,9 +155,9 @@ public class DataTransactionViewHelper {
             double d = diffSuccessTrans;
             String text;
             System.out.println(text = formatter.format(d));
-            percentage.setText(text.replace("-","")+"%");
+            percentage.setText(String.format("%s%%", text.replace("-", "")));
         }else{
-            percentage.setText("Tidak ada data");
+            percentage.setText(R.string.no_data);
         }
 
         displayGraphic(getTransactionGraph, false);

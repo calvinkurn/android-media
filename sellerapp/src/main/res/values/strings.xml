@@ -13,6 +13,13 @@
     <string name="action_settings">Settings</string>
     <string name="set_date">Atur Tanggal</string>
     <string name="title_transaction_success">Transaksi Berhasil</string>
+    <string name="no_data">Tidak ada data</string>
+    <string name="data_product_title">Data Produk</string>
+    <string name="popular_product_title">Produk terlaris</string>
+    <string name="number_of_selled">x Terjual</string>
+    <string name="yesterday">Kemarin</string>
+    <string name="seven_days_ago">7 hari terakhir</string>
+    <string name="thirty_days_ago">30 hari terakhir</string>
 
     <!-- untuk tanggal gmstat -->
     <string-array name="month_names">

@@ -2,7 +2,6 @@ package com.tokopedia.sellerapp.gmstat.views;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -237,7 +236,7 @@ public class MarketInsightViewHelper {
 
             marketInsightProgress.setProgress((float) percentage);
 
-            marketInsightNumber.setText(searchKeyword.getFrequency()+"");
+            marketInsightNumber.setText(String.valueOf(searchKeyword.getFrequency()));
 
             marketInsightKeyword.setText(searchKeyword.getKeyword());
         }

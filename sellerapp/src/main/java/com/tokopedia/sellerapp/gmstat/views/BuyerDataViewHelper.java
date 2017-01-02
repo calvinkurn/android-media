@@ -82,11 +82,11 @@ public class BuyerDataViewHelper {
         /* this is empty state */
         if(getBuyerData.getTotalBuyer()==0 &&
                 (getBuyerData.getMaleBuyer()==0 || getBuyerData.getFemaleBuyer()==0)){
-            buyerCount.setText(getFormattedString(getBuyerData.getTotalBuyer())+"");
+            buyerCount.setText(getFormattedString(getBuyerData.getTotalBuyer()));
             femalePie.setTextColor(gredyColor);
             femalePie.setText("0 %");
             malePie.setVisibility(View.GONE);
-            percentageBuyer.setText("Tidak ada data");
+            percentageBuyer.setText(R.string.no_data);
             percentageBuyer.setTextColor(gredyColor);
             buyerCountIcon.setVisibility(View.GONE);
             headerPieBuyerData.setVisibility(View.GONE);
@@ -119,7 +119,7 @@ public class BuyerDataViewHelper {
             }
         }
 
-        buyerCount.setText(getFormattedString(getBuyerData.getTotalBuyer())+"");
+        buyerCount.setText(getFormattedString(getBuyerData.getTotalBuyer()));
 
         double percentage = getBuyerData.getDiffTotal() * 100D;
         // image for arrow is here
@@ -150,9 +150,9 @@ public class BuyerDataViewHelper {
             DecimalFormat formatter = new DecimalFormat("#0.00");
             String text;
             System.out.println(text = formatter.format(percentage));
-            percentageBuyer.setText(text.replace("-","")+"%");
+            percentageBuyer.setText(String.format("%s%%", text.replace("-", "")));
         }else{
-            percentageBuyer.setText("Tidak ada data");
+            percentageBuyer.setText(R.string.no_data);
         }
 
         // set icon up or down or netral

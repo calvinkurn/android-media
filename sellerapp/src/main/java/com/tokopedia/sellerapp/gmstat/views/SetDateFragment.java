@@ -242,12 +242,12 @@ public class SetDateFragment extends Fragment {
             }
 
             if(periodRangeModel.range == 1 && !periodRangeModel.isRange){
-                periodHeader.setText("Kemarin");
+                periodHeader.setText(R.string.yesterday);
             }else if(periodRangeModel.isRange){
                 if(periodRangeModel.range==7){
-                    periodHeader.setText("7 hari terakhir");
+                    periodHeader.setText(R.string.seven_days_ago);
                 }else if(periodRangeModel.range == 31){
-                    periodHeader.setText("30 hari terakhir");
+                    periodHeader.setText(R.string.thirty_days_ago);
                 }
             }
 //            periodHeader.setText(periodRangeModel.headerText);
@@ -682,12 +682,12 @@ public class SetDateFragment extends Fragment {
             }
 
             if(periodRangeModel.range == 1 && !periodRangeModel.isRange){
-                periodHeader.setText("Kemarin");
+                periodHeader.setText(R.string.yesterday);
             }else if(periodRangeModel.isRange){
                 if(periodRangeModel.range==7){
-                    periodHeader.setText("7 hari terakhir");
+                    periodHeader.setText(R.string.seven_days_ago);
                 }else if(periodRangeModel.range == 31){
-                    periodHeader.setText("30 hari terakhir");
+                    periodHeader.setText(R.string.thirty_days_ago);
                 }
             }
 //            periodHeader.setText(periodRangeModel.headerText);
