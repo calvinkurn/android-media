@@ -15,9 +15,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindArray;
-import butterknife.BindDrawable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -44,6 +44,8 @@ public class GMStatHeaderViewHelper {
 
     @BindView(R.id.calendar_icon)
     LoaderImageView calendarIcon;
+
+    private static final Locale locale = new Locale("in","ID");
 
 
     public static final int MOVE_TO_SET_DATE = 1;
@@ -97,7 +99,7 @@ public class GMStatHeaderViewHelper {
         if(sDate != -1){
             Calendar cal = Calendar.getInstance();
             cal.setTimeInMillis(sDate);
-            DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+            DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", locale);
             startDate = dateFormat.format(cal.getTime());
             startDate = getDateWithYear(Integer.parseInt(startDate), monthNamesAbrev);
         }
@@ -106,7 +108,7 @@ public class GMStatHeaderViewHelper {
         if(eDate != -1){
             Calendar cal = Calendar.getInstance();
             cal.setTimeInMillis(eDate);
-            DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+            DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", locale);
             endDate = dateFormat.format(cal.getTime());
             int end = Integer.parseInt(endDate);
             Log.d("MNORMANSYAH", "endDate "+endDate+" int "+Integer.parseInt(endDate)+" end "+end);

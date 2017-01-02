@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.db.chart.view.LineChartView;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.gmstat.models.GetTransactionGraph;
-import com.tokopedia.sellerapp.gmstat.utils.WiliamChartUtils_;
+import com.tokopedia.sellerapp.gmstat.utils.DataTransactionChartConfig;
 import com.tokopedia.sellerapp.home.utils.ImageHandler;
 
 import java.text.DecimalFormat;
@@ -33,7 +33,7 @@ import static com.tokopedia.sellerapp.gmstat.views.PopularProductViewHelper.getF
  */
 
 public class DataTransactionViewHelper {
-    private WiliamChartUtils_ williamChartUtils;
+    private DataTransactionChartConfig williamChartUtils;
 
     @BindArray(R.array.month_names_abrev)
     String[] monthNamesAbrev;
@@ -90,7 +90,7 @@ public class DataTransactionViewHelper {
         for(int i=0;i<mLabels.length;i++){
             mLabels[i] = "";
         }
-        williamChartUtils = new WiliamChartUtils_(mLabels, mValues);
+        williamChartUtils = new DataTransactionChartConfig(mLabels, mValues);
         this.imageHandler = imageHandler;
 
         if(isGoldMerchant){
@@ -127,7 +127,7 @@ public class DataTransactionViewHelper {
         // percentage is missing and icon is missing too
         Double diffSuccessTrans = getTransactionGraph.getDiffSuccessTrans()*100;
         // image for arrow is here
-        boolean isDefault = false;
+        boolean isDefault;
         if(diffSuccessTrans == 0){
             transactionCountIcon.setVisibility(View.GONE);
             percentage.setTextColor(arrowUp);
@@ -153,7 +153,7 @@ public class DataTransactionViewHelper {
         if(isDefault){
             DecimalFormat formatter = new DecimalFormat("#0.00");
             double d = diffSuccessTrans;
-            String text = "";
+            String text;
             System.out.println(text = formatter.format(d));
             percentage.setText(text.replace("-","")+"%");
         }else{
@@ -193,7 +193,7 @@ public class DataTransactionViewHelper {
         if(dateGraph == null || successTransGrpah == null)
             return null;
 
-        int lowerSize = 0 ;
+        int lowerSize;
         if(dateGraph.size()>successTransGrpah.size()){
             lowerSize = successTransGrpah.size();
         }else{
@@ -201,7 +201,6 @@ public class DataTransactionViewHelper {
         }
 
         for(int i=0;i<lowerSize;i++){
-            Integer date = dateGraph.get(i);
             Integer gross = successTransGrpah.get(i);
 
             nExcels.add(new NExcel(gross, ""));

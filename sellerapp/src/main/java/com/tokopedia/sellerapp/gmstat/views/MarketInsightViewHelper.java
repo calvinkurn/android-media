@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.gmstat.models.GetKeyword;
 import com.tokopedia.sellerapp.gmstat.models.GetShopCategory;
@@ -80,7 +81,7 @@ public class MarketInsightViewHelper {
         String categoryBold = String.format("\"<i><b>%s</b></i>\"", category.getName());
 //        String footerText = String.format("Kata kunci ini berdasarkan kategori dari \"%s\"", category.getName());
 //        marketInsightFooter_.setText(footerText);
-        marketInsightFooter_.setText(Html.fromHtml("Kata kunci ini berdasarkan kategori dari "+categoryBold+" "));
+        marketInsightFooter_.setText(MethodChecker.fromHtml("Kata kunci ini berdasarkan kategori dari "+categoryBold+" "));
     }
 
     public void bindData(List<GetKeyword> getKeywords){
@@ -144,7 +145,7 @@ public class MarketInsightViewHelper {
         }
 
         String categoryBold = String.format("\"<i><b>%s</b></i>\"", "kaos");
-        marketInsightFooter_.setText(Html.fromHtml("Kata kunci ini berdasarkan kategori dari "+categoryBold+" "));
+        marketInsightFooter_.setText(MethodChecker.fromHtml("Kata kunci ini berdasarkan kategori dari "+categoryBold+" "));
 
         marketInsightRecyclerView.setLayoutManager(new LinearLayoutManager(
                 view.getContext(), LinearLayoutManager.VERTICAL, false));

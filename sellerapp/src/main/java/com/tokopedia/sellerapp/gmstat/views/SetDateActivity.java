@@ -3,16 +3,16 @@ package com.tokopedia.sellerapp.gmstat.views;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.WindowManager;
 
 import com.tokopedia.sellerapp.R;
+
+import butterknife.BindColor;
+import butterknife.ButterKnife;
 
 import static com.tokopedia.sellerapp.gmstat.views.GMStatActivity.IS_GOLD_MERCHANT;
 import static com.tokopedia.sellerapp.gmstat.views.GMStatHeaderViewHelper.MOVE_TO_SET_DATE;
@@ -26,33 +26,33 @@ public class SetDateActivity extends AppCompatActivity implements SetDateFragmen
     private boolean isGoldMerchant;
     private boolean isAfterRotate;
 
+    @BindColor(R.color.green_600)
+    int green600;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(!isAfterRotate) {
             fetchIntent(getIntent().getExtras());
         }
+        setContentView(R.layout.activity_set_date);
+        ButterKnife.bind(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().setStatusBarColor(getResources().getColor(R.color.green_600));
+            getWindow().setStatusBarColor(green600);
         }
-        setContentView(R.layout.activity_set_date);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setBackgroundColor(getResources().getColor(R.color.green_600));
+        if(toolbar != null) {
+            toolbar.setBackgroundColor(green600);
+        }
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-        isAfterRotate = savedInstanceState == null ? false : true;
+        ActionBar supportActionBar = getSupportActionBar();
+        if(supportActionBar != null){
+            supportActionBar.setDisplayHomeAsUpEnabled(true);
+            supportActionBar.setDisplayShowHomeEnabled(true);
+            supportActionBar.setHomeButtonEnabled(true);
+        }
+        isAfterRotate = savedInstanceState != null;
     }
 
     private void fetchIntent(Bundle extras) {

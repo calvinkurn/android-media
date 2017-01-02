@@ -1,5 +1,6 @@
 package com.tokopedia.sellerapp.gmstat.utils;
 
+import java.util.Locale;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
@@ -14,13 +15,14 @@ public final class KMNumbers2 {
     public static final String SUFFIXES = "KMGTPE";
     public static final String COMMA = ",";
     public static final String DOT = ".";
+    private static final Locale locale = new Locale("in","ID");
 
     static {
         suffixes.put(1000L, "K");
         suffixes.put(1000000L, "M");
     }
 
-    public static final void overrideSuffixes(long digit, String suffix){
+    public static void overrideSuffixes(long digit, String suffix){
         suffixes.put(digit, suffix);
     }
 
@@ -76,7 +78,7 @@ public final class KMNumbers2 {
         if (number < 0) return "-" + formatNumbersBiggerThanHundredThousand(-number);
         if (number < 10000) return Float.toString(number);
 
-        Map.Entry<Long, String> e = suffixes.floorEntry(Long.valueOf(Math.round(number)));
+        Map.Entry<Long, String> e = suffixes.floorEntry((long) Math.round(number));
         Long divideBy = e.getKey();
         String suffix = e.getValue();
 
@@ -85,10 +87,10 @@ public final class KMNumbers2 {
     }
 
     private static String formatString(Long number, Integer exp) {
-        return String.format(FORMAT, number / Math.pow(1000, exp), SUFFIXES.charAt(exp - 1));
+        return String.format(locale, FORMAT, number / Math.pow(1000, exp), SUFFIXES.charAt(exp - 1));
     }
 
     private static String formatString(Float number, Integer exp) {
-        return String.format(FORMAT, number / Math.pow(1000, exp), SUFFIXES.charAt(exp - 1));
+        return String.format(locale, FORMAT, number / Math.pow(1000, exp), SUFFIXES.charAt(exp - 1));
     }
 }

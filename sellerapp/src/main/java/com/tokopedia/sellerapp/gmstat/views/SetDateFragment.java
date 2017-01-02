@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.Locale;
 
 import butterknife.BindArray;
 import butterknife.BindView;
@@ -51,6 +51,7 @@ import static com.tokopedia.sellerapp.gmstat.views.SetDateFragment.StartOrEndPer
 
 public class SetDateFragment extends Fragment {
     private SetDate setDate;
+    private static final Locale locale = new Locale("in","ID");
 
     public interface SetDate{
         void returnStartAndEndDate(long startDate, long endDate);
@@ -240,9 +241,9 @@ public class SetDateFragment extends Fragment {
                 checkBoxPeriod.setChecked(false);
             }
 
-            if(periodRangeModel.range == 1 && periodRangeModel.isRange == false){
+            if(periodRangeModel.range == 1 && !periodRangeModel.isRange){
                 periodHeader.setText("Kemarin");
-            }else if(periodRangeModel.isRange = true){
+            }else if(periodRangeModel.isRange){
                 if(periodRangeModel.range==7){
                     periodHeader.setText("7 hari terakhir");
                 }else if(periodRangeModel.range == 31){
@@ -255,7 +256,7 @@ public class SetDateFragment extends Fragment {
             Log.d("MNORMANSYAH", "description : "+description);
             String[] range = description.split("-");
             int[] split = new int[range.length];
-            int i=0;
+            int i;
             for(i=0;i<range.length;i++){
                 String[] split1 = range[i].split(" ");
                 split[i] = Integer.parseInt(reverseDate(split1));
@@ -354,7 +355,7 @@ public class SetDateFragment extends Fragment {
 
             periodChooseViewHelpers = new ArrayList<>();
             for (int i=0;i<basePeriodModels.size();i++){
-                View view = LayoutInflater.from(container.getContext()).inflate(R.layout.periode_layout, periodLinLay, false);
+                @SuppressWarnings("ConstantConditions") View view = LayoutInflater.from(container.getContext()).inflate(R.layout.periode_layout, periodLinLay, false);
                 PeriodChooseViewHelper periodChooseViewHelper = new PeriodChooseViewHelper(view, i);
                 periodChooseViewHelper.bindData((PeriodRangeModel) basePeriodModels.get(i));
                 periodChooseViewHelper.setPeriodListener(periodListener);
@@ -375,6 +376,7 @@ public class SetDateFragment extends Fragment {
         }
     }
 
+    @SuppressWarnings("deprecation")
     public static class PeriodAdapter extends RecyclerView.Adapter{
         List<BasePeriodModel> basePeriodModels;
 
@@ -399,10 +401,6 @@ public class SetDateFragment extends Fragment {
         long sDate = -1, eDate = -1;
 
         DateValidationListener dateValidationListener = new DateValidationListener() {
-            @Override
-            public boolean validDate(long sDate, long eDate) {
-                return false;
-            }
 
             @Override
             public boolean addSDate(long sDate) {
@@ -433,10 +431,7 @@ public class SetDateFragment extends Fragment {
             long diff = date2.getTime() - date1.getTime();
             long convert = diff/ (24*60*60*1000);
             System.out.println("Days: " +convert);
-            if(convert > 60 || diff <= 0)
-                return false;
-            else
-                return true;
+            return !(convert > 60 || diff <= 0);
         }
 
         public PeriodAdapter(){
@@ -558,6 +553,7 @@ public class SetDateFragment extends Fragment {
             Calendar newCalendar = Calendar.getInstance();
             fromDatePickerDialog = new DatePickerDialog(this.itemView.getContext(), new DatePickerDialog.OnDateSetListener() {
 
+                @SuppressWarnings("StatementWithEmptyBody")
                 public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                     Calendar newDate = Calendar.getInstance();
                     newDate.set(year, monthOfYear, dayOfMonth);
@@ -633,7 +629,6 @@ public class SetDateFragment extends Fragment {
     }
 
     public interface DateValidationListener{
-        boolean validDate(long sDate, long eDate);
         boolean addSDate(long sDate);
         boolean addEDate(long eDate);
     }
@@ -686,9 +681,9 @@ public class SetDateFragment extends Fragment {
                 checkBoxPeriod.setChecked(false);
             }
 
-            if(periodRangeModel.range == 1 && periodRangeModel.isRange == false){
+            if(periodRangeModel.range == 1 && !periodRangeModel.isRange){
                 periodHeader.setText("Kemarin");
-            }else if(periodRangeModel.isRange = true){
+            }else if(periodRangeModel.isRange){
                 if(periodRangeModel.range==7){
                     periodHeader.setText("7 hari terakhir");
                 }else if(periodRangeModel.range == 31){
@@ -701,7 +696,7 @@ public class SetDateFragment extends Fragment {
             Log.d("MNORMANSYAH", "description : "+description);
             String[] range = description.split("-");
             int[] split = new int[range.length];
-            int i=0;
+            int i;
             for(i=0;i<range.length;i++){
                 String[] split1 = range[i].split(" ");
                 split[i] = Integer.parseInt(reverseDate(split1));
@@ -757,7 +752,7 @@ public class SetDateFragment extends Fragment {
         }
 
         public String getDescription(){
-            DateFormat dateFormat = new SimpleDateFormat("dd MM yyyy");
+            DateFormat dateFormat = new SimpleDateFormat("dd MM yyyy", locale);
             if(isRange) {
                 Calendar sDate = calculateCalendar(YESTERDAY);
                 endDate = sDate.getTimeInMillis();
@@ -770,7 +765,6 @@ public class SetDateFragment extends Fragment {
                 return headerText = String.format(formatText, startDate, yesterday);
             }else{
                 Calendar sDate = calculateCalendar(-range);
-                Calendar eDate = sDate;
                 startDate = sDate.getTimeInMillis();
                 endDate = sDate.getTimeInMillis();
                 return dateFormat.format(sDate.getTime());
@@ -820,7 +814,7 @@ public class SetDateFragment extends Fragment {
                 cal.add(Calendar.DATE, SEVEN_AGO);
                 startDate = cal.getTimeInMillis();
                 System.out.println("Yesterday's date = " + cal.getTime());
-                DateFormat dateFormat = new SimpleDateFormat("dd MM yyyy");
+                DateFormat dateFormat = new SimpleDateFormat("dd MM yyyy", locale);
                 return dateFormat.format(cal.getTime());
             }else
                 return "21/01/1992";
@@ -832,7 +826,7 @@ public class SetDateFragment extends Fragment {
                 cal.add(Calendar.DATE, YESTERDAY);
                 endDate = cal.getTimeInMillis();
                 System.out.println("Yesterday's date = " + cal.getTime());
-                DateFormat dateFormat = new SimpleDateFormat("dd MM yyyy");
+                DateFormat dateFormat = new SimpleDateFormat("dd MM yyyy", locale);
                 return dateFormat.format(cal.getTime());
             }else{
                 return "21/01/1992";

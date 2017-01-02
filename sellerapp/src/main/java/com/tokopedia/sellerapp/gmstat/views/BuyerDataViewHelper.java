@@ -9,13 +9,12 @@ import android.widget.TextView;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.gmstat.models.GetBuyerData;
-import com.tokopedia.sellerapp.home.utils.ImageHandler;
 
 import java.text.DecimalFormat;
+import java.util.Locale;
 
 import butterknife.BindArray;
 import butterknife.BindColor;
-import butterknife.BindDrawable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -61,16 +60,15 @@ public class BuyerDataViewHelper {
 //    @BindDrawable(R.drawable.ic_rectangle_up)
     Drawable icRectagleUp;
 
-    private View itemView;
-
     @BindArray(R.array.gender)
     String[] gender;
 
     @BindView(R.id.header_pie_buyer_data)
     TextView headerPieBuyerData;
 
+    private static final Locale locale = new Locale("in","ID");
+
     public BuyerDataViewHelper(View itemView){
-        this.itemView = itemView;
         ButterKnife.bind(this, itemView);
 
         icRectagleDown = AppCompatDrawableManager.get().getDrawable(itemView.getContext(),
@@ -79,7 +77,7 @@ public class BuyerDataViewHelper {
                 R.drawable.ic_rectangle_up);
     }
 
-    public void bindData(GetBuyerData getBuyerData, ImageHandler imageHandler) {
+    public void bindData(GetBuyerData getBuyerData) {
 
         /* this is empty state */
         if(getBuyerData.getTotalBuyer()==0 &&
@@ -109,14 +107,14 @@ public class BuyerDataViewHelper {
             if(malePercent >= femalePercent){
                 biggerGender += gender[0];
                 headerPieBuyerData.setText(biggerGender);
-                malePie.setText(String.format("%.2f%% %s", femalePercent, gender[1]));
-                femalePie.setText(String.format("%.2f%%", malePercent));
+                malePie.setText(String.format(locale, "%.2f%% %s", femalePercent, gender[1]));
+                femalePie.setText(String.format(locale, "%.2f%%", malePercent));
                 buyerDataPieChart.setProgress((float) malePercent);
             }else{
                 biggerGender += gender[1];
                 headerPieBuyerData.setText(biggerGender);
-                malePie.setText(String.format("%.2f%% %s", malePercent, gender[0]));
-                femalePie.setText(String.format("%.2f%%", femalePercent));
+                malePie.setText(String.format(locale, "%.2f%% %s", malePercent, gender[0]));
+                femalePie.setText(String.format(locale, "%.2f%%", femalePercent));
                 buyerDataPieChart.setProgress((float) femalePercent);
             }
         }
@@ -125,7 +123,7 @@ public class BuyerDataViewHelper {
 
         double percentage = getBuyerData.getDiffTotal() * 100D;
         // image for arrow is here
-        boolean isDefault = false;
+        boolean isDefault;
         if(percentage == 0){
             buyerCountIcon.setVisibility(View.GONE);
             percentageBuyer.setTextColor(arrowUp);
@@ -150,9 +148,8 @@ public class BuyerDataViewHelper {
 
         if(isDefault){
             DecimalFormat formatter = new DecimalFormat("#0.00");
-            double d = percentage;
-            String text = "";
-            System.out.println(text = formatter.format(d));
+            String text;
+            System.out.println(text = formatter.format(percentage));
             percentageBuyer.setText(text.replace("-","")+"%");
         }else{
             percentageBuyer.setText("Tidak ada data");

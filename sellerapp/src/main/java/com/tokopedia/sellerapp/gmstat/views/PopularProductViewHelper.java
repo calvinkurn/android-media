@@ -5,9 +5,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.gmstat.models.GetPopularProduct;
 import com.tokopedia.sellerapp.gmstat.utils.KMNumbers2;
@@ -67,7 +67,7 @@ public class PopularProductViewHelper {
         this.itemView = itemView;
 
         String categoryBold = String.format("\"<i><b>%s</b></i>\"", "Data dalam 30 hari terakhir");
-        footerPopularProduct.setText(Html.fromHtml(categoryBold));
+        footerPopularProduct.setText(MethodChecker.fromHtml(categoryBold));
     }
 
     public void bindData(GetPopularProduct getPopularProduct, ImageHandler imageHandler){
@@ -80,7 +80,7 @@ public class PopularProductViewHelper {
         dataProductTitle.setText("Data Produk");
         textPopularProduct.setText("Produk terlaris");
         imageHandler.loadImage(imagePopularProduct, getPopularProduct.getImageLink());
-        popularProductDescription.setText(Html.fromHtml(getPopularProduct.getProductName()));
+        popularProductDescription.setText(MethodChecker.fromHtml(getPopularProduct.getProductName()));
         long sold = getPopularProduct.getSold();
         String text = getFormattedString(sold);
 //        numberOfSelling.setText(toKFormat(getPopularProduct.getSold()));

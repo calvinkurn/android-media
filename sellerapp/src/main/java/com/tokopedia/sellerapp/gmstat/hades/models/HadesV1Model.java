@@ -34,7 +34,7 @@ public class HadesV1Model {
         this.data = data;
     }
 
-    public void setData(List<Breadcrumb> breadCrumb) {
+    public void setData() {
 
         List<Category> categories = new ArrayList<>();
 
@@ -47,7 +47,7 @@ public class HadesV1Model {
 
         @SerializedName("categories")
         @Expose
-        private List<Category> categories = new ArrayList<Category>();
+        private List<Category> categories = new ArrayList<>();
 
         /**
          * @return The categories

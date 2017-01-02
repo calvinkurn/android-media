@@ -15,6 +15,7 @@ import android.graphics.Shader;
 import android.support.annotation.ColorRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
+import android.support.v4.util.SparseArrayCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -24,9 +25,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by normansyahputa on 10/5/16.
@@ -50,20 +49,11 @@ public class NChart extends View implements ValueAnimator.AnimatorUpdateListener
     private int mNormalColor = Color.parseColor("#42b549");
     private int mInterval;
     private Path pathLine = new Path();
-    private float mHeightRatio;
     private float mTextSize = 15;
     private float mAbove;
     private float mTextMargin;
-    /**
-     * The radius of the polyline
-     */
-    private float mLinePointRadio = 0;
-
-    private float tempTextMargin;
 
     private float ratio = 1;
-    private long animateTime = 1600;
-    private ValueAnimator mVa;
     private Interpolator mInterpolator = new DecelerateInterpolator();
 
     /**
@@ -77,19 +67,9 @@ public class NChart extends View implements ValueAnimator.AnimatorUpdateListener
      */
     private Paint mLinePaint;
 
-    /**
-     * Chart brush
-     */
-    private Paint mExecelPaint;
-
     private float mDownX;
-    private float mSliding;
-    private boolean moved;
     private int mTouchSlop;
-    private boolean mScrollAble = true;
 
-    // animation style effect
-    private DashPathEffect pathEffect;
     private float phase = 0;//
     private Paint mDotPaint;
     private Paint mDotBgPaint;
@@ -127,7 +107,6 @@ public class NChart extends View implements ValueAnimator.AnimatorUpdateListener
         mInterval = dip2px(context, 20);
         mAbscissaMsgSize = dip2px(context, 15);
         mAbove = dip2px(context, 5);
-        tempTextMargin = mTextMargin = dip2px(context, 4);
 
         mAbscissaPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mAbscissaPaint.setTextSize(mAbscissaMsgSize);
@@ -140,8 +119,6 @@ public class NChart extends View implements ValueAnimator.AnimatorUpdateListener
         mLinePaint.setColor(mNormalColor);
 
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
-
-        mExecelPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
         // paint for circle indicator
         mDotPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -229,19 +206,16 @@ public class NChart extends View implements ValueAnimator.AnimatorUpdateListener
             selectedMaps.clear();
             getPoints();
 
-//            for (PointF pointF : selectedPoint) {
-//                drawShadePoint(canvas, pointF.x, pointF.y, "y");
-//            }
-            HashMap<Integer, PointF> selectedMaps = (HashMap<Integer, PointF>) this.selectedMaps;
-            for (Map.Entry<Integer, PointF> floatPointFEntry : selectedMaps.entrySet()) {
-                PointF pointF = floatPointFEntry.getValue();
+            for(int i = 0; i < selectedMaps.size(); i++) {
+                int key = selectedMaps.keyAt(i);
+                // get the object by the key.
+                PointF pointF = selectedMaps.get(key);
                 drawShadePoint(canvas, pointF.x, pointF.y, "y");
             }
-
         }
     }
 
-    Map<Integer, PointF> selectedMaps = new HashMap<>();
+    SparseArrayCompat<PointF> selectedMaps = new SparseArrayCompat<>();
     List<PointF> selectedPoint = new ArrayList<>();
     final int LINE_TO_CALCULATE = 1000;
 
@@ -355,7 +329,7 @@ public class NChart extends View implements ValueAnimator.AnimatorUpdateListener
      * so it is effect for path drawing.
      */
     private void pathEffect() {
-        pathEffect = new DashPathEffect(new float[]{10, 8, 5, 10}, phase); //Specify the length of the line segment and the interval length
+        DashPathEffect pathEffect = new DashPathEffect(new float[]{10, 8, 5, 10}, phase);
         phase = ++phase % 50;//Changing the dashed line moving effect
 
         mLinePaint.setPathEffect(pathEffect);
@@ -390,7 +364,11 @@ public class NChart extends View implements ValueAnimator.AnimatorUpdateListener
     private void scaleHeight() {
         if (mHCoordinate > 0) {
             // determine ratio based on highest pillar
-            mHeightRatio = (mHCoordinate - 2 * mTextSize - mAbove - mTextMargin - mLinePointRadio - 5) / mHeightestTest;
+            /*
+      The radius of the polyline
+     */
+            float mLinePointRadio = 0;
+            float mHeightRatio = (mHCoordinate - 2 * mTextSize - mAbove - mTextMargin - mLinePointRadio - 5) / mHeightestTest;
 
             for (int i = 0; i < mExcels.size(); i++) {
                 //[START] scale the height
@@ -408,11 +386,11 @@ public class NChart extends View implements ValueAnimator.AnimatorUpdateListener
         }
     }
 
-    public void setBarStanded(int i) {
+    public void setBarStanded() {
 
     }
 
-    public void setNormalColor(int i) {
+    public void setNormalColor() {
 
     }
 
@@ -424,13 +402,13 @@ public class NChart extends View implements ValueAnimator.AnimatorUpdateListener
                     mDownX = event.getX();
                     break;
                 case MotionEvent.ACTION_MOVE:
+                    boolean moved;
+                    float mSliding;
                     if (ratio == 1) {//Do not slide while animating
                         float moveX = event.getX();
                         mSliding = moveX - mDownX;
                         if (Math.abs(mSliding) > mTouchSlop) {
                             //          pathLine.reset();
-                            moved = true;
-                            mDownX = moveX;
                             if (mExcels.get(0).getStart().x + mSliding > mInterval || mExcels.get(mExcels.size() - 1)
                                     .getStart().x + mBarWidth + mInterval + mSliding < mWidth) {
                                 return true;
@@ -440,6 +418,7 @@ public class NChart extends View implements ValueAnimator.AnimatorUpdateListener
                                 PointF start = excel.getStart();
                                 start.x += mSliding;//The chart moves left and right
                             }
+                            boolean mScrollAble = true;
                             if (mScrollAble) {
                                 invalidate();
                             }
@@ -452,8 +431,6 @@ public class NChart extends View implements ValueAnimator.AnimatorUpdateListener
                         mSelected = clickWhere(tup);
                         invalidate();
                     }*/
-                    moved = false;
-                    mSliding = 0;
                     break;
             }
         }
@@ -509,7 +486,8 @@ public class NChart extends View implements ValueAnimator.AnimatorUpdateListener
     }
 
     private void animateExcels() {
-        mVa = ValueAnimator.ofFloat(0, 1).setDuration(animateTime);
+        long animateTime = 1600;
+        ValueAnimator mVa = ValueAnimator.ofFloat(0, 1).setDuration(animateTime);
         mVa.addUpdateListener(this);
         mVa.setInterpolator(mInterpolator);
         mVa.addListener(this);

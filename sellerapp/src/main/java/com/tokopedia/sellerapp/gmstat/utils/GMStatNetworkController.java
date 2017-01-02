@@ -28,6 +28,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import okhttp3.MediaType;
@@ -38,7 +39,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.functions.Func3;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -57,6 +57,7 @@ public class GMStatNetworkController extends BaseNetworkController {
 
     private final static long DEFAULT_SDATE = Long.MAX_VALUE;
     private final static long DEFAULT_EDATE = Long.MIN_VALUE;
+    private static final Locale locale = new Locale("in","ID");
 
     private GMStatApi gmstatApi;
 
@@ -92,7 +93,7 @@ public class GMStatNetworkController extends BaseNetworkController {
     }
 
     private static Response<?> getError1000(){
-        Response<Object> error = Response.error(1000, new ResponseBody() {
+        return Response.<Object>error(1000, new ResponseBody() {
             @Override
             public MediaType contentType() {
                 return null;
@@ -108,7 +109,6 @@ public class GMStatNetworkController extends BaseNetworkController {
                 return null;
             }
         });
-        return  error;
     }
 
     public Observable<Response<GetPopularProduct>> getPopularProduct(long shopId, long sDate, long eDate){
@@ -252,8 +252,8 @@ public class GMStatNetworkController extends BaseNetworkController {
                             if(keywordModel.getShopCategory == null || keywordModel.getShopCategory.getShopCategory() == null
                                     || keywordModel.getShopCategory.getShopCategory().isEmpty())
                             {
-                                keywordModel.getResponseList = new ArrayList<Response<GetKeyword>>();
-                                keywordModel.hadesv1Models = new ArrayList<HadesV1Model>();
+                                keywordModel.getResponseList = new ArrayList<>();
+                                keywordModel.hadesv1Models = new ArrayList<>();
                                 return Observable.just(keywordModel);
                             }
 
@@ -273,9 +273,7 @@ public class GMStatNetworkController extends BaseNetworkController {
                                     .flatMap(new Func1<Integer, Observable<Response<GetKeyword>>>() {
                                         @Override
                                         public Observable<Response<GetKeyword>> call(Integer catId) {
-                                            Observable<Response<GetKeyword>> keyword
-                                                    = getKeyword(shopId, catId);
-                                            return keyword;
+                                            return getKeyword(shopId, catId);
                                         }
                                     })
                                     .toList();
@@ -299,7 +297,7 @@ public class GMStatNetworkController extends BaseNetworkController {
                             return Observable.zip(getKeywords, getCategories, Observable.just(keywordModel), new Func3<List<Response<GetKeyword>>, List<Response<HadesV1Model>>, KeywordModel, KeywordModel>() {
                                 @Override
                                 public KeywordModel call(List<Response<GetKeyword>> responses, List<Response<HadesV1Model>> responses2, KeywordModel keywordModel) {
-                                    keywordModel.getKeywords = new ArrayList<GetKeyword>();
+                                    keywordModel.getKeywords = new ArrayList<>();
                                     for (Response<GetKeyword> response : responses) {
                                         if(response.isSuccessful()) {
                                             keywordModel.getKeywords.add(response.body());
@@ -308,7 +306,7 @@ public class GMStatNetworkController extends BaseNetworkController {
 
                                     keywordModel.getResponseList = responses;
 
-                                    List<HadesV1Model> hadesV1Models = new ArrayList<HadesV1Model>();
+                                    List<HadesV1Model> hadesV1Models = new ArrayList<>();
                                     for (Response<HadesV1Model> hadesV1ModelResponse : responses2) {
                                         hadesV1Models.add(hadesV1ModelResponse.body());
                                     }
@@ -426,10 +424,11 @@ public class GMStatNetworkController extends BaseNetworkController {
                 }
             }
             Log.i("MNORMANSYAH", total);
-            return total;
         }
+        return total;
     }
 
+    @SuppressWarnings("unchecked")
     public void fetchData(long shopId, long sDate, long eDate, CompositeSubscription compositeSubscription, final GetGMStat getGMStat){
         compositeSubscription.add(
                 Observable.concat(
@@ -540,6 +539,7 @@ public class GMStatNetworkController extends BaseNetworkController {
         );
     }
 
+    @SuppressWarnings("unchecked")
     public void fetchData(long shopId, CompositeSubscription compositeSubscription, final GetGMStat getGMStat ){
         compositeSubscription.add(
                 Observable.concat(
@@ -749,8 +749,7 @@ public class GMStatNetworkController extends BaseNetworkController {
 
     public String getFormattedDate(long dateLong){
         Date date = new Date(dateLong);
-        DateFormat formatter = new SimpleDateFormat("yyyyMMdd");// "HH:mm:ss:SSS"
-        String dateFormatted = formatter.format(date);
-        return dateFormatted;
+        DateFormat formatter = new SimpleDateFormat("yyyyMMdd", locale);// "HH:mm:ss:SSS"
+        return formatter.format(date);
     }
 }

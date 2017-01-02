@@ -36,9 +36,8 @@ public class HadesNetwork {
      * @return
      */
     @Deprecated
-    public static final HadesApi createHadesNetwork() {
-        HadesApi hadesApi = RetrofitUtils.createRetrofit(baseUrl).create(HadesApi.class);
-        return hadesApi;
+    public static HadesApi createHadesNetwork() {
+        return RetrofitUtils.createRetrofit(baseUrl).create(HadesApi.class);
     }
 
     /**
@@ -50,8 +49,8 @@ public class HadesNetwork {
      */
     @Deprecated
     public static Observable<Response<HadesV1Model>> fetchDepartment(int department, int level, int view) {
-        HadesApi hadesNetwork = createHadesNetwork();
-        Observable<Response<HadesV1Model>> category = null;
+        @SuppressWarnings("deprecation") HadesApi hadesNetwork = createHadesNetwork();
+        Observable<Response<HadesV1Model>> category;
         switch (view) {
             case TREE:
                 String filterValue = getTreeView() + getlevel(level);
@@ -96,7 +95,7 @@ public class HadesNetwork {
         if(hadesNetwork == null)
             return null;
 
-        Observable<Response<HadesV1Model>> category = null;
+        Observable<Response<HadesV1Model>> category;
         switch (view) {
             case TREE:
                 String filterValue = getTreeView() + getlevel(level);

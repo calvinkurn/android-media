@@ -1,7 +1,11 @@
 package com.tokopedia.sellerapp.gmstat.utils;
 
+import android.animation.PropertyValuesHolder;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.view.View;
 
 import com.db.chart.Tools;
 import com.db.chart.animation.Animation;
@@ -18,55 +22,58 @@ import com.db.chart.animation.easing.QuintEase;
 import com.db.chart.animation.easing.SineEase;
 import com.db.chart.model.LineSet;
 import com.db.chart.renderer.AxisRenderer;
+import com.db.chart.renderer.XRenderer;
+import com.db.chart.tooltip.Tooltip;
 import com.db.chart.view.ChartView;
 import com.db.chart.view.LineChartView;
+import com.tokopedia.sellerapp.gmstat.views.YAxisRenderer;
 
 import java.text.DecimalFormat;
 
 /**
- * Created by normansyahputa on 12/17/16.
+ * Created by normansyahputa on 11/24/16.
+ * rename class to gross graph chart config because it belongs to gross graph.
  */
-
-public class WiliamChartUtils_ {
-    private static String[] mLabels;
-    private static float[] mValues;
-    private static boolean mIsLineSmooth = true;
-    private static float mLineThickness = 3 ;
-    private static int mLineColorId;
-    private static float mPointsSize = 0;
-    private static int mPointColorId;
-    private static Paint mGridPaint;
-    private static int mGridColorId;
-    private static float mGridThickness;
-    private static boolean mHasXAxis = false;
-    private static AxisRenderer.LabelPosition mXLabelPosition;
-    private static boolean mHasYAxis = false;
-    private static AxisRenderer.LabelPosition mYLabelPosition;
-    private static int mLabelColorId;
-    private static int mAxisColorId;
-    private static ChartView.GridType mGridType = ChartView.GridType.NONE;
-    private static String mLabelFormat = "";
-    private static int mEasingId;
-    private static BaseEasingMethod mEasing;
-    private static int mDuration = 500;
-    private static int mAlpha = 1;
-    private static int[] mOverlapOrder;
-    private static float mOverlapFactor;
-    private static float mStartX;
-    private static float mStartY;
-    private static final Runnable mEndAction = new Runnable() {
+public class GrossGraphChartConfig {
+    private String[] mLabels;
+    private float[] mValues;
+    private boolean mIsLineSmooth = true;
+    private int mLineColorId;
+    private int mPointColorId;
+    private int mGridColorId;
+    private float mGridThickness;
+    private AxisRenderer.LabelPosition mXLabelPosition;
+    private AxisRenderer.LabelPosition mYLabelPosition;
+    private int mLabelColorId;
+    private int mAxisColorId;
+    private ChartView.GridType mGridType = ChartView.GridType.NONE;
+    private int mEasingId;
+    private int[] mOverlapOrder;
+    private float mOverlapFactor;
+    private float mStartX;
+    private float mStartY;
+    private final Runnable mEndAction = new Runnable() {
         @Override
         public void run() {
 
 //            mPlayBtn.setEnabled(true);
         }
     };
+    private Drawable dotDrawable;
+    private Tooltip tooltip;
+    private XRenderer.XRendererListener xRendererListener;
 
-    private static final int GREEN_COLOR = Color.rgb(66,181,73);
-    private static final int GREY_COLOR = Color.rgb(189,189,189);
+    public GrossGraphChartConfig setDotDrawable(Drawable dotDrawable) {
+        this.dotDrawable = dotDrawable;
+        return this;
+    }
 
+    public GrossGraphChartConfig setTooltip(Tooltip tooltip) {
+        this.tooltip = tooltip;
+        return this;
+    }
 
-    public WiliamChartUtils_(String[] mLabels, float[] mValues){
+    public GrossGraphChartConfig(String[] mLabels, float[] mValues){
         if(mLabels == null)
             throw new RuntimeException("unable to process null WilliamChartUtils mValues");
         if(mValues==null)
@@ -81,23 +88,26 @@ public class WiliamChartUtils_ {
         mLabelColorId = Color.argb(97, 0,0,0);
         mAxisColorId = Color.argb(13, 0,0,0);
         mGridThickness = 1f;
-        mXLabelPosition = AxisRenderer.LabelPosition.NONE;
-        mYLabelPosition = AxisRenderer.LabelPosition.NONE;
+        mXLabelPosition = AxisRenderer.LabelPosition.OUTSIDE;
+        mYLabelPosition = AxisRenderer.LabelPosition.OUTSIDE;
         mEasingId = 0;
         mOverlapFactor = 1;
-        mOverlapOrder = mEqualOrder;
+//        int[] mEqualOrder = new
+//        mOverlapOrder = mEqualOrder;
         mStartX = 0f;
         mStartY = 1f;
     }
 
-    private static int[] mEqualOrder = {0, 1, 2, 3, 4, 5, 6};
+    private int[] mEqualOrder = {0, 1, 2, 3, 4, 5, 6};
 
-    public static void setmLabels(String[] mLabels) {
-        WiliamChartUtils_.mLabels = mLabels;
+    public GrossGraphChartConfig setmLabels(String[] mLabels) {
+        this.mLabels = mLabels;
+        return this;
     }
 
-    public static void setmValues(float[] mValues) {
-        WiliamChartUtils_.mValues = mValues;
+    public GrossGraphChartConfig setmValues(float[] mValues, XRenderer.XRendererListener xRendererListener) {
+        this.mValues = mValues;
+        this.xRendererListener = xRendererListener;
 
         if(mValues.length != mEqualOrder.length)
         {
@@ -107,15 +117,10 @@ public class WiliamChartUtils_ {
             }
         }
         mOverlapOrder = mEqualOrder;
+        return this;
     }
 
-    public ChartView buildLineChart(LineChartView chart, int bottomMargin, boolean emptyState) {
-
-        if(emptyState){
-            mLineColorId = GREY_COLOR;
-        }else{
-            mLineColorId = GREEN_COLOR;
-        }
+    public LineChartView buildLineChart(LineChartView chart) {
 
         chart.reset();
         chart.resetYRndr();
@@ -123,44 +128,74 @@ public class WiliamChartUtils_ {
         LineSet dataset = new LineSet(mLabels, mValues);
 
 //        if (mIsLineDashed) dataset.setDashed(mLineDashType);
+        float mLineThickness = 3;
         dataset.setSmooth(LineSet.SMOOTH_QUAD)
                 .setThickness(Tools.fromDpToPx(mLineThickness))
                 .setColor(mLineColorId);
 
+        float mPointsSize = 4;
         dataset.setDotsRadius(Tools.fromDpToPx(mPointsSize)).setDotsColor(mPointColorId);
         chart.addData(dataset);
-        chart.setTopMargin(0);
-        chart.setRightMargin(0);
-        chart.setBottomMargin(bottomMargin);
 
         return chart;
     }
 
-    public static void buildChart(ChartView chart) {
+    public void buildChart(LineChartView chart) {
 
-        mGridPaint = new Paint();
+        // Tooltip
+        Tooltip mTip = tooltip;
+
+//        ((TextView) mTip.findViewById(R.id.value)).setTypeface(
+//                Typeface.createFromAsset(chart.getContext().getAssets(), "OpenSans-Semibold.ttf"));
+
+        mTip.setVerticalAlignment(Tooltip.Alignment.BOTTOM_TOP);
+        mTip.setDimensions((int) Tools.fromDpToPx(58), (int) Tools.fromDpToPx(25));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+
+            mTip.setEnterAnimation(PropertyValuesHolder.ofFloat(View.ALPHA, 1),
+                    PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f),
+                    PropertyValuesHolder.ofFloat(View.SCALE_X, 1f)).setDuration(200);
+
+            mTip.setExitAnimation(PropertyValuesHolder.ofFloat(View.ALPHA, 0),
+                    PropertyValuesHolder.ofFloat(View.SCALE_Y, 0f),
+                    PropertyValuesHolder.ofFloat(View.SCALE_X, 0f)).setDuration(200);
+
+            mTip.setPivotX(Tools.fromDpToPx(65) / 2);
+            mTip.setPivotY(Tools.fromDpToPx(25));
+        }
+
+        chart.setTooltips(mTip);
+        chart.putYRndrStringFormatter(new YAxisRenderer());
+        chart.setDrawable(dotDrawable);
+
+        Paint mGridPaint = new Paint();
         mGridPaint.setColor(mGridColorId);
         mGridPaint.setStyle(Paint.Style.STROKE);
         mGridPaint.setAntiAlias(true);
         mGridPaint.setStrokeWidth(Tools.fromDpToPx(mGridThickness));
 //        if (mIsGridDashed) mGridPaint.setPathEffect(new DashPathEffect(mGridDashType, 0));
 
-        chart.setXAxis(mHasXAxis)
+        chart.setXAxis(true)
                 .setXLabels(mXLabelPosition)
-                .setYAxis(mHasYAxis)
+                .setYAxis(true)
                 .setYLabels(mYLabelPosition)
                 .setLabelsColor(mLabelColorId)
-                .setAxisColor(mAxisColorId);
+                .setAxisColor(mAxisColorId)
+                .setxDataGrid(true)
+                .setXRendererListener(xRendererListener);
 
         if (mGridType != null) chart.setGrid(mGridType, mGridPaint);
 
+        String mLabelFormat = "";
         chart.setLabelsFormat(new DecimalFormat("#" + mLabelFormat));
 
         chart.show(buildAnimation());
     }
 
-    private static Animation buildAnimation() {
+    private Animation buildAnimation() {
 
+        BaseEasingMethod mEasing;
         switch (mEasingId) {
             case 0:
                 mEasing = new CubicEase();
@@ -196,6 +231,8 @@ public class WiliamChartUtils_ {
                 mEasing = new CubicEase();
         }
 
+        int mAlpha = 1;
+        int mDuration = 500;
         return new Animation(mDuration).setAlpha(mAlpha)
                 .setEasing(mEasing)
                 .setOverlap(mOverlapFactor, mOverlapOrder)

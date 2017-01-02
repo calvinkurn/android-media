@@ -34,7 +34,7 @@ public class NExcel {
     }
 
     public NExcel(float lower, float upper, String mXmsg, int color){
-        this(lower, upper, "", mXmsg, Color.GRAY);
+        this(lower, upper, "", mXmsg, color);
     }
 
 

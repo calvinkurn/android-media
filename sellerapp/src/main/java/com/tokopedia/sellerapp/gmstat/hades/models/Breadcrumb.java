@@ -67,7 +67,7 @@ public class Breadcrumb implements Parcelable {
 
     protected Breadcrumb(Parcel in) {
         this.name_without_total = in.readString();
-        this.child = new ArrayList<Breadcrumb>();
+        this.child = new ArrayList<>();
         in.readList(this.child, Breadcrumb.class.getClassLoader());
         this.id = in.readString();
         this.name = in.readString();

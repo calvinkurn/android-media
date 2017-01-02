@@ -3,9 +3,6 @@ package com.tokopedia.sellerapp.gmstat.views;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -18,7 +15,6 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.core.var.ToolbarVariable;
 import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.SellerMainApplication;
@@ -30,6 +26,7 @@ import com.tokopedia.sellerapp.home.view.SellerToolbarVariable;
 
 import javax.inject.Inject;
 
+import butterknife.BindColor;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,6 +52,9 @@ public class GMStatActivity extends AppCompatActivity implements GMStat, Session
     @BindString(R.string.title_activity_gmstat)
     String titleActivityGMStat;
 
+    @BindColor(R.color.green_600)
+    int green600;
+
     SellerToolbarVariable sellerToolbarVariable;
 
     public static final String IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT";
@@ -73,27 +73,19 @@ public class GMStatActivity extends AppCompatActivity implements GMStat, Session
         if(!isAfterRotate){
             fetchIntent(getIntent().getExtras());
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().setStatusBarColor(getResources().getColor(R.color.green_600));
-        }
         SellerMainApplication.get(this).getComponent().inject(this);
         setContentView(R.layout.activity_gmstat);
         ButterKnife.bind(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getWindow().setStatusBarColor(green600);
+        }
         toolbar.setTitle(titleActivityGMStat);
-        toolbar.setBackgroundColor(getResources().getColor(R.color.green_600));
+        toolbar.setBackgroundColor(green600);
         setSupportActionBar(toolbar);
         initDrawer();
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-        isAfterRotate = savedInstanceState == null ? false : true;
+        isAfterRotate = savedInstanceState != null;
     }
 
     private void initDrawer() {

@@ -15,7 +15,8 @@ def getAPKArchiveFolder(variant) {
 }
 
 def allowSplit() {
-    return !project.hasProperty('tkpdBuildType');
+    return gradle.startParameter.taskNames.contains("assembleRelease") &&
+            !project.hasProperty('tkpdBuildType');
 }
 
 def allowDistribution() {
@@ -103,6 +104,12 @@ android {
         debug {
             storeFile file("debug.keystore")
         }
+        release {
+            keyAlias 'tkpd'
+            keyPassword 'tokopedia789'
+            storeFile file('/Users/normansyahputa/Downloads/tkpd-key.keystore')
+            storePassword 'tokopedia789'
+        }
     }
 
     buildTypes {
@@ -141,6 +148,7 @@ android {
                     }
                 }
             }
+            signingConfig signingConfigs.release
         }
     }
 
@@ -179,29 +187,27 @@ repositories {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-
     /*compile (rootProject.ext.tkpdDependencies.inbox) {
-        exclude group: 'com.tokopedia.core'
-    }
-    compile (rootProject.ext.tkpdDependencies.discovery) {
-        exclude group: 'com.tokopedia.core'
-    }
-    compile (rootProject.ext.tkpdDependencies.transaction) {
-        exclude group: 'com.tokopedia.core'
-    }
-    compile (rootProject.ext.tkpdDependencies.seller) {
-        exclude group: 'com.tokopedia.core'
-    }
-    compile (rootProject.ext.tkpdDependencies.session) {
-        exclude group: 'com.tokopedia.core'
-    }
-    compile (rootProject.ext.tkpdDependencies.core)*/
+                exclude group: 'com.tokopedia.core'
+            }
+            compile (rootProject.ext.tkpdDependencies.discovery) {
+                exclude group: 'com.tokopedia.core'
+            }
+            compile (rootProject.ext.tkpdDependencies.transaction) {
+                exclude group: 'com.tokopedia.core'
+            }
+            compile (rootProject.ext.tkpdDependencies.seller) {
+                exclude group: 'com.tokopedia.core'
+            }
+            compile (rootProject.ext.tkpdDependencies.session) {
+                exclude group: 'com.tokopedia.core'
+            }
+            compile (rootProject.ext.tkpdDependencies.core)*/
     compile project(':tkpddiscovery')
     compile project(':tkpdtransaction')
     compile project(':tkpdseller')
     compile project(':tkpdsession')
     compile project(':tkpdinbox')
-
     compile('de.hdodenhof:circleimageview:2.1.0') {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
@@ -209,21 +215,19 @@ dependencies {
         exclude group: "com.android.support"
     }
     compile 'com.daimajia.numberprogressbar:library:1.2@aar'
-
     compile rootProject.ext.butterKnifeDependencies.butterKnife
     apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
-
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile (name:'rounded-corner-0.0.1', ext:'aar')
-    compile (name:'jgraph-0.0.1', ext:'aar')
-    compile (name:'williamchart-2.3.0', ext:'aar')
-    compile (name:'circle-progress-1.1.1', ext:'aar')
+    compile(name: 'rounded-corner-0.0.1', ext: 'aar')
+    compile(name: 'jgraph-0.0.1', ext: 'aar')
+    compile(name: 'williamchart-2.3.0', ext: 'aar')
+    compile(name: 'circle-progress-1.1.1', ext: 'aar')
     compile 'com.shootr:KMNumbers:1.0.0'
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:multidex:1.0.1'
-    provided "javax.annotation:jsr250-api:1.0"
-    compile "com.google.dagger:dagger:2.5"
+    provided 'javax.annotation:jsr250-api:1.0'
+    compile 'com.google.dagger:dagger:2.5'
     apt "com.google.dagger:dagger-compiler:2.5"
 }
