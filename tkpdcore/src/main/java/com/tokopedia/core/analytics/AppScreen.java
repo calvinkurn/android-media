@@ -230,4 +230,6 @@ public final class AppScreen {
     public static final String SCREEN_VIEWED_ADD_TO_CART = "event : Viewed Add To Cart Page";
     public static final String SCREEN_VIEWED_FAV_STORE = "event : Viewed Home - Fav Store Page";
     public static final String SCREEN_VIEWED_WISHLIST = "event : Viewed Wishlist Page ";
+    public static final String SCREEN_VIEWED_LOGIN = "event : Viewed Login Page ";
+    public static final String SCREEN_VIEWED_TRANSACTION_SHOP = "event : Viewed Transaction Shop Page ";
 }

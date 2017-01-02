@@ -43,6 +43,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.service.DownloadService;
@@ -182,6 +183,7 @@ public class LoginFragment extends Fragment implements LoginView {
         super.onResume();
         login.initData();
         login.sendGTMScreen(getActivity());
+        UnifyTracking.eventViewLoginPage();
         mEmailView.addTextChangedListener(watcher(wrapperEmail));
         mPasswordView.addTextChangedListener(watcher(wrapperPassword));
     }
