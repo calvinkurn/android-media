@@ -35,6 +35,8 @@ import com.tokopedia.sellerapp.gmstat.models.GetPopularProduct;
 import com.tokopedia.sellerapp.gmstat.models.GetProductGraph;
 import com.tokopedia.sellerapp.gmstat.models.GetShopCategory;
 import com.tokopedia.sellerapp.gmstat.models.GetTransactionGraph;
+import com.tokopedia.sellerapp.gmstat.presenters.GMFragmentPresenterImpl;
+import com.tokopedia.sellerapp.gmstat.presenters.GMFragmentView;
 import com.tokopedia.sellerapp.gmstat.presenters.GMStat;
 import com.tokopedia.sellerapp.gmstat.utils.GMStatNetworkController;
 import com.tokopedia.sellerapp.gmstat.utils.GridDividerItemDecoration;
@@ -69,11 +71,11 @@ import static com.tokopedia.sellerapp.gmstat.views.GMStatHeaderViewHelper.getDat
  * A placeholder fragment containing a simple view.
  * created by norman 02/01/2017
  */
-public class GMStatActivityFragment extends Fragment {
+public class GMStatActivityFragment extends Fragment implements GMFragmentView {
 
     public static final double NoDataAvailable = -2147483600;
     private static final String TAG = "GMStatActivityFragment";
-    CompositeSubscription compositeSubscription = new CompositeSubscription();
+
 
     @BindArray(R.array.month_names_abrev)
     String[] monthNamesAbrev;
@@ -117,13 +119,14 @@ public class GMStatActivityFragment extends Fragment {
 
     private GridLayoutManager gridLayoutManager;
     private MarketInsightViewHelper marketInsightViewHelper;
-    private float[] mValues = new float[10];
-    private String[] mLabels = new String[10];
     private PopularProductLoading popularProductLoading;
     private TransactionDataLoading transactionDataLoading;
     private MarketInsightLoading marketInsightLoading;
     private MarketInsightLoading2 marketInsightLoading2;
+    PopularProductViewHelper popularProductViewHelper;
     private View rootView;
+
+    private GMFragmentPresenterImpl gmFragmentPresenter;
 
     @OnClick(R.id.header_gmstat)
     public void onClickHeaderGMStat(){
@@ -131,196 +134,9 @@ public class GMStatActivityFragment extends Fragment {
             gmstatHeaderViewHelper.onClick(this);
         }
     }
-
     private GMStat gmstat;
+
     private Unbinder unbind;
-    private long sDate = -1, eDate = -1;
-
-    PopularProductViewHelper popularProductViewHelper;
-
-    boolean isFetchData = false, isFirstTime = false;
-
-    GMStatNetworkController.GetGMStat gmStatListener = new GMStatNetworkController.GetGMStat() {
-        @Override
-        public void onSuccessGetShopCategory(GetShopCategory getShopCategory) {
-            marketInsightReal.setVisibility(View.VISIBLE);
-            marketInsightLoading2.hideLoading();
-            marketInsightViewHelper.bindData(getShopCategory);
-        }
-
-        @Override
-        public void onSuccessTransactionGraph(GetTransactionGraph getTransactionGraph) {
-
-            GrossIncome grossIncome = new GrossIncome(getTransactionGraph.getGrossRevenue());
-            List<BaseGMModel> baseGMModels = new ArrayList<>();
-            baseGMModels.add(grossIncome);
-
-            List<Integer> dateGraph = getTransactionGraph.getDateGraph();
-            List<String> dates = getDates(dateGraph, GMStatActivityFragment.this.monthNamesAbrev);
-            if(dates != null) {
-                grossIncome.textDescription = dates.get(0)+" - "+dates.get(1);
-            }
-            List<Integer> grossGraph = getTransactionGraph.getGrossGraph();
-            List<NExcel> nExcels = joinDateAndGrossGraph(dateGraph, grossGraph);
-
-            if(nExcels != null){
-                //[]START] try used willam chart
-                displayChart();
-                resizeChart(nExcels.size());
-                int i = 0;
-                mLabels = new String[nExcels.size()];
-                mValues = new float[nExcels.size()];
-                for (NExcel nExcel : nExcels) {
-                    mLabels[i] = getDateRaw(nExcel.getXmsg(), monthNamesAbrev);
-                    mValues[i] = nExcel.getUpper();
-                    i++;
-                }
-//            int[] indexToDisplay = new int[10_000];
-                final List<Integer> indexToDisplay = new ArrayList<>();
-                int divide = mValues.length/10;
-                for(int j=1;j<=divide-1;j++){
-                    indexToDisplay.add((j*10)-1);
-                }
-                grossGraphChartConfig
-                        .setmLabels(mLabels)
-                        .setmValues(mValues, new XRenderer.XRendererListener() {
-                            @Override
-                            public boolean filterX(@IntRange(from = 0L) int i) {
-                                if(i==0 || mValues.length-1 == i)
-                                    return true;
-
-                                if(mValues.length <= 15){
-                                    return true;
-                                }
-
-                                return indexToDisplay.contains(i);
-
-                            }
-                        })
-                        .setDotDrawable(oval2Copy6)
-                        .setTooltip(new Tooltip(getContext(),
-                                R.layout.gm_stat_tooltip,
-                                R.id.gm_stat_tooltip_textview,
-                                new StringFormatRenderer() {
-                                    @Override
-                                    public String formatString(String s) {
-                                        return KMNumbers.formatNumbers(Float.valueOf(s));
-                                    }
-                                }))
-                        .buildChart(grossGraphChartConfig.buildLineChart(grossIncomeGraph2));
-                //[END] try used willam chart
-            }
-
-
-            gmStatWidgetAdapter.addAll(baseGMModels);
-            gmStatWidgetAdapter.notifyDataSetChanged();
-
-            dataTransactionViewHelper.bindData(getTransactionGraph);
-            transactionDataLoading.hideLoading();
-            transactionData.setVisibility(View.VISIBLE);
-
-            if(sDate == -1 && eDate == -1)
-                gmstatHeaderViewHelper.bindData(dateGraph);
-            else
-                gmstatHeaderViewHelper.bindDate(sDate, eDate);
-        }
-
-        @Override
-        public void onSuccessProductnGraph(GetProductGraph getProductGraph) {
-
-            List<BaseGMModel> baseGMModels = new ArrayList<>();
-            SuccessfulTransaction successfulTransaction
-                    = new SuccessfulTransaction(getProductGraph.getSuccessTrans());
-            successfulTransaction.percentage = getProductGraph.getDiffTrans()*100;
-
-            ProdSeen prodSeen = new ProdSeen(getProductGraph.getProductView());
-            prodSeen.percentage = getProductGraph.getDiffView()*100;
-
-            ProdSold prodSold = new ProdSold(getProductGraph.getProductSold());
-            prodSold.percentage = getProductGraph.getDiffSold()*100;
-
-            ConvRate convRate = new ConvRate(getProductGraph.getConversionRate()*100);
-            convRate.percentage = getProductGraph.getDiffConv()*100;
-
-            baseGMModels.add(successfulTransaction);
-            baseGMModels.add(prodSeen);
-            baseGMModels.add(prodSold);
-            baseGMModels.add(convRate);
-            gmStatWidgetAdapter.clear();
-            gmStatWidgetAdapter.addAll(baseGMModels);
-//            gmStatWidgetAdapter = new GMStatWidgetAdapter(baseGMModels, gmstat);
-
-            if(!isFirstTime) {
-                initAdapter(gmStatWidgetAdapter);
-                isFirstTime = !isFirstTime;
-            }
-        }
-
-        @Override
-        public void onSuccessPopularProduct(GetPopularProduct getPopularProduct) {
-            popularProductViewHelper.bindData(getPopularProduct, gmstat.getImageHandler());
-            popularProductLoading.hideLoading();
-            popularProduct.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        public void onSuccessBuyerData(GetBuyerData getBuyerData) {
-            buyerDataViewHelper.bindData(getBuyerData);
-            marketInsight.setVisibility(View.VISIBLE);
-            marketInsightLoading.hideLoading();
-        }
-
-        @Override
-        public void onSuccessGetKeyword(List<GetKeyword> getKeywords) {
-            marketInsightViewHelper.bindData(getKeywords);
-            marketInsightReal.setVisibility(View.VISIBLE);
-            marketInsightLoading2.hideLoading();
-        }
-
-        @Override
-        public void onSuccessGetCategory(List<HadesV1Model> hadesV1Models) {
-            marketInsightViewHelper.bindDataCategory(hadesV1Models);
-        }
-
-        @Override
-        public void onComplete() {
-            if(!isFirstTime) {
-                gmStatWidgetAdapter.clear();
-                gmStatWidgetAdapter.notifyDataSetChanged();
-            }
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            displayDefaultValue();
-
-            snackBar = new SnackBar();
-            String textMessage ="Kesalahan tidak diketahui";
-            if(e instanceof UnknownHostException){
-                textMessage = "Tidak ada koneksi. \nSilahkan coba kembali";
-            }else if(e instanceof ShopNetworkController.MessageErrorException){
-                textMessage = "Terjadi kesalahan koneksi. \nSilahkan coba kembali";
-            }
-            snackBar.view(rootView)
-                    .text(textMessage, "COBA KEMBALI")
-                    .textColors(Color.WHITE,Color.GREEN)
-                    .backgroundColor(Color.BLACK)
-                    .duration(SnackBar.SnackBarDuration.INDEFINITE)
-                    .setOnClickListener(true, new OnActionClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            isFetchData = true;
-                            fetchData();
-                        }
-                    })
-                    .show();
-        }
-
-        @Override
-        public void onFailure() {
-
-        }
-    };
     private DataTransactionViewHelper dataTransactionViewHelper;
     private BuyerDataViewHelper buyerDataViewHelper;
     private GMStatHeaderViewHelper gmstatHeaderViewHelper;
@@ -454,7 +270,8 @@ public class GMStatActivityFragment extends Fragment {
         gmStatRecyclerView.setAdapter(gmStatWidgetAdapter);
     }
 
-    protected void resetToLoading(){
+    @Override
+    public void resetToLoading(){
         resetEmptyAdapter();
         gmstatHeaderViewHelper.resetToLoading();
         initChartLoading();
@@ -462,6 +279,11 @@ public class GMStatActivityFragment extends Fragment {
         initTransactionDataLoading();
         initMarketInsightLoading();
         initMarketInsightLoading2();
+    }
+
+    @Override
+    public void bindHeader(long sDate, long eDate) {
+        gmstatHeaderViewHelper.bindDate(sDate, eDate);
     }
 
     /**
@@ -505,6 +327,8 @@ public class GMStatActivityFragment extends Fragment {
             }catch (NumberFormatException nfe){
                 throw new RuntimeException(nfe.getMessage()+"\n [need valid shop id]");
             }
+
+            gmFragmentPresenter = new GMFragmentPresenterImpl(this, gmstat, shopId);
         }
     }
 
@@ -514,7 +338,7 @@ public class GMStatActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        isFirstTime = false;
+        gmFragmentPresenter.setFirstTime(false);
         rootView = inflater.inflate(R.layout.fragment_gmstat, container, false);
         this.unbind = ButterKnife.bind(this, rootView);
         initNumberFormatter();
@@ -533,10 +357,9 @@ public class GMStatActivityFragment extends Fragment {
         initTransactionDataLoading();
         initMarketInsightLoading();
         initMarketInsightLoading2();
-        for(int i=0;i<mLabels.length;i++){
-            mLabels[i] = "";
-        }
-        grossGraphChartConfig = new GrossGraphChartConfig(mLabels, mValues);
+        gmFragmentPresenter.initInstance();
+        grossGraphChartConfig = new GrossGraphChartConfig(
+                gmFragmentPresenter.getmLabels(), gmFragmentPresenter.getmValues());
         return rootView;
     }
 
@@ -602,43 +425,29 @@ public class GMStatActivityFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        compositeSubscription = RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
-        snackBar = new SnackBar();
+        gmFragmentPresenter.onResume();
         fetchData();
     }
 
     public void displayDefaultValue(){
-        gmstat.getGmStatNetworkController().fetchDataEmptyState(gmStatListener, getActivity().getAssets());
+        gmFragmentPresenter.displayDefaultValue(getActivity().getAssets());
     }
 
+    @Override
     public void fetchData() {
-        if(isFetchData) {
-            isFetchData = false;
-            resetToLoading();
-            gmstat.getGmStatNetworkController().fetchData(shopId, sDate, eDate, compositeSubscription, gmStatListener);
-        }else if(!isFirstTime){
-            //[START] real network
-            gmstat.getGmStatNetworkController().fetchData(shopId, compositeSubscription, gmStatListener);
-            //[END] real network
-        }
+        gmFragmentPresenter.fetchData();
     }
 
+    @Override
     public void fetchData(long sDate, long eDate){
-        isFetchData = true;
-        this.sDate = sDate;
-        this.eDate = eDate;
-        gmstatHeaderViewHelper.bindDate(sDate, eDate);
-
-        //[START] dummy data
-//        gmstat.getGmStatNetworkController().fetchData(gmStatListener, getActivity().getAssets());
-        //[END] dummy data
+        gmFragmentPresenter.fetchData(sDate, eDate);
     }
 
     @Override
     public void onPause() {
         super.onPause();
         snackBar = null;
-        RxUtils.unsubscribeIfNotNull(compositeSubscription);
+        gmFragmentPresenter.onPause();
         if(grossIncomeGraph2 != null)
             grossIncomeGraph2.dismissAllTooltips();
     }
@@ -647,6 +456,181 @@ public class GMStatActivityFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbind.unbind();
+    }
+
+    @Override
+    public void onSuccessGetShopCategory(GetShopCategory getShopCategory) {
+        marketInsightReal.setVisibility(View.VISIBLE);
+        marketInsightLoading2.hideLoading();
+        marketInsightViewHelper.bindData(getShopCategory);
+    }
+
+    @Override
+    public void onSuccessTransactionGraph(GetTransactionGraph getTransactionGraph, long sDate, long eDate) {
+        GrossIncome grossIncome = new GrossIncome(getTransactionGraph.getGrossRevenue());
+        List<BaseGMModel> baseGMModels = new ArrayList<>();
+        baseGMModels.add(grossIncome);
+
+        List<Integer> dateGraph = getTransactionGraph.getDateGraph();
+        List<String> dates = getDates(dateGraph, GMStatActivityFragment.this.monthNamesAbrev);
+        if(dates != null) {
+            grossIncome.textDescription = dates.get(0)+" - "+dates.get(1);
+        }
+        List<Integer> grossGraph = getTransactionGraph.getGrossGraph();
+        List<NExcel> nExcels = joinDateAndGrossGraph(dateGraph, grossGraph);
+
+        if(nExcels != null){
+            //[]START] try used willam chart
+            displayChart();
+            resizeChart(nExcels.size());
+            int i = 0;
+            String[] mLabels = new String[nExcels.size()];
+            final float[] mValues = new float[nExcels.size()];
+            for (NExcel nExcel : nExcels) {
+                mLabels[i] = getDateRaw(nExcel.getXmsg(), monthNamesAbrev);
+                mValues[i] = nExcel.getUpper();
+                i++;
+            }
+
+            final List<Integer> indexToDisplay = new ArrayList<>();
+            int divide = mValues.length/10;
+            for(int j=1;j<=divide-1;j++){
+                indexToDisplay.add((j*10)-1);
+            }
+            grossGraphChartConfig
+                    .setmLabels(mLabels)
+                    .setmValues(mValues, new XRenderer.XRendererListener() {
+                        @Override
+                        public boolean filterX(@IntRange(from = 0L) int i) {
+                            if(i==0 || mValues.length-1 == i)
+                                return true;
+
+                            if(mValues.length <= 15){
+                                return true;
+                            }
+
+                            return indexToDisplay.contains(i);
+
+                        }
+                    })
+                    .setDotDrawable(oval2Copy6)
+                    .setTooltip(new Tooltip(getContext(),
+                            R.layout.gm_stat_tooltip,
+                            R.id.gm_stat_tooltip_textview,
+                            new StringFormatRenderer() {
+                                @Override
+                                public String formatString(String s) {
+                                    return KMNumbers.formatNumbers(Float.valueOf(s));
+                                }
+                            }))
+                    .buildChart(grossGraphChartConfig.buildLineChart(grossIncomeGraph2));
+            //[END] try used willam chart
+        }
+
+
+        gmStatWidgetAdapter.addAll(baseGMModels);
+        gmStatWidgetAdapter.notifyDataSetChanged();
+
+        dataTransactionViewHelper.bindData(getTransactionGraph);
+        transactionDataLoading.hideLoading();
+        transactionData.setVisibility(View.VISIBLE);
+
+        if(sDate == -1 && eDate == -1)
+            gmstatHeaderViewHelper.bindData(dateGraph);
+        else
+            gmstatHeaderViewHelper.bindDate(sDate, eDate);
+    }
+
+    @Override
+    public void onSuccessProductnGraph(GetProductGraph getProductGraph, boolean isFirstTime) {
+        List<BaseGMModel> baseGMModels = new ArrayList<>();
+        SuccessfulTransaction successfulTransaction
+                = new SuccessfulTransaction(getProductGraph.getSuccessTrans());
+        successfulTransaction.percentage = getProductGraph.getDiffTrans()*100;
+
+        ProdSeen prodSeen = new ProdSeen(getProductGraph.getProductView());
+        prodSeen.percentage = getProductGraph.getDiffView()*100;
+
+        ProdSold prodSold = new ProdSold(getProductGraph.getProductSold());
+        prodSold.percentage = getProductGraph.getDiffSold()*100;
+
+        ConvRate convRate = new ConvRate(getProductGraph.getConversionRate()*100);
+        convRate.percentage = getProductGraph.getDiffConv()*100;
+
+        baseGMModels.add(successfulTransaction);
+        baseGMModels.add(prodSeen);
+        baseGMModels.add(prodSold);
+        baseGMModels.add(convRate);
+        gmStatWidgetAdapter.clear();
+        gmStatWidgetAdapter.addAll(baseGMModels);
+//            gmStatWidgetAdapter = new GMStatWidgetAdapter(baseGMModels, gmstat);
+
+        if(!isFirstTime) {
+            initAdapter(gmStatWidgetAdapter);
+            isFirstTime = !isFirstTime;
+        }
+    }
+
+    @Override
+    public void onSuccessPopularProduct(GetPopularProduct getPopularProduct) {
+        popularProductViewHelper.bindData(getPopularProduct, gmstat.getImageHandler());
+        popularProductLoading.hideLoading();
+        popularProduct.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onSuccessBuyerData(GetBuyerData getBuyerData) {
+        buyerDataViewHelper.bindData(getBuyerData);
+        marketInsight.setVisibility(View.VISIBLE);
+        marketInsightLoading.hideLoading();
+    }
+
+    @Override
+    public void onSuccessGetKeyword(List<GetKeyword> getKeywords) {
+        marketInsightViewHelper.bindData(getKeywords);
+        marketInsightReal.setVisibility(View.VISIBLE);
+        marketInsightLoading2.hideLoading();
+    }
+
+    @Override
+    public void onSuccessGetCategory(List<HadesV1Model> hadesV1Models) {
+        marketInsightViewHelper.bindDataCategory(hadesV1Models);
+    }
+
+    @Override
+    public void onComplete() {
+
+    }
+
+    @Override
+    public void onError(Throwable e) {
+        displayDefaultValue();
+
+        snackBar = new SnackBar();
+        String textMessage ="Kesalahan tidak diketahui";
+        if(e instanceof UnknownHostException){
+            textMessage = "Tidak ada koneksi. \nSilahkan coba kembali";
+        }else if(e instanceof ShopNetworkController.MessageErrorException){
+            textMessage = "Terjadi kesalahan koneksi. \nSilahkan coba kembali";
+        }
+        snackBar.view(rootView)
+                .text(textMessage, "COBA KEMBALI")
+                .textColors(Color.WHITE,Color.GREEN)
+                .backgroundColor(Color.BLACK)
+                .duration(SnackBar.SnackBarDuration.INDEFINITE)
+                .setOnClickListener(true, new OnActionClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        gmFragmentPresenter.setFetchData(true);
+                        gmFragmentPresenter.fetchData();
+                    }
+                })
+                .show();
+    }
+
+    @Override
+    public void onFailure() {
+
     }
 
     private static class GMStatWidgetAdapter extends RecyclerView.Adapter{
