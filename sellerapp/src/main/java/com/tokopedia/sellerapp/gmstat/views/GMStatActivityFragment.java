@@ -736,6 +736,8 @@ public class GMStatActivityFragment extends Fragment {
         super.onPause();
         snackBar = null;
         RxUtils.unsubscribeIfNotNull(compositeSubscription);
+        if(grossIncomeGraph2 != null)
+            grossIncomeGraph2.dismissAllTooltips();
     }
 
     @Override
