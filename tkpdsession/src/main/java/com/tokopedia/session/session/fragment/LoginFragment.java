@@ -323,7 +323,7 @@ public class LoginFragment extends Fragment implements LoginView {
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                login.sendGTMRegisterThrougLogin();
+                UnifyTracking.eventRegisterThroughLogin();
                 ((SessionView) getActivity()).moveToRegisterInitial();
             }
         });

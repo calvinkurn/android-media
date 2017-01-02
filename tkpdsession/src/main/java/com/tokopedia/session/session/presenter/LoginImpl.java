@@ -150,15 +150,6 @@ public class LoginImpl implements Login {
     }
 
     @Override
-    public void sendGTMRegisterThrougLogin() {
-        Nishikino.init(mContext).startAnalytics()
-                .sendButtonClick(
-                        AppEventTracking.Event.REGISTER_LOGIN,
-                        AppEventTracking.Category.LOGIN,
-                        AppEventTracking.Action.REGISTER,
-                        AppEventTracking.EventLabel.REGISTER);
-    }
-    @Override
     public void sendCTAAction() {
         Nishikino.init(mContext).startAnalytics()
                 .sendButtonClick(
