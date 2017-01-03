@@ -35,4 +35,14 @@ function setupGradleWrapper {
     echo "distributionUrl=https\://services.gradle.org/distributions/gradle-2.14.1-all.zip" >> gradle/wrapper/gradle-wrapper.properties
 }
 
+function getGradle {
+    echo "Downloading gradle"
+    curl -s https://get.sdkman.io | bash
+
+    sdk install gradle 2.14.1
+
+    echo "FINISH!!"
+
+}
+
 
