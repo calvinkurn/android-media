@@ -174,7 +174,13 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
     @Override
     public void onDestroy() {
+        removeAttachment();
         retrofit.unSubscribe();
+    }
+
+    @Override
+    public void removeAttachment() {
+        LocalCacheManager.AttachmentShippingResCenter.Builder(viewListener.getParamsModel().getResolutionID()).clearAll();
     }
 
     @Override
@@ -288,7 +294,8 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
     }
 
     private void clearAttachment() {
-        LocalCacheManager.AttachmentShippingResCenter.Builder(viewListener.getParamsModel().getResolutionID()).clearAll();
+        LocalCacheManager.AttachmentShippingResCenter.Builder(viewListener.getParamsModel().getResolutionID())
+                .clearAll();
     }
 
     private boolean isValidToSubmit(ShippingParamsPostModel params) {
@@ -321,7 +328,8 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
     }
 
     private boolean isInstanceForEdit() {
-        return viewListener.getParamsModel().getConversationID() != null || !viewListener.getParamsModel().getConversationID().isEmpty();
+        return viewListener.getParamsModel().getConversationID() != null
+                && !viewListener.getParamsModel().getConversationID().isEmpty();
     }
 
     private boolean isShippingRefNumEditted(String shippingRefNum) {
@@ -333,6 +341,8 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
     }
 
     private ResCenterKurir.Kurir getSelectedKurir() throws Exception {
-        return (ResCenterKurir.Kurir) viewListener.getShippingSpinner().getItemAtPosition(viewListener.getShippingSpinner().getSelectedItemPosition() - 1);
+        return (ResCenterKurir.Kurir) viewListener.getShippingSpinner().getItemAtPosition(
+                viewListener.getShippingSpinner().getSelectedItemPosition() - 1
+        );
     }
 }

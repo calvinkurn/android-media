@@ -20,5 +20,7 @@ public interface InputShippingFragmentPresenter {
 
     void onDestroy();
 
+    void removeAttachment();
+
     void onConfirrmButtonClick();
 }
