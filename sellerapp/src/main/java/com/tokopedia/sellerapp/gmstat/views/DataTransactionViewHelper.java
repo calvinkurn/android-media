@@ -1,6 +1,7 @@
 package com.tokopedia.sellerapp.gmstat.views;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.util.DisplayMetrics;
@@ -15,6 +16,7 @@ import com.tokopedia.core.myproduct.ProductActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.gmstat.models.GetTransactionGraph;
 import com.tokopedia.sellerapp.gmstat.utils.DataTransactionChartConfig;
+import com.tokopedia.sellerapp.gmsubscribe.GMSubscribeActivity;
 import com.tokopedia.sellerapp.home.utils.ImageHandler;
 
 import java.text.DecimalFormat;
@@ -79,6 +81,11 @@ public class DataTransactionViewHelper {
     private float[] mValues = new float[10];
     private String[] mLabels = new String[10];
     ImageHandler imageHandler;
+
+    @OnClick(R.id.move_to_gmsubscribe)
+    public void moveToGMSubscribe(){
+        itemView.getContext().startActivity(new Intent(itemView.getContext(), GMSubscribeActivity.class));
+    }
 
     public DataTransactionViewHelper(View itemView, ImageHandler imageHandler, boolean isGoldMerchant){
         this.itemView = itemView;

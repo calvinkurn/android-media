@@ -108,6 +108,7 @@
             </LinearLayout>
 
             <RelativeLayout
+                android:id="@+id/move_to_gmsubscribe"
                 android:layout_width="244dp"
                 android:layout_height="52dp"
                 android:layout_marginTop="9dp"

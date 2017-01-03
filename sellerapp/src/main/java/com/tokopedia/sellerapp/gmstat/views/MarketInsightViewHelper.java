@@ -1,5 +1,6 @@
 package com.tokopedia.sellerapp.gmstat.views;
 
+import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -19,6 +20,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.gmstat.models.GetKeyword;
 import com.tokopedia.sellerapp.gmstat.models.GetShopCategory;
+import com.tokopedia.sellerapp.gmsubscribe.GMSubscribeActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +69,11 @@ public class MarketInsightViewHelper {
     @OnClick(R.id.market_insight_empty_state)
     public void addProductMarketInsight(){
         ProductActivity.moveToAddProduct(view.getContext());
+    }
+
+    @OnClick(R.id.move_to_gmsubscribe)
+    public void moveToGMSubscribe(){
+        view.getContext().startActivity(new Intent(view.getContext(), GMSubscribeActivity.class));
     }
 
     private View view;
