@@ -213,11 +213,6 @@
             android:label="@string/title_activity_etalase_shop_editor"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.inboxmessage.activity.SendMessageActivity"
-            android:label="@string/title_activity_send_message"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateVisible" />
-        <activity
             android:name="com.tokopedia.core.ShopEditor"
             android:label="@string/title_activity_shop_editor"
             android:screenOrientation="portrait" />
@@ -342,16 +337,6 @@
             android:name="com.tokopedia.core.GalleryBrowser"
             android:label="@string/title_activity_gallery_browser"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.inboxmessage.activity.InboxMessageActivity"
-            android:label="@string/title_inbox_message"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            tools:ignore="UnusedAttribute" />
-        <activity
-            android:name="com.tokopedia.core.inboxmessage.activity.InboxMessageDetailActivity"
-            android:label="@string/title_inbox_message"
-            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name="com.tokopedia.core.tracking.activity.TrackingActivity"
             android:label="Tracking"
@@ -610,9 +595,7 @@
         <service
             android:name="com.tokopedia.core.manage.people.address.service.ManagePeopleAddressService"
             android:exported="false" />
-        <service
-            android:name="com.tokopedia.core.inboxmessage.intentservice.InboxMessageIntentService"
-            android:exported="false" />
+
         <service
             android:name="com.localytics.android.GcmListenerService"
             android:exported="false">

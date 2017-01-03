@@ -38,7 +38,6 @@ import com.tokopedia.core.drawer.interactor.NetworkInteractor;
 import com.tokopedia.core.drawer.interactor.NetworkInteractorImpl;
 import com.tokopedia.core.drawer.var.NotificationItem;
 import com.tokopedia.core.gcm.NotificationModHandler;
-import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.network.apiservices.user.NotificationService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -798,7 +797,7 @@ public class NotificationVariable {
                     public void onClick(View v) {
                         Bundle b = new Bundle();
 
-                        Intent intent = new Intent(context, InboxMessageActivity.class);
+                        Intent intent = InboxRouter.getInboxMessageActivityIntent(context);
                         // create smart click for inbox
                         if (MessageCount.get(0) > 0) {
                             intent.putExtra("unread", true);
