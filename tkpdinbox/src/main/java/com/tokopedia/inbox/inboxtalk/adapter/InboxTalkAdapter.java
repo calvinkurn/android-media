@@ -1,10 +1,10 @@
-package com.tokopedia.core.talk.talkproduct.adapter;
+package com.tokopedia.inbox.inboxtalk.adapter;
 
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
@@ -18,20 +18,20 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.inbox.inboxtalk.fragment.InboxTalkFragment;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService;
-import com.tokopedia.core.talk.talkproduct.fragment.TalkProductFragment;
-import com.tokopedia.core.talk.talkproduct.model.Talk;
-import com.tokopedia.core.talk.talkproduct.model.TalkUserReputation;
-import com.tokopedia.core.talk.talkproduct.presenter.TalkProductPresenter;
+import com.tokopedia.core.talk.model.model.InboxTalk;
+import com.tokopedia.core.talk.model.model.TalkUserReputation;
+import com.tokopedia.inbox.inboxtalk.presenter.InboxTalkPresenter;
 import com.tokopedia.core.talkview.activity.TalkViewActivity;
 import com.tokopedia.core.talkview.method.DeleteTalkDialog;
 import com.tokopedia.core.talkview.method.FollowTalkDialog;
@@ -47,42 +47,48 @@ import com.tokopedia.core.var.RecyclerViewItem;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.BindViews;
 import butterknife.ButterKnife;
 
 /**
- * Created by stevenfredian on 4/5/16.
+ * Created by stevenfredian on 4/11/16.
  */
-public class TalkProductAdapter extends BaseRecyclerViewAdapter {
+public class InboxTalkAdapter extends BaseRecyclerViewAdapter {
 
     public static final int MAIN_TYPE = 123456789;
     public LayoutInflater inflater;
     NotificationVariable notif;
     boolean isShop, isInbox;
-    Bundle bundle;
-    TokenHandler Token;
-    TalkProductPresenter presenter;
+    TokenHandler token;
     private TkpdProgressDialog progress;
+    InboxTalkPresenter presenter;
+    InboxTalkFragment fragment;
     boolean enableAction;
-    TalkProductFragment fragment;
 
 
-    public TalkProductAdapter(Context context, TalkProductFragment fragment, List<RecyclerViewItem> data, boolean isShop
-            , boolean isInbox, Bundle bundle, TalkProductPresenter presenter) {
+    public InboxTalkAdapter(Context context, InboxTalkFragment fragment, List<RecyclerViewItem> data, boolean isShop
+            , boolean isInbox, InboxTalkPresenter presenter) {
         super(context, data);
+        this.fragment = fragment;
         this.isShop = isShop;
         this.isInbox = isInbox;
-        this.bundle = bundle;
-        this.fragment = fragment;
-        this.enableAction = true;
         this.presenter = presenter;
-        Token = new TokenHandler();
+        this.enableAction = true;
+        token = new TokenHandler();
         progress = new TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS);
     }
 
-    public static TalkProductAdapter createAdapter(Context context, TalkProductFragment talkProductFragment, List<RecyclerViewItem> data,
-                                                   boolean isShop, boolean isInbox, Bundle bundle, TalkProductPresenter presenter) {
-        return new TalkProductAdapter(context, talkProductFragment, data, isShop, isInbox, bundle, presenter);
+    public static InboxTalkAdapter createAdapter(Context context, InboxTalkFragment fragment, List<RecyclerViewItem> data,
+                                                 boolean isShop, boolean isInbox,
+                                                 InboxTalkPresenter presenter) {
+        return new InboxTalkAdapter(context, fragment, data, isShop, isInbox, presenter);
     }
+
+    public void setEnableAction(boolean status) {
+        enableAction = status;
+        notifyDataSetChanged();
+    }
+
 
     public static class TalkProductViewHolder extends RecyclerView.ViewHolder {
 //        @BindView(R2.id.user_ava) ImageView pImageView;
@@ -108,10 +114,10 @@ public class TalkProductAdapter extends BaseRecyclerViewAdapter {
         @BindView(R2.id.main_view)
         View CommentBut;
         //        @BindView(R2.id.)View ProdView;
-//        @BindView(R2.id.detail_layout)View DetailLayout;
         @BindView(R2.id.reputation_view)
         View viewReputation;
-
+        @BindViews({R2.id.user_name, R2.id.product_name})
+        List<TextView> textViews;
 
         TalkProductViewHolder(View view) {
             super(view);
@@ -155,30 +161,53 @@ public class TalkProductAdapter extends BaseRecyclerViewAdapter {
         }
     }
 
+//    @BindView({R.id.user_name, R.id.product_name})
+//    List<TextView> textViews;
+//    ButterKnife.Action<TextView> CHANGE_COLOR = new ButterKnife.Action<TextView>() {
+//        @Override
+//        public void apply(TextView view, int index) {
+//            for (TextView tv : textViews) {
+//                tv.setTypeface(Typeface.DEFAULT_BOLD);
+//            }
+//        }
+//    };
+
+    ButterKnife.Setter<View, Boolean> CHANGE_COLOR = new ButterKnife.Setter<View, Boolean>() {
+        @Override
+        public void set(View view, Boolean value, int index) {
+            TextView tv = (TextView) view;
+            if (value) {
+//                tv.setTypeface(Typeface.DEFAULT_BOLD);
+                tv.setTextColor(Color.BLACK);
+//                tv.setBackgroundResource(R.drawable.inbox_unread_message);
+            } else {
+//                tv.setTypeface(Typeface.DEFAULT);
+                tv.setTextColor(Color.GRAY);
+//                tv.setBackgroundResource(R.drawable.inbox_read_message);
+            }
+        }
+    };
+
+
     private RecyclerView.ViewHolder bindTalkProductView(final RecyclerView.ViewHolder viewHolder, final int position) {
         final Context context = viewHolder.itemView.getContext();
         final TalkProductViewHolder holder = (TalkProductViewHolder) viewHolder;
-        final Talk talk = (Talk) data.get(position);
+        final InboxTalk talk = (InboxTalk) data.get(position);
         LabelUtils label = LabelUtils.getInstance(context, holder.UserView);
         notif = MainApplication.getNotifInstance();
         notif.setContext((Activity) context);
 
-
-        talk.setTalkProductId(bundle.getString("product_id"));
-        talk.setTalkProductName(bundle.getString("prod_name"));
-        talk.setTalkProductImage(bundle.getString("product_image"));
 
         if (isShop) {
             ImageHandler.loadImageCircle2(context, holder.UserImageView, String.valueOf(talk.getTalkProductImage()));
             holder.UserImageView.setOnClickListener(goToProduct(talk.getTalkProductId()));
         } else {
             ImageHandler.loadImageCircle2(context, holder.UserImageView, talk.getTalkUserImage());
+//			ImageHandler.LoadImageCircle(holder.UserImageView, UserImgUri.get(position));
             holder.UserImageView.setOnClickListener(goToPeople(talk.getTalkUserId()));
         }
-        String HeaderStr;
-        HeaderStr = "<b>" + talk.getTalkUserName() + "</b>";
-        holder.UserView.setText(MethodChecker.fromHtml(HeaderStr));
-//        holder.DetailLayout.setVisibility(View.GONE);
+        holder.UserView.setText(MethodChecker.fromHtml(talk.getTalkUserName()));
+        holder.pProdName.setText(MethodChecker.fromHtml(String.valueOf(talk.getTalkProductName())));
 
         holder.RepRate.setText(String.format("%s%%", talk.getTalkUserReputation().getPositivePercentage()));
 
@@ -198,10 +227,19 @@ public class TalkProductAdapter extends BaseRecyclerViewAdapter {
         });
         holder.TimeView.setText(talk.getTalkCreateTime());
         if (isInbox) {
+            boolean status;
             if (talk.getTalkReadStatus() == 1) {
-                holder.UserView.setTypeface(Typeface.DEFAULT_BOLD);
-                holder.CommentBut.setBackgroundResource(R.drawable.cards_ui_unread);
+                status = true;
+//                holder.UserView.setTypeface(Typeface.DEFAULT_BOLD);
+//                holder.CommentBut.setBackgroundResource(R.drawable.selectable_unread_background);
+                holder.CommentBut.setBackgroundResource(R.drawable.inbox_unread_message);
+            } else {
+                status = false;
+//                holder.UserView.setTypeface(Typeface.DEFAULT);
+//                holder.CommentBut.setBackgroundResource(R.drawable.selectable_white_background);
+                holder.CommentBut.setBackgroundResource(R.drawable.inbox_read_message);
             }
+            ButterKnife.apply(holder.textViews, CHANGE_COLOR, status);
         }
         label.giveSquareLabel(talk.getTalkUserLabel());
         holder.MessageView.setText(MethodChecker.fromHtml(talk.getTalkMessage()));
@@ -224,13 +262,15 @@ public class TalkProductAdapter extends BaseRecyclerViewAdapter {
             holder.ButtonOverflow.setVisibility(View.INVISIBLE);
         }
 
-        holder.ButtonOverflow.setEnabled(enableAction);
+        if (enableAction)
+            holder.ButtonOverflow.setVisibility(View.VISIBLE);
+        else
+            holder.ButtonOverflow.setVisibility(View.GONE);
+
 
         holder.UserView.setOnClickListener(goToPeople(talk.getTalkUserId()));
 
-        holder.pProdName.setVisibility(View.GONE);
-
-//        holder.MessageView.setTextSize(TypedValue.COMPLEX_UNIT_SP,context.getResources().getDimension(R.dimen.fontvs));
+        holder.pProdName.setOnClickListener(goToProduct(talk.getTalkProductId()));
 
         holder.CommentBut.setOnClickListener(goToDetail(talk, position));
 
@@ -238,18 +278,19 @@ public class TalkProductAdapter extends BaseRecyclerViewAdapter {
         return holder;
     }
 
-    private View.OnClickListener goToDetail(final Talk talk, final int position) {
+    private View.OnClickListener goToDetail(final InboxTalk talk, final int position) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventDiscussionDetail();
                 Bundle bundle = new Bundle();
                 Intent intent = new Intent(context, TalkViewActivity.class);
-                bundle.putString("from", TalkViewActivity.PRODUCT_TALK);
+                bundle.putString("from", TalkViewActivity.INBOX_TALK);
                 bundle.putParcelable("talk", talk);
                 bundle.putInt("position", position);
                 intent.putExtras(bundle);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                fragment.startActivityForResult(intent, TalkProductFragment.GO_TO_DETAIL);
+
+                fragment.startActivityForResult(intent, InboxTalkFragment.GO_TO_DETAIL);
             }
         };
     }
@@ -272,6 +313,7 @@ public class TalkProductAdapter extends BaseRecyclerViewAdapter {
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
                 Intent intent;
+//				intent = new Intent(context, ProductDetailPresenter.class);
                 intent = new Intent(context, ProductInfoActivity.class);
                 bundle.putString("product_id", productID);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -300,7 +342,7 @@ public class TalkProductAdapter extends BaseRecyclerViewAdapter {
         });
     }
 
-    public void showPopup(View v, final Talk talk, final int position) {
+    public void showPopup(View v, final InboxTalk talk, final int position) {
         PopupMenu popup = new PopupMenu(context, v);
         MenuInflater inflater = popup.getMenuInflater();
         if (getMenuID(talk) != 0) {
@@ -309,7 +351,6 @@ public class TalkProductAdapter extends BaseRecyclerViewAdapter {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
                     DialogFragment dialog;
-                    CommonUtils.dumper(item.getItemId());
                     if (item.getItemId() == R.id.action_follow || item.getItemId() == R.id.action_unfollow) {
                         dialog = FollowTalkDialog.createInstance(followListener(talk, position)
                                 , talk.getTalkFollowStatus());
@@ -323,16 +364,16 @@ public class TalkProductAdapter extends BaseRecyclerViewAdapter {
                         dialog = ReportTalkDialog.createInstance(reportListener(talk, position));
                         dialog.show(fragment.getFragmentManager(), ReportTalkDialog.FRAGMENT_TAG);
                         return true;
-                    } else {
+                    } else
                         return false;
-                    }
                 }
             });
-            popup.show();
         }
+        popup.show();
     }
 
-    private ReportTalkDialog.ReportTalkListener reportListener(final Talk talk, final int position) {
+
+    private ReportTalkDialog.ReportTalkListener reportListener(final InboxTalk talk, final int position) {
         return new ReportTalkDialog.ReportTalkListener() {
             @Override
             public void reportTalk(String s) {
@@ -342,7 +383,7 @@ public class TalkProductAdapter extends BaseRecyclerViewAdapter {
         };
     }
 
-    private DeleteTalkDialog.DeleteTalkListener deleteListener(final Talk talk, final int position) {
+    private DeleteTalkDialog.DeleteTalkListener deleteListener(final InboxTalk talk, final int position) {
         return new DeleteTalkDialog.DeleteTalkListener() {
             @Override
             public void deleteTalk() {
@@ -352,7 +393,7 @@ public class TalkProductAdapter extends BaseRecyclerViewAdapter {
         };
     }
 
-    private FollowTalkDialog.FollowTalkListener followListener(final Talk talk, final int position) {
+    private FollowTalkDialog.FollowTalkListener followListener(final InboxTalk talk, final int position) {
         return new FollowTalkDialog.FollowTalkListener() {
             @Override
             public void followTalk() {
@@ -362,29 +403,33 @@ public class TalkProductAdapter extends BaseRecyclerViewAdapter {
         };
     }
 
-    private int getMenuID(Talk talk) {
+    private int getMenuID(InboxTalk talk) {
         int menuID;
-        if (Token.getLoginID(context).equals(talk.getTalkUserId())) {
-            if (talk.getTalkFollowStatus() == 1) {
-                menuID = R.menu.unfollow_delete_menu;
-            } else {
-                menuID = R.menu.follow_delete_menu;
-            }
+        if (talk.getTalkShopId().equals(SessionHandler.getShopID(context))) {
+            menuID = R.menu.delete_report_menu;
         } else {
-            menuID = R.menu.report_menu;
+            if (token.getLoginID(context).equals(talk.getTalkUserId())) {
+                if (talk.getTalkFollowStatus() == 1) {
+                    menuID = R.menu.unfollow_delete_menu;
+                } else {
+                    menuID = R.menu.follow_delete_menu;
+                }
+            } else {
+                if (talk.getTalkFollowStatus() == 1) {
+                    menuID = R.menu.unfollow_report_menu;
+                } else {
+                    menuID = R.menu.follow_report_menu;
+                }
+            }
         }
         return menuID;
-    }
-
-    public void setEnableAction(boolean enableAction) {
-        this.enableAction = enableAction;
     }
 
 
     public void onSuccessAction(Bundle resultData, int resultCode, int position) {
         progress.dismiss();
         if (resultData.getString(InboxTalkIntentService.EXTRA_RESULT).equals("1")) {
-            Talk temp = (Talk) data.get(position);
+            InboxTalk temp = (InboxTalk) data.get(position);
             switch (resultCode) {
                 case InboxTalkIntentService.STATUS_SUCCESS_FOLLOW:
                     if (temp.getTalkFollowStatus() == 1) {
@@ -443,4 +488,5 @@ public class TalkProductAdapter extends BaseRecyclerViewAdapter {
                 break;
         }
     }
+
 }

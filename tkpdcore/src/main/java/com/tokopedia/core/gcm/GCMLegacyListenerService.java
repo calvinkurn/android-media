@@ -39,7 +39,6 @@ import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
@@ -185,7 +184,7 @@ public class GCMLegacyListenerService extends GcmListenerService{
                 desc = data.getString("desc");
                 break;
             case TkpdState.GCMServiceState.GCM_TALK:
-                resultclass = InboxTalkActivity.class;
+                intent = InboxRouter.getInboxTalkActivityIntent(this);
                 //bundle.putInt("notif_call", NotificationCode);
                 title = data.getString("counter") + " " + this.getString(R.string.title_new_talk);
                 ticker = data.getString("desc");
