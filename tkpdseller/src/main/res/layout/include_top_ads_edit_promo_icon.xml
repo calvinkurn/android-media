@@ -16,20 +16,20 @@
 
         <RadioButton
             android:id="@+id/radio_button_icon_speaker"
-            style="@style/RadioGroup"
+            style="@style/RadioButton"
             android:checked="true"
             android:drawableEnd="@drawable/icon_bca"
             android:drawableRight="@drawable/icon_bca"/>
 
         <RadioButton
             android:id="@+id/radio_button_icon_thumbs_up"
-            style="@style/RadioGroup"
+            style="@style/RadioButton"
             android:drawableEnd="@drawable/icon_bca"
             android:drawableRight="@drawable/icon_bca"/>
 
         <RadioButton
             android:id="@+id/radio_button_icon_fire"
-            style="@style/RadioGroup"
+            style="@style/RadioButton"
             android:drawableEnd="@drawable/icon_bca"
             android:drawableRight="@drawable/icon_bca"/>
     </RadioGroup>

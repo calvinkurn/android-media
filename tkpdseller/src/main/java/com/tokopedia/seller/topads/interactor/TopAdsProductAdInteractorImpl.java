@@ -19,6 +19,7 @@ import com.tokopedia.seller.topads.model.response.PageDataResponse;
 import com.tokopedia.seller.topads.network.apiservice.TopAdsManagementService;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -29,6 +30,7 @@ import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by zulfikarrahman on 12/30/16.
+ * Created by Nathaniel on 12/29/2016.
  */
 
 public class TopAdsProductAdInteractorImpl implements TopAdsProductAdInteractor {
@@ -36,23 +38,43 @@ public class TopAdsProductAdInteractorImpl implements TopAdsProductAdInteractor 
     private CompositeSubscription compositeSubscription;
     private TopAdsManagementService topAdsManagementService;
     private TopAdsDbDataSource topAdsDbDataSource;
-    private TopAdsCacheDataSource topAdsCacheDataSource;
+    private TopAdsCacheDataSourceImpl topAdsCacheDataSourceImpl;
 
-    public TopAdsProductAdInteractorImpl(CompositeSubscription compositeSubscription, TopAdsManagementService topAdsManagementService, TopAdsDbDataSource topAdsDbDataSource, TopAdsCacheDataSource topAdsCacheDataSource) {
+    public TopAdsProductAdInteractorImpl(CompositeSubscription compositeSubscription, TopAdsManagementService topAdsManagementService, TopAdsDbDataSource topAdsDbDataSource, TopAdsCacheDataSourceImpl topAdsCacheDataSourceImpl) {
         this.compositeSubscription = compositeSubscription;
         this.topAdsManagementService = topAdsManagementService;
         this.topAdsDbDataSource = topAdsDbDataSource;
-        this.topAdsCacheDataSource = topAdsCacheDataSource;
+        this.topAdsCacheDataSourceImpl = topAdsCacheDataSourceImpl;
     }
 
     @Override
     public void searchAd(SearchAdRequest searchAdRequest, ListenerInteractor<List<ProductAd>> listener) {
-
+        Observable<Response<PageDataResponse<List<ProductAd>>>> observable = topAdsManagementService.getApi().searchProductAd(searchAdRequest.getParams());
+        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<Response<PageDataResponse<List<ProductAd>>>, Observable<PageDataResponse<List<ProductAd>>>>() {
+                    @Override
+                    public Observable<PageDataResponse<List<ProductAd>>> call(Response<PageDataResponse<List<ProductAd>>> response) {
+                        return Observable.just(response.body());
+                    }
+                })
+                .subscribe(new SubscribeOnNext<PageDataResponse<List<ProductAd>>>(listener), new SubscribeOnError(listener)));
     }
 
     @Override
     public void bulkAction(DataRequest<ProductAdBulkAction> bulkActionDataRequest, ListenerInteractor<ProductAdBulkAction> listener) {
-
+        Observable<Response<DataResponse<ProductAdBulkAction>>> observable = topAdsManagementService.getApi().bulkActionProductAd(bulkActionDataRequest);
+        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<Response<DataResponse<ProductAdBulkAction>>, Observable<ProductAdBulkAction>>() {
+                    @Override
+                    public Observable<ProductAdBulkAction> call(Response<DataResponse<ProductAdBulkAction>> response) {
+                        return Observable.just(response.body().getData());
+                    }
+                })
+                .subscribe(new SubscribeOnNext<ProductAdBulkAction>(listener), new SubscribeOnError(listener)));
     }
 
     @Override
@@ -70,5 +92,10 @@ public class TopAdsProductAdInteractorImpl implements TopAdsProductAdInteractor 
 
                 })
                 .subscribe(new SubscribeOnNext<List<ProductAd>>(listenerInteractor), new SubscribeOnError(listenerInteractor)));
+    }
+
+    @Override
+    public void unSubscribe() {
+        compositeSubscription.unsubscribe();
     }
 }

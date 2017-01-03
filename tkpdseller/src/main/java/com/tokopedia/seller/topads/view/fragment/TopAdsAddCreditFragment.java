@@ -7,8 +7,10 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
@@ -30,6 +32,9 @@ public class TopAdsAddCreditFragment extends BasePresenterFragment<TopAdsAddCred
 
     @BindView(R2.id.recycler_view)
     RecyclerView recyclerView;
+
+    @BindView(R2.id.button_submit)
+    Button submitButton;
 
     private TopAdsCreditAdapter adapter;
 
@@ -88,7 +93,6 @@ public class TopAdsAddCreditFragment extends BasePresenterFragment<TopAdsAddCred
         adapter = new TopAdsCreditAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
-        presenter.populateCreditList();
     }
 
     @Override
@@ -103,21 +107,43 @@ public class TopAdsAddCreditFragment extends BasePresenterFragment<TopAdsAddCred
 
     @Override
     protected void setActionVar() {
+        populateData();
+    }
 
+    private void populateData() {
+        submitButton.setVisibility(View.GONE);
+        presenter.populateCreditList();
+        adapter.showLoadingFull(true);
     }
 
     @Override
     public void onCreditListLoaded(@NonNull List<DataCredit> creditList) {
-        adapter.setCreditList(creditList);
-        adapter.notifyDataSetChanged();
+        hideLoading();
+        adapter.setData(creditList);
+        submitButton.setVisibility(View.VISIBLE);
+        submitButton.setEnabled(true);
     }
 
     @Override
     public void onLoadCreditListError() {
-
+        hideLoading();
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                hideLoading();
+                populateData();
+            }
+        });
     }
 
-    @OnClick(R2.id.button_choose_credit)
+    private void hideLoading() {
+        adapter.showLoadingFull(false);
+        adapter.showEmpty(false);
+        adapter.showRetry(false);
+        submitButton.setVisibility(View.GONE);
+    }
+
+    @OnClick(R2.id.button_submit)
     void chooseCredit() {
         Intent intent = new Intent(getActivity(), TopAdsPaymentCreditActivity.class);
         intent.putExtra(TopAdsConstant.EXTRA_CREDIT, adapter.getSelectedCredit());

@@ -16,9 +16,11 @@ import java.util.List;
 
 public interface TopAdsProductAdInteractor {
 
-    void searchAd(SearchAdRequest searchAdRequest, final ListenerInteractor<List<ProductAd>> listener);
+    void searchAd(SearchAdRequest searchAdRequest, final ListenerInteractor<PageDataResponse<List<ProductAd>>> listener);
 
     void bulkAction(DataRequest<ProductAdBulkAction> bulkActionDataRequest, final ListenerInteractor<ProductAdBulkAction> listener);
 
     void getDetailProductAd(ListenerInteractor<List<ProductAd>> listenerInteractor);
+
+    void unSubscribe();
 }

@@ -1,15 +1,11 @@
 package com.tokopedia.seller.topads.view.adapter;
 
-import android.support.v7.view.ActionMode;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
-import com.bignerdranch.android.multiselector.ModalMultiSelectorCallback;
 import com.bignerdranch.android.multiselector.MultiSelector;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
@@ -25,18 +21,31 @@ import java.util.List;
  */
 public class TopAdsAdListAdapter<T extends Ad> extends BaseLinearRecyclerViewAdapter {
 
+    public interface Callback {
+        void onChecked(int position, boolean checked);
+    }
+
     public static final int AD_TYPE = 1;
 
     private List<T> data;
 
     private MultiSelector multiSelector;
     private HashMap<Integer, Boolean> checkedList;
+    private Callback callback;
+
+    public void setCallback(Callback callback) {
+        this.callback = callback;
+    }
 
     public TopAdsAdListAdapter() {
         super();
         this.data = new ArrayList<>();
         multiSelector = new MultiSelector();
         checkedList = new HashMap<>();
+    }
+
+    public int getDataSize() {
+        return data.size();
     }
 
     @Override
@@ -76,12 +85,6 @@ public class TopAdsAdListAdapter<T extends Ad> extends BaseLinearRecyclerViewAda
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 setChecked(position, isChecked);
-                if (multiSelector.getSelectedPositions().size() == 0) {
-//                    topAdsListPromoViewListener.finishActionMode();
-                    multiSelector.refreshAllHolders();
-                } else {
-//                    topAdsListPromoViewListener.setTitleMode(multiSelector.getSelectedPositions().size() + "");
-                }
             }
         });
         topAdsViewHolder.mainView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -124,9 +127,14 @@ public class TopAdsAdListAdapter<T extends Ad> extends BaseLinearRecyclerViewAda
         });
     }
 
-    public List<T> getSelectedAds() {
+    public void clearCheckedList() {
+        checkedList = new HashMap<>();
+        notifyDataSetChanged();
+    }
+
+    public List<T> getSelectedList() {
         List<T> selectedAds = new ArrayList<>();
-        for(int position : multiSelector.getSelectedPositions()){
+        for (int position : checkedList.keySet()) {
             selectedAds.add(data.get(position));
         }
         return selectedAds;
@@ -145,12 +153,17 @@ public class TopAdsAdListAdapter<T extends Ad> extends BaseLinearRecyclerViewAda
         }
     }
 
-    public void setChecked(int position, boolean isChecked){
-        checkedList.put(position, isChecked);
-        notifyDataSetChanged();
+    public void setChecked(int position, boolean checked) {
+        checkedList.put(position, checked);
+        if (!checked) {
+            checkedList.remove(position);
+        }
+        if (callback != null) {
+            callback.onChecked(position, checked);
+        }
     }
 
-    public boolean isChecked(int position){
+    public boolean isChecked(int position) {
         return checkedList.containsKey(position) ? checkedList.get(position) : false;
     }
 
@@ -159,44 +172,19 @@ public class TopAdsAdListAdapter<T extends Ad> extends BaseLinearRecyclerViewAda
         clearChecked();
     }
 
-    public void addData(List<T> data){
+    public void addData(List<T> data) {
         this.data.addAll(data);
         notifyDataSetChanged();
     }
 
-    public void clearData(){
+    public void clearData() {
         this.data.clear();
         finishSelection();
         notifyDataSetChanged();
     }
 
-    public void clearChecked(){
+    public void clearChecked() {
         checkedList.clear();
         notifyDataSetChanged();
     }
-
-    ModalMultiSelectorCallback selectionMode = new ModalMultiSelectorCallback(multiSelector) {
-        @Override
-        public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
-            super.onCreateActionMode(actionMode, menu);
-            return true;
-        }
-
-        @Override
-        public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
-            actionMode.setTitle(String.valueOf(multiSelector.getSelectedPositions().size()));
-            return true;
-        }
-
-        @Override
-        public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
-            return false;
-        }
-
-        @Override
-        public void onDestroyActionMode(ActionMode actionMode) {
-            super.onDestroyActionMode(actionMode);
-            finishSelection();
-        }
-    };
 }

@@ -5,8 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
-import android.widget.TextView;
 
+import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.model.data.DataCredit;
@@ -21,32 +21,62 @@ import butterknife.ButterKnife;
  * Created by Nathaniel on 12/2/2016.
  */
 
-public class TopAdsCreditAdapter extends RecyclerView.Adapter<TopAdsCreditAdapter.ViewHolder> {
+public class TopAdsCreditAdapter extends BaseLinearRecyclerViewAdapter {
 
-    private List<DataCredit> creditList;
+    private static final int VIEW_DATA = 100;
+
+    private List<DataCredit> data;
     private int checkedPosition;
 
-    public void setCreditList(List<DataCredit> creditList) {
-        this.creditList = creditList;
+    public void setData(List<DataCredit> data) {
+        this.data = data;
+        notifyDataSetChanged();
     }
 
     public TopAdsCreditAdapter() {
-        creditList = new ArrayList<>();
+        data = new ArrayList<>();
         checkedPosition = 0;
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.listview_top_ads_credit, parent, false);
-        ViewHolder holder = new ViewHolder(view);
-        return holder;
+    public int getItemCount() {
+        return data.size() + super.getItemCount();
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        switch (viewType) {
+            case VIEW_DATA:
+                return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.listview_top_ads_credit, viewGroup, false));
+            default:
+                return super.onCreateViewHolder(viewGroup, viewType);
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        switch (getItemViewType(position)) {
+            case VIEW_DATA:
+                bindProduct((ViewHolder) holder, position);
+                break;
+            default:
+                super.onBindViewHolder(holder, position);
+                break;
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (data.isEmpty() || isLoading() || isRetry()) {
+            return super.getItemViewType(position);
+        } else {
+            return VIEW_DATA;
+        }
+    }
+
+    private void bindProduct(final ViewHolder holder, int position) {
         holder.radioButton.setChecked(position == checkedPosition);
-        holder.contentTextView.setText(creditList.get(position).getProductPrice());
+        holder.radioButton.setText(data.get(position).getProductPrice());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,20 +97,13 @@ public class TopAdsCreditAdapter extends RecyclerView.Adapter<TopAdsCreditAdapte
     }
 
     public DataCredit getSelectedCredit() {
-        return creditList.get(checkedPosition);
-    }
-
-    @Override
-    public int getItemCount() {
-        return creditList.size();
+        return data.get(checkedPosition);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R2.id.radio_button)
         public RadioButton radioButton;
-        @BindView(R2.id.text_view_content)
-        public TextView contentTextView;
 
         public ViewHolder(View view) {
             super(view);

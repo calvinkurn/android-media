@@ -32,15 +32,7 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
         super.initView(view);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        loadData();
-    }
-
-    private void loadData() {
-        presenter.populateSummary(startDate, endDate);
-        presenter.populateDeposit();
-        presenter.populateShopInfo();
+    protected void loadData() {
+        super.loadData();
     }
 }

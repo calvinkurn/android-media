@@ -1,9 +1,7 @@
 package com.tokopedia.seller.topads.view.adapter.viewholder;
 
-import android.content.Context;
-import android.view.LayoutInflater;
+import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -22,8 +20,15 @@ import butterknife.ButterKnife;
  */
 public class TopAdsViewHolder extends SwappingHolder {
 
+    private static final int STATUS_ACTIVE = 1;
+    private static final int STATUS_NOT_SENT = 2;
+    private static final int STATUS_NOT_ACTIVE = 3;
+
     @BindView(R2.id.title_product)
     public TextView titleProduct;
+
+    @BindView(R2.id.status_active_dot)
+    public View statusActiveDot;
 
     @BindView(R2.id.status_active)
     public TextView statusActive;
@@ -40,7 +45,10 @@ public class TopAdsViewHolder extends SwappingHolder {
     @BindView(R2.id.check_promo)
     public CheckBox checkedPromo;
 
-    @BindView(R2.id.progressBarPromo)
+    @BindView(R2.id.progress_bar_layout)
+    public View progressBarLayout;
+
+    @BindView(R2.id.progress_bar)
     public ProgressBar progressBarPromo;
 
     @BindView(R2.id.mainView)
@@ -49,12 +57,31 @@ public class TopAdsViewHolder extends SwappingHolder {
     public void bindObject(Ad ad) {
         titleProduct.setText(ad.getName());
         statusActive.setText(ad.getStatusDesc());
-        promoPriceUsed.setText(promoPriceUsed.getContext().getString(R.string.top_ads_bid_format_text, ad.getPriceBidFmt(), ad.getLabelPerClick()));
+        switch (ad.getStatus()) {
+            case STATUS_ACTIVE:
+                statusActiveDot.setBackgroundResource(R.drawable.green_circle);
+                break;
+            case STATUS_NOT_ACTIVE:
+                statusActiveDot.setBackgroundResource(R.drawable.grey_circle);
+                break;
+            case STATUS_NOT_SENT:
+                statusActiveDot.setBackgroundResource(R.drawable.grey_circle);
+                break;
+        }
+        pricePromoPerClick.setText(promoPriceUsed.getContext().getString(R.string.top_ads_bid_format_text, ad.getPriceBidFmt(), ad.getLabelPerClick()));
+        promoPriceUsed.setText(promoPriceUsed.getContext().getString(R.string.top_ads_used_format_text, ad.getStatTotalSpent()));
         totalPricePromo.setText(ad.getPriceDailySpentFmt());
-        progressBarPromo.setProgress(2);
+        if (!TextUtils.isEmpty(ad.getPriceDailyBar())) {
+            progressBarLayout.setVisibility(View.VISIBLE);
+            progressBarPromo.setProgress((int) Double.parseDouble(ad.getPriceDailyBar()));
+            totalPricePromo.setText(promoPriceUsed.getContext().getString(R.string.top_ads_bid_format_text, ad.getPriceDailySpentFmt(), ad.getPriceDailyFmt()));
+        } else {
+            progressBarLayout.setVisibility(View.GONE);
+        }
+
     }
 
-    public TopAdsViewHolder(View view, MultiSelector multiSelector){
+    public TopAdsViewHolder(View view, MultiSelector multiSelector) {
         super(view, multiSelector);
         ButterKnife.bind(this, view);
     }

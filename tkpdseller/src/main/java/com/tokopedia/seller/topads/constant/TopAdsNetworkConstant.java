@@ -16,8 +16,8 @@ public class TopAdsNetworkConstant {
     public static final String PATH_DASHBOARD_SHOP = "/v1/dashboard/shop";
     public static final String PATH_DASHBOARD_CREDIT = "/v1/tkpd_products";
 
-    public static final String PATH_ACTION_BULK_AD = "/v2/promo/bulk";
-    public static final String PATH_DETAIL_PRODUCT_AD = "/v2/promo";
+    public static final String PATH_BULK_ACTION_PRODUCT_AD = "/v2/promo/bulk";
+    public static final String PATH_BULK_ACTION_GROUP_AD = "/v2/promo/group/bulk";
 
     public static final String PARAM_SHOP_ID = "shop_id";
     public static final String PARAM_TYPE = "type";
