@@ -42,7 +42,12 @@ function getGradle {
     sdk install gradle 2.14.1
 
     echo "FINISH!!"
+}
 
+function setupAndroidSdk {
+    echo "Downloading build tools 25"
+    android update sdk --no-ui --all --filter "build-tools-25"
+    echo "FINISH!!"
 }
 
 
