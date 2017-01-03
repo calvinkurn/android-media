@@ -36,7 +36,10 @@
     <string name="title_group_list">Group</string>
 
     <!-- Top Ads ad list -->
+    <string name="label_top_ads_daily_spend">Biaya Harian</string>
     <string name="top_ads_bid_format_text">%1$s - %2$s</string>
+    <string name="top_ads_used_format_text">Terpakai %1$s</string>
+    <string name="top_ads_spent_format_text">%1$s / %2$s</string>
 
     <!-- Top Ads New Promo -->
     <string name="label_top_ads_group_name">Nama Group</string>

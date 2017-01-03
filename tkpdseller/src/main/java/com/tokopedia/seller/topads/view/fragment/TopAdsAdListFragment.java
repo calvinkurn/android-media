@@ -20,16 +20,13 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
-import com.tokopedia.seller.topads.constant.TopAdsConstant;
-import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.presenter.TopAdsAdListPresenter;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAdListAdapter;
 import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
+import com.tokopedia.seller.topads.view.widget.DividerItemDecoration;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 
@@ -42,7 +39,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     private static final int START_PAGE = 1;
 
     @BindView(R2.id.list_product)
-    RecyclerView listProduct;
+    RecyclerView recyclerView;
 
     @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
@@ -124,9 +121,10 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     protected void setViewListener() {
         swipeToRefresh.setEnabled(false);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        listProduct.setLayoutManager(layoutManager);
-        listProduct.setAdapter(adapter);
-        listProduct.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -221,7 +219,9 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
 
     @Override
     public void onSearchAdLoaded(@NonNull List adList, int totalItem) {
-        swipeToRefresh.setEnabled(true);
+        if (actionMode == null) {
+            swipeToRefresh.setEnabled(true);
+        }
         if (page == START_PAGE) {
             adapter.clearData();
             this.totalItem = totalItem;
@@ -235,6 +235,12 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     public void onLoadSearchAdError() {
         hideLoading();
         checkEmptyData(false);
+        showSnackBarRetry(new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                searchAd();
+            }
+        });
     }
 
     @Override
