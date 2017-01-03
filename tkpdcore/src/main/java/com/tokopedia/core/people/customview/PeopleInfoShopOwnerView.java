@@ -16,6 +16,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.people.model.PeopleInfoData;
 import com.tokopedia.core.people.presenter.PeopleInfoFragmentPresenter;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
+import com.tokopedia.core.util.MethodChecker;
 
 import butterknife.BindView;
 
@@ -78,12 +79,12 @@ public class PeopleInfoShopOwnerView extends BaseView<PeopleInfoData, PeopleInfo
     }
 
     private void renderShopName(PeopleInfoData.ShopInfo shopInfo) {
-        shopName.setText(Html.fromHtml(shopInfo.getShopName()));
+        shopName.setText(MethodChecker.fromHtml(shopInfo.getShopName()));
         shopName.setOnClickListener(new ShopClick(shopInfo));
     }
 
     private void renderShopLocation(PeopleInfoData.ShopInfo shopInfo) {
-        shopLocation.setText(Html.fromHtml(shopInfo.getShopLocation()));
+        shopLocation.setText(MethodChecker.fromHtml(shopInfo.getShopLocation()));
     }
 
     @SuppressLint("SetTextI18n")

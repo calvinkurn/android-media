@@ -1,5 +1,6 @@
 package com.tokopedia.session.session.fragment;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
@@ -31,6 +32,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.base.BaseFragment;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.session.session.google.GoogleActivity;
 import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.core.session.model.LoginProviderModel;
@@ -46,11 +48,17 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 
 /**
  * Created by stevenfredian on 10/18/16.
  */
-
+@RuntimePermissions
 public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresenter>
                                         implements RegisterInitialView{
 
@@ -167,7 +175,8 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
 
     @Override
     public void showError(String string) {
-        SnackbarManager.make(getActivity(),string, Snackbar.LENGTH_LONG).show();
+        snackbar = SnackbarManager.make(getActivity(),string, Snackbar.LENGTH_LONG);
+        snackbar.show();
     }
 
     @Override
@@ -238,7 +247,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
                     tv.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            onGoogleClick();
+                            RegisterInitialFragmentPermissionsDispatcher.onGoogleClickWithCheck(RegisterInitialFragment.this);
                         }
                     });
                 } else {
@@ -277,7 +286,8 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
         );
     }
 
-    private void onGoogleClick() {
+    @NeedsPermission(Manifest.permission.GET_ACCOUNTS)
+    public void onGoogleClick() {
         ((GoogleActivity) getActivity()).onSignInClicked();
         storeCacheGTM(AppEventTracking.GTMCacheKey.REGISTER_TYPE,
                 AppEventTracking.GTMCacheValue.GMAIL);
@@ -356,10 +366,32 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
         super.onDestroyView();
         presenter.unSubscribeFacade();
         KeyboardHandler.DropKeyboard(getActivity(),getView());
+        if(snackbar!=null && snackbar.isShown()) snackbar.dismiss();
     }
 
     private void storeCacheGTM(String key, String value) {
         cacheGTM.putString(key, value);
         cacheGTM.applyEditor();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        RegisterInitialFragmentPermissionsDispatcher.onRequestPermissionsResult(RegisterInitialFragment.this,requestCode, grantResults);
+    }
+
+    @OnShowRationale(Manifest.permission.GET_ACCOUNTS)
+    void showRationaleForGetAccounts(final PermissionRequest request) {
+        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.GET_ACCOUNTS);
+    }
+
+    @OnPermissionDenied(Manifest.permission.GET_ACCOUNTS)
+    void showDeniefForGetAccounts() {
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.GET_ACCOUNTS);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.GET_ACCOUNTS)
+    void showNeverAskForGetAccounts() {
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.GET_ACCOUNTS);
     }
 }

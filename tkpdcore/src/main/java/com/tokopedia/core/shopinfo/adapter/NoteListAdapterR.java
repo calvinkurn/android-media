@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.tokopedia.core.R;
 import com.tokopedia.core.customadapter.AbstractRecyclerAdapter;
 import com.tokopedia.core.shopinfo.models.NoteModel;
+import com.tokopedia.core.util.MethodChecker;
 
 import java.util.List;
 
@@ -78,7 +79,7 @@ public class NoteListAdapterR extends AbstractRecyclerAdapter{
     }
 
     private void bindView(NoteModel model, ViewHolder holder){
-        holder.notesName.setText(Html.fromHtml(model.title));
+        holder.notesName.setText(MethodChecker.fromHtml(model.title));
         holder.editNotes.setVisibility(View.GONE);
         holder.deleteNotes.setVisibility(View.GONE);
         setListener(holder);

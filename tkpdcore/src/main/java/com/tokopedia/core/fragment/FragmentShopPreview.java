@@ -23,6 +23,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
 
 import org.json.JSONException;
@@ -202,7 +203,7 @@ public class FragmentShopPreview extends Fragment {
 
     private void LoadShopInfoToUI(JSONObject Result) throws JSONException {
         JSONObject ShopInfo = new JSONObject(Result.getString("info"));
-        Holder.vShopName.setText(Html.fromHtml(ShopInfo.getString("shop_name")));
+        Holder.vShopName.setText(MethodChecker.fromHtml(ShopInfo.getString("shop_name")));
         Holder.vShopLoc.setText(ShopInfo.getString("shop_location"));
 
         ImageHandler.loadImageCircle2(getActivity(), Holder.vShopAvatar, ShopInfo.getString("shop_avatar"));

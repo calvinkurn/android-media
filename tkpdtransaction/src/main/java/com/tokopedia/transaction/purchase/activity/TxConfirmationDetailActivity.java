@@ -20,6 +20,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.TokopediaBankAccount;
 import com.tokopedia.transaction.purchase.listener.TxConfDetailViewListener;
 import com.tokopedia.transaction.purchase.model.response.txconfirmation.TxConfData;
@@ -141,7 +142,7 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
                 }
 
             });
-            holder.tvShopName.setText(Html.fromHtml(data.getOrderShop().getShopName()));
+            holder.tvShopName.setText(MethodChecker.fromHtml(data.getOrderShop().getShopName()));
             holder.tvTotalPrice.setText(data.getOrderDetail().getDetailOpenAmountIdr());
             holder.tvShippingAddress.setText(data.getOrderDestination().getReceiverName());
             holder.tvShippingAgency.setText(MessageFormat.format("{0} - {1}",
@@ -168,12 +169,12 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
                     .inflate(R.layout.listview_product_cart_payment_conf, container, false);
             final HolderProductCartItem holder = new HolderProductCartItem(view);
             ImageHandler.loadImageRounded2(this, holder.ivPic, data.getProductPicture());
-            holder.tvName.setText(Html.fromHtml(data.getProductName()));
+            holder.tvName.setText(MethodChecker.fromHtml(data.getProductName()));
             holder.tvPrice.setText(data.getProductPrice());
             holder.tvWeight.setText(MessageFormat.format(" ( {0} kg ) ",
                     data.getProductWeight()));
             holder.tvPriceTotal.setText(data.getOrderSubtotalPriceIdr());
-            holder.tvNotes.setText(Html.fromHtml(alterNotesData(data.getProductNotes())));
+            holder.tvNotes.setText(MethodChecker.fromHtml(alterNotesData(data.getProductNotes())));
             holder.tvQty.setText(data.getProductQuantity());
             holder.tvNotes.setEnabled(false);
             container.addView(view);

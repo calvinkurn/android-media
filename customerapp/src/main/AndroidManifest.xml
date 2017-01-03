@@ -13,7 +13,8 @@
                  android:icon="@drawable/qc_launcher"
                  android:label="@string/app_name"
                  android:supportsRtl="true"
-                 android:theme="@style/Theme.Tokopedia3.Launcher">
+                 android:theme="@style/Theme.Tokopedia3.Launcher"
+        >
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="d02324f74e70ffcd2dc00ab722d32baecf1884b4" />

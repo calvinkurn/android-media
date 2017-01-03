@@ -256,7 +256,7 @@ public class ShareSocmedHandler {
 
         if (image != null) {
             share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(f));
+            share.putExtra(Intent.EXTRA_STREAM, MethodChecker.getUri(context, f));
         }
         share.putExtra(Intent.EXTRA_REFERRER, ProductUri);
 //        share.putExtra(Intent.EXTRA_HTML_TEXT, ProductUri);
@@ -298,7 +298,7 @@ public class ShareSocmedHandler {
                     @Override
                     public File call(Boolean aBoolean) {
                         File photo = null;
-                        if(image != null) {
+                        if (image != null) {
                             FutureTarget<File> future = Glide.with(context)
                                     .load(image)
                                     .downloadOnly(4096, 2160);
@@ -337,7 +337,7 @@ public class ShareSocmedHandler {
 
                                 if (image != null) {
                                     share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                                    share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+                                    share.putExtra(Intent.EXTRA_STREAM, MethodChecker.getUri(context, file));
                                 }
                                 share.putExtra(Intent.EXTRA_REFERRER, ProductUri);
                                 share.putExtra(Intent.EXTRA_HTML_TEXT, ProductUri);
@@ -378,7 +378,7 @@ public class ShareSocmedHandler {
         if (f.exists() && f.isDirectory()) {
             Log.v("FILES", "EXIST");
             File[] fs = f.listFiles();
-            if (fs.length > 5) // Hapus jika jumlah gambar temporary > 5
+            if (fs != null && fs.length > 5) // Hapus jika jumlah gambar temporary > 5
                 for (File file : fs) {
                     file.delete();
                 }
@@ -412,24 +412,25 @@ public class ShareSocmedHandler {
             }
         if (icon != null && f.exists()) {
 
-            Uri uri = Uri.fromFile(f);
-            Intent chooserIntent = createIntent(context,title, shareTxt, uri, true);
+            Uri uri = MethodChecker.getUri(context, f);
+            Intent chooserIntent = createIntent(context, title, shareTxt, uri, true);
             context.startActivity(chooserIntent);
         } else {
-            Intent chooserIntent = createIntent(context,title, shareTxt, null, false);
+            Intent chooserIntent = createIntent(context, title, shareTxt, null, false);
             context.startActivity(chooserIntent);
         }
     }
+
     private static Intent createIntent(Context context, String title, String shareTxt, Uri uri,
-                                       boolean fileExists){
+                                       boolean fileExists) {
         Intent share = new Intent(Intent.ACTION_SEND);
         String shareTitle;
-        if (fileExists){
+        if (fileExists) {
             share.setType("image/*");
             share.putExtra(Intent.EXTRA_STREAM, uri);
             share.putExtra(Intent.EXTRA_TEXT, shareTxt);
             shareTitle = "Share Image!";
-        }else {
+        } else {
             share.setType("text/plain");
             share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
             share.putExtra(Intent.EXTRA_SUBJECT, title);
@@ -488,40 +489,14 @@ public class ShareSocmedHandler {
 
     public static void ShareIntentImageUri(Activity context, String title, String shareTxt,
                                            String ProductUri, String imageUri) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        CheckTempDirectory();
-        File f = null;
-        boolean imageExists = false;
-        if (imageUri != null && !TextUtils.isEmpty(imageUri)){
-            f = UploadPhotoTask.writeImageToTkpdPath(AddProductFragment.compressImage(imageUri));
-
-            Bitmap icon = BitmapFactory.decodeFile(f == null ? imageUri : f.getAbsolutePath());
-            if (icon != null && f!= null) {
-                try {
-                    icon.compress(Bitmap.CompressFormat.JPEG, 60, bytes);
-                    f.createNewFile();
-                    FileOutputStream fo = new FileOutputStream(f);
-                    fo.write(bytes.toByteArray());
-                    if (icon != null && f.exists())
-                        imageExists = true;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
 
         Intent share = new Intent(Intent.ACTION_SEND);
-        if (imageExists) {
-            Uri uri = Uri.fromFile(f);
-            Intent chooserIntent = createIntent(context,title, shareTxt, uri, true);
-            context.startActivity(chooserIntent);
-        } else {
-            share.setType("text/plain");
-            share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-            if (title != null) share.putExtra(Intent.EXTRA_SUBJECT, title);
-            share.putExtra(Intent.EXTRA_TEXT, shareTxt);
-            context.startActivity(Intent.createChooser(share, "Share link!"));
-        }
+        share.setType("text/plain");
+        share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        if (title != null) share.putExtra(Intent.EXTRA_SUBJECT, title);
+        share.putExtra(Intent.EXTRA_TEXT, shareTxt);
+        context.startActivity(Intent.createChooser(share, "Share link!"));
+
     }
 
     /**
@@ -570,7 +545,7 @@ public class ShareSocmedHandler {
                         //targetedShare.putExtra(Intent.EXTRA_SUBJECT,"Aplikasi Tokopedia");
 //							  targetedShare.putExtra(Intent.EXTRA_TEXT, context.getString(R.string.message_share_prod_info) + " " + ProductUri);
                         if (icon != null && !info.activityInfo.packageName.equals("com.bbm")) {
-                            targetedShare.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(f));
+                            targetedShare.putExtra(Intent.EXTRA_STREAM, MethodChecker.getUri(context, f));
                             targetedShare.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                         }
 

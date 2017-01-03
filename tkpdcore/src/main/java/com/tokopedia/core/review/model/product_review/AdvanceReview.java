@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.util.MethodChecker;
 
 
 public class AdvanceReview implements Parcelable{
@@ -226,7 +227,7 @@ public class AdvanceReview implements Parcelable{
      *     The productReview
      */
     public String getProductReview() {
-        return Html.fromHtml(productReview).toString();
+        return MethodChecker.fromHtml(productReview).toString();
     }
 
     /**
