@@ -21,5 +21,6 @@ function copyEnvVarsToGradleProperties {
 	echo "Run Gradle wrapper task...."
 	gradle wrapper
 	echo "FINISH!"
+	echo "Starting build now!"
     fi
 }
