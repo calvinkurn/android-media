@@ -20,7 +20,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.MultiPaneActivity;
 import com.tokopedia.core.gcm.NotificationModHandler;
-import com.tokopedia.core.inboxmessage.fragment.InboxMessageFragment;
+import com.tokopedia.inbox.inboxmessage.fragment.InboxMessageFragment;
 import com.tokopedia.core.inboxreputation.fragment.InboxReputationFragment;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.InboxRouter;

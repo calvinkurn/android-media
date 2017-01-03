@@ -12,9 +12,9 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.text.TextUtils;
 
 import com.google.android.gms.gcm.GcmListenerService;
 import com.tkpd.library.utils.CommonUtils;
@@ -29,7 +29,6 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
-import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.InboxRouter;
@@ -178,7 +177,8 @@ public class GCMLegacyListenerService extends GcmListenerService{
         ComponentName componentName = null;
         switch (Integer.parseInt(data.getString("tkp_code"))) {
             case TkpdState.GCMServiceState.GCM_MESSAGE:
-                resultclass = InboxMessageActivity.class;
+                componentName = InboxRouter.getInboxMessageActivityComponentName(this);
+                intent = InboxRouter.getInboxMessageActivityIntent(this);
                 //bundle.putInt("notif_call", NotificationCode);
                 title = data.getString("counter") + " " + this.getString(R.string.title_new_message);
                 ticker = data.getString("desc");
