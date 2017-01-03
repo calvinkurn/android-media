@@ -17,11 +17,11 @@ import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.WholesalePriceDB;
 import com.tokopedia.core.myproduct.model.WholeSaleAdapterModel;
 import com.tokopedia.core.myproduct.utils.VerificationUtils;
+import com.tokopedia.core.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.tokopedia.core.newgallery.presenter.ImageGalleryImpl.Pair;
 
 /**
  * Created by m.normansyah on 10/12/2015.

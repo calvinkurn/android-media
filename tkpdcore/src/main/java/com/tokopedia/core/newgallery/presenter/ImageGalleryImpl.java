@@ -8,6 +8,7 @@ import android.provider.MediaStore;
 import com.tokopedia.core.myproduct.model.FolderModel;
 import com.tokopedia.core.myproduct.presenter.ImageGallery;
 import com.tokopedia.core.newgallery.presenter.ImageGalleryView;
+import com.tokopedia.core.util.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -111,50 +112,6 @@ public class ImageGalleryImpl implements ImageGallery {
 
 
         return result;
-    }
-
-    /**
-     * This is just for this class
-     * @param <E>
-     * @param <F>
-     */
-    public static class Pair<E,F>{
-        E model1;
-        F model2;
-
-        public Pair(){
-            this.model1 = null;
-            this.model2 = null;
-        }
-
-        public Pair(E model1, F model2){
-            this.model1 = model1;
-            this.model2 = model2;
-        }
-
-        public E getModel1() {
-            return model1;
-        }
-
-        public void setModel1(E model1) {
-            this.model1 = model1;
-        }
-
-        public F getModel2() {
-            return model2;
-        }
-
-        public void setModel2(F model2) {
-            this.model2 = model2;
-        }
-
-        @Override
-        public String toString() {
-            return "Pair{" +
-                    "model1=" + model1 +
-                    ", model2=" + model2 +
-                    '}';
-        }
     }
 
     @Override

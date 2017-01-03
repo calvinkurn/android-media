@@ -37,6 +37,7 @@ import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
@@ -640,12 +641,12 @@ public class ProductFeed2Impl implements ProductFeed, DiscoveryListener {
     }
 
     @Override
-    public void onComplete(int type, ImageGalleryImpl.Pair<String, ? extends ObjContainer> data) {
+    public void onComplete(int type, Pair<String, ? extends ObjContainer> data) {
 
     }
 
     @Override
-    public void onFailed(int type, ImageGalleryImpl.Pair<String, ? extends ObjContainer> data) {
+    public void onFailed(int type, Pair<String, ? extends ObjContainer> data) {
         Log.e(TAG, "onFailed " + data.toString());
 //        if (((ErrorContainer)data.getModel2()).body() != null && ((ErrorContainer)data.getModel2()).body().getMessage()
 //                != null && RetrofitUtils.isSessionInvalid(((ErrorContainer)data.getModel2()).body().getMessage())) {
@@ -669,7 +670,7 @@ public class ProductFeed2Impl implements ProductFeed, DiscoveryListener {
     }
 
     @Override
-    public void onSuccess(int type, ImageGalleryImpl.Pair<String, ? extends ObjContainer> data) {
+    public void onSuccess(int type, Pair<String, ? extends ObjContainer> data) {
 
         switch (type) {
             case DiscoveryListener.TOPADS:

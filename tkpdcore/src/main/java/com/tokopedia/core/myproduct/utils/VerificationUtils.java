@@ -6,7 +6,6 @@ import android.util.Log;
 
 import static com.tkpd.library.utils.CommonUtils.checkNotNull;
 import static com.tokopedia.core.myproduct.model.constant.ImageModelType.SELECTED;
-import static com.tokopedia.core.newgallery.presenter.ImageGalleryImpl.Pair;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.database.manager.DbManagerImpl;
@@ -14,6 +13,7 @@ import com.tokopedia.core.myproduct.adapter.WholesaleAdapter;
 import com.tokopedia.core.myproduct.model.ImageModel;
 import com.tokopedia.core.myproduct.model.TextDeleteModel;
 import com.tokopedia.core.myproduct.model.WholeSaleAdapterModel;
+import com.tokopedia.core.util.Pair;
 
 import java.util.List;
 

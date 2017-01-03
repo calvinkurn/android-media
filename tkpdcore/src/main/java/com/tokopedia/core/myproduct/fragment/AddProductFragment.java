@@ -121,6 +121,7 @@ import com.tokopedia.core.myproduct.view.AddProductShare;
 import com.tokopedia.core.myproduct.view.AddProductSocMedSubmit;
 import com.tokopedia.core.myproduct.view.AddProductSubmit;
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.ShareSocmedHandler;
 
@@ -150,7 +151,6 @@ import rx.schedulers.Schedulers;
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
 import static com.tkpd.library.utils.CommonUtils.checkNotNull;
 import static com.tkpd.library.utils.CommonUtils.generateMessageError;
-import static com.tokopedia.core.newgallery.presenter.ImageGalleryImpl.Pair;
 
 /**
  * Created by m.normansyah on 03/12/2015.
@@ -940,7 +940,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
                     File imagePath = new File(imagePathFromImport);
                     if (checkFileSize(imagePath)) {
                         try {
-                            ImageGalleryImpl.Pair<Boolean, String> checkImageResolution = VerificationUtils.checkImageResolution(getActivity(), imagePathFromImport);
+                            Pair<Boolean, String> checkImageResolution = VerificationUtils.checkImageResolution(getActivity(), imagePathFromImport);
                             if (imagePathFromImport != null && checkImageResolution.getModel1()) {
                                 photos.add(getImageModelPrimary(imagePathFromImport, imagePath));
                             } else {
@@ -973,7 +973,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
                             File imagePath = new File(imagePathFromImport);
                             if (checkFileSize(imagePath)) {
                                 try {
-                                    ImageGalleryImpl.Pair<Boolean, String> checkImageResolution = VerificationUtils.checkImageResolution(getActivity(), imagePathFromImport);
+                                    Pair<Boolean, String> checkImageResolution = VerificationUtils.checkImageResolution(getActivity(), imagePathFromImport);
                                     if (checkImageResolution.getModel1()) {
                                         if (!primaryCreated) {
                                             photos.add(getImageModelPrimary(imagePathFromImport, imagePath));
@@ -1106,7 +1106,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
                                     }
                                 };
                                 try {
-                                    ImageGalleryImpl.Pair<Boolean, String> checkImageResolution = VerificationUtils.checkImageResolution(getActivity(), file.getAbsolutePath());
+                                    Pair<Boolean, String> checkImageResolution = VerificationUtils.checkImageResolution(getActivity(), file.getAbsolutePath());
                                     if (file.getAbsolutePath() != null && checkImageResolution.getModel1()) {
                                         photos.set(0, getImageModel(file.getAbsolutePath(), file));
                                     } else {
@@ -1272,7 +1272,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         File photo = UploadPhotoTask.writeImageToTkpdPath(compressImage(path));
         if (photo != null) {
             try {
-                ImageGalleryImpl.Pair<Boolean, String> checkImageResolution = VerificationUtils.checkImageResolution(getActivity(), path);
+                Pair<Boolean, String> checkImageResolution = VerificationUtils.checkImageResolution(getActivity(), path);
                 if (path != null && checkImageResolution.getModel1()) {
                     //[START] save to db for images
                     ImageModel newPhoto = getImageModel(path, photo);

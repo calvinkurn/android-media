@@ -43,6 +43,7 @@ import com.tokopedia.core.myproduct.model.constant.ImageModelType;
 import com.tokopedia.core.myproduct.presenter.ProductSocMedPresenter;
 import com.tokopedia.core.myproduct.service.ProductService;
 import com.tokopedia.core.myproduct.utils.AddProductType;
+import com.tokopedia.core.util.Pair;
 
 import org.parceler.Parcels;
 
@@ -327,7 +328,7 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
 
         imageModels.set(position, imageModel);
 
-        ImageGalleryImpl.Pair<Boolean, String> booleanStringPair = validateAllInstoped(this, imageModels);
+        Pair<Boolean, String> booleanStringPair = validateAllInstoped(this, imageModels);
 
         if(booleanStringPair.getModel1()){
             goToManageProduct();

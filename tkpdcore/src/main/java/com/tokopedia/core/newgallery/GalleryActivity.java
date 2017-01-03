@@ -35,6 +35,8 @@ import com.tokopedia.core.myproduct.presenter.ImageGallery;
 import com.tokopedia.core.newgallery.presenter.ImageGalleryImpl;
 import com.tokopedia.core.newgallery.presenter.ImageGalleryView;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.core.util.SessionHandler;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -205,6 +207,22 @@ public class GalleryActivity extends AppCompatActivity implements ImageGalleryVi
             position = intent.getExtras().getInt(ADD_PRODUCT_IMAGE_LOCATION, ADD_PRODUCT_IMAGE_LOCATION_DEFAULT);
             forceOpenCamera = intent.getExtras().getBoolean(FORCE_OPEN_CAMERA, false);
             maxSelection = intent.getExtras().getInt(MAX_IMAGE_SELECTION, -1);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (SessionHandler.isFirstTimeAskedPermissionStorage(GalleryActivity.this)
+                || shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE))
+            GalleryActivityPermissionsDispatcher.checkPermissionWithCheck(this);
+        else
+            RequestPermissionUtil.onFinishActivityIfNeverAskAgain(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (supportFragmentManager.findFragmentById(R.id.add_product_container) == null)
+            initFragment(FRAGMENT);
+
+        if (forceOpenCamera && checkNotNull(fab)) {
+            fab.performClick();
         }
     }
 

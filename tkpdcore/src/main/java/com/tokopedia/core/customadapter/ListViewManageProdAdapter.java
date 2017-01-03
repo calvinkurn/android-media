@@ -48,6 +48,7 @@ import com.tokopedia.core.myproduct.utils.VerificationUtils;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
 
 import org.json.JSONException;
@@ -395,7 +396,7 @@ public class ListViewManageProdAdapter extends BaseAdapter
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (position < manageProductModels.size()) {
                     String currencycode = manageProductModels.get(position).getCurrencyCode().equals("1") ? "Rp" : "US$";
-                    ImageGalleryImpl.Pair<Boolean, String> verif = VerificationUtils.validatePrice(context, currencycode, s.toString());
+                    Pair<Boolean, String> verif = VerificationUtils.validatePrice(context, currencycode, s.toString());
                     if (!verif.getModel1()) {
                         holder.Prices.setError(verif.getModel2());
                     } else {

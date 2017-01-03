@@ -28,13 +28,13 @@ import com.tokopedia.core.newgallery.presenter.ImageGalleryImpl;
 import com.tokopedia.core.myproduct.utils.ProductEditHelper;
 import com.tokopedia.core.network.apiservices.upload.apis.GeneratedHostActApi;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
+import com.tokopedia.core.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
 import static com.tkpd.library.utils.CommonUtils.checkNotNull;
-import static com.tokopedia.core.newgallery.presenter.ImageGalleryImpl.Pair;
 
 /**
  * Created by m.normansyah on 28/12/2015.
@@ -604,17 +604,6 @@ public class InputAddProductModel {
 
     public void setEditProductData(EditProductModel.Data editProductData) {
         this.editProductData = editProductData;
-    }
-
-    @Deprecated
-    public List<ImageGalleryImpl.Pair<EditProductPictureModel, com.tokopedia.core.myproduct.service.ProductService.EditProductInputModel>> pairs;
-
-    public List<ImageGalleryImpl.Pair<EditProductPictureModel, com.tokopedia.core.myproduct.service.ProductService.EditProductInputModel>> getPairs() {
-        return pairs;
-    }
-
-    public void setPairs(List<ImageGalleryImpl.Pair<EditProductPictureModel, com.tokopedia.core.myproduct.service.ProductService.EditProductInputModel>> pairs) {
-        this.pairs = pairs;
     }
 
     public Bitmap getBitmap() {

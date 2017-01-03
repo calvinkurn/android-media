@@ -15,6 +15,7 @@ import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.PictureDB;
 import com.tokopedia.core.newgallery.presenter.ImageGalleryImpl;
 import com.tokopedia.core.myproduct.utils.VerificationUtils;
+import com.tokopedia.core.util.Pair;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -88,7 +89,7 @@ public class ImageDescriptionDialog  extends DialogFragment {
             @Override
             public void onClick(View v) {
                 addProdOk.setClickable(false);
-                ImageGalleryImpl.Pair<Boolean, String> res
+                Pair<Boolean, String> res
                         = VerificationUtils
                             .validateDescription(ImageDescriptionDialog.this.getActivity(), addProdDesc.getText().toString());
                 if(!res.getModel1()){

@@ -70,6 +70,7 @@ import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.shopinfo.models.shopnotes.GetShopNotes;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.ImageUploadHandler;
+import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdUrl;
@@ -101,7 +102,6 @@ import rx.schedulers.Schedulers;
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
 import static com.tkpd.library.utils.CommonUtils.checkErrorMessageEmpty;
 import static com.tkpd.library.utils.CommonUtils.checkNotNull;
-import static com.tokopedia.core.newgallery.presenter.ImageGalleryImpl.Pair;
 
 /**
  * @author m.normansyah

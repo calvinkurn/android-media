@@ -12,6 +12,7 @@ import com.tokopedia.core.newgallery.presenter.ImageGalleryImpl;
 import com.tokopedia.core.newgallery.presenter.ImageGalleryView;
 import com.tokopedia.core.myproduct.utils.MetadataUtil;
 import com.tokopedia.core.myproduct.utils.VerificationUtils;
+import com.tokopedia.core.util.Pair;
 
 import java.util.ArrayList;
 
@@ -73,7 +74,7 @@ public class ImageGalleryEntry{
                 Log.d(ImageGalleryView.TAG, messageTAG + imageUrl + " & " + position);
 
                 try {
-                    ImageGalleryImpl.Pair<Boolean, String> checkImageResolution = VerificationUtils.checkImageResolution(galleryListener.getContext(), imageUrl);
+                    Pair<Boolean, String> checkImageResolution = VerificationUtils.checkImageResolution(galleryListener.getContext(), imageUrl);
                     if (imageUrl != null && checkImageResolution.getModel1()) {
                         galleryListener.onSuccess(imageUrl, position);
                     } else {

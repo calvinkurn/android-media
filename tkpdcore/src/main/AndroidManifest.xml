@@ -521,6 +521,12 @@
 
         <activity android:name=".manage.general.ManageWebViewActivity"
                   android:screenOrientation="portrait"/>
+
+        <activity android:name=".newgallery.GalleryActivity"
+            android:screenOrientation="portrait"/>
+        
+        <activity android:name=".instoped.InstopedActivity"
+            android:screenOrientation="portrait"/>
         <!--=======================================================-->
         <!--RECEIVERS REGISTRY-->
         <!--=======================================================-->

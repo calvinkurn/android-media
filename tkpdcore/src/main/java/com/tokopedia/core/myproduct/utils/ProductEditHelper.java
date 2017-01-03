@@ -13,6 +13,7 @@ import com.tokopedia.core.myproduct.presenter.AddProductView;
 import com.tokopedia.core.myproduct.presenter.NetworkInteractor;
 import com.tokopedia.core.myproduct.service.ProductService;
 import com.tokopedia.core.product.model.productdetail.ProductWholesalePrice;
+import com.tokopedia.core.util.Pair;
 
 import org.parceler.Parcel;
 
@@ -27,7 +28,6 @@ import java.util.Set;
 
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
 import static com.tkpd.library.utils.CommonUtils.checkNotNull;
-import static com.tokopedia.core.newgallery.presenter.ImageGalleryImpl.Pair;
 
 /**
  * Created by noiz354 on 5/27/16.
