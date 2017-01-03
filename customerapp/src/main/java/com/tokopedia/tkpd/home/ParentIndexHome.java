@@ -20,6 +20,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.Cart;
 import com.tokopedia.core.gcm.FCMMessagingService.NotificationListener;
 import com.tokopedia.core.GalleryBrowser;
+import com.tokopedia.core.myproduct.ProductActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.tkpd.R;
 

@@ -33,7 +33,6 @@ import com.tokopedia.core.instoped.model.InstagramUserModel;
 import com.tokopedia.core.instoped.presenter.InstagramMedia;
 import com.tokopedia.core.instoped.presenter.InstagramMediaFragmentView;
 import com.tokopedia.core.instoped.presenter.InstagramMediaPresenterImpl;
-import com.tokopedia.core.myproduct.ProductActivity;
 import com.tokopedia.core.var.RecyclerViewItem;
 
 import org.parceler.Parcels;

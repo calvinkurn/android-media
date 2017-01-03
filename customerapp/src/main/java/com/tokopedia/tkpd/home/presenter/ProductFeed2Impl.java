@@ -17,7 +17,6 @@ import com.tokopedia.core.home.model.HistoryProductListItem;
 import com.tokopedia.core.home.model.HorizontalRecentViewList;
 import com.tokopedia.core.myproduct.ProductActivity;
 import com.tokopedia.core.myproduct.fragment.AddProductFragment;
-import com.tokopedia.core.newgallery.presenter.ImageGalleryImpl;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.NetworkHandler;
 import com.tokopedia.core.network.apiservices.etc.HomeService;

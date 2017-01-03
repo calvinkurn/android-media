@@ -139,7 +139,6 @@ import rx.subscriptions.CompositeSubscription;
 
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
 import static com.tkpd.library.utils.CommonUtils.checkNotNull;
-import static com.tokopedia.core.myproduct.ProductActivity.messageTAG;
 
 @RuntimePermissions
 public class ManageProduct extends TkpdActivity implements
@@ -269,6 +268,7 @@ public class ManageProduct extends TkpdActivity implements
     GetShopNoteModel.ShopNoteModel returnPolicy = null;
     private DownloadResultReceiver mReceiver;
     private Unbinder unbinder;
+    private String messageTAG = "ManageProduct";
 
     @Override
     public String getScreenName() {

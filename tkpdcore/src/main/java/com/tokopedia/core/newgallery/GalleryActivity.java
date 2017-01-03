@@ -46,6 +46,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
@@ -339,22 +343,7 @@ public class GalleryActivity extends AppCompatActivity implements ImageGalleryVi
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY && data != null) {
-            int position = data.getIntExtra(ADD_PRODUCT_IMAGE_LOCATION, ADD_PRODUCT_IMAGE_LOCATION_DEFAULT);
-            String imageUrl = data.getStringExtra(IMAGE_URL);
-            Log.d(TAG, messageTAG + imageUrl + " & " + position);
-            Fragment fragment = supportFragmentManager.findFragmentByTag(AddProductFragment.FRAGMENT_TAG);
-            if (fragment != null && fragment instanceof AddProductFragment && checkNotNull(imageUrl)) {
-                ((AddProductFragment) fragment).addImageAfterSelect(imageUrl, position);
-            }
-
-            ArrayList<String> imageUrls = data.getStringArrayListExtra(GalleryBrowser.IMAGE_URLS);
-            if(fragment != null && fragment instanceof AddProductFragment && checkCollectionNotNull(imageUrls)){
-                ((AddProductFragment) fragment).addImageAfterSelect(imageUrls.get(0), position);
-                imageUrls.remove(0);
-                ((AddProductFragment) fragment).addImageAfterSelect(imageUrls);
-            }
-        }else if(requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE){
+        if(requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE){
             switch (resultCode){
                 case RESULT_CANCELED:
                     forceOpenCamera = false;
@@ -391,6 +380,57 @@ public class GalleryActivity extends AppCompatActivity implements ImageGalleryVi
         File mediaFile = new File(mediaStorageDir.getPath() + File.separator
                 + "IMG_" + System.currentTimeMillis()/1000L + ".jpg");
         return mediaFile;
+    }
+    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    void showRationaleForStorageAndCamera(final PermissionRequest request) {
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        listPermission.add(Manifest.permission.CAMERA);
+
+        RequestPermissionUtil.onShowRationale(this, request, listPermission);
+    }
+
+    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showRationaleForStorage(final PermissionRequest request) {
+        RequestPermissionUtil.onShowRationale(this, request, Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnPermissionDenied(Manifest.permission.CAMERA)
+    void showDeniedForCamera() {
+        RequestPermissionUtil.onPermissionDenied(this,Manifest.permission.CAMERA);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.CAMERA)
+    void showNeverAskForCamera() {
+        RequestPermissionUtil.onNeverAskAgain(this,Manifest.permission.CAMERA);
+    }
+
+    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showDeniedForStorage() {
+        RequestPermissionUtil.onPermissionDenied(this,Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showNeverAskForStorage() {
+        RequestPermissionUtil.onNeverAskAgain(this,Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnPermissionDenied({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
+    void showDeniedForStorageAndCamera() {
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        listPermission.add(Manifest.permission.CAMERA);
+
+        RequestPermissionUtil.onPermissionDenied(this,listPermission);
+    }
+
+    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    void showNeverAskForStorageAndCamera() {
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        listPermission.add(Manifest.permission.CAMERA);
+
+        RequestPermissionUtil.onNeverAskAgain(this,listPermission);
     }
 
 

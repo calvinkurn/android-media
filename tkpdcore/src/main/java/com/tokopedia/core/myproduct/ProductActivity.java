@@ -1,7 +1,6 @@
 package com.tokopedia.core.myproduct;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.NotificationManager;
@@ -17,25 +16,19 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.PersistableBundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
-import com.bignerdranch.android.multiselector.ModalMultiSelectorCallback;
 import com.sromku.simple.fb.SimpleFacebook;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.DownloadResultReceiver;
@@ -44,24 +37,15 @@ import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.fragment.TwitterDialogV4;
-import com.tokopedia.core.instoped.InstagramAuth;
-import com.tokopedia.core.instoped.fragment.InstagramMediaFragment;
-import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.myproduct.dialog.DialogFragmentImageAddProduct;
 import com.tokopedia.core.myproduct.fragment.AddProductFragment;
 import com.tokopedia.core.myproduct.fragment.ChooserDialogFragment;
 import com.tokopedia.core.myproduct.fragment.ChooserFragment;
 import com.tokopedia.core.myproduct.fragment.ImageChooserDialog;
-import com.tokopedia.core.myproduct.fragment.ImageGalleryAlbumFragment;
-import com.tokopedia.core.myproduct.fragment.ImageGalleryFragment;
 import com.tokopedia.core.myproduct.fragment.ReturnPolicyDialog;
-import com.tokopedia.core.myproduct.model.FolderModel;
-import com.tokopedia.core.myproduct.model.ImageModel;
 import com.tokopedia.core.myproduct.model.NoteDetailModel;
 import com.tokopedia.core.myproduct.model.SimpleTextModel;
 import com.tokopedia.core.myproduct.presenter.AddProductView;
-import com.tokopedia.core.myproduct.presenter.ImageGallery;
-import com.tokopedia.core.myproduct.presenter.ProductSocMedPresenter;
 import com.tokopedia.core.myproduct.presenter.ProductView;
 import com.tokopedia.core.myproduct.service.ProductService;
 import com.tokopedia.core.myproduct.service.ProductServiceConstant;
@@ -69,8 +53,6 @@ import com.tokopedia.core.myproduct.utils.AddProductType;
 import com.tokopedia.core.myproduct.utils.UploadPhotoTask;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.newgallery.GalleryActivity;
-import com.tokopedia.core.newgallery.presenter.ImageGalleryImpl;
-import com.tokopedia.core.newgallery.presenter.ImageGalleryView;
 import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.product.interactor.CacheInteractor;
@@ -95,22 +77,14 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
 
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
 import static com.tkpd.library.utils.CommonUtils.checkNotNull;
 
 /**
- * Created by m.normansyah on 03/12/2015.
+ * Created by sebastianusk on 03/01/2017.
  */
-@RuntimePermissions
 public class ProductActivity extends BaseProductActivity implements
-        ImageGalleryView,
         ProductView,
         ChooserFragment.OnListFragmentInteractionListener,
         DownloadResultReceiver.Receiver,
@@ -121,35 +95,27 @@ public class ProductActivity extends BaseProductActivity implements
         ImageChooserDialog.SelectWithImage
 {
 
-    public static final String FORCE_OPEN_CAMERA = "FORCE_OPEN_CAMERA";
-    public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
+    private static final String TAG = "ProductActivity";
+    public static final String MAX_IMAGE_SELECTION = "MAX_IMAGE_SELECTION";
     SimpleFacebook simplefacebook;
 
     @BindView(R2.id.toolbar)
     Toolbar toolbar;
-
-//    @BindView(R2.id.app_bar_layout)
-//    AppBarLayout appBarLayout;
 
     @BindView(R2.id.add_product_container)
     FrameLayout container;
 
     FloatingActionButton fab;
 
-    ImageGallery imageGallery;
-
     String FRAGMENT;
     int position;
-    String imagePathCamera;
     String imagePathFromImport;
     String[] multiImagePathFromImport;
-    boolean forceOpenCamera;
     boolean isEdit;
     boolean isCopy;
     boolean isModify;
     String productId;
     private long productDb;
-    int maxSelection;
 
     DownloadResultReceiver mReceiver;
 
@@ -157,19 +123,18 @@ public class ProductActivity extends BaseProductActivity implements
     public static final String FRAGMENT_TO_SHOW = "FRAGMENT_TO_SHOW";
 
     public static final String ADD_PRODUCT_IMAGE_LOCATION = "ADD_PRODUCT_IMAGE_LOCATION";
-    public static final String MAX_IMAGE_SELECTION = "MAX_IMAGE_SELECTION";
     public static final int ADD_PRODUCT_IMAGE_LOCATION_DEFAULT = 0;
 
 
     // currently supported type
     public static final int ADD_PRODUCT_CATEGORY = 0;
     public static final int ADD_PRODUCT_CHOOSE_ETALASE = 1;
-    public static final int EDIT_PHOTO_DIALOG = 2;
 
 
     // fragment productActifity, moved there because it is needed for twitter dialog
     Fragment productActifityFragment = null;
     private Unbinder unbinder;
+    private String messageTAG = "Product";
 
     public static File getOutputMediaFile(){
         File mediaStorageDir = new File(
@@ -221,58 +186,10 @@ public class ProductActivity extends BaseProductActivity implements
         getSupportActionBar().setHomeButtonEnabled(true);
 
         supportFragmentManager = getSupportFragmentManager();
-        supportFragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-            public void onBackStackChanged() {
-                int backCount = getSupportFragmentManager().getBackStackEntryCount();
-                Log.d(ImageGalleryView.TAG, "back stack changed [count : " + backCount);
-                if (backCount == 0) {
-                    finish();
-                }
-            }
-        });
 
-
-        imageGallery = new ImageGalleryImpl(this);
-
-
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        if (fab != null)
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    ProductActivityPermissionsDispatcher.onFabClickedWithCheck(ProductActivity.this, view);
-                }
-            });
-        if (FRAGMENT.equals(InstagramAuth.TAG)) {
-            fab.setVisibility(View.GONE);
-        }
-
-         /* Starting Download Service */
+        /* Starting Download Service */
         mReceiver = new DownloadResultReceiver(new Handler());
         mReceiver.setReceiver(this);
-    }
-
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
-    public void onFabClicked(View view) {
-        switch (FRAGMENT) {
-            case ImageGalleryAlbumFragment.FRAGMENT_TAG:
-            case ImageGalleryFragment.FRAGMENT_TAG:
-                if (!Environment.getExternalStorageState().equals(
-                        Environment.MEDIA_REMOVED)) {
-                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                        File outputMediaFile = getOutputMediaFile();
-                        imagePathCamera = outputMediaFile.getAbsolutePath();
-                        Uri fileuri = MethodChecker.getUri(ProductActivity.this, outputMediaFile);
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileuri);
-                        startActivityForResult(takePictureIntent,
-                                CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
-                    }
-                } else {
-                    WarningDialog();
-                }
-                break;
-        }
     }
 
     private void getImplicitIntent() {
@@ -441,23 +358,8 @@ public class ProductActivity extends BaseProductActivity implements
     protected void onResume() {
         super.onResume();
 
-        if (SessionHandler.isFirstTimeAskedPermissionStorage(ProductActivity.this)
-                || shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE))
-            ProductActivityPermissionsDispatcher.checkPermissionWithCheck(this);
-        else
-            RequestPermissionUtil.onFinishActivityIfNeverAskAgain(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-        simplefacebook = SimpleFacebook.getInstance(this);
         if (supportFragmentManager.findFragmentById(R.id.add_product_container) == null)
             initFragment(FRAGMENT);
-
-        if (forceOpenCamera && checkNotNull(fab)) {
-            fab.performClick();
-        }
-    }
-
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void checkPermission() {
-        CommonUtils.dumper("NISNISNIS ProductActivity Storage");
     }
 
     public void fetchSaveInstanceState(Bundle bundle) {
@@ -467,16 +369,12 @@ public class ProductActivity extends BaseProductActivity implements
         }
     }
 
-    @Override
     public void fetchExtras(Intent intent) {
         if (intent != null) {
             // set which fragment should be created
             String fragment = intent.getExtras().getString(FRAGMENT_TO_SHOW);
             if (fragment != null) {
                 switch (fragment) {
-                    case InstagramAuth.TAG:
-                    case ImageGalleryAlbumFragment.FRAGMENT_TAG:
-                    case ImageGalleryFragment.FRAGMENT_TAG:
                     case AddProductFragment.FRAGMENT_TAG:
                         FRAGMENT = fragment;
                         break;
@@ -501,14 +399,11 @@ public class ProductActivity extends BaseProductActivity implements
                 }
             }
 
-            forceOpenCamera = intent.getExtras().getBoolean(FORCE_OPEN_CAMERA, false);
-
             isEdit = intent.getExtras().getBoolean("is_edit", false);
             isCopy = intent.getExtras().getBoolean("is_copy", false);
             isModify = intent.getExtras().getBoolean("is_modify", false);
             productId = intent.getExtras().getString("product_id", "XXX");
             productDb = intent.getExtras().getLong("product_db", -1);
-            maxSelection = intent.getExtras().getInt(MAX_IMAGE_SELECTION, -1);
 
             int notificationId = intent.getIntExtra(ProductService.NOTIFICATION_ID,-1);
             if (notificationId != -1){
@@ -532,25 +427,9 @@ public class ProductActivity extends BaseProductActivity implements
         outState.putInt(ADD_PRODUCT_IMAGE_LOCATION, position);
     }
 
-    @Override
     public void initFragment(String FRAGMENT_TAG) {
 
         switch (FRAGMENT_TAG) {
-            case ImageGalleryAlbumFragment.FRAGMENT_TAG:
-                if (supportFragmentManager.findFragmentByTag(ImageGalleryAlbumFragment.FRAGMENT_TAG) == null) {
-                    if (maxSelection == -1)
-                        productActifityFragment = ImageGalleryAlbumFragment.newInstance();
-                    else {
-                        productActifityFragment = ImageGalleryAlbumFragment.newInstance(maxSelection);
-                    }
-                    moveToFragment(productActifityFragment, true, ImageGalleryAlbumFragment.FRAGMENT_TAG);
-                } else {
-                    Log.d(TAG, messageTAG + ImageGalleryAlbumFragment.FRAGMENT_TAG + " is already created");
-                }
-                break;
-            case ImageGalleryFragment.FRAGMENT_TAG:
-                Log.d(TAG, messageTAG + ImageGalleryFragment.FRAGMENT_TAG + " can be accessed from " + ImageGalleryAlbumFragment.FRAGMENT_TAG);
-                break;
             case AddProductFragment.FRAGMENT_TAG:
                 if (supportFragmentManager.findFragmentByTag(AddProductFragment.FRAGMENT_TAG) == null) {
                     if (imagePathFromImport != null && position != -1) {
@@ -576,84 +455,17 @@ public class ProductActivity extends BaseProductActivity implements
                     Log.d(TAG, messageTAG + AddProductFragment.FRAGMENT_TAG + " is already created");
                 }
                 break;
-            case InstagramAuth.TAG:
-                InstagramAuth auth = new InstagramAuth();
-                auth.getMedias(supportFragmentManager);
-                break;
             case AddProductFragment.FRAGMENT_EDIT_TAG:
                 throw new RuntimeException("not implemented yet");
         }
     }
 
-    public InstagramMediaFragment.OnGetInstagramMediaListener onGetInstagramMediaListener() {
-        return new InstagramMediaFragment.OnGetInstagramMediaListener() {
-            @Override
-            public void onSuccess(SparseArray<InstagramMediaModel> selectedModel) {
-                selectedModel.size();
-                //[START] move to productSocMedActivity
-                Intent moveToProductSocMed = new Intent(ProductActivity.this, ProductSocMedActivity.class);
-                moveToProductSocMed.putExtra(
-                        ProductSocMedPresenter.PRODUCT_SOC_MED_DATA,
-                        Parcels.wrap(selectedModel)
-                );
-                ProductActivity.this.startActivity(moveToProductSocMed);
-                ProductActivity.this.finish();
-                //[END] move to productSocMedActivity
-            }
-        };
-    }
-
-    @Override
     public void moveToFragment(Fragment fragment, boolean isAddtoBackStack, String TAG) {
         FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.add_product_container, fragment, TAG);
         if (isAddtoBackStack)
             fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
-    }
-
-    @Override
-    public ModalMultiSelectorCallback getMultiSelectorCallback(String FRAGMENT_TAG) {
-        Fragment fragment = supportFragmentManager.findFragmentByTag(FRAGMENT_TAG);
-        if (fragment != null && fragment.isVisible() && fragment instanceof ImageGalleryFragment) {
-            return ((ImageGalleryFragment) fragment).getmDeleteMode();
-        }
-
-//        if(fragment !=null && fragment.isVisible() && fragment instanceof AddProductFragment){
-//            return ((AddProductFragment)fragment).getmDeleteMode();
-//        }
-        return null;
-    }
-
-    public void sendResultImageGallery(List<String> paths) {
-        Fragment fragment = supportFragmentManager.findFragmentByTag(ImageGalleryFragment.FRAGMENT_TAG);
-        if (fragment != null && fragment instanceof ImageGalleryFragment && checkCollectionNotNull(paths)) {
-            Intent intent = new Intent();
-            intent.putStringArrayListExtra(GalleryBrowser.IMAGE_URLS, new ArrayList<String>(paths));
-            intent.putExtra(ADD_PRODUCT_IMAGE_LOCATION, position);
-            setResult(GalleryBrowser.RESULT_CODE, intent);
-            finish();
-        }
-    }
-
-    @Override
-    public ActionMode showActionMode(ActionMode.Callback callback) {
-        if (checkNotNull(callback))
-            return startSupportActionMode(callback);
-        else
-            return null;
-    }
-
-    @Override
-    public void sendResultImageGallery(String path) {
-        Fragment fragment = supportFragmentManager.findFragmentByTag(ImageGalleryFragment.FRAGMENT_TAG);
-        if (fragment != null && fragment instanceof ImageGalleryFragment && path != null) {
-            Intent intent = new Intent();
-            intent.putExtra(GalleryBrowser.IMAGE_URL, path);
-            intent.putExtra(ADD_PRODUCT_IMAGE_LOCATION, position);
-            setResult(GalleryBrowser.RESULT_CODE, intent);
-            finish();
-        }
     }
 
     @Override
@@ -673,24 +485,6 @@ public class ProductActivity extends BaseProductActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-    }
-
-    @Override
-    public void fetchImageFromDb() {
-        if (imageGallery != null) {
-            imageGallery.fetchImageUsingDb(this);
-        }
-    }
-
-    @Override
-    public void moveToGallery(List<ImageModel> imageModels, int maxSelection) {
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(ImageGalleryFragment.FRAGMENT_TAG);
-        if (fragment != null && fragment instanceof ImageGalleryFragment) {
-            Log.d(TAG, messageTAG + ImageGalleryFragment.FRAGMENT_TAG + " already created!!!");
-        } else {
-            Fragment imageGalleryFragment = ImageGalleryFragment.newInstance(imageModels, maxSelection);
-            moveToFragment(imageGalleryFragment, true, ImageGalleryFragment.FRAGMENT_TAG);
-        }
     }
 
     public static void moveToAddProduct(Context context) {
@@ -746,16 +540,6 @@ public class ProductActivity extends BaseProductActivity implements
     }
 
     @Override
-    public void loadData(List<FolderModel> models) {
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(ImageGalleryAlbumFragment.FRAGMENT_TAG);
-        if (fragment != null && fragment instanceof ImageGalleryAlbumFragment) {
-            ImageGalleryAlbumFragment imageGalleryAlbumFragment = (ImageGalleryAlbumFragment) fragment;
-            // Load Data
-            imageGalleryAlbumFragment.loadData(models);
-        }
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY && data != null) {
@@ -772,27 +556,6 @@ public class ProductActivity extends BaseProductActivity implements
                 ((AddProductFragment) fragment).addImageAfterSelect(imageUrls.get(0), position);
                 imageUrls.remove(0);
                 ((AddProductFragment) fragment).addImageAfterSelect(imageUrls);
-            }
-        }else if(requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE){
-            switch (resultCode){
-                case RESULT_CANCELED:
-                    forceOpenCamera = false;
-                    finish();
-                    break;
-                case RESULT_OK:
-                    switch (FRAGMENT) {
-                        case ImageGalleryAlbumFragment.FRAGMENT_TAG:
-                        case ImageGalleryFragment.FRAGMENT_TAG:
-                            if (imagePathCamera != null) {
-                                Intent intent = new Intent();
-                                intent.putExtra("image_url", imagePathCamera);
-                                intent.putExtra(ADD_PRODUCT_IMAGE_LOCATION, position);
-                                setResult(GalleryBrowser.RESULT_CODE, intent);
-                                finish();
-                            }
-                            break;
-                    }
-                    break;
             }
         }
 
@@ -1074,63 +837,5 @@ public class ProductActivity extends BaseProductActivity implements
         } else {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        ProductActivityPermissionsDispatcher.onRequestPermissionsResult(ProductActivity.this, requestCode, grantResults);
-    }
-
-    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
-    void showRationaleForStorageAndCamera(final PermissionRequest request) {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-
-        RequestPermissionUtil.onShowRationale(this, request, listPermission);
-    }
-
-    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showRationaleForStorage(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(this, request, Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnPermissionDenied(Manifest.permission.CAMERA)
-    void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(this,Manifest.permission.CAMERA);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.CAMERA)
-    void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(this,Manifest.permission.CAMERA);
-    }
-
-    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(this,Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(this,Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnPermissionDenied({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
-    void showDeniedForStorageAndCamera() {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-
-        RequestPermissionUtil.onPermissionDenied(this,listPermission);
-    }
-
-    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
-    void showNeverAskForStorageAndCamera() {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-
-        RequestPermissionUtil.onNeverAskAgain(this,listPermission);
     }
 }
