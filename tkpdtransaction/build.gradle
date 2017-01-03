@@ -3,11 +3,6 @@ apply plugin: 'android-apt'
 apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.14.1'
-}
-
-
 def getArtifactVersionCode() {
     return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
 }

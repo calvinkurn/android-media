@@ -2,10 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 apply plugin: 'io.fabric'
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.14.1'
-}
-
 def getDpiId(String density) {
 
     def DPI_ID = ['null': 0, 'mdpi': 1, 'hdpi': 2, 'xhdpi': 3, 'xxhdpi': 4]
