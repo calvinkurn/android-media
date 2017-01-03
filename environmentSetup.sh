@@ -38,7 +38,7 @@ function setupGradleWrapper {
 function getGradle {
     echo "Downloading gradle"
     curl -s https://get.sdkman.io | bash
-
+    source "/home/ubuntu/.sdkman/bin/sdkman-init.sh"
     sdk install gradle 2.14.1
 
     echo "FINISH!!"
