@@ -15,10 +15,10 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.gcm.FCMMessagingService.NotificationListener;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.MultiPaneActivity;
+import com.tokopedia.core.gcm.FCMMessagingService.NotificationListener;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.inboxmessage.fragment.InboxMessageFragment;
 import com.tokopedia.core.inboxreputation.fragment.InboxReputationFragment;
@@ -30,7 +30,6 @@ import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.session.presenter.Session;
-import com.tokopedia.core.talk.inboxtalk.fragment.InboxTalkFragment;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
@@ -87,7 +86,7 @@ public class NotificationCenter extends MultiPaneActivity implements Notificatio
                     CONTENT.add(getString(R.string.title_message));
                     break;
                 case 102:
-                    fragment = new InboxTalkFragment();
+                    fragment = InboxRouter.instanceInboxTalkFromNotification(this);
                     bundle.putBoolean("from_notif", true);
                     bundle.putString("nav", "inbox-talk");
                     fragment.setArguments(bundle);

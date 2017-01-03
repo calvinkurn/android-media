@@ -39,7 +39,6 @@ import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
@@ -187,7 +186,7 @@ public class FCMMessagingService extends FirebaseMessagingService {
                 description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
                 break;
             case TkpdState.GCMServiceState.GCM_TALK:
-                targetClass = InboxTalkActivity.class;
+                intent = InboxRouter.getInboxTalkActivityIntent(this);
                 title = String.format("%s %s", data.getString("counter"), this.getString(R.string.title_new_talk));
                 ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
                 description = data.getString(ARG_NOTIFICATION_DESCRIPTION);

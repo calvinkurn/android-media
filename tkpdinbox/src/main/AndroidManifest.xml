@@ -37,6 +37,10 @@
             android:name="com.tokopedia.inbox.rescenter.edit.activity.EditResCenterActivity"
             android:label="@string/title_activity_edit_resolution"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.tokopedia.inbox.inboxtalk.activity.InboxTalkActivity"
+            android:label="@string/title_activity_inbox_talk"
+            android:screenOrientation="portrait" />
         <service
             android:name="com.tokopedia.inbox.rescenter.detail.service.DetailResCenterService"
             android:exported="false" />

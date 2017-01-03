@@ -51,7 +51,6 @@ import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
@@ -403,7 +402,8 @@ public class DrawerVariable {
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.MESSAGE);
                 break;
             case TkpdState.DrawerPosition.INBOX_TALK:
-                startIntent(InboxTalkActivity.class);
+                intent = InboxRouter.getInboxTalkActivityIntent(context);
+                context.startActivity(intent);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_DISCUSSION);
                 break;
             case TkpdState.DrawerPosition.INBOX_REVIEW:

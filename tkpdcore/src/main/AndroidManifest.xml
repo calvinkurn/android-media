@@ -453,10 +453,6 @@
             android:label="@string/title_talk"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity"
-            android:label="@string/title_activity_inbox_talk"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.tokopedia.core.share.ShareActivity"
             android:label="@string/title_activity_share"
             android:screenOrientation="portrait" />
@@ -635,7 +631,7 @@
             android:name="com.tokopedia.core.product.intentservice.ProductInfoIntentService"
             android:exported="false" />
         <service
-            android:name="com.tokopedia.core.talk.inboxtalk.intentservice.InboxTalkIntentService"
+            android:name="com.tokopedia.core.InboxTalkIntentService"
             android:exported="false" />
         <service
             android:name="com.tokopedia.core.talkview.intentservice.TalkDetailIntentService"
