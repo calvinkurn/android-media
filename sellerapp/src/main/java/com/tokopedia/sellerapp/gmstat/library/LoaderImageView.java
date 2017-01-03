@@ -57,8 +57,12 @@ public class LoaderImageView extends ImageView implements LoaderView {
 
     private void init(AttributeSet attrs) {
         loaderController = new LoaderController(this);
-        TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.loader_view, 0, 0);
-        loaderController.setUseGradient(typedArray.getBoolean(R.styleable.loader_view_use_gradient, LoaderConstant.USE_GRADIENT_DEFAULT));
+        TypedArray typedArray = getContext()
+                .obtainStyledAttributes(attrs, R.styleable.loader_view, 0, 0);
+        loaderController.setUseGradient(
+                typedArray.getBoolean(
+                        R.styleable.loader_view_use_gradient,
+                        LoaderConstant.USE_GRADIENT_DEFAULT));
         typedArray.recycle();
     }
 

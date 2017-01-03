@@ -21,7 +21,7 @@ import java.util.List;
 
 public class Breadcrumb implements Parcelable {
     @SerializedName("name_without_total")
-    public String name_without_total;
+    public String nameWithoutTotal;
 
     @SerializedName("child")
     public List<Breadcrumb> child;
@@ -52,7 +52,7 @@ public class Breadcrumb implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.name_without_total);
+        dest.writeString(this.nameWithoutTotal);
         dest.writeList(this.child);
         dest.writeString(this.id);
         dest.writeString(this.name);
@@ -66,7 +66,7 @@ public class Breadcrumb implements Parcelable {
     }
 
     protected Breadcrumb(Parcel in) {
-        this.name_without_total = in.readString();
+        this.nameWithoutTotal = in.readString();
         this.child = new ArrayList<>();
         in.readList(this.child, Breadcrumb.class.getClassLoader());
         this.id = in.readString();

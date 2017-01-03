@@ -132,7 +132,9 @@ public class MarketInsightViewHelper {
 
         // remove null or empty
         for(int i=0;i<getKeywords.size();i++){
-            if(getKeywords.get(i) == null || getKeywords.get(i).getSearchKeyword() == null || getKeywords.get(i).getSearchKeyword().isEmpty())
+            if(getKeywords.get(i) == null
+                    || getKeywords.get(i).getSearchKeyword() == null
+                    || getKeywords.get(i).getSearchKeyword().isEmpty())
                 getKeywords.remove(i);
         }
 

@@ -6,12 +6,9 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Generated;
-
 /**
  * Created by normansyahputa on 11/14/16.
  */
-@Generated("org.jsonschema2pojo")
 public class GetShopCategory {
 
     @SerializedName("ShopCategory")

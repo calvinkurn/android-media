@@ -59,9 +59,14 @@ public class LoaderController {
             prepareGradient(canvas.getWidth() * widthWeight);
         }
         if(gravity == Gravity.RIGHT){
-            canvas.drawRect(canvas.getWidth() - (canvas.getWidth() * widthWeight), margin_height, canvas.getWidth() , canvas.getHeight() - margin_height, rectPaint);
+            canvas.drawRect(canvas.getWidth() - (canvas.getWidth() * widthWeight),
+                    margin_height,
+                    canvas.getWidth() ,
+                    canvas.getHeight() - margin_height, rectPaint);
         }else {
-            canvas.drawRect(0, margin_height, canvas.getWidth() * widthWeight, canvas.getHeight() - margin_height, rectPaint);
+            canvas.drawRect(0, margin_height,
+                    canvas.getWidth() * widthWeight,
+                    canvas.getHeight() - margin_height, rectPaint);
         }
     }
 

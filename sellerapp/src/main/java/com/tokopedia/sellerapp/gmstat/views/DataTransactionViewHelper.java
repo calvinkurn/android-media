@@ -172,7 +172,9 @@ public class DataTransactionViewHelper {
     }
 
     public void displayGraphic(GetTransactionGraph getTransactionGraph, boolean emptyState) {
-        List<NExcel> nExcels = joinDateAndGrossGraph(getTransactionGraph.getDateGraph(), getTransactionGraph.getSuccessTransGraph());
+        List<NExcel> nExcels = joinDateAndGrossGraph(
+                getTransactionGraph.getDateGraph(),
+                getTransactionGraph.getSuccessTransGraph());
         if(nExcels == null)
             return;
 
@@ -192,7 +194,10 @@ public class DataTransactionViewHelper {
         williamChartUtils.setmValues(mValues);
 
         int bottomMargin = 5;
-        williamChartUtils.buildChart(williamChartUtils.buildLineChart(transactionChart, (int) dpToPx(itemView.getContext(), bottomMargin), emptyState));
+        williamChartUtils.buildChart(
+                williamChartUtils.buildLineChart(transactionChart,
+                        (int) dpToPx(itemView.getContext(),
+                                bottomMargin), emptyState));
         //[END] try used willam chart
     }
 
