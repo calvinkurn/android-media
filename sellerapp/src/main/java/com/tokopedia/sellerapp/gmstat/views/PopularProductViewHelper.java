@@ -5,6 +5,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.myproduct.ProductActivity;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.sellerapp.R;
@@ -52,6 +53,11 @@ public class PopularProductViewHelper {
 
     @BindView(R.id.popular_product_empty_state)
     LinearLayout popularProductEmptyState;
+
+    @OnClick(R.id.popular_product_empty_state)
+    public void moveToAddProduct(){
+        ProductActivity.moveToAddProduct(itemView.getContext());
+    }
 
     @OnClick({R.id.image_popular_product, R.id.text_popular_product})
     public void gotoProductDetail(){

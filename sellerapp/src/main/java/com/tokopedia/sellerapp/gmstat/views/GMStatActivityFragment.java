@@ -533,8 +533,10 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
 
         if(sDate == -1 && eDate == -1)
             gmstatHeaderViewHelper.bindData(dateGraph);
-        else
+        else {
             gmstatHeaderViewHelper.bindDate(sDate, eDate);
+            gmstatHeaderViewHelper.stopLoading();
+        }
     }
 
     @Override
@@ -559,11 +561,10 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
         baseGMModels.add(convRate);
         gmStatWidgetAdapter.clear();
         gmStatWidgetAdapter.addAll(baseGMModels);
-//            gmStatWidgetAdapter = new GMStatWidgetAdapter(baseGMModels, gmstat);
 
         if(!isFirstTime) {
             initAdapter(gmStatWidgetAdapter);
-            isFirstTime = !isFirstTime;
+            gmFragmentPresenter.setFirstTime(true);
         }
     }
 

@@ -72,10 +72,12 @@
         <activity
             android:name=".gmstat.views.GMStatActivity"
             android:label="@string/title_activity_gmstat"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3">
         </activity>
         <activity android:name=".gmstat.views.SetDateActivity"
             android:label="@string/set_date"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3"
             />
     </application>

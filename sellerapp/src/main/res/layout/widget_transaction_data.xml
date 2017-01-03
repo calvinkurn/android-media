@@ -118,7 +118,7 @@
         <LinearLayout
             android:id="@+id/transaction_data_container_non_gold_merchant"
             android:layout_width="match_parent"
-            android:layout_height="168dp"
+            android:layout_height="200dp"
             android:background="#CD000000"
             android:orientation="vertical"
             android:gravity="center"

@@ -215,7 +215,7 @@ public class SetDateFragment extends Fragment {
             this.periodListener = periodListener;
         }
 
-        @OnClick({R.id.overlay_set_date, R.id.period_date, R.id.period_header})
+        @OnClick(R.id.overlay_set_date)
         public void onCheckForOther(){
             checkBoxPeriod.setChecked(!checkBoxPeriod.isChecked());
             onCheckBoxPeriod(!checkBoxPeriod.isChecked());
@@ -409,6 +409,7 @@ public class SetDateFragment extends Fragment {
                     return true;
                 }
 
+                PeriodAdapter.this.sDate = sDate;
                 return exceedSixtyDays(sDate, eDate);
             }
 
@@ -419,6 +420,7 @@ public class SetDateFragment extends Fragment {
                     return true;
                 }
 
+                PeriodAdapter.this.eDate = eDate;
                 return exceedSixtyDays(sDate, eDate);
             }
         };

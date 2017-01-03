@@ -8,11 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
+import com.tokopedia.core.myproduct.ProductActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.gmstat.models.GetKeyword;
@@ -21,6 +23,7 @@ import com.tokopedia.sellerapp.gmstat.models.GetShopCategory;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -52,9 +55,18 @@ public class MarketInsightViewHelper {
     @BindView(R.id.market_insight_empty_state)
     LinearLayout marketInsightEmptyState;
 
-    @OnClick(R.id.add_product_market_insight)
+    @BindView(R.id.market_insight_container_top)
+    RelativeLayout marketInsightContainerTop;
+
+    @BindColor(R.color.empty_background)
+    int emptyColorBackground;
+
+    @BindColor(android.R.color.transparent)
+    int transparantColor;
+
+    @OnClick(R.id.market_insight_empty_state)
     public void addProductMarketInsight(){
-        Toast.makeText(view.getContext(), "Tambah Produk", Toast.LENGTH_LONG).show();
+        ProductActivity.moveToAddProduct(view.getContext());
     }
 
     private View view;
@@ -126,6 +138,7 @@ public class MarketInsightViewHelper {
                 view.getContext(), LinearLayoutManager.VERTICAL, false));
         marketInsightAdapter = new MarketInsightAdapter(searchKeyword);
         marketInsightRecyclerView.setAdapter(marketInsightAdapter);
+        marketInsightContainerTop.setBackgroundColor(transparantColor);
     }
 
     public void displayNonGoldMerchant() {
@@ -153,6 +166,7 @@ public class MarketInsightViewHelper {
     }
 
     public void displayEmptyState() {
+        marketInsightContainerTop.setBackgroundColor(emptyColorBackground);
         marketInsightGoldMerchant.setVisibility(View.GONE);
         marketInsightNonGoldMerchant.setVisibility(View.GONE);
         marketInsightEmptyState.setVisibility(View.VISIBLE);

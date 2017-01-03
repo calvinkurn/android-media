@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.db.chart.view.LineChartView;
+import com.tokopedia.core.myproduct.ProductActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.gmstat.models.GetTransactionGraph;
 import com.tokopedia.sellerapp.gmstat.utils.DataTransactionChartConfig;
@@ -24,6 +25,7 @@ import butterknife.BindArray;
 import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static com.tokopedia.sellerapp.gmstat.views.GMStatActivityFragment.NoDataAvailable;
 import static com.tokopedia.sellerapp.gmstat.views.PopularProductViewHelper.getFormattedString;
@@ -115,7 +117,6 @@ public class DataTransactionViewHelper {
             transactionCountIcon.setVisibility(View.GONE);
             percentage.setTextColor(gredyColor);
             percentage.setText(R.string.no_data);
-
 
             displayGraphic(getTransactionGraph, true);
             return;

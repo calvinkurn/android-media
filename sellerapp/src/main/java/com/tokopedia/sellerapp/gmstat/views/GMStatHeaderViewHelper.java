@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindArray;
+import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -44,6 +45,12 @@ public class GMStatHeaderViewHelper {
 
     @BindView(R.id.calendar_icon)
     LoaderImageView calendarIcon;
+
+    @BindColor(R.color.grey_400)
+    int gredyColor;
+
+    @BindColor(R.color.arrow_up)
+    int greenColor;
 
     private static final Locale locale = new Locale("in","ID");
 
@@ -83,12 +90,27 @@ public class GMStatHeaderViewHelper {
 
         calendarRange.setText(startDate+" - "+endDate);
 
+        setImageIcon();
+
+        stopLoading();
+
+        if(!isGmStat){
+            calendarRange.setTextColor(gredyColor);
+            calendarArrowIcon.setVisibility(View.GONE);
+        }else{
+            calendarRange.setTextColor(greenColor);
+            calendarArrowIcon.setVisibility(View.VISIBLE);
+        }
+    }
+
+    protected void setImageIcon() {
         Drawable setDateNext = AppCompatDrawableManager.get().getDrawable(itemView.getContext()
                 , R.drawable.ic_set_date_next);
         calendarArrowIcon.setImageDrawable(setDateNext);
         calendarIcon.setImageResource(R.mipmap.ic_icon_calendar_02);
+    }
 
-
+    public void stopLoading() {
         calendarRange.stopLoading();
         calendarArrowIcon.stopLoading();
         calendarIcon.stopLoading();
@@ -116,6 +138,9 @@ public class GMStatHeaderViewHelper {
         }
 
         calendarRange.setText(startDate+" - "+endDate);
+
+        setImageIcon();
+        stopLoading();
     }
 
     public static List<String> getDates(List<Integer> dateGraph, String[] monthNames){
@@ -135,6 +160,10 @@ public class GMStatHeaderViewHelper {
     }
 
     public void onClick(GMStatActivityFragment gmStatActivityFragment){
+        // prevent to set date if non gold merchant.
+        if(!isGmStat)
+            return;
+
         Intent moveToSetDate = new Intent(gmStatActivityFragment.getActivity(), SetDateActivity.class);
         moveToSetDate.putExtra(IS_GOLD_MERCHANT, isGmStat);
         gmStatActivityFragment.getActivity().startActivityForResult(moveToSetDate, MOVE_TO_SET_DATE);

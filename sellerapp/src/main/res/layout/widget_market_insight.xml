@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingBottom="@dimen/gmstat_padding_item_left_right"
     android:paddingTop="@dimen/gmstat_padding_item_top_transaction"
     android:layout_width="match_parent"
     android:background="@android:color/white"
@@ -38,6 +37,7 @@
         android:background="#1E000000"/>
 
     <RelativeLayout
+        android:id="@+id/market_insight_container_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/separator_1"
@@ -131,7 +131,7 @@
         <LinearLayout
             android:id="@+id/market_insight_empty_state"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="270dp"
             android:orientation="vertical"
             android:background="#f9f9f9"
             android:gravity="center"
