@@ -32,10 +32,9 @@ public class  TopPicksAdapter extends
     private List<Toppick> dataList;
     private int homeMenuWidth;
 
-
-
-    private SectionListCategoryAdapter.OnCategoryClickedListener onCategoryClickedListener;
-    private SectionListCategoryAdapter.OnGimmicClickedListener onGimmicClickedListener;
+    private TopPicksItemAdapter.OnItemClickedListener onItemClickedListener;
+    private TopPicksItemAdapter.OnTitleClickedListener onTitleClickedListener;
+    private TopPicksAdapter.OnClickViewAll onClickViewAll;
 
     public TopPicksAdapter(Context context) {
         this.mContext = context;
@@ -53,27 +52,32 @@ public class  TopPicksAdapter extends
     @Override
     public TopPicksAdapter.ItemRowHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         @SuppressLint("InflateParams") View v = LayoutInflater.from(
-                viewGroup.getContext()).inflate(R.layout.item_section_home_category, null
+                viewGroup.getContext()).inflate(R.layout.item_toppicks_category, null
         );
         return new TopPicksAdapter.ItemRowHolder(v);
     }
 
     @Override
     public void onBindViewHolder(TopPicksAdapter.ItemRowHolder itemRowHolder, int i) {
-        final String sectionName = dataList.get(i).getName();
-        itemRowHolder.itemTitle.setText(sectionName);
+        final Toppick toppick = dataList.get(i);
+        itemRowHolder.itemTitle.setText(toppick.getName());
         TopPicksItemAdapter itemAdapter = new TopPicksItemAdapter(
                 dataList.get(i),
                 homeMenuWidth);
-        //TODO
-        //itemAdapter.setCategoryClickedListener(onCategoryClickedListener);
-
+        itemAdapter.setItemClickedListener(onItemClickedListener);
+        itemAdapter.setTitleClickedListener(onTitleClickedListener);
         itemRowHolder.recycler_view_list.setHasFixedSize(true);
         itemRowHolder.recycler_view_list.setLayoutManager(
                 new NonScrollGridLayoutManager(mContext, 2,
                         GridLayoutManager.VERTICAL, false));
         itemRowHolder.recycler_view_list.addItemDecoration(new DividerItemDecoration(mContext));
         itemRowHolder.recycler_view_list.setAdapter(itemAdapter);
+                itemRowHolder.viewAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickViewAll.onClick(toppick);
+            }
+        });
     }
 
     @Override
@@ -82,15 +86,13 @@ public class  TopPicksAdapter extends
     }
 
     public void setOnGimmicClickedListener(
-            SectionListCategoryAdapter.OnGimmicClickedListener onGimmicClickedListener) {
-
-        this.onGimmicClickedListener = onGimmicClickedListener;
+            TopPicksItemAdapter.OnItemClickedListener onItemClickedListener) {
+        this.onItemClickedListener = onItemClickedListener;
     }
 
     public void setOnCategoryClickedListener(
-            SectionListCategoryAdapter.OnCategoryClickedListener onCategoryClickedListener) {
-
-        this.onCategoryClickedListener = onCategoryClickedListener;
+            TopPicksItemAdapter.OnTitleClickedListener onTitleClickedListener) {
+        this.onTitleClickedListener = onTitleClickedListener;
     }
 
     public void setDataList(List<Toppick> dataList) {
@@ -101,19 +103,31 @@ public class  TopPicksAdapter extends
         this.homeMenuWidth = homeMenuWidth;
     }
 
+    public OnClickViewAll getOnClickViewAll() {
+        return onClickViewAll;
+    }
+
+    public void setOnClickViewAll(OnClickViewAll onClickViewAll) {
+        this.onClickViewAll = onClickViewAll;
+    }
+
     class ItemRowHolder extends RecyclerView.ViewHolder {
 
         TextView itemTitle;
-
         RecyclerView recycler_view_list;
+        TextView viewAll;
 
         ItemRowHolder(View view) {
             super(view);
-
             this.itemTitle = (TextView) view.findViewById(R.id.itemTitle);
             this.recycler_view_list = (RecyclerView) view.findViewById(R.id.recycler_view_list);
+            this.viewAll = (TextView) view.findViewById(R.id.view_all);
         }
 
+    }
+
+    public interface OnClickViewAll {
+        void onClick(Toppick toppick);
     }
 
 }

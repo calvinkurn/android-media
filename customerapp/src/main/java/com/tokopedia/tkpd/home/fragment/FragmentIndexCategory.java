@@ -33,6 +33,7 @@ import com.google.gson.Gson;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tkpd.library.utils.URLParser;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -50,6 +51,7 @@ import com.tokopedia.core.network.entity.home.Banner;
 import com.tokopedia.core.network.entity.home.Ticker;
 import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
+import com.tokopedia.core.network.entity.topPicks.Item;
 import com.tokopedia.core.network.entity.topPicks.Toppick;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -66,6 +68,7 @@ import com.tokopedia.tkpd.home.adapter.RecyclerViewCategoryMenuAdapter;
 import com.tokopedia.tkpd.home.adapter.SectionListCategoryAdapter;
 import com.tokopedia.tkpd.home.adapter.TickerAnnouncementAdapter;
 import com.tokopedia.tkpd.home.adapter.TopPicksAdapter;
+import com.tokopedia.tkpd.home.adapter.TopPicksItemAdapter;
 import com.tokopedia.tkpd.home.facade.FacadePromo;
 import com.tokopedia.tkpd.home.presenter.Category;
 import com.tokopedia.tkpd.home.presenter.CategoryImpl;
@@ -95,7 +98,8 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         CategoryView,
         RechargeCategoryView,
         SectionListCategoryAdapter.OnCategoryClickedListener,
-        SectionListCategoryAdapter.OnGimmicClickedListener, HomeCatMenuView, TopPicksView {
+        SectionListCategoryAdapter.OnGimmicClickedListener, HomeCatMenuView, TopPicksView,
+        TopPicksItemAdapter.OnTitleClickedListener, TopPicksItemAdapter.OnItemClickedListener, TopPicksAdapter.OnClickViewAll{
 
     private static final long SLIDE_DELAY = 8000;
     public static final String TAG = FragmentIndexCategory.class.getSimpleName();
@@ -107,7 +111,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     Category category;
     private RechargeCategoryPresenter rechargeCategoryPresenter;
     TickerAnnouncementAdapter tickerAdapter;
-
+    URLParser urlParser;
 
     private HomeCatMenuPresenter homeCatMenuPresenter;
     private TopPicksPresenter topPicksPresenter;
@@ -115,7 +119,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private TopPicksAdapter topPicksAdapter;
 
     private GetShopInfoRetrofit getShopInfoRetrofit;
-
 
     private class ViewHolder {
         private View MainView;
@@ -398,8 +401,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
         topPicksAdapter.setOnCategoryClickedListener(this);
         topPicksAdapter.setOnGimmicClickedListener(this);
-
-
+        topPicksAdapter.setOnClickViewAll(this);
         holder.topPicksRecylerview.setLayoutManager(
                 new NonScrollLinearLayoutManager(getActivity(),
                         LinearLayoutManager.VERTICAL,
@@ -830,5 +832,24 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         return widthOfHomeMenuView;
     }
 
+    @Override
+    public void onItemClicked(Item topPickItem, int position) {
+        urlParser = new URLParser(topPickItem.getUrl());
+        Bundle bundle = new Bundle();
+        bundle.putString(BrowseProductRouter.EXTRAS_DISCOVERY_ALIAS, urlParser.getHotAlias());
+        bundle.putString(BrowseProductRouter.EXTRA_SOURCE, BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT);
+        Intent intent = BrowseProductRouter.getDefaultBrowseIntent(getContext());
+        intent.putExtras(bundle);
+        getActivity().startActivity(intent);
+    }
 
+    @Override
+    public void onTitleClicked(Toppick toppick) {
+        openWebViewURL(toppick.getUrl());
+    }
+
+    @Override
+    public void onClick(Toppick toppick) {
+        openWebViewURL(toppick.getUrl());
+    }
 }
