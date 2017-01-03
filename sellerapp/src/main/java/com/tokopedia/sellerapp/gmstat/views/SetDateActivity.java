@@ -29,6 +29,9 @@ public class SetDateActivity extends AppCompatActivity implements SetDateFragmen
     @BindColor(R.color.green_600)
     int green600;
 
+    @BindColor(R.color.tkpd_main_green)
+    int tkpdMainGreenColor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +46,7 @@ public class SetDateActivity extends AppCompatActivity implements SetDateFragmen
         }
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if(toolbar != null) {
-            toolbar.setBackgroundColor(green600);
+            toolbar.setBackgroundColor(tkpdMainGreenColor);
         }
         setSupportActionBar(toolbar);
         ActionBar supportActionBar = getSupportActionBar();

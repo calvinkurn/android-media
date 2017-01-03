@@ -55,6 +55,9 @@ public class GMStatActivity extends AppCompatActivity implements GMStat, Session
     @BindColor(R.color.green_600)
     int green600;
 
+    @BindColor(R.color.tkpd_main_green)
+    int tkpdMainGreenColor;
+
     SellerToolbarVariable sellerToolbarVariable;
 
     public static final String IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT";
@@ -81,7 +84,7 @@ public class GMStatActivity extends AppCompatActivity implements GMStat, Session
             getWindow().setStatusBarColor(green600);
         }
         toolbar.setTitle(titleActivityGMStat);
-        toolbar.setBackgroundColor(green600);
+        toolbar.setBackgroundColor(tkpdMainGreenColor);
         setSupportActionBar(toolbar);
         initDrawer();
 
