@@ -83,12 +83,14 @@ public class MethodChecker {
         return result;
     }
 
-    public static SmsMessage createSmsFromPdu(Intent intent, byte[] pdu) {
+    public static SmsMessage createSmsFromPdu(Intent intent) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             SmsMessage[] msgs = Telephony.Sms.Intents.getMessagesFromIntent(intent);
             return msgs[0];
         } else {
-            return SmsMessage.createFromPdu(pdu);
+            final Object[] pdusObj = (Object[]) intent.getExtras().get("pdus");
+
+            return SmsMessage.createFromPdu((byte[]) (pdusObj != null ? pdusObj[0] : ""));
         }
     }
 }

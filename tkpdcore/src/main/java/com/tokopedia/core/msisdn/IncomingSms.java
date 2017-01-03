@@ -1,17 +1,12 @@
 package com.tokopedia.core.msisdn;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Telephony;
 import android.telephony.SmsMessage;
-import android.util.Log;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.util.MethodChecker;
 
 import java.util.regex.Matcher;
@@ -35,33 +30,33 @@ public class IncomingSms extends BroadcastReceiver {
 
         final Bundle bundle = intent.getExtras();
         if (bundle != null) {
-            final Object[] pdusObj = (Object[]) bundle.get("pdus");
-            if (pdusObj != null) {
-                SmsMessage currentMessage;
-                Object pdus[] = (Object[]) bundle.get("pdus");
-                currentMessage = MethodChecker.createSmsFromPdu(intent, (byte[]) (pdus != null ? pdus[0] : ""));
+            SmsMessage currentMessage;
+            currentMessage = MethodChecker.createSmsFromPdu(intent);
 
-                String senderNum = currentMessage.getDisplayOriginatingAddress();
-                String message = currentMessage.getDisplayMessageBody();
-                if (senderNum.equals("Tokopedia") || message.startsWith("Tokopedia")) {
+            if (isTokopediaOTPSMS(currentMessage)) {
 
-                    String regexString = Pattern.quote("Tokopedia - ") + "(.*?)" + Pattern.quote("adalah");
-                    Pattern pattern = Pattern.compile(regexString);
-                    Matcher matcher = pattern.matcher(message);
+                String regexString = Pattern.quote("Tokopedia - ") + "(.*?)" + Pattern.quote("adalah");
+                Pattern pattern = Pattern.compile(regexString);
+                Matcher matcher = pattern.matcher(currentMessage.getDisplayMessageBody());
 
-                    while (matcher.find()) {
-                        String otpCode = matcher.group(1).trim();
-                        if (listener != null)
-                            listener.onReceiveOTP(otpCode);
-                    }
-
-
+                while (matcher.find()) {
+                    String otpCode = matcher.group(1).trim();
+                    if (listener != null)
+                        listener.onReceiveOTP(otpCode);
                 }
             }
         }
     }
 
+    private boolean isTokopediaOTPSMS(SmsMessage currentMessage) {
+        String senderNum = currentMessage.getDisplayOriginatingAddress();
+        String message = currentMessage.getDisplayMessageBody();
+
+        return senderNum.equals("Tokopedia") || message.startsWith("Tokopedia");
+    }
+
     public void registerSMSReceiver(Context context) {
+
         IntentFilter filter = new IntentFilter();
         filter.addAction(ACTION_SMS_RECEIVED);
         context.registerReceiver(this, filter);
