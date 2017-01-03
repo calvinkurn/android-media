@@ -18,6 +18,8 @@ function copyEnvVarsToGradleProperties {
         echo "artifactory_username=$ARTIFACTORY_USERNAME_ENV" >> $GRADLE_PROPERTIES
 	echo "artifactory_password=$ARTIFACTORY_PASSWORD_ENV" >> $GRADLE_PROPERTIES
 	echo "artifactory_url=$ARTIFACTORY_URL_ENV" >> $GRADLE_PROPERTIES
-	gradle wrapper --gradle-version 2.14.1
+	echo "Run Gradle wrapper task...."
+	gradle wrapper
+	echo "FINISH!"
     fi
 }
