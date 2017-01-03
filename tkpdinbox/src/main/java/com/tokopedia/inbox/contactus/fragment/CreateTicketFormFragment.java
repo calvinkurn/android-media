@@ -28,6 +28,7 @@ import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.contactus.ContactUsConstant;
 import com.tokopedia.inbox.contactus.adapter.ImageUploadAdapter;
 import com.tokopedia.inbox.contactus.listener.CreateTicketFormFragmentView;
@@ -79,6 +80,18 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
 
     @BindView(R2.id.phone_number)
     EditText phoneNumber;
+
+    @BindView(R2.id.name)
+    EditText name;
+
+    @BindView(R2.id.email)
+    EditText email;
+
+    @BindView(R2.id.name_text)
+    TextView nameTitle;
+
+    @BindView(R2.id.email_text)
+    TextView emailTitle;
 
     ImageUploadAdapter imageAdapter;
     TkpdProgressDialog progressDialog;
@@ -154,6 +167,12 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
 
     @Override
     protected void initView(View view) {
+        if(SessionHandler.isV4Login(getActivity())){
+            nameTitle.setVisibility(View.GONE);
+            name.setVisibility(View.GONE);
+            email.setVisibility(View.GONE);
+            emailTitle.setVisibility(View.GONE);
+        }
         imageAdapter = ImageUploadAdapter.createAdapter(getActivity());
         imageAdapter.setCanUpload(true);
 
@@ -316,6 +335,16 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
     @Override
     public TextView getAttachmentNote() {
         return attachmentNote;
+    }
+
+    @Override
+    public EditText getName() {
+        return name;
+    }
+
+    @Override
+    public EditText getEmail() {
+        return email;
     }
 
     @Override

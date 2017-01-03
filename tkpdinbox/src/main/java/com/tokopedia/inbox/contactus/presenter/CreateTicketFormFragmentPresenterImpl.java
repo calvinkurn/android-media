@@ -2,6 +2,7 @@ package com.tokopedia.inbox.contactus.presenter;
 
 import android.view.View;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
@@ -85,9 +86,13 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
         if (viewListener.getPhoneNumber().trim().length() > 0)
             pass.setPhoneNumber(String.valueOf(viewListener.getPhoneNumber()));
         if (viewListener.getArguments().getString(
-                ContactUsActivity.PARAM_ORDER_ID).length() > 0)
+                ContactUsActivity.PARAM_ORDER_ID, "").length() > 0)
             pass.setOrderId(String.valueOf(viewListener.getArguments().getString(
                     ContactUsActivity.PARAM_ORDER_ID)));
+        if (!SessionHandler.isV4Login(viewListener.getActivity())) {
+            pass.setName(viewListener.getName().getText().toString());
+            pass.setEmail(viewListener.getEmail().getText().toString());
+        }
         return pass;
     }
 
@@ -99,9 +104,24 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
         } else if (viewListener.getMessage().getText().toString().trim().length() < 30) {
             viewListener.showErrorValidation(viewListener.getMessage(), viewListener.getString(R.string.error_detail_too_short));
             return false;
-        } else if (viewListener.getAttachmentNote().getVisibility() == View.VISIBLE && viewListener.getAttachment().isEmpty()){
+        } else if (viewListener.getAttachmentNote().getVisibility() == View.VISIBLE && viewListener.getAttachment().isEmpty()) {
             viewListener.showError(viewListener.getActivity().getString(R.string.error_attachment));
             return false;
+        }
+
+        if (!SessionHandler.isV4Login(viewListener.getActivity())) {
+            if (viewListener.getName().getText().toString().trim().length() == 0) {
+                viewListener.showErrorValidation(viewListener.getName(), viewListener.getString(R.string.error_detail_empty));
+                return false;
+            }
+
+            if (viewListener.getEmail().getText().toString().trim().length() == 0) {
+                viewListener.showErrorValidation(viewListener.getName(), viewListener.getString(R.string.error_detail_empty));
+                return false;
+            } else if (!CommonUtils.EmailValidation(viewListener.getEmail().getText().toString())) {
+                viewListener.showErrorValidation(viewListener.getName(), viewListener.getString(R.string.error_invalid_email));
+                return false;
+            }
         }
         return true;
     }

@@ -44,4 +44,8 @@ public interface CreateTicketFormFragmentView {
     String getPhoneNumber();
 
     TextView getAttachmentNote();
+
+    EditText getName();
+
+    EditText getEmail();
 }

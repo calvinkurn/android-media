@@ -1218,7 +1218,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="bar_security_question">Verifikasi Keamanan</string>
     <string name="title_security_question">Halo, User</string>
     <string name="content_security_question">Kami telah mengirimkan kode verifikasi ke nomor ponsel/email kamu.</string>
-    <string name="content_security_question_phone">Kami telah mengirimkan kode verifikasi ke nomor ponsel kamu.</string>
+    <string name="content_security_question_phone">Kami telah mengirimkan kode verifikasi ke nomor ponsel </string>
     <string name="content_security_question_email">Kami telah mengirimkan kode verifikasi ke email kamu.</string>
     <string name="msg_otp">Hi Toppers, Mohon kesediaannya mengisi kode OTP berikut untuk membantu kami memastikan bahwa Anda adalah pemilik akun Tokopedia ini.</string>
     <string name="title_error_security">Kode Verifikasi Salah</string>
@@ -1374,7 +1374,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_still_need_help">Masih Memerlukan Bantuan?</string>
     <string name="title_choose_problem">Pilih Masalah</string>
     <string name="title_choose_detail_problem">Pilih Detail Masalah</string>
-    <string name="title_problem_category">Masalah :</string>
+    <string name="title_problem_category">Masalah</string>
     <string name="title_problem_detail">Keterangan Masalah Anda</string>
     <string name="title_invoice_no">No Invoice</string>
     <string name="title_invoice_no_and_user_name">No Invoice / Nama Penerima</string>
@@ -1851,4 +1851,5 @@ di Tokopedia Sekarang!</string>
     <string name="title_phone_optional">Nomor Telepon (Optional)</string>
     <string name="error_attachment">Mohon tambahkan lampiran.</string>
     <string name="action_send_otp_with_call">Atau kirim OTP melalui telepon</string>
+    <string name="content_change_number">Jika nomor Anda sudah tidak aktif, silahkan Klik disini</string>
 </resources>

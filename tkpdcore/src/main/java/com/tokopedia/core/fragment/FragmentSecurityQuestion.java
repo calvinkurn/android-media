@@ -1,7 +1,7 @@
 package com.tokopedia.core.fragment;
 
 import android.Manifest;
-import android.content.IntentFilter;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.design.widget.Snackbar;
@@ -24,18 +24,18 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.msisdn.IncomingSms;
-import com.tokopedia.core.msisdn.fragment.MsisdnVerificationFragment;
-import com.tokopedia.core.session.model.LoginInterruptModel;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.session.model.OTPModel;
 import com.tokopedia.core.session.model.QuestionFormModel;
 import com.tokopedia.core.session.model.SecurityQuestionViewModel;
 import com.tokopedia.core.session.presenter.SecurityQuestion;
 import com.tokopedia.core.session.presenter.SecurityQuestionImpl;
 import com.tokopedia.core.session.presenter.SecurityQuestionView;
-import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
@@ -68,8 +68,6 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     EditText vInputOtp;
     @BindView(R2.id.title_otp)
     TextView titleOTP;
-    @BindView(R2.id.phone_number)
-    EditText phoneNumber;
     @BindView(R2.id.title_security)
     TextView titleSecurity;
     @BindView(R2.id.wrapper_input_text)
@@ -94,6 +92,8 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     TextView vErrorMessage;
     @BindView(R2.id.progress)
     ProgressBar vProgress;
+    @BindView(R2.id.title_change_number)
+    TextView changeNumber;
 
     CountDownTimer countDownTimer;
     private Unbinder unbinder;
@@ -274,6 +274,14 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
             }
         });
+        changeNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = InboxRouter.getContactUsActivityIntent(getActivity());
+                intent.putExtra("PARAM_URL", TkpdBaseURL.ContactUs.URL_CHANGE_NUMBER);
+                startActivity(intent);
+            }
+        });
     }
 
     private boolean otpIsValid() {
@@ -294,9 +302,8 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
         securityQuestion.doRequestOtp();
         titleOTP.setText("Halo, " + SessionHandler.getTempLoginName(getActivity()));
 
-        String sourceString = getString(R.string.action_send_otp_with_call);
 
-        Spannable spannable = new SpannableString(sourceString);
+        Spannable spannable = new SpannableString(getString(R.string.action_send_otp_with_call));
 
         spannable.setSpan(new ClickableSpan() {
                               @Override
@@ -310,11 +317,31 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
                                   ds.setColor(getResources().getColor(R.color.tkpd_main_green));
                               }
                           }
-                , sourceString.indexOf("kirim OTP melalui telepon")
-                , sourceString.length()
+                , getString(R.string.action_send_otp_with_call).indexOf("kirim OTP melalui telepon")
+                , getString(R.string.action_send_otp_with_call).length()
                 , 0);
 
         vSendOtpCall.setText(spannable, TextView.BufferType.SPANNABLE);
+
+        Spannable spannable2 = new SpannableString(getString(R.string.content_change_number));
+
+        spannable2.setSpan(new ClickableSpan() {
+                               @Override
+                               public void onClick(View view) {
+
+                               }
+
+                               @Override
+                               public void updateDrawState(TextPaint ds) {
+                                   ds.setUnderlineText(true);
+                                   ds.setColor(getResources().getColor(R.color.tkpd_main_green));
+                               }
+                           }
+                , getString(R.string.content_change_number).indexOf("Klik disini")
+                , getString(R.string.content_change_number).length()
+                , 0);
+
+        changeNumber.setText(spannable2, TextView.BufferType.SPANNABLE);
     }
 
     @Override
@@ -325,17 +352,24 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
             case QuestionFormModel.OTP_No_HP_TYPE:
                 vSendOtp.setText(securityQuestion.getOtpSendString());
                 vInputOtp.setEnabled(true);
-                titleSecurity.setText(getResources().getString(R.string.content_security_question_phone));
                 String phone = SessionHandler.getTempPhoneNumber(getActivity());
                 phone = phone.substring(phone.length() - 4);
-                phoneNumber.setText(new StringBuilder().append("XXXX-XXXX-").append(phone).toString());
-                phoneNumber.setVisibility(View.VISIBLE);
+                String contentSecurity = getResources().getString(R.string.content_security_question_phone)
+                        + " "
+                        + "<b>"
+                        + new StringBuilder().append("XXXX-XXXX-").append(phone).toString()
+                        + "</b>";
+                titleSecurity.setText(MethodChecker.fromHtml(contentSecurity));
+                changeNumber.setVisibility(View.VISIBLE);
+                vSendOtpCall.setVisibility(View.VISIBLE);
+
                 break;
             case QuestionFormModel.OTP_Email_TYPE:
                 vSendOtp.setText(securityQuestion.getOtpSendString());
                 vInputOtp.setEnabled(true);
                 titleSecurity.setText(getResources().getString(R.string.content_security_question_email));
-                phoneNumber.setVisibility(View.GONE);
+                changeNumber.setVisibility(View.GONE);
+                vSendOtpCall.setVisibility(View.GONE);
                 break;
         }
         ;

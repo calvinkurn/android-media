@@ -70,13 +70,18 @@ public class ContactUsActivity extends BasePresenterActivity implements
         Bundle bundle = getIntent().getExtras();
         if (bundle == null)
             bundle = new Bundle();
-        ContactUsFaqFragment fragment = ContactUsFaqFragment.createInstance(bundle);
-        listener = fragment.getBackButtonListener();
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        fragmentTransaction.add(R.id.main_view, fragment, fragment.getClass().getSimpleName());
-        fragmentTransaction.addToBackStack(ContactUsFaqFragment.class.getSimpleName());
-        fragmentTransaction.commit();
+        if (bundle.getString(PARAM_URL, "").equals("")) {
+            ContactUsFaqFragment fragment = ContactUsFaqFragment.createInstance(bundle);
+            listener = fragment.getBackButtonListener();
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            fragmentTransaction.add(R.id.main_view, fragment, fragment.getClass().getSimpleName());
+            fragmentTransaction.addToBackStack(ContactUsFaqFragment.class.getSimpleName());
+            fragmentTransaction.commit();
+        } else {
+            bundle.putString(PARAM_SOLUTION_ID, Uri.parse(bundle.getString(PARAM_URL)).getQueryParameter("solution_id"));
+            onGoToCreateTicket(bundle);
+        }
     }
 
     @Override
