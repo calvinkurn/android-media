@@ -41,6 +41,7 @@ import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.shop.model.etalasemodel.Data;
 import com.tokopedia.core.shop.model.etalasemodel.List;
 import com.tokopedia.core.shopinfo.models.etalase.AddEtalase;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 
@@ -161,7 +162,7 @@ public class EtalaseShopEditor extends TActivity {
             IsAllowShop = data.getIsAllow().toString();
             for (int i = 0; i < data.getList().size(); i++) {
                 List list = data.getList().get(i);
-                EtalaseName.add(Html.fromHtml(list.getEtalaseName()).toString());
+                EtalaseName.add(MethodChecker.fromHtml(list.getEtalaseName()).toString());
                 EtalaseID.add(list.getEtalaseId().toString());
                 TotalProd.add(list.getEtalaseNumProduct());
             }

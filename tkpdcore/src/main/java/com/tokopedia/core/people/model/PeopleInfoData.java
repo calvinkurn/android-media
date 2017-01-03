@@ -3,6 +3,7 @@ package com.tokopedia.core.people.model;
 import android.text.Html;
 
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.util.MethodChecker;
 
 /**
  * Created on 5/31/16.
@@ -79,7 +80,7 @@ public class PeopleInfoData {
         }
 
         public String getUserMessenger() {
-            return Html.fromHtml(userMessenger).toString();
+            return MethodChecker.fromHtml(userMessenger).toString();
         }
 
         public void setUserMessenger(String userMessenger) {
@@ -111,7 +112,7 @@ public class PeopleInfoData {
         }
 
         public String getUserHobbies() {
-            return Html.fromHtml(userHobbies).toString();
+            return MethodChecker.fromHtml(userHobbies).toString();
         }
 
         public void setUserHobbies(String userHobbies) {

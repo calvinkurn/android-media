@@ -2,6 +2,8 @@ package com.tokopedia.core.session.model;
 
 import org.parceler.Parcel;
 
+import java.util.List;
+
 /**
  * Created by Nisie on 3/28/16.
  */
@@ -19,7 +21,7 @@ public class CreatePasswordModel {
     String confirmPass;
     String registerTos;
     String dateText;
-
+    List<String> allowedFieldList;
 
     public String getEmail() {
         return email;
@@ -107,5 +109,13 @@ public class CreatePasswordModel {
 
     public void setDateText(String dateText) {
         this.dateText = dateText;
+    }
+
+    public List<String> getAllowedFieldList() {
+        return allowedFieldList;
+    }
+
+    public void setAllowedFieldList(List<String> allowedFieldList) {
+        this.allowedFieldList = allowedFieldList;
     }
 }

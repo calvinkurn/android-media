@@ -17,6 +17,7 @@ import org.parceler.Parcels;
 
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Nisie on 3/28/16.
@@ -64,6 +65,9 @@ public class RegisterPassPhoneImpl extends RegisterThird implements DatePickerUt
         } else if (data.containsKey(DATE_DAY)) {
             int day = (int) data.get(DATE_DAY);
             createPassModel.setBdayDay(day);
+        } else if (data.containsKey(ALLOWED_FIELDS)){
+            List allowedFieldList = (List) data.get(ALLOWED_FIELDS);
+            createPassModel.setAllowedFieldList(allowedFieldList);
         }
     }
 
@@ -112,7 +116,9 @@ public class RegisterPassPhoneImpl extends RegisterThird implements DatePickerUt
 
     @Override
     public void initData(@NonNull Context context) {
+        view.setAllowedField();
         if (isAfterRotate) {
+            view.setData(RegisterNewImpl.convertToMap(ALLOWED_FIELDS,createPassModel.getAllowedFieldList()));
             view.setData(RegisterNewImpl.convertToMap(PASSWORD, createPassModel.getNewPass()));
             view.setData(RegisterNewImpl.convertToMap(CONFIRM_PASSWORD, createPassModel.getConfirmPass()));
             view.setData(RegisterNewImpl.convertToMap(IS_CHECKED, createPassModel.getRegisterTos()));
@@ -135,9 +141,6 @@ public class RegisterPassPhoneImpl extends RegisterThird implements DatePickerUt
         view.setData(RegisterNewImpl.convertToMap(BIRTHDAY,
                 RegisterNewImpl.RegisterUtil.formatDateText(createPassModel.getBdayDay(),
                         createPassModel.getBdayMonth(), createPassModel.getBdayYear())));
-
-        view.setAllowedField();
-
     }
 
     @Override

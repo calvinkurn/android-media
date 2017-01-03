@@ -20,6 +20,7 @@ import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.R;
 import com.tokopedia.core.database.model.AttachmentResCenterDB;
+import com.tokopedia.core.util.MethodChecker;
 
 import java.io.File;
 import java.util.List;
@@ -75,7 +76,7 @@ public abstract class BaseUploadImageDialog {
     }
 
     private Uri getOutputMediaFileUri() {
-        return Uri.fromFile(getOutputMediaFile());
+        return MethodChecker.getUri(context, getOutputMediaFile());
     }
 
     private void startActivity(Intent intent, int requestCode) {

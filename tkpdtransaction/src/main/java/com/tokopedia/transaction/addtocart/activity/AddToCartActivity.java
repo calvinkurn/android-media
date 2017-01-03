@@ -31,6 +31,7 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
@@ -46,6 +47,7 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.network.retrofit.utils.DialogNoConnection;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.transaction.addtocart.listener.AddToCartViewListener;
 import com.tokopedia.transaction.addtocart.model.Insurance;
 import com.tokopedia.transaction.addtocart.model.OrderData;
@@ -320,8 +322,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             btnAddressNew.setEnabled(true);
         } else {
             this.mDestination = data;
-            tvAddressName.setText(Html.fromHtml(data.getAddressName()));
-            tvAddressDetail.setText(Html.fromHtml(data.getAddressDetail()));
+            tvAddressName.setText(MethodChecker.fromHtml(data.getAddressName()));
+            tvAddressDetail.setText(MethodChecker.fromHtml(data.getAddressDetail()));
             etValueLocation.setEnabled(true);
             etQuantity.setEnabled(true);
             btnAddressChange.setEnabled(true);
@@ -386,7 +388,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
 
     @Override
     public void showTickerGTM(String message) {
-        tvTickerGTM.setText(Html.fromHtml(message));
+        tvTickerGTM.setText(MethodChecker.fromHtml(message));
         tvTickerGTM.setVisibility(View.VISIBLE);
         tvTickerGTM.setAutoLinkMask(0);
         Linkify.addLinks(tvTickerGTM, Linkify.WEB_URLS);
@@ -506,6 +508,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     @Override
     public void onCartFailedLoading() {
         hideInitLoading();
+        KeyboardHandler.hideSoftKeyboard(this);
         findViewById(R.id.main_scroll).setVisibility(View.GONE);
         NetworkErrorHelper.showEmptyState(this, parentView,
                 new NetworkErrorHelper.RetryClickedListener() {

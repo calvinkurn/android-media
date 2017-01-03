@@ -6,14 +6,6 @@
     android:layout_height="match_parent"
     android:background="@android:color/background_light">
 
-    <include
-        android:id="@+id/include_loading"
-        layout="@layout/loader"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:visibility="gone" />
-
     <TextView
         android:id="@+id/tv_ticker_gtm"
         android:layout_width="match_parent"
@@ -65,6 +57,13 @@
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/margin_vs"
                 android:paddingTop="@dimen/margin_vs" />
+
+            <ProgressBar
+                android:id="@id/view_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:visibility="gone" />
 
             <com.tokopedia.core.product.customview.ManageView
                 android:id="@id/view_manage"
@@ -148,11 +147,4 @@
         android:orientation="horizontal"
         android:visibility="visible" />
 
-    <ProgressBar
-        android:id="@id/view_progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:visibility="gone" />
 </RelativeLayout>

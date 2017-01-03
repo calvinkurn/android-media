@@ -26,6 +26,7 @@ import com.tokopedia.core.customwidget.SquareImageView;
 import com.tokopedia.core.network.entity.discovery.CatalogModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.adapter.ProductAdapter;
@@ -116,7 +117,7 @@ public class BrowseCatalogAdapter extends ProductAdapter {
             this.catalogModel = data;
             ImageHandler.loadImageThumbs(context, holder.productImage, catalogModel.getCatalogImage());
             holder.seller.setText(catalogModel.getCatalogCountProduct() + " " + context.getString(R.string.title_total_prods));
-            holder.title.setText(Html.fromHtml(catalogModel.getCatalogName()));
+            holder.title.setText(MethodChecker.fromHtml(catalogModel.getCatalogName()));
             holder.price.setText(catalogModel.getCatalogPrice());
         }
 

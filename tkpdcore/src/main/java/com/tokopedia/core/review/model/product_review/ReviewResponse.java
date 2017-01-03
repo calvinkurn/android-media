@@ -8,6 +8,7 @@ import android.text.Spanned;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.util.MethodChecker;
 
 public class ReviewResponse implements Parcelable{
 
@@ -59,7 +60,7 @@ public class ReviewResponse implements Parcelable{
      *     The responseMessage
      */
     public Spanned getResponseMessage() {
-        return Html.fromHtml(responseMessage);
+        return MethodChecker.fromHtml(responseMessage);
     }
 
     /**

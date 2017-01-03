@@ -21,6 +21,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.fragment.FragmentCart;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.util.MethodChecker;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -151,7 +152,7 @@ public class ListProductCart {
             }
             ImageHandler.loadImageRounded2(context, holder.pImageView, pImageUri.get(position));
 //			ImageHandler.LoadImageRounded(holder.pImageView, pImageUri.get(position));
-            holder.pNameView.setText(Html.fromHtml(pName.get(position)));
+            holder.pNameView.setText(MethodChecker.fromHtml(pName.get(position)));
             holder.pPriceView.setText(pPrice.get(position));
             holder.pWeightView.setText(pWeight.get(position));
             holder.PriceTotalView.setText(PriceTotal.get(position));

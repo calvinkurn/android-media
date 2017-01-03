@@ -47,6 +47,7 @@ import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.LabelUtils;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.ToolTipUtils;
 import com.tokopedia.core.var.TkpdState;
@@ -221,9 +222,9 @@ public class ReputationViewShop extends TActivity {
 
         ImageHandler.loadImageCircle2(this, holder.avatar, model.avatarUrl);
 //        ImageHandler.LoadImageCircle(holder.avatar, model.avatarUrl);
-        holder.username.setText(Html.fromHtml(model.username).toString());
+        holder.username.setText(MethodChecker.fromHtml(model.username).toString());
         holder.date.setText(model.date);
-        holder.comment.setText(Html.fromHtml(model.comment).toString());
+        holder.comment.setText(MethodChecker.fromHtml(model.comment).toString());
         labelHeader.giveSquareLabel(model.userLabel);
         setCounter();
         setSmiley();

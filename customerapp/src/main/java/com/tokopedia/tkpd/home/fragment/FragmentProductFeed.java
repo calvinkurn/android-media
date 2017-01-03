@@ -54,7 +54,8 @@ import static com.tokopedia.tkpd.home.presenter.ProductFeed.messageTag;
  * Created by m.normansyah on 13/11/2015.
  * modified by m.normansyah on 27/11/2015
  */
-public class FragmentProductFeed extends TkpdBaseV4Fragment implements ProductFeedView, DefaultRetryListener.OnClickRetry{
+public class FragmentProductFeed extends TkpdBaseV4Fragment
+        implements ProductFeedView, DefaultRetryListener.OnClickRetry {
 
     @BindView(R.id.index_main_recycler_view)
     RecyclerView indexRecyclerView;
@@ -419,8 +420,9 @@ public class FragmentProductFeed extends TkpdBaseV4Fragment implements ProductFe
     @Override
     public void loadDataChange() {
         getAdapter().notifyDataSetChanged();
-        if(getAdapter().getHistoryAdapter()!=null)
+        if(getAdapter().getHistoryAdapter()!=null) {
             getAdapter().getHistoryAdapter().notifyDataSetChanged();
+        }
     }
 
     @Override

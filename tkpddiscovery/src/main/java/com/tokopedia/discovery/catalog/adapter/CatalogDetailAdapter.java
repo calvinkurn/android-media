@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.discovery.catalog.model.CatalogDetailItem;
 import com.tokopedia.discovery.catalog.model.CatalogDetailItemShop;
 import com.tokopedia.discovery.catalog.presenter.ICatalogDetailListPresenter;
@@ -79,7 +80,7 @@ public class CatalogDetailAdapter extends BaseLinearRecyclerViewAdapter {
     private void bindShopView(final ShopItemHolder holder, int position) {
         if (this.mCatalogDetailItem.get(position) == null) return;
         CatalogDetailItemShop shop = this.mCatalogDetailItem.get(position).getCatalogDetailItemShop();
-        holder.shopName.setText(Html.fromHtml(shop.getName()));
+        holder.shopName.setText(MethodChecker.fromHtml(shop.getName()));
         if (shop.getCity() != null) {
             holder.shopLocation.setText(shop.getCity());
         }

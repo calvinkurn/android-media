@@ -15,6 +15,7 @@ import com.tokopedia.core.network.apiservices.user.NotificationService;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.util.MethodChecker;
 
 import org.json.JSONException;
 
@@ -239,7 +240,7 @@ public class NetworkInteractorImpl implements NetworkInteractor {
         DrawerHeader drawerHeader = new DrawerHeader();
 
         if (data.getShopInfo() != null) {
-            drawerHeader.shopName = Html.fromHtml(data.getShopInfo().getShopName()).toString();
+            drawerHeader.shopName = MethodChecker.fromHtml(data.getShopInfo().getShopName()).toString();
             drawerHeader.shopIcon = data.getShopInfo().getShopAvatar();
             drawerHeader.shopCover = data.getShopInfo().getShopCover();
             drawerHeader.ShopId = data.getShopInfo().getShopId();
@@ -249,7 +250,7 @@ public class NetworkInteractorImpl implements NetworkInteractor {
             drawerHeader.shopCover = null;
             drawerHeader.ShopId = null;
         }
-        drawerHeader.userName = Html.fromHtml(data.getUserInfo().getUserName()).toString();
+        drawerHeader.userName = MethodChecker.fromHtml(data.getUserInfo().getUserName()).toString();
         drawerHeader.userIcon = data.getUserInfo().getUserImage();
         drawerHeader.timestamp = Long.toString(System.currentTimeMillis() / 1000);
         return drawerHeader;

@@ -249,6 +249,10 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
             presenter.setData(RegisterNewImpl.convertToMap(RegisterThird.IS_CHECKED, vTos.isChecked()));
         }
         presenter.setData(RegisterNewImpl.convertToMap(RegisterThird.GENDER, DEFAULT_GENDER));
+
+        if(allowedFieldList != null) {
+            presenter.setData(RegisterNewImpl.convertToMap(RegisterThird.ALLOWED_FIELDS, allowedFieldList));
+        }
     }
 
     @Override
@@ -279,6 +283,10 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
         } else if (data.containsKey(RegisterThird.PHONENUMBER)) {
             String phoneNumber = (String) data.get(RegisterThird.PHONENUMBER);
             vPhoneNumber.setText(phoneNumber);
+        } else if (data.containsKey(RegisterThird.ALLOWED_FIELDS)) {
+            List temp = (List) data.get(RegisterThird.ALLOWED_FIELDS);
+            allowedFieldList = temp;
+            setAllowedField();
         }
 
 
