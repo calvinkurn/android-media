@@ -25,7 +25,6 @@ import com.db.chart.renderer.XRenderer;
 import com.db.chart.tooltip.Tooltip;
 import com.db.chart.view.LineChartView;
 import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
-import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.gmstat.library.LoaderImageView;
 import com.tokopedia.sellerapp.gmstat.library.LoaderTextView;
@@ -38,14 +37,12 @@ import com.tokopedia.sellerapp.gmstat.models.GetTransactionGraph;
 import com.tokopedia.sellerapp.gmstat.presenters.GMFragmentPresenterImpl;
 import com.tokopedia.sellerapp.gmstat.presenters.GMFragmentView;
 import com.tokopedia.sellerapp.gmstat.presenters.GMStat;
-import com.tokopedia.sellerapp.gmstat.utils.GMStatNetworkController;
 import com.tokopedia.sellerapp.gmstat.utils.GridDividerItemDecoration;
 import com.tokopedia.sellerapp.gmstat.utils.KMNumbers;
 import com.tokopedia.sellerapp.gmstat.utils.GrossGraphChartConfig;
 import com.tokopedia.sellerapp.home.utils.ShopNetworkController;
 
 import java.net.UnknownHostException;
-import java.security.SecureRandom;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -62,7 +59,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import rx.subscriptions.CompositeSubscription;
 
 import static com.tokopedia.sellerapp.gmstat.views.DataTransactionViewHelper.dpToPx;
 import static com.tokopedia.sellerapp.gmstat.views.GMStatHeaderViewHelper.getDates;
@@ -99,10 +95,10 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
     @BindView(R.id.transaction_data)
     View transactionData;
 
-    @BindView(R.id.market_insight)
+    @BindView(R.id.buyer_data)
     View marketInsight;
 
-    @BindView(R.id.market_insight_real)
+    @BindView(R.id.market_insight)
     View marketInsightReal;
 
     @BindView(R.id.parent_fragment_gmstat)
@@ -121,8 +117,8 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
     private MarketInsightViewHelper marketInsightViewHelper;
     private PopularProductLoading popularProductLoading;
     private TransactionDataLoading transactionDataLoading;
+    private BuyerDataLoading buyerDataLoading;
     private MarketInsightLoading marketInsightLoading;
-    private MarketInsightLoading2 marketInsightLoading2;
     PopularProductViewHelper popularProductViewHelper;
     private View rootView;
 
@@ -351,8 +347,8 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
         marketInsightViewHelper = new MarketInsightViewHelper(rootView, gmstat.isGoldMerchant());
         popularProductLoading = new PopularProductLoading(rootView);
         transactionDataLoading = new TransactionDataLoading(rootView);
+        buyerDataLoading = new BuyerDataLoading(rootView);
         marketInsightLoading = new MarketInsightLoading(rootView);
-        marketInsightLoading2 = new MarketInsightLoading2(rootView);
         initPopularLoading();
         initTransactionDataLoading();
         initMarketInsightLoading();
@@ -368,12 +364,12 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
     }
 
     private void initMarketInsightLoading2() {
-        marketInsightLoading2.displayLoading();
+        marketInsightLoading.displayLoading();
         marketInsightReal.setVisibility(View.GONE);
     }
 
     private void initMarketInsightLoading() {
-        marketInsightLoading.displayLoading();
+        buyerDataLoading.displayLoading();
         marketInsight.setVisibility(View.GONE);
     }
 
@@ -461,7 +457,7 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
     @Override
     public void onSuccessGetShopCategory(GetShopCategory getShopCategory) {
         marketInsightReal.setVisibility(View.VISIBLE);
-        marketInsightLoading2.hideLoading();
+        marketInsightLoading.hideLoading();
         marketInsightViewHelper.bindData(getShopCategory);
     }
 
@@ -582,14 +578,14 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
     public void onSuccessBuyerData(GetBuyerData getBuyerData) {
         buyerDataViewHelper.bindData(getBuyerData);
         marketInsight.setVisibility(View.VISIBLE);
-        marketInsightLoading.hideLoading();
+        buyerDataLoading.hideLoading();
     }
 
     @Override
     public void onSuccessGetKeyword(List<GetKeyword> getKeywords) {
         marketInsightViewHelper.bindData(getKeywords);
         marketInsightReal.setVisibility(View.VISIBLE);
-        marketInsightLoading2.hideLoading();
+        marketInsightLoading.hideLoading();
     }
 
     @Override
@@ -674,7 +670,7 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
                     return new LoadingGM(view);
                 case LoadingGMTwoModel.TYPE:
                     view = LayoutInflater.from(parent.getContext()).inflate(R.layout.widget_gross_earn_loading, parent, false);
-                    return new LoadingGM2(view);
+                    return new LoadingGMGrossIncome(view);
             }
             return new EmptyVH(new ImageView(parent.getContext()));
         }
@@ -832,7 +828,7 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
         }
     }
 
-    public static class LoadingGM2 extends RecyclerView.ViewHolder{
+    public static class LoadingGMGrossIncome extends RecyclerView.ViewHolder{
         @BindView(R.id.grossIncomeHeader)
         LoaderTextView grossIncomeHeader;
         @BindView(R.id.text)
@@ -842,7 +838,7 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
         @BindView(R.id.textDescription)
         LoaderTextView textDescription;
 
-        public LoadingGM2(View itemView) {
+        public LoadingGMGrossIncome(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
 
@@ -1097,7 +1093,7 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
         }
     }
 
-    public static class MarketInsightLoading{
+    public static class BuyerDataLoading {
         private final View parentView;
 
         @BindView(R.id.buyer_data_header_ic)
@@ -1119,10 +1115,10 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
         LoaderImageView dataBuyerLoading;
 
 
-        public MarketInsightLoading(View itemView){
+        public BuyerDataLoading(View itemView){
             ButterKnife.bind(this, itemView);
 
-            parentView = itemView.findViewById(R.id.market_insight_loading);
+            parentView = itemView.findViewById(R.id.buyer_data_loading);
 
             buyerdataHeaderIc.resetLoader();
             buyerDataHeaderText.resetLoader();
@@ -1141,7 +1137,7 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
         }
     }
 
-    public static class MarketInsightLoading2{
+    public static class MarketInsightLoading {
         @BindView(R.id.market_insight_header_ic)
         LoaderImageView marketInsightHeaderIc;
 
@@ -1156,17 +1152,17 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
 
         private final View parentView;
 
-        public MarketInsightLoading2(View itemView){
+        public MarketInsightLoading(View itemView){
             ButterKnife.bind(this, itemView);
 
-            parentView = itemView.findViewById(R.id.market_insight_loading2);
+            parentView = itemView.findViewById(R.id.market_insight_loading);
 
             marketInsightHeaderIc.resetLoader();
             marketInsightHeaderText.resetLoader();
             marketInsightHeaderLoading.resetLoader();
 
             marketInsightLoadingRec.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
-            marketInsightLoadingRec.setAdapter(new MarketInsightLoading2Adapter());
+            marketInsightLoadingRec.setAdapter(new MarketInsightLoadingAdapter());
         }
 
         public void displayLoading() {
@@ -1178,9 +1174,9 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
         }
     }
 
-    public static class MarketInsightLoading2Adapter extends RecyclerView.Adapter{
+    public static class MarketInsightLoadingAdapter extends RecyclerView.Adapter{
 
-        public MarketInsightLoading2Adapter(){
+        public MarketInsightLoadingAdapter(){
         }
 
         @Override
