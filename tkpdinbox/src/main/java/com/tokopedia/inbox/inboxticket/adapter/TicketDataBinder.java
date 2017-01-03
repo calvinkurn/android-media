@@ -71,8 +71,8 @@ public class TicketDataBinder extends DataBinder<TicketDataBinder.ViewHolder> {
     }
 
 
-    List<TicketReplyDatum> list;
-    Context context;
+    private List<TicketReplyDatum> list;
+    private Context context;
 
     public TicketDataBinder(DataBindAdapter dataBindAdapter, List<TicketReplyDatum> list, Context context) {
         super(dataBindAdapter);

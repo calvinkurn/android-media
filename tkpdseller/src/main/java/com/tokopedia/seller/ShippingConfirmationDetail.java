@@ -22,6 +22,8 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.network.entity.home.recentView.RecentView;
+import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.customadapter.ListViewOrderStatus;
@@ -177,7 +179,8 @@ ShippingConfirmationDetail extends TActivity {
                 Intent intent = new Intent(ShippingConfirmationDetail.this, ProductInfoActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString(PRODUCT_URI, dataProducts.get(position).ProductUrlList);
-                bundle.putString(PRODUCT_ID, dataProducts.get(position).ProductIdList);
+                bundle.putParcelable(ProductInfoActivity.EXTRA_PRODUCT_PASS,
+                        getProductDataToPass(dataProducts.get(position)));
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -463,5 +466,14 @@ ShippingConfirmationDetail extends TActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private ProductPass getProductDataToPass(ShippingConfirmDetModel.Data data) {
+        return ProductPass.Builder.aProductPass()
+                .setProductPrice(data.PriceList)
+                .setProductId(data.ProductIdList)
+                .setProductName(data.NameList)
+                .setProductImage(data.ImageUrlList)
+                .build();
     }
 }

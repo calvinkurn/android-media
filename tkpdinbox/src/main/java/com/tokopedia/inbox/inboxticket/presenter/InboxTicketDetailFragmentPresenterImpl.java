@@ -66,7 +66,7 @@ public class InboxTicketDetailFragmentPresenterImpl implements InboxTicketDetail
                     startData = result.getTicketReplyData().size() - 1;
                 }
 
-                InboxTicketDetail data = viewListener.getAdapter().getData();
+                InboxTicketDetail data = viewListener.getAdapter().getHeaderView().getData();
                 for (int i = startData; i >= 0; i--) {
                     data.getTicketReply().getTicketReplyData().add(0, result.getTicketReplyData().get(i));
                 }
@@ -74,7 +74,8 @@ public class InboxTicketDetailFragmentPresenterImpl implements InboxTicketDetail
                 data.getTicketReply().setTicketReplyTotalData(result.getTicketReplyTotalData());
                 data.getTicketReply().setTicketReplyTotalPage(result.getTicketReplyTotalPage());
 
-                pagingHandler.setHasNext(viewListener.getAdapter().getData().getTicketReply().getTicketReplyData().size() < result.getTicketReplyTotalPage());
+                pagingHandler.setHasNext(viewListener.getAdapter().getHeaderView().getData()
+                        .getTicketReply().getTicketReplyData().size() < result.getTicketReplyTotalPage());
                 pagingHandler.nextPage();
 
                 viewListener.getAdapter().setData(data);
@@ -367,10 +368,10 @@ public class InboxTicketDetailFragmentPresenterImpl implements InboxTicketDetail
     }
 
     private boolean isDataEmpty() {
-        return viewListener.getAdapter().getData() == null
-                || viewListener.getAdapter().getData().getTicket() == null
-                || viewListener.getAdapter().getData().getTicket().getTicketFirstMessage() == null
-                || viewListener.getAdapter().getData().getTicket().getTicketFirstMessage().equals("");
+        return viewListener.getAdapter().getHeaderView().getData() == null
+                || viewListener.getAdapter().getHeaderView().getData() == null
+                || viewListener.getAdapter().getHeaderView().getData().getTicket().getTicketFirstMessage() == null
+                || viewListener.getAdapter().getHeaderView().getData().getTicket().getTicketFirstMessage().equals("");
     }
 
     private Map<String, String> getInboxTicketDetailParam() {

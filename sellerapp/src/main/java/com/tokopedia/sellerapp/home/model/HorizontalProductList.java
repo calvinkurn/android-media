@@ -2,6 +2,7 @@ package com.tokopedia.sellerapp.home.model;
 
 import android.text.Html;
 
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;

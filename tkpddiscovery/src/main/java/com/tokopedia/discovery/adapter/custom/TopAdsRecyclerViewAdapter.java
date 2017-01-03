@@ -24,6 +24,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.TopAdsUtil;
 import com.tokopedia.core.var.Badge;
@@ -116,7 +117,7 @@ public class TopAdsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
                 Bundle bundle = new Bundle();
                 Intent intent = new Intent(context, ProductInfoActivity.class);
-                bundle.putString("product_id", item.getId());
+                bundle.putParcelable(ProductInfoActivity.EXTRA_PRODUCT_ITEM, item);
                 intent.putExtras(bundle);
                 context.startActivity(intent);
             }
@@ -188,5 +189,14 @@ public class TopAdsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             Activity activity = (Activity) context;
             infoTopAds.show(activity.getFragmentManager(), "INFO_TOPADS");
         }
+    }
+
+    private ProductPass getProductDataToPass(ProductItem productItem) {
+        return ProductPass.Builder.aProductPass()
+                .setProductPrice(productItem.getPrice())
+                .setProductId(productItem.getId())
+                .setProductName(productItem.getName())
+                .setProductImage(productItem.getImgUri())
+                .build();
     }
 }

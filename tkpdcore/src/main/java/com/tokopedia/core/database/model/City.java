@@ -1,5 +1,8 @@
 package com.tokopedia.core.database.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.ContainerKey;
@@ -28,7 +31,9 @@ import java.util.List;
  */
 @ModelContainer
 @Table(database = DbFlowDatabase.class, insertConflict = ConflictAction.REPLACE, updateConflict = ConflictAction.REPLACE)
-public class City extends BaseModel implements DatabaseConstant, Convert<ListCity.Cities, City>{
+public class City extends BaseModel implements DatabaseConstant, Convert<ListCity.Cities, City>,
+        Parcelable
+{
     public static final String CITY_PROVINCE_ID = "city_province_id";
     public static final String CITY_ID = "city_id";
     public static final String CITY_NAME = "city_name";
@@ -38,6 +43,29 @@ public class City extends BaseModel implements DatabaseConstant, Convert<ListCit
     @Column
     @ForeignKey(saveForeignKeyModel = false, onUpdate = ForeignKeyAction.CASCADE, onDelete = ForeignKeyAction.CASCADE)
     ForeignKeyContainer<Province> provinceForeignKeyContainer;
+
+    protected City(Parcel in) {
+        districts = in.createTypedArrayList(District.CREATOR);
+        province = in.readParcelable(Province.class.getClassLoader());
+        cityId = in.readString();
+        cityName = in.readString();
+        Id = in.readLong();
+    }
+
+    public static final Creator<City> CREATOR = new Creator<City>() {
+        @Override
+        public City createFromParcel(Parcel in) {
+            return new City(in);
+        }
+
+        @Override
+        public City[] newArray(int size) {
+            return new City[size];
+        }
+    };
+
+    public City() {
+    }
 
     public void associateProvince(Province province) {
         provinceForeignKeyContainer =
@@ -140,5 +168,19 @@ public class City extends BaseModel implements DatabaseConstant, Convert<ListCit
                 ", cityId='" + cityId + '\'' +
                 ", cityName='" + cityName + '\'' +
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeTypedList(districts);
+        dest.writeParcelable(province, flags);
+        dest.writeString(cityId);
+        dest.writeString(cityName);
+        dest.writeLong(Id);
     }
 }
