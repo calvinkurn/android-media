@@ -156,9 +156,6 @@ public class GalleryActivity extends AppCompatActivity implements ImageGalleryVi
                     GalleryActivityPermissionsDispatcher.onFabClickedWithCheck(GalleryActivity.this, view);
                 }
             });
-        if (FRAGMENT.equals(InstagramAuth.TAG)) {
-            fab.setVisibility(View.GONE);
-        }
 
     }
 

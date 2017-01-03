@@ -79,6 +79,7 @@ import com.tokopedia.core.database.model.EtalaseDB;
 import com.tokopedia.core.database.model.ReturnableDB;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.instoped.InstagramAuth;
+import com.tokopedia.core.instoped.InstopedActivity;
 import com.tokopedia.core.myproduct.fragment.AddProductFragment;
 import com.tokopedia.core.myproduct.fragment.ReturnPolicyDialog;
 import com.tokopedia.core.myproduct.model.ActResponseModelData;
@@ -309,7 +310,7 @@ public class ManageProduct extends TkpdActivity implements
                 int id = menuItem.getItemId();
 
                 if (id == R.id.action_instagram) {
-                    onAddInstagram();
+                    InstopedActivity.startInstopedActivity(ManageProduct.this);
 
                 } else if (id == R.id.action_gallery) {
                     ManageProductPermissionsDispatcher.onAddFromGalleryWithCheck(ManageProduct.this);
@@ -417,14 +418,6 @@ public class ManageProduct extends TkpdActivity implements
                 finish();
             }
         }
-    }
-
-    public void onAddInstagram() {
-        Intent moveToProductActivity = new Intent(ManageProduct.this, ProductActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(ProductActivity.FRAGMENT_TO_SHOW, InstagramAuth.TAG);
-        moveToProductActivity.putExtras(bundle);
-        startActivity(moveToProductActivity);
     }
 
     private void resetListViewMode() {

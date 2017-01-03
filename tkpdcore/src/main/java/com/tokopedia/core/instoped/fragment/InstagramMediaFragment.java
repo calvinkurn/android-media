@@ -26,6 +26,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
+import com.tokopedia.core.instoped.InstagramActivityListener;
 import com.tokopedia.core.instoped.adapter.MediaAdapter;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.instoped.model.InstagramUserModel;
@@ -163,8 +164,8 @@ public class InstagramMediaFragment extends Fragment implements InstagramMediaFr
                 Toast.makeText(getActivity(), getResources().getString(R.string.no_picture_instagram), Toast.LENGTH_SHORT).show();
                 return true;
             }
-            if(checkNotNull(getActivity()) && getActivity() instanceof ProductActivity){
-                ((ProductActivity)getActivity()).onGetInstagramMediaListener().onSuccess(
+            if(checkNotNull(getActivity()) && getActivity() instanceof InstagramActivityListener){
+                ((InstagramActivityListener)getActivity()).onGetInstagramMediaListener().onSuccess(
                         instagramMedia.getSelectedModel()
                 );
             }
@@ -254,7 +255,7 @@ public class InstagramMediaFragment extends Fragment implements InstagramMediaFr
 
     @Override
     public void prepareView() {
-        ((ProductActivity)getActivity()).triggerAppBarAnimation(false);
+        ((InstagramActivityListener)getActivity()).triggerAppBarAnimation(false);
     }
 
     @Override

@@ -328,16 +328,6 @@ public class ProductActivity extends BaseProductActivity implements
         }
     }
 
-    public void triggerAppBarAnimation(boolean turnedOn){
-        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
-        if(turnedOn) {
-            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
-        } else {
-            params.setScrollFlags(0);
-        }
-        toolbar.setLayoutParams(params);
-    }
-
     private void processMultipleImage(ArrayList<Uri> imageUris) {
         int imagescount = (imageUris.size() > 5) ? 5 : imageUris.size();
         multiImagePathFromImport = new String[imagescount];
