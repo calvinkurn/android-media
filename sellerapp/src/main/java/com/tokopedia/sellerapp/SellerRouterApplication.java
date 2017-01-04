@@ -8,6 +8,8 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer.DrawerVariable;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.instoped.InstopedActivity;
+import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
 import com.tokopedia.sellerapp.drawer.DrawerVariableSeller;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 
@@ -19,6 +21,16 @@ public class SellerRouterApplication extends MainApplication implements TkpdCore
     @Override
     public DrawerVariable getDrawer(AppCompatActivity activity) {
         return new DrawerVariableSeller(activity);
+    }
+
+    @Override
+    public void startInstopedActivity(Context context) {
+        InstopedActivity.startInstopedActivity(context);
+    }
+
+    @Override
+    public void removeInstopedToken() {
+        InstagramMediaPresenterImpl.removeToken();
     }
 
     @Override
