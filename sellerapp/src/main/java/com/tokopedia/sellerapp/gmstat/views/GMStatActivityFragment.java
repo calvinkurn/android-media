@@ -44,9 +44,12 @@ import com.tokopedia.sellerapp.gmstat.utils.GrossGraphChartConfig;
 import com.tokopedia.sellerapp.home.utils.ShopNetworkController;
 
 import java.net.UnknownHostException;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -60,7 +63,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import rx.Observable;
 
 import static com.tokopedia.sellerapp.gmstat.views.DataTransactionViewHelper.dpToPx;
 import static com.tokopedia.sellerapp.gmstat.views.GMStatHeaderViewHelper.getDates;
@@ -175,6 +177,17 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
         return day + " "+ month+" "+year;
     }
 
+    public static long getDateWithYear(int date){
+        List<String> dateRaw = getDateRaw(date);
+        String year = dateRaw.get(2);
+        String month = dateRaw.get(1);
+        String day = dateRaw.get(0);
+        Calendar instance = Calendar.getInstance();
+        instance.set(Integer.parseInt(year), Integer.parseInt(month)-1, Integer.parseInt(day));
+
+        return instance.getTimeInMillis();
+    }
+
     public static String getDateWithYear(String date, String[] monthNames){
         List<String> dateRaw = getDateRaw(date);
         String year = dateRaw.get(2);
@@ -280,8 +293,8 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
     }
 
     @Override
-    public void bindHeader(long sDate, long eDate) {
-        gmstatHeaderViewHelper.bindDate(sDate, eDate);
+    public void bindHeader(long sDate, long eDate, int lastSelectionPeriod, int selectionType) {
+        gmstatHeaderViewHelper.bindDate(sDate, eDate, lastSelectionPeriod, selectionType);
     }
 
     /**
@@ -423,6 +436,7 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
     @Override
     public void onResume() {
         super.onResume();
+        snackBar = new SnackBar().view(rootView);
         gmFragmentPresenter.onResume();
         fetchData();
     }
@@ -437,8 +451,8 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
     }
 
     @Override
-    public void fetchData(long sDate, long eDate){
-        gmFragmentPresenter.fetchData(sDate, eDate);
+    public void fetchData(long sDate, long eDate, int lastSelectionPeriod, int selectionType){
+        gmFragmentPresenter.fetchData(sDate, eDate, lastSelectionPeriod, selectionType);
     }
 
     @Override
@@ -464,7 +478,7 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
     }
 
     @Override
-    public void onSuccessTransactionGraph(GetTransactionGraph getTransactionGraph, long sDate, long eDate) {
+    public void onSuccessTransactionGraph(GetTransactionGraph getTransactionGraph, long sDate, long eDate, int lastSelectionPeriod, int selectionType) {
         GrossIncome grossIncome = new GrossIncome(getTransactionGraph.getGrossRevenue());
         List<BaseGMModel> baseGMModels = new ArrayList<>();
         baseGMModels.add(grossIncome);
@@ -534,9 +548,9 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
         transactionData.setVisibility(View.VISIBLE);
 
         if(sDate == -1 && eDate == -1)
-            gmstatHeaderViewHelper.bindData(dateGraph);
+            gmstatHeaderViewHelper.bindData(dateGraph, lastSelectionPeriod);
         else {
-            gmstatHeaderViewHelper.bindDate(sDate, eDate);
+            gmstatHeaderViewHelper.bindDate(sDate, eDate, lastSelectionPeriod, selectionType);
             gmstatHeaderViewHelper.stopLoading();
         }
     }
@@ -604,8 +618,8 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
     @Override
     public void onError(Throwable e) {
         displayDefaultValue();
-
-        snackBar = new SnackBar();
+//
+//        snackBar = new SnackBar();
         final StringBuilder textMessage = new StringBuilder("");
         if(e instanceof UnknownHostException){
             textMessage.append("Tidak ada koneksi. \nSilahkan coba kembali");
@@ -619,7 +633,7 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
             @Override
             public void run() {
                 if(getActivity() != null && rootView != null){
-                    snackBar.view(rootView)
+                    snackBar
                             .text(textMessage.toString(), "COBA KEMBALI")
                             .textColors(Color.WHITE,Color.GREEN)
                             .backgroundColor(Color.BLACK)
@@ -995,6 +1009,15 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
         private ConvRate(long successTrans) {
             super(successTrans);
         }
+    }
+
+
+    private static final Locale locale = new Locale("in","ID");
+    public static String getDateFormat(long timeInMillis){
+        Calendar instance = Calendar.getInstance();
+        instance.setTimeInMillis(timeInMillis);
+        DateFormat dateFormat = new SimpleDateFormat("dd MM yyyy", locale);
+        return dateFormat.format(instance.getTime());
     }
 
 

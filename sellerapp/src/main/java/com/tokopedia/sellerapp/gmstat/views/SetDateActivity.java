@@ -23,6 +23,13 @@ import static com.tokopedia.sellerapp.gmstat.views.GMStatHeaderViewHelper.MOVE_T
 
 public class SetDateActivity extends AppCompatActivity implements SetDateFragment.SetDate {
 
+    public static final String SELECTION_TYPE = "SELECTION_TYPE";
+    public static final String SELECTION_PERIOD = "SELECTION_PERIOD";
+    public static final String CUSTOM_START_DATE = "CUSTOM_START_DATE";
+    public static final String CUSTOM_END_DATE = "CUSTOM_END_DATE";
+    public static final int PERIOD_TYPE = 0;
+    public static final int CUSTOM_TYPE = 1;
+
     private boolean isGoldMerchant;
     private boolean isAfterRotate;
 
@@ -31,6 +38,9 @@ public class SetDateActivity extends AppCompatActivity implements SetDateFragmen
 
     @BindColor(R.color.tkpd_main_green)
     int tkpdMainGreenColor;
+    private int selectionPeriod;
+    private int selectionType;
+    private long sDate = -1, eDate = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,13 +71,22 @@ public class SetDateActivity extends AppCompatActivity implements SetDateFragmen
     private void fetchIntent(Bundle extras) {
         if(extras != null){
             isGoldMerchant = extras.getBoolean(IS_GOLD_MERCHANT, false);
+            selectionPeriod = extras.getInt(SELECTION_PERIOD, 1);
+            selectionType = extras.getInt(SELECTION_TYPE, PERIOD_TYPE);
+            sDate = extras.getLong(CUSTOM_START_DATE, -1);
+            eDate = extras.getLong(CUSTOM_END_DATE, -1);
         }
     }
     @Override
-    public void returnStartAndEndDate(long startDate, long endDate) {
+    public void returnStartAndEndDate(long startDate, long endDate, int lastSelection, int selectionType) {
         Intent intent = new Intent();
         intent.putExtra(SetDateFragment.START_DATE, startDate);
         intent.putExtra(SetDateFragment.END_DATE, endDate);
+        if(lastSelection < 0){
+            lastSelection = selectionPeriod;
+        }
+        intent.putExtra(SELECTION_PERIOD, lastSelection);
+        intent.putExtra(SELECTION_TYPE, selectionType);
         setResult(MOVE_TO_SET_DATE, intent);
         finish();
     }
@@ -87,5 +106,25 @@ public class SetDateActivity extends AppCompatActivity implements SetDateFragmen
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public int selectionPeriod() {
+        return selectionPeriod;
+    }
+
+    @Override
+    public int selectionType() {
+        return selectionType;
+    }
+
+    @Override
+    public long sDate() {
+        return sDate;
+    }
+
+    @Override
+    public long eDate() {
+        return eDate;
     }
 }

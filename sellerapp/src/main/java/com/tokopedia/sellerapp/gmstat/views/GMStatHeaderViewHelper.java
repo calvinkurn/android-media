@@ -24,6 +24,11 @@ import butterknife.ButterKnife;
 
 import static com.tokopedia.sellerapp.gmstat.views.GMStatActivity.IS_GOLD_MERCHANT;
 import static com.tokopedia.sellerapp.gmstat.views.GMStatActivityFragment.getDateWithYear;
+import static com.tokopedia.sellerapp.gmstat.views.SetDateActivity.CUSTOM_END_DATE;
+import static com.tokopedia.sellerapp.gmstat.views.SetDateActivity.CUSTOM_START_DATE;
+import static com.tokopedia.sellerapp.gmstat.views.SetDateActivity.PERIOD_TYPE;
+import static com.tokopedia.sellerapp.gmstat.views.SetDateActivity.SELECTION_PERIOD;
+import static com.tokopedia.sellerapp.gmstat.views.SetDateActivity.SELECTION_TYPE;
 
 /**
  * Created by normansyahputa on 11/21/16.
@@ -59,6 +64,10 @@ public class GMStatHeaderViewHelper {
     private View itemView;
     private boolean isGmStat;
     boolean isFirstTime = true;
+    private long sDate;
+    private long eDate;
+    private int lastSelection;
+    private int selectionType = PERIOD_TYPE;
 
     public GMStatHeaderViewHelper(View itemView, boolean isGmStat){
         this.itemView = itemView;
@@ -74,7 +83,9 @@ public class GMStatHeaderViewHelper {
         calendarIcon.resetLoader();
     }
 
-    public void bindData(List<Integer> dateGraph) {
+    public void bindData(List<Integer> dateGraph, int lastSelection) {
+
+        this.lastSelection = lastSelection;
 
         calendarRange.resetLoader();
         calendarArrowIcon.resetLoader();
@@ -84,9 +95,12 @@ public class GMStatHeaderViewHelper {
             return;
 
         String startDate = getDateWithYear(dateGraph.get(0), monthNamesAbrev);
+        this.sDate = getDateWithYear(dateGraph.get(0));
 
         int lastIndex = (dateGraph.size()>7)?6:dateGraph.size()-1;
         String endDate = getDateWithYear(dateGraph.get(lastIndex), monthNamesAbrev);
+        this.eDate = getDateWithYear(dateGraph.get(lastIndex));
+
 
         calendarRange.setText(startDate+" - "+endDate);
 
@@ -116,7 +130,12 @@ public class GMStatHeaderViewHelper {
         calendarIcon.stopLoading();
     }
 
-    public void bindDate(long sDate, long eDate){
+    public void bindDate(long sDate, long eDate, int lastSelectionPeriod, int selectionType){
+        this.sDate = sDate;
+        this.eDate = eDate;
+        this.lastSelection = lastSelectionPeriod;
+        this.selectionType = selectionType;
+
         String startDate = null;
         if(sDate != -1){
             Calendar cal = Calendar.getInstance();
@@ -166,6 +185,10 @@ public class GMStatHeaderViewHelper {
 
         Intent moveToSetDate = new Intent(gmStatActivityFragment.getActivity(), SetDateActivity.class);
         moveToSetDate.putExtra(IS_GOLD_MERCHANT, isGmStat);
+        moveToSetDate.putExtra(SELECTION_PERIOD, lastSelection);
+        moveToSetDate.putExtra(SELECTION_TYPE, selectionType);
+        moveToSetDate.putExtra(CUSTOM_START_DATE, sDate);
+        moveToSetDate.putExtra(CUSTOM_END_DATE, eDate);
         gmStatActivityFragment.getActivity().startActivityForResult(moveToSetDate, MOVE_TO_SET_DATE);
     }
 }

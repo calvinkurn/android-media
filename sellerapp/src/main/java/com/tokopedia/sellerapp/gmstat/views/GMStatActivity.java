@@ -32,6 +32,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.tokopedia.sellerapp.gmstat.views.GMStatHeaderViewHelper.MOVE_TO_SET_DATE;
+import static com.tokopedia.sellerapp.gmstat.views.SetDateActivity.PERIOD_TYPE;
+import static com.tokopedia.sellerapp.gmstat.views.SetDateActivity.SELECTION_PERIOD;
+import static com.tokopedia.sellerapp.gmstat.views.SetDateActivity.SELECTION_TYPE;
 import static com.tokopedia.sellerapp.gmstat.views.SetDateFragment.END_DATE;
 import static com.tokopedia.sellerapp.gmstat.views.SetDateFragment.START_DATE;
 
@@ -129,10 +132,12 @@ public class GMStatActivity extends AppCompatActivity implements GMStat, Session
             if(data != null){
                 long sDate = data.getLongExtra(START_DATE, -1);
                 long eDate = data.getLongExtra(END_DATE, -1);
+                int lastSelection = data.getIntExtra(SELECTION_PERIOD, 1);
+                int selectionType = data.getIntExtra(SELECTION_TYPE, PERIOD_TYPE);
                 if(sDate != -1 && eDate != -1){
                     Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment);
                     if(fragment != null && fragment instanceof GMStatActivityFragment){
-                        ((GMStatActivityFragment)fragment).fetchData(sDate, eDate);
+                        ((GMStatActivityFragment)fragment).fetchData(sDate, eDate, lastSelection, selectionType);
                     }
                 }
             }

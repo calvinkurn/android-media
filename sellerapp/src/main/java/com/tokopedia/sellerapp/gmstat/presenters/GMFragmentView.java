@@ -16,7 +16,7 @@ import java.util.List;
 
 public interface GMFragmentView {
     void onSuccessGetShopCategory(GetShopCategory getShopCategory);
-    void onSuccessTransactionGraph(GetTransactionGraph getTransactionGraph, long sDate, long eDate);
+    void onSuccessTransactionGraph(GetTransactionGraph getTransactionGraph, long sDate, long eDate, int lastSelectionPeriod, int selectionType);
     void onSuccessProductnGraph(GetProductGraph getProductGraph, boolean isFirstTime);
     void onSuccessPopularProduct(GetPopularProduct getPopularProduct);
     void onSuccessBuyerData(GetBuyerData getBuyerData);
@@ -26,7 +26,7 @@ public interface GMFragmentView {
     void onError(Throwable e);
     void onFailure();
     void fetchData();
-    void fetchData(long sDate, long eDate);
+    void fetchData(long sDate, long eDate, int lastSelectionPeriod, int selectionType);
     void resetToLoading();
-    void bindHeader(long sDate, long eDate);
+    void bindHeader(long sDate, long eDate, int lastSelectionPeriod, int selectionType);
 }

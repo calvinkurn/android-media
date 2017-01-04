@@ -1,6 +1,7 @@
 package com.tokopedia.sellerapp.gmstat.presenters;
 
 import android.content.res.AssetManager;
+import android.support.annotation.IntRange;
 
 import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
 import com.tokopedia.core.rxjava.RxUtils;
@@ -27,6 +28,10 @@ public class GMFragmentPresenterImpl implements GMFragmentPresenter {
     private long shopId;
     private float[] mValues = new float[10];
     private String[] mLabels = new String[10];
+
+    @IntRange(from = 0, to = 2)
+    int lastSelectionPeriod = 1;
+    private int selectionType;
 
 
     private GMFragmentView gmFragmentView;
@@ -70,7 +75,7 @@ public class GMFragmentPresenterImpl implements GMFragmentPresenter {
 
         @Override
         public void onSuccessTransactionGraph(GetTransactionGraph getTransactionGraph) {
-            gmFragmentView.onSuccessTransactionGraph(getTransactionGraph, sDate, eDate);
+            gmFragmentView.onSuccessTransactionGraph(getTransactionGraph, sDate, eDate, lastSelectionPeriod, selectionType);
         }
 
         @Override
@@ -128,11 +133,13 @@ public class GMFragmentPresenterImpl implements GMFragmentPresenter {
     }
 
     @Override
-    public void fetchData(long sDate, long eDate){
+    public void fetchData(long sDate, long eDate, int lastSelectionPeriod, int selectionType){
+        this.lastSelectionPeriod = lastSelectionPeriod;
+        this.selectionType = selectionType;
         isFetchData = true;
         this.sDate = sDate;
         this.eDate = eDate;
-        gmFragmentView.bindHeader(sDate, eDate);
+        gmFragmentView.bindHeader(sDate, eDate, lastSelectionPeriod, selectionType);
 
         //[START] dummy data
 //        gmstat.getGmStatNetworkController().fetchData(gmStatListener, getActivity().getAssets());

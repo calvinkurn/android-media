@@ -8,7 +8,7 @@ import android.content.res.AssetManager;
 
 public interface GMFragmentPresenter {
     void fetchData();
-    void fetchData(long sDate, long eDate);
+    void fetchData(long sDate, long eDate, int lastSelectionPeriod, int selectionType);
     void onResume();
     void onPause();
     void displayDefaultValue(AssetManager assets);
