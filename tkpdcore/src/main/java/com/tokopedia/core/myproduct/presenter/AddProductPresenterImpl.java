@@ -457,10 +457,6 @@ public class AddProductPresenterImpl implements AddProductPresenter
                 break;
         }
 
-        // set returnable 12
-        Integer productReturnable = produk.getReturnableProd();
-        addProductView.setProductReturnable(productReturnable == 1 ? true : false);
-
         // set bekas/baru 13
         switch (produk.getConditionProd()) {
             case CONDITION_OLD:
@@ -706,19 +702,6 @@ public class AddProductPresenterImpl implements AddProductPresenter
                     addProductView.saveReturnPolicy(returnPolicy);
                 }
             }
-        }
-
-        if (data.getHasTerms() == GetShopNoteModel.Data.HAS_NO_TERM || returnPolicy == null) {// returnPolicy==null||
-            ArrayList<String> textToDisplay = new ArrayList<String>() {
-                {
-                    add(PILIH);
-                    add(TAMBAH);
-                }
-            };
-            addProductView.initReturnableSpinner(textToDisplay);
-        } else {
-            addProductView.initReturnableSpinnerFromResource();
-            addProductView.getMyShopInfo();
         }
 
         if(isShouldFetchData) {
@@ -996,10 +979,6 @@ public class AddProductPresenterImpl implements AddProductPresenter
                         addProductView.setProductEtalase(true, productEtalaseId);
                         break;
                 }
-
-                // set returnable 12
-                Integer productReturnable = data.getInfo().getProductReturnable();
-                addProductView.setProductReturnable(productReturnable == 1 ? true : false);
 
                 // set bekas/baru 13
                 switch (data.getProduct().getProductConditionName().toLowerCase()) {

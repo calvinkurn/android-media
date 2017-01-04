@@ -98,8 +98,6 @@ public interface AddProductView extends BaseView{
     void onForbidden();
     void initEtalaseAdapter(ArrayList<EtalaseModel> etalaseModels);
     void showMessageError(List<String> errorMessages);
-    void initReturnableSpinner(List<String> textToDisplay);
-    void initReturnableSpinnerFromResource();
     void getMyShopInfo();
     void getReturnPolicyDetail(MyShopInfoModel.Info info);
     void saveReturnPolicy(GetShopNoteModel.ShopNoteModel returnPolicy);
@@ -122,7 +120,6 @@ public interface AddProductView extends BaseView{
     void initWholeSaleAdapter(ArrayList<WholeSaleAdapterModel> wholeSaleAdapterModels);
     void initWholeSaleAdapter();
     void setProductEtalase(boolean isGudang, String productEtalaseId);
-    void setProductReturnable(boolean returnable);
     void setProductCondition(boolean isNew);
     void setProductInsurance(boolean isInsurance);
     void setProductCatalog(int selection);

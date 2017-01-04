@@ -435,22 +435,6 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
                     }
                     break;
                 case ProductService.STATUS_FINISHED:
-                    switch(type){
-                        case ProductService.UPDATE_RETURNABLE_NOTE_ADD_PRODUCT:
-                            NoteDetailModel.Detail returnableNoteContent = Parcels.unwrap(resultData.getParcelable(ProductService.RETURNABLE_NOTE_CONTENT));
-                            ((AddProductFragment)fragment).setProductReturnable(true);
-                            ((AddProductFragment)fragment).saveReturnPolicyDetail(returnableNoteContent);
-                            ((AddProductFragment)fragment).dismissReturnableDialog();
-                            break;
-                        case ProductService.ADD_RETURNABLE_NOTE_ADD_PRODUCT:
-                            ((AddProductFragment)fragment).clearAvailibilityOfShopNote();
-                            ((AddProductFragment)fragment).checkAvailibilityOfShopNote();
-                            returnableNoteContent = Parcels.unwrap(resultData.getParcelable(ProductService.RETURNABLE_NOTE_CONTENT));
-                            ((AddProductFragment)fragment).setProductReturnable(true);
-                            ((AddProductFragment)fragment).saveReturnPolicyDetail(returnableNoteContent);
-                            ((AddProductFragment)fragment).dismissReturnableDialog();
-                            break;
-                    }
                     break;
                 case ProductService.STATUS_ERROR:
                     switch(type){

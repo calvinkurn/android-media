@@ -162,7 +162,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
     public static final String ADD_PRODUCT_IMAGE_LOCATION = "ADD_PRODUCT_IMAGE_LOCATION";
     public static final String ADD_PRODUCT_IMAGE_PATH = "ADD_PRODUCT_IMAGE_PATH";
     public static final String ADD_PROUCT_SOC_MED_RAW_DATA = "ADD_PROUCT_SOC_MED_RAW_DATA";
-    public static final String STOCK_STATUS = "STOCK_STATUS";
     public static final String PRODUCT_ID = "product_id";
     public static final String PRODUCT_DB = "product_db";
     public static final String ADD_PRODUCT_MULTIPLE_IMAGE_PATH = "ADD_PRODUCT_MULTIPLE_IMAGE_PATH";
@@ -299,10 +298,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
      */
     public int positionAtSocMed;
 
-    @BindView(R2.id.add_product_returnable_spinner)
-    Spinner addProductReturnableSpinner;
-    @BindView(R2.id.add_product_policy_layout)
-    LinearLayout addProductPolicyLayout;
     GetShopNoteModel.ShopNoteModel returnPolicy = null;
     MyShopInfoModel.Info myShopInfoModel;
     NoteDetailModel.Detail detail;
@@ -702,7 +697,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         if (checkNotNull(displayEtalaseModels))
             outState.putParcelable(SAVED_ETALASES, Parcels.wrap(new ArrayList<TextDeleteModel>(displayEtalaseModels)));// 12
         outState.putString(SAVED_NEW_ETALASE, addProductAddToNewEtalase.getText().toString());// 13
-        outState.putInt(SAVED_RETURN_POLICY, addProductReturnableSpinner.getSelectedItemPosition());// 14
         outState.putInt(SAVED_CONDITION, addProductCondition.getSelectedItemPosition());// 15
         outState.putInt(SAVED_INSURANCE, addProductInsurance.getSelectedItemPosition());// 16
         outState.putString(SAVED_DESCRIPTION, addProductDesc.getText().toString());// 17
@@ -1550,9 +1544,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
 
             addProductAddToNewEtalase.setText(newEtalase);
 
-            initReturnableSpinner(textToDisplay);
-            addProductReturnableSpinner.setSelection(returnPolicy_);
-
             addProductCondition.setAdapter(SimpleSpinnerAdapter.createAdapterAddProduct(getActivity(), conditions));
             addProductCondition.setSelection(condition);
 
@@ -1676,16 +1667,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         }
 
         addProductWeightUnit.setText(selectedWeightUnitDesc);
-    }
-
-    @Override
-    public void setProductReturnable(boolean returnable) {
-        int lastIndex = textToDisplay.size() - 1;
-        if (returnable) {
-            addProductReturnableSpinner.setSelection(lastIndex - 1); // dapat dikembalikan
-        } else {
-            addProductReturnableSpinner.setSelection(lastIndex);// tidak dapat dikembalikan
-        }
     }
 
     @Override
@@ -1949,23 +1930,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         addProduct.checkNoteAvailibility(getActivity(), true);
 
     }
-
-    @Override
-    public void initReturnableSpinnerFromResource() {
-        ArrayList<String> textToDisplay = new ArrayList<String>();
-        for (String temp : getResources().getStringArray(R.array.return_policy)) {
-            textToDisplay.add(temp);
-        }
-        initReturnableSpinner(textToDisplay);
-    }
-
-    @Override
-    public void initReturnableSpinner(List<String> textToDisplay) {
-        this.textToDisplay = textToDisplay;
-
-        addProductReturnableSpinner.setAdapter(SimpleSpinnerAdapter.createAdapterAddProduct(getActivity(), textToDisplay));
-    }
-
 
     @Override
     public void getReturnPolicyDetail(MyShopInfoModel.Info info) {
@@ -2412,50 +2376,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         return simpleTextModels;
     }
 
-    @OnClick(R2.id.add_product_policy_layout)
-    public void onClick() {
-        if (addProductReturnableSpinner.getSelectedItem().toString().contains("Tambah")) {
-            DialogFragment fragment = ReturnPolicyDialog.newInstance();
-            fragment.show(getActivity().getSupportFragmentManager(), ReturnPolicyDialog.FRAGMENT_TAG);
-        }
-        if (addProductReturnableSpinner.getSelectedItem().toString().contains("Ya")) {
-            if (detail != null) {
-                DialogFragment fragment = ReturnPolicyDialog.newInstance(detail);
-                fragment.show(getActivity().getSupportFragmentManager(), ReturnPolicyDialog.FRAGMENT_TAG);
-            } else {
-                Toast.makeText(getActivity(), "detail not ready yet", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    @OnItemSelected(R2.id.add_product_returnable_spinner)
-    public void selectReturnPolicy(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-        switch (position) {
-            case 0:
-                addProductPolicyLayout.setVisibility(View.GONE);
-                break;
-            case 1:
-                addProductPolicyLayout.setVisibility(View.VISIBLE);
-                break;
-            case 2:
-                addProductPolicyLayout.setVisibility(View.GONE);
-                break;
-        }
-    }
-
-    //[REMOVE] move onclick to its container
-//    @OnClick(R2.id.add_product_submit_and_push)
-//    public void pushProduct(){
-//        pushAndCreateNewProduct(true);
-//    }
-//
-//    @OnClick(R2.id.add_product_submit)
-//    public void pushAndCreateNewProduct(){
-//        pushAndCreateNewProduct(false);
-//    }
-    //[REMOVE] move onclick to its container
-
-
     @Override
     public void constructOriginalEditData() {
         producteditHelper.constructOriginalEditData(addProduct.getOriginalEditData());
@@ -2646,13 +2566,8 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         }
         inputAddProductModel.setWholeSales(datas);
 
-        // 9. get terima pengembalian
-        String[] array2 = getResources().getStringArray(R.array.return_policy);
-        if (addProductReturnableSpinner.getSelectedItem().toString().contains(array2[1])) {
-            inputAddProductModel.setReturnable(RETURNABLE_YES);
-        } else {
-            inputAddProductModel.setReturnable(RETURNABLE_NO);
-        }
+        inputAddProductModel.setReturnable(RETURNABLE_NO);
+
         // 10. get kondisi
         String[] array1 = getResources().getStringArray(R.array.condition);
         if (addProductCondition.getSelectedItem().toString().contains(array1[0])) {
