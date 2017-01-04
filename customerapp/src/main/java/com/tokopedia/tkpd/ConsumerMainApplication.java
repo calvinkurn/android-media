@@ -7,7 +7,6 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
-import com.tokopedia.seller.SellerModuleRouter;
 
 /**
  * Created by ricoharisin on 11/11/16.

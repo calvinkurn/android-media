@@ -9,6 +9,7 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.shopinfo.facades.authservices.ShopService;
 import com.tokopedia.core.shopinfo.models.ReputationModel;
+import com.tokopedia.core.util.MethodChecker;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -133,13 +134,13 @@ public class GetShopReputationRetrofit {
         model.typeMedal = getMedalType(review);
         model.levelMedal = getMedalLevel(review);
         model.shopReputation = getScoreMedal(review);
-        model.shopName = Html.fromHtml(review.getString("review_shop_name")).toString();
+        model.shopName = MethodChecker.fromHtml(review.getString("review_shop_name")).toString();
 //        model.shopAvatarUrl = review.getString("shop_img_uri");// TODO ???
         model.shopAvatarUrl = ""; // TODO ?????
         model.shopId = review.getString("review_shop_id");
         model.productId = review.optString("review_product_id", "");
         model.productName = review.optString("review_product_name", "");
-        model.productName = Html.fromHtml(model.productName).toString();
+        model.productName = MethodChecker.fromHtml(model.productName).toString();
         model.productAvatar = review.optString("review_product_image", "");
 
         JSONObject ownerJsonObj = new JSONObject(review.getString("review_product_owner"));
@@ -163,7 +164,7 @@ public class GetShopReputationRetrofit {
 
         JSONObject Response = new JSONObject(review.getString("review_response"));
         if (!Response.getString("response_message").equals("0")) {
-            model.responseMessage = Html.fromHtml(Response.getString("response_message")).toString();
+            model.responseMessage = MethodChecker.fromHtml(Response.getString("response_message")).toString();
             model.responseDate = Response.getString("response_create_time");
             model.counterResponse = 1;
         } else {

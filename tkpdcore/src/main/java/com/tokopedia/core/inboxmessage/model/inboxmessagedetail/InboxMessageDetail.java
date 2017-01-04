@@ -8,6 +8,7 @@ import android.text.Html;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 
@@ -118,7 +119,7 @@ public class InboxMessageDetail implements Parcelable {
      * @return The messageTitle
      */
     public String getMessageTitle() {
-        return Html.fromHtml(messageTitle).toString();
+        return MethodChecker.fromHtml(messageTitle).toString();
     }
 
     /**

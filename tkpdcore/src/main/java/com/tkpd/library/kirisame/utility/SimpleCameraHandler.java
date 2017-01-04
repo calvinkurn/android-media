@@ -29,6 +29,8 @@ public class SimpleCameraHandler {
             cameraFile.delete();
     }
 
+
+
     public Bitmap getBitmapFromFile(int sampleSize) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;

@@ -52,4 +52,5 @@ public interface DbManager {
     List<Bank> getBankBasedOnText(String query);
     Province getProvinceFromProvinceId(String provinceId);
     City getCity(String cityId);
+    boolean isEtalaseEmpty(String EtalaseName);
 }

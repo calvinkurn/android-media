@@ -14,6 +14,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.myproduct.ProductActivity;
 import com.tokopedia.core.myproduct.model.SimpleTextModel;
 import com.tokopedia.core.myproduct.model.TextDeleteModel;
+import com.tokopedia.core.util.MethodChecker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,11 +121,11 @@ public class TextDeleteAdapter extends RecyclerView.Adapter<TextDeleteAdapter.Vi
                 switch (type) {
                     case ProductActivity.ADD_PRODUCT_CATEGORY:
                     case ProductActivity.ADD_PRODUCT_CHOOSE_ETALASE:
-                        text.setText(Html.fromHtml(textDeleteModel.getCustomText()));
+                        text.setText(MethodChecker.fromHtml(textDeleteModel.getCustomText()));
                         break;
                 }
             } else {
-                text.setText(Html.fromHtml(textDeleteModel.getText()));
+                text.setText(MethodChecker.fromHtml(textDeleteModel.getText()));
             }
         }
 

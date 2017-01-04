@@ -26,7 +26,8 @@ public abstract class RegisterThird extends BaseImpl<RegisterThirdView> {
         VALIDATE_EMAIL = "VALIDATE_EMAIL",
         DATE_YEAR = "DATE_YEAR",
         DATE_MONTH = "DATE_MONTH",
-        DATE_DAY = "DATE_DAY"
+        DATE_DAY = "DATE_DAY",
+        ALLOWED_FIELDS = "ALLOWED_FIELDS"
     ;
 
     String LOGIN_UUID_KEY = "LOGIN_UUID";

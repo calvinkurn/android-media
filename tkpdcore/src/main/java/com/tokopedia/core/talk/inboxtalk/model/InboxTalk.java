@@ -7,6 +7,7 @@ import android.text.Spanned;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.RecyclerViewItem;
 
 
@@ -320,7 +321,7 @@ public class InboxTalk extends RecyclerViewItem implements Parcelable {
     }
 
     public Spanned getTalkMessageSpanned() {
-        return Html.fromHtml(talkMessage);
+        return MethodChecker.fromHtml(talkMessage);
     }
 
     /**

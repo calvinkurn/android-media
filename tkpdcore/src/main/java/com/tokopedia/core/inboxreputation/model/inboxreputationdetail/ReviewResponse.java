@@ -6,6 +6,7 @@ import android.text.Spanned;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.util.MethodChecker;
 
 @org.parceler.Parcel
 public class ReviewResponse {
@@ -62,7 +63,7 @@ public class ReviewResponse {
      *     The responseMessage
      */
     public Spanned getResponseMessage() {
-        return Html.fromHtml(responseMessage);
+        return MethodChecker.fromHtml(responseMessage);
     }
 
     /**

@@ -22,6 +22,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.discovery.model.Breadcrumb;
 import com.tokopedia.core.discovery.model.Filter;
+import com.tokopedia.discovery.activity.FilterMapAtribut;
 import com.tokopedia.discovery.dynamicfilter.fragments.DynamicFilterCategoryFragment;
 import com.tokopedia.discovery.dynamicfilter.fragments.DynamicFilterListFragment;
 import com.tokopedia.discovery.dynamicfilter.fragments.DynamicFilterOtherFragment;
@@ -224,7 +225,9 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
         if (saveFilterSelectionPosition() && saveFilterSelection() && saveFilterText()) {
             if (isFormValid()) {
                 Intent intent = new Intent();
-                intent.putExtra(EXTRA_FILTERS, Parcels.wrap(selectedFilter));
+                FilterMapAtribut.FilterMapValue filterMapValue = new FilterMapAtribut.FilterMapValue();
+                filterMapValue.setValue(selectedFilter);
+                intent.putExtra(EXTRA_FILTERS, filterMapValue);
                 setResult(RESULT_OK, intent);
                 finish();
             } else {

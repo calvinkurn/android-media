@@ -112,8 +112,6 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     private FragmentManager fragmentManager;
     private SearchInteractor searchInteractor;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
-    //    private HashMap<Integer, DynamicFilterModel.Data> filterAttributMap = new HashMap<>();
-//    private HashMap<Integer, Map<String, String>> filtersMap = new HashMap<>();
     private BrowseProductAtribut mBrowseProductAtribut;
     private FilterMapAtribut mFilterMapAtribut;
     private SharedPreferences preferences;
@@ -636,7 +634,6 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                 BrowseParentFragment parentFragment = (BrowseParentFragment)
                         fragmentManager.findFragmentById(R.id.container);
                 Intent intent;
-//                DynamicFilterModel.Data filterAttribute = filterAttributMap.get(parentFragment.getActiveTab());
                 DataValue filterAttribute
                         = mBrowseProductAtribut.getFilterAttributMap().get(parentFragment.getActiveTab());
                 switch (position) {
@@ -732,14 +729,8 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
 
     private void openFilter(DataValue filterAttribute, String source, int activeTab, FDest dest) {
         Log.d(TAG, "openFilter source " + source);
-        List<Breadcrumb> crumb = getProductBreadCrumb();
-        if (breadcrumbs == null && crumb != null) {
-            breadcrumbs = crumb;
-        }
+        breadcrumbs = getProductBreadCrumb();
         if (filterAttribute != null && breadcrumbs != null) {
-//            Map<String, String> filters = filtersMap.get(source);
-//            Map<String, String> filters = mBrowseProductAtribut.getFiltersMap().get(source);
-
             Map<String, String> filters;
             if (mFilterMapAtribut != null && mFilterMapAtribut.getFiltersMap() != null) {
                 if (mFilterMapAtribut.getFiltersMap().get(source) != null) {
@@ -854,17 +845,13 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                     sendSortGTM(browseProductActivityModel.getOb());
                     break;
                 case DynamicFilterView.REQUEST_CODE:
-                    Map<String, String> filters =
+                    FilterMapAtribut.FilterMapValue filterMapValue =
                             data.getParcelableExtra(DynamicFilterView.EXTRA_FILTERS);
-
-//                    filtersMap.put(browseProductActivityModel.getActiveTab(), filters);
-//                    mBrowseProductAtribut.getFiltersMap().put(browseProductActivityModel.getActiveTab(), filters);
-                    FilterMapAtribut.FilterMapValue filterMapValue = new FilterMapAtribut.FilterMapValue();
-                    filterMapValue.setValue((HashMap<String, String>) filters);
-                    mFilterMapAtribut.getFiltersMap().put(browseProductActivityModel.getActiveTab(), filterMapValue);
-                    browseProductActivityModel.setFilterOptions(filters);
-                    Log.d(TAG, "filter option " + filters);
-                    sendFilterGTM(filters);
+                    mFilterMapAtribut.getFiltersMap()
+                            .put(browseProductActivityModel.getActiveTab(), filterMapValue);
+                    browseProductActivityModel.setFilterOptions(filterMapValue.getValue());
+                    Log.d(TAG, "filter option " + filterMapValue.getValue());
+                    sendFilterGTM(filterMapValue.getValue());
                     break;
             }
             setFragment(BrowseParentFragment.newInstance(browseProductActivityModel, parentFragment.getActiveTab()), BrowseParentFragment.FRAGMENT_TAG);
@@ -980,14 +967,10 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                         if (browseProductActivityModel.getOb() != null) {
                             body.query.ob = browseProductActivityModel.getOb();
                         }
-//                        Map<String, String> filters = filtersMap.get(browseProductActivityModel.getActiveTab());
-//                        Map<String, String> filters = mBrowseProductAtribut.getFiltersMap().get(browseProductActivityModel.getActiveTab());
-                        Map<String, String> filters = mFilterMapAtribut
-                                .getFiltersMap()
-                                .get(browseProductActivityModel.getActiveTab())
-                                .getValue();
+                        Map<String, String> filters;
 
-                        if (filters != null) {
+                        if ( browseProductActivityModel != null ) {
+                            filters = browseProductActivityModel.getFilterOptions();
                             for (Map.Entry<String, String> set : filters.entrySet()) {
                                 if (set.getKey().equals("ob")) {
                                     body.query.ob = set.getValue();
@@ -1015,8 +998,6 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                             editor.apply();
                         }
                         Log.d(TAG, "Hotlist query " + body.query.toString());
-//                        filtersMap.put(browseProductActivityModel.getActiveTab(), filters);
-//                        mBrowseProductAtribut.getFiltersMap().put(browseProductActivityModel.getActiveTab(), filters);
 
                         FilterMapAtribut.FilterMapValue filterMapValue
                                 = new FilterMapAtribut.FilterMapValue();

@@ -36,6 +36,7 @@ public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresen
         DownloadResultSender,
         ProductInfoResultReceiver.Receiver{
     public static final String EXTRA_PRODUCT_PASS = "EXTRA_PRODUCT_PASS";
+    public static final String EXTRA_PRODUCT_ITEM = "EXTRA_PRODUCT_ITEM";
     public static final String EXTRA_PRODUCT_ID = "product_id";
     public static final String SHARE_DATA = "SHARE_DATA";
 
