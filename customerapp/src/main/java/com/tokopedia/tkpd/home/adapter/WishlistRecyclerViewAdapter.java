@@ -83,7 +83,6 @@ public class WishlistRecyclerViewAdapter extends RecyclerView.Adapter<WishlistRe
             @Override
             public void onClick(View view) {
                 UnifyTracking.eventFavoriteView(item.getName());
-                TrackingUtils.eventLoca(AppScreen.SCREEN_VIEWED_WISHLIST_PAGE);
 
                 Bundle bundle = new Bundle();
                 Intent intent = new Intent(context, ProductInfoActivity.class);
