@@ -7,11 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.customwidget.SquareImageView;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.var.RecyclerViewItem;
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.R2;
 
 import java.util.List;
 

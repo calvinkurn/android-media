@@ -524,9 +524,6 @@
 
         <activity android:name=".newgallery.GalleryActivity"
             android:screenOrientation="portrait"/>
-        
-        <activity android:name="com.tokopedia.seller.instoped.InstopedActivity"
-            android:screenOrientation="portrait"/>
         <!--=======================================================-->
         <!--RECEIVERS REGISTRY-->
         <!--=======================================================-->

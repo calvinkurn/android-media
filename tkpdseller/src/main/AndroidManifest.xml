@@ -31,6 +31,9 @@
             android:name=".ShippingConfirmationProdConf"
             android:label="@string/title_activity_shipping_confirmation_prod_conf"
             android:screenOrientation="portrait" />
+
+        <activity android:name="com.tokopedia.seller.instoped.InstopedActivity"
+            android:screenOrientation="portrait"/>
         <service
             android:name=".selling.SellingService"
             android:exported="false" />
@@ -45,6 +48,8 @@
 
         <service android:name=".shop.ShopEditService"
             android:exported="false"/>
+
+
 
     </application>
 

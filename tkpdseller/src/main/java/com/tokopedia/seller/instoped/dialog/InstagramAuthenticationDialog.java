@@ -19,11 +19,11 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.R;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.instoped.InstagramAuth;
+import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.InstopedService;
 import com.tokopedia.seller.instoped.OnRequestTokenCodeListener;
-import com.tokopedia.core.myproduct.ProductActivity;
 import com.tokopedia.core.network.retrofit.utils.MapNulRemover;
 
 import java.util.Map;
@@ -38,7 +38,7 @@ import rx.schedulers.Schedulers;
  * Created by Tkpd_Eka on 4/6/2016.
  * migrate retrofit 2 by Angga.Prasetiyo
  */
-public class InstagramAuthenticationDialog extends Fragment implements ProductActivity.OnBackPressedListener {
+public class InstagramAuthenticationDialog extends Fragment implements InstopedActivity.OnBackPressedListener{
 
     private InstagramAuth.OnRequestAccessTokenListener onRequestAccessTokenListener;
     private InstopedService service = new InstopedService();

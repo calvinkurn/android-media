@@ -5,19 +5,22 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.R2;
 import com.tokopedia.seller.instoped.fragment.InstagramMediaFragment;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.myproduct.ProductSocMedActivity;
 import com.tokopedia.core.myproduct.presenter.ProductSocMedPresenter;
 
 import org.parceler.Parcels;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -128,5 +131,29 @@ public class InstopedActivity extends AppCompatActivity implements InstagramActi
                 //[END] move to productSocMedActivity
             }
         };    }
+
+    public interface OnBackPressedListener {
+        boolean onBackPressed();
+    }
+
+    @Override
+    public void onBackPressed() {
+        List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
+        if (fragmentList != null && fragmentList.size() != 0) {
+            //TODO: Perform your logic to pass back press here
+            for (Fragment fragment : fragmentList) {
+                if (fragment instanceof OnBackPressedListener) {
+                    boolean canGoBack = ((OnBackPressedListener) fragment).onBackPressed();
+                    if (!canGoBack) {
+                        super.onBackPressed();
+                    }
+                } else {
+                    super.onBackPressed();
+                }
+            }
+        } else {
+            super.onBackPressed();
+        }
+    }
 
 }
