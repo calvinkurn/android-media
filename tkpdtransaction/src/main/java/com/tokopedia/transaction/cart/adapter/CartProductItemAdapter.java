@@ -30,7 +30,6 @@ import butterknife.ButterKnife;
 /**
  * @author anggaprasetiyo on 11/10/16.
  */
-
 class CartProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int TYPE_PRODUCT_ITEM = R.layout.holder_item_product_cart_tx_module;
     private final Fragment hostFragment;
@@ -264,11 +263,6 @@ class CartProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public int getItemCount() {
         return dataList.size();
-    }
-
-    public void isEditableMode(boolean editMode) {
-        this.editMode = editMode;
-        this.notifyDataSetChanged();
     }
 
     static class ProductItemHolder extends RecyclerView.ViewHolder {
