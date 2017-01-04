@@ -7,6 +7,7 @@ import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
+import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.ProductItem;
 
@@ -1001,5 +1002,14 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Action.INSTALLED,
                 userId
         ).getEvent());
+    }
+
+    public static void sendLocaProductDetailEvent(ProductDetailData successResult, Map<String,String> attributes){
+        getLocaEngine().sendEventProductView(
+                successResult.getInfo().getProductName(),
+                Integer.toString(successResult.getInfo().getProductId()),
+                successResult.getInfo().getProductCatalogName(),
+                attributes
+        );
     }
 }
