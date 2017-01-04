@@ -17,6 +17,7 @@ import com.tokopedia.inbox.contactus.ContactUsConstant;
 import com.tokopedia.inbox.contactus.fragment.ContactUsFaqFragment;
 import com.tokopedia.inbox.contactus.fragment.ContactUsFaqFragment.ContactUsFaqListener;
 import com.tokopedia.inbox.contactus.fragment.CreateTicketFormFragment;
+import com.tokopedia.inbox.inboxticket.fragment.InboxTicketFragment;
 
 /**
  * Created by nisie on 8/12/16.
@@ -102,12 +103,13 @@ public class ContactUsActivity extends BasePresenterActivity implements
     @Override
     public void onGoToCreateTicket(Bundle bundle) {
         CreateTicketFormFragment fragment = CreateTicketFormFragment.createInstance(bundle);
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.setCustomAnimations(R.animator.slide_in_left, 0, 0, R.animator.slide_out_right);
-        transaction.add(R.id.main_view, fragment, "second");
-        transaction.addToBackStack(CreateTicketFormFragment.class.getSimpleName());
-        transaction.commit();
-
+        if (getFragmentManager().findFragmentByTag(CreateTicketFormFragment.class.getSimpleName()) == null) {
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.setCustomAnimations(R.animator.slide_in_left, 0, 0, R.animator.slide_out_right);
+            transaction.add(R.id.main_view, fragment, CreateTicketFormFragment.class.getSimpleName());
+            transaction.addToBackStack(CreateTicketFormFragment.class.getSimpleName());
+            transaction.commit();
+        }
     }
 
     @Override
