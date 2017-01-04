@@ -3,11 +3,10 @@ package com.tokopedia.core.analytics.handler;
 import android.os.Bundle;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.data.DiskAnalyticsDataStore;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
-import com.tokopedia.core.app.MainApplication;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,46 +16,38 @@ import java.util.Map;
  */
 
 public class UserAuthenticationAnalytics {
-    private static LocalCacheHandler mLocalCacheHandler;
+    private static DiskAnalyticsDataStore mDiskAnalyticsDataStore;
 
     public UserAuthenticationAnalytics() {
-        mLocalCacheHandler = new LocalCacheHandler(MainApplication.getAppContext(), AppEventTracking.GTM_CACHE);
+        mDiskAnalyticsDataStore = new DiskAnalyticsDataStore();
     }
 
-    private static void checkNotNullCacheHandler(){
-        if (mLocalCacheHandler == null){
-            mLocalCacheHandler = new LocalCacheHandler(MainApplication.getAppContext(), AppEventTracking.GTM_CACHE);
+    private static void checkNotNullAnalyticsData() {
+        if (mDiskAnalyticsDataStore == null) {
+            mDiskAnalyticsDataStore = new DiskAnalyticsDataStore();
         }
     }
 
     public static void setActiveLogin() {
-        checkNotNullCacheHandler();
-        setActiveAuthenticationState(AppEventTracking.GTMCacheValue.LOGIN);
+        checkNotNullAnalyticsData();
+        mDiskAnalyticsDataStore.setActiveAuthenticationState(AppEventTracking.GTMCacheValue.LOGIN);
     }
 
     public static void setActiveRegister() {
-        checkNotNullCacheHandler();
-        setActiveAuthenticationState(AppEventTracking.GTMCacheValue.REGISTER);
-    }
-
-    private static void setActiveAuthenticationState(String state) {
-        mLocalCacheHandler.putString(AppEventTracking.GTMCacheKey.SESSION_STATE, state);
-        mLocalCacheHandler.applyEditor();
+        checkNotNullAnalyticsData();
+        mDiskAnalyticsDataStore.setActiveAuthenticationState(AppEventTracking.GTMCacheValue.REGISTER);
     }
 
     public static void setActiveAuthenticationMedium(String medium) {
-        checkNotNullCacheHandler();
-        mLocalCacheHandler.putString(AppEventTracking.GTMCacheKey.MEDIUM, medium);
-        mLocalCacheHandler.applyEditor();
+        checkNotNullAnalyticsData();
+        mDiskAnalyticsDataStore.setActiveAuthenticationMedium(medium);
     }
 
     public static void sendAnalytics(Bundle bundle) {
-        checkNotNullCacheHandler();
-        switch (mLocalCacheHandler.getString(AppEventTracking.GTMCacheKey.SESSION_STATE, "")) {
+        checkNotNullAnalyticsData();
+        switch (mDiskAnalyticsDataStore.getActiveAuthenticationState()) {
             case AppEventTracking.GTMCacheValue.LOGIN:
-                UnifyTracking.eventLoginSuccess(mLocalCacheHandler.getString(AppEventTracking.GTMCacheKey.MEDIUM,
-                        AppEventTracking.DEFAULT_CHANNEL)
-                );
+                UnifyTracking.eventLoginSuccess(mDiskAnalyticsDataStore.getActiveAuthenticationMedium());
 
                 Map<String, String> loginAttr = new HashMap<String, String>();
                 UnifyTracking.eventLoginLoca(new CustomerWrapper.Builder()
@@ -73,20 +64,16 @@ public class UserAuthenticationAnalytics {
                                         AppEventTracking.DEFAULT_CHANNEL)
                         )
                         .setMethod(
-                                mLocalCacheHandler.getString(AppEventTracking.GTMCacheKey.MEDIUM,
-                                        AppEventTracking.DEFAULT_CHANNEL)
+                                mDiskAnalyticsDataStore.getActiveAuthenticationMedium()
                         )
                         .setAttr(loginAttr)
                         .build()
                 );
                 CommonUtils.dumper(bundle.toString());
-                CommonUtils.dumper(mLocalCacheHandler.getString(AppEventTracking.GTMCacheKey.MEDIUM,
-                        AppEventTracking.DEFAULT_CHANNEL));
+                CommonUtils.dumper(mDiskAnalyticsDataStore.getActiveAuthenticationMedium());
                 break;
             case AppEventTracking.GTMCacheValue.REGISTER:
-                UnifyTracking.eventRegisterSuccess(mLocalCacheHandler.getString(AppEventTracking.GTMCacheKey.MEDIUM,
-                        AppEventTracking.DEFAULT_CHANNEL)
-                );
+                UnifyTracking.eventRegisterSuccess(mDiskAnalyticsDataStore.getActiveAuthenticationMedium());
 
                 Map<String, String> registerAttr = new HashMap<String, String>();
                 UnifyTracking.eventRegisterLoca(
@@ -104,15 +91,13 @@ public class UserAuthenticationAnalytics {
                                                 AppEventTracking.DEFAULT_CHANNEL)
                                 )
                                 .setMethod(
-                                        mLocalCacheHandler.getString(AppEventTracking.GTMCacheKey.MEDIUM,
-                                                AppEventTracking.DEFAULT_CHANNEL)
+                                        mDiskAnalyticsDataStore.getActiveAuthenticationMedium()
                                 )
                                 .setAttr(registerAttr)
                                 .build()
                 );
                 CommonUtils.dumper(bundle.toString());
-                CommonUtils.dumper(mLocalCacheHandler.getString(AppEventTracking.GTMCacheKey.MEDIUM,
-                        AppEventTracking.DEFAULT_CHANNEL));
+                CommonUtils.dumper(mDiskAnalyticsDataStore.getActiveAuthenticationMedium());
                 break;
         }
     }
