@@ -18,4 +18,8 @@ public class TopAdsConstant {
 
     public static final String EDIT_PROMO_DISPLAY_DATE = "dd/MM/yyyy";
     public static final String EDIT_PROMO_DISPLAY_TIME = "HH:mm a";
+
+    public static final int STATUS_AD_ACTIVE = 1;
+    public static final int STATUS_AD_NOT_ACTIVE = 3;
+    public static final int STATUS_AD_NOT_SENT = 2;
 }

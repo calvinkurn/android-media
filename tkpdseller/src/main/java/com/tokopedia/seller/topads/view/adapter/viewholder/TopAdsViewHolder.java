@@ -10,6 +10,7 @@ import com.bignerdranch.android.multiselector.MultiSelector;
 import com.bignerdranch.android.multiselector.SwappingHolder;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
+import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.model.data.Ad;
 
 import butterknife.BindView;
@@ -19,10 +20,6 @@ import butterknife.ButterKnife;
  * Created by zulfikarrahman on 11/28/16.
  */
 public class TopAdsViewHolder extends SwappingHolder {
-
-    private static final int STATUS_ACTIVE = 1;
-    private static final int STATUS_NOT_SENT = 2;
-    private static final int STATUS_NOT_ACTIVE = 3;
 
     @BindView(R2.id.title_product)
     public TextView titleProduct;
@@ -54,23 +51,27 @@ public class TopAdsViewHolder extends SwappingHolder {
     @BindView(R2.id.mainView)
     public View mainView;
 
+    public TopAdsViewHolder(View view, MultiSelector multiSelector) {
+        super(view, multiSelector);
+        ButterKnife.bind(this, view);
+    }
+
     public void bindObject(Ad ad) {
         titleProduct.setText(ad.getName());
         statusActive.setText(ad.getStatusDesc());
         switch (ad.getStatus()) {
-            case STATUS_ACTIVE:
+            case TopAdsConstant.STATUS_AD_ACTIVE:
                 statusActiveDot.setBackgroundResource(R.drawable.green_circle);
                 break;
-            case STATUS_NOT_ACTIVE:
+            case TopAdsConstant.STATUS_AD_NOT_ACTIVE:
                 statusActiveDot.setBackgroundResource(R.drawable.grey_circle);
                 break;
-            case STATUS_NOT_SENT:
+            case TopAdsConstant.STATUS_AD_NOT_SENT:
                 statusActiveDot.setBackgroundResource(R.drawable.grey_circle);
                 break;
         }
         pricePromoPerClick.setText(promoPriceUsed.getContext().getString(R.string.top_ads_bid_format_text, ad.getPriceBidFmt(), ad.getLabelPerClick()));
         promoPriceUsed.setText(promoPriceUsed.getContext().getString(R.string.top_ads_used_format_text, ad.getStatTotalSpent()));
-        totalPricePromo.setText(ad.getPriceDailySpentFmt());
         if (!TextUtils.isEmpty(ad.getPriceDailyBar())) {
             progressBarLayout.setVisibility(View.VISIBLE);
             progressBarPromo.setProgress((int) Double.parseDouble(ad.getPriceDailyBar()));
@@ -78,11 +79,5 @@ public class TopAdsViewHolder extends SwappingHolder {
         } else {
             progressBarLayout.setVisibility(View.GONE);
         }
-
-    }
-
-    public TopAdsViewHolder(View view, MultiSelector multiSelector) {
-        super(view, multiSelector);
-        ButterKnife.bind(this, view);
     }
 }
