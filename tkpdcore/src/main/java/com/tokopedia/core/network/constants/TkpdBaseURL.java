@@ -639,5 +639,6 @@ public interface TkpdBaseURL {
         String PATH_CREATE_STEP_1 = URL_CONTACT_US + "/ajax/create/step/1";
         String PATH_CREATE_STEP_2 = URL_CONTACT_US + "/ajax/create/step/2";
         String URL_HELP = MOBILE_DOMAIN + "bantuan/";
+        String URL_CHANGE_NUMBER = "https://www.tokopedia.com/contact-us?solution_id=54";
     }
 }

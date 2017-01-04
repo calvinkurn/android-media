@@ -167,6 +167,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
         if (securityQuestion.isAfterRotate())
             securityQuestion.initDataAfterRotate();
         smsReceiver.registerSMSReceiver(getActivity());
+        FragmentSecurityQuestionPermissionsDispatcher.checkSmsPermissionWithCheck(FragmentSecurityQuestion.this);
     }
 
     @Override
@@ -487,5 +488,10 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     @OnNeverAskAgain(Manifest.permission.READ_SMS)
     void showNeverAskForCamera() {
         RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_SMS);
+    }
+
+    @NeedsPermission(Manifest.permission.READ_SMS)
+    public void checkSmsPermission() {
+
     }
 }
