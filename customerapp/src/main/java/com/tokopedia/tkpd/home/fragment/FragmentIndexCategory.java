@@ -850,6 +850,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void onClick(Toppick toppick) {
-        openWebViewURL(toppick.getUrl());
+        openWebViewURL("https://www.tokopedia.com/toppicks/");
     }
 }

@@ -2,38 +2,40 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:orientation="horizontal">
 
     <LinearLayout
         android:id="@+id/linWrapper"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="?android:selectableItemBackground"
-        android:orientation="horizontal"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:padding="5dp">
+        android:weightSum="100"
+        android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/itemImage"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_weight="1"
-            android:layout_gravity="center"
-            android:contentDescription="@string/image_description"
-            android:scaleType="fitCenter"
-            android:adjustViewBounds="true"
-            android:src="@drawable/ic_loading_toped" />
-
-        <View
-            android:id="@+id/sparator"
-            android:layout_width="1px"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_gravity="right"
-            android:background="@color/grey" />
+            android:layout_weight="95"
+            android:scaleType="fitCenter"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:src="@drawable/ic_loading_toped"
+            android:layout_margin="5dp"/>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="5">
+            <View
+                android:id="@+id/sparator"
+                android:layout_width="2px"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@color/grey_300" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 

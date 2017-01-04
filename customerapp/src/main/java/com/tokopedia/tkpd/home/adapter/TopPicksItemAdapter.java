@@ -28,7 +28,6 @@ public class TopPicksItemAdapter  extends RecyclerView.Adapter<RecyclerView.View
     private final int homeMenuWidth;
 
     TopPicksItemAdapter(Toppick topPick, int homeMenuWidth) {
-
         this.toppick = topPick;
         this.homeMenuWidth = homeMenuWidth;
     }
@@ -41,32 +40,28 @@ public class TopPicksItemAdapter  extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        switch (viewType) {
-            case 0:
-                @SuppressLint("InflateParams") View v = LayoutInflater.from(
-                        viewGroup.getContext()).inflate(R.layout.item_top_picks_title, null
-                );
-                v.setMinimumWidth(homeMenuWidth);
-                return new TopPicksTitleRowHolder(v);
-            default:
-                @SuppressLint("InflateParams") View v2 = LayoutInflater.from(
-                        viewGroup.getContext()).inflate(R.layout.item_top_picks, null
-                );
-                v2.setMinimumWidth(homeMenuWidth);
-                return new TopPicksItemRowHolder(v2);
-        }
+        @SuppressLint("InflateParams") View v = LayoutInflater.from(
+                viewGroup.getContext()).inflate(R.layout.item_top_picks, null
+        );
+        v.setMinimumWidth(homeMenuWidth);
+        return new TopPicksItemRowHolder(v);
 
     }
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int i) {
+        TopPicksItemRowHolder topPicksItemRowHolder = (TopPicksItemRowHolder) holder;
+        topPicksItemRowHolder.linWrapper.getLayoutParams().width = homeMenuWidth;
+        topPicksItemRowHolder.linWrapper.getLayoutParams().height = homeMenuWidth;
+        if(i % 2 != 0 ){
+            topPicksItemRowHolder.sparator.setVisibility(View.GONE);
+        } else {
+            topPicksItemRowHolder.sparator.setVisibility(View.VISIBLE);
+        }
         switch (getItemViewType(i)) {
             case 0:
-                TopPicksTitleRowHolder topPicksTitleRowHolder = (TopPicksTitleRowHolder) holder;
-                topPicksTitleRowHolder.linWrapper.getLayoutParams().width = homeMenuWidth;
-                topPicksTitleRowHolder.sparator.setVisibility(View.VISIBLE);
-                ImageHandler.LoadImage(topPicksTitleRowHolder.itemImage,toppick.getImageUrl());
-                topPicksTitleRowHolder.view.setOnClickListener(new View.OnClickListener() {
+                ImageHandler.LoadImage(topPicksItemRowHolder.itemImage,toppick.getImageUrl());
+                topPicksItemRowHolder.view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         titleClickedListener.onTitleClicked(toppick);
@@ -74,12 +69,7 @@ public class TopPicksItemAdapter  extends RecyclerView.Adapter<RecyclerView.View
                 });
                 break;
             default:
-                TopPicksItemRowHolder topPicksItemRowHolder = (TopPicksItemRowHolder) holder;
-                if(i % 2 != 0 ){
-                    topPicksItemRowHolder.sparator.setVisibility(View.GONE);
-                } else {
-                    topPicksItemRowHolder.sparator.setVisibility(View.VISIBLE);
-                }
+
                 final Item singleItem = toppick.getItem().get(i-1);
                 ImageHandler.LoadImage(topPicksItemRowHolder.itemImage,singleItem.getImageUrl());
                 topPicksItemRowHolder.view.setOnClickListener(new View.OnClickListener() {
@@ -88,21 +78,11 @@ public class TopPicksItemAdapter  extends RecyclerView.Adapter<RecyclerView.View
                         itemClickedListener.onItemClicked(singleItem, holder.getAdapterPosition());
                     }
                 });
-                Log.d("alifa", "onBindViewHolder: "+singleItem.getUrl());
         }
-    }
-
-
-    public OnItemClickedListener getItemClickedListener() {
-        return itemClickedListener;
     }
 
     public void setItemClickedListener(OnItemClickedListener itemClickedListener) {
         this.itemClickedListener = itemClickedListener;
-    }
-
-    public OnTitleClickedListener getTitleClickedListener() {
-        return titleClickedListener;
     }
 
     public void setTitleClickedListener(OnTitleClickedListener titleClickedListener) {
@@ -121,7 +101,6 @@ public class TopPicksItemAdapter  extends RecyclerView.Adapter<RecyclerView.View
         LinearLayout linWrapper;
         View sparator;
         protected View view;
-
         TopPicksItemRowHolder(View view) {
             super(view);
             this.view = view;
@@ -130,25 +109,6 @@ public class TopPicksItemAdapter  extends RecyclerView.Adapter<RecyclerView.View
             this.linWrapper = (LinearLayout) view.findViewById(R.id.linWrapper);
 
         }
-
-    }
-
-    class TopPicksTitleRowHolder extends RecyclerView.ViewHolder {
-
-        ImageView itemImage;
-        LinearLayout linWrapper;
-        View sparator;
-        protected View view;
-
-        TopPicksTitleRowHolder(View view) {
-            super(view);
-            this.view = view;
-            this.sparator = view.findViewById(R.id.sparator);
-            this.itemImage = (ImageView) view.findViewById(R.id.itemImage);
-            this.linWrapper = (LinearLayout) view.findViewById(R.id.linWrapper);
-
-        }
-
     }
 
     public interface OnItemClickedListener {
