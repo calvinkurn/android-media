@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.cart.interactor.entity;
+package com.tokopedia.transaction.cart.interactor.data.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * @author  by alvarisi on 11/30/16.
  */
 
-public class ShipmentPackageEntity implements Parcelable {
+public class ShipmentPackageEntity {
 
     @SerializedName("price_total")
     @Expose
@@ -36,28 +36,6 @@ public class ShipmentPackageEntity implements Parcelable {
     @SerializedName("package_available")
     @Expose
     private Integer packageAvailable;
-
-    protected ShipmentPackageEntity(Parcel in) {
-        priceTotal = in.readString();
-        shipmentId = in.readString();
-        desc = in.readString();
-        name = in.readString();
-        shipmentPackageId = in.readString();
-        isShowMap = in.readInt();
-        price = in.readString();
-    }
-
-    public static final Creator<ShipmentPackageEntity> CREATOR = new Creator<ShipmentPackageEntity>() {
-        @Override
-        public ShipmentPackageEntity createFromParcel(Parcel in) {
-            return new ShipmentPackageEntity(in);
-        }
-
-        @Override
-        public ShipmentPackageEntity[] newArray(int size) {
-            return new ShipmentPackageEntity[size];
-        }
-    };
 
     public ShipmentPackageEntity() {
     }
@@ -162,22 +140,6 @@ public class ShipmentPackageEntity implements Parcelable {
     @Override
     public String toString() {
         return name;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(priceTotal);
-        parcel.writeString(shipmentId);
-        parcel.writeString(desc);
-        parcel.writeString(name);
-        parcel.writeString(shipmentPackageId);
-        parcel.writeInt(isShowMap);
-        parcel.writeString(price);
     }
 
     public int getIsShowMap() {

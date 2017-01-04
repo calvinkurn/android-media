@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.cart.interactor.entity;
+package com.tokopedia.transaction.cart.interactor.data.entity;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by alvarisi on 11/30/16.
+ * @author  by alvarisi on 11/30/16.
  */
 
 public class CalculateShipmentEntity {

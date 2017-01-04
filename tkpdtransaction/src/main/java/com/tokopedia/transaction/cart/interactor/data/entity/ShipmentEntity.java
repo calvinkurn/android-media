@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.cart.interactor.entity;
+package com.tokopedia.transaction.cart.interactor.data.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by alvarisi on 11/30/16.
+ * @author  by alvarisi on 11/30/16.
  */
-public class ShipmentEntity implements Parcelable {
+public class ShipmentEntity{
 
     @SerializedName("shipping_max_add_fee")
     @Expose
@@ -38,35 +38,6 @@ public class ShipmentEntity implements Parcelable {
 
     }
 
-    protected ShipmentEntity(Parcel in) {
-        shipmentId = in.readString();
-        shipmentImage = in.readString();
-        shipmentName = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(shipmentId);
-        dest.writeString(shipmentImage);
-        dest.writeString(shipmentName);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<ShipmentEntity> CREATOR = new Creator<ShipmentEntity>() {
-        @Override
-        public ShipmentEntity createFromParcel(Parcel in) {
-            return new ShipmentEntity(in);
-        }
-
-        @Override
-        public ShipmentEntity[] newArray(int size) {
-            return new ShipmentEntity[size];
-        }
-    };
 
     /**
      * @return The shippingMaxAddFee
