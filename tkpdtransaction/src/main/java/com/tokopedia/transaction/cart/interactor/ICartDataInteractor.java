@@ -3,10 +3,8 @@ package com.tokopedia.transaction.cart.interactor;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.cart.model.ResponseTransform;
-import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentData;
 import com.tokopedia.transaction.cart.model.cartdata.CartData;
 import com.tokopedia.transaction.cart.model.calculateshipment.Shipment;
-import com.tokopedia.transaction.cart.model.cartdata.CartModel;
 import com.tokopedia.transaction.cart.model.savelocation.SaveLocationData;
 import com.tokopedia.transaction.cart.model.shipmentcart.EditShipmentCart;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;

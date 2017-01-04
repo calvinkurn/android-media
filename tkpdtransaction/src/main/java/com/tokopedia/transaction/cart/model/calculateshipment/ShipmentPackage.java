@@ -21,26 +21,6 @@ public class ShipmentPackage implements Parcelable {
     public ShipmentPackage() {
     }
 
-    protected ShipmentPackage(Parcel in) {
-        shipmentId = in.readString();
-        name = in.readString();
-        shipmentPackageId = in.readString();
-        isShowMap = in.readInt();
-        price = in.readString();
-    }
-
-    public static final Creator<ShipmentPackage> CREATOR = new Creator<ShipmentPackage>() {
-        @Override
-        public ShipmentPackage createFromParcel(Parcel in) {
-            return new ShipmentPackage(in);
-        }
-
-        @Override
-        public ShipmentPackage[] newArray(int size) {
-            return new ShipmentPackage[size];
-        }
-    };
-
     /**
      * @return The shipmentId
      */
@@ -129,17 +109,45 @@ public class ShipmentPackage implements Parcelable {
         this.isShowMap = isShowMap;
     }
 
+    protected ShipmentPackage(Parcel in) {
+        shipmentId = in.readString();
+        name = in.readString();
+        shipmentPackageId = in.readString();
+        isShowMap = in.readInt();
+        price = in.readString();
+        packageAvailable = in.readByte() == 0x00 ? null : in.readInt();
+    }
+
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(shipmentId);
-        parcel.writeString(name);
-        parcel.writeString(shipmentPackageId);
-        parcel.writeInt(isShowMap);
-        parcel.writeString(price);
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(shipmentId);
+        dest.writeString(name);
+        dest.writeString(shipmentPackageId);
+        dest.writeInt(isShowMap);
+        dest.writeString(price);
+        if (packageAvailable == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(packageAvailable);
+        }
     }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<ShipmentPackage> CREATOR = new Parcelable.Creator<ShipmentPackage>() {
+        @Override
+        public ShipmentPackage createFromParcel(Parcel in) {
+            return new ShipmentPackage(in);
+        }
+
+        @Override
+        public ShipmentPackage[] newArray(int size) {
+            return new ShipmentPackage[size];
+        }
+    };
 }

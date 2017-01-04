@@ -13,7 +13,7 @@ import java.util.List;
  * @author by alvarisi on 11/3/16.
  */
 
-public class Shipment implements Parcelable {
+public class Shipment implements Parcelable{
     private String shipmentId;
     private List<ShipmentPackage> shipmentPackage = new ArrayList<ShipmentPackage>();
     private Integer shipmentAvailable;
@@ -22,24 +22,6 @@ public class Shipment implements Parcelable {
     public Shipment() {
 
     }
-
-    protected Shipment(Parcel in) {
-        shipmentId = in.readString();
-        shipmentPackage = in.createTypedArrayList(ShipmentPackage.CREATOR);
-        shipmentName = in.readString();
-    }
-
-    public static final Creator<Shipment> CREATOR = new Creator<Shipment>() {
-        @Override
-        public Shipment createFromParcel(Parcel in) {
-            return new Shipment(in);
-        }
-
-        @Override
-        public Shipment[] newArray(int size) {
-            return new Shipment[size];
-        }
-    };
 
     /**
      * @return The shipmentId
@@ -111,15 +93,51 @@ public class Shipment implements Parcelable {
         return shipment;
     }
 
+    protected Shipment(Parcel in) {
+        shipmentId = in.readString();
+        if (in.readByte() == 0x01) {
+            shipmentPackage = new ArrayList<ShipmentPackage>();
+            in.readList(shipmentPackage, ShipmentPackage.class.getClassLoader());
+        } else {
+            shipmentPackage = null;
+        }
+        shipmentAvailable = in.readByte() == 0x00 ? null : in.readInt();
+        shipmentName = in.readString();
+    }
+
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(shipmentId);
-        parcel.writeTypedList(shipmentPackage);
-        parcel.writeString(shipmentName);
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(shipmentId);
+        if (shipmentPackage == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(shipmentPackage);
+        }
+        if (shipmentAvailable == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(shipmentAvailable);
+        }
+        dest.writeString(shipmentName);
     }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Shipment> CREATOR = new Parcelable.Creator<Shipment>() {
+        @Override
+        public Shipment createFromParcel(Parcel in) {
+            return new Shipment(in);
+        }
+
+        @Override
+        public Shipment[] newArray(int size) {
+            return new Shipment[size];
+        }
+    };
 }

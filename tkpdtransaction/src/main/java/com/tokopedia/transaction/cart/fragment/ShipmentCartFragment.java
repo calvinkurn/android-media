@@ -32,8 +32,6 @@ import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.adapter.ShipmentCartAdapter;
 import com.tokopedia.transaction.cart.adapter.ShipmentPackageCartAdapter;
 import com.tokopedia.transaction.cart.listener.IShipmentCartView;
@@ -46,6 +44,8 @@ import com.tokopedia.transaction.cart.model.savelocation.SaveLocationWrapper;
 import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartWrapper;
 import com.tokopedia.transaction.cart.presenter.IShipmentCartPresenter;
 import com.tokopedia.transaction.cart.presenter.ShipmentCartPresenter;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,7 +109,6 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
     private TkpdProgressDialog progressdialog;
     private List<Shipment> shipmentData;
     private CartItem transactionPassData;
-    private CalculateShipmentData shipmentData;
     private ShipmentCartAdapter adapterShipment;
     private ShipmentPackageCartAdapter adapterShipmentPackage;
     private ShipmentCartWrapper wrapper;

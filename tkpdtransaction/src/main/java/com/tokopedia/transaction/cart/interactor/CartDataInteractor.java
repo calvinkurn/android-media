@@ -6,20 +6,13 @@ import com.tokopedia.core.network.apiservices.transaction.TXActService;
 import com.tokopedia.core.network.apiservices.transaction.TXCartActService;
 import com.tokopedia.core.network.apiservices.transaction.TXService;
 import com.tokopedia.core.network.apiservices.transaction.TXVoucherService;
-import com.tokopedia.core.network.apiservices.user.PeopleActService;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.transaction.cart.interactor.entity.EditShipmentEntity;
-import com.tokopedia.transaction.cart.interactor.entity.ShipmentEntity;
-import com.tokopedia.transaction.cart.interactor.entity.mapper.ShipmentEntityDataMapper;
-import com.tokopedia.transaction.cart.interactor.source.CloudShipmentCartSource;
+import com.tokopedia.transaction.cart.interactor.data.ShipmentCartDataRepository;
+import com.tokopedia.transaction.cart.interactor.domain.IShipmentCartRepository;
 import com.tokopedia.transaction.cart.model.calculateshipment.Shipment;
-import com.tokopedia.transaction.cart.model.cartdata.CartModel;
 import com.tokopedia.transaction.cart.model.ResponseTransform;
-import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentData;
 import com.tokopedia.transaction.cart.model.cartdata.CartData;
 import com.tokopedia.transaction.cart.model.savelocation.SaveLocationData;
 import com.tokopedia.transaction.cart.model.shipmentcart.EditShipmentCart;
@@ -55,8 +48,7 @@ public class CartDataInteractor implements ICartDataInteractor {
     private final TXVoucherService txVoucherService;
     private final CompositeSubscription compositeSubscription;
 
-    private CloudShipmentCartSource cloudSource;
-    private ShipmentEntityDataMapper mapper;
+    private IShipmentCartRepository shipmentCartRepository;
 
     public CartDataInteractor() {
         this.compositeSubscription = new CompositeSubscription();
@@ -64,8 +56,7 @@ public class CartDataInteractor implements ICartDataInteractor {
         this.txCartActService = new TXCartActService();
         this.txActService = new TXActService();
         this.txVoucherService = new TXVoucherService();
-        this.cloudSource = new CloudShipmentCartSource();
-        this.mapper = new ShipmentEntityDataMapper();
+        this.shipmentCartRepository = new ShipmentCartDataRepository();
     }
 
     @Override
@@ -102,57 +93,8 @@ public class CartDataInteractor implements ICartDataInteractor {
 
     @Override
     public void calculateShipment(TKPDMapParam<String, String> param,
-                                  Subscriber<CalculateShipmentData> subscriber) {
-        Observable.just(param)
-                .flatMap(new Func1<TKPDMapParam<String, String>, Observable<Response<TkpdResponse>>>() {
-                    @Override
-                    public Observable<Response<TkpdResponse>> call(TKPDMapParam<String, String> stringStringTKPDMapParam) {
-                        TXCartService service = new TXCartService();
-                        return service
-                                .getApi()
-                                .calculateCart(stringStringTKPDMapParam);
-                    }
-                })
-                .map(new Func1<Response<TkpdResponse>, CalculateShipmentData>() {
-                    @Override
-                    public CalculateShipmentData call(Response<TkpdResponse> response) {
-                        if (response.isSuccessful()) {
-                            if (!response.body().isError()) {
-                                return response.body().convertDataObj(CalculateShipmentData.class);
-                            } else {
-                                throw new RuntimeException(response.body().getErrorMessages().get(0));
-                            }
-                        } else {
-                            new ErrorHandler(new ErrorListener() {
-                                @Override
-                                public void onUnknown() {
-                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                                }
-
-                                @Override
-                                public void onTimeout() {
-                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
-                                }
-
-                                @Override
-                                public void onServerError() {
-                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                                }
-
-                                @Override
-                                public void onBadRequest() {
-                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                                }
-
-                                @Override
-                                public void onForbidden() {
-                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                                }
-                            }, response.code());
-                        }
-                        throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                    }
-                })
+                                  Subscriber<List<Shipment>> subscriber) {
+        shipmentCartRepository.shipments(param)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())
@@ -272,30 +214,8 @@ public class CartDataInteractor implements ICartDataInteractor {
     }
 
     @Override
-    public void editShipmentCart(TKPDMapParam<String, String> param,
-                                 Subscriber<ShipmentCartData> subscriber) {
-        Observable.just(param)
-                .flatMap(new Func1<TKPDMapParam<String, String>, Observable<Response<TkpdResponse>>>() {
-                    @Override
-                    public List<Shipment> call(List<ShipmentEntity> shipmentEntities) {
-                        return mapper.transform(shipmentEntities);
-                    }
-                })
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .subscribe(subscriber);
-    }
-
-    @Override
     public void editShipmentCart(TKPDMapParam<String, String> param, Subscriber<EditShipmentCart> subscriber) {
-        cloudSource.editShipment(param)
-                .map(new Func1<EditShipmentEntity, EditShipmentCart>() {
-                    @Override
-                    public EditShipmentCart call(EditShipmentEntity editShipmentEntity) {
-                        return mapper.transform(editShipmentEntity);
-                    }
-                })
+        shipmentCartRepository.editShipment(param)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())
@@ -304,7 +224,7 @@ public class CartDataInteractor implements ICartDataInteractor {
 
     @Override
     public void editLocationShipment(TKPDMapParam<String, String> param, Subscriber<SaveLocationData> subscriber) {
-        cloudSource.editLocation(param)
+        shipmentCartRepository.editLocation(param)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())
