@@ -541,6 +541,11 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
         }
     }
 
+    @Override
+    public String getScreenName() {
+        return "";
+    }
+
     protected static class PagerAdapter2 extends ArrayFragmentStatePagerAdapter<InstagramMediaModelParc> {
 
         public PagerAdapter2(FragmentManager fm, List<InstagramMediaModelParc> items) {

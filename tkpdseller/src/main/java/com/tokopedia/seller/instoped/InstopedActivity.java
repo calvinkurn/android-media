@@ -11,6 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
 
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.instoped.fragment.InstagramMediaFragment;
@@ -30,7 +32,7 @@ import butterknife.Unbinder;
  * Created by sebastianuskh on 1/3/17.
  */
 
-public class InstopedActivity extends AppCompatActivity implements InstagramActivityListener {
+public class InstopedActivity extends TActivity implements InstagramActivityListener {
 
     private static final String FRAGMENT_TO_SHOW = "FRAGMENT_TO_SHOW";
     private String FRAGMENT;
@@ -131,6 +133,11 @@ public class InstopedActivity extends AppCompatActivity implements InstagramActi
                 //[END] move to productSocMedActivity
             }
         };    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_INSTOPED;
+    }
 
     public interface OnBackPressedListener {
         boolean onBackPressed();

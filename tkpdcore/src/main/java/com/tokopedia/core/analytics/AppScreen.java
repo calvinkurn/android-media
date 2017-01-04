@@ -12,6 +12,8 @@ import com.tokopedia.core.router.home.HomeRouter;
 public final class AppScreen {
 
 
+
+
     private AppScreen() {
 
     }
@@ -227,4 +229,7 @@ public final class AppScreen {
     public static final String SCREEN_HOME_CATEGORY = "event : Viewed Home - Category";
     public static final String SCREEN_HOME_FEED = "event : Viewed Home - Product feed Page";
     public static final String SCREEN_VIEWED_SHOP_PAGE = "event : Viewed Shop Page";
+
+    public static final String SCREEN_INSTOPED = "Instoped Select Image";
+
 }

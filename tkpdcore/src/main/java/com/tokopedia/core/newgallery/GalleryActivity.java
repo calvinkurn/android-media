@@ -25,6 +25,8 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.myproduct.fragment.ImageGalleryAlbumFragment;
 import com.tokopedia.core.myproduct.fragment.ImageGalleryFragment;
 import com.tokopedia.core.myproduct.model.FolderModel;
@@ -57,7 +59,7 @@ import static com.tkpd.library.utils.CommonUtils.checkNotNull;
  * Created by sebastianuskh on 12/30/16.
  */
 @RuntimePermissions
-public class GalleryActivity extends AppCompatActivity implements ImageGalleryView {
+public class GalleryActivity extends TActivity implements ImageGalleryView {
     public static final String ADD_PRODUCT_IMAGE_LOCATION = "ADD_PRODUCT_IMAGE_LOCATION";
     public static final String FORCE_OPEN_CAMERA = "FORCE_OPEN_CAMERA";
     public static final String MAX_IMAGE_SELECTION = "MAX_IMAGE_SELECTION";
@@ -431,5 +433,8 @@ public class GalleryActivity extends AppCompatActivity implements ImageGalleryVi
         RequestPermissionUtil.onNeverAskAgain(this,listPermission);
     }
 
-
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_GALLERY_BROWSER;
+    }
 }

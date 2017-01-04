@@ -36,6 +36,7 @@ import com.tkpd.library.utils.DownloadResultSender;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.fragment.TwitterDialogV4;
 import com.tokopedia.core.myproduct.dialog.DialogFragmentImageAddProduct;
 import com.tokopedia.core.myproduct.fragment.AddProductFragment;
@@ -812,5 +813,10 @@ public class ProductActivity extends BaseProductActivity implements
         if(fragment instanceof AddProductFragment){
             ((AddProductFragment)fragment).setProductCatalog(index);
         }
+    }
+
+    @Override
+    public String getScreenName() {
+        return "";
     }
 }
