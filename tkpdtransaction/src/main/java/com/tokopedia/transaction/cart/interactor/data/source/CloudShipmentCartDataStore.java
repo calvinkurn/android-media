@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.cart.interactor.source;
+package com.tokopedia.transaction.cart.interactor.data.source;
 
 import com.tokopedia.core.network.apiservices.transaction.TXCartActService;
 import com.tokopedia.core.network.apiservices.transaction.TXCartService;
@@ -7,10 +7,10 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.transaction.cart.interactor.entity.CalculateShipmentEntity;
-import com.tokopedia.transaction.cart.interactor.entity.EditShipmentEntity;
-import com.tokopedia.transaction.cart.interactor.entity.ShipmentEntity;
+import com.tokopedia.transaction.cart.interactor.data.IShipmentCartDataStore;
+import com.tokopedia.transaction.cart.interactor.data.entity.CalculateShipmentEntity;
+import com.tokopedia.transaction.cart.interactor.data.entity.EditShipmentEntity;
+import com.tokopedia.transaction.cart.interactor.data.entity.ShipmentEntity;
 import com.tokopedia.transaction.cart.model.savelocation.SaveLocationData;
 
 import org.json.JSONException;
@@ -26,8 +26,11 @@ import rx.functions.Func1;
  * @author by alvarisi on 11/30/16.
  */
 
-public class CloudShipmentCartSource {
+public class CloudShipmentCartDataStore implements IShipmentCartDataStore {
     private static final String KEY_FLAG_IS_SUCCESS = "is_success";
+
+    public CloudShipmentCartDataStore() {
+    }
 
     public Observable<List<ShipmentEntity>> shipments(Map<String, String> param) {
         return Observable.just(param)

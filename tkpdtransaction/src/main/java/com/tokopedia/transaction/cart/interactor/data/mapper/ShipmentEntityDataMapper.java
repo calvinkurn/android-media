@@ -1,11 +1,11 @@
-package com.tokopedia.transaction.cart.interactor.entity.mapper;
+package com.tokopedia.transaction.cart.interactor.data.mapper;
 
 import com.tokopedia.transaction.cart.model.calculateshipment.Shipment;
 import com.tokopedia.transaction.cart.model.calculateshipment.ShipmentPackage;
 import com.tokopedia.transaction.cart.model.shipmentcart.EditShipmentCart;
-import com.tokopedia.transaction.cart.interactor.entity.EditShipmentEntity;
-import com.tokopedia.transaction.cart.interactor.entity.ShipmentEntity;
-import com.tokopedia.transaction.cart.interactor.entity.ShipmentPackageEntity;
+import com.tokopedia.transaction.cart.interactor.data.entity.EditShipmentEntity;
+import com.tokopedia.transaction.cart.interactor.data.entity.ShipmentEntity;
+import com.tokopedia.transaction.cart.interactor.data.entity.ShipmentPackageEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +15,9 @@ import java.util.List;
  */
 
 public class ShipmentEntityDataMapper {
+    public ShipmentEntityDataMapper() {
+    }
+
     public List<Shipment> transform(List<ShipmentEntity> shipmentEntities) {
         List<Shipment> shipments = new ArrayList<>();
         if (shipmentEntities != null){
