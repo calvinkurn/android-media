@@ -80,6 +80,8 @@ public class PopularProductViewHelper {
         if(getPopularProduct == null || getPopularProduct.getProductId() == 0){
             popularProductEmptyState.setVisibility(View.VISIBLE);
             return;
+        }else{
+            popularProductEmptyState.setVisibility(View.GONE);
         }
 
         dataProductTitle.setText(R.string.data_product_title);

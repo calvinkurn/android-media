@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingTop="@dimen/gmstat_padding_item_top_transaction"
+
     android:background="@android:color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -119,7 +120,7 @@
         android:orientation="vertical"
         android:background="#f9f9f9"
         android:gravity="center"
-        android:visibility="visible"
+        android:visibility="gone"
         android:layout_below="@id/separator_1"
         >
 
@@ -144,7 +145,7 @@
             android:layout_height="wrap_content"
             android:textColor="#42b549"
             android:layout_marginTop="13dp"
-            android:text="Tambah Produk"
+            android:text="+ Tambah Produk"
             android:textSize="20sp"/>
 
     </LinearLayout>

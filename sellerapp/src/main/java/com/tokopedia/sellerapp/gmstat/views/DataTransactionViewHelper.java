@@ -119,7 +119,7 @@ public class DataTransactionViewHelper {
         }
 
         /* empty state */
-        if(getTransactionGraph == null || getTransactionGraph.getSuccessTrans() == 0){
+        if(getTransactionGraph == null || getTransactionGraph.getFinishedTrans() == 0){
 
             transactionCountIcon.setVisibility(View.GONE);
             percentage.setTextColor(gredyColor);
@@ -130,10 +130,11 @@ public class DataTransactionViewHelper {
         }
 
         /* non empty state */
-        transactionCount.setText(getFormattedString(getTransactionGraph.getSuccessTrans()));
+        transactionCount.setText(getFormattedString(getTransactionGraph.getFinishedTrans()));
 
         // percentage is missing and icon is missing too
-        Double diffSuccessTrans = getTransactionGraph.getDiffSuccessTrans()*100;
+//        Double diffSuccessTrans = getTransactionGraph.getDiffSuccessTrans()*100;
+        Double diffSuccessTrans = getTransactionGraph.getDiffFinishedTrans()*100;
         // image for arrow is here
         boolean isDefault;
         if(diffSuccessTrans == 0){
@@ -172,9 +173,19 @@ public class DataTransactionViewHelper {
     }
 
     public void displayGraphic(GetTransactionGraph getTransactionGraph, boolean emptyState) {
+
+        List<Integer> successTransGraph = getTransactionGraph.getSuccessTransGraph();
+        List<Integer> rejectedTransGraph = getTransactionGraph.getRejectedTransGraph();
+        int size = (successTransGraph.size() >= rejectedTransGraph.size())
+                ? rejectedTransGraph.size() : successTransGraph.size();
+        List<Integer> merge = new ArrayList<>();
+        for(int i=0;i<size;i++){
+            merge.add(successTransGraph.get(i)+rejectedTransGraph.get(i));
+        }
+
         List<NExcel> nExcels = joinDateAndGrossGraph(
                 getTransactionGraph.getDateGraph(),
-                getTransactionGraph.getSuccessTransGraph());
+                merge);
         if(nExcels == null)
             return;
 

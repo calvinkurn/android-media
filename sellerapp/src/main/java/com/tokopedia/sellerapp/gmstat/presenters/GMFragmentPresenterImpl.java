@@ -120,7 +120,7 @@ public class GMFragmentPresenterImpl implements GMFragmentPresenter {
             isFetchData = false;
             gmFragmentView.resetToLoading();
             gmStat.getGmStatNetworkController().fetchData(shopId, sDate, eDate, compositeSubscription, gmStatListener);
-        }else if(!isFirstTime){
+        }else if(!isFirstTime && !isFetchData){
             //[START] real network
             gmStat.getGmStatNetworkController().fetchData(shopId, compositeSubscription, gmStatListener);
             //[END] real network

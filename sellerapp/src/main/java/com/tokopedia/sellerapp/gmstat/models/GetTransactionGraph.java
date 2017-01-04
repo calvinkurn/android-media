@@ -6,6 +6,12 @@ import com.google.gson.annotations.SerializedName;
 
 public class GetTransactionGraph {
 
+    @SerializedName("FinishedTrans")
+    @Expose
+    private Long finishedTrans;
+    @SerializedName("DiffFinishedTrans")
+    @Expose
+    private Double diffFinishedTrans;
     @SerializedName("SuccessTrans")
     @Expose
     private Long successTrans;
@@ -114,6 +120,33 @@ public class GetTransactionGraph {
     @SerializedName("PAdsSGraph")
     @Expose
     private List<Integer> pAdsSGraph = null;
+    @SerializedName("RejectedTransGraph")
+    @Expose
+    private List<Integer> rejectedTransGraph = null;
+
+    public List<Integer> getRejectedTransGraph() {
+        return rejectedTransGraph;
+    }
+
+    public void setRejectedTransGraph(List<Integer> rejectedTransGraph) {
+        this.rejectedTransGraph = rejectedTransGraph;
+    }
+
+    public Long getFinishedTrans() {
+        return finishedTrans;
+    }
+
+    public void setFinishedTrans(Long finishedTrans) {
+        this.finishedTrans = finishedTrans;
+    }
+
+    public Double getDiffFinishedTrans() {
+        return diffFinishedTrans;
+    }
+
+    public void setDiffFinishedTrans(Double diffFinishedTrans) {
+        this.diffFinishedTrans = diffFinishedTrans;
+    }
 
     public Long getSuccessTrans() {
         return successTrans;

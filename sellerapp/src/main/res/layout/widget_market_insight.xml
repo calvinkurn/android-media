@@ -160,7 +160,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="#42b549"
                 android:layout_marginTop="28dp"
-                android:text="Tambah Produk"
+                android:text="+ Tambah Produk"
                 android:textSize="20sp"/>
 
         </LinearLayout>

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.IntRange;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatDrawableManager;
@@ -59,6 +60,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import rx.Observable;
 
 import static com.tokopedia.sellerapp.gmstat.views.DataTransactionViewHelper.dpToPx;
 import static com.tokopedia.sellerapp.gmstat.views.GMStatHeaderViewHelper.getDates;
@@ -604,25 +606,35 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
         displayDefaultValue();
 
         snackBar = new SnackBar();
-        String textMessage ="Kesalahan tidak diketahui";
+        final StringBuilder textMessage = new StringBuilder("");
         if(e instanceof UnknownHostException){
-            textMessage = "Tidak ada koneksi. \nSilahkan coba kembali";
+            textMessage.append("Tidak ada koneksi. \nSilahkan coba kembali");
         }else if(e instanceof ShopNetworkController.MessageErrorException){
-            textMessage = "Terjadi kesalahan koneksi. \nSilahkan coba kembali";
+            textMessage.append("Terjadi kesalahan koneksi. \nSilahkan coba kembali");
+        }else{
+            textMessage.append("Kesalahan tidak diketahui");
         }
-        snackBar.view(rootView)
-                .text(textMessage, "COBA KEMBALI")
-                .textColors(Color.WHITE,Color.GREEN)
-                .backgroundColor(Color.BLACK)
-                .duration(SnackBar.SnackBarDuration.INDEFINITE)
-                .setOnClickListener(true, new OnActionClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        gmFragmentPresenter.setFetchData(true);
-                        gmFragmentPresenter.fetchData();
-                    }
-                })
-                .show();
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(getActivity() != null && rootView != null){
+                    snackBar.view(rootView)
+                            .text(textMessage.toString(), "COBA KEMBALI")
+                            .textColors(Color.WHITE,Color.GREEN)
+                            .backgroundColor(Color.BLACK)
+                            .duration(SnackBar.SnackBarDuration.INDEFINITE)
+                            .setOnClickListener(true, new OnActionClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    gmFragmentPresenter.setFetchData(true);
+                                    gmFragmentPresenter.fetchData();
+                                }
+                            })
+                            .show();
+                }
+            }
+        }, 100);
     }
 
     @Override
@@ -920,7 +932,7 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
 //            double l = successTrans / 1000D;
 //            text = Double.toString(l)+"K";
             //[END] This is obsolete
-            textDescription = "Transaksi Berhasil";
+            textDescription = "Transaksi Sukses";
         }
     }
 

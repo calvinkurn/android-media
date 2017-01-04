@@ -596,6 +596,7 @@ public class SetDateFragment extends Fragment {
                 }
 
             },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+            toDatePickerDialog.getDatePicker().setMinDate(minDate.getTimeInMillis());
         }
 
         public void bindData(StartOrEndPeriodModel startOrEndPeriodModel){
