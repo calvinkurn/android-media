@@ -17,7 +17,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
-import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.ActionMode;
@@ -51,7 +50,6 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.raizlabs.android.dbflow.sql.language.Select;
 import com.tkpd.library.ui.floatbutton.FabSpeedDial;
 import com.tkpd.library.ui.floatbutton.ListenerFabClick;
 import com.tkpd.library.ui.floatbutton.SimpleMenuListenerAdapter;
@@ -69,6 +67,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TkpdActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customView.SimpleListView;
 import com.tokopedia.core.customadapter.ListViewManageProdAdapter;
 import com.tokopedia.core.database.manager.DbManagerImpl;
@@ -78,8 +77,6 @@ import com.tokopedia.core.database.model.CategoryDB_Table;
 import com.tokopedia.core.database.model.EtalaseDB;
 import com.tokopedia.core.database.model.ReturnableDB;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
-import com.tokopedia.core.instoped.InstagramAuth;
-import com.tokopedia.core.instoped.InstopedActivity;
 import com.tokopedia.core.myproduct.fragment.AddProductFragment;
 import com.tokopedia.core.myproduct.fragment.ReturnPolicyDialog;
 import com.tokopedia.core.myproduct.model.ActResponseModelData;
@@ -310,7 +307,8 @@ public class ManageProduct extends TkpdActivity implements
                 int id = menuItem.getItemId();
 
                 if (id == R.id.action_instagram) {
-                    InstopedActivity.startInstopedActivity(ManageProduct.this);
+                    if(getApplication() instanceof TkpdCoreRouter)
+                        ((TkpdCoreRouter)getApplication()).startInstopedActivity(ManageProduct.this);
 
                 } else if (id == R.id.action_gallery) {
                     ManageProductPermissionsDispatcher.onAddFromGalleryWithCheck(ManageProduct.this);

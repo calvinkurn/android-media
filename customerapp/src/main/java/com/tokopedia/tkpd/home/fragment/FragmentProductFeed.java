@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.home.fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
@@ -25,7 +24,7 @@ import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
-import com.tokopedia.core.instoped.InstopedActivity;
+import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.RetryHandler;
 import com.tokopedia.core.util.SessionHandler;

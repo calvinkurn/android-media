@@ -104,7 +104,6 @@ import com.tokopedia.core.myproduct.model.editProductForm.EditProductForm;
 import com.tokopedia.core.myproduct.presenter.AddProductPresenter;
 import com.tokopedia.core.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.core.myproduct.presenter.AddProductView;
-import com.tokopedia.core.newgallery.presenter.ImageGalleryImpl;
 import com.tokopedia.core.newgallery.presenter.ImageGalleryView;
 import com.tokopedia.core.myproduct.presenter.ProductSocMedPresenter;
 import com.tokopedia.core.myproduct.presenter.ProductView;

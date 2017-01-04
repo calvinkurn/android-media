@@ -25,8 +25,6 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.instoped.InstagramAuth;
-import com.tokopedia.core.myproduct.fragment.AddProductFragment;
 import com.tokopedia.core.myproduct.fragment.ImageGalleryAlbumFragment;
 import com.tokopedia.core.myproduct.fragment.ImageGalleryFragment;
 import com.tokopedia.core.myproduct.model.FolderModel;

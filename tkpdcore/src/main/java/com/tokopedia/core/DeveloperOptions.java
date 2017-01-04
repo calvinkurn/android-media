@@ -19,14 +19,10 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.OneOnClick;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.instoped.InstagramAuth;
-import com.tokopedia.core.instoped.fragment.InstagramMediaFragment;
-import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.network.BasicNetworkHandler;
 import com.tokopedia.core.network.TkpdNetworkURLHandler;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.onboarding.ConstantOnBoarding;
-import com.tokopedia.core.onboarding.FreeReturnOnboardingActivity;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.SessionHandler;
@@ -177,7 +173,6 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
                 onSaveSetting();
             }
         });
-        vCustomIntent.setOnClickListener(onCustomClick());
 
         SharedPreferences pref = getApplicationContext().getSharedPreferences(DOMAIN_WS_41,
                 MODE_PRIVATE);
@@ -275,23 +270,6 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
                     Toast.makeText(this, TkpdBaseURL.LIVE_DOMAIN, Toast.LENGTH_SHORT).show();
                 break;
         }
-    }
-
-    InstagramAuth auth = new InstagramAuth();
-
-    private View.OnClickListener onCustomClick() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                auth.setGetMediaListener(new InstagramMediaFragment.OnGetInstagramMediaListener() {
-                    @Override
-                    public void onSuccess(SparseArray<InstagramMediaModel> selectedModel) {
-                        selectedModel.size();
-                    }
-                });
-                auth.getMedias(getSupportFragmentManager());
-            }
-        };
     }
 
     private Boolean isValidForm() {
