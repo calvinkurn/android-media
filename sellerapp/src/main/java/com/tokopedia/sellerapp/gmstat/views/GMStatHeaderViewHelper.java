@@ -63,11 +63,11 @@ public class GMStatHeaderViewHelper {
     public static final int MOVE_TO_SET_DATE = 1;
     private View itemView;
     private boolean isGmStat;
-    boolean isFirstTime = true;
     private long sDate;
     private long eDate;
     private int lastSelection;
     private int selectionType = PERIOD_TYPE;
+    boolean isLoading = false;
 
     public GMStatHeaderViewHelper(View itemView, boolean isGmStat){
         this.itemView = itemView;
@@ -81,15 +81,15 @@ public class GMStatHeaderViewHelper {
         calendarRange.resetLoader();
         calendarArrowIcon.resetLoader();
         calendarIcon.resetLoader();
+
+        isLoading = true;
     }
 
     public void bindData(List<Integer> dateGraph, int lastSelection) {
 
         this.lastSelection = lastSelection;
 
-        calendarRange.resetLoader();
-        calendarArrowIcon.resetLoader();
-        calendarIcon.resetLoader();
+        resetToLoading();
 
         if(dateGraph == null || dateGraph.size() <=0)
             return;
@@ -128,6 +128,8 @@ public class GMStatHeaderViewHelper {
         calendarRange.stopLoading();
         calendarArrowIcon.stopLoading();
         calendarIcon.stopLoading();
+
+        isLoading = true;
     }
 
     public void bindDate(long sDate, long eDate, int lastSelectionPeriod, int selectionType){
@@ -179,6 +181,10 @@ public class GMStatHeaderViewHelper {
     }
 
     public void onClick(GMStatActivityFragment gmStatActivityFragment){
+        if(isLoading){
+            return;
+        }
+
         // prevent to set date if non gold merchant.
         if(!isGmStat)
             return;

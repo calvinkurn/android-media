@@ -634,6 +634,7 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
             public void run() {
                 if(getActivity() != null && rootView != null){
                     snackBar
+                            .duration(SnackBar.SnackBarDuration.INDEFINITE)
                             .text(textMessage.toString(), "COBA KEMBALI")
                             .textColors(Color.WHITE,Color.GREEN)
                             .backgroundColor(Color.BLACK)

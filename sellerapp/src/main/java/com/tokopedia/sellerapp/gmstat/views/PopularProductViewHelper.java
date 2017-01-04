@@ -64,7 +64,8 @@ public class PopularProductViewHelper {
         if(getPopularProduct == null)
             return;
 
-        ProductInfoActivity.createInstance(itemView.getContext(), getPopularProduct.getProductId()+"");
+        itemView.getContext().startActivity(ProductInfoActivity.createInstance(
+                itemView.getContext(), getPopularProduct.getProductId()+""));
     }
 
     public PopularProductViewHelper(View itemView){

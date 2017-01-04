@@ -744,6 +744,10 @@ public class SetDateFragment extends Fragment {
             minDate.set(2015, 6, 25);
             fromDatePickerDialog.getDatePicker().setMinDate(minDate.getTimeInMillis());
 
+            Calendar maxDate = Calendar.getInstance();
+            maxDate.add(Calendar.DATE, -1);
+            fromDatePickerDialog.getDatePicker().setMaxDate(maxDate.getTimeInMillis());
+
             toDatePickerDialog = new DatePickerDialog(this.itemView.getContext(), new DatePickerDialog.OnDateSetListener() {
 
                 public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -763,6 +767,7 @@ public class SetDateFragment extends Fragment {
 
             },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
             toDatePickerDialog.getDatePicker().setMinDate(minDate.getTimeInMillis());
+            toDatePickerDialog.getDatePicker().setMaxDate(maxDate.getTimeInMillis());
         }
 
         public void bindData(StartOrEndPeriodModel startOrEndPeriodModel){
