@@ -37,7 +37,6 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.inboxmessage.activity.SendMessageActivity;
 import com.tokopedia.core.inboxmessage.fragment.SendMessageFragment;
@@ -188,11 +187,6 @@ public class ShopInfoActivity extends TActivity {
         super.onResume();
         registerReceiver(loginReceiver, new IntentFilter(LOGIN_ACTION));
         sendNotifLocalyticsCallback();
-        if (isShopValid()) {
-            if (shopModel.info.shopIsOfficial == 1) {
-                UnifyTracking.eventViewFavStore();
-            }
-        }
     }
 
 
