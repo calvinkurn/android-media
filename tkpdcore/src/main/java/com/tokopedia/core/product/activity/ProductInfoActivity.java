@@ -263,8 +263,6 @@ public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresen
             case ProductService.ADD_PRODUCT:
             case ProductServiceConstant.ADD_PRODUCT_WITHOUT_IMAGE:
             case ProductService.DELETE_PRODUCT:
-            case ProductService.UPDATE_RETURNABLE_NOTE_ADD_PRODUCT:
-            case ProductService.ADD_RETURNABLE_NOTE_ADD_PRODUCT:
                 ProductService.startDownload(this, addProductReceiver, data, type);
                 break;
             default :

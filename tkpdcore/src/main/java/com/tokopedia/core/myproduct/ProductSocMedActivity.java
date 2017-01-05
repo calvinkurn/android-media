@@ -406,8 +406,6 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
         switch(type){
             case ProductService.ADD_PRODUCT:
             case ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
-            case ProductService.UPDATE_RETURNABLE_NOTE_ADD_PRODUCT:
-            case ProductService.ADD_RETURNABLE_NOTE_ADD_PRODUCT:
                 // default position is "0"
                 int position = resultData.getInt(ProductService.PRODUCT_POSITION, 0);
                 fragment = getFragment(position);
@@ -438,25 +436,7 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
                     break;
                 case ProductService.STATUS_ERROR:
                     switch(type){
-                        case ProductService.UPDATE_RETURNABLE_NOTE_ADD_PRODUCT:
-                        case ProductService.ADD_RETURNABLE_NOTE_ADD_PRODUCT:
-                            switch(resultData.getInt(ProductService.NETWORK_ERROR_FLAG, ProductService.INVALID_NETWORK_ERROR_FLAG)){
-                                case NetworkConfig.BAD_REQUEST_NETWORK_ERROR:
-                                    ((BaseView)fragment).onNetworkError(type, " BAD_REQUEST_NETWORK_ERROR !!!");
-                                    break;
-                                case NetworkConfig.INTERNAL_SERVER_ERROR:
-                                    ((BaseView)fragment).onNetworkError(type, " INTERNAL_SERVER_ERROR !!!");
-                                    break;
-                                case NetworkConfig.FORBIDDEN_NETWORK_ERROR:
-                                    ((BaseView)fragment).onNetworkError(type, " FORBIDDEN_NETWORK_ERROR !!!");
-                                    break;
-                                case ProductService.INVALID_NETWORK_ERROR_FLAG :
-                                default :
-                                    String messageError = resultData.getString(ProductService.MESSAGE_ERROR_FLAG, ProductService.INVALID_MESSAGE_ERROR);
-                                    if(!messageError.equals(ProductService.INVALID_MESSAGE_ERROR)){
-                                        ((BaseView)fragment).onMessageError(type, messageError);
-                                    }
-                            }
+
                     }
 
             }// end of status download service
@@ -468,8 +448,6 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
         switch (type){
             case ProductService.ADD_PRODUCT:
             case ProductServiceConstant.ADD_PRODUCT_WITHOUT_IMAGE:
-            case ProductService.UPDATE_RETURNABLE_NOTE_ADD_PRODUCT:
-            case ProductService.ADD_RETURNABLE_NOTE_ADD_PRODUCT:
                 ProductService.startDownload(this, mReceiver, data, type);
                 break;
             default :

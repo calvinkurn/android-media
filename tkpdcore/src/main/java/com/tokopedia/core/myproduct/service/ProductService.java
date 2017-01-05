@@ -31,17 +31,12 @@ import com.tokopedia.core.myproduct.ManageProduct;
 import com.tokopedia.core.myproduct.ProductActivity;
 import com.tokopedia.core.myproduct.api.UploadImageProduct;
 import com.tokopedia.core.myproduct.fragment.AddProductFragment;
-import com.tokopedia.core.myproduct.model.ActResponseModel;
 import com.tokopedia.core.myproduct.model.ActResponseModelData;
 import com.tokopedia.core.myproduct.model.AddProductPictureModel;
 import com.tokopedia.core.myproduct.model.AddProductWithoutImageModel;
-import com.tokopedia.core.myproduct.model.CreateShopNoteParam;
 import com.tokopedia.core.myproduct.model.EditProductPictureModel;
-import com.tokopedia.core.myproduct.model.EditShopNoteParam;
 import com.tokopedia.core.myproduct.model.GenerateHostModel;
 import com.tokopedia.core.myproduct.model.InputAddProductModel;
-import com.tokopedia.core.myproduct.model.MyShopInfoModel;
-import com.tokopedia.core.myproduct.model.NoteDetailModel;
 import com.tokopedia.core.myproduct.model.ProductSubmitModel;
 import com.tokopedia.core.myproduct.model.ProductValidationModel;
 import com.tokopedia.core.myproduct.model.UploadProductImageData;
@@ -55,10 +50,6 @@ import com.tokopedia.core.myproduct.utils.UploadPhotoTask;
 import com.tokopedia.core.network.apiservices.product.ProductActAfterService;
 import com.tokopedia.core.network.apiservices.product.ProductActService;
 import com.tokopedia.core.network.apiservices.product.apis.ProductActApi;
-import com.tokopedia.core.network.apiservices.shop.MyShopInfoService;
-import com.tokopedia.core.network.apiservices.shop.MyShopNoteActService;
-import com.tokopedia.core.network.apiservices.shop.NotesService;
-import com.tokopedia.core.network.apiservices.shop.ShopService;
 import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
 import com.tokopedia.core.network.apiservices.upload.apis.GeneratedHostActApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -67,12 +58,10 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.network.v4.NetworkConfig;
-import com.tokopedia.core.shopinfo.models.shopnotes.GetShopNotes;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdUrl;
 
 import org.parceler.Parcels;
@@ -159,16 +148,6 @@ public class ProductService extends IntentService implements ProductServiceConst
             case DELETE_PRODUCT:
                 Log.d(TAG, messageTAG + "try to delete product ");
                 intent.putExtra(PRODUCT_ID, bundle.getString(PRODUCT_ID));
-                break;
-            case UPDATE_RETURNABLE_NOTE_ADD_PRODUCT:
-                Log.d(TAG, messageTAG + "try to update shop note");
-                EditShopNoteParam editShopNoteParam = Parcels.unwrap(bundle.getParcelable(EDIT_SHOP_NOTE_PARAM));
-                intent.putExtra(EDIT_SHOP_NOTE_PARAM, Parcels.wrap(editShopNoteParam));
-                break;
-            case ADD_RETURNABLE_NOTE_ADD_PRODUCT:
-                Log.d(TAG, messageTAG + "try to add shop note");
-                CreateShopNoteParam createShopNoteParam = Parcels.unwrap(bundle.getParcelable(ADD_SHOP_NOTE_PARAM));
-                intent.putExtra(ADD_SHOP_NOTE_PARAM, Parcels.wrap(createShopNoteParam));
                 break;
             default:
                 throw new RuntimeException("unknown type for starting product service !!!");
@@ -258,253 +237,8 @@ public class ProductService extends IntentService implements ProductServiceConst
                 String productIdDelete = intent.getStringExtra(PRODUCT_ID);
                 deleteProduct(productIdDelete + "");
                 break;
-            case UPDATE_RETURNABLE_NOTE_ADD_PRODUCT:
-                EditShopNoteParam shopNoteEditParam = Parcels.unwrap(intent.getParcelableExtra(EDIT_SHOP_NOTE_PARAM));
-                Map<String, Object> updateReturnableNoteAddProduct = new HashMap<>();
-                updateReturnableNoteAddProduct.put(EDIT_SHOP_NOTE_PARAM, shopNoteEditParam);
-                editShopNote(updateReturnableNoteAddProduct);
-                break;
-            case ADD_RETURNABLE_NOTE_ADD_PRODUCT:
-                CreateShopNoteParam createShopNoteParam = Parcels.unwrap(intent.getParcelableExtra(ADD_SHOP_NOTE_PARAM));
-                Map<String, Object> addReturnableNoteAddProduct = new HashMap<>();
-                addReturnableNoteAddProduct.put(ADD_SHOP_NOTE_PARAM, createShopNoteParam);
-                addShopNote(addReturnableNoteAddProduct);
         }
     }
-
-    Func1<Map<String, Object>, Observable<Map<String, Object>>> addShopNote() {
-        return new Func1<Map<String, Object>, Observable<Map<String, Object>>>() {
-            @Override
-            public Observable<Map<String, Object>> call(Map<String, Object> updateReturnableNoteAddProduct) {
-
-                CreateShopNoteParam createShopNoteParam = (CreateShopNoteParam) updateReturnableNoteAddProduct.get(ADD_SHOP_NOTE_PARAM);
-
-
-                Map<String, String> params = new HashMap<>();
-                params.put(NOTE_CONTENT, createShopNoteParam.getNoteContent());
-                params.put(TERMS, createShopNoteParam.getTerms());
-                params.put(NOTE_TITLE, createShopNoteParam.getNoteTitle());
-                Observable<ActResponseModel> addShopNoteAct = new MyShopNoteActService().getApi().addNote2(AuthUtil.generateParams(getApplicationContext(), params));
-
-                return Observable.zip(Observable.just(updateReturnableNoteAddProduct), addShopNoteAct
-                        , new Func2<Map<String, Object>, ActResponseModel, Map<String, Object>>() {
-
-                            @Override
-                            public Map<String, Object> call(Map<String, Object> updateReturnableNoteAddProduct, ActResponseModel addShopNoteData) {
-                                updateReturnableNoteAddProduct.put(EDIT_SHOP_NOTE_DATA, addShopNoteData);
-                                return updateReturnableNoteAddProduct;
-                            }
-                        });
-            }
-        };
-    }
-
-    private void addShopNote(Map<String, Object> addReturnableNoteAddProduct) {
-        Observable.just(addReturnableNoteAddProduct)
-                .flatMap(addShopNote())
-                .flatMap(getShopDetail())
-                .flatMap(getShopNotes())
-                .flatMap(getReturnableNote())
-                .subscribeOn(Schedulers.immediate())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.immediate())
-                .subscribe(new Subscriber<Map<String, Object>>() {
-                    @Override
-                    public void onCompleted() {
-                        Log.d(TAG, "onCompleted()!!!");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        if (e != null) {
-                            Log.e(TAG, e.getLocalizedMessage());
-
-                            Bundle resultData = new Bundle();
-                            resultData.putInt(TYPE, ADD_RETURNABLE_NOTE_ADD_PRODUCT);
-                            resultData.putString(MESSAGE_ERROR_FLAG, CommonUtils.generateMessageError(getApplicationContext(), e.getMessage()));
-                            receiver.send(STATUS_ERROR, resultData);
-                        }
-                    }
-
-                    @Override
-                    public void onNext(Map<String, Object> shopCreateParams) {
-                        Log.d(TAG, " masuk sini !!! ");
-
-                        // delete cache
-                        GlobalCacheManager globalCacheManager = new GlobalCacheManager();
-                        globalCacheManager.delete(TkpdCache.Key.KEBIJAKAN_PENGEMBALIAN_PRODUK);
-
-                        NoteDetailModel.Detail returnableNoteDetail = (NoteDetailModel.Detail) shopCreateParams.get(RETURNABLE_NOTE_DETAIL);
-                        Bundle resultData = new Bundle();
-                        resultData.putParcelable(RETURNABLE_NOTE_CONTENT, Parcels.wrap(returnableNoteDetail));
-                        resultData.putInt(TYPE, ADD_RETURNABLE_NOTE_ADD_PRODUCT);
-                        receiver.send(STATUS_FINISHED, resultData);
-
-                    }
-                });
-    }
-
-
-    Func1<Map<String, Object>, Observable<Map<String, Object>>> editShopNote() {
-        return new Func1<Map<String, Object>, Observable<Map<String, Object>>>() {
-            @Override
-            public Observable<Map<String, Object>> call(Map<String, Object> updateReturnableNoteAddProduct) {
-
-                EditShopNoteParam editShopNoteParam = (EditShopNoteParam) updateReturnableNoteAddProduct.get(EDIT_SHOP_NOTE_PARAM);
-
-                Map<String, String> params = new HashMap<>();
-                params.put(NOTE_CONTENT, editShopNoteParam.getNoteContent());
-                params.put(NOTE_ID, editShopNoteParam.getNoteId());
-                params.put(NOTE_TITLE, editShopNoteParam.getNoteTitle());
-
-                Observable<ActResponseModel> editShopNoteAct = new MyShopNoteActService().getApi().editNote2(AuthUtil.generateParams(getApplicationContext(), params));
-
-                return Observable.zip(Observable.just(updateReturnableNoteAddProduct), editShopNoteAct
-                        , new Func2<Map<String, Object>, ActResponseModel, Map<String, Object>>() {
-
-                            @Override
-                            public Map<String, Object> call(Map<String, Object> updateReturnableNoteAddProduct, ActResponseModel editShopNoteData) {
-                                updateReturnableNoteAddProduct.put(EDIT_SHOP_NOTE_DATA, editShopNoteData);
-                                return updateReturnableNoteAddProduct;
-                            }
-                        });
-            }
-        };
-    }
-
-    Func1<Map<String, Object>, Observable<Map<String, Object>>> getShopDetail() {
-        return new Func1<Map<String, Object>, Observable<Map<String, Object>>>() {
-            @Override
-            public Observable<Map<String, Object>> call(Map<String, Object> updateReturnableNoteAddProduct) {
-
-                Observable<MyShopInfoModel> getShopDetailAct = new MyShopInfoService().getApi().getInfo2(AuthUtil.generateParams(getApplicationContext(), new HashMap<String, String>()));
-
-                return Observable.zip(Observable.just(updateReturnableNoteAddProduct), getShopDetailAct
-                        , new Func2<Map<String, Object>, MyShopInfoModel, Map<String, Object>>() {
-
-                            @Override
-                            public Map<String, Object> call(Map<String, Object> updateReturnableNoteAddProduct, MyShopInfoModel shopInfoData) {
-                                String shopDomain = shopInfoData.getData().getInfo().getShop_domain();
-                                String shopId = shopInfoData.getData().getInfo().getShop_id();
-                                updateReturnableNoteAddProduct.put(SHOP_DOMAIN, shopDomain);
-                                updateReturnableNoteAddProduct.put(SHOP_ID, shopId);
-                                return updateReturnableNoteAddProduct;
-                            }
-                        });
-            }
-        };
-    }
-
-    Func1<Map<String, Object>, Observable<Map<String, Object>>> getShopNotes() {
-        return new Func1<Map<String, Object>, Observable<Map<String, Object>>>() {
-            @Override
-            public Observable<Map<String, Object>> call(Map<String, Object> updateReturnableNoteAddProduct) {
-
-                String shopDomain = (String) updateReturnableNoteAddProduct.get(SHOP_DOMAIN);
-
-
-                Map<String, String> params = new HashMap<>();
-                params.put(SHOP_DOMAIN_PARAM, shopDomain);
-                Observable<GetShopNotes> getShopNotesAct = new ShopService().getApi().getNotes2(AuthUtil.generateParams(getApplicationContext(), params));
-
-                return Observable.zip(Observable.just(updateReturnableNoteAddProduct), getShopNotesAct
-                        , new Func2<Map<String, Object>, GetShopNotes, Map<String, Object>>() {
-
-                            @Override
-                            public Map<String, Object> call(Map<String, Object> updateReturnableNoteAddProduct, GetShopNotes getShopNotesData) {
-                                GetShopNotes.Data shopNotes = getShopNotesData.getData();
-                                GetShopNotes.List returnableNote = null;
-                                for (GetShopNotes.List shopNote :
-                                        shopNotes.getList()) {
-                                    if (shopNote.getNoteTitle().equals(AddProductView.KEBIJAKAN_PENGEMBALIAN_PRODUK)) {
-                                        returnableNote = shopNote;
-                                        break;
-                                    }
-                                }
-                                updateReturnableNoteAddProduct.put(RETURNABLE_NOTE, returnableNote);
-                                return updateReturnableNoteAddProduct;
-                            }
-                        });
-            }
-        };
-    }
-
-    Func1<Map<String, Object>, Observable<Map<String, Object>>> getReturnableNote() {
-        return new Func1<Map<String, Object>, Observable<Map<String, Object>>>() {
-            @Override
-            public Observable<Map<String, Object>> call(Map<String, Object> updateReturnableNoteAddProduct) {
-
-                String shopDomain = (String) updateReturnableNoteAddProduct.get(SHOP_DOMAIN);
-                String shopId = (String) updateReturnableNoteAddProduct.get(SHOP_ID);
-                GetShopNotes.List returnableNote = (GetShopNotes.List) updateReturnableNoteAddProduct.get(RETURNABLE_NOTE);
-
-
-                Map<String, String> params = new HashMap<>();
-                params.put(SHOP_DOMAIN_PARAM, shopDomain);
-                params.put(SHOP_ID_PARAM, shopId);
-                params.put(NOTE_ID, returnableNote.getNoteId());
-                params.put(TERMS, "0");
-                Observable<NoteDetailModel> getReturnableNotesAct = new NotesService().getApi().getNotesDetail2(AuthUtil.generateParams(getApplicationContext(), params));
-
-                return Observable.zip(Observable.just(updateReturnableNoteAddProduct), getReturnableNotesAct
-                        , new Func2<Map<String, Object>, NoteDetailModel, Map<String, Object>>() {
-
-                            @Override
-                            public Map<String, Object> call(Map<String, Object> updateReturnableNoteAddProduct, NoteDetailModel getReturnableNotesData) {
-                                NoteDetailModel.Detail returnableNoteDetail = getReturnableNotesData.getData().getDetail();
-                                updateReturnableNoteAddProduct.put(RETURNABLE_NOTE_DETAIL, returnableNoteDetail);
-                                return updateReturnableNoteAddProduct;
-                            }
-                        });
-            }
-        };
-    }
-
-    private void editShopNote(Map<String, Object> updateReturnableNoteAddProduct) {
-        Observable.just(updateReturnableNoteAddProduct)
-                .flatMap(editShopNote())
-                .flatMap(getShopDetail())
-                .flatMap(getShopNotes())
-                .flatMap(getReturnableNote())
-                .subscribeOn(Schedulers.immediate())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.immediate())
-                .subscribe(new Subscriber<Map<String, Object>>() {
-                    @Override
-                    public void onCompleted() {
-                        Log.d(TAG, "onCompleted()!!!");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        if (e != null) {
-                            Log.e(TAG, e.getLocalizedMessage());
-
-                            Bundle resultData = new Bundle();
-                            resultData.putInt(TYPE, UPDATE_RETURNABLE_NOTE_ADD_PRODUCT);
-                            resultData.putString(MESSAGE_ERROR_FLAG, CommonUtils.generateMessageError(getApplicationContext(), e.getMessage()));
-                            receiver.send(STATUS_ERROR, resultData);
-                        }
-                    }
-
-                    @Override
-                    public void onNext(Map<String, Object> shopCreateParams) {
-                        Log.d(TAG, " masuk sini !!! ");
-
-                        // delete cache
-                        GlobalCacheManager globalCacheManager = new GlobalCacheManager();
-                        globalCacheManager.delete(TkpdCache.Key.KEBIJAKAN_PENGEMBALIAN_PRODUK);
-
-                        NoteDetailModel.Detail returnableNoteDetail = (NoteDetailModel.Detail) shopCreateParams.get(RETURNABLE_NOTE_DETAIL);
-                        Bundle resultData = new Bundle();
-                        resultData.putParcelable(RETURNABLE_NOTE_CONTENT, Parcels.wrap(returnableNoteDetail));
-                        resultData.putInt(TYPE, UPDATE_RETURNABLE_NOTE_ADD_PRODUCT);
-                        receiver.send(STATUS_FINISHED, resultData);
-
-                    }
-                });
-    }
-
 
     private void deleteProduct(String productId) {
         HashMap<String, String> param = new HashMap<>();

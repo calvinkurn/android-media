@@ -1028,14 +1028,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         }
     }
 
-    public void dismissReturnableDialog() {
-        ReturnPolicyDialog returnPolicyDialog = ((ReturnPolicyDialog) getActivity().getSupportFragmentManager().findFragmentByTag(ReturnPolicyDialog.FRAGMENT_TAG));
-        if (returnPolicyDialog != null) {
-            returnPolicyDialog.dismiss();
-        }
-
-    }
-
     private void changeTitle(int type) {
         if (type == AddProductType.EDIT.getType()) {
             getActivity().setTitle(R.string.title_activity_edit_product);
@@ -2912,7 +2904,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         if (tkpdProgressDialog != null && tkpdProgressDialog.isProgress()) {
             tkpdProgressDialog.dismiss();
         }
-        dismissReturnableDialog();
         Snackbar.make(parentView, (String) data[0], Snackbar.LENGTH_LONG).show();
     }
 
@@ -2927,39 +2918,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
                 tkpdProgressDialog.dismiss();
             }
         }
-    }
-
-    /**
-     * login facebook
-     */
-    public void loginFacebook(final OnNewPermissionsListener onNewPermissionsListener) {
-        // login
-        mSimpleFacebook.login(new OnLoginListener() {
-            @Override
-            public void onFail(String reason) {
-            }
-
-            @Override
-            public void onException(Throwable throwable) {
-            }
-
-            @Override
-            public void onLogin(String accessToken, List<Permission> acceptedPermissions, List<Permission> declinedPermissions) {
-                authorizeFacebook(onNewPermissionsListener);
-            }
-
-            @Override
-            public void onCancel() {
-
-            }
-        });
-    }
-
-    public void authorizeFacebook(OnNewPermissionsListener onNewPermissionsListener) {
-        Permission[] permissions = new Permission[]{
-                Permission.PUBLISH_ACTION
-        };
-        mSimpleFacebook.requestNewPermissions(permissions, onNewPermissionsListener);
     }
 
     public void showDialog() {

@@ -38,8 +38,6 @@ public interface ProductServiceConstant {
     int ADD_PRODUCT_WITHOUT_IMAGE = 11;
     int EDIT_PRODUCT = 12;
     int DELETE_PRODUCT = 13;
-    int UPDATE_RETURNABLE_NOTE_ADD_PRODUCT = 14;
-    int ADD_RETURNABLE_NOTE_ADD_PRODUCT = 15;
     String PRODUCT_DATABASE_ID = "PRODUCT_DATABASE_ID";
     String PRODUCT_POSITION = "PRODUCT_POSITION";
     String ADD_PRODUCT_SHOW_DIALOG = "ADD_PRODUCT_SHOW_DIALOG";
@@ -101,20 +99,6 @@ public interface ProductServiceConstant {
     String SHOP_ID = "SHOP_ID";
     String SHOP_ID_PARAM = "shop_id";
     String PRODUCT_ID = "PRODUCT_ID";
-
-    // EDIT SHOP NOTE
-    String EDIT_SHOP_NOTE_PARAM = "EDIT_SHOP_NOTE_PARAM";
-    String ADD_SHOP_NOTE_PARAM= "ADD_SHOP_NOTE_PARAM";
-    String EDIT_SHOP_NOTE_DATA = "EDIT_SHOP_NOTE_DATA";
-    String SHOP_DOMAIN = "SHOP_DOMAIN";
-    String SHOP_DOMAIN_PARAM = "shop_domain";
-    String NOTE_CONTENT = "note_content";
-    String NOTE_ID = "note_id";
-    String TERMS = "terms";
-    String NOTE_TITLE = "note_title";
-    String RETURNABLE_NOTE = "RETURNABLE_NOTE";
-    String RETURNABLE_NOTE_DETAIL = "RETURNABLE_NOTE_DETAIL";
-    String RETURNABLE_NOTE_CONTENT = "RETURNABLE_NOTE_CONTENT";
 
     //local broadcast manage
     String ACTION_COMPLETED_ADD_PRODUCT = "action_completed_add_product";

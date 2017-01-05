@@ -36,15 +36,12 @@ import com.tkpd.library.utils.DownloadResultSender;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.fragment.TwitterDialogV4;
 import com.tokopedia.core.myproduct.dialog.DialogFragmentImageAddProduct;
 import com.tokopedia.core.myproduct.fragment.AddProductFragment;
 import com.tokopedia.core.myproduct.fragment.ChooserDialogFragment;
 import com.tokopedia.core.myproduct.fragment.ChooserFragment;
 import com.tokopedia.core.myproduct.fragment.ImageChooserDialog;
-import com.tokopedia.core.myproduct.fragment.ReturnPolicyDialog;
-import com.tokopedia.core.myproduct.model.NoteDetailModel;
 import com.tokopedia.core.myproduct.model.SimpleTextModel;
 import com.tokopedia.core.myproduct.presenter.AddProductView;
 import com.tokopedia.core.myproduct.presenter.ProductView;
@@ -60,8 +57,6 @@ import com.tokopedia.core.product.interactor.CacheInteractor;
 import com.tokopedia.core.product.interactor.CacheInteractorImpl;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.SessionRouter;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
@@ -89,7 +84,6 @@ public class ProductActivity extends BaseProductActivity implements
         ProductView,
         ChooserFragment.OnListFragmentInteractionListener,
         DownloadResultReceiver.Receiver,
-        ReturnPolicyDialog.ReturnPolicyListener,
         DownloadResultSender,
         TwitterDialogV4.TwitterInterface,
         DialogFragmentImageAddProduct.DFIAListener,
@@ -626,22 +620,6 @@ public class ProductActivity extends BaseProductActivity implements
     }
 
     @Override
-    public void refreshReturnPolicy() {
-        Fragment fragment = supportFragmentManager.findFragmentByTag(AddProductFragment.FRAGMENT_TAG);
-        if (fragment != null && fragment instanceof AddProductFragment) {
-            ((AddProductView) fragment).checkAvailibilityOfShopNote();
-        }
-    }
-
-    @Override
-    public void refreshReturnPolicy(String noteId) {
-        Fragment fragment = supportFragmentManager.findFragmentByTag(AddProductFragment.FRAGMENT_TAG);
-        if (fragment != null && fragment instanceof AddProductFragment) {
-            ((AddProductView) fragment).checkAvailibilityOfShopNote();
-        }
-    }
-
-    @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
         int type = resultData.getInt(ProductService.TYPE, ProductService.INVALID_TYPE);
         Fragment fragment = null;
@@ -650,8 +628,6 @@ public class ProductActivity extends BaseProductActivity implements
             case ProductService.ADD_PRODUCT:
             case ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
             case ProductService.DELETE_PRODUCT:
-            case ProductService.UPDATE_RETURNABLE_NOTE_ADD_PRODUCT:
-            case ProductService.ADD_RETURNABLE_NOTE_ADD_PRODUCT:
                 fragment = supportFragmentManager.findFragmentByTag(AddProductFragment.FRAGMENT_TAG);
                 break;
             default:
@@ -732,8 +708,6 @@ public class ProductActivity extends BaseProductActivity implements
             case ProductService.ADD_PRODUCT:
             case ProductServiceConstant.ADD_PRODUCT_WITHOUT_IMAGE:
             case ProductService.DELETE_PRODUCT:
-            case ProductService.UPDATE_RETURNABLE_NOTE_ADD_PRODUCT:
-            case ProductService.ADD_RETURNABLE_NOTE_ADD_PRODUCT:
                 ProductService.startDownload(this, mReceiver, data, type);
                 break;
             default:
