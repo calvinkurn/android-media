@@ -69,16 +69,12 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
     @OnClick(R2.id.label_view_group_summary)
     void onProductGroupClicked() {
         Intent intent = new Intent(getActivity(), TopAdsGroupAdListActivity.class);
-        intent.putExtra(TopAdsNetworkConstant.PARAM_START_DATE, new SimpleDateFormat(TopAdsConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(startDate));
-        intent.putExtra(TopAdsNetworkConstant.PARAM_END_DATE, new SimpleDateFormat(TopAdsConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(endDate));
         startActivity(intent);
     }
 
     @OnClick(R2.id.label_view_item_summary)
     void onProductItemClicked() {
         Intent intent = new Intent(getActivity(), TopAdsProductAdListActivity.class);
-        intent.putExtra(TopAdsNetworkConstant.PARAM_START_DATE, new SimpleDateFormat(TopAdsConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(startDate));
-        intent.putExtra(TopAdsNetworkConstant.PARAM_END_DATE, new SimpleDateFormat(TopAdsConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(endDate));
         startActivity(intent);
     }
 }

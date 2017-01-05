@@ -66,6 +66,7 @@
     <style name="CardView.TopAds">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
         <item name="contentPaddingTop">@dimen/top_ads_dashboard_padding_cards</item>
         <item name="contentPaddingLeft">@dimen/top_ads_dashboard_padding_cards</item>
         <item name="contentPaddingRight">@dimen/top_ads_dashboard_padding_cards</item>
