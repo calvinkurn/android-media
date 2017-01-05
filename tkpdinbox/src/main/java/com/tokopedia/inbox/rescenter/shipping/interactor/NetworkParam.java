@@ -34,9 +34,13 @@ public class NetworkParam {
         params.put("resolution_id", passData.getResolutionID());
         params.put("shipping_ref", passData.getShippingNumber());
         params.put("shipment_id", passData.getShippingID());
-        params.put("has_resi_photo", String.valueOf(passData.getAttachmentList() == null || passData.getAttachmentList().isEmpty() ? 0 : 1));
-        params.put("resi_photo_all", getPhotos(passData.getAttachmentList()));
-        params.put("resi_pic_obj", getPhotosObj(passData.getAttachmentList()));
+        if (passData.getAttachmentList() == null || passData.getAttachmentList().isEmpty()) {
+            params.put("has_resi_photo", "0");
+        } else {
+            params.put("has_resi_photo", "1");
+            params.put("resi_photo_all", getPhotos(passData.getAttachmentList()));
+            params.put("resi_pic_obj", getPhotosObj(passData.getAttachmentList()));
+        }
         return params;
     }
 
@@ -105,9 +109,13 @@ public class NetworkParam {
         params.put("conversation_id", passData.getConversationID());
         params.put("shipping_ref", passData.getShippingNumber());
         params.put("shipment_id", passData.getShippingID());
-        params.put("has_resi_photo", String.valueOf(passData.getAttachmentList() == null || passData.getAttachmentList().isEmpty() ? 0 : 1));
-        params.put("resi_photo_all", getPhotos(passData.getAttachmentList()));
-        params.put("resi_pic_obj", getPhotosObj(passData.getAttachmentList()));
+        if (passData.getAttachmentList() == null || passData.getAttachmentList().isEmpty()) {
+            params.put("has_resi_photo", "0");
+        } else {
+            params.put("has_resi_photo", "1");
+            params.put("resi_photo_all", getPhotos(passData.getAttachmentList()));
+            params.put("resi_pic_obj", getPhotosObj(passData.getAttachmentList()));
+        }
         return params;
     }
 

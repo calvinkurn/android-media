@@ -62,4 +62,6 @@ public interface InputShippingFragmentView {
     void toastErrorMessage(String message);
 
     void finishAsSuccessResult();
+
+    void dropKeyBoard();
 }

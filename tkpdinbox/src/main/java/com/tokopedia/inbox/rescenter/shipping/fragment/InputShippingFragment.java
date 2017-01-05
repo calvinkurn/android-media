@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.database.model.AttachmentResCenterDB;
@@ -84,6 +85,11 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
     @OnClick(R2.id.confirm_button)
     public void setOnConfirmButtonClick() {
         presenter.onConfirrmButtonClick();
+    }
+
+    @Override
+    public void dropKeyBoard() {
+        KeyboardHandler.DropKeyboard(getActivity(), getView());
     }
 
     @Override

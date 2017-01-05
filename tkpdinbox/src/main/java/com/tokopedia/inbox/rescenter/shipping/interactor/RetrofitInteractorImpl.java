@@ -156,36 +156,32 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                             @Override
                             public Observable<ShippingParamsPostModel> call(ShippingParamsPostModel passData) {
                                 Log.d(TAG, "flatMap1");
-                                if (!(passData.getAttachmentList() == null || passData.getAttachmentList().isEmpty())) {
-                                    return Observable.zip(
-                                            Observable.just(passData),
-                                            resCenterActService.getApi()
-                                                    .inputResiResolutionValidation(AuthUtil.generateParamsNetwork(
-                                                            context,
-                                                            NetworkParam.paramInputShippingValidation(passData)
-                                                    )),
-                                            new Func2<ShippingParamsPostModel, Response<TkpdResponse>, ShippingParamsPostModel>() {
-                                                @Override
-                                                public ShippingParamsPostModel call(ShippingParamsPostModel passData, Response<TkpdResponse> tkpdResponse) {
-                                                    ActionResponseData result = tkpdResponse.body().convertDataObj(ActionResponseData.class);
-                                                    if (result.isSuccess()) {
-                                                        passData.setStatusInputShipping(result.getPostKey() == null || result.getPostKey().isEmpty());
-                                                        passData.setPostKey(result.getPostKey());
-                                                        passData.setToken(result.getToken());
-                                                        return passData;
-                                                    } else {
-                                                        String errorMessage = "";
-                                                        for (int i = 0; i < tkpdResponse.body().getErrorMessages().size(); i++) {
-                                                            errorMessage += tkpdResponse.body().getErrorMessages().get(i);
-                                                        }
-                                                        throw new RuntimeException(errorMessage);
+                                return Observable.zip(
+                                        Observable.just(passData),
+                                        resCenterActService.getApi()
+                                                .inputResiResolutionValidation(AuthUtil.generateParamsNetwork(
+                                                        context,
+                                                        NetworkParam.paramInputShippingValidation(passData)
+                                                )),
+                                        new Func2<ShippingParamsPostModel, Response<TkpdResponse>, ShippingParamsPostModel>() {
+                                            @Override
+                                            public ShippingParamsPostModel call(ShippingParamsPostModel passData, Response<TkpdResponse> tkpdResponse) {
+                                                ActionResponseData result = tkpdResponse.body().convertDataObj(ActionResponseData.class);
+                                                if (result.isSuccess()) {
+                                                    passData.setStatusInputShipping(true);
+                                                    passData.setPostKey(result.getPostKey());
+                                                    passData.setToken(result.getToken());
+                                                    return passData;
+                                                } else {
+                                                    String errorMessage = "";
+                                                    for (int i = 0; i < tkpdResponse.body().getErrorMessages().size(); i++) {
+                                                        errorMessage += tkpdResponse.body().getErrorMessages().get(i);
                                                     }
+                                                    throw new RuntimeException(errorMessage);
                                                 }
                                             }
-                                    );
-                                } else {
-                                    return Observable.just(passData);
-                                }
+                                        }
+                                );
                             }
                         })
                         .flatMap(new Func1<ShippingParamsPostModel, Observable<ShippingParamsPostModel>>() {
@@ -262,7 +258,11 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                             @Override
                             public void onNext(ShippingParamsPostModel passData) {
                                 Log.d(TAG, "onNext: ");
-                                listener.onSuccess();
+                                if (passData.isStatusInputShipping()) {
+                                    listener.onSuccess();
+                                } else {
+                                    listener.onTimeOut();
+                                }
                             }
                         })
         );
@@ -387,36 +387,32 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                             @Override
                             public Observable<ShippingParamsPostModel> call(ShippingParamsPostModel passData) {
                                 Log.d(TAG, "flatMap1");
-                                if (!(passData.getAttachmentList() == null || passData.getAttachmentList().isEmpty())) {
-                                    return Observable.zip(
-                                            Observable.just(passData),
-                                            resCenterActService.getApi()
-                                                    .editResiResolutionValidation(AuthUtil.generateParamsNetwork(
-                                                            context,
-                                                            NetworkParam.paramEditShippingValidation(passData)
-                                                    )),
-                                            new Func2<ShippingParamsPostModel, Response<TkpdResponse>, ShippingParamsPostModel>() {
-                                                @Override
-                                                public ShippingParamsPostModel call(ShippingParamsPostModel passData, Response<TkpdResponse> tkpdResponse) {
-                                                    ActionResponseData result = tkpdResponse.body().convertDataObj(ActionResponseData.class);
-                                                    if (result.isSuccess()) {
-                                                        passData.setStatusInputShipping(result.getPostKey() == null || result.getPostKey().isEmpty());
-                                                        passData.setPostKey(result.getPostKey());
-                                                        passData.setToken(result.getToken());
-                                                        return passData;
-                                                    } else {
-                                                        String errorMessage = "";
-                                                        for (int i = 0; i < tkpdResponse.body().getErrorMessages().size(); i++) {
-                                                            errorMessage += tkpdResponse.body().getErrorMessages().get(i);
-                                                        }
-                                                        throw new RuntimeException(errorMessage);
+                                return Observable.zip(
+                                        Observable.just(passData),
+                                        resCenterActService.getApi()
+                                                .editResiResolutionValidation(AuthUtil.generateParamsNetwork(
+                                                        context,
+                                                        NetworkParam.paramEditShippingValidation(passData)
+                                                )),
+                                        new Func2<ShippingParamsPostModel, Response<TkpdResponse>, ShippingParamsPostModel>() {
+                                            @Override
+                                            public ShippingParamsPostModel call(ShippingParamsPostModel passData, Response<TkpdResponse> tkpdResponse) {
+                                                ActionResponseData result = tkpdResponse.body().convertDataObj(ActionResponseData.class);
+                                                if (result.isSuccess()) {
+                                                    passData.setStatusInputShipping(true);
+                                                    passData.setPostKey(result.getPostKey());
+                                                    passData.setToken(result.getToken());
+                                                    return passData;
+                                                } else {
+                                                    String errorMessage = "";
+                                                    for (int i = 0; i < tkpdResponse.body().getErrorMessages().size(); i++) {
+                                                        errorMessage += tkpdResponse.body().getErrorMessages().get(i);
                                                     }
+                                                    throw new RuntimeException(errorMessage);
                                                 }
                                             }
-                                    );
-                                } else {
-                                    return Observable.just(passData);
-                                }
+                                        }
+                                );
                             }
                         })
                         .flatMap(new Func1<ShippingParamsPostModel, Observable<ShippingParamsPostModel>>() {
@@ -493,7 +489,11 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                             @Override
                             public void onNext(ShippingParamsPostModel passData) {
                                 Log.d(TAG, "onNext: ");
-                                listener.onSuccess();
+                                if (passData.isStatusInputShipping()) {
+                                    listener.onSuccess();
+                                } else {
+                                    listener.onTimeOut();
+                                }
                             }
                         })
         );

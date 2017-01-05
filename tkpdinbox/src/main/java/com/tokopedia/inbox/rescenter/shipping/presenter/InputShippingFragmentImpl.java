@@ -223,6 +223,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
                     @Override
                     public void onStart() {
+                        viewListener.dropKeyBoard();
                         showLoading(true);
                         showMainPage(false);
                     }
@@ -264,6 +265,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
                     @Override
                     public void onStart() {
+                        viewListener.dropKeyBoard();
                         showLoading(true);
                         showMainPage(false);
                     }
