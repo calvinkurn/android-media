@@ -316,7 +316,7 @@ public class SetDateFragment extends Fragment {
             }
 
             if(split.length  >1 ){
-                String res = String.format("%s-%s", getDateWithYear(split[0], monthNamesAbrev), getDateWithYear(split[1], monthNamesAbrev));
+                String res = String.format("%s - %s", getDateWithYear(split[0], monthNamesAbrev), getDateWithYear(split[1], monthNamesAbrev));
                 periodDate.setText(res);
             }
 
