@@ -666,7 +666,33 @@ public class ProductShopInfo implements Parcelable{
         }
 
         public Builder but() {
-            return aProductShopInfo().setShopIsClosedReason(shopIsClosedReason).setShopLucky(shopLucky).setShopId(shopId).setShopOwnerLastLogin(shopOwnerLastLogin).setShopTagline(shopTagline).setShopUrl(shopUrl).setShopDescription(shopDescription).setShopCover(shopCover).setShopHasTerms(shopHasTerms).setShopIsGold(shopIsGold).setShopOpenSince(shopOpenSince).setShopMinBadgeScore(shopMinBadgeScore).setShopLocation(shopLocation).setShopIsClosedUntil(shopIsClosedUntil).setShopName(shopName).setShopReputation(shopReputation).setShopStats(shopStats).setShopOwnerId(shopOwnerId).setShopAlreadyFavorited(shopAlreadyFavorited).setShopIsOwner(shopIsOwner).setShopStatus(shopStatus).setShopIsClosedNote(shopIsClosedNote).setShopReputationBadge(shopReputationBadge).setShopAvatar(shopAvatar).setShopTotalFavorit(shopTotalFavorit).setShopDomain(shopDomain).setShopIsOfficial(shopIsOfficial);
+            return aProductShopInfo()
+                    .setShopIsClosedReason(shopIsClosedReason)
+                    .setShopLucky(shopLucky).setShopId(shopId)
+                    .setShopOwnerLastLogin(shopOwnerLastLogin)
+                    .setShopTagline(shopTagline)
+                    .setShopUrl(shopUrl)
+                    .setShopDescription(shopDescription)
+                    .setShopCover(shopCover)
+                    .setShopHasTerms(shopHasTerms)
+                    .setShopIsGold(shopIsGold)
+                    .setShopOpenSince(shopOpenSince)
+                    .setShopMinBadgeScore(shopMinBadgeScore)
+                    .setShopLocation(shopLocation)
+                    .setShopIsClosedUntil(shopIsClosedUntil)
+                    .setShopName(shopName)
+                    .setShopReputation(shopReputation)
+                    .setShopStats(shopStats)
+                    .setShopOwnerId(shopOwnerId)
+                    .setShopAlreadyFavorited(shopAlreadyFavorited)
+                    .setShopIsOwner(shopIsOwner)
+                    .setShopStatus(shopStatus)
+                    .setShopIsClosedNote(shopIsClosedNote)
+                    .setShopReputationBadge(shopReputationBadge)
+                    .setShopAvatar(shopAvatar)
+                    .setShopTotalFavorit(shopTotalFavorit)
+                    .setShopDomain(shopDomain)
+                    .setShopIsOfficial(shopIsOfficial);
         }
 
         public ProductShopInfo build() {
