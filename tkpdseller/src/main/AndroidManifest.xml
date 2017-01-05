@@ -63,6 +63,16 @@
             android:exported="false" />
 
         <activity
+            android:screenOrientation="portrait"
+            android:label="@string/title_item_detail"
+            android:name=".topads.view.activity.TopAdsDetailProductActivity" />
+
+        <activity
+            android:label="@string/title_group_detail"
+            android:screenOrientation="portrait"
+            android:name=".topads.view.activity.TopAdsDetailGroupActivity"/>
+
+        <activity
             android:name=".shop.ShopEditorActivity"
             android:label="@string/shop_setting"
             android:theme="@style/ShopAppTheme" />
@@ -73,8 +83,6 @@
         <service
             android:name=".shop.ShopEditService"
             android:exported="false" />
-
-        <activity android:name=".topads.view.activity.TopAdsDetailProductActivity"></activity>
     </application>
 
 </manifest>

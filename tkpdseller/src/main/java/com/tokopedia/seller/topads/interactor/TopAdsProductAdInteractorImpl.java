@@ -40,15 +40,15 @@ public class TopAdsProductAdInteractorImpl implements TopAdsProductAdInteractor 
     private TopAdsDbDataSource topAdsDbDataSource;
     private TopAdsCacheDataSourceImpl topAdsCacheDataSourceImpl;
 
-    public TopAdsProductAdInteractorImpl(CompositeSubscription compositeSubscription, TopAdsManagementService topAdsManagementService, TopAdsDbDataSource topAdsDbDataSource, TopAdsCacheDataSourceImpl topAdsCacheDataSourceImpl) {
-        this.compositeSubscription = compositeSubscription;
+    public TopAdsProductAdInteractorImpl(TopAdsManagementService topAdsManagementService, TopAdsDbDataSource topAdsDbDataSource, TopAdsCacheDataSourceImpl topAdsCacheDataSourceImpl) {
+        this.compositeSubscription = new CompositeSubscription();
         this.topAdsManagementService = topAdsManagementService;
         this.topAdsDbDataSource = topAdsDbDataSource;
         this.topAdsCacheDataSourceImpl = topAdsCacheDataSourceImpl;
     }
 
     @Override
-    public void searchAd(SearchAdRequest searchAdRequest, ListenerInteractor<List<ProductAd>> listener) {
+    public void searchAd(SearchAdRequest searchAdRequest, final ListenerInteractor<PageDataResponse<List<ProductAd>>> listener) {
         Observable<Response<PageDataResponse<List<ProductAd>>>> observable = topAdsManagementService.getApi().searchProductAd(searchAdRequest.getParams());
         compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())

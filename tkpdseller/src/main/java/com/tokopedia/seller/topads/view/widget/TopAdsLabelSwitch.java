@@ -1,10 +1,14 @@
-package com.tokopedia.seller.topads.view.custom;
+package com.tokopedia.seller.topads.view.widget;
 
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.SwitchCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
@@ -17,7 +21,7 @@ import butterknife.ButterKnife;
  * Created by zulfikarrahman on 12/29/16.
  */
 
-public class ItemDetailTopAdsSwitch extends View {
+public class TopAdsLabelSwitch extends CardView {
     @BindView(R2.id.title_item)
     TextView title;
 
@@ -28,30 +32,40 @@ public class ItemDetailTopAdsSwitch extends View {
     SwitchCompat switchCompat;
 
     private ListenerSwitchValue listenerSwitchValue;
+    private String titleText;
 
-    public ItemDetailTopAdsSwitch(Context context) {
+    public TopAdsLabelSwitch(Context context) {
         super(context);
         init();
     }
 
-    public ItemDetailTopAdsSwitch(Context context, AttributeSet attrs) {
+    public TopAdsLabelSwitch(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(attrs);
     }
 
-    public ItemDetailTopAdsSwitch(Context context, AttributeSet attrs, int defStyleAttr) {
+    public TopAdsLabelSwitch(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
+        init(attrs);
     }
 
-    public ItemDetailTopAdsSwitch(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
+    private void init(AttributeSet attrs) {
         init();
+        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.TopAdsLabelView);
+
+        try {
+            titleText = styledAttributes.getString(R.styleable.TopAdsLabelView_title);
+        }finally {
+            styledAttributes.recycle();
+        }
+
+
     }
 
-    private void init() {
-        View view = inflate(getContext(), R.layout.item_detail_topads_switch_layout, null);
-        ButterKnife.bind(this, view);
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        title.setText(titleText);
         switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -66,10 +80,20 @@ public class ItemDetailTopAdsSwitch extends View {
                 }
             }
         });
+        invalidate();
+        requestLayout();
+    }
+
+    private void init() {
+        View view = inflate(getContext(), R.layout.item_detail_topads_switch_layout, null);
+        ButterKnife.bind(this, view);
+        addView(view);
     }
 
     public void setTitle(String textTitle){
         title.setText(textTitle);
+        invalidate();
+        requestLayout();
     }
 
     public String getTitle(){
@@ -82,6 +106,8 @@ public class ItemDetailTopAdsSwitch extends View {
 
     public void setValue(boolean isChecked){
         switchCompat.setChecked(isChecked);
+        invalidate();
+        requestLayout();
     }
 
     public void setListenerValue(ListenerSwitchValue listenerSwitchValue){

@@ -7,7 +7,7 @@ import com.tokopedia.seller.topads.view.listener.TopAdsDetailViewListener;
  */
 public abstract class TopAdsDetailPresenterImpl implements TopAdsDetailPresenter {
 
-    private final TopAdsDetailViewListener topAdsDetailViewListener;
+    protected final TopAdsDetailViewListener topAdsDetailViewListener;
 
     public TopAdsDetailPresenterImpl(TopAdsDetailViewListener topAdsDetailViewListener){
         this.topAdsDetailViewListener = topAdsDetailViewListener;
