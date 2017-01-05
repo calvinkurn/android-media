@@ -704,7 +704,7 @@ public class SetDateFragment extends Fragment {
         private DatePickerDialog toDatePickerDialog;
         private StartOrEndPeriodModel startOrEndPeriodModel;
 
-        @OnClick(R.id.custom_layout_container)
+        @OnClick(R.id.custom_header)
         public void onChooseDate(){
             if(startOrEndPeriodModel == null)
                 return;

@@ -24,8 +24,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/custom_header"
-        android:layout_marginLeft="16dp"
         android:layout_marginTop="16sp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginBottom="10dp"
         android:layout_alignLeft="@+id/custom_header"
         android:layout_alignStart="@+id/custom_header"
         android:textSize="16sp"
@@ -42,12 +43,13 @@
         android:layout_below="@+id/custom_date"/>
 
     <ImageView
-        android:layout_width="6dp"
-        android:layout_height="10dp"
+        android:layout_width="9dp"
+        android:layout_height="6dp"
+        android:scaleType="fitXY"
         app:srcCompat="@drawable/ic_rec_down_set_date"
         android:id="@+id/custom_drop_down"
         android:layout_above="@+id/custom_break_point"
         android:layout_alignRight="@+id/custom_break_point"
         android:layout_alignEnd="@+id/custom_break_point"
-        android:layout_marginBottom="5dp"/>
+        android:layout_marginBottom="15dp"/>
 </RelativeLayout>
