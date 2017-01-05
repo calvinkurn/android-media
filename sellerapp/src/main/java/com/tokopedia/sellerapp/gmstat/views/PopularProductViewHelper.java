@@ -76,7 +76,7 @@ public class PopularProductViewHelper {
         ButterKnife.bind(this, itemView);
         this.itemView = itemView;
 
-        String categoryBold = String.format("\"<i><b>%s</b></i>\"", "Data dalam 30 hari terakhir");
+        String categoryBold = String.format("<i>%s</i>", "Data dalam 30 hari terakhir");
         footerPopularProduct.setText(MethodChecker.fromHtml(categoryBold));
     }
 
