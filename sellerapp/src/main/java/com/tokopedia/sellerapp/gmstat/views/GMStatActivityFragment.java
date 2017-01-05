@@ -171,7 +171,7 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
         String month = dateRaw.get(1);
         month = monthNames[Integer.parseInt(month)-1];
 
-        String day = dateRaw.get(0);
+        String day = String.valueOf(Integer.valueOf(dateRaw.get(0)));
         Log.d(TAG, "bulan "+month+" tanggal "+day+" rawDate "+date);
 
         return day + " "+ month+" "+year;
