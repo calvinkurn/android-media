@@ -3,7 +3,8 @@
 
     <string name="title_topads_list">Produk</string>
     <string name="title_topads_dashboard">TopAds</string>
-    <string name="title_topads_product">Produk</string>
+    <string name="title_topads_promo_product">Promo Produk</string>
+    <string name="title_topads_promo_group">Promo Group</string>
     <string name="title_topads_store">Toko</string>
     <string name="title_top_ads_dashboard">TopAds</string>
     <string name="title_top_ads_product">Produk</string>

@@ -20,9 +20,7 @@ import com.tokopedia.seller.topads.presenter.TopAdsDashboardPresenter;
 import com.tokopedia.seller.topads.view.activity.TopAdsAddCreditActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardFragmentListener;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -30,8 +28,6 @@ import butterknife.OnClick;
 public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter> extends BasePresenterFragment<T> implements TopAdsDashboardFragmentListener {
 
     private static String TAG = TopAdsDashboardFragment.class.getSimpleName();
-
-    private static final String RANGE_DATE_FORMAT = "dd MMM yyyy";
 
     @BindView(R2.id.image_view_shop_icon)
     ImageView shopIconImageView;
@@ -149,7 +145,9 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
     @Override
     public void onResume() {
         super.onResume();
-        if (presenter.isDateUpdated(startDate, endDate)){
+        if (presenter.isDateUpdated(startDate, endDate)) {
+            startDate = presenter.getStartDate();
+            endDate = presenter.getEndDate();
             loadData();
         }
     }
@@ -177,19 +175,10 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
     }
 
     protected void loadData() {
-        startDate = presenter.getStartDate();
-        endDate = presenter.getEndDate();
-        presenter.saveDate(startDate, endDate);
-        updateRangeDate();
+        rangeDateDescTextView.setText(presenter.getRangeDateFormat(startDate, endDate));
         presenter.populateSummary(startDate, endDate);
         presenter.populateDeposit();
         presenter.populateShopInfo();
-    }
-
-    protected void updateRangeDate() {
-        rangeDateDescTextView.setText(getString(R.string.top_ads_range_date_text,
-                new SimpleDateFormat(RANGE_DATE_FORMAT, Locale.ENGLISH).format(startDate),
-                new SimpleDateFormat(RANGE_DATE_FORMAT, Locale.ENGLISH).format(endDate)));
     }
 
     @OnClick(R2.id.image_button_add_deposit)

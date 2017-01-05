@@ -16,4 +16,6 @@ public interface TopAdsDatePickerPresenter {
     Date getEndDate();
 
     boolean isDateUpdated(Date startDate, Date endDate);
+
+    String getRangeDateFormat(Date startDate, Date endDate);
 }

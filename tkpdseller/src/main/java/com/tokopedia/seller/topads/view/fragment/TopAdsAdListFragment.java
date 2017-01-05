@@ -5,9 +5,11 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
@@ -114,7 +116,17 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
 
     @Override
     protected void setActionVar() {
-        searchAd();
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (presenter.isDateUpdated(startDate, endDate)) {
+            startDate = presenter.getStartDate();
+            endDate = presenter.getEndDate();
+            loadData();
+        }
     }
 
     @Override
@@ -150,7 +162,13 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         });
         adapter = new TopAdsAdListAdapter(this);
         adapter.setCallback(this);
+    }
+
+    protected void loadData() {
         adapter.showLoadingFull(true);
+        Log.d("TEST", presenter.getRangeDateFormat(startDate, endDate));
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(presenter.getRangeDateFormat(startDate, endDate));
+        searchAd();
     }
 
     private void searchAd(int page) {
@@ -159,8 +177,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     }
 
     private void initialDate() {
-        startDate = presenter.getStartDate();
-        endDate = presenter.getEndDate();
+
     }
 
     @Override

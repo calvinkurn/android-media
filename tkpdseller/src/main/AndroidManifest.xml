@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.seller">
 
     <application
@@ -8,81 +9,82 @@
         <activity
             android:name=".selling.orderReject.ConfirmRejectOrderActivity"
             android:label="@string/title_reject_confirm"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".selling.view.activity.SellingDetailActivity"
             android:label="@string/title_activity_people_tx_details"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3" />
+            android:theme="@style/Theme.Tokopedia3"/>
         <activity
             android:name=".selling.view.activity.ActivitySellingTransaction"
             android:label="@string/title_activity_shop_transaction_new"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".OrderHistoryView"
             android:label="@string/title_activity_order_history_view"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ShippingConfirmationDetail"
             android:label="@string/title_activity_shipping_confirmation_detail"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ShippingConfirmationProdConf"
             android:label="@string/title_activity_shipping_confirmation_prod_conf"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".topads.view.activity.TopAdsDashboardActivity"
             android:label="@string/title_topads_dashboard"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".topads.view.activity.TopAdsProductAdListActivity"
-            android:label="@string/title_topads_list"
-            android:screenOrientation="portrait" />
+            android:label="@string/title_topads_promo_product"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".topads.view.activity.TopAdsGroupAdListActivity"
-            android:label="@string/title_group_list"
-            android:screenOrientation="portrait" />
+            android:label="@string/title_topads_promo_group"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".topads.view.activity.TopAdsAddCreditActivity"
-            android:label="@string/title_top_ads_add_credit" />
+            android:label="@string/title_top_ads_add_credit"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".topads.view.activity.TopAdsPaymentCreditActivity"
-            android:label="@string/title_top_ads_add_credit" />
+            android:label="@string/title_top_ads_add_credit"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".topads.view.activity.TopAdsNewPromoActivity"
-            android:label="@string/title_top_ads_new_promo" />
+            android:label="@string/title_top_ads_new_promo"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".topads.view.activity.TopAdsEditPromoActivity"
-            android:label="@string/title_top_ads_new_promo" />
+            android:label="@string/title_top_ads_new_promo"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".topads.view.activity.TopAdsAddProductActivity"
-            android:label="@string/title_top_ads_product" />
-
-        <service
-            android:name=".selling.SellingService"
-            android:exported="false" />
-
+            android:label="@string/title_top_ads_product"
+            android:screenOrientation="portrait"/>
         <activity
-            android:screenOrientation="portrait"
+            android:name=".topads.view.activity.TopAdsDetailProductActivity"
             android:label="@string/title_item_detail"
-            android:name=".topads.view.activity.TopAdsDetailProductActivity" />
-
+            android:screenOrientation="portrait"/>
         <activity
+            android:name=".topads.view.activity.TopAdsDetailGroupActivity"
             android:label="@string/title_group_detail"
-            android:screenOrientation="portrait"
-            android:name=".topads.view.activity.TopAdsDetailGroupActivity"/>
-
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".shop.ShopEditorActivity"
             android:label="@string/shop_setting"
-            android:theme="@style/ShopAppTheme" />
+            android:theme="@style/ShopAppTheme"/>
 
         <service
             android:name=".selling.SellingService"
-            android:exported="false" />
+            android:exported="false"/>
+        <service
+            android:name=".selling.SellingService"
+            android:exported="false"/>
         <service
             android:name=".shop.ShopEditService"
-            android:exported="false" />
+            android:exported="false"/>
     </application>
 
 </manifest>
