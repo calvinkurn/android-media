@@ -13,18 +13,12 @@ import java.util.Date;
  */
 public class TopAdsDatePickerPresenterImpl implements TopAdsDatePickerPresenter {
 
-    private DashboardTopadsInteractor dashboardTopadsInteractor;
+    private static final int DIFF_START_DAYS = -7;
 
-    private Date startDate;
-    private Date endDate;
+    private DashboardTopadsInteractor dashboardTopadsInteractor;
 
     public TopAdsDatePickerPresenterImpl(Context context) {
         this.dashboardTopadsInteractor = new DashboardTopadsInteractorImpl(context);
-        Calendar startCalendar = Calendar.getInstance();
-        Calendar endCalendar = Calendar.getInstance();
-        startCalendar.add(Calendar.DAY_OF_YEAR, -7);
-        startDate = startCalendar.getTime();
-        endDate = endCalendar.getTime();
     }
 
     @Override
@@ -40,13 +34,27 @@ public class TopAdsDatePickerPresenterImpl implements TopAdsDatePickerPresenter 
     @Override
     public Date getStartDate() {
         Calendar startCalendar = Calendar.getInstance();
-        startCalendar.add(Calendar.DAY_OF_YEAR, -7);
-        return dashboardTopadsInteractor.getStartDate(startDate);
+        startCalendar.add(Calendar.DAY_OF_YEAR, DIFF_START_DAYS);
+        return dashboardTopadsInteractor.getStartDate(startCalendar.getTime());
     }
 
     @Override
     public Date getEndDate() {
         Calendar endCalendar = Calendar.getInstance();
-        return dashboardTopadsInteractor.getEndDate(endDate);
+        return dashboardTopadsInteractor.getEndDate(endCalendar.getTime());
+    }
+
+    @Override
+    public boolean isDateUpdated(Date startDate, Date endDate) {
+        if (startDate == null || endDate == null) {
+            return true;
+        }
+        if (startDate.getTime() != getStartDate().getTime()) {
+            return true;
+        }
+        if (endDate.getTime() != getEndDate().getTime()) {
+            return true;
+        }
+        return false;
     }
 }

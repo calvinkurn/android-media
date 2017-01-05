@@ -21,7 +21,6 @@ import com.tokopedia.seller.topads.view.activity.TopAdsAddCreditActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardFragmentListener;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -144,13 +143,15 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
 
     @Override
     protected void setActionVar() {
-        presenter.resetDate();
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        loadData();
+        if (presenter.isDateUpdated(startDate, endDate)){
+            loadData();
+        }
     }
 
     private void initialLayout() {
@@ -178,6 +179,7 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
     protected void loadData() {
         startDate = presenter.getStartDate();
         endDate = presenter.getEndDate();
+        presenter.saveDate(startDate, endDate);
         updateRangeDate();
         presenter.populateSummary(startDate, endDate);
         presenter.populateDeposit();

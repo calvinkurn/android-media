@@ -14,4 +14,6 @@ public interface TopAdsDatePickerPresenter {
     Date getStartDate();
 
     Date getEndDate();
+
+    boolean isDateUpdated(Date startDate, Date endDate);
 }

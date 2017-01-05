@@ -21,12 +21,7 @@
         <android.support.v7.widget.CardView
             style="@style/CardView.TopAds"
             android:layout_marginBottom="@dimen/top_ads_dashboard_margin_bottom_space"
-            android:layout_marginTop="@dimen/top_ads_dashboard_margin_cards"
-            android:padding="@dimen/top_ads_dashboard_padding_cards"
-            app:contentPaddingBottom="0dp"
-            app:contentPaddingLeft="0dp"
-            app:contentPaddingRight="0dp"
-            app:contentPaddingTop="0dp">
+            android:layout_marginTop="@dimen/top_ads_dashboard_margin_cards">
 
             <include
                 layout="@layout/include_top_ads_shop_ad"

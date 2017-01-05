@@ -20,11 +20,18 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <include
-            layout="@layout/include_top_ads_shop_ad"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/padding_small"/>
+            android:padding="@dimen/padding_small">
+
+            <include
+                layout="@layout/include_top_ads_shop_ad"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+        </FrameLayout>
+
 
         <LinearLayout
             android:id="@+id/progress_bar_layout"
