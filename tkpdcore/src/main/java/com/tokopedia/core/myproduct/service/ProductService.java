@@ -607,7 +607,7 @@ public class ProductService extends IntentService implements ProductServiceConst
                                                                         inputModelPair.setModel1(editProductPic);// save to the data
                                                                     } else {
                                                                         if (checkNotNull(editProductPic.getMessageError()) && !checkErrorMessageEmpty(editProductPic.getMessageError().toString())) {
-                                                                            throw new RuntimeException(editProductPic.getMessageError().toString());
+                                                                            throw new MessageErrorException(editProductPic.getMessageError().toString());
                                                                         } else {
                                                                             new RetrofitUtils.DefaultErrorHandler(delete.code());
                                                                         }
@@ -619,7 +619,7 @@ public class ProductService extends IntentService implements ProductServiceConst
                                                                 try {
                                                                     edit = uploadEditProduct(ImageUploadHandler.writeImageToTkpdPath(ImageUploadHandler.compressImage(path)), productId + "", userId, deviceId).toBlocking().first();// upload picture
                                                                 } catch (IOException e) {
-                                                                    throw new RuntimeException(getApplicationContext().getString(R.string.error_upload_image));
+                                                                    throw new MessageErrorException(getApplicationContext().getString(R.string.error_upload_image));
                                                                 }
                                                                 inputModelPair.setModel2(edit);// set result here
 
@@ -635,7 +635,7 @@ public class ProductService extends IntentService implements ProductServiceConst
                                                                     inputModelPair.setModel2(null);
                                                                 } else {
                                                                     if (checkNotNull(editProductPic.getMessageError()) && !checkErrorMessageEmpty(editProductPic.getMessageError().toString())) {
-                                                                        throw new RuntimeException(editProductPic.getMessageError().toString());
+                                                                        throw new MessageErrorException(editProductPic.getMessageError().toString());
                                                                     } else {
                                                                         new RetrofitUtils.DefaultErrorHandler(delete.code());
                                                                     }
@@ -650,7 +650,7 @@ public class ProductService extends IntentService implements ProductServiceConst
                                                                 try {
                                                                     edit = uploadEditProduct(ImageUploadHandler.writeImageToTkpdPath(ImageUploadHandler.compressImage(path)), productId + "", userId, deviceId).toBlocking().first();// upload picture
                                                                 } catch (IOException e) {
-                                                                    throw new RuntimeException(getApplicationContext().getString(R.string.error_upload_image));
+                                                                    throw new MessageErrorException(getApplicationContext().getString(R.string.error_upload_image));
                                                                 }
                                                                 inputModelPair.setModel2(edit);// set result here
 
@@ -733,7 +733,7 @@ public class ProductService extends IntentService implements ProductServiceConst
                                 TkpdResponse body = tkpdResponseResponse.body();
                                 if (tkpdResponseResponse.isSuccessful()) {
                                     if (!checkErrorMessageEmpty(body.getErrorMessages().toString())) {
-                                        throw new RuntimeException(body.getErrorMessages().toString());
+                                        throw new MessageErrorException(body.getErrorMessages().toString());
                                     }
                                 } else {
                                     new RetrofitUtils.DefaultErrorHandler(tkpdResponseResponse.code());
@@ -762,7 +762,13 @@ public class ProductService extends IntentService implements ProductServiceConst
 
                             Bundle resultData = new Bundle();
                             resultData.putInt(TYPE, EDIT_PRODUCT);
-                            resultData.putString(MESSAGE_ERROR_FLAG, CommonUtils.generateMessageError(getApplicationContext(), e.getMessage()));
+                            String error;
+                            if(e instanceof MessageErrorException){
+                                error = e.getMessage();
+                            }else{
+                                error = getString(R.string.error_connection_problem);
+                            }
+                            resultData.putString(MESSAGE_ERROR_FLAG, CommonUtils.generateMessageError(getApplicationContext(), error));
                             receiver.send(STATUS_ERROR, resultData);
                         }
                     }
@@ -819,8 +825,14 @@ public class ProductService extends IntentService implements ProductServiceConst
         // parse here
         EditProductPictureModel editProductPic = null;
         if (checkNotNull(delete)) {
-            TkpdResponse body = delete.body();
-            editProductPic = gson.fromJson(body.getStrResponse(), EditProductPictureModel.class);
+            if(delete.isSuccessful()) {
+                TkpdResponse body = delete.body();
+                editProductPic = gson.fromJson(body.getStrResponse(), EditProductPictureModel.class);
+            }else{
+                throw new RuntimeException(getString(R.string.error_connection_problem));
+            }
+        }else{
+            throw new RuntimeException(getString(R.string.error_connection_problem));
         }
         return editProductPic;
     }

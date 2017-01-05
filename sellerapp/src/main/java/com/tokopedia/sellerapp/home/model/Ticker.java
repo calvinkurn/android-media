@@ -5,6 +5,7 @@ import android.text.Spanned;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.util.MethodChecker;
 
 import java.util.Arrays;
 
@@ -163,7 +164,7 @@ public class Ticker {
         }
 
         public Spanned getMessage() {
-            return Html.fromHtml(message);
+            return MethodChecker.fromHtml(message);
         }
 
         public void setMessage(String message) {

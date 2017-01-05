@@ -40,6 +40,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.customadapter.ListViewShopOrderDetail;
 import com.tokopedia.seller.selling.model.shopconfirmationdetail.ShippingConfirmDetModel;
 import com.tokopedia.core.network.NetworkHandler;
@@ -211,13 +212,13 @@ public class ShippingConfirmationProdConf extends TActivity {
 			JSONObject shipping = new JSONObject(order.getString("shipping"));
 			JSONObject dest = new JSONObject(order.getString("dest"));
 			OrderId = orderdata.getString("order_id");
-			TotalItem.setText(Html.fromHtml(getString(R.string.title_total_item) + ": <b>" + orderdata.getString("quantity") + " ( " + orderdata.getString("total_weight") + "kg )</b>"));
+			TotalItem.setText(MethodChecker.fromHtml(getString(R.string.title_total_item) + ": <b>" + orderdata.getString("quantity") + " ( " + orderdata.getString("total_weight") + "kg )</b>"));
 			Invoice.setText(orderdata.getString("invoice"));
 			BuyerName.setText(customer.getString("cust_name"));
 			Courier.setText(shipping.getString("shipping_name") + "( " + shipping.getString("shipping_product") + " )");
-			Value.setText(Html.fromHtml(getString(R.string.title_transaction_value) + " : <b>" + orderdata.getString("open_amt_idr")+"</b>"));
+			Value.setText(MethodChecker.fromHtml(getString(R.string.title_transaction_value) + " : <b>" + orderdata.getString("open_amt_idr")+"</b>"));
 			ReceiverName.setText(dest.getString("receiver_name"));
-			Destination.setText(Html.fromHtml(dest.getString("receiver_name") + "<br>" +dest.getString("address_name").replace("<br/>", "\n").replace("<br>", "\n")
+			Destination.setText(MethodChecker.fromHtml(dest.getString("receiver_name") + "<br>" +dest.getString("address_name").replace("<br/>", "\n").replace("<br>", "\n")
 					+ "<br>" + dest.getString("district") + " " + dest.getString("city") + ", " + dest.getString("postal")
 					+ "<br>" + dest.getString("province") + "<br>"+ getString(R.string.title_phone) + " : " +dest.getString("phone")));
 

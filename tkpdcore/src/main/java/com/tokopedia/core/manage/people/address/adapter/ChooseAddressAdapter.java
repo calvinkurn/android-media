@@ -17,6 +17,7 @@ import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.model.Destination;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.manage.people.address.presenter.ChooseAddressFragmentPresenterImpl;
 
 import java.util.ArrayList;
@@ -94,8 +95,8 @@ public class ChooseAddressAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
     private void bindAddress(final ViewHolder holder, final int position) {
-        holder.titleAddress.setText(Html.fromHtml(list.get(position).getAddressName()));
-        holder.addressDetail.setText(Html.fromHtml(list.get(position).getAddressDetail()));
+        holder.titleAddress.setText(MethodChecker.fromHtml(list.get(position).getAddressName()));
+        holder.addressDetail.setText(MethodChecker.fromHtml(list.get(position).getAddressDetail()));
         holder.btnEdit.setOnClickListener(new View.OnClickListener() {
 
             @Override

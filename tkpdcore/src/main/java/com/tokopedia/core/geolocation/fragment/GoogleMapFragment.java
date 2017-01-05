@@ -41,6 +41,7 @@ import com.tokopedia.core.geolocation.listener.GoogleMapView;
 import com.tokopedia.core.geolocation.model.LocationPass;
 import com.tokopedia.core.geolocation.presenter.GoogleMapPresenter;
 import com.tokopedia.core.geolocation.presenter.GoogleMapPresenterImpl;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 
 import butterknife.BindView;
@@ -433,7 +434,7 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
         dialog.setContentView(R.layout.layout_extra_google_map);
         TextView destination = (TextView) dialog.findViewById(R.id.text_address_destination);
         if (destination != null) {
-            destination.setText(Html.fromHtml(s).toString());
+            destination.setText(MethodChecker.fromHtml(s).toString());
         }
     }
 }

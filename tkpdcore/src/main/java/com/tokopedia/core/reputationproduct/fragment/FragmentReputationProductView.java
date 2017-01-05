@@ -51,6 +51,7 @@ import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.LabelUtils;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.StarGenerator;
@@ -256,7 +257,7 @@ public class FragmentReputationProductView extends Fragment {
         holder.imageHolder.setAdapter(imageUploadAdapter);
         setVisibility();
         ImageHandler.loadImageCircle2(getActivity(), holder.avatar, model.getReviewUserImage());
-        holder.username.setText(Html.fromHtml(model.getReviewUserName()).toString());
+        holder.username.setText(MethodChecker.fromHtml(model.getReviewUserName()).toString());
         holder.date.setText(model.getReviewCreateTime());
         holder.comment.setText(model.getReviewMessage());
         holder.comment.setMovementMethod(new SelectableSpannedMovementMethod());
