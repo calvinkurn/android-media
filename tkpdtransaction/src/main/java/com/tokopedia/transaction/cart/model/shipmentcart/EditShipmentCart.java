@@ -10,31 +10,27 @@ import com.google.gson.annotations.SerializedName;
  * @author by alvarisi on 11/3/16.
  */
 
-public class ShipmentCartData implements Parcelable {
-    @SerializedName("message_status")
-    @Expose
+public class EditShipmentCart implements Parcelable {
     private String message;
-    @SerializedName("status")
-    @Expose
     private String status;
 
-    public ShipmentCartData() {
+    public EditShipmentCart() {
     }
 
-    protected ShipmentCartData(Parcel in) {
+    protected EditShipmentCart(Parcel in) {
         message = in.readString();
         status = in.readString();
     }
 
-    public static final Creator<ShipmentCartData> CREATOR = new Creator<ShipmentCartData>() {
+    public static final Creator<EditShipmentCart> CREATOR = new Creator<EditShipmentCart>() {
         @Override
-        public ShipmentCartData createFromParcel(Parcel in) {
-            return new ShipmentCartData(in);
+        public EditShipmentCart createFromParcel(Parcel in) {
+            return new EditShipmentCart(in);
         }
 
         @Override
-        public ShipmentCartData[] newArray(int size) {
-            return new ShipmentCartData[size];
+        public EditShipmentCart[] newArray(int size) {
+            return new EditShipmentCart[size];
         }
     };
 

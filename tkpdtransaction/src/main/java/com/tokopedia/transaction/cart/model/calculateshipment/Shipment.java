@@ -13,74 +13,14 @@ import java.util.List;
  * @author by alvarisi on 11/3/16.
  */
 
-public class Shipment implements Parcelable {
-
-    @SerializedName("shipping_max_add_fee")
-    @Expose
-    private Integer shippingMaxAddFee;
-    @SerializedName("shipment_id")
-    @Expose
+public class Shipment implements Parcelable{
     private String shipmentId;
-    @SerializedName("shipment_package")
-    @Expose
     private List<ShipmentPackage> shipmentPackage = new ArrayList<ShipmentPackage>();
-    @SerializedName("shipment_available")
-    @Expose
     private Integer shipmentAvailable;
-    @SerializedName("shipment_image")
-    @Expose
-    private String shipmentImage;
-    @SerializedName("shipment_name")
-    @Expose
     private String shipmentName;
-
 
     public Shipment() {
 
-    }
-
-    protected Shipment(Parcel in) {
-        shipmentId = in.readString();
-        shipmentImage = in.readString();
-        shipmentName = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(shipmentId);
-        dest.writeString(shipmentImage);
-        dest.writeString(shipmentName);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<Shipment> CREATOR = new Creator<Shipment>() {
-        @Override
-        public Shipment createFromParcel(Parcel in) {
-            return new Shipment(in);
-        }
-
-        @Override
-        public Shipment[] newArray(int size) {
-            return new Shipment[size];
-        }
-    };
-
-    /**
-     * @return The shippingMaxAddFee
-     */
-    public Integer getShippingMaxAddFee() {
-        return shippingMaxAddFee;
-    }
-
-    /**
-     * @param shippingMaxAddFee The shipping_max_add_fee
-     */
-    public void setShippingMaxAddFee(Integer shippingMaxAddFee) {
-        this.shippingMaxAddFee = shippingMaxAddFee;
     }
 
     /**
@@ -126,20 +66,6 @@ public class Shipment implements Parcelable {
     }
 
     /**
-     * @return The shipmentImage
-     */
-    public String getShipmentImage() {
-        return shipmentImage;
-    }
-
-    /**
-     * @param shipmentImage The shipment_image
-     */
-    public void setShipmentImage(String shipmentImage) {
-        this.shipmentImage = shipmentImage;
-    }
-
-    /**
      * @return The shipmentName
      */
     public String getShipmentName() {
@@ -166,4 +92,52 @@ public class Shipment implements Parcelable {
         shipment.setShipmentPackage(new ArrayList<ShipmentPackage>());
         return shipment;
     }
+
+    protected Shipment(Parcel in) {
+        shipmentId = in.readString();
+        if (in.readByte() == 0x01) {
+            shipmentPackage = new ArrayList<ShipmentPackage>();
+            in.readList(shipmentPackage, ShipmentPackage.class.getClassLoader());
+        } else {
+            shipmentPackage = null;
+        }
+        shipmentAvailable = in.readByte() == 0x00 ? null : in.readInt();
+        shipmentName = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(shipmentId);
+        if (shipmentPackage == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(shipmentPackage);
+        }
+        if (shipmentAvailable == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(shipmentAvailable);
+        }
+        dest.writeString(shipmentName);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Shipment> CREATOR = new Parcelable.Creator<Shipment>() {
+        @Override
+        public Shipment createFromParcel(Parcel in) {
+            return new Shipment(in);
+        }
+
+        @Override
+        public Shipment[] newArray(int size) {
+            return new Shipment[size];
+        }
+    };
 }

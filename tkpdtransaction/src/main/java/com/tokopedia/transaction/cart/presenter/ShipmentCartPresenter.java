@@ -8,15 +8,16 @@ import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.transaction.cart.interactor.CartDataInteractor;
 import com.tokopedia.transaction.cart.interactor.ICartDataInteractor;
 import com.tokopedia.transaction.cart.listener.IShipmentCartView;
-import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentData;
 import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentWrapper;
+import com.tokopedia.transaction.cart.model.calculateshipment.Shipment;
 import com.tokopedia.transaction.cart.model.savelocation.SaveLocationData;
 import com.tokopedia.transaction.cart.model.savelocation.SaveLocationWrapper;
-import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartData;
+import com.tokopedia.transaction.cart.model.shipmentcart.EditShipmentCart;
 import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartWrapper;
 
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -93,7 +94,7 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
         }
     }
 
-    private final class EditShipmentCartSubscriber extends Subscriber<ShipmentCartData> {
+    private final class EditShipmentCartSubscriber extends Subscriber<EditShipmentCart> {
         @Override
         public void onCompleted() {
             view.dismisLoading();
@@ -106,11 +107,11 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
         }
 
         @Override
-        public void onNext(ShipmentCartData shipmentCartData) {
-            if (shipmentCartData.getStatus().equalsIgnoreCase("1")) {
-                view.navigateToCart(shipmentCartData.getMessage());
+        public void onNext(EditShipmentCart editShipmentCart) {
+            if (editShipmentCart.getStatus().equalsIgnoreCase("1")) {
+                view.navigateToCart(editShipmentCart.getMessage());
             } else {
-                view.renderErrorEditShipment(shipmentCartData.getMessage());
+                view.renderErrorEditShipment(editShipmentCart.getMessage());
             }
         }
     }
@@ -130,7 +131,7 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
         }
     }
 
-    private final class CalculateShipmentSubscriber extends Subscriber<CalculateShipmentData> {
+    private final class CalculateShipmentSubscriber extends Subscriber<List<Shipment>> {
         @Override
         public void onCompleted() {
             view.dismisLoading();
@@ -156,8 +157,8 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
         }
 
         @Override
-        public void onNext(CalculateShipmentData data) {
-            view.renderCalculateShipment(data);
+        public void onNext(List<Shipment> shipments) {
+            view.renderCalculateShipment(shipments);
         }
     }
 
