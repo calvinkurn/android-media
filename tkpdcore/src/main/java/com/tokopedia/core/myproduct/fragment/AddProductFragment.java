@@ -368,7 +368,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
 
     @BindView(R2.id.add_product_desc)
     LimitedEditText addProductDesc;
-    EditText addProductDescNormal;
 
     @BindView(R2.id.add_product_product_desc_layout)
     TextInputLayout addProductProductDescLayout;
@@ -379,8 +378,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
     @BindView(R2.id.add_product_insurance)
     Spinner addProductInsurance;
 
-    @BindView(R2.id.title_preorder)
-    RelativeLayout addProductTitlePreorder;
     @BindView(R2.id.chevron_preorder)
     ImageView addProductChevronPreorder;
     @BindView(R2.id.preorder_content)
@@ -390,8 +387,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
 
     @BindView(R2.id.add_product_catalog_layout)
     LinearLayout addProductCatalogLayout;
-    @BindView(R2.id.add_product_prompt_catalog)
-    TextView addProductPromptCatalog;
     @BindView(R2.id.add_product_catalog)
     ClickToSelectWithImage addProductCatalog;
     ArrayList<CatalogDataModel.Catalog> catalogs;
@@ -818,17 +813,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         }
     }
 
-    private void clearFocusable() {
-        addProductAddToNewEtalase.clearFocus();
-        addProductMinimumOrder.clearFocus();
-        addProductProductName.clearFocus();
-        addProductPrice.clearFocus();
-        addProductWeight.clearFocus();
-        addProductDesc.clearFocus();
-        addProductEdittextPreorder.clearFocus();
-    }
-
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -881,14 +865,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
                     instagramMediaModel = temp2.get(position);
                     downloadImage(temp2.get(position).standardResolution);
                     photos.add(new ImageModel(temp2.get(position).standardResolution));
-
-                    //[OLD CODE]
-//                    List<String> temp = bundle.getStringArrayList(ADD_PRODUCT_SOC_MED_DATA);
-//                    int position = bundle.getInt(ADD_PRODUCT_SOC_MED_POSITION, 0);
-//                    photos = new ArrayList<>();
-//                    downloadImage(temp.get(position));
-//                    photos.add(new ImageModel(temp.get(position)));
-                    //[OLD CODE]
                 }
                 // get the position for dismiss add product
                 positionAtSocMed = bundle.getInt(ADD_PRODUCT_SOC_MED_POSITION, 0);
@@ -1469,17 +1445,11 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
 
 
             displayEtalaseModels = new ArrayList<>();
-//            retrieveDepartmentIdWithName();
-
             //[START] this is for demo only
             initWholeSaleAdapter();
             //[END] this is for demo only
 
-//            addEtalaseChooseText();
             initEtalaseAdapter(new ArrayList<EtalaseModel>());
-//            fetchEtalase();
-
-//            checkAvailibilityOfShopNote();
 
             initWeightUnit();
             initCurrencyUnit();
@@ -1526,7 +1496,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
             initWholeSaleAdapter();
 
             etalaseAdapter = new TextDeleteAdapter(displayEtalaseModels, ProductActivity.ADD_PRODUCT_CHOOSE_ETALASE);
-//            etalaseAdapter.setSimpleTextModels(toSimpleTextEtalase(etalaseModels, 0));
             for (List<SimpleTextModel> a : etalaseOwned) {
                 etalaseAdapter.setSimpleTextModels(a);
             }
@@ -1904,7 +1873,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
 
         Snackbar.make(parentView, generateMessageError(getActivity(), errorMessages.toString()), Snackbar.LENGTH_LONG).show();
         showProgress(false);
-//        Toast.makeText(AddProductFragment.this.getActivity(), errorMessages.toString(), Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -1969,19 +1937,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         }
     }
 
-//    @OnTextChanged(R2.id.add_product_desc)
-//    public void onTextChangedDescription(CharSequence s, int start, int before,
-//                                      int count){
-//        Pair<Boolean, String> validate = VerificationUtils.validateDescription(getActivity(), s.toString());
-//        if(validate.getModel1()) {
-//            addProductProductDescLayout.setErrorEnabled(false);
-//            addProductProductDescLayout.setError(null);
-//        }else {
-//            addProductProductDescLayout.setErrorEnabled(true);
-//            addProductProductDescLayout.setError(validate.getModel2());
-//        }
-//    }
-
     @OnTextChanged(R2.id.add_product_minimum_order)
     public void onTextChangedMinOrder(CharSequence s, int start, int before,
                                       int count) {
@@ -2007,11 +1962,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
 
     private void validateProdWeight(CharSequence s) {
         // This is old spinner way
-//        Pair<Boolean, String> validate =
-//                VerificationUtils.validateMinimumWeight(
-//                        getActivity(),
-//                        addProductWeightUnit.getSelectedItem().toString(),
-//                        s.toString());
         Pair<Boolean, String> validate =
                 VerificationUtils.validateMinimumWeight(
                         getActivity(),
@@ -2057,10 +2007,8 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
     public void onTextChanged(CharSequence s, int start, int before,
                               int count) {
 
-//        Log.d(TAG, messageTAG + s + " [] " + start + " [] " + before + " [] " + count + " [] " + addProductCurrency.getSelectedItem().toString());
         Log.d(TAG, messageTAG + s + " [] " + start + " [] " + before + " [] " + count + " [] " + selectedCurrencyDesc);
         priceTextFormatter(s.toString());
-//        wholesaleLayout.removeAllWholesale();
     }
 
     private void priceTextFormatter(String s) {
@@ -2077,7 +2025,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
     }
 
     private void validateProdPrice(CharSequence s) {
-//        Pair<Boolean, String> verif = VerificationUtils.validatePrice(getActivity(), addProductCurrency.getSelectedItem().toString(), s.toString());
         Pair<Boolean, String> verif = VerificationUtils.validatePrice(getActivity(), selectedCurrencyDesc, s.toString());
         if (!verif.getModel1()) {
             addProductPriceAlert.setErrorEnabled(true);
@@ -2576,11 +2523,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
             inputAddProductModel.setMustAsurance(MUST_ASURANCE_YES);
         }
 
-        // 12. deskripsi
-//        if(addProductProductDescLayout.isErrorEnabled()){
-//            Snackbar.make(parentView, addProductProductDescLayout.getError(),  Snackbar.LENGTH_LONG).show();
-//            return null;
-//        }
         String description;
         description = addProductDesc.getText().toString();
         inputAddProductModel.setDescription(description);
@@ -2607,7 +2549,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         }
 
         Log.d(TAG, messageTAG + inputAddProductModel);
-//        Parcels.wrap(inputAddProductModel);
 
         return new Pair<>(inputAddProductModel, stockStatus);
     }
@@ -2670,7 +2611,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
 
     @OnClick(R2.id.add_product_tittle_wholesale)
     public void toggleWholeSale() {
-//        if (!VerificationUtils.validatePrice(addProductCurrency.getSelectedItem().toString(), addProductPrice.getText().toString())) {
         Pair<Boolean, String> verif = VerificationUtils.validatePrice(getActivity(), selectedCurrencyDesc, addProductPrice.getText().toString(), "checkwholesale");
         if (!verif.getModel1()) {
             addProductPriceAlert.setError(verif.getModel2());
@@ -2729,9 +2669,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
                             }
                         }
                     });
-            if (checkNotNull(getActivity()) && getActivity() instanceof ProductSocMedActivity) {
-//            ((ProductSocMedActivity) getActivity()).recalculateView();
-            }
             if (wholeSaleContainer.isExpanded())
                 chevron.setImageResource(R.drawable.chevron_down);
             else
@@ -2743,7 +2680,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
-//        addProduct.onSuccessGetInboxTicketDetail(null);
         addProduct.unsubscribe();
     }
 
@@ -2836,10 +2772,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
 
                         }
                         noitfyCompleted(fragmentPosition);
-
-
-//                        removeFragment(fragmentPosition);
-
                         break;
                     case EDIT:
                         Log.d(TAG, messageTAG + "berhasil masuk sini ");
