@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
@@ -596,6 +597,11 @@ public class SetDateFragment extends Fragment {
 
                     PeriodAdapter.this.notifyDataSetChanged();
                 }
+
+                @Override
+                public void promptUserExceedLimit() {
+                    Toast.makeText(itemView.getContext(), "exceed range date", Toast.LENGTH_SHORT).show();
+                }
             });
             datePickerRules.seteDate(eDate);
             datePickerRules.setsDate(sDate);
@@ -753,6 +759,8 @@ public class SetDateFragment extends Fragment {
             maxDate.add(Calendar.DATE, -1);
             fromDatePickerDialog.getDatePicker().setMaxDate(maxDate.getTimeInMillis());
 
+            fromDatePickerDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
             toDatePickerDialog = new DatePickerDialog(this.itemView.getContext(), new DatePickerDialog.OnDateSetListener() {
 
                 public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -773,6 +781,7 @@ public class SetDateFragment extends Fragment {
             },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
             toDatePickerDialog.getDatePicker().setMinDate(minDate.getTimeInMillis());
             toDatePickerDialog.getDatePicker().setMaxDate(maxDate.getTimeInMillis());
+            toDatePickerDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         }
 
         public void bindData(StartOrEndPeriodModel startOrEndPeriodModel){
@@ -1047,6 +1056,7 @@ public class SetDateFragment extends Fragment {
             void resetToEDate(long sDate, long eDate);
             void successSDate(long sDate, long eDate);
             void successEDate(long sDate, long eDate);
+            void promptUserExceedLimit();
         }
 
         DatePickerRulesListener datePickerRulesListener;
@@ -1078,8 +1088,12 @@ public class SetDateFragment extends Fragment {
 
         public void setsDate(long sDate) {
             Log.d("MNORMANSYAH", "# "+getDateFormat(sDate)+" & "+getDateFormat(maxLimit)+" & "+ getDateFormat(minLimit));
-            if(sDate > maxLimit || sDate < minLimit )
+            if(sDate > maxLimit || sDate < minLimit ) {
+                if(datePickerRulesListener != null){
+                    datePickerRulesListener.promptUserExceedLimit();
+                }
                 return;
+            }
 
             if(sDate < maxSDate){
                 maxSDate = sDate;
@@ -1175,8 +1189,12 @@ public class SetDateFragment extends Fragment {
         }
 
         public void seteDate(long eDate) {
-            if(eDate > maxLimit || eDate < minLimit )
+            if(eDate > maxLimit || eDate < minLimit ) {
+                if(datePickerRulesListener != null){
+                    datePickerRulesListener.promptUserExceedLimit();
+                }
                 return;
+            }
 
             if(eDate > maxEDate){
                 maxEDate = eDate;
@@ -1237,6 +1255,7 @@ public class SetDateFragment extends Fragment {
                     if(sDates < minLimit){
                         instance = getInstance();
                         instance.setTimeInMillis(minLimit);
+                        instance.add(Calendar.DATE, 1);
                         sDate = instance.getTimeInMillis();
                         maxSDate = sDate;
                     }else{

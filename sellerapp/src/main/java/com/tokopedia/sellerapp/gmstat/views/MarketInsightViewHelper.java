@@ -112,7 +112,13 @@ public class MarketInsightViewHelper {
 
         if(isGoldMerchant){
             separator2.removeAllViews();
+            View view2= new View(view.getContext());
+            view2.setLayoutParams(new LinearLayout.LayoutParams( ViewGroup.LayoutParams.MATCH_PARENT,
+                    (int) dpToPx(view.getContext(), 16)));
+            view2.setBackgroundResource(android.R.color.transparent);
+            separator2.addView(view2);
         }else{
+            separator2.removeAllViews();
             View view2= new View(view.getContext());
             view2.setLayoutParams(new LinearLayout.LayoutParams( ViewGroup.LayoutParams.MATCH_PARENT,
                     (int) dpToPx(view.getContext(), 16)));

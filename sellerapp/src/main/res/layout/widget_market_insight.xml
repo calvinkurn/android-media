@@ -96,9 +96,9 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
                 <ImageView
-                    android:layout_width="26dp"
-                    android:layout_height="32dp"
-                    app:srcCompat="@drawable/ic_lock_icon"/>
+                    android:layout_width="27dp"
+                    android:layout_height="33dp"
+                    app:srcCompat="@drawable/ic_sellerapp_lock"/>
 
                 <TextView
                     android:layout_width="wrap_content"

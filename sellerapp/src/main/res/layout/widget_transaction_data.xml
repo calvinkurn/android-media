@@ -83,11 +83,11 @@
                     android:orientation="horizontal"
                     android:layout_below="@+id/transaction_count">
                     <ImageView
-                        android:layout_width="12dp"
-                        android:layout_height="12dp"
-                        android:paddingTop="3dp"
+                        android:layout_width="10dp"
+                        android:layout_height="5dp"
+                        android:layout_marginRight="2dp"
                         app:srcCompat="@mipmap/arrow_up_percentage"
-                        android:layout_below="@+id/transaction_count"
+                        android:layout_gravity="center_vertical"
                         android:id="@+id/transaction_count_icon" />
 
                     <TextView
@@ -97,9 +97,6 @@
                         android:textColor="#42b549"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignTop="@id/transaction_count_icon"
-                        android:layout_toRightOf="@+id/transaction_count_icon"
-                        android:layout_toEndOf="@+id/transaction_count_icon"
                         android:id="@+id/percentage" />
                 </LinearLayout>
             </RelativeLayout>
@@ -132,7 +129,7 @@
                 <ImageView
                     android:layout_width="26dp"
                     android:layout_height="32dp"
-                    app:srcCompat="@drawable/ic_lock_icon"/>
+                    app:srcCompat="@drawable/ic_sellerapp_lock"/>
 
                 <TextView
                     android:layout_width="wrap_content"
