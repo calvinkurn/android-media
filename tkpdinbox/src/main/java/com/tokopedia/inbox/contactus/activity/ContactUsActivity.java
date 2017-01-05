@@ -30,6 +30,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
     public static final String PARAM_SOLUTION_ID = "PARAM_SOLUTION_ID";
     public static final String PARAM_ORDER_ID = "PARAM_ORDER_ID";
     public static final String PARAM_TAG = "PARAM_TAG";
+    private static final String CURRENT_FRAGMENT_BACKSTACK = "CURRENT_FRAGMENT_BACKSTACK";
 
 
     public interface BackButtonListener {
@@ -67,11 +68,10 @@ public class ContactUsActivity extends BasePresenterActivity implements
 
     @Override
     protected void initView() {
-
         Bundle bundle = getIntent().getExtras();
         if (bundle == null)
             bundle = new Bundle();
-        if (bundle.getString(PARAM_URL, "").equals("")) {
+        if (bundle.getString(PARAM_URL, "").equals("") && getFragmentManager().findFragmentById(R.id.main_view) == null) {
             ContactUsFaqFragment fragment = ContactUsFaqFragment.createInstance(bundle);
             listener = fragment.getBackButtonListener();
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
@@ -102,8 +102,8 @@ public class ContactUsActivity extends BasePresenterActivity implements
 
     @Override
     public void onGoToCreateTicket(Bundle bundle) {
-        CreateTicketFormFragment fragment = CreateTicketFormFragment.createInstance(bundle);
         if (getFragmentManager().findFragmentByTag(CreateTicketFormFragment.class.getSimpleName()) == null) {
+            CreateTicketFormFragment fragment = CreateTicketFormFragment.createInstance(bundle);
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.setCustomAnimations(R.animator.slide_in_left, 0, 0, R.animator.slide_out_right);
             transaction.add(R.id.main_view, fragment, CreateTicketFormFragment.class.getSimpleName());
