@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/transaction_data_container_upper"
     android:background="@android:color/white"
-    android:paddingBottom="@dimen/gmstat_padding_item_left_right"
     android:paddingTop="@dimen/gmstat_padding_item_top_transaction"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -40,6 +39,7 @@
         android:background="#1E000000"/>
 
     <RelativeLayout
+        android:id="@+id/rl_transaction_data"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/separator_1">
@@ -167,6 +167,13 @@
             <!--android:layout_height="91.3dp" />-->
         </LinearLayout>
     </RelativeLayout>
+
+    <View
+        android:id="@+id/separator_2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/gmstat_padding_item_left_right"
+        android:layout_below="@id/rl_transaction_data"
+        android:background="@android:color/transparent"/>
 
 
 

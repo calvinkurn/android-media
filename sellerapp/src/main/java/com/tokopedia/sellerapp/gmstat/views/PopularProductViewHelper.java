@@ -54,6 +54,9 @@ public class PopularProductViewHelper {
     @BindView(R.id.popular_product_empty_state)
     LinearLayout popularProductEmptyState;
 
+    @BindView(R.id.separator_2)
+    View separator2;
+
     @OnClick(R.id.popular_product_empty_state)
     public void moveToAddProduct(){
         ProductActivity.moveToAddProduct(itemView.getContext());
@@ -80,9 +83,11 @@ public class PopularProductViewHelper {
         this.getPopularProduct = getPopularProduct;
         if(getPopularProduct == null || getPopularProduct.getProductId() == 0){
             popularProductEmptyState.setVisibility(View.VISIBLE);
+            separator2.setVisibility(View.GONE);
             return;
         }else{
             popularProductEmptyState.setVisibility(View.GONE);
+            separator2.setVisibility(View.VISIBLE);
         }
 
         dataProductTitle.setText(R.string.data_product_title);

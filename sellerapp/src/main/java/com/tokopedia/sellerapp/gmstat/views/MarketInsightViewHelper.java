@@ -70,8 +70,14 @@ public class MarketInsightViewHelper {
     @BindColor(android.R.color.transparent)
     int transparantColor;
 
+    @BindColor(R.color.breakline_background)
+    int breakLineBackground;
+
 //    @BindView(R.id.market_insight_container_upper)
 //    RelativeLayout marketInsightContainerUpper;
+
+    @BindView(R.id.separator_2)
+    View separator2;
 
     @OnClick(R.id.market_insight_empty_state)
     public void addProductMarketInsight(){
@@ -104,10 +110,15 @@ public class MarketInsightViewHelper {
             }
         });
 
-//        if(isGoldMerchant){
-//
+        if(isGoldMerchant){
+            separator2.setVisibility(View.VISIBLE);
+            separator2.setBackgroundColor(transparantColor);
 //            marketInsightContainerUpper.setPadding(0, 0, 0, (int) dpToPx(view.getContext(), 16));
-//        }
+        }else{
+            separator2.setVisibility(View.VISIBLE);
+            separator2.setBackgroundColor(breakLineBackground);
+        }
+
     }
 
     /**

@@ -86,6 +86,15 @@ public class DataTransactionViewHelper {
     private String[] mLabels = new String[10];
     ImageHandler imageHandler;
 
+    @BindView(R.id.separator_2)
+    View separator2;
+
+    @BindColor(R.color.breakline_background)
+    int breakLineBackground;
+
+    @BindColor(android.R.color.transparent)
+    int transparantColor;
+
     @OnClick(R.id.move_to_gmsubscribe)
     public void moveToGMSubscribe(){
         itemView.getContext().startActivity(new Intent(itemView.getContext(), GMSubscribeActivity.class));
@@ -109,8 +118,14 @@ public class DataTransactionViewHelper {
         if(isGoldMerchant){
             transactionDataContainerGoldMerchant.setVisibility(View.VISIBLE);
             transactionDataContainerNonGoldMerchant.setVisibility(View.GONE);
+        }
 
-//            transactionDataContainerUpper.setPadding(0, 0, 0, (int) dpToPx(itemView.getContext(), 16));
+        if(isGoldMerchant){
+            separator2.setVisibility(View.VISIBLE);
+            separator2.setBackgroundResource(android.R.color.transparent);
+        }else{
+            separator2.setVisibility(View.VISIBLE);
+            separator2.setBackgroundColor(breakLineBackground);
         }
     }
 

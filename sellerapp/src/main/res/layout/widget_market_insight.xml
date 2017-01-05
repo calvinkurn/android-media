@@ -172,6 +172,11 @@
     </FrameLayout>
 
 
-
+    <View
+        android:id="@+id/separator_2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/gmstat_padding_item_left_right"
+        android:layout_below="@id/market_insight_container_top"
+        android:background="@android:color/transparent"/>
 
 </RelativeLayout>
