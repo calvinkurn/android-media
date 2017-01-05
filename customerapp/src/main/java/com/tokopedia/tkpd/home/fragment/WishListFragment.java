@@ -124,7 +124,6 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         }else{
             wishList.fetchDataFromCache(getActivity());
         }
-        UnifyTracking.eventViewWishlit();
     }
 
     @Override
