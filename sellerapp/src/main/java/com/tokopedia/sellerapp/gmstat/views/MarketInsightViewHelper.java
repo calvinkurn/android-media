@@ -1,12 +1,14 @@
 package com.tokopedia.sellerapp.gmstat.views;
 
 import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -29,6 +31,8 @@ import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.tokopedia.sellerapp.gmstat.views.DataTransactionViewHelper.dpToPx;
 
 /**
  * Created by normansyahputa on 11/23/16.
@@ -58,7 +62,7 @@ public class MarketInsightViewHelper {
     LinearLayout marketInsightEmptyState;
 
     @BindView(R.id.market_insight_container_top)
-    RelativeLayout marketInsightContainerTop;
+    FrameLayout marketInsightContainerTop;
 
     @BindColor(R.color.empty_background)
     int emptyColorBackground;
@@ -66,14 +70,22 @@ public class MarketInsightViewHelper {
     @BindColor(android.R.color.transparent)
     int transparantColor;
 
+//    @BindView(R.id.market_insight_container_upper)
+//    RelativeLayout marketInsightContainerUpper;
+
     @OnClick(R.id.market_insight_empty_state)
     public void addProductMarketInsight(){
         ProductActivity.moveToAddProduct(view.getContext());
     }
 
-    @OnClick(R.id.move_to_gmsubscribe)
+    @OnClick({R.id.move_to_gmsubscribe_market_insight,
+            R.id.market_insight_container_top,
+            R.id.market_insight_non_gold_merchant,
+            R.id.market_insight_gmsubscribe_text
+    })
     public void moveToGMSubscribe(){
-        view.getContext().startActivity(new Intent(view.getContext(), GMSubscribeActivity.class));
+        if(!isGoldMerchant)
+            view.getContext().startActivity(new Intent(view.getContext(), GMSubscribeActivity.class));
     }
 
     private View view;
@@ -84,6 +96,18 @@ public class MarketInsightViewHelper {
         this.view = view;
         this.isGoldMerchant = isGoldMerchant;
         ButterKnife.bind(this, view);
+
+        view.findViewById(R.id.move_to_gmsubscribe_market_insight).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moveToGMSubscribe();
+            }
+        });
+
+//        if(isGoldMerchant){
+//
+//            marketInsightContainerUpper.setPadding(0, 0, 0, (int) dpToPx(view.getContext(), 16));
+//        }
     }
 
     /**

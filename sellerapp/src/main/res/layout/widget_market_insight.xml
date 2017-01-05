@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/market_insight_container_upper"
     android:paddingTop="@dimen/gmstat_padding_item_top_transaction"
     android:layout_width="match_parent"
     android:background="@android:color/white"
@@ -36,7 +37,7 @@
         android:layout_below="@id/market_insight_header"
         android:background="#1E000000"/>
 
-    <RelativeLayout
+    <FrameLayout
         android:id="@+id/market_insight_container_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -51,7 +52,8 @@
             android:layout_marginRight="@dimen/gmstat_padding_item_left_right"
             android:layout_marginTop="8dp"
             android:orientation="vertical"
-            android:weightSum="1">
+            android:weightSum="1"
+            android:visibility="visible">
 
             <TextView
                 android:id="@+id/market_insight_header_"
@@ -85,6 +87,8 @@
             android:background="#CD000000"
             android:orientation="vertical"
             android:gravity="center"
+            android:visibility="visible"
+            android:clickable="true"
             >
 
             <LinearLayout
@@ -101,19 +105,20 @@
                     android:layout_height="wrap_content"
                     android:text="Dapatkan akses untuk melihat\ndata lengkap statistik produk"
                     android:textSize="14sp"
-                    android:textColor="#f2f2f2"
+                    android:textColor="#80ffffff"
                     android:textAlignment="center"
                     android:layout_marginLeft="10dp"
                     />
             </LinearLayout>
 
             <RelativeLayout
-                android:id="@+id/move_to_gmsubscribe"
+                android:id="@+id/move_to_gmsubscribe_market_insight"
                 android:layout_width="244dp"
                 android:layout_height="52dp"
                 android:layout_marginTop="9dp"
                 android:background="@drawable/rounded_corner">
                 <TextView
+                    android:id="@+id/market_insight_gmsubscribe_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Upgrade ke Gold Merchant"
@@ -136,7 +141,7 @@
             android:orientation="vertical"
             android:background="#f9f9f9"
             android:gravity="center"
-            android:visibility="visible"
+            android:visibility="gone"
             >
 
             <ImageView
@@ -164,7 +169,7 @@
                 android:textSize="20sp"/>
 
         </LinearLayout>
-    </RelativeLayout>
+    </FrameLayout>
 
 
 

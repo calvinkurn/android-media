@@ -9,6 +9,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.db.chart.view.LineChartView;
@@ -66,6 +67,9 @@ public class DataTransactionViewHelper {
     @BindView(R.id.transaction_data_container_non_gold_merchant)
     LinearLayout transactionDataContainerNonGoldMerchant;
 
+//    @BindView(R.id.transaction_data_container_upper)
+//    RelativeLayout transactionDataContainerUpper;
+
     @BindColor(R.color.grey_400)
     int gredyColor;
 
@@ -105,6 +109,8 @@ public class DataTransactionViewHelper {
         if(isGoldMerchant){
             transactionDataContainerGoldMerchant.setVisibility(View.VISIBLE);
             transactionDataContainerNonGoldMerchant.setVisibility(View.GONE);
+
+//            transactionDataContainerUpper.setPadding(0, 0, 0, (int) dpToPx(itemView.getContext(), 16));
         }
     }
 
@@ -112,7 +118,7 @@ public class DataTransactionViewHelper {
 
         /* non gold merchant */
         if(!isGoldMerchant){
-            transactionDataContainerGoldMerchant.setVisibility(View.GONE);
+            transactionDataContainerGoldMerchant.setVisibility(View.VISIBLE);
             transactionDataContainerNonGoldMerchant.setVisibility(View.VISIBLE);
 
             return;

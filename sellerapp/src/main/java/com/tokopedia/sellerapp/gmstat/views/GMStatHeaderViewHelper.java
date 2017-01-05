@@ -181,7 +181,7 @@ public class GMStatHeaderViewHelper {
     }
 
     public void onClick(GMStatActivityFragment gmStatActivityFragment){
-        if(isLoading){
+        if(!isLoading){
             return;
         }
 

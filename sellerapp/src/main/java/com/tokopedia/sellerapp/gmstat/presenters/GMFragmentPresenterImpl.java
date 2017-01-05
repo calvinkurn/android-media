@@ -121,14 +121,17 @@ public class GMFragmentPresenterImpl implements GMFragmentPresenter {
 
     @Override
     public void fetchData() {
-        if(isFetchData) {
-            isFetchData = false;
+        if(isFirstTime && isFetchData) {
             gmFragmentView.resetToLoading();
             gmStat.getGmStatNetworkController().fetchData(shopId, sDate, eDate, compositeSubscription, gmStatListener);
-        }else if(!isFirstTime && !isFetchData){
+        }else if(!isFirstTime){
             //[START] real network
             gmStat.getGmStatNetworkController().fetchData(shopId, compositeSubscription, gmStatListener);
             //[END] real network
+        }
+
+        if(isFetchData){
+            isFetchData = false;
         }
     }
 

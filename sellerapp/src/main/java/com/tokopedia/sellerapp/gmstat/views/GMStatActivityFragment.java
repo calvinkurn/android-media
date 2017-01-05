@@ -438,7 +438,6 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
         super.onResume();
         snackBar = new SnackBar().view(rootView);
         gmFragmentPresenter.onResume();
-        fetchData();
     }
 
     public void displayDefaultValue(){
