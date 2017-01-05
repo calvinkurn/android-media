@@ -11,11 +11,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -27,8 +24,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.ViewConfiguration;
-import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -41,7 +36,6 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Spinner;
@@ -56,8 +50,6 @@ import com.tkpd.library.ui.floatbutton.SimpleMenuListenerAdapter;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.AbsListViewScrollDetector;
 import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.DownloadResultReceiver;
-import com.tkpd.library.utils.DownloadResultSender;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SimpleSpinnerAdapter;
 import com.tkpd.library.utils.SnackbarManager;
@@ -71,29 +63,21 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customView.SimpleListView;
 import com.tokopedia.core.customadapter.ListViewManageProdAdapter;
 import com.tokopedia.core.database.manager.DbManagerImpl;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.database.model.CategoryDB_Table;
 import com.tokopedia.core.database.model.EtalaseDB;
-import com.tokopedia.core.database.model.ReturnableDB;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.myproduct.fragment.AddProductFragment;
-import com.tokopedia.core.myproduct.fragment.ReturnPolicyDialog;
 import com.tokopedia.core.myproduct.model.ActResponseModelData;
 import com.tokopedia.core.myproduct.model.GetEtalaseModel;
-import com.tokopedia.core.myproduct.model.GetShopNoteModel;
 import com.tokopedia.core.myproduct.model.ManageProductModel;
-import com.tokopedia.core.myproduct.model.MyShopInfoModel;
-import com.tokopedia.core.myproduct.model.NoteDetailModel;
 import com.tokopedia.core.myproduct.model.getProductList.ProductList;
-import com.tokopedia.core.myproduct.presenter.AddProductView;
 import com.tokopedia.core.myproduct.presenter.ManageProductPresenterImpl;
 import com.tokopedia.core.myproduct.presenter.ManageProductView;
 import com.tokopedia.core.myproduct.presenter.NetworkInteractor;
 import com.tokopedia.core.myproduct.presenter.NetworkInteractorImpl;
 import com.tokopedia.core.myproduct.service.ProductService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.prototype.ProductCache;
@@ -108,7 +92,6 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.RetryHandler;
 import com.tokopedia.core.util.RetryHandler.OnConnectionTimeout;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 
 import org.json.JSONException;
@@ -142,14 +125,10 @@ public class ManageProduct extends TkpdActivity implements
         NetworkInteractorImpl.GetProductList,
         NetworkInteractorImpl.EditEtalase,
         NetworkInteractorImpl.ChangeCategories,
-        NetworkInteractorImpl.ChangeReturnable,
         NetworkInteractorImpl.ChangeInsurance,
         NetworkInteractorImpl.DeleteProduct,
         NetworkInteractorImpl.FetchEtalase,
-        ManageProductView, NetworkInteractorImpl.CheckNoteAvailibility, NetworkInteractorImpl.GetMyInfo, NetworkInteractorImpl.GetReturnPolicyDetail,
-        DownloadResultSender,
-        DownloadResultReceiver.Receiver,
-        ReturnPolicyDialog.ReturnPolicyListener {
+        ManageProductView{
     public static final String IMAGE_GALLERY = "IMAGE_GALLERY";
     public static final String IMAGE_POSITION = "IMAGE_POSITION";
     public static final String TAG = "STUART";
@@ -182,7 +161,6 @@ public class ManageProduct extends TkpdActivity implements
     private String mAddTo;
     private String mEtalase;
     private String IsAllowShop = "0";
-    private ArrayList<String> SortValue;
     private ListViewManageProdAdapter lvadapter;
     @BindView(R2.id.prod_list)
     SimpleListView lvListProd;
@@ -194,13 +172,11 @@ public class ManageProduct extends TkpdActivity implements
     Spinner SpinnerAddTo;
     Spinner SpinnerOption;
     Spinner spinnerInsurance;
-    Spinner returnableSpinner;
     private RefreshHandler Refresh;
     private ArrayAdapter<CharSequence> adapterCondition;
     private ArrayAdapter<CharSequence> adapterInsurance;
     private ArrayAdapter<String> CategoryAdapter;
     private ArrayAdapter<String> EtalaseAdapter;
-    private List<String> returnableSpinnerItems = new ArrayList<String>();
     EditText EtalaseName;
     View footerLV;
     private String Sort = null;
@@ -262,8 +238,6 @@ public class ManageProduct extends TkpdActivity implements
             });
         }
     };
-    GetShopNoteModel.ShopNoteModel returnPolicy = null;
-    private DownloadResultReceiver mReceiver;
     private Unbinder unbinder;
     private String messageTAG = "ManageProduct";
 
@@ -289,7 +263,6 @@ public class ManageProduct extends TkpdActivity implements
         drawer.setDrawerPosition(TkpdState.DrawerPosition.MANAGE_PRODUCT);
 
         getOverflowMenu();
-        addReturnableSpinnerItems();
 
         fabAddProduct = (FabSpeedDial) findViewById(R.id.fab_speed_dial);
         fabAddProduct.setListenerFabClick(new ListenerFabClick() {
@@ -325,7 +298,6 @@ public class ManageProduct extends TkpdActivity implements
         footerLV.setOnClickListener(null);
 
         SortValueList = getResources().getStringArray(R.array.sort_value);
-        SortValue = new ArrayList<String>(Arrays.asList(SortValueList));
         SortMenu = new AlertDialog.Builder(this);
         progress = new TkpdProgressDialog(this,
                 TkpdProgressDialog.NORMAL_PROGRESS);
@@ -379,10 +351,6 @@ public class ManageProduct extends TkpdActivity implements
         manageProductPresenter = new ManageProductPresenterImpl(this);
         networkInteractorImpl = new NetworkInteractorImpl();
         gson = new GsonBuilder().create();
-
-        mReceiver = new DownloadResultReceiver(new Handler());
-        mReceiver.setReceiver(this);
-
 
     }
 
@@ -462,11 +430,6 @@ public class ManageProduct extends TkpdActivity implements
                     ShowInsuranceChange();
                     mode.finish();
                     return true;
-                } else if (item.getItemId() == R.id.action_update_returnable) {
-                    ActionTaken = true;
-                    changeMultipleReturnable();
-                    mode.finish();
-                    return true;
                 } else if (item.getItemId() == R.id.action_delete) {
                     ActionTaken = true;
                     ShowDeleteChange();
@@ -483,7 +446,6 @@ public class ManageProduct extends TkpdActivity implements
                 System.out.println("FALSE");
                 isMultiSelect = true;
                 lvadapter.setMultiselect(isMultiSelect);
-//				SearchText.setEnabled(false);
                 getMenuInflater().inflate(R.menu.manage_product_contextual,
                         menu);
                 lvadapter.clearCheckdData();
@@ -495,7 +457,6 @@ public class ManageProduct extends TkpdActivity implements
                 System.out.println("TRUE");
                 isMultiSelect = false;
                 lvadapter.setMultiselect(isMultiSelect);
-//				SearchText.setEnabled(true);
                 if (!ActionTaken)
                     ClearCheckedData();
                 // Here you can make any necessary updates to the activity when
@@ -819,7 +780,6 @@ public class ManageProduct extends TkpdActivity implements
                     lvListProd.addLoadingFooter();
                     keyword = query;
                     ClearData();
-//					CurrPage = 1;
                     mPaging.resetPage();
                     GetProductList(mPaging.getPage(), Sort);
                     KeyboardHandler.DropKeyboard(ManageProduct.this, searchView);
@@ -833,10 +793,6 @@ public class ManageProduct extends TkpdActivity implements
             }
         });
         return true;
-    }
-
-    public void dismissSnackbar() {
-        snackbar.dismiss();
     }
 
     @Override
@@ -880,242 +836,6 @@ public class ManageProduct extends TkpdActivity implements
                 ManageProductPresenterImpl.resetCache(null);
                 CheckCache();
             }
-        }
-    }
-
-    @Override
-    public void onFailureCheckNoteAvailibility(Throwable e) {
-        String message = CommonUtils.generateMessageError(this, e.getMessage());
-        if (message.contains("koneksi")) {
-            createSnackBar(message, null);
-        } else {
-            createSnackBar(message, null);
-        }
-    }
-
-    @Override
-    public void onSuccessFCheckNoteAvailibility(Response<TkpdResponse> responseData) {
-        if (responseData.isSuccessful()) {
-            TkpdResponse response = responseData.body();
-            JSONObject jsonObject = null;
-            try {
-                jsonObject = new JSONObject(response.getStringData());
-            } catch (JSONException je) {
-                Log.e(TAG, messageTAG + je.getLocalizedMessage());
-            }
-            if (!response.isError()) {
-
-                // save cache
-                GlobalCacheManager globalCacheManager = new GlobalCacheManager();
-                globalCacheManager.setKey(TkpdCache.Key.SHOP_NOTE_LIST).setValue(jsonObject.toString()).store();
-
-                GetShopNoteModel.Data data = gson.fromJson(jsonObject.toString(), GetShopNoteModel.Data.class);
-                processShopNote(data);
-            } else {
-                String message = CommonUtils.generateMessageError(this, response.getErrorMessages().get(0));
-                if (message.contains("koneksi")) {
-                    createSnackBar(message, null);
-                } else {
-                    createSnackBar(message, null);
-                }
-            }
-        } else {
-            String message = CommonUtils.generateMessageError(this, responseData.message());
-            if (message.contains("koneksi")) {
-                createSnackBar(message, null);
-            } else {
-                createSnackBar(message, null);
-            }
-        }
-    }
-
-    @Override
-    public void onFailureGetMyInfo(Throwable e) {
-        String message = CommonUtils.generateMessageError(this, e.getMessage());
-        if (message.contains("koneksi")) {
-            createSnackBar(message, null);
-        } else {
-            createSnackBar(message, null);
-        }
-    }
-
-    @Override
-    public void onSuccessGetMyInfo(Response<TkpdResponse> responseData) {
-        if (responseData.isSuccessful()) {
-            TkpdResponse response = responseData.body();
-            JSONObject jsonObject = null;
-            try {
-                jsonObject = new JSONObject(response.getStringData());
-            } catch (JSONException je) {
-                Log.e(TAG, messageTAG + je.getLocalizedMessage());
-            }
-
-            // save cache
-            GlobalCacheManager globalCacheManager = new GlobalCacheManager();
-            globalCacheManager.setKey(TkpdCache.Key.SHOP_INFO).setValue(jsonObject.toString()).setCacheDuration(1800000).store();
-
-            if (!response.isError()) {
-                MyShopInfoModel.Data myShopData = gson.fromJson(jsonObject.toString(), MyShopInfoModel.Data.class);
-                MyShopInfoModel.Info myShopInfoModel = myShopData.getInfo();
-                getReturnPolicyDetail(myShopInfoModel);
-            } else {
-                String message = CommonUtils.generateMessageError(this, response.getErrorMessages().get(0));
-                if (message.contains("koneksi")) {
-                    createSnackBar(message, null);
-                } else {
-                    createSnackBar(message, null);
-                }
-            }
-        } else {
-            String message = CommonUtils.generateMessageError(this, responseData.message());
-            if (message.contains("koneksi")) {
-                createSnackBar(message, null);
-            } else {
-                createSnackBar(message, null);
-            }
-        }
-    }
-
-    @Override
-    public void onFailureGetReturnPolicyDetail(Throwable e) {
-        String message = CommonUtils.generateMessageError(this, e.getMessage());
-        if (message.contains("koneksi")) {
-            createSnackBar(message, null);
-        } else {
-            createSnackBar(message, null);
-        }
-    }
-
-    @Override
-    public void onSuccessGetReturnPolicyDetail(Response<TkpdResponse> responseData) {
-        if (responseData.isSuccessful()) {
-            TkpdResponse response = responseData.body();
-            JSONObject jsonObject = null;
-            try {
-                jsonObject = new JSONObject(response.getStringData());
-            } catch (JSONException je) {
-                Log.e(TAG, messageTAG + je.getLocalizedMessage());
-            }
-            if (!response.isError()) {
-                // save cache
-                GlobalCacheManager globalCacheManager = new GlobalCacheManager();
-                globalCacheManager.setKey(TkpdCache.Key.KEBIJAKAN_PENGEMBALIAN_PRODUK).setValue(jsonObject.toString()).setCacheDuration(18000).store();
-
-                NoteDetailModel.Data data = gson.fromJson(jsonObject.toString(), NoteDetailModel.Data.class);
-                processSuccessGetReturnPolicy(data);
-            } else {
-                String message = CommonUtils.generateMessageError(this, response.getErrorMessages().get(0));
-                if (message.contains("koneksi")) {
-                    createSnackBar(message, null);
-                } else {
-                    createSnackBar(message, null);
-                }
-            }
-        } else {
-            String message = CommonUtils.generateMessageError(this, responseData.message());
-            if (message.contains("koneksi")) {
-                createSnackBar(message, null);
-            } else {
-                createSnackBar(message, null);
-            }
-        }
-    }
-
-    @Override
-    public void sendDataToInternet(int type, Bundle data) {
-        switch (type) {
-            case ProductService.UPDATE_RETURNABLE_NOTE_ADD_PRODUCT:
-            case ProductService.ADD_RETURNABLE_NOTE_ADD_PRODUCT:
-                ProductService.startDownload(this, mReceiver, data, type);
-                break;
-            default:
-                throw new UnsupportedOperationException("please pass type when want to process it !!!");
-        }
-    }
-
-    @Override
-    public void onReceiveResult(int resultCode, Bundle resultData) {
-        int type = resultData.getInt(ProductService.TYPE, ProductService.INVALID_TYPE);
-
-        switch (resultCode) {
-            case ProductService.STATUS_FINISHED:
-                switch (type) {
-                    case ProductService.UPDATE_RETURNABLE_NOTE_ADD_PRODUCT:
-                        dismissReturnableDialog();
-                        break;
-                    case ProductService.ADD_RETURNABLE_NOTE_ADD_PRODUCT:
-                        clearAvailibilityOfShopNote();
-                        dismissReturnableDialog();
-                        break;
-                }
-                break;
-            case ProductService.STATUS_ERROR:
-                switch (resultData.getInt(ProductService.NETWORK_ERROR_FLAG, ProductService.INVALID_NETWORK_ERROR_FLAG)) {
-                    case NetworkConfig.BAD_REQUEST_NETWORK_ERROR:
-                        String message = CommonUtils.generateMessageError(this, " BAD_REQUEST_NETWORK_ERROR !!!");
-                        if (message.contains("koneksi")) {
-                            createSnackBar(message, null);
-                        } else {
-                            createSnackBar(message, null);
-                        }
-                        break;
-                    case NetworkConfig.INTERNAL_SERVER_ERROR:
-                        message = CommonUtils.generateMessageError(this, " INTERNAL_SERVER_ERROR !!!");
-                        if (message.contains("koneksi")) {
-                            createSnackBar(message, null);
-                        } else {
-                            createSnackBar(message, null);
-                        }
-                        break;
-                    case NetworkConfig.FORBIDDEN_NETWORK_ERROR:
-                        message = CommonUtils.generateMessageError(this, " FORBIDDEN_NETWORK_ERROR !!!");
-                        if (message.contains("koneksi")) {
-                            createSnackBar(message, null);
-                        } else {
-                            createSnackBar(message, null);
-                        }
-                        break;
-                    case ProductService.INVALID_NETWORK_ERROR_FLAG:
-                    default:
-                        message = CommonUtils.generateMessageError(this, resultData.getString(ProductService.MESSAGE_ERROR_FLAG, ProductService.INVALID_MESSAGE_ERROR));
-                        if (message.contains("koneksi")) {
-                            createSnackBar(message, null);
-                        } else {
-                            createSnackBar(message, null);
-                        }
-
-                }
-                break;
-        }// end of status download service
-    }
-
-    private void clearAvailibilityOfShopNote() {
-        GlobalCacheManager globalCacheManager = new GlobalCacheManager();
-        globalCacheManager.delete(TkpdCache.Key.SHOP_NOTE_LIST);
-        globalCacheManager.delete(TkpdCache.Key.SHOP_INFO);
-        globalCacheManager.delete(TkpdCache.Key.KEBIJAKAN_PENGEMBALIAN_PRODUK);
-    }
-
-    public void dismissReturnableDialog() {
-        ReturnPolicyDialog returnPolicyDialog = (ReturnPolicyDialog) getSupportFragmentManager().findFragmentByTag(ReturnPolicyDialog.FRAGMENT_TAG);
-        if (returnPolicyDialog != null) {
-            returnPolicyDialog.dismiss();
-        }
-    }
-
-    @Override
-    public void refreshReturnPolicy() {
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(AddProductFragment.FRAGMENT_TAG);
-        if (fragment != null && fragment instanceof AddProductFragment) {
-            ((AddProductView) fragment).checkAvailibilityOfShopNote();
-        }
-    }
-
-    @Override
-    public void refreshReturnPolicy(String noteId) {
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(AddProductFragment.FRAGMENT_TAG);
-        if (fragment != null && fragment instanceof AddProductFragment) {
-            ((AddProductView) fragment).checkAvailibilityOfShopNote();
         }
     }
 
@@ -1738,26 +1458,6 @@ public class ManageProduct extends TkpdActivity implements
         }
     }
 
-
-    private void changeMultipleReturnable() {
-        LayoutInflater inflater = LayoutInflater.from(ManageProduct.this);
-        View dialogView = inflater.inflate(R.layout.prompt_dialog_spinner, null);
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ManageProduct.this);
-        alertDialogBuilder.setView(dialogView);
-        setReturnableSpinner(dialogView);
-        alertDialogBuilder.setCancelable(true);
-        alertDialogBuilder.setPositiveButton(getString(R.string.action_edit), returnableDialogPositiveButtonListener());
-        alertDialogBuilder.setNegativeButton(getString(R.string.title_cancel), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                ClearCheckedData();
-                dialog.cancel();
-            }
-        });
-        final AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-    }
-
-
     private void TriggerLoadNewData() {
         if (!Refresh.isRefreshing()) {
             clearData();
@@ -1772,30 +1472,6 @@ public class ManageProduct extends TkpdActivity implements
         lvadapter.clearEditMode();
         lvadapter.clearDatas2();
         lvadapter.notifyDataSetChanged();
-    }
-
-
-    public void setListViewHeightBasedOnChildren(ListView listView) {
-        ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null) {
-            return;
-        }
-
-        int totalHeight = listView.getPaddingTop()
-                + listView.getPaddingBottom();
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            View listItem = listAdapter.getView(i, null, listView);
-            if (listItem instanceof ViewGroup)
-                listItem.setLayoutParams(new LayoutParams(
-                        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            listItem.measure(0, 0);
-            totalHeight += listItem.getMeasuredHeight();
-        }
-
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight
-                + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-        listView.setLayoutParams(params);
     }
 
     public void ClearData() {
@@ -1927,145 +1603,6 @@ public class ManageProduct extends TkpdActivity implements
         return true;
     }
 
-    private void addReturnableSpinnerItems() {
-        returnableSpinnerItems.add(ManageProduct.this.getString(R.string.return_policy_not_set));
-        returnableSpinnerItems.add(ManageProduct.this.getString(R.string.title_yes));
-        returnableSpinnerItems.add(ManageProduct.this.getString(R.string.title_no));
-    }
-
-    private void setReturnableSpinner(View dialogView) {
-        simpleSpinnerAdapter = SimpleSpinnerAdapter.createAdapter(ManageProduct.this, returnableSpinnerItems);
-        returnableSpinner = (Spinner) dialogView.findViewById(R.id.spinner_option);
-        returnableSpinner.setAdapter(simpleSpinnerAdapter);
-        returnableSpinner.setOnItemSelectedListener(returnableSpinnerListener());
-    }
-
-    private DialogInterface.OnClickListener returnableDialogPositiveButtonListener() {
-        return new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (!lvadapter.CheckedProductId().isEmpty()) {
-                    changeReturnable(lvadapter.CheckedProductId(), returnableSpinner.getSelectedItemPosition());
-                }
-                ClearCheckedData();
-            }
-        };
-    }
-
-    private void checkPolicyDialog() {
-        GlobalCacheManager globalCacheManager = new GlobalCacheManager();
-        try {
-            String valueString = globalCacheManager.getValueString(TkpdCache.Key.SHOP_NOTE_LIST);
-            if (checkNotNull(valueString) && !valueString.equals("")) {
-                GetShopNoteModel.Data data = globalCacheManager.getConvertObjData(TkpdCache.Key.SHOP_NOTE_LIST, GetShopNoteModel.Data.class);
-                processShopNote(data);
-            } else {
-                checkNoteAvailibityNetwork(this);
-            }
-        } catch (Exception e) {
-            checkNoteAvailibityNetwork(this);
-        }
-
-//        FragmentManager fm = getSupportFragmentManager();
-//        DialogFragment returnPolicyDialog = ReturnPolicyDialog.checkInstance(SessionHandler.getShopID(this), returnableSpinner, returnableSpinner.getSelectedItemPosition());
-//        returnPolicyDialog.show(fm, "check_policy");
-
-    }
-
-    private void checkNoteAvailibityNetwork(Context context) {
-        Log.e(TAG, messageTAG + " start fetch shop note");
-        ((NetworkInteractorImpl) networkInteractorImpl).setCheckNoteAvailibility(this);
-        ((NetworkInteractorImpl) networkInteractorImpl).setCompositeSubscription(compositeSubscription);
-        networkInteractorImpl.checkAvailibilityOfShopNote(context);
-    }
-
-    private void processShopNote(GetShopNoteModel.Data data) {
-        GetShopNoteModel.ShopNoteModel returnPolicy = null;
-        if (data.getShopNoteModels() != null) {
-            for (GetShopNoteModel.ShopNoteModel shopNoteModel : data.getShopNoteModels()) {
-                if (shopNoteModel.getNoteTitle().contains(
-                        AddProductView.KEBIJAKAN_PENGEMBALIAN_PRODUK)) {
-                    returnPolicy = shopNoteModel;
-                }
-            }
-        }
-        if (data.getHasTerms() == GetShopNoteModel.Data.HAS_NO_TERM || returnPolicy == null) {// returnPolicy==null||
-            DialogFragment fragment = ReturnPolicyDialog.newInstance();
-            fragment.show(getSupportFragmentManager(), ReturnPolicyDialog.FRAGMENT_TAG);
-        }
-//        else {
-//            GlobalCacheManager globalCacheManager = new GlobalCacheManager();
-//            try {
-//                String valueString = globalCacheManager.getValueString(TkpdCache.Key.SHOP_INFO);
-//                if (checkNotNull(valueString) && !valueString.equals("")) {
-//                    MyShopInfoModel.Data myShopData = globalCacheManager.getConvertObjData(TkpdCache.Key.SHOP_INFO, MyShopInfoModel.Data.class);
-//                    MyShopInfoModel.Info myShopInfoModel = myShopData.getInfo();
-//                    getReturnPolicyDetail(myShopInfoModel);
-//                }else{
-//                    getMyShopInfoNetwork(this);
-//                }
-//            }catch(Exception e){
-//                getMyShopInfoNetwork(this);
-//            }
-//        }
-    }
-
-    private void getMyShopInfoNetwork(Context context) {
-        Log.e(TAG, messageTAG + " start fetch my shop info");
-        ((NetworkInteractorImpl) networkInteractorImpl).setGetMyInfo(this);
-        ((NetworkInteractorImpl) networkInteractorImpl).setCompositeSubscription(compositeSubscription);
-        networkInteractorImpl.getMyShopInfo(context);
-    }
-
-    private void getReturnPolicyDetail(MyShopInfoModel.Info myShopInfoModel) {
-        GlobalCacheManager globalCacheManager = new GlobalCacheManager();
-        try {
-            String valueString = globalCacheManager.getValueString(TkpdCache.Key.KEBIJAKAN_PENGEMBALIAN_PRODUK);
-            if (checkNotNull(valueString) && !valueString.equals("")) {
-                NoteDetailModel.Data data = globalCacheManager.getConvertObjData(TkpdCache.Key.KEBIJAKAN_PENGEMBALIAN_PRODUK, NoteDetailModel.Data.class);
-                processSuccessGetReturnPolicy(data);
-            } else {
-                getReturnPolicyDetailNetwork(this, myShopInfoModel, returnPolicy);
-            }
-        } catch (Exception e) {
-            getReturnPolicyDetailNetwork(this, myShopInfoModel, returnPolicy);
-        }
-    }
-
-    private void getReturnPolicyDetailNetwork(Context context, MyShopInfoModel.Info myShopInfoModel, GetShopNoteModel.ShopNoteModel returnPolicy) {
-        Log.e(TAG, messageTAG + " start fetch return policy detail");
-        ((NetworkInteractorImpl) networkInteractorImpl).setGetReturnPolicyDetail(this);
-        ((NetworkInteractorImpl) networkInteractorImpl).setCompositeSubscription(compositeSubscription);
-        networkInteractorImpl.getReturnPolicyDetail(context, myShopInfoModel, returnPolicy);
-    }
-
-    private void processSuccessGetReturnPolicy(NoteDetailModel.Data data) {
-        NoteDetailModel.Detail detail = data.getDetail();
-        ReturnableDB returnableDB = new ReturnableDB(detail.getNotes_title(), detail.getNotes_content(), Integer.parseInt(detail.getNotes_id()));
-        returnableDB.save();
-        long id = returnableDB.Id;
-        detail.setDbId(id);
-
-        DialogFragment fragment = ReturnPolicyDialog.newInstance(detail);
-        fragment.show(getSupportFragmentManager(), ReturnPolicyDialog.FRAGMENT_TAG);
-    }
-
-
-    private OnItemSelectedListener returnableSpinnerListener() {
-        return new OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (returnableSpinner.getSelectedItemPosition() != 0)
-                    checkPolicyDialog();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        };
-    }
-
     private void setToUI(ManageProductPresenterImpl.CacheManageProduct cacheManageProduct) {
 
         if (mPaging.getPage() == 1) {
@@ -2178,16 +1715,6 @@ public class ManageProduct extends TkpdActivity implements
         ((NetworkInteractorImpl) networkInteractorImpl).setCompositeSubscription(compositeSubscription);
         for (int i = 0; i < ID.size(); i++) {
             networkInteractorImpl.editEtalase(this, ID.get(i), etalaseID, EtalaseName, addTo);
-
-//            if (addTo == 2) isToWareHouse = true;
-//            else isToWareHouse = false;
-//            networkInteractorImpl.changeEtalase(this,
-//                    etalaseID, ID.get(i),
-//                    EtalaseName);
-//            if (addTo == 2) {
-//                ((NetworkInteractorImpl) networkInteractorImpl).setMoveToWareHouse(this);
-//                networkInteractorImpl.moveToWareHouse(this, ID.get(i));
-//            }
         }
     }
 
@@ -2202,20 +1729,6 @@ public class ManageProduct extends TkpdActivity implements
             networkInteractorImpl.changeCategories(this,
                     CtgID, ID.get(i), SessionHandler.getShopID(this));
         }
-    }
-
-    private void changeReturnable(
-            List<String> ID, int returnableCondition
-    ) {
-        progress.showDialog();
-        multiActionCount = ID.size();
-        ((NetworkInteractorImpl) networkInteractorImpl).setChangeReturnable(this);
-        ((NetworkInteractorImpl) networkInteractorImpl).setCompositeSubscription(compositeSubscription);
-        for (int i = 0; i < ID.size(); i++) {
-            networkInteractorImpl.changeReturnable(this,
-                    Integer.toString(returnableCondition), ID.get(i));
-        }
-
     }
 
     private void changeInsurance(
@@ -2294,30 +1807,6 @@ public class ManageProduct extends TkpdActivity implements
 
     @Override
     public void onSuccessChangeInsurance(Response<TkpdResponse> responseData) {
-        TkpdResponse response = responseData.body();
-        JSONObject jsonObject = null;
-        try {
-            jsonObject = new JSONObject(response.getStringData());
-        } catch (JSONException je) {
-            Log.e(TAG, messageTAG + je.getLocalizedMessage());
-        }
-
-        ActResponseModelData data =
-                gson.fromJson(jsonObject.toString(), ActResponseModelData.class);
-        if (data.getIsSuccess() == 1) {
-            multiActionCount--;
-            if (multiActionCount == 0) {
-                progress.dismiss();
-                ClearCheckedData();
-                ClearData();
-                ManageProductPresenterImpl.resetCache(null);
-                CheckCache();
-            }
-        }
-    }
-
-    @Override
-    public void onSuccessChangeReturnable(Response<TkpdResponse> responseData) {
         TkpdResponse response = responseData.body();
         JSONObject jsonObject = null;
         try {
@@ -2476,26 +1965,6 @@ public class ManageProduct extends TkpdActivity implements
                 snackbar.dismiss();
                 progress.showDialog();
                 networkInteractorImpl.changeInsurance(getApplicationContext(), insuranceID, ID);
-            }
-        };
-        String message = CommonUtils.generateMessageError(this, e.getMessage());
-        if (message.contains("koneksi")) {
-            createSnackBar(message, listener);
-        } else {
-            createSnackBar(message, null);
-        }
-    }
-
-    @Override
-    public void onFailureChangeReturnable(Throwable e, final String returnableCondition, final String ID) {
-        finishLoading();
-
-        View.OnClickListener listener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                snackbar.dismiss();
-                progress.showDialog();
-                networkInteractorImpl.changeReturnable(getApplicationContext(), returnableCondition, ID);
             }
         };
         String message = CommonUtils.generateMessageError(this, e.getMessage());
