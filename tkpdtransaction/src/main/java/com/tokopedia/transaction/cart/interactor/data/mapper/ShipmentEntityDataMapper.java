@@ -72,6 +72,6 @@ public class ShipmentEntityDataMapper {
             editShipmentCart.setMessage(editShipmentEntity.getMessage());
             editShipmentCart.setStatus(editShipmentEntity.getStatus());
         }
-        return null;
+        return editShipmentCart;
     }
 }
