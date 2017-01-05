@@ -1255,7 +1255,7 @@ public class SetDateFragment extends Fragment {
                     if(sDates < minLimit){
                         instance = getInstance();
                         instance.setTimeInMillis(minLimit);
-                        instance.add(Calendar.DATE, 1);
+//                        instance.add(Calendar.DATE, 1);
                         sDate = instance.getTimeInMillis();
                         maxSDate = sDate;
                     }else{

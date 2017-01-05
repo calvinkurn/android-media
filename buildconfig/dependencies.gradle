@@ -7,7 +7,7 @@ ext {
     okHttpVersion = '3.4.1'
     glideVersion = '3.7.0'
     permissionDispatcherVersion = '2.2.0'
-    tkpdCoreVersion =  '1.+'
+    tkpdCoreVersion =  '1.1'
     tkpdInboxVersion = '1.+'
     tkpdSessionVersion = '1.+'
     tkpdSellerVersion = '1.+'
