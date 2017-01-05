@@ -213,6 +213,8 @@ public class DetailView extends BaseView<Detail, DetailResCenterView> {
             case "upsert_retur_address":
                 if (Uri.parse(url).getQueryParameter("act").equals(String.valueOf(2))) {
                     listener.openEditAddress(url);
+                } else {
+                    listener.openInputAddressMigrateVersion();
                 }
                 return true;
             case "detail":

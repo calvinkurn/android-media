@@ -157,4 +157,12 @@ public class NetworkParam {
         params.put("new_address", String.valueOf(1));
         return params;
     }
+
+    public static Map<String, String> getParamInputAddressMigrateVersion(String addressID, String resolutionID) {
+        Map<String, String> params = new HashMap<>();
+        params.put("address_id", addressID);
+        params.put("resolution_id", resolutionID);
+        params.put("new_address", String.valueOf(1));
+        return params;
+    }
 }
