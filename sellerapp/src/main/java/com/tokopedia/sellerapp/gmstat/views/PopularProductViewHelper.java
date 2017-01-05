@@ -62,7 +62,7 @@ public class PopularProductViewHelper {
         ProductActivity.moveToAddProduct(itemView.getContext());
     }
 
-    @OnClick({R.id.image_popular_product, R.id.text_popular_product})
+    @OnClick({R.id.image_popular_product, R.id.text_popular_product, R.id.data_product_title})
     public void gotoProductDetail(){
         if(getPopularProduct == null)
             return;

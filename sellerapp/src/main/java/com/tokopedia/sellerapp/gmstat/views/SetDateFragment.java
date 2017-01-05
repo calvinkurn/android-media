@@ -474,6 +474,7 @@ public class SetDateFragment extends Fragment {
     public static class PeriodAdapter extends RecyclerView.Adapter{
         DatePickerRules datePickerRules;
         List<BasePeriodModel> basePeriodModels;
+        DateFormat dateFormat = new SimpleDateFormat("dd MM yyyy", locale);
 
         PeriodListener periodListener = new PeriodListener() {
             @Override
@@ -507,7 +508,7 @@ public class SetDateFragment extends Fragment {
             basePeriodModels = new ArrayList<>();
 
             Calendar instance = Calendar.getInstance();
-            instance.add(Calendar.DATE, -1);
+//            instance.add(Calendar.DATE, -1);
             long tomorrow = instance.getTimeInMillis();
 
             instance = Calendar.getInstance();
@@ -517,6 +518,10 @@ public class SetDateFragment extends Fragment {
             instance = Calendar.getInstance();
             instance.add(Calendar.DATE, -1);
             long yesterday = instance.getTimeInMillis();
+
+            Log.d("MNORMANSYAH", "max limit ## "+dateFormat.format(tomorrow)+
+                    " minLimit "+ dateFormat.format(minLimit) +
+                    " max End Date "+dateFormat.format(yesterday));
 
             datePickerRules = new DatePickerRules(tomorrow, minLimit, 60, yesterday);
             datePickerRules.setDatePickerRulesListener(new DatePickerRules.DatePickerRulesListener() {
@@ -1134,10 +1139,12 @@ public class SetDateFragment extends Fragment {
                     if(eDates > maxLimit){
                         instance = getInstance();
                         instance.setTimeInMillis(maxLimit);
-                        instance.set(Calendar.DATE, -1);
+                        instance.add(Calendar.DATE, -1);
+                        Log.d("MNORMANSYAH", "set end date exceed ## "+dateFormat.format(instance.getTimeInMillis()));
                         eDate = instance.getTimeInMillis();
                         maxEDate = eDate;
                     }else{
+                        Log.d("MNORMANSYAH", "set end date normal ## "+dateFormat.format(eDates));
                         eDate = eDates;
                         maxEDate = eDates;
                     }
