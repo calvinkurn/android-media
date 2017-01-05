@@ -168,12 +168,12 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <View
-        android:id="@+id/separator_2"
+    <LinearLayout
+        android:id="@+id/separator_2_transaction_data"
         android:layout_width="match_parent"
         android:layout_height="@dimen/gmstat_padding_item_left_right"
         android:layout_below="@id/rl_transaction_data"
-        android:background="@android:color/transparent"/>
+        android:orientation="vertical" />
 
 
 

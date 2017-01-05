@@ -7,6 +7,7 @@ import android.support.v7.widget.AppCompatDrawableManager;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -86,8 +87,8 @@ public class DataTransactionViewHelper {
     private String[] mLabels = new String[10];
     ImageHandler imageHandler;
 
-    @BindView(R.id.separator_2)
-    View separator2;
+    @BindView(R.id.separator_2_transaction_data)
+    LinearLayout separator2;
 
     @BindColor(R.color.breakline_background)
     int breakLineBackground;
@@ -119,17 +120,19 @@ public class DataTransactionViewHelper {
             transactionDataContainerGoldMerchant.setVisibility(View.VISIBLE);
             transactionDataContainerNonGoldMerchant.setVisibility(View.GONE);
         }
-
-        if(isGoldMerchant){
-            separator2.setVisibility(View.VISIBLE);
-            separator2.setBackgroundResource(android.R.color.transparent);
-        }else{
-            separator2.setVisibility(View.VISIBLE);
-            separator2.setBackgroundColor(breakLineBackground);
-        }
     }
 
     public void bindData(GetTransactionGraph getTransactionGraph){
+
+        if(isGoldMerchant){
+            separator2.removeAllViews();
+        }else{
+            View view = new View(itemView.getContext());
+            view.setLayoutParams(new LinearLayout.LayoutParams( ViewGroup.LayoutParams.MATCH_PARENT,
+                    (int) dpToPx(itemView.getContext(), 16)));
+            view.setBackgroundResource(R.color.breakline_background);
+            separator2.addView(view);
+        }
 
         /* non gold merchant */
         if(!isGoldMerchant){
