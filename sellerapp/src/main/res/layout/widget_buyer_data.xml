@@ -76,10 +76,11 @@
                 android:layout_below="@+id/buyer_count">
 
                 <ImageView
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:paddingTop="3dp"
-                    app:srcCompat="@mipmap/arrow_up_percentage"
+                    android:layout_width="10dp"
+                    android:layout_height="5dp"
+                    android:layout_marginRight="2dp"
+                    app:srcCompat="@drawable/ic_rectangle_up"
+                    android:layout_gravity="center_vertical"
                     android:layout_below="@+id/buyer_count"
                     android:id="@+id/buyer_count_icon" />
 

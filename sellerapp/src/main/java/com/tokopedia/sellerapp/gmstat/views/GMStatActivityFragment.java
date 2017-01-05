@@ -546,9 +546,11 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
         transactionDataLoading.hideLoading();
         transactionData.setVisibility(View.VISIBLE);
 
-        if(sDate == -1 && eDate == -1)
+        if(sDate == -1 && eDate == -1) {
             gmstatHeaderViewHelper.bindData(dateGraph, lastSelectionPeriod);
-        else {
+            gmFragmentPresenter.setsDate(gmstatHeaderViewHelper.getsDate());
+            gmFragmentPresenter.seteDate(gmstatHeaderViewHelper.geteDate());
+        }else {
             gmstatHeaderViewHelper.bindDate(sDate, eDate, lastSelectionPeriod, selectionType);
             gmstatHeaderViewHelper.stopLoading();
         }
@@ -617,8 +619,7 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
     @Override
     public void onError(Throwable e) {
         displayDefaultValue();
-//
-//        snackBar = new SnackBar();
+
         final StringBuilder textMessage = new StringBuilder("");
         if(e instanceof UnknownHostException){
             textMessage.append("Tidak ada koneksi. \nSilahkan coba kembali");

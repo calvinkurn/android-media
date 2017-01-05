@@ -166,4 +166,12 @@ public class GMFragmentPresenterImpl implements GMFragmentPresenter {
 
         gmStat.getGmStatNetworkController().fetchDataEmptyState(gmStatListener, assets);
     }
+
+    public void setsDate(long sDate) {
+        this.sDate = sDate;
+    }
+
+    public void seteDate(long eDate) {
+        this.eDate = eDate;
+    }
 }

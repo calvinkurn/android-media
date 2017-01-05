@@ -62,7 +62,8 @@ public class PopularProductViewHelper {
         ProductActivity.moveToAddProduct(itemView.getContext());
     }
 
-    @OnClick({R.id.image_popular_product, R.id.text_popular_product})
+    @OnClick({R.id.image_popular_product, R.id.text_popular_product, R.id.data_product_title
+            , R.id.popular_product_description})
     public void gotoProductDetail(){
         if(getPopularProduct == null)
             return;
@@ -75,7 +76,7 @@ public class PopularProductViewHelper {
         ButterKnife.bind(this, itemView);
         this.itemView = itemView;
 
-        String categoryBold = String.format("\"<i><b>%s</b></i>\"", "Data dalam 30 hari terakhir");
+        String categoryBold = String.format("<i>%s</i>", "Data dalam 30 hari terakhir");
         footerPopularProduct.setText(MethodChecker.fromHtml(categoryBold));
     }
 

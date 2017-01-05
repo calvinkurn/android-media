@@ -67,7 +67,7 @@ public class GMStatHeaderViewHelper {
     private long eDate;
     private int lastSelection;
     private int selectionType = PERIOD_TYPE;
-    boolean isLoading = false;
+    boolean isLoading = true;
 
     public GMStatHeaderViewHelper(View itemView, boolean isGmStat){
         this.itemView = itemView;
@@ -82,7 +82,7 @@ public class GMStatHeaderViewHelper {
         calendarArrowIcon.resetLoader();
         calendarIcon.resetLoader();
 
-        isLoading = true;
+        isLoading = false;
     }
 
     public void bindData(List<Integer> dateGraph, int lastSelection) {
@@ -196,5 +196,13 @@ public class GMStatHeaderViewHelper {
         moveToSetDate.putExtra(CUSTOM_START_DATE, sDate);
         moveToSetDate.putExtra(CUSTOM_END_DATE, eDate);
         gmStatActivityFragment.getActivity().startActivityForResult(moveToSetDate, MOVE_TO_SET_DATE);
+    }
+
+    public long geteDate() {
+        return eDate;
+    }
+
+    public long getsDate() {
+        return sDate;
     }
 }
