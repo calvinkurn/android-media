@@ -4,26 +4,26 @@ import android.support.annotation.NonNull;
 
 import com.tokopedia.core.network.apiservices.transaction.TXActService;
 import com.tokopedia.core.network.apiservices.transaction.TXCartActService;
-import com.tokopedia.core.network.apiservices.transaction.TXCartService;
 import com.tokopedia.core.network.apiservices.transaction.TXService;
 import com.tokopedia.core.network.apiservices.transaction.TXVoucherService;
-import com.tokopedia.core.network.apiservices.user.PeopleActService;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.transaction.cart.interactor.data.ShipmentCartDataRepository;
+import com.tokopedia.transaction.cart.interactor.domain.IShipmentCartRepository;
+import com.tokopedia.transaction.cart.model.calculateshipment.Shipment;
 import com.tokopedia.transaction.cart.model.ResponseTransform;
-import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentData;
 import com.tokopedia.transaction.cart.model.cartdata.CartData;
 import com.tokopedia.transaction.cart.model.savelocation.SaveLocationData;
-import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartData;
+import com.tokopedia.transaction.cart.model.shipmentcart.EditShipmentCart;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 import com.tokopedia.transaction.cart.model.voucher.VoucherData;
 import com.tokopedia.transaction.exception.HttpErrorException;
 import com.tokopedia.transaction.exception.ResponseErrorException;
 
 import org.json.JSONException;
+
+import java.util.List;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -48,12 +48,15 @@ public class CartDataInteractor implements ICartDataInteractor {
     private final TXVoucherService txVoucherService;
     private final CompositeSubscription compositeSubscription;
 
+    private IShipmentCartRepository shipmentCartRepository;
+
     public CartDataInteractor() {
         this.compositeSubscription = new CompositeSubscription();
         this.txService = new TXService();
         this.txCartActService = new TXCartActService();
         this.txActService = new TXActService();
         this.txVoucherService = new TXVoucherService();
+        this.shipmentCartRepository = new ShipmentCartDataRepository();
     }
 
     @Override
@@ -90,57 +93,8 @@ public class CartDataInteractor implements ICartDataInteractor {
 
     @Override
     public void calculateShipment(TKPDMapParam<String, String> param,
-                                  Subscriber<CalculateShipmentData> subscriber) {
-        Observable.just(param)
-                .flatMap(new Func1<TKPDMapParam<String, String>, Observable<Response<TkpdResponse>>>() {
-                    @Override
-                    public Observable<Response<TkpdResponse>> call(TKPDMapParam<String, String> stringStringTKPDMapParam) {
-                        TXCartService service = new TXCartService();
-                        return service
-                                .getApi()
-                                .calculateCart(stringStringTKPDMapParam);
-                    }
-                })
-                .map(new Func1<Response<TkpdResponse>, CalculateShipmentData>() {
-                    @Override
-                    public CalculateShipmentData call(Response<TkpdResponse> response) {
-                        if (response.isSuccessful()) {
-                            if (!response.body().isError()) {
-                                return response.body().convertDataObj(CalculateShipmentData.class);
-                            } else {
-                                throw new RuntimeException(response.body().getErrorMessages().get(0));
-                            }
-                        } else {
-                            new ErrorHandler(new ErrorListener() {
-                                @Override
-                                public void onUnknown() {
-                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                                }
-
-                                @Override
-                                public void onTimeout() {
-                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
-                                }
-
-                                @Override
-                                public void onServerError() {
-                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                                }
-
-                                @Override
-                                public void onBadRequest() {
-                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                                }
-
-                                @Override
-                                public void onForbidden() {
-                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                                }
-                            }, response.code());
-                        }
-                        throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                    }
-                })
+                                  Subscriber<List<Shipment>> subscriber) {
+        shipmentCartRepository.shipments(param)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())
@@ -260,80 +214,8 @@ public class CartDataInteractor implements ICartDataInteractor {
     }
 
     @Override
-    public void editShipmentCart(TKPDMapParam<String, String> param,
-                                 Subscriber<ShipmentCartData> subscriber) {
-        Observable.just(param)
-                .flatMap(new Func1<TKPDMapParam<String, String>, Observable<Response<TkpdResponse>>>() {
-                    @Override
-                    public Observable<Response<TkpdResponse>> call(TKPDMapParam<String, String> params) {
-                        TXCartActService service = new TXCartActService();
-                        return service
-                                .getApi()
-                                .editAddress(params);
-                    }
-                })
-                .map(new Func1<Response<TkpdResponse>, ShipmentCartData>() {
-                    @Override
-                    public ShipmentCartData call(Response<TkpdResponse> response) {
-                        if (response.isSuccessful()) {
-                            if (!response.body().isError()) {
-                                if (!response.body().isNullData() &&
-                                        !response.body().getJsonData().isNull(KEY_FLAG_IS_SUCCESS)) {
-                                    int status = 0;
-                                    try {
-                                        status = response.body().getJsonData()
-                                                .getInt(KEY_FLAG_IS_SUCCESS);
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                    String message;
-                                    if (status == 1) {
-                                        message = response.body()
-                                                .getStatusMessages().get(0);
-                                    } else {
-                                        message = response.body().getErrorMessages().get(0);
-                                    }
-                                    ShipmentCartData shipmentCartData = new ShipmentCartData();
-                                    shipmentCartData.setStatus(String.valueOf(status));
-                                    shipmentCartData.setMessage(message);
-                                    return shipmentCartData;
-                                } else {
-                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_NULL_DATA);
-                                }
-                            } else {
-                                throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                            }
-                        } else {
-                            new ErrorHandler(new ErrorListener() {
-                                @Override
-                                public void onUnknown() {
-                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                                }
-
-                                @Override
-                                public void onTimeout() {
-                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
-                                }
-
-                                @Override
-                                public void onServerError() {
-                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                                }
-
-                                @Override
-                                public void onBadRequest() {
-                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                                }
-
-                                @Override
-                                public void onForbidden() {
-                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                                }
-                            }, response.code());
-                        }
-                        throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                    }
-                })
+    public void editShipmentCart(TKPDMapParam<String, String> param, Subscriber<EditShipmentCart> subscriber) {
+        shipmentCartRepository.editShipment(param)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())
@@ -341,63 +223,8 @@ public class CartDataInteractor implements ICartDataInteractor {
     }
 
     @Override
-    public void editLocationShipment(TKPDMapParam<String, String> param,
-                                     Subscriber<SaveLocationData> subscriber) {
-        Observable.just(param)
-                .flatMap(new Func1<TKPDMapParam<String, String>, Observable<Response<TkpdResponse>>>() {
-                    @Override
-                    public Observable<Response<TkpdResponse>> call(TKPDMapParam<String, String> params) {
-                        PeopleActService service = new PeopleActService();
-                        return service
-                                .getApi()
-                                .editAddress(params);
-                    }
-                })
-                .map(new Func1<Response<TkpdResponse>, SaveLocationData>() {
-                    @Override
-                    public SaveLocationData call(Response<TkpdResponse> response) {
-                        if (response.isSuccessful()) {
-                            if (!response.body().isError()) {
-                                if (!response.body().isNullData() &&
-                                        !response.body().getJsonData().isNull(KEY_FLAG_IS_SUCCESS)) {
-                                    return response.body().convertDataObj(SaveLocationData.class);
-                                } else {
-                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_NULL_DATA);
-                                }
-                            } else {
-                                throw new RuntimeException(response.body().getErrorMessages().get(0));
-                            }
-                        } else {
-                            new ErrorHandler(new ErrorListener() {
-                                @Override
-                                public void onUnknown() {
-                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                                }
-
-                                @Override
-                                public void onTimeout() {
-                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
-                                }
-
-                                @Override
-                                public void onServerError() {
-                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                                }
-
-                                @Override
-                                public void onBadRequest() {
-                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                                }
-
-                                @Override
-                                public void onForbidden() {
-                                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                                }
-                            }, response.code());
-                        }
-                        throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                    }
-                })
+    public void editLocationShipment(TKPDMapParam<String, String> param, Subscriber<SaveLocationData> subscriber) {
+        shipmentCartRepository.editLocation(param)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())

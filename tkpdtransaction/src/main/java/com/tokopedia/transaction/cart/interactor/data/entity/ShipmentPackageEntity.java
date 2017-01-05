@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.cart.model.calculateshipment;
+package com.tokopedia.transaction.cart.interactor.data.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,18 +7,51 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * @author by alvarisi on 11/3/16.
+ * @author  by alvarisi on 11/30/16.
  */
 
-public class ShipmentPackage implements Parcelable {
+public class ShipmentPackageEntity {
+
+    @SerializedName("price_total")
+    @Expose
+    private String priceTotal;
+    @SerializedName("shipment_id")
+    @Expose
     private String shipmentId;
+    @SerializedName("desc")
+    @Expose
+    private String desc;
+    @SerializedName("name")
+    @Expose
     private String name;
+    @SerializedName("sp_id")
+    @Expose
     private String shipmentPackageId;
+    @SerializedName("is_show_map")
+    @Expose
     private int isShowMap;
+    @SerializedName("price")
+    @Expose
     private String price;
+    @SerializedName("package_available")
+    @Expose
     private Integer packageAvailable;
 
-    public ShipmentPackage() {
+    public ShipmentPackageEntity() {
+    }
+
+    /**
+     * @return The priceTotal
+     */
+    public String getPriceTotal() {
+        return priceTotal;
+    }
+
+    /**
+     * @param priceTotal The price_total
+     */
+    public void setPriceTotal(String priceTotal) {
+        this.priceTotal = priceTotal;
     }
 
     /**
@@ -33,6 +66,20 @@ public class ShipmentPackage implements Parcelable {
      */
     public void setShipmentId(String shipmentId) {
         this.shipmentId = shipmentId;
+    }
+
+    /**
+     * @return The desc
+     */
+    public String getDesc() {
+        return desc;
+    }
+
+    /**
+     * @param desc The desc
+     */
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 
     /**
@@ -95,59 +142,11 @@ public class ShipmentPackage implements Parcelable {
         return name;
     }
 
-    public static ShipmentPackage createSelectionInfo(String info) {
-        ShipmentPackage shipment = new ShipmentPackage();
-        shipment.setName(info);
-        shipment.setShipmentPackageId("0");
-        shipment.setPrice("0");
-        shipment.setShipmentId(String.valueOf(0));
-        shipment.isShowMap = 0;
-        return shipment;
+    public int getIsShowMap() {
+        return isShowMap;
     }
 
     public void setIsShowMap(int isShowMap) {
         this.isShowMap = isShowMap;
     }
-
-    protected ShipmentPackage(Parcel in) {
-        shipmentId = in.readString();
-        name = in.readString();
-        shipmentPackageId = in.readString();
-        isShowMap = in.readInt();
-        price = in.readString();
-        packageAvailable = in.readByte() == 0x00 ? null : in.readInt();
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(shipmentId);
-        dest.writeString(name);
-        dest.writeString(shipmentPackageId);
-        dest.writeInt(isShowMap);
-        dest.writeString(price);
-        if (packageAvailable == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeInt(packageAvailable);
-        }
-    }
-
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<ShipmentPackage> CREATOR = new Parcelable.Creator<ShipmentPackage>() {
-        @Override
-        public ShipmentPackage createFromParcel(Parcel in) {
-            return new ShipmentPackage(in);
-        }
-
-        @Override
-        public ShipmentPackage[] newArray(int size) {
-            return new ShipmentPackage[size];
-        }
-    };
 }

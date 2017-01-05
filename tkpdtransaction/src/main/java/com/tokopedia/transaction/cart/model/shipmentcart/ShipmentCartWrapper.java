@@ -17,7 +17,7 @@ public class ShipmentCartWrapper {
     private String oldShipmentPackageId;
     private boolean isValidShipment = true;
     private boolean isValidShipmentPackage = true;
-    private ShipmentCartData shipmentCartData;
+    private EditShipmentCart editShipmentCart;
 
     public ShipmentCartWrapper() {
     }
@@ -90,11 +90,11 @@ public class ShipmentCartWrapper {
         this.oldShipmentPackageId = oldShipmentPackageId;
     }
 
-    public ShipmentCartData getShipmentCartData() {
-        return shipmentCartData;
+    public EditShipmentCart getEditShipmentCart() {
+        return editShipmentCart;
     }
 
-    public void setShipmentCartData(ShipmentCartData shipmentCartData) {
-        this.shipmentCartData = shipmentCartData;
+    public void setEditShipmentCart(EditShipmentCart editShipmentCart) {
+        this.editShipmentCart = editShipmentCart;
     }
 }

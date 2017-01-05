@@ -13,7 +13,6 @@ public class CalculateShipmentWrapper {
     private String mWeight;
     private String mDo = "calculate_address_shipping";
     private String mRecalculate = "1";
-    private CalculateShipmentData mCalculateShipmentData;
 
     public TKPDMapParam<String, String> getParams() {
         TKPDMapParam<String, String> map = new TKPDMapParam<>();
@@ -22,16 +21,7 @@ public class CalculateShipmentWrapper {
         map.put("weight", this.mWeight);
         map.put("do", this.mDo);
         map.put("recalculate", this.mRecalculate);
-
         return map;
-    }
-
-    public CalculateShipmentData getData() {
-        return mCalculateShipmentData;
-    }
-
-    public void setData(CalculateShipmentData mCalculateShipmentData) {
-        this.mCalculateShipmentData = mCalculateShipmentData;
     }
 
     public void setAddressId(String addressId) {

@@ -3,12 +3,14 @@ package com.tokopedia.transaction.cart.interactor;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.cart.model.ResponseTransform;
-import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentData;
 import com.tokopedia.transaction.cart.model.cartdata.CartData;
+import com.tokopedia.transaction.cart.model.calculateshipment.Shipment;
 import com.tokopedia.transaction.cart.model.savelocation.SaveLocationData;
-import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartData;
+import com.tokopedia.transaction.cart.model.shipmentcart.EditShipmentCart;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 import com.tokopedia.transaction.cart.model.voucher.VoucherData;
+
+import java.util.List;
 
 import rx.Scheduler;
 import rx.Subscriber;
@@ -29,11 +31,9 @@ public interface ICartDataInteractor {
 
     void calculateCart(TKPDMapParam<String, String> param, Subscriber<Object> subscriber);
 
-    void calculateShipment(TKPDMapParam<String, String> param,
-                           Subscriber<CalculateShipmentData> subscriber);
+    void calculateShipment(TKPDMapParam<String, String> param, Subscriber<List<Shipment>> subscriber);
 
-    void editShipmentCart(TKPDMapParam<String, String> param,
-                          Subscriber<ShipmentCartData> subscriber);
+    void editShipmentCart(TKPDMapParam<String, String> param, Subscriber<EditShipmentCart> subscriber);
 
     void editLocationShipment(TKPDMapParam<String, String> param,
                               Subscriber<SaveLocationData> subscriber);
