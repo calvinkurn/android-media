@@ -119,7 +119,7 @@
                 android:backgroundTintMode="add"
                 app:donut_show_text="false"
                 app:donut_unfinished_color="#cecece"
-                app:donut_unfinished_stroke_width="10dp" />
+                app:donut_unfinished_stroke_width="10dp"/>
 
             <LinearLayout
                 android:layout_centerVertical="true"
