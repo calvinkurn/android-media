@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -17,20 +18,20 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/top_ads_dashboard_margin_cards"/>
 
-        <include
-            android:id="@+id/layout_top_ads_product_group_summary"
-            layout="@layout/include_top_ads_product_list_summary"
+        <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
+            android:id="@+id/label_view_group_summary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/top_ads_dashboard_margin_cards"/>
+            android:layout_marginTop="@dimen/top_ads_dashboard_margin_cards"
+            app:title="@string/label_top_ads_groups"/>
 
         <include layout="@layout/include_separator_horizontal"/>
 
-        <include
-            android:id="@+id/layout_top_ads_product_item_summary"
-            layout="@layout/include_top_ads_product_list_summary"
+        <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
+            android:id="@+id/label_view_item_summary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/top_ads_dashboard_margin_bottom_space"/>
+            android:layout_marginBottom="@dimen/top_ads_dashboard_margin_bottom_space"
+            app:title="@string/label_top_ads_items"/>
     </LinearLayout>
 </ScrollView>
