@@ -18,6 +18,7 @@ public class TopAdsNetworkConstant {
 
     public static final String PATH_BULK_ACTION_PRODUCT_AD = "/v2/promo/bulk";
     public static final String PATH_BULK_ACTION_GROUP_AD = "/v2/promo/group/bulk";
+    public static final String PATH_DETAIL_PRODUCT_AD = "/v2/promo";
 
     public static final String PARAM_SHOP_ID = "shop_id";
     public static final String PARAM_TYPE = "type";

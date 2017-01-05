@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
+import com.tokopedia.seller.topads.datasource.TopAdsCacheDataSourceImpl;
+import com.tokopedia.seller.topads.datasource.TopAdsDbDataSourceImpl;
 import com.tokopedia.seller.topads.interactor.ListenerInteractor;
 import com.tokopedia.seller.topads.interactor.TopAdsProductAdInteractor;
 import com.tokopedia.seller.topads.interactor.TopAdsProductAdInteractorImpl;
@@ -15,6 +17,7 @@ import com.tokopedia.seller.topads.model.data.ProductAdBulkAction;
 import com.tokopedia.seller.topads.model.request.DataRequest;
 import com.tokopedia.seller.topads.model.request.SearchAdRequest;
 import com.tokopedia.seller.topads.model.response.PageDataResponse;
+import com.tokopedia.seller.topads.network.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
 
 import java.util.ArrayList;
@@ -30,7 +33,7 @@ public class TopAdsProductAdListPresenterImpl extends TopAdsAdListPresenterImpl<
 
     public TopAdsProductAdListPresenterImpl(Context context, TopAdsListPromoViewListener topadsListPromoViewListener) {
         super(context, topadsListPromoViewListener);
-        this.productAdInteractor = new TopAdsProductAdInteractorImpl(context);
+        this.productAdInteractor = new TopAdsProductAdInteractorImpl(new TopAdsManagementService(), new TopAdsDbDataSourceImpl(), new TopAdsCacheDataSourceImpl(context));
     }
 
     @Override

@@ -10,7 +10,9 @@ import com.bignerdranch.android.multiselector.MultiSelector;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.model.data.Ad;
+import com.tokopedia.seller.topads.model.data.GroupAd;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsViewHolder;
+import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +22,8 @@ import java.util.List;
  * Created by zulfikarrahman on 11/24/16.
  */
 public class TopAdsAdListAdapter<T extends Ad> extends BaseLinearRecyclerViewAdapter {
+
+    private final TopAdsListPromoViewListener topAdsListPromoViewListener;
 
     public interface Callback {
         void onChecked(int position, boolean checked);
@@ -37,11 +41,12 @@ public class TopAdsAdListAdapter<T extends Ad> extends BaseLinearRecyclerViewAda
         this.callback = callback;
     }
 
-    public TopAdsAdListAdapter() {
+    public TopAdsAdListAdapter(TopAdsListPromoViewListener topAdsListPromoViewListener) {
         super();
         this.data = new ArrayList<>();
         multiSelector = new MultiSelector();
         checkedList = new HashMap<>();
+        this.topAdsListPromoViewListener = topAdsListPromoViewListener;
     }
 
     public int getDataSize() {
@@ -77,7 +82,7 @@ public class TopAdsAdListAdapter<T extends Ad> extends BaseLinearRecyclerViewAda
     }
 
     public void bindDataAds(final int position, RecyclerView.ViewHolder viewHolder) {
-        Ad ad = data.get(position);
+        final Ad ad = data.get(position);
         final TopAdsViewHolder topAdsViewHolder = (TopAdsViewHolder) viewHolder;
         topAdsViewHolder.bindObject(ad);
         topAdsViewHolder.checkedPromo.setChecked(isChecked(position));
@@ -109,6 +114,9 @@ public class TopAdsAdListAdapter<T extends Ad> extends BaseLinearRecyclerViewAda
             @Override
             public void onClick(View v) {
                 if (!multiSelector.tapSelection(topAdsViewHolder)) {
+                    if(topAdsListPromoViewListener != null){
+                        topAdsListPromoViewListener.moveToDetail(ad);
+                    }
                     /*if (isLoading()) {
                         getPaging().setPage(getPaging().getPage() - 1);
                         presenter.onFinishConnection();
@@ -120,6 +128,7 @@ public class TopAdsAdListAdapter<T extends Ad> extends BaseLinearRecyclerViewAda
 //                        topAdsListPromoViewListener.finishActionMode();
                         multiSelector.refreshAllHolders();
                     } else {
+
 //                        topAdsListPromoViewListener.setTitleMode(multiSelector.getSelectedPositions().size() + "");
                     }
                 }

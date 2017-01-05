@@ -54,9 +54,13 @@ public interface TopAdsManagementApi {
     @GET(TopAdsNetworkConstant.PATH_SEARCH_PRODUCT)
     Observable<Response<DataResponse<List<Product>>>> searchProduct(@QueryMap Map<String, String> params);
 
+    @GET(TopAdsNetworkConstant.PATH_DETAIL_PRODUCT_AD)
+    Observable<Response<PageDataResponse<List<ProductAd>>>> getDetailProductAd();
+
     @PATCH(TopAdsNetworkConstant.PATH_BULK_ACTION_PRODUCT_AD)
     Observable<Response<DataResponse<ProductAdBulkAction>>> bulkActionProductAd(@Body DataRequest<ProductAdBulkAction> body);
 
     @PATCH(TopAdsNetworkConstant.PATH_BULK_ACTION_GROUP_AD)
     Observable<Response<DataResponse<GroupAdBulkAction>>> bulkActionGroupAd(@Body DataRequest<GroupAdBulkAction> body);
+
 }

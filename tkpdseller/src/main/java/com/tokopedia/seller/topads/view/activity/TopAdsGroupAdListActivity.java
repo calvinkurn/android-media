@@ -25,4 +25,5 @@ public class TopAdsGroupAdListActivity extends TActivity {
     public String getScreenName() {
         return null;
     }
+
 }
