@@ -599,8 +599,10 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == TopPayActivity.REQUEST_CODE
-                || requestCode == ShipmentCartActivity.INTENT_REQUEST_CODE) {
+        if (requestCode == TopPayActivity.REQUEST_CODE) {
+            presenter.processGetCartData();
+        } else if (requestCode == ShipmentCartActivity.INTENT_REQUEST_CODE
+                && resultCode == Activity.RESULT_OK) {
             presenter.processGetCartData();
         }
     }

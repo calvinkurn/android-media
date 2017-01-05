@@ -10,6 +10,7 @@ import java.util.List;
  */
 
 public class CheckoutData implements Parcelable {
+    private static final String DEFAULT_PAYMENT_GATEWAY_ID = "99";
 
     private String lpFlag = "1";
     private String depositAmount;
@@ -91,7 +92,7 @@ public class CheckoutData implements Parcelable {
     }
 
     public String getGateway() {
-        return gateway;
+        return gateway == null || gateway.isEmpty() ? DEFAULT_PAYMENT_GATEWAY_ID : gateway;
     }
 
     public void setGateway(String gateway) {
@@ -115,7 +116,7 @@ public class CheckoutData implements Parcelable {
     }
 
     public String getUsedDeposit() {
-        return usedDeposit;
+        return usedDeposit == null || usedDeposit.isEmpty() ? "0" : usedDeposit;
     }
 
     public void setUsedDeposit(String usedDeposit) {

@@ -141,14 +141,10 @@ public class TopPayIntentService extends IntentService {
 
     private void getParameterDataTopPay(CheckoutData checkoutData) {
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
-        params.put("lp_flag", checkoutData.getLpFlag());
         params.put("gateway", checkoutData.getGateway());
-        params.put("step", "1");
-        params.put("token", checkoutData.getToken());
         params.put("token_cart", checkoutData.getToken());
         params.put("chosen", checkoutData.getPartialString());
-        params.put("method", "POST");
-        params.put("use_deposit", "0");
+        params.put("use_deposit", checkoutData.getUsedDeposit());
         params.put("deposit_amt", checkoutData.getDepositAmount());
         params.put("partial_str", checkoutData.getPartialString());
         params.put("dropship_str", checkoutData.getDropShipString());

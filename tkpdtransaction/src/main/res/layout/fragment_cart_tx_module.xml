@@ -1,9 +1,9 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="@dimen/padding_small">
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:padding="@dimen/padding_small">
 
     <ProgressBar
         android:id="@+id/pb_main_loading"
@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:visibility="gone"
-        tools:visibility="gone" />
+        tools:visibility="gone"/>
 
     <TextView
         android:id="@+id/tv_ticker_gtm"
@@ -23,7 +23,7 @@
         android:padding="@dimen/padding_small"
         android:visibility="gone"
         tools:text="vhashkjalsla asbhdkashahs askjdhasjdhas asdbaksdlasd"
-        tools:visibility="visible" />
+        tools:visibility="visible"/>
 
 
     <android.support.v4.widget.NestedScrollView
@@ -61,7 +61,7 @@
                         android:padding="@dimen/padding_vs"
                         android:textColor="@color/black"
                         android:textStyle="bold"
-                        android:visibility="gone" />
+                        android:visibility="gone"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -75,7 +75,7 @@
                             android:text="Total Pembayaran"
                             android:textColor="@color/black"
                             android:textSize="@dimen/font_large"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"/>
 
                         <TextView
                             android:id="@+id/tv_total_payment"
@@ -85,7 +85,7 @@
                             android:textColor="@color/black"
                             android:textSize="@dimen/font_large"
                             android:textStyle="bold"
-                            tools:text="Rp 200.000,-" />
+                            tools:text="Rp 200.000,-"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -102,7 +102,7 @@
                             android:layout_marginRight="@dimen/margin_small"
                             android:text="@string/title_loyalty_points"
                             android:textColor="@color/label_color"
-                            android:textSize="@dimen/fontvs" />
+                            android:textSize="@dimen/fontvs"/>
 
                         <TextView
                             android:id="@+id/tv_loyalty_balance"
@@ -111,7 +111,7 @@
                             android:gravity="end"
                             android:textColor="@color/label_color"
                             android:textSize="@dimen/fontvs"
-                            tools:text="Rp 2.000.213,-" />
+                            tools:text="Rp 2.000.213,-"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -127,7 +127,7 @@
                             android:layout_marginRight="@dimen/margin_small"
                             android:text="Saldo Tokopedia Anda saat ini"
                             android:textColor="@color/label_color"
-                            android:textSize="@dimen/fontvs" />
+                            android:textSize="@dimen/fontvs"/>
 
                         <TextView
                             android:id="@+id/tv_deposit_tokopedia"
@@ -136,8 +136,12 @@
                             android:gravity="end"
                             android:textColor="@color/label_color"
                             android:textSize="@dimen/fontvs"
-                            tools:text="Rp 2.000.213,-" />
+                            tools:text="Rp 2.000.213,-"/>
                     </LinearLayout>
+
+                    <android.support.v4.widget.Space
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/margin_med"/>
 
                     <RelativeLayout
                         android:id="@+id/btn_payment_method"
@@ -148,7 +152,8 @@
                         android:layout_marginTop="@dimen/margin_med"
                         android:background="@drawable/cards_ui_selected"
                         android:gravity="center"
-                        android:padding="@dimen/padding_small">
+                        android:padding="@dimen/padding_small"
+                        android:visibility="gone">
 
                         <ImageView
                             android:id="@+id/iv_logo_btn_payment_method"
@@ -161,7 +166,7 @@
                             android:layout_toStartOf="@+id/tv_desc_btn_payment_method"
                             android:visibility="gone"
                             tools:ignore="ContentDescription"
-                            tools:src="@drawable/icon_bca" />
+                            tools:src="@drawable/icon_bca"/>
 
                         <TextView
                             android:id="@+id/tv_desc_btn_payment_method"
@@ -174,7 +179,7 @@
                             android:text="Pilih metode pembayaran dulu"
                             android:textColor="@color/href_link"
                             android:textSize="@dimen/font_small"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"/>
 
                         <ImageView
                             android:layout_width="@dimen/small_dp"
@@ -186,7 +191,7 @@
                             android:layout_toRightOf="@+id/tv_desc_btn_payment_method"
                             android:background="@drawable/overflow_selected"
                             android:src="@drawable/chevron_down"
-                            tools:ignore="ContentDescription" />
+                            tools:ignore="ContentDescription"/>
                     </RelativeLayout>
 
                     <TextView
@@ -198,7 +203,7 @@
                         android:background="@color/green_200"
                         android:padding="@dimen/margin_vs"
                         android:visibility="gone"
-                        tools:text="Tidak dikenakan biaya" />
+                        tools:text="Tidak dikenakan biaya"/>
 
                     <LinearLayout
                         android:id="@+id/holder_use_deposit"
@@ -206,7 +211,10 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/payment_label"
                         android:gravity="center"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:paddingBottom="@dimen/margin_vs"
+                        android:paddingTop="@dimen/margin_small"
+                        android:visibility="gone">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -215,7 +223,7 @@
                             android:textColor="@color/label_color"
                             android:textSize="@dimen/fonts"
                             android:textStyle="bold"
-                            android:visibility="visible" />
+                            android:visibility="visible"/>
 
                         <EditText
                             android:id="@+id/et_use_deposit"
@@ -224,7 +232,7 @@
                             android:hint="@string/title_use_tokopedia_balance"
                             android:inputType="number"
                             android:textSize="@dimen/fonts"
-                            android:visibility="visible" />
+                            android:visibility="visible"/>
                     </LinearLayout>
 
                     <TextView
@@ -237,7 +245,7 @@
                         android:text="@string/tittle_checkout"
                         android:textColor="@color/white"
                         android:textSize="@dimen/font_small"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"/>
 
                     <CheckBox
                         android:id="@+id/cb_use_voucher"
@@ -248,7 +256,7 @@
                         android:text="@string/title_use_promo_code"
                         android:textColor="@color/black"
                         android:textSize="@dimen/fontvs"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"/>
 
                     <RelativeLayout
                         android:id="@+id/holder_use_voucher"
@@ -261,18 +269,18 @@
                         <TextView
                             android:id="@+id/btn_check_voucher"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="@dimen/margin_vl"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentRight="true"
                             android:layout_marginLeft="@dimen/margin_small"
                             android:layout_marginStart="@dimen/margin_small"
-                            android:background="@color/green_500"
+                            android:background="@drawable/green_button_rounded"
                             android:gravity="center"
                             android:padding="@dimen/margin_small"
                             android:text="@string/title_check"
                             android:textColor="@color/white"
                             android:textSize="@dimen/font_small"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"/>
 
                         <android.support.design.widget.TextInputLayout
                             android:id="@+id/til_et_voucher_code"
@@ -284,9 +292,11 @@
                             <EditText
                                 android:id="@+id/et_voucher_code"
                                 android:layout_width="match_parent"
-                                android:layout_height="@dimen/btn_height"
+                                android:layout_height="@dimen/margin_vl"
                                 android:hint="Kode Voucher"
-                                android:singleLine="true" />
+                                android:lines="1"/>
+
+
                         </android.support.design.widget.TextInputLayout>
 
                         <TextView
@@ -294,7 +304,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/til_et_voucher_code"
-                            tools:text="Total bolo bolo" />
+                            tools:text="Total bolo bolo"/>
 
                     </RelativeLayout>
 
@@ -326,7 +336,7 @@
                         android:layout_weight="1"
                         android:text="Potensi Cashback"
                         android:textColor="@color/green_500"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"/>
 
                     <TextView
                         android:id="@+id/tv_cash_back_value"
@@ -339,14 +349,14 @@
                         android:gravity="end"
                         android:textColor="@color/green_500"
                         android:textStyle="bold"
-                        tools:text="5000" />
+                        tools:text="5000"/>
                 </RelativeLayout>
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_cart"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"/>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
