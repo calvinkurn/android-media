@@ -19,6 +19,7 @@ import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.gmstat.models.GetTransactionGraph;
 import com.tokopedia.sellerapp.gmstat.utils.DataTransactionChartConfig;
 import com.tokopedia.sellerapp.gmsubscribe.GMSubscribeActivity;
+import com.tokopedia.sellerapp.gmstat.utils.KMNumbers;
 import com.tokopedia.sellerapp.home.utils.ImageHandler;
 
 import java.text.DecimalFormat;
@@ -184,11 +185,12 @@ public class DataTransactionViewHelper {
         }
 
         if(isDefault){
-            DecimalFormat formatter = new DecimalFormat("#0.00");
+//            DecimalFormat formatter = new DecimalFormat("#0.00");
+//            double d = diffSuccessTrans;
+//            String text;
+//            System.out.println(text = formatter.format(d));
             double d = diffSuccessTrans;
-            String text;
-            System.out.println(text = formatter.format(d));
-            percentage.setText(String.format("%s%%", text.replace("-", "")));
+            percentage.setText(String.format("%s%%", KMNumbers.formatString(d).replace("-", "")));
         }else{
             percentage.setText(R.string.no_data);
         }

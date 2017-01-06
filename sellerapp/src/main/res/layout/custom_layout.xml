@@ -24,14 +24,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/custom_header"
-        android:layout_marginTop="16sp"
         android:layout_marginLeft="2dp"
+        android:layout_marginTop="16sp"
         android:layout_marginBottom="10dp"
         android:layout_alignLeft="@+id/custom_header"
         android:layout_alignStart="@+id/custom_header"
         android:textSize="16sp"
         android:textColor="#42b549"
-        android:id="@+id/custom_date" />
+        android:id="@+id/custom_date"
+        android:layout_toLeftOf="@+id/custom_drop_down"
+        android:layout_toStartOf="@+id/custom_drop_down" />
 
     <View
         android:id="@+id/custom_break_point"

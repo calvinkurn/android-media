@@ -704,7 +704,7 @@ public class SetDateFragment extends Fragment {
         private DatePickerDialog toDatePickerDialog;
         private StartOrEndPeriodModel startOrEndPeriodModel;
 
-        @OnClick(R.id.custom_header)
+        @OnClick({R.id.custom_date,R.id.custom_drop_down})
         public void onChooseDate(){
             if(startOrEndPeriodModel == null)
                 return;
@@ -890,6 +890,7 @@ public class SetDateFragment extends Fragment {
                 String[] split1 = range[i].split(" ");
                 split[i] = Integer.parseInt(reverseDate(split1));
             }
+
             if(split.length  >1 ){
                 String res = String.format("%s - %s", getDateWithYear(split[0], monthNamesAbrev), getDateWithYear(split[1], monthNamesAbrev));
                 periodDate.setText(res);

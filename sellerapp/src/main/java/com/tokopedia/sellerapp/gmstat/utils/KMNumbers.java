@@ -11,6 +11,7 @@ import java.util.TreeMap;
 public final class KMNumbers {
 
     public static final NavigableMap<Long, String> suffixes = new TreeMap<>();
+    public static final String FORMAT_DOUBLE = "%.1f";
     public static final String FORMAT = "%.1f%c";
     public static final String SUFFIXES = "KMGTPE";
     public static final String COMMA = ",";
@@ -35,11 +36,13 @@ public final class KMNumbers {
 
         int exp = (int) (Math.log(number) / Math.log(1000));
         String result = formatString(number, exp);
-        String comma = COMMA;
-        String dot = DOT;
-        if(result.contains(comma)){
-            result = result.replaceAll(comma,dot);
-        }
+        //[START] dont delete this
+//        String comma = COMMA;
+//        String dot = DOT;
+//        if(result.contains(comma)){
+//            result = result.replaceAll(comma,dot);
+//        }
+        //[END] dont delete this
         return result;
     }
 
@@ -52,11 +55,13 @@ public final class KMNumbers {
 
         int exp = (int) (Math.log(number) / Math.log(1000));
         String result = formatString(number, exp);
-        String comma = COMMA;
-        String dot = DOT;
-        if(result.contains(comma)){
-            result = result.replaceAll(comma,dot);
-        }
+        //[START] dont delete this
+//        String comma = COMMA;
+//        String dot = DOT;
+//        if(result.contains(comma)){
+//            result = result.replaceAll(comma,dot);
+//        }
+        //[END] dont delete this
         return result;
     }
 
@@ -70,7 +75,8 @@ public final class KMNumbers {
         String suffix = e.getValue();
 
         long truncated = number / (divideBy / 10);
-        return (truncated / 10d) + suffix;
+        double v = truncated / 10d;
+        return formatString(v) + suffix;
     }
 
     private static String formatNumbersBiggerThanHundredThousand(Float number) {
@@ -83,7 +89,12 @@ public final class KMNumbers {
         String suffix = e.getValue();
 
         float truncated = number / (divideBy / 10);
-        return (truncated / 10d) + suffix;
+        double v = truncated / 10d;
+        return formatString(v) + suffix;
+    }
+
+    public static String formatString(Double number){
+        return String.format(locale, FORMAT_DOUBLE, number);
     }
 
     private static String formatString(Long number, Integer exp) {

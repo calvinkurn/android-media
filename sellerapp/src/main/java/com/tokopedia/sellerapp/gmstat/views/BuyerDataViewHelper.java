@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.gmstat.models.GetBuyerData;
+import com.tokopedia.sellerapp.gmstat.utils.KMNumbers;
 
 import java.text.DecimalFormat;
 import java.util.Locale;
@@ -107,14 +108,18 @@ public class BuyerDataViewHelper {
             if(malePercent >= femalePercent){
                 biggerGender += gender[0];
                 headerPieBuyerData.setText(biggerGender);
-                malePie.setText(String.format(locale, "%.2f%% %s", femalePercent, gender[1]));
-                femalePie.setText(String.format(locale, "%.2f%%", malePercent));
+//                malePie.setText(String.format(locale, "%.2f%% %s", femalePercent, gender[1]));
+//                femalePie.setText(String.format(locale, "%.2f%%", malePercent));
+                malePie.setText(String.format(locale, "%3d%% %s", (int)femalePercent, gender[1]));
+                femalePie.setText(String.format(locale, "%3d%%", (int)malePercent));
                 buyerDataPieChart.setProgress((float) malePercent);
             }else{
                 biggerGender += gender[1];
                 headerPieBuyerData.setText(biggerGender);
-                malePie.setText(String.format(locale, "%.2f%% %s", malePercent, gender[0]));
-                femalePie.setText(String.format(locale, "%.2f%%", femalePercent));
+//                malePie.setText(String.format(locale, "%.2f%% %s", malePercent, gender[0]));
+//                femalePie.setText(String.format(locale, "%.2f%%", femalePercent));
+                malePie.setText(String.format(locale, "%3d%% %s", malePercent, gender[0]));
+                femalePie.setText(String.format(locale, "%3d%% %s", femalePercent));
                 buyerDataPieChart.setProgress((float) femalePercent);
             }
         }
@@ -147,10 +152,13 @@ public class BuyerDataViewHelper {
         }
 
         if(isDefault){
-            DecimalFormat formatter = new DecimalFormat("#0.00");
-            String text;
-            System.out.println(text = formatter.format(percentage));
-            percentageBuyer.setText(String.format("%s%%", text.replace("-", "")));
+            double d = percentage;
+            percentageBuyer.setText(String.format("%s%%", KMNumbers.formatString(d).replace("-", "")));
+
+//            DecimalFormat formatter = new DecimalFormat("#0.00");
+//            String text;
+//            System.out.println(text = formatter.format(percentage));
+//            percentageBuyer.setText(String.format("%s%%", text.replace("-", "")));
         }else{
             percentageBuyer.setText(R.string.no_data);
         }

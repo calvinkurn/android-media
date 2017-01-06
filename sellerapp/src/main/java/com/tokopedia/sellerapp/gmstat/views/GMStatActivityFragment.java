@@ -39,6 +39,7 @@ import com.tokopedia.sellerapp.gmstat.models.GetTransactionGraph;
 import com.tokopedia.sellerapp.gmstat.presenters.GMFragmentPresenterImpl;
 import com.tokopedia.sellerapp.gmstat.presenters.GMFragmentView;
 import com.tokopedia.sellerapp.gmstat.presenters.GMStat;
+import com.tokopedia.sellerapp.gmstat.utils.GMStatNetworkController;
 import com.tokopedia.sellerapp.gmstat.utils.GridDividerItemDecoration;
 import com.tokopedia.sellerapp.gmstat.utils.KMNumbers;
 import com.tokopedia.sellerapp.gmstat.utils.GrossGraphChartConfig;
@@ -47,6 +48,7 @@ import com.tokopedia.sellerapp.home.utils.ShopNetworkController;
 import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -831,11 +833,13 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
             }
 
             if(isDefault) {
-                DecimalFormat formatter = new DecimalFormat("#0.00");
+//                DecimalFormat formatter = new DecimalFormat("#0.00");
+//                double d = commomGMModel.percentage;
+//                String text;
+//                System.out.println(text = formatter.format(d));
+
                 double d = commomGMModel.percentage;
-                String text;
-                System.out.println(text = formatter.format(d));
-                percentage.setText(String.format("%s%%", text.replace("-", "")));
+                percentage.setText(String.format("%s%%", KMNumbers.formatString(d).replace("-", "")));
             }else{
                 percentage.setText(R.string.no_data);
             }
@@ -1007,8 +1011,12 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
             super(0);
             type = TYPE;
             this.convRate = convRate*100;
-            NumberFormat formatter = new DecimalFormat("#0.00");
-            text = formatter.format(convRate)+"%";
+
+            text = KMNumbers.formatString(this.convRate) + "%";
+
+//            NumberFormat formatter = new DecimalFormat("#0.00");
+//            text = formatter.format(convRate)+"%";
+
             //[START] obsolete things
 //            text = convRate+"%";
             //[END] obsolete things
