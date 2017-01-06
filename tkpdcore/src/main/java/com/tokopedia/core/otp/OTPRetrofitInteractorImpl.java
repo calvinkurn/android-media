@@ -32,6 +32,7 @@ public class OTPRetrofitInteractorImpl implements OTPRetrofitInteractor {
 
     private static final String TAG = OTPRetrofitInteractorImpl.class.getSimpleName();
     private static final String DEFAULT_MSG_ERROR = "Terjadi Kesalahan, Mohon ulangi beberapa saat lagi";
+    private static final String TOO_MANY_REQUEST = "TOO_MANY_REQUEST";
 
     private final CompositeSubscription compositeSubscription;
     private final InterruptActService interruptActService;
@@ -72,7 +73,9 @@ public class OTPRetrofitInteractorImpl implements OTPRetrofitInteractor {
                         if (!response.body().isError() && response.body().getJsonData().getString("is_success").equals("1")) {
                             listener.onSuccess();
                         } else {
-                            if (response.body().isNullData()) listener.onNullData();
+                            if (response.body().getStatus().equals(TOO_MANY_REQUEST))
+                                listener.onError(response.body().getErrorMessages().toString().replace("[", "").replace("]", ""));
+                            else if (response.body().isNullData()) listener.onNullData();
                             else listener.onError(response.body().getErrorMessages().get(0));
                         }
                     } catch (JSONException e) {
@@ -152,7 +155,9 @@ public class OTPRetrofitInteractorImpl implements OTPRetrofitInteractor {
                     if (!response.body().isError()) {
                         listener.onSuccess(response.body().getStatusMessages().toString().replace("[", "").replace("]", ""));
                     } else {
-                        if (!response.body().getStatusMessages().isEmpty())
+                        if (response.body().getStatus().equals(TOO_MANY_REQUEST))
+                            listener.onError(response.body().getErrorMessages().toString().replace("[", "").replace("]", ""));
+                        else if (!response.body().getStatusMessages().isEmpty())
                             listener.onSuccess(response.body().getStatusMessages().toString().replace("[", "").replace("]", ""));
                         else if (!response.body().getErrorMessages().isEmpty())
                             listener.onError(response.body().getErrorMessages().toString().replace("[", "").replace("]", ""));
