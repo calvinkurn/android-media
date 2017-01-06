@@ -1092,7 +1092,7 @@ public class SetDateFragment extends Fragment {
                 return;
             }
 
-            if(sDate == eDate){
+            if(isEqual(sDate,eDate)){
                 this.eDate = sDate;
                 this.sDate = sDate;
                 if(datePickerRulesListener != null){
@@ -1102,7 +1102,8 @@ public class SetDateFragment extends Fragment {
             }
 
             if(eDate != -1){
-                if(eDate > sDate){
+                Log.d("MNORMANSYAH", String.format("eDate > sDate %s > %s", dateFormat.format(eDate)+"", dateFormat.format(sDate)+""));
+                if(eDate >= sDate){
                     this.sDate = sDate;
                     if(datePickerRulesListener != null){
                         datePickerRulesListener.successSDate(sDate, eDate);
@@ -1193,11 +1194,11 @@ public class SetDateFragment extends Fragment {
                 return;
             }
 
-            if(sDate == eDate){
-                this.eDate = sDate;
-                this.sDate = sDate;
+            if(isEqual(sDate,eDate)){
+                this.eDate = eDate;
+                this.sDate = eDate;
                 if(datePickerRulesListener != null){
-                    datePickerRulesListener.successSDate(sDate, eDate);
+                    datePickerRulesListener.successEDate(sDate, eDate);
                 }
                 return;
             }
@@ -1254,6 +1255,19 @@ public class SetDateFragment extends Fragment {
                     datePickerRulesListener.successEDate(sDate, eDate);
                 }
             }
+        }
+
+        boolean isEqual(long sDate, long eDate){
+            Calendar c1 = Calendar.getInstance();
+            Calendar c2 = Calendar.getInstance();
+
+            c1.setTimeInMillis(sDate);
+            c2.setTimeInMillis(eDate);
+
+            int yearDiff = c1.get(Calendar.YEAR) - c2.get(Calendar.YEAR);
+            int monthDiff = c1.get(Calendar.MONTH) - c2.get(Calendar.MONTH);
+            int dayDiff = c1.get(Calendar.DAY_OF_MONTH) - c2.get(Calendar.DAY_OF_MONTH);
+            return yearDiff==0&&monthDiff==0&&dayDiff==0;
         }
     }
 }
