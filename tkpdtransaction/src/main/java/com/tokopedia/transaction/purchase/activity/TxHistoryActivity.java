@@ -3,14 +3,15 @@ package com.tokopedia.transaction.purchase.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ListView;
+import android.support.v7.widget.RecyclerView;
 
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
-import com.tokopedia.transaction.purchase.adapter.HistoryListAdapter;
+import com.tokopedia.transaction.purchase.adapter.TxHistoryListAdapter;
+import com.tokopedia.transaction.utils.LinearLayoutManagerNonScroll;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ public class TxHistoryActivity extends TActivity {
     }
 
     @BindView(R2.id.order_status)
-    ListView listView;
+    RecyclerView rvHistory;
 
     @Override
     public String getScreenName() {
@@ -44,11 +45,12 @@ public class TxHistoryActivity extends TActivity {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_transaction_history_tx_module);
         ButterKnife.bind(this);
-        HistoryListAdapter adapter = new HistoryListAdapter(this);
-        listView.setAdapter(adapter);
+        rvHistory.setLayoutManager(new LinearLayoutManagerNonScroll(this));
+        TxHistoryListAdapter adapter = new TxHistoryListAdapter(this);
+        rvHistory.setAdapter(adapter);
         List<OrderHistory> orderHistories =
                 getIntent().getParcelableArrayListExtra(EXTRA_ORDER_HISTORIES);
-        adapter.addAll(orderHistories);
+        adapter.addAllDataList(orderHistories);
         adapter.notifyDataSetChanged();
     }
 }

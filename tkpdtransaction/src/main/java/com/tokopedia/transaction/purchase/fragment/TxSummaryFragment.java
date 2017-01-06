@@ -2,9 +2,9 @@ package com.tokopedia.transaction.purchase.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
@@ -25,15 +25,15 @@ import butterknife.BindView;
  * @author Angga.Prasetiyo on 07/04/2016.
  */
 public class TxSummaryFragment extends BasePresenterFragment<TxSummaryPresenter> implements
-        AdapterView.OnItemClickListener, TxSummaryViewListener,
-        RefreshHandler.OnRefreshHandlerListener {
+        TxSummaryViewListener, RefreshHandler.OnRefreshHandlerListener,
+        TxSummaryAdapter.ActionListener {
     private static final String EXTRA_INSTANCE_TYPE = "EXTRA_INSTANCE_TYPE";
     private OnCenterMenuClickListener listener;
     public static int INSTANCE_TYPE_PURCHASE = 1;
     public static int INSTANCE_TYPE_SALES = 2;
 
     @BindView(R2.id.menu_list)
-    ListView lvSummary;
+    RecyclerView rvSummary;
     private TxSummaryAdapter summaryAdapter;
     private int instanceType;
     private RefreshHandler refreshHandler;
@@ -55,11 +55,6 @@ public class TxSummaryFragment extends BasePresenterFragment<TxSummaryPresenter>
     public void onRefresh(View view) {
         presenter.getNotificationFromNetwork(getActivity());
         refreshHandler.setPullEnabled(false);
-    }
-
-
-    public interface OnCenterMenuClickListener {
-        void OnMenuClick(int position, String stateTxFilter);
     }
 
     public static TxSummaryFragment createInstancePurchase() {
@@ -126,14 +121,14 @@ public class TxSummaryFragment extends BasePresenterFragment<TxSummaryPresenter>
 
     @Override
     protected void initView(View view) {
-        summaryAdapter = new TxSummaryAdapter(getActivity());
+        summaryAdapter = new TxSummaryAdapter(getActivity(), this);
         refreshHandler = new RefreshHandler(getActivity(), getView(), this);
+        rvSummary.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
     @Override
     protected void setViewListener() {
-        lvSummary.setAdapter(summaryAdapter);
-        lvSummary.setOnItemClickListener(this);
+        rvSummary.setAdapter(summaryAdapter);
     }
 
     @Override
@@ -163,37 +158,36 @@ public class TxSummaryFragment extends BasePresenterFragment<TxSummaryPresenter>
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-        if (instanceType == INSTANCE_TYPE_PURCHASE && summaryAdapter != null) {
-            final TxSummaryItem item = summaryAdapter.getItem(position);
-            if (item == null) return;
-            switch (item.getIndex()) {
-                case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_VERIFICATION:
-                    listener.OnMenuClick(
-                            TransactionPurchaseRouter.TAB_POSITION_PURCHASE_VERIFICATION,
-                            TransactionPurchaseRouter.ALL_STATUS_FILTER_ID
-                    );
-                    break;
-                case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER:
-                    listener.OnMenuClick(
-                            TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER,
-                            TransactionPurchaseRouter.ALL_STATUS_FILTER_ID
-                    );
-                    break;
-                case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVER_ORDER:
-                    listener.OnMenuClick(
-                            TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVER_ORDER,
-                            TransactionPurchaseRouter.ALL_STATUS_FILTER_ID
-                    );
-                    break;
-                case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_ALL_ORDER:
-                    listener.OnMenuClick(
-                            TransactionPurchaseRouter.TAB_POSITION_PURCHASE_ALL_ORDER,
-                            TransactionPurchaseRouter.TRANSACTION_CANCELED_FILTER_ID
-                    );
-                    break;
-            }
+    public void onItemClicked(TxSummaryItem txSummaryItem) {
+        switch (txSummaryItem.getIndex()) {
+            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_VERIFICATION:
+                listener.OnMenuClick(
+                        TransactionPurchaseRouter.TAB_POSITION_PURCHASE_VERIFICATION,
+                        TransactionPurchaseRouter.ALL_STATUS_FILTER_ID
+                );
+                break;
+            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER:
+                listener.OnMenuClick(
+                        TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER,
+                        TransactionPurchaseRouter.ALL_STATUS_FILTER_ID
+                );
+                break;
+            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVER_ORDER:
+                listener.OnMenuClick(
+                        TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVER_ORDER,
+                        TransactionPurchaseRouter.ALL_STATUS_FILTER_ID
+                );
+                break;
+            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_ALL_ORDER:
+                listener.OnMenuClick(
+                        TransactionPurchaseRouter.TAB_POSITION_PURCHASE_ALL_ORDER,
+                        TransactionPurchaseRouter.TRANSACTION_CANCELED_FILTER_ID
+                );
+                break;
         }
+    }
+
+    public interface OnCenterMenuClickListener {
+        void OnMenuClick(int position, String stateTxFilter);
     }
 }

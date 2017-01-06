@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -20,7 +20,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:text="Tanggal Transaksi"
-            android:textSize="@dimen/fontvs" />
+            android:textSize="@dimen/fontvs"/>
 
         <TextView
             android:id="@+id/date"
@@ -30,7 +30,7 @@
             android:layout_below="@id/txtTanggalTransaksi"
             android:text="21 Oktober 2014"
             android:textSize="@dimen/font_small"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/txtTotalPembayaran"
@@ -39,7 +39,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:text="Total Pembayaran"
-            android:textSize="@dimen/fontvs" />
+            android:textSize="@dimen/fontvs"/>
 
         <TextView
             android:id="@+id/total_invoice"
@@ -49,7 +49,7 @@
             android:layout_below="@+id/txtTotalPembayaran"
             android:text="Rp 200.000,-"
             android:textSize="@dimen/font_small"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/indomaret_code_detail_label"
@@ -64,7 +64,7 @@
             android:minHeight="@dimen/btn_height"
             android:textSize="@dimen/font_large"
             android:textStyle="bold"
-            android:visibility="gone" />
+            android:visibility="gone"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -84,7 +84,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:text="Rekening Anda"
-            android:textSize="@dimen/fontvs" />
+            android:textSize="@dimen/fontvs"/>
 
         <TextView
             android:id="@+id/txtNoRekeningTujuan"
@@ -93,7 +93,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:text="Rekening Tujuan"
-            android:textSize="@dimen/fontvs" />
+            android:textSize="@dimen/fontvs"/>
 
         <TextView
             android:id="@+id/account_owner"
@@ -103,7 +103,7 @@
             android:layout_below="@+id/txtNoRekeningAsal"
             android:text="No Rekening Asal"
             android:textSize="@dimen/font_small"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/account_number"
@@ -113,7 +113,7 @@
             android:layout_below="@+id/txtNoRekeningTujuan"
             android:text="No Rekening Tujuan"
             android:textSize="@dimen/font_small"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -127,7 +127,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginBottom="@dimen/margin_small"
             android:layout_marginTop="@dimen/margin_small"
-            android:background="@drawable/gradient_black_alt" />
+            android:background="@drawable/gradient_black_alt"/>
 
         <LinearLayout
             android:id="@+id/layoutTemp"
@@ -149,7 +149,7 @@
                 android:text="Ubah Pembayaran"
                 android:textColor="@color/white"
                 android:textSize="@dimen/font_small"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/upload_button"
@@ -163,10 +163,10 @@
                 android:text="Unggah Bukti Pembayaran"
                 android:textColor="@color/label_color"
                 android:textSize="@dimen/font_small"
-                android:visibility="visible" />
+                android:visibility="visible"/>
         </LinearLayout>
 
-        <ListView
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/listView1"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
@@ -174,7 +174,7 @@
             android:layout_below="@+id/divider"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small" />
+            android:layout_marginRight="@dimen/margin_small"/>
     </RelativeLayout>
 
 </LinearLayout>

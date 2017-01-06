@@ -12,10 +12,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -54,7 +54,7 @@ import permissions.dispatcher.RuntimePermissions;
  */
 @RuntimePermissions
 public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresenter>
-        implements TxVerDetailViewListener, AdapterView.OnItemClickListener {
+        implements TxVerDetailViewListener, TxVerInvoiceAdapter.ActionListener {
     private static final String EXTRA_TX_VER_DATA = "EXTRA_TX_VER_DATA";
     public static final String EXTRA_MESSAGE_ERROR_GET_INVOICE = "EXTRA_MESSAGE_ERROR_GET_INVOICE";
     public static final int RESULT_INVOICE_FAILED = 2;
@@ -64,7 +64,7 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
     private TxVerInvoiceAdapter invoiceAdapter;
 
     @BindView(R2.id.listView1)
-    ListView lvInvoice;
+    RecyclerView rvInvoice;
     @BindView(R2.id.date)
     TextView tvPaymentDate;
     @BindView(R2.id.total_invoice)
@@ -119,12 +119,12 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
     @Override
     protected void initView() {
         mProgressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
+        rvInvoice.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @Override
     protected void setViewListener() {
-        lvInvoice.setAdapter(invoiceAdapter);
-        lvInvoice.setOnItemClickListener(this);
+        rvInvoice.setAdapter(invoiceAdapter);
     }
 
     @Override
@@ -211,8 +211,7 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
 
     @Override
     public void renderInvoiceList(List<Detail> detail) {
-        invoiceAdapter.addAll(detail);
-        invoiceAdapter.notifyDataSetChanged();
+        invoiceAdapter.addAllInvoiceList(detail);
     }
 
     @Override
@@ -220,14 +219,6 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
         setResult(RESULT_INVOICE_FAILED,
                 new Intent().putExtra(EXTRA_MESSAGE_ERROR_GET_INVOICE, message));
         finish();
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Detail data = invoiceAdapter.getItem(position);
-        AppUtils.InvoiceDialog(
-                this, data != null ? data.getUrl() : "", data != null ? data.getInvoice() : ""
-        );
     }
 
     @Override
@@ -383,5 +374,13 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
         listPermission.add(Manifest.permission.CAMERA);
 
         RequestPermissionUtil.onNeverAskAgain(this, listPermission);
+    }
+
+    @Override
+    public void onInvoiceItemClicked(Detail detailInvoice) {
+        AppUtils.InvoiceDialog(
+                this, detailInvoice != null ? detailInvoice.getUrl() : "",
+                detailInvoice != null ? detailInvoice.getInvoice() : ""
+        );
     }
 }

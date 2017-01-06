@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -34,7 +35,7 @@ import com.tokopedia.transaction.purchase.model.response.txlist.OrderData;
 import com.tokopedia.transaction.purchase.presenter.TxDetailPresenter;
 import com.tokopedia.transaction.purchase.presenter.TxDetailPresenterImpl;
 import com.tokopedia.transaction.purchase.receiver.TxListUIReceiver;
-import com.tokopedia.transaction.purchase.view.NestedListView;
+import com.tokopedia.transaction.utils.LinearLayoutManagerNonScroll;
 
 import java.text.MessageFormat;
 
@@ -53,7 +54,7 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
     @BindView(R2.id.shop_name)
     TextView tvShopName;
     @BindView(R2.id.product_list)
-    NestedListView lvProduct;
+    RecyclerView rvProductList;
     @BindView(R2.id.shipping_cost)
     TextView tvShippingCost;
     @BindView(R2.id.additional_cost)
@@ -126,16 +127,17 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
     @Override
     protected void initView() {
         progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
+        rvProductList.setLayoutManager(new LinearLayoutManagerNonScroll(this));
     }
 
     @Override
     protected void setViewListener() {
-        lvProduct.setAdapter(productListAdapter);
+        rvProductList.setAdapter(productListAdapter);
     }
 
     @Override
     protected void initVar() {
-        this.productListAdapter = new TxProductListAdapter(this, this);
+        this.productListAdapter = new TxProductListAdapter(this);
     }
 
     @Override
@@ -152,8 +154,7 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
     }
 
     private void renderProductList() {
-        productListAdapter.addAll(orderData.getOrderProducts());
-        productListAdapter.notifyDataSetChanged();
+        productListAdapter.addAllDataList(orderData.getOrderProducts());
     }
 
     private void renderOrderStatus() {

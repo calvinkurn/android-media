@@ -1,8 +1,8 @@
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/padding_small">
+                                            xmlns:tools="http://schemas.android.com/tools"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:paddingBottom="@dimen/padding_small">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -32,7 +32,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/tx_date"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/fontvs" />
+                    android:textSize="@dimen/fontvs"/>
 
                 <TextView
                     android:id="@+id/transaction"
@@ -40,7 +40,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/fonts"
                     android:textStyle="bold"
-                    tools:text="16 Mei 2014" />
+                    tools:text="16 Mei 2014"/>
             </LinearLayout>
 
             <LinearLayout
@@ -56,7 +56,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/title_buy_from"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/fontvs" />
+                    android:textSize="@dimen/fontvs"/>
 
                 <TextView
                     android:id="@+id/shop_name"
@@ -66,7 +66,7 @@
                     android:maxLines="1"
                     android:textSize="@dimen/fonts"
                     android:textStyle="bold"
-                    tools:text="Shop Name" />
+                    tools:text="Shop Name"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -89,7 +89,7 @@
                 android:gravity="center"
                 android:textColor="@color/href_link"
                 android:textIsSelectable="true"
-                android:textSize="@dimen/fonts" />
+                android:textSize="@dimen/fonts"/>
         </LinearLayout>
 
         <View
@@ -97,7 +97,7 @@
             android:layout_height="10dp"
             android:layout_marginBottom="@dimen/margin_small"
             android:layout_marginTop="@dimen/margin_small"
-            android:background="@drawable/gradient_black_alt" />
+            android:background="@drawable/gradient_black_alt"/>
 
         <LinearLayout
             android:id="@+id/order_status_layout"
@@ -105,7 +105,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_small"
             android:layout_marginRight="@dimen/margin_small"
-            android:orientation="vertical" />
+            android:orientation="vertical"/>
 
         <TextView
             android:id="@+id/see_all"
@@ -118,14 +118,14 @@
             android:gravity="center"
             android:padding="@dimen/padding_vs"
             android:text="@string/title_see_all"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"/>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_marginBottom="@dimen/margin_small"
             android:layout_marginTop="@dimen/margin_small"
-            android:background="@color/label_color" />
+            android:background="@color/label_color"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -136,12 +136,12 @@
             android:background="@drawable/see_all_bg"
             android:orientation="vertical">
 
-            <com.tokopedia.transaction.purchase.view.NestedListView
+            <android.support.v7.widget.RecyclerView
                 android:id="@+id/product_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:divider="@color/greyish_bg"
-                android:dividerHeight="1dp" />
+                android:dividerHeight="1dp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -164,14 +164,14 @@
                     android:layout_height="wrap_content"
                     android:text="@string/title_shipping_cost"
                     android:textColor="@color/label_color"
-                    android:textSize="@dimen/fonts" />
+                    android:textSize="@dimen/fonts"/>
 
                 <TextView
                     android:id="@+id/shipping_cost"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="end"
-                    android:textSize="@dimen/fonts" />
+                    android:textSize="@dimen/fonts"/>
             </LinearLayout>
 
             <LinearLayout
@@ -185,14 +185,14 @@
                     android:layout_height="wrap_content"
                     android:text="@string/title_additional_cost"
                     android:textColor="@color/label_color"
-                    android:textSize="@dimen/fonts" />
+                    android:textSize="@dimen/fonts"/>
 
                 <TextView
                     android:id="@+id/additional_cost"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="end"
-                    android:textSize="@dimen/fonts" />
+                    android:textSize="@dimen/fonts"/>
             </LinearLayout>
 
             <LinearLayout
@@ -207,7 +207,7 @@
                     android:layout_weight=".50"
                     android:text="@string/title_quantity"
                     android:textColor="@color/label_color"
-                    android:textSize="@dimen/fonts" />
+                    android:textSize="@dimen/fonts"/>
 
                 <TextView
                     android:id="@+id/quantity"
@@ -215,7 +215,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight=".50"
                     android:gravity="end"
-                    android:textSize="@dimen/fonts" />
+                    android:textSize="@dimen/fonts"/>
             </LinearLayout>
 
             <LinearLayout
@@ -230,7 +230,7 @@
                     android:text="@string/title_grand_total"
                     android:textColor="@color/label_color"
                     android:textSize="@dimen/fonts"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/grand_total"
@@ -239,7 +239,7 @@
                     android:layout_weight=".50"
                     android:gravity="end"
                     android:textSize="@dimen/fonts"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -265,7 +265,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/title_sender_name"
                     android:textColor="@color/label_color"
-                    android:textSize="@dimen/fonts" />
+                    android:textSize="@dimen/fonts"/>
 
                 <TextView
                     android:id="@+id/sender_name"
@@ -275,14 +275,14 @@
                     android:gravity="start"
                     android:textIsSelectable="true"
                     android:textSize="@dimen/fonts"
-                    tools:text="Budi Anduk" />
+                    tools:text="Budi Anduk"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/title_sender_phone"
                     android:textColor="@color/label_color"
-                    android:textSize="@dimen/fonts" />
+                    android:textSize="@dimen/fonts"/>
 
                 <TextView
                     android:id="@+id/sender_phone"
@@ -291,7 +291,7 @@
                     android:gravity="start"
                     android:textIsSelectable="true"
                     android:textSize="@dimen/fonts"
-                    tools:text="08451558" />
+                    tools:text="08451558"/>
             </LinearLayout>
 
             <LinearLayout
@@ -305,7 +305,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/title_destination_address"
                     android:textColor="@color/label_color"
-                    android:textSize="@dimen/fonts" />
+                    android:textSize="@dimen/fonts"/>
 
                 <TextView
                     android:id="@+id/destination_detail"
@@ -313,7 +313,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="start"
                     android:textIsSelectable="true"
-                    android:textSize="@dimen/fonts" />
+                    android:textSize="@dimen/fonts"/>
             </LinearLayout>
 
             <LinearLayout
@@ -327,14 +327,14 @@
                     android:layout_height="wrap_content"
                     android:text="@string/title_shipping_courier"
                     android:textColor="@color/label_color"
-                    android:textSize="@dimen/fonts" />
+                    android:textSize="@dimen/fonts"/>
 
                 <TextView
                     android:id="@+id/destination"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="start"
-                    android:textSize="@dimen/fonts" />
+                    android:textSize="@dimen/fonts"/>
             </LinearLayout>
 
 
@@ -351,7 +351,7 @@
             android:gravity="center"
             android:text="@string/title_show_complain"
             android:textColor="@color/label_color"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/ask_seller"
@@ -364,7 +364,7 @@
             android:gravity="center"
             android:text="@string/title_ask_seller"
             android:textColor="@color/label_color"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/btn_request_cancel_order"
@@ -377,7 +377,7 @@
             android:gravity="center"
             android:text="@string/title_request_cancel_order"
             android:textColor="@color/label_color"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/track_btn"
@@ -390,7 +390,7 @@
             android:gravity="center"
             android:text="@string/title_track"
             android:textColor="@color/label_color"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/receive_btn"
@@ -403,7 +403,7 @@
             android:gravity="center"
             android:text="@string/title_receive_confirmation"
             android:textColor="@color/white"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/reject_btn"
@@ -416,7 +416,7 @@
             android:gravity="center"
             android:text="@string/title_package_not_received"
             android:textColor="@color/label_color"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/upload_proof"
@@ -429,7 +429,7 @@
             android:gravity="center"
             android:text="@string/title_upload_evidence"
             android:textColor="@color/white"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>
