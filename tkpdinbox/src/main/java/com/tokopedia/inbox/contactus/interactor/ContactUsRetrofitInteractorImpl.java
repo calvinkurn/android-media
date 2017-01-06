@@ -90,12 +90,7 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
                                                     throw new RuntimeException(errorMessage);
                                                 }
                                             } else {
-                                                if (tkpdResponse.body().getStatus().equals(TOO_MANY_REQUEST))
-                                                    listener.onError(tkpdResponse.body().getErrorMessages().toString().replace("[", "").replace("]", ""));
-                                                else if (tkpdResponse.body().isNullData())
-                                                    listener.onNullData();
-                                                else
-                                                    listener.onError(tkpdResponse.body().getErrorMessages().toString().replace("[", "").replace("]", ""));
+                                                throw new RuntimeException(tkpdResponse.body().getErrorMessages().toString().replace("[", "").replace("]", ""));
                                             }
                                         }
                                     });
