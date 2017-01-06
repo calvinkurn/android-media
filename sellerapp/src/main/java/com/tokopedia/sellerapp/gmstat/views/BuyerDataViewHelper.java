@@ -118,8 +118,8 @@ public class BuyerDataViewHelper {
                 headerPieBuyerData.setText(biggerGender);
 //                malePie.setText(String.format(locale, "%.2f%% %s", malePercent, gender[0]));
 //                femalePie.setText(String.format(locale, "%.2f%%", femalePercent));
-                malePie.setText(String.format(locale, "%3d%% %s", malePercent, gender[0]));
-                femalePie.setText(String.format(locale, "%3d%% %s", femalePercent));
+                malePie.setText(String.format(locale, "%3d%% %s", (int)malePercent, gender[0]));
+                femalePie.setText(String.format(locale, "%3d%%", (int)femalePercent));
                 buyerDataPieChart.setProgress((float) femalePercent);
             }
         }
