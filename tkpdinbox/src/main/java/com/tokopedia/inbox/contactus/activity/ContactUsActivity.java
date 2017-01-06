@@ -31,7 +31,8 @@ public class ContactUsActivity extends BasePresenterActivity implements
     public static final String PARAM_ORDER_ID = "PARAM_ORDER_ID";
     public static final String PARAM_TAG = "PARAM_TAG";
     private static final String CURRENT_FRAGMENT_BACKSTACK = "CURRENT_FRAGMENT_BACKSTACK";
-
+    private static final String PARAM_BUNDLE = "PARAM_BUNDLE";
+    String url;
 
     public interface BackButtonListener {
         void onBackPressed();
@@ -49,6 +50,27 @@ public class ContactUsActivity extends BasePresenterActivity implements
     @Override
     protected void setupBundlePass(Bundle extras) {
 
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        if (savedInstanceState.getString(CURRENT_FRAGMENT_BACKSTACK, "").equals(CreateTicketFormFragment.class.getSimpleName())) {
+            url = savedInstanceState.getString(PARAM_URL, "");
+
+            Bundle bundle = getIntent().getExtras();
+            if (bundle == null)
+                bundle = new Bundle();
+            bundle.putAll(savedInstanceState.getBundle(PARAM_BUNDLE));
+            if (!url.equals(""))
+                bundle.putString(PARAM_SOLUTION_ID, Uri.parse(url).getQueryParameter("solution_id"));
+            CreateTicketFormFragment fragment = CreateTicketFormFragment.createInstance(bundle);
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.setCustomAnimations(R.animator.slide_in_left, 0, 0, R.animator.slide_out_right);
+            transaction.add(R.id.main_view, fragment, CreateTicketFormFragment.class.getSimpleName());
+            transaction.addToBackStack(CreateTicketFormFragment.class.getSimpleName());
+            transaction.commit();
+        }
+        super.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override
@@ -79,8 +101,10 @@ public class ContactUsActivity extends BasePresenterActivity implements
             fragmentTransaction.add(R.id.main_view, fragment, fragment.getClass().getSimpleName());
             fragmentTransaction.addToBackStack(ContactUsFaqFragment.class.getSimpleName());
             fragmentTransaction.commit();
-        } else {
-            bundle.putString(PARAM_SOLUTION_ID, Uri.parse(bundle.getString(PARAM_URL)).getQueryParameter("solution_id"));
+        } else if (getFragmentManager().findFragmentById(R.id.main_view) == null) {
+            url = bundle.getString(PARAM_URL, "");
+            if (url == null || url.equals(""))
+                bundle.putString(PARAM_SOLUTION_ID, Uri.parse(url).getQueryParameter("solution_id"));
             onGoToCreateTicket(bundle);
         }
     }
@@ -137,5 +161,13 @@ public class ContactUsActivity extends BasePresenterActivity implements
             startActivity(intent);
             finish();
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString(CURRENT_FRAGMENT_BACKSTACK, getFragmentManager().findFragmentById(R.id.main_view).getTag());
+        outState.putString(PARAM_URL, url);
+        outState.putBundle(PARAM_BUNDLE, getIntent().getExtras());
+        super.onSaveInstanceState(outState);
     }
 }

@@ -196,6 +196,7 @@ public class SecurityQuestionImpl implements SecurityQuestion {
     @Override
     public void doRequestOtp() {
         view.displayProgress(true);
+        view.disableOtpButton();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_BUNDLE, String.valueOf(viewModel.getSecurity2()));
         ((SessionView) mContext).sendDataFromInternet(ACTION_REQUEST_OTP, bundle);
@@ -204,7 +205,7 @@ public class SecurityQuestionImpl implements SecurityQuestion {
     @Override
     public void doRequestOtpWithCall() {
         view.displayProgress(true);
-
+        view.disableOtpButton();
         Bundle bundle = new Bundle();
         ((SessionView) mContext).sendDataFromInternet(ACTION_REQUEST_OTP_WITH_CALL, bundle);
     }
@@ -291,7 +292,7 @@ public class SecurityQuestionImpl implements SecurityQuestion {
                 OTPModel otpModel = Parcels.unwrap(data.getParcelable(REQUEST_OTP_MODEL));
                 view.requestOTP(otpModel);
                 view.displayProgress(false);
-                view.disableButton();
+                view.startTimer();
                 break;
             case DownloadService.ANSWER_SECURITY_QUESTION:
                 if (data.getParcelable(DownloadService.ANSWER_SECURITY_QUESTION_FALSE_MODEL) != null) {

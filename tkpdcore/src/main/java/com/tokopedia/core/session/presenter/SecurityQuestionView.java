@@ -34,8 +34,10 @@ public interface SecurityQuestionView extends BaseView {
 
     void displayProgress(boolean isShow);
 
-    void disableButton();
+    void startTimer();
 
     void destroyTimer();
+
+    void disableOtpButton();
 
 }

@@ -133,6 +133,7 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
         inflater.inflate(R.menu.talk_add_new, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }

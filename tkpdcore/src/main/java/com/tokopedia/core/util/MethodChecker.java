@@ -16,6 +16,7 @@ import android.text.Spanned;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.ValueCallback;
+import android.webkit.WebSettings;
 
 import com.tkpd.library.utils.CommonUtils;
 
@@ -92,5 +93,10 @@ public class MethodChecker {
 
             return SmsMessage.createFromPdu((byte[]) (pdusObj != null ? pdusObj[0] : ""));
         }
+    }
+
+    public static void setAllowMixedContent(WebSettings webSettings) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
     }
 }

@@ -194,12 +194,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     }
 
     @Override
-    public void disableButton() {
-        MethodChecker.setBackground(vSendOtp, getResources().getDrawable(R.drawable.btn_transparent_disable));
-        vSendOtp.setEnabled(false);
-        vSendOtp.setTextColor(getResources().getColor(R.color.grey_600));
-
-        vSendOtpCall.setVisibility(View.GONE);
+    public void startTimer() {
 
         countDownTimer = new CountDownTimer(90000, 1000) {
             public void onTick(long millisUntilFinished) {
@@ -221,12 +216,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
             public void onFinish() {
                 try {
-                    vSendOtp.setTextColor(getResources().getColor(R.color.tkpd_green_onboarding));
-                    vSendOtp.setBackground(getResources().getDrawable(R.drawable.btn_share_transaparent));
-                    vSendOtp.setText("Kirim ulang OTP");
-                    vSendOtp.setEnabled(true);
-
-                    vSendOtpCall.setVisibility(View.VISIBLE);
+                    enableOtpButton();
                 } catch (Exception e) {
 
                 }
@@ -236,12 +226,29 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
         vInputOtp.requestFocus();
     }
 
+    private void enableOtpButton() {
+        vSendOtp.setTextColor(getResources().getColor(R.color.tkpd_green_onboarding));
+        vSendOtp.setBackground(getResources().getDrawable(R.drawable.btn_share_transaparent));
+        vSendOtp.setText("Kirim ulang OTP");
+        vSendOtp.setEnabled(true);
+
+        vSendOtpCall.setVisibility(View.VISIBLE);
+    }
+
     @Override
     public void destroyTimer() {
         if (countDownTimer != null) {
             countDownTimer.cancel();
             countDownTimer = null;
         }
+    }
+
+    @Override
+    public void disableOtpButton() {
+        MethodChecker.setBackground(vSendOtp, getResources().getDrawable(R.drawable.btn_transparent_disable));
+        vSendOtp.setEnabled(false);
+        vSendOtp.setTextColor(getResources().getColor(R.color.grey_600));
+        vSendOtpCall.setVisibility(View.GONE);
     }
 
     @Override
@@ -416,6 +423,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
         Log.d(TAG, messageTAG + "retry arise !!!");
         SnackbarManager.make(getActivity(), getString(R.string.message_verification_timeout), Snackbar.LENGTH_SHORT).show();
         displayProgress(false);
+        enableOtpButton();
     }
 
     @Override
@@ -423,6 +431,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
         String text = (String) data[0];
         SnackbarManager.make(getActivity(), text, Snackbar.LENGTH_SHORT).show();
         displayProgress(false);
+        enableOtpButton();
     }
 
     @Override
@@ -430,6 +439,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
         String text = (String) data[0];
         SnackbarManager.make(getActivity(), text, Snackbar.LENGTH_SHORT).show();
         displayProgress(false);
+        enableOtpButton();
     }
 
     @Override
@@ -444,16 +454,17 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
             NetworkErrorHelper.showSnackbar(getActivity());
         else
             NetworkErrorHelper.showSnackbar(getActivity(), message);
+        enableOtpButton();
     }
 
     public void onSuccessRequestOTPWithCall(String message) {
-        disableButton();
+        startTimer();
         displayProgress(false);
         SnackbarManager.make(getActivity(), message, Snackbar.LENGTH_LONG).show();
     }
 
     public void onSuccessRequestOTP(String message) {
-        disableButton();
+        startTimer();
         displayProgress(false);
         SnackbarManager.make(getActivity(), message, Snackbar.LENGTH_LONG).show();
     }

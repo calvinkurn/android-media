@@ -1215,7 +1215,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_activity_buy_credit">BuyCredit</string>
     <!--string related to Security Question -->
     <string name="msg_security_question">Hi Toppers, Mohon kesediaannya menjawab pertanyaan berikut untuk membantu kami memastikan bahwa Anda adalah pemilik akun Tokopedia ini.</string>
-    <string name="bar_security_question">Verifikasi Keamanan</string>
+    <string name="bar_security_question">Pertanyaan Keamanan</string>
     <string name="title_security_question">Halo, User</string>
     <string name="content_security_question">Kami telah mengirimkan kode verifikasi ke nomor ponsel/email kamu.</string>
     <string name="content_security_question_phone">Kami telah mengirimkan kode verifikasi ke nomor ponsel </string>
