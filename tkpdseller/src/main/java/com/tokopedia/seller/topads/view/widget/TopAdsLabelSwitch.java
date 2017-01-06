@@ -2,13 +2,11 @@ package com.tokopedia.seller.topads.view.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.SwitchCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
@@ -22,14 +20,14 @@ import butterknife.ButterKnife;
  */
 
 public class TopAdsLabelSwitch extends CardView {
-    @BindView(R2.id.title_item)
-    TextView title;
+    @BindView(R2.id.title_text_view)
+    TextView titleTextView;
 
-    @BindView(R2.id.desc_switch)
-    TextView desc_switch;
+    @BindView(R2.id.switch_text_view)
+    TextView switchTextView;
 
-    @BindView(R2.id.switch_active_ads)
-    SwitchCompat switchCompat;
+    @BindView(R2.id.switch_status)
+    SwitchCompat switchStatus;
 
     private ListenerSwitchValue listenerSwitchValue;
     private String titleText;
@@ -65,8 +63,8 @@ public class TopAdsLabelSwitch extends CardView {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        title.setText(titleText);
-        switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        titleTextView.setText(titleText);
+        switchStatus.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(listenerSwitchValue!=null){
@@ -74,9 +72,9 @@ public class TopAdsLabelSwitch extends CardView {
                 }
 
                 if(isChecked){
-                    desc_switch.setText(R.string.label_active_topads);
+                    switchTextView.setText(R.string.label_active_topads);
                 }else{
-                    desc_switch.setText(R.string.label_non_active_topads);
+                    switchTextView.setText(R.string.label_non_active_topads);
                 }
             }
         });
@@ -91,21 +89,21 @@ public class TopAdsLabelSwitch extends CardView {
     }
 
     public void setTitle(String textTitle){
-        title.setText(textTitle);
+        titleTextView.setText(textTitle);
         invalidate();
         requestLayout();
     }
 
     public String getTitle(){
-        return title.getText().toString();
+        return titleTextView.getText().toString();
     }
 
-    public boolean getValue(){
-        return switchCompat.isChecked();
+    public boolean isChecked(){
+        return switchStatus.isChecked();
     }
 
-    public void setValue(boolean isChecked){
-        switchCompat.setChecked(isChecked);
+    public void setChecked(boolean isChecked){
+        switchStatus.setChecked(isChecked);
         invalidate();
         requestLayout();
     }

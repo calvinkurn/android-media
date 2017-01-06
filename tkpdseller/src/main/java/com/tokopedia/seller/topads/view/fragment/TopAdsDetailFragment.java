@@ -142,18 +142,18 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     }
 
     protected void setData(Ad ad){
-        name.setValue(ad.getName());
-        status.setValue(ad.getStatus() == 1 ? true:false);
-        maxBid.setValue(ad.getPriceBidFmt());
-        avgCost.setValue(ad.getStatTotalSpent());
-        start.setValue(ad.getStartDate() + " - " + ad.getStartTime());
-        end.setValue(ad.getEndDate() + " - " + ad.getEndTime());
-        dailyBudget.setValue(ad.getPriceDailyFmt());
-        sent.setValue(ad.getPriceDailySpentFmt());
-        impr.setValue(ad.getStatTotalImpression());
-        click.setValue(ad.getStatTotalClick());
-        ctr.setValue(ad.getStatTotalCtr());
-        favorite.setValue(ad.getStatTotalConversion());
+        name.setContent(ad.getName());
+        status.setChecked(ad.getStatus() == 1 ? true:false);
+        maxBid.setContent(ad.getPriceBidFmt());
+        avgCost.setContent(ad.getStatTotalSpent());
+        start.setContent(ad.getStartDate() + " - " + ad.getStartTime());
+        end.setContent(ad.getEndDate() + " - " + ad.getEndTime());
+        dailyBudget.setContent(ad.getPriceDailyFmt());
+        sent.setContent(ad.getPriceDailySpentFmt());
+        impr.setContent(ad.getStatTotalImpression());
+        click.setContent(ad.getStatTotalClick());
+        ctr.setContent(ad.getStatTotalCtr());
+        favorite.setContent(ad.getStatTotalConversion());
     }
 
 }

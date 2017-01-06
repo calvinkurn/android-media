@@ -40,21 +40,21 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <include
-                android:id="@+id/layout_top_ads_info_text_impression"
-                layout="@layout/include_top_ads_main_info_text"
+            <com.tokopedia.seller.topads.view.widget.TopAdsStatisticLabelView
+                android:id="@+id/statistic_label_view_impression"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                app:title="@string/label_top_ads_impression"/>
 
             <include layout="@layout/include_separator_vertical"/>
 
-            <include
-                android:id="@+id/layout_top_ads_info_text_click"
-                layout="@layout/include_top_ads_main_info_text"
+            <com.tokopedia.seller.topads.view.widget.TopAdsStatisticLabelView
+                android:id="@+id/statistic_label_view_click"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                app:title="@string/label_top_ads_click"/>
         </LinearLayout>
 
         <include layout="@layout/include_separator_horizontal"/>
@@ -64,21 +64,22 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <include
-                android:id="@+id/layout_top_ads_info_text_ctr"
-                layout="@layout/include_top_ads_main_info_text"
+            <com.tokopedia.seller.topads.view.widget.TopAdsStatisticLabelView
+                android:id="@+id/statistic_label_view_ctr"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                app:title="@string/label_top_ads_ctr"/>
 
             <include layout="@layout/include_separator_vertical"/>
 
-            <include
-                android:id="@+id/layout_top_ads_info_text_conversion"
-                layout="@layout/include_top_ads_main_info_text"
+            <com.tokopedia.seller.topads.view.widget.TopAdsStatisticLabelView
+                android:id="@+id/statistic_label_view_conversion"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                app:title="@string/label_top_ads_conversion"/>
+
         </LinearLayout>
 
         <include layout="@layout/include_separator_horizontal"/>
@@ -88,21 +89,22 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <include
-                android:id="@+id/layout_top_ads_info_text_average"
-                layout="@layout/include_top_ads_main_info_text"
+            <com.tokopedia.seller.topads.view.widget.TopAdsStatisticLabelView
+                android:id="@+id/statistic_label_view_average"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                app:title="@string/label_top_ads_average"/>
 
             <include layout="@layout/include_separator_vertical"/>
 
-            <include
-                android:id="@+id/layout_top_ads_info_text_cost"
-                layout="@layout/include_top_ads_main_info_text"
+            <com.tokopedia.seller.topads.view.widget.TopAdsStatisticLabelView
+                android:id="@+id/statistic_label_view_cost"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                app:title="@string/label_top_ads_cost"/>
+
         </LinearLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>

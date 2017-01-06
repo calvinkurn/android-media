@@ -6,17 +6,12 @@ import android.view.View;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
-import com.tokopedia.seller.topads.constant.TopAdsConstant;
-import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.model.data.TotalAd;
 import com.tokopedia.seller.topads.presenter.TopAdsDashboardProductPresenterImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsGroupAdListActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardProductFragmentListener;
 import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
-
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -57,8 +52,8 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
 
     @Override
     public void onTotalAdLoaded(@NonNull TotalAd totalAd) {
-        groupSummaryLabelView.setValue(String.valueOf(totalAd.getTotalProductGroupAd()));
-        itemSummaryLabelView.setValue(String.valueOf(totalAd.getTotalProductAd()));
+        groupSummaryLabelView.setContent(String.valueOf(totalAd.getTotalProductGroupAd()));
+        itemSummaryLabelView.setContent(String.valueOf(totalAd.getTotalProductAd()));
     }
 
     @Override

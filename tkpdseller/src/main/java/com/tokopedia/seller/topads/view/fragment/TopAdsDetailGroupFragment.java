@@ -56,7 +56,7 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
         super.initView(view);
         if(groupAd != null) {
             setData(groupAd);
-            items.setValue(String.valueOf(groupAd.getTotalItem()));
+            items.setContent(String.valueOf(groupAd.getTotalItem()));
         }
     }
 

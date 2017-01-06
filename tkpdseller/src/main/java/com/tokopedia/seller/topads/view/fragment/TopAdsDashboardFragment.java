@@ -19,6 +19,7 @@ import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.presenter.TopAdsDashboardPresenter;
 import com.tokopedia.seller.topads.view.activity.TopAdsAddCreditActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardFragmentListener;
+import com.tokopedia.seller.topads.view.widget.TopAdsStatisticLabelView;
 
 import java.util.Date;
 
@@ -39,18 +40,18 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
     @BindView(R2.id.text_view_range_date)
     TextView rangeDateDescTextView;
 
-    @BindView(R2.id.layout_top_ads_info_text_impression)
-    View impressionInfoLayout;
-    @BindView(R2.id.layout_top_ads_info_text_click)
-    View clickInfoLayout;
-    @BindView(R2.id.layout_top_ads_info_text_ctr)
-    View ctrInfoLayout;
-    @BindView(R2.id.layout_top_ads_info_text_conversion)
-    View conversionInfoLayout;
-    @BindView(R2.id.layout_top_ads_info_text_average)
-    View averageMainInfoLayout;
-    @BindView(R2.id.layout_top_ads_info_text_cost)
-    View costInfoLayout;
+    @BindView(R2.id.statistic_label_view_impression)
+    TopAdsStatisticLabelView impressionStatisticLabelView;
+    @BindView(R2.id.statistic_label_view_click)
+    TopAdsStatisticLabelView clickStatisticLabelView;
+    @BindView(R2.id.statistic_label_view_ctr)
+    TopAdsStatisticLabelView ctrStatisticLabelView;
+    @BindView(R2.id.statistic_label_view_conversion)
+    TopAdsStatisticLabelView conversionStatisticLabelView;
+    @BindView(R2.id.statistic_label_view_average)
+    TopAdsStatisticLabelView averageStatisticLabelView;
+    @BindView(R2.id.statistic_label_view_cost)
+    TopAdsStatisticLabelView costStatisticLabelView;
 
     protected Date startDate;
     protected Date endDate;
@@ -92,7 +93,7 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
 
     @Override
     protected void initView(View view) {
-        initialLayout();
+
     }
 
     @Override
@@ -152,26 +153,13 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
         }
     }
 
-    private void initialLayout() {
-        updateInfoText(impressionInfoLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_impression)));
-        updateInfoText(clickInfoLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_click)));
-        updateInfoText(ctrInfoLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_ctr)));
-        updateInfoText(conversionInfoLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_conversion)));
-        updateInfoText(averageMainInfoLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_average)));
-        updateInfoText(costInfoLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_cost)));
-    }
-
     private void updateSummaryLayout(Summary summary) {
-        updateInfoText(impressionInfoLayout, R.id.text_view_content, String.valueOf(summary.getImpressionSum()));
-        updateInfoText(clickInfoLayout, R.id.text_view_content, String.valueOf(summary.getClickSum()));
-        updateInfoText(ctrInfoLayout, R.id.text_view_content, String.valueOf(summary.getCtrPercentage()));
-        updateInfoText(conversionInfoLayout, R.id.text_view_content, String.valueOf(summary.getConversionSum()));
-        updateInfoText(averageMainInfoLayout, R.id.text_view_content, String.valueOf(summary.getCostAvg()));
-        updateInfoText(costInfoLayout, R.id.text_view_content, String.valueOf(summary.getCostSum()));
-    }
-
-    protected void updateInfoText(View layout, int resourceId, String value) {
-        ((TextView) layout.findViewById(resourceId)).setText(value);
+        impressionStatisticLabelView.setContent(String.valueOf(summary.getImpressionSum()));
+        clickStatisticLabelView.setContent(String.valueOf(summary.getClickSum()));
+        ctrStatisticLabelView.setContent(String.valueOf(summary.getCtrPercentage()));
+        conversionStatisticLabelView.setContent(String.valueOf(summary.getConversionSum()));
+        averageStatisticLabelView.setContent(String.valueOf(summary.getCostAvg()));
+        costStatisticLabelView.setContent(String.valueOf(summary.getCostSum()));
     }
 
     protected void loadData() {
@@ -179,6 +167,42 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
         presenter.populateSummary(startDate, endDate);
         presenter.populateDeposit();
         presenter.populateShopInfo();
+    }
+
+    @OnClick(R2.id.statistic_label_view_impression)
+    void onStaticImpressionClicked() {
+        Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
+        startActivity(intent);
+    }
+
+    @OnClick(R2.id.statistic_label_view_click)
+    void onStatisticClickClicked() {
+        Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
+        startActivity(intent);
+    }
+
+    @OnClick(R2.id.statistic_label_view_ctr)
+    void onStatisticImpressionClicked() {
+        Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
+        startActivity(intent);
+    }
+
+    @OnClick(R2.id.statistic_label_view_conversion)
+    void onStatisticConversionClicked() {
+        Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
+        startActivity(intent);
+    }
+
+    @OnClick(R2.id.statistic_label_view_average)
+    void onStatisticAverageClicked() {
+        Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
+        startActivity(intent);
+    }
+
+    @OnClick(R2.id.statistic_label_view_cost)
+    void onStatisticCostClicked() {
+        Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
+        startActivity(intent);
     }
 
     @OnClick(R2.id.image_button_add_deposit)
