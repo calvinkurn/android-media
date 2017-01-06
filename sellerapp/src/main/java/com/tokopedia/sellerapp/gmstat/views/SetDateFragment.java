@@ -1,6 +1,7 @@
 package com.tokopedia.sellerapp.gmstat.views;
 
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tkpd.library.ui.utilities.DatePickerUtil;
 import com.tokopedia.sellerapp.R;
 
 import org.parceler.Parcel;
@@ -691,6 +693,7 @@ public class SetDateFragment extends Fragment {
 //        DateValidationListener dateValidationListener;
 
         DatePickerRules datePickerRules;
+        private Calendar cal;
 
         public void setDatePickerRules(DatePickerRules datePickerRules) {
             this.datePickerRules = datePickerRules;
@@ -700,88 +703,65 @@ public class SetDateFragment extends Fragment {
 //            this.dateValidationListener = dateValidationListener;
         }
 
-        private DatePickerDialog fromDatePickerDialog;
-        private DatePickerDialog toDatePickerDialog;
         private StartOrEndPeriodModel startOrEndPeriodModel;
 
         @OnClick({R.id.custom_date,R.id.custom_drop_down})
         public void onChooseDate(){
-            if(startOrEndPeriodModel == null)
+            if(startOrEndPeriodModel == null || !(this.itemView.getContext() instanceof Activity))
                 return;
+            Calendar minDate = Calendar.getInstance();
+            minDate.set(2015, 6, 25);
+            Calendar maxDate = Calendar.getInstance();
+            maxDate.add(Calendar.DATE, YESTERDAY);
+            DatePickerUtil datePicker =
+                    new DatePickerUtil(
+                            (Activity) this.itemView.getContext(),
+                            cal.get(Calendar.DAY_OF_MONTH),
+                            cal.get(Calendar.MONTH) + 1,
+                            cal.get(Calendar.YEAR)
+                    );
 
-            if(startOrEndPeriodModel.isEndDate
-                    && toDatePickerDialog != null
-                    && !toDatePickerDialog.isShowing()){
-                toDatePickerDialog.show();
+            datePicker.setMinDate(minDate.getTimeInMillis());
+            datePicker.setMaxDate(maxDate.getTimeInMillis());
+
+            if(startOrEndPeriodModel.isEndDate){
+                datePicker.DatePickerCalendar(new DatePickerUtil.onDateSelectedListener() {
+                    @Override
+                    public void onDateSelected(int year, int monthOfYear, int dayOfMonth) {
+                        Calendar newDate = Calendar.getInstance();
+                        newDate.set(year, monthOfYear - 1, dayOfMonth);
+                        Log.d("MNORMANSYAH", "year : "+year+" monthOfYear "+monthOfYear+ " dayOfMonth "+dayOfMonth);
+                        String month = ((monthOfYear+1 < 10)?("0"+(monthOfYear+1)):(monthOfYear+1)+"");
+                        String day = ((dayOfMonth < 10)?("0"+dayOfMonth):dayOfMonth+"");
+                        String data = year+""+month+""+day;
+                        Log.d("MNORMANSYAH", "data : "+data);
+
+                        datePickerRules.seteDate(newDate.getTimeInMillis());
+                    }
+                });
             }
 
-            if(startOrEndPeriodModel.isStartDate
-                    && fromDatePickerDialog != null
-                    && !fromDatePickerDialog.isShowing()){
-                fromDatePickerDialog.show();
+            if(startOrEndPeriodModel.isStartDate){
+                datePicker.DatePickerCalendar(new DatePickerUtil.onDateSelectedListener() {
+                    @Override
+                    public void onDateSelected(int year, int monthOfYear, int dayOfMonth) {
+                        Calendar newDate = Calendar.getInstance();
+                        newDate.set(year, monthOfYear - 1, dayOfMonth);
+                        String month = ((monthOfYear+1 < 10)?("0"+(monthOfYear+1)):(monthOfYear+1)+"");
+                        String day = ((dayOfMonth < 10)?("0"+dayOfMonth):dayOfMonth+"");
+                        String data = year+""+month+"" +
+                                ""+day;
+                        Log.d("MNORMANSYAH", "data : "+data);
+
+                        datePickerRules.setsDate(newDate.getTimeInMillis());
+                    }
+                });
             }
         }
 
         public CustomViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-
-            Calendar newCalendar = Calendar.getInstance();
-            fromDatePickerDialog = new DatePickerDialog(this.itemView.getContext(), new DatePickerDialog.OnDateSetListener() {
-
-                @SuppressWarnings("StatementWithEmptyBody")
-                public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                    Calendar newDate = Calendar.getInstance();
-                    newDate.set(year, monthOfYear, dayOfMonth);
-                    Log.d("MNORMANSYAH", "year : "+year+" monthOfYear "+monthOfYear+ " dayOfMonth "+dayOfMonth);
-                    String month = ((monthOfYear+1 < 10)?("0"+(monthOfYear+1)):(monthOfYear+1)+"");
-                    String day = ((dayOfMonth < 10)?("0"+dayOfMonth):dayOfMonth+"");
-                    String data = year+""+month+""+day;
-                    Log.d("MNORMANSYAH", "data : "+data);
-
-
-                    datePickerRules.setsDate(newDate.getTimeInMillis());
-//                    if(dateValidationListener.addSDate(newDate.getTimeInMillis())) {
-//                        startOrEndPeriodModel.startDate = newDate.getTimeInMillis();
-//                        customDate.setText(getDateWithYear(Integer.parseInt(data), monthNamesAbrev));
-//                    }else{
-//                        // maximal 60 hari
-//                    }
-
-                }
-
-            },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
-            Calendar minDate = Calendar.getInstance();
-            minDate.set(2015, 6, 25);
-            fromDatePickerDialog.getDatePicker().setMinDate(minDate.getTimeInMillis());
-
-            Calendar maxDate = Calendar.getInstance();
-            maxDate.add(Calendar.DATE, -1);
-            fromDatePickerDialog.getDatePicker().setMaxDate(maxDate.getTimeInMillis());
-
-            fromDatePickerDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-            toDatePickerDialog = new DatePickerDialog(this.itemView.getContext(), new DatePickerDialog.OnDateSetListener() {
-
-                public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                    Calendar newDate = Calendar.getInstance();
-                    newDate.set(year, monthOfYear, dayOfMonth);
-                    String month = ((monthOfYear+1 < 10)?("0"+(monthOfYear+1)):(monthOfYear+1)+"");
-                    String day = ((dayOfMonth < 10)?("0"+dayOfMonth):dayOfMonth+"");
-                    String data = year+""+month+""+day;
-                    Log.d("MNORMANSYAH", "data : "+data);
-
-                    datePickerRules.seteDate(newDate.getTimeInMillis());
-//                    if(dateValidationListener.addEDate(newDate.getTimeInMillis())){
-//                        startOrEndPeriodModel.endDate = newDate.getTimeInMillis();
-//                        customDate.setText(getDateWithYear(Integer.parseInt(data), monthNamesAbrev));
-//                    }
-                }
-
-            },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
-            toDatePickerDialog.getDatePicker().setMinDate(minDate.getTimeInMillis());
-            toDatePickerDialog.getDatePicker().setMaxDate(maxDate.getTimeInMillis());
-            toDatePickerDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         }
 
         public void bindData(StartOrEndPeriodModel startOrEndPeriodModel){
@@ -793,14 +773,8 @@ public class SetDateFragment extends Fragment {
                 customDate.setText(getDateWithYear(Integer.parseInt(reverseDate(split)), monthNamesAbrev));
 
 //                dateValidationListener.addEDate(startOrEndPeriodModel.endDate);
-                Calendar cal = Calendar.getInstance();
-                cal.setTimeInMillis(startOrEndPeriodModel.endDate);
-
-                toDatePickerDialog.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
-
                 cal = Calendar.getInstance();
-                cal.add(Calendar.DATE, YESTERDAY);
-                toDatePickerDialog.getDatePicker().setMaxDate(cal.getTimeInMillis());
+                cal.setTimeInMillis(startOrEndPeriodModel.endDate);
             }
             if(startOrEndPeriodModel.isStartDate) {
                 String startDate = startOrEndPeriodModel.getStartDate();
@@ -808,10 +782,8 @@ public class SetDateFragment extends Fragment {
                 customDate.setText(getDateWithYear(Integer.parseInt(reverseDate(split)), monthNamesAbrev));
 
 //                dateValidationListener.addSDate(startOrEndPeriodModel.startDate);
-                Calendar cal = Calendar.getInstance();
+                cal = Calendar.getInstance();
                 cal.setTimeInMillis(startOrEndPeriodModel.startDate);
-
-                fromDatePickerDialog.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
             }
         }
     }

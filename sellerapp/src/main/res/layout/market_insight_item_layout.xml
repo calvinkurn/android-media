@@ -22,11 +22,16 @@
         android:id="@+id/market_insight_number" />
 
     <ImageView
-        android:layout_width="14dp"
-        android:layout_height="14dp"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
         app:srcCompat="@drawable/ic_search_icon"
         android:layout_toLeftOf="@id/market_insight_number"
-        android:id="@+id/zoom_icon" />
+        android:layout_alignBottom="@id/market_insight_number"
+        android:id="@+id/zoom_icon"
+        android:layout_marginRight="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="4dp"
+        />
 
     <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
         android:layout_width="match_parent"

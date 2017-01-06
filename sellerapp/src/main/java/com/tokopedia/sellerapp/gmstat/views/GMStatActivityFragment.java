@@ -184,7 +184,7 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
         List<String> dateRaw = getDateRaw(date);
         String year = dateRaw.get(2);
         String month = dateRaw.get(1);
-        String day = dateRaw.get(0);
+        String day = String.valueOf(Integer.valueOf(dateRaw.get(0)));
         Calendar instance = Calendar.getInstance();
         instance.set(Integer.parseInt(year), Integer.parseInt(month)-1, Integer.parseInt(day));
 
@@ -197,7 +197,7 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
         String month = dateRaw.get(1);
         month = monthNames[Integer.parseInt(month)-1];
 
-        String day = dateRaw.get(0);
+        String day = String.valueOf(Integer.valueOf(dateRaw.get(0)));
         Log.d(TAG, "bulan "+month+" tanggal "+day+" rawDate "+date);
 
         return day + " "+ month+" "+year;
