@@ -75,7 +75,7 @@ public class TopPicksItemAdapter  extends RecyclerView.Adapter<RecyclerView.View
                 topPicksItemRowHolder.view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        itemClickedListener.onItemClicked(singleItem, holder.getAdapterPosition());
+                        itemClickedListener.onItemClicked(toppick.getName(), singleItem, holder.getAdapterPosition());
                     }
                 });
         }
@@ -112,7 +112,7 @@ public class TopPicksItemAdapter  extends RecyclerView.Adapter<RecyclerView.View
     }
 
     public interface OnItemClickedListener {
-        void onItemClicked(Item topPickItem, int position);
+        void onItemClicked(String toppickName, Item topPickItem, int position);
     }
 
     public interface OnTitleClickedListener {

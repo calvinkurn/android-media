@@ -4,6 +4,7 @@ import com.tokopedia.core.network.apiservices.ace.AceSearchService;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.home.database.HomeCategoryMenuDbManager;
 
 import java.util.HashMap;
@@ -64,7 +65,7 @@ public class HomeMenuInteractorImpl implements HomeMenuInteractor {
 
     @Override
     public void fetchTopPicksNetworkNetwork(Map<String, String> params, Subscriber<Response<String>> networksubscriber) {
-        subscription.add(aceSearchService.getApi().getTopPicks( params).subscribeOn(Schedulers.io())
+        subscription.add(aceSearchService.getApi().getTopPicks( params,BuildConfig.VERSION_NAME,"android").subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
                 .subscribe(

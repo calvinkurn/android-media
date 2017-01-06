@@ -7,6 +7,7 @@ import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
 import com.tokopedia.core.network.entity.homeMenu.HomeCategoryMenuItem;
 import com.tokopedia.core.network.entity.homeMenu.LayoutSection;
+import com.tokopedia.core.network.entity.topPicks.Group;
 import com.tokopedia.core.network.entity.topPicks.TopPicksResponse;
 import com.tokopedia.core.network.entity.topPicks.Toppick;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
@@ -99,11 +100,11 @@ public class TopPicksPresenterImpl implements TopPicksPresenter, ErrorListener {
                     TopPicksResponse topPicksResponse = new Gson().fromJson(
                             response.body(), TopPicksResponse.class);
 
-                    ArrayList<Toppick> toppicksList = new ArrayList<>();
-                    for (Toppick toppicks : topPicksResponse.getData().getToppicks()) {
-                        toppicksList.add(toppicks);
+                    ArrayList<Group> toppicksGroupList = new ArrayList<>();
+                    for (Group toppicksGroup : topPicksResponse.getData().getGroups()) {
+                        toppicksGroupList.add(toppicksGroup);
                     }
-                    view.renderTopPicks(toppicksList);
+                    view.renderTopPicks(toppicksGroupList);
                 } else {
                     new ErrorHandler(TopPicksPresenterImpl.this, response.code());
 

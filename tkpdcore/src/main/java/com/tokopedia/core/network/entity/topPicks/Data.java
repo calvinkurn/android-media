@@ -7,16 +7,16 @@ import com.google.gson.annotations.SerializedName;
 
 public class Data {
 
-    @SerializedName("toppicks")
+    @SerializedName("groups")
     @Expose
-    private List<Toppick> toppicks = null;
+    private List<Group> groups = null;
 
-    public List<Toppick> getToppicks() {
-        return toppicks;
+    public List<Group> getGroups() {
+        return groups;
     }
 
-    public void setToppicks(List<Toppick> toppicks) {
-        this.toppicks = toppicks;
+    public void setGroups(List<Group> groups) {
+        this.groups = groups;
     }
 
 }

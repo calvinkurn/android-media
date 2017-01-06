@@ -92,6 +92,7 @@ public interface AppEventTracking {
         String GMSUBSCRIBE = "subscribeGoldMerchant";
         String DEPOSIT = "clickSaldo";
         String OTP = "clickOTP";
+        String TOP_PICKS = "clickToppicks";
     }
 
     interface Category {
@@ -138,6 +139,8 @@ public interface AppEventTracking {
         String GOLD_MERCHANT = "Gold Merchant";
         String DEPOSIT = "Saldo";
         String OTP = "OTP";
+        String TOP_PICKS_HOME = "Toppicks Home";
+        String TOP_PICKS = "Toppicks";
     }
 
     interface Action {

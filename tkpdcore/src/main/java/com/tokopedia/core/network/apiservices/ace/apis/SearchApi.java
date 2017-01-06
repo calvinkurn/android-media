@@ -10,6 +10,7 @@ import java.util.Map;
 import retrofit2.Response;
 import retrofit2.http.FieldMap;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.QueryMap;
 import rx.Observable;
 
@@ -37,5 +38,7 @@ public interface SearchApi {
     Observable<CatalogDataModel> getCatalog(@QueryMap Map<String, String> params);
 
     @GET(TkpdBaseURL.Ace.PATH_TOP_PICKS)
-    Observable<Response<String>> getTopPicks(@QueryMap Map<String, String> params);
+    Observable<Response<String>> getTopPicks(@QueryMap Map<String, String> params,
+                                             @Header("X-APP-VERSION") String version,
+                                             @Header("X-DEVICE") String device);
 }
