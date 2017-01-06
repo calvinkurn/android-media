@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.seller.topads.constant.TopAdsConstant;
 
 
 public class ProductAd implements Ad, Parcelable {
@@ -248,6 +249,18 @@ public class ProductAd implements Ad, Parcelable {
 
     public ProductAd() {
     }
+
+    public boolean isStatusActive() {
+        switch (status) {
+            case TopAdsConstant.STATUS_AD_ACTIVE:
+                return true;
+            case TopAdsConstant.STATUS_AD_NOT_ACTIVE:
+            case TopAdsConstant.STATUS_AD_NOT_SENT:
+                break;
+        }
+        return false;
+    }
+
 
     @Override
     public int describeContents() {

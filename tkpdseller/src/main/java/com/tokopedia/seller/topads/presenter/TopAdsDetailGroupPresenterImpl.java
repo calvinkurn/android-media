@@ -1,5 +1,6 @@
 package com.tokopedia.seller.topads.presenter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.util.SessionHandler;
@@ -24,8 +25,8 @@ public class TopAdsDetailGroupPresenterImpl extends TopAdsDetailPresenterImpl im
 
     private final TopAdsGroupAdInteractor topAdsGroupAdInteractor;
 
-    public TopAdsDetailGroupPresenterImpl(TopAdsDetailViewListener topAdsDetailViewListener, TopAdsGroupAdInteractor topAdsGroupAdInteractor) {
-        super(topAdsDetailViewListener);
+    public TopAdsDetailGroupPresenterImpl(Context context, TopAdsDetailViewListener topAdsDetailViewListener, TopAdsGroupAdInteractor topAdsGroupAdInteractor) {
+        super(context, topAdsDetailViewListener);
         this.topAdsGroupAdInteractor = topAdsGroupAdInteractor;
     }
 

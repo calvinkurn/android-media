@@ -16,6 +16,7 @@ import android.view.View;
 
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
@@ -151,7 +152,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
 
     @Override
     protected void initialVar() {
-        initialDate();
         page = START_PAGE;
         totalItem = Integer.MAX_VALUE;
         refresh = new RefreshHandler(getActivity(), mainView, new RefreshHandler.OnRefreshHandlerListener() {
@@ -166,7 +166,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
 
     protected void loadData() {
         adapter.showLoadingFull(true);
-        Log.d("TEST", presenter.getRangeDateFormat(startDate, endDate));
         ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(presenter.getRangeDateFormat(startDate, endDate));
         searchAd();
     }
@@ -174,10 +173,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     private void searchAd(int page) {
         this.page = page;
         searchAd();
-    }
-
-    private void initialDate() {
-
     }
 
     @Override

@@ -35,8 +35,8 @@
     <string name="title_action_off">Off</string>
     <string name="action_filter_date">Filter Tanggal</string>
     <string name="title_group_list">Group</string>
-    <string name="title_item_detail">Item Detail</string>
-    <string name="title_group_detail">Group Detail</string>
+    <string name="title_product_ad_detail">Detail Item Detail</string>
+    <string name="title_group_ad_detail">Detail Group Detail</string>
 
     <!-- Top Ads ad list -->
     <string name="label_top_ads_daily_spend">Biaya Harian</string>

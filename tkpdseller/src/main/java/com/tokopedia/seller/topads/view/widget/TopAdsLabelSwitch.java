@@ -29,7 +29,7 @@ public class TopAdsLabelSwitch extends CardView {
     @BindView(R2.id.switch_status)
     SwitchCompat switchStatus;
 
-    private ListenerSwitchValue listenerSwitchValue;
+    private CompoundButton.OnCheckedChangeListener listener;
     private String titleText;
 
     public TopAdsLabelSwitch(Context context) {
@@ -53,7 +53,7 @@ public class TopAdsLabelSwitch extends CardView {
 
         try {
             titleText = styledAttributes.getString(R.styleable.TopAdsLabelView_title);
-        }finally {
+        } finally {
             styledAttributes.recycle();
         }
 
@@ -67,14 +67,8 @@ public class TopAdsLabelSwitch extends CardView {
         switchStatus.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(listenerSwitchValue!=null){
-                    listenerSwitchValue.onValueChange(buttonView, isChecked);
-                }
-
-                if(isChecked){
-                    switchTextView.setText(R.string.label_active_topads);
-                }else{
-                    switchTextView.setText(R.string.label_non_active_topads);
+                if (listener != null) {
+                    listener.onCheckedChanged(buttonView, isChecked);
                 }
             }
         });
@@ -88,31 +82,33 @@ public class TopAdsLabelSwitch extends CardView {
         addView(view);
     }
 
-    public void setTitle(String textTitle){
+    public void setTitle(String textTitle) {
         titleTextView.setText(textTitle);
         invalidate();
         requestLayout();
     }
 
-    public String getTitle(){
+    public String getTitle() {
         return titleTextView.getText().toString();
     }
 
-    public boolean isChecked(){
+    public void setSwitchStatusText(String textTitle) {
+        switchStatus.setText(textTitle);
+        invalidate();
+        requestLayout();
+    }
+
+    public boolean isChecked() {
         return switchStatus.isChecked();
     }
 
-    public void setChecked(boolean isChecked){
+    public void setChecked(boolean isChecked) {
         switchStatus.setChecked(isChecked);
         invalidate();
         requestLayout();
     }
 
-    public void setListenerValue(ListenerSwitchValue listenerSwitchValue){
-        this.listenerSwitchValue = listenerSwitchValue;
-    }
-
-    public interface ListenerSwitchValue{
-        void onValueChange(CompoundButton buttonView, boolean isChecked);
+    public void setListenerValue(CompoundButton.OnCheckedChangeListener listener) {
+        this.listener = listener;
     }
 }

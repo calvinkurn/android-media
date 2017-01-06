@@ -42,7 +42,7 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
 
     @Override
     protected void initialPresenter() {
-        presenter = new TopAdsDetailGroupPresenterImpl(this, new TopAdsGroupAdInteractorImpl(getActivity()));
+        presenter = new TopAdsDetailGroupPresenterImpl(getActivity(), this, new TopAdsGroupAdInteractorImpl(getActivity()));
     }
 
     @Override
@@ -52,32 +52,26 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
     }
 
     @Override
-    protected void initView(View view) {
-        super.initView(view);
-        if(groupAd != null) {
-            setData(groupAd);
-            items.setContent(String.valueOf(groupAd.getTotalItem()));
-        }
-    }
-
-    @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_top_ads_group_detail;
     }
 
     @Override
-    protected void setActionVar() {
-        super.setActionVar();
-        status.setListenerValue(new TopAdsLabelSwitch.ListenerSwitchValue() {
-            @Override
-            public void onValueChange(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
-                    presenter.turnOnAds(groupAd, SessionHandler.getShopID(getActivity()));
-                }else{
-                    presenter.turnOffAds(groupAd, SessionHandler.getShopID(getActivity()));
-                }
-            }
-        });
+    public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+        if(checked){
+            presenter.turnOnAds(groupAd, SessionHandler.getShopID(getActivity()));
+        }else{
+            presenter.turnOffAds(groupAd, SessionHandler.getShopID(getActivity()));
+        }
+    }
+
+    @Override
+    protected void loadData() {
+        super.loadData();
+        if(groupAd != null) {
+            loadAdDetail(groupAd);
+            items.setContent(String.valueOf(groupAd.getTotalItem()));
+        }
     }
 
     @OnClick(R2.id.items)

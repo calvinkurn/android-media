@@ -2,6 +2,7 @@ package com.tokopedia.seller.topads.model.data;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.seller.topads.constant.TopAdsConstant;
 
 /**
  * Created by Nathaniel on 12/28/2016.
@@ -208,5 +209,16 @@ public class ShopAd implements Ad {
 
     public String getShopUri() {
         return shopUri;
+    }
+
+    public boolean isStatusActive() {
+        switch (status) {
+            case TopAdsConstant.STATUS_AD_ACTIVE:
+                return true;
+            case TopAdsConstant.STATUS_AD_NOT_ACTIVE:
+            case TopAdsConstant.STATUS_AD_NOT_SENT:
+                break;
+        }
+        return false;
     }
 }

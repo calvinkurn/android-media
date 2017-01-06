@@ -49,4 +49,6 @@ public interface Ad {
     String getLabelOf();
 
     String getName();
+
+    boolean isStatusActive();
 }

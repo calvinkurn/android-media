@@ -5,9 +5,11 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -19,12 +21,14 @@ import com.tokopedia.seller.topads.view.listener.TopAdsDetailViewListener;
 import com.tokopedia.seller.topads.view.widget.TopAdsLabelSwitch;
 import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 
+import java.util.Date;
+
 import butterknife.BindView;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> extends BasePresenterFragment<T> implements TopAdsDetailViewListener {
+public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> extends BasePresenterFragment<T> implements TopAdsDetailViewListener, CompoundButton.OnCheckedChangeListener {
 
     @BindView(R2.id.container_detail_topads)
     LinearLayout containerDetail;
@@ -64,7 +68,10 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
 
     @BindView(R2.id.favorite)
     TopAdsLabelView favorite;
+
     private ProgressDialog progressDialog;
+    private Date startDate;
+    private Date endDate;
 
     public TopAdsDetailFragment() {
         // Required empty public constructor
@@ -132,6 +139,20 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (presenter.isDateUpdated(startDate, endDate)) {
+            startDate = presenter.getStartDate();
+            endDate = presenter.getEndDate();
+            loadData();
+        }
+    }
+
+    protected void loadData() {
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(presenter.getRangeDateFormat(startDate, endDate));
+    }
+
+    @Override
     public void showProgress() {
         progressDialog.show();
     }
@@ -141,9 +162,10 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         progressDialog.dismiss();
     }
 
-    protected void setData(Ad ad){
+    protected void loadAdDetail(Ad ad){
         name.setContent(ad.getName());
-        status.setChecked(ad.getStatus() == 1 ? true:false);
+        status.setChecked(ad.isStatusActive());
+        status.setSwitchStatusText(ad.getStatusDesc());
         maxBid.setContent(ad.getPriceBidFmt());
         avgCost.setContent(ad.getStatTotalSpent());
         start.setContent(ad.getStartDate() + " - " + ad.getStartTime());
@@ -154,6 +176,6 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         click.setContent(ad.getStatTotalClick());
         ctr.setContent(ad.getStatTotalCtr());
         favorite.setContent(ad.getStatTotalConversion());
+        status.setListenerValue(this);
     }
-
 }

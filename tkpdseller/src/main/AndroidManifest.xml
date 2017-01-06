@@ -65,11 +65,11 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".topads.view.activity.TopAdsDetailProductActivity"
-            android:label="@string/title_item_detail"
+            android:label="@string/title_product_ad_detail"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".topads.view.activity.TopAdsDetailGroupActivity"
-            android:label="@string/title_group_detail"
+            android:label="@string/title_group_ad_detail"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".shop.ShopEditorActivity"

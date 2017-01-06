@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.constant.TopAdsConstant;
 
 /**
  * Created by zulfikarrahman on 12/14/16.
@@ -223,6 +225,17 @@ public class GroupAd implements Ad, Parcelable {
     }
 
     public GroupAd() {
+    }
+
+    public boolean isStatusActive() {
+        switch (status) {
+            case TopAdsConstant.STATUS_AD_ACTIVE:
+                return true;
+            case TopAdsConstant.STATUS_AD_NOT_ACTIVE:
+            case TopAdsConstant.STATUS_AD_NOT_SENT:
+                break;
+        }
+        return false;
     }
 
     @Override
