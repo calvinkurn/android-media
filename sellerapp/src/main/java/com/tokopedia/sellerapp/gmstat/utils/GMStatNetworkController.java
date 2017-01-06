@@ -298,25 +298,46 @@ public class GMStatNetworkController extends BaseNetworkController {
                                 @Override
                                 public KeywordModel call(List<Response<GetKeyword>> responses, List<Response<HadesV1Model>> responses2, KeywordModel keywordModel) {
                                     keywordModel.getKeywords = new ArrayList<>();
-                                    for (Response<GetKeyword> response : responses) {
-                                        if(response.isSuccessful()) {
-                                            keywordModel.getKeywords.add(response.body());
-                                        }
-                                    }
-
-                                    keywordModel.getResponseList = responses;
-
+                                    keywordModel.hadesv1Models = new ArrayList<>();
+                                    List<Integer> indexToRemoved = new ArrayList<Integer>();
                                     List<HadesV1Model> hadesV1Models = new ArrayList<>();
-                                    for (Response<HadesV1Model> hadesV1ModelResponse : responses2) {
-                                        hadesV1Models.add(hadesV1ModelResponse.body());
+                                    if(responses != null && responses2 != null
+                                            && responses.size() == responses2.size()){
+                                        int size = responses.size();
+                                        for(int i=0;i<size;i++){
+                                            Response<GetKeyword> h1 = responses.get(i);
+                                            Response<HadesV1Model> h2 = responses2.get(i);
+                                            if(h2.isSuccessful()&&h2.errorBody()==null) {
+                                                keywordModel.getKeywords.add(h1.body());
+                                                keywordModel.hadesv1Models.add(h2.body());
+                                                hadesV1Models.add(h2.body());
+                                                indexToRemoved.add(i);
+                                            }
+                                        }
+                                    }else{
+                                        keywordModel.getKeywords = new ArrayList<>();
+                                        for (Response<GetKeyword> response : responses) {
+                                            if(response.isSuccessful()) {
+                                                keywordModel.getKeywords.add(response.body());
+                                            }
+                                        }
+
+                                        keywordModel.getResponseList = responses;
+
+                                        hadesV1Models = new ArrayList<>();
+                                        for (Response<HadesV1Model> hadesV1ModelResponse : responses2) {
+                                            hadesV1Models.add(hadesV1ModelResponse.body());
+                                        }
+
+                                        keywordModel.hadesv1Models = hadesV1Models;
+                                        return keywordModel;
                                     }
 
-                                    keywordModel.hadesv1Models = hadesV1Models;
                                     return keywordModel;
                                 }
                             });
                         }else{
-                            throw new RuntimeException("failed");
+                            throw new RuntimeException("fai    led");
                         }
                     }
                 });
