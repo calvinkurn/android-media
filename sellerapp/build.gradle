@@ -104,12 +104,6 @@ android {
         debug {
             storeFile file("debug.keystore")
         }
-        release {
-            keyAlias 'tkpd'
-            keyPassword 'tokopedia789'
-            storeFile file('/Users/normansyahputa/Downloads/tkpd-key.keystore')
-            storePassword 'tokopedia789'
-        }
     }
 
     buildTypes {
@@ -148,7 +142,6 @@ android {
                     }
                 }
             }
-            signingConfig signingConfigs.release
         }
     }
 
