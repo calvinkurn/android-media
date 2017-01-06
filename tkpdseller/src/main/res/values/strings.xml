@@ -91,4 +91,12 @@
     <string name="label_title_ctr_topads">CTR</string>
     <string name="label_title_favorite_topads">Favorite</string>
     <string name="label_title_items_topads">Items</string>
+
+    <!-- Top Ads Statistic-->
+    <string name="label_title_show_statistics_topads">Tampil</string>
+    <string name="label_title_klik_statistics_topads">Klik</string>
+    <string name="label_title_ctr_statistics_topads">CTR</string>
+    <string name="label_title_convertion_statistics_topads">Konversi</string>
+    <string name="label_title_average_statistics_topads">Rata-Rata</string>
+    <string name="label_title_used_statistics_topads">Terpakai</string>
 </resources>

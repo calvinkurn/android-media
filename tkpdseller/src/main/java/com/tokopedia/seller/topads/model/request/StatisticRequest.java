@@ -1,5 +1,8 @@
 package com.tokopedia.seller.topads.model.request;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
 
@@ -12,7 +15,7 @@ import java.util.Locale;
  * Created by Nathaniel on 11/25/2016.
  */
 
-public class StatisticRequest {
+public class StatisticRequest implements Parcelable {
 
     private String shopId;
     private int type;
@@ -67,4 +70,41 @@ public class StatisticRequest {
         params.put(TopAdsNetworkConstant.PARAM_END_DATE, new SimpleDateFormat(TopAdsConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(endDate));
         return params;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.shopId);
+        dest.writeInt(this.type);
+        dest.writeLong(this.startDate != null ? this.startDate.getTime() : -1);
+        dest.writeLong(this.endDate != null ? this.endDate.getTime() : -1);
+    }
+
+    public StatisticRequest() {
+    }
+
+    protected StatisticRequest(Parcel in) {
+        this.shopId = in.readString();
+        this.type = in.readInt();
+        long tmpStartDate = in.readLong();
+        this.startDate = tmpStartDate == -1 ? null : new Date(tmpStartDate);
+        long tmpEndDate = in.readLong();
+        this.endDate = tmpEndDate == -1 ? null : new Date(tmpEndDate);
+    }
+
+    public static final Parcelable.Creator<StatisticRequest> CREATOR = new Parcelable.Creator<StatisticRequest>() {
+        @Override
+        public StatisticRequest createFromParcel(Parcel source) {
+            return new StatisticRequest(source);
+        }
+
+        @Override
+        public StatisticRequest[] newArray(int size) {
+            return new StatisticRequest[size];
+        }
+    };
 }

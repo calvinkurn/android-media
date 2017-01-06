@@ -2,22 +2,28 @@ package com.tokopedia.seller.topads.interactor;
 
 import android.content.Context;
 
+import com.tokopedia.seller.selling.model.modelConfirmShipping.Data;
 import com.tokopedia.seller.topads.datasource.TopAdsCacheDataSource;
 import com.tokopedia.seller.topads.datasource.TopAdsCacheDataSourceImpl;
 import com.tokopedia.seller.topads.datasource.TopAdsDbDataSource;
 import com.tokopedia.seller.topads.datasource.TopAdsDbDataSourceImpl;
 import com.tokopedia.seller.topads.model.data.Ad;
+import com.tokopedia.seller.topads.model.data.Cell;
 import com.tokopedia.seller.topads.model.data.DataDeposit;
+import com.tokopedia.seller.topads.model.data.DataStatistic;
 import com.tokopedia.seller.topads.model.data.GroupAd;
 import com.tokopedia.seller.topads.model.data.Product;
 import com.tokopedia.seller.topads.model.data.ProductAd;
 import com.tokopedia.seller.topads.model.data.ProductAdBulkAction;
+import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.model.request.DataRequest;
 import com.tokopedia.seller.topads.model.request.SearchAdRequest;
+import com.tokopedia.seller.topads.model.request.StatisticRequest;
 import com.tokopedia.seller.topads.model.response.DataResponse;
 import com.tokopedia.seller.topads.model.response.PageDataResponse;
 import com.tokopedia.seller.topads.network.apiservice.TopAdsManagementService;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -25,6 +31,7 @@ import retrofit2.Response;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -92,6 +99,23 @@ public class TopAdsProductAdInteractorImpl implements TopAdsProductAdInteractor 
 
                 })
                 .subscribe(new SubscribeOnNext<List<ProductAd>>(listenerInteractor), new SubscribeOnError(listenerInteractor)));
+    }
+
+    @Override
+    public void getStatistic(final StatisticRequest statisticRequest, final ListenerInteractor<List<Cell>> listener) {
+        Observable<Response<DataResponse<DataStatistic>>> statisticApiObservable = topAdsManagementService.getApi().getDashboardStatistic(new HashMap<String, String>());
+        compositeSubscription.add(statisticApiObservable
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .flatMap(new Func1<Response<DataResponse<DataStatistic>>, Observable<List<Cell>>>() {
+                    @Override
+                    public Observable<List<Cell>> call(Response<DataResponse<DataStatistic>> dataResponseResponse) {
+                        return Observable.just(dataResponseResponse.body().getData().getCells());
+                    }
+
+                })
+                .subscribe(new SubscribeOnNext<List<Cell>>(listener), new SubscribeOnError(listener)));
     }
 
     @Override

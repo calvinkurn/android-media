@@ -12,6 +12,7 @@ import com.tokopedia.seller.topads.model.data.TotalAd;
 import com.tokopedia.seller.topads.presenter.TopAdsDashboardProductPresenterImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsGroupAdListActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsProductAdListActivity;
+import com.tokopedia.seller.topads.view.activity.TopAdsStatisticActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardProductFragmentListener;
 
 import java.text.SimpleDateFormat;
@@ -49,6 +50,18 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
         super.initView(view);
         updateInfoText(productGroupSummaryLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_groups)));
         updateInfoText(productItemSummaryLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_items)));
+    }
+
+    @Override
+    protected void setViewListener() {
+        super.setViewListener();
+        impressionInfoLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), TopAdsStatisticActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     protected void loadData() {

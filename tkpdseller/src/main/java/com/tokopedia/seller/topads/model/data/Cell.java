@@ -11,38 +11,38 @@ public class Cell {
 
     @SerializedName("click_sum")
     @Expose
-    private Integer clickSum;
+    private int clickSum;
     @SerializedName("date.month")
     @Expose
-    private Integer dateMonth;
+    private int dateMonth;
     @SerializedName("cost_sum")
     @Expose
-    private Double costSum;
+    private double costSum;
     @SerializedName("impression_sum")
     @Expose
-    private Integer impressionSum;
+    private int impressionSum;
     @SerializedName("date.day")
     @Expose
-    private Integer dateDay;
+    private int dateDay;
     @SerializedName("ctr_percentage")
     @Expose
-    private Double ctrPercentage;
+    private double ctrPercentage;
     @SerializedName("conversion_sum")
     @Expose
-    private Integer conversionSum;
+    private int conversionSum;
     @SerializedName("date.year")
     @Expose
-    private Integer dateYear;
+    private int dateYear;
     @SerializedName("cost_avg")
     @Expose
-    private Double costAvg;
+    private double costAvg;
 
     /**
      *
      * @return
      * The clickSum
      */
-    public Integer getClickSum() {
+    public int getClickSum() {
         return clickSum;
     }
 
@@ -51,7 +51,7 @@ public class Cell {
      * @param clickSum
      * The click_sum
      */
-    public void setClickSum(Integer clickSum) {
+    public void setClickSum(int clickSum) {
         this.clickSum = clickSum;
     }
 
@@ -60,7 +60,7 @@ public class Cell {
      * @return
      * The dateMonth
      */
-    public Integer getDateMonth() {
+    public int getDateMonth() {
         return dateMonth;
     }
 
@@ -69,7 +69,7 @@ public class Cell {
      * @param dateMonth
      * The date.month
      */
-    public void setDateMonth(Integer dateMonth) {
+    public void setDateMonth(int dateMonth) {
         this.dateMonth = dateMonth;
     }
 
@@ -78,7 +78,7 @@ public class Cell {
      * @return
      * The costSum
      */
-    public Double getCostSum() {
+    public double getCostSum() {
         return costSum;
     }
 
@@ -87,7 +87,7 @@ public class Cell {
      * @param costSum
      * The cost_sum
      */
-    public void setCostSum(Double costSum) {
+    public void setCostSum(double costSum) {
         this.costSum = costSum;
     }
 
@@ -96,7 +96,7 @@ public class Cell {
      * @return
      * The impressionSum
      */
-    public Integer getImpressionSum() {
+    public int getImpressionSum() {
         return impressionSum;
     }
 
@@ -105,7 +105,7 @@ public class Cell {
      * @param impressionSum
      * The impression_sum
      */
-    public void setImpressionSum(Integer impressionSum) {
+    public void setImpressionSum(int impressionSum) {
         this.impressionSum = impressionSum;
     }
 
@@ -114,7 +114,7 @@ public class Cell {
      * @return
      * The dateDay
      */
-    public Integer getDateDay() {
+    public int getDateDay() {
         return dateDay;
     }
 
@@ -123,7 +123,7 @@ public class Cell {
      * @param dateDay
      * The date.day
      */
-    public void setDateDay(Integer dateDay) {
+    public void setDateDay(int dateDay) {
         this.dateDay = dateDay;
     }
 
@@ -132,7 +132,7 @@ public class Cell {
      * @return
      * The ctrPercentage
      */
-    public Double getCtrPercentage() {
+    public double getCtrPercentage() {
         return ctrPercentage;
     }
 
@@ -141,7 +141,7 @@ public class Cell {
      * @param ctrPercentage
      * The ctr_percentage
      */
-    public void setCtrPercentage(Double ctrPercentage) {
+    public void setCtrPercentage(double ctrPercentage) {
         this.ctrPercentage = ctrPercentage;
     }
 
@@ -150,7 +150,7 @@ public class Cell {
      * @return
      * The conversionSum
      */
-    public Integer getConversionSum() {
+    public int getConversionSum() {
         return conversionSum;
     }
 
@@ -159,7 +159,7 @@ public class Cell {
      * @param conversionSum
      * The conversion_sum
      */
-    public void setConversionSum(Integer conversionSum) {
+    public void setConversionSum(int conversionSum) {
         this.conversionSum = conversionSum;
     }
 
@@ -168,7 +168,7 @@ public class Cell {
      * @return
      * The dateYear
      */
-    public Integer getDateYear() {
+    public int getDateYear() {
         return dateYear;
     }
 
@@ -177,7 +177,7 @@ public class Cell {
      * @param dateYear
      * The date.year
      */
-    public void setDateYear(Integer dateYear) {
+    public void setDateYear(int dateYear) {
         this.dateYear = dateYear;
     }
 
@@ -186,7 +186,7 @@ public class Cell {
      * @return
      * The costAvg
      */
-    public Double getCostAvg() {
+    public double getCostAvg() {
         return costAvg;
     }
 
@@ -195,7 +195,7 @@ public class Cell {
      * @param costAvg
      * The cost_avg
      */
-    public void setCostAvg(Double costAvg) {
+    public void setCostAvg(double costAvg) {
         this.costAvg = costAvg;
     }
 
