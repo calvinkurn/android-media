@@ -22,6 +22,7 @@ import com.tokopedia.core.myproduct.model.NoteDetailModel;
 import com.tokopedia.core.myproduct.service.ProductService;
 import com.tokopedia.core.network.apiservices.shop.MyShopNoteActService;
 import com.tokopedia.core.network.retrofit.services.AuthService;
+import com.tokopedia.core.util.MethodChecker;
 
 import org.parceler.Parcels;
 
@@ -124,7 +125,7 @@ public class ReturnPolicyDialog extends DialogFragment {
             returnPolicyContentTitle.setText(data.getNotes_title());
             returnPolicyContentTitle.setEnabled(false);
             if (CommonUtils.checkNullForZeroJson(data.getNotes_content())) {
-                returnPolicyContent.setText(Html.fromHtml(data.getNotes_content()));
+                returnPolicyContent.setText(MethodChecker.fromHtml(data.getNotes_content()));
             }
             returnPolicyContent.requestFocus();
             returnPolicyAdd.setText(SIMPAN);
@@ -154,6 +155,13 @@ public class ReturnPolicyDialog extends DialogFragment {
 
     @OnClick(R2.id.return_policy_add)
     public void addReturnPolicy() {
+
+        String textReturnPolicy = returnPolicyContent.getText().toString();
+        if(textReturnPolicy != null && textReturnPolicy.trim().isEmpty()){
+            returnPolicyContent.setError(getString(R.string.empty_returnable_note));
+            return;
+        }
+
         //[START] display progressbar
         showProgressBar();
         //[END] display progressbar

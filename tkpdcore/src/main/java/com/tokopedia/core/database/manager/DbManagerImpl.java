@@ -174,6 +174,19 @@ public class DbManagerImpl implements DbManager{
     }
 
     @Override
+    public boolean isEtalaseEmpty(String etalaseName) {
+        List<EtalaseDB> etalaseDBs = new Select().from(EtalaseDB.class)
+                .where(EtalaseDB_Table.etalse_name.like(etalaseName))
+                .queryList();
+
+        if(etalaseDBs != null && etalaseDBs.size() > 0){
+            return false;
+        }else {
+            return true;
+        }
+    }
+
+    @Override
     public EtalaseDB getEtalase(String etalaseId){
         int etalaseIdInt = Integer.parseInt(etalaseId);
         EtalaseDB etalaseDB = new Select().from(EtalaseDB.class)

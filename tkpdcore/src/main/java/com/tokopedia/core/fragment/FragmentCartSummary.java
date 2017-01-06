@@ -54,6 +54,7 @@ import com.tokopedia.core.payment.model.responsecartstep1.CarStep1Data;
 import com.tokopedia.core.payment.model.responsecartstep1.CartProduct;
 import com.tokopedia.core.payment.model.responsecartstep2.CartStep2Data;
 import com.tokopedia.core.util.JSONHandler;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.TokenHandler;
 import com.tokopedia.core.var.TkpdUrl;
 
@@ -702,7 +703,7 @@ public class FragmentCartSummary extends TkpdFragment implements CartInterfaces.
                     product.setProductID(DetailProd.getString("prod_id"));
                     product.setPrice(CurrencyFormatHelper.convertRupiahToInt(DetailProd.getString("price")));
                     product.setQty(DetailProd.getInt("qty"));
-                    product.setProductName(Html.fromHtml(DetailProd.getString("prod_name")).toString());
+                    product.setProductName(MethodChecker.fromHtml(DetailProd.getString("prod_name")).toString());
 
                     checkoutAnalytics.addProduct(product.getProduct());
                 }
@@ -713,7 +714,7 @@ public class FragmentCartSummary extends TkpdFragment implements CartInterfaces.
                 luckyMerchantBadge.add(Shop.optInt("lucky_merchant", 0));
 
                 JSONObject Dest = new JSONObject(ListDetail.getString("dest"));
-                ShippingAddress.add(Html.fromHtml(Dest.getString("receiver_name")).toString());
+                ShippingAddress.add(MethodChecker.fromHtml(Dest.getString("receiver_name")).toString());
                 AddrID.add(Dest.getString("id"));
 
                 JSONObject Shipping = new JSONObject(ListDetail.getString("shipping"));
@@ -871,7 +872,7 @@ public class FragmentCartSummary extends TkpdFragment implements CartInterfaces.
                 product1.setProductID(product.getProductId());
                 product1.setPrice(CurrencyFormatHelper.convertRupiahToInt(product.getProductPrice()));
                 product1.setQty(product.getProductQuantity());
-                product1.setProductName(Html.fromHtml(product.getProductName()).toString());
+                product1.setProductName(MethodChecker.fromHtml(product.getProductName()).toString());
                 checkoutAnalytics.addProduct(product1.getProduct());
             }
 
@@ -879,7 +880,7 @@ public class FragmentCartSummary extends TkpdFragment implements CartInterfaces.
             ShopID.add(cart.getCartShop().getShopId());
             luckyMerchantBadge.add(cart.getCartShop().getLuckyMerchant());
 
-            ShippingAddress.add(Html.fromHtml(cart.getCartDestination().getReceiverName()).toString());
+            ShippingAddress.add(MethodChecker.fromHtml(cart.getCartDestination().getReceiverName()).toString());
             AddrID.add(cart.getCartDestination().getAddressId());
 
             ShippingAgency.add(cart.getCartShipments().getShipmentName() + " - " + cart.getCartShipments().getShipmentPackageName());
@@ -1497,7 +1498,7 @@ public class FragmentCartSummary extends TkpdFragment implements CartInterfaces.
                 itemTemp.ErrorView2.setText(Error2.get(i));
             }
 
-            itemTemp.vShopName.setText(Html.fromHtml(ShopName.get(i)));
+            itemTemp.vShopName.setText(MethodChecker.fromHtml(ShopName.get(i)));
             setLuckyEmblem(luckyMerchantBadge.get(i), itemTemp.vShopName);
             itemTemp.vTotalPrice.setText(TotalPrice.get(i));
             itemTemp.vShippingAddress.setText(ShippingAddress.get(i));

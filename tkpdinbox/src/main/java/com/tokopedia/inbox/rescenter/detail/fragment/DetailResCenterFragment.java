@@ -25,6 +25,7 @@ import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.rescenter.detail.customview.DetailView;
 import com.tokopedia.inbox.rescenter.detail.customview.ReplyEditorView;
 import com.tokopedia.inbox.rescenter.detail.dialog.ConfirmationDialog;
@@ -280,7 +281,7 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     @Override
     public void showInvalidTrackingDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(Html.fromHtml(getActivity().getString(R.string.error_520_tracking)));
+        builder.setMessage(MethodChecker.fromHtml(getActivity().getString(R.string.error_520_tracking)));
         builder.setPositiveButton(getActivity().getString(R.string.title_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {

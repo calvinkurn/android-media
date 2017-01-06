@@ -8,6 +8,7 @@ import android.text.Spanned;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.talkview.model.TalkBaseModel;
+import com.tokopedia.core.util.MethodChecker;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -135,7 +136,7 @@ public class TalkDetail extends TalkBaseModel implements Parcelable {
      *     The commentShopName
      */
     public String getCommentShopName() {
-        return Html.fromHtml(commentShopName).toString();
+        return MethodChecker.fromHtml(commentShopName).toString();
     }
 
     /**
@@ -207,7 +208,7 @@ public class TalkDetail extends TalkBaseModel implements Parcelable {
      *     The commentUserName
      */
     public String getCommentUserName() {
-        return Html.fromHtml(commentUserName).toString();
+        return MethodChecker.fromHtml(commentUserName).toString();
     }
 
     /**
@@ -243,12 +244,12 @@ public class TalkDetail extends TalkBaseModel implements Parcelable {
      *     The commentMessage
      */
     public String getCommentMessage() {
-        return Html.fromHtml(commentMessage).toString();
+        return MethodChecker.fromHtml(commentMessage).toString();
     }
 
 
     public Spanned getCommentMessageSpanned() {
-        return Html.fromHtml(commentMessage);
+        return MethodChecker.fromHtml(commentMessage);
     }
 
     /**

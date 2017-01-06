@@ -28,13 +28,16 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.Breadcrumb;
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
+import com.tokopedia.core.network.entity.discovery.CatalogModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.session.base.BaseFragment;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.browseparent.BrowserSectionsPagerAdapter;
 import com.tokopedia.discovery.model.NetworkParam;
@@ -109,7 +112,8 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
                         }
                     case 1:
                         if (fragment instanceof CatalogFragment) {
-                            return ((CatalogFragment) fragment).getDataModel().result.breadcrumb;
+                            BrowseCatalogModel catalogModel = ((CatalogFragment) fragment).getDataModel();
+                            return catalogModel.result.breadcrumb;
                         }
                     default:
                         return new ArrayList<Breadcrumb>();
@@ -169,7 +173,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     private void showTickerGTM(String message) {
         if (discoveryTicker != null) {
             if (message != null) {
-                discoveryTicker.setText(Html.fromHtml(message));
+                discoveryTicker.setText(MethodChecker.fromHtml(message));
                 discoveryTicker.setVisibility(View.VISIBLE);
                 discoveryTicker.setAutoLinkMask(0);
                 Linkify.addLinks(discoveryTicker, Linkify.WEB_URLS);
@@ -239,7 +243,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     }
 
     @Override
-    public void setDynamicFilterAtrribute(DynamicFilterModel.Data filterAtrribute, int activeTab) {
+    public void setDynamicFilterAtrribute(DataValue filterAtrribute, int activeTab) {
         Log.d(TAG, filterAtrribute.toString());
         if (filterAtrribute.getSort() != null) {
             filterAtrribute.setSelected(filterAtrribute.getSort().get(0).getName());

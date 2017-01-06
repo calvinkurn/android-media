@@ -22,6 +22,7 @@ import com.tokopedia.core.product.listener.ProductDetailView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ReturnInfo;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 
 import butterknife.BindView;
@@ -74,13 +75,12 @@ public class FreeReturnView extends BaseView<ProductDetailData, ProductDetailVie
             setVisibility(GONE);
         } else {
             layoutFreeReturn.setBackgroundColor(Color.parseColor(returnInfo.getColorHex()));
-            textFreeReturn.setText(Html.fromHtml(returnInfo.getContent()));
+            textFreeReturn.setText(MethodChecker.fromHtml(returnInfo.getContent()));
             textFreeReturn.setMovementMethod(new SelectableSpannedMovementMethod());
 
             Spannable sp = (Spannable)textFreeReturn.getText();
             URLSpan[] urls=sp.getSpans(0, textFreeReturn.getText().length(), URLSpan.class);
             SpannableStringBuilder style=new SpannableStringBuilder(textFreeReturn.getText());
-            style.clearSpans();
             for(final URLSpan url : urls){
                 style.setSpan(new ClickableSpan() {
                     @Override

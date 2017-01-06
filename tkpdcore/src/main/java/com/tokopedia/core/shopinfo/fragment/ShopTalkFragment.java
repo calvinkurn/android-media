@@ -111,9 +111,6 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (adapter.getList().isEmpty() && !adapter.isEmpty() && !presenter.isRequesting()) {
-            presenter.getShopTalk();
-        }
     }
 
     @Override
@@ -255,6 +252,11 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && presenter != null && adapter != null) {
+            if (adapter.getList().isEmpty() && !adapter.isEmpty() && !presenter.isRequesting()) {
+                presenter.getShopTalk();
+            }
+        }
     }
 
     @Override
@@ -350,5 +352,16 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
         adapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.unsubscribe();
+    }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (adapter != null)
+            adapter.getList().clear();
+    }
 }

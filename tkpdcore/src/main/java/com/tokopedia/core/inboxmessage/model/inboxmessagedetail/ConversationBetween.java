@@ -7,6 +7,7 @@ import android.text.Html;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.util.MethodChecker;
 
 public class ConversationBetween implements Parcelable {
 
@@ -52,7 +53,7 @@ public class ConversationBetween implements Parcelable {
      * @return The userName
      */
     public String getUserName() {
-        return Html.fromHtml(userName).toString();
+        return MethodChecker.fromHtml(userName).toString();
     }
 
     /**

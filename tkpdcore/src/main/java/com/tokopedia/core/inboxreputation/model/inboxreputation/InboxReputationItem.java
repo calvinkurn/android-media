@@ -7,6 +7,7 @@ import android.text.Html;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.util.MethodChecker;
 
 public class InboxReputationItem implements Parcelable{
 
@@ -146,7 +147,7 @@ public class InboxReputationItem implements Parcelable{
      * @return The revieweeName
      */
     public String getRevieweeName() {
-        return Html.fromHtml(revieweeName).toString();
+        return MethodChecker.fromHtml(revieweeName).toString();
     }
 
     /**
@@ -244,7 +245,7 @@ public class InboxReputationItem implements Parcelable{
      * @return The reviewStatusDescription
      */
     public String getReviewStatusDescription() {
-        return Html.fromHtml(reviewStatusDescription).toString();
+        return MethodChecker.fromHtml(reviewStatusDescription).toString();
     }
 
     /**

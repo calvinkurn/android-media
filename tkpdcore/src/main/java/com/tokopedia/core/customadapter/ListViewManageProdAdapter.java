@@ -49,6 +49,8 @@ import com.tokopedia.core.myproduct.presenter.NetworkInteractorImpl;
 import com.tokopedia.core.myproduct.utils.VerificationUtils;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.product.model.passdata.ProductPass;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 
 import org.json.JSONException;
@@ -166,7 +168,7 @@ public class ListViewManageProdAdapter extends BaseAdapter
         List<EtalaseDB> etalaseDBs = DbManagerImpl.getInstance().getEtalases();
         for (EtalaseDB etalaseDB :
                 etalaseDBs) {
-            menuName.add(String.valueOf(Html.fromHtml(etalaseDB.getEtalaseName())));
+            menuName.add(String.valueOf(MethodChecker.fromHtml(etalaseDB.getEtalaseName())));
         }
 //		if (mAddTo.equals("1")){
         menuName.add(context.getString(R.string.title_add_new_etalase));
@@ -328,7 +330,7 @@ public class ListViewManageProdAdapter extends BaseAdapter
             } else {
                 holder.GudangTag.setVisibility(View.GONE);
             }
-            holder.Etalase.setText(context.getString(R.string.prompt_etalase) + ": " + Html.fromHtml(Etalase));
+            holder.Etalase.setText(context.getString(R.string.prompt_etalase) + ": " + MethodChecker.fromHtml(Etalase));
         } else {
             holder.Etalase.setVisibility(View.GONE);
             holder.GudangTag.setVisibility(View.VISIBLE);
@@ -452,25 +454,11 @@ public class ListViewManageProdAdapter extends BaseAdapter
                 }
             }
         });
-        holder.pNameView.setText(Html.fromHtml(prodName));
+        holder.pNameView.setText(MethodChecker.fromHtml(prodName));
         holder.returnableView.setText(returnableCondition(returnablePolicy));
         if (returnablePolicy != 1) {
             holder.returnableView.setVisibility(View.GONE);
         }
-        holder.pNameView.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                if (!multiselect) {
-                    Bundle bundle = new Bundle();
-                    Intent intent = new Intent(context, ProductInfoActivity.class);
-                    bundle.putString("product_id", ProductID);
-                    intent.putExtras(bundle);
-                    context.startActivity(intent);
-                }
-            }
-        });
-
         holder.EditBut.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -653,6 +641,15 @@ public class ListViewManageProdAdapter extends BaseAdapter
 
     public void setMultiselect(boolean multiselect) {
         this.multiselect = multiselect;
+    }
+
+    public ProductPass getProductDataToPass(int position) {
+        return ProductPass.Builder.aProductPass()
+                .setProductPrice(manageProductModels.get(position).getPrice())
+                .setProductId(manageProductModels.get(position).getProdID())
+                .setProductName(manageProductModels.get(position).getProdName())
+                .setProductImage(manageProductModels.get(position).getProdImgUri())
+                .build();
     }
 
 }
