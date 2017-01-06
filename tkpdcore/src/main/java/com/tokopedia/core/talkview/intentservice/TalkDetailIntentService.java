@@ -8,7 +8,6 @@ import android.os.ResultReceiver;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.network.apiservices.kunyit.KunyitService;
-import com.tokopedia.core.network.apiservices.product.TalkActService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;

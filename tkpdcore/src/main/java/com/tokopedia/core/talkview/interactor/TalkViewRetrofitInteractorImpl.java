@@ -4,9 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.tokopedia.core.network.apiservices.kunyit.KunyitService;
-import com.tokopedia.core.network.apiservices.product.TalkActService;
-import com.tokopedia.core.network.apiservices.product.TalkService;
-import com.tokopedia.core.network.apiservices.user.InboxTalkService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;

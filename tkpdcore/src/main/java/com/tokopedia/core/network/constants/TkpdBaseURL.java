@@ -37,8 +37,6 @@ public interface  TkpdBaseURL {
         String URL_PROMO_ACTION = BASE_DOMAIN + "v4/action/promo/";
         String URL_PROMO = BASE_DOMAIN + "v4/promo/";
         String URL_REVIEW_ACTION = BASE_DOMAIN + "v4/action/review/";
-        String URL_TALK = BASE_DOMAIN + "v4/talk/";
-        String URL_TALK_ACTION = BASE_DOMAIN + "v4/action/talk/";
 
         String PATH_GET_DETAIL_PRODUCT = "get_detail.pl";
         String PATH_GET_OTHER_PRODUCT = "get_other_product.pl";
@@ -88,15 +86,6 @@ public interface  TkpdBaseURL {
         String PATH_EDIT_REPUTATION_REVIEW_VALIDATION = "edit_reputation_review_validation.pl";
         String PATH_EDIT_REPUTATION_REVIEW_SUBMIT = "edit_reputation_review_submit.pl";
 
-        String PATH_ADD_COMMENT_TALK = "add_comment_talk.pl";
-        String PATH_ADD_PRODUCT_TALK = "add_product_talk.pl";
-        String PATH_DELETE_COMMENT_TALK = "delete_comment_talk.pl";
-        String PATH_DELETE_PRODUCT_TALK = "delete_product_talk.pl";
-        String PATH_FOLLOW_PRODUCT_TALK = "follow_product_talk.pl";
-        String PATH_REPORT_COMMENT_TALK = "report_comment_talk.pl";
-        String PATH_REPORT_PRODUCT_TALK = "report_product_talk.pl";
-
-        String PATH_GET_COMMENT_BY_TALK = "get_comment_by_talk_id.pl";
         String PATH_GET_HELPFUL_REVIEW = "get_helpful_review.pl";
         String PATH_GET_REPORT_PRODUCT_TYPE = "get_product_report_type.pl";
     }
@@ -109,7 +98,6 @@ public interface  TkpdBaseURL {
         String URL_INBOX_REPUTATION = BASE_DOMAIN + "v4/inbox-reputation/";
         String URL_INBOX_RES_CENTER = BASE_DOMAIN + "v4/inbox-resolution-center/";
         String URL_INBOX_REVIEW = BASE_DOMAIN + "v4/inbox-review/";
-        String URL_INBOX_TALK = BASE_DOMAIN + "v4/inbox-talk/";
         String URL_INBOX_TICKET = BASE_DOMAIN + "v4/inbox-ticket/";
         String URL_INTERRUPT_ACTION = BASE_DOMAIN + "v4/action/interrupt/";
         String URL_INTERRUPT = BASE_DOMAIN + "v4/interrupt/";
@@ -152,9 +140,6 @@ public interface  TkpdBaseURL {
         String PATH_TRACK_SHIPPING_REF = "track_shipping_ref.pl";
 
         String PATH_GET_INBOX_REVIEW = "get_inbox_review.pl";
-
-        String PATH_GET_INBOX_DETAIL_TALK = "get_inbox_detail_talk.pl";
-        String PATH_GET_INBOX_TALK = "get_inbox_talk.pl";
 
         String PATH_GET_INBOX_TICKET = "get_inbox_ticket.pl";
         String PATH_GET_INBOX_TICKET_DETAIL = "get_inbox_ticket_detail.pl";
@@ -336,7 +321,6 @@ public interface  TkpdBaseURL {
         String PATH_GET_SHOP_NOTES = "get_shop_notes.pl";
         String PATH_GET_SHOP_PRODUCT = "get_shop_product.pl";
         String PATH_GET_SHOP_REVIEW = "get_shop_review.pl";
-        String PATH_GEt_SHOP_TALK = "get_shop_talk.pl";
     }
 
     interface Etc {

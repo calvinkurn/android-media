@@ -34,13 +34,11 @@ public class ShopTalkRetrofitInteractorImpl implements ShopTalkRetrofitInteracto
     private static final String TAG = ShopTalkRetrofitInteractorImpl.class.getSimpleName();
 
     private final CompositeSubscription compositeSubscription;
-    private final ShopService shopService;
     private final KunyitService kunyitService;
     private boolean isRequesting;
 
     public ShopTalkRetrofitInteractorImpl() {
         compositeSubscription = new CompositeSubscription();
-        shopService = new ShopService();
         kunyitService = new KunyitService();
     }
 
@@ -49,8 +47,8 @@ public class ShopTalkRetrofitInteractorImpl implements ShopTalkRetrofitInteracto
                             @NonNull Map<String, String> params,
                             @NonNull final GetShopTalkListener listener) {
         setRequesting(true);
-        Observable<Response<TkpdResponse>> observable = shopService.getApi()
-                .getTalk(AuthUtil.generateParams(context, params));
+        Observable<Response<TkpdResponse>> observable = kunyitService.getApi()
+                .getShopTalk(AuthUtil.generateParams(context, params));
 
         Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
             @Override

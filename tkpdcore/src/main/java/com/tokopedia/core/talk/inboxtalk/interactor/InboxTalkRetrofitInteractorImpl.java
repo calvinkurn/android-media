@@ -6,8 +6,6 @@ import android.util.Log;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.core.R;
 import com.tokopedia.core.network.apiservices.kunyit.KunyitService;
-import com.tokopedia.core.network.apiservices.product.TalkActService;
-import com.tokopedia.core.network.apiservices.user.InboxTalkService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -36,8 +34,6 @@ import rx.subscriptions.CompositeSubscription;
 public class InboxTalkRetrofitInteractorImpl implements InboxTalkRetrofitInteractor {
 
     InboxTalkPresenterImpl presenter;
-    InboxTalkService inboxTalkService;
-    TalkActService talkActService;
     KunyitService kunyitService;
     CompositeSubscription subscription;
 
@@ -45,7 +41,6 @@ public class InboxTalkRetrofitInteractorImpl implements InboxTalkRetrofitInterac
     public static InboxTalkRetrofitInteractor createInstance(InboxTalkPresenterImpl inboxTalkPresenter) {
         InboxTalkRetrofitInteractorImpl facade = new InboxTalkRetrofitInteractorImpl();
         facade.presenter = inboxTalkPresenter;
-        facade.inboxTalkService = new InboxTalkService();
         facade.kunyitService = new KunyitService();
         facade.subscription = new CompositeSubscription();
         return facade;
@@ -53,10 +48,8 @@ public class InboxTalkRetrofitInteractorImpl implements InboxTalkRetrofitInterac
 
     @Override
     public void getInboxTalk(final Context context, Map<String, String> param, final GetInboxTalkListener listener) {
-//        Observable<Response<TkpdResponse>> observable = inboxTalkService.getApi()
-//                .getInbox(AuthUtil.generateParams(context,param));
-        Observable<Response<TkpdResponse>> observable = inboxTalkService.getApi()
-                .getInbox(AuthUtil.generateParams(context, param));
+        Observable<Response<TkpdResponse>> observable = kunyitService.getApi()
+                .getInboxTalk(AuthUtil.generateParams(context, param));
 
         Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
             @Override
