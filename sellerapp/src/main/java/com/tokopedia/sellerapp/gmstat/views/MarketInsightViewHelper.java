@@ -301,7 +301,7 @@ public class MarketInsightViewHelper {
 
             marketInsightProgress.setProgress((float) percentage);
 
-            marketInsightNumber.setText(String.valueOf(searchKeyword.getFrequency()));
+            marketInsightNumber.setText(String.valueOf(searchKeyword.getFrequency()) + "x");
 
             marketInsightKeyword.setText(searchKeyword.getKeyword());
         }
