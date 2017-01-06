@@ -378,6 +378,7 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
     }
 
     private void initNumberFormatter() {
+        KMNumbers.overrideSuffixes(1000L, "Rb");
         KMNumbers.overrideSuffixes(1000000L, "jt");
     }
 
