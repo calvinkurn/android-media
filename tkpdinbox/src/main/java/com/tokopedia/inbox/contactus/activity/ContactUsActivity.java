@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.contactus.activity;
 
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -19,6 +20,8 @@ import com.tokopedia.inbox.contactus.fragment.ContactUsFaqFragment.ContactUsFaqL
 import com.tokopedia.inbox.contactus.fragment.CreateTicketFormFragment;
 import com.tokopedia.inbox.inboxticket.fragment.InboxTicketFragment;
 
+import static com.google.ads.conversiontracking.g.d.b;
+
 /**
  * Created by nisie on 8/12/16.
  */
@@ -33,6 +36,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
     private static final String CURRENT_FRAGMENT_BACKSTACK = "CURRENT_FRAGMENT_BACKSTACK";
     private static final String PARAM_BUNDLE = "PARAM_BUNDLE";
     String url;
+    Bundle bundleCreateTicket;
 
     public interface BackButtonListener {
         void onBackPressed();
@@ -55,17 +59,22 @@ public class ContactUsActivity extends BasePresenterActivity implements
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         if (savedInstanceState.getString(CURRENT_FRAGMENT_BACKSTACK, "").equals(CreateTicketFormFragment.class.getSimpleName())) {
-            url = savedInstanceState.getString(PARAM_URL, "");
 
-            Bundle bundle = getIntent().getExtras();
-            if (bundle == null)
-                bundle = new Bundle();
-            bundle.putAll(savedInstanceState.getBundle(PARAM_BUNDLE));
+            Bundle bundle = new Bundle();
+            if (savedInstanceState.getBundle(PARAM_BUNDLE) != null) {
+                bundleCreateTicket = savedInstanceState.getBundle(PARAM_BUNDLE);
+                bundle.putAll(savedInstanceState.getBundle(PARAM_BUNDLE));
+            }
+
+            url = savedInstanceState.getString(PARAM_URL, "");
             if (!url.equals(""))
                 bundle.putString(PARAM_SOLUTION_ID, Uri.parse(url).getQueryParameter("solution_id"));
+
             CreateTicketFormFragment fragment = CreateTicketFormFragment.createInstance(bundle);
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.setCustomAnimations(R.animator.slide_in_left, 0, 0, R.animator.slide_out_right);
+            while (getFragmentManager().getBackStackEntryCount() > 0) {
+                getFragmentManager().popBackStackImmediate();
+            }
             transaction.add(R.id.main_view, fragment, CreateTicketFormFragment.class.getSimpleName());
             transaction.addToBackStack(CreateTicketFormFragment.class.getSimpleName());
             transaction.commit();
@@ -126,6 +135,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
 
     @Override
     public void onGoToCreateTicket(Bundle bundle) {
+        bundleCreateTicket = bundle;
         if (getFragmentManager().findFragmentByTag(CreateTicketFormFragment.class.getSimpleName()) == null) {
             CreateTicketFormFragment fragment = CreateTicketFormFragment.createInstance(bundle);
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -167,7 +177,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
     protected void onSaveInstanceState(Bundle outState) {
         outState.putString(CURRENT_FRAGMENT_BACKSTACK, getFragmentManager().findFragmentById(R.id.main_view).getTag());
         outState.putString(PARAM_URL, url);
-        outState.putBundle(PARAM_BUNDLE, getIntent().getExtras());
+        outState.putBundle(PARAM_BUNDLE, bundleCreateTicket);
         super.onSaveInstanceState(outState);
     }
 }
