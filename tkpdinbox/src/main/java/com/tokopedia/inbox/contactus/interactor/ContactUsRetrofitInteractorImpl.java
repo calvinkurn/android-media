@@ -51,6 +51,7 @@ import rx.subscriptions.CompositeSubscription;
 public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInteractor {
 
     private static final String TAG = ContactUsRetrofitInteractorImpl.class.getSimpleName();
+    private static final String TOO_MANY_REQUEST = "TOO_MANY_REQUEST";
 
     private final CompositeSubscription compositeSubscription;
     private final ContactUsService contactUsService;
@@ -76,18 +77,26 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
                                     .map(new Func1<Response<TkpdResponse>, ContactUsPass>() {
                                         @Override
                                         public ContactUsPass call(Response<TkpdResponse> tkpdResponse) {
-                                            CreateTicketResult result = tkpdResponse.body().convertDataObj(CreateTicketResult.class);
-                                            if (result.getIsSuccess() == 1) {
-                                                contactUsPass.setPostKey(result.getPostKey());
-                                                return contactUsPass;
-                                            } else {
-                                                String errorMessage = "";
-                                                for (int i = 0; i < tkpdResponse.body().getErrorMessages().size(); i++) {
-                                                    errorMessage += tkpdResponse.body().getErrorMessages().get(i);
+                                            if (tkpdResponse.isSuccessful() && !tkpdResponse.body().isError()) {
+                                                CreateTicketResult result = tkpdResponse.body().convertDataObj(CreateTicketResult.class);
+                                                if (result.getIsSuccess() == 1) {
+                                                    contactUsPass.setPostKey(result.getPostKey());
+                                                    return contactUsPass;
+                                                } else {
+                                                    String errorMessage = "";
+                                                    for (int i = 0; i < tkpdResponse.body().getErrorMessages().size(); i++) {
+                                                        errorMessage += tkpdResponse.body().getErrorMessages().get(i);
+                                                    }
+                                                    throw new RuntimeException(errorMessage);
                                                 }
-                                                throw new RuntimeException(errorMessage);
+                                            } else {
+                                                if (tkpdResponse.body().getStatus().equals(TOO_MANY_REQUEST))
+                                                    listener.onError(tkpdResponse.body().getErrorMessages().toString().replace("[", "").replace("]", ""));
+                                                else if (tkpdResponse.body().isNullData())
+                                                    listener.onNullData();
+                                                else
+                                                    listener.onError(tkpdResponse.body().getErrorMessages().toString().replace("[", "").replace("]", ""));
                                             }
-
                                         }
                                     });
                         } else {
