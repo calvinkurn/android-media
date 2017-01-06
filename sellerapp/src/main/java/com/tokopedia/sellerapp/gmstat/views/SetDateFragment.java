@@ -602,7 +602,12 @@ public class SetDateFragment extends Fragment {
 
                 @Override
                 public void promptUserExceedLimit() {
-                    Toast.makeText(itemView.getContext(), "exceed range date", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(itemView.getContext(), "Tidak dapat memilih tanggal ini", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void promptUserBelowLimit() {
+                    Toast.makeText(itemView.getContext(), "Data tidak tersedia pada periode ini", Toast.LENGTH_SHORT).show();
                 }
             });
             datePickerRules.seteDate(eDate);
@@ -1029,6 +1034,7 @@ public class SetDateFragment extends Fragment {
             void successSDate(long sDate, long eDate);
             void successEDate(long sDate, long eDate);
             void promptUserExceedLimit();
+            void promptUserBelowLimit();
         }
 
         DatePickerRulesListener datePickerRulesListener;
@@ -1060,9 +1066,16 @@ public class SetDateFragment extends Fragment {
 
         public void setsDate(long sDate) {
             Log.d("MNORMANSYAH", "# "+getDateFormat(sDate)+" & "+getDateFormat(maxLimit)+" & "+ getDateFormat(minLimit));
-            if(sDate > maxLimit || sDate < minLimit ) {
+            if(sDate > maxLimit) {
                 if(datePickerRulesListener != null){
                     datePickerRulesListener.promptUserExceedLimit();
+                }
+                return;
+            }
+
+            if(sDate < minLimit){
+                if(datePickerRulesListener != null){
+                    datePickerRulesListener.promptUserBelowLimit();
                 }
                 return;
             }
@@ -1163,9 +1176,16 @@ public class SetDateFragment extends Fragment {
         }
 
         public void seteDate(long eDate) {
-            if(eDate > maxLimit || eDate < minLimit ) {
+            if(eDate > maxLimit) {
                 if(datePickerRulesListener != null){
                     datePickerRulesListener.promptUserExceedLimit();
+                }
+                return;
+            }
+
+            if(eDate < minLimit){
+                if(datePickerRulesListener != null){
+                    datePickerRulesListener.promptUserBelowLimit();
                 }
                 return;
             }
