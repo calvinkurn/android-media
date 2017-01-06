@@ -84,9 +84,6 @@ public class AddProductPresenterImpl implements AddProductPresenter
         , NetworkInteractorImpl.FetchDepartment
         , NetworkInteractorImpl.FetchEtalase
         , ErrorListener
-        , NetworkInteractorImpl.CheckNoteAvailibility
-        , NetworkInteractorImpl.GetMyInfo
-        , NetworkInteractorImpl.GetReturnPolicyDetail
         , NetworkInteractorImpl.FetchDepartmentChild
         , NetworkInteractorImpl.FetchCatalog
         , NetworkInteractorImpl.FetchEditData {
@@ -174,86 +171,6 @@ public class AddProductPresenterImpl implements AddProductPresenter
     public void clearEtalaseCache(Context context) {
         fetchEtalaseTimer = initCacheIfNotNull(context, FETCH_ETALASE);
         fetchEtalaseTimer.setExpire(0);
-    }
-
-    @Override
-    public void checkNoteAvailibility(Context context, boolean isShouldFetchData) {
-        GlobalCacheManager globalCacheManager = new GlobalCacheManager();
-        try {
-            String valueString = globalCacheManager.getValueString(TkpdCache.Key.SHOP_NOTE_LIST);
-            if (checkNotNull(valueString) && !valueString.equals("")) {
-                GetShopNoteModel.Data data = globalCacheManager.getConvertObjData(TkpdCache.Key.SHOP_NOTE_LIST, GetShopNoteModel.Data.class);
-                processShopNote(data, isShouldFetchData);
-            } else {
-                checkNoteAvailibityNetwork(context);
-            }
-        } catch (Exception e) {
-            checkNoteAvailibityNetwork(context);
-        }
-
-    }
-
-    @Override
-    public void clearNoteAvailibility() {
-        GlobalCacheManager globalCacheManager = new GlobalCacheManager();
-        globalCacheManager.delete(TkpdCache.Key.SHOP_NOTE_LIST);
-        globalCacheManager.delete(TkpdCache.Key.SHOP_INFO);
-        globalCacheManager.delete(TkpdCache.Key.KEBIJAKAN_PENGEMBALIAN_PRODUK);
-
-    }
-
-    private void checkNoteAvailibityNetwork(Context context) {
-        Log.e(TAG, messageTAG + " start fetch shop note");
-        ((NetworkInteractorImpl) networkInteractorImpl).setCheckNoteAvailibility(this);
-        ((NetworkInteractorImpl) networkInteractorImpl).setCompositeSubscription(compositeSubscription);
-        networkInteractorImpl.checkAvailibilityOfShopNote(context);
-    }
-
-    @Override
-    public void getMyShopInfo(Context context) {
-        GlobalCacheManager globalCacheManager = new GlobalCacheManager();
-        try {
-            String valueString = globalCacheManager.getValueString(TkpdCache.Key.SHOP_INFO);
-            if (checkNotNull(valueString) && !valueString.equals("")) {
-                MyShopInfoModel.Data myShopData = globalCacheManager.getConvertObjData(TkpdCache.Key.SHOP_INFO, MyShopInfoModel.Data.class);
-                MyShopInfoModel.Info myShopInfoModel = myShopData.getInfo();
-                addProductView.getReturnPolicyDetail(myShopInfoModel);
-            } else {
-                getMyShopInfoNetwork(context);
-            }
-        } catch (Exception e) {
-            getMyShopInfoNetwork(context);
-        }
-    }
-
-    private void getMyShopInfoNetwork(Context context) {
-        Log.e(TAG, messageTAG + " start fetch my shop info");
-        ((NetworkInteractorImpl) networkInteractorImpl).setGetMyInfo(this);
-        ((NetworkInteractorImpl) networkInteractorImpl).setCompositeSubscription(compositeSubscription);
-        networkInteractorImpl.getMyShopInfo(context);
-    }
-
-    @Override
-    public void getReturnPolicyDetail(Context context, MyShopInfoModel.Info info, GetShopNoteModel.ShopNoteModel returnPolicy) {
-        GlobalCacheManager globalCacheManager = new GlobalCacheManager();
-        try {
-            String valueString = globalCacheManager.getValueString(TkpdCache.Key.KEBIJAKAN_PENGEMBALIAN_PRODUK);
-            if (checkNotNull(valueString) && !valueString.equals("")) {
-                NoteDetailModel.Data data = globalCacheManager.getConvertObjData(TkpdCache.Key.KEBIJAKAN_PENGEMBALIAN_PRODUK, NoteDetailModel.Data.class);
-                processSuccessGetReturnPolicy(data);
-            } else {
-                getReturnPolicyDetailNetwork(context, info, returnPolicy);
-            }
-        } catch (Exception e) {
-            getReturnPolicyDetailNetwork(context, info, returnPolicy);
-        }
-    }
-
-    private void getReturnPolicyDetailNetwork(Context context, MyShopInfoModel.Info info, GetShopNoteModel.ShopNoteModel returnPolicy) {
-        Log.e(TAG, messageTAG + " start fetch return policy detail");
-        ((NetworkInteractorImpl) networkInteractorImpl).setGetReturnPolicyDetail(this);
-        ((NetworkInteractorImpl) networkInteractorImpl).setCompositeSubscription(compositeSubscription);
-        networkInteractorImpl.getReturnPolicyDetail(context, info, returnPolicy);
     }
 
     @Override
@@ -628,7 +545,7 @@ public class AddProductPresenterImpl implements AddProductPresenter
 
         addProductView.addEtalaseChooseText();
         addProductView.initEtalaseAdapter(etalaseModels);
-        addProductView.checkAvailibilityOfShopNote();
+        addProductView.fetchProductData();
     }
 
     @Override
@@ -654,137 +571,6 @@ public class AddProductPresenterImpl implements AddProductPresenter
     @Override
     public void onForbidden() {
         addProductView.onForbidden();
-    }
-
-    @Override
-    public void onFailureCheckNoteAvailibility(final Throwable e) {
-        addProductView.showMessageError(new ArrayList<String>() {{
-            add(e != null ? e.getMessage() : "unknown error");
-        }});
-    }
-
-    @Override
-    public void onSuccessFCheckNoteAvailibility(Response<TkpdResponse> responseData) {
-        if (responseData.isSuccessful()) {
-            TkpdResponse response = responseData.body();
-            JSONObject jsonObject = null;
-            try {
-                jsonObject = new JSONObject(response.getStringData());
-            } catch (JSONException je) {
-                Log.e(TAG, messageTAG + je.getLocalizedMessage());
-            }
-            if (!response.isError()) {
-
-                // save cache
-                GlobalCacheManager globalCacheManager = new GlobalCacheManager();
-                globalCacheManager.setKey(TkpdCache.Key.SHOP_NOTE_LIST).setValue(jsonObject.toString()).store();
-
-                GetShopNoteModel.Data data = gson.fromJson(jsonObject.toString(), GetShopNoteModel.Data.class);
-                processShopNote(data, true);
-            } else {
-                addProductView.showMessageError(response.getErrorMessages());
-            }
-        } else {
-            if (addProductView instanceof ErrorListener) {
-                ErrorListener errorlistener = (ErrorListener) addProductView;
-                new ErrorHandler(errorlistener, responseData.code());
-            }
-        }
-    }
-
-    private void processShopNote(GetShopNoteModel.Data data, boolean isShouldFetchData) {
-        GetShopNoteModel.ShopNoteModel returnPolicy = null;
-        if (data.getShopNoteModels() != null) {
-            for (GetShopNoteModel.ShopNoteModel shopNoteModel : data.getShopNoteModels()) {
-                if (shopNoteModel.getNoteTitle().contains(
-                        KEBIJAKAN_PENGEMBALIAN_PRODUK)) {
-                    returnPolicy = shopNoteModel;
-                    addProductView.saveReturnPolicy(returnPolicy);
-                }
-            }
-        }
-
-        if(isShouldFetchData) {
-            addProductView.fetchProductData();
-        }
-    }
-
-    @Override
-    public void onFailureGetMyInfo(Throwable e) {
-        defaultMessageError(e);
-    }
-
-    @Override
-    public void onSuccessGetMyInfo(Response<TkpdResponse> responseData) {
-        if (responseData.isSuccessful()) {
-            TkpdResponse response = responseData.body();
-            JSONObject jsonObject = null;
-            try {
-                jsonObject = new JSONObject(response.getStringData());
-            } catch (JSONException je) {
-                Log.e(TAG, messageTAG + je.getLocalizedMessage());
-            }
-
-            // save cache
-            GlobalCacheManager globalCacheManager = new GlobalCacheManager();
-            globalCacheManager.setKey(TkpdCache.Key.SHOP_INFO).setValue(jsonObject.toString()).setCacheDuration(1800000).store();
-
-            if (!response.isError()) {
-                MyShopInfoModel.Data myShopData = gson.fromJson(jsonObject.toString(), MyShopInfoModel.Data.class);
-                MyShopInfoModel.Info myShopInfoModel = myShopData.getInfo();
-                addProductView.getReturnPolicyDetail(myShopInfoModel);
-            } else {
-                addProductView.showMessageError(response.getErrorMessages());
-            }
-        } else {
-            if (addProductView instanceof ErrorListener) {
-                ErrorListener errorlistener = (ErrorListener) addProductView;
-                new ErrorHandler(errorlistener, responseData.code());
-            }
-        }
-    }
-
-    @Override
-    public void onFailureGetReturnPolicyDetail(Throwable e) {
-        defaultMessageError(e);
-    }
-
-    @Override
-    public void onSuccessGetReturnPolicyDetail(Response<TkpdResponse> responseData) {
-        if (responseData.isSuccessful()) {
-            TkpdResponse response = responseData.body();
-            JSONObject jsonObject = null;
-            try {
-                jsonObject = new JSONObject(response.getStringData());
-            } catch (JSONException je) {
-                Log.e(TAG, messageTAG + je.getLocalizedMessage());
-            }
-            if (!response.isError()) {
-                // save cache
-                GlobalCacheManager globalCacheManager = new GlobalCacheManager();
-                globalCacheManager.setKey(TkpdCache.Key.KEBIJAKAN_PENGEMBALIAN_PRODUK).setValue(jsonObject.toString()).setCacheDuration(18000).store();
-
-                NoteDetailModel.Data data = gson.fromJson(jsonObject.toString(), NoteDetailModel.Data.class);
-                processSuccessGetReturnPolicy(data);
-            } else {
-                addProductView.showMessageError(response.getErrorMessages());
-            }
-        } else {
-            if (addProductView instanceof ErrorListener) {
-                ErrorListener errorlistener = (ErrorListener) addProductView;
-                new ErrorHandler(errorlistener, responseData.code());
-            }
-        }
-    }
-
-    private void processSuccessGetReturnPolicy(NoteDetailModel.Data data) {
-        NoteDetailModel.Detail detail = data.getDetail();
-        ReturnableDB returnableDB = new ReturnableDB(detail.getNotes_title(), detail.getNotes_content(), Integer.parseInt(detail.getNotes_id()));
-        returnableDB.save();
-        long id = returnableDB.Id;
-        detail.setDbId(id);
-
-        addProductView.saveReturnPolicyDetail(detail);
     }
 
     @Override
@@ -826,10 +612,6 @@ public class AddProductPresenterImpl implements AddProductPresenter
         defaultMessageError(e);
     }
 
-
-    public void se(AddProductView addProductView) {
-        this.addProductView = addProductView;
-    }
 
     @Override
     public void onSuccessFetchEditData(Map<String, Object> map) {

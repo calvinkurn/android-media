@@ -84,9 +84,6 @@ public interface AddProductView extends BaseView{
     void addEtalaseAfterSelect(SimpleTextModel model);
     void initVar();
     void fetchEtalase();
-    void clearAvailibilityOfShopNote();
-    void checkAvailibilityOfShopNote();
-//    ModalMultiSelectorCallback getmDeleteMode();
     void showProgress(boolean show);
     void initCategoryAdapter(@NonNull ArrayList<TextDeleteModel> categoryModels);
     void initCategoryAdapter(List<List<SimpleTextModel>> textDeleteModels, @NonNull ArrayList<TextDeleteModel> categoryModels);
@@ -98,10 +95,6 @@ public interface AddProductView extends BaseView{
     void onForbidden();
     void initEtalaseAdapter(ArrayList<EtalaseModel> etalaseModels);
     void showMessageError(List<String> errorMessages);
-    void getMyShopInfo();
-    void getReturnPolicyDetail(MyShopInfoModel.Info info);
-    void saveReturnPolicy(GetShopNoteModel.ShopNoteModel returnPolicy);
-    void saveReturnPolicyDetail(NoteDetailModel.Detail detail);
     void processFetchDepartmentChild(DepartmentParentModel departmentParentModel, int depId, int level);
     void fetchDepartmentChild(final int depId, final int level);
     void saveCatalogs(ArrayList<CatalogDataModel.Catalog> catalogs);

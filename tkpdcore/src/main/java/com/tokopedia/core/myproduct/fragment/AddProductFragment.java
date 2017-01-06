@@ -298,10 +298,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
      */
     public int positionAtSocMed;
 
-    GetShopNoteModel.ShopNoteModel returnPolicy = null;
-    MyShopInfoModel.Info myShopInfoModel;
-    NoteDetailModel.Detail detail;
-
     @BindView(R2.id.add_product_add_to_new_etalase_layout)
     ExpandableRelativeLayout addProductAddToNewEtalaseLayout;
     @BindView(R2.id.add_product_add_to_new_etalase_alert)
@@ -1852,18 +1848,9 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         priceTextFormatter(oldFormatPrice);
     }
 
-    public void getMyShopInfo() {
-        addProduct.getMyShopInfo(getActivity());
-    }
-
     @Override
     public void fetchEtalase() {
         addProduct.fetchEtalase(getActivity());
-    }
-
-    @Override
-    public void clearAvailibilityOfShopNote() {
-        addProduct.clearNoteAvailibility();
     }
 
     @Override
@@ -1884,34 +1871,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         addProductAddTo.setLayoutManager(layoutManager);
         addProductAddTo.setAdapter(etalaseAdapter);
     }
-
-    @Override
-    public void checkAvailibilityOfShopNote() {
-        addProduct.checkNoteAvailibility(getActivity(), true);
-
-    }
-
-    @Override
-    public void getReturnPolicyDetail(MyShopInfoModel.Info info) {
-        myShopInfoModel = info;
-        Log.d(TAG, messageTAG + " check return policy : " + returnPolicy);
-        addProduct.getReturnPolicyDetail(getActivity(), myShopInfoModel, returnPolicy);
-    }
-
-    @Override
-    public void saveReturnPolicy(GetShopNoteModel.ShopNoteModel returnPolicy) {
-        this.returnPolicy = returnPolicy;
-    }
-
-    @Override
-    public void saveReturnPolicyDetail(NoteDetailModel.Detail detail) {
-        this.detail = detail;
-    }
-
-//    @Override
-//    public ModalMultiSelectorCallback getmDeleteMode() {
-//        return mDeleteMode;
-//    }
 
     @OnFocusChange(R2.id.add_product_price)
     public void onFocusChange(View v, boolean hasFocus) {
@@ -2873,10 +2832,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         }
         Log.i(TAG, messageTAG + "number of active image : " + count);
         return count;
-    }
-
-    public void updateShopNote() {
-        addProduct.checkNoteAvailibility(getActivity(), false);
     }
 }
 

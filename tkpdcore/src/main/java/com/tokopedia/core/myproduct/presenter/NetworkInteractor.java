@@ -29,9 +29,6 @@ public interface NetworkInteractor  {
 
     void fetchDepartment(Context context);
     void fetchEtalase(Context context);
-    void checkAvailibilityOfShopNote(Context context);
-    void getMyShopInfo(Context context);
-    void getReturnPolicyDetail(Context context, MyShopInfoModel.Info info, GetShopNoteModel.ShopNoteModel returnPolicy);
     void fetchDepartmentChild(Context context, final int depId, final int level);
     void fetchCatalog(Context context, String productDepId, String productName);
     void editProductDetail(CompositeSubscription compositeSubscription, Context context, String productId, String productName, String shopDomain);
@@ -42,7 +39,6 @@ public interface NetworkInteractor  {
                         String picture_status, String condition);
     void changeCategories(Context context,
                           String CtgID, final String ID, String shopID);
-    void changeReturnable(Context context, String returnableCondition, String ID);
     void changeInsurance(Context context, String insuranceID, String ID);
     void deleteProduct(Context context, String ID);
     void editPrice(Context context, EditPriceParam param);

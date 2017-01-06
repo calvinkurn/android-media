@@ -75,23 +75,17 @@ public class NetworkInteractorImpl implements NetworkInteractor {
 
     private FetchEtalase fetchEtalase;
 
-    private CheckNoteAvailibility checkNoteAvailibility;
-    private GetMyInfo getMyInfo;
-    private GetReturnPolicyDetail getReturnPolicyDetail;
     private FetchDepartmentChild fetchDepartmentChild;
     private FetchCatalog fetchCatalog;
     private FetchEditData fetchEditData;
     //LISTENER FROM MANAGE PRODUCT
     private GetProductList getProductList;
     private ChangeCategories changeCategories;
-    private ChangeReturnable changeReturnable;
     private ChangeInsurance changeInsurance;
     private DeleteProduct deleteProduct;
     private EditPrice editPrice;
     private EditEtalase editEtalase;
 
-    private NotesService notesService;
-    private MyShopInfoService myShopInfoService;
     private MyShopNoteService myShopNoteService;
     private ShopService shopService;
     private ProductService productService;
@@ -103,8 +97,6 @@ public class NetworkInteractorImpl implements NetworkInteractor {
     public NetworkInteractorImpl() {
         shopService = new ShopService();
         myShopNoteService = new MyShopNoteService();
-        myShopInfoService = new MyShopInfoService();
-        notesService = new NotesService();
         productService = new ProductService();
         productActService = new ProductActService();
         retrofitInteractorImpl = new RetrofitInteractorImpl();
@@ -141,30 +133,6 @@ public class NetworkInteractorImpl implements NetworkInteractor {
 
     public void setFetchDepartment(FetchDepartment fetchDepartment) {
         this.fetchDepartment = fetchDepartment;
-    }
-
-    public CheckNoteAvailibility getCheckNoteAvailibility() {
-        return checkNoteAvailibility;
-    }
-
-    public void setCheckNoteAvailibility(CheckNoteAvailibility checkNoteAvailibility) {
-        this.checkNoteAvailibility = checkNoteAvailibility;
-    }
-
-    public GetMyInfo getGetMyInfo() {
-        return getMyInfo;
-    }
-
-    public void setGetMyInfo(GetMyInfo getMyInfo) {
-        this.getMyInfo = getMyInfo;
-    }
-
-    public GetReturnPolicyDetail getGetReturnPolicyDetail() {
-        return getReturnPolicyDetail;
-    }
-
-    public void setGetReturnPolicyDetail(GetReturnPolicyDetail getReturnPolicyDetail) {
-        this.getReturnPolicyDetail = getReturnPolicyDetail;
     }
 
     public FetchDepartmentChild getFetchDepartmentChild() {
@@ -210,14 +178,6 @@ public class NetworkInteractorImpl implements NetworkInteractor {
 
     public void setChangeInsurance(ChangeInsurance changeInsurance) {
         this.changeInsurance = changeInsurance;
-    }
-
-    public ChangeReturnable getChangeReturnable() {
-        return changeReturnable;
-    }
-
-    public void setChangeReturnable(ChangeReturnable changeReturnable) {
-        this.changeReturnable = changeReturnable;
     }
 
     public GetProductList getGetProductList() {
@@ -335,72 +295,6 @@ public class NetworkInteractorImpl implements NetworkInteractor {
                 ));
     }
 
-    @Override
-    public void checkAvailibilityOfShopNote(final Context context) {
-
-        if (!checkNotNull(checkNoteAvailibility))
-            return;
-
-        compositeSubscription.add(myShopNoteService.getApi().getNote(AuthUtil.generateParams(context, new HashMap<String, String>()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe(
-                        new Subscriber<Response<TkpdResponse>>() {
-                            @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                if (checkNotNull(e))
-                                    e = new Throwable(context.getString(R.string.default_request_error_unknown_short));
-
-                                checkNoteAvailibility.onFailureCheckNoteAvailibility(e);
-                            }
-
-                            @Override
-                            public void onNext(Response<TkpdResponse> responseData) {
-                                checkNoteAvailibility.onSuccessFCheckNoteAvailibility(responseData);
-                            }
-                        }
-                ));
-
-    }
-
-    @Override
-    public void getMyShopInfo(Context context) {
-        if (!checkNotNull(getMyInfo))
-            return;
-
-        Map<String, String> param = new HashMap<String, String>();
-        compositeSubscription.add(myShopInfoService.getApi().getInfo(AuthUtil.generateParams(context, param))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<Response<TkpdResponse>>() {
-                               @Override
-                               public void onCompleted() {
-                               }
-
-                               @Override
-                               public void onError(Throwable e) {
-//                                   if(BuildConfig.DEBUG){
-//                                       e = new Throwable("getMyShopInfo ["+e.getMessage()+"]");
-//                                   }
-                                   getMyInfo.onFailureGetMyInfo(e);
-                               }
-
-                               @Override
-                               public void onNext(Response<TkpdResponse> responseData) {
-                                   getMyInfo.onSuccessGetMyInfo(responseData);
-                               }
-                           }
-                ));
-
-    }
-
     private HashMap<String, String> generateParamReturnPolicyDetail(
             MyShopInfoModel.Info info, GetShopNoteModel.ShopNoteModel returnPolicy
     ) {
@@ -410,40 +304,6 @@ public class NetworkInteractorImpl implements NetworkInteractor {
         param.put("terms", "0");
         param.put("note_id", returnPolicy.getNoteId());
         return param;
-    }
-
-    @Override
-    public void getReturnPolicyDetail(Context context, MyShopInfoModel.Info info, GetShopNoteModel.ShopNoteModel returnPolicy) {
-
-        if (!checkNotNull(getReturnPolicyDetail))
-            return;
-
-        compositeSubscription.add(notesService.getApi().getNotesDetail(AuthUtil.generateParams(context, generateParamReturnPolicyDetail(
-                info, returnPolicy
-        )))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe(
-                        new Subscriber<Response<TkpdResponse>>() {
-                            @Override
-                            public void onCompleted() {
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-//                                if(BuildConfig.DEBUG){
-//                                    e = new Throwable("getReturnPolicyDetail ["+e.getMessage()+"]");
-//                                }
-                                getReturnPolicyDetail.onFailureGetReturnPolicyDetail(e);
-                            }
-
-                            @Override
-                            public void onNext(Response<TkpdResponse> responseData) {
-                                getReturnPolicyDetail.onSuccessGetReturnPolicyDetail(responseData);
-                            }
-                        }
-                ));
     }
 
     @Override
@@ -916,40 +776,6 @@ public class NetworkInteractorImpl implements NetworkInteractor {
         return param;
     }
 
-    @Override
-    public void changeReturnable(Context context, final String returnableCondition, final String ID) {
-        if (!checkNotNull(changeReturnable))
-            return;
-        compositeSubscription.add(productActService.getApi()
-                .editReturnable(AuthUtil.generateParams(context, generateEditReturnableParam(returnableCondition, ID)))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe(
-                        new Subscriber<Response<TkpdResponse>>() {
-                            @Override
-                            public void onCompleted() {
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                changeReturnable.onFailureChangeReturnable(e, returnableCondition, ID);
-                            }
-
-                            @Override
-                            public void onNext(Response<TkpdResponse> responseData) {
-                                if (responseData.body().isError()) {
-                                    changeReturnable.onFailureChangeReturnable(new Throwable(responseData.body().getErrorMessages().get(0)), returnableCondition, ID);
-                                } else {
-                                    changeReturnable.onSuccessChangeReturnable(responseData);
-                                }
-
-                            }
-                        }
-                ));
-
-    }
-
     private static Map<String, String> generateEditInsuranceParam(String insuranceID, String ID) {
         HashMap<String, String> param = new HashMap<>();
         param.put("product_id", ID);
@@ -1121,24 +947,6 @@ public class NetworkInteractorImpl implements NetworkInteractor {
         void onSuccessFetchEtalase(Response<TkpdResponse> departmentParentModel);
     }
 
-    public interface CheckNoteAvailibility {
-        void onFailureCheckNoteAvailibility(Throwable e);
-
-        void onSuccessFCheckNoteAvailibility(Response<TkpdResponse> departmentParentModel);
-    }
-
-    public interface GetMyInfo {
-        void onFailureGetMyInfo(Throwable e);
-
-        void onSuccessGetMyInfo(Response<TkpdResponse> departmentParentModel);
-    }
-
-    public interface GetReturnPolicyDetail {
-        void onFailureGetReturnPolicyDetail(Throwable e);
-
-        void onSuccessGetReturnPolicyDetail(Response<TkpdResponse> departmentParentModel);
-    }
-
     public interface FetchDepartmentChild {
         void onFailureFetchDepartmentChild(Throwable e);
 
@@ -1169,12 +977,6 @@ public class NetworkInteractorImpl implements NetworkInteractor {
         void onFailureChangeCategories(Throwable e, final String CtgID, final String ID, final String shopID);
 
         void onSuccessChangeCategories(Response<TkpdResponse> departmentParentModel);
-    }
-
-    public interface ChangeReturnable {
-        void onFailureChangeReturnable(Throwable e, final String returnableCondition, final String ID);
-
-        void onSuccessChangeReturnable(Response<TkpdResponse> departmentParentModel);
     }
 
     public interface ChangeInsurance {

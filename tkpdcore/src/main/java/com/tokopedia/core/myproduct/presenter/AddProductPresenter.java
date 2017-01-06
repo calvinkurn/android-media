@@ -25,11 +25,7 @@ public interface AddProductPresenter {
      * @param isShouldFetchData flag untuk menandakan apakah action dibarengin dengan fetch edit
      *                          data dari network maupun dari database
      */
-    void checkNoteAvailibility(Context context, boolean isShouldFetchData);
 
-    void clearNoteAvailibility();
-    void getMyShopInfo(Context context);
-    void getReturnPolicyDetail(Context context, MyShopInfoModel.Info info, GetShopNoteModel.ShopNoteModel returnPolicy);
     void fetchDepartmentChild(Context context, final int depId, final int level);
     void fetchCatalog(Context context, String productDepId, String productName);
     void fetchEditData(Context context, String productId);

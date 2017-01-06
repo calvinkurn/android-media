@@ -120,10 +120,6 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
 
                     adapter.notifyDataSetChanged();
 
-                    AddProductFragment adf = getFragment(position);
-                    if(adf != null){
-                        adf.updateShopNote();
-                    }
                 }
 
                 @Override
