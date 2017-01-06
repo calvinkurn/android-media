@@ -15,16 +15,16 @@ import rx.subscriptions.CompositeSubscription;
 
 public class PushNotificationDataInteractor implements IPushNotificationDataInteractor {
     private final CompositeSubscription mCompositeSubscription;
-    private final CloudPushNotificationDataSource mCloudPushNotificationDataSource;
+    private final PushNotificationRepository mPushNotificationRepository;
 
     public PushNotificationDataInteractor() {
-        this.mCloudPushNotificationDataSource = new CloudPushNotificationDataSource();
         this.mCompositeSubscription = new CompositeSubscription();
+        this.mPushNotificationRepository = new PushNotificationDataRepository();
     }
 
     @Override
     public void updateTokenServer(FCMTokenUpdate data, Subscriber<FCMTokenUpdateEntity> subscriber) {
-        this.mCloudPushNotificationDataSource.updateTokenServer(data)
+        this.mPushNotificationRepository.updateTokenServer(data)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())
