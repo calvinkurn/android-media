@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.IntRange;
+import android.support.annotation.LayoutRes;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.support.v7.widget.GridLayoutManager;
@@ -508,6 +509,13 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
             for(int j=1;j<=divide-1;j++){
                 indexToDisplay.add((j*10)-1);
             }
+
+            @LayoutRes int layoutTooltip = R.layout.gm_stat_tooltip_lollipop;
+            int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+            if (currentapiVersion < android.os.Build.VERSION_CODES.LOLLIPOP){
+                layoutTooltip = R.layout.gm_stat_tooltip;
+            }
+
             grossGraphChartConfig
                     .setmLabels(mLabels)
                     .setmValues(mValues, new XRenderer.XRendererListener() {
@@ -526,7 +534,7 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
                     })
                     .setDotDrawable(oval2Copy6)
                     .setTooltip(new Tooltip(getContext(),
-                            R.layout.gm_stat_tooltip,
+                            layoutTooltip,
                             R.id.gm_stat_tooltip_textview,
                             new StringFormatRenderer() {
                                 @Override
