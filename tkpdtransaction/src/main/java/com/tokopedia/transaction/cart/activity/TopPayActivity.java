@@ -34,6 +34,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.transaction.R;
@@ -188,6 +189,7 @@ public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> impl
         hideProgressLoading();
         showToastMessage(message);
         navigateToActivity(TransactionPurchaseRouter.createIntentTxSummary(this));
+        CartBadgeNotificationReceiver.resetBadgeCart(this);
         closeView();
     }
 
