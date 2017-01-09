@@ -249,7 +249,7 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
                     case TkpdState.ProductService.ADD_PRODUCT:
                     case TkpdState.ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
                         // default position is "0"
-                        int position = resultData.getInt(TkpdState.ProductService.PRODUCT_POSITION, 0);
+                        int position = resultData.getInt(TkpdState.ProductService.PRODUCT_POS, 0);
                         fragment = getFragment(position);
                         break;
                     default:

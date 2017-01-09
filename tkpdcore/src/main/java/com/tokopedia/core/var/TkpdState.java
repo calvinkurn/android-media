@@ -463,11 +463,12 @@ public class TkpdState {
         /* DATA */
         public static final String PRODUCT_DB_ID = "PRODUCT_DB_ID";
         public static final long NO_PRODUCT_DB = -1;
-        public static final String PRODUCT_POSITION = "PRODUCT_POSITION";
+        public static final String PRODUCT_POS = "PRODUCT_POS";
         public static final int NO_PRODUCT_POS = -1;
+        public static final String PRODUCT_ID = "PRODUCT_ID";
+        public static final int NO_PRODUCT_ID = -1;
         public static final String MESSAGE_ERROR_FLAG = "MESSAGE_ERROR_FLAG";
         public static final String INVALID_MESSAGE_ERROR = "default";
-        public static final String PRODUCT_ID = "PRODUCT_ID";
 
 
 

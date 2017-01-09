@@ -2523,7 +2523,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         Bundle bundle = new Bundle();
         bundle.putLong(TkpdState.ProductService.PRODUCT_DB_ID, ProductDb.getId());
         if (getActivity() instanceof ProductSocMedActivity) {
-            bundle.putInt(TkpdState.ProductService.PRODUCT_POSITION, ((ProductSocMedActivity) getActivity()).getCurrentFragmentPosition());
+            bundle.putInt(TkpdState.ProductService.PRODUCT_POS, ((ProductSocMedActivity) getActivity()).getCurrentFragmentPosition());
         }
         bundle.putString(com.tokopedia.core.myproduct.service.ProductService.STOCK_STATUS, stockStatus);
 
