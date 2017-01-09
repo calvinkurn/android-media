@@ -346,7 +346,6 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
                 e.printStackTrace();
                 price = -1;
             }
-
         }
         return price;
     }
