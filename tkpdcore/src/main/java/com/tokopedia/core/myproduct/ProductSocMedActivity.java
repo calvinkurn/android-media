@@ -1,6 +1,9 @@
 package com.tokopedia.core.myproduct;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -156,6 +159,7 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
 
     TkpdProgressDialog tkpdProgressDialog;
     private Unbinder unbinder;
+    private BroadcastReceiver addProductReceiver;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -216,6 +220,65 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
          /* Starting Download Service */
         mReceiver = new DownloadResultReceiver(new Handler());
         mReceiver.setReceiver(this);
+
+        addProductReceiver = getProductServiceReceiver();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(addProductReceiver, new IntentFilter(TkpdState.ProductService.BROADCAST_ADD_PRODUCT));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(addProductReceiver);
+    }
+
+    private BroadcastReceiver getProductServiceReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Bundle resultData = intent.getExtras();
+                int resultCode = resultData.getInt(TkpdState.ProductService.STATUS_FLAG);
+                int type = resultData.getInt(TkpdState.ProductService.SERVICE_TYPE, TkpdState.ProductService.INVALID_TYPE);
+                Fragment fragment = null;
+                switch(type){
+                    case TkpdState.ProductService.ADD_PRODUCT:
+                    case TkpdState.ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
+                        // default position is "0"
+                        int position = resultData.getInt(TkpdState.ProductService.PRODUCT_POSITION, 0);
+                        fragment = getFragment(position);
+                        break;
+                    default:
+                        throw new UnsupportedOperationException("please pass type when want to process it !!!");
+                }
+
+                //check if Fragment implement necessary interface
+                if(fragment!=null && fragment instanceof BaseView && type != TkpdState.ProductService.INVALID_TYPE){
+                    switch (resultCode) {
+                        case TkpdState.ProductService.STATUS_RUNNING:
+                            switch(type) {
+                                case TkpdState.ProductService.ADD_PRODUCT:
+                                case TkpdState.ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
+                                    showProgress(false);
+                                    ((BaseView) fragment).setData(type, resultData);
+                                    break;
+                            }
+                            break;
+                        case TkpdState.ProductService.STATUS_DONE:
+                            break;
+                        case TkpdState.ProductService.STATUS_ERROR:
+                            switch(type){
+
+                            }
+
+                    }// end of status download service
+                }
+            }
+        };
     }
 
     private List<InstagramMediaModel> fromSparseArray(SparseArray<InstagramMediaModel> data){
@@ -394,40 +457,7 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
 
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
-        int type = resultData.getInt(TkpdState.ProductService.SERVICE_TYPE, TkpdState.ProductService.INVALID_TYPE);
-        Fragment fragment = null;
-        switch(type){
-            case TkpdState.ProductService.ADD_PRODUCT:
-            case TkpdState.ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
-                // default position is "0"
-                int position = resultData.getInt(TkpdState.ProductService.PRODUCT_POSITION, 0);
-                fragment = getFragment(position);
-                break;
-            default:
-                throw new UnsupportedOperationException("please pass type when want to process it !!!");
-        }
 
-        //check if Fragment implement necessary interface
-        if(fragment!=null && fragment instanceof BaseView && type != TkpdState.ProductService.INVALID_TYPE){
-            switch (resultCode) {
-                case TkpdState.ProductService.STATUS_RUNNING:
-                    switch(type) {
-                        case TkpdState.ProductService.ADD_PRODUCT:
-                        case TkpdState.ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
-                            showProgress(false);
-                            ((BaseView) fragment).setData(type, resultData);
-                            break;
-                    }
-                    break;
-                case TkpdState.ProductService.STATUS_DONE:
-                    break;
-                case TkpdState.ProductService.STATUS_ERROR:
-                    switch(type){
-
-                    }
-
-            }// end of status download service
-        }
     }
 
     @Override
