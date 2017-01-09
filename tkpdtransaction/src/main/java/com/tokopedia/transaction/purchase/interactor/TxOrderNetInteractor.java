@@ -59,9 +59,6 @@ public interface TxOrderNetInteractor {
     void deliverReject(@NonNull Context context, @NonNull Map<String, String> params,
                        @NonNull OnDeliverReject listener);
 
-    void getInvoiceData(@NonNull Context context, @NonNull Map<String, String> params,
-                        @NonNull OnGetInvoiceData listener);
-
     void getInvoiceData(TKPDMapParam<String, String> paramNetwork,
                         Subscriber<TxVerInvoiceData> subscriberGetTXInvoiceData);
 
@@ -175,13 +172,6 @@ public interface TxOrderNetInteractor {
         void onNoConnection(String message);
 
         void onEmptyData();
-    }
-
-    interface OnGetInvoiceData {
-
-        void onSuccess(TxVerInvoiceData data);
-
-        void onError(String message);
     }
 
     interface OnUploadProof {

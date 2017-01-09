@@ -27,6 +27,8 @@ import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -137,7 +139,7 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
     @Override
     protected void setActionVar() {
         renderViewData();
-        presenter.getTxInvoiceData(this, txVerData);
+        presenter.getTxInvoiceData(txVerData.getPaymentId());
     }
 
     private void renderViewData() {
@@ -217,6 +219,13 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
     }
 
     @Override
+    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
+            TKPDMapParam<String, String> originParams
+    ) {
+        return AuthUtil.generateParamsNetwork(this, originParams);
+    }
+
+    @Override
     public void closeView() {
         finish();
     }
@@ -277,7 +286,10 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
 
     @OnClick(R2.id.changePayment)
     void actionEditPayment() {
-        presenter.processEditPayment(this, txVerData);
+        navigateToActivityRequest(
+                ConfirmPaymentActivity.instanceEdit(this, txVerData.getPaymentId()),
+                TxVerDetailActivity.REQUEST_EDIT_PAYMENT
+        );
     }
 
     @OnClick(R2.id.upload_button)

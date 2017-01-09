@@ -1,11 +1,11 @@
 package com.tokopedia.transaction.purchase.presenter;
 
 import android.app.Activity;
-import android.content.Context;
 
-import com.tokopedia.core.util.UploadImageReVamp;
-import com.tokopedia.transaction.purchase.activity.ConfirmPaymentActivity;
-import com.tokopedia.transaction.purchase.activity.TxVerDetailActivity;
+import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.transaction.exception.HttpErrorException;
+import com.tokopedia.transaction.exception.ResponseErrorException;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractorImpl;
 import com.tokopedia.transaction.purchase.interactor.TxUploadInteractor;
@@ -14,10 +14,10 @@ import com.tokopedia.transaction.purchase.listener.TxVerDetailViewListener;
 import com.tokopedia.transaction.purchase.model.response.txverification.TxVerData;
 import com.tokopedia.transaction.purchase.model.response.txverinvoice.TxVerInvoiceData;
 
-import org.json.JSONObject;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 
-import java.util.HashMap;
-import java.util.Map;
+import rx.Subscriber;
 
 /**
  * @author Angga.Prasetiyo on 13/06/2016.
@@ -34,28 +34,13 @@ public class TxVerDetailPresenterImpl implements TxVerDetailPresenter {
     }
 
     @Override
-    public void getTxInvoiceData(Context context, TxVerData txVerData) {
-        Map<String, String> params = new HashMap<>();
-        params.put("payment_id", txVerData.getPaymentId());
-        netInteractor.getInvoiceData(context, params, new TxOrderNetInteractor.OnGetInvoiceData() {
-
-            @Override
-            public void onSuccess(TxVerInvoiceData data) {
-                viewListener.renderInvoiceList(data.getTxOrderDetail().getDetail());
-            }
-
-            @Override
-            public void onError(String message) {
-                viewListener.renderErrorGetInvoiceData(message);
-            }
-        });
-    }
-
-    @Override
-    public void processEditPayment(Context context, TxVerData txVerData) {
-        viewListener.navigateToActivityRequest(ConfirmPaymentActivity.instanceEdit(context,
-                txVerData.getPaymentId()),
-                TxVerDetailActivity.REQUEST_EDIT_PAYMENT);
+    public void getTxInvoiceData(String paymentId) {
+        TKPDMapParam<String, String> paramNetwork = new TKPDMapParam<>();
+        paramNetwork.put("payment_id", paymentId);
+        netInteractor.getInvoiceData(
+                viewListener.getGeneratedAuthParamNetwork(paramNetwork),
+                new SubscriberGetTXInvoiceData()
+        );
     }
 
     @Override
@@ -67,30 +52,6 @@ public class TxVerDetailPresenterImpl implements TxVerDetailPresenter {
                     data.getButton().getButtonUploadProof() == 0 &&
                     data.getButton().getButtonViewProof() == 0 ? 2 : 3;
         }
-    }
-
-    @Override
-    public void processUploadProof(final Context context, UploadImageReVamp uploadImage,
-                                   TxVerData txVerData) {
-        uploadImage.addParam("payment_id", txVerData.getPaymentId());
-        uploadImage.setOnUploadListener(new UploadImageReVamp.UploadImageListener() {
-            @Override
-            public void onSuccess(JSONObject result) {
-                String picSrc = result.optString("pic_src");
-                String picObj = result.optString("pic_obj");
-                verifyUploadedImageProof(context, picSrc, picObj);
-            }
-
-            @Override
-            public void onStart() {
-                viewListener.showProgressLoading();
-            }
-
-            @Override
-            public void onFailure() {
-                viewListener.hideProgressLoading();
-            }
-        });
     }
 
     @Override
@@ -123,22 +84,32 @@ public class TxVerDetailPresenterImpl implements TxVerDetailPresenter {
                 });
     }
 
-    private void verifyUploadedImageProof(Context context, String picSrc, String picObj) {
-        Map<String, String> params = new HashMap<>();
-        params.put("pic_obj", picObj);
-        params.put("pic_src", picSrc);
-        netInteractor.uploadValidProofByPayment(context, params,
-                new TxOrderNetInteractor.OnUploadProof() {
-                    @Override
-                    public void onSuccess(String message) {
-                        viewListener.showToastMessage(message);
-                        viewListener.setResult(Activity.RESULT_OK);
-                    }
+    private class SubscriberGetTXInvoiceData extends Subscriber<TxVerInvoiceData> {
+        @Override
+        public void onCompleted() {
 
-                    @Override
-                    public void onFailed(String message) {
-                        viewListener.showToastMessage(message);
-                    }
-                });
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            if (e instanceof SocketTimeoutException) {
+                viewListener.renderErrorGetInvoiceData(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+            } else if (e instanceof UnknownHostException) {
+                viewListener.renderErrorGetInvoiceData(
+                        ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION
+                );
+            } else if (e.getCause() instanceof ResponseErrorException) {
+                viewListener.renderErrorGetInvoiceData(e.getCause().getMessage());
+            } else if (e.getCause() instanceof HttpErrorException) {
+                viewListener.renderErrorGetInvoiceData(e.getCause().getMessage());
+            } else {
+                viewListener.renderErrorGetInvoiceData(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+            }
+        }
+
+        @Override
+        public void onNext(TxVerInvoiceData txVerInvoiceData) {
+            viewListener.renderInvoiceList(txVerInvoiceData.getTxOrderDetail().getDetail());
+        }
     }
 }

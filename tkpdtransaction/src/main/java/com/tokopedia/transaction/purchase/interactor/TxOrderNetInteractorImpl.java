@@ -627,47 +627,6 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
     }
 
     @Override
-    public void getInvoiceData(@NonNull final Context context, @NonNull Map<String, String> params,
-                               @NonNull final OnGetInvoiceData listener) {
-        Observable<Response<TkpdResponse>> observable = txOrderService.getApi()
-                .getTXOrderPaymentConfirmedDetail(AuthUtil.generateParams(context, params));
-        Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (e instanceof UnknownHostException) {
-                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
-                } else if (e instanceof SocketTimeoutException) {
-                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
-                } else {
-                    listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                }
-            }
-
-            @Override
-            public void onNext(Response<TkpdResponse> response) {
-                if (response.isSuccessful() && !response.body().isError()) {
-                    TxVerInvoiceData data = response.body().convertDataObj(TxVerInvoiceData.class);
-                    listener.onSuccess(data);
-                } else {
-                    listener.onError((response.body().getErrorMessages() != null
-                            && !response.body().getErrorMessages().isEmpty())
-                            ? response.body().getErrorMessages().get(0)
-                            : ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                }
-            }
-        };
-        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(subscriber));
-    }
-
-    @Override
     public void getInvoiceData(TKPDMapParam<String, String> paramNetwork,
                                Subscriber<TxVerInvoiceData> subscriberGetTXInvoiceData) {
         compositeSubscription.add(Observable.just(paramNetwork)
