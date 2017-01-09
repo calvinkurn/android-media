@@ -1,10 +1,10 @@
 package com.tokopedia.core.gcm.interactor;
 
-import rx.Observable;
+import com.tokopedia.core.gcm.model.DeviceRegistrationDataResponse;
+
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author  by alvarisi on 1/5/17.
@@ -17,7 +17,7 @@ public class RegisterDeviceInteractor {
         this.mPushNotificationRepository = new PushNotificationDataRepository();
     }
 
-    public void registerDevice(Subscriber<String> subscriber){
+    public void registerDevice(Subscriber<DeviceRegistrationDataResponse> subscriber){
         mPushNotificationRepository.deviceRegistration()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())

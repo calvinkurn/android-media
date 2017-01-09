@@ -111,7 +111,6 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     private void registerFCMDeviceID() {
 	    GCMHandler gcm = new GCMHandler(this);
         gcm.actionRegisterOrUpdateDevice(getGCMHandlerListener());
-        gcm.commitGCMProcess();
     }
 
     public void finishSplashScreen() {
