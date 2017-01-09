@@ -23,6 +23,10 @@ public class DrawerHeader extends RecyclerViewItem {
     public String ShopId = "";
     public String Loyalty = "";
     public String LoyaltyUrl = "";
+    public String tokoCashURL = "";
+    public String tokoCashValue = "";
+    public String tokoCashText = "";
+    public boolean tokoCashToWallet = false;
     public UserType userType = UserType.TYPE_GUEST;
 
     public DrawerHeader() {

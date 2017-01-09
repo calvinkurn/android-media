@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.core.drawer.DrawerVariable;
 import com.tokopedia.core.drawer.model.DrawerHeader;
 import com.tokopedia.core.drawer.model.LoyaltyItem.LoyaltyItem;
+import com.tokopedia.core.drawer.model.topcastItem.TopCashItem;
 import com.tokopedia.core.drawer.var.NotificationItem;
 
 /**
@@ -19,6 +20,8 @@ public interface NetworkInteractor {
     void getNotification(Context context, NotificationListener listener);
 
     void getLoyalty(Context context, LoyaltyListener listener);
+
+    void getTokoCash(Context context, TopCashListener listener);
 
     void resetNotification(Context context, ResetNotificationListener listener);
 
@@ -53,6 +56,12 @@ public interface NetworkInteractor {
     interface ResetNotificationListener {
 
         void onSuccess();
+
+        void onError(String message);
+    }
+
+    interface TopCashListener {
+        void onSuccess(TopCashItem topCashItem);
 
         void onError(String message);
     }

@@ -1395,6 +1395,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_shipping_fee_max">Maksimum biaya pengiriman tambahan</string>
     <string name="title_loyalty_points">TopPoints terpakai</string>
     <string name="loyalty_points_info">TopPoints</string>
+    <string name="toko_cash_info">TokoCash</string>
     <string name="msg_lucky_merchant">Anda berhasil menjadi Lucky Merchant</string>
     <string name="msg_lucky_merchant_detail">Kesempatan mendapatkan pesanan lebih banyak setiap harinya</string>
     <string name="msg_lucky_valid">Berlaku sampai 30 hari kedepan</string>

@@ -634,4 +634,9 @@ public interface  TkpdBaseURL {
     interface FCM{
         String UPDATE_FCM = "/api/gcm/update";
     }
+
+    interface TopCash{
+        String GET_WALLET = "https://wallet-staging.tokopedia.id/api/v1/";
+        String PATH_WALLET = "wallet";
+    }
 }
