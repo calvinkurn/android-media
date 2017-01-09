@@ -2,11 +2,13 @@ package com.tokopedia.transaction.purchase.activity;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.AppCompatSpinner;
@@ -295,6 +297,16 @@ public class ConfirmPaymentActivity extends BasePresenterActivity<ConfirmPayment
     @Override
     public void dismissDialog(Dialog dialog) {
         if (dialog.isShowing()) dialog.dismiss();
+    }
+
+    @Override
+    public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
+
+    }
+
+    @Override
+    public String getStringFromResource(@StringRes int resId) {
+        return getString(resId);
     }
 
     @Override

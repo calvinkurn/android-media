@@ -1,12 +1,9 @@
 package com.tokopedia.transaction.cart.listener;
 
-import android.app.IntentService;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.product.listener.ViewListener;
+import com.tokopedia.transaction.base.IBaseView;
 import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.GatewayList;
@@ -18,7 +15,7 @@ import java.util.List;
  * @author anggaprasetiyo on 11/3/16.
  */
 
-public interface ICartView extends ViewListener {
+public interface ICartView extends IBaseView {
     void renderDepositInfo(String depositIdr);
 
     void renderTotalPayment(String grandTotalWithoutLPIDR);
@@ -71,8 +68,6 @@ public interface ICartView extends ViewListener {
 
     void renderErrorDefaultInitialCartInfo(String messageError);
 
-    void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz);
-
     void setCheckoutCartToken(String token);
 
     List<CartItemEditable> getItemCartListCheckoutData();
@@ -84,8 +79,6 @@ public interface ICartView extends ViewListener {
     CheckoutData.Builder getCheckoutDataBuilder();
 
     String getDepositCheckoutData();
-
-    String getStringFromResource(@StringRes int resId);
 
     TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
             TKPDMapParam<String, String> originParams

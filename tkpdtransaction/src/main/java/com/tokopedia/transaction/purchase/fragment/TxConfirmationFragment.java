@@ -3,9 +3,11 @@ package com.tokopedia.transaction.purchase.fragment;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.IntentService;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -191,6 +193,16 @@ public class TxConfirmationFragment extends BasePresenterFragment<TxConfirmation
     @Override
     public void dismissDialog(Dialog dialog) {
         if (dialog.isShowing()) dialog.dismiss();
+    }
+
+    @Override
+    public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
+
+    }
+
+    @Override
+    public String getStringFromResource(@StringRes int resId) {
+        return getString(resId);
     }
 
     @Override

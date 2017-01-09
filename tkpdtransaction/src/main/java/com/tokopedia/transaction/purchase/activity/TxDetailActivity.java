@@ -3,12 +3,14 @@ package com.tokopedia.transaction.purchase.activity;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.IntentService;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.RecyclerView;
@@ -275,6 +277,16 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
     @Override
     public void dismissDialog(Dialog dialog) {
         if (dialog.isShowing()) dialog.dismiss();
+    }
+
+    @Override
+    public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
+
+    }
+
+    @Override
+    public String getStringFromResource(@StringRes int resId) {
+        return getString(resId);
     }
 
     @Override

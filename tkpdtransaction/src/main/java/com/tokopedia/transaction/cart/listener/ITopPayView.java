@@ -5,13 +5,13 @@ import android.os.Bundle;
 import android.support.annotation.StringRes;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.product.listener.ViewListener;
+import com.tokopedia.transaction.base.IBaseView;
 
 /**
  * @author anggaprasetiyo on 12/8/16.
  */
 
-public interface ITopPayView extends ViewListener {
+public interface ITopPayView extends IBaseView {
     void renderWebViewPostUrl(String url, byte[] postData);
 
     void showToastMessageWithForceCloseView(String message);
