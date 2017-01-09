@@ -1,6 +1,10 @@
 package com.tokopedia.core.share.fragment;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.Menu;
@@ -24,6 +28,7 @@ import com.tokopedia.core.myproduct.service.ProductService;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.share.presenter.ProductSharePresenter;
 import com.tokopedia.core.share.presenter.ProductSharePresenterImpl;
+import com.tokopedia.core.var.TkpdState;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -82,6 +87,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
 
     @BindView(R2.id.text_subtitle)
     TextView subtitle;
+    private BroadcastReceiver addProductReceiver;
 
     public static ProductShareFragment newInstance(@NonNull ShareData shareData) {
         ProductShareFragment fragment = new ProductShareFragment();
@@ -107,6 +113,12 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
         args.putString(ProductService.STOCK_STATUS, stockStatus);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().registerReceiver(addProductReceiver, new IntentFilter(TkpdState.AddProduct.BROADCAST_ADD_PRODUCT));
     }
 
     @Override
@@ -190,22 +202,15 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
         }
     }
 
-    public void onError(int type, Bundle resultData) {
-        switch (type) {
-            case ProductService.ADD_PRODUCT:
-            case ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
-                String messageError = resultData.getString(ProductService.MESSAGE_ERROR_FLAG, ProductService.INVALID_MESSAGE_ERROR);
-                if (!messageError.equals(ProductService.INVALID_MESSAGE_ERROR)) {
-                    progressBar.setVisibility(View.GONE);
-                    errorImage.setVisibility(View.VISIBLE);
-                    loadingAddProduct.setText(messageError + "\n" +getString(R.string.error_failed_add_product));
-                    loadingAddProduct.setVisibility(View.VISIBLE);
-                    setIconShareVisibility(View.GONE);
-                    setVisibilityTitle(View.GONE);
-                }
-                break;
-        }
-
+    public void onError(Intent resultData) {
+        String messageError = resultData.getStringExtra(TkpdState.AddProduct.MESSAGE_ERROR_FLAG);
+        progressBar.setVisibility(View.GONE);
+        errorImage.setVisibility(View.VISIBLE);
+        loadingAddProduct.setText(messageError +
+                "\n" +getString(R.string.error_failed_add_product));
+        loadingAddProduct.setVisibility(View.VISIBLE);
+        setIconShareVisibility(View.GONE);
+        setVisibilityTitle(View.GONE);
     }
 
     private void setIconShareVisibility(int visibility) {
@@ -226,40 +231,35 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
         subtitle.setVisibility(visibility);
     }
 
-    public void setData(int type, Bundle data) {
-        switch (type) {
-            case ProductService.ADD_PRODUCT:
-            case ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
-                final long productServerId = data.getLong(ProductService.PRODUCT_DATABASE_ID);
-                new android.os.Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        ProductDB ProductDB = new Select()
-                                .from(ProductDB.class)
-                                .where(ProductDB_Table.productId.is((int) productServerId))
-                                .querySingle();
-                        if (ProductDB!= null && ProductDB.getImages() != null)
-                            ProductDB.setPictureDBs(ProductDB.getImages());
-                        if (ProductDB!= null && ProductDB.getWholeSales() != null)
-                            ProductDB.setWholesalePriceDBs(ProductDB.getWholeSales());
-                        shareData = new ShareData();
-                        if (ProductDB!= null && ProductDB.getNameProd() != null)
-                            shareData.setName(ProductDB.getNameProd());
+    public void setData(Intent data) {
+        final long productServerId = data.getLongExtra(TkpdState.AddProduct.PRODUCT_DB_ID, -1);
+        new android.os.Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ProductDB ProductDB = new Select()
+                        .from(ProductDB.class)
+                        .where(ProductDB_Table.productId.is((int) productServerId))
+                        .querySingle();
+                if (ProductDB!= null && ProductDB.getImages() != null)
+                    ProductDB.setPictureDBs(ProductDB.getImages());
+                if (ProductDB!= null && ProductDB.getWholeSales() != null)
+                    ProductDB.setWholesalePriceDBs(ProductDB.getWholeSales());
+                shareData = new ShareData();
+                if (ProductDB!= null && ProductDB.getNameProd() != null)
+                    shareData.setName(ProductDB.getNameProd());
 
-                        if (ProductDB!= null && ProductDB.getPictureDBs()!= null
-                                && CommonUtils.checkCollectionNotNull(ProductDB.getPictureDBs()))
-                            shareData.setImgUri(ProductDB.getPictureDBs().get(0).getPath());
+                if (ProductDB!= null && ProductDB.getPictureDBs()!= null
+                        && CommonUtils.checkCollectionNotNull(ProductDB.getPictureDBs()))
+                    shareData.setImgUri(ProductDB.getPictureDBs().get(0).getPath());
 
-                        if (ProductDB!= null && ProductDB.getProductUrl() != null)
-                            shareData.setUri(ProductDB.getProductUrl());
-                        if (ProductDB!= null && ProductDB.getDescProd() != null)
-                            shareData.setDescription(ProductDB.getDescProd());
-                        if (ProductDB!= null)
-                            shareData.setPrice(ProductDB.getPriceProd() + "");
-                    }
-                }, 100);//[END] move to manage product
-                break;
-        }
+                if (ProductDB!= null && ProductDB.getProductUrl() != null)
+                    shareData.setUri(ProductDB.getProductUrl());
+                if (ProductDB!= null && ProductDB.getDescProd() != null)
+                    shareData.setDescription(ProductDB.getDescProd());
+                if (ProductDB!= null)
+                    shareData.setPrice(ProductDB.getPriceProd() + "");
+            }
+        }, 100);//[END] move to manage product
     }
 
     public void addingProduct(boolean isAdding) {
@@ -278,7 +278,25 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
 
     @Override
     protected void setViewListener() {
-
+        addProductReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                int status = intent.getIntExtra(TkpdState.AddProduct.STATUS_FLAG, TkpdState.AddProduct.STATUS_ERROR);
+                switch (status){
+                    case TkpdState.AddProduct.STATUS_RUNNING:
+                        addingProduct(true);
+                        break;
+                    case TkpdState.AddProduct.STATUS_DONE:
+                        setData(intent);
+                        addingProduct(false);
+                        break;
+                    case TkpdState.AddProduct.STATUS_ERROR:
+                    default:
+                        addingProduct(false);
+                        onError(intent);
+                }
+            }
+        };
     }
 
     @Override

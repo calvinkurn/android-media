@@ -440,4 +440,33 @@ public class TkpdState {
         public static final String defaultLatitude = "-6.1753924";
         public static final String defaultLongitude = "106.8249641";
     }
+
+    public class AddProduct {
+        /* BROADCAST INTENT FILTER */
+        public static final String BROADCAST_ADD_PRODUCT = "BROADCAST_ADD_PRODUCT";
+
+        /* TYPE */
+        public static final String SERVICE_TYPE = "SERVICE_TYPE";
+        public static final int ADD_PRODUCT = 10;
+        public static final int ADD_PRODUCT_WITHOUT_IMAGE = 11;
+        public static final int EDIT_PRODUCT = 12;
+        public static final int DELETE_PRODUCT = 13;
+
+
+        /* STATUS */
+        public static final String STATUS_FLAG = "STATUS_FLAG";
+        public static final int STATUS_RUNNING = 1;
+        public static final int STATUS_DONE = 2;
+        public static final int STATUS_ERROR = 3;
+
+        /* DATA */
+        public static final String PRODUCT_DB_ID = "PRODUCT_DB_ID";
+        public static final long NO_PRODUCT_DB = -1;
+        public static final String PRODUCT_POSITION = "PRODUCT_POSITION";
+        public static final int NO_PRODUCT_POS = -1;
+        public static final String MESSAGE_ERROR_FLAG = "MESSAGE_ERROR_FLAG";
+
+
+
+    }
 }

@@ -274,49 +274,7 @@ public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresen
         return new DownloadResultReceiver.Receiver() {
             @Override
             public void onReceiveResult(int resultCode, Bundle resultData) {
-                int type = resultData.getInt(ProductService.TYPE, ProductService.INVALID_TYPE);
-                Fragment fragment = null;
-                switch(type){
-                    case ProductService.ADD_PRODUCT:
-                    case ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
-                        fragment = getFragmentManager().findFragmentByTag(ProductShareFragment.TAG);
-                        break;
-                    default:
-                        throw new UnsupportedOperationException("please pass type when want to process it !!!");
-                }
 
-                //check if Fragment implement necessary interface
-                if(fragment!=null && fragment instanceof ProductShareFragment){
-                    switch (resultCode) {
-                        case ProductService.STATUS_RUNNING:
-                            switch(type) {
-                                case ProductService.ADD_PRODUCT:
-                                case ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
-                                    if(fragment instanceof ProductShareFragment){
-                                        ((ProductShareFragment)fragment).addingProduct(true);
-                                    }
-                                    break;
-                            }
-                            break;
-                        case ProductService.STATUS_FINISHED:
-                            switch(type){
-                                case ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
-                                case ProductService.ADD_PRODUCT:
-                                    ((ProductShareFragment) fragment).setData(type, resultData);
-                                    ((ProductShareFragment) fragment).addingProduct(false);
-                                    break;
-                            }
-                            break;
-                        case ProductService.STATUS_ERROR:
-                            switch(type){
-                                case ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
-                                case ProductService.ADD_PRODUCT:
-                                    ((ProductShareFragment) fragment).onError(type, resultData);
-                                    break;
-                            }
-                            break;
-                    }// end of status download service
-                }
             }
         };
     }

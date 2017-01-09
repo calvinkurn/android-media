@@ -62,6 +62,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.var.TkpdUrl;
 
 import org.parceler.Parcels;
@@ -178,7 +179,12 @@ public class ProductService extends IntentService implements ProductServiceConst
         switch (type) {
             case ADD_PRODUCT_WITHOUT_IMAGE:
             case ADD_PRODUCT:
-                sendRunningStatus(type, intent.getIntExtra(PRODUCT_POSITION, 0));
+                sendProductServiceBroadcast(
+                        type,
+                        TkpdState.AddProduct.STATUS_RUNNING,
+                        TkpdState.AddProduct.NO_PRODUCT_DB,
+                        intent.getIntExtra(PRODUCT_POSITION, 0),
+                        "");
 
                 // crawl from db product id
                 long productId = intent.getLongExtra(PRODUCT_DATABASE_ID, -1);
@@ -674,6 +680,14 @@ public class ProductService extends IntentService implements ProductServiceConst
                                 notificationService.updateNotificationError(eIntent, errorMessage);
                             }
 
+                            sendProductServiceBroadcast(
+                                    TkpdState.AddProduct.ADD_PRODUCT,
+                                    TkpdState.AddProduct.STATUS_ERROR,
+                                    TkpdState.AddProduct.NO_PRODUCT_DB,
+                                    TkpdState.AddProduct.NO_PRODUCT_POS,
+                                    CommonUtils.generateMessageError(getApplicationContext(), e.getMessage())
+                            );
+
                             Bundle resultData = new Bundle();
                             resultData.putInt(TYPE, ADD_PRODUCT);
                             resultData.putString(MESSAGE_ERROR_FLAG, CommonUtils.generateMessageError(getApplicationContext(), e.getMessage()));
@@ -727,14 +741,32 @@ public class ProductService extends IntentService implements ProductServiceConst
                         //[END] hapus etalase tambah baru - kena FOREIGN KEY CONSTRAINT
 
                         //[START] Send to UI if user images is one, if more than one send the rest
-                        Bundle result = new Bundle();
-                        result.putInt(TYPE, ADD_PRODUCT);
-                        result.putLong(PRODUCT_DATABASE_ID, produk.getProductId());
-                        result.putInt(PRODUCT_POSITION, inputAddProductModel.getPosition());
-                        receiver.send(STATUS_FINISHED, result);
+                        sendProductServiceBroadcast(
+                                TkpdState.AddProduct.ADD_PRODUCT,
+                                TkpdState.AddProduct.STATUS_DONE,
+                                produk.getProductId(),
+                                inputAddProductModel.getPosition(),
+                                "");
+
                         //[END] Send to UI
                     }
                 });
+    }
+
+    private void sendProductServiceBroadcast(int type, int status, long productId, int productPosition, String errorMessage) {
+        Intent result = new Intent(TkpdState.AddProduct.BROADCAST_ADD_PRODUCT);
+        result.putExtra(TkpdState.AddProduct.SERVICE_TYPE, type);
+        result.putExtra(TkpdState.AddProduct.STATUS_FLAG, status);
+        if(productId != -1) {
+            result.putExtra(TkpdState.AddProduct.PRODUCT_DB_ID, productId);
+        }
+        if(productPosition != -1) {
+            result.putExtra(TkpdState.AddProduct.PRODUCT_POSITION, productPosition);
+        }
+        if(!errorMessage.isEmpty()){
+            result.putExtra(TkpdState.AddProduct.MESSAGE_ERROR_FLAG, errorMessage);
+        }
+        sendBroadcast(result);
     }
 
     /**
@@ -1459,54 +1491,6 @@ public class ProductService extends IntentService implements ProductServiceConst
 
         return new ProductActService().getApi().addValidationWithoutImage(AuthUtil.generateParams(userId, deviceId, params));
 
-//        return RetrofitUtils.createRetrofit().create(ProductActApi.class).addValidationWithoutImage(
-//                NetworkCalculator.getContentMd5(networkCalculator),// 1
-//                NetworkCalculator.getDate(networkCalculator),// 2
-//                NetworkCalculator.getAuthorization(networkCalculator),// 3
-//                NetworkCalculator.getxMethod(networkCalculator),// 4
-//                userId,
-//                deviceId,
-//                NetworkCalculator.getHash(networkCalculator),
-//                networkCalculator.getDeviceTime(networkCalculator),
-//
-//                networkCalculator.getContent().get(CLICK_NAME),
-//                networkCalculator.getContent().get(DUPLICATE),
-//                networkCalculator.getContent().get(PRODUCT_CATALOG_ID),
-//                networkCalculator.getContent().get(PRODUCT_CONDITION),
-//                networkCalculator.getContent().get(PRODUCT_DEPARTMENT_ID),
-//                networkCalculator.getContent().get(PRODUCT_DESCRIPTION),
-//                networkCalculator.getContent().get(PRODUCT_ETALASE_ID),
-//                networkCalculator.getContent().get(PRODUCT_ETALASE_NAME),
-//                networkCalculator.getContent().get(PRODUCT_MIN_ORDER),
-//                networkCalculator.getContent().get(PRODUCT_MUST_INSURANCE),
-//
-//                networkCalculator.getContent().get(PRODUCT_NAME),
-//                networkCalculator.getContent().get(PRODUCT_PRICE),
-//                networkCalculator.getContent().get(PRODUCT_PRICE_CURRENCY),
-//                networkCalculator.getContent().get(PRODUCT_RETURNABLE),
-//                networkCalculator.getContent().get(PRODUCT_UPLOAD_TO),
-//                networkCalculator.getContent().get(PRODUCT_WEIGHT),
-//                networkCalculator.getContent().get(PRODUCT_WEIGHT_UNIT),
-//                networkCalculator.getContent().get(PRODUCT_PRC_1),
-//                networkCalculator.getContent().get(PRODUCT_PRC_2),
-//                networkCalculator.getContent().get(PRODUCT_PRC_3),
-//
-//                networkCalculator.getContent().get(PRODUCT_PRC_4),
-//                networkCalculator.getContent().get(PRODUCT_PRC_5),
-//                networkCalculator.getContent().get(QTY_MAX_1),
-//                networkCalculator.getContent().get(QTY_MAX_2),
-//                networkCalculator.getContent().get(QTY_MAX_3),
-//                networkCalculator.getContent().get(QTY_MAX_4),
-//                networkCalculator.getContent().get(QTY_MAX_5),
-//                networkCalculator.getContent().get(QTY_MIN_1),
-//                networkCalculator.getContent().get(QTY_MIN_2),
-//                networkCalculator.getContent().get(QTY_MIN_3),
-//
-//                networkCalculator.getContent().get(QTY_MIN_4),
-//                networkCalculator.getContent().get(QTY_MIN_5),
-//                networkCalculator.getContent().get(PO_PROCESS_TYPE),
-//                networkCalculator.getContent().get(PO_PROCESS_VALUE)
-//        );
     }
 
     private void sendRunningStatus(int type, int fragmentPosition) {
