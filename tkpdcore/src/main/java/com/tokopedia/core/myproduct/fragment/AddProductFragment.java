@@ -2531,25 +2531,23 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
             //[START] move to ProductShareFragment
             if (isPush && getActivity() != null && getActivity() instanceof DownloadResultSender) {
                 if (isWithoutImageAndStockEmpty) {
-                    bundle.putInt(TkpdState.ProductService.SERVICE_TYPE, TkpdState.ProductService.ADD_PRODUCT_WITHOUT_IMAGE);
-                    ProductActivity.moveToProductShare(bundle, getActivity());
+                    ProductActivity.moveToProductShare(getActivity());
                 } else {
-                    bundle.putInt(TkpdState.ProductService.SERVICE_TYPE, TkpdState.ProductService.ADD_PRODUCT);
-                    ProductActivity.moveToProductShare(bundle, getActivity());
+                    ProductActivity.moveToProductShare(getActivity());
                 }
             }
             //[END] move to ProductShareFragment
-        } else {
-            //[START] send data to internet
-            if (isPush && getActivity() != null && getActivity() instanceof DownloadResultSender) {
-                if (isWithoutImageAndStockEmpty) {
-                    ((DownloadResultSender) getActivity()).sendDataToInternet(TkpdState.ProductService.ADD_PRODUCT_WITHOUT_IMAGE, bundle);
-                } else {
-                    ((DownloadResultSender) getActivity()).sendDataToInternet(TkpdState.ProductService.ADD_PRODUCT, bundle);
-                }
-            }
-            //[END] send data to internet
         }
+        //[START] send data to internet
+        if (isPush && getActivity() != null && getActivity() instanceof DownloadResultSender) {
+            if (isWithoutImageAndStockEmpty) {
+                ((DownloadResultSender) getActivity()).sendDataToInternet(TkpdState.ProductService.ADD_PRODUCT_WITHOUT_IMAGE, bundle);
+            } else {
+                ((DownloadResultSender) getActivity()).sendDataToInternet(TkpdState.ProductService.ADD_PRODUCT, bundle);
+            }
+        }
+        //[END] send data to internet
+
     }
 
     @OnClick(R2.id.title_preorder)

@@ -32,12 +32,12 @@ import com.tokopedia.core.var.TkpdState;
 public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresenter> implements
         ProductInfoView,
         ProductDetailFragment.OnFragmentInteractionListener,
-        DownloadResultSender,
         ProductInfoResultReceiver.Receiver{
     public static final String EXTRA_PRODUCT_PASS = "EXTRA_PRODUCT_PASS";
     public static final String EXTRA_PRODUCT_ITEM = "EXTRA_PRODUCT_ITEM";
     public static final String EXTRA_PRODUCT_ID = "product_id";
     public static final String SHARE_DATA = "SHARE_DATA";
+    public static final String IS_ADDING_PRODUCT = "IS_ADDING_PRODUCT";
 
     private Uri uriData;
     private Bundle bundleData;
@@ -76,11 +76,12 @@ public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresen
      * Author : Sebast
      * Adding this for uploading product from product share activity
      * @param context
-     * @param bundle
      * @return
      */
-    public static Intent createInstance(Context context, @NonNull Bundle bundle){
+    public static Intent createInstance(Context context){
         Intent intent = new Intent(context, ProductInfoActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(IS_ADDING_PRODUCT, true);
         intent.putExtras(bundle);
         return intent;
     }
@@ -249,19 +250,5 @@ public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresen
 
     private void onReceiveResultSuccess(Fragment fragment, Bundle resultData, int resultCode) {
         ((ProductDetailFragment) fragment).onSuccessAction(resultData,resultCode);
-    }
-
-    @Override
-    public void sendDataToInternet(int type, Bundle data) {
-        switch (type){
-            case TkpdState.ProductService.EDIT_PRODUCT:
-            case TkpdState.ProductService.ADD_PRODUCT:
-            case TkpdState.ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
-            case TkpdState.ProductService.DELETE_PRODUCT:
-                com.tokopedia.core.myproduct.service.ProductService.startDownload(this, data, type);
-                break;
-            default :
-                throw new UnsupportedOperationException("please pass type when want to process it !!!");
-        }
     }
 }

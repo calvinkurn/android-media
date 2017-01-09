@@ -843,23 +843,6 @@ public class ProductService extends IntentService implements ProductServiceConst
 
                 Log.d(TAG, "wkwkwk it happened");
                 Observable<AddProductPictureModel> addProductPictureAfter = new ProductActAfterService(HTTPS + generateHost.getUploadHost() + "/web-service/v4/action/upload-image-helper/").getApi().addProductPictureAfter(AuthUtil.generateParams(getApplicationContext(), param));
-//                Observable<AddProductPictureModel> addProductPictureAfter = RetrofitUtils.createRetrofit(HTTPS + generateHost.getUploadHost() + "/web-service/v4/action/upload-image-helper/add_product_picture.pl")
-//                        .create(UploadImageProduct.class).addProductPictureAfter(
-//                                HTTPS + generateHost.getUploadHost() + "/web-service/v4/action/upload-image-helper/add_product_picture.pl",
-//                                NetworkCalculator.getContentMd5(networkCalculator),// 1
-//                                NetworkCalculator.getDate(networkCalculator),// 2
-//                                NetworkCalculator.getAuthorization(networkCalculator),// 3
-//                                NetworkCalculator.getxMethod(networkCalculator),// 4
-//                                NetworkCalculator.getUserId(getApplicationContext()),
-//                                NetworkCalculator.getDeviceId(getApplicationContext()),
-//                                NetworkCalculator.getHash(networkCalculator),
-//                                networkCalculator.getDeviceTime(networkCalculator),
-//                                networkCalculator.getContent().get(DUPLICATE),
-//                                networkCalculator.getContent().get(PRODUCT_PHOTO),
-//                                networkCalculator.getContent().get(PRODUCT_PHOTO_DEFAULT),
-//                                networkCalculator.getContent().get(PRODUCT_PHOTO_DESCRIPTION),
-//                                networkCalculator.getContent().get(SERVER_ID)
-//                        );
                 Log.d(TAG, messageTAG + " addProductPictureAfter [" + addProductPictureAfter + "]");
                 return Observable.zip(Observable.just(inputAddProductModel), addProductPictureAfter
                         , new Func2<InputAddProductModel, AddProductPictureModel, InputAddProductModel>() {

@@ -593,9 +593,9 @@ public class ProductActivity extends BaseProductActivity implements
         }
     }
 
-    public static void moveToProductShare(Bundle bundle, Context context) {
+    public static void moveToProductShare(Context context) {
 
-        context.startActivity(ProductInfoActivity.createInstance(context, bundle));
+        context.startActivity(ProductInfoActivity.createInstance(context));
 
         if (context instanceof AppCompatActivity) {
             ((AppCompatActivity) context).finish();

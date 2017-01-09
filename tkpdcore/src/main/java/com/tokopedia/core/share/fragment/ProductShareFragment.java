@@ -39,6 +39,7 @@ import butterknife.OnClick;
 public class ProductShareFragment extends BasePresenterFragment<ProductSharePresenter> {
     public static final String TAG = "ProductShareFragment";
     private static final String ARGS_SHARE_DATA = "ARGS_SHARE_DATA";
+    public static final String IS_ADDING_PRODUCT = "IS_ADDING_PRODUCT";
 
     private ShareData shareData;
     private SimpleFacebook simpleFacebook;
@@ -87,6 +88,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
     @BindView(R2.id.text_subtitle)
     TextView subtitle;
     private BroadcastReceiver addProductReceiver;
+    private boolean isAdding;
 
     public static ProductShareFragment newInstance(@NonNull ShareData shareData) {
         ProductShareFragment fragment = new ProductShareFragment();
@@ -99,17 +101,12 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
     /**
      * added for add product from product share
      *
-     * @param type
-     * @param productId
-     * @param stockStatus
      * @return
      */
-    public static ProductShareFragment newInstance(@NonNull int type, @NonNull long productId, @NonNull String stockStatus) {
+    public static ProductShareFragment newInstance(boolean isAddingProduct) {
         ProductShareFragment fragment = new ProductShareFragment();
         Bundle args = new Bundle();
-        args.putInt(TkpdState.ProductService.SERVICE_TYPE, type);
-        args.putLong(TkpdState.ProductService.PRODUCT_DB_ID, productId);
-        args.putString(com.tokopedia.core.myproduct.service.ProductService.STOCK_STATUS, stockStatus);
+        args.putBoolean(IS_ADDING_PRODUCT, isAddingProduct);
         fragment.setArguments(args);
         return fragment;
     }
@@ -117,7 +114,10 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().registerReceiver(addProductReceiver, new IntentFilter(TkpdState.ProductService.BROADCAST_ADD_PRODUCT));
+        if(isAdding){
+            getActivity().registerReceiver(addProductReceiver, new IntentFilter(TkpdState.ProductService.BROADCAST_ADD_PRODUCT));
+            addingProduct(true);
+        }
     }
 
     @Override
@@ -164,14 +164,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
     @Override
     protected void setupArguments(Bundle arguments) {
         this.shareData = arguments.getParcelable(ARGS_SHARE_DATA);
-
-        int type = arguments.getInt(TkpdState.ProductService.SERVICE_TYPE, -1);
-        long productId = arguments.getLong(TkpdState.ProductService.PRODUCT_DB_ID, -1);
-        String stockStatus = arguments.getString(com.tokopedia.core.myproduct.service.ProductService.STOCK_STATUS, "");
-        // if there is product need to be uploaded
-        if (type != -1 && productId != -1 && !stockStatus.equals("")) {
-            ((DownloadResultSender) getActivity()).sendDataToInternet(type, arguments);
-        }
+        this.isAdding = arguments.getBoolean(IS_ADDING_PRODUCT);
     }
 
     @Override

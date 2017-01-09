@@ -39,16 +39,14 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
 
     @Override
     public void initialFragment(@NonNull Context context, Uri uri, Bundle bundle) {
-        // [variable for add product before share]
-        int type = bundle.getInt(TkpdState.ProductService.SERVICE_TYPE, -1);
-        long productId = bundle.getLong(TkpdState.ProductService.PRODUCT_DB_ID, -1);
-        String stockStatus = bundle.getString(com.tokopedia.core.myproduct.service.ProductService.STOCK_STATUS,"");
-        // [variable for add product before share]
+
+        boolean isAddingProduct = bundle.getBoolean(ProductInfoActivity.IS_ADDING_PRODUCT);
+
         ShareData shareDa = bundle.getParcelable(ProductInfoActivity.SHARE_DATA);
 
         // [variable for add product before share]
-        if(type != -1 && productId != -1 && !stockStatus.equals("")){
-            viewListener.inflateFragment(ProductShareFragment.newInstance(type, productId, stockStatus), ProductShareFragment.TAG);
+        if(isAddingProduct){
+            viewListener.inflateFragment(ProductShareFragment.newInstance(isAddingProduct), ProductShareFragment.TAG);
         // [variable for add product before share]
         }else if(shareDa !=null){
             viewListener.inflateFragment(ProductShareFragment.newInstance(shareDa), ProductShareFragment.TAG);
