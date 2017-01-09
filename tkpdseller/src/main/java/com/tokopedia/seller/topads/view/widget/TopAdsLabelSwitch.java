@@ -2,11 +2,12 @@ package com.tokopedia.seller.topads.view.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.SwitchCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
@@ -19,7 +20,7 @@ import butterknife.ButterKnife;
  * Created by zulfikarrahman on 12/29/16.
  */
 
-public class TopAdsLabelSwitch extends CardView {
+public class TopAdsLabelSwitch extends FrameLayout {
     @BindView(R2.id.title_text_view)
     TextView titleTextView;
 
