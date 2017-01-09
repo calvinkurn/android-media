@@ -160,7 +160,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
                 searchAd(START_PAGE);
             }
         });
-        adapter = new TopAdsAdListAdapter(this);
+        adapter = new TopAdsAdListAdapter();
         adapter.setCallback(this);
     }
 

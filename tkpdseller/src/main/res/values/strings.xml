@@ -92,4 +92,5 @@
     <string name="label_title_ctr_topads">CTR</string>
     <string name="label_title_favorite_topads">Favorite</string>
     <string name="label_title_items_topads">Items</string>
+    <string name="label_top_ads_promo_group">Promo Group</string>
 </resources>

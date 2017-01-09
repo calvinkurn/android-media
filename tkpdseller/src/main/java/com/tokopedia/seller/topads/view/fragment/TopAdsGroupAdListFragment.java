@@ -38,7 +38,7 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
     }
 
     @Override
-    public void moveToDetail(Ad ad) {
+    public void onClicked(Ad ad) {
         if(ad instanceof GroupAd){
             Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
             intent.putExtra(TopAdsExtraConstant.EXTRA_DETAIL_DATA, (GroupAd) ad);

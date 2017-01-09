@@ -7,6 +7,7 @@ import android.widget.CompoundButton;
 
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.datasource.TopAdsCacheDataSourceImpl;
 import com.tokopedia.seller.topads.datasource.TopAdsDbDataSourceImpl;
@@ -16,12 +17,18 @@ import com.tokopedia.seller.topads.network.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.topads.presenter.TopAdsDetailProductPresenter;
 import com.tokopedia.seller.topads.presenter.TopAdsDetailProductPresenterImpl;
 import com.tokopedia.seller.topads.view.widget.TopAdsLabelSwitch;
+import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
+
+import butterknife.BindView;
 
 /**
  * Created by zulfikarrahman on 12/29/16.
  */
 
 public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDetailProductPresenter> {
+
+    @BindView(R2.id.label_view_promo_group)
+    TopAdsLabelView promoGroupLabelView;
 
     private ProductAd productAd;
 
@@ -56,6 +63,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
         super.loadData();
         if(productAd != null) {
             loadAdDetail(productAd);
+            promoGroupLabelView.setContent(productAd.getGroupName());
         }
     }
 

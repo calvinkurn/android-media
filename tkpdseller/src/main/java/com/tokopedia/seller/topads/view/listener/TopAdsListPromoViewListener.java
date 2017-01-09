@@ -27,6 +27,4 @@ public interface TopAdsListPromoViewListener<T extends Ad> {
     void onTurnOffAdSuccess();
 
     void onTurnOffAdFailed();
-
-    void moveToDetail(Ad ad);
 }
