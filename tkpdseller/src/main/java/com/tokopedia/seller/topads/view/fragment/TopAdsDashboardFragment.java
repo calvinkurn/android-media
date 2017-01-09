@@ -154,12 +154,12 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
     }
 
     private void updateSummaryLayout(Summary summary) {
-        impressionStatisticLabelView.setContent(String.valueOf(summary.getImpressionSum()));
-        clickStatisticLabelView.setContent(String.valueOf(summary.getClickSum()));
-        ctrStatisticLabelView.setContent(String.valueOf(summary.getCtrPercentage()));
-        conversionStatisticLabelView.setContent(String.valueOf(summary.getConversionSum()));
-        averageStatisticLabelView.setContent(String.valueOf(summary.getCostAvg()));
-        costStatisticLabelView.setContent(String.valueOf(summary.getCostSum()));
+        impressionStatisticLabelView.setContent(String.valueOf(summary.getImpressionSumFmt()));
+        clickStatisticLabelView.setContent(String.valueOf(summary.getClickSumFmt()));
+        ctrStatisticLabelView.setContent(String.valueOf(summary.getCtrPercentageFmt()));
+        conversionStatisticLabelView.setContent(String.valueOf(summary.getConversionSumFmt()));
+        averageStatisticLabelView.setContent(String.valueOf(summary.getCostAvgFmt()));
+        costStatisticLabelView.setContent(String.valueOf(summary.getCostSumFmt()));
     }
 
     protected void loadData() {

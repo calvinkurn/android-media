@@ -31,30 +31,54 @@ public class Summary extends BaseModel {
     @Column
     public int clickSum;
 
+    @SerializedName("click_sum_fmt")
+    @Expose
+    public String clickSumFmt;
+
     @SerializedName("cost_sum")
     @Expose
     @Column
     public double costSum;
+
+    @SerializedName("cost_sum_fmt")
+    @Expose
+    public String costSumFmt;
 
     @SerializedName("impression_sum")
     @Expose
     @Column
     public int impressionSum;
 
+    @SerializedName("impression_sum_fmt")
+    @Expose
+    public String impressionSumFmt;
+
     @SerializedName("ctr_percentage")
     @Expose
     @Column
     public double ctrPercentage;
+
+    @SerializedName("ctr_percentage_fmt")
+    @Expose
+    public String ctrPercentageFmt;
 
     @SerializedName("conversion_sum")
     @Expose
     @Column
     public int conversionSum;
 
+    @SerializedName("conversion_sum_fmt")
+    @Expose
+    public String conversionSumFmt;
+
     @SerializedName("cost_avg")
     @Expose
     @Column
     public double costAvg;
+
+    @SerializedName("cost_avg_fmt")
+    @Expose
+    public String costAvgFmt;
 
     @Unique(unique = false, uniqueGroups = 1)
     @Column
@@ -88,12 +112,28 @@ public class Summary extends BaseModel {
         this.clickSum = clickSum;
     }
 
+    public String getClickSumFmt() {
+        return clickSumFmt;
+    }
+
+    public void setClickSumFmt(String clickSumFmt) {
+        this.clickSumFmt = clickSumFmt;
+    }
+
     public double getCostSum() {
         return costSum;
     }
 
     public void setCostSum(double costSum) {
         this.costSum = costSum;
+    }
+
+    public String getCostSumFmt() {
+        return costSumFmt;
+    }
+
+    public void setCostSumFmt(String costSumFmt) {
+        this.costSumFmt = costSumFmt;
     }
 
     public int getImpressionSum() {
@@ -104,12 +144,28 @@ public class Summary extends BaseModel {
         this.impressionSum = impressionSum;
     }
 
+    public String getImpressionSumFmt() {
+        return impressionSumFmt;
+    }
+
+    public void setImpressionSumFmt(String impressionSumFmt) {
+        this.impressionSumFmt = impressionSumFmt;
+    }
+
     public double getCtrPercentage() {
         return ctrPercentage;
     }
 
     public void setCtrPercentage(double ctrPercentage) {
         this.ctrPercentage = ctrPercentage;
+    }
+
+    public String getCtrPercentageFmt() {
+        return ctrPercentageFmt;
+    }
+
+    public void setCtrPercentageFmt(String ctrPercentageFmt) {
+        this.ctrPercentageFmt = ctrPercentageFmt;
     }
 
     public int getConversionSum() {
@@ -120,12 +176,28 @@ public class Summary extends BaseModel {
         this.conversionSum = conversionSum;
     }
 
+    public String getConversionSumFmt() {
+        return conversionSumFmt;
+    }
+
+    public void setConversionSumFmt(String conversionSumFmt) {
+        this.conversionSumFmt = conversionSumFmt;
+    }
+
     public double getCostAvg() {
         return costAvg;
     }
 
     public void setCostAvg(double costAvg) {
         this.costAvg = costAvg;
+    }
+
+    public String getCostAvgFmt() {
+        return costAvgFmt;
+    }
+
+    public void setCostAvgFmt(String costAvgFmt) {
+        this.costAvgFmt = costAvgFmt;
     }
 
     public String getShopId() {
