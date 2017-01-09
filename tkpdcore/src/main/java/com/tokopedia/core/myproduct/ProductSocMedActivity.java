@@ -60,10 +60,12 @@ import static com.tokopedia.core.myproduct.utils.VerificationUtils.validateAllIn
 /**
  * Created by m.normansyah on 4/7/16.
  */
-public class ProductSocMedActivity extends BaseProductActivity implements ProductSocMedPresenter,
-        ChooserFragment.OnListFragmentInteractionListener
-        ,DownloadResultReceiver.Receiver, DownloadResultSender, DialogFragmentImageAddProduct.DFIAListener
-        ,ImageChooserDialog.SelectWithImage
+public class ProductSocMedActivity extends BaseProductActivity implements
+        ProductSocMedPresenter,
+        ChooserFragment.OnListFragmentInteractionListener,
+        DownloadResultSender,
+        DialogFragmentImageAddProduct.DFIAListener,
+        ImageChooserDialog.SelectWithImage
 {
     public static final String DEFAULT_HTTP = "http://www.glamour.com/images/fashion/2016/03/Iskra-02-main.jpg";
     @BindView(R2.id.toolbar)
@@ -78,7 +80,6 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
     PagerAdapter2 pagerAdapter;
     SmallPhotoAdapter adapter;
 
-    DownloadResultReceiver mReceiver;
     ViewPager.OnPageChangeListener onPageChangeListener =
             new ViewPager.OnPageChangeListener() {
                 @Override
@@ -216,10 +217,6 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
         productsSocMedThumnNail.setItemAnimator(new DefaultItemAnimator());
         productsSocMedThumnNail.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.HORIZONTAL, false));
-
-         /* Starting Download Service */
-        mReceiver = new DownloadResultReceiver(new Handler());
-        mReceiver.setReceiver(this);
 
         addProductReceiver = getProductServiceReceiver();
 
@@ -456,16 +453,11 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
     }
 
     @Override
-    public void onReceiveResult(int resultCode, Bundle resultData) {
-
-    }
-
-    @Override
     public void sendDataToInternet(int type, Bundle data) {
         switch (type){
             case TkpdState.ProductService.ADD_PRODUCT:
             case TkpdState.ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
-                com.tokopedia.core.myproduct.service.ProductService.startDownload(this, mReceiver, data, type);
+                com.tokopedia.core.myproduct.service.ProductService.startDownload(this, data, type);
                 break;
             default :
                 throw new UnsupportedOperationException("please pass type when want to process it !!!");

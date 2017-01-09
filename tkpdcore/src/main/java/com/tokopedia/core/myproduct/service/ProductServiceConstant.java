@@ -7,12 +7,6 @@ public interface ProductServiceConstant {
     String TAG = "MNORMANSYAH";
     String messageTAG = "ProductServiceConstant : ";
 
-    // common
-    String RECEIVER = "receiver";
-    int NUMBER_OF_TRY = 1;
-    int TIMEOUT_TIME = 10000;
-    String IS_NEED_LOGIN = "IS_NEED_LOGIN";
-
     // error
     String NETWORK_ERROR_FLAG ="NETWORK_ERROR_FLAG";
     int INVALID_NETWORK_ERROR_FLAG = -1;

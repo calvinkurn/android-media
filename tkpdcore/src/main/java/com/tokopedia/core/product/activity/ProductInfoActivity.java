@@ -41,7 +41,6 @@ public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresen
 
     private Uri uriData;
     private Bundle bundleData;
-    private DownloadResultReceiver addProductReceiver;
 
     ProductInfoResultReceiver mReceiver;
 
@@ -254,27 +253,15 @@ public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresen
 
     @Override
     public void sendDataToInternet(int type, Bundle data) {
-        /* Starting Download Service */
-        addProductReceiver = new DownloadResultReceiver(new Handler());
-        addProductReceiver.setReceiver(getAddProductReceiver());
         switch (type){
             case TkpdState.ProductService.EDIT_PRODUCT:
             case TkpdState.ProductService.ADD_PRODUCT:
             case TkpdState.ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
             case TkpdState.ProductService.DELETE_PRODUCT:
-                com.tokopedia.core.myproduct.service.ProductService.startDownload(this, addProductReceiver, data, type);
+                com.tokopedia.core.myproduct.service.ProductService.startDownload(this, data, type);
                 break;
             default :
                 throw new UnsupportedOperationException("please pass type when want to process it !!!");
         }
-    }
-
-    private DownloadResultReceiver.Receiver getAddProductReceiver() {
-        return new DownloadResultReceiver.Receiver() {
-            @Override
-            public void onReceiveResult(int resultCode, Bundle resultData) {
-
-            }
-        };
     }
 }

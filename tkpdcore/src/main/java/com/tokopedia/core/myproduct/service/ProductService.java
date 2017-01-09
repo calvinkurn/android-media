@@ -109,7 +109,6 @@ public class ProductService extends IntentService implements ProductServiceConst
     public static final String PRODUCT_CHANGE_CATALOG = "product_change_catalog";
     public static final String PRODUCT_CHANGE_WHOLESALE = "product_change_wholesale";
     public static final String NOTIFICATION_ID = "NOTIFICATION_ID";
-    private ResultReceiver receiver;
     private final Gson gson = new GsonBuilder().create();
 
     public static NotificationProductService notificationService;
@@ -119,9 +118,8 @@ public class ProductService extends IntentService implements ProductServiceConst
         super("ProductService");
     }
 
-    public static void startDownload(Context context, DownloadResultReceiver receiver, Bundle bundle, int type) {
+    public static void startDownload(Context context, Bundle bundle, int type) {
         Intent intent = new Intent(Intent.ACTION_SYNC, null, context, ProductService.class);
-        intent.putExtra(RECEIVER, receiver);
 
         // set mandatory param
         intent.putExtra(TkpdState.ProductService.SERVICE_TYPE, type);
@@ -161,7 +159,6 @@ public class ProductService extends IntentService implements ProductServiceConst
     protected void onHandleIntent(Intent intent) {
         Log.d(TAG, messageTAG + " Service Started!");
 
-        receiver = intent.getParcelableExtra(RECEIVER);
         int type = intent.getIntExtra(TkpdState.ProductService.SERVICE_TYPE, TkpdState.ProductService.INVALID_TYPE);
 
         int notificationId = intent.getIntExtra(NOTIFICATION_ID, -1);
@@ -291,10 +288,6 @@ public class ProductService extends IntentService implements ProductServiceConst
                         if (e != null) {
                             Log.e(TAG, messageTAG + e.getLocalizedMessage());
 
-                            Bundle resultData = new Bundle();
-                            resultData.putInt(TkpdState.ProductService.SERVICE_TYPE, TkpdState.ProductService.DELETE_PRODUCT);
-                            resultData.putString(TkpdState.ProductService.MESSAGE_ERROR_FLAG, CommonUtils.generateMessageError(getApplicationContext(), e.getMessage()));
-                            receiver.send(TkpdState.ProductService.STATUS_ERROR, resultData);
                             sendProductServiceBroadcast(
                                     TkpdState.ProductService.DELETE_PRODUCT,
                                     TkpdState.ProductService.STATUS_ERROR,
@@ -308,9 +301,6 @@ public class ProductService extends IntentService implements ProductServiceConst
 
                     @Override
                     public void onNext(ActResponseModelData response) {
-                        Bundle result = new Bundle();
-                        result.putInt(TkpdState.ProductService.SERVICE_TYPE, TkpdState.ProductService.DELETE_PRODUCT);
-                        receiver.send(TkpdState.ProductService.STATUS_DONE, result);
                         sendProductServiceBroadcast(
                                 TkpdState.ProductService.DELETE_PRODUCT,
                                 TkpdState.ProductService.STATUS_DONE,
@@ -522,16 +512,12 @@ public class ProductService extends IntentService implements ProductServiceConst
                         if (e != null) {
                             Log.e(TAG, messageTAG + e.getLocalizedMessage());
 
-                            Bundle resultData = new Bundle();
-                            resultData.putInt(TkpdState.ProductService.SERVICE_TYPE, TkpdState.ProductService.EDIT_PRODUCT);
                             String error;
                             if(e instanceof MessageErrorException){
                                 error = e.getMessage();
                             }else{
                                 error = getString(R.string.error_connection_problem);
                             }
-                            resultData.putString(TkpdState.ProductService.MESSAGE_ERROR_FLAG, CommonUtils.generateMessageError(getApplicationContext(), error));
-                            receiver.send(TkpdState.ProductService.STATUS_ERROR, resultData);
                             sendProductServiceBroadcast(
                                     TkpdState.ProductService.EDIT_PRODUCT,
                                     TkpdState.ProductService.STATUS_ERROR,
@@ -545,10 +531,6 @@ public class ProductService extends IntentService implements ProductServiceConst
                     @Override
                     public void onNext(InputAddProductModel inputAddProductModel) {
                         if (inputAddProductModel.getEditProductData().getIsSuccess() == 1) {
-                            Bundle result = new Bundle();
-                            result.putInt(TkpdState.ProductService.SERVICE_TYPE, TkpdState.ProductService.EDIT_PRODUCT);
-                            result.putInt(TkpdState.ProductService.PRODUCT_ID, productId);
-                            receiver.send(TkpdState.ProductService.STATUS_DONE, result);
                             sendProductServiceBroadcast(
                                     TkpdState.ProductService.EDIT_PRODUCT,
                                     TkpdState.ProductService.STATUS_DONE,
@@ -1091,57 +1073,6 @@ public class ProductService extends IntentService implements ProductServiceConst
                 Observable<ProductValidationModel> productValidationModelObservable = new ProductActService().getApi().addValidation(AuthUtil.generateParams(getApplicationContext(), params));
 
 
-//                Observable<ProductValidationModel> productValidationModelObservable = RetrofitUtils.createRetrofit().create(ProductActApi.class).addValidation(
-//                        NetworkCalculator.getContentMd5(networkCalculator),// 1
-//                        NetworkCalculator.getDate(networkCalculator),// 2
-//                        NetworkCalculator.getAuthorization(networkCalculator),// 3
-//                        NetworkCalculator.getxMethod(networkCalculator),// 4
-//                        NetworkCalculator.getUserId(getApplicationContext()),
-//                        NetworkCalculator.getDeviceId(getApplicationContext()),
-//                        NetworkCalculator.getHash(networkCalculator),
-//                        networkCalculator.getDeviceTime(networkCalculator),
-//                        networkCalculator.getContent().get(CLICK_NAME),
-//                        networkCalculator.getContent().get(DUPLICATE),
-//                        networkCalculator.getContent().get(PRODUCT_CATALOG_ID),
-//                        networkCalculator.getContent().get(PRODUCT_CONDITION),
-//                        networkCalculator.getContent().get(PRODUCT_DEPARTMENT_ID),
-//                        networkCalculator.getContent().get(PRODUCT_DESCRIPTION),
-//                        networkCalculator.getContent().get(PRODUCT_ETALASE_ID),
-//                        networkCalculator.getContent().get(PRODUCT_ETALASE_NAME),
-//                        networkCalculator.getContent().get(PRODUCT_MIN_ORDER),
-//                        networkCalculator.getContent().get(PRODUCT_MUST_INSURANCE),
-//
-//                        networkCalculator.getContent().get(PRODUCT_NAME),
-//                        networkCalculator.getContent().get(PRODUCT_PHOTO),
-//                        networkCalculator.getContent().get(PRODUCT_PHOTO_DEFAULT),
-//                        networkCalculator.getContent().get(PRODUCT_PHOTO_DESCRIPTION),
-//                        networkCalculator.getContent().get(PRODUCT_PRICE),
-//                        networkCalculator.getContent().get(PRODUCT_PRICE_CURRENCY),
-//                        networkCalculator.getContent().get(PRODUCT_RETURNABLE),
-//                        networkCalculator.getContent().get(PRODUCT_UPLOAD_TO),
-//                        networkCalculator.getContent().get(PRODUCT_WEIGHT),
-//                        networkCalculator.getContent().get(PRODUCT_WEIGHT_UNIT),
-//
-//                        networkCalculator.getContent().get(PRODUCT_PRC_1),
-//                        networkCalculator.getContent().get(PRODUCT_PRC_2),
-//                        networkCalculator.getContent().get(PRODUCT_PRC_3),
-//                        networkCalculator.getContent().get(PRODUCT_PRC_4),
-//                        networkCalculator.getContent().get(PRODUCT_PRC_5),
-//                        networkCalculator.getContent().get(QTY_MAX_1),
-//                        networkCalculator.getContent().get(QTY_MAX_2),
-//                        networkCalculator.getContent().get(QTY_MAX_3),
-//                        networkCalculator.getContent().get(QTY_MAX_4),
-//                        networkCalculator.getContent().get(QTY_MAX_5),
-//
-//                        networkCalculator.getContent().get(QTY_MIN_1),
-//                        networkCalculator.getContent().get(QTY_MIN_2),
-//                        networkCalculator.getContent().get(QTY_MIN_3),
-//                        networkCalculator.getContent().get(QTY_MIN_4),
-//                        networkCalculator.getContent().get(QTY_MIN_5),
-//                        networkCalculator.getContent().get(PO_PROCESS_TYPE),
-//                        networkCalculator.getContent().get(PO_PROCESS_VALUE),
-//                        networkCalculator.getContent().get(SERVER_ID)
-//                );
                 return Observable.zip(Observable.just(inputAddProductModel), productValidationModelObservable, new Func2<InputAddProductModel, ProductValidationModel, InputAddProductModel>() {
                     @Override
                     public InputAddProductModel call(InputAddProductModel inputAddProductModel, ProductValidationModel productValidationModel) {
@@ -1362,10 +1293,6 @@ public class ProductService extends IntentService implements ProductServiceConst
                                 }
                                 notificationService.updateNotificationError(eIntent, errorMessage);
                             }
-                            Bundle resultData = new Bundle();
-                            resultData.putInt(TkpdState.ProductService.SERVICE_TYPE, TkpdState.ProductService.ADD_PRODUCT);
-                            resultData.putString(TkpdState.ProductService.MESSAGE_ERROR_FLAG, CommonUtils.generateMessageError(getApplicationContext(), e.getMessage()));
-                            receiver.send(TkpdState.ProductService.STATUS_ERROR, resultData);
                             sendProductServiceBroadcast(
                                     TkpdState.ProductService.ADD_PRODUCT_WITHOUT_IMAGE,
                                     TkpdState.ProductService.STATUS_ERROR,
@@ -1393,11 +1320,6 @@ public class ProductService extends IntentService implements ProductServiceConst
                         cacheManager.delete(ManageProductPresenter.CACHE_KEY);
 
                         //[START] Send to UI if user images is one, if more than one send the rest
-                        Bundle result = new Bundle();
-                        result.putInt(TkpdState.ProductService.SERVICE_TYPE, TkpdState.ProductService.ADD_PRODUCT_WITHOUT_IMAGE);
-                        result.putLong(TkpdState.ProductService.PRODUCT_DB_ID, produk.getProductId());
-                        result.putInt(TkpdState.ProductService.PRODUCT_POS, inputAddProductModel.getPosition());
-                        receiver.send(TkpdState.ProductService.STATUS_DONE, result);
                         sendProductServiceBroadcast(
                                 TkpdState.ProductService.ADD_PRODUCT_WITHOUT_IMAGE,
                                 TkpdState.ProductService.STATUS_DONE,
@@ -1543,14 +1465,6 @@ public class ProductService extends IntentService implements ProductServiceConst
 
         return new ProductActService().getApi().addValidationWithoutImage(AuthUtil.generateParams(userId, deviceId, params));
 
-    }
-
-    private void sendRunningStatus(int type, int fragmentPosition) {
-        /* Update UI: Product Service is running */
-        Bundle running = new Bundle();
-        running.putInt(TkpdState.ProductService.SERVICE_TYPE, type);
-        running.putInt(TkpdState.ProductService.PRODUCT_POS, fragmentPosition);
-        receiver.send(TkpdState.ProductService.STATUS_RUNNING, running);
     }
 
     public static Observable<GenerateHostModel> generateHost(String userId, String deviceId) {

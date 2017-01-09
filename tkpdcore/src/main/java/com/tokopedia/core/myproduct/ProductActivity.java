@@ -112,8 +112,6 @@ public class ProductActivity extends BaseProductActivity implements
     String productId;
     private long productDb;
 
-    DownloadResultReceiver mReceiver;
-
     FragmentManager supportFragmentManager;
     public static final String FRAGMENT_TO_SHOW = "FRAGMENT_TO_SHOW";
 
@@ -184,9 +182,6 @@ public class ProductActivity extends BaseProductActivity implements
         supportFragmentManager = getSupportFragmentManager();
 
         /* Starting Download Service */
-        mReceiver = new DownloadResultReceiver(new Handler());
-        mReceiver.setReceiver(this);
-
         addProductReceiver = getProductServiceReceiver();
     }
 
@@ -722,7 +717,7 @@ public class ProductActivity extends BaseProductActivity implements
             case TkpdState.ProductService.ADD_PRODUCT:
             case TkpdState.ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
             case TkpdState.ProductService.DELETE_PRODUCT:
-                com.tokopedia.core.myproduct.service.ProductService.startDownload(this, mReceiver, data, type);
+                com.tokopedia.core.myproduct.service.ProductService.startDownload(this, data, type);
                 break;
             default:
                 throw new UnsupportedOperationException("please pass type when want to process it !!!");
