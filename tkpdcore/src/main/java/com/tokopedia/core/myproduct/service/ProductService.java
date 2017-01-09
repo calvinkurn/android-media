@@ -126,17 +126,17 @@ public class ProductService extends IntentService implements ProductServiceConst
         // set mandatory param
         intent.putExtra(TYPE, type);
         switch (type) {
-            case ADD_PRODUCT_WITHOUT_IMAGE:
-            case ADD_PRODUCT:
+            case TkpdState.AddProduct.ADD_PRODUCT_WITHOUT_IMAGE:
+            case TkpdState.AddProduct.ADD_PRODUCT:
                 Log.d(TAG, messageTAG + "try to upload product ");
-                intent.putExtra(PRODUCT_DATABASE_ID, bundle.getLong(PRODUCT_DATABASE_ID));
-                intent.putExtra(PRODUCT_POSITION, bundle.getInt(PRODUCT_POSITION));
+                intent.putExtra(TkpdState.AddProduct.PRODUCT_DB_ID, bundle.getLong(TkpdState.AddProduct.PRODUCT_DB_ID));
+                intent.putExtra(TkpdState.AddProduct.PRODUCT_POSITION, bundle.getInt(TkpdState.AddProduct.PRODUCT_POSITION));
                 intent.putExtra(STOCK_STATUS, bundle.getString(STOCK_STATUS));
                 break;
-            case EDIT_PRODUCT:
+            case TkpdState.AddProduct.EDIT_PRODUCT:
                 Log.d(TAG, messageTAG + "try to edit product ");
-                intent.putExtra(PRODUCT_DATABASE_ID, bundle.getLong(PRODUCT_DATABASE_ID));
-                intent.putExtra(PRODUCT_POSITION, bundle.getInt(PRODUCT_POSITION));
+                intent.putExtra(TkpdState.AddProduct.PRODUCT_DB_ID, bundle.getLong(TkpdState.AddProduct.PRODUCT_DB_ID));
+                intent.putExtra(TkpdState.AddProduct.PRODUCT_POSITION, bundle.getInt(TkpdState.AddProduct.PRODUCT_POSITION));
                 intent.putExtra(STOCK_STATUS, bundle.getString(STOCK_STATUS));
                 ArrayList<ProductEditHelper.ProductEditImage> productEditImages
                         = Parcels.unwrap(bundle.getParcelable(PRODUCT_EDIT_PHOTOS));
@@ -146,7 +146,7 @@ public class ProductService extends IntentService implements ProductServiceConst
                 intent.putExtra(ProductService.PRODUCT_CHANGE_CATALOG, bundle.getString(ProductService.PRODUCT_CHANGE_CATALOG));
                 intent.putExtra(ProductService.PRODUCT_NAME, bundle.getString(ProductService.PRODUCT_NAME));
                 break;
-            case DELETE_PRODUCT:
+            case TkpdState.AddProduct.DELETE_PRODUCT:
                 Log.d(TAG, messageTAG + "try to delete product ");
                 intent.putExtra(PRODUCT_ID, bundle.getString(PRODUCT_ID));
                 break;
@@ -177,17 +177,17 @@ public class ProductService extends IntentService implements ProductServiceConst
                 .finish();
 
         switch (type) {
-            case ADD_PRODUCT_WITHOUT_IMAGE:
-            case ADD_PRODUCT:
+            case TkpdState.AddProduct.ADD_PRODUCT_WITHOUT_IMAGE:
+            case TkpdState.AddProduct.ADD_PRODUCT:
                 sendProductServiceBroadcast(
                         type,
                         TkpdState.AddProduct.STATUS_RUNNING,
                         TkpdState.AddProduct.NO_PRODUCT_DB,
-                        intent.getIntExtra(PRODUCT_POSITION, 0),
+                        intent.getIntExtra(TkpdState.AddProduct.PRODUCT_POSITION, 0),
                         "");
 
                 // crawl from db product id
-                long productId = intent.getLongExtra(PRODUCT_DATABASE_ID, -1);
+                long productId = intent.getLongExtra(TkpdState.AddProduct.PRODUCT_DB_ID, -1);
                 if (productId != (-1)) {
                     //[START] get produk from db
                     ProductDB produk = DbManagerImpl.getInstance().getProductDb(productId);
@@ -199,12 +199,12 @@ public class ProductService extends IntentService implements ProductServiceConst
                     inputAddProductModel.setProduk(produk);
                     inputAddProductModel.setNetworkCalculator(networkCalculator);
                     inputAddProductModel.setGeneratedHostActApi(RetrofitUtils.createRetrofit().create(GeneratedHostActApi.class));
-                    inputAddProductModel.setPosition(intent.getIntExtra(PRODUCT_POSITION, 0));
+                    inputAddProductModel.setPosition(intent.getIntExtra(TkpdState.AddProduct.PRODUCT_POSITION, 0));
                     inputAddProductModel.setStockStatus(intent.getStringExtra(STOCK_STATUS));
 
                     Bundle retryBundle = intent.getExtras();
-                    retryBundle.putLong(PRODUCT_DATABASE_ID, productId);
-                    if (produk.getPictureDBs() == null || type == ADD_PRODUCT_WITHOUT_IMAGE) {
+                    retryBundle.putLong(TkpdState.AddProduct.PRODUCT_DB_ID, productId);
+                    if (produk.getPictureDBs() == null || type == TkpdState.AddProduct.ADD_PRODUCT_WITHOUT_IMAGE) {
                         addProductEmptyImage(inputAddProductModel, retryBundle);
                     } else {
                         addProduct(inputAddProductModel, retryBundle);
@@ -213,10 +213,10 @@ public class ProductService extends IntentService implements ProductServiceConst
                     // notify to receiver that invalid data
                 }
                 break;
-            case EDIT_PRODUCT:
-                sendRunningStatus(type, intent.getIntExtra(PRODUCT_POSITION, 0));
+            case TkpdState.AddProduct.EDIT_PRODUCT:
+                sendRunningStatus(type, intent.getIntExtra(TkpdState.AddProduct.PRODUCT_POSITION, 0));
 
-                productId = intent.getLongExtra(PRODUCT_DATABASE_ID, -1);
+                productId = intent.getLongExtra(TkpdState.AddProduct.PRODUCT_DB_ID, -1);
                 if (productId != (-1)) {
                     //[START] get produk from db
                     ProductDB produk =
@@ -239,7 +239,7 @@ public class ProductService extends IntentService implements ProductServiceConst
                     editProduct(inputAddProductModel);
                 }
                 break;
-            case DELETE_PRODUCT:
+            case TkpdState.AddProduct.DELETE_PRODUCT:
                 String productIdDelete = intent.getStringExtra(PRODUCT_ID);
                 deleteProduct(productIdDelete + "");
                 break;
@@ -285,7 +285,7 @@ public class ProductService extends IntentService implements ProductServiceConst
                             Log.e(TAG, messageTAG + e.getLocalizedMessage());
 
                             Bundle resultData = new Bundle();
-                            resultData.putInt(TYPE, DELETE_PRODUCT);
+                            resultData.putInt(TYPE, TkpdState.AddProduct.DELETE_PRODUCT);
                             resultData.putString(MESSAGE_ERROR_FLAG, CommonUtils.generateMessageError(getApplicationContext(), e.getMessage()));
                             receiver.send(STATUS_ERROR, resultData);
                         }
@@ -294,7 +294,7 @@ public class ProductService extends IntentService implements ProductServiceConst
                     @Override
                     public void onNext(ActResponseModelData response) {
                         Bundle result = new Bundle();
-                        result.putInt(TYPE, DELETE_PRODUCT);
+                        result.putInt(TYPE, TkpdState.AddProduct.DELETE_PRODUCT);
                         receiver.send(STATUS_FINISHED, result);
                     }
                 });
@@ -501,7 +501,7 @@ public class ProductService extends IntentService implements ProductServiceConst
                             Log.e(TAG, messageTAG + e.getLocalizedMessage());
 
                             Bundle resultData = new Bundle();
-                            resultData.putInt(TYPE, EDIT_PRODUCT);
+                            resultData.putInt(TYPE, TkpdState.AddProduct.EDIT_PRODUCT);
                             String error;
                             if(e instanceof MessageErrorException){
                                 error = e.getMessage();
@@ -517,7 +517,7 @@ public class ProductService extends IntentService implements ProductServiceConst
                     public void onNext(InputAddProductModel inputAddProductModel) {
                         if (inputAddProductModel.getEditProductData().getIsSuccess() == 1) {
                             Bundle result = new Bundle();
-                            result.putInt(TYPE, EDIT_PRODUCT);
+                            result.putInt(TYPE, TkpdState.AddProduct.EDIT_PRODUCT);
                             result.putInt(PRODUCT_ID, productId);
                             receiver.send(STATUS_FINISHED, result);
                         }
@@ -672,7 +672,7 @@ public class ProductService extends IntentService implements ProductServiceConst
                                     errorMessage += " - " + getApplicationContext().getString(R.string.retry_upload_product);
                                     eIntent = PendingIntent.getService(getApplicationContext(), requestCode, errorIntent, 0);
                                 } else {
-                                    Intent errorIntent = ProductActivity.moveToModifyProduct(getApplicationContext(), retryBundle.getLong(PRODUCT_DATABASE_ID));
+                                    Intent errorIntent = ProductActivity.moveToModifyProduct(getApplicationContext(), retryBundle.getLong(TkpdState.AddProduct.PRODUCT_DB_ID));
                                     errorIntent.putExtra(NOTIFICATION_ID, notificationService.getNotificationId());
                                     errorMessage += " - " + getApplicationContext().getString(R.string.return_modify_product);
                                     eIntent = PendingIntent.getActivity(getApplicationContext(), requestCode, errorIntent, 0);
@@ -689,7 +689,7 @@ public class ProductService extends IntentService implements ProductServiceConst
                             );
 
                             Bundle resultData = new Bundle();
-                            resultData.putInt(TYPE, ADD_PRODUCT);
+                            resultData.putInt(TYPE, TkpdState.AddProduct.ADD_PRODUCT);
                             resultData.putString(MESSAGE_ERROR_FLAG, CommonUtils.generateMessageError(getApplicationContext(), e.getMessage()));
                             receiver.send(STATUS_ERROR, resultData);
                         }
@@ -1317,7 +1317,7 @@ public class ProductService extends IntentService implements ProductServiceConst
                                     errorMessage += " - " + getApplicationContext().getString(R.string.retry_upload_product);
                                     eIntent = PendingIntent.getService(getApplicationContext(), requestCode, errorIntent, 0);
                                 } else {
-                                    Intent errorIntent = ProductActivity.moveToModifyProduct(getApplicationContext(), retryBundle.getLong(PRODUCT_DATABASE_ID));
+                                    Intent errorIntent = ProductActivity.moveToModifyProduct(getApplicationContext(), retryBundle.getLong(TkpdState.AddProduct.PRODUCT_DB_ID));
                                     errorIntent.putExtra(NOTIFICATION_ID, notificationService.getNotificationId());
                                     errorMessage += " - " + getApplicationContext().getString(R.string.return_modify_product);
                                     eIntent = PendingIntent.getActivity(getApplicationContext(), requestCode, errorIntent, 0);
@@ -1325,7 +1325,7 @@ public class ProductService extends IntentService implements ProductServiceConst
                                 notificationService.updateNotificationError(eIntent, errorMessage);
                             }
                             Bundle resultData = new Bundle();
-                            resultData.putInt(TYPE, ADD_PRODUCT);
+                            resultData.putInt(TYPE, TkpdState.AddProduct.ADD_PRODUCT);
                             resultData.putString(MESSAGE_ERROR_FLAG, CommonUtils.generateMessageError(getApplicationContext(), e.getMessage()));
                             receiver.send(STATUS_ERROR, resultData);
                         }
@@ -1349,9 +1349,9 @@ public class ProductService extends IntentService implements ProductServiceConst
 
                         //[START] Send to UI if user images is one, if more than one send the rest
                         Bundle result = new Bundle();
-                        result.putInt(TYPE, ADD_PRODUCT_WITHOUT_IMAGE);
-                        result.putLong(PRODUCT_DATABASE_ID, produk.getProductId());
-                        result.putInt(PRODUCT_POSITION, inputAddProductModel.getPosition());
+                        result.putInt(TYPE, TkpdState.AddProduct.ADD_PRODUCT_WITHOUT_IMAGE);
+                        result.putLong(TkpdState.AddProduct.PRODUCT_DB_ID, produk.getProductId());
+                        result.putInt(TkpdState.AddProduct.PRODUCT_POSITION, inputAddProductModel.getPosition());
                         receiver.send(STATUS_FINISHED, result);
                         //[END] Send to UI
                     }
@@ -1497,7 +1497,7 @@ public class ProductService extends IntentService implements ProductServiceConst
         /* Update UI: Product Service is running */
         Bundle running = new Bundle();
         running.putInt(TYPE, type);
-        running.putInt(PRODUCT_POSITION, fragmentPosition);
+        running.putInt(TkpdState.AddProduct.PRODUCT_POSITION, fragmentPosition);
         receiver.send(STATUS_RUNNING, running);
     }
 

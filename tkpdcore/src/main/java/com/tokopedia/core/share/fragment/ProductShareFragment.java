@@ -109,7 +109,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
         ProductShareFragment fragment = new ProductShareFragment();
         Bundle args = new Bundle();
         args.putInt(ProductService.TYPE, type);
-        args.putLong(ProductService.PRODUCT_DATABASE_ID, productId);
+        args.putLong(TkpdState.AddProduct.PRODUCT_DB_ID, productId);
         args.putString(ProductService.STOCK_STATUS, stockStatus);
         fragment.setArguments(args);
         return fragment;
@@ -161,7 +161,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
         this.shareData = arguments.getParcelable(ARGS_SHARE_DATA);
 
         int type = arguments.getInt(ProductService.TYPE, -1);
-        long productId = arguments.getLong(ProductService.PRODUCT_DATABASE_ID, -1);
+        long productId = arguments.getLong(TkpdState.AddProduct.PRODUCT_DB_ID, -1);
         String stockStatus = arguments.getString(ProductService.STOCK_STATUS, "");
         // if there is product need to be uploaded
         if (type != -1 && productId != -1 && !stockStatus.equals("")) {

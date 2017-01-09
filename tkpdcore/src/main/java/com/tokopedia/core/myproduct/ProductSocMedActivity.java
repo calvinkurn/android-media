@@ -43,6 +43,7 @@ import com.tokopedia.core.myproduct.presenter.ProductSocMedPresenter;
 import com.tokopedia.core.myproduct.service.ProductService;
 import com.tokopedia.core.myproduct.utils.AddProductType;
 import com.tokopedia.core.util.Pair;
+import com.tokopedia.core.var.TkpdState;
 
 import org.parceler.Parcels;
 
@@ -400,10 +401,10 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
         int type = resultData.getInt(ProductService.TYPE, ProductService.INVALID_TYPE);
         Fragment fragment = null;
         switch(type){
-            case ProductService.ADD_PRODUCT:
-            case ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
+            case TkpdState.AddProduct.ADD_PRODUCT:
+            case TkpdState.AddProduct.ADD_PRODUCT_WITHOUT_IMAGE:
                 // default position is "0"
-                int position = resultData.getInt(ProductService.PRODUCT_POSITION, 0);
+                int position = resultData.getInt(TkpdState.AddProduct.PRODUCT_POSITION, 0);
                 fragment = getFragment(position);
                 break;
             default:
@@ -415,8 +416,8 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
             switch (resultCode) {
                 case ProductService.STATUS_RUNNING:
                     switch(type) {
-                        case ProductService.ADD_PRODUCT:
-                        case ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
+                        case TkpdState.AddProduct.ADD_PRODUCT:
+                        case TkpdState.AddProduct.ADD_PRODUCT_WITHOUT_IMAGE:
 
                             if(resultData.getBoolean(ProductService.RETRY_FLAG, false)){
                                 boolean retry = resultData.getBoolean(ProductService.RETRY_FLAG, false);
@@ -442,8 +443,8 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
     @Override
     public void sendDataToInternet(int type, Bundle data) {
         switch (type){
-            case ProductService.ADD_PRODUCT:
-            case ProductServiceConstant.ADD_PRODUCT_WITHOUT_IMAGE:
+            case TkpdState.AddProduct.ADD_PRODUCT:
+            case TkpdState.AddProduct.ADD_PRODUCT_WITHOUT_IMAGE:
                 ProductService.startDownload(this, mReceiver, data, type);
                 break;
             default :

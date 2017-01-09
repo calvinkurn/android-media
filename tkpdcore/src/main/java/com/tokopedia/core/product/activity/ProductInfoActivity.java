@@ -29,6 +29,7 @@ import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.product.presenter.ProductInfoPresenter;
 import com.tokopedia.core.product.presenter.ProductInfoPresenterImpl;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
+import com.tokopedia.core.var.TkpdState;
 
 public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresenter> implements
         ProductInfoView,
@@ -259,10 +260,10 @@ public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresen
         addProductReceiver = new DownloadResultReceiver(new Handler());
         addProductReceiver.setReceiver(getAddProductReceiver());
         switch (type){
-            case ProductService.EDIT_PRODUCT:
-            case ProductService.ADD_PRODUCT:
-            case ProductServiceConstant.ADD_PRODUCT_WITHOUT_IMAGE:
-            case ProductService.DELETE_PRODUCT:
+            case TkpdState.AddProduct.EDIT_PRODUCT:
+            case TkpdState.AddProduct.ADD_PRODUCT:
+            case TkpdState.AddProduct.ADD_PRODUCT_WITHOUT_IMAGE:
+            case TkpdState.AddProduct.DELETE_PRODUCT:
                 ProductService.startDownload(this, addProductReceiver, data, type);
                 break;
             default :

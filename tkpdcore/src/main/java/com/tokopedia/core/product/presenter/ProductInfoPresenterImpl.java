@@ -22,6 +22,7 @@ import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
 import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.core.var.TkpdState;
 
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
     public void initialFragment(@NonNull Context context, Uri uri, Bundle bundle) {
         // [variable for add product before share]
         int type = bundle.getInt(ProductService.TYPE, -1);
-        long productId = bundle.getLong(ProductService.PRODUCT_DATABASE_ID, -1);
+        long productId = bundle.getLong(TkpdState.AddProduct.PRODUCT_DB_ID, -1);
         String stockStatus = bundle.getString(ProductService.STOCK_STATUS,"");
         // [variable for add product before share]
         ShareData shareDa = bundle.getParcelable(ProductInfoActivity.SHARE_DATA);

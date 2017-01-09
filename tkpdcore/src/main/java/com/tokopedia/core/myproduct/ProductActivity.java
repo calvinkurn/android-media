@@ -624,10 +624,10 @@ public class ProductActivity extends BaseProductActivity implements
         int type = resultData.getInt(ProductService.TYPE, ProductService.INVALID_TYPE);
         Fragment fragment = null;
         switch (type) {
-            case ProductService.EDIT_PRODUCT:
-            case ProductService.ADD_PRODUCT:
-            case ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
-            case ProductService.DELETE_PRODUCT:
+            case TkpdState.AddProduct.EDIT_PRODUCT:
+            case TkpdState.AddProduct.ADD_PRODUCT:
+            case TkpdState.AddProduct.ADD_PRODUCT_WITHOUT_IMAGE:
+            case TkpdState.AddProduct.DELETE_PRODUCT:
                 fragment = supportFragmentManager.findFragmentByTag(AddProductFragment.FRAGMENT_TAG);
                 break;
             default:
@@ -639,12 +639,12 @@ public class ProductActivity extends BaseProductActivity implements
             switch (resultCode) {
                 case ProductService.STATUS_RUNNING:
                     switch (type) {
-                        case ProductService.ADD_PRODUCT:
+                        case TkpdState.AddProduct.ADD_PRODUCT:
                             ((BaseView) fragment).setData(type, resultData);
                             break;
-                        case ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
-                        case ProductService.EDIT_PRODUCT:
-                        case ProductService.DELETE_PRODUCT:
+                        case TkpdState.AddProduct.ADD_PRODUCT_WITHOUT_IMAGE:
+                        case TkpdState.AddProduct.EDIT_PRODUCT:
+                        case TkpdState.AddProduct.DELETE_PRODUCT:
                             //[START] show progress bar
                             if (fragment instanceof AddProductFragment) {
 //                                boolean showDialog = resultData.getBoolean(ProductService.ADD_PRODUCT_SHOW_DIALOG, false);
@@ -655,17 +655,17 @@ public class ProductActivity extends BaseProductActivity implements
                     break;
                 case ProductService.STATUS_FINISHED:
                     switch (type) {
-                        case ProductService.ADD_PRODUCT:
+                        case TkpdState.AddProduct.ADD_PRODUCT:
                             break;
-                        case ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
+                        case TkpdState.AddProduct.ADD_PRODUCT_WITHOUT_IMAGE:
                             if (resultData.getBoolean(ProductService.RETRY_FLAG, false)) {
                                 boolean retry = resultData.getBoolean(ProductService.RETRY_FLAG, false);
                                 ((BaseView) fragment).ariseRetry(type, retry);
                             } else {
                                 ((BaseView) fragment).setData(type, resultData);
                             }
-                        case ProductService.DELETE_PRODUCT:
-                        case ProductService.EDIT_PRODUCT:
+                        case TkpdState.AddProduct.DELETE_PRODUCT:
+                        case TkpdState.AddProduct.EDIT_PRODUCT:
                             if (resultData.getBoolean(ProductService.RETRY_FLAG, false)) {
                                 boolean retry = resultData.getBoolean(ProductService.RETRY_FLAG, false);
                                 ((BaseView) fragment).ariseRetry(type, retry);
@@ -704,10 +704,10 @@ public class ProductActivity extends BaseProductActivity implements
     @Override
     public void sendDataToInternet(int type, Bundle data) {
         switch (type) {
-            case ProductService.EDIT_PRODUCT:
-            case ProductService.ADD_PRODUCT:
-            case ProductServiceConstant.ADD_PRODUCT_WITHOUT_IMAGE:
-            case ProductService.DELETE_PRODUCT:
+            case TkpdState.AddProduct.EDIT_PRODUCT:
+            case TkpdState.AddProduct.ADD_PRODUCT:
+            case TkpdState.AddProduct.ADD_PRODUCT_WITHOUT_IMAGE:
+            case TkpdState.AddProduct.DELETE_PRODUCT:
                 ProductService.startDownload(this, mReceiver, data, type);
                 break;
             default:

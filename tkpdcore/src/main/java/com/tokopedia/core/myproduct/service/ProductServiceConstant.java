@@ -26,21 +26,6 @@ public interface ProductServiceConstant {
     int STATUS_FINISHED = 1;
     int STATUS_ERROR = 2;
 
-    // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
-    String ACTION_FOO = "com.tokopedia.tkpd.revamp.service.action.FOO";
-    String ACTION_BAZ = "com.tokopedia.tkpd.revamp.service.action.BAZ";
-
-    String EXTRA_PARAM1 = "com.tokopedia.tkpd.revamp.service.extra.PARAM1";
-    String EXTRA_PARAM2 = "com.tokopedia.tkpd.revamp.service.extra.PARAM2";
-
-    // ADDPRODUCT
-    int ADD_PRODUCT = 10;
-    int ADD_PRODUCT_WITHOUT_IMAGE = 11;
-    int EDIT_PRODUCT = 12;
-    int DELETE_PRODUCT = 13;
-    String PRODUCT_DATABASE_ID = "PRODUCT_DATABASE_ID";
-    String PRODUCT_POSITION = "PRODUCT_POSITION";
-    String ADD_PRODUCT_SHOW_DIALOG = "ADD_PRODUCT_SHOW_DIALOG";
     String PRODUCT_EDIT_PHOTOS = "PRODUCT_EDIT_PHOTOS";
 
     // ADD PRODUCT VALIDATION

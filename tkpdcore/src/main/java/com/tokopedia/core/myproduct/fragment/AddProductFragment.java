@@ -123,6 +123,7 @@ import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.ShareSocmedHandler;
+import com.tokopedia.core.var.TkpdState;
 
 import org.parceler.Parcels;
 
@@ -2307,7 +2308,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
             ProductDb = InputAddProductModel.compileAllForEdit(verif.getModel1(), ProductDb, producteditHelper.editProductForm);
             Bundle bundle = new Bundle();
             bundle.putParcelable(ProductService.PRODUCT_EDIT_PHOTOS, Parcels.wrap(producteditHelper.toParcelFormatForPhotos()));
-            bundle.putLong(ProductService.PRODUCT_DATABASE_ID, ProductDb.getId());
+            bundle.putLong(TkpdState.AddProduct.PRODUCT_DB_ID, ProductDb.getId());
             bundle.putString(ProductService.STOCK_STATUS, verif.getModel2().getText());
             bundle.putString(ProductService.SHOP_ID, SessionHandler.getShopID(getActivity()));
             bundle.putString(ProductService.PRODUCT_CHANGE_WHOLESALE, isCatalogAndWholeSaleChange.get(ProductService.PRODUCT_CHANGE_WHOLESALE));
@@ -2316,7 +2317,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
 
             //[START] send data to internet
             if (isPush && getActivity() != null && getActivity() instanceof DownloadResultSender) {
-                ((DownloadResultSender) getActivity()).sendDataToInternet(ProductService.EDIT_PRODUCT, bundle);
+                ((DownloadResultSender) getActivity()).sendDataToInternet(TkpdState.AddProduct.EDIT_PRODUCT, bundle);
             }
             //[END] send data to internet
         }
@@ -2532,9 +2533,9 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         boolean isWithoutImageAndStockEmpty = stockStatus.equals(AddProductView.ETALASE_GUDANG) && isWithoutImage;
         ProductDb = InputAddProductModel.compileAll(verif.getModel1(), ProductDb, isWithoutImageAndStockEmpty);
         Bundle bundle = new Bundle();
-        bundle.putLong(ProductService.PRODUCT_DATABASE_ID, ProductDb.getId());
+        bundle.putLong(TkpdState.AddProduct.PRODUCT_DB_ID, ProductDb.getId());
         if (getActivity() instanceof ProductSocMedActivity) {
-            bundle.putInt(ProductService.PRODUCT_POSITION, ((ProductSocMedActivity) getActivity()).getCurrentFragmentPosition());
+            bundle.putInt(TkpdState.AddProduct.PRODUCT_POSITION, ((ProductSocMedActivity) getActivity()).getCurrentFragmentPosition());
         }
         bundle.putString(ProductService.STOCK_STATUS, stockStatus);
 
@@ -2542,10 +2543,10 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
             //[START] move to ProductShareFragment
             if (isPush && getActivity() != null && getActivity() instanceof DownloadResultSender) {
                 if (isWithoutImageAndStockEmpty) {
-                    bundle.putInt(ProductService.TYPE, ProductService.ADD_PRODUCT_WITHOUT_IMAGE);
+                    bundle.putInt(ProductService.TYPE, TkpdState.AddProduct.ADD_PRODUCT_WITHOUT_IMAGE);
                     ProductActivity.moveToProductShare(bundle, getActivity());
                 } else {
-                    bundle.putInt(ProductService.TYPE, ProductService.ADD_PRODUCT);
+                    bundle.putInt(ProductService.TYPE, TkpdState.AddProduct.ADD_PRODUCT);
                     ProductActivity.moveToProductShare(bundle, getActivity());
                 }
             }
@@ -2554,9 +2555,9 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
             //[START] send data to internet
             if (isPush && getActivity() != null && getActivity() instanceof DownloadResultSender) {
                 if (isWithoutImageAndStockEmpty) {
-                    ((DownloadResultSender) getActivity()).sendDataToInternet(ProductService.ADD_PRODUCT_WITHOUT_IMAGE, bundle);
+                    ((DownloadResultSender) getActivity()).sendDataToInternet(TkpdState.AddProduct.ADD_PRODUCT_WITHOUT_IMAGE, bundle);
                 } else {
-                    ((DownloadResultSender) getActivity()).sendDataToInternet(ProductService.ADD_PRODUCT, bundle);
+                    ((DownloadResultSender) getActivity()).sendDataToInternet(TkpdState.AddProduct.ADD_PRODUCT, bundle);
                 }
             }
             //[END] send data to internet
@@ -2655,10 +2656,10 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
     @Override
     public void setData(final int type, Bundle data) {
         switch (type) {
-            case ProductService.EDIT_PRODUCT:
-            case ProductService.ADD_PRODUCT:
-            case ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
-            case ProductService.DELETE_PRODUCT:
+            case TkpdState.AddProduct.EDIT_PRODUCT:
+            case TkpdState.AddProduct.ADD_PRODUCT:
+            case TkpdState.AddProduct.ADD_PRODUCT_WITHOUT_IMAGE:
+            case TkpdState.AddProduct.DELETE_PRODUCT:
                 if (tkpdProgressDialog != null && tkpdProgressDialog.isProgress())
                     tkpdProgressDialog.dismiss();
 
@@ -2668,7 +2669,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
                     case ADD_MULTIPLE_FROM_GALERY:
                     case COPY:
                     case MODIFY:
-                        final long productServerId = data.getLong(ProductService.PRODUCT_DATABASE_ID);
+                        final long productServerId = data.getLong(TkpdState.AddProduct.PRODUCT_DB_ID);
                         new android.os.Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -2759,7 +2760,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
     public void removeFragment() {
         Bundle bundle = new Bundle();
         bundle.putString(ProductService.PRODUCT_ID, productId);
-        ((DownloadResultSender) getActivity()).sendDataToInternet(ProductService.DELETE_PRODUCT, bundle);
+        ((DownloadResultSender) getActivity()).sendDataToInternet(TkpdState.AddProduct.DELETE_PRODUCT, bundle);
     }
 
     public void deleteProductDialog() {
