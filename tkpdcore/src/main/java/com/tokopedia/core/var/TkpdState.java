@@ -441,7 +441,7 @@ public class TkpdState {
         public static final String defaultLongitude = "106.8249641";
     }
 
-    public class AddProduct {
+    public class ProductService {
         /* BROADCAST INTENT FILTER */
         public static final String BROADCAST_ADD_PRODUCT = "BROADCAST_ADD_PRODUCT";
 
@@ -451,6 +451,7 @@ public class TkpdState {
         public static final int ADD_PRODUCT_WITHOUT_IMAGE = 11;
         public static final int EDIT_PRODUCT = 12;
         public static final int DELETE_PRODUCT = 13;
+        public static final int INVALID_TYPE = -1;
 
 
         /* STATUS */
@@ -465,6 +466,8 @@ public class TkpdState {
         public static final String PRODUCT_POSITION = "PRODUCT_POSITION";
         public static final int NO_PRODUCT_POS = -1;
         public static final String MESSAGE_ERROR_FLAG = "MESSAGE_ERROR_FLAG";
+        public static final String INVALID_MESSAGE_ERROR = "default";
+        public static final String PRODUCT_ID = "PRODUCT_ID";
 
 
 

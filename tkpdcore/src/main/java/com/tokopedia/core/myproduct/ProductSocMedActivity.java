@@ -27,10 +27,7 @@ import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.instoped.model.InstagramMediaModelParc;
 import com.tokopedia.core.myproduct.dialog.DialogFragmentImageAddProduct;
 import com.tokopedia.core.myproduct.fragment.ImageChooserDialog;
-import com.tokopedia.core.myproduct.model.NoteDetailModel;
 import com.tokopedia.core.newgallery.GalleryActivity;
-import com.tokopedia.core.myproduct.service.ProductServiceConstant;
-import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.myproduct.adapter.SmallPhotoAdapter;
 import com.tokopedia.core.myproduct.fragment.AddProductFragment;
@@ -40,7 +37,6 @@ import com.tokopedia.core.myproduct.model.ImageModel;
 import com.tokopedia.core.myproduct.model.SimpleTextModel;
 import com.tokopedia.core.myproduct.model.constant.ImageModelType;
 import com.tokopedia.core.myproduct.presenter.ProductSocMedPresenter;
-import com.tokopedia.core.myproduct.service.ProductService;
 import com.tokopedia.core.myproduct.utils.AddProductType;
 import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.var.TkpdState;
@@ -398,13 +394,13 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
 
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
-        int type = resultData.getInt(ProductService.TYPE, ProductService.INVALID_TYPE);
+        int type = resultData.getInt(TkpdState.ProductService.SERVICE_TYPE, TkpdState.ProductService.INVALID_TYPE);
         Fragment fragment = null;
         switch(type){
-            case TkpdState.AddProduct.ADD_PRODUCT:
-            case TkpdState.AddProduct.ADD_PRODUCT_WITHOUT_IMAGE:
+            case TkpdState.ProductService.ADD_PRODUCT:
+            case TkpdState.ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
                 // default position is "0"
-                int position = resultData.getInt(TkpdState.AddProduct.PRODUCT_POSITION, 0);
+                int position = resultData.getInt(TkpdState.ProductService.PRODUCT_POSITION, 0);
                 fragment = getFragment(position);
                 break;
             default:
@@ -412,26 +408,20 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
         }
 
         //check if Fragment implement necessary interface
-        if(fragment!=null && fragment instanceof BaseView && type != ProductService.INVALID_TYPE){
+        if(fragment!=null && fragment instanceof BaseView && type != TkpdState.ProductService.INVALID_TYPE){
             switch (resultCode) {
-                case ProductService.STATUS_RUNNING:
+                case TkpdState.ProductService.STATUS_RUNNING:
                     switch(type) {
-                        case TkpdState.AddProduct.ADD_PRODUCT:
-                        case TkpdState.AddProduct.ADD_PRODUCT_WITHOUT_IMAGE:
-
-                            if(resultData.getBoolean(ProductService.RETRY_FLAG, false)){
-                                boolean retry = resultData.getBoolean(ProductService.RETRY_FLAG, false);
-                                ((BaseView)fragment).ariseRetry(type, retry);
-                            }else {
-                                showProgress(false);
-                                ((BaseView) fragment).setData(type, resultData);
-                            }
+                        case TkpdState.ProductService.ADD_PRODUCT:
+                        case TkpdState.ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
+                            showProgress(false);
+                            ((BaseView) fragment).setData(type, resultData);
                             break;
                     }
                     break;
-                case ProductService.STATUS_FINISHED:
+                case TkpdState.ProductService.STATUS_DONE:
                     break;
-                case ProductService.STATUS_ERROR:
+                case TkpdState.ProductService.STATUS_ERROR:
                     switch(type){
 
                     }
@@ -443,9 +433,9 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
     @Override
     public void sendDataToInternet(int type, Bundle data) {
         switch (type){
-            case TkpdState.AddProduct.ADD_PRODUCT:
-            case TkpdState.AddProduct.ADD_PRODUCT_WITHOUT_IMAGE:
-                ProductService.startDownload(this, mReceiver, data, type);
+            case TkpdState.ProductService.ADD_PRODUCT:
+            case TkpdState.ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
+                com.tokopedia.core.myproduct.service.ProductService.startDownload(this, mReceiver, data, type);
                 break;
             default :
                 throw new UnsupportedOperationException("please pass type when want to process it !!!");

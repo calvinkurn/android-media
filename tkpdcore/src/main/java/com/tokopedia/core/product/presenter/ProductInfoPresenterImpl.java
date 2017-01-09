@@ -13,7 +13,6 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.database.model.CategoryDB_Table;
-import com.tokopedia.core.myproduct.service.ProductService;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.product.fragment.ProductDetailFragment;
 import com.tokopedia.core.product.listener.ProductInfoView;
@@ -41,9 +40,9 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
     @Override
     public void initialFragment(@NonNull Context context, Uri uri, Bundle bundle) {
         // [variable for add product before share]
-        int type = bundle.getInt(ProductService.TYPE, -1);
-        long productId = bundle.getLong(TkpdState.AddProduct.PRODUCT_DB_ID, -1);
-        String stockStatus = bundle.getString(ProductService.STOCK_STATUS,"");
+        int type = bundle.getInt(TkpdState.ProductService.SERVICE_TYPE, -1);
+        long productId = bundle.getLong(TkpdState.ProductService.PRODUCT_DB_ID, -1);
+        String stockStatus = bundle.getString(com.tokopedia.core.myproduct.service.ProductService.STOCK_STATUS,"");
         // [variable for add product before share]
         ShareData shareDa = bundle.getParcelable(ProductInfoActivity.SHARE_DATA);
 

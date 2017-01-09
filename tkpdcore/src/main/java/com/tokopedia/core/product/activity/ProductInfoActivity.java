@@ -17,8 +17,6 @@ import com.tkpd.library.utils.DownloadResultSender;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.myproduct.service.ProductService;
-import com.tokopedia.core.myproduct.service.ProductServiceConstant;
 import com.tokopedia.core.product.fragment.ProductDetailFragment;
 import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
 import com.tokopedia.core.product.intentservice.ProductInfoResultReceiver;
@@ -260,11 +258,11 @@ public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresen
         addProductReceiver = new DownloadResultReceiver(new Handler());
         addProductReceiver.setReceiver(getAddProductReceiver());
         switch (type){
-            case TkpdState.AddProduct.EDIT_PRODUCT:
-            case TkpdState.AddProduct.ADD_PRODUCT:
-            case TkpdState.AddProduct.ADD_PRODUCT_WITHOUT_IMAGE:
-            case TkpdState.AddProduct.DELETE_PRODUCT:
-                ProductService.startDownload(this, addProductReceiver, data, type);
+            case TkpdState.ProductService.EDIT_PRODUCT:
+            case TkpdState.ProductService.ADD_PRODUCT:
+            case TkpdState.ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
+            case TkpdState.ProductService.DELETE_PRODUCT:
+                com.tokopedia.core.myproduct.service.ProductService.startDownload(this, addProductReceiver, data, type);
                 break;
             default :
                 throw new UnsupportedOperationException("please pass type when want to process it !!!");

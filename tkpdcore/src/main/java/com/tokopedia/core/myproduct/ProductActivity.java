@@ -1,11 +1,12 @@
 package com.tokopedia.core.myproduct;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,6 +17,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.PersistableBundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -45,8 +47,6 @@ import com.tokopedia.core.myproduct.fragment.ImageChooserDialog;
 import com.tokopedia.core.myproduct.model.SimpleTextModel;
 import com.tokopedia.core.myproduct.presenter.AddProductView;
 import com.tokopedia.core.myproduct.presenter.ProductView;
-import com.tokopedia.core.myproduct.service.ProductService;
-import com.tokopedia.core.myproduct.service.ProductServiceConstant;
 import com.tokopedia.core.myproduct.utils.AddProductType;
 import com.tokopedia.core.myproduct.utils.UploadPhotoTask;
 import com.tokopedia.core.network.v4.NetworkConfig;
@@ -130,6 +130,7 @@ public class ProductActivity extends BaseProductActivity implements
     Fragment productActifityFragment = null;
     private Unbinder unbinder;
     private String messageTAG = "Product";
+    private BroadcastReceiver addProductReceiver;
 
     public static File getOutputMediaFile(){
         File mediaStorageDir = new File(
@@ -185,6 +186,87 @@ public class ProductActivity extends BaseProductActivity implements
         /* Starting Download Service */
         mReceiver = new DownloadResultReceiver(new Handler());
         mReceiver.setReceiver(this);
+
+        addProductReceiver = getProductServiceReceiver();
+    }
+
+    @NonNull
+    private BroadcastReceiver getProductServiceReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Bundle bundle = intent.getExtras();
+                int resultCode = bundle.getInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_ERROR);
+                int type = bundle.getInt(TkpdState.ProductService.SERVICE_TYPE, TkpdState.ProductService.INVALID_TYPE);
+                Fragment fragment = null;
+                switch (type) {
+                    case TkpdState.ProductService.EDIT_PRODUCT:
+                    case TkpdState.ProductService.ADD_PRODUCT:
+                    case TkpdState.ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
+                    case TkpdState.ProductService.DELETE_PRODUCT:
+                        fragment = supportFragmentManager.findFragmentByTag(AddProductFragment.FRAGMENT_TAG);
+                        break;
+                    default:
+                        throw new UnsupportedOperationException("please pass type when want to process it !!!");
+                }
+
+                //check if Fragment implement necessary interface
+                if (fragment != null && fragment instanceof BaseView && type != TkpdState.ProductService.INVALID_TYPE) {
+                    switch (resultCode) {
+                        case TkpdState.ProductService.STATUS_RUNNING:
+                            switch (type) {
+                                case TkpdState.ProductService.ADD_PRODUCT:
+                                    ((BaseView) fragment).setData(type, bundle);
+                                    break;
+                                case TkpdState.ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
+                                case TkpdState.ProductService.EDIT_PRODUCT:
+                                case TkpdState.ProductService.DELETE_PRODUCT:
+                                    //[START] show progress bar
+                                    if (fragment instanceof AddProductFragment) {
+//                                boolean showDialog = resultData.getBoolean(ProductService.ADD_PRODUCT_SHOW_DIALOG, false);
+                                        ((AddProductView) fragment).showProgress(true);
+                                    }
+                                    break;
+                            }
+                            break;
+                        case TkpdState.ProductService.STATUS_DONE:
+                            switch (type) {
+                                case TkpdState.ProductService.ADD_PRODUCT:
+                                    break;
+                                case TkpdState.ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
+                                    ((BaseView) fragment).setData(type, bundle);
+                                case TkpdState.ProductService.DELETE_PRODUCT:
+                                case TkpdState.ProductService.EDIT_PRODUCT:
+                                    CacheInteractor cacheInteractor = new CacheInteractorImpl();
+                                    cacheInteractor.deleteProductDetail(bundle.getInt(TkpdState.ProductService.PRODUCT_ID));
+                                    ((BaseView) fragment).setData(type, bundle);
+                                    break;
+                            }
+                            break;
+                        case TkpdState.ProductService.STATUS_ERROR:
+                            switch (bundle.getInt(com.tokopedia.core.myproduct.service.ProductService.NETWORK_ERROR_FLAG, com.tokopedia.core.myproduct.service.ProductService.INVALID_NETWORK_ERROR_FLAG)) {
+                                case NetworkConfig.BAD_REQUEST_NETWORK_ERROR:
+                                    ((BaseView) fragment).onNetworkError(type, " BAD_REQUEST_NETWORK_ERROR !!!");
+                                    break;
+                                case NetworkConfig.INTERNAL_SERVER_ERROR:
+                                    ((BaseView) fragment).onNetworkError(type, " INTERNAL_SERVER_ERROR !!!");
+                                    break;
+                                case NetworkConfig.FORBIDDEN_NETWORK_ERROR:
+                                    ((BaseView) fragment).onNetworkError(type, " FORBIDDEN_NETWORK_ERROR !!!");
+                                    break;
+                                case com.tokopedia.core.myproduct.service.ProductService.INVALID_NETWORK_ERROR_FLAG:
+                                default:
+                                    String messageError = bundle.getString(TkpdState.ProductService.MESSAGE_ERROR_FLAG);
+                                    if (!messageError.equals(TkpdState.ProductService.INVALID_MESSAGE_ERROR)) {
+                                        ((BaseView) fragment).onMessageError(type, messageError);
+                                    }
+
+                            }
+                            break;
+                    }// end of status download service
+                }
+            }
+        };
     }
 
     private void getImplicitIntent() {
@@ -355,6 +437,15 @@ public class ProductActivity extends BaseProductActivity implements
 
         if (supportFragmentManager.findFragmentById(R.id.add_product_container) == null)
             initFragment(FRAGMENT);
+
+        registerReceiver(addProductReceiver, new IntentFilter(TkpdState.ProductService.BROADCAST_ADD_PRODUCT));
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(addProductReceiver);
     }
 
     public void fetchSaveInstanceState(Bundle bundle) {
@@ -400,7 +491,7 @@ public class ProductActivity extends BaseProductActivity implements
             productId = intent.getExtras().getString("product_id", "XXX");
             productDb = intent.getExtras().getLong("product_db", -1);
 
-            int notificationId = intent.getIntExtra(ProductService.NOTIFICATION_ID,-1);
+            int notificationId = intent.getIntExtra(com.tokopedia.core.myproduct.service.ProductService.NOTIFICATION_ID,-1);
             if (notificationId != -1){
                 NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                 manager.cancel(notificationId);
@@ -621,94 +712,17 @@ public class ProductActivity extends BaseProductActivity implements
 
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
-        int type = resultData.getInt(ProductService.TYPE, ProductService.INVALID_TYPE);
-        Fragment fragment = null;
-        switch (type) {
-            case TkpdState.AddProduct.EDIT_PRODUCT:
-            case TkpdState.AddProduct.ADD_PRODUCT:
-            case TkpdState.AddProduct.ADD_PRODUCT_WITHOUT_IMAGE:
-            case TkpdState.AddProduct.DELETE_PRODUCT:
-                fragment = supportFragmentManager.findFragmentByTag(AddProductFragment.FRAGMENT_TAG);
-                break;
-            default:
-                throw new UnsupportedOperationException("please pass type when want to process it !!!");
-        }
 
-        //check if Fragment implement necessary interface
-        if (fragment != null && fragment instanceof BaseView && type != ProductService.INVALID_TYPE) {
-            switch (resultCode) {
-                case ProductService.STATUS_RUNNING:
-                    switch (type) {
-                        case TkpdState.AddProduct.ADD_PRODUCT:
-                            ((BaseView) fragment).setData(type, resultData);
-                            break;
-                        case TkpdState.AddProduct.ADD_PRODUCT_WITHOUT_IMAGE:
-                        case TkpdState.AddProduct.EDIT_PRODUCT:
-                        case TkpdState.AddProduct.DELETE_PRODUCT:
-                            //[START] show progress bar
-                            if (fragment instanceof AddProductFragment) {
-//                                boolean showDialog = resultData.getBoolean(ProductService.ADD_PRODUCT_SHOW_DIALOG, false);
-                                ((AddProductView) fragment).showProgress(true);
-                            }
-                            break;
-                    }
-                    break;
-                case ProductService.STATUS_FINISHED:
-                    switch (type) {
-                        case TkpdState.AddProduct.ADD_PRODUCT:
-                            break;
-                        case TkpdState.AddProduct.ADD_PRODUCT_WITHOUT_IMAGE:
-                            if (resultData.getBoolean(ProductService.RETRY_FLAG, false)) {
-                                boolean retry = resultData.getBoolean(ProductService.RETRY_FLAG, false);
-                                ((BaseView) fragment).ariseRetry(type, retry);
-                            } else {
-                                ((BaseView) fragment).setData(type, resultData);
-                            }
-                        case TkpdState.AddProduct.DELETE_PRODUCT:
-                        case TkpdState.AddProduct.EDIT_PRODUCT:
-                            if (resultData.getBoolean(ProductService.RETRY_FLAG, false)) {
-                                boolean retry = resultData.getBoolean(ProductService.RETRY_FLAG, false);
-                                ((BaseView) fragment).ariseRetry(type, retry);
-                            } else {
-                                CacheInteractor cacheInteractor = new CacheInteractorImpl();
-                                cacheInteractor.deleteProductDetail(resultData.getInt(ProductService.PRODUCT_ID));
-                                ((BaseView) fragment).setData(type, resultData);
-                            }
-                            break;
-                    }
-                    break;
-                case ProductService.STATUS_ERROR:
-                    switch (resultData.getInt(ProductService.NETWORK_ERROR_FLAG, ProductService.INVALID_NETWORK_ERROR_FLAG)) {
-                        case NetworkConfig.BAD_REQUEST_NETWORK_ERROR:
-                            ((BaseView) fragment).onNetworkError(type, " BAD_REQUEST_NETWORK_ERROR !!!");
-                            break;
-                        case NetworkConfig.INTERNAL_SERVER_ERROR:
-                            ((BaseView) fragment).onNetworkError(type, " INTERNAL_SERVER_ERROR !!!");
-                            break;
-                        case NetworkConfig.FORBIDDEN_NETWORK_ERROR:
-                            ((BaseView) fragment).onNetworkError(type, " FORBIDDEN_NETWORK_ERROR !!!");
-                            break;
-                        case ProductService.INVALID_NETWORK_ERROR_FLAG:
-                        default:
-                            String messageError = resultData.getString(ProductService.MESSAGE_ERROR_FLAG, ProductService.INVALID_MESSAGE_ERROR);
-                            if (!messageError.equals(ProductService.INVALID_MESSAGE_ERROR)) {
-                                ((BaseView) fragment).onMessageError(type, messageError);
-                            }
-
-                    }
-                    break;
-            }// end of status download service
-        }
     }
 
     @Override
     public void sendDataToInternet(int type, Bundle data) {
         switch (type) {
-            case TkpdState.AddProduct.EDIT_PRODUCT:
-            case TkpdState.AddProduct.ADD_PRODUCT:
-            case TkpdState.AddProduct.ADD_PRODUCT_WITHOUT_IMAGE:
-            case TkpdState.AddProduct.DELETE_PRODUCT:
-                ProductService.startDownload(this, mReceiver, data, type);
+            case TkpdState.ProductService.EDIT_PRODUCT:
+            case TkpdState.ProductService.ADD_PRODUCT:
+            case TkpdState.ProductService.ADD_PRODUCT_WITHOUT_IMAGE:
+            case TkpdState.ProductService.DELETE_PRODUCT:
+                com.tokopedia.core.myproduct.service.ProductService.startDownload(this, mReceiver, data, type);
                 break;
             default:
                 throw new UnsupportedOperationException("please pass type when want to process it !!!");

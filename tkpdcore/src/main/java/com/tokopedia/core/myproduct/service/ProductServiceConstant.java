@@ -8,23 +8,14 @@ public interface ProductServiceConstant {
     String messageTAG = "ProductServiceConstant : ";
 
     // common
-    String TYPE = "type";
-    int INVALID_TYPE = -1;
-    String RETRY_FLAG = "RETRY_FLAG";
     String RECEIVER = "receiver";
     int NUMBER_OF_TRY = 1;
     int TIMEOUT_TIME = 10000;
     String IS_NEED_LOGIN = "IS_NEED_LOGIN";
 
     // error
-    String MESSAGE_ERROR_FLAG ="MESSAGE_ERROR_FLAG";
-    String INVALID_MESSAGE_ERROR = "default";
     String NETWORK_ERROR_FLAG ="NETWORK_ERROR_FLAG";
     int INVALID_NETWORK_ERROR_FLAG = -1;
-
-    int STATUS_RUNNING = 0;
-    int STATUS_FINISHED = 1;
-    int STATUS_ERROR = 2;
 
     String PRODUCT_EDIT_PHOTOS = "PRODUCT_EDIT_PHOTOS";
 
@@ -83,7 +74,6 @@ public interface ProductServiceConstant {
     String STOCK_STATUS = "STOCK_STATUS";
     String SHOP_ID = "SHOP_ID";
     String SHOP_ID_PARAM = "shop_id";
-    String PRODUCT_ID = "PRODUCT_ID";
 
     //local broadcast manage
     String ACTION_COMPLETED_ADD_PRODUCT = "action_completed_add_product";

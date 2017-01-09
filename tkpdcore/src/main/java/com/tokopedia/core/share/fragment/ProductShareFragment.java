@@ -24,7 +24,6 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.database.model.ProductDB;
 import com.tokopedia.core.database.model.ProductDB_Table;
-import com.tokopedia.core.myproduct.service.ProductService;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.share.presenter.ProductSharePresenter;
 import com.tokopedia.core.share.presenter.ProductSharePresenterImpl;
@@ -108,9 +107,9 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
     public static ProductShareFragment newInstance(@NonNull int type, @NonNull long productId, @NonNull String stockStatus) {
         ProductShareFragment fragment = new ProductShareFragment();
         Bundle args = new Bundle();
-        args.putInt(ProductService.TYPE, type);
-        args.putLong(TkpdState.AddProduct.PRODUCT_DB_ID, productId);
-        args.putString(ProductService.STOCK_STATUS, stockStatus);
+        args.putInt(TkpdState.ProductService.SERVICE_TYPE, type);
+        args.putLong(TkpdState.ProductService.PRODUCT_DB_ID, productId);
+        args.putString(com.tokopedia.core.myproduct.service.ProductService.STOCK_STATUS, stockStatus);
         fragment.setArguments(args);
         return fragment;
     }
@@ -118,7 +117,13 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().registerReceiver(addProductReceiver, new IntentFilter(TkpdState.AddProduct.BROADCAST_ADD_PRODUCT));
+        getActivity().registerReceiver(addProductReceiver, new IntentFilter(TkpdState.ProductService.BROADCAST_ADD_PRODUCT));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().unregisterReceiver(addProductReceiver);
     }
 
     @Override
@@ -160,9 +165,9 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
     protected void setupArguments(Bundle arguments) {
         this.shareData = arguments.getParcelable(ARGS_SHARE_DATA);
 
-        int type = arguments.getInt(ProductService.TYPE, -1);
-        long productId = arguments.getLong(TkpdState.AddProduct.PRODUCT_DB_ID, -1);
-        String stockStatus = arguments.getString(ProductService.STOCK_STATUS, "");
+        int type = arguments.getInt(TkpdState.ProductService.SERVICE_TYPE, -1);
+        long productId = arguments.getLong(TkpdState.ProductService.PRODUCT_DB_ID, -1);
+        String stockStatus = arguments.getString(com.tokopedia.core.myproduct.service.ProductService.STOCK_STATUS, "");
         // if there is product need to be uploaded
         if (type != -1 && productId != -1 && !stockStatus.equals("")) {
             ((DownloadResultSender) getActivity()).sendDataToInternet(type, arguments);
@@ -202,8 +207,8 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
         }
     }
 
-    public void onError(Intent resultData) {
-        String messageError = resultData.getStringExtra(TkpdState.AddProduct.MESSAGE_ERROR_FLAG);
+    public void onError(Bundle resultData) {
+        String messageError = resultData.getString(TkpdState.ProductService.MESSAGE_ERROR_FLAG);
         progressBar.setVisibility(View.GONE);
         errorImage.setVisibility(View.VISIBLE);
         loadingAddProduct.setText(messageError +
@@ -231,8 +236,8 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
         subtitle.setVisibility(visibility);
     }
 
-    public void setData(Intent data) {
-        final long productServerId = data.getLongExtra(TkpdState.AddProduct.PRODUCT_DB_ID, -1);
+    public void setData(Bundle data) {
+        final long productServerId = data.getLong(TkpdState.ProductService.PRODUCT_DB_ID, -1);
         new android.os.Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -281,19 +286,20 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
         addProductReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                int status = intent.getIntExtra(TkpdState.AddProduct.STATUS_FLAG, TkpdState.AddProduct.STATUS_ERROR);
+                Bundle bundle = intent.getExtras();
+                int status = bundle.getInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_ERROR);
                 switch (status){
-                    case TkpdState.AddProduct.STATUS_RUNNING:
+                    case TkpdState.ProductService.STATUS_RUNNING:
                         addingProduct(true);
                         break;
-                    case TkpdState.AddProduct.STATUS_DONE:
-                        setData(intent);
+                    case TkpdState.ProductService.STATUS_DONE:
+                        setData(bundle);
                         addingProduct(false);
                         break;
-                    case TkpdState.AddProduct.STATUS_ERROR:
+                    case TkpdState.ProductService.STATUS_ERROR:
                     default:
                         addingProduct(false);
-                        onError(intent);
+                        onError(bundle);
                 }
             }
         };
