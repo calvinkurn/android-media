@@ -6,6 +6,7 @@ import android.view.View;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
+import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.model.data.TotalAd;
 import com.tokopedia.seller.topads.presenter.TopAdsDashboardProductPresenterImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsGroupAdListActivity;
@@ -23,6 +24,8 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
 
     @BindView(R2.id.label_view_item_summary)
     TopAdsLabelView itemSummaryLabelView;
+
+    int totalProductAd;
 
     public static TopAdsDashboardProductFragment createInstance() {
         TopAdsDashboardProductFragment fragment = new TopAdsDashboardProductFragment();
@@ -45,6 +48,12 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
         super.initView(view);
     }
 
+    @Override
+    protected void initialVar() {
+        super.initialVar();
+        totalProductAd = Integer.MIN_VALUE;
+    }
+
     protected void loadData() {
         super.loadData();
         presenter.populateTotalAd();
@@ -54,6 +63,7 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
     public void onTotalAdLoaded(@NonNull TotalAd totalAd) {
         groupSummaryLabelView.setContent(String.valueOf(totalAd.getTotalProductGroupAd()));
         itemSummaryLabelView.setContent(String.valueOf(totalAd.getTotalProductAd()));
+        totalProductAd = totalAd.getTotalProductAd();
     }
 
     @Override
@@ -64,6 +74,9 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
     @OnClick(R2.id.label_view_group_summary)
     void onProductGroupClicked() {
         Intent intent = new Intent(getActivity(), TopAdsGroupAdListActivity.class);
+        if (totalProductAd >= 0) {
+            intent.putExtra(TopAdsExtraConstant.EXTRA_TOTAL_PRODUCT_ADS, totalProductAd);
+        }
         startActivity(intent);
     }
 

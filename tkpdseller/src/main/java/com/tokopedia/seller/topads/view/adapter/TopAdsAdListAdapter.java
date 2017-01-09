@@ -10,9 +10,7 @@ import com.bignerdranch.android.multiselector.MultiSelector;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.model.data.Ad;
-import com.tokopedia.seller.topads.model.data.GroupAd;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsViewHolder;
-import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;

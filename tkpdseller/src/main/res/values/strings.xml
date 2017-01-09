@@ -43,6 +43,10 @@
     <string name="top_ads_bid_format_text">%1$s - %2$s</string>
     <string name="top_ads_used_format_text">Terpakai %1$s</string>
     <string name="top_ads_spent_format_text">%1$s / %2$s</string>
+    <string name="top_ads_empty_group_promo_text">Group Promo Anda Kosong</string>
+    <string name="top_ads_empty_group_promo_content_empty_text">Anda belum memiliki produk yang dipromosikan</string>
+    <string name="top_ads_empty_group_promo_content_not_empty_text">Produk yang telah anda promosikan ada di dalam items</string>
+    <string name="top_ads_empty_group_promo_content_item_no_text">Lihat %1$s Promo Produk</string>
 
     <!-- Top Ads New Promo -->
     <string name="label_top_ads_group_name">Nama Group</string>

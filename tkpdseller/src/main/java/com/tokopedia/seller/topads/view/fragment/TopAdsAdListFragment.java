@@ -9,14 +9,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
@@ -25,6 +23,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.presenter.TopAdsAdListPresenter;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAdListAdapter;
+import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyGroupAdsDataBinder;
 import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
 import com.tokopedia.seller.topads.view.widget.DividerItemDecoration;
 
@@ -162,6 +161,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         });
         adapter = new TopAdsAdListAdapter();
         adapter.setCallback(this);
+        adapter.setEmptyView(new TopAdsEmptyGroupAdsDataBinder(adapter));
     }
 
     protected void loadData() {
