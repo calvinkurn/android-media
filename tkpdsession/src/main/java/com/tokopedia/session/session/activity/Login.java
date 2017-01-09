@@ -20,6 +20,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
+import com.facebook.login.LoginManager;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.tkpd.library.utils.CommonUtils;
@@ -131,13 +132,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                     // block where back has been pressed. since backstack is zero.
                     SessionHandler.clearUserData(Login.this);// because user is back that reset all data
                     SessionHandler.deleteRegisterNext(Login.this);
-//                    Login.this.simplefacebook.logout(new OnLogoutListener() {
-//                        @Override
-//                        public void onLogout() {
-//                            Log.i(TAG, "logout facebook");
-//                        }
-//                    });
-//                    finish();
+                    LoginManager.getInstance().logOut();
                     destroy();
                 } else {
                     Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.login_fragment);
