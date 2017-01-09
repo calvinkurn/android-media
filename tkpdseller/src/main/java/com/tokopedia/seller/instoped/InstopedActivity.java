@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
 
@@ -17,8 +16,8 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.instoped.fragment.InstagramMediaFragment;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
-import com.tokopedia.core.myproduct.ProductSocMedActivity;
-import com.tokopedia.core.myproduct.presenter.ProductSocMedPresenter;
+import com.tokopedia.seller.myproduct.ProductSocMedActivity;
+import com.tokopedia.seller.myproduct.presenter.ProductSocMedPresenter;
 
 import org.parceler.Parcels;
 

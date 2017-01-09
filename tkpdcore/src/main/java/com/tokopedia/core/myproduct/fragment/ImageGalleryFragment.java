@@ -18,7 +18,7 @@ import com.bignerdranch.android.multiselector.ModalMultiSelectorCallback;
 import com.bignerdranch.android.multiselector.MultiSelector;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.myproduct.ProductActivity;
+import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.newgallery.adapter.ImageGalleryAdapter;
 import com.tokopedia.core.myproduct.model.ImageModel;
 import com.tokopedia.core.newgallery.presenter.ImageGalleryView;
@@ -112,7 +112,7 @@ public class ImageGalleryFragment extends Fragment implements ImageGalleryAdapte
         ImageGalleryFragment imageGalleryFragment = new ImageGalleryFragment();
         Bundle data = new Bundle();
         data.putParcelable(FRAGMENT_DATA, Parcels.wrap(imageModels));
-        data.putInt(ProductActivity.MAX_IMAGE_SELECTION, maxSelection);
+        data.putInt(GalleryActivity.MAX_IMAGE_SELECTION, maxSelection);
         imageGalleryFragment.setArguments(data);
         return imageGalleryFragment;
     }
@@ -149,7 +149,7 @@ public class ImageGalleryFragment extends Fragment implements ImageGalleryAdapte
         if(getArguments()!=null){
             if(getArguments().getParcelable(FRAGMENT_DATA)!=null){
                 datas = Parcels.unwrap(getArguments().getParcelable(FRAGMENT_DATA));
-                maxSelection = getArguments().getInt(ProductActivity.MAX_IMAGE_SELECTION);
+                maxSelection = getArguments().getInt(GalleryActivity.MAX_IMAGE_SELECTION);
             }
         }
 

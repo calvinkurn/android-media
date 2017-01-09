@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -28,7 +27,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.inboxmessage.activity.SendMessageActivity;
-import com.tokopedia.core.myproduct.ProductActivity;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.product.dialog.DialogToEtalase;
 import com.tokopedia.core.product.facade.NetworkParam;
@@ -220,8 +218,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     public void processToEditProduct(@NonNull Context context, @NonNull Bundle bundle) {
         boolean isEdit = bundle.getBoolean("is_edit");
         String productId = bundle.getString("product_id");
-        Intent intent = ProductActivity.moveToEditFragment(context, isEdit, productId);
-        viewListener.navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_EDIT_PRODUCT);
+        viewListener.moveToEditFragment(isEdit, productId);
+//        Intent intent = ProductActivity.moveToEditFragment(context, isEdit, productId);
+//        viewListener.navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_EDIT_PRODUCT);
     }
 
     @Override

@@ -68,7 +68,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
 
     public static final String FRAGMENT_TO_SHOW = "FRAGMENT_TO_SHOW";
-    private static final String IMAGE_URL = "image_url";
+    public static final String IMAGE_URL = "image_url";
 
     String FRAGMENT;
     int position;
@@ -132,7 +132,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         super.onCreate(savedInstanceState);
 
         fetchExtras(getIntent());
-        setContentView(R.layout.activity_product);
+        setContentView(R.layout.activity_gallery);
         unbinder = ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

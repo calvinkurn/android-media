@@ -108,7 +108,7 @@
                         android:textSize="@dimen/new_text_size_small" />
 
 
-                    <com.tokopedia.core.myproduct.adapter.ClickToSelectWithImage
+                    <com.tokopedia.seller.myproduct.adapter.ClickToSelectWithImage
                         android:id="@+id/add_product_catalog"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -327,7 +327,7 @@
                 app:ael_interpolator="bounce"
                 app:ael_orientation="vertical">
 
-                <com.tokopedia.core.myproduct.customview.wholesale.WholesaleLayout
+                <com.tokopedia.seller.myproduct.customview.wholesale.WholesaleLayout
                     android:id="@+id/add_product_wholesale_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>

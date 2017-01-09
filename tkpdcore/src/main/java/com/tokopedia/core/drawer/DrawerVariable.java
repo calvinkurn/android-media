@@ -30,6 +30,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer.interactor.NetworkInteractor;
 import com.tokopedia.core.drawer.interactor.NetworkInteractorImpl;
 import com.tokopedia.core.drawer.model.DrawerHeader;
@@ -42,7 +43,6 @@ import com.tokopedia.core.drawer.var.UserType;
 import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.core.myproduct.ManageProduct;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
@@ -391,7 +391,7 @@ public class DrawerVariable {
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.SALES_LIST);
                 break;
             case TkpdState.DrawerPosition.MANAGE_PRODUCT:
-                startIntent(ManageProduct.class);
+                goToManageProduct();
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_LIST);
                 break;
             case TkpdState.DrawerPosition.MANAGE_ETALASE:
@@ -510,7 +510,9 @@ public class DrawerVariable {
     }
 
     private void goToManageProduct() {
-
+        if(context.getApplication() instanceof TkpdCoreRouter){
+            ((TkpdCoreRouter)context.getApplication()).goToManageProduct();
+        }
     }
 
     private void startIntent(Class<?> cls) {
