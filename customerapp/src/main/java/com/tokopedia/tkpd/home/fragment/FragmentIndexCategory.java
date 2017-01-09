@@ -51,6 +51,7 @@ import com.tokopedia.core.network.entity.home.Banner;
 import com.tokopedia.core.network.entity.home.Ticker;
 import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
+import com.tokopedia.core.network.entity.topPicks.Group;
 import com.tokopedia.core.network.entity.topPicks.Item;
 import com.tokopedia.core.network.entity.topPicks.Toppick;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
@@ -549,7 +550,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     /* TOP PICKS */
     @Override
-    public void renderTopPicks(ArrayList<Toppick> topicks) {
+    public void renderTopPicks(ArrayList<Group> topicks) {
         topPicksAdapter.setDataList(topicks);
         topPicksAdapter.notifyDataSetChanged();
     }
@@ -833,7 +834,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     @Override
-    public void onItemClicked(Item topPickItem, int position) {
+    public void onItemClicked(String toppickName, Item topPickItem, int position) {
         urlParser = new URLParser(topPickItem.getUrl());
         Bundle bundle = new Bundle();
         bundle.putString(BrowseProductRouter.EXTRAS_DISCOVERY_ALIAS, urlParser.getHotAlias());
@@ -841,11 +842,13 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         Intent intent = BrowseProductRouter.getDefaultBrowseIntent(getContext());
         intent.putExtras(bundle);
         getActivity().startActivity(intent);
+        UnifyTracking.eventHomeTopPicksItem(toppickName, topPickItem.getName());
     }
 
     @Override
     public void onTitleClicked(Toppick toppick) {
         openWebViewURL(toppick.getUrl());
+        UnifyTracking.eventHomeTopPicksTitle(toppick.getName());
     }
 
     @Override

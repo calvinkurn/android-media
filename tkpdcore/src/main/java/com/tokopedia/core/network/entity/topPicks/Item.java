@@ -15,9 +15,6 @@ public class Item {
     @SerializedName("url")
     @Expose
     private String url;
-    @SerializedName("label")
-    @Expose
-    private String label;
 
     public String getImageUrl() {
         return imageUrl;
@@ -43,11 +40,4 @@ public class Item {
         this.url = url;
     }
 
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
 }

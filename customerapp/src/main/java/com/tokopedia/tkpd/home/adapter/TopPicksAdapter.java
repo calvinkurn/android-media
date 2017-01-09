@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
+import com.tokopedia.core.network.entity.topPicks.Group;
 import com.tokopedia.core.network.entity.topPicks.Item;
 import com.tokopedia.core.network.entity.topPicks.Toppick;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
@@ -29,7 +30,7 @@ public class  TopPicksAdapter extends
         RecyclerView.Adapter<TopPicksAdapter.ItemRowHolder> {
 
     private final Context mContext;
-    private List<Toppick> dataList;
+    private List<Group> dataList;
     private int homeMenuWidth;
 
     private TopPicksItemAdapter.OnItemClickedListener onItemClickedListener;
@@ -43,7 +44,7 @@ public class  TopPicksAdapter extends
 
     @SuppressWarnings("unused")
     public TopPicksAdapter(
-            Context context, ArrayList<Toppick> dataList, int homeMenuWidth) {
+            Context context, ArrayList<Group> dataList, int homeMenuWidth) {
         this.dataList = dataList;
         this.mContext = context;
         this.homeMenuWidth = homeMenuWidth;
@@ -59,10 +60,11 @@ public class  TopPicksAdapter extends
 
     @Override
     public void onBindViewHolder(TopPicksAdapter.ItemRowHolder itemRowHolder, int i) {
-        final Toppick toppick = dataList.get(i);
-        itemRowHolder.itemTitle.setText(toppick.getName());
+        final Group toppickGroup = dataList.get(i);
+        final Toppick firstTopPicks = dataList.get(0).getToppicks().get(i);
+        itemRowHolder.itemTitle.setText(toppickGroup.getName());
         TopPicksItemAdapter itemAdapter = new TopPicksItemAdapter(
-                dataList.get(i),
+                dataList.get(0).getToppicks().get(i),
                 homeMenuWidth);
         itemAdapter.setItemClickedListener(onItemClickedListener);
         itemAdapter.setTitleClickedListener(onTitleClickedListener);
@@ -75,7 +77,7 @@ public class  TopPicksAdapter extends
                 itemRowHolder.viewAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClickViewAll.onClick(toppick);
+                onClickViewAll.onClick(firstTopPicks);
             }
         });
     }
@@ -95,7 +97,7 @@ public class  TopPicksAdapter extends
         this.onTitleClickedListener = onTitleClickedListener;
     }
 
-    public void setDataList(List<Toppick> dataList) {
+    public void setDataList(List<Group> dataList) {
         this.dataList = dataList;
     }
 

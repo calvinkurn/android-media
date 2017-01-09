@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.home;
 
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
+import com.tokopedia.core.network.entity.topPicks.Group;
 import com.tokopedia.core.network.entity.topPicks.Toppick;
 
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 
 public interface TopPicksView {
 
-    void renderTopPicks(ArrayList<Toppick> topicks);
+    void renderTopPicks(ArrayList<Group> topicksGroup);
 
 /*    void showGetCatMenuUnknownHostMessage(int stringId);
 
