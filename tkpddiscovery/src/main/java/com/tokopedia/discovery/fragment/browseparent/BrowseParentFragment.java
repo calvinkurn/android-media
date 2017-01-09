@@ -257,7 +257,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
         if (uri.contains("/hot/")) {
             Uri myurl = Uri.parse(uri);
             uri = myurl.getPathSegments().get(1);
-            ((BrowseProductActivity) getActivity()).sendHotlist(uri);
+            ((BrowseProductActivity) getActivity()).sendHotlist(uri, "");
         }
         if (uri.contains("/p/")) {
             BrowseProductActivity browseProductActivity = (BrowseProductActivity) getActivity();
