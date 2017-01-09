@@ -19,6 +19,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.selling.model.orderShipping.OrderProduct;
 import com.tokopedia.seller.selling.orderReject.fragment.EditPriceDialog;
 import com.tokopedia.seller.selling.orderReject.fragment.EditVarianDialog;
@@ -134,7 +135,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
                 holder.enableEditStock();
                 break;
         }
-        holder.titleTxt.setText(Html.fromHtml(orderProduct.getProductName()));
+        holder.titleTxt.setText(MethodChecker.fromHtml(orderProduct.getProductName()));
         holder.priceTxt.setText(orderProduct.getProductPrice());
         String weight = "Kilogram (kg)";
         if(orderProduct.getProductWeightUnit()!= null && !orderProduct.getProductWeightUnit().equals("")){
@@ -147,7 +148,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
         }
         holder.weightTxt.setText(orderProduct.getProductWeight() + " " + weight);
         if(CommonUtils.checkNullForZeroJson(orderProduct.getProductDescription())) {
-            holder.descTxt.setText(Html.fromHtml(orderProduct.getProductDescription()));
+            holder.descTxt.setText(MethodChecker.fromHtml(orderProduct.getProductDescription()));
         }else{
             holder.descTxt.setText(activity.getString(R.string.message_no_desc));
         }

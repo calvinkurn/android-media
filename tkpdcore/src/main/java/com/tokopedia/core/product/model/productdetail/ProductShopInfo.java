@@ -6,6 +6,7 @@ import android.text.Html;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.util.MethodChecker;
 
 /**
  * Created by Angga.Prasetiyo on 28/10/2015.
@@ -305,7 +306,7 @@ public class ProductShopInfo implements Parcelable{
     }
 
     public String getShopStatusMessage() {
-        return Html.fromHtml(shopStatusMessage).toString();
+        return MethodChecker.fromHtml(shopStatusMessage).toString();
     }
 
     public void setShopStatusMessage(String shopStatusMessage) {
@@ -313,7 +314,7 @@ public class ProductShopInfo implements Parcelable{
     }
 
     public String getShopStatusTitle() {
-        return Html.fromHtml(shopStatusTitle).toString();
+        return MethodChecker.fromHtml(shopStatusTitle).toString();
     }
 
     public void setShopStatusTitle(String shopStatusTitle) {

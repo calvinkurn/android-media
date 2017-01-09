@@ -4,10 +4,13 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 
 import com.tokopedia.core.R;
@@ -22,6 +25,10 @@ public class InboxTalkFilterDialog {
     private final Activity activity;
     private final InboxTalkFragment fragment;
     private final BottomSheetDialog dialog;
+    private final RadioButton radioAll;
+    private final RadioButton radioUnread;
+    private final RadioGroup viewFilterRadio;
+
 
     private ArrayAdapter<CharSequence> adapterRead;
 
@@ -45,6 +52,9 @@ public class InboxTalkFilterDialog {
         this.dialog.setContentView(R.layout.inbox_talk_filter_dialog);
         filterRead = (Spinner) dialog.findViewById(R.id.filter_status_read);
         submit = (Button) dialog.findViewById(R.id.submit);
+        radioAll = (RadioButton) dialog.findViewById(R.id.radio_all);
+        radioUnread = (RadioButton) dialog.findViewById(R.id.radio_unread);
+        viewFilterRadio = (RadioGroup) dialog.findViewById(R.id.radio_read);
         initAdapter();
         setAdapter();
     }
@@ -67,13 +77,17 @@ public class InboxTalkFilterDialog {
             @Override
             public void onClick(View view) {
                 dismissDialog();
+                View selectedRadio = dialog.findViewById(viewFilterRadio.getCheckedRadioButtonId());
+                int selected = viewFilterRadio.indexOfChild(selectedRadio);
                 fragment.filter(
-                        filterString.values()[filterRead.getSelectedItemPosition()].toString());
+                        filterString.values()[selected].toString());
+//                        filterString.values()[filterRead.getSelectedItemPosition()].toString());
             }
         });
     }
 
     public void setView() {
+        filterRead.setVisibility(View.GONE);
         filterRead.setPrompt("Status Terbaca");
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override

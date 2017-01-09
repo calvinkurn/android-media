@@ -8,6 +8,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.data.DataManager;
 import com.tkpd.library.utils.data.DataManagerImpl;
 import com.tkpd.library.utils.data.DataReceiver;
+import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.model.Bank;
 import com.tokopedia.core.database.model.CategoryDB;
@@ -36,7 +37,7 @@ import rx.subscriptions.CompositeSubscription;
  * Created by Nisie on 6/10/16.
  */
 public class ManagePeopleBankFragmentPresenterImpl implements ManagePeopleBankFragmentPresenter,
-        ManagePeopleBankConstant{
+        ManagePeopleBankConstant {
 
     ManagePeopleBankFragmentView viewListener;
     ManageBankRetrofitInteractor networkInteractor;
@@ -71,92 +72,114 @@ public class ManagePeopleBankFragmentPresenterImpl implements ManagePeopleBankFr
         viewListener.showLoading();
         viewListener.setActionsEnabled(false);
         dataManager.getListBank(viewListener.getActivity(), new DataReceiver() {
-            @Override
-            public CompositeSubscription getSubscription() {
-                return new CompositeSubscription();
-            }
-
-            @Override
-            public void setDistricts(List<District> districts) {
-
-            }
-
-            @Override
-            public void setCities(List<City> cities) {
-
-            }
-
-            @Override
-            public void setProvinces(List<Province> provinces) {
-
-            }
-
-            @Override
-            public void setBank(List<Bank> banks) {
-                LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), HomeRouter.TAG_FETCH_BANK);
-                cache.setExpire(86400);
-                cache.applyEditor();
-                getBankAccount();
-            }
-
-            @Override
-            public void setDepartments(List<CategoryDB> departments) {
-
-            }
-
-            @Override
-            public void setShippingCity(List<District> districts) {
-
-            }
-
-            @Override
-            public void onNetworkError(String message) {
-                viewListener.finishLoading();
-                showError(message, new NetworkErrorHelper.RetryClickedListener() {
                     @Override
-                    public void onRetryClicked() {
-                        getListBank();
+                    public CompositeSubscription getSubscription() {
+                        return new CompositeSubscription();
                     }
-                });
-            }
 
-            @Override
-            public void onMessageError(String message) {
-                viewListener.finishLoading();
-                showError(message, new NetworkErrorHelper.RetryClickedListener() {
                     @Override
-                    public void onRetryClicked() {
-                        getListBank();
-                    }
-                });
-            }
+                    public void setDistricts(List<District> districts) {
 
-            @Override
-            public void onUnknownError(String message) {
-                viewListener.finishLoading();
-                showError(message, new NetworkErrorHelper.RetryClickedListener() {
+                    }
+
                     @Override
-                    public void onRetryClicked() {
-                        getListBank();
-                    }
-                });
-            }
+                    public void setCities(List<City> cities) {
 
-            @Override
-            public void onTimeout() {
-                viewListener.finishLoading();
-                showError(new NetworkErrorHelper.RetryClickedListener() {
+                    }
+
                     @Override
-                    public void onRetryClicked() {
-                        getListBank();
-                    }
-                });
-            }
+                    public void setProvinces(List<Province> provinces) {
 
-            @Override
-            public void onFailAuth() {
-            }
-        });
+                    }
+
+                    @Override
+                    public void setBank(List<Bank> banks) {
+                        LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(),
+                                HomeRouter.TAG_FETCH_BANK);
+                        cache.setExpire(86400);
+                        cache.applyEditor();
+                        getBankAccount();
+                    }
+
+                    @Override
+                    public void setDepartments(List<CategoryDB> departments) {
+
+                    }
+
+                    @Override
+                    public void setShippingCity(List<District> districts) {
+
+                    }
+
+                    @Override
+                    public void onNetworkError(String message) {
+                        if (viewListener.getActivity() != null) {
+                            viewListener.finishLoading();
+                            showError(new NetworkErrorHelper.RetryClickedListener() {
+                                @Override
+                                public void onRetryClicked() {
+                                    getListBank();
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onMessageError(String message) {
+                        if (viewListener != null) {
+                            viewListener.finishLoading();
+                            showError(message, new NetworkErrorHelper.RetryClickedListener() {
+                                @Override
+                                public void onRetryClicked() {
+                                    getListBank();
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onUnknownError(String message) {
+                        if (viewListener.getActivity() != null) {
+                            viewListener.finishLoading();
+                            showError(message, new NetworkErrorHelper.RetryClickedListener() {
+                                @Override
+                                public void onRetryClicked() {
+                                    getListBank();
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onTimeout() {
+                        if (viewListener.getActivity() != null) {
+                            viewListener.finishLoading();
+                            showError(new NetworkErrorHelper.RetryClickedListener() {
+                                @Override
+                                public void onRetryClicked() {
+                                    getListBank();
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onFailAuth() {
+                        if (viewListener.getActivity() != null) {
+                            viewListener.finishLoading();
+                            showError(viewListener.getActivity().getString(R.string.default_request_error_forbidden_auth),
+                                    new NetworkErrorHelper.RetryClickedListener() {
+                                        @Override
+                                        public void onRetryClicked() {
+                                            getListBank();
+                                        }
+                                    });
+                        }
+
+                    }
+                }
+
+        );
     }
 
     private void showError(NetworkErrorHelper.RetryClickedListener listener) {

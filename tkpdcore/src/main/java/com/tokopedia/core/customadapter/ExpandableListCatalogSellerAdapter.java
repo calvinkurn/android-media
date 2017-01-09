@@ -23,6 +23,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.util.MethodChecker;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -101,7 +102,7 @@ public class ExpandableListCatalogSellerAdapter extends BaseExpandableListAdapte
                 }
             });
 
-            txtListChild.setText(Html.fromHtml(childTextData.getString("name")));
+            txtListChild.setText(MethodChecker.fromHtml(childTextData.getString("name")));
             if (!childTextData.isNull("condition")) {
                 if(childTextData.getString("condition").equals(("1")))
                     prodCondition.setText(_context.getString(R.string.title_new));
@@ -176,7 +177,7 @@ public class ExpandableListCatalogSellerAdapter extends BaseExpandableListAdapte
                 sellerLoc.setText(headerData.getString("s_loc"));
             }
             lblListHeader.setTypeface(null, Typeface.BOLD);
-            lblListHeader.setText(Html.fromHtml(headerData.getString("name")));
+            lblListHeader.setText(MethodChecker.fromHtml(headerData.getString("name")));
             lblListHeader.setOnClickListener(new OnClickListener() {
 
                 @Override

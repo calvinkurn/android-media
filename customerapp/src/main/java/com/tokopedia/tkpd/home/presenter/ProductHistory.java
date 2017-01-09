@@ -3,7 +3,7 @@ package com.tokopedia.tkpd.home.presenter;
 import android.content.Context;
 import android.os.Bundle;
 
-import com.tokopedia.core.network.entity.home.ProductFeedData;
+import com.tokopedia.core.network.entity.home.recentView.RecentViewData;
 import com.tokopedia.core.var.RecyclerViewItem;
 
 import java.util.List;
@@ -78,5 +78,5 @@ public interface ProductHistory {
 
     void fetchDataFromCache(Context context);
 
-    void setData(ProductFeedData productFeedData);
+    void setData(RecentViewData recentViewData);
 }

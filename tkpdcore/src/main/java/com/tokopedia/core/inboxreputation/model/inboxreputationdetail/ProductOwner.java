@@ -5,6 +5,7 @@ import android.text.Html;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.util.MethodChecker;
 
 @org.parceler.Parcel
 public class ProductOwner {
@@ -106,7 +107,7 @@ public class ProductOwner {
      *     The fullName
      */
     public String getFullName() {
-        return Html.fromHtml(fullName).toString();
+        return MethodChecker.fromHtml(fullName).toString();
     }
 
     /**
@@ -124,7 +125,7 @@ public class ProductOwner {
      *     The shopName
      */
     public String getShopName() {
-        return Html.fromHtml(shopName).toString();
+        return MethodChecker.fromHtml(shopName).toString();
     }
 
     /**
