@@ -6,6 +6,6 @@ package com.tokopedia.tkpd.home.presenter;
 
 public interface TopPicksPresenter {
 
-    void fetchTopPicks(boolean isFromRetry);
+    void fetchTopPicks();
     void onDestroy();
 }

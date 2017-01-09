@@ -182,7 +182,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         getAnnouncement();
         getPromo();
         homeCatMenuPresenter.fetchHomeCategoryMenu(false);
-        topPicksPresenter.fetchTopPicks(false);
+        topPicksPresenter.fetchTopPicks();
 
     }
 
@@ -390,27 +390,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         holder.categoriesRecylerview.setAdapter(recyclerViewCategoryMenuAdapter);
     }
 
-    private void initTopPicks() {
-        holder.topPicksRecylerview = (RecyclerView) holder.MainView.findViewById(R.id.my_recycler_view_toppicks);
-
-        holder.topPicksRecylerview.setHasFixedSize(true);
-        holder.topPicksRecylerview.setNestedScrollingEnabled(false);
-
-        topPicksAdapter = new TopPicksAdapter(getContext());
-
-        topPicksAdapter.setHomeMenuWidth(getHomeMenuWidth());
-
-        topPicksAdapter.setOnCategoryClickedListener(this);
-        topPicksAdapter.setOnGimmicClickedListener(this);
-        topPicksAdapter.setOnClickViewAll(this);
-        holder.topPicksRecylerview.setLayoutManager(
-                new NonScrollLinearLayoutManager(getActivity(),
-                        LinearLayoutManager.VERTICAL,
-                        false)
-        );
-        holder.topPicksRecylerview.setAdapter(topPicksAdapter);
-    }
-
     private boolean isShop(List<String> linkSegment) {
         return (linkSegment.size() == 1
                 && !linkSegment.get(0).equals("pulsa")
@@ -549,10 +528,54 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     /* TOP PICKS */
+    private void initTopPicks() {
+        holder.topPicksRecylerview = (RecyclerView) holder.MainView.findViewById(R.id.my_recycler_view_toppicks);
+
+        holder.topPicksRecylerview.setHasFixedSize(true);
+        holder.topPicksRecylerview.setNestedScrollingEnabled(false);
+
+        topPicksAdapter = new TopPicksAdapter(getContext());
+
+        topPicksAdapter.setHomeMenuWidth(getHomeMenuWidth());
+
+        topPicksAdapter.setOnCategoryClickedListener(this);
+        topPicksAdapter.setOnGimmicClickedListener(this);
+        topPicksAdapter.setOnClickViewAll(this);
+        holder.topPicksRecylerview.setLayoutManager(
+                new NonScrollLinearLayoutManager(getActivity(),
+                        LinearLayoutManager.VERTICAL,
+                        false)
+        );
+        holder.topPicksRecylerview.setAdapter(topPicksAdapter);
+    }
+
     @Override
     public void renderTopPicks(ArrayList<Group> topicks) {
         topPicksAdapter.setDataList(topicks);
         topPicksAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onItemClicked(String toppickName, Item topPickItem, int position) {
+        urlParser = new URLParser(topPickItem.getUrl());
+        Bundle bundle = new Bundle();
+        bundle.putString(BrowseProductRouter.EXTRAS_DISCOVERY_ALIAS, urlParser.getHotAlias());
+        bundle.putString(BrowseProductRouter.EXTRA_SOURCE, BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT);
+        Intent intent = BrowseProductRouter.getDefaultBrowseIntent(getContext());
+        intent.putExtras(bundle);
+        getActivity().startActivity(intent);
+        UnifyTracking.eventHomeTopPicksItem(toppickName, topPickItem.getName());
+    }
+
+    @Override
+    public void onTitleClicked(Toppick toppick) {
+        openWebViewURL(toppick.getUrl());
+        UnifyTracking.eventHomeTopPicksTitle(toppick.getName());
+    }
+
+    @Override
+    public void onClick(Toppick toppick) {
+        openWebViewURL("https://www.tokopedia.com/toppicks/");
     }
 
     /* TOP PICKS */
@@ -582,7 +605,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             @Override
             public void onRetryClicked() {
                 homeCatMenuPresenter.fetchHomeCategoryMenu(true);
-                topPicksPresenter.fetchTopPicks(true);
+                topPicksPresenter.fetchTopPicks();
             }
         }).showRetrySnackbar();
     }
@@ -833,26 +856,5 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         return widthOfHomeMenuView;
     }
 
-    @Override
-    public void onItemClicked(String toppickName, Item topPickItem, int position) {
-        urlParser = new URLParser(topPickItem.getUrl());
-        Bundle bundle = new Bundle();
-        bundle.putString(BrowseProductRouter.EXTRAS_DISCOVERY_ALIAS, urlParser.getHotAlias());
-        bundle.putString(BrowseProductRouter.EXTRA_SOURCE, BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT);
-        Intent intent = BrowseProductRouter.getDefaultBrowseIntent(getContext());
-        intent.putExtras(bundle);
-        getActivity().startActivity(intent);
-        UnifyTracking.eventHomeTopPicksItem(toppickName, topPickItem.getName());
-    }
 
-    @Override
-    public void onTitleClicked(Toppick toppick) {
-        openWebViewURL(toppick.getUrl());
-        UnifyTracking.eventHomeTopPicksTitle(toppick.getName());
-    }
-
-    @Override
-    public void onClick(Toppick toppick) {
-        openWebViewURL("https://www.tokopedia.com/toppicks/");
-    }
 }

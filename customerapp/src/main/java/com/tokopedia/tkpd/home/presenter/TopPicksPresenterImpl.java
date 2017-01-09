@@ -40,7 +40,7 @@ public class TopPicksPresenterImpl implements TopPicksPresenter, ErrorListener {
     }
 
     @Override
-    public void fetchTopPicks(boolean isFromRetry) {
+    public void fetchTopPicks() {
         Subscriber<Response<String>> subscriber = getSubcribption();
         Map<String, String> param = new HashMap<>();
         param.put("random","true");
@@ -53,7 +53,8 @@ public class TopPicksPresenterImpl implements TopPicksPresenter, ErrorListener {
 
     @Override
     public void onDestroy() {
-
+        this.homeMenuInteractor.removeSubscription();
+        this.view = null;
     }
 
     @Override
