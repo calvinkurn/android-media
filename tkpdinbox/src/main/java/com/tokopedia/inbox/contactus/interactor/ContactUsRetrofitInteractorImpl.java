@@ -77,7 +77,7 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
                                     .map(new Func1<Response<TkpdResponse>, ContactUsPass>() {
                                         @Override
                                         public ContactUsPass call(Response<TkpdResponse> tkpdResponse) {
-                                            if (tkpdResponse.isSuccessful() && !tkpdResponse.body().isError()) {
+                                            if (tkpdResponse.isSuccessful() && tkpdResponse.body() != null && !tkpdResponse.body().isError()) {
                                                 CreateTicketResult result = tkpdResponse.body().convertDataObj(CreateTicketResult.class);
                                                 if (result.getIsSuccess() == 1) {
                                                     contactUsPass.setPostKey(result.getPostKey());
@@ -89,8 +89,40 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
                                                     }
                                                     throw new RuntimeException(errorMessage);
                                                 }
-                                            } else {
+                                            } else if (tkpdResponse.body() != null && tkpdResponse.body().getErrorMessages() != null) {
                                                 throw new RuntimeException(tkpdResponse.body().getErrorMessages().toString().replace("[", "").replace("]", ""));
+                                            } else {
+                                                new ErrorHandler(new ErrorListener() {
+                                                    @Override
+                                                    public void onUnknown() {
+                                                        throw new RuntimeException(context.getString(R.string.default_request_error_unknown));
+                                                    }
+
+                                                    @Override
+                                                    public void onTimeout() {
+                                                        throw new RuntimeException(context.getString(R.string.default_request_error_timeout));
+
+                                                    }
+
+                                                    @Override
+                                                    public void onServerError() {
+                                                        throw new RuntimeException(context.getString(R.string.default_request_error_internal_server));
+
+                                                    }
+
+                                                    @Override
+                                                    public void onBadRequest() {
+                                                        throw new RuntimeException(context.getString(R.string.default_request_error_bad_request));
+
+                                                    }
+
+                                                    @Override
+                                                    public void onForbidden() {
+                                                        throw new RuntimeException(context.getString(R.string.default_request_error_forbidden_auth));
+
+                                                    }
+                                                }, tkpdResponse.code());
+                                                throw new RuntimeException(context.getString(R.string.failed_create_ticket));
                                             }
                                         }
                                     });
@@ -160,8 +192,8 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
                                 && response.body().getJsonData().getString("is_success").equals("1")) {
                             listener.onSuccess();
                         } else {
-                            if(response.body().getStatus().equals(TOO_MANY_REQUEST))
-                                listener.onError(response.body().getErrorMessages().toString().replace("[","").replace("]",""));
+                            if (response.body().getStatus().equals(TOO_MANY_REQUEST))
+                                listener.onError(response.body().getErrorMessages().toString().replace("[", "").replace("]", ""));
                             else if (response.body().isNullData())
                                 listener.onNullData();
                             else
