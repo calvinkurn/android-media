@@ -88,6 +88,6 @@ public interface InboxMessageConstant {
     int VIEW_MESSAGE = 100;
     int STATE_SELECTED = 100;
     int STATE_READ = 1;
-    int STATE_NOT_READ = 2;
+    int STATE_NOT_READ = 0;
     int STATE_BOTH = 3;
 }
