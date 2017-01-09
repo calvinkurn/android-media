@@ -1,6 +1,5 @@
 package com.tokopedia.core.share.presenter;
 
-import com.sromku.simple.fb.SimpleFacebook;
 import com.tokopedia.core.product.model.share.ShareData;
 
 /**
@@ -9,7 +8,7 @@ import com.tokopedia.core.product.model.share.ShareData;
 public interface ProductSharePresenter {
     void shareBBM(ShareData data);
 
-    void shareFb(SimpleFacebook simpleFacebook, ShareData data);
+    void shareFb(ShareData data);
 
     void shareTwitter(ShareData data);
 
@@ -26,4 +25,6 @@ public interface ProductSharePresenter {
     void shareGPlus(ShareData data);
 
     void shareCopy(ShareData data);
+
+    void setFacebookCache();
 }

@@ -12,6 +12,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,15 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.google.gson.GsonBuilder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -32,6 +42,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.base.BaseFragment;
+import com.tokopedia.core.session.model.FacebookModel;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.session.session.google.GoogleActivity;
 import com.tokopedia.core.session.model.LoginGoogleModel;
@@ -43,6 +54,9 @@ import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.AppEventTracking;
 import com.tokopedia.core.var.TkpdState;
 
+import org.json.JSONObject;
+
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -72,9 +86,17 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
     List<LoginProviderModel.ProvidersBean> listProvider;
     private Snackbar snackbar;
     LocalCacheHandler cacheGTM;
+    CallbackManager callbackManager;
 
     public static Fragment newInstance(){
         return new RegisterInitialFragment();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
     }
 
     @Nullable
@@ -295,7 +317,44 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
 
     private void onFacebookClick() {
         showProgress(true);
-        presenter.loginFacebook(getActivity());
+
+        List<String> readPermissions = Arrays.asList("public_profile", "user_friends", "email", "user_birthday");
+        LoginManager.getInstance().logInWithReadPermissions(this, readPermissions);
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(final LoginResult loginResult) {
+                Bundle parameters = new Bundle();
+                parameters.putString("fields","id,name,gender,birthday,email");
+
+                GraphRequest request = GraphRequest.newMeRequest(
+                        loginResult.getAccessToken(),
+                        new GraphRequest.GraphJSONObjectCallback() {
+                            @Override
+                            public void onCompleted(
+                                    JSONObject object,
+                                    GraphResponse response) {
+                                FacebookModel facebookModel =
+                                        new GsonBuilder().create().fromJson(String.valueOf(object), FacebookModel.class);
+                                presenter.loginFacebook(getActivity(),facebookModel,loginResult.getAccessToken().getToken());
+//                                LoginManager.getInstance().logOut();
+                            }
+                        });
+
+                request.setParameters(parameters);
+                request.executeAsync();
+            }
+
+            @Override
+            public void onCancel() {
+                LoginManager.getInstance().logOut();
+                Log.i(TAG, "onCancel: ");
+            }
+
+            @Override
+            public void onError(FacebookException e) {
+                e.toString();
+            }
+        });
         CommonUtils.dumper("LocalTag : TYPE : FACEBOOK");
         storeCacheGTM(AppEventTracking.GTMCacheKey.REGISTER_TYPE,
                 AppEventTracking.GTMCacheValue.FACEBOOK);
@@ -304,6 +363,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode,resultCode,data);
         switch (requestCode){
             case 100:
                 if(resultCode == Activity.RESULT_CANCELED){

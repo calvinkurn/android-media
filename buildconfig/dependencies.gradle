@@ -82,7 +82,7 @@ ext {
 
     miscDependencies = [
             captureActivity : "info.vividcode.android.zxing:capture-activity:2.3.0-1.2",
-            simpleFb : "com.sromku:simple-fb:4.1.1",
+            facebook : "com.facebook.android:facebook-android-sdk:4.16.+",
             parcelerApi : "org.parceler:parceler-api:1.1.6",
             parceler : "org.parceler:parceler:1.1.6",
             gson : "com.google.code.gson:gson:2.4",

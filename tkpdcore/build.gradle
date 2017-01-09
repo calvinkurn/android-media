@@ -140,7 +140,7 @@ dependencies {
     compile rootProject.ext.miscDependencies.parcelerApi
     apt rootProject.ext.miscDependencies.parceler
     compile rootProject.ext.miscDependencies.gson
-    compile rootProject.ext.miscDependencies.simpleFb
+    compile rootProject.ext.miscDependencies.facebook
     compile rootProject.ext.miscDependencies.rxAndroid
     compile rootProject.ext.miscDependencies.rxJava
     compile rootProject.ext.miscDependencies.rxJavaMath
