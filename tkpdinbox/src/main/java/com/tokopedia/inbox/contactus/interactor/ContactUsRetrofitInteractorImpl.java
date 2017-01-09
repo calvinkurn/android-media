@@ -160,8 +160,12 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
                                 && response.body().getJsonData().getString("is_success").equals("1")) {
                             listener.onSuccess();
                         } else {
-                            if (response.body().isNullData()) listener.onNullData();
-                            else listener.onError(response.body().getErrorMessages().get(0));
+                            if(response.body().getStatus().equals(TOO_MANY_REQUEST))
+                                listener.onError(response.body().getErrorMessages().toString().replace("[","").replace("]",""));
+                            else if (response.body().isNullData())
+                                listener.onNullData();
+                            else
+                                listener.onError(response.body().getErrorMessages().get(0));
                         }
                     } catch (JSONException e) {
                         listener.onError(context.getString(R.string.failed_create_ticket));

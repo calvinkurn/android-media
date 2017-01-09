@@ -70,7 +70,7 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
         } else
             url = getArguments().getString(PARAM_URL);
 
-        webView.loadUrl(url);
+        webView.loadUrlWithFlags(url);
 
 
     }

@@ -7,6 +7,10 @@ import android.webkit.WebView;
 
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Map;
+
 /**
  * Created by nisie on 11/30/16.
  */
@@ -24,13 +28,12 @@ public class TkpdWebView extends WebView {
         super(context, attrs, defStyleAttr);
     }
 
-    @Override
-    public void loadUrl(String url) {
-        super.loadUrl(generateUri(url));
+    public void loadUrlWithFlags(String url){
+        loadUrl(generateUri(url));
     }
 
     public void loadAuthUrl(String url) {
-        super.loadUrl(generateUri(url),
+        loadUrl(generateUri(url),
                 AuthUtil.generateHeaders(
                         Uri.parse(url).getPath(),
                         Uri.parse(generateUri(url)).getQuery(),
@@ -40,7 +43,21 @@ public class TkpdWebView extends WebView {
 
     private String generateUri(String uri) {
         String url = String.valueOf(uri);
-        url += "?flag_app%3D1%26device%3Dandroid%26utm_source%3Dandroid%26app_version%3D" + GlobalConfig.VERSION_CODE;
+        String flag_app = "flag_app=1";
+        String device = "device=android";
+        String utm_source = "utm_source=android";
+        String app_version = "app_version=" + GlobalConfig.VERSION_CODE;
+        String flags = flag_app
+                + "&" + device
+                + "&" + utm_source
+                + "&" + app_version;
+
+        try {
+            url += "?" + URLEncoder.encode(flags, "UTF-8");
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         return url;
     }
 }
