@@ -10,7 +10,7 @@ public interface  TkpdBaseURL {
     String BASE_DOMAIN = LIVE_DOMAIN;
     String ACE_STAGING_DOMAIN = "http://ace-staging.tokopedia.com/";
     String ACE_DOMAIN = "https://ace.tokopedia.com/";
-    String CLOVER_DOMAIN = "https://clover.tokopedia.com/";
+    String CLOVER_DOMAIN = "https://points.tokopedia.com/";
     String TOPADS_DOMAIN = "https://ta.tokopedia.com/";
     String TOPADS_STAGING_DOMAIN = "http://ta-staging.tokopedia.com/";
     String MOJITO_DOMAIN = "https://mojito.tokopedia.com/";
