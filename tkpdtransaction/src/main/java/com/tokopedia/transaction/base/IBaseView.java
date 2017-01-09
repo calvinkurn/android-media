@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+
 /**
  * @author anggaprasetiyo on 1/9/17.
  */
@@ -29,6 +31,10 @@ public interface IBaseView {
     void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz);
 
     String getStringFromResource(@StringRes int resId);
+
+    TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
+            TKPDMapParam<String, String> originParams
+    );
 
     void closeView();
 }

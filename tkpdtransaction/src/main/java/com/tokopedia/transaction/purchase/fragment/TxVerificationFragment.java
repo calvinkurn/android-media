@@ -24,6 +24,7 @@ import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customadapter.LazyListView;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.RefreshHandler;
@@ -369,6 +370,13 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
     @Override
     public String getStringFromResource(@StringRes int resId) {
         return getString(resId);
+    }
+
+    @Override
+    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
+            TKPDMapParam<String, String> originParams
+    ) {
+        return null;
     }
 
     @Override

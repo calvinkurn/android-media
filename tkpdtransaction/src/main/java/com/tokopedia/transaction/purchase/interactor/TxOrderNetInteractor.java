@@ -17,6 +17,8 @@ import org.json.JSONObject;
 
 import java.util.Map;
 
+import rx.Subscriber;
+
 /**
  * @author Angga.Prasetiyo on 11/04/2016.
  */
@@ -59,6 +61,9 @@ public interface TxOrderNetInteractor {
 
     void getInvoiceData(@NonNull Context context, @NonNull Map<String, String> params,
                         @NonNull OnGetInvoiceData listener);
+
+    void getInvoiceData(TKPDMapParam<String, String> paramNetwork,
+                        Subscriber<TxVerInvoiceData> subscriberGetTXInvoiceData);
 
     void uploadValidProofByPayment(Context context, Map<String, String> params,
                                    OnUploadProof listener);

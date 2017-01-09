@@ -2,7 +2,6 @@ package com.tokopedia.transaction.cart.listener;
 
 import android.support.annotation.NonNull;
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.base.IBaseView;
 import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
@@ -79,10 +78,6 @@ public interface ICartView extends IBaseView {
     CheckoutData.Builder getCheckoutDataBuilder();
 
     String getDepositCheckoutData();
-
-    TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
-            TKPDMapParam<String, String> originParams
-    );
 
     void trackingCartCheckoutEvent();
 

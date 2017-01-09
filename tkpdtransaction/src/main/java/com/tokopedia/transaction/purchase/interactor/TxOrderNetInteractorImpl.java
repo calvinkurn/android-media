@@ -9,6 +9,8 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.transaction.exception.HttpErrorException;
+import com.tokopedia.transaction.exception.ResponseErrorException;
 import com.tokopedia.transaction.purchase.model.ConfirmationData;
 import com.tokopedia.transaction.purchase.model.response.cancelform.CancelFormData;
 import com.tokopedia.transaction.purchase.model.response.formconfirmpayment.FormConfPaymentData;
@@ -28,6 +30,7 @@ import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -665,6 +668,32 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
     }
 
     @Override
+    public void getInvoiceData(TKPDMapParam<String, String> paramNetwork,
+                               Subscriber<TxVerInvoiceData> subscriberGetTXInvoiceData) {
+        compositeSubscription.add(Observable.just(paramNetwork)
+                .flatMap(new Func1<TKPDMapParam<String, String>,
+                        Observable<Response<TkpdResponse>>>() {
+                    @Override
+                    public Observable<Response<TkpdResponse>> call(TKPDMapParam<String,
+                            String> param) {
+                        return txOrderService.getApi()
+                                .getTXOrderPaymentConfirmedDetail(param);
+                    }
+                })
+                .map(new Func1<Response<TkpdResponse>, TxVerInvoiceData>() {
+                    @Override
+                    public TxVerInvoiceData call(Response<TkpdResponse> response) {
+                        return transformToTxVerInvoiceData(response);
+                    }
+                })
+                .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriberGetTXInvoiceData)
+        );
+    }
+
+    @Override
     public void getOrderReceiveList(@NonNull final Context context,
                                     @NonNull final Map<String, String> params,
                                     @NonNull final OnGetOrderReceiveList listener) {
@@ -880,4 +909,22 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
     public void unSubscribeObservable() {
         compositeSubscription.unsubscribe();
     }
+
+    private TxVerInvoiceData transformToTxVerInvoiceData(Response<TkpdResponse> response) {
+        if (response.isSuccessful()) {
+            TkpdResponse tkpdResponse = response.body();
+            if (tkpdResponse.isError()) {
+                throw new RuntimeException(
+                        new ResponseErrorException(
+                                tkpdResponse.getErrorMessageJoined()
+                        )
+                );
+            } else {
+                return tkpdResponse.convertDataObj(TxVerInvoiceData.class);
+            }
+        } else {
+            throw new RuntimeException(new HttpErrorException(response.code()));
+        }
+    }
+
 }
