@@ -444,8 +444,9 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             public void onClick(View v) {
                 try {
                     Uri uri = Uri.parse(url);
+                    String[] levels = uri.getHost().split("\\.");
                     List<String> linkSegment = uri.getPathSegments();
-                    if (isShop(linkSegment)) {
+                    if (levels.length < 3 && isShop(linkSegment)) {
                         String shopDomain = linkSegment.get(0);
                         getShopInfo(url,shopDomain);
                     } else {
