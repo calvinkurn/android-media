@@ -295,6 +295,14 @@ public class ProductService extends IntentService implements ProductServiceConst
                             resultData.putInt(TkpdState.ProductService.SERVICE_TYPE, TkpdState.ProductService.DELETE_PRODUCT);
                             resultData.putString(TkpdState.ProductService.MESSAGE_ERROR_FLAG, CommonUtils.generateMessageError(getApplicationContext(), e.getMessage()));
                             receiver.send(TkpdState.ProductService.STATUS_ERROR, resultData);
+                            sendProductServiceBroadcast(
+                                    TkpdState.ProductService.DELETE_PRODUCT,
+                                    TkpdState.ProductService.STATUS_ERROR,
+                                    TkpdState.ProductService.NO_PRODUCT_DB,
+                                    TkpdState.ProductService.NO_PRODUCT_POS,
+                                    TkpdState.ProductService.NO_PRODUCT_ID,
+                                    CommonUtils.generateMessageError(getApplicationContext(), e.getMessage()));
+
                         }
                     }
 
@@ -303,6 +311,13 @@ public class ProductService extends IntentService implements ProductServiceConst
                         Bundle result = new Bundle();
                         result.putInt(TkpdState.ProductService.SERVICE_TYPE, TkpdState.ProductService.DELETE_PRODUCT);
                         receiver.send(TkpdState.ProductService.STATUS_DONE, result);
+                        sendProductServiceBroadcast(
+                                TkpdState.ProductService.DELETE_PRODUCT,
+                                TkpdState.ProductService.STATUS_DONE,
+                                TkpdState.ProductService.NO_PRODUCT_DB,
+                                TkpdState.ProductService.NO_PRODUCT_POS,
+                                TkpdState.ProductService.NO_PRODUCT_ID,
+                                TkpdState.ProductService.INVALID_MESSAGE_ERROR);
                     }
                 });
     }
@@ -1351,6 +1366,13 @@ public class ProductService extends IntentService implements ProductServiceConst
                             resultData.putInt(TkpdState.ProductService.SERVICE_TYPE, TkpdState.ProductService.ADD_PRODUCT);
                             resultData.putString(TkpdState.ProductService.MESSAGE_ERROR_FLAG, CommonUtils.generateMessageError(getApplicationContext(), e.getMessage()));
                             receiver.send(TkpdState.ProductService.STATUS_ERROR, resultData);
+                            sendProductServiceBroadcast(
+                                    TkpdState.ProductService.ADD_PRODUCT_WITHOUT_IMAGE,
+                                    TkpdState.ProductService.STATUS_ERROR,
+                                    TkpdState.ProductService.NO_PRODUCT_DB,
+                                    TkpdState.ProductService.NO_PRODUCT_POS,
+                                    TkpdState.ProductService.NO_PRODUCT_ID,
+                                    CommonUtils.generateMessageError(getApplicationContext(), e.getMessage()));
                         }
                     }
 
@@ -1376,6 +1398,13 @@ public class ProductService extends IntentService implements ProductServiceConst
                         result.putLong(TkpdState.ProductService.PRODUCT_DB_ID, produk.getProductId());
                         result.putInt(TkpdState.ProductService.PRODUCT_POS, inputAddProductModel.getPosition());
                         receiver.send(TkpdState.ProductService.STATUS_DONE, result);
+                        sendProductServiceBroadcast(
+                                TkpdState.ProductService.ADD_PRODUCT_WITHOUT_IMAGE,
+                                TkpdState.ProductService.STATUS_DONE,
+                                produk.getProductId(),
+                                inputAddProductModel.getPosition(),
+                                TkpdState.ProductService.NO_PRODUCT_ID,
+                                TkpdState.ProductService.INVALID_MESSAGE_ERROR);
                         //[END] Send to UI
                     }
                 });
