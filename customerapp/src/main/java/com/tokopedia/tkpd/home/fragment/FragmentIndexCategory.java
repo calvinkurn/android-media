@@ -559,13 +559,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     @Override
     public void onItemClicked(String toppickName, Item topPickItem, int position) {
         String url = topPickItem.getUrl();
-      /*  urlParser = new URLParser(topPickItem.getUrl());
-        Bundle bundle = new Bundle();
-        bundle.putString(BrowseProductRouter.EXTRAS_DISCOVERY_ALIAS, urlParser.getHotAlias());
-        bundle.putString(BrowseProductRouter.EXTRA_SOURCE, BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT);
-        Intent intent = BrowseProductRouter.getDefaultBrowseIntent(getContext());
-        intent.putExtras(bundle);
-        getActivity().startActivity(intent);*/
         UnifyTracking.eventHomeTopPicksItem(toppickName, topPickItem.getName());
         switch ((DeepLinkChecker.getDeepLinkType(url))) {
             case DeepLinkChecker.BROWSE:
