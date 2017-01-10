@@ -319,7 +319,7 @@ public class CartPresenter implements ICartPresenter {
                         VoucherData voucherData = responseTransform.getData();
                         String descVoucher = view.getStringFromResource(
                                 R.string.label_message_default_voucher_desc_result
-                        );
+                        ) + responseTransform.getData().getVoucher().getVoucherAmountIdr();
                         if (voucherData.getVoucher().getVoucherAmount().equals("0"))
                             descVoucher = voucherData.getVoucher().getVoucherPromoDesc();
                         view.renderSuccessCheckVoucher(descVoucher);
