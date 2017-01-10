@@ -58,15 +58,15 @@
             android:name="com.tokopedia.inbox.inboxmessage.activity.InboxMessageDetailActivity"
             android:label="@string/title_inbox_message"
             android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name="com.tokopedia.inbox.inboxtalk.activity.InboxTalkActivity"gi
+            android:label="@string/title_activity_inbox_talk"
+            android:screenOrientation="portrait" />
 
         <!-- ======================================================= -->
         <!-- SERVICES REGISTRY -->
         <!-- ======================================================= -->
 
-        <activity
-            android:name="com.tokopedia.inbox.inboxtalk.activity.InboxTalkActivity"
-            android:label="@string/title_activity_inbox_talk"
-            android:screenOrientation="portrait" />
         <service
             android:name="com.tokopedia.inbox.rescenter.detail.service.DetailResCenterService"
             android:exported="false" />
@@ -75,6 +75,9 @@
             android:exported="false" />
         <service
             android:name="com.tokopedia.inbox.inboxmessage.intentservice.InboxMessageIntentService"
+            android:exported="false" />
+        <service
+            android:name="com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService"
             android:exported="false" />
     </application>
 </manifest>

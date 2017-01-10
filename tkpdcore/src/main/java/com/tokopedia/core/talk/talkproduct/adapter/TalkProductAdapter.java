@@ -371,7 +371,11 @@ public class TalkProductAdapter extends BaseRecyclerViewAdapter {
                 menuID = R.menu.follow_delete_menu;
             }
         } else {
-            menuID = R.menu.report_menu;
+            if (talk.getTalkFollowStatus() == 1) {
+                menuID = R.menu.unfollow_report_menu;
+            } else {
+                menuID = R.menu.follow_report_menu;
+            }
         }
         return menuID;
     }

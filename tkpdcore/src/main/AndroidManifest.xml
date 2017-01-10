@@ -614,9 +614,6 @@
             android:name="com.tokopedia.core.product.intentservice.ProductInfoIntentService"
             android:exported="false" />
         <service
-            android:name="com.tokopedia.core.InboxTalkIntentService"
-            android:exported="false" />
-        <service
             android:name="com.tokopedia.core.talkview.intentservice.TalkDetailIntentService"
             android:exported="false" />
         <service
