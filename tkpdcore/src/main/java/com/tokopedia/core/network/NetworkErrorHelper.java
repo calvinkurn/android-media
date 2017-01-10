@@ -6,11 +6,15 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -108,9 +112,13 @@ public class NetworkErrorHelper {
         }
     }
 
-    public static void showEmptyState(Context context, final View rootview, String titleMessage,
-                                      String subTitleMessage, String titleRetry,
-                                      final RetryClickedListener listener) {
+    @SuppressLint("NewApi")
+    public static void showEmptyState(Context context, final View rootview,
+                                      @Nullable String titleMessage,
+                                      @Nullable String subTitleMessage,
+                                      @Nullable String titleRetry,
+                                      @DrawableRes int iconRes,
+                                      @Nullable final RetryClickedListener listener) {
         try {
             rootview.findViewById(R.id.main_retry).setVisibility(View.VISIBLE);
         } catch (NullPointerException e) {
@@ -125,9 +133,15 @@ public class NetworkErrorHelper {
             TextView retryButon = (TextView) retryLoad.findViewById(R.id.button_retry);
             TextView tvTitleMessage = (TextView) retryLoad.findViewById(R.id.message_retry);
             TextView tvSubTitleMessage = (TextView) retryLoad.findViewById(R.id.sub_message_retry);
-            tvSubTitleMessage.setText(subTitleMessage);
-            tvTitleMessage.setText(titleMessage);
-            retryButon.setText(titleRetry);
+            ImageView ivIcon = (ImageView) retryLoad.findViewById(R.id.iv_icon);
+            if (subTitleMessage != null) tvSubTitleMessage.setText(subTitleMessage);
+            if (titleMessage != null) tvTitleMessage.setText(titleMessage);
+            if (titleRetry != null) retryButon.setText(titleRetry);
+            if (iconRes != 0) {
+                //noinspection deprecation
+                ivIcon.setImageDrawable(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ?
+                        context.getDrawable(iconRes) : context.getResources().getDrawable(iconRes));
+            }
             if (listener != null) {
                 retryButon.setOnClickListener(new View.OnClickListener() {
 
