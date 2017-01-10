@@ -112,7 +112,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
             fragmentTransaction.commit();
         } else if (getFragmentManager().findFragmentById(R.id.main_view) == null) {
             url = bundle.getString(PARAM_URL, "");
-            if (url == null || url.equals(""))
+            if (url != null || !url.equals(""))
                 bundle.putString(PARAM_SOLUTION_ID, Uri.parse(url).getQueryParameter("solution_id"));
             onGoToCreateTicket(bundle);
         }

@@ -270,7 +270,6 @@ public interface TkpdBaseURL {
 
         String PATH_IS_ALREADY_WISHLIST_PRODUCT = "is_already_wishlist_product.pl";
         String PATH_OTP_WITH_CALL = "otp/request";
-        String URL_OTP_WITH_CALL = "https://accounts.tokopedia.com/";
     }
 
     interface Shop {
@@ -618,6 +617,7 @@ public interface TkpdBaseURL {
         String RESET_PASSWORD = "api/reset";
         String VALIDATE_EMAIL = "/api/register/validate-email";
         String RESENT_ACTIVATION = "/api/resend";
+        String GENERATE_HOST = "/api/upload-host";
     }
 
     interface Home {
