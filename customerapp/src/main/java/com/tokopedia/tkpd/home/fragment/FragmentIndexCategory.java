@@ -44,6 +44,7 @@ import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.customView.WrapContentViewPager;
 import com.tokopedia.core.database.model.category.CategoryData;
 import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
@@ -450,6 +451,14 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         }
     }
 
+    public void openWebViewTopPicksURL(String url) {
+        if (url!="") {
+            Intent intent = new Intent(getActivity(), TopPicksWebView.class);
+            intent.putExtra("url", url);
+            startActivity(intent);
+        }
+    }
+
 
     private View.OnClickListener onPromoClicked(final String url) {
         return new View.OnClickListener() {
@@ -569,13 +578,13 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void onTitleClicked(Toppick toppick) {
-        openWebViewURL(toppick.getUrl());
+        openWebViewTopPicksURL(toppick.getUrl());
         UnifyTracking.eventHomeTopPicksTitle(toppick.getName());
     }
 
     @Override
     public void onClick(Toppick toppick) {
-        openWebViewURL("https://www.tokopedia.com/toppicks/");
+        openWebViewTopPicksURL("https://www.tokopedia.com/toppicks/");
     }
 
     /* TOP PICKS */

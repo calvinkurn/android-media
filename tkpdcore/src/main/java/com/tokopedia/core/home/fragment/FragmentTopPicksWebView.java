@@ -22,13 +22,14 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.util.DeepLinkChecker;
 
 /**
- * Created by Nisie on 8/25/2015.
+ * Created by Alifa on 1/10/2017.
  */
-public class FragmentBannerWebView extends Fragment {
+
+public class FragmentTopPicksWebView extends Fragment {
 
     private ProgressBar progressBar;
     private WebView webview;
@@ -83,11 +84,11 @@ public class FragmentBannerWebView extends Fragment {
     }
 
 
-    public FragmentBannerWebView() {
+    public FragmentTopPicksWebView() {
     }
 
-    public static FragmentBannerWebView createInstance(String url) {
-        FragmentBannerWebView fragment = new FragmentBannerWebView();
+    public static FragmentTopPicksWebView createInstance(String url) {
+        FragmentTopPicksWebView fragment = new FragmentTopPicksWebView();
         Bundle args = new Bundle();
         args.putString("url", url);
         fragment.setArguments(args);
@@ -95,7 +96,6 @@ public class FragmentBannerWebView extends Fragment {
     }
 
     private boolean overrideUrl(String url) {
-        if (TrackingUtils.getBoolean(AppEventTracking.GTM.OVERRIDE_BANNER)) {
 
             if (((Uri.parse(url).getHost().contains("www.tokopedia.com"))
                     || Uri.parse(url).getHost().contains("m.tokopedia.com"))
@@ -122,9 +122,6 @@ public class FragmentBannerWebView extends Fragment {
             } else {
                 return false;
             }
-        } else {
-            return false;
-        }
     }
 
     @Override
@@ -144,8 +141,8 @@ public class FragmentBannerWebView extends Fragment {
         progressBar.setIndeterminate(true);
         clearCache(webview);
         webview.loadUrl(url);
-        webview.setWebViewClient(new MyWebClient());
-        webview.setWebChromeClient(new MyWebViewClient());
+        webview.setWebViewClient(new FragmentTopPicksWebView.MyWebClient());
+        webview.setWebChromeClient(new FragmentTopPicksWebView.MyWebViewClient());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             WebView.setWebContentsDebuggingEnabled(true);
             webview.setWebContentsDebuggingEnabled(true);

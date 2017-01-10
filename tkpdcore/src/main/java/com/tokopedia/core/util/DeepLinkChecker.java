@@ -6,7 +6,9 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 
@@ -22,6 +24,7 @@ public class DeepLinkChecker {
     public static final int CATALOG = 2;
     public static final int PRODUCT = 3;
     public static final int SHOP = 4;
+    public static final int TOPPICKS = 5;
 
     public static int getDeepLinkType(String url) {
         List<String> linkSegment = getLinkSegment(url);
@@ -37,6 +40,8 @@ public class DeepLinkChecker {
                 return PRODUCT;
             else if (isShop(linkSegment))
                 return SHOP;
+            else if (isTopPicks(linkSegment))
+                return TOPPICKS;
             else return -1;
         } catch (Exception e) {
             return -1;
@@ -59,11 +64,16 @@ public class DeepLinkChecker {
         return (linkSegment.get(0).equals("hot"));
     }
 
+    private static boolean isTopPicks(List<String> linkSegment) {
+        return (linkSegment.get(0).equals("toppicks"));
+    }
+
     private static boolean isProduct(List<String> linkSegment) {
         return (linkSegment.size() == 2
                 && !isBrowse(linkSegment)
                 && !isHot(linkSegment)
-                && !isCatalog(linkSegment));
+                && !isCatalog(linkSegment)
+                && !isTopPicks(linkSegment));
     }
 
     private static boolean isShop(List<String> linkSegment) {
@@ -153,21 +163,13 @@ public class DeepLinkChecker {
     }
 
     public static void openHot(String url, Context context) {
-//        Intent intent;
-//        Bundle bundle = new Bundle();
-//        if (isHotBrowse(url)) {
-//            intent = new Intent(context, ParentIndexHome.class);
-//            intent.putExtra("fragment",3);
-//        } else if (isHotAlias(url)) {
-//            bundle.putString("alias", getQuery(url, "alk"));
-//            intent = new Intent(context, BrowseHotDetail.class);
-//            intent.putExtras(bundle);
-//        } else if (isHotLink(url)) {
-//            bundle.putString("alias", getLinkSegment(url).get(1));
-//            intent = new Intent(context, BrowseHotDetail.class);
-//            intent.putExtras(bundle);
-//        } else return;
-//        context.startActivity(intent);
+        URLParser urlParser = new URLParser(url);
+        Bundle bundle = new Bundle();
+        bundle.putString(BrowseProductRouter.EXTRAS_DISCOVERY_ALIAS, urlParser.getHotAlias());
+        bundle.putString(BrowseProductRouter.EXTRA_SOURCE, BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT);
+        Intent intent = BrowseProductRouter.getDefaultBrowseIntent(context);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 
 
@@ -186,6 +188,7 @@ public class DeepLinkChecker {
         bundle.putString("url", url);
         Intent intent = new Intent(context, ProductInfoActivity.class);
         intent.putExtras(bundle);
+        intent.setData(Uri.parse(url) );
         context.startActivity(intent);
     }
 
