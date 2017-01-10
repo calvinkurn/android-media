@@ -22,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.facebook.CallbackManager;
+import com.facebook.FacebookAuthorizationException;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
@@ -352,7 +353,9 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
 
             @Override
             public void onError(FacebookException e) {
-                e.toString();
+                if(e instanceof FacebookAuthorizationException){
+                    LoginManager.getInstance().logOut();
+                }
             }
         });
         CommonUtils.dumper("LocalTag : TYPE : FACEBOOK");

@@ -35,6 +35,5 @@ public abstract class RegisterInitialPresenter extends BaseImpl<RegisterInitialV
 
     public abstract void setData(Context activity, int type, Bundle data);
 
-
     public abstract void unSubscribeFacade();
 }

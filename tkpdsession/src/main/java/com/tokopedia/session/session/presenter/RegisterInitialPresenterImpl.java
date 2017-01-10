@@ -160,42 +160,10 @@ public class RegisterInitialPresenterImpl extends RegisterInitialPresenter {
     }
 
     private CreatePasswordModel setModelFromParcelable(CreatePasswordModel createPasswordModel, Parcelable parcelable, InfoModel infoModel) {
-        if (Parcels.unwrap(parcelable) instanceof LoginGoogleModel) {
-            LoginGoogleModel loginGoogleModel = Parcels.unwrap(parcelable);
-            if (loginGoogleModel.getFullName() != null) {
-                createPasswordModel.setFullName(loginGoogleModel.getFullName());
-            }
-            if (loginGoogleModel.getGender().contains("male")) {
-                createPasswordModel.setGender(RegisterViewModel.GENDER_MALE + "");
-            } else {
-                createPasswordModel.setGender(RegisterViewModel.GENDER_FEMALE + "");
-            }
-            if (loginGoogleModel.getBirthday() != null) {
-                createPasswordModel.setDateText(loginGoogleModel.getBirthday());
-            }
-            if (loginGoogleModel.getEmail() != null) {
-                createPasswordModel.setEmail(loginGoogleModel.getEmail());
-            }
-        }else if(Parcels.unwrap(parcelable) instanceof LoginFacebookViewModel){
-            LoginFacebookViewModel loginFacebookViewModel = Parcels.unwrap(parcelable);
-            if (loginFacebookViewModel.getFullName() != null) {
-                createPasswordModel.setFullName(loginFacebookViewModel.getFullName());
-            }
-            if (loginFacebookViewModel.getGender().contains("male")) {
-                createPasswordModel.setGender(RegisterViewModel.GENDER_MALE + "");
-            } else {
-                createPasswordModel.setGender(RegisterViewModel.GENDER_FEMALE + "");
-            }
-            if (loginFacebookViewModel.getBirthday() != null) {
-                createPasswordModel.setDateText(loginFacebookViewModel.getBirthday());
-            }
-            if (loginFacebookViewModel.getEmail() != null) {
-                createPasswordModel.setEmail(loginFacebookViewModel.getEmail());
-            }
-        }else{
-            createPasswordModel.setFullName(infoModel.getName());
-            createPasswordModel.setEmail(infoModel.getEmail());
-        }
+        createPasswordModel.setFullName(infoModel.getName());
+        createPasswordModel.setEmail(infoModel.getEmail());
+        if (infoModel.getPhone() != null)
+            createPasswordModel.setMsisdn(infoModel.getPhone());
         return createPasswordModel;
     }
 

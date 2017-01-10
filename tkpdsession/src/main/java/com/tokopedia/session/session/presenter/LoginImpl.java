@@ -430,7 +430,6 @@ public class LoginImpl implements Login {
         loginViewModel = data;// override the instance here
         loginViewModel.setUuid(getUUID());// store uuid
 
-
         Bundle bundle = new Bundle();
         bundle.putParcelable(DownloadService.LOGIN_VIEW_MODEL_KEY, Parcels.wrap(loginViewModel));
         bundle.putBoolean(DownloadService.IS_NEED_LOGIN, isNeedLogin);

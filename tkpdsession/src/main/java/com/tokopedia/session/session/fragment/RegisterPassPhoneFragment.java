@@ -454,7 +454,6 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
                         break;
                     case "phone":
                         makeItEnabled(vPhoneNumber,true);
-
                         break;
                     default:
                         break;
