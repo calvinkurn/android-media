@@ -84,6 +84,7 @@ public class BuyerDataViewHelper {
         if(getBuyerData.getTotalBuyer()==0 &&
                 (getBuyerData.getMaleBuyer()==0 || getBuyerData.getFemaleBuyer()==0)){
             buyerCount.setText(getFormattedString(getBuyerData.getTotalBuyer()));
+            buyerDataPieChart.setProgress(0f);
             femalePie.setTextColor(gredyColor);
             femalePie.setText("0 %");
             malePie.setVisibility(View.GONE);
