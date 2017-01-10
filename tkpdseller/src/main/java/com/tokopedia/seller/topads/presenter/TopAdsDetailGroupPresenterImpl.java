@@ -65,9 +65,9 @@ public class TopAdsDetailGroupPresenterImpl extends TopAdsDetailPresenterImpl im
         dataRequestGroupAd.setAction(action);
         dataRequestGroupAd.setShopId(shopId);
         List<GroupAdAction> dataRequestGroupAdses = new ArrayList<>();
-        GroupAdAction data = new GroupAdAction();
-        data.setId(ad.getId());
-        dataRequestGroupAdses.add(data);
+        GroupAdAction adAction = new GroupAdAction();
+        adAction.setId(String.valueOf(ad.getId()));
+        dataRequestGroupAdses.add(adAction);
         dataRequestGroupAd.setAdList(dataRequestGroupAdses);
         dataRequest.setData(dataRequestGroupAd);
         return dataRequest;

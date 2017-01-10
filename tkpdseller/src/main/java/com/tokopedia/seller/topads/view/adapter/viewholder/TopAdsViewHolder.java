@@ -59,10 +59,13 @@ public class TopAdsViewHolder extends SwappingHolder {
     public void bindObject(Ad ad) {
         titleProduct.setText(ad.getName());
         statusActive.setText(ad.getStatusDesc());
-        if (ad.isStatusActive()) {
-            statusActiveDot.setBackgroundResource(R.drawable.green_circle);
-        } else {
-            statusActiveDot.setBackgroundResource(R.drawable.grey_circle);
+        switch (ad.getStatus()) {
+            case TopAdsConstant.STATUS_AD_ACTIVE:
+                statusActiveDot.setBackgroundResource(R.drawable.green_circle);
+                break;
+            default:
+                statusActiveDot.setBackgroundResource(R.drawable.grey_circle);
+                break;
         }
         pricePromoPerClick.setText(promoPriceUsed.getContext().getString(R.string.top_ads_bid_format_text, ad.getPriceBidFmt(), ad.getLabelPerClick()));
         promoPriceUsed.setText(promoPriceUsed.getContext().getString(R.string.top_ads_used_format_text, ad.getStatTotalSpent()));

@@ -100,7 +100,7 @@ public class TopAdsProductAdListPresenterImpl extends TopAdsAdListPresenterImpl<
         List<ProductAdAction> dataRequestSingleAdses = new ArrayList<>();
         for (ProductAd ad : ads) {
             ProductAdAction data = new ProductAdAction();
-            data.setId(ad.getId());
+            data.setId(String.valueOf(ad.getId()));
             dataRequestSingleAdses.add(data);
         }
         dataRequestSingleAd.setAds(dataRequestSingleAdses);

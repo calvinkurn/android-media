@@ -227,17 +227,6 @@ public class GroupAd implements Ad, Parcelable {
     public GroupAd() {
     }
 
-    public boolean isStatusActive() {
-        switch (status) {
-            case TopAdsConstant.STATUS_AD_ACTIVE:
-                return true;
-            case TopAdsConstant.STATUS_AD_NOT_ACTIVE:
-            case TopAdsConstant.STATUS_AD_NOT_SENT:
-                break;
-        }
-        return false;
-    }
-
     @Override
     public int describeContents() {
         return 0;

@@ -210,15 +210,4 @@ public class ShopAd implements Ad {
     public String getShopUri() {
         return shopUri;
     }
-
-    public boolean isStatusActive() {
-        switch (status) {
-            case TopAdsConstant.STATUS_AD_ACTIVE:
-                return true;
-            case TopAdsConstant.STATUS_AD_NOT_ACTIVE:
-            case TopAdsConstant.STATUS_AD_NOT_SENT:
-                break;
-        }
-        return false;
-    }
 }

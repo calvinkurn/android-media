@@ -2,6 +2,7 @@ package com.tokopedia.seller.topads.view.fragment;
 
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -64,6 +65,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     private SearchView searchView;
     private TopAdsAdListActionMode actionMode;
     private SnackbarRetry snackBarRetry;
+    private ProgressDialog progressDialog;
 
     protected abstract void searchAd();
 
@@ -113,7 +115,8 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
 
     @Override
     protected void initView(View view) {
-
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage(getString(R.string.title_loading));
     }
 
     @Override
@@ -216,16 +219,19 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
 
     @Override
     public void onActionTurnOn() {
+        progressDialog.show();
         presenter.turnOnAddList(adapter.getSelectedList());
     }
 
     @Override
     public void onActionTurnOff() {
+        progressDialog.show();
         presenter.turnOffAdList(adapter.getSelectedList());
     }
 
     @Override
     public void onActionModeDestroyed() {
+        progressDialog.dismiss();
         actionMode = null;
         adapter.clearCheckedList();
         swipeToRefresh.setEnabled(true);
@@ -321,6 +327,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         if (swipeToRefresh.isRefreshing()) {
             swipeToRefresh.setRefreshing(false);
         }
+        progressDialog.dismiss();
         hideSnackBarRetry();
     }
 

@@ -34,7 +34,7 @@ public class TopAdsNetworkConstant {
     public static final String PARAM_PAGE = "page";
 
     public static final String ACTION_BULK_DELETE_AD = "delete";
-    public static final String ACTION_BULK_OFF_AD = "toogle_off";
-    public static final String ACTION_BULK_ON_AD = "toogle_on";
+    public static final String ACTION_BULK_OFF_AD = "toggle_off";
+    public static final String ACTION_BULK_ON_AD = "toggle_on";
     public static final String ACTION_BULK_MOVE_AD = "move_group";
 }

@@ -75,7 +75,7 @@ public class TopAdsDetailProductPresenterImpl extends TopAdsDetailPresenterImpl 
         dataRequestSingleAd.setShopId(shopId);
         List<ProductAdAction> dataRequestSingleAdses = new ArrayList<>();
         ProductAdAction data = new ProductAdAction();
-        data.setId(ad.getId());
+        data.setId(String.valueOf(ad.getId()));
         dataRequestSingleAdses.add(data);
         dataRequestSingleAd.setAds(dataRequestSingleAdses);
         dataRequest.setData(dataRequestSingleAd);

@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
+import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.model.data.Ad;
 import com.tokopedia.seller.topads.presenter.TopAdsDetailPresenter;
 import com.tokopedia.seller.topads.view.listener.TopAdsDetailViewListener;
@@ -164,7 +165,15 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
 
     protected void loadAdDetail(Ad ad){
         name.setContent(ad.getName());
-        status.setChecked(ad.isStatusActive());
+        switch (ad.getStatus()) {
+            case TopAdsConstant.STATUS_AD_ACTIVE:
+            case TopAdsConstant.STATUS_AD_NOT_SENT:
+                status.setChecked(true);
+                break;
+            default:
+                status.setChecked(false);
+                break;
+        }
         status.setSwitchStatusText(ad.getStatusDesc());
         maxBid.setContent(ad.getPriceBidFmt());
         avgCost.setContent(ad.getStatTotalSpent());
