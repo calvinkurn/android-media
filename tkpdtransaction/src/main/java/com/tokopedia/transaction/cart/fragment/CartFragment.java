@@ -39,6 +39,7 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -343,10 +344,11 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     public void renderErrorEmptyCart() {
         nsvContainer.setVisibility(View.GONE);
         pbMainLoading.setVisibility(View.GONE);
+        CartBadgeNotificationReceiver.resetBadgeCart(getActivity());
         NetworkErrorHelper.showEmptyState(
                 getActivity(), getView(), getString(R.string.label_title_empty_cart),
                 getString(R.string.label_sub_title_empty_cart),
-                getString(R.string.label_btn_action_empty_cart),
+                getString(R.string.label_btn_action_empty_cart), R.drawable.status_no_result,
                 getRetryEmptyCartClickListener()
         );
     }
@@ -421,7 +423,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                 getActivity(), getView(),
                 getString(R.string.label_title_error_timeout_initial_cart_data),
                 messageError,
-                getString(R.string.label_title_button_retry),
+                getString(R.string.label_title_button_retry), 0,
                 getRetryErrorInitialCartInfoClickListener()
         );
     }
@@ -432,7 +434,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                 getActivity(), getView(),
                 getString(R.string.label_title_error_no_connection_initial_cart_data),
                 messageError,
-                getString(R.string.label_title_button_retry),
+                getString(R.string.label_title_button_retry), 0,
                 getRetryErrorInitialCartInfoClickListener()
         );
     }
@@ -443,7 +445,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                 getActivity(), getView(),
                 getString(R.string.label_title_error_default_initial_cart_data),
                 messageError,
-                getString(R.string.label_title_button_retry),
+                getString(R.string.label_title_button_retry), 0,
                 getRetryErrorInitialCartInfoClickListener()
         );
     }
@@ -454,7 +456,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                 getActivity(), getView(),
                 getString(R.string.label_title_error_default_initial_cart_data),
                 messageError,
-                getString(R.string.label_title_button_retry),
+                getString(R.string.label_title_button_retry), 0,
                 getRetryErrorInitialCartInfoClickListener()
         );
     }
