@@ -19,6 +19,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatDrawableManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
@@ -241,7 +242,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
     @BindView(R.id.drawer_layout_nav)
     DrawerLayout drawerLayoutNav;
 
-    FckToolbarVariable toolbar;
+    SellerToolbarVariable toolbar;
 
     SnackbarRetry snackbarRetry;
     SnackbarRetry snackbarRetryUndefinite;
@@ -351,7 +352,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
 
     private void initDrawer() {
         drawer = new DrawerVariableSeller(this);
-        toolbar = new FckToolbarVariable(this, sellerHomeToolbar);
+        toolbar = new SellerToolbarVariable(this, sellerHomeToolbar);
         toolbar.createToolbarWithDrawer();
         drawer.setToolbar(toolbar);
         drawer.createDrawer();
@@ -863,7 +864,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
                 R.drawable.ic_settings
         };
         for (int i = 0; i < drawables.length; i++)
-            drawables[i] = ContextCompat.getDrawable(this, drawablesResource[i]);
+            drawables[i] = AppCompatDrawableManager.get().getDrawable(this, drawablesResource[i]);
 
         String[] STRINGS = new String[]{
                 "Atur Produk",
