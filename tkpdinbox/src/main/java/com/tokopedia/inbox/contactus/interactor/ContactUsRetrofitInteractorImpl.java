@@ -21,6 +21,7 @@ import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.util.ImageUploadHandler;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.contactus.UploadImageContactUsParam;
 import com.tokopedia.inbox.contactus.model.ContactUsPass;
 import com.tokopedia.inbox.contactus.model.CreateTicketResult;
@@ -269,14 +270,14 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
     private Observable<ContactUsPass> getObservableUploadingFile(final Context context,
                                                                  final ContactUsPass contactUsPass) {
 
-            return Observable.zip(Observable.just(contactUsPass), uploadFile(context, contactUsPass),
-                    new Func2<ContactUsPass, List<ImageUpload>, ContactUsPass>() {
-                        @Override
-                        public ContactUsPass call(ContactUsPass pass, List<ImageUpload> imageUploads) {
-                            pass.setAttachment((ArrayList<ImageUpload>) imageUploads);
-                            return pass;
-                        }
-                    });
+        return Observable.zip(Observable.just(contactUsPass), uploadFile(context, contactUsPass),
+                new Func2<ContactUsPass, List<ImageUpload>, ContactUsPass>() {
+                    @Override
+                    public ContactUsPass call(ContactUsPass pass, List<ImageUpload> imageUploads) {
+                        pass.setAttachment((ArrayList<ImageUpload>) imageUploads);
+                        return pass;
+                    }
+                });
     }
 
     private Observable<List<ImageUpload>> uploadFile(final Context context, final ContactUsPass contactUsPass) {
@@ -317,22 +318,39 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
                                 networkCalculator.getContent().get(PARAM_WEB_SERVICE));
 
                         Log.d(TAG + "(step 2):host = ", contactUsPass.getGeneratedHost().getUploadHost());
-                        Observable<ImageUploadResult> upload = RetrofitUtils.createRetrofit(uploadUrl)
-                                .create(UploadImageContactUsParam.class)
-                                .uploadImage(
-                                        networkCalculator.getHeader().get(NetworkCalculator.CONTENT_MD5),// 1
-                                        networkCalculator.getHeader().get(NetworkCalculator.DATE),// 2
-                                        networkCalculator.getHeader().get(NetworkCalculator.AUTHORIZATION),// 3
-                                        networkCalculator.getHeader().get(NetworkCalculator.X_METHOD),// 4
-                                        userId,
-                                        deviceId,
-                                        hash,
-                                        deviceTime,
-                                        fileToUpload,
-                                        imageId,
-                                        web_service
-                                );
+                        Observable<ImageUploadResult> upload;
+                        if (SessionHandler.isV4Login(context)) {
+                            upload = RetrofitUtils.createRetrofit(uploadUrl)
+                                    .create(UploadImageContactUsParam.class)
+                                    .uploadImage(
+                                            networkCalculator.getHeader().get(NetworkCalculator.CONTENT_MD5),// 1
+                                            networkCalculator.getHeader().get(NetworkCalculator.DATE),// 2
+                                            networkCalculator.getHeader().get(NetworkCalculator.AUTHORIZATION),// 3
+                                            networkCalculator.getHeader().get(NetworkCalculator.X_METHOD),// 4
+                                            userId,
+                                            deviceId,
+                                            hash,
+                                            deviceTime,
+                                            fileToUpload,
+                                            imageId, web_service
 
+                                    );
+                        } else {
+                            upload = RetrofitUtils.createRetrofit(uploadUrl)
+                                    .create(UploadImageContactUsParam.class)
+                                    .uploadImagePublic(
+                                            networkCalculator.getHeader().get(NetworkCalculator.CONTENT_MD5),// 1
+                                            networkCalculator.getHeader().get(NetworkCalculator.DATE),// 2
+                                            networkCalculator.getHeader().get(NetworkCalculator.AUTHORIZATION),// 3
+                                            networkCalculator.getHeader().get(NetworkCalculator.X_METHOD),// 4
+                                            userId,
+                                            deviceId,
+                                            hash,
+                                            deviceTime,
+                                            fileToUpload,
+                                            imageId,
+                                            web_service);
+                        }
 
                         return Observable.zip(Observable.just(imageUpload), upload, new Func2<ImageUpload, ImageUploadResult, ImageUpload>() {
                             @Override
