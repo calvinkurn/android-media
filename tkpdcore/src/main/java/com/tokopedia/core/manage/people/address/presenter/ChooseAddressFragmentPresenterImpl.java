@@ -1,8 +1,14 @@
 package com.tokopedia.core.manage.people.address.presenter;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.customadapter.RetryDataBinder;
+import com.tokopedia.core.manage.people.address.ManageAddressConstant;
+import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.fragment.ChooseAddressFragment;
 import com.tokopedia.core.manage.people.address.interactor.ChooseAddressCacheInteractor;
 import com.tokopedia.core.manage.people.address.interactor.ChooseAddressCacheInteractorImpl;
@@ -10,8 +16,11 @@ import com.tokopedia.core.manage.people.address.interactor.ChooseAddressRetrofit
 import com.tokopedia.core.manage.people.address.interactor.ChooseAddressRetrofitInteractorImpl;
 import com.tokopedia.core.manage.people.address.listener.ChooseAddressFragmentView;
 import com.tokopedia.core.manage.people.address.model.ChooseAddress.ChooseAddressResponse;
+import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.PagingHandler;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * Created by Alifa on 10/11/2016.
@@ -173,5 +182,40 @@ public class ChooseAddressFragmentPresenterImpl implements  ChooseAddressFragmen
         networkInteractor.unsubscribe();
     }
 
+    @Override
+    public void setOnAddAddressClick(Context context) {
+        Intent intent = new Intent(context, AddAddressActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("is_edit", false);
+        intent.putExtras(bundle);
+        viewListener.startActivityForResult(intent, ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
+    }
 
+    @Override
+    public void onSuccessCreateAddress(Context context) {
+        viewListener.refresh();
+    }
+
+    @Override
+    public void onSuccessEditAddress(Context context) {
+        viewListener.refresh();
+    }
+
+    @Override
+    public void setOnEditAddressClick(Context context, Destination destination) {
+        Intent intent = new Intent(context, AddAddressActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ManageAddressConstant.EDIT_PARAM, destination);
+        bundle.putBoolean(ManageAddressConstant.IS_EDIT, true);
+        intent.putExtras(bundle);
+        viewListener.startActivityForResult(intent, ChooseAddressFragmentPresenterImpl.REQUEST_CHOOSE_ADDRESS_CODE);
+    }
+
+    @Override
+    public void setOnChooseAddressClick(Context context, Destination destination) {
+        Intent intent = ((Activity) context).getIntent();
+        intent.putExtra(ManageAddressConstant.EXTRA_ADDRESS, destination);
+        ((Activity) context).setResult(RESULT_OK, intent);
+        ((Activity) context).finish();
+    }
 }

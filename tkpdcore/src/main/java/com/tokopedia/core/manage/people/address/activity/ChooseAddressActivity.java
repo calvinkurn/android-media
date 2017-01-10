@@ -1,6 +1,5 @@
 package com.tokopedia.core.manage.people.address.activity;
 
-import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -8,17 +7,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.fragment.ChooseAddressFragment;
-import com.tokopedia.core.manage.people.address.presenter.ChooseAddressFragmentPresenterImpl;
 
 /**
  * Created by Alifa on 10/11/2016.
@@ -92,36 +85,4 @@ public class ChooseAddressActivity extends BasePresenterActivity {
         super.onResume();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == ChooseAddressFragmentPresenterImpl.REQUEST_CHOOSE_ADDRESS_CODE && resultCode == Activity.RESULT_OK){
-            ((ChooseAddressFragment)getFragmentManager().findFragmentByTag(TAG)).refresh();
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        if (getIntent().getBooleanExtra("resolution_center", false)) {
-            MenuInflater inflater = getMenuInflater();
-            inflater.inflate(R.menu.manage_people_address, menu);
-            return true;
-        } else {
-            return super.onCreateOptionsMenu(menu);
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_add_address) {
-            Intent intent = new Intent(getBaseContext(), AddAddressActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putBoolean("is_edit", false);
-            intent.putExtras(bundle);
-            startActivityForResult(intent, ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
-            return true;
-        } else {
-            return super.onOptionsItemSelected(item);
-        }
-    }
 }
