@@ -577,7 +577,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void onTitleClicked(Toppick toppick) {
-        openWebViewURL(toppick.getUrl());
+        openWebViewTopPicksURL(toppick.getUrl());
         UnifyTracking.eventHomeTopPicksTitle(toppick.getName());
     }
 
