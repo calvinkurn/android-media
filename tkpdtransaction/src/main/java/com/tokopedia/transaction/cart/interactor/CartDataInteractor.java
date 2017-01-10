@@ -11,8 +11,8 @@ import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.cart.interactor.data.ShipmentCartDataRepository;
 import com.tokopedia.transaction.cart.interactor.domain.IShipmentCartRepository;
-import com.tokopedia.transaction.cart.model.calculateshipment.Shipment;
 import com.tokopedia.transaction.cart.model.ResponseTransform;
+import com.tokopedia.transaction.cart.model.calculateshipment.Shipment;
 import com.tokopedia.transaction.cart.model.cartdata.CartData;
 import com.tokopedia.transaction.cart.model.savelocation.SaveLocationData;
 import com.tokopedia.transaction.cart.model.shipmentcart.EditShipmentCart;
@@ -332,18 +332,22 @@ public class CartDataInteractor implements ICartDataInteractor {
             public ResponseTransform<CartData> call(Response<TkpdResponse> response) {
 
                 if (response.isSuccessful()) {
-                    if (!response.body().getJsonData().isNull(KEY_FLAG_IS_SUCCESS)) {
+                    TkpdResponse tkpdResponse = response.body();
+                    if (tkpdResponse.isError()) throw new RuntimeException(
+                            new ResponseErrorException(tkpdResponse.getErrorMessageJoined())
+                    );
+                    if (!tkpdResponse.getJsonData().isNull(KEY_FLAG_IS_SUCCESS)) {
                         try {
-                            int status = response.body().getJsonData()
+                            int status = tkpdResponse.getJsonData()
                                     .getInt(KEY_FLAG_IS_SUCCESS);
-                            String message = status == 1 ? response.body().getErrorMessageJoined()
-                                    : response.body().getErrorMessageJoined();
+                            String message = status == 1 ? tkpdResponse.getErrorMessageJoined()
+                                    : tkpdResponse.getErrorMessageJoined();
                             switch (status) {
                                 case 1:
                                     ResponseTransform<CartData> responseTransform
                                             = new ResponseTransform<>();
                                     responseTransform.setMessageSuccess(
-                                            response.body().getStatusMessageJoined()
+                                            tkpdResponse.getStatusMessageJoined()
                                     );
                                     return responseTransform;
                                 default:
