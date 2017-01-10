@@ -137,6 +137,8 @@ public class FragmentTopPicksWebView extends Fragment {
         System.out.println("KIRISAME use URL: " + getArguments().getString("url", "http://blog.tokopedia.com"));
         String url = getArguments().getString("url", "http://blog.tokopedia.com");
         webview = (WebView) view.findViewById(R.id.webview);
+        webview.getSettings().setBuiltInZoomControls(true);
+        webview.getSettings().setDisplayZoomControls(false);
         progressBar = (ProgressBar) view.findViewById(R.id.progressbar);
         progressBar.setIndeterminate(true);
         clearCache(webview);

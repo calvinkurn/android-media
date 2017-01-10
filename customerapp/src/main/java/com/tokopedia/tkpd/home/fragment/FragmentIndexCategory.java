@@ -60,6 +60,7 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
@@ -451,15 +452,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         }
     }
 
-    public void openWebViewTopPicksURL(String url) {
-        if (url!="") {
-            Intent intent = new Intent(getActivity(), TopPicksWebView.class);
-            intent.putExtra("url", url);
-            startActivity(intent);
-        }
-    }
-
-
     private View.OnClickListener onPromoClicked(final String url) {
         return new View.OnClickListener() {
             @Override
@@ -566,19 +558,33 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void onItemClicked(String toppickName, Item topPickItem, int position) {
-        urlParser = new URLParser(topPickItem.getUrl());
+        String url = topPickItem.getUrl();
+      /*  urlParser = new URLParser(topPickItem.getUrl());
         Bundle bundle = new Bundle();
         bundle.putString(BrowseProductRouter.EXTRAS_DISCOVERY_ALIAS, urlParser.getHotAlias());
         bundle.putString(BrowseProductRouter.EXTRA_SOURCE, BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT);
         Intent intent = BrowseProductRouter.getDefaultBrowseIntent(getContext());
         intent.putExtras(bundle);
-        getActivity().startActivity(intent);
+        getActivity().startActivity(intent);*/
         UnifyTracking.eventHomeTopPicksItem(toppickName, topPickItem.getName());
+        switch ((DeepLinkChecker.getDeepLinkType(url))) {
+            case DeepLinkChecker.BROWSE:
+                DeepLinkChecker.openBrowse(url, getActivity());
+                break;
+            case DeepLinkChecker.HOT:
+                DeepLinkChecker.openHot(url, getActivity());
+                break;
+            case DeepLinkChecker.CATALOG:
+                DeepLinkChecker.openCatalog(url, getActivity());
+                break;
+            default:
+                openWebViewTopPicksURL(url);
+        }
     }
 
     @Override
     public void onTitleClicked(Toppick toppick) {
-        openWebViewTopPicksURL(toppick.getUrl());
+        openWebViewURL(toppick.getUrl());
         UnifyTracking.eventHomeTopPicksTitle(toppick.getName());
     }
 
@@ -586,6 +592,15 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     public void onClick(Toppick toppick) {
         openWebViewTopPicksURL("https://www.tokopedia.com/toppicks/");
     }
+
+    public void openWebViewTopPicksURL(String url) {
+        if (url!="") {
+            Intent intent = new Intent(getActivity(), TopPicksWebView.class);
+            intent.putExtra("url", url);
+            startActivity(intent);
+        }
+    }
+
 
     /* TOP PICKS */
 

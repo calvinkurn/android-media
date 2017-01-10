@@ -7,6 +7,9 @@ import android.os.Bundle;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.URLParser;
+import com.tokopedia.core.database.manager.DbManagerImpl;
+import com.tokopedia.core.database.model.CategoryDB;
+import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
@@ -16,6 +19,7 @@ import java.util.List;
 
 /**
  * Created by Nisie on 28/10/15.
+ * Modified by Alifa
  */
 public class DeepLinkChecker {
 
@@ -25,6 +29,8 @@ public class DeepLinkChecker {
     public static final int PRODUCT = 3;
     public static final int SHOP = 4;
     public static final int TOPPICKS = 5;
+
+    public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
 
     public static int getDeepLinkType(String url) {
         List<String> linkSegment = getLinkSegment(url);
@@ -53,7 +59,10 @@ public class DeepLinkChecker {
     }
 
     private static boolean isBrowse(List<String> linkSegment) {
-        return linkSegment.get(0).equals("search") || linkSegment.get(0).equals("p");
+        return (linkSegment.get(0).equals("search") || linkSegment.get(0).equals("p")
+                && !isHot(linkSegment)
+                && !isCatalog(linkSegment)
+                && !isTopPicks(linkSegment));
     }
 
     private static boolean isCatalog(List<String> linkSegment) {
@@ -112,42 +121,43 @@ public class DeepLinkChecker {
     }
 
     public static void openBrowse(String url, Context context) {
-//        Bundle bundle = new Bundle();
-//
-//        if (isSearch(url)) {
-//            CommonUtils.dumper("DEEPLINK is search");
-//            bundle.putString("d_id", getQuery(url, "sc"));
-//            bundle.putString("st", getQuery(url, "st"));
-//            Integer stType = getStType(getQuery(url, "st"));
-//            try {
-//                bundle.putInt("vi", Integer.parseInt(getQuery(url, "vi")));
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            if (stType != null) {
-//                bundle.putInt("vi", stType);
-//            }
-//            bundle.putString("search_query", getQuery(url, "q"));
-//            bundle.putInt("state", 5);
-//        } else if (isCategory(url)) {
-//            List<String> linkSegment = getLinkSegment(url);
-//            String iden = linkSegment.get(1);
-//            for (int i = 2; i < linkSegment.size(); i++) {
-//                iden = iden + "_" + linkSegment.get(i);
-//            }
-//            Kategori dep =
-//            new com.activeandroid.query.Select().from(Kategori.class)
-//                    .where(Kategori.KATEGORI_NAMA_IDENTIFIER+" LIKE \'"+iden+"\'")
-//                    .executeSingle();
-//            String dep_id = dep.getDepartmentId()+"";
-//            bundle.putString("d_id", dep_id);
-//            bundle.putString("st", "product");
-//            bundle.putInt("vi", 2);
-//        }
-//
-//        Intent intent = new Intent(context, BrowseCategory.class);
-//        intent.putExtras(bundle);
-//        context.startActivity(intent);
+        Uri uriData = Uri.parse(url);
+        List<String> linkSegment = uriData.getPathSegments();
+        Bundle bundle = new Bundle();
+        String departmentId = "0";
+        String searchQuery = "";
+        String source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
+        if (isSearch(url)) {
+            departmentId = uriData.getQueryParameter("sc");
+            searchQuery = uriData.getQueryParameter("q");
+            source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
+            bundle.putInt(BrowseProductRouter.FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
+            bundle.putBoolean(IS_DEEP_LINK_SEARCH, true);
+        } else if (isCategory(url)) {
+            String iden = linkSegment.get(1);
+            for (int i = 2; i < linkSegment.size(); i++) {
+                iden = iden + "_" + linkSegment.get(i);
+            }
+            CategoryDB dep =
+                    DbManagerImpl.getInstance().getCategoryDb(iden);
+            if (dep != null) {
+                departmentId = dep.getDepartmentId() + "";
+                bundle.putString(BrowseProductRouter.DEPARTMENT_ID, departmentId);
+            }
+            bundle.putInt(BrowseProductRouter.FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
+            source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY;
+        }
+
+        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, departmentId);
+        bundle.putString(BrowseProductRouter.AD_SRC, TopAdsApi.SRC_HOTLIST);
+        bundle.putString(BrowseProductRouter.EXTRAS_SEARCH_TERM, searchQuery);
+        bundle.putString(BrowseProductRouter.EXTRA_SOURCE, source);
+        Intent intent = BrowseProductRouter.getDefaultBrowseIntent(context);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 
     private static boolean isHotBrowse(String url) {
