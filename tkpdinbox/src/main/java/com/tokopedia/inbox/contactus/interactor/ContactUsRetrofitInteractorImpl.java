@@ -11,7 +11,6 @@ import com.tokopedia.core.inboxreputation.model.actresult.ImageUploadResult;
 import com.tokopedia.core.inboxreputation.model.param.GenerateHostPass;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.apiservices.etc.ContactUsService;
-import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.GeneratedHost;
@@ -20,6 +19,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.network.v4.NetworkConfig;
+import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.contactus.UploadImageContactUsParam;
@@ -180,8 +180,7 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
                 if (e instanceof UnknownHostException) {
                     listener.onNoNetworkConnection();
                 } else if (e instanceof SocketTimeoutException) {
-                    listener.onTimeout("Timeout connection," +
-                            " Mohon ulangi beberapa saat lagi");
+                    listener.onTimeout(context.getString(R.string.default_request_error_timeout));
                 } else {
                     listener.onError(e.getMessage());
                 }
@@ -209,32 +208,27 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
                     new ErrorHandler(new ErrorListener() {
                         @Override
                         public void onUnknown() {
-                            listener.onError("Terjadi Kesalahan, " +
-                                    "Mohon ulangi beberapa saat lagi");
+                            listener.onError(context.getString(R.string.default_request_error_unknown));
                         }
 
                         @Override
                         public void onTimeout() {
-                            listener.onTimeout("Timeout connection," +
-                                    " Mohon ulangi beberapa saat lagi");
+                            listener.onTimeout(context.getString(R.string.default_request_error_timeout));
                         }
 
                         @Override
                         public void onServerError() {
-                            listener.onError("Terjadi Kesalahan, " +
-                                    "Mohon ulangi beberapa saat lagi");
+                            listener.onError(context.getString(R.string.default_request_error_internal_server));
                         }
 
                         @Override
                         public void onBadRequest() {
-                            listener.onError("Terjadi Kesalahan, " +
-                                    "Mohon ulangi beberapa saat lagi");
+                            listener.onError(context.getString(R.string.default_request_error_bad_request));
                         }
 
                         @Override
                         public void onForbidden() {
-                            listener.onError("Terjadi Kesalahan, " +
-                                    "Mohon ulangi beberapa saat lagi");
+                            listener.onError(context.getString(R.string.default_request_error_forbidden_auth));
                         }
                     }, response.code());
                 }
@@ -375,11 +369,11 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
 
     @Override
     public void unsubscribe() {
-        compositeSubscription.unsubscribe();
+        RxUtils.unsubscribeIfNotNull(compositeSubscription);
     }
 
     @Override
-    public void getSolution(@NonNull Context context, @NonNull String id, @NonNull final GetSolutionListener listener) {
+    public void getSolution(@NonNull final Context context, @NonNull String id, @NonNull final GetSolutionListener listener) {
         Observable<Response<TkpdResponse>> observable = contactUsService.getApi()
                 .getSolution(id);
 
@@ -395,11 +389,9 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
                 if (e instanceof UnknownHostException) {
                     listener.onNoNetworkConnection();
                 } else if (e instanceof SocketTimeoutException) {
-                    listener.onTimeout("Timeout connection," +
-                            " Mohon ulangi beberapa saat lagi");
+                    listener.onTimeout(context.getString(R.string.default_request_error_timeout));
                 } else {
-                    listener.onError("Terjadi Kesalahan, " +
-                            "Mohon ulangi beberapa saat lagi");
+                    listener.onError(context.getString(R.string.default_request_error_unknown));
                 }
             }
 
@@ -409,39 +401,36 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
                     if (!response.body().isError()) {
                         listener.onSuccess(response.body().convertDataObj(SolutionResult.class));
                     } else {
-                        if (response.body().isNullData()) listener.onNullData();
+                        if (response.body().getStatus().equals(TOO_MANY_REQUEST))
+                            listener.onError(response.body().getErrorMessages().toString().replace("[", "").replace("]", ""));
+                        else if (response.body().isNullData()) listener.onNullData();
                         else listener.onError(response.body().getErrorMessages().get(0));
                     }
                 } else {
                     new ErrorHandler(new ErrorListener() {
                         @Override
                         public void onUnknown() {
-                            listener.onError("Terjadi Kesalahan, " +
-                                    "Mohon ulangi beberapa saat lagi");
+                            listener.onError(context.getString(R.string.default_request_error_unknown));
                         }
 
                         @Override
                         public void onTimeout() {
-                            listener.onTimeout("Timeout connection," +
-                                    " Mohon ulangi beberapa saat lagi");
+                            listener.onTimeout(context.getString(R.string.default_request_error_timeout));
                         }
 
                         @Override
                         public void onServerError() {
-                            listener.onError("Terjadi Kesalahan, " +
-                                    "Mohon ulangi beberapa saat lagi");
+                            listener.onError(context.getString(R.string.default_request_error_internal_server));
                         }
 
                         @Override
                         public void onBadRequest() {
-                            listener.onError("Terjadi Kesalahan, " +
-                                    "Mohon ulangi beberapa saat lagi");
+                            listener.onError(context.getString(R.string.default_request_error_bad_request));
                         }
 
                         @Override
                         public void onForbidden() {
-                            listener.onError("Terjadi Kesalahan, " +
-                                    "Mohon ulangi beberapa saat lagi");
+                            listener.onError(context.getString(R.string.default_request_error_forbidden_auth));
                         }
                     }, response.code());
                 }

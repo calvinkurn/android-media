@@ -98,6 +98,21 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
 
     private boolean isTicketValid() {
 
+        if (!SessionHandler.isV4Login(viewListener.getActivity())) {
+            if (viewListener.getName().getText().toString().trim().length() == 0) {
+                viewListener.showErrorValidation(viewListener.getName(), viewListener.getString(R.string.error_field_required));
+                return false;
+            }
+
+            if (viewListener.getEmail().getText().toString().trim().length() == 0) {
+                viewListener.showErrorValidation(viewListener.getEmail(), viewListener.getString(R.string.error_field_required));
+                return false;
+            } else if (!CommonUtils.EmailValidation(viewListener.getEmail().getText().toString())) {
+                viewListener.showErrorValidation(viewListener.getEmail(), viewListener.getString(R.string.error_invalid_email));
+                return false;
+            }
+        }
+
         if (viewListener.getMessage().getText().toString().trim().length() == 0) {
             viewListener.showErrorValidation(viewListener.getMessage(), viewListener.getString(R.string.error_detail_empty));
             return false;
@@ -109,20 +124,7 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
             return false;
         }
 
-        if (!SessionHandler.isV4Login(viewListener.getActivity())) {
-            if (viewListener.getName().getText().toString().trim().length() == 0) {
-                viewListener.showErrorValidation(viewListener.getName(), viewListener.getString(R.string.error_detail_empty));
-                return false;
-            }
 
-            if (viewListener.getEmail().getText().toString().trim().length() == 0) {
-                viewListener.showErrorValidation(viewListener.getName(), viewListener.getString(R.string.error_detail_empty));
-                return false;
-            } else if (!CommonUtils.EmailValidation(viewListener.getEmail().getText().toString())) {
-                viewListener.showErrorValidation(viewListener.getName(), viewListener.getString(R.string.error_invalid_email));
-                return false;
-            }
-        }
         return true;
     }
 

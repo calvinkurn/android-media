@@ -276,6 +276,7 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
 
     @Override
     public void setResult(SolutionResult solutionResult) {
+        setHasOptionsMenu(true);
         mainView.setVisibility(View.VISIBLE);
         mainCategory.setText(solutionResult.getSolutions().getName());
         if (solutionResult.getSolutions().hasAttachment()) {
@@ -314,6 +315,7 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
 
     @Override
     public void showErrorEmptyState(String error, NetworkErrorHelper.RetryClickedListener retryClickedListener) {
+        setHasOptionsMenu(false);
         if (error.equals(""))
             NetworkErrorHelper.showEmptyState(getActivity(), getView(), retryClickedListener);
         else
