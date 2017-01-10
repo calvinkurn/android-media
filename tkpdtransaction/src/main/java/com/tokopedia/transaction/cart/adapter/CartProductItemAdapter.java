@@ -1,6 +1,8 @@
 package com.tokopedia.transaction.cart.adapter;
 
 import android.app.Fragment;
+import android.graphics.Color;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -202,9 +204,7 @@ class CartProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         holder.tvNameProduct.setText(item.getCartProduct().getProductName());
         holder.tvPriceProduct.setText(item.getCartProduct().getProductPriceIdr());
-        holder.tvWeightProduct.setText(
-                String.format("%s Kg", item.getCartProduct().getProductWeight())
-        );
+        holder.tvWeightProduct.setText(item.getCartProduct().getProductWeight());
         holder.etQuantityProduct.setEnabled(editMode);
         holder.etNotesProduct.setEnabled(editMode);
         holder.btnDelete.setOnClickListener(new View.OnClickListener() {
@@ -248,9 +248,29 @@ class CartProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (editMode) {
             holder.etNotesProduct.setEnabled(true);
             holder.etQuantityProduct.setEnabled(true);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                holder.etNotesProduct.setBackground(
+                        hostFragment.getResources().getDrawable(R.drawable.border_cart_1)
+                );
+            } else {
+                holder.etNotesProduct.setBackgroundDrawable(
+                        hostFragment.getResources().getDrawable(R.drawable.border_cart_1)
+                );
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                holder.etQuantityProduct.setBackground(
+                        hostFragment.getResources().getDrawable(R.drawable.border_cart_1)
+                );
+            } else {
+                holder.etQuantityProduct.setBackgroundDrawable(
+                        hostFragment.getResources().getDrawable(R.drawable.border_cart_1)
+                );
+            }
         } else {
             holder.etNotesProduct.setEnabled(false);
             holder.etQuantityProduct.setEnabled(false);
+            holder.etNotesProduct.setBackgroundColor(Color.TRANSPARENT);
+            holder.etQuantityProduct.setBackgroundColor(Color.TRANSPARENT);
         }
     }
 
