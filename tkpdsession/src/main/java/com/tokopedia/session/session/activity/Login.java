@@ -745,7 +745,6 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
             case DownloadService.LOGIN_FACEBOOK:
             case DownloadService.LOGIN_WEBVIEW:
             case DownloadService.REGISTER_FACEBOOK:
-                Log.d("steven", "berhasil minta token");
                 sendDataFromInternet(DownloadService.LOGIN_ACCOUNTS_INFO, resultData);
                 break;
             case DownloadService.RESET_PASSWORD:

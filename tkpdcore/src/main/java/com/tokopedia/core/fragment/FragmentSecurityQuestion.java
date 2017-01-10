@@ -24,7 +24,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.msisdn.IncomingSms;
+import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.InboxRouter;
@@ -56,7 +56,7 @@ import permissions.dispatcher.RuntimePermissions;
  * complete MVP
  */
 @RuntimePermissions
-public class FragmentSecurityQuestion extends Fragment implements SecurityQuestionView, IncomingSms.ReceiveSMSListener {
+public class FragmentSecurityQuestion extends Fragment implements SecurityQuestionView, IncomingSmsReceiver.ReceiveSMSListener {
 
     private TkpdProgressDialog Progress;
     SecurityQuestion securityQuestion;
@@ -97,7 +97,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
     CountDownTimer countDownTimer;
     private Unbinder unbinder;
-    IncomingSms smsReceiver;
+    IncomingSmsReceiver smsReceiver;
 
     public interface SecurityQuestionListener {
         public void onSuccess();
@@ -120,7 +120,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     }
 
     public FragmentSecurityQuestion() {
-        this.smsReceiver = new IncomingSms();
+        this.smsReceiver = new IncomingSmsReceiver();
         this.smsReceiver.setListener(this);
     }
 
@@ -166,7 +166,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
         super.onResume();
         if (securityQuestion.isAfterRotate())
             securityQuestion.initDataAfterRotate();
-        smsReceiver.registerSMSReceiver(getActivity());
+        smsReceiver.registerSmsReceiver(getActivity());
         FragmentSecurityQuestionPermissionsDispatcher.checkSmsPermissionWithCheck(FragmentSecurityQuestion.this);
     }
 
@@ -228,8 +228,8 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
     private void enableOtpButton() {
         vSendOtp.setTextColor(getResources().getColor(R.color.tkpd_green_onboarding));
-        vSendOtp.setBackground(getResources().getDrawable(R.drawable.btn_share_transaparent));
-        vSendOtp.setText("Kirim ulang OTP");
+        MethodChecker.setBackground(vSendOtp, getResources().getDrawable(R.drawable.btn_share_transaparent));
+        vSendOtp.setText(R.string.title_resend_otp);
         vSendOtp.setEnabled(true);
 
         vSendOtpCall.setVisibility(View.VISIBLE);
@@ -362,15 +362,10 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
                 vInputOtp.setEnabled(true);
                 String phone = SessionHandler.getTempPhoneNumber(getActivity());
                 phone = phone.substring(phone.length() - 4);
-                String contentSecurity = getResources().getString(R.string.content_security_question_phone)
-                        + " "
-                        + "<b>"
-                        + new StringBuilder().append("XXXX-XXXX-").append(phone).toString()
-                        + "</b>";
+                String contentSecurity = String.format(getResources().getString(R.string.content_security_question_phone) + " <b>XXXX-XXXX- %s </b>",phone);
                 titleSecurity.setText(MethodChecker.fromHtml(contentSecurity));
                 changeNumber.setVisibility(View.VISIBLE);
                 vSendOtpCall.setVisibility(View.VISIBLE);
-
                 break;
             case QuestionFormModel.OTP_Email_TYPE:
                 vSendOtp.setText(securityQuestion.getOtpSendString());

@@ -31,7 +31,9 @@ import static com.tokopedia.inbox.contactus.ContactUsConstant.PARAM_URL;
  */
 public class ContactUsFaqFragment extends BasePresenterFragment {
 
-    private static final String GTM_CONTACTUS_URL = "url_contactus";
+    private static final String SOLUTION_ID = "solution_id";
+    private static final String TAGS = "tags";
+    private static final String ORDER_ID = "order_id";
 
     @BindView(R2.id.scroll_view)
     ScrollView mainView;
@@ -190,11 +192,11 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
                         url.getQueryParameter("action").equals("create_ticket")) {
                     Bundle bundle = new Bundle();
                     bundle.putString(ContactUsActivity.PARAM_SOLUTION_ID,
-                            url.getQueryParameter("solution_id") == null ? "" : url.getQueryParameter("solution_id"));
+                            url.getQueryParameter(SOLUTION_ID) == null ? "" : url.getQueryParameter(SOLUTION_ID));
                     bundle.putString(ContactUsActivity.PARAM_TAG,
-                            url.getQueryParameter("tags") == null ? "" : url.getQueryParameter("tags"));
+                            url.getQueryParameter(TAGS) == null ? "" : url.getQueryParameter(TAGS));
                     bundle.putString(ContactUsActivity.PARAM_ORDER_ID,
-                            url.getQueryParameter("order_id") == null ? "" : url.getQueryParameter("order_id"));
+                            url.getQueryParameter(ORDER_ID) == null ? "" : url.getQueryParameter(ORDER_ID));
                     listener.onGoToCreateTicket(bundle);
                     return true;
                 } else {

@@ -5,9 +5,7 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.IntentFilter;
 
-import com.tokopedia.core.msisdn.IncomingSms;
 import com.tokopedia.core.msisdn.MSISDNConstant;
 import com.tokopedia.core.msisdn.fragment.MsisdnVerificationFragment;
 import com.tokopedia.core.msisdn.interactor.MsisdnVerificationRetrofitInteractor;
@@ -15,8 +13,6 @@ import com.tokopedia.core.msisdn.interactor.MsisdnVerificationRetrofitInteractor
 import com.tokopedia.core.msisdn.model.VerificationForm;
 
 import java.util.HashMap;
-
-import static com.google.ads.conversiontracking.l.f;
 
 /**
  * Created by Kris on 4/20/2015.

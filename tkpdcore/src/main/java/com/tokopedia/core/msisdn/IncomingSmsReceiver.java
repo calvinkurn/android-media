@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 /**
  * Created by Nisie on 7/14/16.
  */
-public class IncomingSms extends BroadcastReceiver {
+public class IncomingSmsReceiver extends BroadcastReceiver {
 
     private static final String ACTION_SMS_RECEIVED = "android.provider.Telephony.SMS_RECEIVED";
 
@@ -33,7 +33,7 @@ public class IncomingSms extends BroadcastReceiver {
             SmsMessage currentMessage;
             currentMessage = MethodChecker.createSmsFromPdu(intent);
 
-            if (isTokopediaOTPSMS(currentMessage)) {
+            if (isTokopediaOtpSms(currentMessage)) {
 
                 String regexString = Pattern.quote("Tokopedia - ") + "(.*?)" + Pattern.quote("adalah");
                 Pattern pattern = Pattern.compile(regexString);
@@ -48,14 +48,14 @@ public class IncomingSms extends BroadcastReceiver {
         }
     }
 
-    private boolean isTokopediaOTPSMS(SmsMessage currentMessage) {
+    private boolean isTokopediaOtpSms(SmsMessage currentMessage) {
         String senderNum = currentMessage.getDisplayOriginatingAddress();
         String message = currentMessage.getDisplayMessageBody();
 
         return senderNum.equals("Tokopedia") || message.startsWith("Tokopedia");
     }
 
-    public void registerSMSReceiver(Context context) {
+    public void registerSmsReceiver(Context context) {
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(ACTION_SMS_RECEIVED);

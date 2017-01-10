@@ -17,6 +17,8 @@ import com.tokopedia.core.util.SessionHandler;
  */
 public class URLGenerator {
 
+    private static final String SEAMLESS_LOGIN = "seamless?";
+
     public static String generateURLLucky(String url, Context context) {
         Uri uri = Uri.parse(url);
         String path = uri.getLastPathSegment();
@@ -52,8 +54,8 @@ public class URLGenerator {
     }
 
     public static String generateURLContactUs(String url, Context context) {
-        return getBaseUrl() + "seamless?token="
-                + GCMHandler.getRegistrationId(context)
+        return getBaseUrl() + SEAMLESS_LOGIN
+                + "token=" + GCMHandler.getRegistrationId(context)
                 + "&os_type=1"
                 + "&uid=" + SessionHandler.getLoginID(context)
                 + "&url=" + url;
@@ -64,10 +66,11 @@ public class URLGenerator {
         if (BuildConfig.DEBUG) {
             SharedPreferences pref = MainApplication.getAppContext()
                     .getSharedPreferences("DOMAIN_WS_4", Context.MODE_PRIVATE);
-            if (pref.getString("DOMAIN_WS4", TkpdBaseURL.BASE_DOMAIN).contains("alpha")){
+            if (pref.getString("DOMAIN_WS4", TkpdBaseURL.BASE_DOMAIN).contains("alpha")) {
                 baseUrl = TkpdBaseURL.JS_ALPHA_DOMAIN;
             } else if (pref.getString("DOMAIN_WS4", TkpdBaseURL.BASE_DOMAIN).contains("staging")) {
-                baseUrl = TkpdBaseURL.JS_STAGING_DOMAIN;;
+                baseUrl = TkpdBaseURL.JS_STAGING_DOMAIN;
+                ;
             }
         }
         return baseUrl;

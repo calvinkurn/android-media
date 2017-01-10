@@ -20,7 +20,7 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.msisdn.IncomingSms;
+import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.msisdn.MSISDNConstant;
 import com.tokopedia.core.msisdn.listener.MsisdnVerificationFragmentView;
 import com.tokopedia.core.msisdn.presenter.MsisdnVerificationFragmentPresenter;
@@ -35,8 +35,6 @@ import com.tokopedia.core.util.SessionHandler;
 
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import permissions.dispatcher.NeedsPermission;
@@ -52,7 +50,7 @@ import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
 public class MsisdnFragment extends BasePresenterFragment<MsisdnVerificationFragmentPresenter>
-        implements MsisdnVerificationFragmentView, IncomingSms.ReceiveSMSListener, MSISDNConstant {
+        implements MsisdnVerificationFragmentView, IncomingSmsReceiver.ReceiveSMSListener, MSISDNConstant {
 
     private static final String FORMAT = "%02d:%02d";
     private static final long COUNTDOWN_INTERVAL = 1000;
@@ -89,7 +87,7 @@ public class MsisdnFragment extends BasePresenterFragment<MsisdnVerificationFrag
     private PhoneVerificationUtil.MSISDNListener listener;
     CountDownTimer countDownTimer;
     PhoneVerificationUtil phoneVerificationUtil;
-    IncomingSms smsReceiver;
+    IncomingSmsReceiver smsReceiver;
 
     public static MsisdnFragment createInstance() {
         MsisdnFragment fragment = new MsisdnFragment();
@@ -98,7 +96,7 @@ public class MsisdnFragment extends BasePresenterFragment<MsisdnVerificationFrag
     }
 
     public MsisdnFragment() {
-        this.smsReceiver = new IncomingSms();
+        this.smsReceiver = new IncomingSmsReceiver();
         this.smsReceiver.setListener(this);
     }
 
@@ -444,7 +442,7 @@ public class MsisdnFragment extends BasePresenterFragment<MsisdnVerificationFrag
 
     @Override
     public void onResume() {
-        smsReceiver.registerSMSReceiver(getActivity());
+        smsReceiver.registerSmsReceiver(getActivity());
         super.onResume();
     }
 

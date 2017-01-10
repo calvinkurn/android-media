@@ -20,6 +20,6 @@ import static com.tokopedia.core.network.apiservices.etc.apis.home.CategoryApi.H
 public interface OtpOnCallApi {
 
     @GET(TkpdBaseURL.User.PATH_OTP_WITH_CALL)
-    Observable<Response<TkpdResponse>> requestOTPWithCall(@Header(HEADER_USER_ID) String user_id,
+    Observable<Response<TkpdResponse>> requestOTPWithCall(@Header(HEADER_USER_ID) String userId,
                                                           @QueryMap Map<String, String> params);
 }

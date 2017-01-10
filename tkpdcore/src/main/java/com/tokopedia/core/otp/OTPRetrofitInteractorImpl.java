@@ -4,11 +4,13 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.tokopedia.core.R;
 import com.tokopedia.core.network.apiservices.user.OTPOnCallService;
 import com.tokopedia.core.network.apiservices.user.InterruptActService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.SessionHandler;
 
 import org.json.JSONException;
@@ -31,7 +33,6 @@ import rx.subscriptions.CompositeSubscription;
 public class OTPRetrofitInteractorImpl implements OTPRetrofitInteractor {
 
     private static final String TAG = OTPRetrofitInteractorImpl.class.getSimpleName();
-    private static final String DEFAULT_MSG_ERROR = "Terjadi Kesalahan, Mohon ulangi beberapa saat lagi";
     private static final String TOO_MANY_REQUEST = "TOO_MANY_REQUEST";
 
     private final CompositeSubscription compositeSubscription;
@@ -43,7 +44,7 @@ public class OTPRetrofitInteractorImpl implements OTPRetrofitInteractor {
     }
 
     @Override
-    public void requestOTP(@NonNull Context context,
+    public void requestOTP(@NonNull final Context context,
                            @NonNull Map<String, String> params,
                            @NonNull final OTPRetrofitInteractor.RequestOTPListener listener) {
         Observable<Response<TkpdResponse>> observable = interruptActService.getApi().requestOTP(params);
@@ -61,8 +62,7 @@ public class OTPRetrofitInteractorImpl implements OTPRetrofitInteractor {
                 } else if (e instanceof SocketTimeoutException) {
                     listener.onTimeout();
                 } else {
-                    listener.onError("Terjadi Kesalahan, " +
-                            "Mohon ulangi beberapa saat lagi");
+                    listener.onError(context.getString(R.string.default_request_error_unknown));
                 }
             }
 
@@ -86,28 +86,28 @@ public class OTPRetrofitInteractorImpl implements OTPRetrofitInteractor {
                     new ErrorHandler(new ErrorListener() {
                         @Override
                         public void onUnknown() {
-                            listener.onError("Network Unknown Error!");
+                            listener.onError(context.getString(R.string.default_request_error_unknown));
                         }
 
                         @Override
                         public void onTimeout() {
-                            listener.onError("Network Timeout Error!");
+                            listener.onError(context.getString(R.string.default_request_error_timeout));
                             listener.onTimeout();
                         }
 
                         @Override
                         public void onServerError() {
-                            listener.onError("Network Internal Server Error!");
+                            listener.onError(context.getString(R.string.default_request_error_internal_server));
                         }
 
                         @Override
                         public void onBadRequest() {
-                            listener.onError("Network Bad Request Error!");
+                            listener.onError(context.getString(R.string.default_request_error_bad_request));
                         }
 
                         @Override
                         public void onForbidden() {
-                            listener.onError("Network Forbidden Error!");
+                            listener.onError(context.getString(R.string.default_request_error_forbidden_auth));
                             listener.onFailAuth();
                         }
                     }, response.code());
@@ -121,7 +121,7 @@ public class OTPRetrofitInteractorImpl implements OTPRetrofitInteractor {
     }
 
     @Override
-    public void requestOTPWithCall(@NonNull Context context,
+    public void requestOTPWithCall(@NonNull final Context context,
                                    @NonNull Map<String, String> params,
                                    @NonNull final OTPRetrofitInteractor.RequestOTPWithCallListener listener) {
         OTPOnCallService otpOnCallS = new OTPOnCallService(new SessionHandler(context).getAccessToken(context));
@@ -144,8 +144,7 @@ public class OTPRetrofitInteractorImpl implements OTPRetrofitInteractor {
                 } else if (e instanceof SocketTimeoutException) {
                     listener.onTimeout();
                 } else {
-                    listener.onError("Terjadi Kesalahan, " +
-                            "Mohon ulangi beberapa saat lagi");
+                    listener.onError(context.getString(R.string.default_request_error_unknown));
                 }
             }
 
@@ -168,29 +167,28 @@ public class OTPRetrofitInteractorImpl implements OTPRetrofitInteractor {
                     new ErrorHandler(new ErrorListener() {
                         @Override
                         public void onUnknown() {
-                            listener.onError("Network Unknown Error!");
+                            listener.onError(context.getString(R.string.default_request_error_unknown));
                         }
 
                         @Override
                         public void onTimeout() {
-                            listener.onError("Network Timeout Error!");
+                            listener.onError(context.getString(R.string.default_request_error_timeout));
                             listener.onTimeout();
                         }
 
                         @Override
                         public void onServerError() {
-                            listener.onError("Network Internal Server Error!");
+                            listener.onError(context.getString(R.string.default_request_error_internal_server));
                         }
 
                         @Override
                         public void onBadRequest() {
-                            listener.onError("Network Bad Request Error!");
+                            listener.onError(context.getString(R.string.default_request_error_bad_request));
                         }
-
 
                         @Override
                         public void onForbidden() {
-                            listener.onError("Network Forbidden Error!");
+                            listener.onError(context.getString(R.string.default_request_error_forbidden_auth));
                             listener.onFailAuth();
                         }
                     }, response.code());
@@ -205,7 +203,7 @@ public class OTPRetrofitInteractorImpl implements OTPRetrofitInteractor {
     }
 
     @Override
-    public void verifyOTP(@NonNull Context context,
+    public void verifyOTP(@NonNull final Context context,
                           @NonNull Map<String, String> params,
                           @NonNull final OTPRetrofitInteractor.VerifyOTPListener listener) {
         Observable<Response<TkpdResponse>> observable = interruptActService.getApi().requestOTP(params);
@@ -223,8 +221,7 @@ public class OTPRetrofitInteractorImpl implements OTPRetrofitInteractor {
                 } else if (e instanceof SocketTimeoutException) {
                     listener.onTimeout();
                 } else {
-                    listener.onError("Terjadi Kesalahan, " +
-                            "Mohon ulangi beberapa saat lagi");
+                    listener.onError(context.getString(R.string.default_request_error_unknown));
                 }
             }
 
@@ -241,28 +238,28 @@ public class OTPRetrofitInteractorImpl implements OTPRetrofitInteractor {
                     new ErrorHandler(new ErrorListener() {
                         @Override
                         public void onUnknown() {
-                            listener.onError("Network Unknown Error!");
+                            listener.onError(context.getString(R.string.default_request_error_unknown));
                         }
 
                         @Override
                         public void onTimeout() {
-                            listener.onError("Network Timeout Error!");
+                            listener.onError(context.getString(R.string.default_request_error_timeout));
                             listener.onTimeout();
                         }
 
                         @Override
                         public void onServerError() {
-                            listener.onError("Network Internal Server Error!");
+                            listener.onError(context.getString(R.string.default_request_error_internal_server));
                         }
 
                         @Override
                         public void onBadRequest() {
-                            listener.onError("Network Bad Request Error!");
+                            listener.onError(context.getString(R.string.default_request_error_bad_request));
                         }
 
                         @Override
                         public void onForbidden() {
-                            listener.onError("Network Forbidden Error!");
+                            listener.onError(context.getString(R.string.default_request_error_forbidden_auth));
                             listener.onFailAuth();
                         }
                     }, response.code());
@@ -277,6 +274,6 @@ public class OTPRetrofitInteractorImpl implements OTPRetrofitInteractor {
 
     @Override
     public void unsubscribeObservable() {
-        compositeSubscription.unsubscribe();
+        RxUtils.unsubscribeIfNotNull(compositeSubscription);
     }
 }

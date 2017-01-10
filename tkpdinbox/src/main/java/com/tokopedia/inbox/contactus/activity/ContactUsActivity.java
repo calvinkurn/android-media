@@ -1,6 +1,5 @@
 package com.tokopedia.inbox.contactus.activity;
 
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -18,9 +17,6 @@ import com.tokopedia.inbox.contactus.ContactUsConstant;
 import com.tokopedia.inbox.contactus.fragment.ContactUsFaqFragment;
 import com.tokopedia.inbox.contactus.fragment.ContactUsFaqFragment.ContactUsFaqListener;
 import com.tokopedia.inbox.contactus.fragment.CreateTicketFormFragment;
-import com.tokopedia.inbox.inboxticket.fragment.InboxTicketFragment;
-
-import static com.google.ads.conversiontracking.g.d.b;
 
 /**
  * Created by nisie on 8/12/16.

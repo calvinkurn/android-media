@@ -556,7 +556,7 @@
                 <action android:name="com.tokopedia.tkpd.SERVER_ERROR" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.tokopedia.core.msisdn.IncomingSms">
+        <receiver android:name="com.tokopedia.core.msisdn.IncomingSmsReceiver">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>

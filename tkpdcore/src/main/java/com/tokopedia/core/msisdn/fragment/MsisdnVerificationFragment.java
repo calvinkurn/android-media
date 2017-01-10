@@ -2,7 +2,6 @@ package com.tokopedia.core.msisdn.fragment;
 
 import android.Manifest;
 import android.app.DialogFragment;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -22,8 +21,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.inboxreputation.fragment.InboxReputationFormFragment;
-import com.tokopedia.core.msisdn.IncomingSms;
+import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.msisdn.MSISDNConstant;
 import com.tokopedia.core.msisdn.listener.MsisdnVerificationFragmentView;
 import com.tokopedia.core.msisdn.presenter.MsisdnVerificationFragmentPresenter;
@@ -31,11 +29,6 @@ import com.tokopedia.core.msisdn.presenter.MsisdnVerificationFragmentPresenterIm
 import com.tokopedia.core.util.PhoneVerificationUtil;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -52,7 +45,7 @@ import permissions.dispatcher.RuntimePermissions;
  */
 @RuntimePermissions
 public class MsisdnVerificationFragment extends DialogFragment
-        implements MsisdnVerificationFragmentView, IncomingSms.ReceiveSMSListener, MSISDNConstant {
+        implements MsisdnVerificationFragmentView, IncomingSmsReceiver.ReceiveSMSListener, MSISDNConstant {
 
     @BindView(R2.id.view_verification)
     View verificationView;
@@ -92,7 +85,7 @@ public class MsisdnVerificationFragment extends DialogFragment
     private PhoneVerificationUtil.MSISDNListener listener;
     LocalCacheHandler cacheHandler;
     private Unbinder unbinder;
-    IncomingSms smsReceiver;
+    IncomingSmsReceiver smsReceiver;
 
     public static MsisdnVerificationFragment createInstance() {
         MsisdnVerificationFragment fragment = new MsisdnVerificationFragment();
@@ -101,7 +94,7 @@ public class MsisdnVerificationFragment extends DialogFragment
     }
 
     public MsisdnVerificationFragment() {
-        this.smsReceiver = new IncomingSms();
+        this.smsReceiver = new IncomingSmsReceiver();
         this.smsReceiver.setListener(this);
 
     }
@@ -165,7 +158,7 @@ public class MsisdnVerificationFragment extends DialogFragment
         params.width = ViewGroup.LayoutParams.MATCH_PARENT;
         params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
-        smsReceiver.registerSMSReceiver(getActivity());
+        smsReceiver.registerSmsReceiver(getActivity());
 
         super.onResume();
     }
