@@ -15,6 +15,7 @@ import android.view.View;
 
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
@@ -24,6 +25,7 @@ import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.presenter.TopAdsAdListPresenter;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAdListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyGroupAdsDataBinder;
+import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
 import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
 import com.tokopedia.seller.topads.view.widget.DividerItemDecoration;
 
@@ -162,6 +164,15 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         adapter = new TopAdsAdListAdapter();
         adapter.setCallback(this);
         adapter.setEmptyView(new TopAdsEmptyGroupAdsDataBinder(adapter));
+        TopAdsRetryDataBinder topAdsRetryDataBinder = new TopAdsRetryDataBinder(adapter);
+        topAdsRetryDataBinder.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
+            @Override
+            public void onRetryCliked() {
+                hideLoading();
+                searchAd(START_PAGE);
+            }
+        });
+        adapter.setRetryView(topAdsRetryDataBinder);
     }
 
     protected void loadData() {
@@ -240,32 +251,37 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         }
         adapter.addData(adList);
         hideLoading();
-        checkEmptyData(true);
+        if (adapter.getDataSize() < 1) {
+            adapter.showEmpty(true);
+        }
     }
 
     @Override
     public void onLoadSearchAdError() {
         hideLoading();
-        checkEmptyData(false);
-        showSnackBarRetry(new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                searchAd();
-            }
-        });
+        if (adapter.getDataSize() > 0) {
+            showSnackBarRetry(new NetworkErrorHelper.RetryClickedListener() {
+                @Override
+                public void onRetryClicked() {
+                    searchAd();
+                }
+            });
+        } else {
+            swipeToRefresh.setEnabled(false);
+            adapter.showRetryFull(true);
+        }
+
     }
 
     @Override
     public void onTurnOnAdSuccess() {
         hideLoading();
-        checkEmptyData(true);
         onBulkUpdateSuccess();
     }
 
     @Override
     public void onTurnOnAdFailed() {
         hideLoading();
-        checkEmptyData(false);
         showSnackBarRetry(new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
@@ -277,14 +293,12 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     @Override
     public void onTurnOffAdSuccess() {
         hideLoading();
-        checkEmptyData(true);
         onBulkUpdateSuccess();
     }
 
     @Override
     public void onTurnOffAdFailed() {
         hideLoading();
-        checkEmptyData(false);
         showSnackBarRetry(new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
@@ -298,24 +312,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
             actionMode.finish();
         }
         searchAd(START_PAGE);
-    }
-
-    private void checkEmptyData(boolean loadSuccess) {
-        if (adapter.getDataSize() > 0) {
-            return;
-        }
-        if (loadSuccess) {
-            adapter.showEmpty(true);
-        } else {
-            swipeToRefresh.setEnabled(false);
-            NetworkErrorHelper.showEmptyState(getActivity(), getView(), new NetworkErrorHelper.RetryClickedListener() {
-                @Override
-                public void onRetryClicked() {
-                    hideLoading();
-                    searchAd(START_PAGE);
-                }
-            });
-        }
     }
 
     private void hideLoading() {

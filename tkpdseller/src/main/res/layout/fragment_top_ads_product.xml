@@ -23,6 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/top_ads_dashboard_margin_cards"
+            app:content="@string/top_ads_statistic_info_default_value"
             app:title="@string/label_top_ads_groups"/>
 
         <include layout="@layout/include_separator_horizontal"/>
@@ -32,6 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/top_ads_dashboard_margin_bottom_space"
+            app:content="@string/top_ads_statistic_info_default_value"
             app:title="@string/label_top_ads_items"/>
     </LinearLayout>
 </ScrollView>

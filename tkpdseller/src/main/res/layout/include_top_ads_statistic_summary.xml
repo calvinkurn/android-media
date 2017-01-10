@@ -43,6 +43,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            app:content="@string/top_ads_statistic_info_default_value"
             app:title="@string/label_top_ads_impression"/>
 
         <include layout="@layout/include_separator_vertical"/>
@@ -52,6 +53,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            app:content="@string/top_ads_statistic_info_default_value"
             app:title="@string/label_top_ads_click"/>
     </LinearLayout>
 
@@ -67,6 +69,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            app:content="@string/top_ads_statistic_info_default_value"
             app:title="@string/label_top_ads_ctr"/>
 
         <include layout="@layout/include_separator_vertical"/>
@@ -76,6 +79,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            app:content="@string/top_ads_statistic_info_default_value"
             app:title="@string/label_top_ads_conversion"/>
 
     </LinearLayout>
@@ -92,6 +96,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            app:content="@string/top_ads_statistic_info_default_value"
             app:title="@string/label_top_ads_average"/>
 
         <include layout="@layout/include_separator_vertical"/>
@@ -101,6 +106,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            app:content="@string/top_ads_statistic_info_default_value"
             app:title="@string/label_top_ads_cost"/>
 
     </LinearLayout>
