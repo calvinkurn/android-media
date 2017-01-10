@@ -139,7 +139,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holder.tvShippingCost.setText(cartData.getCartShippingRateIdr());
         holder.tvSubTotal.setText(cartData.getCartTotalProductPriceIdr());
         holder.tvTotalPrice.setText(cartData.getCartTotalAmountIdr());
-        holder.tvWeight.setText(cartData.getCartTotalWeight());
+        holder.tvWeight.setText(String.format("%s Kg", cartData.getCartTotalWeight()));
         holder.tvShippingAddress.setText(String.format("%s (Ubah)",
                 cartData.getCartDestination().getReceiverName()));
         holder.tvShipment.setText(String.format("%s - %s (Ubah)",
