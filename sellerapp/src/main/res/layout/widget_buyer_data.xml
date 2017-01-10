@@ -81,6 +81,7 @@
                     android:layout_marginRight="2dp"
                     app:srcCompat="@drawable/ic_rectangle_up"
                     android:layout_gravity="center_vertical"
+                    android:scaleType="fitXY"
                     android:layout_below="@+id/buyer_count"
                     android:id="@+id/buyer_count_icon" />
 

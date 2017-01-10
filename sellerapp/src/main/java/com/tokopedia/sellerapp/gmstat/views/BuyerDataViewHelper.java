@@ -84,6 +84,7 @@ public class BuyerDataViewHelper {
         if(getBuyerData.getTotalBuyer()==0 &&
                 (getBuyerData.getMaleBuyer()==0 || getBuyerData.getFemaleBuyer()==0)){
             buyerCount.setText(getFormattedString(getBuyerData.getTotalBuyer()));
+            buyerDataPieChart.setProgress(0f);
             femalePie.setTextColor(gredyColor);
             femalePie.setText("0 %");
             malePie.setVisibility(View.GONE);
@@ -97,6 +98,10 @@ public class BuyerDataViewHelper {
             return;
         }else{
             femalePie.setTextColor(arrowDown);
+
+            headerPieBuyerData.setVisibility(View.VISIBLE);
+            malePie.setVisibility(View.VISIBLE);
+            femalePie.setVisibility(View.VISIBLE);
 
             double malePercentage = (double)getBuyerData.getMaleBuyer() / (double)getBuyerData.getTotalBuyer();
             double malePercent = Math.floor((malePercentage * 100) + 0.5);
@@ -139,12 +144,14 @@ public class BuyerDataViewHelper {
                 percentageBuyer.setTextColor(gredyColor);
                 isDefault = false;
             }else{
+                buyerCountIcon.setVisibility(View.VISIBLE);
                 buyerCountIcon.setImageDrawable(icRectagleDown);
 //            imageHandler.loadImage(buyerCountIcon, R.mipmap.arrow_down_percentage);
                 percentageBuyer.setTextColor(arrowDown);
                 isDefault = true;
             }
         }else{// up here
+            buyerCountIcon.setVisibility(View.VISIBLE);
             buyerCountIcon.setImageDrawable(icRectagleUp);
 //            imageHandler.loadImage(buyerCountIcon, R.mipmap.arrow_up_percentage);
             percentageBuyer.setTextColor(arrowUp);
