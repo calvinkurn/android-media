@@ -437,7 +437,7 @@ public interface  TkpdBaseURL {
     interface Transaction {
         String URL_DEPOSIT_ACTION = BASE_DOMAIN + "v4/action/deposit/";
         String URL_DEPOSIT = BASE_DOMAIN + "v4/deposit/";
-        String URL_DEPOSIT_CLOVER = CLOVER_DOMAIN + "deposit/v4/";
+        String URL_DEPOSIT_CLOVER = CLOVER_DOMAIN + "app/";
         String URL_TRACKING_ORDER = BASE_DOMAIN + "v4/tracking-order/";
         String URL_TX_ACTION = BASE_DOMAIN + "v4/action/tx/";
         String URL_TX = BASE_DOMAIN + "v4/";
@@ -458,7 +458,7 @@ public interface  TkpdBaseURL {
         String PATH_GET_SUMMARY = "get_summary.pl";
         String PATH_GET_WITHDRAW_FORM = "get_withdraw_form.pl";
         String PATH_GET_TOPPOINTS = "get_lp.pl";
-        String PATH_GET_TOPPOINTS_CLOVER = "lp";
+        String PATH_GET_TOPPOINTS_CLOVER = "v4";
 
 
         String PATH_TRACK_ORDER = "track_order.pl";
