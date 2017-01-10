@@ -9,9 +9,9 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.localytics.android.Localytics;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.gcm.interactor.RegisterDeviceInteractor;
 import com.tokopedia.core.gcm.model.DeviceRegistrationDataResponse;
-import com.tokopedia.core.analytics.TrackingUtils;
 
 import java.io.IOException;
 
@@ -54,22 +54,18 @@ public class GCMHandler {
             registerDeviceToFCM();
             commitGCMProcess();
         } else {
-            Log.d(TAG, " failed to get GCM id !!!");
+            Log.d(TAG, " Play services not available");
         }
     }
 
     private void commitGCMProcess() {
-        if (isPlayServicesAvailable()) {
-            mGoogleCloudMessaging = GoogleCloudMessaging.getInstance(context);
-            gcmRegid = getRegistrationId(context);
-            CommonUtils.dumper("start mGoogleCloudMessaging get");
-            if (gcmRegid.isEmpty()) {
-                registerGCM();
-            } else {
-                Localytics.setPushRegistrationId(gcmRegid);
-            }
+        mGoogleCloudMessaging = GoogleCloudMessaging.getInstance(context);
+        gcmRegid = getRegistrationId(context);
+        CommonUtils.dumper("start mGoogleCloudMessaging get");
+        if (gcmRegid.isEmpty()) {
+            registerGCM();
         } else {
-            Log.d(TAG, " failed to get mGoogleCloudMessaging id !!!");
+            Localytics.setPushRegistrationId(gcmRegid);
         }
     }
 

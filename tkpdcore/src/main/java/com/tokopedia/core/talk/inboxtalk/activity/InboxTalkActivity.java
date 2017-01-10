@@ -13,13 +13,13 @@ import android.view.ActionMode;
 import android.view.View;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.gcm.FCMMessagingService;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.NotificationModHandler;
+import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -40,7 +40,7 @@ import butterknife.ButterKnife;
 
 public class InboxTalkActivity extends DrawerPresenterActivity implements
         InboxTalkActivityView,
-        FCMMessagingService.NotificationListener, InboxTalkResultReceiver.Receiver {
+        NotificationReceivedListener, InboxTalkResultReceiver.Receiver {
 
     private static final String BUNDLE_POSITION = "INBOX_TALK_POSITION";
     PagerAdapter adapter;

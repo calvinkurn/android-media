@@ -1,7 +1,6 @@
 package com.tokopedia.core.gcm.interactor;
 
 import com.tokopedia.core.gcm.interactor.entity.FCMTokenUpdateEntity;
-import com.tokopedia.core.gcm.interactor.source.CloudPushNotificationDataSource;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
 
 import rx.Subscriber;

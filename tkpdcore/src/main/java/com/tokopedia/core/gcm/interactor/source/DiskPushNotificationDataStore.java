@@ -1,7 +1,6 @@
 package com.tokopedia.core.gcm.interactor.source;
 
 import android.content.Context;
-import android.text.TextUtils;
 
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.model.DeviceRegistrationDataResponse;
@@ -11,9 +10,7 @@ import rx.Observable;
 import rx.functions.Func1;
 
 import static com.tokopedia.core.gcm.Constants.REGISTRATION_MESSAGE_ERROR;
-import static com.tokopedia.core.gcm.Constants.REGISTRATION_MESSAGE_OK;
 import static com.tokopedia.core.gcm.Constants.REGISTRATION_STATUS_ERROR;
-import static com.tokopedia.core.gcm.Constants.REGISTRATION_STATUS_OK;
 
 /**
  * @author by alvarisi on 1/5/17.
