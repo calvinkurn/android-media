@@ -201,8 +201,10 @@ class CartProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
         holder.tvNameProduct.setText(item.getCartProduct().getProductName());
-        holder.tvPriceProduct.setText(item.getCartProduct().getProductTotalPriceIdr());
-        holder.tvWeightProduct.setText(item.getCartProduct().getProductTotalWeight());
+        holder.tvPriceProduct.setText(item.getCartProduct().getProductPriceIdr());
+        holder.tvWeightProduct.setText(
+                String.format("%s Kg", item.getCartProduct().getProductWeight())
+        );
         holder.etQuantityProduct.setEnabled(editMode);
         holder.etNotesProduct.setEnabled(editMode);
         holder.btnDelete.setOnClickListener(new View.OnClickListener() {
