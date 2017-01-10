@@ -211,6 +211,8 @@ dependencies {
     compile rootProject.ext.butterKnifeDependencies.butterKnife
     apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
+    compile rootProject.ext.playServicesDependencies.firebase
+
     compile 'com.android.support:multidex:1.0.1'
 
 }
