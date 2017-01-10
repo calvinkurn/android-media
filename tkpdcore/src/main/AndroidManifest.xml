@@ -98,36 +98,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tokopedia.core.com.tokopedia.seller.myproduct.ProductActivity"
-            android:label="@string/title_activity_add_product"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="tkpdevel.com"
-                    android:scheme="http" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data android:mimeType="image/*" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.SEND_MULTIPLE" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data android:mimeType="image/*" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name="com.tokopedia.core.onboarding.OnboardingActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
@@ -157,12 +127,7 @@
             android:name="com.tokopedia.core.ShopLocation"
             android:label="@string/title_activity_shop_location"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.com.tokopedia.seller.myproduct.ManageProduct"
-            android:label="@string/title_activity_manage_product"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
+
         <activity
             android:name="com.tokopedia.core.manage.people.address.activity.AddAddressActivity"
             android:label="@string/title_activity_add_address"
@@ -592,15 +557,7 @@
         <service
             android:name="com.tokopedia.core.talkview.intentservice.TalkViewIntentService"
             android:exported="false" />
-        <service
-            android:name="com.tokopedia.core.com.tokopedia.seller.myproduct.service.ProductService"
-            android:exported="false" />
 
-        <activity
-            android:name="com.tokopedia.core.com.tokopedia.seller.myproduct.ProductSocMedActivity"
-            android:label="Add Product Social Media"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3" />
 
         <service
             android:name="com.tokopedia.core.service.HadesService"
