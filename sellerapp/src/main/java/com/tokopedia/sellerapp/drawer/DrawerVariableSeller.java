@@ -408,10 +408,11 @@ public class DrawerVariableSeller extends DrawerVariable {
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.SETTING);
                 break;
             case TkpdState.DrawerPosition.CONTACT_US:
-                intent = InboxRouter.getContactUsActivityIntent(context);
+                /*intent = InboxRouter.getContactUsActivityIntent(context);
                 if (TrackingUtils.getBoolean(AppEventTracking.GTM.CREATE_TICKET)) {
                     intent.putExtra("link", "https://tokopedia.com/contact-us-android");
-                }
+                }*/
+                intent = SellerRouter.getActivityTopadsDashboard(context);
                 context.startActivity(intent);
                 break;
             case TkpdState.DrawerPosition.LOGOUT:
