@@ -25,12 +25,12 @@
         <TextView
             android:id="@+id/text_view_shop_title"
             style="@style/TextView"
-            tools:text="@string/app_name"/>
+            android:text="@string/top_ads_statistic_info_default_value"/>
 
         <TextView
             android:id="@+id/text_view_deposit_desc"
             style="@style/TextView"
-            tools:text="@string/app_name"/>
+            android:text="@string/top_ads_statistic_info_default_value"/>
     </LinearLayout>
 
     <ImageButton

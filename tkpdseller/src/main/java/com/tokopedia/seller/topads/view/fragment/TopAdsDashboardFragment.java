@@ -9,9 +9,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tkpd.library.utils.Logger;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.customwidget.SwipeToRefresh;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.model.data.DataDeposit;
@@ -29,6 +31,9 @@ import butterknife.OnClick;
 public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter> extends BasePresenterFragment<T> implements TopAdsDashboardFragmentListener {
 
     private static String TAG = TopAdsDashboardFragment.class.getSimpleName();
+
+    @BindView(R2.id.swipe_refresh_layout)
+    SwipeToRefresh swipeToRefresh;
 
     @BindView(R2.id.image_view_shop_icon)
     ImageView shopIconImageView;
@@ -93,39 +98,7 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
 
     @Override
     protected void initView(View view) {
-
-    }
-
-    @Override
-    public void onSummaryLoaded(@NonNull Summary summary) {
-        Logger.i(TAG, "Cost Summary: " + summary.getCostSum());
-        updateSummaryLayout(summary);
-    }
-
-    @Override
-    public void onLoadSummaryError(@NonNull Throwable throwable) {
-
-    }
-
-    @Override
-    public void onDepositTopAdsLoaded(@NonNull DataDeposit dataDeposit) {
-        depositDescTextView.setText(getString(R.string.label_top_ads_deposit_desc, dataDeposit.getAmountFmt()));
-    }
-
-    @Override
-    public void onLoadDepositTopAdsError(@NonNull Throwable throwable) {
-
-    }
-
-    @Override
-    public void onShopDetailLoaded(@NonNull ShopModel shopModel) {
-        ImageHandler.loadImageCircle2(getActivity(), shopIconImageView, shopModel.info.shopAvatar);
-        shopTitleTextView.setText(shopModel.info.shopName);
-    }
-
-    @Override
-    public void onLoadShopDetailError(@NonNull Throwable throwable) {
-
+        depositDescTextView.setText(getString(R.string.label_top_ads_deposit_desc, getString(R.string.top_ads_statistic_info_default_value)));
     }
 
     @Override
@@ -135,7 +108,12 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
 
     @Override
     protected void initialVar() {
-
+        RefreshHandler refresh = new RefreshHandler(getActivity(), getView(), new RefreshHandler.OnRefreshHandlerListener() {
+            @Override
+            public void onRefresh(View view) {
+                loadData();
+            }
+        });
     }
 
     @Override
@@ -153,6 +131,20 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
         }
     }
 
+    protected void loadData() {
+        swipeToRefresh.setRefreshing(true);
+        rangeDateDescTextView.setText(presenter.getRangeDateFormat(startDate, endDate));
+        presenter.populateSummary(startDate, endDate);
+        presenter.populateDeposit();
+        presenter.populateShopInfo();
+    }
+
+    @Override
+    public void onSummaryLoaded(@NonNull Summary summary) {
+        updateSummaryLayout(summary);
+        hideLoading();
+    }
+
     private void updateSummaryLayout(Summary summary) {
         impressionStatisticLabelView.setContent(String.valueOf(summary.getImpressionSumFmt()));
         clickStatisticLabelView.setContent(String.valueOf(summary.getClickSumFmt()));
@@ -162,11 +154,48 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
         costStatisticLabelView.setContent(String.valueOf(summary.getCostSumFmt()));
     }
 
-    protected void loadData() {
-        rangeDateDescTextView.setText(presenter.getRangeDateFormat(startDate, endDate));
-        presenter.populateSummary(startDate, endDate);
-        presenter.populateDeposit();
-        presenter.populateShopInfo();
+    @Override
+    public void onLoadSummaryError(@NonNull Throwable throwable) {
+        showNetworkError();
+        hideLoading();
+    }
+
+    @Override
+    public void onDepositTopAdsLoaded(@NonNull DataDeposit dataDeposit) {
+        depositDescTextView.setText(getString(R.string.label_top_ads_deposit_desc, dataDeposit.getAmountFmt()));
+        hideLoading();
+    }
+
+    @Override
+    public void onLoadDepositTopAdsError(@NonNull Throwable throwable) {
+        showNetworkError();
+        hideLoading();
+    }
+
+    @Override
+    public void onShopDetailLoaded(@NonNull ShopModel shopModel) {
+        ImageHandler.loadImageCircle2(getActivity(), shopIconImageView, shopModel.info.shopAvatar);
+        shopTitleTextView.setText(shopModel.info.shopName);
+        hideLoading();
+    }
+
+    @Override
+    public void onLoadShopDetailError(@NonNull Throwable throwable) {
+        showNetworkError();
+        hideLoading();
+    }
+
+    protected void showNetworkError() {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                loadData();
+            }
+        }).showRetrySnackbar();
+    }
+
+    protected void hideLoading() {
+        swipeToRefresh.setRefreshing(false);
     }
 
     @OnClick(R2.id.statistic_label_view_impression)

@@ -68,7 +68,8 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
 
     @Override
     public void onLoadTotalAdError(@NonNull Throwable throwable) {
-
+        showNetworkError();
+        hideLoading();
     }
 
     @OnClick(R2.id.label_view_group_summary)

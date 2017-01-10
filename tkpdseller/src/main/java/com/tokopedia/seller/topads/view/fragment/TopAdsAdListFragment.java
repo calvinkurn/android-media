@@ -333,7 +333,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
 
     private void showSnackBarRetry(NetworkErrorHelper.RetryClickedListener listener) {
         if (snackBarRetry == null) {
-            snackBarRetry = new SnackbarRetry(SnackbarManager.make(getActivity(), getResources().getString(com.tokopedia.core.R.string.msg_network_error), -2), listener);
+            snackBarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), listener);
             snackBarRetry.showRetrySnackbar();
         }
     }

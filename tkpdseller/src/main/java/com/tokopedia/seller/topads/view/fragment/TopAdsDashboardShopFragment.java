@@ -15,20 +15,23 @@ import butterknife.BindView;
 
 public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsDashboardShopPresenterImpl> implements TopAdsDashboardStoreFragmentListener {
 
+    @BindView(R2.id.layout_shop_ad)
+    View shopAdView;
+
     @BindView(R2.id.title_product)
-    public TextView titleProduct;
+    TextView titleProduct;
 
     @BindView(R2.id.status_active_dot)
-    public View statusActiveDot;
+    View statusActiveDot;
 
     @BindView(R2.id.status_active)
-    public TextView statusActive;
+    TextView statusActive;
 
     @BindView(R2.id.promo_price_used)
-    public TextView promoPriceUsed;
+    TextView promoPriceUsed;
 
     @BindView(R2.id.price_promo_per_click)
-    public TextView pricePromoPerClick;
+    TextView pricePromoPerClick;
 
     public static TopAdsDashboardShopFragment createInstance() {
         TopAdsDashboardShopFragment fragment = new TopAdsDashboardShopFragment();
@@ -58,6 +61,7 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
 
     @Override
     public void onAdShopLoaded(@NonNull ShopAd ad) {
+        shopAdView.setVisibility(View.VISIBLE);
         titleProduct.setText(ad.getName());
         statusActive.setText(ad.getStatusDesc());
         switch (ad.getStatus()) {
@@ -77,6 +81,7 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
 
     @Override
     public void onLoadAdShopError() {
-
+        showNetworkError();
+        hideLoading();
     }
 }
