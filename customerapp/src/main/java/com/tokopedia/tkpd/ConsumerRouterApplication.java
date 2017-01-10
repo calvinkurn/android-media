@@ -12,6 +12,9 @@ import com.tokopedia.core.drawer.DrawerVariable;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
+import com.tokopedia.seller.myproduct.ManageProduct;
+import com.tokopedia.seller.myproduct.ProductActivity;
+import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 
@@ -47,5 +50,27 @@ public class ConsumerRouterApplication extends MainApplication implements TkpdCo
     @Override
     public void removeInstopedToken() {
         InstagramMediaPresenterImpl.removeToken();
+    }
+
+    @Override
+    public void goToManageProduct() {
+        Intent intent = new Intent(getAppContext(), ManageProduct.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void clearEtalaseCache() {
+        AddProductPresenterImpl.clearEtalaseCache(getApplicationContext());
+    }
+
+    @Override
+    public void goToEditProduct(boolean isEdit, String productId) {
+        ProductActivity.moveToEditFragment(getAppContext(), isEdit, productId);
+    }
+
+    @Override
+    public void resetAddProductCache() {
+        AddProductPresenterImpl.clearEtalaseCache(getApplicationContext());
+        AddProductPresenterImpl.clearDepartementCache(getApplicationContext());
     }
 }
