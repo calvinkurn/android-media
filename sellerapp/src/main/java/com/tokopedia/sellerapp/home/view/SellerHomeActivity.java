@@ -67,7 +67,7 @@ import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity;
+import com.tokopedia.inbox.inboxtalk.activity.InboxTalkActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.core.util.SessionHandler;
