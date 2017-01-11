@@ -19,6 +19,8 @@ import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.model.data.DataDeposit;
 import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.presenter.TopAdsDashboardPresenter;
+import com.tokopedia.seller.topads.view.activity.SetDateActivity;
+import com.tokopedia.seller.topads.view.activity.SetDateFragment;
 import com.tokopedia.seller.topads.view.activity.TopAdsAddCreditActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardFragmentListener;
 import com.tokopedia.seller.topads.view.widget.TopAdsStatisticLabelView;
@@ -30,7 +32,8 @@ import butterknife.OnClick;
 
 public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter> extends BasePresenterFragment<T> implements TopAdsDashboardFragmentListener {
 
-    private static String TAG = TopAdsDashboardFragment.class.getSimpleName();
+    private static final int REQUEST_CODE_DATE = 0;
+
 
     @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
@@ -131,6 +134,19 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        // check if the request code is the same
+        if (requestCode == REQUEST_CODE_DATE && intent != null) {
+            long startDateTime = intent.getLongExtra(SetDateFragment.START_DATE, -1);
+            long endDateTime = intent.getLongExtra(SetDateFragment.END_DATE, -1);
+            if (startDateTime > 0 && endDateTime > 0) {
+                presenter.saveDate(new Date(startDateTime), new Date(endDateTime));
+            }
+        }
+    }
+
     protected void loadData() {
         swipeToRefresh.setRefreshing(true);
         rangeDateDescTextView.setText(presenter.getRangeDateFormat(startDate, endDate));
@@ -196,6 +212,17 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
 
     protected void hideLoading() {
         swipeToRefresh.setRefreshing(false);
+    }
+
+    @OnClick(R2.id.layout_date)
+    void onDateLayoutClicked() {
+        Intent moveToSetDate = new Intent(getActivity(), SetDateActivity.class);
+        moveToSetDate.putExtra(SetDateActivity.IS_GOLD_MERCHANT, true);
+//        moveToSetDate.putExtra(SetDateActivity.SELECTION_PERIOD, lastSelection);
+//        moveToSetDate.putExtra(SetDateActivity.SELECTION_TYPE, selectionType);
+        moveToSetDate.putExtra(SetDateActivity.CUSTOM_START_DATE, startDate.getTime());
+        moveToSetDate.putExtra(SetDateActivity.CUSTOM_END_DATE, endDate.getTime());
+        startActivityForResult(moveToSetDate, REQUEST_CODE_DATE);
     }
 
     @OnClick(R2.id.statistic_label_view_impression)

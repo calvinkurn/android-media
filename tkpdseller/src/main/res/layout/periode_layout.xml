@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="16dp"
+    >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+
+        <CheckBox
+            android:clickable="false"
+            android:button="@drawable/set_date_radio_button"
+            android:text=""
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:id="@+id/checkbox_period" />
+
+        <TextView
+            android:id="@+id/period_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Kemarin"
+            android:textColor="#61000000"
+            android:textSize="14sp"
+            android:layout_toRightOf="@id/checkbox_period"
+            android:layout_marginLeft="9dp"
+            android:layout_marginStart="9dp"/>
+        <TextView
+            android:textSize="16sp"
+            android:id="@+id/period_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="2 Aug 2016 - 9 Aug 2016"
+            android:layout_below="@id/period_header"
+            android:layout_toRightOf="@id/checkbox_period"
+            android:textColor="#B2000000"
+            android:layout_marginLeft="9dp"
+            android:layout_marginStart="9dp"/>
+    </RelativeLayout>
+
+    <View
+        android:clickable="true"
+        android:background="@android:color/transparent"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/overlay_set_date"/>
+</FrameLayout>
+

@@ -97,4 +97,40 @@
     <string name="label_title_favorite_topads">Favorite</string>
     <string name="label_title_items_topads">Items</string>
     <string name="label_top_ads_promo_group">Promo Group</string>
+
+    <string name="yesterday">Kemarin</string>
+    <string name="seven_days_ago">7 hari terakhir</string>
+    <string name="thirty_days_ago">30 hari terakhir</string>
+
+    <!-- untuk tanggal gmstat -->
+    <string-array name="month_names">
+        <item>Januari</item>
+        <item>Februari</item>
+        <item>Maret</item>
+        <item>April</item>
+        <item>Mei</item>
+        <item>Juni</item>
+        <item>Juli</item>
+        <item>Agustus</item>
+        <item>September</item>
+        <item>Oktober</item>
+        <item>November</item>
+        <item>Desember</item>
+    </string-array>
+
+    <!-- untuk tanggal gmstat -->
+    <string-array name="month_names_abrev">
+        <item>Jan</item>
+        <item>Feb</item>
+        <item>Mar</item>
+        <item>Apr</item>
+        <item>Mei</item>
+        <item>Jun</item>
+        <item>Jul</item>
+        <item>Agu</item>
+        <item>Sep</item>
+        <item>Okt</item>
+        <item>Nov</item>
+        <item>Des</item>
+    </string-array>
 </resources>

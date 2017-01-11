@@ -19,7 +19,7 @@ public class TopAdsManagementService extends AuthService<TopAdsManagementApi> {
 
     @Override
     protected String getBaseUrl() {
-        return "https://ta-staging.tokopedia.com/";
+        return "https://ta.tokopedia.com/";
     }
 
     @Override

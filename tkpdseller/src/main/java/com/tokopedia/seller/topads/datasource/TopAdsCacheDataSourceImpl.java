@@ -32,15 +32,18 @@ public class TopAdsCacheDataSourceImpl implements TopAdsCacheDataSource {
     public void resetDate() {
         localCacheHandler.putString(PARAM_START_DATE, null);
         localCacheHandler.putString(PARAM_END_DATE, null);
+        localCacheHandler.applyEditor();
     }
 
     @Override
     public void saveDate(Date startDate, Date endDate) {
         if (startDate != null) {
             localCacheHandler.putString(PARAM_START_DATE, new SimpleDateFormat(REQUEST_DATE_FORMAT, Locale.ENGLISH).format(startDate));
+            localCacheHandler.applyEditor();
         }
         if (endDate != null) {
             localCacheHandler.putString(PARAM_END_DATE, new SimpleDateFormat(REQUEST_DATE_FORMAT, Locale.ENGLISH).format(endDate));
+            localCacheHandler.applyEditor();
         }
     }
 
@@ -69,6 +72,7 @@ public class TopAdsCacheDataSourceImpl implements TopAdsCacheDataSource {
     @Override
     public void updateLastInsertStatistic() {
         localCacheHandler.setExpire(TopAdsConstant.CACHE_EXPIRED_TIME);
+        localCacheHandler.applyEditor();
     }
 
     @Override

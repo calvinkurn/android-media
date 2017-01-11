@@ -14,9 +14,8 @@
     android:paddingTop="0dp">
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/top_ads_dashboard_padding_cards">
+        android:id="@+id/layout_date"
+        style="@style/LabelLayout">
 
         <TextView
             android:id="@+id/text_view_range_date"
