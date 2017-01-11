@@ -43,6 +43,7 @@ import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.activity.ShipmentCartActivity;
@@ -560,6 +561,9 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void onShopDetailInfoClicked(CartShop cartShop) {
+        Intent intent = new Intent(context, ShopInfoActivity.class);
+        intent.putExtras(ShopInfoActivity.createBundle(cartShop.getShopId(), ""));
+        navigateToActivity(intent);
     }
 
     @Override
