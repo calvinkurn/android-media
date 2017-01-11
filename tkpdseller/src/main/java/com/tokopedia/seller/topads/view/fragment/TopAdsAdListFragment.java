@@ -136,6 +136,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
             @Override
             public void onRetryCliked() {
                 hideLoading();
+                adapter.showLoadingFull(true);
                 searchAd(START_PAGE);
             }
         });

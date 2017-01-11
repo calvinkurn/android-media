@@ -12,6 +12,7 @@ import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.datasource.TopAdsCacheDataSourceImpl;
 import com.tokopedia.seller.topads.datasource.TopAdsDbDataSourceImpl;
 import com.tokopedia.seller.topads.interactor.TopAdsProductAdInteractorImpl;
+import com.tokopedia.seller.topads.model.data.Ad;
 import com.tokopedia.seller.topads.model.data.ProductAd;
 import com.tokopedia.seller.topads.network.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.topads.presenter.TopAdsDetailProductPresenter;
@@ -32,6 +33,14 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
 
     private ProductAd productAd;
 
+    public static Fragment createInstance(ProductAd productAd) {
+        Fragment fragment = new TopAdsDetailProductFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(TopAdsExtraConstant.EXTRA_DETAIL_DATA, productAd);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
     @Override
     protected void initialPresenter() {
         presenter = new TopAdsDetailProductPresenterImpl(getActivity(), this, new TopAdsProductAdInteractorImpl(new TopAdsManagementService(),
@@ -41,7 +50,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
     @Override
     protected void setupArguments(Bundle bundle) {
         super.setupArguments(bundle);
-        productAd = bundle.getParcelable(TopAdsExtraConstant.EXTRA_DETAIL_DATA);
+
     }
 
     @Override
@@ -51,6 +60,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
 
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+        progressDialog.show();
         if(checked){
             presenter.turnOnAds(productAd, SessionHandler.getShopID(getActivity()));
         }else{
@@ -59,19 +69,14 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
     }
 
     @Override
-    protected void loadData() {
-        super.loadData();
-        if(productAd != null) {
-            loadAdDetail(productAd);
-            promoGroupLabelView.setContent(productAd.getGroupName());
-        }
+    protected void refreshAd() {
+        presenter.refreshAd(startDate, endDate, productAd.getId());
     }
 
-    public static Fragment createInstance(ProductAd productAd) {
-        Fragment fragment = new TopAdsDetailProductFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(TopAdsExtraConstant.EXTRA_DETAIL_DATA, productAd);
-        fragment.setArguments(bundle);
-        return fragment;
+    @Override
+    public void onAdLoaded(Ad ad) {
+        super.onAdLoaded(ad);
+        productAd = (ProductAd) ad;
+        promoGroupLabelView.setContent(productAd.getGroupName());
     }
 }

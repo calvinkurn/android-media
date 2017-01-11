@@ -21,6 +21,8 @@ public class TopAdsNetworkConstant {
     public static final String PATH_DETAIL_PRODUCT_AD = "/v2/promo";
 
     public static final String PARAM_SHOP_ID = "shop_id";
+    public static final String PARAM_GROUP_ID = "group_id";
+    public static final String PARAM_AD_ID = "ad_id";
     public static final String PARAM_TYPE = "type";
     public static final String PARAM_START_DATE = "start_date";
     public static final String PARAM_END_DATE = "end_date";

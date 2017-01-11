@@ -11,6 +11,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.interactor.TopAdsGroupAdInteractorImpl;
+import com.tokopedia.seller.topads.model.data.Ad;
 import com.tokopedia.seller.topads.model.data.GroupAd;
 import com.tokopedia.seller.topads.presenter.TopAdsDetailGroupPresenter;
 import com.tokopedia.seller.topads.presenter.TopAdsDetailGroupPresenterImpl;
@@ -58,6 +59,7 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
 
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+        progressDialog.show();
         if(checked){
             presenter.turnOnAds(groupAd, SessionHandler.getShopID(getActivity()));
         }else{
@@ -66,12 +68,15 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
     }
 
     @Override
-    protected void loadData() {
-        super.loadData();
-        if(groupAd != null) {
-            loadAdDetail(groupAd);
-            items.setContent(String.valueOf(groupAd.getTotalItem()));
-        }
+    protected void refreshAd() {
+        presenter.refreshAd(startDate, endDate, groupAd.getId());
+    }
+
+    @Override
+    public void onAdLoaded(Ad ad) {
+        super.onAdLoaded(ad);
+        groupAd = (GroupAd) ad;
+        items.setContent(String.valueOf(groupAd.getTotalItem()));
     }
 
     @OnClick(R2.id.items)

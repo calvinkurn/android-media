@@ -17,6 +17,7 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
+import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.model.data.Ad;
 import com.tokopedia.seller.topads.presenter.TopAdsDetailPresenter;
 import com.tokopedia.seller.topads.view.listener.TopAdsDetailViewListener;
@@ -71,7 +72,10 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     @BindView(R2.id.favorite)
     TopAdsLabelView favorite;
 
-    private ProgressDialog progressDialog;
+    protected Ad adFromIntent;
+    protected ProgressDialog progressDialog;
+
+    protected abstract void refreshAd();
 
     public TopAdsDetailFragment() {
         // Required empty public constructor
@@ -89,6 +93,12 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     }
 
     @Override
+    protected void setupArguments(Bundle bundle) {
+        super.setupArguments(bundle);
+        adFromIntent = bundle.getParcelable(TopAdsExtraConstant.EXTRA_DETAIL_DATA);
+    }
+
+    @Override
     protected void initialVar() {
     }
 
@@ -98,16 +108,34 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     }
 
     protected void loadData() {
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(presenter.getRangeDateFormat(startDate, endDate));
-    }
-
-    @Override
-    public void showProgress() {
         progressDialog.show();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(presenter.getRangeDateFormat(startDate, endDate));
+        if (adFromIntent != null) {
+            onAdLoaded(adFromIntent);
+            adFromIntent = null;
+        } else {
+            refreshAd();
+        }
     }
 
     @Override
-    public void dismissProgress() {
+    public void onAdLoaded(Ad ad) {
+        progressDialog.dismiss();
+        loadAdDetail(ad);
+    }
+
+    @Override
+    public void onLoadAdError() {
+        progressDialog.dismiss();
+    }
+
+    @Override
+    public void onBulkAdLoaded() {
+        progressDialog.dismiss();
+    }
+
+    @Override
+    public void onLoadBulkAAdError() {
         progressDialog.dismiss();
     }
 
