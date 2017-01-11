@@ -38,10 +38,17 @@ public class CartPartialDeliver {
         return info;
     }
 
-    public static List<CartPartialDeliver> createListForAdapter() {
+    public static List<CartPartialDeliver> createListForDeliverPartial() {
         List<CartPartialDeliver> list = new ArrayList<>();
-        list.add(0, new CartPartialDeliver("0", "Tidak"));
-        list.add(1, new CartPartialDeliver("1", "Ya"));
+        list.add(0, new CartPartialDeliver("1", "Kirimkan stok tersedia"));
+        list.add(1, new CartPartialDeliver("0", "Batalkan pemesanan"));
+        return list;
+    }
+
+    public static List<CartPartialDeliver> createListForCancelDeliverPartial() {
+        List<CartPartialDeliver> list = new ArrayList<>();
+        list.add(0, new CartPartialDeliver("0", "Batalkan pemesanan"));
+        list.add(1, new CartPartialDeliver("1", "Kirimkan stok tersedia"));
         return list;
     }
 
