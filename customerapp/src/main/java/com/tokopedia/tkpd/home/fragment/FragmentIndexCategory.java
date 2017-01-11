@@ -551,9 +551,11 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     @Override
-    public void renderTopPicks(ArrayList<Group> topicks) {
-        topPicksAdapter.setDataList(topicks);
-        topPicksAdapter.notifyDataSetChanged();
+    public void renderTopPicks(ArrayList<Toppick> toppicks) {
+
+            topPicksAdapter.setDataList(toppicks);
+            topPicksAdapter.notifyDataSetChanged();
+
     }
 
     @Override

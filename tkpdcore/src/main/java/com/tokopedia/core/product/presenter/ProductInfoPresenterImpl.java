@@ -93,7 +93,7 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
 
     private ProductPass generateProductPass(Bundle bundleData, Uri uriData) {
         ProductPass productPass;
-        if (bundleData != null && bundleData.getParcelable(ProductInfoActivity.EXTRA_PRODUCT_PASS) !=null) {
+        if (bundleData != null) {
             productPass = bundleData.getParcelable(ProductInfoActivity.EXTRA_PRODUCT_PASS);
             ProductItem productItem = bundleData
                     .getParcelable(ProductInfoActivity.EXTRA_PRODUCT_ITEM);

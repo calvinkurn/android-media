@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public interface TopPicksView {
 
-    void renderTopPicks(ArrayList<Group> topicksGroup);
+    void renderTopPicks(ArrayList<Toppick> topicks);
 
 /*    void showGetCatMenuUnknownHostMessage(int stringId);
 

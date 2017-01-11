@@ -19,6 +19,9 @@ public class Toppick {
     @SerializedName("item")
     @Expose
     private List<Item> item = null;
+    @SerializedName("group_name")
+    @Expose
+    private String groupName;
 
     public String getName() {
         return name;
@@ -52,4 +55,11 @@ public class Toppick {
         this.item = item;
     }
 
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
 }

@@ -30,7 +30,7 @@ public class  TopPicksAdapter extends
         RecyclerView.Adapter<TopPicksAdapter.ItemRowHolder> {
 
     private final Context mContext;
-    private List<Group> dataList;
+    private List<Toppick> dataList;
     private int homeMenuWidth;
 
     private TopPicksItemAdapter.OnItemClickedListener onItemClickedListener;
@@ -44,7 +44,7 @@ public class  TopPicksAdapter extends
 
     @SuppressWarnings("unused")
     public TopPicksAdapter(
-            Context context, ArrayList<Group> dataList, int homeMenuWidth) {
+            Context context, ArrayList<Toppick> dataList, int homeMenuWidth) {
         this.dataList = dataList;
         this.mContext = context;
         this.homeMenuWidth = homeMenuWidth;
@@ -60,11 +60,10 @@ public class  TopPicksAdapter extends
 
     @Override
     public void onBindViewHolder(TopPicksAdapter.ItemRowHolder itemRowHolder, int i) {
-        final Group toppickGroup = dataList.get(i);
-        final Toppick firstTopPicks = dataList.get(0).getToppicks().get(i);
-        itemRowHolder.itemTitle.setText(toppickGroup.getName());
+        final Toppick toppick = dataList.get(i);
+        itemRowHolder.itemTitle.setText(toppick.getGroupName());
         TopPicksItemAdapter itemAdapter = new TopPicksItemAdapter(
-                dataList.get(0).getToppicks().get(i),
+                dataList.get(i),
                 homeMenuWidth);
         itemAdapter.setItemClickedListener(onItemClickedListener);
         itemAdapter.setTitleClickedListener(onTitleClickedListener);
@@ -74,17 +73,17 @@ public class  TopPicksAdapter extends
                         GridLayoutManager.VERTICAL, false));
         itemRowHolder.recycler_view_list.addItemDecoration(new DividerItemDecoration(mContext));
         itemRowHolder.recycler_view_list.setAdapter(itemAdapter);
-                itemRowHolder.viewAll.setOnClickListener(new View.OnClickListener() {
+        itemRowHolder.viewAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClickViewAll.onClick(firstTopPicks);
+                onClickViewAll.onClick(toppick);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return dataList.size();
+        return  dataList.size();
     }
 
     public void setOnGimmicClickedListener(
@@ -97,7 +96,7 @@ public class  TopPicksAdapter extends
         this.onTitleClickedListener = onTitleClickedListener;
     }
 
-    public void setDataList(List<Group> dataList) {
+    public void setDataList(List<Toppick> dataList) {
         this.dataList = dataList;
     }
 

@@ -44,8 +44,6 @@ public class TopPicksPresenterImpl implements TopPicksPresenter, ErrorListener {
         Subscriber<Response<String>> subscriber = getSubcribption();
         Map<String, String> param = new HashMap<>();
         param.put("random","true");
-        param.put("count", String.valueOf(1));
-        param.put("item", String.valueOf(3));
         param.put("device", "android");
         param.put("source", "home");
         homeMenuInteractor.fetchTopPicksNetworkNetwork(param,subscriber);
@@ -82,6 +80,16 @@ public class TopPicksPresenterImpl implements TopPicksPresenter, ErrorListener {
 
     }
 
+    public boolean isTopPickValid(TopPicksResponse topPicksResponse) {
+        //Top Picks on Mobile is always 1 group & 1 Toppick
+        return (topPicksResponse.getData() != null &&
+                topPicksResponse.getData().getGroups() != null &&
+                topPicksResponse.getData().getGroups().size() >0 &&
+                topPicksResponse.getData().getGroups().get(0) != null &&
+                topPicksResponse.getData().getGroups().get(0).getToppicks() !=null &&
+                topPicksResponse.getData().getGroups().get(0).getToppicks().size() > 0);
+    }
+
     private Subscriber<Response<String>> getSubcribption() {
         return new Subscriber<Response<String>>() {
 
@@ -92,7 +100,7 @@ public class TopPicksPresenterImpl implements TopPicksPresenter, ErrorListener {
 
             @Override
             public void onError(Throwable e) {
-                //handleErrorWhenGetHomeCatMenu(e);
+
             }
 
             @Override
@@ -101,11 +109,16 @@ public class TopPicksPresenterImpl implements TopPicksPresenter, ErrorListener {
                     TopPicksResponse topPicksResponse = new Gson().fromJson(
                             response.body(), TopPicksResponse.class);
 
-                    ArrayList<Group> toppicksGroupList = new ArrayList<>();
-                    for (Group toppicksGroup : topPicksResponse.getData().getGroups()) {
-                        toppicksGroupList.add(toppicksGroup);
+
+                    if (isTopPickValid(topPicksResponse)) {
+                        ArrayList<Toppick> toppicksList = new ArrayList<>();
+                        for (Toppick toppicks : topPicksResponse.getData().getGroups().get(0).getToppicks()) {
+                            toppicks.setGroupName(topPicksResponse.getData().getGroups().get(0).getName());
+                            toppicksList.add(toppicks);
+                        }
+                        view.renderTopPicks(toppicksList);
                     }
-                    view.renderTopPicks(toppicksGroupList);
+
                 } else {
                     new ErrorHandler(TopPicksPresenterImpl.this, response.code());
 

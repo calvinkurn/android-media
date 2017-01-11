@@ -153,9 +153,6 @@ public class DeepLinkChecker {
         bundle.putString(BrowseProductRouter.EXTRAS_SEARCH_TERM, searchQuery);
         bundle.putString(BrowseProductRouter.EXTRA_SOURCE, source);
         Intent intent = BrowseProductRouter.getDefaultBrowseIntent(context);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtras(bundle);
         context.startActivity(intent);
     }
@@ -184,10 +181,6 @@ public class DeepLinkChecker {
 
 
     public static void openCatalog(String url, Context context) {
-        Bundle bundle = new Bundle();
-//        bundle.putString("ctg_id", getLinkSegment(url).get(1));
-//        Intent intent = new Intent(context, Catalog.class);
-//        intent.putExtras(bundle);
         context.startActivity(DetailProductRouter.getCatalogDetailActivity(context, getLinkSegment(url).get(1)));
     }
 
