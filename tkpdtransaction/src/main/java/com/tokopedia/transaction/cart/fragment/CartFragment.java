@@ -78,8 +78,14 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @BindView(R2.id.pb_main_loading)
     ProgressBar pbMainLoading;
-    @BindView(R2.id.tv_error_payment)
-    TextView tvErrorPayment;
+    //    @BindView(R2.id.tv_error_payment)
+//    TextView tvErrorPayment;
+    @BindView(R2.id.tv_error_1)
+    TextView tvError1;
+    @BindView(R2.id.tv_error_2)
+    TextView tvError2;
+    @BindView(R2.id.holder_error)
+    LinearLayout holderError;
     @BindView(R2.id.tv_total_payment)
     TextView tvTotalPayment;
     @BindView(R2.id.nsv_container)
@@ -314,18 +320,21 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderVisibleErrorPaymentCart(@NonNull String messageError) {
+    public void renderVisibleErrorPaymentCart(
+            @NonNull String messageError1, @NonNull String messageError2
+    ) {
         checkoutDataBuilder.errorPayment(true);
-        tvErrorPayment.setText(messageError);
-        checkoutDataBuilder.errorPaymentMessage(messageError);
-        tvErrorPayment.setVisibility(View.VISIBLE);
+        holderError.setVisibility(View.VISIBLE);
+        tvError1.setText(messageError1);
+        tvError2.setText(messageError2);
+        checkoutDataBuilder.errorPaymentMessage(messageError1 + " , " + messageError2);
     }
 
     @Override
     public void renderInvisibleErrorPaymentCart() {
         checkoutDataBuilder.errorPayment(false);
         checkoutDataBuilder.errorPaymentMessage(null);
-        tvErrorPayment.setVisibility(View.GONE);
+        holderError.setVisibility(View.GONE);
     }
 
     @Override

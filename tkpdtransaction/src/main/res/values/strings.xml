@@ -44,4 +44,6 @@
     <string name="label_history_transaction_actor_buyer">Buyer</string>
     <string name="label_history_transaction_actor_seller">Seller</string>
     <string name="label_error_upload_image">Gagal Mengupload gambar, silahkan coba lagi</string>
+    <string name="label_error_message_1_count_notif">Anda memiliki XX_XX pesanan yang tidak dapat diproses</string>
+    <string name="label_error_message_2_count_notif">Harap hapus produk dari keranjang belanja Anda</string>
 </resources>
