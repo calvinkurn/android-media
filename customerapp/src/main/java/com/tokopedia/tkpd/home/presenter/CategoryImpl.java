@@ -143,6 +143,7 @@ public class CategoryImpl implements Category {
         subscription
                 .add(
                         categoryApi.getBanners(
+                                SessionHandler.getLoginID(MainApplication.getAppContext()),
                                 CategoryApi.size,
                                 CategoryApi.ANDROID_DEVICE,
                                 CategoryApi.TARGET_BANNER,

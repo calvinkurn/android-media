@@ -57,6 +57,7 @@ public interface CategoryApi {
     //    @GET(API_V1_BANNERS)
     @GET(API_V1_SLIDES)
     Observable<Response<Banner>> getBanners(
+            @Header(HEADER_USER_ID) String user_id,
             @Query(PAGE_SIZE) String size,
             @Query(FILTER_DEVICE) String device,
             @Query(FILTER_TARGET) String target,
