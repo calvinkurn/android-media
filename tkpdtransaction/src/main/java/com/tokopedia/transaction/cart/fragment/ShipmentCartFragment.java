@@ -256,12 +256,12 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
             int selectedPosition = 0;
             for (int i = 0; i < shipmentPackages.size(); i++) {
                 if (wrapper.getShipmentId().equalsIgnoreCase(shipment.getShipmentId())
-                        && wrapper.getShipmentPackageId().equalsIgnoreCase(shipmentPackages.get(i).getShipmentId())) {
+                        && wrapper.getShipmentPackageId().equalsIgnoreCase(shipmentPackages.get(i).getShipmentPackageId())) {
                     selectedPosition = i;
+                    break;
                 }
             }
             spShipmentPackage.setAdapter(adapterShipmentPackage);
-            wrapper.setShipmentPackageId(shipmentPackages.get(selectedPosition).getShipmentPackageId());
             spShipmentPackage.setSelection(selectedPosition);
         } else {
             renderEmptyShipmentPackageSpinner();
@@ -319,22 +319,24 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
                 shipments.add(shipment);
             }
         }
+
         if (shipments.size() > 0) {
             adapterShipment.setAdapterData(shipments);
             spShipment.setAdapter(adapterShipment);
-            renderShipmentPackageSpinner(shipments.get(0));
+            int selectedPosition = 0;
+            for (int i = 0; i < shipments.size(); i++) {
+                if (wrapper.getShipmentId().equalsIgnoreCase(shipments.get(i).getShipmentId())) {
+                    selectedPosition = i;
+                    break;
+                }
+            }
+            spShipment.setSelection(selectedPosition);
+
+            renderShipmentPackageSpinner(shipments.get(selectedPosition));
         } else {
             renderEmptyShipment();
             renderEmptyShipmentPackageSpinner();
         }
-
-        int selectedPosition = 0;
-        for (int i = 0; i < shipments.size(); i++) {
-            if (wrapper.getAddressId().equalsIgnoreCase(shipments.get(i).getShipmentId())) {
-                selectedPosition = i;
-            }
-        }
-        spShipment.setSelection(selectedPosition);
     }
 
     @Override
