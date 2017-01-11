@@ -2,9 +2,9 @@ package com.tokopedia.tkpd.home.recharge.interactor;
 
 import android.util.Log;
 
+import com.fernandocejas.frodo.annotation.RxLogObservable;
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.database.CacheDuration;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.database.manager.RechargeOperatorManager;
@@ -23,7 +23,6 @@ import com.tokopedia.core.network.apiservices.recharge.RechargeService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -216,9 +215,13 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                 .first(new Func1<CategoryData, Boolean>() {
                     @Override
                     public Boolean call(CategoryData categoryData) {
-                        return categoryData != null && !categoryData.getData().isEmpty();
+                        return categoryData != null &&
+                                categoryData.getData() != null &&
+                                !categoryData.getData().isEmpty();
                     }
                 })
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<CategoryData>() {
                     @Override
                     public void onCompleted() {
@@ -549,9 +552,11 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                 });
     }
 
-    
+    @RxLogObservable
     private Observable<CategoryData> getObservableNetworkCategory() {
         return rechargeService.getApi().getCategory()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(new Action1<Response<CategoryData>>() {
                     @Override
                     public void call(Response<CategoryData> categoryDataResponse) {
@@ -562,7 +567,7 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                             manager.setValue(CacheUtil.convertListModelToString(categoryData.getData(),
                                     new TypeToken<List<com.tokopedia.core.database.model.category.Category>>() {
                                     }.getType()));
-                            manager.setCacheDuration(10*60);
+                            manager.setCacheDuration(60*5);
                             manager.store();
                         }
                     }
@@ -576,6 +581,7 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                 });
     }
 
+    @RxLogObservable
     private Observable<CategoryData> getObservableDbCategory() {
         return Observable.just(true)
                 .subscribeOn(Schedulers.newThread())
@@ -584,24 +590,23 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                 .map(new Func1<Boolean, List<com.tokopedia.core.database.model.category.Category>>() {
                     @Override
                     public List<com.tokopedia.core.database.model.category.Category> call(Boolean aBoolean) {
-                        try {
                             GlobalCacheManager manager = new GlobalCacheManager();
+                            manager.getValueString(KEY_CATEGORY);
                             return CacheUtil.convertStringToListModel(
                                     manager.getValueString(KEY_CATEGORY),
                                     new TypeToken<List<com.tokopedia.core.database.model.category.Category>>() {
                                     }.getType());
-
-                        } catch (Exception e) {
-                            return new ArrayList<com.tokopedia.core.database.model.category.Category>();
-                        }
-
-
+                    }
+                })
+                .onErrorReturn(new Func1<Throwable, List<com.tokopedia.core.database.model.category.Category>>() {
+                    @Override
+                    public List<com.tokopedia.core.database.model.category.Category> call(Throwable throwable) {
+                        return new ArrayList<com.tokopedia.core.database.model.category.Category>();
                     }
                 })
                 .flatMap(new Func1<List<com.tokopedia.core.database.model.category.Category>, Observable<CategoryData>>() {
                     @Override
                     public Observable<CategoryData> call(List<com.tokopedia.core.database.model.category.Category> categories) {
-                        //Log.i("OBSERVABLE", "db enter : "+categories);
                         CategoryData categoryData = new CategoryData();
                         categoryData.setData(categories);
                         return Observable.just(categoryData);
@@ -609,8 +614,11 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                 });
     }
 
+    @RxLogObservable
     private Observable<List<Product>> getObservableNetworkListProduct() {
         return rechargeService.getApi().getProduct()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(new Action1<Response<ProductData>>() {
                     @Override
                     public void call(Response<ProductData> productDataResponse) {
@@ -621,7 +629,7 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                             manager.setValue(CacheUtil.convertListModelToString(productData.getData(),
                                     new TypeToken<List<Product>>() {
                                     }.getType()));
-                            manager.setCacheDuration(60*10);
+                            manager.setCacheDuration(60*5);
                             manager.store();
                         }
                     }
@@ -634,8 +642,11 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                 });
     }
 
+    @RxLogObservable
     private Observable<List<Product>> getObservableDbListProduct() {
         return Observable.just(true)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<Boolean, List<Product>>() {
                     @Override
                     public List<Product> call(Boolean condition) {
@@ -646,11 +657,20 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                                 }.getType());
 
                     }
+                })
+                .onErrorReturn(new Func1<Throwable, List<Product>>() {
+                    @Override
+                    public List<Product> call(Throwable throwable) {
+                        return new ArrayList<Product>();
+                    }
                 });
     }
 
+    @RxLogObservable
     private Observable<List<Operator>> getObservableDbListOperator() {
         return Observable.just(true)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<Boolean, List<Operator>>() {
                     @Override
                     public List<Operator> call(Boolean condition) {
@@ -660,11 +680,20 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                                 new TypeToken<List<Operator>>() {
                                 }.getType());
                     }
+                })
+                .onErrorReturn(new Func1<Throwable, List<Operator>>() {
+                    @Override
+                    public List<Operator> call(Throwable throwable) {
+                        return new ArrayList<Operator>();
+                    }
                 });
     }
 
+    @RxLogObservable
     private Observable<List<Operator>> getObservableNetworkListOperator() {
         return rechargeService.getApi().getOperator()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(new Action1<Response<OperatorData>>() {
                     @Override
                     public void call(Response<OperatorData> operatorDataResponse) {
@@ -675,7 +704,7 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                             manager.setValue(CacheUtil.convertListModelToString(operatorData.getData(),
                                     new TypeToken<List<Operator>>() {
                                     }.getType()));
-                            manager.setCacheDuration(60*10);
+                            manager.setCacheDuration(60*5);
                             manager.store();
                         }
                     }
