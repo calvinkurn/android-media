@@ -28,7 +28,7 @@ public class CartItem implements Parcelable {
     private String cartInsurancePrice;
     @SerializedName("cart_total_product")
     @Expose
-    private String cartTotalProduct;
+    private int cartTotalProduct;
     @SerializedName("cart_is_price_changed")
     @Expose
     private String cartIsPriceChanged;
@@ -151,11 +151,11 @@ public class CartItem implements Parcelable {
         this.cartInsurancePrice = cartInsurancePrice;
     }
 
-    public String getCartTotalProduct() {
+    public int getCartTotalProduct() {
         return cartTotalProduct;
     }
 
-    public void setCartTotalProduct(String cartTotalProduct) {
+    public void setCartTotalProduct(int cartTotalProduct) {
         this.cartTotalProduct = cartTotalProduct;
     }
 
@@ -376,6 +376,9 @@ public class CartItem implements Parcelable {
     }
 
 
+    public CartItem() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -388,7 +391,7 @@ public class CartItem implements Parcelable {
         dest.writeString(this.cartTotalLogisticFee);
         dest.writeValue(this.cartCannotInsurance);
         dest.writeString(this.cartInsurancePrice);
-        dest.writeString(this.cartTotalProduct);
+        dest.writeInt(this.cartTotalProduct);
         dest.writeString(this.cartIsPriceChanged);
         dest.writeString(this.cartInsurancePriceIdr);
         dest.writeString(this.cartIsExceptionErrorDelete);
@@ -418,16 +421,13 @@ public class CartItem implements Parcelable {
         dest.writeString(this.cartString);
     }
 
-    public CartItem() {
-    }
-
     protected CartItem(Parcel in) {
         this.cartTotalLogisticFeeIdr = in.readString();
         this.cartShippingRateIdr = in.readString();
         this.cartTotalLogisticFee = in.readString();
         this.cartCannotInsurance = (Integer) in.readValue(Integer.class.getClassLoader());
         this.cartInsurancePrice = in.readString();
-        this.cartTotalProduct = in.readString();
+        this.cartTotalProduct = in.readInt();
         this.cartIsPriceChanged = in.readString();
         this.cartInsurancePriceIdr = in.readString();
         this.cartIsExceptionErrorDelete = in.readString();

@@ -341,9 +341,12 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private void renderPartialDeliverOption(ViewHolder holder, final CartItem cartData) {
         List<CartPartialDeliver> partialDeliverList;
-        partialDeliverList = cartData.getCartPartial().equalsIgnoreCase("1")
-                ? CartPartialDeliver.createListForDeliverPartial()
-                : CartPartialDeliver.createListForCancelDeliverPartial();
+        if (!cartData.getCartPartial().equalsIgnoreCase("1")
+                || cartData.getCartTotalProduct() <= 1) {
+            partialDeliverList = CartPartialDeliver.createListForCancelDeliverPartial();
+        } else {
+            partialDeliverList = CartPartialDeliver.createListForDeliverPartial();
+        }
         ArrayAdapter<CartPartialDeliver> cartPartialDeliverAdapter
                 = new ArrayAdapter<>(
                 hostFragment.getActivity(), android.R.layout.simple_spinner_item,
@@ -370,6 +373,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     }
                 }
         );
+        holder.spShipmentOptionChoosen.setEnabled(cartData.getCartTotalProduct() > 1);
     }
 
     private void updateDropShipperCartName(CartItem cartData, String dropShipperName) {
