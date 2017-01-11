@@ -6,7 +6,6 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +16,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.model.CartProductItemEditable;
@@ -181,7 +181,9 @@ class CartProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (item.getCartProduct().getProductErrorMsg() != null
                 && !item.getCartProduct().getProductErrorMsg().isEmpty()
                 && !item.getCartProduct().getProductErrorMsg().equalsIgnoreCase("0")) {
-            holder.tvError.setText(item.getCartProduct().getProductErrorMsg());
+            holder.tvError.setText(
+                    MethodChecker.fromHtml(item.getCartProduct().getProductErrorMsg())
+            );
             holder.tvError.setVisibility(View.VISIBLE);
         } else {
             holder.tvError.setVisibility(View.GONE);
@@ -202,7 +204,9 @@ class CartProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             holder.tvPreorderPeriod.setVisibility(View.GONE);
         }
 
-        holder.tvNameProduct.setText(item.getCartProduct().getProductName());
+        holder.tvNameProduct.setText(
+                MethodChecker.fromHtml(item.getCartProduct().getProductName())
+        );
         holder.tvPriceProduct.setText(item.getCartProduct().getProductPriceIdr());
         holder.tvWeightProduct.setText(item.getCartProduct().getProductWeight());
         holder.etQuantityProduct.setEnabled(editMode);
@@ -215,7 +219,7 @@ class CartProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
         });
         holder.etQuantityProduct.setText(item.getTempQuantity());
-        holder.etNotesProduct.setText(Html.fromHtml(item.getTempNotes()));
+        holder.etNotesProduct.setText(MethodChecker.fromHtml(item.getTempNotes()));
 
         holder.tvNameProduct.setOnClickListener(getOnProductDetailClickListener(cartProduct));
         holder.ivPicProduct.setOnClickListener(getOnProductDetailClickListener(cartProduct));
