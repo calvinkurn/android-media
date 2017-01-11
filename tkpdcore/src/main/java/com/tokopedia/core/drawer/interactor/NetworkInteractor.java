@@ -64,6 +64,8 @@ public interface NetworkInteractor {
         void onSuccess(TopCashItem topCashItem);
 
         void onError(String message);
+
+        void onTokenExpire();
     }
 
     void unsubscribe();

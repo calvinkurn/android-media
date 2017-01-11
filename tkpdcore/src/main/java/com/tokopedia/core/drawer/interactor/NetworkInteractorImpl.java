@@ -186,7 +186,7 @@ public class NetworkInteractorImpl implements NetworkInteractor {
     @Override
     public void getTokoCash(final Context context, final TopCashListener listener) {
         TKPDMapParam<String, String> topCashParams = new TKPDMapParam<>();
-        topCashParams.put("user_id", "33330");
+        topCashParams.put("user_id", "271052");
         Observable<Response<TopCashItem>> observable = tokoCashService.getApi()
                 .getTokoCash(topCashParams);
         compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())

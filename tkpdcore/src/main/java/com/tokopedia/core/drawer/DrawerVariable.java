@@ -25,6 +25,7 @@ import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.EtalaseShopEditor;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.R;
+import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -44,6 +45,7 @@ import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.myproduct.ManageProduct;
+import com.tokopedia.core.network.retrofit.utils.DialogForceLogout;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
@@ -53,6 +55,7 @@ import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
@@ -980,6 +983,26 @@ public class DrawerVariable {
             @Override
             public void onError(String message) {
 
+            }
+
+            @Override
+            public void onTokenExpire() {
+                DialogForceLogout.create(context, new DialogForceLogout.ActionListener() {
+                    @Override
+                    public void onDialogClicked() {
+                        SessionHandler sessionHandler = new SessionHandler(context);
+                        sessionHandler.forceLogout();
+                        if(GlobalConfig.isSellerApp()){
+                            Intent intent = SellerRouter.getAcitivitySplashScreenActivity(context);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(intent);
+                        }else {
+                            Intent intent = new Intent(context, SplashScreen.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(intent);
+                        }
+                    }
+                });
             }
         });
     }

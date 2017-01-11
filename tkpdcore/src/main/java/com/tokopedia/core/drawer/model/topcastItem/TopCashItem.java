@@ -9,8 +9,8 @@ public class TopCashItem {
     private String mCode;
     @SerializedName("data")
     private Data mData;
-    @SerializedName("message")
-    private String mMessage;
+    @SerializedName("error")
+    private String error;
 
     public String getCode() {
         return mCode;
@@ -28,12 +28,12 @@ public class TopCashItem {
         mData = data;
     }
 
-    public String getMessage() {
-        return mMessage;
+    public String getError() {
+        return error;
     }
 
-    public void setMessage(String message) {
-        mMessage = message;
+    public void setError(String error) {
+        this.error = error;
     }
 
 }

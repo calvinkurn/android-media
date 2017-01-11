@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
+import com.tokopedia.core.network.retrofit.interceptors.StandardizedInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
 
 import java.io.IOException;
@@ -41,7 +42,7 @@ public abstract class BearerService<T> {
                 return chain.proceed(request);
             }
         });
-        Interceptor authInterceptor = new TkpdBaseInterceptor();
+        Interceptor authInterceptor = new StandardizedInterceptor();
         httpClientBuilder.interceptors().add(authInterceptor);
         HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
         logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
