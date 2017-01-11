@@ -2,7 +2,6 @@ package com.tokopedia.tkpd.home.recharge.interactor;
 
 import android.util.Log;
 
-import com.fernandocejas.frodo.annotation.RxLogObservable;
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.database.CacheUtil;
@@ -558,7 +557,6 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                 });
     }
 
-    @RxLogObservable
     private Observable<CategoryData> getObservableNetworkCategory() {
         return rechargeService.getApi().getCategory()
                 .subscribeOn(Schedulers.newThread())
@@ -587,7 +585,6 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                 });
     }
 
-    @RxLogObservable
     private Observable<CategoryData> getObservableDbCategory() {
         return Observable.just(true)
                 .subscribeOn(Schedulers.newThread())
@@ -620,7 +617,6 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                 });
     }
 
-    @RxLogObservable
     private Observable<List<Product>> getObservableNetworkListProduct() {
         return rechargeService.getApi().getProduct()
                 .subscribeOn(Schedulers.newThread())
@@ -648,7 +644,6 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                 });
     }
 
-    @RxLogObservable
     private Observable<List<Product>> getObservableDbListProduct() {
         return Observable.just(true)
                 .subscribeOn(Schedulers.newThread())
@@ -672,7 +667,6 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                 });
     }
 
-    @RxLogObservable
     private Observable<List<Operator>> getObservableDbListOperator() {
         return Observable.just(true)
                 .subscribeOn(Schedulers.newThread())
@@ -695,7 +689,6 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                 });
     }
 
-    @RxLogObservable
     private Observable<List<Operator>> getObservableNetworkListOperator() {
         return rechargeService.getApi().getOperator()
                 .subscribeOn(Schedulers.newThread())
