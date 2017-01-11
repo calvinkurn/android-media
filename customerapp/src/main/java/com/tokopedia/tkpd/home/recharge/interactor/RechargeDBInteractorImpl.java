@@ -43,6 +43,7 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
     private final static String KEY_PRODUCT = "RECHARGE_PRODUCT";
     private final static String KEY_OPERATOR = "RECHARGE_STATUS";
     private RechargeService rechargeService;
+    private static int CACHE_DURATION = 60*5;
 
     public RechargeDBInteractorImpl() {
         rechargeService = new RechargeService();
@@ -63,7 +64,8 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                             @Override
                             public Boolean call(Product product) {
                                 return product.getRelationships().getCategory().getData().getId() == categoryId
-                                        && product.getRelationships().getOperator().getData().getId() == operator.getId();
+                                        && product.getRelationships().getOperator().getData().getId() == operator.getId()
+                                        && product.getAttributes().getStatus() != 2;
                             }
                         }).toList().toBlocking().single();
                     }
@@ -156,7 +158,11 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                                 .getRelationships()
                                 .getOperator()
                                 .getData()
-                                .getId() == Integer.parseInt(operatorId);
+                                .getId() == Integer.parseInt(operatorId)
+                                &&
+                                product
+                                .getAttributes()
+                                .getStatus() != 2;
                     }
                 })
                 .toList()
@@ -567,7 +573,7 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                             manager.setValue(CacheUtil.convertListModelToString(categoryData.getData(),
                                     new TypeToken<List<com.tokopedia.core.database.model.category.Category>>() {
                                     }.getType()));
-                            manager.setCacheDuration(60*5);
+                            manager.setCacheDuration(CACHE_DURATION);
                             manager.store();
                         }
                     }
@@ -629,7 +635,7 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                             manager.setValue(CacheUtil.convertListModelToString(productData.getData(),
                                     new TypeToken<List<Product>>() {
                                     }.getType()));
-                            manager.setCacheDuration(60*5);
+                            manager.setCacheDuration(CACHE_DURATION);
                             manager.store();
                         }
                     }
@@ -704,7 +710,7 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                             manager.setValue(CacheUtil.convertListModelToString(operatorData.getData(),
                                     new TypeToken<List<Operator>>() {
                                     }.getType()));
-                            manager.setCacheDuration(60*5);
+                            manager.setCacheDuration(CACHE_DURATION);
                             manager.store();
                         }
                     }
