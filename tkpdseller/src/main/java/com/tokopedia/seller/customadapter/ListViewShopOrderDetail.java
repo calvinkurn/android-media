@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.selling.model.shopconfirmationdetail.ShippingConfirmDetModel;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
@@ -102,12 +103,22 @@ public class ListViewShopOrderDetail extends BaseAdapter{
 				Intent intent = new Intent(context, ProductInfoActivity.class);
 				Bundle bundle = new Bundle();
 				bundle.putString(PRODUCT_URI, data.ProductUrlList);
-				bundle.putString(PRODUCT_ID, data.ProductIdList);
+				bundle.putParcelable(ProductInfoActivity.EXTRA_PRODUCT_PASS,
+						getProductDataToPass(data));
 				intent.putExtras(bundle);
 				context.startActivity(intent);
 			}
 		});
 		return convertView;
+	}
+
+	private ProductPass getProductDataToPass(ShippingConfirmDetModel.Data data) {
+		return ProductPass.Builder.aProductPass()
+				.setProductPrice(data.PriceList)
+				.setProductId(data.ProductIdList)
+				.setProductName(data.NameList)
+				.setProductImage(data.ImageUrlList)
+				.build();
 	}
 
 }

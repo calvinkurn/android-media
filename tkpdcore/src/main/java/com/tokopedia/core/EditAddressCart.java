@@ -723,7 +723,7 @@ public class EditAddressCart extends TActivity {
 
     private void onSuccessSelectAddress(Bundle bundle) {
         Destination temp = bundle.getParcelable(ManageAddressConstant.EXTRA_ADDRESS);
-        addressStreet = temp.getAddressDetail();
+        addressStreet = String.valueOf(MethodChecker.fromHtml(temp.getAddressDetail()));
         addressName = temp.getAddressName();
         CurrAddressID = temp.getAddressId();
         latitude = temp.getLatitude();

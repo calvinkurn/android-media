@@ -85,7 +85,7 @@ public class WishlistRecyclerViewAdapter extends RecyclerView.Adapter<WishlistRe
 
                 Bundle bundle = new Bundle();
                 Intent intent = new Intent(context, ProductInfoActivity.class);
-                bundle.putString("product_id", item.getId());
+                bundle.putParcelable(ProductInfoActivity.EXTRA_PRODUCT_ITEM, item);
                 intent.putExtras(bundle);
                 context.startActivity(intent);
             }

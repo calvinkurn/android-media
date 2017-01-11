@@ -20,7 +20,7 @@ public interface TrackingFragmentView {
 
     void setLoading();
 
-    void showErrorMessage();
+    void showErrorMessage(String errorMessage);
 
     void removeError();
 

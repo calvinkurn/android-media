@@ -344,8 +344,8 @@ public class Destination implements Parcelable {
     }
 
     public String getAddressDetail() {
-        return MethodChecker.fromHtml(receiverName)
-                + "<br>" + MethodChecker.fromHtml(addressStreet)
+        return receiverName
+                + "<br>" + addressStreet
                 + "<br>" + districtName
                 + ", " + cityName
                 + ", " + postalCode

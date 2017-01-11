@@ -64,7 +64,6 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
 
     @Override
     protected void setViewListener() {
-        setVisibility(INVISIBLE);
         vpImage.setAdapter(imagePagerAdapter);
         indicator.setViewPager(vpImage);
     }
@@ -84,11 +83,9 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
                     .setImageDescription("").build());
             imagePagerAdapter.addAll(productImageList);
             indicator.notifyDataSetChanged();
-            setVisibility(VISIBLE);
         } else {
             imagePagerAdapter.addAll(productImageList);
             indicator.notifyDataSetChanged();
-            setVisibility(VISIBLE);
             imagePagerAdapter.setActionListener(new PagerAdapterAction(data));
         }
     }
@@ -96,7 +93,9 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
     public void renderTempData(ProductPass productPass) {
         ProductImage productImage = new ProductImage();
         productImage.setImageSrc300(productPass.getProductImage());
+        productImage.setImageSrc(productPass.getProductImage());
         productImage.setImageDescription("");
+        imagePagerAdapter.add(productImage);
         indicator.notifyDataSetChanged();
     }
 

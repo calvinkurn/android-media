@@ -4,4 +4,15 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="padding_top_onboard_cover_page">20dp</dimen>
     <dimen name="padding_bottom_onboard_cover_page">80dp</dimen>
+
+    <!-- gmstat -->
+    <dimen name="gmstat_height_header_date">52dp</dimen>
+    <dimen name="gmstat_card_elevation">1dp</dimen>
+    <dimen name="gmstat_padding_item_left_right">16dp</dimen>
+    <dimen name="gmstat_margin_cardview">-2dp</dimen>
+    <dimen name="gmstat_margin_bottom">8dp</dimen>
+    <dimen name="gmstat_height_view_transaction">200dp</dimen>
+    <dimen name="card_insets">1dp</dimen>
+    <dimen name="gmstat_margin_bottom_double">16dp</dimen>
+    <dimen name="gmstat_padding_item_top_transaction">6dp</dimen>
 </resources>

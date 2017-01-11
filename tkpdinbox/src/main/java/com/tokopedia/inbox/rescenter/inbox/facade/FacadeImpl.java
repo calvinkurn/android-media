@@ -56,30 +56,34 @@ public class FacadeImpl implements Facade {
                 presenter.setOnSuccessInitInboxData(data);
                 presenter.setAllowConnection(true);
                 presenter.setOnRequestSuccess();
+                presenter.finishRequest();
             }
 
             @Override
             public void onTimeout(NetworkErrorHelper.RetryClickedListener listener) {
+                presenter.finishRequest();
                 presenter.setOnResponseTimeOut(listener);
             }
 
             @Override
             public void onError(String message) {
-                presenter.setOnRequestError(message);
                 presenter.setAllowConnection(true);
                 presenter.setOnRequestSuccess();
+                presenter.finishRequest();
+                presenter.setOnRequestError(message);
             }
 
             @Override
             public void onNullData() {
-                presenter.setOnResponseNull();
                 presenter.setAllowConnection(true);
                 presenter.setOnRequestSuccess();
+                presenter.finishRequest();
+                presenter.setOnResponseNull();
             }
 
             @Override
             public void onComplete() {
-                presenter.finishRequest();
+
             }
         });
     }

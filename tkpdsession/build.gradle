@@ -3,6 +3,11 @@ apply plugin: 'android-apt'
 apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
 
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.14.1'
+}
+
+
 def getArtifactVersionCode() {
     return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
 }
@@ -67,12 +72,12 @@ buildscript {
 
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion "25.0.0"
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 24
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
 

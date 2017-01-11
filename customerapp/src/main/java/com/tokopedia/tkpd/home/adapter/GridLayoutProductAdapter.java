@@ -25,7 +25,9 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
+import com.tokopedia.core.network.entity.home.recentView.RecentView;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.Label;
 import com.tokopedia.core.var.ProductItem;
@@ -130,37 +132,69 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
     }
 
     private void bindProductViewHolder(ViewHolder viewHolder, int position) {
-        ProductItem product = (ProductItem) data.get(position);
-        viewHolder.productName.setText(MethodChecker.fromHtml(product.name));
-        viewHolder.productPrice.setText(product.price);
-        viewHolder.shopName.setText(MethodChecker.fromHtml(product.shop));
-        setProductImage(viewHolder, product);
-        if(product.labels == null) {
-            product.labels = new ArrayList<Label>();
-            if (product.preorder != null && product.preorder.equals("1")) {
-                Label label = new Label();
-                label.setTitle(context.getString(R.string.preorder));
-                label.setColor(context.getString(R.string.white_hex_color));
-                product.labels.add(label);
+        if (data.get(position) instanceof ProductItem) {
+            ProductItem product = (ProductItem) data.get(position);
+            viewHolder.productName.setText(Html.fromHtml(product.name));
+            viewHolder.productPrice.setText(product.price);
+            viewHolder.shopName.setText(Html.fromHtml(product.shop));
+            setProductImage(viewHolder, product.getImgUri());
+            if (product.labels == null) {
+                product.labels = new ArrayList<Label>();
+                if (product.preorder != null && product.preorder.equals("1")) {
+                    Label label = new Label();
+                    label.setTitle(context.getString(R.string.preorder));
+                    label.setColor(context.getString(R.string.white_hex_color));
+                    product.labels.add(label);
+                }
+                if (product.wholesale != null && product.wholesale.equals("1")) {
+                    Label label = new Label();
+                    label.setTitle(context.getString(R.string.grosir));
+                    label.setColor(context.getString(R.string.white_hex_color));
+                    product.labels.add(label);
+                }
             }
-            if (product.wholesale != null && product.wholesale.equals("1")) {
-                Label label = new Label();
-                label.setTitle(context.getString(R.string.grosir));
-                label.setColor(context.getString(R.string.white_hex_color));
-                product.labels.add(label);
+            setBadges(viewHolder, product);
+            setLabels(viewHolder, product);
+            viewHolder.mainContent.setOnClickListener(onProductItemClicked(position));
+            setBadges(viewHolder, product);
+            setLabels(viewHolder, product);
+        } else if (data.get(position) instanceof RecentView) {
+            RecentView product = (RecentView) data.get(position);
+            viewHolder.productName.setText(Html.fromHtml(product.getProductName()));
+            viewHolder.productPrice.setText(product.getProductPrice());
+            viewHolder.shopName.setText(Html.fromHtml(product.getShopName()));
+            setProductImage(viewHolder, product.getProductImage());
+            if (product.getLabels() == null) {
+                product.setLabels(new ArrayList<com.tokopedia.core.network.entity.home.recentView.Label>());
+                if (product.getProductPreorder() != null && product.getProductPreorder().equals("1")) {
+                    com.tokopedia.core.network.entity.home.recentView.Label label
+                            = new com.tokopedia.core.network.entity.home.recentView.Label();
+
+                    label.setTitle(context.getString(R.string.preorder));
+                    label.setColor(context.getString(R.string.white_hex_color));
+                    product.getLabels().add(label);
+                }
+                if (product.getProductWholesale() != null && product.getProductWholesale().equals("1")) {
+                    com.tokopedia.core.network.entity.home.recentView.Label label
+                            = new com.tokopedia.core.network.entity.home.recentView.Label();
+
+                    label.setTitle(context.getString(R.string.grosir));
+                    label.setColor(context.getString(R.string.white_hex_color));
+                    product.getLabels().add(label);
+                }
             }
+            setBadgesRecentView(viewHolder, product);
+            setLabelsRecentView(viewHolder, product);
+            viewHolder.mainContent.setOnClickListener(onProductItemClicked(position));
         }
-        setBadges(viewHolder, product);
-        setLabels(viewHolder, product);
-        viewHolder.mainContent.setOnClickListener(onProductItemClicked(position));
     }
 
     private void bindWishlistViewHolder(ViewHolder viewHolder, int position) {
         ProductItem product = (ProductItem) data.get(position);
-        viewHolder.productName.setText(MethodChecker.fromHtml(product.name));
+        viewHolder.productName.setText(Html.fromHtml(product.name));
         viewHolder.productPrice.setText(product.price);
-        viewHolder.shopName.setText(MethodChecker.fromHtml(product.shop));
-        setProductImage(viewHolder, product);
+        viewHolder.shopName.setText(Html.fromHtml(product.shop));
+        setProductImage(viewHolder, product.getImgUri());
         if(product.labels == null) {
             product.labels = new ArrayList<Label>();
             if (product.preorder != null && product.preorder.equals("1")) {
@@ -212,14 +246,25 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ProductItem product = (ProductItem) data.get(position);
-                UnifyTracking.eventWishlistView(product.getName());
+                if(data.get(position) instanceof ProductItem) {
+                    ProductItem product = (ProductItem) data.get(position);
+                    UnifyTracking.eventWishlistView(product.getName());
 
-                Bundle bundle = new Bundle();
-                Intent intent = new Intent(context, ProductInfoActivity.class);
-                bundle.putString("product_id", product.id);
-                intent.putExtras(bundle);
-                context.startActivity(intent);
+                    Bundle bundle = new Bundle();
+                    Intent intent = new Intent(context, ProductInfoActivity.class);
+                    bundle.putParcelable(ProductInfoActivity.EXTRA_PRODUCT_ITEM, data.get(position));
+                    intent.putExtras(bundle);
+                    context.startActivity(intent);
+                } else if (data.get(position) instanceof RecentView) {
+                    RecentView product = (RecentView) data.get(position);
+                    UnifyTracking.eventWishlistView(product.getProductName());
+                    Bundle bundle = new Bundle();
+                    Intent intent = new Intent(context, ProductInfoActivity.class);
+                    bundle.putParcelable(ProductInfoActivity.EXTRA_PRODUCT_PASS,
+                            getProductDataToPass((RecentView) data.get(position)));
+                    intent.putExtras(bundle);
+                    context.startActivity(intent);
+                }
             }
         };
     }
@@ -232,9 +277,18 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
         }
     }
 
-    private void setProductImage(ViewHolder holder, ProductItem product) {
-        ImageHandler.loadImageFit2(holder.getContext(), holder.productImage, product.imgUri);
+    private void setProductImage(ViewHolder holder, String imageUrl) {
+        ImageHandler.loadImageFit2(holder.getContext(), holder.productImage, imageUrl);
     }
+
+    private void setBadgesRecentView(ViewHolder holder, RecentView data) {
+        if (data.getBadges() != null && holder.badgeContainer.getChildCount() == 0) {
+            for (com.tokopedia.core.network.entity.home.recentView.Badge badges : data.getBadges()) {
+                LuckyShopImage.loadImage(context, badges.getImageUrl(), holder.badgeContainer);
+            }
+        }
+    }
+
 
     private void setLabels(ViewHolder holder, ProductItem data){
         holder.labelContainer.removeAllViews();
@@ -258,6 +312,28 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
         }
     }
 
+    private void setLabelsRecentView(ViewHolder holder, RecentView data) {
+        holder.labelContainer.removeAllViews();
+        if (data.getLabels() != null) {
+            for (com.tokopedia.core.network.entity.home.recentView.Label label : data.getLabels()) {
+                View view = LayoutInflater.from(context).inflate(R.layout.label_layout, null);
+                TextView labelText = (TextView) view.findViewById(R.id.label);
+                labelText.setText(label.getTitle());
+                if (!label.getColor().toLowerCase().equals("#ffffff")) {
+                    labelText.setBackgroundResource(R.drawable.bg_label);
+                    labelText.setTextColor(ContextCompat.getColor(context, R.color.white));
+                    ColorStateList tint = ColorStateList.valueOf(Color.parseColor(label.getColor()));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        labelText.setBackgroundTintList(tint);
+                    } else {
+                        ViewCompat.setBackgroundTintList(labelText, tint);
+                    }
+                }
+                holder.labelContainer.addView(view);
+            }
+        }
+    }
+
     private void setProductImageWoFit(ViewHolder holder, ProductItem product) {
         ImageHandler.LoadImage(holder.productImage, product.imgUri);
     }
@@ -265,9 +341,11 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
     @Override
     public int getItemViewType(int position) {
         if (position >= 0 && (!isLastItemPosition(position) || position < data.size())) {
-            ProductItem product = (ProductItem) data.get(position);
-            if (product.getIsWishlist()) {
-                return TkpdState.RecyclerView.VIEW_WISHLIST;
+            if (data.get(position) instanceof ProductItem) {
+                ProductItem product = (ProductItem) data.get(position);
+                if (product.getIsWishlist()) {
+                    return TkpdState.RecyclerView.VIEW_WISHLIST;
+                }
             }
         }
 
@@ -325,4 +403,14 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
             return context.getResources().getColor(id);
         }
     }
+
+    private ProductPass getProductDataToPass(RecentView recentView) {
+        return ProductPass.Builder.aProductPass()
+                .setProductPrice(recentView.getProductPrice())
+                .setProductId(recentView.getProductId().toString())
+                .setProductName(recentView.getProductName())
+                .setProductImage(recentView.getProductImage())
+                .build();
+    }
+
 }

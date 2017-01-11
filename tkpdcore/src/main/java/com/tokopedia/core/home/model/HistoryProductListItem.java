@@ -1,6 +1,9 @@
 package com.tokopedia.core.home.model;
 
-import com.tokopedia.core.var.ProductItem;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.tokopedia.core.network.entity.home.recentView.RecentView;
 import com.tokopedia.core.var.RecyclerViewItem;
 
 import java.util.ArrayList;
@@ -9,22 +12,23 @@ import java.util.List;
 /**
  * History Product Feed
  */
-public class HistoryProductListItem extends RecyclerViewItem {
+public class HistoryProductListItem extends RecyclerViewItem implements Parcelable {
     public static final int HISTORY_PRODUCT_LIST_ITEM = 129_212;
-    List<ProductItem> productItems = new ArrayList<>();
+    List<RecentView> productItems = new ArrayList<>();
 
     public HistoryProductListItem() {
         setType(HISTORY_PRODUCT_LIST_ITEM);
     }
 
-    public HistoryProductListItem(List<ProductItem> productItems) {
+    public HistoryProductListItem(List<RecentView> productItems) {
         this();
         this.productItems = productItems;
     }
 
-    public List<ProductItem> getProductItems() {
+    public List<RecentView> getProductItems() {
         return productItems;
     }
+
 
     @Override
     public int describeContents() {
@@ -32,19 +36,19 @@ public class HistoryProductListItem extends RecyclerViewItem {
     }
 
     @Override
-    public void writeToParcel(android.os.Parcel dest, int flags) {
+    public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
         dest.writeTypedList(this.productItems);
     }
 
-    protected HistoryProductListItem(android.os.Parcel in) {
+    protected HistoryProductListItem(Parcel in) {
         super(in);
-        this.productItems = in.createTypedArrayList(ProductItem.CREATOR);
+        this.productItems = in.createTypedArrayList(RecentView.CREATOR);
     }
 
     public static final Creator<HistoryProductListItem> CREATOR = new Creator<HistoryProductListItem>() {
         @Override
-        public HistoryProductListItem createFromParcel(android.os.Parcel source) {
+        public HistoryProductListItem createFromParcel(Parcel source) {
             return new HistoryProductListItem(source);
         }
 

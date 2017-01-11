@@ -35,6 +35,10 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     TextView cashbackTextView;
     @BindView(R2.id.cashback_holder)
     LinearLayout cashbackHolder;
+    @BindView(R2.id.title_viewed)
+    TextView titleViewed;
+    @BindView(R2.id.title_sold)
+    TextView titleSold;
 
     public HeaderInfoView(Context context) {
         super(context);
@@ -70,6 +74,8 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     public void renderData(@NonNull ProductDetailData data) {
         tvName.setText(MethodChecker.fromHtml(data.getInfo().getProductName()));
         tvPrice.setText(data.getInfo().getProductPrice());
+        titleViewed.setVisibility(VISIBLE);
+        titleSold.setVisibility(VISIBLE);
         tvBrought.setText(data.getStatistic().getProductSoldCount());
         tvViewed.setText(data.getStatistic().getProductViewCount());
         setVisibility(VISIBLE);

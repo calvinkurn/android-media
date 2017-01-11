@@ -112,7 +112,7 @@ public class AuthUtil {
         finalHeader.put(HEADER_AUTHORIZATION, "TKPD Tokopedia:" + signature.trim());
         finalHeader.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
         finalHeader.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
-        finalHeader.put(HEADER_X_TKPD_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
+        finalHeader.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
 
         return finalHeader;
     }
@@ -135,7 +135,7 @@ public class AuthUtil {
         finalHeader.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
         finalHeader.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
         finalHeader.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
-        finalHeader.put(HEADER_X_TKPD_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
+        finalHeader.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
 
         return finalHeader;
     }
@@ -159,7 +159,7 @@ public class AuthUtil {
         finalHeader.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
         finalHeader.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
         finalHeader.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
-        finalHeader.put(HEADER_X_TKPD_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
+        finalHeader.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
         return finalHeader;
     }
 

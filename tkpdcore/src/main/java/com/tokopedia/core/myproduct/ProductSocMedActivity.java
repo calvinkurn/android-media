@@ -118,6 +118,11 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
                     imageModels.set(position, imageModel);
 
                     adapter.notifyDataSetChanged();
+
+                    AddProductFragment adf = getFragment(position);
+                    if(adf != null){
+                        adf.updateShopNote();
+                    }
                 }
 
                 @Override
@@ -342,6 +347,7 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
         bundle.putBoolean(ManageProduct.SNACKBAR_CREATE,true);
         intent.putExtras(bundle);
         startActivity(intent);
+        finish();
     }
 
     private boolean checkAllPictureUploadedAndMoveToNextProduct(int position) {

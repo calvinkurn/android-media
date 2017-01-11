@@ -21,6 +21,7 @@ import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
+import com.tokopedia.core.var.ProductItem;
 
 import java.util.List;
 
@@ -93,12 +94,24 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
     private ProductPass generateProductPass(Bundle bundleData, Uri uriData) {
         ProductPass productPass;
         if (bundleData != null && bundleData.getParcelable(ProductInfoActivity.EXTRA_PRODUCT_PASS) !=null) {
-            productPass = ProductPass.Builder.aProductPass()
-                    .setProductId(bundleData.getString("product_id", ""))
-                    .setProductName(bundleData.getString("product_key", ""))
-                    .setProductPrice(bundleData.getString("product_price", ""))
-                    .setShopDomain(bundleData.getString("shop_domain", ""))
-                    .build();
+            productPass = bundleData.getParcelable(ProductInfoActivity.EXTRA_PRODUCT_PASS);
+            ProductItem productItem = bundleData
+                    .getParcelable(ProductInfoActivity.EXTRA_PRODUCT_ITEM);
+            if (productPass == null && productItem == null) {
+                productPass = ProductPass.Builder.aProductPass()
+                        .setProductId(bundleData.getString("product_id", ""))
+                        .setProductName(bundleData.getString("product_key", ""))
+                        .setProductPrice(bundleData.getString("product_price", ""))
+                        .setShopDomain(bundleData.getString("shop_domain", ""))
+                        .build();
+            } else if (productItem != null) {
+                productPass = ProductPass.Builder.aProductPass()
+                        .setProductPrice(productItem.getPrice())
+                        .setProductId(productItem.getId())
+                        .setProductName(productItem.getName())
+                        .setProductImage(productItem.getImgUri())
+                        .build();
+            }
         } else {
             List<String> uriSegments = uriData.getPathSegments();
             String prodName = "";
