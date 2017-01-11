@@ -485,14 +485,15 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
             }
         });
-        if (cartData.getCartForceInsurance() == 1
-                || isProductMustInsurance(cartData.getCartProducts())) {
-            holder.spUseInsurance.setEnabled(false);
-        } else {
-            holder.spUseInsurance.setEnabled(true);
-        }
+//        if (cartData.getCartForceInsurance() == 1
+//                || isProductMustInsurance(cartData.getCartProducts())) {
+//            holder.spUseInsurance.setEnabled(false);
+//        } else {
+//            holder.spUseInsurance.setEnabled(true);
+//        }
 
-        if (cartData.getCartCannotInsurance() == 1) {
+        if (cartData.getCartCannotInsurance() == 1 || (cartData.getCartForceInsurance() == 1
+                || isProductMustInsurance(cartData.getCartProducts()))) {
             holder.spUseInsurance.setEnabled(false);
         } else {
             holder.spUseInsurance.setEnabled(true);
