@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
@@ -29,7 +30,7 @@ import butterknife.BindView;
 /**
  * A simple {@link Fragment} subclass.
  */
-public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> extends BasePresenterFragment<T> implements TopAdsDetailViewListener, CompoundButton.OnCheckedChangeListener {
+public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> extends TopAdsDatePickerFragment<T> implements TopAdsDetailViewListener, CompoundButton.OnCheckedChangeListener {
 
     @BindView(R2.id.container_detail_topads)
     LinearLayout containerDetail;
@@ -71,52 +72,9 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     TopAdsLabelView favorite;
 
     private ProgressDialog progressDialog;
-    private Date startDate;
-    private Date endDate;
 
     public TopAdsDetailFragment() {
         // Required empty public constructor
-    }
-
-    @Override
-    protected boolean isRetainInstance() {
-        return false;
-    }
-
-    @Override
-    protected void onFirstTimeLaunched() {
-
-    }
-
-    @Override
-    public void onSaveState(Bundle bundle) {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle bundle) {
-
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return true;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.promo_topads_detail, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
-
-    }
-
-    @Override
-    protected void setupArguments(Bundle bundle) {
-
     }
 
     @Override
@@ -137,16 +95,6 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     @Override
     protected void setActionVar() {
 
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (presenter.isDateUpdated(startDate, endDate)) {
-            startDate = presenter.getStartDate();
-            endDate = presenter.getEndDate();
-            loadData();
-        }
     }
 
     protected void loadData() {
@@ -186,5 +134,20 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         ctr.setContent(ad.getStatTotalCtr());
         favorite.setContent(ad.getStatTotalConversion());
         status.setListenerValue(this);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.promo_topads_detail, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_date) {
+            openDatePicker();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

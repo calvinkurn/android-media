@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.tkpd.library.utils.SnackbarManager;
@@ -38,7 +39,7 @@ import butterknife.BindView;
 /**
  * A simple {@link Fragment} subclass.
  */
-public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> extends BasePresenterFragment<T> implements
+public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> extends TopAdsDatePickerFragment<T> implements
         TopAdsListPromoViewListener, SearchView.OnQueryTextListener, TopAdsAdListAdapter.Callback, TopAdsAdListActionMode.Callback {
 
     private static final int START_PAGE = 1;
@@ -52,8 +53,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     @BindView(R2.id.mainView)
     View mainView;
 
-    protected Date startDate;
-    protected Date endDate;
     protected String keyword;
     protected int status;
     protected int page;
@@ -71,31 +70,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
 
     public TopAdsAdListFragment() {
         // Required empty public constructor
-    }
-
-    @Override
-    protected boolean isRetainInstance() {
-        return false;
-    }
-
-    @Override
-    protected void onFirstTimeLaunched() {
-
-    }
-
-    @Override
-    public void onSaveState(Bundle state) {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return true;
     }
 
     @Override
@@ -122,16 +96,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     @Override
     protected void setActionVar() {
 
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (presenter.isDateUpdated(startDate, endDate)) {
-            startDate = presenter.getStartDate();
-            endDate = presenter.getEndDate();
-            loadData();
-        }
     }
 
     @Override
@@ -178,7 +142,10 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         adapter.setRetryView(topAdsRetryDataBinder);
     }
 
+    @Override
     protected void loadData() {
+        page = START_PAGE;
+        adapter.clearData();
         adapter.showLoadingFull(true);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(presenter.getRangeDateFormat(startDate, endDate));
         searchAd();
@@ -244,6 +211,15 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
         searchView.setOnQueryTextListener(this);
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_date) {
+            openDatePicker();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
