@@ -1754,7 +1754,7 @@ di Tokopedia Sekarang!</string>
     <string name="need_permission_contacts">Aplikasi ini membutuhkan izin untuk mengakses Kontak. Perbolehkan Android meminta izin?</string>
     <string name="need_permission_location">Aplikasi ini membutuhkan izin untuk mengakses Lokasi. Perbolehkan Android meminta izin?</string>
     <string name="need_permission_get_accounts">Aplikasi ini membutuhkan izin untuk mengakses akun. Perbolehkan Android meminta izin?</string>
-    <string name="need_permission_SMS">Aplikasi ini membutuhkan izin untuk membaca SMS OTP untuk verifikasi. Perbolehkan Android meminta izin?</string>
+    <string name="need_permission_SMS">Aplikasi ini membutuhkan izin untuk membaca SMS OTP untuk mempermudah verifikasi. Perbolehkan Android meminta izin?</string>
 
     <string name="permission_camera_denied">Anda tidak memberikan izin akses untuk Kamera.</string>
     <string name="permission_storage_denied">Anda tidak memberikan izin akses untuk Media Penyimpanan.</string>

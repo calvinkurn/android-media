@@ -1,12 +1,15 @@
 package com.tokopedia.core.fragment;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextPaint;
@@ -50,6 +53,8 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
+
+import static android.R.attr.permission;
 
 /**
  * modify by m.normansyah 9-11-2015,
@@ -167,7 +172,30 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
         if (securityQuestion.isAfterRotate())
             securityQuestion.initDataAfterRotate();
         smsReceiver.registerSmsReceiver(getActivity());
-        FragmentSecurityQuestionPermissionsDispatcher.checkSmsPermissionWithCheck(FragmentSecurityQuestion.this);
+
+        if (ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.READ_SMS) == PackageManager.PERMISSION_DENIED
+                && !getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
+            new android.support.v7.app.AlertDialog.Builder(getActivity())
+                    .setMessage(RequestPermissionUtil.getNeedPermissionMessage(Manifest.permission.READ_SMS)
+                    )
+                    .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            FragmentSecurityQuestionPermissionsDispatcher.checkSmsPermissionWithCheck(FragmentSecurityQuestion.this);
+
+                        }
+                    })
+                    .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .show();
+        }else if (getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)){
+            FragmentSecurityQuestionPermissionsDispatcher.checkSmsPermissionWithCheck(FragmentSecurityQuestion.this);
+        }
     }
 
     @Override
@@ -362,7 +390,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
                 vInputOtp.setEnabled(true);
                 String phone = SessionHandler.getTempPhoneNumber(getActivity());
                 phone = phone.substring(phone.length() - 4);
-                String contentSecurity = String.format(getResources().getString(R.string.content_security_question_phone) + " <b>XXXX-XXXX- %s </b>",phone);
+                String contentSecurity = String.format(getResources().getString(R.string.content_security_question_phone) + " <b>XXXX-XXXX- %s </b>", phone);
                 titleSecurity.setText(MethodChecker.fromHtml(contentSecurity));
                 changeNumber.setVisibility(View.VISIBLE);
                 vSendOtpCall.setVisibility(View.VISIBLE);

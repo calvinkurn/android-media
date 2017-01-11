@@ -156,11 +156,11 @@ public class RequestPermissionUtil {
                 .show();
     }
 
-    private static int getNeedPermissionMessage(List<String> permission) {
+    public static int getNeedPermissionMessage(List<String> permission) {
         return R.string.need_permission_multi;
     }
 
-    private static int getNeedPermissionMessage(String permission) {
+    public static int getNeedPermissionMessage(String permission) {
         switch (permission) {
             case Manifest.permission.CAMERA:
                 return R.string.need_permission_camera;
@@ -193,4 +193,6 @@ public class RequestPermissionUtil {
         return ContextCompat.checkSelfPermission(activity, permission)
                 == PackageManager.PERMISSION_GRANTED;
     }
+
+
 }
