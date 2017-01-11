@@ -2,6 +2,7 @@ package com.tokopedia.seller.topads.model.data;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.seller.topads.constant.TopAdsConstant;
 
 /**
  * Created by Nathaniel on 12/28/2016.

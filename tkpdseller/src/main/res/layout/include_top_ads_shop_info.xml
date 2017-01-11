@@ -1,44 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/CardView.TopAds">
+    style="@style/LabelLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/image_view_shop_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_penjualan"/>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:layout_marginLeft="@dimen/top_ads_dashboard_padding_cards"
+        android:layout_marginStart="@dimen/top_ads_dashboard_padding_cards"
+        android:layout_weight="1"
+        android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/image_view_shop_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:src="@drawable/icon_bca"/>
+        <TextView
+            android:id="@+id/text_view_shop_title"
+            style="@style/TextView"
+            android:text="@string/top_ads_statistic_info_default_value"/>
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/top_ads_dashboard_padding_cards"
-            android:layout_marginStart="@dimen/top_ads_dashboard_padding_cards"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/text_view_shop_title"
-                style="@style/TextView"
-                tools:text="@string/app_name"/>
-
-            <TextView
-                android:id="@+id/text_view_deposit_desc"
-                style="@style/TextView"
-                tools:text="@string/app_name"/>
-        </LinearLayout>
-
-        <ImageButton
-            android:id="@+id/image_button_add_deposit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:src="@drawable/ic_add_black_48dp"/>
+        <TextView
+            android:id="@+id/text_view_deposit_desc"
+            style="@style/TextView"
+            android:text="@string/top_ads_statistic_info_default_value"/>
     </LinearLayout>
-</android.support.v7.widget.CardView>
+
+    <ImageButton
+        android:id="@+id/image_button_add_deposit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:src="@drawable/ic_add_black_48dp"/>
+</LinearLayout>

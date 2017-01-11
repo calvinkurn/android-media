@@ -16,7 +16,7 @@ public class TopAdsStatisticAvgFragment extends TopAdsStatisticFragment {
     }
 
     @Override
-    public String getValueData(Cell cell) {
-        return String.valueOf(cell.getCostAvg());
+    public float getValueData(Cell cell) {
+        return (float) cell.getCostAvg();
     }
 }

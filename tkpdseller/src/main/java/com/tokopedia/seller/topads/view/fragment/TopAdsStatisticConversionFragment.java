@@ -16,7 +16,7 @@ public class TopAdsStatisticConversionFragment extends TopAdsStatisticFragment {
     }
 
     @Override
-    public String getValueData(Cell cell) {
-        return String.valueOf(cell.getConversionSum());
+    public float getValueData(Cell cell) {
+        return (float)cell.getConversionSum();
     }
 }

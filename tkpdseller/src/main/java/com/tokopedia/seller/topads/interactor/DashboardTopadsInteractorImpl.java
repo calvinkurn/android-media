@@ -10,15 +10,14 @@ import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.topads.datasource.TopAdsCacheDataSourceImpl;
 import com.tokopedia.seller.topads.datasource.TopAdsDbDataSource;
 import com.tokopedia.seller.topads.datasource.TopAdsDbDataSourceImpl;
-import com.tokopedia.seller.topads.model.data.GroupAdBulkAction;
-import com.tokopedia.seller.topads.model.data.ProductAdBulkAction;
-import com.tokopedia.seller.topads.model.data.Cell;
 import com.tokopedia.seller.topads.model.data.DataCredit;
 import com.tokopedia.seller.topads.model.data.DataDeposit;
 import com.tokopedia.seller.topads.model.data.DataStatistic;
 import com.tokopedia.seller.topads.model.data.GroupAd;
+import com.tokopedia.seller.topads.model.data.GroupAdBulkAction;
 import com.tokopedia.seller.topads.model.data.Product;
 import com.tokopedia.seller.topads.model.data.ProductAd;
+import com.tokopedia.seller.topads.model.data.ProductAdBulkAction;
 import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.model.data.TotalAd;
 import com.tokopedia.seller.topads.model.request.DataRequest;
@@ -39,7 +38,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -85,36 +83,15 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
 
     @Override
     public void getDashboardSummary(final StatisticRequest statisticRequest, final ListenerInteractor<Summary> listener) {
-        Observable<Summary> getSummaryCacheObservable = topAdsDbDataSource.getSummary(statisticRequest);
-        compositeSubscription.add(getSummaryCacheObservable
+        Observable<Response<DataResponse<DataStatistic>>> statisticApiObservable = topAdsManagementService.getApi().getDashboardStatistic(statisticRequest.getParams());
+        compositeSubscription.add(statisticApiObservable
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())
-                .flatMap(new Func1<Summary, Observable<Summary>>() {
+                .flatMap(new Func1<Response<DataResponse<DataStatistic>>, Observable<Summary>>() {
                     @Override
-                    public Observable<Summary> call(Summary summary) {
-                        if (!topAdsCacheDataSource.isStatisticDataExpired() && summary != null) {
-                            return Observable.just(summary);
-                        }
-                        Observable<Response<DataResponse<DataStatistic>>> statisticApiObservable = topAdsManagementService.getApi().getDashboardStatistic(statisticRequest.getParams());
-                        return statisticApiObservable
-                                .subscribeOn(Schedulers.newThread())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .unsubscribeOn(Schedulers.newThread())
-                                .flatMap(new Func1<Response<DataResponse<DataStatistic>>, Observable<Summary>>() {
-                                    @Override
-                                    public Observable<Summary> call(Response<DataResponse<DataStatistic>> statisticResponse) {
-                                        Observable<Summary> insertSummaryObservable = topAdsDbDataSource.insertSummary(statisticRequest, statisticResponse.body().getData().getSummary());
-                                        Observable<List<Cell>> insertCellListObservable = topAdsDbDataSource.insertCellList(statisticRequest, statisticResponse.body().getData().getCells());
-                                        return Observable.zip(insertSummaryObservable, insertCellListObservable, new Func2<Summary, List<Cell>, Summary>() {
-                                            @Override
-                                            public Summary call(Summary summary, List<Cell> cellList) {
-                                                topAdsCacheDataSource.updateLastInsertStatistic();
-                                                return summary;
-                                            }
-                                        });
-                                    }
-                                });
+                    public Observable<Summary> call(Response<DataResponse<DataStatistic>> statisticResponse) {
+                        return topAdsDbDataSource.insertSummary(statisticRequest, statisticResponse.body().getData().getSummary());
                     }
                 }).subscribe(new SubscribeOnNext<Summary>(listener), new SubscribeOnError(listener)));
     }
@@ -251,34 +228,6 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
                     public void onNext(Response<PageDataResponse<List<GroupAd>>> response) {
                         if (response.isSuccessful()) {
                             listener.onSuccess(response.body().getData());
-                        } else {
-                            // TODO Define error
-                        }
-                    }
-                }));
-    }
-
-    @Override
-    public void getDashboardShop(HashMap<String, String> params, final ListenerInteractor<DataResponse<ProductAd>> listener) {
-        Observable<Response<DataResponse<ProductAd>>> observable = topAdsManagementService.getApi().getDashboardShop(params);
-        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Response<DataResponse<ProductAd>>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        listener.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(Response<DataResponse<ProductAd>> response) {
-                        if (response.isSuccessful()) {
-                            listener.onSuccess(response.body());
                         } else {
                             // TODO Define error
                         }

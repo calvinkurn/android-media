@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/mainView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
 
     <com.tokopedia.core.customwidget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
@@ -13,6 +14,6 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/list_product"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"/>
     </com.tokopedia.core.customwidget.SwipeToRefresh>
 </RelativeLayout>

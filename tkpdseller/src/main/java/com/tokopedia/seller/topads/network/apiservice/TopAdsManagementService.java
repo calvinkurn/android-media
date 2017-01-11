@@ -1,6 +1,5 @@
 package com.tokopedia.seller.topads.network.apiservice;
 
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.services.AuthService;
 import com.tokopedia.seller.topads.network.apiservice.api.TopAdsManagementApi;
 import com.tokopedia.seller.topads.network.interceptor.TopAdsAuthInterceptor;
@@ -20,7 +19,7 @@ public class TopAdsManagementService extends AuthService<TopAdsManagementApi> {
 
     @Override
     protected String getBaseUrl() {
-        return TkpdBaseURL.TOPADS_STAGING_DOMAIN;
+        return "https://ta.tokopedia.com/";
     }
 
     @Override

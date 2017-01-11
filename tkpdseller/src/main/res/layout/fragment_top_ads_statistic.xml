@@ -6,7 +6,6 @@
     tools:context="com.tokopedia.seller.topads.view.fragment.TopAdsStatisticFragment">
 
     <android.support.v7.widget.CardView
-        style="@style/CardView.TopAds"
         android:layout_gravity="top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -25,7 +24,7 @@
             <com.tokopedia.seller.topads.view.library.williamchart.view.LineChartView
                 android:id="@+id/content_graph"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="300dp"/>
 
 
         </LinearLayout>

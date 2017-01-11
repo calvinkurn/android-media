@@ -51,6 +51,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.var.ToolbarVariable;
+import com.tokopedia.seller.topads.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.gmsubscribe.GMSubscribeActivity;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
@@ -100,6 +101,7 @@ public class DrawerVariableSeller extends DrawerVariable {
         private DrawerItemList shopMenu;
         private DrawerItemList inboxMenu;
         private DrawerItemList gmSubscribeMenu;
+        private DrawerItem topAdsMenu;
         private List<RecyclerViewItem> data;
 
         public Model() {
@@ -109,6 +111,7 @@ public class DrawerVariableSeller extends DrawerVariable {
             shopMenu = new DrawerItemList("Penjualan", 0, R.drawable.icon_penjualan, TkpdState.DrawerPosition.SHOP, true);
             inboxMenu = new DrawerItemList("Kotak Masuk", 0, R.drawable.icon_inbox, TkpdState.DrawerPosition.INBOX, true);
             gmSubscribeMenu = new DrawerItemList("Gold Merchant", 0, R.drawable.ic_goldmerchant_drawer, TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE, true);
+            topAdsMenu = new DrawerItem(context.getString(R.string.title_top_ads), 0, R.drawable.ic_top_ads, TkpdState.DrawerPosition.SELLER_TOP_ADS, false);
         }
 
     }
@@ -421,6 +424,10 @@ public class DrawerVariableSeller extends DrawerVariable {
                 session.Logout(context);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.SIGN_OUT);
                 break;
+            case TkpdState.DrawerPosition.SELLER_TOP_ADS:
+                intent = new Intent(context, TopAdsDashboardActivity.class);
+                context.startActivity(intent);
+                break;
             default:
                 break;
         }
@@ -648,6 +655,7 @@ public class DrawerVariableSeller extends DrawerVariable {
             model.data.add(model.header);
             model.data.add(model.sellerHome);
             model.data.add(model.gmSubscribeMenu);
+            model.data.add(model.topAdsMenu);
             model.data.add(model.inboxMenu);
             model.data.add(model.shopMenu);
             model.data.add(new DrawerItem("Pengaturan", 0, R.drawable.icon_setting, TkpdState.DrawerPosition.SETTINGS,

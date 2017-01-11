@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.constant.TopAdsConstant;
 
 /**
  * Created by zulfikarrahman on 12/14/16.

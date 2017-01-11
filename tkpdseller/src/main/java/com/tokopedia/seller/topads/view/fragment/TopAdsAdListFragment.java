@@ -2,9 +2,11 @@ package com.tokopedia.seller.topads.view.fragment;
 
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -14,6 +16,7 @@ import android.view.View;
 
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
@@ -22,6 +25,8 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.presenter.TopAdsAdListPresenter;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAdListAdapter;
+import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyGroupAdsDataBinder;
+import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
 import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
 import com.tokopedia.seller.topads.view.widget.DividerItemDecoration;
 
@@ -60,6 +65,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     private SearchView searchView;
     private TopAdsAdListActionMode actionMode;
     private SnackbarRetry snackBarRetry;
+    private ProgressDialog progressDialog;
 
     protected abstract void searchAd();
 
@@ -109,12 +115,23 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
 
     @Override
     protected void initView(View view) {
-
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage(getString(R.string.title_loading));
     }
 
     @Override
     protected void setActionVar() {
-        searchAd();
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (presenter.isDateUpdated(startDate, endDate)) {
+            startDate = presenter.getStartDate();
+            endDate = presenter.getEndDate();
+            loadData();
+        }
     }
 
     @Override
@@ -139,7 +156,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
 
     @Override
     protected void initialVar() {
-        initialDate();
         page = START_PAGE;
         totalItem = Integer.MAX_VALUE;
         refresh = new RefreshHandler(getActivity(), mainView, new RefreshHandler.OnRefreshHandlerListener() {
@@ -148,19 +164,29 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
                 searchAd(START_PAGE);
             }
         });
-        adapter = new TopAdsAdListAdapter(this);
+        adapter = new TopAdsAdListAdapter();
         adapter.setCallback(this);
+        adapter.setEmptyView(new TopAdsEmptyGroupAdsDataBinder(adapter));
+        TopAdsRetryDataBinder topAdsRetryDataBinder = new TopAdsRetryDataBinder(adapter);
+        topAdsRetryDataBinder.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
+            @Override
+            public void onRetryCliked() {
+                hideLoading();
+                searchAd(START_PAGE);
+            }
+        });
+        adapter.setRetryView(topAdsRetryDataBinder);
+    }
+
+    protected void loadData() {
         adapter.showLoadingFull(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(presenter.getRangeDateFormat(startDate, endDate));
+        searchAd();
     }
 
     private void searchAd(int page) {
         this.page = page;
         searchAd();
-    }
-
-    private void initialDate() {
-        startDate = presenter.getStartDate();
-        endDate = presenter.getEndDate();
     }
 
     @Override
@@ -193,16 +219,19 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
 
     @Override
     public void onActionTurnOn() {
+        progressDialog.show();
         presenter.turnOnAddList(adapter.getSelectedList());
     }
 
     @Override
     public void onActionTurnOff() {
+        progressDialog.show();
         presenter.turnOffAdList(adapter.getSelectedList());
     }
 
     @Override
     public void onActionModeDestroyed() {
+        progressDialog.dismiss();
         actionMode = null;
         adapter.clearCheckedList();
         swipeToRefresh.setEnabled(true);
@@ -228,32 +257,37 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         }
         adapter.addData(adList);
         hideLoading();
-        checkEmptyData(true);
+        if (adapter.getDataSize() < 1) {
+            adapter.showEmpty(true);
+        }
     }
 
     @Override
     public void onLoadSearchAdError() {
         hideLoading();
-        checkEmptyData(false);
-        showSnackBarRetry(new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                searchAd();
-            }
-        });
+        if (adapter.getDataSize() > 0) {
+            showSnackBarRetry(new NetworkErrorHelper.RetryClickedListener() {
+                @Override
+                public void onRetryClicked() {
+                    searchAd();
+                }
+            });
+        } else {
+            swipeToRefresh.setEnabled(false);
+            adapter.showRetryFull(true);
+        }
+
     }
 
     @Override
     public void onTurnOnAdSuccess() {
         hideLoading();
-        checkEmptyData(true);
         onBulkUpdateSuccess();
     }
 
     @Override
     public void onTurnOnAdFailed() {
         hideLoading();
-        checkEmptyData(false);
         showSnackBarRetry(new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
@@ -265,14 +299,12 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     @Override
     public void onTurnOffAdSuccess() {
         hideLoading();
-        checkEmptyData(true);
         onBulkUpdateSuccess();
     }
 
     @Override
     public void onTurnOffAdFailed() {
         hideLoading();
-        checkEmptyData(false);
         showSnackBarRetry(new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
@@ -288,24 +320,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         searchAd(START_PAGE);
     }
 
-    private void checkEmptyData(boolean loadSuccess) {
-        if (adapter.getDataSize() > 0) {
-            return;
-        }
-        if (loadSuccess) {
-            adapter.showEmpty(true);
-        } else {
-            swipeToRefresh.setEnabled(false);
-            NetworkErrorHelper.showEmptyState(getActivity(), getView(), new NetworkErrorHelper.RetryClickedListener() {
-                @Override
-                public void onRetryClicked() {
-                    hideLoading();
-                    searchAd(START_PAGE);
-                }
-            });
-        }
-    }
-
     private void hideLoading() {
         adapter.showLoadingFull(false);
         adapter.showEmpty(false);
@@ -313,12 +327,13 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         if (swipeToRefresh.isRefreshing()) {
             swipeToRefresh.setRefreshing(false);
         }
+        progressDialog.dismiss();
         hideSnackBarRetry();
     }
 
     private void showSnackBarRetry(NetworkErrorHelper.RetryClickedListener listener) {
         if (snackBarRetry == null) {
-            snackBarRetry = new SnackbarRetry(SnackbarManager.make(getActivity(), getResources().getString(com.tokopedia.core.R.string.msg_network_error), -2), listener);
+            snackBarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), listener);
             snackBarRetry.showRetrySnackbar();
         }
     }

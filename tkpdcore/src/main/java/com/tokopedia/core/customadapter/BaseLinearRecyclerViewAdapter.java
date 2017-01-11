@@ -29,6 +29,18 @@ public class BaseLinearRecyclerViewAdapter extends DataBindAdapter{
         retryView.setOnRetryListenerRV(onRetryClicked());
     }
 
+    public void setLoadingView(LoadingDataBinder loadingView) {
+        this.loadingView = loadingView;
+    }
+
+    public void setEmptyView(NoResultDataBinder emptyView) {
+        this.emptyView = emptyView;
+    }
+
+    public void setRetryView(RetryDataBinder retryView) {
+        this.retryView = retryView;
+    }
+
     @Override
     public int getItemCount() {
         return empty + loading + retry;

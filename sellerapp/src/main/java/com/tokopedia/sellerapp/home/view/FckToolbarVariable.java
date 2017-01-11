@@ -12,10 +12,12 @@ import com.tokopedia.core.var.ToolbarVariable;
 
 public class FckToolbarVariable extends ToolbarVariable {
     private Toolbar toolbar;
+    private AppCompatActivity appCompatActivity;
 
     public FckToolbarVariable(AppCompatActivity appCompatActivity, Toolbar toolbar) {
         super(appCompatActivity);
         this.toolbar = toolbar;
+        this.appCompatActivity = appCompatActivity;
     }
 
     @Override
@@ -26,5 +28,6 @@ public class FckToolbarVariable extends ToolbarVariable {
         initView(toolbar);
         initListener();
         setAsActionBar();
+        appCompatActivity.getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 }

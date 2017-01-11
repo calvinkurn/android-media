@@ -9,30 +9,34 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tkpd.library.utils.Logger;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.customwidget.SwipeToRefresh;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.model.data.DataDeposit;
 import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.presenter.TopAdsDashboardPresenter;
+import com.tokopedia.seller.topads.view.activity.SetDateActivity;
+import com.tokopedia.seller.topads.view.activity.SetDateFragment;
 import com.tokopedia.seller.topads.view.activity.TopAdsAddCreditActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardFragmentListener;
+import com.tokopedia.seller.topads.view.widget.TopAdsStatisticLabelView;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
 public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter> extends BasePresenterFragment<T> implements TopAdsDashboardFragmentListener {
 
-    private static String TAG = TopAdsDashboardFragment.class.getSimpleName();
+    private static final int REQUEST_CODE_DATE = 0;
 
-    private static final String RANGE_DATE_FORMAT = "dd MMM yyyy";
+
+    @BindView(R2.id.swipe_refresh_layout)
+    SwipeToRefresh swipeToRefresh;
 
     @BindView(R2.id.image_view_shop_icon)
     ImageView shopIconImageView;
@@ -44,18 +48,18 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
     @BindView(R2.id.text_view_range_date)
     TextView rangeDateDescTextView;
 
-    @BindView(R2.id.layout_top_ads_info_text_impression)
-    View impressionInfoLayout;
-    @BindView(R2.id.layout_top_ads_info_text_click)
-    View clickInfoLayout;
-    @BindView(R2.id.layout_top_ads_info_text_ctr)
-    View ctrInfoLayout;
-    @BindView(R2.id.layout_top_ads_info_text_conversion)
-    View conversionInfoLayout;
-    @BindView(R2.id.layout_top_ads_info_text_average)
-    View averageMainInfoLayout;
-    @BindView(R2.id.layout_top_ads_info_text_cost)
-    View costInfoLayout;
+    @BindView(R2.id.statistic_label_view_impression)
+    TopAdsStatisticLabelView impressionStatisticLabelView;
+    @BindView(R2.id.statistic_label_view_click)
+    TopAdsStatisticLabelView clickStatisticLabelView;
+    @BindView(R2.id.statistic_label_view_ctr)
+    TopAdsStatisticLabelView ctrStatisticLabelView;
+    @BindView(R2.id.statistic_label_view_conversion)
+    TopAdsStatisticLabelView conversionStatisticLabelView;
+    @BindView(R2.id.statistic_label_view_average)
+    TopAdsStatisticLabelView averageStatisticLabelView;
+    @BindView(R2.id.statistic_label_view_cost)
+    TopAdsStatisticLabelView costStatisticLabelView;
 
     protected Date startDate;
     protected Date endDate;
@@ -97,39 +101,7 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
 
     @Override
     protected void initView(View view) {
-        initialLayout();
-    }
-
-    @Override
-    public void onSummaryLoaded(@NonNull Summary summary) {
-        Logger.i(TAG, "Cost Summary: " + summary.getCostSum());
-        updateSummaryLayout(summary);
-    }
-
-    @Override
-    public void onLoadSummaryError(@NonNull Throwable throwable) {
-
-    }
-
-    @Override
-    public void onDepositTopAdsLoaded(@NonNull DataDeposit dataDeposit) {
-        depositDescTextView.setText(getString(R.string.label_top_ads_deposit_desc, dataDeposit.getAmountFmt()));
-    }
-
-    @Override
-    public void onLoadDepositTopAdsError(@NonNull Throwable throwable) {
-
-    }
-
-    @Override
-    public void onShopDetailLoaded(@NonNull ShopModel shopModel) {
-        ImageHandler.loadImageCircle2(getActivity(), shopIconImageView, shopModel.info.shopAvatar);
-        shopTitleTextView.setText(shopModel.info.shopName);
-    }
-
-    @Override
-    public void onLoadShopDetailError(@NonNull Throwable throwable) {
-
+        depositDescTextView.setText(getString(R.string.label_top_ads_deposit_desc, getString(R.string.top_ads_statistic_info_default_value)));
     }
 
     @Override
@@ -139,55 +111,154 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
 
     @Override
     protected void initialVar() {
-
+        RefreshHandler refresh = new RefreshHandler(getActivity(), getView(), new RefreshHandler.OnRefreshHandlerListener() {
+            @Override
+            public void onRefresh(View view) {
+                loadData();
+            }
+        });
     }
 
     @Override
     protected void setActionVar() {
-        presenter.resetDate();
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        loadData();
+        if (presenter.isDateUpdated(startDate, endDate)) {
+            startDate = presenter.getStartDate();
+            endDate = presenter.getEndDate();
+            loadData();
+        }
     }
 
-    private void initialLayout() {
-        updateInfoText(impressionInfoLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_impression)));
-        updateInfoText(clickInfoLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_click)));
-        updateInfoText(ctrInfoLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_ctr)));
-        updateInfoText(conversionInfoLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_conversion)));
-        updateInfoText(averageMainInfoLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_average)));
-        updateInfoText(costInfoLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_cost)));
-    }
-
-    private void updateSummaryLayout(Summary summary) {
-        updateInfoText(impressionInfoLayout, R.id.text_view_content, String.valueOf(summary.getImpressionSum()));
-        updateInfoText(clickInfoLayout, R.id.text_view_content, String.valueOf(summary.getClickSum()));
-        updateInfoText(ctrInfoLayout, R.id.text_view_content, String.valueOf(summary.getCtrPercentage()));
-        updateInfoText(conversionInfoLayout, R.id.text_view_content, String.valueOf(summary.getConversionSum()));
-        updateInfoText(averageMainInfoLayout, R.id.text_view_content, String.valueOf(summary.getCostAvg()));
-        updateInfoText(costInfoLayout, R.id.text_view_content, String.valueOf(summary.getCostSum()));
-    }
-
-    protected void updateInfoText(View layout, int resourceId, String value) {
-        ((TextView) layout.findViewById(resourceId)).setText(value);
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        // check if the request code is the same
+        if (requestCode == REQUEST_CODE_DATE && intent != null) {
+            long startDateTime = intent.getLongExtra(SetDateFragment.START_DATE, -1);
+            long endDateTime = intent.getLongExtra(SetDateFragment.END_DATE, -1);
+            if (startDateTime > 0 && endDateTime > 0) {
+                presenter.saveDate(new Date(startDateTime), new Date(endDateTime));
+            }
+        }
     }
 
     protected void loadData() {
-        startDate = presenter.getStartDate();
-        endDate = presenter.getEndDate();
-        updateRangeDate();
+        swipeToRefresh.setRefreshing(true);
+        rangeDateDescTextView.setText(presenter.getRangeDateFormat(startDate, endDate));
         presenter.populateSummary(startDate, endDate);
         presenter.populateDeposit();
         presenter.populateShopInfo();
     }
 
-    protected void updateRangeDate() {
-        rangeDateDescTextView.setText(getString(R.string.top_ads_range_date_text,
-                new SimpleDateFormat(RANGE_DATE_FORMAT, Locale.ENGLISH).format(startDate),
-                new SimpleDateFormat(RANGE_DATE_FORMAT, Locale.ENGLISH).format(endDate)));
+    @Override
+    public void onSummaryLoaded(@NonNull Summary summary) {
+        updateSummaryLayout(summary);
+        hideLoading();
+    }
+
+    private void updateSummaryLayout(Summary summary) {
+        impressionStatisticLabelView.setContent(String.valueOf(summary.getImpressionSumFmt()));
+        clickStatisticLabelView.setContent(String.valueOf(summary.getClickSumFmt()));
+        ctrStatisticLabelView.setContent(String.valueOf(summary.getCtrPercentageFmt()));
+        conversionStatisticLabelView.setContent(String.valueOf(summary.getConversionSumFmt()));
+        averageStatisticLabelView.setContent(String.valueOf(summary.getCostAvgFmt()));
+        costStatisticLabelView.setContent(String.valueOf(summary.getCostSumFmt()));
+    }
+
+    @Override
+    public void onLoadSummaryError(@NonNull Throwable throwable) {
+        showNetworkError();
+        hideLoading();
+    }
+
+    @Override
+    public void onDepositTopAdsLoaded(@NonNull DataDeposit dataDeposit) {
+        depositDescTextView.setText(getString(R.string.label_top_ads_deposit_desc, dataDeposit.getAmountFmt()));
+        hideLoading();
+    }
+
+    @Override
+    public void onLoadDepositTopAdsError(@NonNull Throwable throwable) {
+        showNetworkError();
+        hideLoading();
+    }
+
+    @Override
+    public void onShopDetailLoaded(@NonNull ShopModel shopModel) {
+        ImageHandler.loadImageCircle2(getActivity(), shopIconImageView, shopModel.info.shopAvatar);
+        shopTitleTextView.setText(shopModel.info.shopName);
+        hideLoading();
+    }
+
+    @Override
+    public void onLoadShopDetailError(@NonNull Throwable throwable) {
+        showNetworkError();
+        hideLoading();
+    }
+
+    protected void showNetworkError() {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                loadData();
+            }
+        }).showRetrySnackbar();
+    }
+
+    protected void hideLoading() {
+        swipeToRefresh.setRefreshing(false);
+    }
+
+    @OnClick(R2.id.layout_date)
+    void onDateLayoutClicked() {
+        Intent moveToSetDate = new Intent(getActivity(), SetDateActivity.class);
+        moveToSetDate.putExtra(SetDateActivity.IS_GOLD_MERCHANT, true);
+//        moveToSetDate.putExtra(SetDateActivity.SELECTION_PERIOD, lastSelection);
+//        moveToSetDate.putExtra(SetDateActivity.SELECTION_TYPE, selectionType);
+        moveToSetDate.putExtra(SetDateActivity.CUSTOM_START_DATE, startDate.getTime());
+        moveToSetDate.putExtra(SetDateActivity.CUSTOM_END_DATE, endDate.getTime());
+        startActivityForResult(moveToSetDate, REQUEST_CODE_DATE);
+    }
+
+    @OnClick(R2.id.statistic_label_view_impression)
+    void onStaticImpressionClicked() {
+        Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
+        startActivity(intent);
+    }
+
+    @OnClick(R2.id.statistic_label_view_click)
+    void onStatisticClickClicked() {
+        Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
+        startActivity(intent);
+    }
+
+    @OnClick(R2.id.statistic_label_view_ctr)
+    void onStatisticImpressionClicked() {
+        Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
+        startActivity(intent);
+    }
+
+    @OnClick(R2.id.statistic_label_view_conversion)
+    void onStatisticConversionClicked() {
+        Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
+        startActivity(intent);
+    }
+
+    @OnClick(R2.id.statistic_label_view_average)
+    void onStatisticAverageClicked() {
+        Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
+        startActivity(intent);
+    }
+
+    @OnClick(R2.id.statistic_label_view_cost)
+    void onStatisticCostClicked() {
+        Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
+        startActivity(intent);
     }
 
     @OnClick(R2.id.image_button_add_deposit)

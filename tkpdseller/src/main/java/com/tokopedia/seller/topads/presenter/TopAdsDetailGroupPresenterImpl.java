@@ -1,5 +1,6 @@
 package com.tokopedia.seller.topads.presenter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.util.SessionHandler;
@@ -24,8 +25,8 @@ public class TopAdsDetailGroupPresenterImpl extends TopAdsDetailPresenterImpl im
 
     private final TopAdsGroupAdInteractor topAdsGroupAdInteractor;
 
-    public TopAdsDetailGroupPresenterImpl(TopAdsDetailViewListener topAdsDetailViewListener, TopAdsGroupAdInteractor topAdsGroupAdInteractor) {
-        super(topAdsDetailViewListener);
+    public TopAdsDetailGroupPresenterImpl(Context context, TopAdsDetailViewListener topAdsDetailViewListener, TopAdsGroupAdInteractor topAdsGroupAdInteractor) {
+        super(context, topAdsDetailViewListener);
         this.topAdsGroupAdInteractor = topAdsGroupAdInteractor;
     }
 
@@ -64,9 +65,9 @@ public class TopAdsDetailGroupPresenterImpl extends TopAdsDetailPresenterImpl im
         dataRequestGroupAd.setAction(action);
         dataRequestGroupAd.setShopId(shopId);
         List<GroupAdAction> dataRequestGroupAdses = new ArrayList<>();
-        GroupAdAction data = new GroupAdAction();
-        data.setId(ad.getId());
-        dataRequestGroupAdses.add(data);
+        GroupAdAction adAction = new GroupAdAction();
+        adAction.setId(String.valueOf(ad.getId()));
+        dataRequestGroupAdses.add(adAction);
         dataRequestGroupAd.setAdList(dataRequestGroupAdses);
         dataRequest.setData(dataRequestGroupAd);
         return dataRequest;

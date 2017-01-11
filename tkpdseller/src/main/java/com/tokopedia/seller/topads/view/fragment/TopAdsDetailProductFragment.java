@@ -2,7 +2,6 @@ package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.CompoundButton;
 
@@ -10,7 +9,6 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.datasource.TopAdsCacheDataSourceImpl;
 import com.tokopedia.seller.topads.datasource.TopAdsDbDataSourceImpl;
 import com.tokopedia.seller.topads.interactor.TopAdsProductAdInteractorImpl;
@@ -18,8 +16,8 @@ import com.tokopedia.seller.topads.model.data.ProductAd;
 import com.tokopedia.seller.topads.network.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.topads.presenter.TopAdsDetailProductPresenter;
 import com.tokopedia.seller.topads.presenter.TopAdsDetailProductPresenterImpl;
-import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 import com.tokopedia.seller.topads.view.widget.TopAdsLabelSwitch;
+import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 
 import butterknife.BindView;
 
@@ -29,11 +27,14 @@ import butterknife.BindView;
 
 public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDetailProductPresenter> {
 
-    ProductAd productAd;
+    @BindView(R2.id.label_view_promo_group)
+    TopAdsLabelView promoGroupLabelView;
+
+    private ProductAd productAd;
 
     @Override
     protected void initialPresenter() {
-        presenter = new TopAdsDetailProductPresenterImpl(this, new TopAdsProductAdInteractorImpl(new TopAdsManagementService(),
+        presenter = new TopAdsDetailProductPresenterImpl(getActivity(), this, new TopAdsProductAdInteractorImpl(new TopAdsManagementService(),
                 new TopAdsDbDataSourceImpl(), new TopAdsCacheDataSourceImpl(getActivity())));
     }
 
@@ -44,31 +45,26 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
     }
 
     @Override
-    protected void initView(View view) {
-        super.initView(view);
-        if(productAd != null) {
-            setData(productAd);
-        }
-    }
-
-    @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_top_ads_product_detail;
     }
 
     @Override
-    protected void setActionVar() {
-        super.setActionVar();
-        status.setListenerValue(new TopAdsLabelSwitch.ListenerSwitchValue() {
-            @Override
-            public void onValueChange(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
-                    presenter.turnOnAds(productAd, SessionHandler.getShopID(getActivity()));
-                }else{
-                    presenter.turnOffAds(productAd, SessionHandler.getShopID(getActivity()));
-                }
-            }
-        });
+    public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+        if(checked){
+            presenter.turnOnAds(productAd, SessionHandler.getShopID(getActivity()));
+        }else{
+            presenter.turnOffAds(productAd, SessionHandler.getShopID(getActivity()));
+        }
+    }
+
+    @Override
+    protected void loadData() {
+        super.loadData();
+        if(productAd != null) {
+            loadAdDetail(productAd);
+            promoGroupLabelView.setContent(productAd.getGroupName());
+        }
     }
 
     public static Fragment createInstance(ProductAd productAd) {

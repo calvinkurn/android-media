@@ -16,7 +16,7 @@ public class TopAdsStatisticCtrFragment extends TopAdsStatisticFragment {
     }
 
     @Override
-    public String getValueData(Cell cell) {
-        return String.valueOf(cell.getCtrPercentage());
+    public float getValueData(Cell cell) {
+        return (float)cell.getCtrPercentage();
     }
 }

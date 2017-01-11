@@ -1,5 +1,6 @@
 package com.tokopedia.seller.topads.presenter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.util.SessionHandler;
@@ -32,8 +33,8 @@ public class TopAdsDetailProductPresenterImpl extends TopAdsDetailPresenterImpl 
 
     private TopAdsProductAdInteractor topAdsProductAdInteractor;
 
-    public TopAdsDetailProductPresenterImpl(TopAdsDetailViewListener topAdsDetailViewListener, TopAdsProductAdInteractor topAdsProductAdInteractor) {
-        super(topAdsDetailViewListener);
+    public TopAdsDetailProductPresenterImpl(Context context, TopAdsDetailViewListener topAdsDetailViewListener, TopAdsProductAdInteractor topAdsProductAdInteractor) {
+        super(context, topAdsDetailViewListener);
         this.topAdsProductAdInteractor = topAdsProductAdInteractor;
     }
 
@@ -74,7 +75,7 @@ public class TopAdsDetailProductPresenterImpl extends TopAdsDetailPresenterImpl 
         dataRequestSingleAd.setShopId(shopId);
         List<ProductAdAction> dataRequestSingleAdses = new ArrayList<>();
         ProductAdAction data = new ProductAdAction();
-        data.setId(ad.getId());
+        data.setId(String.valueOf(ad.getId()));
         dataRequestSingleAdses.add(data);
         dataRequestSingleAd.setAds(dataRequestSingleAdses);
         dataRequest.setData(dataRequestSingleAd);

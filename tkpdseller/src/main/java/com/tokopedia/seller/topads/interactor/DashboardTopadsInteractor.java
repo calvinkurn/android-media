@@ -54,8 +54,6 @@ public interface DashboardTopadsInteractor {
 
     void getListGroupAds(SearchAdRequest searchAdRequest, ListenerInteractor<List<GroupAd>> listener);
 
-    void getDashboardShop(HashMap<String, String> params, ListenerInteractor<DataResponse<ProductAd>> listener);
-
     void getDashboardResponse(HashMap<String, String> params, ListenerInteractor<DataResponse<DataDeposit>> listener);
 
     void actionSingleAds(DataRequest<ProductAdBulkAction> dataRequest, ListenerInteractor<ProductAdBulkAction> listenerInteractor);

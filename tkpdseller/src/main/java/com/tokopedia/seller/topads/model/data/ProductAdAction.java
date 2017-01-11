@@ -11,13 +11,13 @@ public class ProductAdAction {
 
     @SerializedName("ad_id")
     @Expose
-    private int id;
+    private String id;
     @SerializedName("group_id")
     @Expose
-    private int groupId;
+    private String groupId;
     @SerializedName("status")
     @Expose
-    private int status;
+    private String status;
     @SerializedName("status_desc")
     @Expose
     private String statusDesc;
@@ -42,35 +42,27 @@ public class ProductAdAction {
     @Expose
     private String endTime;
 
-    public String getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(String endTime) {
-        this.endTime = endTime;
-    }
-
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public int getGroupId() {
+    public String getGroupId() {
         return groupId;
     }
 
-    public void setGroupId(int groupId) {
+    public void setGroupId(String groupId) {
         this.groupId = groupId;
     }
 
-    public int getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
@@ -120,5 +112,13 @@ public class ProductAdAction {
 
     public void setEndDate(String endDate) {
         this.endDate = endDate;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
     }
 }

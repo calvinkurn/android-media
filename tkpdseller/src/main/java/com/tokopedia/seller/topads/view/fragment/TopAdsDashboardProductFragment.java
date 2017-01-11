@@ -6,28 +6,27 @@ import android.view.View;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
-import com.tokopedia.seller.topads.constant.TopAdsConstant;
-import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
+import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.model.data.TotalAd;
 import com.tokopedia.seller.topads.presenter.TopAdsDashboardProductPresenterImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsGroupAdListActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsStatisticActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardProductFragmentListener;
-
-import java.text.SimpleDateFormat;
-import java.util.Locale;
+import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
 public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopAdsDashboardProductPresenterImpl> implements TopAdsDashboardProductFragmentListener {
 
-    @BindView(R2.id.layout_top_ads_product_group_summary)
-    View productGroupSummaryLayout;
+    @BindView(R2.id.label_view_group_summary)
+    TopAdsLabelView groupSummaryLabelView;
 
-    @BindView(R2.id.layout_top_ads_product_item_summary)
-    View productItemSummaryLayout;
+    @BindView(R2.id.label_view_item_summary)
+    TopAdsLabelView itemSummaryLabelView;
+
+    int totalProductAd;
 
     public static TopAdsDashboardProductFragment createInstance() {
         TopAdsDashboardProductFragment fragment = new TopAdsDashboardProductFragment();
@@ -48,14 +47,18 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
     @Override
     protected void initView(View view) {
         super.initView(view);
-        updateInfoText(productGroupSummaryLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_groups)));
-        updateInfoText(productItemSummaryLayout, R.id.text_view_title, String.valueOf(getString(R.string.label_top_ads_items)));
+    }
+
+    @Override
+    protected void initialVar() {
+        super.initialVar();
+        totalProductAd = Integer.MIN_VALUE;
     }
 
     @Override
     protected void setViewListener() {
         super.setViewListener();
-        impressionInfoLayout.setOnClickListener(new View.OnClickListener() {
+        impressionStatisticLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), TopAdsStatisticActivity.class);
@@ -71,28 +74,29 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
 
     @Override
     public void onTotalAdLoaded(@NonNull TotalAd totalAd) {
-        updateInfoText(productGroupSummaryLayout, R.id.text_view_content, String.valueOf(totalAd.getTotalProductGroupAd()));
-        updateInfoText(productItemSummaryLayout, R.id.text_view_content, String.valueOf(totalAd.getTotalProductAd()));
+        groupSummaryLabelView.setContent(String.valueOf(totalAd.getTotalProductGroupAd()));
+        itemSummaryLabelView.setContent(String.valueOf(totalAd.getTotalProductAd()));
+        totalProductAd = totalAd.getTotalProductAd();
     }
 
     @Override
     public void onLoadTotalAdError(@NonNull Throwable throwable) {
-
+        showNetworkError();
+        hideLoading();
     }
 
-    @OnClick(R2.id.layout_top_ads_product_group_summary)
+    @OnClick(R2.id.label_view_group_summary)
     void onProductGroupClicked() {
         Intent intent = new Intent(getActivity(), TopAdsGroupAdListActivity.class);
-        intent.putExtra(TopAdsNetworkConstant.PARAM_START_DATE, new SimpleDateFormat(TopAdsConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(startDate));
-        intent.putExtra(TopAdsNetworkConstant.PARAM_END_DATE, new SimpleDateFormat(TopAdsConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(endDate));
+        if (totalProductAd >= 0) {
+            intent.putExtra(TopAdsExtraConstant.EXTRA_TOTAL_PRODUCT_ADS, totalProductAd);
+        }
         startActivity(intent);
     }
 
-    @OnClick(R2.id.layout_top_ads_product_item_summary)
+    @OnClick(R2.id.label_view_item_summary)
     void onProductItemClicked() {
         Intent intent = new Intent(getActivity(), TopAdsProductAdListActivity.class);
-        intent.putExtra(TopAdsNetworkConstant.PARAM_START_DATE, new SimpleDateFormat(TopAdsConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(startDate));
-        intent.putExtra(TopAdsNetworkConstant.PARAM_END_DATE, new SimpleDateFormat(TopAdsConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(endDate));
         startActivity(intent);
     }
 }

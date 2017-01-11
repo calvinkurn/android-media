@@ -11,27 +11,27 @@ public class GroupAdAction {
 
     @SerializedName("group_id")
     @Expose
-    private int id;
+    private String id;
     @SerializedName("status")
     @Expose
-    private int status;
+    private String status;
     @SerializedName("status_desc")
     @Expose
     private String statusDesc;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public int getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

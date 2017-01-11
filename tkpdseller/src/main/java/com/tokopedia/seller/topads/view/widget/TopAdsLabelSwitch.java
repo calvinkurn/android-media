@@ -2,13 +2,12 @@ package com.tokopedia.seller.topads.view.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.SwitchCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.RelativeLayout;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
@@ -21,17 +20,17 @@ import butterknife.ButterKnife;
  * Created by zulfikarrahman on 12/29/16.
  */
 
-public class TopAdsLabelSwitch extends CardView {
-    @BindView(R2.id.title_item)
-    TextView title;
+public class TopAdsLabelSwitch extends FrameLayout {
+    @BindView(R2.id.title_text_view)
+    TextView titleTextView;
 
-    @BindView(R2.id.desc_switch)
-    TextView desc_switch;
+    @BindView(R2.id.switch_text_view)
+    TextView switchTextView;
 
-    @BindView(R2.id.switch_active_ads)
-    SwitchCompat switchCompat;
+    @BindView(R2.id.switch_status)
+    SwitchCompat switchStatus;
 
-    private ListenerSwitchValue listenerSwitchValue;
+    private CompoundButton.OnCheckedChangeListener listener;
     private String titleText;
 
     public TopAdsLabelSwitch(Context context) {
@@ -55,7 +54,7 @@ public class TopAdsLabelSwitch extends CardView {
 
         try {
             titleText = styledAttributes.getString(R.styleable.TopAdsLabelView_title);
-        }finally {
+        } finally {
             styledAttributes.recycle();
         }
 
@@ -65,18 +64,12 @@ public class TopAdsLabelSwitch extends CardView {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        title.setText(titleText);
-        switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        titleTextView.setText(titleText);
+        switchStatus.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(listenerSwitchValue!=null){
-                    listenerSwitchValue.onValueChange(buttonView, isChecked);
-                }
-
-                if(isChecked){
-                    desc_switch.setText(R.string.label_active_topads);
-                }else{
-                    desc_switch.setText(R.string.label_non_active_topads);
+                if (listener != null) {
+                    listener.onCheckedChanged(buttonView, isChecked);
                 }
             }
         });
@@ -90,31 +83,33 @@ public class TopAdsLabelSwitch extends CardView {
         addView(view);
     }
 
-    public void setTitle(String textTitle){
-        title.setText(textTitle);
+    public void setTitle(String textTitle) {
+        titleTextView.setText(textTitle);
         invalidate();
         requestLayout();
     }
 
-    public String getTitle(){
-        return title.getText().toString();
+    public String getTitle() {
+        return titleTextView.getText().toString();
     }
 
-    public boolean getValue(){
-        return switchCompat.isChecked();
-    }
-
-    public void setValue(boolean isChecked){
-        switchCompat.setChecked(isChecked);
+    public void setSwitchStatusText(String textTitle) {
+        switchStatus.setText(textTitle);
         invalidate();
         requestLayout();
     }
 
-    public void setListenerValue(ListenerSwitchValue listenerSwitchValue){
-        this.listenerSwitchValue = listenerSwitchValue;
+    public boolean isChecked() {
+        return switchStatus.isChecked();
     }
 
-    public interface ListenerSwitchValue{
-        void onValueChange(CompoundButton buttonView, boolean isChecked);
+    public void setChecked(boolean isChecked) {
+        switchStatus.setChecked(isChecked);
+        invalidate();
+        requestLayout();
+    }
+
+    public void setListenerValue(CompoundButton.OnCheckedChangeListener listener) {
+        this.listener = listener;
     }
 }

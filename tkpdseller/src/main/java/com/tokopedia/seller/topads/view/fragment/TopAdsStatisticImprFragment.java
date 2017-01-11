@@ -16,7 +16,7 @@ public class TopAdsStatisticImprFragment extends TopAdsStatisticFragment {
     }
 
     @Override
-    public String getValueData(Cell cell) {
-        return String.valueOf(cell.getImpressionSum());
+    public float getValueData(Cell cell) {
+        return (float)cell.getImpressionSum();
     }
 }

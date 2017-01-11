@@ -3,7 +3,8 @@
 
     <string name="title_topads_list">Produk</string>
     <string name="title_topads_dashboard">TopAds</string>
-    <string name="title_topads_product">Produk</string>
+    <string name="title_topads_promo_product">Promo Produk</string>
+    <string name="title_topads_promo_group">Promo Group</string>
     <string name="title_topads_store">Toko</string>
     <string name="title_top_ads_dashboard">TopAds</string>
     <string name="title_top_ads_product">Produk</string>
@@ -20,28 +21,32 @@
     <string name="label_top_ads_groups">Groups</string>
     <string name="label_top_ads_items">Items</string>
     <string name="label_top_ads_choose_credit">Pilih</string>
-    <string name="label_top_ads_deposit_desc">Saldo TopAds - %s</string>
+    <string name="label_top_ads_deposit_desc">Saldo TopAds: %1$s</string>
     <string name="label_top_ads_next">Selanjutnya</string>
     <string name="label_top_ads_save">Simpan</string>
 
     <string name="menu_top_ads_add_promo_group">Tambah Promo Group</string>
     <string name="menu_top_ads_add_promo_product">Tambah Promo Produk</string>
 
-    <string name="top_ads_statistic_info_default_value">0</string>
+    <string name="top_ads_statistic_info_default_value">-</string>
     <string name="top_ads_range_date_text">%1$s - %2$s</string>
 
     <string name="title_action_on">On</string>
     <string name="title_action_off">Off</string>
     <string name="action_filter_date">Filter Tanggal</string>
     <string name="title_group_list">Group</string>
-    <string name="title_item_detail">Item Detail</string>
-    <string name="title_group_detail">Group Detail</string>
+    <string name="title_product_ad_detail">Detail Item Detail</string>
+    <string name="title_group_ad_detail">Detail Group Detail</string>
 
     <!-- Top Ads ad list -->
     <string name="label_top_ads_daily_spend">Biaya Harian</string>
     <string name="top_ads_bid_format_text">%1$s - %2$s</string>
     <string name="top_ads_used_format_text">Terpakai %1$s</string>
     <string name="top_ads_spent_format_text">%1$s / %2$s</string>
+    <string name="top_ads_empty_group_promo_text">Group Promo Anda Kosong</string>
+    <string name="top_ads_empty_group_promo_content_empty_text">Anda belum memiliki produk yang dipromosikan</string>
+    <string name="top_ads_empty_group_promo_content_not_empty_text">Produk yang telah anda promosikan ada di dalam items</string>
+    <string name="top_ads_empty_group_promo_content_item_no_text">Lihat %1$s Promo Produk</string>
 
     <!-- Top Ads New Promo -->
     <string name="label_top_ads_group_name">Nama Group</string>
@@ -91,6 +96,43 @@
     <string name="label_title_ctr_topads">CTR</string>
     <string name="label_title_favorite_topads">Favorite</string>
     <string name="label_title_items_topads">Items</string>
+    <string name="label_top_ads_promo_group">Promo Group</string>
+
+    <string name="yesterday">Kemarin</string>
+    <string name="seven_days_ago">7 hari terakhir</string>
+    <string name="thirty_days_ago">30 hari terakhir</string>
+
+    <!-- untuk tanggal gmstat -->
+    <string-array name="month_names">
+        <item>Januari</item>
+        <item>Februari</item>
+        <item>Maret</item>
+        <item>April</item>
+        <item>Mei</item>
+        <item>Juni</item>
+        <item>Juli</item>
+        <item>Agustus</item>
+        <item>September</item>
+        <item>Oktober</item>
+        <item>November</item>
+        <item>Desember</item>
+    </string-array>
+
+    <!-- untuk tanggal gmstat -->
+    <string-array name="month_names_abrev">
+        <item>Jan</item>
+        <item>Feb</item>
+        <item>Mar</item>
+        <item>Apr</item>
+        <item>Mei</item>
+        <item>Jun</item>
+        <item>Jul</item>
+        <item>Agu</item>
+        <item>Sep</item>
+        <item>Okt</item>
+        <item>Nov</item>
+        <item>Des</item>
+    </string-array>
 
     <!-- Top Ads Statistic-->
     <string name="label_title_show_statistics_topads">Tampil</string>

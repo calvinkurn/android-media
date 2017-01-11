@@ -10,9 +10,7 @@ import com.bignerdranch.android.multiselector.MultiSelector;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.model.data.Ad;
-import com.tokopedia.seller.topads.model.data.GroupAd;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsViewHolder;
-import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,10 +21,10 @@ import java.util.List;
  */
 public class TopAdsAdListAdapter<T extends Ad> extends BaseLinearRecyclerViewAdapter {
 
-    private final TopAdsListPromoViewListener topAdsListPromoViewListener;
-
     public interface Callback {
         void onChecked(int position, boolean checked);
+
+        void onClicked(Ad ad);
     }
 
     public static final int AD_TYPE = 1;
@@ -41,12 +39,11 @@ public class TopAdsAdListAdapter<T extends Ad> extends BaseLinearRecyclerViewAda
         this.callback = callback;
     }
 
-    public TopAdsAdListAdapter(TopAdsListPromoViewListener topAdsListPromoViewListener) {
+    public TopAdsAdListAdapter() {
         super();
         this.data = new ArrayList<>();
         multiSelector = new MultiSelector();
         checkedList = new HashMap<>();
-        this.topAdsListPromoViewListener = topAdsListPromoViewListener;
     }
 
     public int getDataSize() {
@@ -114,8 +111,8 @@ public class TopAdsAdListAdapter<T extends Ad> extends BaseLinearRecyclerViewAda
             @Override
             public void onClick(View v) {
                 if (!multiSelector.tapSelection(topAdsViewHolder)) {
-                    if(topAdsListPromoViewListener != null){
-                        topAdsListPromoViewListener.moveToDetail(ad);
+                    if (callback != null) {
+                        callback.onClicked(ad);
                     }
                     /*if (isLoading()) {
                         getPaging().setPage(getPaging().getPage() - 1);

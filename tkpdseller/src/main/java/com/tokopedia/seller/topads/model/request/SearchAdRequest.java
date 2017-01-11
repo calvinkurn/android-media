@@ -97,4 +97,12 @@ public class SearchAdRequest {
         }
         return params;
     }
+
+    public HashMap<String, String> getShopParams() {
+        HashMap<String, String> params = new HashMap<>();
+        params.put(TopAdsNetworkConstant.PARAM_SHOP_ID, shopId);
+        params.put(TopAdsNetworkConstant.PARAM_START_DATE, new SimpleDateFormat(TopAdsConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(startDate));
+        params.put(TopAdsNetworkConstant.PARAM_END_DATE, new SimpleDateFormat(TopAdsConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(endDate));
+        return params;
+    }
 }
