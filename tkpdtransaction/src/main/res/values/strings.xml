@@ -23,7 +23,7 @@
     <string name="label_btn_action_empty_cart">CARI SEKARANG</string>
     <string name="label_message_success_cancel_cart">Berhasil menghapus item keranjang</string>
     <string name="label_message_error_cannot_checkout">Keranjang tidak dapat diproses, mohon periksa kembali keranjang Anda.</string>
-    <string name="label_message_default_voucher_desc_result">"Anda mendapatkan voucher\nRp. "</string>
+    <string name="label_message_default_voucher_desc_result">"Anda mendapatkan voucher "</string>
     <string name="label_error_form_dropshipper_name_empty">Nama pengirim harus diisi</string>
     <string name="label_error_form_dropshipper_phone_empty">Telepon pengirim harus diisi</string>
     <string name="label_error_form_voucher_code_empty">Voucher Kosong</string>

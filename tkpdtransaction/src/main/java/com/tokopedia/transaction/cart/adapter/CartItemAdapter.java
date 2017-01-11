@@ -6,7 +6,6 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.AppCompatCheckBox;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -140,7 +139,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holder.tvShippingCost.setText(cartData.getCartShippingRateIdr());
         holder.tvSubTotal.setText(cartData.getCartTotalProductPriceIdr());
         holder.tvTotalPrice.setText(cartData.getCartTotalAmountIdr());
-        holder.tvWeight.setText(cartData.getCartTotalWeight());
+        holder.tvWeight.setText(String.format("%s Kg", cartData.getCartTotalWeight()));
         holder.tvShippingAddress.setText(String.format("%s (Ubah)",
                 cartData.getCartDestination().getReceiverName()));
         holder.tvShipment.setText(String.format("%s - %s (Ubah)",
@@ -643,7 +642,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R2.id.holder_container)
-        CardView holderContainer;
+        RelativeLayout holderContainer;
         @BindView(R2.id.tv_error_1)
         TextView tvError1;
         @BindView(R2.id.tv_error_2)

@@ -319,7 +319,7 @@ public class CartPresenter implements ICartPresenter {
                         VoucherData voucherData = responseTransform.getData();
                         String descVoucher = view.getStringFromResource(
                                 R.string.label_message_default_voucher_desc_result
-                        );
+                        ) + responseTransform.getData().getVoucher().getVoucherAmountIdr();
                         if (voucherData.getVoucher().getVoucherAmount().equals("0"))
                             descVoucher = voucherData.getVoucher().getVoucherPromoDesc();
                         view.renderSuccessCheckVoucher(descVoucher);
@@ -330,7 +330,7 @@ public class CartPresenter implements ICartPresenter {
 
     @Override
     public void processGetTickerGTM() {
-        if (TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_CART).equalsIgnoreCase("true")) {
+        if (TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_CART).equalsIgnoreCase("false")) {
             String message = TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_CART_TEXT);
             view.renderVisibleTickerGTM(message);
         } else {
