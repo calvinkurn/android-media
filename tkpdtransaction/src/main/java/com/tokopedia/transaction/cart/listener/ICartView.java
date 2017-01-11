@@ -37,7 +37,9 @@ public interface ICartView extends IBaseView {
 
     void renderForceShowPaymentGatewaySelection();
 
-    void renderVisibleErrorPaymentCart(@NonNull String messageError);
+    void renderVisibleErrorPaymentCart(
+            @NonNull String messageError1, @NonNull String messageError2
+    );
 
     void renderInvisibleErrorPaymentCart();
 

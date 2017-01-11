@@ -27,6 +27,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.model.CartInsurance;
@@ -134,17 +135,17 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private void renderDetailCartItem(ViewHolder holder, CartItem cartData) {
-        holder.tvShopName.setText(cartData.getCartShop().getShopName());
+        holder.tvShopName.setText(MethodChecker.fromHtml(cartData.getCartShop().getShopName()));
         holder.tvInsurancePrice.setText(cartData.getCartInsurancePriceIdr());
         holder.tvShippingCost.setText(cartData.getCartShippingRateIdr());
         holder.tvSubTotal.setText(cartData.getCartTotalProductPriceIdr());
         holder.tvTotalPrice.setText(cartData.getCartTotalAmountIdr());
         holder.tvWeight.setText(String.format("%s Kg", cartData.getCartTotalWeight()));
         holder.tvShippingAddress.setText(String.format("%s (Ubah)",
-                cartData.getCartDestination().getReceiverName()));
+                MethodChecker.fromHtml(cartData.getCartDestination().getReceiverName())));
         holder.tvShipment.setText(String.format("%s - %s (Ubah)",
-                cartData.getCartShipments().getShipmentName(),
-                cartData.getCartShipments().getShipmentPackageName()));
+                MethodChecker.fromHtml(cartData.getCartShipments().getShipmentName()),
+                MethodChecker.fromHtml(cartData.getCartShipments().getShipmentPackageName())));
         holder.tvAdditionalCost.setText(cartData.getCartTotalLogisticFeeIdr());
     }
 
@@ -339,10 +340,17 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private void renderPartialDeliverOption(ViewHolder holder, final CartItem cartData) {
+        List<CartPartialDeliver> partialDeliverList;
+        if (!cartData.getCartPartial().equalsIgnoreCase("1")
+                || cartData.getCartTotalProduct() <= 1) {
+            partialDeliverList = CartPartialDeliver.createListForCancelDeliverPartial();
+        } else {
+            partialDeliverList = CartPartialDeliver.createListForDeliverPartial();
+        }
         ArrayAdapter<CartPartialDeliver> cartPartialDeliverAdapter
                 = new ArrayAdapter<>(
                 hostFragment.getActivity(), android.R.layout.simple_spinner_item,
-                CartPartialDeliver.createListForAdapter()
+                partialDeliverList
         );
         cartPartialDeliverAdapter.setDropDownViewResource(
                 android.R.layout.simple_spinner_dropdown_item
@@ -365,6 +373,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     }
                 }
         );
+        holder.spShipmentOptionChoosen.setEnabled(cartData.getCartTotalProduct() > 1);
     }
 
     private void updateDropShipperCartName(CartItem cartData, String dropShipperName) {
@@ -485,14 +494,9 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
             }
         });
-        if (cartData.getCartForceInsurance() == 1
-                || isProductMustInsurance(cartData.getCartProducts())) {
-            holder.spUseInsurance.setEnabled(false);
-        } else {
-            holder.spUseInsurance.setEnabled(true);
-        }
 
-        if (cartData.getCartCannotInsurance() == 1) {
+        if (cartData.getCartCannotInsurance() == 1 || (cartData.getCartForceInsurance() == 1
+                || isProductMustInsurance(cartData.getCartProducts()))) {
             holder.spUseInsurance.setEnabled(false);
         } else {
             holder.spUseInsurance.setEnabled(true);

@@ -484,7 +484,16 @@ public class CartPresenter implements ICartPresenter {
         view.renderCheckoutCartDepositAmount(data.getDeposit() + "");
         view.setCheckoutCartToken(data.getToken());
         if ((data.getCheckoutNotifError() != null && !data.getCheckoutNotifError().equals("0"))) {
-            view.renderVisibleErrorPaymentCart(data.getCheckoutNotifError());
+            String countNotifError = data.getCheckoutNotifError();
+            String messageError1 = view.getStringFromResource(
+                    R.string.label_error_message_1_count_notif
+            );
+            String messageError2 = view.getStringFromResource(
+                    R.string.label_error_message_2_count_notif
+            );
+            view.renderVisibleErrorPaymentCart(
+                    messageError1.replace("XX_XX", countNotifError), messageError2
+            );
         } else {
             view.renderInvisibleErrorPaymentCart();
         }
