@@ -31,8 +31,6 @@ class GCMUtils {
 
     static boolean isExcludeFromSellerApp(int tkpCode) {
         switch (tkpCode) {
-            case TkpdState.GCMServiceState.GCM_REVIEW:
-                return true;
             case TkpdState.GCMServiceState.GCM_REVIEW_REPLY:
                 return true;
             case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_BUYER:
@@ -48,8 +46,6 @@ class GCMUtils {
             case TkpdState.GCMServiceState.GCM_PURCHASE_REJECTED:
                 return true;
             case TkpdState.GCMServiceState.GCM_PURCHASE_VERIFIED:
-                return true;
-            case TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_REPLY:
                 return true;
             case TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_AGREE:
                 return true;

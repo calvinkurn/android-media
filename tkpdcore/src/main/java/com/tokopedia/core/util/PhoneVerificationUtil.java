@@ -14,8 +14,6 @@ import com.tokopedia.core.msisdn.model.VerificationForm;
 
 import java.util.HashMap;
 
-import static com.google.ads.conversiontracking.l.f;
-
 /**
  * Created by Kris on 4/20/2015.
  * modified by m.normansyah on 29/11/2015
@@ -26,7 +24,6 @@ public class PhoneVerificationUtil implements MSISDNConstant {
 
     MsisdnVerificationRetrofitInteractor msisdnNetworkInteractor;
     MSISDNListener msisdnListener;
-    //    IncomingSms smsReceiver;
     boolean hasShown = false;
     DialogFragment dialogFragment;
 
@@ -56,8 +53,6 @@ public class PhoneVerificationUtil implements MSISDNConstant {
     public PhoneVerificationUtil(Context context) {
         this.context = context;
         this.msisdnNetworkInteractor = new MsisdnVerificationRetrofitInteractorImpl();
-//        this.smsReceiver = new IncomingSms();
-
     }
 
     public void checkIsMSISDNVerified() {
@@ -132,15 +127,9 @@ public class PhoneVerificationUtil implements MSISDNConstant {
             ((MsisdnVerificationFragment) dialogFragment).setListener(msisdnListener);
         dialogFragment.show(ft, TAG_DIALOG);
 
-//        smsReceiver.setListener(((MsisdnVerificationFragment) dialogFragment));
-
     }
 
-//    public void registerSMSReceiver() {
-//        IntentFilter filter = new IntentFilter();
-//        filter.addAction("android.provider.Telephony.SMS_RECEIVED");
-//        context.registerReceiver(smsReceiver, filter);
-//    }
+
 
     public boolean isShowing() {
         return dialogFragment.getShowsDialog();
@@ -150,11 +139,6 @@ public class PhoneVerificationUtil implements MSISDNConstant {
     public void setMSISDNListener(MSISDNListener msisdnListener) {
         this.msisdnListener = msisdnListener;
     }
-
-//    public void unregister() {
-//        if (smsReceiver != null)
-//            context.unregisterReceiver(smsReceiver);
-//    }
 
     public void unSubscribe() {
         if (msisdnNetworkInteractor != null)

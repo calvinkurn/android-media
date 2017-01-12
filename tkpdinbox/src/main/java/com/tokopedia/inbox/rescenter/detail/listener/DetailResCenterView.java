@@ -80,6 +80,8 @@ public interface DetailResCenterView {
 
     void openInputAddress();
 
+    void openInputAddressMigrateVersion();
+
     void openEditAddress(String url);
 
     void setReplyAreaEmpty();

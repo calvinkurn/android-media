@@ -19,6 +19,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
@@ -172,6 +173,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         productAdapter.incrementPage();
 
         UnifyTracking.eventAppsFlyerViewListingSearch(model, browseModel.q);
+        TrackingUtils.eventLocaSearched(browseModel.q);
     }
 
     @Override

@@ -64,6 +64,7 @@ import com.tkpd.library.utils.TwitterHandler;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.myproduct.ManageProduct;
 import com.tokopedia.core.R;
@@ -2718,7 +2719,9 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
 
         if (!isCreateNewActivity) {
             UnifyTracking.eventAddProduct();
+            TrackingUtils.eventLoca(AppScreen.EVENT_ADDED_PRODUCT);
         } else {
+            TrackingUtils.eventLoca(AppScreen.EVENT_ADDED_PRODUCT);
             UnifyTracking.eventAddProductMore();
         }
 
