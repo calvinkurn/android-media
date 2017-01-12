@@ -3,6 +3,7 @@ package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -15,8 +16,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -24,6 +23,7 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
+import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.presenter.TopAdsAdListPresenter;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAdListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyGroupAdsDataBinder;
@@ -31,7 +31,6 @@ import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder
 import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
 import com.tokopedia.seller.topads.view.widget.DividerItemDecoration;
 
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -43,6 +42,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         TopAdsListPromoViewListener, SearchView.OnQueryTextListener, TopAdsAdListAdapter.Callback {
 
     private static final int START_PAGE = 1;
+    protected static final int REQUEST_CODE_AD_STATUS = TopAdsAdListFragment.class.hashCode();
 
     @BindView(R2.id.list_product)
     RecyclerView recyclerView;
@@ -171,6 +171,18 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        // check if the request code is the same
+        if (requestCode == REQUEST_CODE_AD_STATUS && intent != null) {
+            boolean adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_STATUS_CHANGED, false);
+            if (adStatusChanged) {
+                searchAd(START_PAGE);
+            }
+        }
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.promo_topads, menu);
         searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
@@ -193,6 +205,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         if (page == START_PAGE) {
             adapter.clearData();
             this.totalItem = totalItem;
+            layoutManager.scrollToPositionWithOffset(0, 0);
         }
         adapter.addData(adList);
         hideLoading();

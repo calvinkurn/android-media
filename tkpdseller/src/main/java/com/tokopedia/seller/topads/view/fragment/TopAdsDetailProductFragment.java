@@ -2,8 +2,6 @@ package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.CompoundButton;
 
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
@@ -17,7 +15,6 @@ import com.tokopedia.seller.topads.model.data.ProductAd;
 import com.tokopedia.seller.topads.network.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.topads.presenter.TopAdsDetailProductPresenter;
 import com.tokopedia.seller.topads.presenter.TopAdsDetailProductPresenterImpl;
-import com.tokopedia.seller.topads.view.widget.TopAdsLabelSwitch;
 import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 
 import butterknife.BindView;
@@ -36,7 +33,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
     public static Fragment createInstance(ProductAd productAd) {
         Fragment fragment = new TopAdsDetailProductFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable(TopAdsExtraConstant.EXTRA_DETAIL_DATA, productAd);
+        bundle.putParcelable(TopAdsExtraConstant.EXTRA_AD, productAd);
         fragment.setArguments(bundle);
         return fragment;
     }

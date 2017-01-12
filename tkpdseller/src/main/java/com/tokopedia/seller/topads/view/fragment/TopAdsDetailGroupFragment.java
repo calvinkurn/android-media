@@ -3,8 +3,6 @@ package com.tokopedia.seller.topads.view.fragment;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.CompoundButton;
 
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
@@ -17,7 +15,6 @@ import com.tokopedia.seller.topads.model.data.GroupAd;
 import com.tokopedia.seller.topads.presenter.TopAdsDetailGroupPresenter;
 import com.tokopedia.seller.topads.presenter.TopAdsDetailGroupPresenterImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsProductAdListActivity;
-import com.tokopedia.seller.topads.view.widget.TopAdsLabelSwitch;
 import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 
 import butterknife.BindView;
@@ -37,7 +34,7 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
     public static Fragment createInstance(GroupAd groupAd) {
         Fragment fragment = new TopAdsDetailGroupFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable(TopAdsExtraConstant.EXTRA_DETAIL_DATA, groupAd);
+        bundle.putParcelable(TopAdsExtraConstant.EXTRA_AD, groupAd);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -50,7 +47,7 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
     @Override
     protected void setupArguments(Bundle bundle) {
         super.setupArguments(bundle);
-        groupAd = bundle.getParcelable(TopAdsExtraConstant.EXTRA_DETAIL_DATA);
+        groupAd = bundle.getParcelable(TopAdsExtraConstant.EXTRA_AD);
     }
 
     @Override

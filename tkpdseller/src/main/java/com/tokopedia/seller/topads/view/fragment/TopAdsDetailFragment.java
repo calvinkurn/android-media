@@ -1,7 +1,9 @@
 package com.tokopedia.seller.topads.view.fragment;
 
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -13,7 +15,6 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
@@ -93,7 +94,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     @Override
     protected void setupArguments(Bundle bundle) {
         super.setupArguments(bundle);
-        adFromIntent = bundle.getParcelable(TopAdsExtraConstant.EXTRA_DETAIL_DATA);
+        adFromIntent = bundle.getParcelable(TopAdsExtraConstant.EXTRA_AD);
     }
 
     @Override
@@ -119,9 +120,9 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
 
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-        if(checked){
+        if (checked) {
             turnOnAd();
-        }else{
+        } else {
             turnOffAd();
         }
     }
@@ -148,6 +149,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     @Override
     public void onTurnOnAdSuccess() {
         progressDialog.dismiss();
+        setResultAdStatusChanged();
     }
 
     @Override
@@ -166,6 +168,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     @Override
     public void onTurnOffAdSuccess() {
         progressDialog.dismiss();
+        setResultAdStatusChanged();
     }
 
     @Override
@@ -181,7 +184,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         }).showRetrySnackbar();
     }
 
-    protected void loadAdDetail(Ad ad){
+    protected void loadAdDetail(Ad ad) {
         name.setContent(ad.getName());
         switch (ad.getStatus()) {
             case TopAdsConstant.STATUS_AD_ACTIVE:
@@ -209,6 +212,12 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         status.setListenerValue(null);
         status.setChecked(checked);
         status.setListenerValue(this);
+    }
+
+    private void setResultAdStatusChanged() {
+        Intent intent = new Intent();
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_STATUS_CHANGED, true);
+        getActivity().setResult(Activity.RESULT_OK, intent);
     }
 
     @Override

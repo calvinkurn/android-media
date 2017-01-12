@@ -14,7 +14,8 @@ import java.util.Date;
 
 public abstract class TopAdsDatePickerFragment<T extends TopAdsDatePickerPresenter> extends BasePresenterFragment<T> {
 
-    private static final int REQUEST_CODE_DATE = 0;
+    private static final int REQUEST_CODE_DATE = TopAdsDatePickerFragment.class.hashCode();
+
     protected Date startDate;
     protected Date endDate;
 
@@ -98,13 +99,13 @@ public abstract class TopAdsDatePickerFragment<T extends TopAdsDatePickerPresent
     protected abstract void loadData();
 
     protected void openDatePicker() {
-        Intent moveToSetDate = new Intent(getActivity(), SetDateActivity.class);
-        moveToSetDate.putExtra(SetDateActivity.IS_GOLD_MERCHANT, true);
+        Intent intent = new Intent(getActivity(), SetDateActivity.class);
+        intent.putExtra(SetDateActivity.IS_GOLD_MERCHANT, true);
 //        moveToSetDate.putExtra(SetDateActivity.SELECTION_PERIOD, lastSelection);
 //        moveToSetDate.putExtra(SetDateActivity.SELECTION_TYPE, selectionType);
-        moveToSetDate.putExtra(SetDateActivity.CUSTOM_START_DATE, startDate.getTime());
-        moveToSetDate.putExtra(SetDateActivity.CUSTOM_END_DATE, endDate.getTime());
-        startActivityForResult(moveToSetDate, REQUEST_CODE_DATE);
+        intent.putExtra(SetDateActivity.CUSTOM_START_DATE, startDate.getTime());
+        intent.putExtra(SetDateActivity.CUSTOM_END_DATE, endDate.getTime());
+        startActivityForResult(intent, REQUEST_CODE_DATE);
     }
 
 }
