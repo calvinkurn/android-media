@@ -377,6 +377,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         }
         if (browseProductActivityModel.isSearchDeeplink()) {
             searchView.setQuery(browseProductActivityModel.getQ(), false);
+            CommonUtils.hideKeyboard(this, getCurrentFocus());
             browseProductActivityModel.setSearchDeeplink(false);
         }
         if (CommonUtils.isFinishActivitiesOptionEnabled(this)) {

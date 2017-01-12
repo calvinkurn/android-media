@@ -22,16 +22,21 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.home.TopPicksWebView;
+import com.tokopedia.core.util.DeepLinkChecker;
 
 /**
- * Created by Nisie on 8/25/2015.
+ * Created by Alifa on 1/10/2017.
  */
-public class FragmentBannerWebView extends Fragment {
+
+public class FragmentTopPicksWebView extends Fragment {
 
     private ProgressBar progressBar;
     private WebView webview;
+    private static final String TOP_PICKS_URL = "https://www.tokopedia.com/toppicks/";
+    private static final String BASE_URL = "www.tokopedia.com";
+    private static final String BASE_MOBILE_URL = "m.tokopedia.com";
 
     private class MyWebViewClient extends WebChromeClient {
         @Override
@@ -83,11 +88,11 @@ public class FragmentBannerWebView extends Fragment {
     }
 
 
-    public FragmentBannerWebView() {
+    public FragmentTopPicksWebView() {
     }
 
-    public static FragmentBannerWebView createInstance(String url) {
-        FragmentBannerWebView fragment = new FragmentBannerWebView();
+    public static FragmentTopPicksWebView createInstance(String url) {
+        FragmentTopPicksWebView fragment = new FragmentTopPicksWebView();
         Bundle args = new Bundle();
         args.putString("url", url);
         fragment.setArguments(args);
@@ -95,10 +100,9 @@ public class FragmentBannerWebView extends Fragment {
     }
 
     private boolean overrideUrl(String url) {
-        if (TrackingUtils.getBoolean(AppEventTracking.GTM.OVERRIDE_BANNER)) {
 
-            if (((Uri.parse(url).getHost().contains("www.tokopedia.com"))
-                    || Uri.parse(url).getHost().contains("m.tokopedia.com"))
+            if (((Uri.parse(url).getHost().contains(BASE_URL))
+                    || Uri.parse(url).getHost().contains(BASE_MOBILE_URL))
                     && !url.endsWith(".pl")) {
                 switch ((DeepLinkChecker.getDeepLinkType(url))) {
                     case DeepLinkChecker.BROWSE:
@@ -122,9 +126,6 @@ public class FragmentBannerWebView extends Fragment {
             } else {
                 return false;
             }
-        } else {
-            return false;
-        }
     }
 
     @Override
@@ -137,15 +138,16 @@ public class FragmentBannerWebView extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fragment_general_web_view, container, false);
-        System.out.println("KIRISAME use URL: " + getArguments().getString("url", "http://blog.tokopedia.com"));
-        String url = getArguments().getString("url", "http://blog.tokopedia.com");
+        String url = getArguments().getString("url", TOP_PICKS_URL);
         webview = (WebView) view.findViewById(R.id.webview);
+        webview.getSettings().setBuiltInZoomControls(true);
+        webview.getSettings().setDisplayZoomControls(false);
         progressBar = (ProgressBar) view.findViewById(R.id.progressbar);
         progressBar.setIndeterminate(true);
         clearCache(webview);
         webview.loadUrl(url);
-        webview.setWebViewClient(new MyWebClient());
-        webview.setWebChromeClient(new MyWebViewClient());
+        webview.setWebViewClient(new FragmentTopPicksWebView.MyWebClient());
+        webview.setWebChromeClient(new FragmentTopPicksWebView.MyWebViewClient());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             WebView.setWebContentsDebuggingEnabled(true);
             webview.setWebContentsDebuggingEnabled(true);

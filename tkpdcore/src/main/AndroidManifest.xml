@@ -424,6 +424,10 @@
             android:label="@string/title_activity_deep_link"
             android:screenOrientation="portrait" />
         <activity
+            android:name="com.tokopedia.core.home.TopPicksWebView"
+            android:label="@string/title_activity_deep_link"
+            android:screenOrientation="portrait" />
+        <activity
             android:name="com.tokopedia.core.geolocation.activity.GeolocationActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/choose_location"

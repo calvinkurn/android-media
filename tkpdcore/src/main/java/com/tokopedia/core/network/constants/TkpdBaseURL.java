@@ -541,6 +541,7 @@ public interface TkpdBaseURL {
         String PATH_OTHER_PRODUCT = "v1/product";
         String PATH_FAV_SHOP_FEED = "catalog/product";
         String PATH_CATALOG = "v1/catalog";
+        String PATH_TOP_PICKS = "/hoth/toppicks/widget";
 
     }
 

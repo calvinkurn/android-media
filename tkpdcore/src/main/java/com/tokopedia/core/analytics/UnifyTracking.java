@@ -43,6 +43,24 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventHomeTopPicksItem(String action, String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.TOP_PICKS,
+                AppEventTracking.Category.TOP_PICKS_HOME,
+                action,
+                label
+        ).getEvent());
+    }
+
+    public static void eventHomeTopPicksTitle( String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.TOP_PICKS,
+                AppEventTracking.Category.TOP_PICKS_HOME,
+                AppEventTracking.Action.CLICK,
+                label
+        ).getEvent());
+    }
+
     public static void eventNewOrderDetail(){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.NEW_ORDER,
