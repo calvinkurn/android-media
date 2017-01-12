@@ -190,6 +190,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
+                            RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_SMS);
                         }
                     })
                     .show();
