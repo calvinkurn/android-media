@@ -225,8 +225,7 @@ public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> impl
 
     @Override
     public void onBackPressed() {
-        if (webView.canGoBack()) webView.goBack();
-        else finish();
+        presenter.processVerifyPaymentIdByCancelTopPay(paymentId);
     }
 
     @Override

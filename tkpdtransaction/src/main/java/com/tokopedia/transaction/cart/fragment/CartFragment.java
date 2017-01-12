@@ -350,6 +350,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void renderErrorEmptyCart() {
+        tvTickerGTM.setVisibility(View.GONE);
         nsvContainer.setVisibility(View.GONE);
         pbMainLoading.setVisibility(View.GONE);
         CartBadgeNotificationReceiver.resetBadgeCart(getActivity());

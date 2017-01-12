@@ -86,6 +86,17 @@ public class TopPayPresenter implements ITopPayPresenter {
     }
 
     @Override
+    public void processVerifyPaymentIdByCancelTopPay(String paymentId) {
+        if (paymentId == null) {
+            view.showToastMessageWithForceCloseView(
+                    view.getStringFromResource(R.string.message_transaction_toppay_canceled)
+            );
+            return;
+        }
+        processVerifyPaymentId(paymentId);
+    }
+
+    @Override
     public void clearNotificationCart() {
         LocalCacheHandler cache = view.getLocalCacheHandlerNotification();
         cache.putInt(TkpdCache.Key.IS_HAS_CART, 0);

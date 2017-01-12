@@ -21,5 +21,7 @@ public interface ITopPayPresenter {
 
     void processVerifyPaymentId(String paymentId);
 
+    void processVerifyPaymentIdByCancelTopPay(String paymentId);
+
     void clearNotificationCart();
 }
