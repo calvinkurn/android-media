@@ -14,13 +14,4 @@ public interface TopPicksView {
 
     void renderTopPicks(ArrayList<Toppick> topicks);
 
-/*    void showGetCatMenuUnknownHostMessage(int stringId);
-
-    void showGetCatMenuSocketTimeoutExceptionMessage(int stringId);
-
-    void showGetCatMenuEmptyMessage(int stringId);
-
-    void renderHomeCatMenu(ArrayList<CategoryMenuModel> categoryMenuModels);
-
-    void showGetCatMenuFromDbErrorMessage(int stringId);*/
 }
