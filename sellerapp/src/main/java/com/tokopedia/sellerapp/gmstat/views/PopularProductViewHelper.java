@@ -5,7 +5,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.core.myproduct.ProductActivity;
+import com.tokopedia.seller.myproduct.ProductActivity;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.sellerapp.R;

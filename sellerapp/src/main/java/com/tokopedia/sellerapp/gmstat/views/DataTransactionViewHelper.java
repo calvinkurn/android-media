@@ -14,7 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.db.chart.view.LineChartView;
-import com.tokopedia.core.myproduct.ProductActivity;
+import com.tokopedia.seller.myproduct.ProductActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.gmstat.models.GetTransactionGraph;
 import com.tokopedia.sellerapp.gmstat.utils.DataTransactionChartConfig;
