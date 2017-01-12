@@ -55,7 +55,7 @@ public class ConsumerRouterApplication extends MainApplication implements TkpdCo
     @Override
     public void goToManageProduct(Context context) {
         Intent intent = new Intent(context, ManageProduct.class);
-        startActivity(intent);
+        context.startActivity(intent);
     }
 
     @Override
@@ -64,8 +64,8 @@ public class ConsumerRouterApplication extends MainApplication implements TkpdCo
     }
 
     @Override
-    public void goToEditProduct(boolean isEdit, String productId) {
-        ProductActivity.moveToEditFragment(getAppContext(), isEdit, productId);
+    public void goToEditProduct(Context context, boolean isEdit, String productId) {
+        ProductActivity.moveToEditFragment(context, isEdit, productId);
     }
 
     @Override

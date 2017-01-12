@@ -16,6 +16,6 @@ public interface TkpdCoreRouter {
     void removeInstopedToken();
     void goToManageProduct(Context context);
     void clearEtalaseCache();
-    void goToEditProduct(boolean isEdit, String productId);
+    void goToEditProduct(Context context, boolean isEdit, String productId);
     void resetAddProductCache();
 }

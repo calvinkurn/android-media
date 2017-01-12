@@ -754,7 +754,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void moveToEditFragment(boolean isEdit, String productId) {
         if(getActivity().getApplication() instanceof TkpdCoreRouter){
-            ((TkpdCoreRouter)getActivity().getApplication()).goToEditProduct(isEdit, productId);
+            ((TkpdCoreRouter)getActivity().getApplication()).goToEditProduct(context, isEdit, productId);
         }
     }
 
