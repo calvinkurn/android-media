@@ -9,9 +9,5 @@ import java.util.List;
  */
 public interface TopAdsAdListPresenter<T extends Ad> extends TopAdsDatePickerPresenter {
 
-    void turnOffAdList(List<T> adList);
-
-    void turnOnAddList(List<T> adList);
-
     void onDestroy();
 }

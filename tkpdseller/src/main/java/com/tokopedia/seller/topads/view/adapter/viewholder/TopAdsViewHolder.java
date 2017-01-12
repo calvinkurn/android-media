@@ -1,13 +1,11 @@
 package com.tokopedia.seller.topads.view.adapter.viewholder;
 
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bignerdranch.android.multiselector.MultiSelector;
-import com.bignerdranch.android.multiselector.SwappingHolder;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
@@ -19,7 +17,7 @@ import butterknife.ButterKnife;
 /**
  * Created by zulfikarrahman on 11/28/16.
  */
-public class TopAdsViewHolder extends SwappingHolder {
+public class TopAdsViewHolder extends RecyclerView.ViewHolder {
 
     @BindView(R2.id.title_product)
     public TextView titleProduct;
@@ -39,9 +37,6 @@ public class TopAdsViewHolder extends SwappingHolder {
     @BindView(R2.id.price_promo_per_click)
     public TextView pricePromoPerClick;
 
-    @BindView(R2.id.check_promo)
-    public CheckBox checkedPromo;
-
     @BindView(R2.id.progress_bar_layout)
     public View progressBarLayout;
 
@@ -51,8 +46,8 @@ public class TopAdsViewHolder extends SwappingHolder {
     @BindView(R2.id.mainView)
     public View mainView;
 
-    public TopAdsViewHolder(View view, MultiSelector multiSelector) {
-        super(view, multiSelector);
+    public TopAdsViewHolder(View view) {
+        super(view);
         ButterKnife.bind(this, view);
     }
 

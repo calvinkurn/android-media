@@ -40,7 +40,7 @@ import butterknife.BindView;
  * A simple {@link Fragment} subclass.
  */
 public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> extends TopAdsDatePickerFragment<T> implements
-        TopAdsListPromoViewListener, SearchView.OnQueryTextListener, TopAdsAdListAdapter.Callback, TopAdsAdListActionMode.Callback {
+        TopAdsListPromoViewListener, SearchView.OnQueryTextListener, TopAdsAdListAdapter.Callback {
 
     private static final int START_PAGE = 1;
 
@@ -62,7 +62,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     private RefreshHandler refresh;
     private LinearLayoutManager layoutManager;
     private SearchView searchView;
-    private TopAdsAdListActionMode actionMode;
     private SnackbarRetry snackBarRetry;
     private ProgressDialog progressDialog;
 
@@ -172,41 +171,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     }
 
     @Override
-    public void onChecked(int position, boolean checked) {
-        if (adapter.getSelectedList().size() > 0 && actionMode == null) {
-            actionMode = new TopAdsAdListActionMode();
-            actionMode.setCallback(this);
-            getActivity().startActionMode(actionMode);
-            swipeToRefresh.setEnabled(false);
-        }
-        if (actionMode != null) {
-            actionMode.setTitle(String.valueOf(adapter.getSelectedList().size()));
-        }
-        hideSnackBarRetry();
-    }
-
-    @Override
-    public void onActionTurnOn() {
-        progressDialog.show();
-        presenter.turnOnAddList(adapter.getSelectedList());
-    }
-
-    @Override
-    public void onActionTurnOff() {
-        progressDialog.show();
-        presenter.turnOffAdList(adapter.getSelectedList());
-    }
-
-    @Override
-    public void onActionModeDestroyed() {
-        progressDialog.dismiss();
-        actionMode = null;
-        adapter.clearCheckedList();
-        swipeToRefresh.setEnabled(true);
-        hideSnackBarRetry();
-    }
-
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.promo_topads, menu);
         searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
@@ -225,9 +189,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
 
     @Override
     public void onSearchAdLoaded(@NonNull List adList, int totalItem) {
-        if (actionMode == null) {
-            swipeToRefresh.setEnabled(true);
-        }
+        swipeToRefresh.setEnabled(true);
         if (page == START_PAGE) {
             adapter.clearData();
             this.totalItem = totalItem;
@@ -253,48 +215,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
             swipeToRefresh.setEnabled(false);
             adapter.showRetryFull(true);
         }
-
-    }
-
-    @Override
-    public void onTurnOnAdSuccess() {
-        hideLoading();
-        onBulkUpdateSuccess();
-    }
-
-    @Override
-    public void onTurnOnAdFailed() {
-        hideLoading();
-        showSnackBarRetry(new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                onActionTurnOn();
-            }
-        });
-    }
-
-    @Override
-    public void onTurnOffAdSuccess() {
-        hideLoading();
-        onBulkUpdateSuccess();
-    }
-
-    @Override
-    public void onTurnOffAdFailed() {
-        hideLoading();
-        showSnackBarRetry(new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                onActionTurnOff();
-            }
-        });
-    }
-
-    private void onBulkUpdateSuccess() {
-        if (actionMode != null) {
-            actionMode.finish();
-        }
-        searchAd(START_PAGE);
     }
 
     private void hideLoading() {
