@@ -416,12 +416,13 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
 
     @Override
     public void onNetworkError(int type, Object... data) {
-
+        onMessageError(type,data);
     }
 
     @Override
     public void onMessageError(int type, Object... data) {
-
+        snackbar = SnackbarManager.make(getActivity(), (String) data[0], Snackbar.LENGTH_LONG);
+        snackbar.show();
     }
 
     @Override
