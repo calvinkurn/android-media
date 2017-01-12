@@ -13,6 +13,7 @@ import com.tokopedia.transaction.R;
 
 /**
  * @author anggaprasetiyo on 11/2/16.
+ *          modified by Mr. alvarisi
  */
 
 public class ShipmentCartActivity extends BasePresenterActivity {

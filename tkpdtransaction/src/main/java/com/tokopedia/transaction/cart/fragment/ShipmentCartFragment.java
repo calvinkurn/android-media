@@ -9,7 +9,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.CardView;
-import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
@@ -32,6 +31,9 @@ import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.adapter.ShipmentCartAdapter;
 import com.tokopedia.transaction.cart.adapter.ShipmentPackageCartAdapter;
 import com.tokopedia.transaction.cart.listener.IShipmentCartView;
@@ -44,8 +46,6 @@ import com.tokopedia.transaction.cart.model.savelocation.SaveLocationWrapper;
 import com.tokopedia.transaction.cart.model.shipmentcart.ShipmentCartWrapper;
 import com.tokopedia.transaction.cart.presenter.IShipmentCartPresenter;
 import com.tokopedia.transaction.cart.presenter.ShipmentCartPresenter;
-import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.R2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -176,8 +176,10 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
     @Override
     protected void setViewListener() {
         cvGeoLocation.setVisibility(View.GONE);
-        tvTitleAddress.setText(Html.fromHtml(transactionPassData.getCartDestination().getAddressName()));
-        tvDetailAddress.setText(Html.fromHtml(renderDetailAddressFromTransaction(
+        tvTitleAddress.setText(
+                MethodChecker.fromHtml(transactionPassData.getCartDestination().getAddressName())
+        );
+        tvDetailAddress.setText(MethodChecker.fromHtml(renderDetailAddressFromTransaction(
                 transactionPassData.getCartDestination()))
         );
         spShipment.setOnItemSelectedListener(getShipmentItemSelectionListener());
@@ -235,7 +237,7 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
 
     private String renderDetailAddressFromTransaction(CartDestination destination) {
         return String.format("%s\n%s\n%s, %s, %s\n%s\n%s", destination.getReceiverName(),
-                Html.fromHtml(destination.getAddressName()).toString(),
+                MethodChecker.fromHtml(destination.getAddressName()).toString(),
                 destination.getAddressDistrict(), destination.getAddressCity(),
                 destination.getAddressPostal(), destination.getAddressProvince(),
                 destination.getReceiverPhone()
@@ -256,12 +258,14 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
             int selectedPosition = 0;
             for (int i = 0; i < shipmentPackages.size(); i++) {
                 if (wrapper.getShipmentId().equalsIgnoreCase(shipment.getShipmentId())
-                        && wrapper.getShipmentPackageId().equalsIgnoreCase(shipmentPackages.get(i).getShipmentId())) {
+                        && wrapper.getShipmentPackageId().equalsIgnoreCase(
+                        shipmentPackages.get(i).getShipmentPackageId()
+                )) {
                     selectedPosition = i;
+                    break;
                 }
             }
             spShipmentPackage.setAdapter(adapterShipmentPackage);
-            wrapper.setShipmentPackageId(shipmentPackages.get(selectedPosition).getShipmentPackageId());
             spShipmentPackage.setSelection(selectedPosition);
         } else {
             renderEmptyShipmentPackageSpinner();
@@ -280,7 +284,9 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
         wrapper = new ShipmentCartWrapper();
         wrapper.setOldAddressId(transactionPassData.getCartDestination().getAddressId());
         wrapper.setOldShipmentId(transactionPassData.getCartShipments().getShipmentId());
-        wrapper.setOldShipmentPackageId(transactionPassData.getCartShipments().getShipmentPackageId());
+        wrapper.setOldShipmentPackageId(
+                transactionPassData.getCartShipments().getShipmentPackageId()
+        );
         wrapper.setAddressId(transactionPassData.getCartDestination().getAddressId());
         wrapper.setShipmentId(transactionPassData.getCartShipments().getShipmentId());
         wrapper.setShipmentPackageId(transactionPassData.getCartShipments().getShipmentPackageId());
@@ -319,22 +325,24 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
                 shipments.add(shipment);
             }
         }
+
         if (shipments.size() > 0) {
             adapterShipment.setAdapterData(shipments);
             spShipment.setAdapter(adapterShipment);
-            renderShipmentPackageSpinner(shipments.get(0));
+            int selectedPosition = 0;
+            for (int i = 0; i < shipments.size(); i++) {
+                if (wrapper.getShipmentId().equalsIgnoreCase(shipments.get(i).getShipmentId())) {
+                    selectedPosition = i;
+                    break;
+                }
+            }
+            spShipment.setSelection(selectedPosition);
+
+            renderShipmentPackageSpinner(shipments.get(selectedPosition));
         } else {
             renderEmptyShipment();
             renderEmptyShipmentPackageSpinner();
         }
-
-        int selectedPosition = 0;
-        for (int i = 0; i < shipments.size(); i++) {
-            if (wrapper.getAddressId().equalsIgnoreCase(shipments.get(i).getShipmentId())) {
-                selectedPosition = i;
-            }
-        }
-        spShipment.setSelection(selectedPosition);
     }
 
     @Override
@@ -457,13 +465,16 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
 
         if (ConnectionResult.SUCCESS == resultCode) {
             LocationPass locationArg = null;
-            if (!(TextUtils.isEmpty(locationPass.getLongitude()) || TextUtils.isEmpty(locationPass.getLatitude()))) {
+            if (!(TextUtils.isEmpty(locationPass.getLongitude())
+                    || TextUtils.isEmpty(locationPass.getLatitude()))) {
                 locationArg = locationPass;
             }
             Intent intent = GeolocationActivity.createInstance(getActivity(), locationArg);
             startActivityForResult(intent, CHOOSE_LOCATION);
         } else {
-            Toast.makeText(getActivity(), "Google Play Service Unavailable", Toast.LENGTH_LONG).show();
+            Toast.makeText(
+                    getActivity(), "Google Play Service Unavailable", Toast.LENGTH_LONG
+            ).show();
             Dialog dialog = availability.getErrorDialog(getActivity(), resultCode, 0);
             dialog.show();
         }
@@ -545,8 +556,8 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
         assert temp != null;
         locationPass.setLatitude(temp.getLatitude());
         locationPass.setLongitude(temp.getLongitude());
-        tvTitleAddress.setText(Html.fromHtml(temp.getAddressName()));
-        tvDetailAddress.setText(Html.fromHtml(temp.getAddressDetail()));
+        tvTitleAddress.setText(MethodChecker.fromHtml(temp.getAddressName()));
+        tvDetailAddress.setText(MethodChecker.fromHtml(temp.getAddressDetail()));
         wrapper.setAddressId(temp.getAddressId());
         actionCalculateShipment();
         fetchGeocodeLocation();

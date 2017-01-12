@@ -66,7 +66,9 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
                 this.view.showLoading();
             }
             this.interactor.calculateShipment(
-                    AuthUtil.generateParamsNetwork(MainApplication.getAppContext(), wrapper.getParams()),
+                    AuthUtil.generateParamsNetwork(
+                            MainApplication.getAppContext(), wrapper.getParams()
+                    ),
                     new CalculateShipmentSubscriber()
             );
         }
@@ -88,7 +90,9 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
         if (this.view != null) {
             this.view.showLoading();
             this.interactor.editLocationShipment(
-                    AuthUtil.generateParamsNetwork(MainApplication.getAppContext(), wrapper.getParams()),
+                    AuthUtil.generateParamsNetwork(
+                            MainApplication.getAppContext(), wrapper.getParams()
+                    ),
                     new SaveLocationShipmentSubscriber()
             );
         }

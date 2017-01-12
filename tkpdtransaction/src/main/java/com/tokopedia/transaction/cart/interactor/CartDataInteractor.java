@@ -214,7 +214,8 @@ public class CartDataInteractor implements ICartDataInteractor {
     }
 
     @Override
-    public void editShipmentCart(TKPDMapParam<String, String> param, Subscriber<EditShipmentCart> subscriber) {
+    public void editShipmentCart(TKPDMapParam<String, String> param,
+                                 Subscriber<EditShipmentCart> subscriber) {
         shipmentCartRepository.editShipment(param)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -223,7 +224,8 @@ public class CartDataInteractor implements ICartDataInteractor {
     }
 
     @Override
-    public void editLocationShipment(TKPDMapParam<String, String> param, Subscriber<SaveLocationData> subscriber) {
+    public void editLocationShipment(TKPDMapParam<String, String> param,
+                                     Subscriber<SaveLocationData> subscriber) {
         shipmentCartRepository.editLocation(param)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())

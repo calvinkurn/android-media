@@ -150,7 +150,8 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private void renderHolderViewListener(final ViewHolder holder, final CartItem cartData,
-                                          final CartProductItemAdapter adapterProduct, final int position) {
+                                          final CartProductItemAdapter adapterProduct,
+                                          final int position) {
         holder.tvShippingAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
