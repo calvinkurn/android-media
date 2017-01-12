@@ -23,9 +23,9 @@ public interface ChooseAddressFragmentPresenter {
 
     void setOnAddAddressClick(Context context);
 
-    void onSuccessCreateAddress(Context context);
+    void onSuccessCreateAddress();
 
-    void onSuccessEditAddress(Context context);
+    void onSuccessEditAddress();
 
     void setOnEditAddressClick(Context context, Destination destination);
 

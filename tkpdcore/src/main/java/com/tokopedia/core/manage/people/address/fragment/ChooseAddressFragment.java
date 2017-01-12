@@ -19,6 +19,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
+import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.adapter.ChooseAddressAdapter;
 import com.tokopedia.core.manage.people.address.listener.ChooseAddressFragmentView;
 import com.tokopedia.core.manage.people.address.presenter.ChooseAddressFragmentPresenter;
@@ -306,10 +307,10 @@ public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFr
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case ManageAddressConstant.REQUEST_CODE_PARAM_CREATE:
-                    presenter.onSuccessCreateAddress(getActivity());
+                    presenter.onSuccessCreateAddress();
                     break;
                 case ChooseAddressFragmentPresenterImpl.REQUEST_CHOOSE_ADDRESS_CODE:
-                    presenter.onSuccessEditAddress(getActivity());
+                    presenter.onSuccessEditAddress();
                 default:
                     break;
             }
@@ -321,4 +322,17 @@ public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFr
         search.setText("");
     }
 
+    @Override
+    public void navigateToAddAddress(Bundle bundle) {
+        Intent intent = new Intent(getActivity(), AddAddressActivity.class);
+        intent.putExtras(bundle);
+        startActivityForResult(intent, ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
+    }
+
+    @Override
+    public void navigateToEditAddress(Bundle bundle) {
+        Intent intent = new Intent(getActivity(), AddAddressActivity.class);
+        intent.putExtras(bundle);
+        startActivityForResult(intent, ChooseAddressFragmentPresenterImpl.REQUEST_CHOOSE_ADDRESS_CODE);
+    }
 }

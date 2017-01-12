@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
-import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.fragment.ChooseAddressFragment;
 import com.tokopedia.core.manage.people.address.interactor.ChooseAddressCacheInteractor;
 import com.tokopedia.core.manage.people.address.interactor.ChooseAddressCacheInteractorImpl;
@@ -184,31 +183,27 @@ public class ChooseAddressFragmentPresenterImpl implements  ChooseAddressFragmen
 
     @Override
     public void setOnAddAddressClick(Context context) {
-        Intent intent = new Intent(context, AddAddressActivity.class);
         Bundle bundle = new Bundle();
         bundle.putBoolean("is_edit", false);
-        intent.putExtras(bundle);
-        viewListener.startActivityForResult(intent, ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
+        viewListener.navigateToAddAddress(bundle);
     }
 
     @Override
-    public void onSuccessCreateAddress(Context context) {
+    public void onSuccessCreateAddress() {
         viewListener.refresh();
     }
 
     @Override
-    public void onSuccessEditAddress(Context context) {
+    public void onSuccessEditAddress() {
         viewListener.refresh();
     }
 
     @Override
     public void setOnEditAddressClick(Context context, Destination destination) {
-        Intent intent = new Intent(context, AddAddressActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(ManageAddressConstant.EDIT_PARAM, destination);
         bundle.putBoolean(ManageAddressConstant.IS_EDIT, true);
-        intent.putExtras(bundle);
-        viewListener.startActivityForResult(intent, ChooseAddressFragmentPresenterImpl.REQUEST_CHOOSE_ADDRESS_CODE);
+        viewListener.navigateToEditAddress(bundle);
     }
 
     @Override

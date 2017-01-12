@@ -2,7 +2,7 @@ package com.tokopedia.core.manage.people.address.listener;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
+import android.os.Bundle;
 
 import com.tokopedia.core.manage.people.address.adapter.ChooseAddressAdapter;
 
@@ -43,7 +43,9 @@ public interface ChooseAddressFragmentView {
 
     void setRetry(String error);
 
-    void startActivityForResult(Intent intent, int requestCode);
-
     void resetSearch();
+
+    void navigateToAddAddress(Bundle bundle);
+
+    void navigateToEditAddress(Bundle bundle);
 }

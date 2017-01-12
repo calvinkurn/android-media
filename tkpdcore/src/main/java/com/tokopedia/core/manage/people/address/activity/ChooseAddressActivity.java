@@ -80,9 +80,4 @@ public class ChooseAddressActivity extends BasePresenterActivity {
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
 }
