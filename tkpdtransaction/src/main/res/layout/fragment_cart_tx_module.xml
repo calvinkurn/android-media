@@ -74,7 +74,7 @@
                             android:layout_marginBottom="@dimen/margin_vs"
                             android:gravity="center"
                             android:text="@string/label_error_message_1_count_notif"
-                            android:textColor="@color/black"
+                            android:textColor="@color/tkpd_dark_red"
                             android:textStyle="bold"/>
 
                         <TextView
@@ -96,7 +96,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Total Pembayaran"
+                            android:text="@string/label_transaction_total_payment"
                             android:textColor="@color/black"
                             android:textSize="@dimen/font_large"
                             android:textStyle="bold"/>
@@ -122,7 +122,7 @@
                             android:layout_below="@+id/et_tkpd_balance"
                             android:layout_marginEnd="@dimen/margin_small"
                             android:layout_marginRight="@dimen/margin_small"
-                            android:text="Saldo Tokopedia Anda saat ini"
+                            android:text="@string/label_transaction_info_deposit_tokopedia"
                             android:textColor="@color/label_color"
                             android:textSize="@dimen/fontvs"/>
 
@@ -202,7 +202,8 @@
                             android:text="Pilih metode pembayaran dulu"
                             android:textColor="@color/href_link"
                             android:textSize="@dimen/font_small"
-                            android:textStyle="bold"/>
+                            android:textStyle="bold"
+                            tools:ignore="HardcodedText"/>
 
                         <ImageView
                             android:layout_width="@dimen/small_dp"
@@ -316,7 +317,7 @@
                                 android:id="@+id/et_voucher_code"
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/margin_vl"
-                                android:hint="Kode Voucher"
+                                android:hint="@string/label_transaction_hint_form_voucher_code"
                                 android:lines="1"/>
 
 
@@ -357,7 +358,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Potensi Cashback"
+                        android:text="@string/label_transaction_potential_cashback"
                         android:textColor="@color/green_500"
                         android:textStyle="bold"/>
 

@@ -1,7 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="@dimen/padding_small">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/padding_small">
 
     <include
         android:id="@+id/include_loading"
@@ -9,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -38,19 +39,20 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/margin_small"
                         android:layout_marginRight="@dimen/margin_small"
                         android:text="@string/title_total_payment"
                         android:textColor="@color/label_color"
-                        android:textSize="@dimen/fonts" />
+                        android:textSize="@dimen/fonts"/>
 
                     <TextView
                         android:id="@+id/total_payment"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/margin_small"
-                        android:text="asdas dasdas"
                         android:textSize="@dimen/fontm"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:text="asdas dasdas"/>
 
 
                     <android.support.design.widget.TextInputLayout
@@ -63,9 +65,10 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/title_payment_date"
-                            android:singleLine="true"
+                            android:lines="1"
                             android:textSize="@dimen/fonts"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            tools:ignore="TextFields"/>
                     </android.support.design.widget.TextInputLayout>
 
 
@@ -76,22 +79,22 @@
                         android:layout_marginTop="@dimen/margin_small"
                         android:text="@string/title_payment_method"
                         android:textSize="@dimen/floating_label"
-                        android:visibility="gone" />
+                        android:visibility="gone"/>
 
                     <android.support.v7.widget.AppCompatSpinner
                         android:id="@+id/spinner_payment_method"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_small" />
+                        android:layout_marginBottom="@dimen/margin_small"/>
 
                     <TextView
                         android:id="@+id/tv_error_payment_method"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="right"
+                        android:gravity="end"
                         android:textColor="@color/tkpd_dark_red"
                         android:textSize="@dimen/fontvs"
-                        android:visibility="visible" />
+                        android:visibility="visible"/>
 
                     <LinearLayout
                         android:id="@+id/from_account"
@@ -106,22 +109,22 @@
                             android:layout_height="wrap_content"
                             android:text="@string/title_from_account"
                             android:textSize="@dimen/floating_label"
-                            android:visibility="gone" />
+                            android:visibility="gone"/>
 
                         <android.support.v7.widget.AppCompatSpinner
                             android:id="@+id/spinner_from_account"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"/>
 
                         <TextView
                             android:id="@+id/error_spinner_account_from"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="right"
+                            android:gravity="end"
                             android:text="@string/error_from_account"
                             android:textColor="@color/tkpd_dark_red"
                             android:textSize="@dimen/fontvs"
-                            android:visibility="gone" />
+                            android:visibility="gone"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -141,7 +144,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="@dimen/margin_small"
-                                android:hint="@string/title_account_owner" />
+                                android:hint="@string/title_account_owner"/>
                         </android.support.design.widget.TextInputLayout>
 
 
@@ -156,7 +159,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="@dimen/margin_small"
                                 android:hint="@string/title_account_number"
-                                android:inputType="number" />
+                                android:inputType="number"/>
                         </android.support.design.widget.TextInputLayout>
 
                         <android.support.design.widget.TextInputLayout
@@ -173,7 +176,7 @@
                                 android:focusableInTouchMode="false"
                                 android:hint="@string/title_choose_bank"
                                 android:inputType="none"
-                                android:singleLine="true" />
+                                android:singleLine="true"/>
                         </android.support.design.widget.TextInputLayout>
 
                         <android.support.design.widget.TextInputLayout
@@ -187,7 +190,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="@dimen/margin_small"
                                 android:hint="@string/title_branch"
-                                android:singleLine="true" />
+                                android:singleLine="true"/>
                         </android.support.design.widget.TextInputLayout>
                     </LinearLayout>
 
@@ -208,7 +211,7 @@
                                 android:id="@+id/nama_penyetor"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="@string/title_penyetor" />
+                                android:hint="@string/title_penyetor"/>
                         </android.support.design.widget.TextInputLayout>
                     </LinearLayout>
 
@@ -225,22 +228,22 @@
                             android:layout_height="wrap_content"
                             android:text="@string/title_dest_account"
                             android:textSize="@dimen/floating_label"
-                            android:visibility="gone" />
+                            android:visibility="gone"/>
 
                         <android.support.v7.widget.AppCompatSpinner
                             android:id="@+id/spinner_dest_account"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"/>
 
                         <TextView
                             android:id="@+id/error_spinner_account_dest"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="right"
+                            android:gravity="end"
                             android:text="@string/error_dest_account"
                             android:textColor="@color/tkpd_dark_red"
                             android:textSize="@dimen/fontvs"
-                            android:visibility="gone" />
+                            android:visibility="gone"/>
 
                     </LinearLayout>
 
@@ -262,7 +265,7 @@
                                 android:layout_height="wrap_content"
                                 android:hint="@string/title_total_payment"
                                 android:inputType="number"
-                                android:maxLength="10" />
+                                android:maxLength="10"/>
                         </android.support.design.widget.TextInputLayout>
                     </LinearLayout>
 
@@ -282,7 +285,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/margin_small"
-                            android:hint="@string/title_remark" />
+                            android:hint="@string/title_remark"/>
                     </android.support.design.widget.TextInputLayout>
 
                     <LinearLayout
@@ -301,7 +304,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:hint="@string/title_password"
-                                android:inputType="textPassword" />
+                                android:inputType="textPassword"/>
                         </android.support.design.widget.TextInputLayout>
                     </LinearLayout>
 
@@ -317,20 +320,10 @@
                         android:padding="@dimen/padding_small"
                         android:text="Nomor Rekening"
                         android:textColor="@color/tkpd_dark_green"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:ignore="HardcodedText"/>
 
                 </LinearLayout>
-
-                <!-- <TextView -->
-                <!-- android:shopId="@+shopId/error_message" -->
-                <!-- android:layout_width="match_parent" -->
-                <!-- android:layout_height="wrap_content" -->
-                <!-- android:padding="@dimen/padding_vs" -->
-                <!-- android:textColor="@color/tkpd_dark_red" -->
-                <!-- android:text="errir noh" -->
-                <!-- android:layout_marginTop="@dimen/margin_small" -->
-                <!-- android:visibility="gone" -->
-                <!-- /> -->
 
                 <TextView
                     android:id="@+id/submit_but"
@@ -341,7 +334,7 @@
                     android:gravity="center"
                     android:text="@string/title_save"
                     android:textColor="@color/white"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"/>
             </LinearLayout>
 
             <LinearLayout
@@ -358,19 +351,19 @@
                     android:gravity="center"
                     android:text="@string/title_payment_conf_success"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/msg_success"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center" />
+                    android:gravity="center"/>
 
                 <TextView
                     android:id="@+id/title_conf_payment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center" />
+                    android:gravity="center"/>
 
                 <TextView
                     android:id="@+id/total_payment_success"
@@ -378,34 +371,21 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/tokopedia_deposit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:visibility="gone" />
+                    android:visibility="gone"/>
 
                 <TextView
                     android:id="@+id/remaining_tokopedia_deposit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:visibility="gone" />
-
-                <!-- <TextView -->
-                <!-- android:layout_width="match_parent" -->
-                <!-- android:layout_height="wrap_content" -->
-                <!-- android:text="@string/title_payment_confirmation" -->
-                <!-- android:background="@drawable/button_buy_from_cart" -->
-                <!-- android:layout_marginBottom="@dimen/margin_small" -->
-                <!-- android:layout_marginTop="@dimen/margin_small" -->
-                <!-- android:shopId="@+shopId/to_payment_confirmation" -->
-                <!-- android:textColor="@color/white" -->
-                <!-- android:gravity="center" -->
-                <!-- android:padding="@dimen/padding_small" -->
-                <!-- /> -->
+                    android:visibility="gone"/>
 
             </LinearLayout>
         </LinearLayout>

@@ -1,8 +1,9 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="@dimen/padding_small">
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_small">
 
     <LinearLayout
         android:id="@+id/container"
@@ -30,7 +31,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/title_shipping_dest"
-                    android:textColor="@color/time_color" />
+                    android:textColor="@color/time_color"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -45,12 +46,12 @@
                         android:id="@+id/tv_title_address"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"/>
 
                     <TextView
                         android:id="@+id/tv_detail_address"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -63,6 +64,7 @@
                         android:id="@+id/btn_choose_address"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:layout_marginEnd="@dimen/margin_vs"
                         android:layout_marginRight="@dimen/margin_vs"
                         android:layout_weight=".50"
                         android:background="@drawable/btn_shop"
@@ -70,7 +72,7 @@
                         android:paddingLeft="@dimen/padding_small"
                         android:paddingRight="@dimen/padding_small"
                         android:text="@string/title_choose_address"
-                        android:textColor="@color/label_color" />
+                        android:textColor="@color/label_color"/>
 
                     <TextView
                         android:id="@+id/btn_add_address"
@@ -82,7 +84,7 @@
                         android:paddingLeft="@dimen/padding_small"
                         android:paddingRight="@dimen/padding_small"
                         android:text="@string/title_new_address"
-                        android:textColor="@color/label_color" />
+                        android:textColor="@color/label_color"/>
                 </LinearLayout>
             </LinearLayout>
         </android.support.v7.widget.CardView>
@@ -106,24 +108,24 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/title_shipping_agency"
-                    android:textColor="@color/label_color" />
+                    android:textColor="@color/label_color"/>
 
                 <android.support.v7.widget.AppCompatSpinner
                     android:id="@+id/sp_shipment"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_small"
                     android:text="@string/title_service_type"
-                    android:textColor="@color/label_color" />
+                    android:textColor="@color/label_color"/>
 
                 <android.support.v7.widget.AppCompatSpinner
                     android:id="@+id/sp_shipment_package"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"/>
 
             </LinearLayout>
 
@@ -149,7 +151,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/title_delivery_location_cart"
                     android:textColor="@color/label_color"
-                    android:textSize="@dimen/fonts" />
+                    android:textSize="@dimen/fonts"/>
 
                 <RelativeLayout
                     android:id="@+id/layout_value_location"
@@ -165,7 +167,8 @@
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
-                        android:src="@drawable/ic_icon_market_toped" />
+                        android:src="@drawable/ic_icon_market_toped"
+                        tools:ignore="ContentDescription"/>
 
                     <ImageView
                         android:id="@+id/btn_change_value_location"
@@ -174,7 +177,8 @@
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
-                        android:src="@drawable/chevron_thin_right" />
+                        android:src="@drawable/chevron_thin_right"
+                        tools:ignore="ContentDescription"/>
 
                     <android.support.v7.widget.AppCompatTextView
                         android:id="@+id/tv_value_location"
@@ -193,7 +197,7 @@
                         android:paddingLeft="@dimen/margin_vs"
                         android:paddingRight="@dimen/margin_vs"
                         android:paddingStart="@dimen/margin_vs"
-                        android:textSize="@dimen/font_small" />
+                        android:textSize="@dimen/font_small"/>
 
                 </RelativeLayout>
 
@@ -203,7 +207,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/error_field_required"
                     android:textColor="@color/red_400"
-                    android:visibility="gone" />
+                    android:visibility="gone"/>
 
             </LinearLayout>
 
@@ -228,7 +232,7 @@
                     android:layout_width="@dimen/img_thumb_m"
                     android:layout_height="@dimen/img_thumb_m"
                     android:layout_gravity="center"
-                    android:visibility="gone" />
+                    android:visibility="gone"/>
 
                 <RelativeLayout
                     android:id="@+id/holder_price"
@@ -242,21 +246,22 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
                         android:text="@string/title_shipping_cost"
-                        android:textColor="@color/time_color" />
+                        android:textColor="@color/time_color"/>
 
                     <TextView
                         android:id="@+id/tv_price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:ignore="RelativeOverlap"/>
                 </RelativeLayout>
             </LinearLayout>
 
         </android.support.v7.widget.CardView>
-
-        <!-- ujung bagian perhitungan harga -->
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/btn_save"
@@ -266,7 +271,7 @@
             android:gravity="center"
             android:text="@string/title_save"
             android:textColor="@color/white"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
     </LinearLayout>
 
 </ScrollView>

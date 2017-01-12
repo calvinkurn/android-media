@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical">
@@ -18,8 +19,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:text="Tanggal Transaksi"
+            android:text="@string/label_transaction_date_transaction"
             android:textSize="@dimen/fontvs"/>
 
         <TextView
@@ -27,29 +29,35 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_below="@id/txtTanggalTransaksi"
-            android:text="21 Oktober 2014"
             android:textSize="@dimen/font_small"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            tools:text="21 Oktober 2014"/>
 
         <TextView
             android:id="@+id/txtTotalPembayaran"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:text="Total Pembayaran"
+            android:layout_toEndOf="@+id/date"
+            android:layout_toRightOf="@+id/date"
+            android:gravity="end"
+            android:text="@string/label_transaction_total_payment"
             android:textSize="@dimen/fontvs"/>
 
         <TextView
             android:id="@+id/total_invoice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/txtTotalPembayaran"
-            android:text="Rp 200.000,-"
             android:textSize="@dimen/font_small"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            tools:text="Rp 200.000,-"/>
 
         <TextView
             android:id="@+id/indomaret_code_detail_label"
@@ -82,17 +90,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:text="Rekening Anda"
+            android:text="@string/label_transaction_bank_account_source"
             android:textSize="@dimen/fontvs"/>
 
         <TextView
             android:id="@+id/txtNoRekeningTujuan"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:text="Rekening Tujuan"
+            android:layout_toEndOf="@+id/txtNoRekeningAsal"
+            android:layout_toRightOf="@+id/txtNoRekeningAsal"
+            android:gravity="end"
+            android:text="@string/label_transaction_bank_account_destination"
             android:textSize="@dimen/fontvs"/>
 
         <TextView
@@ -100,20 +113,22 @@
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_below="@+id/txtNoRekeningAsal"
-            android:text="No Rekening Asal"
             android:textSize="@dimen/font_small"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            tools:text="No Rekening Asal"/>
 
         <TextView
             android:id="@+id/account_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/txtNoRekeningTujuan"
-            android:text="No Rekening Tujuan"
             android:textSize="@dimen/font_small"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            tools:text="No Rekening Tujuan"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -146,7 +161,7 @@
                 android:layout_marginTop="@dimen/margin_small"
                 android:background="@drawable/button_buy_from_cart"
                 android:gravity="center"
-                android:text="Ubah Pembayaran"
+                android:text="@string/label_button_purchase_edit_payment"
                 android:textColor="@color/white"
                 android:textSize="@dimen/font_small"
                 android:textStyle="bold"/>
@@ -160,7 +175,7 @@
                 android:layout_marginTop="@dimen/margin_small"
                 android:background="@drawable/btn_shop"
                 android:gravity="center"
-                android:text="Unggah Bukti Pembayaran"
+                android:text="@string/label_button_purchase_upload_proof"
                 android:textColor="@color/label_color"
                 android:textSize="@dimen/font_small"
                 android:visibility="visible"/>

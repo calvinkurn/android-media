@@ -14,8 +14,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-light"
-            android:text="Ringkasan Notifikasi Anda"
+            android:text="@string/label_transaction_title_summary_puchase"
             android:textColor="@color/black"
             android:textSize="@dimen/font_medium"
             android:textStyle="bold"/>

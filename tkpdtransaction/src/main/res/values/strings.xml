@@ -46,4 +46,14 @@
     <string name="label_error_upload_image">Gagal Mengupload gambar, silahkan coba lagi</string>
     <string name="label_error_message_1_count_notif">Anda memiliki XX_XX pesanan yang tidak dapat diproses</string>
     <string name="label_error_message_2_count_notif">Harap hapus produk dari keranjang belanja Anda</string>
+    <string name="label_button_purchase_edit_payment">Ubah Pembayaran</string>
+    <string name="label_button_purchase_upload_proof">Unggah Bukti Pembayaran</string>
+    <string name="label_transaction_bank_account_destination">Rekening Tujuan</string>
+    <string name="label_transaction_bank_account_source">Rekening Anda</string>
+    <string name="label_transaction_date_transaction">Tanggal Transaksi</string>
+    <string name="label_transaction_total_payment">Total Pembayaran</string>
+    <string name="label_transaction_info_deposit_tokopedia">Saldo Tokopedia Anda saat ini</string>
+    <string name="label_transaction_hint_form_voucher_code">Kode Voucher</string>
+    <string name="label_transaction_potential_cashback">Potensi Cashback</string>
+    <string name="label_transaction_title_summary_puchase">Ringkasan Notifikasi Anda</string>
 </resources>

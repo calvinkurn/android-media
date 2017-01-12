@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
         android:orientation="vertical"
         android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingEnd="@dimen/activity_horizontal_margin"
@@ -18,23 +19,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:entries="@array/transaction_filter_type_ppl"
-            android:textSize="@dimen/fontvs" />
+            android:textSize="@dimen/fontvs"/>
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <!--<EditText-->
-            <!--android:id="@+id/search"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:hint="@string/title_invoice_no"-->
-            <!--android:singleLine="true"-->
-            <!--android:iconifiedByDefault="false"-->
-            <!--android:lines="1"-->
-            <!--android:scrollHorizontally="true"-->
-            <!--android:inputType="text"-->
-            <!--android:ellipsize="end"/> -->
             <com.tokopedia.transaction.purchase.view.ClearableEditText
                 android:id="@+id/search"
                 android:layout_width="match_parent"
@@ -43,8 +33,8 @@
                 android:hint="@string/title_invoice_no_and_user_name"
                 android:inputType="text"
                 android:lines="1"
-                android:scrollHorizontally="true"
-                android:singleLine="true" />
+                android:maxLines="1"
+                android:scrollHorizontally="true"/>
         </android.support.design.widget.TextInputLayout>
 
 
@@ -64,6 +54,7 @@
                 android:layout_width="@dimen/tx_list_search_btn"
                 android:layout_height="@dimen/tx_list_search_btn_h"
                 android:layout_gravity="start"
+                android:layout_marginEnd="@dimen/margin_small"
                 android:layout_marginRight="@dimen/margin_small"
                 android:layout_weight="0.50"
                 android:background="@drawable/btn_cancel"
@@ -71,12 +62,13 @@
                 android:gravity="center"
                 android:inputType="date"
                 android:text="@string/start_date_button"
-                android:textSize="@dimen/fonts" />
+                android:textSize="@dimen/fonts"/>
 
             <EditText
                 android:id="@+id/end_date"
                 android:layout_width="@dimen/tx_list_search_btn"
                 android:layout_height="@dimen/tx_list_search_btn_h"
+                android:layout_marginEnd="@dimen/margin_small"
                 android:layout_marginRight="@dimen/margin_small"
                 android:layout_weight="0.50"
                 android:background="@drawable/btn_cancel"
@@ -84,7 +76,7 @@
                 android:gravity="center"
                 android:inputType="date"
                 android:text="@string/end_date_button"
-                android:textSize="@dimen/fonts" />
+                android:textSize="@dimen/fonts"/>
 
 
         </LinearLayout>
@@ -103,6 +95,6 @@
             android:text="@string/hint_search_purchase"
             android:textAllCaps="true"
             android:textColor="@color/white"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

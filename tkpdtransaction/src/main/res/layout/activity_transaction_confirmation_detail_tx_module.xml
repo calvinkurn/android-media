@@ -1,8 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".purchase.activity.TxConfirmationDetailActivity">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".purchase.activity.TxConfirmationDetailActivity">
 
     <ScrollView
         android:id="@+id/main_scroll"
@@ -24,6 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_yellow_border_yelow"
+                android:baselineAligned="false"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -39,15 +40,15 @@
                         android:layout_height="wrap_content"
                         android:text="@string/tx_date"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/fontvs" />
+                        android:textSize="@dimen/fontvs"/>
 
                     <TextView
                         android:id="@+id/tx_date"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="16 Mei 2014"
                         android:textSize="@dimen/fonts"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:text="16 Mei 2014"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -55,7 +56,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight=".50"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:orientation="vertical"
                     android:padding="@dimen/padding_small">
 
@@ -64,15 +65,15 @@
                         android:layout_height="wrap_content"
                         android:text="@string/due_date"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/fontvs" />
+                        android:textSize="@dimen/fontvs"/>
 
                     <TextView
                         android:id="@+id/due_date"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="19 Mei 2014"
                         android:textSize="@dimen/fonts"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:text="19 Mei 2014"/>
                 </LinearLayout>
             </LinearLayout>
 
@@ -97,17 +98,20 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
                         android:text="@string/total_item"
                         android:textColor="@color/label_color"
-                        android:textSize="@dimen/fonts" />
+                        android:textSize="@dimen/fonts"/>
 
                     <TextView
                         android:id="@+id/total_item"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
-                        android:text="1 Items (1kg)"
-                        android:textSize="@dimen/fonts" />
+                        android:textSize="@dimen/fonts"
+                        tools:ignore="RelativeOverlap"
+                        tools:text="1 Items (1kg)"/>
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -121,17 +125,20 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
                         android:text="@string/total_item_price"
                         android:textColor="@color/label_color"
-                        android:textSize="@dimen/fonts" />
+                        android:textSize="@dimen/fonts"/>
 
                     <TextView
                         android:id="@+id/total_item_price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
-                        android:text="Rp 20.000,-"
-                        android:textSize="@dimen/fonts" />
+                        android:textSize="@dimen/fonts"
+                        tools:ignore="RelativeOverlap"
+                        tools:text="Rp 20.000,-"/>
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -147,17 +154,20 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
                         android:text="@string/deposit_used"
                         android:textColor="@color/label_color"
-                        android:textSize="@dimen/fonts" />
+                        android:textSize="@dimen/fonts"/>
 
                     <TextView
                         android:id="@+id/deposit_used"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
-                        android:text="Rp 20.000,-"
-                        android:textSize="@dimen/fonts" />
+                        android:textSize="@dimen/fonts"
+                        tools:ignore="RelativeOverlap"
+                        tools:text="Rp 20.000,-"/>
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -172,20 +182,23 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
                         android:text="@string/total_payment"
                         android:textColor="@color/black"
                         android:textSize="@dimen/fonts"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"/>
 
                     <TextView
                         android:id="@+id/total_tx"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
-                        android:text="Rp 20.000,-"
                         android:textColor="@color/black"
                         android:textSize="@dimen/fonts"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:ignore="RelativeOverlap"
+                        tools:text="Rp 20.000,-"/>
                 </RelativeLayout>
 
             </RelativeLayout>
@@ -202,13 +215,14 @@
                 android:padding="@dimen/padding_small"
                 android:text="Nomor Rekening"
                 android:textColor="@color/tkpd_dark_green"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:ignore="HardcodedText"/>
 
             <LinearLayout
                 android:id="@+id/lv_cart"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" />
+                android:orientation="vertical"/>
 
         </LinearLayout>
 
@@ -229,7 +243,7 @@
             android:gravity="center"
             android:padding="@dimen/padding_small"
             android:text="@string/title_cancel"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/confirm_button"
@@ -241,7 +255,7 @@
             android:padding="@dimen/padding_small"
             android:text="@string/title_confirm"
             android:textColor="@color/white"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
     </LinearLayout>
 
 </RelativeLayout>
