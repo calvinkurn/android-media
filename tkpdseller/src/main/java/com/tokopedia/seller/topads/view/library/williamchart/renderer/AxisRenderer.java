@@ -339,6 +339,7 @@ public abstract class AxisRenderer {
 		while (pos <= max) {
 			result.add(pos);
 			pos += step;
+
 		}
 
 		// Set max Y axis label in case isn't already there
@@ -620,7 +621,7 @@ public abstract class AxisRenderer {
 	public void setBorderValues(int min, int max) {
 
 		if (!hasStep())
-			step = Tools.largestDivisor(max - min);
+			step = Tools.largestDivisor(max, min);
 		setBorderValues(min, max, step);
 	}
 

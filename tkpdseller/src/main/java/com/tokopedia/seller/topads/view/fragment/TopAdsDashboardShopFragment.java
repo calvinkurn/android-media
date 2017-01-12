@@ -9,6 +9,7 @@ import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.model.data.ShopAd;
 import com.tokopedia.seller.topads.presenter.TopAdsDashboardShopPresenterImpl;
+import com.tokopedia.seller.topads.view.activity.TopAdsStatisticShopActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardStoreFragmentListener;
 
 import butterknife.BindView;
@@ -83,5 +84,10 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
     public void onLoadAdShopError() {
         showNetworkError();
         hideLoading();
+    }
+
+    @Override
+    protected Class<?> getClassIntentStatistic() {
+        return TopAdsStatisticShopActivity.class;
     }
 }

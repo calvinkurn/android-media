@@ -103,7 +103,7 @@ public class TopAdsProductAdInteractorImpl implements TopAdsProductAdInteractor 
 
     @Override
     public void getStatistic(final StatisticRequest statisticRequest, final ListenerInteractor<List<Cell>> listener) {
-        Observable<Response<DataResponse<DataStatistic>>> statisticApiObservable = topAdsManagementService.getApi().getDashboardStatistic(new HashMap<String, String>());
+        Observable<Response<DataResponse<DataStatistic>>> statisticApiObservable = topAdsManagementService.getApi().getDashboardStatistic(statisticRequest.getParams());
         compositeSubscription.add(statisticApiObservable
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())

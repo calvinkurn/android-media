@@ -6,11 +6,13 @@
     tools:context="com.tokopedia.seller.topads.view.fragment.TopAdsStatisticFragment">
 
     <android.support.v7.widget.CardView
+        app:cardPreventCornerOverlap="false"
         android:layout_gravity="top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <LinearLayout
+            android:padding="@dimen/top_ads_dashboard_padding_cards"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">

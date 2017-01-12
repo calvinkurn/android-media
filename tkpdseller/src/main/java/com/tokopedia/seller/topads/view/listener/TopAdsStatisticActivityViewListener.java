@@ -13,4 +13,8 @@ public interface TopAdsStatisticActivityViewListener {
     void updateDataCell(List<Cell> cells);
 
     List<Cell> getDataCell();
+
+    void showLoading();
+
+    void dismissLoading();
 }

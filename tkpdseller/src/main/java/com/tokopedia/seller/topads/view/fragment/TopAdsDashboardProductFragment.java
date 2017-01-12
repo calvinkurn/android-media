@@ -12,6 +12,7 @@ import com.tokopedia.seller.topads.presenter.TopAdsDashboardProductPresenterImpl
 import com.tokopedia.seller.topads.view.activity.TopAdsGroupAdListActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsStatisticActivity;
+import com.tokopedia.seller.topads.view.activity.TopAdsStatisticProductActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardProductFragmentListener;
 import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 
@@ -58,13 +59,6 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
     @Override
     protected void setViewListener() {
         super.setViewListener();
-        impressionStatisticLabelView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), TopAdsStatisticActivity.class);
-                startActivity(intent);
-            }
-        });
     }
 
     protected void loadData() {
@@ -98,5 +92,10 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
     void onProductItemClicked() {
         Intent intent = new Intent(getActivity(), TopAdsProductAdListActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    protected Class<?> getClassIntentStatistic() {
+        return TopAdsStatisticProductActivity.class;
     }
 }

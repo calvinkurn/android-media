@@ -28,73 +28,89 @@ import android.support.annotation.NonNull;
 public class Tools {
 
 
-	/**
-	 * Converts dp size into pixels.
-	 *
-	 * @param dp dp size to get converted
-	 *
-	 * @return Pixel size
-	 */
-	public static float fromDpToPx(float dp) {
+    /**
+     * Converts dp size into pixels.
+     *
+     * @param dp dp size to get converted
+     * @return Pixel size
+     */
+    public static float fromDpToPx(float dp) {
 
-		try {
-			return dp * Resources.getSystem().getDisplayMetrics().density;
-		} catch (Exception e) {
-			return dp;
-		}
-	}
-
-
-	/**
-	 * Converts a {@link Drawable} into {@link Bitmap}.
-	 *
-	 * @param drawable {@link Drawable} to be converted
-	 *
-	 * @return {@link Bitmap} object
-	 */
-	public static Bitmap drawableToBitmap(@NonNull Drawable drawable) {
-
-		if (drawable instanceof BitmapDrawable) return ((BitmapDrawable) drawable).getBitmap();
-
-		Bitmap bitmap =
-				  Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(),
-							 Config.ARGB_8888);
-		Canvas canvas = new Canvas(bitmap);
-		drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-		drawable.draw(canvas);
-
-		return bitmap;
-	}
+        try {
+            return dp * Resources.getSystem().getDisplayMetrics().density;
+        } catch (Exception e) {
+            return dp;
+        }
+    }
 
 
-	/**
-	 * Find the Greatest Common Denominator.
-	 * https://en.wikipedia.org/wiki/Euclidean_algorithm
-	 *
-	 * @param min Mininum value
-	 * @param max Maximum value
-	 *
-	 * @return Greatest common denominator
-	 */
-	public static int GCD(int min, int max) {
+    /**
+     * Converts a {@link Drawable} into {@link Bitmap}.
+     *
+     * @param drawable {@link Drawable} to be converted
+     * @return {@link Bitmap} object
+     */
+    public static Bitmap drawableToBitmap(@NonNull Drawable drawable) {
 
-		return max == 0 ? min : GCD(max, min % max);
-	}
+        if (drawable instanceof BitmapDrawable) return ((BitmapDrawable) drawable).getBitmap();
+
+        Bitmap bitmap =
+                Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(),
+                        Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
+    }
 
 
-	/**
-	 * Finds the largest divisor of a number.
-	 *
-	 * @param num Value to be found the largest divisor
-	 *
-	 * @return Largest divisor of parameter given
-	 */
-	public static int largestDivisor(int num) {
+    /**
+     * Find the Greatest Common Denominator.
+     * https://en.wikipedia.org/wiki/Euclidean_algorithm
+     *
+     * @param min Mininum value
+     * @param max Maximum value
+     * @return Greatest common denominator
+     */
+    public static int GCD(int min, int max) {
 
-		if (num > 1)
-			for (int i = num / 2; i >= 0; i--)
-				if (num % i == 0) return i;
-		return 1;
-	}
+        return max == 0 ? min : GCD(max, min % max);
+    }
 
+
+    /**
+     * Finds the largest divisor of a number.
+     *
+     * @param num Value to be found the largest divisor
+     * @return Largest divisor of parameter given
+     */
+    public static int largestDivisor(int num) {
+
+        if (num > 1)
+            for (int i = num / 2; i >= 0; i--)
+                if (num % i == 0) {
+                    return i;
+                }
+        return 1;
+    }
+
+    /**
+     * Finds the largest divisor of a number.
+     *
+     * @param max Value to be found the largest divisor
+     * @param min Value to be found the largest divisor
+     * @return Largest divisor of parameter given
+     */
+    public static int largestDivisor(int max, int min) {
+        int num = max - min;
+        if (num > 1)
+            for (int i = num / 2; i >= 0; i--)
+                if (num % i == 0) {
+                    if (num / i < 10) {
+                        return i;
+                    }
+                }
+        return 1;
+    }
 }
