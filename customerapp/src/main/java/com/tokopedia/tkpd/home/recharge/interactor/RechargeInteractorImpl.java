@@ -267,6 +267,8 @@ public class RechargeInteractorImpl implements RechargeInteractor {
                         String statusString = CacheUtil.convertModelToString(status,
                                 new TypeToken<Status>() {
                                 }.getType());
+                        Log.i("OBSERVABLE", "Current: "+currentStatusString);
+                        Log.i("OBSERVABLE", "New: "+statusString);
                         if (currentStatusString != null && !currentStatusString.equals(statusString)) {
                             manager.delete(KEY_CATEGORY);
                             manager.delete(KEY_OPERATOR);
@@ -276,6 +278,8 @@ public class RechargeInteractorImpl implements RechargeInteractor {
                             managerStatus.setKey(KEY_STATUS_CURRENT);
                             managerStatus.setValue(statusString);
                             managerStatus.store();
+
+                            Log.i("OBSERVABLE", "masuk sini neeeeeehhhh");
                         } else if (currentStatusString == null) {
                             GlobalCacheManager managerStatus = new GlobalCacheManager();
                             managerStatus.setKey(KEY_STATUS_CURRENT);
