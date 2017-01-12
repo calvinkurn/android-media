@@ -7,6 +7,7 @@ import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.ProductItem;
 
 import org.json.JSONArray;
@@ -665,7 +666,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.WISHLIST,
                 AppEventTracking.Category.WISHLIST,
                 AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.ADD_TO_WISHLIST_LABEL + Html.fromHtml(label)
+                AppEventTracking.EventLabel.ADD_TO_WISHLIST_LABEL + MethodChecker.fromHtml(label)
         ).getEvent());
     }
 
@@ -924,6 +925,10 @@ public class UnifyTracking extends TrackingUtils {
         getLocaEngine().sendEventLoggedOut(attrs);
     }
 
+    public static void eventViewWishlist(){
+        eventLoca(AppScreen.SCREEN_VIEWED_WISHLIST_PAGE);
+    }
+
     public static void deleteProfileAttrLoca(){
         getLocaEngine().deleteProfileAttribute("profile : last date has product in cart");
     }
@@ -952,6 +957,15 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.TRUECALLER,
                 AppEventTracking.Action.INSTALLED,
                 userId
+        ).getEvent());
+    }
+
+    public static void eventClickCatalog(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CATALOG,
+                AppEventTracking.Category.CATALOG,
+                AppEventTracking.Action.CLICK,
+                label
         ).getEvent());
     }
 }

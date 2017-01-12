@@ -496,6 +496,40 @@ public class DetailResCenterImpl implements DetailResCenterPresenter {
     }
 
     @Override
+    public void actionInputAddressMigrateVersion(Context context, String addressID) {
+        retrofitInteractor.postAddress(context,
+                NetworkParam.getParamInputAddressMigrateVersion(addressID, view.getResolutionID()),
+                new RetrofitInteractor.OnPostAddressListener() {
+                    @Override
+                    public void onStart() {
+                        view.setProgressLoading(true);
+                    }
+
+                    @Override
+                    public void onSuccess() {
+                        view.refreshPage();
+                    }
+
+                    @Override
+                    public void onTimeOut(NetworkErrorHelper.RetryClickedListener listener) {
+                        view.setProgressLoading(false);
+                        view.showTimeOutMessage();
+                    }
+
+                    @Override
+                    public void onFailAuth() {
+                        view.setProgressLoading(false);
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        view.setProgressLoading(false);
+                        view.showToastMessage(message);
+                    }
+                });
+    }
+
+    @Override
     public void actionEditAddress(Context context, String addressID, String ahrefEditAddressURL) {
         retrofitInteractor.editAddress(context,
                 NetworkParam.getParamInputEditAddress(addressID, ahrefEditAddressURL, view.getResolutionID()),

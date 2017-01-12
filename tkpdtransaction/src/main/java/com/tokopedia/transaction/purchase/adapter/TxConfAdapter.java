@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.transaction.purchase.model.response.txconfirmation.TxConfData;
 
 import java.util.ArrayList;
@@ -82,7 +83,7 @@ public class TxConfAdapter extends ArrayAdapter<TxConfData> {
             holder = (ViewHolder) convertView.getTag();
         }
         final TxConfData item = getItem(position);
-        holder.tvShopName.setText(Html.fromHtml(item.getConfirmation().getShopList()));
+        holder.tvShopName.setText(MethodChecker.fromHtml(item.getConfirmation().getShopList()));
         holder.tvCreateDate.setText(item.getConfirmation().getCreateTime());
         holder.tvDueDate.setText(item.getConfirmation().getPayDueDate());
         holder.tvTotalLeftAmount.setText(item.getConfirmation().getLeftAmount());

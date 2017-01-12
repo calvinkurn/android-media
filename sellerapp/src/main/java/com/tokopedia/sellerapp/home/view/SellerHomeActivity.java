@@ -19,6 +19,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatDrawableManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
@@ -53,6 +54,8 @@ import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.gcm.GCMHandlerListener;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.sellerapp.drawer.DrawerVariableSeller;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
@@ -114,7 +117,7 @@ import rx.functions.Action1;
 import static com.tokopedia.sellerapp.drawer.DrawerVariableSeller.goToShopNewOrder;
 import static com.tokopedia.core.drawer.DrawerVariable.startIntent;
 
-public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.GCMHandlerListener,
+public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerListener,
         SessionHandler.onLogoutListener {
     private static final String ARG_TRUECALLER_PACKAGE = "com.truecaller";
     public static final String messageTAG = SellerHomeActivity.class.getSimpleName();
@@ -240,7 +243,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
     @BindView(R.id.drawer_layout_nav)
     DrawerLayout drawerLayoutNav;
 
-    FckToolbarVariable toolbar;
+    SellerToolbarVariable toolbar;
 
     SnackbarRetry snackbarRetry;
     SnackbarRetry snackbarRetryUndefinite;
@@ -350,7 +353,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
 
     private void initDrawer() {
         drawer = new DrawerVariableSeller(this);
-        toolbar = new FckToolbarVariable(this, sellerHomeToolbar);
+        toolbar = new SellerToolbarVariable(this, sellerHomeToolbar);
         toolbar.createToolbarWithDrawer();
         drawer.setToolbar(toolbar);
         drawer.createDrawer();
@@ -618,7 +621,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
                     sellerHomeTransactionView.init(shopModel);
                 }
 
-                sellerHomeShopname.setText(Html.fromHtml(shopModel.info.shopName));
+                sellerHomeShopname.setText(MethodChecker.fromHtml(shopModel.info.shopName));
                 sellerHomeShopPlace.setText(shopModel.info.shopLocation);
 
                 imageHandler.loadImage(sellerHomeShopCover, shopModel.info.shopCover);
@@ -862,7 +865,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
                 R.drawable.ic_settings
         };
         for (int i = 0; i < drawables.length; i++)
-            drawables[i] = ContextCompat.getDrawable(this, drawablesResource[i]);
+            drawables[i] = AppCompatDrawableManager.get().getDrawable(this, drawablesResource[i]);
 
         String[] STRINGS = new String[]{
                 "Atur Produk",

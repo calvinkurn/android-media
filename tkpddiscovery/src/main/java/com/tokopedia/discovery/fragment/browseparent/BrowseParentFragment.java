@@ -25,16 +25,20 @@ import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.Breadcrumb;
 import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
+import com.tokopedia.core.network.entity.discovery.CatalogModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.session.base.BaseFragment;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.browseparent.BrowserSectionsPagerAdapter;
 import com.tokopedia.discovery.model.NetworkParam;
@@ -46,7 +50,9 @@ import com.tokopedia.discovery.view.BrowseProductParentView;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -109,7 +115,8 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
                         }
                     case 1:
                         if (fragment instanceof CatalogFragment) {
-                            return ((CatalogFragment) fragment).getDataModel().result.breadcrumb;
+                            BrowseCatalogModel catalogModel = ((CatalogFragment) fragment).getDataModel();
+                            return catalogModel.result.breadcrumb;
                         }
                     default:
                         return new ArrayList<Breadcrumb>();
@@ -169,7 +176,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     private void showTickerGTM(String message) {
         if (discoveryTicker != null) {
             if (message != null) {
-                discoveryTicker.setText(Html.fromHtml(message));
+                discoveryTicker.setText(MethodChecker.fromHtml(message));
                 discoveryTicker.setVisibility(View.VISIBLE);
                 discoveryTicker.setAutoLinkMask(0);
                 Linkify.addLinks(discoveryTicker, Linkify.WEB_URLS);
@@ -253,7 +260,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
         if (uri.contains("/hot/")) {
             Uri myurl = Uri.parse(uri);
             uri = myurl.getPathSegments().get(1);
-            ((BrowseProductActivity) getActivity()).sendHotlist(uri);
+            ((BrowseProductActivity) getActivity()).sendHotlist(uri, "");
         }
         if (uri.contains("/p/")) {
             BrowseProductActivity browseProductActivity = (BrowseProductActivity) getActivity();
@@ -281,6 +288,10 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     @Override
     public void setupWithViewPager() {
         Log.d(TAG, "setupWithViewPager source " + source);
+        /**
+         * For called first time
+         */
+        sendTabClickGTM();
         tabLayout.setVisibility(View.GONE);
         tabContainer.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
         BrowseProductActivity productActivity = (BrowseProductActivity) getActivity();
@@ -404,11 +415,22 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     }
 
     private void sendTabClickGTM() {
+        Map<String, String> value = new HashMap<>();
+        CommonUtils.dumper("locasearched "+source);
         switch (source) {
+            case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT:
+                value.put("tab","product");
+                TrackingUtils.eventLoca(AppScreen.SCREEN_VIEWED_SEARCH_PAGE,value);
+                UnifyTracking.eventDiscoverySearchCatalog();
+                break;
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP:
                 UnifyTracking.eventDiscoverySearchShop();
+                value.put("tab","shop");
+                TrackingUtils.eventLoca(AppScreen.SCREEN_VIEWED_SEARCH_PAGE,value);
                 break;
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG:
+                value.put("tab","catalog");
+                TrackingUtils.eventLoca(AppScreen.SCREEN_VIEWED_SEARCH_PAGE,value);
                 UnifyTracking.eventDiscoverySearchCatalog();
                 break;
         }

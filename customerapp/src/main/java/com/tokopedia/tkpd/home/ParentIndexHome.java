@@ -18,7 +18,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.Cart;
-import com.tokopedia.core.GCMListenerService.NotificationListener;
+import com.tokopedia.core.gcm.FCMMessagingService.NotificationListener;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.tkpd.R;
@@ -226,7 +226,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
             adapter = new PagerAdapter(getSupportFragmentManager());
             mViewPager.setAdapter(adapter);
             mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator));
-//            indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(mViewPager));
             indicator.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                 @Override
                 public void onTabSelected(TabLayout.Tab tab) {

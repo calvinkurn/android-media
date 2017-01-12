@@ -207,6 +207,7 @@ public class InstagramMediaPresenterImpl implements InstagramMedia {
             instagramMediaView.showEmptyData();
         } else {
             isLoading = false;
+            mediaModels.clear();
             mediaModels.addAll(getMediaModelsFromResult(data));
             instagramMediaView.initAdapter(mediaModels);
             if (maxItemCount == -1) {

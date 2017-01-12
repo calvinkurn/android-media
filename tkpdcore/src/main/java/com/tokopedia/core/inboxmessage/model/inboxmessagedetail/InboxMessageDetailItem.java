@@ -9,6 +9,7 @@ import android.text.Spanned;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.inboxreputation.model.inboxreputation.UserReputation;
+import com.tokopedia.core.util.MethodChecker;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -231,7 +232,7 @@ public class InboxMessageDetailItem implements Parcelable {
      * @return The messageReply
      */
     public Spanned getMessageReply() {
-        return Html.fromHtml(messageReply);
+        return MethodChecker.fromHtml(messageReply);
     }
 
     public String getMessageReplyString() {
@@ -291,7 +292,7 @@ public class InboxMessageDetailItem implements Parcelable {
      * @return The userName
      */
     public Spanned getUserName() {
-        return Html.fromHtml(userName);
+        return MethodChecker.fromHtml(userName);
     }
 
     /**

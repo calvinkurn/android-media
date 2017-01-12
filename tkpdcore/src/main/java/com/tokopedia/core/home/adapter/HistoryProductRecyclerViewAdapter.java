@@ -16,8 +16,11 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
+import com.tokopedia.core.network.entity.home.recentView.Badge;
+import com.tokopedia.core.network.entity.home.recentView.RecentView;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
-import com.tokopedia.core.var.Badge;
+import com.tokopedia.core.product.model.passdata.ProductPass;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.ProductItem;
 
 import java.util.List;
@@ -28,10 +31,10 @@ import java.util.List;
  */
 public class HistoryProductRecyclerViewAdapter extends RecyclerView.Adapter<HistoryProductRecyclerViewAdapter.ViewHolder>{
 
-    private List<ProductItem> data;
+    private List<RecentView> data;
     private Context context;
 
-    public void setData(List<ProductItem> productItems) {
+    public void setData(List<RecentView> productItems) {
         data.clear();
         data = productItems;
         notifyDataSetChanged();
@@ -61,7 +64,7 @@ public class HistoryProductRecyclerViewAdapter extends RecyclerView.Adapter<Hist
         }
     }
 
-    public HistoryProductRecyclerViewAdapter(Context context, List<ProductItem> data) {
+    public HistoryProductRecyclerViewAdapter(Context context, List<RecentView> data) {
         this.context = context;
         this.data = data;
 //        setHasStableIds(true);
@@ -78,10 +81,10 @@ public class HistoryProductRecyclerViewAdapter extends RecyclerView.Adapter<Hist
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.productName.setText(Html.fromHtml(data.get(position).name));
-        holder.productPrice.setText(data.get(position).price);
-        holder.shopName.setText(data.get(position).shop);
-        ImageHandler.loadImageFit2(holder.getContext(), holder.productImage, data.get(position).imgUri);
+        holder.productName.setText(MethodChecker.fromHtml(data.get(position).getProductName()));
+        holder.productPrice.setText(data.get(position).getProductPrice());
+        holder.shopName.setText(data.get(position).getShopName());
+        ImageHandler.loadImageFit2(holder.getContext(), holder.productImage, data.get(position).getProductImage());
         setBadges(holder, data.get(position));
 
         holder.mainContent.setOnClickListener(onProductItemClicked(position));
@@ -92,10 +95,11 @@ public class HistoryProductRecyclerViewAdapter extends RecyclerView.Adapter<Hist
             @Override
             public void onClick(View view) {
                 if(position < data.size()) {
-                    UnifyTracking.eventFeedRecent(data.get(position).getName());
+                    UnifyTracking.eventFeedRecent(data.get(position).getProductName());
                     Bundle bundle = new Bundle();
                     Intent intent = new Intent(context, ProductInfoActivity.class);
-                    bundle.putString("product_id", data.get(position).id);
+                    bundle.putParcelable(ProductInfoActivity.EXTRA_PRODUCT_PASS,
+                            getProductDataToPass(data.get(position)));
                     intent.putExtras(bundle);
                     context.startActivity(intent);
                 }
@@ -109,24 +113,37 @@ public class HistoryProductRecyclerViewAdapter extends RecyclerView.Adapter<Hist
         else return data.size();
     }
 
-    public List<ProductItem> getData() {
+    public List<RecentView> getData() {
         return data;
     }
 
-    public void addAll(List<ProductItem> newData){
+    public void addAll(List<RecentView> newData) {
         data.clear();
         data.addAll(newData);
     }
 
 
-
-    private void setBadges(ViewHolder holder, ProductItem data) {
-        if (data.getBadges() != null && holder.badgesContainer.getChildCount() == 0)
-            for (Badge badges : data.getBadges()) {
+    private void setBadges(ViewHolder holder, RecentView data) {
+        if (holder.badgesContainer !=null && holder.badgesContainer.getChildCount() != 0) {
+            holder.badgesContainer.removeAllViews();
+        }
+        if (data.getBadges() != null) {
+            for (Badge badges : data.getBadges())  {
                 View view = LayoutInflater.from(context).inflate(R.layout.badge_layout_small, null);
                 ImageView imageBadge = (ImageView) view.findViewById(R.id.badge);
                 holder.badgesContainer.addView(view);
                 LuckyShopImage.loadImage(imageBadge, badges.getImageUrl());
             }
+        }
+
+    }
+
+    private ProductPass getProductDataToPass(RecentView recentView) {
+        return ProductPass.Builder.aProductPass()
+                .setProductPrice(recentView.getProductPrice())
+                .setProductId(recentView.getProductId().toString())
+                .setProductName(recentView.getProductName())
+                .setProductImage(recentView.getProductImage())
+                .build();
     }
 }

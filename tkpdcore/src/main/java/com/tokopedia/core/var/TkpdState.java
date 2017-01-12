@@ -76,6 +76,7 @@ public class TkpdState {
         public static final int SELLER_GM_SUBSCRIBE = 46;
         public static final int SELLER_GM_SUBSCRIBE_EXTEND = 47;
         public static final int SELLER_TOP_ADS = 48;
+        public static final int SELLER_GM_STAT = 49;
     }
 
     public class Application {

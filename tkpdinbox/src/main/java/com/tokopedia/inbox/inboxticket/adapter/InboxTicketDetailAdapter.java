@@ -2,6 +2,7 @@ package com.tokopedia.inbox.inboxticket.adapter;
 
 import android.content.Context;
 
+import com.tokopedia.inbox.inboxticket.model.inboxticket.InboxTicket;
 import com.tokopedia.inbox.inboxticket.model.inboxticketdetail.InboxTicketDetail;
 import com.tokopedia.inbox.inboxticket.model.inboxticketdetail.Ticket;
 import com.tokopedia.inbox.inboxticket.model.inboxticketdetail.TicketReply;
@@ -19,23 +20,21 @@ public class InboxTicketDetailAdapter extends DataBindAdapter {
 
     private static final int VIEW_HEADER = 100;
     private static final int VIEW_TICKET_DETAIL = 101;
-    private static final int VIEW_RATING = 102;
     private static final int HEADER = 1;
 
-    HeaderTicketDataBinder headerView;
-    TicketDataBinder ticketView;
-    InboxTicketDetail data;
+    private HeaderTicketDataBinder headerView;
+    private TicketDataBinder ticketView;
 
 
     public InboxTicketDetailAdapter(Context context, InboxTicketDetailFragmentPresenter presenter) {
         super();
-        data = new InboxTicketDetail();
+        InboxTicketDetail data = new InboxTicketDetail();
         data.setTicketReply(new TicketReply());
         data.setTicket(new Ticket());
         data.getTicketReply().setTicketReplyData(new ArrayList<TicketReplyDatum>());
         headerView = new HeaderTicketDataBinder(this, data, context);
         headerView.setPresenter(presenter);
-        ticketView = new TicketDataBinder(this, new ArrayList<TicketReplyDatum>(), context);
+        ticketView = new TicketDataBinder(this, data.getTicketReply().getTicketReplyData(), context);
     }
 
 
@@ -45,8 +44,7 @@ public class InboxTicketDetailAdapter extends DataBindAdapter {
 
     @Override
     public int getItemCount() {
-        return (data.getTicket() != null ? 1 : 0)
-                + data.getTicketReply().getTicketReplyData().size();
+        return headerView.getItemCount() + ticketView.getItemCount();
 
     }
 
@@ -80,17 +78,35 @@ public class InboxTicketDetailAdapter extends DataBindAdapter {
     }
 
     public void setData(InboxTicketDetail data) {
-        this.data = data;
         headerView.setData(data);
         ticketView.setList(data.getTicketReply().getTicketReplyData());
+        updateView();
         notifyDataSetChanged();
     }
 
-    public InboxTicketDetail getData() {
-        return data;
+    public TicketDataBinder getTicketView() {
+        return ticketView;
     }
 
-    public TicketDataBinder getTicketView(){
-        return ticketView;
+    public HeaderTicketDataBinder getHeaderView() {
+        return headerView;
+    }
+
+    public void addReply(TicketReplyDatum ticketReply) {
+
+        if (getHeaderView().getData().getTicketReply().getTicketReplyData().size() >= 2) {
+            getTicketView().getData().remove(0);
+            getHeaderView().getData().getTicketReply().getTicketReplyData().remove(0);
+        }
+
+        getTicketView().getData().add(ticketReply);
+        getHeaderView().getData().getTicket().setTicketTotalMessage(getHeaderView().getData().getTicket().getTicketTotalMessage() + 1);
+        getHeaderView().getData().getTicketReply().getTicketReplyData().add(ticketReply);
+
+    }
+
+    public void updateView() {
+        headerView.notifyDataSetChanged();
+        ticketView.notifyDataSetChanged();
     }
 }

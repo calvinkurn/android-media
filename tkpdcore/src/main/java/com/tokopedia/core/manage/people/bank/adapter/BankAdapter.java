@@ -67,7 +67,7 @@ public class BankAdapter extends BaseLinearRecyclerViewAdapter {
     private final Context context;
     private ManagePeopleBankFragmentPresenter presenter;
 
-    public BankAdapter(Context context, ManagePeopleBankFragmentPresenter presenter) {
+    private BankAdapter(Context context, ManagePeopleBankFragmentPresenter presenter) {
         this.context = context;
         this.list = new ArrayList<>();
         this.presenter = presenter;
@@ -99,9 +99,9 @@ public class BankAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
     private void bindBank(ViewHolder holder, int position) {
-        ImageHandler.loadImageWithId(holder.defaultBank, R.drawable.ic_done_24dp);
-        ImageHandler.loadImageWithId(holder.deleteBank, R.drawable.ic_clear_24dp);
-        ImageHandler.loadImageWithId(holder.editBank, R.drawable.ic_create_24dp);
+//        ImageHandler.loadImageWithId(holder.defaultBank, R.drawable.ic_done_36dp);
+//        ImageHandler.loadImageWithId(holder.deleteBank, R.drawable.ic_clear_36dp);
+//        ImageHandler.loadImageWithId(holder.editBank, R.drawable.ic_create_36dp);
         if (list.get(position).getBankLogo() != null
                 && !list.get(position).getBankLogo().equals("")
                 && !list.get(position).getBankLogo().equals("0")) {

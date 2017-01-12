@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.core.util.MethodChecker;
 
 public class ListViewShopLocation extends BaseAdapter {
     public Activity context;
@@ -71,8 +72,8 @@ public class ListViewShopLocation extends BaseAdapter {
         } else
             holder = (ViewHolder) convertView.getTag();
 
-        holder.ShopName.setText(Html.fromHtml(shopModel.address.get(position).locationAddressName).toString());
-        holder.ShopDetail.setText(Html.fromHtml(shopModel.address.get(position).locationAddress + "\n"
+        holder.ShopName.setText(MethodChecker.fromHtml(shopModel.address.get(position).locationAddressName).toString());
+        holder.ShopDetail.setText(MethodChecker.fromHtml(shopModel.address.get(position).locationAddress + "\n"
                 + shopModel.address.get(position).locationArea).toString());
         if (!shopModel.address.get(position).locationPhone.equals("0")) {
             holder.ShopPhone.setText(shopModel.address.get(position).locationPhone);

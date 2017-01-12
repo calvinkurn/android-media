@@ -7,6 +7,7 @@ import android.text.Html;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.util.MethodChecker;
 
 public class ReviewImageList implements Parcelable{
 
@@ -84,7 +85,7 @@ public class ReviewImageList implements Parcelable{
      *     The imageCaption
      */
     public String getImageCaption() {
-        return Html.fromHtml(imageCaption).toString();
+        return MethodChecker.fromHtml(imageCaption).toString();
     }
 
     /**

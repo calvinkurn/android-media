@@ -23,10 +23,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.URLParser;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
@@ -45,6 +47,7 @@ import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.Label;
@@ -191,20 +194,20 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
     //[START] This is banner HotList
 
-    public static class ViewHolderSearchEmpty extends RecyclerView.ViewHolder {
-        @BindView(R2.id.text)
-        TextView textView;
 
-        public ViewHolderSearchEmpty(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-    }
-
-
-    private ViewHolderSearchEmpty createEmptySearch(ViewGroup parent) {
-        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_empty_search_item, parent, false);
-        return new ViewHolderSearchEmpty(inflate);
+    public RecyclerView.ViewHolder createEmptySearch(ViewGroup parent){
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_empty_hotlist, parent, false);
+        LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.include_no_result);
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) linearLayout.getLayoutParams();
+        lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        linearLayout.setLayoutParams(lp);
+        ImageHandler.loadImageWithId(((ImageView)view.findViewById(R.id.no_result_image)), R.drawable.status_no_result);
+        return new RecyclerView.ViewHolder(view) {
+            @Override
+            public String toString() {
+                return super.toString();
+            }
+        };
     }
 
     private BannerHotListViewHolder onCreateBannerHotList(ViewGroup parent) {
@@ -632,17 +635,17 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             if (data.getSpannedName() != null)
                 title.setText(data.getSpannedName());
             else
-                title.setText(Html.fromHtml(data.name));
+                title.setText(MethodChecker.fromHtml(data.name));
             price.setText(data.price);
             if (data.getShop_location() != null)
-                location.setText(Html.fromHtml(data.getShop_location()));
+                location.setText(MethodChecker.fromHtml(data.getShop_location()));
             else
                 location.setVisibility(View.INVISIBLE);
 
             if (data.getSpannedShop() != null)
                 shopName.setText(data.getSpannedShop());
             else
-                shopName.setText(Html.fromHtml(data.shop));
+                shopName.setText(MethodChecker.fromHtml(data.shop));
             ImageHandler.loadImageThumbs(context, productImage, data.imgUri);
             viewHolder.badgesContainer.removeAllViews();
             if (data.getBadges() != null) {
@@ -675,10 +678,11 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         public void onClick() {
             Bundle bundle = new Bundle();
             Intent intent = new Intent(context, ProductInfoActivity.class);
-            bundle.putString("product_id", data.id);
+            bundle.putParcelable(ProductInfoActivity.EXTRA_PRODUCT_ITEM, data);
             intent.putExtras(bundle);
             context.startActivity(intent);
         }
+
     }
 
     public static class ViewHolderProductGrid extends RecyclerView.ViewHolder {

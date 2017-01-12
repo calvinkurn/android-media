@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.inbox.rescenter.inbox.model.ResCenterCounterPending;
 import com.tokopedia.inbox.rescenter.inbox.model.ResCenterHeader;
@@ -119,12 +120,12 @@ public class ResCenterInboxAdapter extends ResCenterExtendedAdapter {
 
         if (counterPendingModel != null) {
             String valueTotalPending = context.getString(R.string.desc_summary_day_reso).replace("XXX", String.valueOf(counterPendingModel.getTotalList())).replace("YYY", counterPendingModel.getPendingDays());
-            holder.totalPending.setText(Html.fromHtml(valueTotalPending));
+            holder.totalPending.setText(MethodChecker.fromHtml(valueTotalPending));
         }
 
         if (pendingAmountModel != null) {
             String valueAmountPending = context.getString(R.string.desc_summary_amount_reso).replace("ZZZ", pendingAmountModel);
-            holder.amountPending.setText(Html.fromHtml(valueAmountPending));
+            holder.amountPending.setText(MethodChecker.fromHtml(valueAmountPending));
         }
     }
 
