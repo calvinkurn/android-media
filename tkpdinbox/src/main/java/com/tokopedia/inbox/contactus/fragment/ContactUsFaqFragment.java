@@ -3,30 +3,27 @@ package com.tokopedia.inbox.contactus.fragment;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.net.http.SslError;
 import android.os.Bundle;
 import android.view.View;
-import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 
-import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.TkpdWebView;
+import com.tokopedia.core.util.TkpdWebViewClient;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity.BackButtonListener;
-import com.tokopedia.core.var.TkpdUrl;
 
 import butterknife.BindView;
 
-import static com.tokopedia.core.analytics.container.GTMContainer.getContainer;
 import static com.tokopedia.inbox.contactus.ContactUsConstant.PARAM_URL;
 
 /**
@@ -34,13 +31,15 @@ import static com.tokopedia.inbox.contactus.ContactUsConstant.PARAM_URL;
  */
 public class ContactUsFaqFragment extends BasePresenterFragment {
 
-    private static final String GTM_CONTACTUS_URL = "url_contactus";
+    private static final String SOLUTION_ID = "solution_id";
+    private static final String TAGS = "tags";
+    private static final String ORDER_ID = "order_id";
 
     @BindView(R2.id.scroll_view)
     ScrollView mainView;
 
     @BindView(R2.id.webview)
-    WebView webView;
+    TkpdWebView webView;
 
     @BindView(R2.id.progressbar)
     ProgressBar progressBar;
@@ -49,7 +48,7 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
     String url;
 
     public interface ContactUsFaqListener {
-        void onGoToCreateTicket();
+        void onGoToCreateTicket(Bundle solutionId);
     }
 
     public static ContactUsFaqFragment createInstance(Bundle extras) {
@@ -66,22 +65,14 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
     }
 
     @Override
-    protected String getScreenName() {
-        return null;
-    }
-
-    @Override
     protected void onFirstTimeLaunched() {
         String url;
         if (getArguments().getString(PARAM_URL, "").equals("")) {
-            if (!GTMContainer.getContainer().getString(GTM_CONTACTUS_URL).equals(""))
-                url = GTMContainer.getContainer().getString(GTM_CONTACTUS_URL) + "&app_version=" + GlobalConfig.VERSION_CODE;
-            else
-                url = TkpdUrl.CONTACT_US_FAQ + "&app_version=" + GlobalConfig.VERSION_CODE;
+            url = TkpdBaseURL.ContactUs.URL_HELP;
         } else
             url = getArguments().getString(PARAM_URL);
 
-        webView.loadUrl(url);
+        webView.loadUrlWithFlags(url);
 
 
     }
@@ -133,6 +124,7 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
         webSettings.setJavaScriptEnabled(true);
         webSettings.setBuiltInZoomControls(true);
         webSettings.setAppCacheEnabled(false);
+        MethodChecker.setAllowMixedContent(webSettings);
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
     }
 
@@ -167,7 +159,7 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
         }
     }
 
-    private class MyWebClient extends WebViewClient {
+    private class MyWebClient extends TkpdWebViewClient {
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
@@ -176,16 +168,6 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-
-        @Override
-        public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-            try {
-                handler.proceed();
-            } catch (Exception e) {
-                super.onReceivedSslError(view, handler, error);
-            }
-
         }
 
         @Override
@@ -201,10 +183,21 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
         }
 
         @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+        protected boolean onOverrideUrl(Uri url) {
             try {
-                if (Uri.parse(url).getLastPathSegment().equals("contact-us-android")) {
-                    listener.onGoToCreateTicket();
+                if (url.getLastPathSegment().equals("contact-us.pl")) {
+                    webView.loadAuthUrl(URLGenerator.generateURLContactUs(TkpdBaseURL.ContactUs.URL_CONTACT_US, context));
+                    return true;
+                } else if (url.getQueryParameter("action") != null &&
+                        url.getQueryParameter("action").equals("create_ticket")) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(ContactUsActivity.PARAM_SOLUTION_ID,
+                            url.getQueryParameter(SOLUTION_ID) == null ? "" : url.getQueryParameter(SOLUTION_ID));
+                    bundle.putString(ContactUsActivity.PARAM_TAG,
+                            url.getQueryParameter(TAGS) == null ? "" : url.getQueryParameter(TAGS));
+                    bundle.putString(ContactUsActivity.PARAM_ORDER_ID,
+                            url.getQueryParameter(ORDER_ID) == null ? "" : url.getQueryParameter(ORDER_ID));
+                    listener.onGoToCreateTicket(bundle);
                     return true;
                 } else {
                     return false;
@@ -214,6 +207,7 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
                 return false;
             }
         }
+
     }
 
     @Override

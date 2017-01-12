@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.home.favorite.presenter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -34,6 +35,7 @@ import com.tokopedia.tkpd.home.favorite.interactor.FavoriteInteractorImpl;
 import com.tokopedia.tkpd.home.favorite.model.params.TopAddParams;
 import com.tokopedia.tkpd.home.favorite.model.params.WishlistFromNetworkParams;
 import com.tokopedia.tkpd.home.favorite.view.FavoriteView;
+import com.tokopedia.tkpd.home.fragment.FragmentProductFeed;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractor;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractorImpl;
 import com.tokopedia.tkpd.home.model.FavoriteTransformData;
@@ -180,6 +182,7 @@ public class FavoriteImpl implements Favorite {
                         (HorizontalShopList) FavoriteImpl.this.data.get(TOP_ADS_START);
 
                 cacheHome.setRecommendedShopCache(horizontalShopList.getShopItemList());
+                mContext.sendBroadcast(new Intent(FragmentProductFeed.ACTION));
             }
         };
     }

@@ -73,6 +73,9 @@ public class RequestPermissionUtil {
             case Manifest.permission.GET_ACCOUNTS:
                 Toast.makeText(context, R.string.permission_get_accounts_denied, Toast.LENGTH_LONG).show();
                 break;
+            case Manifest.permission.READ_SMS:
+                Toast.makeText(context, R.string.permission_sms_denied, Toast.LENGTH_LONG).show();
+                break;
             default:
                 Toast.makeText(context, R.string.permission_multi_denied, Toast.LENGTH_LONG).show();
                 break;
@@ -99,6 +102,9 @@ public class RequestPermissionUtil {
                 break;
             case Manifest.permission.GET_ACCOUNTS:
                 Toast.makeText(context, R.string.permission_get_accounts_neverask, Toast.LENGTH_LONG).show();
+                break;
+            case Manifest.permission.READ_SMS:
+                Toast.makeText(context, R.string.permission_sms_neverask, Toast.LENGTH_LONG).show();
                 break;
             default:
                 Toast.makeText(context, R.string.permission_multi_neverask, Toast.LENGTH_LONG).show();
@@ -150,11 +156,11 @@ public class RequestPermissionUtil {
                 .show();
     }
 
-    private static int getNeedPermissionMessage(List<String> permission) {
+    public static int getNeedPermissionMessage(List<String> permission) {
         return R.string.need_permission_multi;
     }
 
-    private static int getNeedPermissionMessage(String permission) {
+    public static int getNeedPermissionMessage(String permission) {
         switch (permission) {
             case Manifest.permission.CAMERA:
                 return R.string.need_permission_camera;
@@ -168,6 +174,8 @@ public class RequestPermissionUtil {
                 return R.string.need_permission_location;
             case Manifest.permission.GET_ACCOUNTS:
                 return R.string.need_permission_get_accounts;
+            case Manifest.permission.READ_SMS:
+                return R.string.need_permission_SMS;
             default:
                 return R.string.need_permission_multi;
         }
@@ -185,4 +193,6 @@ public class RequestPermissionUtil {
         return ContextCompat.checkSelfPermission(activity, permission)
                 == PackageManager.PERMISSION_GRANTED;
     }
+
+
 }

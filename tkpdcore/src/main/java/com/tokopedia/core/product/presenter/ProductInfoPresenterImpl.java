@@ -46,14 +46,20 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
         String stockStatus = bundle.getString(ProductService.STOCK_STATUS,"");
         // [variable for add product before share]
         ShareData shareDa = bundle.getParcelable(ProductInfoActivity.SHARE_DATA);
-
         // [variable for add product before share]
         if(type != -1 && productId != -1 && !stockStatus.equals("")){
             viewListener.inflateFragment(ProductShareFragment.newInstance(type, productId, stockStatus), ProductShareFragment.TAG);
         // [variable for add product before share]
         }else if(shareDa !=null){
             viewListener.inflateFragment(ProductShareFragment.newInstance(shareDa), ProductShareFragment.TAG);
-        }else if (isProductDetail(uri, bundle)) {
+        } else if (bundle !=null && uri !=null && uri.getPathSegments().size() == 2) {
+            viewListener.inflateFragment(ProductDetailFragment.newInstanceForDeeplink(ProductPass.Builder.aProductPass()
+                            .setProductKey(uri.getPathSegments().get(1))
+                            .setShopDomain(uri.getPathSegments().get(0))
+                            .setProductUri(uri.toString())
+                            .build()),
+                    ProductDetailFragment.class.getSimpleName());
+        } else if (isProductDetail(uri, bundle)) {
             viewListener.inflateFragment(ProductDetailFragment
                             .newInstance(generateProductPass(bundle, uri)),
                     ProductDetailFragment.class.getSimpleName());
