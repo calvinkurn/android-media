@@ -34,7 +34,7 @@ import java.util.List;
 public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter,
         RechargeNetworkInteractor.OnGetOperatorListener,
         RechargeNetworkInteractor.OnGetProductListener,
-        RechargeNetworkInteractor.OnGetStatusListener,
+        RechargeDBInteractor.OnGetStatus,
         RechargeNetworkInteractor.OnGetRecentNumbersListener,
         RechargeNetworkInteractor.OnGetRecentOrderListener,
         RechargeDBInteractor.OnGetCategory {
@@ -63,7 +63,7 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter,
 
     @Override
     public void fecthDataRechargeCategory() {
-        rechargeNetworkInteractor.getStatus(this);
+        rechargeDBInteractor.getStatus(this);
     }
 
     @Override

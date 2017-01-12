@@ -41,6 +41,8 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
     private final static String KEY_STATUS = "RECHARGE_STATUS";
     private final static String KEY_PRODUCT = "RECHARGE_PRODUCT";
     private final static String KEY_OPERATOR = "RECHARGE_STATUS";
+    private final static String KEY_STATUS_CURRENT = "RECHARGE_STATUS_CURRENT";
+    private final static int STATE_CATEGORY_NON_ACTIVE = 2;
     private RechargeService rechargeService;
     private static int CACHE_DURATION = 60*5;
 
@@ -53,7 +55,6 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
     public void getListProduct(final OnGetListProduct onGetListProduct, final String prefix,
                                final int categoryId, final Boolean validatePrefix) {
 
-
         Observable.zip(getOperatorByPrefix(prefix),
                 getObservableListProduct(),
                 new Func2<Operator, List<Product>, List<Product>>() {
@@ -64,7 +65,7 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                             public Boolean call(Product product) {
                                 return product.getRelationships().getCategory().getData().getId() == categoryId
                                         && product.getRelationships().getOperator().getData().getId() == operator.getId()
-                                        && product.getAttributes().getStatus() != 2;
+                                        && product.getAttributes().getStatus() != STATE_CATEGORY_NON_ACTIVE;
                             }
                         }).toList().toBlocking().single();
                     }
@@ -161,7 +162,7 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                                 &&
                                 product
                                 .getAttributes()
-                                .getStatus() != 2;
+                                .getStatus() != STATE_CATEGORY_NON_ACTIVE;
                     }
                 })
                 .toList()
@@ -251,20 +252,41 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
 
     @Override
     public void getStatus(final OnGetStatus onGetStatus) {
-        Observable.just(true)
+        Observable.concat(getObservableDbStatus(), getObservableNetworkStatus())
+                .first(new Func1<Status, Boolean>() {
+                    @Override
+                    public Boolean call(Status status) {
+                        return status != null && status.getData() != null;
+                    }
+                })
+                .doOnNext(new Action1<Status>() {
+                    @Override
+                    public void call(Status status) {
+                        GlobalCacheManager manager = new GlobalCacheManager();
+                        String currentStatusString = manager.getValueString(KEY_STATUS_CURRENT);
+                        String statusString = CacheUtil.convertModelToString(status,
+                                new TypeToken<Status>() {
+                                }.getType());
+                        if (currentStatusString != null && !currentStatusString.equals(statusString)) {
+                            manager.delete(KEY_CATEGORY);
+                            manager.delete(KEY_OPERATOR);
+                            manager.delete(KEY_PRODUCT);
+
+                            GlobalCacheManager managerStatus = new GlobalCacheManager();
+                            managerStatus.setKey(KEY_STATUS_CURRENT);
+                            managerStatus.setValue(statusString);
+                            managerStatus.store();
+                        } else if (currentStatusString == null) {
+                            GlobalCacheManager managerStatus = new GlobalCacheManager();
+                            managerStatus.setKey(KEY_STATUS_CURRENT);
+                            managerStatus.setValue(statusString);
+                            managerStatus.store();
+                        }
+                    }
+                })
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<Boolean, Status>() {
-                    @Override
-                    public Status call(Boolean aBoolean) {
-                        GlobalCacheManager manager = new GlobalCacheManager();
-                        return CacheUtil.convertStringToModel(
-                                manager.getValueString(KEY_STATUS),
-                                Status.class);
-
-                    }
-                })
                 .subscribe(new Subscriber<Status>() {
                     @Override
                     public void onCompleted() {
@@ -571,7 +593,6 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                             manager.setValue(CacheUtil.convertListModelToString(categoryData.getData(),
                                     new TypeToken<List<com.tokopedia.core.database.model.category.Category>>() {
                                     }.getType()));
-                            manager.setCacheDuration(CACHE_DURATION);
                             manager.store();
                         }
                     }
@@ -631,7 +652,6 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                             manager.setValue(CacheUtil.convertListModelToString(productData.getData(),
                                     new TypeToken<List<Product>>() {
                                     }.getType()));
-                            manager.setCacheDuration(CACHE_DURATION);
                             manager.store();
                         }
                     }
@@ -691,8 +711,6 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
 
     private Observable<List<Operator>> getObservableNetworkListOperator() {
         return rechargeService.getApi().getOperator()
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(new Action1<Response<OperatorData>>() {
                     @Override
                     public void call(Response<OperatorData> operatorDataResponse) {
@@ -703,7 +721,6 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                             manager.setValue(CacheUtil.convertListModelToString(operatorData.getData(),
                                     new TypeToken<List<Operator>>() {
                                     }.getType()));
-                            manager.setCacheDuration(CACHE_DURATION);
                             manager.store();
                         }
                     }
@@ -712,6 +729,54 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                     @Override
                     public Observable<List<Operator>> call(Response<OperatorData> operatorDataResponse) {
                         return Observable.just(operatorDataResponse.body().getData());
+                    }
+                })
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    private Observable<Status> getObservableNetworkStatus() {
+        return rechargeService.getApi().getStatus()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.newThread())
+                .doOnNext(new Action1<Response<Status>>() {
+                    @Override
+                    public void call(Response<Status> statusResponse) {
+                        GlobalCacheManager manager = new GlobalCacheManager();
+                        manager.setKey(KEY_STATUS);
+                        manager.setValue(CacheUtil.convertModelToString(statusResponse.body(),
+                                new TypeToken<Status>(){}.getType()));
+                        manager.setCacheDuration(CACHE_DURATION);
+                        manager.store();
+                    }
+                })
+                .flatMap(new Func1<Response<Status>, Observable<Status>>() {
+                    @Override
+                    public Observable<Status> call(Response<Status> statusResponse) {
+                        return Observable.just(statusResponse.body());
+                    }
+                });
+    }
+
+    private Observable<Status> getObservableDbStatus() {
+        return Observable.just(true)
+                .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<Boolean, Status>() {
+                    @Override
+                    public Status call(Boolean aBoolean) {
+                        GlobalCacheManager manager = new GlobalCacheManager();
+                        return CacheUtil.convertStringToModel(
+                                manager.getValueString(KEY_STATUS),
+                                Status.class);
+
+                    }
+                })
+                .onErrorReturn(new Func1<Throwable, Status>() {
+                    @Override
+                    public Status call(Throwable throwable) {
+                        return null;
                     }
                 });
     }
