@@ -28,7 +28,8 @@ public class ShipmentPackageCartAdapter extends ArrayAdapter<ShipmentPackage> {
         return new ShipmentPackageCartAdapter(context, shipmentPackages);
     }
 
-    private ShipmentPackageCartAdapter(Context context, ArrayList<ShipmentPackage> shipmentPackages) {
+    private ShipmentPackageCartAdapter(Context context,
+                                       ArrayList<ShipmentPackage> shipmentPackages) {
         super(context, android.R.layout.simple_spinner_dropdown_item, shipmentPackages);
         mShipmentPackages = shipmentPackages;
     }
@@ -47,9 +48,8 @@ public class ShipmentPackageCartAdapter extends ArrayAdapter<ShipmentPackage> {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-
+        if (shipment == null) return convertView;
         viewHolder.shipment.setText(shipment.getName() != null ? shipment.getName() : "");
-
         return convertView;
     }
 

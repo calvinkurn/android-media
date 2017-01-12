@@ -116,12 +116,12 @@ class CartProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             final ProductItemHolder productItemHolder = (ProductItemHolder) holder;
             final CartProductItemEditable item = (CartProductItemEditable) dataList.get(position);
             bindProductItemHolder(productItemHolder, item);
-            bindProductItemEditableListener(productItemHolder, item, position);
+            bindProductItemEditableListener(productItemHolder, position);
         }
     }
 
     private void bindProductItemEditableListener(ProductItemHolder holder,
-                                                 CartProductItemEditable item, final int position) {
+                                                 final int position) {
         holder.etNotesProduct.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -248,6 +248,7 @@ class CartProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         };
     }
 
+    @SuppressWarnings("deprecation")
     private void renderEditableMode(ProductItemHolder holder) {
         if (editMode) {
             holder.etNotesProduct.setEnabled(true);

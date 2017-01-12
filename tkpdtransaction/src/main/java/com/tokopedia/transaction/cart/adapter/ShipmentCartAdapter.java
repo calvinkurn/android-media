@@ -36,7 +36,7 @@ public class ShipmentCartAdapter extends ArrayAdapter<Shipment> {
     @NonNull
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
-        Shipment shipment = getItem(position);
+        final Shipment shipment = getItem(position);
         ViewHolder viewHolder;
         if (convertView == null) {
             viewHolder = new ViewHolder();
@@ -47,9 +47,8 @@ public class ShipmentCartAdapter extends ArrayAdapter<Shipment> {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-
+        if (shipment == null) return convertView;
         viewHolder.shipment.setText(shipment.getShipmentName());
-
         return convertView;
     }
 

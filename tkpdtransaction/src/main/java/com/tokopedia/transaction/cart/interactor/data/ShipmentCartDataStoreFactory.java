@@ -6,11 +6,11 @@ import com.tokopedia.transaction.cart.interactor.data.source.CloudShipmentCartDa
  * @author  by alvarisi on 1/4/17.
  */
 
-public class ShipmentCartDataStoreFactory {
-    public ShipmentCartDataStoreFactory() {
+class ShipmentCartDataStoreFactory {
+    ShipmentCartDataStoreFactory() {
     }
 
-    public IShipmentCartDataStore createCloudShipmentCartDataStore(){
+    IShipmentCartDataStore createCloudShipmentCartDataStore() {
         return new CloudShipmentCartDataStore();
     }
 
