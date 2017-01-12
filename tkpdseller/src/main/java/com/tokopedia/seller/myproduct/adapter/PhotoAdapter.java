@@ -16,11 +16,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.PictureDB;
 import com.tokopedia.core.myproduct.model.ImageModel;
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.R2;
 import com.tokopedia.seller.myproduct.BaseProductActivity;
 import com.tokopedia.seller.myproduct.ProductActivity;
 import com.tokopedia.seller.myproduct.ProductSocMedActivity;
@@ -57,7 +57,7 @@ public class PhotoAdapter  extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemLayoutView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.picture_galery_item, parent, false);
+                .inflate(R.layout.picture_item, parent, false);
         return new ViewHolder(itemLayoutView);
     }
 
