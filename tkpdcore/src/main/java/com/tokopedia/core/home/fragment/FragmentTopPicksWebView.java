@@ -23,6 +23,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.util.DeepLinkChecker;
 
 /**
@@ -33,6 +34,9 @@ public class FragmentTopPicksWebView extends Fragment {
 
     private ProgressBar progressBar;
     private WebView webview;
+    private static final String TOP_PICKS_URL = "https://www.tokopedia.com/toppicks/";
+    private static final String BASE_URL = "www.tokopedia.com";
+    private static final String BASE_MOBILE_URL = "m.tokopedia.com";
 
     private class MyWebViewClient extends WebChromeClient {
         @Override
@@ -97,8 +101,8 @@ public class FragmentTopPicksWebView extends Fragment {
 
     private boolean overrideUrl(String url) {
 
-            if (((Uri.parse(url).getHost().contains("www.tokopedia.com"))
-                    || Uri.parse(url).getHost().contains("m.tokopedia.com"))
+            if (((Uri.parse(url).getHost().contains(BASE_URL))
+                    || Uri.parse(url).getHost().contains(BASE_MOBILE_URL))
                     && !url.endsWith(".pl")) {
                 switch ((DeepLinkChecker.getDeepLinkType(url))) {
                     case DeepLinkChecker.BROWSE:
@@ -134,8 +138,7 @@ public class FragmentTopPicksWebView extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fragment_general_web_view, container, false);
-        System.out.println("KIRISAME use URL: " + getArguments().getString("url", "http://blog.tokopedia.com"));
-        String url = getArguments().getString("url", "http://blog.tokopedia.com");
+        String url = getArguments().getString("url", TOP_PICKS_URL);
         webview = (WebView) view.findViewById(R.id.webview);
         webview.getSettings().setBuiltInZoomControls(true);
         webview.getSettings().setDisplayZoomControls(false);

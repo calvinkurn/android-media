@@ -33,7 +33,6 @@ import com.google.gson.Gson;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tkpd.library.utils.URLParser;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -52,7 +51,6 @@ import com.tokopedia.core.network.entity.home.Banner;
 import com.tokopedia.core.network.entity.home.Ticker;
 import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
-import com.tokopedia.core.network.entity.topPicks.Group;
 import com.tokopedia.core.network.entity.topPicks.Item;
 import com.tokopedia.core.network.entity.topPicks.Toppick;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
@@ -106,6 +104,8 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     private static final long SLIDE_DELAY = 8000;
     public static final String TAG = FragmentIndexCategory.class.getSimpleName();
+    private static final String TOP_PICKS_URL = "https://www.tokopedia.com/toppicks/";
+
     private ViewHolder holder;
     private Model model;
     private PromoImagePagerAdapter pagerAdapter;
@@ -134,7 +134,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         RecyclerView announcementContainer;
         NestedScrollView wrapperScrollview;
         RecyclerView categoriesRecylerview;
-        RecyclerView topPicksRecylerview;
+        RecyclerView topPicksRecyclerView;
         public LinearLayout wrapperLinearLayout;
 
 
@@ -526,17 +526,17 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     /* TOP PICKS */
     private void initTopPicks() {
-        holder.topPicksRecylerview = (RecyclerView) holder.MainView.findViewById(R.id.my_recycler_view_toppicks);
-        holder.topPicksRecylerview.setHasFixedSize(true);
-        holder.topPicksRecylerview.setNestedScrollingEnabled(false);
+        holder.topPicksRecyclerView = (RecyclerView) holder.MainView.findViewById(R.id.recycler_view_toppicks);
+        holder.topPicksRecyclerView.setHasFixedSize(true);
+        holder.topPicksRecyclerView.setNestedScrollingEnabled(false);
         topPicksAdapter = new TopPicksAdapter(getContext(),this,this,this);
         topPicksAdapter.setHomeMenuWidth(getHomeMenuWidth());
-        holder.topPicksRecylerview.setLayoutManager(
+        holder.topPicksRecyclerView.setLayoutManager(
                 new NonScrollLinearLayoutManager(getActivity(),
                         LinearLayoutManager.VERTICAL,
                         false)
         );
-        holder.topPicksRecylerview.setAdapter(topPicksAdapter);
+        holder.topPicksRecyclerView.setAdapter(topPicksAdapter);
     }
 
     @Override
@@ -574,14 +574,12 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void onClick(Toppick toppick) {
-        openWebViewTopPicksURL("https://www.tokopedia.com/toppicks/");
+        openWebViewTopPicksURL(TOP_PICKS_URL);
     }
 
     public void openWebViewTopPicksURL(String url) {
         if (url!="") {
-            Intent intent = new Intent(getActivity(), TopPicksWebView.class);
-            intent.putExtra("url", url);
-            startActivity(intent);
+            startActivity(TopPicksWebView.newInstance(getActivity(),url));
         }
     }
 

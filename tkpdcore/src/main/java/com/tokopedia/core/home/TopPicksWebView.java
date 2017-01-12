@@ -3,6 +3,8 @@ package com.tokopedia.core.home;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -24,7 +26,14 @@ public class TopPicksWebView extends TActivity implements
         FragmentGeneralWebView.OnFragmentInteractionListener, DeepLinkWebViewHandleListener {
 
     private static final int IS_WEBVIEW = 1;
+    private static final String URL = "url";
     private FragmentTopPicksWebView fragment;
+
+    public static Intent newInstance(Context context, String url) {
+        Intent intent = new Intent(context, TopPicksWebView.class);
+        intent.putExtra(URL, url);
+        return intent;
+    }
 
     @Override
     public String getScreenName() {
