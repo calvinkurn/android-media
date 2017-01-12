@@ -63,6 +63,7 @@ public class CategoryImpl implements Category {
         subscription
                 .add(
                         categoryApi.getSlides(
+                                SessionHandler.getLoginID(MainApplication.getAppContext()),
                                 CategoryApi.size,
                                 CategoryApi.number,
                                 CategoryApi.ANDROID_DEVICE,

@@ -70,6 +70,7 @@ public interface CategoryApi {
 
     @GET(API_V1_SLIDES)
     Observable<Response<Slide>> getSlides(
+            @Header(HEADER_USER_ID) String user_id,
             @Query(PAGE_SIZE) String size,
             @Query(PAGE_NUMBER) String number,
             @Query(FILTER_DEVICE) String device,
