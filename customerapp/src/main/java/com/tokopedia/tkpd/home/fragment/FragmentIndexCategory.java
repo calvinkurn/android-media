@@ -96,6 +96,9 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     private static final long SLIDE_DELAY = 8000;
     public static final String TAG = FragmentIndexCategory.class.getSimpleName();
+    private static final String BASE_URL = "www.tokopedia.com";
+    private static final String BASE_MOBILE_URL = "m.tokopedia.com";
+
     private ViewHolder holder;
     private Model model;
     private PromoImagePagerAdapter pagerAdapter;
@@ -438,8 +441,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     private boolean isBaseHost(String host) {
-        return (host.equals("www.tokopedia.com") || host.equals("m.tokopedia.com"))
-                ||  host.equals("tokopedia.com");
+        return (host.contains(BASE_URL) || host.contains(BASE_MOBILE_URL));
     }
 
     private View.OnClickListener onPromoClicked(final String url) {
