@@ -35,7 +35,7 @@ import rx.schedulers.Schedulers;
 /**
  * @author ricoharisin on 7/18/16.
  */
-public class RechargeDBInteractorImpl implements RechargeDBInteractor {
+public class RechargeInteractorImpl implements RechargeInteractor {
 
     private final static String KEY_CATEGORY = "RECHARGE_CATEGORY";
     private final static String KEY_STATUS = "RECHARGE_STATUS";
@@ -46,7 +46,7 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
     private RechargeService rechargeService;
     private static int CACHE_DURATION = 60*5;
 
-    public RechargeDBInteractorImpl() {
+    public RechargeInteractorImpl() {
         rechargeService = new RechargeService();
     }
 
@@ -320,7 +320,7 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                     public Boolean call(CategoryData categoryData) {
                         GlobalCacheManager manager = new GlobalCacheManager();
                         if (categoryData != null) {
-                            manager.setKey(RechargeDBInteractorImpl.KEY_CATEGORY);
+                            manager.setKey(RechargeInteractorImpl.KEY_CATEGORY);
                             manager.setValue(CacheUtil.convertListModelToString(categoryData.getData(),
                                     new TypeToken<List<Category>>() {
                                     }.getType()));
@@ -343,7 +343,7 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                     public Boolean call(OperatorData operatorData) {
                         GlobalCacheManager manager = new GlobalCacheManager();
                         if (operatorData != null && operatorData.getData() != null) {
-                            manager.setKey(RechargeDBInteractorImpl.KEY_OPERATOR);
+                            manager.setKey(RechargeInteractorImpl.KEY_OPERATOR);
                             manager.setValue(CacheUtil.convertListModelToString(operatorData.getData(),
                                     new TypeToken<List<Operator>>() {
                                     }.getType()));
@@ -367,7 +367,7 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                     public Boolean call(ProductData productData) {
                         GlobalCacheManager manager = new GlobalCacheManager();
                         if (productData != null && productData.getData() != null) {
-                            manager.setKey(RechargeDBInteractorImpl.KEY_PRODUCT);
+                            manager.setKey(RechargeInteractorImpl.KEY_PRODUCT);
                             manager.setValue(CacheUtil.convertListModelToString(productData.getData(),
                                     new TypeToken<List<Product>>() {
                                     }.getType()));
@@ -410,7 +410,7 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                     @Override
                     public Boolean call(Status status) {
                         GlobalCacheManager manager = new GlobalCacheManager();
-                        manager.setKey(RechargeDBInteractorImpl.KEY_STATUS);
+                        manager.setKey(RechargeInteractorImpl.KEY_STATUS);
                         manager.setValue(CacheUtil.convertModelToString(status, Status.class));
                         manager.store();
 
@@ -589,7 +589,7 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                         CategoryData categoryData = categoryDataResponse.body();
                         GlobalCacheManager manager = new GlobalCacheManager();
                         if (categoryData != null) {
-                            manager.setKey(RechargeDBInteractorImpl.KEY_CATEGORY);
+                            manager.setKey(RechargeInteractorImpl.KEY_CATEGORY);
                             manager.setValue(CacheUtil.convertListModelToString(categoryData.getData(),
                                     new TypeToken<List<com.tokopedia.core.database.model.category.Category>>() {
                                     }.getType()));
@@ -648,7 +648,7 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                         ProductData productData = productDataResponse.body();
                         GlobalCacheManager manager = new GlobalCacheManager();
                         if (productData != null && productData.getData() != null) {
-                            manager.setKey(RechargeDBInteractorImpl.KEY_PRODUCT);
+                            manager.setKey(RechargeInteractorImpl.KEY_PRODUCT);
                             manager.setValue(CacheUtil.convertListModelToString(productData.getData(),
                                     new TypeToken<List<Product>>() {
                                     }.getType()));
@@ -717,7 +717,7 @@ public class RechargeDBInteractorImpl implements RechargeDBInteractor {
                         OperatorData operatorData = operatorDataResponse.body();
                         GlobalCacheManager manager = new GlobalCacheManager();
                         if (operatorData != null && operatorData.getData() != null) {
-                            manager.setKey(RechargeDBInteractorImpl.KEY_OPERATOR);
+                            manager.setKey(RechargeInteractorImpl.KEY_OPERATOR);
                             manager.setValue(CacheUtil.convertListModelToString(operatorData.getData(),
                                     new TypeToken<List<Operator>>() {
                                     }.getType()));

@@ -5,39 +5,31 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
-import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.database.CacheUtil;
-import com.tokopedia.core.database.model.category.Category;
 import com.tokopedia.core.database.model.category.CategoryData;
-import com.tokopedia.core.database.recharge.operator.OperatorData;
-import com.tokopedia.core.database.recharge.product.ProductData;
 import com.tokopedia.core.database.recharge.recentNumber.RecentData;
 import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
 import com.tokopedia.core.database.recharge.status.Status;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.tkpd.home.recharge.interactor.RechargeDBInteractor;
-import com.tokopedia.tkpd.home.recharge.interactor.RechargeDBInteractorImpl;
+import com.tokopedia.tkpd.home.recharge.interactor.RechargeInteractor;
+import com.tokopedia.tkpd.home.recharge.interactor.RechargeInteractorImpl;
 import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractor;
 import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractorImpl;
 import com.tokopedia.tkpd.home.recharge.util.CategoryComparator;
 import com.tokopedia.tkpd.home.recharge.view.RechargeCategoryView;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 /**
  * @author kulomady 05 on 7/13/2016.
  */
 public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter,
-        RechargeNetworkInteractor.OnGetOperatorListener,
-        RechargeNetworkInteractor.OnGetProductListener,
-        RechargeDBInteractor.OnGetStatus,
+        RechargeInteractor.OnGetStatus,
         RechargeNetworkInteractor.OnGetRecentNumbersListener,
         RechargeNetworkInteractor.OnGetRecentOrderListener,
-        RechargeDBInteractor.OnGetCategory {
+        RechargeInteractor.OnGetCategory {
 
     static final String RECHARGE_CACHE_KEY = "PrimaryRechargeCache";
     final static String KEY_CATEGORY = "RECHARGE_CATEGORY";
@@ -49,7 +41,7 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter,
     private Activity activity;
     private RechargeCategoryView view;
     private RechargeNetworkInteractor rechargeNetworkInteractor;
-    private RechargeDBInteractor rechargeDBInteractor;
+    private RechargeInteractor rechargeDBInteractor;
     private CategoryData categoryData;
     private final LocalCacheHandler cacheHandler;
 
@@ -57,7 +49,7 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter,
         this.activity = activity;
         this.view = view;
         this.rechargeNetworkInteractor = new RechargeNetworkInteractorImpl();
-        this.rechargeDBInteractor = new RechargeDBInteractorImpl();
+        this.rechargeDBInteractor = new RechargeInteractorImpl();
         this.cacheHandler = new LocalCacheHandler(activity, RECHARGE_CACHE_KEY);
     }
 
@@ -105,19 +97,6 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter,
     @Override
     public void onEmpty() {
 
-    }
-
-    @Override
-    public void onSuccess(OperatorData data) {
-        this.rechargeDBInteractor.storeOperatorData(data);
-        this.rechargeNetworkInteractor.getAllProduct(this);
-
-    }
-
-    @Override
-    public void onSuccess(ProductData data) {
-        this.rechargeDBInteractor.storeProductData(data);
-        finishPrepareRechargeModule();
     }
 
     @Override

@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * @author ricoharisin on 7/18/16.
  */
-public interface RechargeDBInteractor {
+public interface RechargeInteractor {
 
     void getListProduct(OnGetListProduct onGetListProduct, String prefix, int categoryId, Boolean validatePrefix);
 
