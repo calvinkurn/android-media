@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.CompoundButton;
 
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
@@ -58,13 +59,15 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
     }
 
     @Override
-    public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-        progressDialog.show();
-        if(checked){
-            presenter.turnOnAds(groupAd, SessionHandler.getShopID(getActivity()));
-        }else{
-            presenter.turnOffAds(groupAd, SessionHandler.getShopID(getActivity()));
-        }
+    protected void turnOnAd() {
+        super.turnOnAd();
+        presenter.turnOnAds(groupAd, SessionHandler.getShopID(getActivity()));
+    }
+
+    @Override
+    protected void turnOffAd() {
+        super.turnOffAd();
+        presenter.turnOffAds(groupAd, SessionHandler.getShopID(getActivity()));
     }
 
     @Override
@@ -77,6 +80,28 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
         super.onAdLoaded(ad);
         groupAd = (GroupAd) ad;
         items.setContent(String.valueOf(groupAd.getTotalItem()));
+    }
+
+    @Override
+    public void onTurnOnAdError() {
+        super.onTurnOnAdError();
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.turnOnAds(groupAd, SessionHandler.getShopID(getActivity()));
+            }
+        }).showRetrySnackbar();
+    }
+
+    @Override
+    public void onTurnOffAdError() {
+        super.onTurnOffAdError();
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.turnOffAds(groupAd, SessionHandler.getShopID(getActivity()));
+            }
+        }).showRetrySnackbar();
     }
 
     @OnClick(R2.id.items)

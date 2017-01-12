@@ -11,7 +11,11 @@ public interface TopAdsDetailViewListener {
 
     void onLoadAdError();
 
-    void onBulkAdLoaded();
+    void onTurnOnAdSuccess();
 
-    void onLoadBulkAAdError();
+    void onTurnOnAdError();
+
+    void onTurnOffAdSuccess();
+
+    void onTurnOffAdError();
 }

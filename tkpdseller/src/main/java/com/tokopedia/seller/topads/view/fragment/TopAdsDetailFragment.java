@@ -1,7 +1,6 @@
 package com.tokopedia.seller.topads.view.fragment;
 
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,7 +12,8 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 
-import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
@@ -23,8 +23,6 @@ import com.tokopedia.seller.topads.presenter.TopAdsDetailPresenter;
 import com.tokopedia.seller.topads.view.listener.TopAdsDetailViewListener;
 import com.tokopedia.seller.topads.view.widget.TopAdsLabelSwitch;
 import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
-
-import java.util.Date;
 
 import butterknife.BindView;
 
@@ -107,6 +105,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
 
     }
 
+    @Override
     protected void loadData() {
         progressDialog.show();
         ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(presenter.getRangeDateFormat(startDate, endDate));
@@ -116,6 +115,23 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         } else {
             refreshAd();
         }
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+        if(checked){
+            turnOnAd();
+        }else{
+            turnOffAd();
+        }
+    }
+
+    protected void turnOnAd() {
+        progressDialog.show();
+    }
+
+    protected void turnOffAd() {
+        progressDialog.show();
     }
 
     @Override
@@ -130,13 +146,39 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     }
 
     @Override
-    public void onBulkAdLoaded() {
+    public void onTurnOnAdSuccess() {
         progressDialog.dismiss();
     }
 
     @Override
-    public void onLoadBulkAAdError() {
+    public void onTurnOnAdError() {
+        setStatusSwitch(!status.isChecked());
         progressDialog.dismiss();
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                setStatusSwitch(true);
+                turnOnAd();
+            }
+        }).showRetrySnackbar();
+    }
+
+    @Override
+    public void onTurnOffAdSuccess() {
+        progressDialog.dismiss();
+    }
+
+    @Override
+    public void onTurnOffAdError() {
+        setStatusSwitch(!status.isChecked());
+        progressDialog.dismiss();
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                setStatusSwitch(false);
+                turnOffAd();
+            }
+        }).showRetrySnackbar();
     }
 
     protected void loadAdDetail(Ad ad){
@@ -144,10 +186,10 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         switch (ad.getStatus()) {
             case TopAdsConstant.STATUS_AD_ACTIVE:
             case TopAdsConstant.STATUS_AD_NOT_SENT:
-                status.setChecked(true);
+                setStatusSwitch(true);
                 break;
             default:
-                status.setChecked(false);
+                setStatusSwitch(false);
                 break;
         }
         status.setSwitchStatusText(ad.getStatusDesc());
@@ -161,6 +203,11 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         click.setContent(ad.getStatTotalClick());
         ctr.setContent(ad.getStatTotalCtr());
         favorite.setContent(ad.getStatTotalConversion());
+    }
+
+    protected void setStatusSwitch(boolean checked) {
+        status.setListenerValue(null);
+        status.setChecked(checked);
         status.setListenerValue(this);
     }
 

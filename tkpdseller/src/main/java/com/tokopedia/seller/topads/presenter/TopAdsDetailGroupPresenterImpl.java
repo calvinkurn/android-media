@@ -54,26 +54,31 @@ public class TopAdsDetailGroupPresenterImpl extends TopAdsDetailPresenterImpl im
     @Override
     public void turnOnAds(Ad ad, String shopId) {
         DataRequest<GroupAdBulkAction> dataRequest = generateActionRequest(ad, TopAdsNetworkConstant.ACTION_BULK_ON_AD, shopId);
-        actionBulkAds(dataRequest);
+        groupAdInteractor.bulkAction(dataRequest, new ListenerInteractor<GroupAdBulkAction>() {
+            @Override
+            public void onSuccess(GroupAdBulkAction dataResponseActionAds) {
+                topAdsDetailViewListener.onTurnOnAdSuccess();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                topAdsDetailViewListener.onTurnOnAdError();
+            }
+        });
     }
 
     @Override
     public void turnOffAds(Ad ad, String shopId) {
         DataRequest<GroupAdBulkAction> dataRequest = generateActionRequest(ad, TopAdsNetworkConstant.ACTION_BULK_OFF_AD, shopId);
-        actionBulkAds(dataRequest);
-    }
-
-    @NonNull
-    private void actionBulkAds(DataRequest<GroupAdBulkAction> actionRequest) {
-        groupAdInteractor.bulkAction(actionRequest, new ListenerInteractor<GroupAdBulkAction>() {
+        groupAdInteractor.bulkAction(dataRequest, new ListenerInteractor<GroupAdBulkAction>() {
             @Override
             public void onSuccess(GroupAdBulkAction dataResponseActionAds) {
-                topAdsDetailViewListener.onBulkAdLoaded();
+                topAdsDetailViewListener.onTurnOffAdSuccess();
             }
 
             @Override
             public void onError(Throwable throwable) {
-                topAdsDetailViewListener.onLoadBulkAAdError();
+                topAdsDetailViewListener.onTurnOffAdError();
             }
         });
     }

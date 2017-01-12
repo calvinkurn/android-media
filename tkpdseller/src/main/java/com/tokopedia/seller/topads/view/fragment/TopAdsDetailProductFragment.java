@@ -59,13 +59,15 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
     }
 
     @Override
-    public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-        progressDialog.show();
-        if(checked){
-            presenter.turnOnAds(productAd, SessionHandler.getShopID(getActivity()));
-        }else{
-            presenter.turnOffAds(productAd, SessionHandler.getShopID(getActivity()));
-        }
+    protected void turnOnAd() {
+        super.turnOnAd();
+        presenter.turnOnAds(productAd, SessionHandler.getShopID(getActivity()));
+    }
+
+    @Override
+    protected void turnOffAd() {
+        super.turnOffAd();
+        presenter.turnOffAds(productAd, SessionHandler.getShopID(getActivity()));
     }
 
     @Override
