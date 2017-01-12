@@ -164,6 +164,10 @@ public class TrackingUtils extends TrackingConfig {
         getLocaEngine().tageEventandInApp(eventName);
     }
 
+    public static void eventLocaSearched(String keyword){
+        getLocaEngine().sendEventSearchProduct(keyword,"product",null,null);
+    }
+
     static void sendGTMEvent(Map<String, Object> dataLayers){
         getGTMEngine().sendEvent(dataLayers);
     }

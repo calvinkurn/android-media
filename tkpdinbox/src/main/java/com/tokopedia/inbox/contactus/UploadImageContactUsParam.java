@@ -30,4 +30,21 @@ public interface UploadImageContactUsParam {
             @Part("web_service") RequestBody web_service
 
     );
+
+    @Multipart
+    @POST("/upload/attachment/public/image")
+    Observable<ImageUploadResult> uploadImagePublic(
+            @Header("Content-MD5") String contentMD5,
+            @Header("Date") String date,
+            @Header("Authorization") String authorization,
+            @Header("X-Method") String xMethod,
+            @Part("user_id") RequestBody userId,
+            @Part("device_id") RequestBody deviceId,
+            @Part("hash") RequestBody hash,
+            @Part("device_time") RequestBody deviceTime,
+            @Part("fileToUpload\"; filename=\"image.jpg")  RequestBody imageFile,
+            @Part("id") RequestBody imageId,
+            @Part("web_service") RequestBody web_service
+
+    );
 }

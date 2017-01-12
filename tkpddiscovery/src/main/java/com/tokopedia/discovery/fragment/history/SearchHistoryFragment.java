@@ -117,7 +117,7 @@ public class SearchHistoryFragment extends BaseFragment<SearchHistory> implement
 
     @Override
     public void sendHotlistResult(String selected, String keyword) {
-        ((BrowseProductActivity) getActivity()).sendHotlist(selected);
+        ((BrowseProductActivity) getActivity()).sendHotlist(selected, keyword);
     }
 
     @Override

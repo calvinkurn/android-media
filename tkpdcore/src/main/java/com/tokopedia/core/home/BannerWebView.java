@@ -72,8 +72,8 @@ public class BannerWebView extends TActivity implements
     @Override
     public void onBackPressed() {
         try {
-            if (fragment.getWebviewBanner().canGoBack()) {
-                fragment.getWebviewBanner().goBack();
+            if (fragment.getWebview().canGoBack()) {
+                fragment.getWebview().goBack();
             } else {
                 super.onBackPressed();
             }
