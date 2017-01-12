@@ -62,6 +62,7 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     private static final String TAG = DetailResCenterFragment.class.getSimpleName();
     private static final int EDIT_RESOLUTION_REQUEST_CODE = 6789;
     private static final int CHOOSE_ADDRESS = 7890;
+    private static final int CHOOSE_ADDRESS_MIGRATE_VERSION = 7891;
     private static final int EDIT_ADDRESS = 5678;
 
     private ActivityParamenterPassData passData;
@@ -248,6 +249,12 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
                 if (resultCode == Activity.RESULT_OK) {
                     Destination destination = (Destination) data.getExtras().get(ManageAddressConstant.EXTRA_ADDRESS);
                     presenter.actionInputAddress(getActivity(), destination.getAddressId());
+                }
+                break;
+            case CHOOSE_ADDRESS_MIGRATE_VERSION:
+                if (resultCode == Activity.RESULT_OK) {
+                    Destination destination = (Destination) data.getExtras().get(ManageAddressConstant.EXTRA_ADDRESS);
+                    presenter.actionInputAddressMigrateVersion(getActivity(), destination.getAddressId());
                 }
                 break;
             case EDIT_ADDRESS:
@@ -488,6 +495,13 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
         Intent intent = new Intent(getActivity(), ChooseAddressActivity.class);
         intent.putExtra("resolution_center", true);
         startActivityForResult(intent, CHOOSE_ADDRESS);
+    }
+
+    @Override
+    public void openInputAddressMigrateVersion() {
+        Intent intent = new Intent(getActivity(), ChooseAddressActivity.class);
+        intent.putExtra("resolution_center", true);
+        startActivityForResult(intent, CHOOSE_ADDRESS_MIGRATE_VERSION);
     }
 
     @Override
