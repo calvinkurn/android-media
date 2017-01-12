@@ -14,7 +14,7 @@ public interface TkpdCoreRouter {
     DrawerVariable getDrawer(AppCompatActivity activity);
     void startInstopedActivity(Context context);
     void removeInstopedToken();
-    void goToManageProduct();
+    void goToManageProduct(Context context);
     void clearEtalaseCache();
     void goToEditProduct(boolean isEdit, String productId);
     void resetAddProductCache();

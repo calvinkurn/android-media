@@ -53,8 +53,8 @@ public class ConsumerRouterApplication extends MainApplication implements TkpdCo
     }
 
     @Override
-    public void goToManageProduct() {
-        Intent intent = new Intent(getAppContext(), ManageProduct.class);
+    public void goToManageProduct(Context context) {
+        Intent intent = new Intent(context, ManageProduct.class);
         startActivity(intent);
     }
 

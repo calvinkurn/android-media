@@ -511,7 +511,7 @@ public class DrawerVariable {
 
     private void goToManageProduct() {
         if(context.getApplication() instanceof TkpdCoreRouter){
-            ((TkpdCoreRouter)context.getApplication()).goToManageProduct();
+            ((TkpdCoreRouter)context.getApplication()).goToManageProduct(context);
         }
     }
 

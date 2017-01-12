@@ -37,8 +37,8 @@ public class SellerRouterApplication extends MainApplication implements TkpdCore
     }
 
     @Override
-    public void goToManageProduct() {
-        Intent intent = new Intent(getAppContext(), ManageProduct.class);
+    public void goToManageProduct(Context context) {
+        Intent intent = new Intent(context, ManageProduct.class);
         startActivity(intent);
     }
 
