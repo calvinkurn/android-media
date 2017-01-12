@@ -302,7 +302,11 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 break;
         }
         final CartItem cartData = cartItemEditable.getCartItem();
-
+        if (cartData.getCartShipments().getShipmentPickUp() == 1) {
+            holder.cbDropshiper.setVisibility(View.GONE);
+        } else {
+            holder.cbDropshiper.setVisibility(View.VISIBLE);
+        }
         holder.etDropshiperName.setText(cartItemEditable.getDropShipperName() != null
                 ? cartItemEditable.getDropShipperName() : "");
         holder.etDropshiperPhone.setText(cartItemEditable.getDropShipperPhone() != null

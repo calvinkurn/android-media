@@ -78,8 +78,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @BindView(R2.id.pb_main_loading)
     ProgressBar pbMainLoading;
-    //    @BindView(R2.id.tv_error_payment)
-//    TextView tvErrorPayment;
     @BindView(R2.id.tv_error_1)
     TextView tvError1;
     @BindView(R2.id.tv_error_2)

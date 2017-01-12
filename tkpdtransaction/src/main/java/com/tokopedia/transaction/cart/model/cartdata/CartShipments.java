@@ -29,6 +29,9 @@ public class CartShipments implements Parcelable {
     @SerializedName("is_pick_up")
     @Expose
     private int isPickUp;
+    @SerializedName("shipment_pickup")
+    @Expose
+    private int shipmentPickUp;
 
     public String getShipmentImage() {
         return shipmentImage;
@@ -82,6 +85,16 @@ public class CartShipments implements Parcelable {
         this.shipmentPackageId = shipmentPackageId;
     }
 
+    public int getShipmentPickUp() {
+        return shipmentPickUp;
+    }
+
+    public void setShipmentPickUp(int shipmentPickUp) {
+        this.shipmentPickUp = shipmentPickUp;
+    }
+
+    public CartShipments() {
+    }
 
     @Override
     public int describeContents() {
@@ -97,9 +110,7 @@ public class CartShipments implements Parcelable {
         dest.writeString(this.shipmentName);
         dest.writeString(this.shipmentPackageId);
         dest.writeInt(this.isPickUp);
-    }
-
-    public CartShipments() {
+        dest.writeInt(this.shipmentPickUp);
     }
 
     protected CartShipments(Parcel in) {
@@ -110,6 +121,7 @@ public class CartShipments implements Parcelable {
         this.shipmentName = in.readString();
         this.shipmentPackageId = in.readString();
         this.isPickUp = in.readInt();
+        this.shipmentPickUp = in.readInt();
     }
 
     public static final Creator<CartShipments> CREATOR = new Creator<CartShipments>() {
