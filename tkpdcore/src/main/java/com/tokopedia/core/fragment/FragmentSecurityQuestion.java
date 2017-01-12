@@ -27,6 +27,8 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -63,6 +65,7 @@ import static android.R.attr.permission;
 @RuntimePermissions
 public class FragmentSecurityQuestion extends Fragment implements SecurityQuestionView, IncomingSmsReceiver.ReceiveSMSListener {
 
+    private static final String CAN_REQUEST_OTP_IMMEDIATELY = "auto_request_otp";
     private TkpdProgressDialog Progress;
     SecurityQuestion securityQuestion;
     private static final String FORMAT = "%02d:%02d";
@@ -194,7 +197,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
                         }
                     })
                     .show();
-        }else if (getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)){
+        } else if (getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
             FragmentSecurityQuestionPermissionsDispatcher.checkSmsPermissionWithCheck(FragmentSecurityQuestion.this);
         }
     }
@@ -336,7 +339,8 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     public void showViewOtp() {
         vOtp.setVisibility(View.VISIBLE);
         vSecurity.setVisibility(View.GONE);
-        securityQuestion.doRequestOtp();
+        if (TrackingUtils.getGtmString(CAN_REQUEST_OTP_IMMEDIATELY).equals("true"))
+            securityQuestion.doRequestOtp();
         titleOTP.setText("Halo, " + SessionHandler.getTempLoginName(getActivity()));
 
 
