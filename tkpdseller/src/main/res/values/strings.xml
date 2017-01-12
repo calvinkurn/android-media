@@ -21,7 +21,7 @@
     <string name="label_top_ads_groups">Groups</string>
     <string name="label_top_ads_items">Items</string>
     <string name="label_top_ads_choose_credit">Pilih</string>
-    <string name="label_top_ads_deposit_desc">Saldo TopAds: %1$s</string>
+    <string name="label_top_ads_deposit_desc">Kredit TopAds: %1$s</string>
     <string name="label_top_ads_next">Selanjutnya</string>
     <string name="label_top_ads_save">Simpan</string>
 

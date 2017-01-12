@@ -1,5 +1,8 @@
 package com.tokopedia.seller.topads.model.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
@@ -8,7 +11,7 @@ import com.tokopedia.seller.topads.constant.TopAdsConstant;
  * Created by Nathaniel on 12/28/2016.
  */
 
-public class ShopAd implements Ad {
+public class ShopAd implements Ad, Parcelable {
 
     @SerializedName("ad_id")
     @Expose
@@ -210,4 +213,81 @@ public class ShopAd implements Ad {
     public String getShopUri() {
         return shopUri;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
+        dest.writeInt(this.status);
+        dest.writeString(this.statusDesc);
+        dest.writeInt(this.statusToogle);
+        dest.writeString(this.priceBidFmt);
+        dest.writeString(this.priceDailyFmt);
+        dest.writeString(this.priceDailySpentFmt);
+        dest.writeString(this.priceDailyBar);
+        dest.writeInt(this.editable);
+        dest.writeString(this.startDate);
+        dest.writeString(this.startTime);
+        dest.writeString(this.endDate);
+        dest.writeString(this.endTime);
+        dest.writeString(this.statAvgClick);
+        dest.writeString(this.statTotalSpent);
+        dest.writeString(this.statTotalImpression);
+        dest.writeString(this.statTotalClick);
+        dest.writeString(this.statTotalCtr);
+        dest.writeString(this.statTotalConversion);
+        dest.writeString(this.labelEdit);
+        dest.writeString(this.labelPerClick);
+        dest.writeString(this.labelOf);
+        dest.writeString(this.name);
+        dest.writeInt(this.shopId);
+        dest.writeString(this.shopUri);
+    }
+
+    public ShopAd() {
+    }
+
+    protected ShopAd(Parcel in) {
+        this.id = in.readInt();
+        this.status = in.readInt();
+        this.statusDesc = in.readString();
+        this.statusToogle = in.readInt();
+        this.priceBidFmt = in.readString();
+        this.priceDailyFmt = in.readString();
+        this.priceDailySpentFmt = in.readString();
+        this.priceDailyBar = in.readString();
+        this.editable = in.readInt();
+        this.startDate = in.readString();
+        this.startTime = in.readString();
+        this.endDate = in.readString();
+        this.endTime = in.readString();
+        this.statAvgClick = in.readString();
+        this.statTotalSpent = in.readString();
+        this.statTotalImpression = in.readString();
+        this.statTotalClick = in.readString();
+        this.statTotalCtr = in.readString();
+        this.statTotalConversion = in.readString();
+        this.labelEdit = in.readString();
+        this.labelPerClick = in.readString();
+        this.labelOf = in.readString();
+        this.name = in.readString();
+        this.shopId = in.readInt();
+        this.shopUri = in.readString();
+    }
+
+    public static final Creator<ShopAd> CREATOR = new Creator<ShopAd>() {
+        @Override
+        public ShopAd createFromParcel(Parcel source) {
+            return new ShopAd(source);
+        }
+
+        @Override
+        public ShopAd[] newArray(int size) {
+            return new ShopAd[size];
+        }
+    };
 }
