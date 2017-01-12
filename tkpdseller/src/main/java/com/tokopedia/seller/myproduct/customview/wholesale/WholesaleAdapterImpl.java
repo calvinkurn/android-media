@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.core.R;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.myproduct.utils.PriceUtils;
 
 import java.util.ArrayList;

@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
-import com.tokopedia.core.R2;
+import com.tokopedia.seller.R2;
 import com.tokopedia.seller.myproduct.utils.CurrencyFormatter;
 import com.tokopedia.seller.myproduct.utils.PriceUtils;
 

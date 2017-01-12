@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.tokopedia.core.R;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.myproduct.utils.PriceUtils;
 
 import java.util.List;
