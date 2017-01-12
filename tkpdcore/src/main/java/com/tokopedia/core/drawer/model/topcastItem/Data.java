@@ -16,6 +16,8 @@ public class Data {
     private String mText;
     @SerializedName("wallet_id")
     private Long mWalletId;
+    @SerializedName("link")
+    private Integer link;
 
 
     public Action getAction() {
@@ -58,4 +60,11 @@ public class Data {
         mWalletId = wallet_id;
     }
 
+    public Integer getLink() {
+        return link;
+    }
+
+    public void setLink(Integer link) {
+        this.link = link;
+    }
 }

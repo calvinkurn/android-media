@@ -26,7 +26,7 @@ public class TokoCashService extends BearerService<TokoCashApi> {
 
     @Override
     protected String getOauthAuthorization() {
-        return null;
+        return "Bearer " + mToken;
     }
 
     @Override

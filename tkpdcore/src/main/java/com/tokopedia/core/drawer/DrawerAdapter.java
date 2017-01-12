@@ -470,7 +470,8 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             holder.topCashLayout.setOnClickListener(onLayoutTopCashSelected(headerValue.tokoCashURL));
             if(headerValue.tokoCashToWallet)
                 holder.tokoCashValueView.setText(headerValue.tokoCashValue);
-            else holder.tokoCashValueView.setText("DAFTAR");
+            else holder.topCashLayout.setVisibility(View.GONE);
+            //else holder.tokoCashValueView.setText("DAFTAR");
             holder.loadingTopCash.setVisibility(View.GONE);
         }
     }

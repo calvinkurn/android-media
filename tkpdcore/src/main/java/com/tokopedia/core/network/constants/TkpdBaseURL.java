@@ -636,7 +636,7 @@ public interface  TkpdBaseURL {
     }
 
     interface TopCash{
-        String GET_WALLET = "https://wallet-staging.tokopedia.id/api/v1/";
-        String PATH_WALLET = "wallet";
+        String GET_WALLET = ACCOUNTS_DOMAIN + "api/wallet/";
+        String PATH_WALLET = "balance";
     }
 }

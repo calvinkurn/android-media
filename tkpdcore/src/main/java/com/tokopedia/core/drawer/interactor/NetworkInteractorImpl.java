@@ -9,6 +9,7 @@ import com.tokopedia.core.drawer.model.notification.NotificationData;
 import com.tokopedia.core.drawer.model.profileinfo.ProfileData;
 import com.tokopedia.core.drawer.model.topcastItem.TopCashItem;
 import com.tokopedia.core.drawer.var.NotificationItem;
+import com.tokopedia.core.exception.SessionExpiredException;
 import com.tokopedia.core.network.apiservices.clover.CloverService;
 import com.tokopedia.core.network.apiservices.transaction.DepositService;
 import com.tokopedia.core.network.apiservices.transaction.TokoCashService;
@@ -186,7 +187,6 @@ public class NetworkInteractorImpl implements NetworkInteractor {
     @Override
     public void getTokoCash(final Context context, final TopCashListener listener) {
         TKPDMapParam<String, String> topCashParams = new TKPDMapParam<>();
-        topCashParams.put("user_id", "271052");
         Observable<Response<TopCashItem>> observable = tokoCashService.getApi()
                 .getTokoCash(topCashParams);
         compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
@@ -200,7 +200,9 @@ public class NetworkInteractorImpl implements NetworkInteractor {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        if(e instanceof SessionExpiredException) {
+                            listener.onTokenExpire();
+                        }
                     }
 
                     @Override
