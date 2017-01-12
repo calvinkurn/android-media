@@ -123,7 +123,7 @@ public class DynamicFilterOtherAdapter extends ProductAdapter {
             if (textBoxModel.isFirstTime && context != null && context instanceof DynamicFilterView) {
                 String textInput = ((DynamicFilterView) context).getTextInput(textBoxModel.key);
                 if (textInput != null) {
-                    textBox.setText(textInput);
+                    formatPrice(textInput, textBox);
                 }
                 textBoxModel.isFirstTime = false;
             }
@@ -164,14 +164,22 @@ public class DynamicFilterOtherAdapter extends ProductAdapter {
             } else {
                 textBox.setError(null);
             }
-            if (!s.toString().equals(current)) {
+            formatPrice(s.toString(), textBox);
+        }
+
+        private String getCleanString(String s){
+            String replaceable = String.format("[Rp,.\\s]",
+                    NumberFormat.getCurrencyInstance().getCurrency().getSymbol(local));
+            String cleanString = s.toString().replaceAll(replaceable, "");
+            return cleanString;
+        }
+
+        private void formatPrice(String s, EditText textBox){
+            if (!s.equals(current) && !s.isEmpty()) {
                 textBox.removeTextChangedListener(this);
-
-
-
                 double parsed;
                 try {
-                    parsed = Double.parseDouble(getCleanString(s.toString()));
+                    parsed = Double.parseDouble(getCleanString(s));
                 } catch (NumberFormatException e) {
                     parsed = 0.00;
                 }
@@ -191,13 +199,6 @@ public class DynamicFilterOtherAdapter extends ProductAdapter {
                 textBox.setSelection(clean.length());
                 textBox.addTextChangedListener(this);
             }
-        }
-
-        private String getCleanString(String s){
-            String replaceable = String.format("[Rp,.\\s]",
-                    NumberFormat.getCurrencyInstance().getCurrency().getSymbol(local));
-            String cleanString = s.toString().replaceAll(replaceable, "");
-            return cleanString;
         }
     }
 

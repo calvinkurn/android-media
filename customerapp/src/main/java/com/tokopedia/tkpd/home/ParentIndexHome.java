@@ -226,7 +226,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
             adapter = new PagerAdapter(getSupportFragmentManager());
             mViewPager.setAdapter(adapter);
             mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator));
-//            indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(mViewPager));
             indicator.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                 @Override
                 public void onTabSelected(TabLayout.Tab tab) {

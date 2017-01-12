@@ -1666,7 +1666,7 @@ di Tokopedia Sekarang!</string>
 
     <string name="msg_server_error_2">Terjadi Kendala Pada Server, Silahkan Laporkan</string>
     <string name="filter_description">Silahkan pilih menu di sebelah kiri untuk menemukan produk yang lebih spesifik</string>
-    <string name="msg_filter_invalid_amount">Invalid amount price</string>
+    <string name="msg_filter_invalid_amount">Harga tidak sesuai</string>
     <string name="no_catalog_selected">Tidak ada katalog</string>
     <string name="ibg_report_bug">Laporkan Bug</string>
     <string name="ibg_report_feedback">Kritik dan Saran</string>
