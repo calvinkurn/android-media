@@ -37,18 +37,16 @@ public class  TopPicksAdapter extends
     private TopPicksItemAdapter.OnTitleClickedListener onTitleClickedListener;
     private TopPicksAdapter.OnClickViewAll onClickViewAll;
 
-    public TopPicksAdapter(Context context) {
+    public TopPicksAdapter(Context context, TopPicksItemAdapter.OnItemClickedListener itemListener,
+                           TopPicksItemAdapter.OnTitleClickedListener titleListener,
+                           TopPicksAdapter.OnClickViewAll allListener) {
         this.mContext = context;
         this.dataList = Collections.emptyList();
+        this.onItemClickedListener = itemListener;
+        this.onTitleClickedListener = titleListener;
+        this.onClickViewAll = allListener;
     }
 
-    @SuppressWarnings("unused")
-    public TopPicksAdapter(
-            Context context, ArrayList<Toppick> dataList, int homeMenuWidth) {
-        this.dataList = dataList;
-        this.mContext = context;
-        this.homeMenuWidth = homeMenuWidth;
-    }
 
     @Override
     public TopPicksAdapter.ItemRowHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
@@ -62,11 +60,8 @@ public class  TopPicksAdapter extends
     public void onBindViewHolder(TopPicksAdapter.ItemRowHolder itemRowHolder, int i) {
         final Toppick toppick = dataList.get(i);
         itemRowHolder.itemTitle.setText(toppick.getGroupName());
-        TopPicksItemAdapter itemAdapter = new TopPicksItemAdapter(
-                dataList.get(i),
-                homeMenuWidth);
-        itemAdapter.setItemClickedListener(onItemClickedListener);
-        itemAdapter.setTitleClickedListener(onTitleClickedListener);
+        TopPicksItemAdapter itemAdapter = new TopPicksItemAdapter(dataList.get(i),
+                homeMenuWidth,onItemClickedListener, onTitleClickedListener );
         itemRowHolder.recycler_view_list.setHasFixedSize(true);
         itemRowHolder.recycler_view_list.setLayoutManager(
                 new NonScrollGridLayoutManager(mContext, 2,
@@ -86,30 +81,12 @@ public class  TopPicksAdapter extends
         return  dataList.size();
     }
 
-    public void setOnGimmicClickedListener(
-            TopPicksItemAdapter.OnItemClickedListener onItemClickedListener) {
-        this.onItemClickedListener = onItemClickedListener;
-    }
-
-    public void setOnCategoryClickedListener(
-            TopPicksItemAdapter.OnTitleClickedListener onTitleClickedListener) {
-        this.onTitleClickedListener = onTitleClickedListener;
-    }
-
     public void setDataList(List<Toppick> dataList) {
         this.dataList = dataList;
     }
 
     public void setHomeMenuWidth(int homeMenuWidth) {
         this.homeMenuWidth = homeMenuWidth;
-    }
-
-    public OnClickViewAll getOnClickViewAll() {
-        return onClickViewAll;
-    }
-
-    public void setOnClickViewAll(OnClickViewAll onClickViewAll) {
-        this.onClickViewAll = onClickViewAll;
     }
 
     class ItemRowHolder extends RecyclerView.ViewHolder {

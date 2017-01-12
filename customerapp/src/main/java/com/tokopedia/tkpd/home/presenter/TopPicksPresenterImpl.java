@@ -109,11 +109,11 @@ public class TopPicksPresenterImpl implements TopPicksPresenter, ErrorListener {
                     TopPicksResponse topPicksResponse = new Gson().fromJson(
                             response.body(), TopPicksResponse.class);
 
-
                     if (isTopPickValid(topPicksResponse)) {
                         ArrayList<Toppick> toppicksList = new ArrayList<>();
-                        for (Toppick toppicks : topPicksResponse.getData().getGroups().get(0).getToppicks()) {
-                            toppicks.setGroupName(topPicksResponse.getData().getGroups().get(0).getName());
+                        Group topPickGroup = topPicksResponse.getData().getGroups().get(0);
+                        for (Toppick toppicks : topPickGroup.getToppicks()) {
+                            toppicks.setGroupName(topPickGroup.getName() != null ? topPickGroup.getName() : "Top Picks");
                             toppicksList.add(toppicks);
                         }
                         view.renderTopPicks(toppicksList);

@@ -22,14 +22,19 @@ import com.tokopedia.tkpd.R;
 
 public class TopPicksItemAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    public static final int TOPPICKS_TITLE = 0;
+
     private Toppick toppick;
     private TopPicksItemAdapter.OnItemClickedListener itemClickedListener;
     private TopPicksItemAdapter.OnTitleClickedListener titleClickedListener;
     private final int homeMenuWidth;
 
-    TopPicksItemAdapter(Toppick topPick, int homeMenuWidth) {
+    TopPicksItemAdapter(Toppick topPick, int homeMenuWidth, TopPicksItemAdapter.OnItemClickedListener itemListener,
+                        TopPicksItemAdapter.OnTitleClickedListener titleListener) {
         this.toppick = topPick;
         this.homeMenuWidth = homeMenuWidth;
+        this.itemClickedListener = itemListener;
+        this.titleClickedListener = titleListener;
     }
 
     @Override
@@ -59,7 +64,7 @@ public class TopPicksItemAdapter  extends RecyclerView.Adapter<RecyclerView.View
             topPicksItemRowHolder.sparator.setVisibility(View.VISIBLE);
         }
         switch (getItemViewType(i)) {
-            case 0:
+            case TOPPICKS_TITLE:
                 ImageHandler.LoadImage(topPicksItemRowHolder.itemImage,toppick.getImageUrl());
                 topPicksItemRowHolder.view.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -79,14 +84,6 @@ public class TopPicksItemAdapter  extends RecyclerView.Adapter<RecyclerView.View
                     }
                 });
         }
-    }
-
-    public void setItemClickedListener(OnItemClickedListener itemClickedListener) {
-        this.itemClickedListener = itemClickedListener;
-    }
-
-    public void setTitleClickedListener(OnTitleClickedListener titleClickedListener) {
-        this.titleClickedListener = titleClickedListener;
     }
 
     @Override

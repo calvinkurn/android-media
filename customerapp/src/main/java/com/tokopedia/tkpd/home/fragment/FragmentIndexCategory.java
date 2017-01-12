@@ -114,7 +114,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     Category category;
     private RechargeCategoryPresenter rechargeCategoryPresenter;
     TickerAnnouncementAdapter tickerAdapter;
-    URLParser urlParser;
 
     private HomeCatMenuPresenter homeCatMenuPresenter;
     private TopPicksPresenter topPicksPresenter;
@@ -206,10 +205,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
             }
         });
-
-
     }
-
 
     private void getPromo() {
         category.fetchBanners(onGetPromoListener());
@@ -531,17 +527,10 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     /* TOP PICKS */
     private void initTopPicks() {
         holder.topPicksRecylerview = (RecyclerView) holder.MainView.findViewById(R.id.my_recycler_view_toppicks);
-
         holder.topPicksRecylerview.setHasFixedSize(true);
         holder.topPicksRecylerview.setNestedScrollingEnabled(false);
-
-        topPicksAdapter = new TopPicksAdapter(getContext());
-
+        topPicksAdapter = new TopPicksAdapter(getContext(),this,this,this);
         topPicksAdapter.setHomeMenuWidth(getHomeMenuWidth());
-
-        topPicksAdapter.setOnCategoryClickedListener(this);
-        topPicksAdapter.setOnGimmicClickedListener(this);
-        topPicksAdapter.setOnClickViewAll(this);
         holder.topPicksRecylerview.setLayoutManager(
                 new NonScrollLinearLayoutManager(getActivity(),
                         LinearLayoutManager.VERTICAL,
