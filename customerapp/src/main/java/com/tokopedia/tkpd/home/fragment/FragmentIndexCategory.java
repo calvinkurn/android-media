@@ -437,6 +437,10 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         }
     }
 
+    private boolean isBaseHost(String host) {
+        return (host.equals("www.tokopedia.com") || host.equals("m.tokopedia.com"))
+                ||  host.equals("tokopedia.com");
+    }
 
     private View.OnClickListener onPromoClicked(final String url) {
         return new View.OnClickListener() {
@@ -444,9 +448,9 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             public void onClick(View v) {
                 try {
                     Uri uri = Uri.parse(url);
-                    String[] levels = uri.getHost().split("\\.");
+                    String host = uri.getHost();
                     List<String> linkSegment = uri.getPathSegments();
-                    if (levels.length < 3 && isShop(linkSegment)) {
+                    if (isBaseHost(host) && isShop(linkSegment)) {
                         String shopDomain = linkSegment.get(0);
                         getShopInfo(url,shopDomain);
                     } else {
