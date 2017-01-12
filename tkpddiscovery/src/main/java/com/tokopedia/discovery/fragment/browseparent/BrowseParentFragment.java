@@ -25,6 +25,7 @@ import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.Breadcrumb;
@@ -49,7 +50,9 @@ import com.tokopedia.discovery.view.BrowseProductParentView;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -285,6 +288,10 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     @Override
     public void setupWithViewPager() {
         Log.d(TAG, "setupWithViewPager source " + source);
+        /**
+         * For called first time
+         */
+        sendTabClickGTM();
         tabLayout.setVisibility(View.GONE);
         tabContainer.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
         BrowseProductActivity productActivity = (BrowseProductActivity) getActivity();
@@ -408,11 +415,22 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     }
 
     private void sendTabClickGTM() {
+        Map<String, String> value = new HashMap<>();
+        CommonUtils.dumper("locasearched "+source);
         switch (source) {
+            case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT:
+                value.put("tab","product");
+                TrackingUtils.eventLoca(AppScreen.SCREEN_VIEWED_SEARCH_PAGE,value);
+                UnifyTracking.eventDiscoverySearchCatalog();
+                break;
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP:
                 UnifyTracking.eventDiscoverySearchShop();
+                value.put("tab","shop");
+                TrackingUtils.eventLoca(AppScreen.SCREEN_VIEWED_SEARCH_PAGE,value);
                 break;
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG:
+                value.put("tab","catalog");
+                TrackingUtils.eventLoca(AppScreen.SCREEN_VIEWED_SEARCH_PAGE,value);
                 UnifyTracking.eventDiscoverySearchCatalog();
                 break;
         }

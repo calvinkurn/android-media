@@ -34,6 +34,7 @@ public interface AppEventTracking {
 
     interface Event {
         String HOMEPAGE = "clickHomePage";
+        String CATALOG = "clickKatalog";
         String PRODUCT_DETAIL_PAGE = "clickPDP";
         String ATC = "clickATC";
         String CHECKOUT = "clickCheckout";
@@ -141,6 +142,7 @@ public interface AppEventTracking {
         String OTP = "OTP";
         String TOP_PICKS_HOME = "Toppicks Home";
         String TOP_PICKS = "Toppicks";
+        String CATALOG = "Katalog";
     }
 
     interface Action {

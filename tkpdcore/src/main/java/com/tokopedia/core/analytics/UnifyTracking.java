@@ -943,6 +943,10 @@ public class UnifyTracking extends TrackingUtils {
         getLocaEngine().sendEventLoggedOut(attrs);
     }
 
+    public static void eventViewWishlist(){
+        eventLoca(AppScreen.SCREEN_VIEWED_WISHLIST_PAGE);
+    }
+
     public static void deleteProfileAttrLoca(){
         getLocaEngine().deleteProfileAttribute("profile : last date has product in cart");
     }
@@ -971,6 +975,15 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.TRUECALLER,
                 AppEventTracking.Action.INSTALLED,
                 userId
+        ).getEvent());
+    }
+
+    public static void eventClickCatalog(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CATALOG,
+                AppEventTracking.Category.CATALOG,
+                AppEventTracking.Action.CLICK,
+                label
         ).getEvent());
     }
 }
