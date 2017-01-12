@@ -97,4 +97,11 @@ public class TopAdsDetailGroupPresenterImpl extends TopAdsDetailPresenterImpl im
         dataRequest.setData(dataRequestGroupAd);
         return dataRequest;
     }
+
+    @Override
+    public void unSubscribe() {
+        if (groupAdInteractor != null) {
+            groupAdInteractor.unSubscribe();
+        }
+    }
 }

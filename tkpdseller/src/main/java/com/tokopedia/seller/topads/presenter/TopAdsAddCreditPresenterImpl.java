@@ -39,4 +39,11 @@ public class TopAdsAddCreditPresenterImpl implements TopAdsAddCreditPresenter {
             }
         });
     }
+
+    @Override
+    public void unSubscribe() {
+        if (dashboardTopadsInteractor != null) {
+            dashboardTopadsInteractor.unSubscribe();
+        }
+    }
 }

@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
@@ -19,13 +18,9 @@ import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.model.data.DataDeposit;
 import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.presenter.TopAdsDashboardPresenter;
-import com.tokopedia.seller.topads.view.activity.SetDateActivity;
-import com.tokopedia.seller.topads.view.activity.SetDateFragment;
 import com.tokopedia.seller.topads.view.activity.TopAdsAddCreditActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardFragmentListener;
 import com.tokopedia.seller.topads.view.widget.TopAdsStatisticLabelView;
-
-import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -232,5 +227,11 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
     void goToAddCredit() {
         Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.unSubscribe();
     }
 }

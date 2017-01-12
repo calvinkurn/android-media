@@ -102,4 +102,11 @@ public abstract class TopAdsDashboardPresenterImpl extends TopAdsDatePickerPrese
             }
         });
     }
+
+    @Override
+    public void unSubscribe() {
+        if (dashboardTopadsInteractor != null) {
+            dashboardTopadsInteractor.unSubscribe();
+        }
+    }
 }

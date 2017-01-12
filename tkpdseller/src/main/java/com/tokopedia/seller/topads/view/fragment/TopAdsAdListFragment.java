@@ -258,6 +258,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     @Override
     public void onDestroy() {
         super.onDestroy();
-        presenter.onDestroy();
+        presenter.unSubscribe();
     }
 }

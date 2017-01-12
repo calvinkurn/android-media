@@ -57,7 +57,7 @@ public class TopAdsGroupAdListPresenterImpl extends TopAdsAdListPresenterImpl<Gr
     }
 
     @Override
-    public void onDestroy() {
+    public void unSubscribe() {
         if (groupAdInteractor != null) {
             groupAdInteractor.unSubscribe();
         }

@@ -234,4 +234,10 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.unSubscribe();
+    }
 }

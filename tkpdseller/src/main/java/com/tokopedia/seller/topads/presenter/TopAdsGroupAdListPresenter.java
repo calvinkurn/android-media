@@ -12,5 +12,4 @@ public interface TopAdsGroupAdListPresenter extends TopAdsAdListPresenter<GroupA
 
     void searchAd(Date startDate, Date endDate, String keyword, int status, int page);
 
-    void onDestroy();
 }

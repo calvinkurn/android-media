@@ -98,4 +98,11 @@ public class TopAdsDetailProductPresenterImpl extends TopAdsDetailPresenterImpl 
         return dataRequest;
     }
 
+    @Override
+    public void unSubscribe() {
+        if (productAdInteractor != null) {
+            productAdInteractor.unSubscribe();
+        }
+    }
+
 }

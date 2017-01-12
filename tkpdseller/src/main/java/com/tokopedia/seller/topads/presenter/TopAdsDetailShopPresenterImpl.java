@@ -44,4 +44,12 @@ public class TopAdsDetailShopPresenterImpl extends TopAdsDetailProductPresenterI
             }
         });
     }
+
+    @Override
+    public void unSubscribe() {
+        super.unSubscribe();
+        if (shopAdInteractor != null) {
+            shopAdInteractor.unSubscribe();
+        }
+    }
 }

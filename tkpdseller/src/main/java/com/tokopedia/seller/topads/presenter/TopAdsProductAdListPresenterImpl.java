@@ -60,7 +60,7 @@ public class TopAdsProductAdListPresenterImpl extends TopAdsAdListPresenterImpl<
     }
 
     @Override
-    public void onDestroy() {
+    public void unSubscribe() {
         if (productAdInteractor != null) {
             productAdInteractor.unSubscribe();
         }
