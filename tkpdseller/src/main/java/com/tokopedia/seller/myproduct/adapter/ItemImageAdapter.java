@@ -8,9 +8,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.myproduct.adapter.ItemImageAndText;
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.R2;
 import com.tokopedia.seller.myproduct.fragment.ImageChooserDialog;
 
 import java.util.List;
