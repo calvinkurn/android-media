@@ -69,6 +69,8 @@ public interface DetailResCenterPresenter {
 
     void actionInputAddress(Context context, String addressID);
 
+    void actionInputAddressMigrateVersion(Context context, String addressID);
+
     void actionEditAddress(Context context, String addressId, String ahrefEditAddressURL);
 
     void actionImagePicker();

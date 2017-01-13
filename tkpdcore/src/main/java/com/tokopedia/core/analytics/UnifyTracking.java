@@ -44,6 +44,24 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventHomeTopPicksItem(String action, String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.TOP_PICKS,
+                AppEventTracking.Category.TOP_PICKS_HOME,
+                action,
+                label
+        ).getEvent());
+    }
+
+    public static void eventHomeTopPicksTitle( String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.TOP_PICKS,
+                AppEventTracking.Category.TOP_PICKS_HOME,
+                AppEventTracking.Action.CLICK,
+                label
+        ).getEvent());
+    }
+
     public static void eventNewOrderDetail(){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.NEW_ORDER,
@@ -961,16 +979,16 @@ public class UnifyTracking extends TrackingUtils {
         eventLoca(AppScreen.SCREEN_VIEWED_FAV_STORE);
     }
 
-    public static void eventViewWishlit(){
-        eventLoca(AppScreen.SCREEN_VIEWED_WISHLIST);
-    }
-
     public static void eventViewLoginPage(){
         eventLoca(AppScreen.SCREEN_VIEWED_LOGIN);
     }
 
     public static void eventViewShopTransactionPage(){
         eventLoca(AppScreen.SCREEN_VIEWED_TRANSACTION_SHOP);
+    }
+
+    public static void eventViewWishlist(){
+        eventLoca(AppScreen.SCREEN_VIEWED_WISHLIST_PAGE);
     }
 
     public static void deleteProfileAttrLoca(){
@@ -1011,5 +1029,14 @@ public class UnifyTracking extends TrackingUtils {
                 successResult.getInfo().getProductCatalogName(),
                 attributes
         );
+    }
+
+    public static void eventClickCatalog(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CATALOG,
+                AppEventTracking.Category.CATALOG,
+                AppEventTracking.Action.CLICK,
+                label
+        ).getEvent());
     }
 }

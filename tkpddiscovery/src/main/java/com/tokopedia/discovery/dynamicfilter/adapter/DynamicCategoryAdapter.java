@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.discovery.dynamicfilter.adapter.MultiLevelExpIndListAdapter;
@@ -59,7 +60,8 @@ public class DynamicCategoryAdapter extends MultiLevelExpIndListAdapter {
         parentViewHolder.dynamicParentViewHolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setCheckedView(parentViewHolder, dynamicObject);
+                boolean isChecked = ((CheckBox) view).isChecked();
+                setCheckedView(parentViewHolder, dynamicObject, isChecked);
             }
         });
         if (dynamicFilterView != null) {
@@ -97,7 +99,8 @@ public class DynamicCategoryAdapter extends MultiLevelExpIndListAdapter {
                 parentViewHolder.dynamicParentViewHolderText.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        setCheckedView(parentViewHolder, dynamicObject);
+                        boolean isChecked = !parentViewHolder.dynamicParentViewHolder.isChecked();
+                        setCheckedView(parentViewHolder, dynamicObject, isChecked);
                     }
                 });
             }
@@ -107,14 +110,14 @@ public class DynamicCategoryAdapter extends MultiLevelExpIndListAdapter {
             parentViewHolder.dynamicParentViewHolderText.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    setCheckedView(parentViewHolder, dynamicObject);
+                    boolean isChecked = !parentViewHolder.dynamicParentViewHolder.isChecked();
+                    setCheckedView(parentViewHolder, dynamicObject, isChecked);
                 }
             });
         }
     }
 
-    private void setCheckedView(DynamicViewHolder parentViewHolder, DynamicObject dynamicObject){
-        boolean isChecked = !parentViewHolder.dynamicParentViewHolder.isChecked();
+    private void setCheckedView(DynamicViewHolder parentViewHolder, DynamicObject dynamicObject, boolean isChecked){
         parentViewHolder.dynamicParentViewHolder.setChecked(isChecked);
         dynamicObject.setChecked(isChecked);
         Context context = parentViewHolder.itemView.getContext();

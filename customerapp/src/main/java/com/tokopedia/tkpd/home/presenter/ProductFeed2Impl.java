@@ -463,7 +463,6 @@ public class ProductFeed2Impl implements ProductFeed, DiscoveryListener {
                                     public ProductFeedTransformData call(ProductFeedTransformData productFeedTransformData, GetListFaveShopId getListFaveShopId) {
                                         ArrayList<String> shop_id_list = getListFaveShopId.getData().getShop_id_list();
                                         if (shop_id_list.size() > 0) {
-//                                            productFeedTransformData.setShopId(shop_id_list.get(mPaging.getPage() - 1));
                                             String shopIds = "";
                                             for (int i = 0; i < shop_id_list.size(); i++) {
                                                 if (i < (shop_id_list.size() - 1))
