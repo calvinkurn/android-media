@@ -19,6 +19,8 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.facebook.CallbackManager;
@@ -59,6 +61,7 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -83,6 +86,10 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
     LoginTextView registerButton;
     @BindView(R2.id.login_button)
     TextView loginButton;
+    @BindView(R2.id.container)
+    ScrollView container;
+    @BindView(R2.id.progress_bar)
+    RelativeLayout progressBar;
 
     List<LoginProviderModel.ProvidersBean> listProvider;
     private Snackbar snackbar;
@@ -105,8 +112,6 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View parentView = super.onCreateView(inflater, container, savedInstanceState);
         initView();
-        showProgress(false);
-
         cacheGTM = new LocalCacheHandler(getActivity(), AppEventTracking.GTM_CACHE);
         cacheGTM.putString(AppEventTracking.GTMCacheKey.SESSION_STATE,
                 AppEventTracking.GTMCacheValue.REGISTER);
@@ -192,8 +197,10 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
     }
 
     @Override
-    public void showProgress(boolean show) {
-
+    public void showProgress(boolean isShow) {
+        progressBar.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        container.setVisibility(isShow ? View.GONE : View.VISIBLE);
+        loginButton.setVisibility(isShow ? View.GONE : View.VISIBLE);
     }
 
     @Override
@@ -317,9 +324,15 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
     }
 
     private void onFacebookClick() {
-        showProgress(true);
+        LoginManager.getInstance().logOut();
+        processFacebookLogin();
+        CommonUtils.dumper("LocalTag : TYPE : FACEBOOK");
+        storeCacheGTM(AppEventTracking.GTMCacheKey.REGISTER_TYPE,
+                AppEventTracking.GTMCacheValue.FACEBOOK);
+    }
 
-        List<String> readPermissions = Arrays.asList("public_profile", "user_friends", "email", "user_birthday");
+    private void processFacebookLogin() {
+        List<String> readPermissions = Arrays.asList("public_profile", "email", "user_birthday");
         LoginManager.getInstance().logInWithReadPermissions(this, readPermissions);
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -327,22 +340,27 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
                 Bundle parameters = new Bundle();
                 parameters.putString("fields","id,name,gender,birthday,email");
 
-                GraphRequest request = GraphRequest.newMeRequest(
-                        loginResult.getAccessToken(),
-                        new GraphRequest.GraphJSONObjectCallback() {
-                            @Override
-                            public void onCompleted(
-                                    JSONObject object,
-                                    GraphResponse response) {
-                                FacebookModel facebookModel =
-                                        new GsonBuilder().create().fromJson(String.valueOf(object), FacebookModel.class);
-                                presenter.loginFacebook(getActivity(),facebookModel,loginResult.getAccessToken().getToken());
-//                                LoginManager.getInstance().logOut();
-                            }
-                        });
+                if(loginResult.getAccessToken().getDeclinedPermissions().size()>0){
+                    processFacebookLogin();
 
-                request.setParameters(parameters);
-                request.executeAsync();
+                }else {
+                    GraphRequest request = GraphRequest.newMeRequest(
+                            loginResult.getAccessToken(),
+                            new GraphRequest.GraphJSONObjectCallback() {
+                                @Override
+                                public void onCompleted(
+                                        JSONObject object,
+                                        GraphResponse response) {
+                                    FacebookModel facebookModel =
+                                            new GsonBuilder().create().fromJson(String.valueOf(object), FacebookModel.class);
+                                    presenter.loginFacebook(getActivity(),facebookModel,loginResult.getAccessToken().getToken());
+//                                LoginManager.getInstance().logOut();
+                                }
+                            });
+
+                    request.setParameters(parameters);
+                    request.executeAsync();
+                }
             }
 
             @Override
@@ -356,11 +374,9 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
                 if(e instanceof FacebookAuthorizationException){
                     LoginManager.getInstance().logOut();
                 }
+                SnackbarManager.make(getActivity(), getString(R.string.msg_network_error), Snackbar.LENGTH_LONG).show();
             }
         });
-        CommonUtils.dumper("LocalTag : TYPE : FACEBOOK");
-        storeCacheGTM(AppEventTracking.GTMCacheKey.REGISTER_TYPE,
-                AppEventTracking.GTMCacheValue.FACEBOOK);
     }
 
     @Override
@@ -421,6 +437,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
 
     @Override
     public void onMessageError(int type, Object... data) {
+        showProgress(false);
         snackbar = SnackbarManager.make(getActivity(), (String) data[0], Snackbar.LENGTH_LONG);
         snackbar.show();
     }

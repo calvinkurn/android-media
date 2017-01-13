@@ -39,6 +39,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.facebook.CallbackManager;
+import com.facebook.FacebookAuthorizationException;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
@@ -375,7 +376,13 @@ public class LoginFragment extends Fragment implements LoginView {
     }
 
     public void onFacebookClick() {
-        List<String> readPermissions = Arrays.asList("public_profile", "user_friends", "email", "user_birthday");
+        LoginManager.getInstance().logOut();
+        processFacebookLogin();
+
+    }
+
+    private void processFacebookLogin() {
+        List<String> readPermissions = Arrays.asList("public_profile", "email", "user_birthday");
         LoginManager.getInstance().logInWithReadPermissions(this, readPermissions);
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -383,22 +390,27 @@ public class LoginFragment extends Fragment implements LoginView {
                 Bundle parameters = new Bundle();
                 parameters.putString("fields","id,name,gender,birthday,email");
 
-                GraphRequest request = GraphRequest.newMeRequest(
-                        loginResult.getAccessToken(),
-                        new GraphRequest.GraphJSONObjectCallback() {
-                            @Override
-                            public void onCompleted(
-                                    JSONObject object,
-                                    GraphResponse response) {
-                                FacebookModel facebookModel =
-                                        new GsonBuilder().create().fromJson(String.valueOf(object), FacebookModel.class);
-                                login.loginFacebook(facebookModel,loginResult.getAccessToken().getToken());
-//                                LoginManager.getInstance().logOut();
-                            }
-                        });
+                if(loginResult.getAccessToken().getDeclinedPermissions().size()>0){
+                    processFacebookLogin();
 
-                request.setParameters(parameters);
-                request.executeAsync();
+                }else {
+                    GraphRequest request = GraphRequest.newMeRequest(
+                            loginResult.getAccessToken(),
+                            new GraphRequest.GraphJSONObjectCallback() {
+                                @Override
+                                public void onCompleted(
+                                        JSONObject object,
+                                        GraphResponse response) {
+                                    FacebookModel facebookModel =
+                                            new GsonBuilder().create().fromJson(String.valueOf(object), FacebookModel.class);
+                                    login.loginFacebook(facebookModel,loginResult.getAccessToken().getToken());
+//                                LoginManager.getInstance().logOut();
+                                }
+                            });
+
+                    request.setParameters(parameters);
+                    request.executeAsync();
+                }
             }
 
             @Override
@@ -409,7 +421,10 @@ public class LoginFragment extends Fragment implements LoginView {
 
             @Override
             public void onError(FacebookException e) {
-                e.toString();
+                if(e instanceof FacebookAuthorizationException){
+                    LoginManager.getInstance().logOut();
+                }
+                SnackbarManager.make(getActivity(), getString(R.string.msg_network_error), Snackbar.LENGTH_LONG).show();
             }
         });
     }

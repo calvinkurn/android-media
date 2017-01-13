@@ -26,9 +26,6 @@ import com.tokopedia.session.session.model.LoginModel;
 import org.parceler.Parcels;
 
 import java.lang.reflect.Type;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import static com.tokopedia.core.session.presenter.Login.LOGIN_UUID_KEY;
@@ -148,7 +145,6 @@ public class RegisterInitialPresenterImpl extends RegisterInitialPresenter {
                 break;
 
             case DownloadServiceConstant.MAKE_LOGIN:
-                view.showProgress(false);
                 view.finishActivity();
                 break;
         }
@@ -209,19 +205,15 @@ public class RegisterInitialPresenterImpl extends RegisterInitialPresenter {
             bundle.putParcelable(DownloadService.LOGIN_FACEBOOK_MODEL_KEY, Parcels.wrap(loginFacebookViewModel));
             bundle.putBoolean(DownloadService.IS_NEED_LOGIN, false);
 
-
+            view.showProgress(true);
             ((SessionView) context).sendDataFromInternet(DownloadService.REGISTER_FACEBOOK
                     , bundle);
         }
-        // dismiss progress
-        view.showProgress(false);
     }
 
     @Override
     public void startLoginWithGoogle(Context context,String type, LoginGoogleModel loginGoogleModel) {
         if(type != null && type.equals(LoginModel.GoogleType) && loginGoogleModel != null){
-            // dismiss progress
-            view.showProgress(false);
             RegisterViewModel registerViewModel = new RegisterViewModel();
 
             // update data and UI
@@ -250,6 +242,7 @@ public class RegisterInitialPresenterImpl extends RegisterInitialPresenter {
             bundle.putParcelable(DownloadService.LOGIN_GOOGLE_MODEL_KEY, Parcels.wrap(loginGoogleModel));
             bundle.putBoolean(DownloadService.IS_NEED_LOGIN, false);
 
+            view.showProgress(true);
             ((SessionView)context).sendDataFromInternet(DownloadService.REGISTER_GOOGLE, bundle);
         }
     }
@@ -259,6 +252,7 @@ public class RegisterInitialPresenterImpl extends RegisterInitialPresenter {
         Bundle bundle = data;
         bundle.putBoolean(DownloadService.IS_NEED_LOGIN, false);
 
+        view.showProgress(true);
         ((SessionView)context).sendDataFromInternet(DownloadService.LOGIN_WEBVIEW, bundle);
     }
 

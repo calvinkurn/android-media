@@ -378,7 +378,6 @@ public class LoginImpl implements Login {
     public void setData(int type, Bundle data) {
         switch (type) {
             case DownloadServiceConstant.MAKE_LOGIN:
-                loginView.showProgress(false);
                 // if need to move to security
                 if (data.getBoolean(DownloadService.LOGIN_MOVE_SECURITY, false)) {// move to security
                     SecurityModel loginSecurityModel = data.getParcelable(DownloadService.LOGIN_SECURITY_QUESTION_DATA);
