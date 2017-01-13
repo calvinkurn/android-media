@@ -171,6 +171,7 @@ public interface AppEventTracking {
         String INSTALLED = "Installed";
         String SUBSCRIBE = "Subscribe";
         String ERROR = "Error";
+        String SUCCESS = "Success";
     }
 
     interface EventLabel {
@@ -242,6 +243,7 @@ public interface AppEventTracking {
         String SHOP_ETALASE = "Shop Etalase";
         String SHOP_NOTES = "Shop Notes";
         String SHOP_LOCATION = "Shop Location";
+        String SHOP_CREATED = "Shop Created";
 
         String DELETE = "Delete";
         String ADD = "Add";

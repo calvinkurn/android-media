@@ -259,6 +259,15 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventCreateShopSuccess(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CREATE_SHOP,
+                AppEventTracking.Category.CREATE_SHOP,
+                AppEventTracking.Action.SUCCESS,
+                AppEventTracking.EventLabel.SHOP_CREATED
+        ).getEvent());
+    }
+
     public static void eventResolutionSendSuccess(){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.RESOLUTION_CENTER,
