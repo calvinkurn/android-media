@@ -1,5 +1,8 @@
 package com.tokopedia.transaction.exception;
 
+import com.tokopedia.core.network.retrofit.response.ResponseStatus;
+import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+
 import java.io.IOException;
 
 /**
@@ -9,19 +12,29 @@ import java.io.IOException;
 public class HttpErrorException extends IOException {
 
     private static final long serialVersionUID = -6934568265822386135L;
-
-    public HttpErrorException() {
-    }
+    private final int errorCode;
 
     public HttpErrorException(int errorCode) {
-        super("HTTP Error ==> Error code : " + errorCode);
+        this.errorCode = errorCode;
     }
 
-    public HttpErrorException(int errorCode, String detailMessage) {
-        super("HTTP Error ==> Error code : " + errorCode + "\n" + detailMessage);
-    }
-
-    public HttpErrorException(String detailMessage) {
-        super(detailMessage);
+    @Override
+    public String getMessage() {
+        switch (errorCode) {
+            case ResponseStatus.SC_REQUEST_TIMEOUT:
+                return ErrorNetMessage.MESSAGE_ERROR_TIMEOUT;
+            case ResponseStatus.SC_GATEWAY_TIMEOUT:
+                return ErrorNetMessage.MESSAGE_ERROR_TIMEOUT;
+            case ResponseStatus.SC_INTERNAL_SERVER_ERROR:
+                return ErrorNetMessage.MESSAGE_ERROR_SERVER;
+            case ResponseStatus.SC_FORBIDDEN:
+                return ErrorNetMessage.MESSAGE_ERROR_FORBIDDEN;
+            case ResponseStatus.SC_BAD_GATEWAY:
+                return ErrorNetMessage.MESSAGE_ERROR_TIMEOUT;
+            case ResponseStatus.SC_BAD_REQUEST:
+                return ErrorNetMessage.MESSAGE_ERROR_TIMEOUT;
+            default:
+                return ErrorNetMessage.MESSAGE_ERROR_DEFAULT;
+        }
     }
 }
