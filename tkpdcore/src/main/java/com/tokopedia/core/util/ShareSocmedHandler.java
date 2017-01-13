@@ -18,10 +18,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
-import com.sromku.simple.fb.SimpleFacebook;
-import com.sromku.simple.fb.entities.Feed;
-import com.sromku.simple.fb.listeners.OnPublishListener;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.myproduct.fragment.AddProductFragment;
@@ -60,33 +56,32 @@ public class ShareSocmedHandler {
     private Activity activity;
     private String url = null;
     private FacebookInterface fbinterface;
-    private SimpleFacebook mSimpleFacebook;
-    private OnPublishListener onPublishListener = new OnPublishListener() {
-
-        @Override
-        public void onFail(String reason) {
-            // insure that you are logged in before publishing
-            fbinterface.onShareFailed();
-        }
-
-        @Override
-        public void onException(Throwable throwable) {
-            CommonUtils.dumper("hangman sharefb exception " + throwable.toString());
-            fbinterface.onShareFailed();
-        }
-
-        @Override
-        public void onThinking() {
-
-        }
-
-        @Override
-        public void onComplete(String postId) {
-            CommonUtils.dumper("SUCCESS!" + postId);
-            fbinterface.onShareComplete();
-        }
-    };
-
+//    private OnPublishListener onPublishListener = new OnPublishListener() {
+//
+//        @Override
+//        public void onFail(String reason) {
+//            // insure that you are logged in before publishing
+//            fbinterface.onShareFailed();
+//        }
+//
+//        @Override
+//        public void onException(Throwable throwable) {
+//            CommonUtils.dumper("hangman sharefb exception " + throwable.toString());
+//            fbinterface.onShareFailed();
+//        }
+//
+//        @Override
+//        public void onThinking() {
+//
+//        }
+//
+//        @Override
+//        public void onComplete(String postId) {
+//            CommonUtils.dumper("SUCCESS!" + postId);
+//            fbinterface.onShareComplete();
+//        }
+//    };
+//
 
     public interface FacebookInterface {
         public void onShareComplete();
@@ -618,24 +613,24 @@ public class ShareSocmedHandler {
         fbinterface = (FacebookInterface) activity;
     }
 
-    public ShareSocmedHandler(String url, Activity activity, SimpleFacebook mSimpleFacebook) {
-        this.activity = activity;
-        this.url = url;
-        fbinterface = (FacebookInterface) activity;
-        this.mSimpleFacebook = mSimpleFacebook;
-    }
+//    public ShareSocmedHandler(String url, Activity activity, SimpleFacebook mSimpleFacebook) {
+//        this.activity = activity;
+//        this.url = url;
+//        fbinterface = (FacebookInterface) activity;
+//        this.mSimpleFacebook = mSimpleFacebook;
+//    }
 
     public void publishStory(String name, String desc, String picture, String url) {
-        Feed feed = new Feed.Builder()
-                .setName(name)
-                .setCaption("www.tokopedia.com")
-                .setDescription(desc)
-                .setPicture(picture)
-                .setLink(url)
-                .build();
-
-        // publish the feed
-        mSimpleFacebook.publish(feed, onPublishListener);
+//        Feed feed = new Feed.Builder()
+//                .setName(name)
+//                .setCaption("www.tokopedia.com")
+//                .setDescription(desc)
+//                .setPicture(picture)
+//                .setLink(url)
+//                .build();
+//
+//        // publish the feed
+//        mSimpleFacebook.publish(feed, onPublishListener);
     }
 
 	/*public void publishStory() {

@@ -20,10 +20,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
+import com.facebook.login.LoginManager;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
-import com.sromku.simple.fb.SimpleFacebook;
-import com.sromku.simple.fb.listeners.OnLogoutListener;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -106,7 +105,6 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     Session session;
     FragmentManager supportFragmentManager;
     Toolbar toolbar;
-    SimpleFacebook simplefacebook;
     DownloadResultReceiver mReceiver;
     LoginResultReceiver loginReceiver;
     RegisterResultReceiver registerReceiver;
@@ -138,13 +136,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                     // block where back has been pressed. since backstack is zero.
                     SessionHandler.clearUserData(Login.this);// because user is back that reset all data
                     SessionHandler.deleteRegisterNext(Login.this);
-                    Login.this.simplefacebook.logout(new OnLogoutListener() {
-                        @Override
-                        public void onLogout() {
-                            Log.i(TAG, "logout facebook");
-                        }
-                    });
-//                    finish();
+                    LoginManager.getInstance().logOut();
                     destroy();
                 } else {
                     Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.login_fragment);
@@ -163,7 +155,6 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         getSupportActionBar().setHomeButtonEnabled(true);
 
         initListener(this);
-        simplefacebook = SimpleFacebook.getInstance(this);
 
          /* Starting Download Service */
         mReceiver = new DownloadResultReceiver(new Handler());
@@ -389,7 +380,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         try {
-            simplefacebook.onActivityResult(requestCode, resultCode, data);
+//            simplefacebook.onActivityResult(requestCode, resultCode, data);
         } catch (NullPointerException e) {
             e.printStackTrace();
             CommonUtils.UniversalToast(MainApplication.getAppContext(), MainApplication.getAppContext().getString(R.string.try_again));

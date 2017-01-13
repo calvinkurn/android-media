@@ -7,15 +7,7 @@ import android.util.Log;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.sromku.simple.fb.Permission;
-import com.sromku.simple.fb.SimpleFacebook;
-import com.sromku.simple.fb.entities.Profile;
-import com.sromku.simple.fb.listeners.OnLoginListener;
-import com.sromku.simple.fb.listeners.OnLogoutListener;
-import com.sromku.simple.fb.listeners.OnNewPermissionsListener;
-import com.sromku.simple.fb.listeners.OnProfileListener;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -23,20 +15,21 @@ import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.constant.DownloadServiceConstant;
-import com.tokopedia.core.session.presenter.Login;
-import com.tokopedia.core.session.presenter.SessionView;
-import com.tokopedia.session.session.interactor.LoginInteractor;
-import com.tokopedia.session.session.interactor.LoginInteractorImpl;
 import com.tokopedia.core.session.model.CreatePasswordModel;
+import com.tokopedia.core.session.model.FacebookModel;
 import com.tokopedia.core.session.model.InfoModel;
-import com.tokopedia.session.session.model.LoginEmailModel;
 import com.tokopedia.core.session.model.LoginFacebookViewModel;
 import com.tokopedia.core.session.model.LoginGoogleModel;
-import com.tokopedia.session.session.model.LoginModel;
 import com.tokopedia.core.session.model.LoginProviderModel;
 import com.tokopedia.core.session.model.LoginViewModel;
 import com.tokopedia.core.session.model.SecurityModel;
+import com.tokopedia.core.session.presenter.Login;
+import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.session.session.interactor.LoginInteractor;
+import com.tokopedia.session.session.interactor.LoginInteractorImpl;
+import com.tokopedia.session.session.model.LoginEmailModel;
+import com.tokopedia.session.session.model.LoginModel;
 
 import org.json.JSONObject;
 import org.parceler.Parcels;
@@ -70,8 +63,6 @@ public class LoginImpl implements Login {
     Context mContext;
 
     ArrayList<String> LoginIdList;
-
-    private SimpleFacebook simpleFacebook;
 
     public LoginImpl(LoginView view) {
         loginView = view;
@@ -157,6 +148,7 @@ public class LoginImpl implements Login {
                         AppEventTracking.Action.REGISTER,
                         AppEventTracking.EventLabel.REGISTER);
     }
+
     @Override
     public void sendCTAAction() {
         Nishikino.init(mContext).startAnalytics()
@@ -166,6 +158,7 @@ public class LoginImpl implements Login {
                         AppEventTracking.Action.CLICK,
                         AppEventTracking.EventLabel.CTA);
     }
+
     @Override
     public void sendGTMLoginError(String label) {
         Nishikino.init(mContext).startAnalytics()
@@ -175,8 +168,8 @@ public class LoginImpl implements Login {
                         AppEventTracking.Action.LOGIN_ERROR,
                         label);
     }
-    
-    
+
+
     public void downloadProviderLogin() {
         facade.downloadProvider(loginView.getActivity(), new LoginInteractor.DiscoverLoginListener() {
             @Override
@@ -246,7 +239,7 @@ public class LoginImpl implements Login {
         Bundle bundle;
         switch (action) {
             case LoginModel.EmailType:
-                getToken(action,(LoginViewModel)data[0]);
+                getToken(action, (LoginViewModel) data[0]);
                 break;
             case LoginModel.GoogleType:
                 LoginGoogleModel loginGoogleModel = (LoginGoogleModel) data[0];
@@ -356,121 +349,16 @@ public class LoginImpl implements Login {
     }
 
     @Override
-    public void loginFacebook() {
-        simpleFacebook = simpleFacebook.getInstance();
-        Log.d("steven isLogin?", String.valueOf(simpleFacebook.isLogin()));
-        if (simpleFacebook.isLogin()) {
-            simpleFacebook.logout(new OnLogoutListener() {
-                @Override
-                public void onLogout() {
-                    Log.d("steven logout", "you are logged out");
-                }
-            });
-        }
-        Permission[] permissions = new Permission[]{
-                Permission.EMAIL,
-        };
+    public void loginFacebook(FacebookModel facebookModel, String token) {
+        LoginFacebookViewModel loginFacebookViewModel = new LoginFacebookViewModel();
+        loginFacebookViewModel.setFullName(facebookModel.getName());
+        loginFacebookViewModel.setGender(facebookModel.getGender());
+        loginFacebookViewModel.setBirthday(facebookModel.getBirthdayConverted());
+        loginFacebookViewModel.setFbToken(token);
+        loginFacebookViewModel.setFbId(facebookModel.getId());
+        loginFacebookViewModel.setEmail(facebookModel.getEmail());
 
-        OnNewPermissionsListener onNewPermissionsListener = new OnNewPermissionsListener() {
-            @Override
-            public void onSuccess(String accessToken, List<Permission> acceptedPermissions, List<Permission> declinedPermissions) {
-                Log.d("steven permissions succ", acceptedPermissions.toString());
-                askToLogin();
-            }
-
-            @Override
-            public void onCancel() {
-                Log.d("steven permissions canc", "you are out");
-                loginView.showProgress(false);
-            }
-
-            @Override
-            public void onException(Throwable throwable) {
-                Log.d("steven permissions excn", throwable.toString());
-                loginView.showError(mContext.getString(R.string.msg_network_error));
-            }
-
-            @Override
-            public void onFail(String reason) {
-                Log.d("steven permissions fail", reason);
-            }
-        };
-
-        simpleFacebook.requestNewPermissions(permissions, onNewPermissionsListener);
-    }
-
-    private void askToLogin() {
-        simpleFacebook.login(new OnLoginListener() {
-            @Override
-            public void onLogin(String accessToken, List<Permission> acceptedPermissions, List<Permission> declinedPermissions) {
-                Profile.Properties properties = new Profile.Properties.Builder()
-                        .add(Profile.Properties.ID)
-                        .add(Profile.Properties.FIRST_NAME)
-                        .add(Profile.Properties.GENDER)
-                        .add(Profile.Properties.EMAIL)
-                        .build();
-                simpleFacebook.getProfile(properties, new OnProfileListener() {
-                    @Override
-                    public void onComplete(Profile response) {
-                        Log.e(TAG, messageTAG + " start login to facebook !!");
-                        super.onComplete(response);
-                        LoginFacebookViewModel loginFacebookViewModel = new LoginFacebookViewModel();
-                        loginFacebookViewModel.setFullName(response.getFirstName());// 10
-                        loginFacebookViewModel.setGender(response.getGender());// 7
-                        setBirthday(loginFacebookViewModel, response.getBirthday());// 2
-                        loginFacebookViewModel.setFbToken(simpleFacebook.getAccessToken().getToken());// 6
-                        loginFacebookViewModel.setFbId(response.getId());// 8
-                        loginFacebookViewModel.setEmail(response.getEmail());// 5
-                        loginFacebookViewModel.setEducation(response.getEducation() + "");// 4
-                        loginFacebookViewModel.setInterest(response.getRelationshipStatus());// 9
-                        loginFacebookViewModel.setWork(response.getWork() + "");
-
-                        sendDataFromInternet(LoginModel.FacebookType, loginFacebookViewModel);
-                    }
-
-                    @Override
-                    public void onException(Throwable throwable) {
-                        super.onException(throwable);
-                        Log.e(TAG, messageTAG + " login facebook : " + throwable.getLocalizedMessage());
-                    }
-
-                    @Override
-                    public void onFail(String reason) {
-                        super.onFail(reason);
-                        Log.e(TAG, messageTAG + " login facebook : " + reason);
-                    }
-                });
-            }
-
-            @Override
-            public void onCancel() {
-                loginView.showProgress(false);
-            }
-
-            @Override
-            public void onException(Throwable throwable) {
-                Log.e(TAG, messageTAG + " login facebook : " + throwable.getLocalizedMessage());
-                loginView.showError(mContext.getString(R.string.msg_network_error));
-            }
-
-            @Override
-            public void onFail(String s) {
-                Log.e(TAG, messageTAG + " login facebook : " + s);
-            }
-        });
-    }
-
-
-    private void setBirthday(LoginFacebookViewModel loginFacebookViewModel, String birthday) {
-        DateFormat inputFormat = new SimpleDateFormat("MM/dd/yyyy");
-        DateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy");
-        Date date = null;
-        try {
-            date = inputFormat.parse(birthday);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (date != null) loginFacebookViewModel.setBirthday(outputFormat.format(date));
+        sendDataFromInternet(LoginModel.FacebookType, loginFacebookViewModel);
     }
 
     @Override
@@ -490,7 +378,6 @@ public class LoginImpl implements Login {
     public void setData(int type, Bundle data) {
         switch (type) {
             case DownloadServiceConstant.MAKE_LOGIN:
-                loginView.showProgress(false);
                 // if need to move to security
                 if (data.getBoolean(DownloadService.LOGIN_MOVE_SECURITY, false)) {// move to security
                     SecurityModel loginSecurityModel = data.getParcelable(DownloadService.LOGIN_SECURITY_QUESTION_DATA);
@@ -541,7 +428,6 @@ public class LoginImpl implements Login {
         boolean isNeedLogin = true;
         loginViewModel = data;// override the instance here
         loginViewModel.setUuid(getUUID());// store uuid
-
 
         Bundle bundle = new Bundle();
         bundle.putParcelable(DownloadService.LOGIN_VIEW_MODEL_KEY, Parcels.wrap(loginViewModel));

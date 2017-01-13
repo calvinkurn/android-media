@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.tokopedia.core.session.base.BaseImpl;
+import com.tokopedia.core.session.model.FacebookModel;
 import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.core.session.model.LoginProviderModel;
 
@@ -24,7 +25,7 @@ public abstract class RegisterInitialPresenter extends BaseImpl<RegisterInitialV
 
     public abstract void loginWebView(Context activity, Bundle bundle);
 
-    public abstract void loginFacebook(Context activity);
+    public abstract void loginFacebook(Context activity, FacebookModel facebookModel, String token);
 
     public abstract void downloadProviderLogin(Context context);
 
@@ -33,7 +34,6 @@ public abstract class RegisterInitialPresenter extends BaseImpl<RegisterInitialV
     public abstract void storeCacheGTM(String registerType, String name);
 
     public abstract void setData(Context activity, int type, Bundle data);
-
 
     public abstract void unSubscribeFacade();
 }

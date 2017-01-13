@@ -7,24 +7,23 @@ import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
 
-import com.sromku.simple.fb.SimpleFacebook;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.constant.DownloadServiceConstant;
-import com.tokopedia.core.session.presenter.SessionView;
-import com.tokopedia.session.session.interactor.RegisterInteractor;
-import com.tokopedia.session.session.interactor.RegisterInteractorImpl;
 import com.tokopedia.core.session.model.CreatePasswordModel;
 import com.tokopedia.core.session.model.InfoModel;
 import com.tokopedia.core.session.model.LoginFacebookViewModel;
 import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.core.session.model.RegisterViewModel;
+import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.session.session.interactor.RegisterInteractor;
+import com.tokopedia.session.session.interactor.RegisterInteractorImpl;
 import com.tokopedia.session.session.service.RegisterService;
-import com.tokopedia.core.analytics.AppEventTracking;
 
 import org.parceler.Parcels;
 
@@ -39,7 +38,6 @@ import java.util.Map;
 public class RegisterNewImpl extends RegisterNew implements TextWatcher{
     RegisterService registerService;
     RegisterViewModel registerViewModel;
-    SimpleFacebook simpleFacebook;
     LocalCacheHandler loginUuid;
     LocalCacheHandler providerListCache;
     RegisterInteractor facade;
