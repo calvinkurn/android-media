@@ -140,7 +140,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     protected boolean isRetainInstance() {
-        return false;
+        return true;
     }
 
     @Override
@@ -607,6 +607,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void onDestroy() {
         super.onDestroy();
+        presenter.unSubscribeObservable();
         getActivity().unregisterReceiver(topPayBroadcastReceiver);
     }
 

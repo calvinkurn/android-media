@@ -32,4 +32,6 @@ public interface ICartPresenter {
 
     void processValidationCheckoutData();
 
+    void unSubscribeObservable();
+
 }

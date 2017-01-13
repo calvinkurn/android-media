@@ -378,6 +378,11 @@ public class CartPresenter implements ICartPresenter {
         }
     }
 
+    @Override
+    public void unSubscribeObservable() {
+        cartDataInteractor.unSubscribeObservable();
+    }
+
     @NonNull
     private Map<String, String> generateDropShipperParam(List<String> dropShipperNameList,
                                                          List<String> dropShipperPhoneList,
