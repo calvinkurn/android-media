@@ -335,9 +335,6 @@ public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> impl
                 view.stopLoading();
                 presenter.processRedirectUrlContainsTopPayCallbackUrl(url);
                 return true;
-            } else if (url.contains(topPayParameterData.getRedirectUrl())) {
-                presenter.processRedirectUrlContainsTopPayRedirectUrl(url);
-                return true;
             } else if (url.contains(CONTAINS_ACCOUNT_URL)) {
                 view.stopLoading();
                 presenter.processRedirectUrlContainsAccountUrl(url);
