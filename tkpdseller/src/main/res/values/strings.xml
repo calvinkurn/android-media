@@ -133,4 +133,19 @@
         <item>Nov</item>
         <item>Des</item>
     </string-array>
+
+    <!-- Top Ads Statistic-->
+    <string name="label_title_show_statistics_topads">Tampil</string>
+    <string name="label_title_klik_statistics_topads">Klik</string>
+    <string name="label_title_ctr_statistics_topads">CTR</string>
+    <string name="label_title_convertion_statistics_topads">Konversi</string>
+    <string name="label_title_average_statistics_topads">Rata-Rata</string>
+    <string name="label_title_used_statistics_topads">Terpakai</string>
+    <string name="title_graph_impr_statistic_topads">Jumlah orang yang melihat promo anda.</string>
+    <string name="title_graph_avg_statistic_topads">Biaya rata-rata yang anda bayarkan untuk setiap klik.</string>
+    <string name="title_graph_convertion_statistic_topads">Jumlah favorit / transaksi dari promo anda.</string>
+    <string name="title_graph_ctr_statistic_topads">Perbandingan orang yang melihat promo anda dengan jumlah klik pada promo tersebut.</string>
+    <string name="title_graph_klik_statistic_topads">Jumlah klik pada promo anda.</string>
+    <string name="title_graph_spent_statistic_topads">Jumlah anggaran yang telah terpakai untuk promosi ini.</string>
+    <string name="title_activity_statistic">Overview</string>
 </resources>

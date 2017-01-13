@@ -11,6 +11,8 @@ import com.tokopedia.seller.topads.model.data.TotalAd;
 import com.tokopedia.seller.topads.presenter.TopAdsDashboardProductPresenterImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsGroupAdListActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsProductAdListActivity;
+import com.tokopedia.seller.topads.view.activity.TopAdsStatisticActivity;
+import com.tokopedia.seller.topads.view.activity.TopAdsStatisticProductActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardProductFragmentListener;
 import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 
@@ -54,6 +56,11 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
         totalProductAd = Integer.MIN_VALUE;
     }
 
+    @Override
+    protected void setViewListener() {
+        super.setViewListener();
+    }
+
     protected void loadData() {
         super.loadData();
         presenter.populateTotalAd();
@@ -85,5 +92,10 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
     void onProductItemClicked() {
         Intent intent = new Intent(getActivity(), TopAdsProductAdListActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    protected Class<?> getClassIntentStatistic() {
+        return TopAdsStatisticProductActivity.class;
     }
 }

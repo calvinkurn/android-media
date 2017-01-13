@@ -12,6 +12,7 @@ import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.model.data.ProductAd;
 import com.tokopedia.seller.topads.model.data.ShopAd;
 import com.tokopedia.seller.topads.presenter.TopAdsDashboardShopPresenterImpl;
+import com.tokopedia.seller.topads.view.activity.TopAdsStatisticShopActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailShopActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardStoreFragmentListener;
@@ -106,6 +107,11 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
     public void onLoadAdShopError() {
         showNetworkError();
         hideLoading();
+    }
+
+    @Override
+    protected Class<?> getClassIntentStatistic() {
+        return TopAdsStatisticShopActivity.class;
     }
 
     @OnClick(R2.id.layout_shop_ad)

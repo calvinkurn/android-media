@@ -1,5 +1,7 @@
 package com.tokopedia.seller.topads.constant;
 
+import com.tokopedia.seller.topads.model.request.StatisticRequest;
+
 /**
  * Created by Nathaniel on 11/15/2016.
  */
@@ -39,4 +41,7 @@ public class TopAdsNetworkConstant {
     public static final String ACTION_BULK_OFF_AD = "toggle_off";
     public static final String ACTION_BULK_ON_AD = "toggle_on";
     public static final String ACTION_BULK_MOVE_AD = "move_group";
+
+    public static final int TYPE_PRODUCT_STAT = 1;
+    public static final int TYPE_PRODUCT_SHOP = 2;
 }

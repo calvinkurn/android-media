@@ -15,10 +15,12 @@ import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
+import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.model.data.DataDeposit;
 import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.presenter.TopAdsDashboardPresenter;
 import com.tokopedia.seller.topads.view.activity.TopAdsAddCreditActivity;
+import com.tokopedia.seller.topads.view.activity.TopAdsStatisticProductActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardFragmentListener;
 import com.tokopedia.seller.topads.view.widget.TopAdsStatisticLabelView;
 
@@ -189,37 +191,51 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
 
     @OnClick(R2.id.statistic_label_view_impression)
     void onStaticImpressionClicked() {
-        Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
+        Intent intent = new Intent(getActivity(), getClassIntentStatistic());
+        Bundle bundle = new Bundle();
+        bundle.putInt(TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_KEY, TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_IMPR);
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 
     @OnClick(R2.id.statistic_label_view_click)
     void onStatisticClickClicked() {
-        Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
+        Intent intent = new Intent(getActivity(), getClassIntentStatistic());
+        Bundle bundle = new Bundle();
+        bundle.putInt(TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_KEY, TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_CLICK);
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 
     @OnClick(R2.id.statistic_label_view_ctr)
     void onStatisticImpressionClicked() {
-        Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
+        Intent intent = new Intent(getActivity(), getClassIntentStatistic());Bundle bundle = new Bundle();
+        bundle.putInt(TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_KEY, TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_CTR);
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 
     @OnClick(R2.id.statistic_label_view_conversion)
     void onStatisticConversionClicked() {
-        Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
+        Intent intent = new Intent(getActivity(), getClassIntentStatistic());Bundle bundle = new Bundle();
+        bundle.putInt(TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_KEY, TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_CONVERTION);
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 
     @OnClick(R2.id.statistic_label_view_average)
     void onStatisticAverageClicked() {
-        Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
+        Intent intent = new Intent(getActivity(), getClassIntentStatistic());Bundle bundle = new Bundle();
+        bundle.putInt(TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_KEY, TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_AVG);
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 
     @OnClick(R2.id.statistic_label_view_cost)
     void onStatisticCostClicked() {
-        Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
+        Intent intent = new Intent(getActivity(), getClassIntentStatistic());Bundle bundle = new Bundle();
+        bundle.putInt(TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_KEY, TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_SPENT);
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 
@@ -228,6 +244,8 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
         Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
         startActivity(intent);
     }
+
+    protected abstract Class<?> getClassIntentStatistic();
 
     @Override
     public void onDestroy() {
