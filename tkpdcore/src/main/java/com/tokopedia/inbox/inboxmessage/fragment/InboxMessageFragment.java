@@ -463,6 +463,7 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
             inboxMode = ((AppCompatActivity) getActivity()).startSupportActionMode(moveInboxMode);
 
         if (inboxMode != null) {
+            inboxMode.invalidate();
             if (adapter.getSelected() == 0) {
                 inboxMode.finish();
             }

@@ -454,10 +454,10 @@ public class InboxMessageAdapter extends BaseLinearRecyclerViewAdapter
 
         for (InboxMessageItem inboxMessageItem : listMove) {
             if (inboxMessageItem.getMessageReadStatus() == STATE_READ)
-                statusRead = STATE_READ;
+                statusRead = 1;
 
             if (inboxMessageItem.getMessageReadStatus() == STATE_NOT_READ) {
-                statusUnread = STATE_NOT_READ;
+                statusUnread = 1;
             }
 
         }
