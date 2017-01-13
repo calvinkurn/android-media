@@ -1,6 +1,7 @@
 package com.tokopedia.core.network.apiservices.accounts.apis;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.retrofit.response.GeneratedHost;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 
 import java.util.Map;
@@ -56,4 +57,8 @@ public interface AccountsApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.RESENT_ACTIVATION)
     Observable<Response<TkpdResponse>> resentActivation(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.GENERATE_HOST)
+    Observable<GeneratedHost> generateHost(@FieldMap Map<String, String> params);
 }

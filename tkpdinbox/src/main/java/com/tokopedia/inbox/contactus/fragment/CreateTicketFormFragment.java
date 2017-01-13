@@ -12,14 +12,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
@@ -30,10 +28,11 @@ import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.contactus.ContactUsConstant;
 import com.tokopedia.inbox.contactus.adapter.ImageUploadAdapter;
 import com.tokopedia.inbox.contactus.listener.CreateTicketFormFragmentView;
-import com.tokopedia.inbox.contactus.model.contactusform.TicketFormData;
+import com.tokopedia.inbox.contactus.model.solution.SolutionResult;
 import com.tokopedia.inbox.contactus.presenter.CreateTicketFormFragmentPresenter;
 import com.tokopedia.inbox.contactus.presenter.CreateTicketFormFragmentPresenterImpl;
 import com.tokopedia.core.inboxreputation.model.ImageUpload;
@@ -64,29 +63,35 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
         void onFinishCreateTicket();
     }
 
-    @BindView(R2.id.category_list)
-    LinearLayout categoryPathList;
-
     @BindView(R2.id.main_category)
-    TextView mainCategory;
-
-    @BindView(R2.id.invoice)
-    EditText invoice;
+    EditText mainCategory;
 
     @BindView(R2.id.detail)
     EditText detail;
 
-    @BindView(R2.id.invoice_text)
-    View invoiceText;
-
-    @BindView(R2.id.attachment_text)
-    View attachmentText;
+    @BindView(R2.id.attachment_note)
+    TextView attachmentNote;
 
     @BindView(R2.id.main)
     View mainView;
 
     @BindView(R2.id.attachment)
     RecyclerView attachment;
+
+    @BindView(R2.id.phone_number)
+    EditText phoneNumber;
+
+    @BindView(R2.id.name)
+    EditText name;
+
+    @BindView(R2.id.email)
+    EditText email;
+
+    @BindView(R2.id.name_text)
+    TextView nameTitle;
+
+    @BindView(R2.id.email_text)
+    TextView emailTitle;
 
     ImageUploadAdapter imageAdapter;
     TkpdProgressDialog progressDialog;
@@ -108,7 +113,6 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
 
     @Override
     protected void onFirstTimeLaunched() {
-        categoryPathList.removeAllViews();
         presenter.initForm();
     }
 
@@ -129,6 +133,7 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
         inflater.inflate(R.menu.talk_add_new, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -139,11 +144,6 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
             KeyboardHandler.DropKeyboard(getActivity(), getView());
         presenter.sendTicket();
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected String getScreenName() {
-        return null;
     }
 
     @Override
@@ -168,6 +168,12 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
 
     @Override
     protected void initView(View view) {
+        if(SessionHandler.isV4Login(getActivity())){
+            nameTitle.setVisibility(View.GONE);
+            name.setVisibility(View.GONE);
+            email.setVisibility(View.GONE);
+            emailTitle.setVisibility(View.GONE);
+        }
         imageAdapter = ImageUploadAdapter.createAdapter(getActivity());
         imageAdapter.setCanUpload(true);
 
@@ -230,7 +236,7 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
         dialog.show();
     }
 
-    @NeedsPermission({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     public void actionCamera() {
         imageUploadHandler.actionCamera();
     }
@@ -269,23 +275,22 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
     }
 
     @Override
-    public void setResult(TicketFormData ticketFormData) {
+    public void setResult(SolutionResult solutionResult) {
+        setHasOptionsMenu(true);
         mainView.setVisibility(View.VISIBLE);
-        setCategoryPath();
-        if (ticketFormData.getTicketCategoryInvoiceStatus().equals("0")) {
-            invoiceText.setVisibility(View.GONE);
-            invoice.setVisibility(View.GONE);
-        }
-        if (ticketFormData.getTicketCategoryAttachmentStatus().equals("0")) {
-            attachmentText.setVisibility(View.GONE);
-            attachment.setVisibility(View.GONE);
+        mainCategory.setText(solutionResult.getSolutions().getName());
+        if (solutionResult.getSolutions().hasAttachment()) {
+            attachmentNote.setText(solutionResult.getSolutions().getNote());
+            attachmentNote.setVisibility(View.VISIBLE);
+        } else {
+            attachmentNote.setVisibility(View.GONE);
         }
         finishLoading();
     }
 
     @Override
-    public String getMessage() {
-        return detail.getText().toString();
+    public EditText getMessage() {
+        return detail;
     }
 
     @Override
@@ -294,6 +299,8 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
             NetworkErrorHelper.showSnackbar(getActivity());
         else
             NetworkErrorHelper.showSnackbar(getActivity(), error);
+
+
     }
 
     @Override
@@ -308,6 +315,7 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
 
     @Override
     public void showErrorEmptyState(String error, NetworkErrorHelper.RetryClickedListener retryClickedListener) {
+        setHasOptionsMenu(false);
         if (error.equals(""))
             NetworkErrorHelper.showEmptyState(getActivity(), getView(), retryClickedListener);
         else
@@ -316,17 +324,30 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
 
     }
 
-    private void setCategoryPath() {
-        ArrayList<String> path = getArguments().getStringArrayList(PARAM_PATH);
-        if (path != null) {
-            mainCategory.setText(path.get(0));
-            path.remove(0);
-            for (String catName : path) {
-                TextView cat = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.contact_us_category, categoryPathList, false);
-                cat.setText(catName);
-                categoryPathList.addView(cat);
-            }
-        }
+    @Override
+    public void showErrorValidation(EditText view, String error) {
+        view.setError(error);
+        view.requestFocus();
+    }
+
+    @Override
+    public String getPhoneNumber() {
+        return phoneNumber.getText().toString();
+    }
+
+    @Override
+    public TextView getAttachmentNote() {
+        return attachmentNote;
+    }
+
+    @Override
+    public EditText getName() {
+        return name;
+    }
+
+    @Override
+    public EditText getEmail() {
+        return email;
     }
 
     @Override
@@ -386,31 +407,31 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
 
     @OnPermissionDenied(Manifest.permission.CAMERA)
     void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(),Manifest.permission.CAMERA);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CAMERA);
     }
 
     @OnNeverAskAgain(Manifest.permission.CAMERA)
     void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.CAMERA);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CAMERA);
     }
 
     @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
     @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
-    @OnPermissionDenied({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     void showDeniedForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
 
-        RequestPermissionUtil.onPermissionDenied(getActivity(),listPermission);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
     }
 
     @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
@@ -419,6 +440,6 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
 
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),listPermission);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
     }
 }

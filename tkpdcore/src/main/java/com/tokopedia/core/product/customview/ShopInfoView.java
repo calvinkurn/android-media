@@ -41,6 +41,8 @@ public class ShopInfoView extends BaseView<ProductDetailData, ProductDetailView>
     ImageView ivShopAva;
     @BindView(R2.id.iv_gold)
     ImageView ivGoldShop;
+    @BindView(R2.id.iv_official)
+    ImageView ivOfficialStore;
     @BindView(R2.id.iv_lucky)
     ImageView ivLuckyShop;
     @BindView(R2.id.tv_name)
@@ -103,6 +105,7 @@ public class ShopInfoView extends BaseView<ProductDetailData, ProductDetailView>
 
         ivBtnFav.setVisibility(data.getShopInfo().getShopIsOwner() == 1 ? GONE : VISIBLE);
         ivGoldShop.setVisibility(data.getShopInfo().getShopIsGold() == 1 ? VISIBLE : GONE);
+        switchOfficialStoreBadge(data.getShopInfo().getShopIsOfficial());
         ivShopMessage.setVisibility(data.getShopInfo().getShopId()
                 .equals(SessionHandler.getShopID(getContext())) ? GONE : VISIBLE);
 
@@ -284,6 +287,13 @@ public class ShopInfoView extends BaseView<ProductDetailData, ProductDetailView>
             bundle.putInt("tab", 2);
             bundle.putString("shop_id", data.getShopInfo().getShopId());
             listener.onProductShopRatingClicked(bundle);
+        }
+    }
+
+    private void switchOfficialStoreBadge(int isOfficialStore) {
+        if (isOfficialStore == 1) {
+            ivGoldShop.setVisibility(GONE);
+            ivOfficialStore.setVisibility(VISIBLE);
         }
     }
 }

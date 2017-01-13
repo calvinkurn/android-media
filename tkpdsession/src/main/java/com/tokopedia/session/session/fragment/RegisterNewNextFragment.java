@@ -423,6 +423,7 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
                 RegisterSuccessModel registerSuccessModel = data.getParcelable(DownloadService.REGISTER_MODEL_KEY);
                 switch (registerSuccessModel.getIsActive()){
                     case RegisterSuccessModel.USER_PENDING:
+                    case RegisterSuccessModel.USER_INACTIVE:
                         sendLocalyticsRegisterEvent(registerSuccessModel.getUserId());
                         sendGTMRegisterEvent();
                         Bundle bundle = new Bundle();
