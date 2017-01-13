@@ -5,6 +5,14 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookAuthorizationException;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -18,18 +26,21 @@ import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.core.session.model.LoginProviderModel;
 import com.tokopedia.core.session.model.RegisterViewModel;
 import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.session.R;
 import com.tokopedia.session.session.fragment.RegisterInitialFragment;
 import com.tokopedia.session.session.interactor.LoginInteractor;
 import com.tokopedia.session.session.interactor.LoginInteractorImpl;
 import com.tokopedia.session.session.model.LoginModel;
 
+import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.List;
 
-import static com.tokopedia.core.session.presenter.Login.LOGIN_UUID_KEY;
-import static com.tokopedia.core.session.presenter.Login.PROVIDER_LIST;
+import static com.tokopedia.session.session.presenter.Login.LOGIN_UUID_KEY;
+import static com.tokopedia.session.session.presenter.Login.PROVIDER_LIST;
 
 /**
  * Created by stevenfredian on 10/18/16.
@@ -153,6 +164,54 @@ public class RegisterInitialPresenterImpl extends RegisterInitialPresenter {
     @Override
     public void unSubscribeFacade() {
         interactor.unSubscribe();
+    }
+
+    @Override
+    public void doFacebookLogin(final RegisterInitialFragment fragment, final CallbackManager callbackManager) {
+        List<String> readPermissions = Arrays.asList("public_profile", "email", "user_birthday");
+        LoginManager.getInstance().logInWithReadPermissions(fragment, readPermissions);
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(final LoginResult loginResult) {
+                Bundle parameters = new Bundle();
+                parameters.putString("fields","id,name,gender,birthday,email");
+
+                if(loginResult.getAccessToken().getDeclinedPermissions().size()>0){
+                    doFacebookLogin(fragment,callbackManager);
+
+                }else {
+                    GraphRequest request = GraphRequest.newMeRequest(
+                            loginResult.getAccessToken(),
+                            new GraphRequest.GraphJSONObjectCallback() {
+                                @Override
+                                public void onCompleted(
+                                        JSONObject object,
+                                        GraphResponse response) {
+                                    FacebookModel facebookModel =
+                                            new GsonBuilder().create().fromJson(String.valueOf(object), FacebookModel.class);
+                                    loginFacebook(fragment.getActivity(), facebookModel,loginResult.getAccessToken().getToken());
+                                }
+                            });
+
+                    request.setParameters(parameters);
+                    request.executeAsync();
+                }
+            }
+
+            @Override
+            public void onCancel() {
+                LoginManager.getInstance().logOut();
+                Log.i(TAG, "onCancel: ");
+            }
+
+            @Override
+            public void onError(FacebookException e) {
+                if(e instanceof FacebookAuthorizationException){
+                    LoginManager.getInstance().logOut();
+                }
+                view.showError(fragment.getActivity().getString(R.string.msg_network_error));
+            }
+        });
     }
 
     private CreatePasswordModel setModelFromParcelable(CreatePasswordModel createPasswordModel, Parcelable parcelable, InfoModel infoModel) {

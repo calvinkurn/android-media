@@ -413,8 +413,8 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                     String name = "";
                     String url = "";
                     if (intent != null) {
-                        mEmail = intent.getStringExtra(com.tokopedia.core.session.presenter.Login.EXTRA_EMAIL);
-                        GoToIndex = intent.getBooleanExtra(com.tokopedia.core.session.presenter.Login.GO_TO_INDEX_KEY, false);
+                        mEmail = intent.getStringExtra(com.tokopedia.session.session.presenter.Login.EXTRA_EMAIL);
+                        GoToIndex = intent.getBooleanExtra(com.tokopedia.session.session.presenter.Login.GO_TO_INDEX_KEY, false);
                         login = intent.getStringExtra("login");
                         url = intent.getStringExtra("url");
                         name = intent.getStringExtra("name");

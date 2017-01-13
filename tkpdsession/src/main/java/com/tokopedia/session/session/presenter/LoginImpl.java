@@ -5,6 +5,14 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookAuthorizationException;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -23,9 +31,10 @@ import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.core.session.model.LoginProviderModel;
 import com.tokopedia.core.session.model.LoginViewModel;
 import com.tokopedia.core.session.model.SecurityModel;
-import com.tokopedia.core.session.presenter.Login;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.session.R;
+import com.tokopedia.session.session.fragment.LoginFragment;
 import com.tokopedia.session.session.interactor.LoginInteractor;
 import com.tokopedia.session.session.interactor.LoginInteractorImpl;
 import com.tokopedia.session.session.model.LoginEmailModel;
@@ -35,10 +44,8 @@ import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import java.lang.reflect.Type;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -167,6 +174,51 @@ public class LoginImpl implements Login {
                         AppEventTracking.Category.LOGIN,
                         AppEventTracking.Action.LOGIN_ERROR,
                         label);
+    }
+
+    @Override
+    public void doFacebookLogin(final LoginFragment fragment, final CallbackManager callbackManager) {
+        List<String> readPermissions = Arrays.asList("public_profile", "email", "user_birthday");
+        LoginManager.getInstance().logInWithReadPermissions(fragment, readPermissions);
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(final LoginResult loginResult) {
+                if(loginResult.getAccessToken().getDeclinedPermissions().size()>0){
+                    doFacebookLogin(fragment,callbackManager);
+                }else {
+                    GraphRequest request = GraphRequest.newMeRequest(
+                            loginResult.getAccessToken(),
+                            new GraphRequest.GraphJSONObjectCallback() {
+                                @Override
+                                public void onCompleted(
+                                        JSONObject object,
+                                        GraphResponse response) {
+                                    FacebookModel facebookModel =
+                                            new GsonBuilder().create().fromJson(String.valueOf(object), FacebookModel.class);
+                                    loginFacebook(facebookModel,loginResult.getAccessToken().getToken());
+                                }
+                            });
+                    Bundle parameters = new Bundle();
+                    parameters.putString("fields","id,name,gender,birthday,email");
+                    request.setParameters(parameters);
+                    request.executeAsync();
+                }
+            }
+
+            @Override
+            public void onCancel() {
+                LoginManager.getInstance().logOut();
+                Log.i(TAG, "onCancel: ");
+            }
+
+            @Override
+            public void onError(FacebookException e) {
+                if(e instanceof FacebookAuthorizationException){
+                    LoginManager.getInstance().logOut();
+                }
+                loginView.showError(fragment.getActivity().getString(R.string.msg_network_error));
+            }
+        });
     }
 
 

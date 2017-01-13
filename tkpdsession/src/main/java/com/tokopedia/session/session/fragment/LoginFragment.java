@@ -39,16 +39,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.facebook.CallbackManager;
-import com.facebook.FacebookAuthorizationException;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
-import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
-import com.google.gson.GsonBuilder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
@@ -59,19 +51,16 @@ import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.customView.PasswordView;
 import com.tokopedia.core.session.presenter.*;
 import com.tokopedia.session.session.google.GoogleActivity;
-import com.tokopedia.core.session.model.FacebookModel;
 import com.tokopedia.session.session.model.LoginModel;
 import com.tokopedia.core.session.model.LoginProviderModel;
 import com.tokopedia.core.session.model.LoginViewModel;
+import com.tokopedia.session.session.presenter.Login;
 import com.tokopedia.session.session.presenter.LoginImpl;
 import com.tokopedia.session.session.presenter.LoginView;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.var.TkpdState;
 
-import org.json.JSONObject;
-
-import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -96,7 +85,7 @@ import permissions.dispatcher.RuntimePermissions;
 public class LoginFragment extends Fragment implements LoginView {
     // demo only
     int anTestInt = 0;
-    com.tokopedia.core.session.presenter.Login login;
+    Login login;
 
     Context mContext;
 
@@ -382,51 +371,7 @@ public class LoginFragment extends Fragment implements LoginView {
     }
 
     private void processFacebookLogin() {
-        List<String> readPermissions = Arrays.asList("public_profile", "email", "user_birthday");
-        LoginManager.getInstance().logInWithReadPermissions(this, readPermissions);
-        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(final LoginResult loginResult) {
-                Bundle parameters = new Bundle();
-                parameters.putString("fields","id,name,gender,birthday,email");
-
-                if(loginResult.getAccessToken().getDeclinedPermissions().size()>0){
-                    processFacebookLogin();
-
-                }else {
-                    GraphRequest request = GraphRequest.newMeRequest(
-                            loginResult.getAccessToken(),
-                            new GraphRequest.GraphJSONObjectCallback() {
-                                @Override
-                                public void onCompleted(
-                                        JSONObject object,
-                                        GraphResponse response) {
-                                    FacebookModel facebookModel =
-                                            new GsonBuilder().create().fromJson(String.valueOf(object), FacebookModel.class);
-                                    login.loginFacebook(facebookModel,loginResult.getAccessToken().getToken());
-//                                LoginManager.getInstance().logOut();
-                                }
-                            });
-
-                    request.setParameters(parameters);
-                    request.executeAsync();
-                }
-            }
-
-            @Override
-            public void onCancel() {
-                LoginManager.getInstance().logOut();
-                Log.i(TAG, "onCancel: ");
-            }
-
-            @Override
-            public void onError(FacebookException e) {
-                if(e instanceof FacebookAuthorizationException){
-                    LoginManager.getInstance().logOut();
-                }
-                SnackbarManager.make(getActivity(), getString(R.string.msg_network_error), Snackbar.LENGTH_LONG).show();
-            }
-        });
+        login.doFacebookLogin(this, callbackManager);
     }
 
     @Override
