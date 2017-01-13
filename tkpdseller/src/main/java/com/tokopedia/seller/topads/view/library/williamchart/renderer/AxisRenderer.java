@@ -128,6 +128,10 @@ public abstract class AxisRenderer {
 				else borders = findBorders(data, 1);
 				minLabelValue = borders[0];
 				maxLabelValue = borders[1];
+
+				if((maxLabelValue - minLabelValue)  % 2 != 0){
+					maxLabelValue++;
+				}
 			}
 			if (!hasStep()) // If no pre-defined step
 				setBorderValues(minLabelValue, maxLabelValue);
@@ -621,7 +625,7 @@ public abstract class AxisRenderer {
 	public void setBorderValues(int min, int max) {
 
 		if (!hasStep())
-			step = Tools.largestDivisor(max, min);
+			step = Tools.largestDivisor(max- min);
 		setBorderValues(min, max, step);
 	}
 
