@@ -104,13 +104,13 @@ public class Tools {
      */
     public static int largestDivisor(int max, int min) {
         int num = max - min;
-        if (num > 1)
-            for (int i = num / 2; i >= 0; i--)
-                if (num % i == 0) {
-                    if (num / i < 10) {
-                        return i;
-                    }
+        if (num > 1) {
+            for (int i = num / 2; i > 0; i--) {
+                if (num % i == 0 && (num / i) < 10) {
+                    return i;
                 }
+            }
+        }
         return 1;
     }
 }
