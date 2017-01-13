@@ -36,7 +36,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import butterknife.BindArray;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
@@ -94,7 +93,7 @@ public class SetDateFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.set_date_layout, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_date_picker, container, false);
         bind = ButterKnife.bind(this, rootView);
         setDatePagerAdapter = new SetDatePagerAdapter(getActivity().getSupportFragmentManager(),
                 getActivity(), setDate.isGMStat(), setDate.selectionPeriod(),

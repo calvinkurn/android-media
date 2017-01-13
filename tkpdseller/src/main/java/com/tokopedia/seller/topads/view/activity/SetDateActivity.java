@@ -11,9 +11,7 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
 
-import butterknife.BindColor;
 import butterknife.ButterKnife;
 
 /**
@@ -48,7 +46,7 @@ public class SetDateActivity extends AppCompatActivity implements SetDateFragmen
         if (!isAfterRotate) {
             fetchIntent(getIntent().getExtras());
         }
-        setContentView(R.layout.activity_set_date);
+        setContentView(R.layout.activity_date_picker);
         ButterKnife.bind(this);
         green600 = ContextCompat.getColor(this, R.color.green_600);
         tkpdMainGreenColor = ContextCompat.getColor(this, R.color.tkpd_main_green);

@@ -148,7 +148,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
 
     @Override
     public void onTurnOnAdSuccess() {
-        progressDialog.dismiss();
+        loadData();
         setResultAdStatusChanged();
     }
 
@@ -167,7 +167,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
 
     @Override
     public void onTurnOffAdSuccess() {
-        progressDialog.dismiss();
+        loadData();
         setResultAdStatusChanged();
     }
 
