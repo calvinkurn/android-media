@@ -409,9 +409,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     && ((CartItemEditable) dataList.get(i)).getCartItem().getCartString()
                     .equals(cartData.getCartString())) {
                 ((CartItemEditable) dataList.get(i)).setPartialDeliver(false);
-                ((CartItemEditable) dataList.get(i)).setCartStringForDeliverOption(
-                        cartData.getCartString()
-                );
+                ((CartItemEditable) dataList.get(i)).setCartStringForDeliverOption("");
                 return;
             }
         }
@@ -423,7 +421,9 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     && ((CartItemEditable) dataList.get(i)).getCartItem().getCartString()
                     .equals(cartData.getCartString())) {
                 ((CartItemEditable) dataList.get(i)).setPartialDeliver(true);
-                ((CartItemEditable) dataList.get(i)).setCartStringForDeliverOption("");
+                ((CartItemEditable) dataList.get(i)).setCartStringForDeliverOption(
+                        cartData.getCartString()
+                );
                 return;
             }
         }

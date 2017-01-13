@@ -329,7 +329,6 @@ public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> impl
         @SuppressWarnings("deprecation")
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            Log.d("REDIRECT_URL", url);
             view.invalidate();
             if (url.contains(topPayParameterData.getCallbackUrlPath())) {
                 view.stopLoading();
