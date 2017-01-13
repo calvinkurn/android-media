@@ -133,7 +133,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     private TkpdProgressDialog progressDialogNormal;
     private TopPayBroadcastReceiver topPayBroadcastReceiver;
     private CartItemAdapter cartItemAdapter;
-    
+
     private String totalPaymentWithLoyaltyIdr;
     private String totalPaymentWithoutLoyaltyIdr;
     private String totalLoyaltyBalance;
@@ -297,7 +297,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void renderVisibleLoyaltyBalance(String loyaltyAmountIDR) {
         this.totalLoyaltyBalance = loyaltyAmountIDR;
-        tvLoyaltyBalance.setText(loyaltyAmountIDR);
+        tvLoyaltyBalance.setText("(" + loyaltyAmountIDR + ")");
     }
 
     @Override

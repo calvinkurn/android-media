@@ -483,8 +483,9 @@ public class CartPresenter implements ICartPresenter {
         view.renderTotalPaymentWithLoyalty(data.getGrandTotalIdr());
         view.renderPaymentGatewayOption(data.getGatewayList());
         if (data.getLpAmount() != 0)
-            view.renderVisibleLoyaltyBalance("(" + data.getLpAmountIdr() + ")");
+            view.renderVisibleLoyaltyBalance(data.getLpAmountIdr());
         else view.renderInvisibleLoyaltyBalance();
+        view.renderTotalPaymentWithoutLoyalty(data.getGrandTotalWithoutLPIDR());
         view.renderCartListData(data.getCartItemList());
         view.renderCheckoutCartDepositAmount(data.getDeposit() + "");
         view.setCheckoutCartToken(data.getToken());
