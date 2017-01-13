@@ -141,14 +141,18 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
                     .setmValues(mValues, new XRenderer.XRendererListener() {
                         @Override
                         public boolean filterX(@IntRange(from = 0L) int i) {
-                            if (i == 0 || mValues.length - 1 == i)
-                                return true;
+                            if(mValues != null) {
+                                if (i == 0 || mValues.length - 1 == i)
+                                    return true;
 
-                            if (mValues.length <= 15) {
+                                if (mValues.length <= 15) {
+                                    return true;
+                                }
+
+                                return indexToDisplay.contains(i);
+                            }else{
                                 return true;
                             }
-
-                            return indexToDisplay.contains(i);
 
                         }
                     })

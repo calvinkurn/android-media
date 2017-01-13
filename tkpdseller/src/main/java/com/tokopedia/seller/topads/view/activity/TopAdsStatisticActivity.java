@@ -111,7 +111,7 @@ public abstract class TopAdsStatisticActivity extends BasePresenterActivity<TopA
 
             }
         });
-        tabLayout.addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
+        tabLayout.setOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
     }
 
     @Override
