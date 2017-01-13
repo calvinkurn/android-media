@@ -61,6 +61,8 @@ public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> impl
     private static final String CONTAINS_ACCOUNT_URL = "accounts.tokopedia.com";
     private static final String CONTAINS_LOGIN_URL = "login.pl";
     private static final long FORCE_TIMEOUT = 60000L;
+    public static final int RESULT_TOPPAY_CANCELED_OR_NOT_VERIFIED = TopPayActivity.class.hashCode();
+    public static final String EXTRA_RESULT_MESSAGE = "EXTRA_RESULT_MESSAGE";
 
     @BindView(R2.id.webview)
     WebView webView;
@@ -247,14 +249,18 @@ public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> impl
 
     @Override
     public void showToastMessageWithForceCloseView(String message) {
-        View view = findViewById(android.R.id.content);
-        if (view != null) {
-            Snackbar.make(view, message, Snackbar.LENGTH_SHORT).setCallback(
-                    getCallbackToCloseView()).show();
-        } else {
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-            closeView();
-        }
+//        View view = findViewById(android.R.id.content);
+//        if (view != null) {
+//            Snackbar.make(view, message, Snackbar.LENGTH_SHORT).setCallback(
+//                    getCallbackToCloseView()).show();
+//        } else {
+//            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+//            closeView();
+//        }
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_RESULT_MESSAGE, message);
+        setResult(RESULT_TOPPAY_CANCELED_OR_NOT_VERIFIED, intent);
+        closeView();
     }
 
     @Override

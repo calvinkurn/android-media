@@ -614,6 +614,13 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == TopPayActivity.REQUEST_CODE) {
+            if (resultCode == TopPayActivity.RESULT_TOPPAY_CANCELED_OR_NOT_VERIFIED) {
+                if (data.getStringExtra(TopPayActivity.EXTRA_RESULT_MESSAGE) != null) {
+                    NetworkErrorHelper.showSnackbar(
+                            getActivity(), data.getStringExtra(TopPayActivity.EXTRA_RESULT_MESSAGE)
+                    );
+                }
+            }
             presenter.processGetCartData();
         } else if (requestCode == ShipmentCartActivity.INTENT_REQUEST_CODE
                 && resultCode == Activity.RESULT_OK) {
