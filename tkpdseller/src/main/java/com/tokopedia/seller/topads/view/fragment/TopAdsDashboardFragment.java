@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
@@ -20,22 +19,17 @@ import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.model.data.DataDeposit;
 import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.presenter.TopAdsDashboardPresenter;
-import com.tokopedia.seller.topads.view.activity.SetDateActivity;
-import com.tokopedia.seller.topads.view.activity.SetDateFragment;
 import com.tokopedia.seller.topads.view.activity.TopAdsAddCreditActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsStatisticProductActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardFragmentListener;
 import com.tokopedia.seller.topads.view.widget.TopAdsStatisticLabelView;
 
-import java.util.Date;
-
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter> extends BasePresenterFragment<T> implements TopAdsDashboardFragmentListener {
+public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter> extends TopAdsDatePickerFragment<T> implements TopAdsDashboardFragmentListener {
 
     private static final int REQUEST_CODE_DATE = 0;
-
 
     @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
@@ -62,9 +56,6 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
     TopAdsStatisticLabelView averageStatisticLabelView;
     @BindView(R2.id.statistic_label_view_cost)
     TopAdsStatisticLabelView costStatisticLabelView;
-
-    protected Date startDate;
-    protected Date endDate;
 
     @Override
     protected boolean isRetainInstance() {
@@ -124,29 +115,6 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
     @Override
     protected void setActionVar() {
 
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (presenter.isDateUpdated(startDate, endDate)) {
-            startDate = presenter.getStartDate();
-            endDate = presenter.getEndDate();
-            loadData();
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-        // check if the request code is the same
-        if (requestCode == REQUEST_CODE_DATE && intent != null) {
-            long startDateTime = intent.getLongExtra(SetDateFragment.START_DATE, -1);
-            long endDateTime = intent.getLongExtra(SetDateFragment.END_DATE, -1);
-            if (startDateTime > 0 && endDateTime > 0) {
-                presenter.saveDate(new Date(startDateTime), new Date(endDateTime));
-            }
-        }
     }
 
     protected void loadData() {
@@ -218,13 +186,7 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
 
     @OnClick(R2.id.layout_date)
     void onDateLayoutClicked() {
-        Intent moveToSetDate = new Intent(getActivity(), SetDateActivity.class);
-        moveToSetDate.putExtra(SetDateActivity.IS_GOLD_MERCHANT, true);
-//        moveToSetDate.putExtra(SetDateActivity.SELECTION_PERIOD, lastSelection);
-//        moveToSetDate.putExtra(SetDateActivity.SELECTION_TYPE, selectionType);
-        moveToSetDate.putExtra(SetDateActivity.CUSTOM_START_DATE, startDate.getTime());
-        moveToSetDate.putExtra(SetDateActivity.CUSTOM_END_DATE, endDate.getTime());
-        startActivityForResult(moveToSetDate, REQUEST_CODE_DATE);
+        openDatePicker();
     }
 
     @OnClick(R2.id.statistic_label_view_impression)
@@ -284,4 +246,10 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
     }
 
     protected abstract Class<?> getClassIntentStatistic();
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.unSubscribe();
+    }
 }

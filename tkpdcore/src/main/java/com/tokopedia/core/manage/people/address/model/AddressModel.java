@@ -6,6 +6,7 @@ import android.text.Html;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.util.MethodChecker;
 
 public class AddressModel implements Parcelable {
 
@@ -154,7 +155,7 @@ public class AddressModel implements Parcelable {
      *     The addressStreet
      */
     public String getAddressStreet() {
-        return Html.fromHtml(addressStreet).toString();
+        return MethodChecker.fromHtml(addressStreet).toString();
     }
 
     /**
@@ -280,7 +281,7 @@ public class AddressModel implements Parcelable {
      *     The addressName
      */
     public String getAddressName() {
-        return Html.fromHtml(addressName).toString();
+        return MethodChecker.fromHtml(addressName).toString();
     }
 
     /**
@@ -298,7 +299,7 @@ public class AddressModel implements Parcelable {
      *     The receiverName
      */
     public String getReceiverName() {
-        return Html.fromHtml(receiverName).toString();
+        return MethodChecker.fromHtml(receiverName).toString();
     }
 
     /**

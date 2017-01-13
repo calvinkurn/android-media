@@ -25,6 +25,7 @@ import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.rescenter.detail.customview.DetailView;
 import com.tokopedia.inbox.rescenter.detail.customview.ReplyEditorView;
 import com.tokopedia.inbox.rescenter.detail.dialog.ConfirmationDialog;
@@ -61,6 +62,7 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     private static final String TAG = DetailResCenterFragment.class.getSimpleName();
     private static final int EDIT_RESOLUTION_REQUEST_CODE = 6789;
     private static final int CHOOSE_ADDRESS = 7890;
+    private static final int CHOOSE_ADDRESS_MIGRATE_VERSION = 7891;
     private static final int EDIT_ADDRESS = 5678;
 
     private ActivityParamenterPassData passData;
@@ -249,6 +251,12 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
                     presenter.actionInputAddress(getActivity(), destination.getAddressId());
                 }
                 break;
+            case CHOOSE_ADDRESS_MIGRATE_VERSION:
+                if (resultCode == Activity.RESULT_OK) {
+                    Destination destination = (Destination) data.getExtras().get(ManageAddressConstant.EXTRA_ADDRESS);
+                    presenter.actionInputAddressMigrateVersion(getActivity(), destination.getAddressId());
+                }
+                break;
             case EDIT_ADDRESS:
                 if (resultCode == Activity.RESULT_OK) {
                     Destination destination = (Destination) data.getExtras().get(ManageAddressConstant.EXTRA_ADDRESS);
@@ -280,7 +288,7 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     @Override
     public void showInvalidTrackingDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(Html.fromHtml(getActivity().getString(R.string.error_520_tracking)));
+        builder.setMessage(MethodChecker.fromHtml(getActivity().getString(R.string.error_520_tracking)));
         builder.setPositiveButton(getActivity().getString(R.string.title_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -487,6 +495,13 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
         Intent intent = new Intent(getActivity(), ChooseAddressActivity.class);
         intent.putExtra("resolution_center", true);
         startActivityForResult(intent, CHOOSE_ADDRESS);
+    }
+
+    @Override
+    public void openInputAddressMigrateVersion() {
+        Intent intent = new Intent(getActivity(), ChooseAddressActivity.class);
+        intent.putExtra("resolution_center", true);
+        startActivityForResult(intent, CHOOSE_ADDRESS_MIGRATE_VERSION);
     }
 
     @Override

@@ -9,6 +9,7 @@ import com.tokopedia.seller.topads.view.fragment.TopAdsProductAdListFragment;
 
 public class TopAdsProductAdListActivity extends TActivity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

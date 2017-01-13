@@ -30,12 +30,11 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.Cart;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.fragment.FragmentSecurityQuestion;
 import com.tokopedia.core.msisdn.activity.MsisdnActivity;
 import com.tokopedia.core.network.v4.NetworkConfig;
-import com.tokopedia.core.onboarding.OnboardingActivity;
+import com.tokopedia.session.session.intentservice.OTPService;
 import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SellerRouter;
@@ -52,7 +51,6 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.session.session.fragment.ActivationResentFragment;
 import com.tokopedia.session.session.fragment.ForgotPasswordFragment;
 import com.tokopedia.session.session.fragment.LoginFragment;
@@ -63,6 +61,7 @@ import com.tokopedia.session.session.fragment.RegisterPassPhoneFragment;
 import com.tokopedia.session.session.google.GoogleActivity;
 import com.tokopedia.session.session.intentservice.LoginResultReceiver;
 import com.tokopedia.session.session.intentservice.LoginService;
+import com.tokopedia.session.session.intentservice.OTPResultReceiver;
 import com.tokopedia.session.session.intentservice.RegisterResultReceiver;
 import com.tokopedia.session.session.intentservice.RegisterService;
 import com.tokopedia.session.session.intentservice.ResetPasswordResultReceiver;
@@ -96,10 +95,11 @@ import permissions.dispatcher.RuntimePermissions;
  */
 @RuntimePermissions
 public class Login extends GoogleActivity implements SessionView, GoogleActivity.GoogleListener
-            , DownloadResultReceiver.Receiver
-            , LoginResultReceiver.Receiver
-            , RegisterResultReceiver.Receiver
-            , ResetPasswordResultReceiver.Receiver{
+        , DownloadResultReceiver.Receiver
+        , LoginResultReceiver.Receiver
+        , RegisterResultReceiver.Receiver
+        , ResetPasswordResultReceiver.Receiver
+        , OTPResultReceiver.Receiver {
 
     //    int whichFragmentKey;
     LocalCacheHandler cacheGTM;
@@ -111,6 +111,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     LoginResultReceiver loginReceiver;
     RegisterResultReceiver registerReceiver;
     ResetPasswordResultReceiver resetPasswordReceiver;
+    OTPResultReceiver otpReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -174,7 +175,8 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         registerReceiver.setReceiver(this);
         resetPasswordReceiver = new ResetPasswordResultReceiver(new Handler());
         resetPasswordReceiver.setReceiver(this);
-
+        otpReceiver = new OTPResultReceiver(new Handler());
+        otpReceiver.setReceiver(this);
     }
 
     @Override
@@ -190,7 +192,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     public void moveToRegisterPassPhone(CreatePasswordModel model, List<String> createPasswordList, Bundle bundle) {
         Log.d(TAG, messageTAG + " moveToRegisterThird : " + model);
         if (isFragmentCreated(REGISTER_THIRD)) {
-            Fragment fragment = RegisterPassPhoneFragment.newInstance(model,createPasswordList,bundle);
+            Fragment fragment = RegisterPassPhoneFragment.newInstance(model, createPasswordList, bundle);
             moveToFragment(fragment, false, REGISTER_THIRD, TkpdState.DrawerPosition.REGISTER_THIRD);
         }
     }
@@ -232,22 +234,23 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                     Intent intent = new Intent(this, MsisdnActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
-                } else{
-                if (SessionHandler.isV4Login(this)) {
-                    Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
-                    intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
-                            HomeRouter.INIT_STATE_FRAGMENT_FEED);
-                    startActivity(intent);
                 } else {
-                    Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
-                    intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
-                            HomeRouter.INIT_STATE_FRAGMENT_HOME);
-                    startActivity(intent);
-                }}
+                    if (SessionHandler.isV4Login(this)) {
+                        Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
+                        intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
+                                HomeRouter.INIT_STATE_FRAGMENT_FEED);
+                        startActivity(intent);
+                    } else {
+                        Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
+                        intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
+                                HomeRouter.INIT_STATE_FRAGMENT_HOME);
+                        startActivity(intent);
+                    }
+                }
                 break;
 
             case SELLER_HOME:
-                if(SessionHandler.isV4Login(this)) {
+                if (SessionHandler.isV4Login(this)) {
                     if (SessionHandler.isFirstTimeUser(this) || !SessionHandler.isUserSeller(this)) {
                         //  Launch app intro
                         Intent intent = SellerAppRouter.getSellerOnBoardingActivity(this);
@@ -269,19 +272,20 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                 break;
         }
     }
+
     @NonNull
     public static Intent moveToCreateShop(Context context) {
-        if(context == null)
+        if (context == null)
             return null;
 
-        if(SessionHandler.isMsisdnVerified()) {
+        if (SessionHandler.isMsisdnVerified()) {
             Intent intent;
             intent = SellerRouter.getAcitivityShopCreateEdit(context);
             intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
                     SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             return intent;
-        }else{
+        } else {
             // TODO move to msisdn activity
             /*Intent intent;
             intent = new Intent(context, MsisdnActivity.class);
@@ -357,7 +361,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
 
     @Override
     public void moveToLogin() {
-        Fragment loginFragment = LoginFragment.newInstance("", false, "","","");
+        Fragment loginFragment = LoginFragment.newInstance("", false, "", "", "");
         moveToFragment(loginFragment, false, LOGIN_FRAGMENT_TAG, TkpdState.DrawerPosition.LOGIN);
 
         // Change the header
@@ -490,7 +494,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         session.setWhichFragment(TkpdState.DrawerPosition.SECURITY_QUESTION);
         setToolbarTitle();
         invalidateOptionsMenu();
-   }
+    }
 
     @Override
     public void destroy() {
@@ -538,7 +542,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
             getSupportFragmentManager().popBackStack();
         } else {
-            if(GlobalConfig.isSellerApp()){
+            if (GlobalConfig.isSellerApp()) {
 
             }
             finish();
@@ -580,7 +584,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
             } catch (Exception e) {
                 email = "";
             }
-            if (currentPerson != null && email !=null && !email.equals("")) {
+            if (currentPerson != null && email != null && !email.equals("")) {
                 // Show signed-in user's name
                 String name = currentPerson.getDisplayName();
 
@@ -687,13 +691,13 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         if (fragment != null && fragment instanceof BaseView && type != DownloadService.INVALID_TYPE) {
             switch (resultCode) {
                 case DownloadService.STATUS_RUNNING:
-                    showProgressDialog(fragment,type,resultData);
+                    showProgressDialog(fragment, type, resultData);
                     break;
                 case DownloadService.STATUS_FINISHED:
-                    finishTask(fragment,type,resultData);
+                    finishTask(fragment, type, resultData);
                     break;
                 case DownloadService.STATUS_ERROR:
-                    sendMessageError(fragment,type,resultData);
+                    sendMessageError(fragment, type, resultData);
                     break;
             }
         }
@@ -701,9 +705,20 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
 
     private void finishTask(Fragment fragment, int type, Bundle resultData) {
         switch (type) {
+            case OTPService.ACTION_REQUEST_OTP_WITH_CALL:
+                if(fragment instanceof FragmentSecurityQuestion && resultData.getString(OTPService.EXTRA_BUNDLE) != null){
+                    session.sendGTMEvent(resultData, type);
+                    session.sendLocalyticsEvent(resultData, type);
+                    ((FragmentSecurityQuestion)fragment).onSuccessRequestOTPWithCall(resultData.getString(OTPService.EXTRA_BUNDLE));
+                }
+            case OTPService.ACTION_REQUEST_OTP:
+                if(fragment instanceof FragmentSecurityQuestion && resultData.getString(OTPService.EXTRA_BUNDLE) != null){
+                    session.sendGTMEvent(resultData, type);
+                    session.sendLocalyticsEvent(resultData, type);
+                    ((FragmentSecurityQuestion)fragment).onSuccessRequestOTP(resultData.getString(OTPService.EXTRA_BUNDLE));
+                }
             case DownloadService.LOGIN_EMAIL:
             case DownloadService.SECURITY_QUESTION_GET:
-            case DownloadService.REQUEST_OTP:
             case DownloadService.ANSWER_SECURITY_QUESTION:
             case DownloadService.REGISTER:
             case DownloadService.REGISTER_PASS_PHONE:
@@ -716,7 +731,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                 } else {
                     if (resultData.getBoolean(DownloadService.LOGIN_MOVE_REGISTER_THIRD, false)) {// register new for third party
                         CreatePasswordModel model = Parcels.unwrap(resultData.getParcelable(DownloadService.LOGIN_GOOGLE_MODEL_KEY));
-                        moveToRegisterPassPhone(model,null, resultData);
+                        moveToRegisterPassPhone(model, null, resultData);
                     } else {
                         session.sendGTMEvent(resultData, type);
                         session.sendLocalyticsEvent(resultData, type);
@@ -730,13 +745,11 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
             case DownloadService.LOGIN_FACEBOOK:
             case DownloadService.LOGIN_WEBVIEW:
             case DownloadService.REGISTER_FACEBOOK:
-                Log.d("steven","berhasil minta token");
-                sendDataFromInternet(DownloadService.LOGIN_ACCOUNTS_INFO,resultData);
+                sendDataFromInternet(DownloadService.LOGIN_ACCOUNTS_INFO, resultData);
                 break;
             case DownloadService.RESET_PASSWORD:
-                ((BaseView) fragment).setData(type,resultData);
+                ((BaseView) fragment).setData(type, resultData);
                 break;
-
         }
     }
 
@@ -758,6 +771,10 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                     ((BaseView) fragment).onMessageError(type, messageError);
                 }
         }
+
+        if(fragment instanceof FragmentSecurityQuestion && resultData.getString(OTPService.EXTRA_ERROR) != null){
+            ((FragmentSecurityQuestion)fragment).showError(resultData.getString(OTPService.EXTRA_ERROR));
+        }
     }
 
     private void showProgressDialog(Fragment fragment, int type, Bundle resultData) {
@@ -776,16 +793,17 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                     boolean showDialog = resultData.getBoolean(DownloadService.LOGIN_SHOW_DIALOG, false);
                     ((LoginFragment) fragment).showProgress(showDialog);
                 }
-                if(fragment instanceof RegisterNewViewFragment){
+                if (fragment instanceof RegisterNewViewFragment) {
                     boolean showDialog = resultData.getBoolean(DownloadService.LOGIN_SHOW_DIALOG, false);
                     ((RegisterNewViewFragment) fragment).showProgress(showDialog);
                 }
-                if(fragment instanceof RegisterPassPhoneFragment){
+                if (fragment instanceof RegisterPassPhoneFragment) {
                     boolean showDialog = resultData.getBoolean(DownloadService.LOGIN_SHOW_DIALOG, false);
                     ((RegisterPassPhoneFragment) fragment).showProgress(showDialog);
                 }
                 break;
-            case DownloadService.REQUEST_OTP:
+            case OTPService.ACTION_REQUEST_OTP:
+            case OTPService.ACTION_REQUEST_OTP_WITH_CALL:
             case DownloadService.ANSWER_SECURITY_QUESTION:
                 if (fragment instanceof FragmentSecurityQuestion) {
                     boolean showDialog = resultData.getBoolean(DownloadService.SECURITY_QUESTION_LOADING, false);
@@ -808,7 +826,8 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                 fragment = supportFragmentManager.findFragmentByTag(LOGIN_FRAGMENT_TAG);
                 break;
             case DownloadService.SECURITY_QUESTION_GET:
-            case DownloadService.REQUEST_OTP:
+            case OTPService.ACTION_REQUEST_OTP:
+            case OTPService.ACTION_REQUEST_OTP_WITH_CALL:
             case DownloadService.ANSWER_SECURITY_QUESTION:
                 fragment = supportFragmentManager.findFragmentByTag(SECURITY_QUESTION_TAG);
                 break;
@@ -841,8 +860,12 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     @Override
     public void sendDataFromInternet(int type, Bundle data) {
         switch (type) {
-            case DownloadService.REQUEST_OTP:
-            case DownloadService.REQUEST_OTP_PHONE:
+            case OTPService.ACTION_REQUEST_OTP:
+                OTPService.startAction(this, data, otpReceiver, OTPService.ACTION_REQUEST_OTP);
+                break;
+            case OTPService.ACTION_REQUEST_OTP_WITH_CALL:
+                OTPService.startAction(this, data, otpReceiver, OTPService.ACTION_REQUEST_OTP_WITH_CALL);
+                break;
             case DownloadService.ANSWER_SECURITY_QUESTION:
             case DownloadService.SECURITY_QUESTION_GET:
                 DownloadService.startDownload(this, mReceiver, data, type);
@@ -870,7 +893,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
 
             case DownloadService.REGISTER:
             case DownloadService.REGISTER_PASS_PHONE:
-                RegisterService.startRegister(this, registerReceiver, data,type);
+                RegisterService.startRegister(this, registerReceiver, data, type);
                 break;
 
             case DownloadService.RESET_PASSWORD:

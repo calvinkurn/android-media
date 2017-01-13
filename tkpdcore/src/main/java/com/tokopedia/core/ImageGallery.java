@@ -13,9 +13,11 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import com.tkpd.library.ui.animation.FlipAnimation;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.customadapter.ImageGalleryAdapter;
 import com.tokopedia.core.customadapter.ImageGalleryAlbumAdapter;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 
 import java.io.File;
@@ -260,7 +262,7 @@ public class ImageGallery extends TActivity {
             }
         });
         if (child != null && child.length > 0)
-            return Uri.decode(Uri.fromFile(child[0]).toString());
+            return Uri.decode(MethodChecker.getUri(MainApplication.getAppContext(), child[0]).toString());
         else
             return null;
     }
@@ -277,7 +279,7 @@ public class ImageGallery extends TActivity {
         if (child != null && child.length > 0) {
             for (File file : child) {
                 ListImageHolder childTemp = new ListImageHolder();
-                childTemp.setFirstPhotoURL(Uri.decode(Uri.fromFile(file).toString()));
+                childTemp.setFirstPhotoURL(Uri.decode(MethodChecker.getUri(ImageGallery.this, file).toString()));
                 childTemp.setFolderName(file.getName());
                 childTemp.setUrl(file.getAbsolutePath());
                 childTemp.setFile(file.getAbsoluteFile());

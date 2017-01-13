@@ -1,5 +1,6 @@
 package com.tokopedia.seller.topads.view.fragment;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
@@ -7,14 +8,21 @@ import android.widget.TextView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
+import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.model.data.ProductAd;
 import com.tokopedia.seller.topads.model.data.ShopAd;
 import com.tokopedia.seller.topads.presenter.TopAdsDashboardShopPresenterImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsStatisticShopActivity;
+import com.tokopedia.seller.topads.view.activity.TopAdsDetailShopActivity;
+import com.tokopedia.seller.topads.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardStoreFragmentListener;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsDashboardShopPresenterImpl> implements TopAdsDashboardStoreFragmentListener {
+
+    protected static final int REQUEST_CODE_AD_STATUS = TopAdsDashboardShopFragment.class.hashCode();
 
     @BindView(R2.id.layout_shop_ad)
     View shopAdView;
@@ -33,6 +41,8 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
 
     @BindView(R2.id.price_promo_per_click)
     TextView pricePromoPerClick;
+
+    private ShopAd shopAd;
 
     public static TopAdsDashboardShopFragment createInstance() {
         TopAdsDashboardShopFragment fragment = new TopAdsDashboardShopFragment();
@@ -61,7 +71,20 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        // check if the request code is the same
+        if (requestCode == REQUEST_CODE_AD_STATUS && intent != null) {
+            boolean adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_STATUS_CHANGED, false);
+            if (adStatusChanged) {
+                loadData();
+            }
+        }
+    }
+
+    @Override
     public void onAdShopLoaded(@NonNull ShopAd ad) {
+        shopAd = ad;
         shopAdView.setVisibility(View.VISIBLE);
         titleProduct.setText(ad.getName());
         statusActive.setText(ad.getStatusDesc());
@@ -89,5 +112,12 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
     @Override
     protected Class<?> getClassIntentStatistic() {
         return TopAdsStatisticShopActivity.class;
+    }
+
+    @OnClick(R2.id.layout_shop_ad)
+    void onShopItemClicked() {
+        Intent intent = new Intent(getActivity(), TopAdsDetailShopActivity.class);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD, shopAd);
+        startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
     }
 }

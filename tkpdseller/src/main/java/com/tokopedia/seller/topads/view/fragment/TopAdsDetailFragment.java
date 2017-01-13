@@ -3,33 +3,34 @@ package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 
-import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
+import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.model.data.Ad;
 import com.tokopedia.seller.topads.presenter.TopAdsDetailPresenter;
 import com.tokopedia.seller.topads.view.listener.TopAdsDetailViewListener;
 import com.tokopedia.seller.topads.view.widget.TopAdsLabelSwitch;
 import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 
-import java.util.Date;
-
 import butterknife.BindView;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> extends BasePresenterFragment<T> implements TopAdsDetailViewListener, CompoundButton.OnCheckedChangeListener {
+public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> extends TopAdsDatePickerFragment<T> implements TopAdsDetailViewListener, CompoundButton.OnCheckedChangeListener {
 
     @BindView(R2.id.container_detail_topads)
     LinearLayout containerDetail;
@@ -70,53 +71,13 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     @BindView(R2.id.favorite)
     TopAdsLabelView favorite;
 
-    private ProgressDialog progressDialog;
-    private Date startDate;
-    private Date endDate;
+    protected Ad adFromIntent;
+    protected ProgressDialog progressDialog;
+
+    protected abstract void refreshAd();
 
     public TopAdsDetailFragment() {
         // Required empty public constructor
-    }
-
-    @Override
-    protected boolean isRetainInstance() {
-        return false;
-    }
-
-    @Override
-    protected void onFirstTimeLaunched() {
-
-    }
-
-    @Override
-    public void onSaveState(Bundle bundle) {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle bundle) {
-
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return true;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.promo_topads_detail, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
-
-    }
-
-    @Override
-    protected void setupArguments(Bundle bundle) {
-
     }
 
     @Override
@@ -131,6 +92,12 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     }
 
     @Override
+    protected void setupArguments(Bundle bundle) {
+        super.setupArguments(bundle);
+        adFromIntent = bundle.getParcelable(TopAdsExtraConstant.EXTRA_AD);
+    }
+
+    @Override
     protected void initialVar() {
     }
 
@@ -140,38 +107,92 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        if (presenter.isDateUpdated(startDate, endDate)) {
-            startDate = presenter.getStartDate();
-            endDate = presenter.getEndDate();
-            loadData();
+    protected void loadData() {
+        progressDialog.show();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(presenter.getRangeDateFormat(startDate, endDate));
+        if (adFromIntent != null) {
+            onAdLoaded(adFromIntent);
+            adFromIntent = null;
+        } else {
+            refreshAd();
         }
     }
 
-    protected void loadData() {
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(presenter.getRangeDateFormat(startDate, endDate));
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+        if (checked) {
+            turnOnAd();
+        } else {
+            turnOffAd();
+        }
     }
 
-    @Override
-    public void showProgress() {
+    protected void turnOnAd() {
+        progressDialog.show();
+    }
+
+    protected void turnOffAd() {
         progressDialog.show();
     }
 
     @Override
-    public void dismissProgress() {
+    public void onAdLoaded(Ad ad) {
+        progressDialog.dismiss();
+        loadAdDetail(ad);
+    }
+
+    @Override
+    public void onLoadAdError() {
         progressDialog.dismiss();
     }
 
-    protected void loadAdDetail(Ad ad){
+    @Override
+    public void onTurnOnAdSuccess() {
+        loadData();
+        setResultAdStatusChanged();
+    }
+
+    @Override
+    public void onTurnOnAdError() {
+        setStatusSwitch(!status.isChecked());
+        progressDialog.dismiss();
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                setStatusSwitch(true);
+                turnOnAd();
+            }
+        }).showRetrySnackbar();
+    }
+
+    @Override
+    public void onTurnOffAdSuccess() {
+        loadData();
+        setResultAdStatusChanged();
+    }
+
+    @Override
+    public void onTurnOffAdError() {
+        setStatusSwitch(!status.isChecked());
+        progressDialog.dismiss();
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                setStatusSwitch(false);
+                turnOffAd();
+            }
+        }).showRetrySnackbar();
+    }
+
+    protected void loadAdDetail(Ad ad) {
         name.setContent(ad.getName());
         switch (ad.getStatus()) {
             case TopAdsConstant.STATUS_AD_ACTIVE:
             case TopAdsConstant.STATUS_AD_NOT_SENT:
-                status.setChecked(true);
+                setStatusSwitch(true);
                 break;
             default:
-                status.setChecked(false);
+                setStatusSwitch(false);
                 break;
         }
         status.setSwitchStatusText(ad.getStatusDesc());
@@ -185,6 +206,38 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         click.setContent(ad.getStatTotalClick());
         ctr.setContent(ad.getStatTotalCtr());
         favorite.setContent(ad.getStatTotalConversion());
+    }
+
+    protected void setStatusSwitch(boolean checked) {
+        status.setListenerValue(null);
+        status.setChecked(checked);
         status.setListenerValue(this);
+    }
+
+    private void setResultAdStatusChanged() {
+        Intent intent = new Intent();
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_STATUS_CHANGED, true);
+        getActivity().setResult(Activity.RESULT_OK, intent);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.promo_topads_detail, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_date) {
+            openDatePicker();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.unSubscribe();
     }
 }

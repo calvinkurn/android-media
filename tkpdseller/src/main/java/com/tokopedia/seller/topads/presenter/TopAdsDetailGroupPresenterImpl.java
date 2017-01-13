@@ -3,7 +3,6 @@ package com.tokopedia.seller.topads.presenter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.interactor.ListenerInteractor;
 import com.tokopedia.seller.topads.interactor.TopAdsGroupAdInteractor;
@@ -11,11 +10,13 @@ import com.tokopedia.seller.topads.model.data.Ad;
 import com.tokopedia.seller.topads.model.data.GroupAd;
 import com.tokopedia.seller.topads.model.data.GroupAdAction;
 import com.tokopedia.seller.topads.model.data.GroupAdBulkAction;
-import com.tokopedia.seller.topads.model.data.ProductAdBulkAction;
 import com.tokopedia.seller.topads.model.request.DataRequest;
+import com.tokopedia.seller.topads.model.request.SearchAdRequest;
+import com.tokopedia.seller.topads.model.response.PageDataResponse;
 import com.tokopedia.seller.topads.view.listener.TopAdsDetailViewListener;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -23,37 +24,61 @@ import java.util.List;
  */
 public class TopAdsDetailGroupPresenterImpl extends TopAdsDetailPresenterImpl implements TopAdsDetailGroupPresenter {
 
-    private final TopAdsGroupAdInteractor topAdsGroupAdInteractor;
+    private final TopAdsGroupAdInteractor groupAdInteractor;
 
-    public TopAdsDetailGroupPresenterImpl(Context context, TopAdsDetailViewListener topAdsDetailViewListener, TopAdsGroupAdInteractor topAdsGroupAdInteractor) {
+    public TopAdsDetailGroupPresenterImpl(Context context, TopAdsDetailViewListener topAdsDetailViewListener, TopAdsGroupAdInteractor groupAdInteractor) {
         super(context, topAdsDetailViewListener);
-        this.topAdsGroupAdInteractor = topAdsGroupAdInteractor;
+        this.groupAdInteractor = groupAdInteractor;
+    }
+
+    @Override
+    public void refreshAd(Date startDate, Date endDate, int id) {
+        SearchAdRequest searchAdRequest = new SearchAdRequest();
+        searchAdRequest.setShopId(getShopId());
+        searchAdRequest.setStartDate(startDate);
+        searchAdRequest.setEndDate(endDate);
+        searchAdRequest.setGroupId(String.valueOf(id));
+        groupAdInteractor.searchAd(searchAdRequest, new ListenerInteractor<PageDataResponse<List<GroupAd>>>() {
+            @Override
+            public void onSuccess(PageDataResponse<List<GroupAd>> pageDataResponse) {
+                topAdsDetailViewListener.onAdLoaded(pageDataResponse.getData().get(0));
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                topAdsDetailViewListener.onLoadAdError();
+            }
+        });
     }
 
     @Override
     public void turnOnAds(Ad ad, String shopId) {
         DataRequest<GroupAdBulkAction> dataRequest = generateActionRequest(ad, TopAdsNetworkConstant.ACTION_BULK_ON_AD, shopId);
-        actionBulkAds(dataRequest);
+        groupAdInteractor.bulkAction(dataRequest, new ListenerInteractor<GroupAdBulkAction>() {
+            @Override
+            public void onSuccess(GroupAdBulkAction dataResponseActionAds) {
+                topAdsDetailViewListener.onTurnOnAdSuccess();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                topAdsDetailViewListener.onTurnOnAdError();
+            }
+        });
     }
 
     @Override
     public void turnOffAds(Ad ad, String shopId) {
         DataRequest<GroupAdBulkAction> dataRequest = generateActionRequest(ad, TopAdsNetworkConstant.ACTION_BULK_OFF_AD, shopId);
-        actionBulkAds(dataRequest);
-    }
-
-    @NonNull
-    private void actionBulkAds(DataRequest<GroupAdBulkAction> actionRequest) {
-        topAdsDetailViewListener.showProgress();
-        topAdsGroupAdInteractor.bulkAction(actionRequest, new ListenerInteractor<GroupAdBulkAction>() {
+        groupAdInteractor.bulkAction(dataRequest, new ListenerInteractor<GroupAdBulkAction>() {
             @Override
             public void onSuccess(GroupAdBulkAction dataResponseActionAds) {
-                topAdsDetailViewListener.dismissProgress();
+                topAdsDetailViewListener.onTurnOffAdSuccess();
             }
 
             @Override
             public void onError(Throwable throwable) {
-                topAdsDetailViewListener.dismissProgress();
+                topAdsDetailViewListener.onTurnOffAdError();
             }
         });
     }
@@ -71,5 +96,12 @@ public class TopAdsDetailGroupPresenterImpl extends TopAdsDetailPresenterImpl im
         dataRequestGroupAd.setAdList(dataRequestGroupAdses);
         dataRequest.setData(dataRequestGroupAd);
         return dataRequest;
+    }
+
+    @Override
+    public void unSubscribe() {
+        if (groupAdInteractor != null) {
+            groupAdInteractor.unSubscribe();
+        }
     }
 }

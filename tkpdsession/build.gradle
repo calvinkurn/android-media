@@ -3,12 +3,26 @@ apply plugin: 'android-apt'
 apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
 
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.14.1'
+}
+
+
+def getArtifactVersionCode() {
+    return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
+}
+
+def getTkpdCore() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.core : project(':tkpdcore');
+}
+
 publishing {
     publications {
         aar(MavenPublication) {
             groupId 'com.tokopedia.session'
             artifactId 'session'
-            version '1.0-SNAPSHOT'
+            version getArtifactVersionCode()
             artifact("$buildDir/outputs/aar/tkpdsession-release.aar")
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
@@ -30,7 +44,7 @@ artifactory {
     contextUrl = rootProject.ext.artifactoryUrl
     publish {
         repository {
-            repoKey = 'libs-snapshot-local'
+            repoKey = 'libs-release-local'
 
             username = artifactory_username
             password = artifactory_password
@@ -58,12 +72,12 @@ buildscript {
 
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion "25.0.0"
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 24
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
 
@@ -81,8 +95,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    //compile rootProject.ext.tkpdDependencies.core;
-    compile project(':tkpdcore')
+    compile getTkpdCore()
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor

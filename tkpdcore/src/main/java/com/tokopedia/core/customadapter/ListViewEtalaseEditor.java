@@ -247,6 +247,11 @@ public class ListViewEtalaseEditor extends BaseAdapter {
 
                             @Override
                             public void onError(Throwable e) {
+                                progressdialog.dismiss();
+                                Snackbar snackbarError = SnackbarManager.make(context,
+                                        context.getString(R.string.error_connection_problem),
+                                        Snackbar.LENGTH_LONG);
+                                snackbarError.show();
                                 Log.e(STUART, SHOP_EDITOR + "on error");
                             }
 
@@ -255,6 +260,7 @@ public class ListViewEtalaseEditor extends BaseAdapter {
                                 Log.e(STUART, SHOP_EDITOR + "on next");
                                 TkpdResponse response = responseData.body();
 
+                                progressdialog.dismiss();
                                 JSONObject jsonObject = null;
                                 try {
                                     jsonObject = new JSONObject(response.getStringData());
@@ -262,7 +268,6 @@ public class ListViewEtalaseEditor extends BaseAdapter {
                                     Data data = gson.fromJson(jsonObject.toString(), Data.class);
                                     if (data.getIsSuccess() == null && response.getErrorMessages().size() > 0) {
                                         String responses = "";
-                                        progressdialog.dismiss();
                                         for (int i = 0; i < response.getErrorMessages().size(); i++) {
                                             responses += response.getErrorMessages().get(i) + " ";
                                         }

@@ -40,6 +40,7 @@ import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.base.BaseFragment;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.session.session.model.LoginModel;
 import com.tokopedia.core.session.model.LoginViewModel;
 import com.tokopedia.session.session.model.RegisterSuccessModel;
@@ -347,7 +348,7 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
                 break;
             case T_AND_C:
                 String joinString = (String)data[0];
-                registerNextTAndC.setText(Html.fromHtml(joinString));
+                registerNextTAndC.setText(MethodChecker.fromHtml(joinString));
                 registerNextTAndC.setMovementMethod(LinkMovementMethod.getInstance());
                 break;
             case TTL:
@@ -422,6 +423,7 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
                 RegisterSuccessModel registerSuccessModel = data.getParcelable(DownloadService.REGISTER_MODEL_KEY);
                 switch (registerSuccessModel.getIsActive()){
                     case RegisterSuccessModel.USER_PENDING:
+                    case RegisterSuccessModel.USER_INACTIVE:
                         sendLocalyticsRegisterEvent(registerSuccessModel.getUserId());
                         sendGTMRegisterEvent();
                         Bundle bundle = new Bundle();

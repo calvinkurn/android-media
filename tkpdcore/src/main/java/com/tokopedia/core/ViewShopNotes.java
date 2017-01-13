@@ -18,6 +18,7 @@ import com.tokopedia.core.network.apiservices.shop.NotesService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.note.model.modelnote.Data;
+import com.tokopedia.core.util.MethodChecker;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,7 +64,7 @@ public class ViewShopNotes extends TActivity {
         NoteId = bundle.getString("note_id");
 
         if (!bundle.getString("note_name").isEmpty()) {
-            NoteName.setText(Html.fromHtml(bundle.getString("note_name")));
+            NoteName.setText(MethodChecker.fromHtml(bundle.getString("note_name")));
         } else {
             NoteName.setText(bundle.getString("note_name"));
         }
@@ -119,7 +120,7 @@ public class ViewShopNotes extends TActivity {
 
                                     Gson gson = new GsonBuilder().create();
                                     Data data = gson.fromJson(jsonObject.toString(), Data.class);
-                                    NoteContent.setText(Html.fromHtml(data.getDetail().getNotesContent()));
+                                    NoteContent.setText(MethodChecker.fromHtml(data.getDetail().getNotesContent()));
                                     if (data.getDetail().getNotesUpdateTime() != null && data.getDetail().getNotesUpdateTime().length() < 5) {
                                         NoteDate.setText(getString(R.string.note_last_update) + " " + data.getDetail().getNotesCreateTime() + " WIB");
                                     } else {

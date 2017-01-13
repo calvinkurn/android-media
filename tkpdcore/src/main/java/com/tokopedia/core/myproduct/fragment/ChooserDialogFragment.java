@@ -15,6 +15,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.myproduct.ProductActivity;
 import com.tokopedia.core.myproduct.adapter.SimpleFragmentPagerAdapter;
 import com.tokopedia.core.myproduct.model.SimpleTextModel;
+import com.tokopedia.core.util.MethodChecker;
 
 import org.parceler.Parcels;
 
@@ -184,7 +185,7 @@ public class ChooserDialogFragment extends android.support.v4.app.DialogFragment
         } else {
             searchHint = getString(R.string.hint_search_status);
         }
-        searchView.setQueryHint(Html.fromHtml("<font color = #888888>" + searchHint + "</font>"));
+        searchView.setQueryHint(MethodChecker.fromHtml("<font color = #888888>" + searchHint + "</font>"));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

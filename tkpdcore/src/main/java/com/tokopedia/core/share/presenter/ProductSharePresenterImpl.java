@@ -92,12 +92,7 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
                 AppEventTracking.SOCIAL_MEDIA.TWITTER
         );
         data.setSource(AppEventTracking.SOCIAL_MEDIA.TWITTER);
-        if(data.getBitmap()!=null) {
-            ShareSocmedHandler.ShareSpecific(activity, TkpdState.PackageName.Twitter,
-                    TkpdState.PackageName.TYPE_IMAGE, data.getTextContent(),
-                    data.renderShareUri(), data.getBitmap(), TkpdState.PackageName
-                            .TWITTER_DEFAULT + "url=" + data.getUri() + "&text=" + data.getName());
-        } else if (data.getImgUri()!=null){
+       if (data.getImgUri()!=null){
             ShareSocmedHandler.ShareSpecificUri(activity, TkpdState.PackageName.Twitter,
                     TkpdState.PackageName.TYPE_IMAGE, data.getTextContent(),
                     data.renderShareUri(), data.getImgUri(), TkpdState.PackageName
@@ -126,11 +121,7 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
                 AppEventTracking.SOCIAL_MEDIA.LINE
         );
         data.setSource(AppEventTracking.SOCIAL_MEDIA.LINE);
-        if (data.getBitmap() != null) {
-            ShareSocmedHandler.ShareSpecific(activity, TkpdState.PackageName.Line,
-                    TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.renderShareUri(),
-                    data.getBitmap(), null);
-        } else if (data.getImgUri() != null){
+        if (data.getImgUri() != null){
             ShareSocmedHandler.ShareSpecificUri(activity, TkpdState.PackageName.Line,
                     TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.renderShareUri(),
                     data.getImgUri(), null);
@@ -146,11 +137,7 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
                 AppEventTracking.SOCIAL_MEDIA.PINTEREST
         );
         data.setSource(AppEventTracking.SOCIAL_MEDIA.PINTEREST);
-        if(data.getBitmap() != null) {
-            ShareSocmedHandler.ShareSpecific(activity, TkpdState.PackageName.Pinterest,
-                    TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.renderShareUri(),
-                    data.getBitmap(), null);
-        } else if (data.getImgUri() != null){
+        if (data.getImgUri() != null){
             ShareSocmedHandler.ShareSpecificUri(activity, TkpdState.PackageName.Pinterest,
                     TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.renderShareUri(),
                     data.getImgUri(), null);
@@ -166,10 +153,7 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
                 AppEventTracking.SOCIAL_MEDIA.OTHER
         );
         data.setSource(AppEventTracking.SOCIAL_MEDIA.OTHER);
-        if (data.getBitmap() != null) {
-            ShareSocmedHandler.ShareIntentImage(activity, null, data.getTextContent(), data.renderShareUri(),
-                    data.getBitmap());
-        } else if (data.getImgUri()!= null){
+        if (data.getImgUri()!= null){
             ShareSocmedHandler.ShareIntentImageUri(activity, null, data.getTextContent(), data.renderShareUri(),
                     data.getImgUri());
         } else {
@@ -184,11 +168,7 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
                 AppEventTracking.SOCIAL_MEDIA.INSTAGRAM
         );
         data.setSource(AppEventTracking.SOCIAL_MEDIA.INSTAGRAM);
-        if(data.getBitmap() != null) {
-            ShareSocmedHandler.ShareSpecific(activity, TkpdState.PackageName.Instagram,
-                    TkpdState.PackageName.TYPE_IMAGE, data.getTextContent(), data.renderShareUri(),
-                    data.getBitmap(), null);
-        } else if(data.getImgUri()!= null){
+        if(data.getImgUri()!= null){
             ShareSocmedHandler.ShareSpecificUri(activity, TkpdState.PackageName.Instagram,
                     TkpdState.PackageName.TYPE_IMAGE, data.getTextContent(), data.renderShareUri(),
                     data.getImgUri(), null);
@@ -206,7 +186,7 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
         data.setSource(AppEventTracking.SOCIAL_MEDIA.GOOGLE_PLUS);
         ShareSocmedHandler.ShareSpecific(activity, TkpdState.PackageName.Gplus,
                 TkpdState.PackageName.TYPE_IMAGE, data.getTextContent(), data.renderShareUri(),
-                data.getBitmap(), null);
+                null, null);
     }
 
     @Override

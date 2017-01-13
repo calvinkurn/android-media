@@ -57,56 +57,7 @@ public class TopAdsGroupAdListPresenterImpl extends TopAdsAdListPresenterImpl<Gr
     }
 
     @Override
-    public void turnOffAdList(List<GroupAd> adList) {
-        DataRequest<GroupAdBulkAction> dataRequest = generateActionRequest(adList, TopAdsNetworkConstant.ACTION_BULK_OFF_AD);
-        groupAdInteractor.bulkAction(dataRequest, new ListenerInteractor<GroupAdBulkAction>() {
-            @Override
-            public void onSuccess(GroupAdBulkAction dataResponseActionAds) {
-                topAdsListPromoViewListener.onTurnOnAdSuccess();
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                topAdsListPromoViewListener.onTurnOnAdFailed();
-            }
-        });
-    }
-
-    @Override
-    public void turnOnAddList(List<GroupAd> adList) {
-        DataRequest<GroupAdBulkAction> dataRequest = generateActionRequest(adList, TopAdsNetworkConstant.ACTION_BULK_ON_AD);
-        groupAdInteractor.bulkAction(dataRequest, new ListenerInteractor<GroupAdBulkAction>() {
-            @Override
-            public void onSuccess(GroupAdBulkAction dataResponseActionAds) {
-                topAdsListPromoViewListener.onTurnOnAdSuccess();
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                topAdsListPromoViewListener.onTurnOnAdFailed();
-            }
-        });
-    }
-
-    @NonNull
-    private DataRequest<GroupAdBulkAction> generateActionRequest(List<GroupAd> ads, String action) {
-        DataRequest<GroupAdBulkAction> dataRequest = new DataRequest<>();
-        GroupAdBulkAction dataRequestGroupAd = new GroupAdBulkAction();
-        dataRequestGroupAd.setAction(action);
-        dataRequestGroupAd.setShopId(SessionHandler.getShopID(context));
-        List<GroupAdAction> dataRequestGroupAdses = new ArrayList<>();
-        for (GroupAd ad : ads) {
-            GroupAdAction data = new GroupAdAction();
-            data.setId(String.valueOf(ad.getId()));
-            dataRequestGroupAdses.add(data);
-        }
-        dataRequestGroupAd.setAdList(dataRequestGroupAdses);
-        dataRequest.setData(dataRequestGroupAd);
-        return dataRequest;
-    }
-
-    @Override
-    public void onDestroy() {
+    public void unSubscribe() {
         if (groupAdInteractor != null) {
             groupAdInteractor.unSubscribe();
         }

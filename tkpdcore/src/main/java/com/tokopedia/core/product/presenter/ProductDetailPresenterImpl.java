@@ -21,6 +21,7 @@ import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -58,6 +59,7 @@ import com.tokopedia.core.talk.talkproduct.activity.TalkProductActivity;
 import com.tokopedia.core.util.AppIndexHandler;
 import com.tokopedia.core.util.DeepLinkUtils;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
@@ -387,7 +389,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             String msg = context.getResources()
                                     .getString(R.string.toast_success_promo1)
                                     + " "
-                                    + Html.fromHtml(productName)
+                                    + MethodChecker.fromHtml(productName)
                                     + " "
                                     + context.getResources()
                                     .getString(R.string.toast_success_promo2);
@@ -396,7 +398,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             String msg = context.getResources()
                                     .getString(R.string.toast_promo_error)
                                     + " "
-                                    + Html.fromHtml(productName)
+                                    + MethodChecker.fromHtml(productName)
                                     + "\n"
                                     + data.getExpiry();
                             viewListener.showToastMessage(msg);
@@ -437,7 +439,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void startIndexingApp(@NonNull AppIndexHandler handler, @NonNull ProductDetailData data) {
         handler.setAction(Action.TYPE_VIEW,
-                Html.fromHtml(data.getInfo().getProductName()).toString(),
+                MethodChecker.fromHtml(data.getInfo().getProductName()).toString(),
                 Uri.parse(data.getInfo().getProductUrl()),
                 DeepLinkUtils.generateAppUri(data.getInfo().getProductUrl()));
         handler.startIndexing();
@@ -613,6 +615,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     private void requestAddWishList(final Context context, final Integer productId) {
         viewListener.loadingWishList();
         UnifyTracking.eventPDPWishlit();
+        TrackingUtils.eventLoca(AppScreen.EVENT_ADDED_WISHLIST);
         retrofitInteractor.addToWishList(context, productId,
                 new RetrofitInteractor.AddWishListListener() {
                     @Override
@@ -710,14 +713,14 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     }
 
                     @Override
-                    public void onTimeout(String message) {
-                        viewListener.showProductDetailRetry(message);
+                    public void onTimeout() {
+                        viewListener.showProductDetailRetry();
                         viewListener.hideProgressLoading();
                     }
 
                     @Override
                     public void onError(String error) {
-                        viewListener.showProductDetailRetry(error);
+                        viewListener.showProductDetailRetry();
                         viewListener.hideProgressLoading();
                     }
 
@@ -725,6 +728,12 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     public void onNullData() {
                         viewListener.hideProgressLoading();
                         viewListener.onNullData();
+                    }
+
+                    @Override
+                    public void onReportServerProblem() {
+                        viewListener.hideProgressLoading();
+                        viewListener.showFullScreenError();
                     }
                 });
     }

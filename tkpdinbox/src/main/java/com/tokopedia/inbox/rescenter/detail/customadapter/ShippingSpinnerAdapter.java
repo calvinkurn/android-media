@@ -2,6 +2,7 @@ package com.tokopedia.inbox.rescenter.detail.customadapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +43,7 @@ public class ShippingSpinnerAdapter extends ArrayAdapter<ResCenterKurir.Kurir> {
         if (position == 0) {
             holder.textView.setText(getContext().getString(R.string.index_spinner_0_default));
         } else {
-            holder.textView.setText(getItem(position - 1).getShipmentName());
+            holder.textView.setText(Html.fromHtml(getItem(position - 1).getShipmentName()).toString());
         }
         return convertView;
     }
@@ -57,7 +58,7 @@ public class ShippingSpinnerAdapter extends ArrayAdapter<ResCenterKurir.Kurir> {
         if (position == 0) {
             holderDropDown.textView.setText(getContext().getString(R.string.index_spinner_0_default));
         } else {
-            holderDropDown.textView.setText(getItem(position - 1).getShipmentName());
+            holderDropDown.textView.setText(Html.fromHtml(getItem(position - 1).getShipmentName()).toString());
         }
 
         return localView;

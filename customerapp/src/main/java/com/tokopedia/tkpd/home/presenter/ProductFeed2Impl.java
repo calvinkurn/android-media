@@ -3,18 +3,18 @@ package com.tokopedia.tkpd.home.presenter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.DeveloperOptions;
-import com.tokopedia.tkpd.R;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.home.model.HistoryProductListItem;
-import com.tokopedia.core.home.model.HorizontalProductList;
+import com.tokopedia.core.home.model.HorizontalRecentViewList;
 import com.tokopedia.core.myproduct.ProductActivity;
 import com.tokopedia.core.myproduct.fragment.AddProductFragment;
 import com.tokopedia.core.myproduct.presenter.ImageGalleryImpl;
@@ -22,11 +22,13 @@ import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.NetworkHandler;
 import com.tokopedia.core.network.apiservices.etc.HomeService;
 import com.tokopedia.core.network.apiservices.etc.apis.home.ProductFeedApi;
+import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.entity.home.GetListFaveShopId;
-import com.tokopedia.core.network.entity.home.ProductFeedData;
 import com.tokopedia.core.network.entity.home.ProductFeedData3;
+import com.tokopedia.core.network.entity.home.recentView.RecentView;
+import com.tokopedia.core.network.entity.home.recentView.RecentViewData;
 import com.tokopedia.core.network.entity.topads.TopAds;
 import com.tokopedia.core.network.entity.topads.TopAdsResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -41,6 +43,7 @@ import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.discovery.interactor.DiscoveryInteractorImpl;
 import com.tokopedia.discovery.interfaces.DiscoveryListener;
 import com.tokopedia.discovery.model.NetworkParam;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractor;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractorImpl;
@@ -79,6 +82,7 @@ public class ProductFeed2Impl implements ProductFeed, DiscoveryListener {
 //    private List<RecyclerViewItem> data;
 
     public static final int[] shopIdDemo = new int[]{642687, 271947, 177783, 578674, 523451, 294558};
+    private final MojitoAuthService mMojitoAuthService;
     GetListFaveShopId.ListFaveShopId listFaveShopId;
 
     private PagingHandler mPaging;
@@ -103,6 +107,7 @@ public class ProductFeed2Impl implements ProductFeed, DiscoveryListener {
         mPaging = new PagingHandler();
         homeService = new HomeService();
         productFeedApi2 = RetrofitUtils.createRetrofit(ACE_URL).create(ProductFeedApi.class);
+        mMojitoAuthService = new MojitoAuthService();
     }
 
     @Override
@@ -178,9 +183,9 @@ public class ProductFeed2Impl implements ProductFeed, DiscoveryListener {
             public void onSuccess(ProductFeedTransformData productFeedTransformData) {
 
                 List<RecyclerViewItem> result = new ArrayList<RecyclerViewItem>();
-                HistoryProductListItem historyProductListItem
-                        = new HistoryProductListItem(productFeedTransformData.getHorizontalProductList().getListProduct());
-                result.add(historyProductListItem);
+                List<RecentView> listProduct = new ArrayList<RecentView>();
+                listProduct.addAll(productFeedTransformData.getHorizontalProductList().getRecentViewList());
+                result.add(new HistoryProductListItem(listProduct));
                 GetListFaveShopId getListFaveShopId = productFeedTransformData.getGetListFaveShopId();
                 if (getListFaveShopId != null)
                     listFaveShopId = getListFaveShopId.getData();
@@ -227,7 +232,8 @@ public class ProductFeed2Impl implements ProductFeed, DiscoveryListener {
     }
 
     private int getPagingIndex() {
-        return mPaging != null ? mPaging.getPagingHandlerModel() != null ? mPaging.getPagingHandlerModel().getStartIndex() : 0 : 0;
+        return mPaging != null ? mPaging.getPagingHandlerModel() != null
+                ? mPaging.getPagingHandlerModel().getStartIndex() : 0 : 0;
     }
 
     @Override
@@ -417,26 +423,25 @@ public class ProductFeed2Impl implements ProductFeed, DiscoveryListener {
     public void fecthRecentProductFromNetwork() {
         Log.d(TAG, "fecthRecentProductFromNetwork");
         view.resetPaging();
+        String userId = SessionHandler.getLoginID(mContext);
         _subscriptions.add(
-                homeService.getApi().getRecentViewProduct(
-                        AuthUtil.generateParams(mContext, new HashMap<String, String>()))
-                        .map(new Func1<Response<ProductFeedData>, ProductFeedTransformData>() {
+                mMojitoAuthService.getApi().getRecentViews(userId)
+                        .map(new Func1<Response<RecentViewData>, ProductFeedTransformData>() {
                             @Override
-                            public ProductFeedTransformData call(Response<ProductFeedData> response) {
+                            public ProductFeedTransformData call(Response<RecentViewData> response) {
                                 ProductFeedTransformData pair = null;
                                 Log.e(TAG, messageTag + response.body());
                                 FileUtils.writeStringAsFileExt(mContext, response.body() + "", "using_response.txt");
-                                if (response.isSuccessful() && response.body().getMessageError() == null) {
-                                    HorizontalProductList horizontalProductList = new HorizontalProductList(response.body().getData().getList());
+                                if (response.isSuccessful()) {
                                     NetworkCalculator newProducFeed = new NetworkCalculator(NetworkConfig.POST, mContext, DeveloperOptions.getWsV4Domain(mContext) + ProductFeedApi.GET_LIST_FAVE_SHOP_ID)
                                             .setIdentity()
                                             .addParam(ProductFeedApi.LIMIT, "")
                                             .compileAllParam()
                                             .finish();
 
-                                    pair = new ProductFeedTransformData(newProducFeed.getHeader(), newProducFeed.getContent(), horizontalProductList);
-                                } else if (response.code() == 200 && response.body().getMessageError() != null && response.body().getMessageError().size() > 0) {
-                                    throw new RuntimeException(response.body().getMessageError().get(0));
+                                    pair = new ProductFeedTransformData(newProducFeed.getHeader(),
+                                            newProducFeed.getContent(),
+                                            getHorizontalRecentViewList(response.body()));
                                 } else {
                                     new RetrofitUtils.DefaultErrorHandler(response.code());
                                 }
@@ -447,7 +452,7 @@ public class ProductFeed2Impl implements ProductFeed, DiscoveryListener {
                             @Override
                             public Observable<ProductFeedTransformData> call(ProductFeedTransformData productFeedTransformData) {
 
-                                Map<String, String> params = new HashMap<String, String>();
+                                Map<String, String> params = new HashMap<>();
                                 params.put(ProductFeedApi.LIMIT, productFeedTransformData.getContent().get(ProductFeedApi.LIMIT));
 
                                 Observable<GetListFaveShopId> getList = homeService.getApi().getListFaveShopId(
@@ -458,7 +463,6 @@ public class ProductFeed2Impl implements ProductFeed, DiscoveryListener {
                                     public ProductFeedTransformData call(ProductFeedTransformData productFeedTransformData, GetListFaveShopId getListFaveShopId) {
                                         ArrayList<String> shop_id_list = getListFaveShopId.getData().getShop_id_list();
                                         if (shop_id_list.size() > 0) {
-//                                            productFeedTransformData.setShopId(shop_id_list.get(mPaging.getPage() - 1));
                                             String shopIds = "";
                                             for (int i = 0; i < shop_id_list.size(); i++) {
                                                 if (i < (shop_id_list.size() - 1))
@@ -561,7 +565,7 @@ public class ProductFeed2Impl implements ProductFeed, DiscoveryListener {
                                 final List<RecyclerViewItem> result = new ArrayList<RecyclerViewItem>();
 //                                FileUtils.writeStringAsFileExt(mContext, productFeedTransformData.getHorizontalProductList() + "", "check_horizontal.txt");
                                 // set history product
-                                List<ProductItem> listProduct = productFeedTransformData.getHorizontalProductList().getListProduct();
+                                List<RecentView> listProduct = productFeedTransformData.getHorizontalProductList().getRecentViewList();
                                 result.add(new HistoryProductListItem(listProduct));
                                 // set product feed real data
                                 List<ProductItem> listProductItems = productFeedTransformData.getListProductItems();
@@ -606,6 +610,11 @@ public class ProductFeed2Impl implements ProductFeed, DiscoveryListener {
                             }
                         })
         );
+    }
+
+    @NonNull
+    private HorizontalRecentViewList getHorizontalRecentViewList(RecentViewData aRecentViewData) {
+        return new HorizontalRecentViewList(aRecentViewData.getData().getRecentView());
     }
 
     private void getTopads(int page) {

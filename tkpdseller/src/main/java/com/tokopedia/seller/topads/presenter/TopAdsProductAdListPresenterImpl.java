@@ -60,56 +60,7 @@ public class TopAdsProductAdListPresenterImpl extends TopAdsAdListPresenterImpl<
     }
 
     @Override
-    public void turnOffAdList(List<ProductAd> adList) {
-        DataRequest<ProductAdBulkAction> dataRequest = generateActionRequest(adList, TopAdsNetworkConstant.ACTION_BULK_OFF_AD);
-        productAdInteractor.bulkAction(dataRequest, new ListenerInteractor<ProductAdBulkAction>() {
-            @Override
-            public void onSuccess(ProductAdBulkAction dataResponseActionAds) {
-                topAdsListPromoViewListener.onTurnOffAdSuccess();
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                topAdsListPromoViewListener.onTurnOffAdFailed();
-            }
-        });
-    }
-
-    @Override
-    public void turnOnAddList(List<ProductAd> adList) {
-        DataRequest<ProductAdBulkAction> dataRequest = generateActionRequest(adList, TopAdsNetworkConstant.ACTION_BULK_ON_AD);
-        productAdInteractor.bulkAction(dataRequest, new ListenerInteractor<ProductAdBulkAction>() {
-            @Override
-            public void onSuccess(ProductAdBulkAction dataResponseActionAds) {
-                topAdsListPromoViewListener.onTurnOnAdSuccess();
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                topAdsListPromoViewListener.onTurnOnAdFailed();
-            }
-        });
-    }
-
-    @NonNull
-    private DataRequest<ProductAdBulkAction> generateActionRequest(List<ProductAd> ads, String action) {
-        DataRequest<ProductAdBulkAction> dataRequest = new DataRequest<>();
-        ProductAdBulkAction dataRequestSingleAd = new ProductAdBulkAction();
-        dataRequestSingleAd.setAction(action);
-        dataRequestSingleAd.setShopId(SessionHandler.getShopID(context));
-        List<ProductAdAction> dataRequestSingleAdses = new ArrayList<>();
-        for (ProductAd ad : ads) {
-            ProductAdAction data = new ProductAdAction();
-            data.setId(String.valueOf(ad.getId()));
-            dataRequestSingleAdses.add(data);
-        }
-        dataRequestSingleAd.setAds(dataRequestSingleAdses);
-        dataRequest.setData(dataRequestSingleAd);
-        return dataRequest;
-    }
-
-    @Override
-    public void onDestroy() {
+    public void unSubscribe() {
         if (productAdInteractor != null) {
             productAdInteractor.unSubscribe();
         }

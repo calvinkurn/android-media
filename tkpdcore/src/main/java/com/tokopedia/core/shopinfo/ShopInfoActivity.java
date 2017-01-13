@@ -53,6 +53,7 @@ import com.tokopedia.core.shopinfo.facades.ActionShopInfoRetrofit;
 import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
 import com.tokopedia.core.shopinfo.fragment.ProductList;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.TkpdState;
@@ -406,7 +407,7 @@ public class ShopInfoActivity extends TActivity {
     private void initInitialData() {
         if (isShopValid()) {
             showShopInfo();
-            shopModel.info.shopName = Html.fromHtml(shopModel.info.shopName).toString();
+            shopModel.info.shopName = MethodChecker.fromHtml(shopModel.info.shopName).toString();
             holder.shopName.setText(shopModel.info.shopName);
             ImageHandler.loadImageCircle2(this, holder.shopAvatar, shopModel.info.shopAvatar);
             if (!shopModel.info.shopCover.isEmpty()) {
@@ -447,7 +448,7 @@ public class ShopInfoActivity extends TActivity {
         holder.pager.addOnPageChangeListener(new
                 TabLayout.TabLayoutOnPageChangeListener(holder.indicator));
         holder.indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(holder.pager));
-        shopModel.info.shopName = Html.fromHtml(shopModel.info.shopName).toString();
+        shopModel.info.shopName = MethodChecker.fromHtml(shopModel.info.shopName).toString();
         setListener();
         holder.collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
         holder.collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
@@ -455,7 +456,7 @@ public class ShopInfoActivity extends TActivity {
             ImageHandler.loadImageCircle2(this, holder.shopAvatar, shopModel.info.shopAvatar);
         ImageHandler.loadImageLucky2(this, holder.luckyShop, shopModel.info.shopLucky);
         setFreeReturn(holder, shopModel.info);
-        holder.shopName.setText(Html.fromHtml(shopModel.info.shopName));
+        holder.shopName.setText(MethodChecker.fromHtml(shopModel.info.shopName));
         holder.location.setText(shopModel.info.shopLocation);
         holder.location.setVisibility(View.VISIBLE);
         holder.collapsingToolbarLayout.setTitle(" ");
@@ -563,13 +564,13 @@ public class ShopInfoActivity extends TActivity {
         String closeNote = "<b>" + getResources().getString(R.string.title_currently_closed) + "</b>" + "<br>"
                 + getResources().getString(R.string.title_until) + " <b>" + shopModel.closedInfo.until + "</b>" + "<br>"
                 + getResources().getString(R.string.title_reason) + " <b>" + shopModel.closedInfo.note + "</b>";
-        return Html.fromHtml(closeNote);
+        return MethodChecker.fromHtml(closeNote);
     }
 
     private Spanned compileShopStatus() {
         String inactiveNote = "<b>" + shopModel.info.shopStatusTitle + "</b>" + "<br>"
                 + shopModel.info.shopStatusMessage;
-        return Html.fromHtml(inactiveNote);
+        return MethodChecker.fromHtml(inactiveNote);
     }
 
     private void setListener() {

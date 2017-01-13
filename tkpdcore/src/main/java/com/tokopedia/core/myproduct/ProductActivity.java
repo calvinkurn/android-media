@@ -76,6 +76,7 @@ import com.tokopedia.core.product.interactor.CacheInteractor;
 import com.tokopedia.core.product.interactor.CacheInteractorImpl;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
@@ -261,7 +262,7 @@ public class ProductActivity extends BaseProductActivity implements
                     if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                         File outputMediaFile = getOutputMediaFile();
                         imagePathCamera = outputMediaFile.getAbsolutePath();
-                        Uri fileuri = Uri.fromFile(outputMediaFile);
+                        Uri fileuri = MethodChecker.getUri(ProductActivity.this, outputMediaFile);
                         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileuri);
                         startActivityForResult(takePictureIntent,
                                 CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);

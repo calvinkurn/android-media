@@ -11,8 +11,10 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.myproduct.model.FolderModel;
 import com.tokopedia.core.myproduct.presenter.ImageGalleryView;
+import com.tokopedia.core.util.MethodChecker;
 
 import java.io.File;
 import java.util.List;
@@ -20,7 +22,7 @@ import java.util.List;
 /**
  * Created by m.normansyah on 12/6/15.
  */
-public class ImageAlbumAdapter extends RecyclerView.Adapter<ImageAlbumAdapter.ViewHolder>{
+public class ImageAlbumAdapter extends RecyclerView.Adapter<ImageAlbumAdapter.ViewHolder> {
     int maxSelection = -1;
 
     public int getMaxSelection() {
@@ -51,7 +53,7 @@ public class ImageAlbumAdapter extends RecyclerView.Adapter<ImageAlbumAdapter.Vi
     /**
      * This is view holder class
      */
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         ImageView mImageView;
         LinearLayout mBorder;
@@ -59,10 +61,10 @@ public class ImageAlbumAdapter extends RecyclerView.Adapter<ImageAlbumAdapter.Vi
         FolderModel folderModel;
         int maxSelection = ImageGalleryAdapter.UNLIMITED_SELECTION;
 
-        public ViewHolder(View itemView){
+        public ViewHolder(View itemView) {
             super(itemView);
             mImageView = (ImageView) itemView.findViewById(R.id.picture_gallery_album_imageview);
-            mBorder	  = (LinearLayout) itemView.findViewById(R.id.border_gallery_album_layout);
+            mBorder = (LinearLayout) itemView.findViewById(R.id.border_gallery_album_layout);
             mAlbumname = (TextView) itemView.findViewById(R.id.picture_gallery_album_name);
 
             mImageView.setOnClickListener(this);
@@ -70,20 +72,20 @@ public class ImageAlbumAdapter extends RecyclerView.Adapter<ImageAlbumAdapter.Vi
             mImageView.setOnClickListener(this);
         }
 
-        public void bindView(FolderModel folderModel, int maxSelection){
+        public void bindView(FolderModel folderModel, int maxSelection) {
             this.folderModel = folderModel;
             mAlbumname.setText(folderModel.getPath());
-            ImageHandler.loadImageFit2(itemView.getContext(),mImageView,
-                Uri.fromFile(new File(folderModel.getImageModels().get(0).getPath())).toString());
+            ImageHandler.loadImageFit2(itemView.getContext(), mImageView,
+                    MethodChecker.getUri(MainApplication.getAppContext(), new File(folderModel.getImageModels().get(0).getPath())).toString());
             setMaxSelection(maxSelection);
 //            ImageHandler.LoadImageCustom(Uri.fromFile(new File(folderModel.getImageModels().get(0).getPath())).toString())
 //                    .fit()
 //                    .centerCrop().into(mImageView);
         }
 
-        public void moveToImageGallery(){
-            if(itemView.getContext()!= null && itemView.getContext() instanceof ImageGalleryView){
-                ((ImageGalleryView)itemView.getContext()).moveToGallery(folderModel.getImageModels(), maxSelection);
+        public void moveToImageGallery() {
+            if (itemView.getContext() != null && itemView.getContext() instanceof ImageGalleryView) {
+                ((ImageGalleryView) itemView.getContext()).moveToGallery(folderModel.getImageModels(), maxSelection);
             }
         }
 
@@ -103,15 +105,15 @@ public class ImageAlbumAdapter extends RecyclerView.Adapter<ImageAlbumAdapter.Vi
 
     List<FolderModel> data;
 
-    public ImageAlbumAdapter(List<FolderModel> data){
+    public ImageAlbumAdapter(List<FolderModel> data) {
         this.data = data;
     }
 
-    public void addAll(List<FolderModel> data){
+    public void addAll(List<FolderModel> data) {
         this.data.addAll(data);
     }
 
-    public void add(FolderModel data){
+    public void add(FolderModel data) {
         this.data.add(data);
     }
 }

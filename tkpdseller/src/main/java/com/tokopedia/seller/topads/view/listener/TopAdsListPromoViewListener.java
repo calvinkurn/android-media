@@ -20,11 +20,4 @@ public interface TopAdsListPromoViewListener<T extends Ad> {
 
     void onLoadSearchAdError();
 
-    void onTurnOnAdSuccess();
-
-    void onTurnOnAdFailed();
-
-    void onTurnOffAdSuccess();
-
-    void onTurnOffAdFailed();
 }

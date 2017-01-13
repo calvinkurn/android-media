@@ -175,7 +175,8 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
 
     @Override
     public void showError(String string) {
-        SnackbarManager.make(getActivity(),string, Snackbar.LENGTH_LONG).show();
+        snackbar = SnackbarManager.make(getActivity(),string, Snackbar.LENGTH_LONG);
+        snackbar.show();
     }
 
     @Override
@@ -365,6 +366,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
         super.onDestroyView();
         presenter.unSubscribeFacade();
         KeyboardHandler.DropKeyboard(getActivity(),getView());
+        if(snackbar!=null && snackbar.isShown()) snackbar.dismiss();
     }
 
     private void storeCacheGTM(String key, String value) {

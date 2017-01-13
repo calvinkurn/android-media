@@ -3,6 +3,7 @@ package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -12,10 +13,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
-import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -23,6 +23,7 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
+import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.presenter.TopAdsAdListPresenter;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAdListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyGroupAdsDataBinder;
@@ -30,7 +31,6 @@ import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder
 import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
 import com.tokopedia.seller.topads.view.widget.DividerItemDecoration;
 
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -38,10 +38,11 @@ import butterknife.BindView;
 /**
  * A simple {@link Fragment} subclass.
  */
-public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> extends BasePresenterFragment<T> implements
-        TopAdsListPromoViewListener, SearchView.OnQueryTextListener, TopAdsAdListAdapter.Callback, TopAdsAdListActionMode.Callback {
+public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> extends TopAdsDatePickerFragment<T> implements
+        TopAdsListPromoViewListener, SearchView.OnQueryTextListener, TopAdsAdListAdapter.Callback {
 
     private static final int START_PAGE = 1;
+    protected static final int REQUEST_CODE_AD_STATUS = TopAdsAdListFragment.class.hashCode();
 
     @BindView(R2.id.list_product)
     RecyclerView recyclerView;
@@ -52,8 +53,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     @BindView(R2.id.mainView)
     View mainView;
 
-    protected Date startDate;
-    protected Date endDate;
     protected String keyword;
     protected int status;
     protected int page;
@@ -63,7 +62,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     private RefreshHandler refresh;
     private LinearLayoutManager layoutManager;
     private SearchView searchView;
-    private TopAdsAdListActionMode actionMode;
     private SnackbarRetry snackBarRetry;
     private ProgressDialog progressDialog;
 
@@ -71,31 +69,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
 
     public TopAdsAdListFragment() {
         // Required empty public constructor
-    }
-
-    @Override
-    protected boolean isRetainInstance() {
-        return false;
-    }
-
-    @Override
-    protected void onFirstTimeLaunched() {
-
-    }
-
-    @Override
-    public void onSaveState(Bundle state) {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return true;
     }
 
     @Override
@@ -122,16 +95,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     @Override
     protected void setActionVar() {
 
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (presenter.isDateUpdated(startDate, endDate)) {
-            startDate = presenter.getStartDate();
-            endDate = presenter.getEndDate();
-            loadData();
-        }
     }
 
     @Override
@@ -172,13 +135,17 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
             @Override
             public void onRetryCliked() {
                 hideLoading();
+                adapter.showLoadingFull(true);
                 searchAd(START_PAGE);
             }
         });
         adapter.setRetryView(topAdsRetryDataBinder);
     }
 
+    @Override
     protected void loadData() {
+        page = START_PAGE;
+        adapter.clearData();
         adapter.showLoadingFull(true);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(presenter.getRangeDateFormat(startDate, endDate));
         searchAd();
@@ -204,38 +171,15 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     }
 
     @Override
-    public void onChecked(int position, boolean checked) {
-        if (adapter.getSelectedList().size() > 0 && actionMode == null) {
-            actionMode = new TopAdsAdListActionMode();
-            actionMode.setCallback(this);
-            getActivity().startActionMode(actionMode);
-            swipeToRefresh.setEnabled(false);
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        // check if the request code is the same
+        if (requestCode == REQUEST_CODE_AD_STATUS && intent != null) {
+            boolean adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_STATUS_CHANGED, false);
+            if (adStatusChanged) {
+                searchAd(START_PAGE);
+            }
         }
-        if (actionMode != null) {
-            actionMode.setTitle(String.valueOf(adapter.getSelectedList().size()));
-        }
-        hideSnackBarRetry();
-    }
-
-    @Override
-    public void onActionTurnOn() {
-        progressDialog.show();
-        presenter.turnOnAddList(adapter.getSelectedList());
-    }
-
-    @Override
-    public void onActionTurnOff() {
-        progressDialog.show();
-        presenter.turnOffAdList(adapter.getSelectedList());
-    }
-
-    @Override
-    public void onActionModeDestroyed() {
-        progressDialog.dismiss();
-        actionMode = null;
-        adapter.clearCheckedList();
-        swipeToRefresh.setEnabled(true);
-        hideSnackBarRetry();
     }
 
     @Override
@@ -247,13 +191,21 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     }
 
     @Override
-    public void onSearchAdLoaded(@NonNull List adList, int totalItem) {
-        if (actionMode == null) {
-            swipeToRefresh.setEnabled(true);
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_date) {
+            openDatePicker();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSearchAdLoaded(@NonNull List adList, int totalItem) {
+        swipeToRefresh.setEnabled(true);
         if (page == START_PAGE) {
             adapter.clearData();
             this.totalItem = totalItem;
+            layoutManager.scrollToPositionWithOffset(0, 0);
         }
         adapter.addData(adList);
         hideLoading();
@@ -276,48 +228,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
             swipeToRefresh.setEnabled(false);
             adapter.showRetryFull(true);
         }
-
-    }
-
-    @Override
-    public void onTurnOnAdSuccess() {
-        hideLoading();
-        onBulkUpdateSuccess();
-    }
-
-    @Override
-    public void onTurnOnAdFailed() {
-        hideLoading();
-        showSnackBarRetry(new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                onActionTurnOn();
-            }
-        });
-    }
-
-    @Override
-    public void onTurnOffAdSuccess() {
-        hideLoading();
-        onBulkUpdateSuccess();
-    }
-
-    @Override
-    public void onTurnOffAdFailed() {
-        hideLoading();
-        showSnackBarRetry(new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                onActionTurnOff();
-            }
-        });
-    }
-
-    private void onBulkUpdateSuccess() {
-        if (actionMode != null) {
-            actionMode.finish();
-        }
-        searchAd(START_PAGE);
     }
 
     private void hideLoading() {
@@ -348,6 +258,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     @Override
     public void onDestroy() {
         super.onDestroy();
-        presenter.onDestroy();
+        presenter.unSubscribe();
     }
 }

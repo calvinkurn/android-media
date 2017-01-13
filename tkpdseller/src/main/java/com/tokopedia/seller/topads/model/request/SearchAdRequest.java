@@ -23,6 +23,8 @@ public class SearchAdRequest {
     private int status;
     private int group;
     private int page;
+    private String adId;
+    private String groupId;
 
     public String getShopId() {
         return shopId;
@@ -80,11 +82,27 @@ public class SearchAdRequest {
         this.page = page;
     }
 
+    public void setAdId(String adId) {
+        this.adId = adId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
     public HashMap<String, String> getParams() {
         HashMap<String, String> params = new HashMap<>();
         params.put(TopAdsNetworkConstant.PARAM_SHOP_ID, shopId);
         params.put(TopAdsNetworkConstant.PARAM_START_DATE, new SimpleDateFormat(TopAdsConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(startDate));
         params.put(TopAdsNetworkConstant.PARAM_END_DATE, new SimpleDateFormat(TopAdsConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(endDate));
+        if (!TextUtils.isEmpty(groupId)) {
+            params.put(TopAdsNetworkConstant.PARAM_GROUP_ID, groupId);
+            return params;
+        }
+        if (!TextUtils.isEmpty(adId)) {
+            params.put(TopAdsNetworkConstant.PARAM_AD_ID, adId);
+            return params;
+        }
         if (!TextUtils.isEmpty(keyword)) {
             params.put(TopAdsNetworkConstant.PARAM_KEYWORD, keyword);
         }
