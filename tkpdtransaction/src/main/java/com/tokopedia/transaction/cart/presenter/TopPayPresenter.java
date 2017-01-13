@@ -46,6 +46,13 @@ public class TopPayPresenter implements ITopPayPresenter {
     }
 
     @Override
+    public void processRedirectUrlContainsTopPayRedirectUrl(String url) {
+        Uri uri = Uri.parse(url);
+        String paymentId = uri.getQueryParameter(KEY_QUERY_PAYMENT_ID);
+        view.setPaymentId(paymentId);
+    }
+
+    @Override
     public void processRedirectUrlContainsAccountUrl(String url) {
         Uri uriMain = Uri.parse(url);
         String ld = uriMain.getQueryParameter(KEY_QUERY_LD);

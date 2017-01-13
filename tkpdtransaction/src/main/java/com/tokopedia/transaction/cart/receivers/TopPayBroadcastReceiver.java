@@ -19,6 +19,7 @@ public class TopPayBroadcastReceiver extends BroadcastReceiver {
     public static final int RESULT_CODE_TOP_PAY_ERROR = 0;
     public static final int RESULT_CODE_TOP_PAY_NO_CONNECTION = 2;
     public static final int RESULT_CODE_TOP_PAY_PROCESS_ONGOING = 3;
+    public static final int RESULT_CODE_TOP_PAY_PAYMENT_NOT_VERIFIED = 4;
 
     public static final String EXTRA_RESULT_CODE_TOP_PAY_ACTION
             = "EXTRA_RESULT_CODE_TOP_PAY_ACTION";
@@ -87,6 +88,11 @@ public class TopPayBroadcastReceiver extends BroadcastReceiver {
                             intent.getExtras().getString(EXTRA_MESSAGE_TOP_PAY_ACTION)
                     );
                     break;
+                case RESULT_CODE_TOP_PAY_PAYMENT_NOT_VERIFIED:
+                    topPayGetThanksListener.onGetThanksTopPayNotValid(
+                            intent.getExtras().getString(EXTRA_MESSAGE_TOP_PAY_ACTION)
+                    );
+                    break;
             }
         }
     }
@@ -105,6 +111,8 @@ public class TopPayBroadcastReceiver extends BroadcastReceiver {
         void onGetThanksTopPaySuccess(String message);
 
         void onGetThanksTopPayFailed(String message);
+
+        void onGetThanksTopPayNotValid(String message);
 
         void onGetThanksTopPayNoConnection(String message);
 

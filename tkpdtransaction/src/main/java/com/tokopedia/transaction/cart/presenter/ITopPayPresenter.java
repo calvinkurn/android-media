@@ -15,6 +15,8 @@ public interface ITopPayPresenter {
 
     void processRedirectUrlContainsTopPayCallbackUrl(String url);
 
+    void processRedirectUrlContainsTopPayRedirectUrl(String url);
+
     void processRedirectUrlContainsAccountUrl(String url);
 
     void processRedirectUrlContainsLoginUrl();
@@ -24,4 +26,6 @@ public interface ITopPayPresenter {
     void processVerifyPaymentIdByCancelTopPay(String paymentId);
 
     void clearNotificationCart();
+
+
 }

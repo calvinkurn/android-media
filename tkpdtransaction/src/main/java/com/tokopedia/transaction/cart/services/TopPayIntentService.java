@@ -127,11 +127,11 @@ public class TopPayIntentService extends IntentService {
                             );
                             intent.putExtra(
                                     TopPayBroadcastReceiver.EXTRA_RESULT_CODE_TOP_PAY_ACTION,
-                                    TopPayBroadcastReceiver.RESULT_CODE_TOP_PAY_ERROR
+                                    TopPayBroadcastReceiver.RESULT_CODE_TOP_PAY_PAYMENT_NOT_VERIFIED
                             );
                             intent.putExtra(
                                     TopPayBroadcastReceiver.EXTRA_MESSAGE_TOP_PAY_ACTION,
-                                    "Pembayaran Gagal"
+                                    "Proses pembayaran tidak berhasil atau dibatalkan"
                             );
                             sendBroadcast(intent);
                         }

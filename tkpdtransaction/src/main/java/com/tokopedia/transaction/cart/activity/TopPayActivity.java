@@ -203,7 +203,13 @@ public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> impl
                     public void onRetryClicked() {
                         closeView();
                     }
-                });
+                }).showRetrySnackbar();
+    }
+
+    @Override
+    public void onGetThanksTopPayNotValid(String message) {
+        hideProgressLoading();
+        showToastMessageWithForceCloseView(message);
     }
 
     @Override
@@ -213,7 +219,10 @@ public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> impl
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        presenter.processVerifyPaymentId(paymentId);
+                        presenter.processVerifyPaymentId(
+                                paymentId != null ? paymentId
+                                        : topPayParameterData.getParameter().getTransactionId()
+                        );
                     }
                 });
     }
@@ -225,7 +234,9 @@ public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> impl
 
     @Override
     public void onBackPressed() {
-        presenter.processVerifyPaymentIdByCancelTopPay(paymentId);
+        presenter.processVerifyPaymentIdByCancelTopPay(
+                paymentId != null ? paymentId : topPayParameterData.getParameter().getTransactionId()
+        );
     }
 
     @Override
@@ -312,10 +323,14 @@ public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> impl
         @SuppressWarnings("deprecation")
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            Log.d("REDIRECT_URL", url);
             view.invalidate();
             if (url.contains(topPayParameterData.getCallbackUrlPath())) {
                 view.stopLoading();
                 presenter.processRedirectUrlContainsTopPayCallbackUrl(url);
+                return true;
+            } else if (url.contains(topPayParameterData.getRedirectUrl())) {
+                presenter.processRedirectUrlContainsTopPayRedirectUrl(url);
                 return true;
             } else if (url.contains(CONTAINS_ACCOUNT_URL)) {
                 view.stopLoading();
