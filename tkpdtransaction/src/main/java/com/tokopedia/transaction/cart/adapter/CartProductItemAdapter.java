@@ -219,8 +219,7 @@ class CartProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
         });
         holder.etQuantityProduct.setText(item.getTempQuantity());
-        holder.etNotesProduct.setText(MethodChecker.fromHtml(item.getTempNotes()));
-
+        holder.etNotesProduct.setText(item.getTempNotes());
         holder.tvNameProduct.setOnClickListener(getOnProductDetailClickListener(cartProduct));
         holder.ivPicProduct.setOnClickListener(getOnProductDetailClickListener(cartProduct));
         holder.tvPriceProduct.setOnClickListener(getOnProductDetailClickListener(cartProduct));
