@@ -9,5 +9,6 @@
     <string name="hint_dialog_alert_request_cancel_order_et_reason">Alasan</string>
     <string name="label_error_request_cancel_order_reason_empty">Alasan pembatalan harus diisi</string>
     <string name="label_error_request_cancel_order_reason_to_short">Alasan pembatalan terlalu pendek, minimum 10 karakter</string>
+    <string name="toko_cash_info">TokoCash</string>
 
 </resources>

@@ -190,6 +190,7 @@ public final class AppScreen {
     public static final String SCREEN_SHOP_INFO = "Shop info detail page";
     public static final String SCREEN_PRODUCT_IMAGE_PREVIEW = "Preview Image Product page";
     public static final String SCREEN_LOYALTY = "Loyalty page";
+    public static final String SCREEN_WALLET = "Wallet page";
     public static final String SCREEN_CREDIT_CARD_BUY = "Credit card buy page";
     public static final String SCREEN_CREDIT_CARD_CART_BUY = "Credit card buy cart page";
     public static final String SCREEN_DOWNLOAD_INVOICE = "Download invoice page";

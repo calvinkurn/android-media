@@ -1,5 +1,6 @@
 package com.tokopedia.core.drawer;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -19,6 +20,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.drawer.model.DrawerHeader;
 import com.tokopedia.core.drawer.model.DrawerItem;
@@ -465,13 +467,14 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private void setTokoCashLayoutValue(HeaderViewHolder holder, DrawerHeader headerValue) {
         if(headerValue.tokoCashValue == null || headerValue.tokoCashText.isEmpty()) {
            holder.topCashLayout.setVisibility(View.GONE);
-        } else {
+        } else if(!headerValue.tokoCashToWallet && !headerValue.tokoCashOtherAction) {
+            holder.topCashLayout.setVisibility(View.GONE);
+        }else {
             holder.tokoCashLabel.setText(headerValue.tokoCashText);
-            holder.topCashLayout.setOnClickListener(onLayoutTopCashSelected(headerValue.tokoCashURL));
-            if(headerValue.tokoCashToWallet)
-                holder.tokoCashValueView.setText(headerValue.tokoCashValue);
-            else holder.topCashLayout.setVisibility(View.GONE);
-            //else holder.tokoCashValueView.setText("DAFTAR");
+            holder.topCashLayout
+                    .setOnClickListener(onLayoutTopCashSelected(headerValue.tokoCashURL));
+            holder.tokoCashValueView.setText(headerValue.tokoCashValue);
+            holder.topCashLayout.setVisibility(View.VISIBLE);
             holder.loadingTopCash.setVisibility(View.GONE);
         }
     }
@@ -483,9 +486,16 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 drawerListener.OnClosed();
                 Bundle bundle = new Bundle();
                 bundle.putString("url", redirectURL);
-                Intent intent = new Intent(context, LoyaltyDetail.class);
-                intent.putExtras(bundle);
-                context.startActivity(intent);
+                if(context instanceof Activity){
+                    if(((Activity) context).getApplication() instanceof TkpdCoreRouter) {
+                        ((TkpdCoreRouter)((Activity) context).getApplication())
+                                .goToWallet(context, bundle);
+                    }
+                }
+
+//                Intent intent = new Intent(context, LoyaltyDetail.class);
+//                intent.putExtras(bundle);
+//                context.startActivity(intent);
                 finishActivity();
             }
         };

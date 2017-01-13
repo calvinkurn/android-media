@@ -19,6 +19,7 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.SessionHandler;
 
 import org.json.JSONException;
 
@@ -187,6 +188,8 @@ public class NetworkInteractorImpl implements NetworkInteractor {
     @Override
     public void getTokoCash(final Context context, final TopCashListener listener) {
         TKPDMapParam<String, String> topCashParams = new TKPDMapParam<>();
+        SessionHandler sessionHandler = new SessionHandler(context);
+        tokoCashService.setToken(sessionHandler.getAccessToken(context));
         Observable<Response<TopCashItem>> observable = tokoCashService.getApi()
                 .getTokoCash(topCashParams);
         compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
@@ -200,7 +203,8 @@ public class NetworkInteractorImpl implements NetworkInteractor {
 
                     @Override
                     public void onError(Throwable e) {
-                        if(e instanceof SessionExpiredException) {
+                        if(e instanceof SessionExpiredException
+                                && SessionHandler.isV4Login(context)) {
                             listener.onTokenExpire();
                         }
                     }

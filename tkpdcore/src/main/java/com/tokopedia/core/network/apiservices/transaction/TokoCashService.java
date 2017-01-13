@@ -34,4 +34,8 @@ public class TokoCashService extends BearerService<TokoCashApi> {
         return this.mApi;
     }
 
+    public void setToken(String accessToken) {
+        mToken = accessToken;
+    }
+
 }
