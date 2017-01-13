@@ -76,7 +76,7 @@ public class FCMMessagingService extends FirebaseMessagingService {
         mNotificationAnalyticsReceiver = new NotificationAnalyticsReceiver();
         Bundle data = GCMUtils.convertMap(message.getData());
 
-        CommonUtils.dumper(data.toString());
+        CommonUtils.dumper("FCM messaging "+data.toString());
         cacheManager = new FCMCacheManager(this);
         if (cacheManager.isAllowToHandleNotif(data)) {
             cacheManager.setCache(this);

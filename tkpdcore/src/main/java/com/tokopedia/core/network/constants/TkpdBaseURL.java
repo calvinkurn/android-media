@@ -3,7 +3,8 @@ package com.tokopedia.core.network.constants;
 /**
  * Created by Angga.Prasetiyo on 07/12/2015.
  */
-public interface  TkpdBaseURL {
+public interface TkpdBaseURL {
+
     String LIVE_DOMAIN = "https://ws.tokopedia.com/";
     String STAGE_DOMAIN = "https://ws-staging.tokopedia.com/";
     String ALPHA_DOMAIN = "https://ws-alpha.tokopedia.com/";
@@ -24,12 +25,14 @@ public interface  TkpdBaseURL {
     String INBOX_DOMAIN = "https://inbox.tokopedia.com";
     String JS_DOMAIN = "https://js.tokopedia.com/";
     String JS_STAGING_DOMAIN = "https://js-staging.tokopedia.com/";
-    String JS_ALPHA_DOMAIN = "https://js-alpha.tokopedia.com/";
+    String JS_ALPHA_DOMAIN = "https://ajax-alpha.tokopedia.com/js/";
     String KERO_DOMAIN = "https://kero.tokopedia.com/";
     String JAHE_DOMAIN = "https://jahe.tokopedia.com";
     String PULSA_WEB_DOMAIN = "https://pulsa.tokopedia.com";
     String PULSA_WEB_STAGING_DOMAIN = "https://pulsa-staging.tokopedia.com";
     String GOLD_MERCHANT_DOMAIN = "https://goldmerchant.tokopedia.com";
+    String WEB_DOMAIN = "https://www.tokopedia.com/";
+    String MOBILE_DOMAIN = "https://m.tokopedia.com/";
 
     interface Product {
         String URL_PRODUCT = BASE_DOMAIN + "v4/product/";
@@ -230,6 +233,7 @@ public interface  TkpdBaseURL {
         String PATH_REMOVE_WISHLIST_PRODUCT = "remove_wishlist_product.pl";
 
         String PATH_IS_ALREADY_WISHLIST_PRODUCT = "is_already_wishlist_product.pl";
+        String PATH_OTP_WITH_CALL = "otp/request";
     }
 
     interface Shop {
@@ -325,8 +329,6 @@ public interface  TkpdBaseURL {
 
     interface Etc {
         String URL_ADDRESS = BASE_DOMAIN + "v4/address/";
-        String URL_CONTACT_US = BASE_DOMAIN + "v4/contact-us/";
-        String URL_CONTACT_US_ACTION = BASE_DOMAIN + "v4/action/contact-us/";
         String URL_DEPARTMENT = BASE_DOMAIN + "v4/department/";
         String URL_HOME = BASE_DOMAIN + "v4/home/";
         String URL_TICKER = BASE_DOMAIN + "v4/ticker/";
@@ -335,12 +337,6 @@ public interface  TkpdBaseURL {
         String PATH_GET_DISTRICT = "get_district.pl";
         String PATH_GET_PROVINCE = "get_province.pl";
         String PATH_GET_SHIPPING_CITY = "get_shipping_city.pl";
-
-        String PATH_GET_FORM_MODEL_CONTACT_US = "get_form_model_contact_us.pl";
-        String PATH_GET_TREE_TICKET_CATEGORY = "get_tree_ticket_category.pl";
-        String PATH_CREATE_TICKET = "create_ticket.pl";
-        String PATH_CREATE_TICKET_VALIDATION = "create_ticket_validation.pl";
-
 
         String PATH_GET_DEPARTMENT_CHILD = "get_department_child.pl";
         String PATH_GET_DEPARTMENT_PARENT = "get_department_parent.pl";
@@ -508,6 +504,7 @@ public interface  TkpdBaseURL {
         String PATH_OTHER_PRODUCT = "v1/product";
         String PATH_FAV_SHOP_FEED = "catalog/product";
         String PATH_CATALOG = "v1/catalog";
+        String PATH_TOP_PICKS = "/hoth/toppicks/widget";
 
     }
 
@@ -594,6 +591,7 @@ public interface  TkpdBaseURL {
         String RESET_PASSWORD = "api/reset";
         String VALIDATE_EMAIL = "/api/register/validate-email";
         String RESENT_ACTIVATION = "/api/resend";
+        String GENERATE_HOST = "/api/upload-host";
     }
 
     interface Home {
@@ -606,5 +604,15 @@ public interface  TkpdBaseURL {
 
     interface FCM{
         String UPDATE_FCM = "/api/gcm/update";
+    }
+
+    interface ContactUs {
+        String URL_CONTACT_US = WEB_DOMAIN + "contact-us";
+
+        String PATH_GET_SOLUTION = URL_CONTACT_US + "/ajax/solution/{id}";
+        String PATH_CREATE_STEP_1 = URL_CONTACT_US + "/ajax/create/step/1";
+        String PATH_CREATE_STEP_2 = URL_CONTACT_US + "/ajax/create/step/2";
+        String URL_HELP = MOBILE_DOMAIN + "bantuan/";
+        String URL_CHANGE_NUMBER = "https://www.tokopedia.com/contact-us?solution_id=54";
     }
 }

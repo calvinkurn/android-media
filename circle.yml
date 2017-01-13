@@ -1,0 +1,6 @@
+dependencies:
+  pre:
+    - source environmentSetup.sh && copyEnvVarsToGradleProperties && getGradle && setupAndroidSdk
+  override:
+    - gradle clean build:
+        timeout: 1800

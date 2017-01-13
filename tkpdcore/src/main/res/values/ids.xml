@@ -58,6 +58,7 @@
     <item name="tv_success" type="id" />
     <item name="iv_ava" type="id" />
     <item name="iv_gold" type="id" />
+    <item name="iv_official" type="id" />
     <item name="iv_lucky" type="id" />
     <item name="tv_location" type="id" />
     <item name="iv_fav" type="id" />

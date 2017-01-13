@@ -75,6 +75,8 @@ public class TkpdState {
         public static final int REGISTER_INITIAL = 45;
         public static final int SELLER_GM_SUBSCRIBE = 46;
         public static final int SELLER_GM_SUBSCRIBE_EXTEND = 47;
+        public static final int SELLER_GM_STAT = 48;
+
     }
 
     public class Application {

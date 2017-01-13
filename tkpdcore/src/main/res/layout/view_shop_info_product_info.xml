@@ -53,6 +53,14 @@
                         tools:ignore="ContentDescription" />
 
                     <ImageView
+                        android:id="@id/iv_official"
+                        android:layout_width="@dimen/large_dp"
+                        android:layout_height="@dimen/large_dp"
+                        android:src="@drawable/ic_badge_official"
+                        android:visibility="gone"
+                        tools:ignore="ContentDescription" />
+
+                    <ImageView
                         android:id="@id/iv_lucky"
                         android:layout_width="@dimen/large_dp"
                         android:layout_height="@dimen/large_dp"

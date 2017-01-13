@@ -51,6 +51,7 @@ import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.var.ToolbarVariable;
 import com.tokopedia.sellerapp.R;
+import com.tokopedia.sellerapp.gmstat.views.GMStatActivity;
 import com.tokopedia.sellerapp.gmsubscribe.GMSubscribeActivity;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 
@@ -420,6 +421,12 @@ public class DrawerVariableSeller extends DrawerVariable {
                 session.Logout(context);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.SIGN_OUT);
                 break;
+            case TkpdState.DrawerPosition.SELLER_GM_STAT:
+                intent = new Intent(context, GMStatActivity.class);
+                intent.putExtra(GMStatActivity.SHOP_ID, SessionHandler.getShopID(context));
+                intent.putExtra(GMStatActivity.IS_GOLD_MERCHANT, SessionHandler.isGoldMerchant(context));
+                context.startActivity(intent);
+                break;
             default:
                 break;
         }
@@ -647,6 +654,8 @@ public class DrawerVariableSeller extends DrawerVariable {
             model.data.add(model.header);
             model.data.add(model.sellerHome);
             model.data.add(model.gmSubscribeMenu);
+            model.data.add(new DrawerItem("Statistik", 0, R.drawable.statistik_icon, TkpdState.DrawerPosition.SELLER_GM_STAT,
+                    false));
             model.data.add(model.inboxMenu);
             model.data.add(model.shopMenu);
             model.data.add(new DrawerItem("Pengaturan", 0, R.drawable.icon_setting, TkpdState.DrawerPosition.SETTINGS,

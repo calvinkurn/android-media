@@ -1,18 +1,22 @@
 package com.tokopedia.core.util;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
+import android.provider.Telephony;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewCompat;
+import android.telephony.SmsMessage;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.ValueCallback;
+import android.webkit.WebSettings;
 
 import com.tkpd.library.utils.CommonUtils;
 
@@ -78,5 +82,21 @@ public class MethodChecker {
             result = Html.fromHtml(text);
         }
         return result;
+    }
+
+    public static SmsMessage createSmsFromPdu(Intent intent) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            SmsMessage[] msgs = Telephony.Sms.Intents.getMessagesFromIntent(intent);
+            return msgs[0];
+        } else {
+            final Object[] pdusObj = (Object[]) intent.getExtras().get("pdus");
+
+            return SmsMessage.createFromPdu((byte[]) (pdusObj != null ? pdusObj[0] : ""));
+        }
+    }
+
+    public static void setAllowMixedContent(WebSettings webSettings) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
     }
 }

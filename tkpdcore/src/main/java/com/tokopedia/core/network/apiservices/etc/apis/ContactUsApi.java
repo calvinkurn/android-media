@@ -6,7 +6,11 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import java.util.Map;
 
 import retrofit2.Response;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.QueryMap;
 import rx.Observable;
 
@@ -16,9 +20,14 @@ import rx.Observable;
  */
 public interface ContactUsApi {
 
-    @GET(TkpdBaseURL.Etc.PATH_GET_FORM_MODEL_CONTACT_US)
-    Observable<Response<TkpdResponse>> getFormModel(@QueryMap Map<String, String> params);
+    @GET(TkpdBaseURL.ContactUs.PATH_GET_SOLUTION)
+    Observable<Response<TkpdResponse>> getSolution(@Path("id") String id);
 
-    @GET(TkpdBaseURL.Etc.PATH_GET_TREE_TICKET_CATEGORY)
-    Observable<Response<TkpdResponse>> getTreeTicketCategory(@QueryMap Map<String, String> params);
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ContactUs.PATH_CREATE_STEP_2)
+    Observable<Response<TkpdResponse>> createTicket(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ContactUs.PATH_CREATE_STEP_1)
+    Observable<Response<TkpdResponse>> createTicketValidation(@FieldMap Map<String, String> params);
 }
