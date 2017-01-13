@@ -480,7 +480,7 @@ public class CartPresenter implements ICartPresenter {
             view.renderVisiblePotentialCashBack(data.getCashbackIdr());
         else view.renderInvisiblePotentialCashBack();
         view.renderDepositInfo(data.getDepositIdr());
-        view.renderTotalPayment(data.getGrandTotalIdr());
+        view.renderTotalPaymentWithLoyalty(data.getGrandTotalIdr());
         view.renderPaymentGatewayOption(data.getGatewayList());
         if (data.getLpAmount() != 0)
             view.renderVisibleLoyaltyBalance("(" + data.getLpAmountIdr() + ")");

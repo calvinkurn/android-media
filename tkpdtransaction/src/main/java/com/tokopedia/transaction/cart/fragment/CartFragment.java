@@ -133,6 +133,10 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     private TkpdProgressDialog progressDialogNormal;
     private TopPayBroadcastReceiver topPayBroadcastReceiver;
     private CartItemAdapter cartItemAdapter;
+    
+    private String totalPaymentWithLoyaltyIdr;
+    private String totalPaymentWithoutLoyaltyIdr;
+    private String totalLoyaltyBalance;
 
     public static Fragment newInstance() {
         return new CartFragment();
@@ -255,7 +259,14 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderTotalPayment(String grandTotalWithoutLPIDR) {
+    public void renderTotalPaymentWithLoyalty(String totalPaymentWithLoyaltyIdr) {
+        this.totalPaymentWithLoyaltyIdr = totalPaymentWithLoyaltyIdr;
+        tvTotalPayment.setText(totalPaymentWithLoyaltyIdr);
+    }
+
+    @Override
+    public void renderTotalPaymentWithoutLoyalty(String grandTotalWithoutLPIDR) {
+        this.totalPaymentWithoutLoyaltyIdr = grandTotalWithoutLPIDR;
         tvTotalPayment.setText(grandTotalWithoutLPIDR);
     }
 
@@ -285,6 +296,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void renderVisibleLoyaltyBalance(String loyaltyAmountIDR) {
+        this.totalLoyaltyBalance = loyaltyAmountIDR;
         tvLoyaltyBalance.setText(loyaltyAmountIDR);
     }
 
@@ -687,10 +699,15 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                 if (isChecked) {
                     holderUseVoucher.setVisibility(View.VISIBLE);
                     btnCheckVoucher.setOnClickListener(getButtonCheckVoucherClickListener());
+                    renderTotalPaymentWithoutLoyalty(totalPaymentWithoutLoyaltyIdr);
+                    renderInvisibleLoyaltyBalance();
                 } else {
                     holderUseVoucher.setVisibility(View.GONE);
                     btnCheckVoucher.setOnClickListener(null);
                     etVoucherCode.setText("");
+                    renderTotalPaymentWithoutLoyalty(totalPaymentWithLoyaltyIdr);
+                    if (totalLoyaltyBalance != null)
+                        renderVisibleLoyaltyBalance(totalLoyaltyBalance);
                 }
             }
         };

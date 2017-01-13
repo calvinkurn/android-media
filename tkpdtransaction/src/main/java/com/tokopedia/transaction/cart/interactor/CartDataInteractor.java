@@ -266,7 +266,7 @@ public class CartDataInteractor implements ICartDataInteractor {
                             }
                         }
                         throw new RuntimeException(
-                                new HttpErrorException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+                                new HttpErrorException(response.code())
                         );
                     }
                 })
@@ -319,7 +319,7 @@ public class CartDataInteractor implements ICartDataInteractor {
                     }
                 } else {
                     throw new RuntimeException(
-                            new HttpErrorException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+                            new HttpErrorException(response.code())
                     );
                 }
             }
@@ -368,7 +368,7 @@ public class CartDataInteractor implements ICartDataInteractor {
                     }
                 } else {
                     throw new RuntimeException(
-                            new HttpErrorException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+                            new HttpErrorException(response.code())
                     );
                 }
             }

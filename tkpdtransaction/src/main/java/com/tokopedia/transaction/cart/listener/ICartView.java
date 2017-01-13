@@ -17,7 +17,9 @@ import java.util.List;
 public interface ICartView extends IBaseView {
     void renderDepositInfo(String depositIdr);
 
-    void renderTotalPayment(String grandTotalWithoutLPIDR);
+    void renderTotalPaymentWithLoyalty(String grandTotalWithLPIDR);
+
+    void renderTotalPaymentWithoutLoyalty(String grandTotalWithoutLPIDR);
 
     void renderButtonCheckVoucherListener();
 
