@@ -35,8 +35,8 @@
     <string name="title_action_off">Off</string>
     <string name="action_filter_date">Filter Tanggal</string>
     <string name="title_group_list">Group</string>
-    <string name="title_product_ad_detail">Detail Item Detail</string>
-    <string name="title_group_ad_detail">Detail Group Detail</string>
+    <string name="title_product_ad_detail">Detail Promo Produk</string>
+    <string name="title_group_ad_detail">Detail Promo Group</string>
 
     <!-- Top Ads ad list -->
     <string name="label_top_ads_daily_spend">Biaya Harian</string>
@@ -85,14 +85,14 @@
     <string name="label_active_topads">Aktif</string>
     <string name="label_title_name_topads">Name</string>
     <string name="label_title_status_topads">Status</string>
-    <string name="label_title_max_bid_topads">Max Bid</string>
-    <string name="label_title_avg_cost_topads">Avg Cost</string>
-    <string name="label_title_start_topads">Start</string>
-    <string name="label_title_end_topads">End</string>
-    <string name="label_title_daily_budget_topads">Daily Budget</string>
-    <string name="label_title_sent_topads">Sent</string>
-    <string name="label_title_impr_topads">Impr</string>
-    <string name="label_title_click_topads">Click</string>
+    <string name="label_title_max_bid_topads">Biaya Maks</string>
+    <string name="label_title_avg_cost_topads">Rata-rata</string>
+    <string name="label_title_start_topads">Mulai</string>
+    <string name="label_title_end_topads">Selesai</string>
+    <string name="label_title_daily_budget_topads">Anggaran Harian</string>
+    <string name="label_title_sent_topads">Terpakai</string>
+    <string name="label_title_impr_topads">Tampil</string>
+    <string name="label_title_click_topads">Klik</string>
     <string name="label_title_ctr_topads">CTR</string>
     <string name="label_title_favorite_topads">Favorite</string>
     <string name="label_title_items_topads">Items</string>

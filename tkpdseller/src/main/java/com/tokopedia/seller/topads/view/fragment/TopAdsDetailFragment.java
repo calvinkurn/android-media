@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -199,7 +200,11 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         maxBid.setContent(ad.getPriceBidFmt());
         avgCost.setContent(ad.getStatTotalSpent());
         start.setContent(ad.getStartDate() + " - " + ad.getStartTime());
-        end.setContent(ad.getEndDate() + " - " + ad.getEndTime());
+        if (TextUtils.isEmpty(ad.getEndTime())) {
+            end.setContent(ad.getEndDate());
+        } else {
+            end.setContent(getString(R.string.top_ads_range_date_text, ad.getEndDate(), ad.getEndTime()));
+        }
         dailyBudget.setContent(ad.getPriceDailyFmt());
         sent.setContent(ad.getPriceDailySpentFmt());
         impr.setContent(ad.getStatTotalImpression());
