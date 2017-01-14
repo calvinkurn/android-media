@@ -1,84 +1,67 @@
 package com.tokopedia.core.gcm;
 
-import android.annotation.TargetApi;
 import android.app.Application;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 
-import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.URLParser;
-import com.tokopedia.core.NotificationCenter;
+import com.tokopedia.core.Cart;
+import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.R;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
+import com.tokopedia.core.gcm.model.NotificationPass;
+import com.tokopedia.core.gcm.model.notification.NewDiscussionNotification;
+import com.tokopedia.core.gcm.model.notification.NewMessageNotification;
 import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
+import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RouterUtils;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
-import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
-import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_ICON;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_IMAGE;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_TITLE;
-import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_UPDATE_APPS_TITLE;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_URL;
-import static com.tokopedia.core.gcm.Constants.EXTRA_PLAYSTORE_URL;
 
 /**
  * @author by alvarisi on 1/9/17.
  */
 
-class AppNotificationReceiverUIBackground {
+public class AppNotificationReceiverUIBackground {
     private INotificationAnalyticsReceiver mNotificationAnalyticsReceiver;
     private FCMCacheManager cacheManager;
-    private Application mApplication;
     private Context mContext;
-    private long[] notificationVibratePattern = {500, 500, 500, 500, 500, 500, 500, 500, 500};
+    private BuildAndShowNotification mBuildAndShowNotification;
 
-    AppNotificationReceiverUIBackground(Application application) {
+    public AppNotificationReceiverUIBackground(Application application) {
         cacheManager = new FCMCacheManager(application.getBaseContext());
-        mApplication = application;
         mContext = application.getBaseContext();
         mNotificationAnalyticsReceiver = new NotificationAnalyticsReceiver();
+        mBuildAndShowNotification = new BuildAndShowNotification(mContext);
     }
 
-    void sendNotification(Bundle data) {
-        int tkpCode = Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE));
-
-        if (!cacheManager.checkLocalNotificationAppSettings(tkpCode)) {
-            return;
-        }
-        if (!GCMUtils.isValidForSellerApp(tkpCode, mApplication)) {
-            return;
-        }
-
+    void prepareAndExecuteDedicationNotification(Bundle data) {
         String title;
         String ticker;
         String description;
@@ -124,6 +107,7 @@ class AppNotificationReceiverUIBackground {
                 description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
                 break;
             case TkpdState.GCMServiceState.GCM_RES_CENTER:
+                componentName = InboxRouter.getActivityInboxResCenterName(mContext);
                 intent = InboxRouter.getInboxResCenterActivityIntent(mContext);
                 title = mContext.getString(R.string.title_new_rescenter);
                 ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
@@ -135,18 +119,6 @@ class AppNotificationReceiverUIBackground {
                 title = String.format("%s %s", data.getString("counter"), mContext.getString(R.string.title_new_order));
                 description = mContext.getString(R.string.msg_new_order);
                 ticker = mContext.getString(R.string.msg_new_order);
-                break;
-            case TkpdState.GCMServiceState.GCM_PROMO:
-                title = data.getString(ARG_NOTIFICATION_TITLE);
-                description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-                ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-                componentName = HomeRouter.getActivityHomeName(mContext);
-                break;
-            case TkpdState.GCMServiceState.GCM_GENERAL:
-                title = data.getString(ARG_NOTIFICATION_TITLE);
-                description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-                ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-                componentName = HomeRouter.getActivityHomeName(mContext);
                 break;
             case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY:
                 componentName = RouterUtils.getActivityComponentName(mContext, InboxReputationActivity.class);
@@ -301,133 +273,46 @@ class AppNotificationReceiverUIBackground {
             intent = new Intent();
             intent.setComponent(componentName);
         }
-        createNotification(intent, title, ticker, description, bundle, data, componentName);
-    }
-
-    private void createNotification(Intent intent, String title, String ticker,
-                                    String desc, Bundle bundle, final Bundle data, ComponentName componentName) {
-        NotificationManager mNotificationManager =
-                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        final ArrayList<String> contents = new ArrayList<>(), descriptions = new ArrayList<>();
-        final ArrayList<Integer> codes = new ArrayList<>();
-        final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext)
-                .setSmallIcon(getDrawableIcon())
-                .setAutoCancel(true);
-        NotificationCompat.InboxStyle inboxStyle;
-        NotificationCompat.BigTextStyle bigStyle;
-
-        cacheManager.processNotifData(data, title, desc, new FCMCacheManager.CacheProcessListener() {
-            @Override
-            public void onDataProcessed(ArrayList<String> content, ArrayList<String> desc, ArrayList<Integer> code) {
-                contents.addAll(content);
-                codes.addAll(code);
-                descriptions.addAll(desc);
-            }
-        });
-
-        if (codes.size() == 1) {
-            bigStyle = new NotificationCompat.BigTextStyle();
-            mBuilder.setContentTitle(title);
-            mBuilder.setContentText(desc);
-            bigStyle.bigText(desc);
-            mBuilder.setStyle(bigStyle);
-            mBuilder.setTicker(ticker);
-        } else if (isPromoNotification(data)) {
-            bigStyle = new NotificationCompat.BigTextStyle();
-            mBuilder.setContentTitle(title);
-            mBuilder.setContentText(desc);
-            bigStyle.bigText(desc);
-            mBuilder.setStyle(bigStyle);
-            mBuilder.setTicker(ticker);
-        } else {
-            componentName = RouterUtils.getActivityComponentName(mContext, NotificationCenter.class);
-            bundle.putInt("notif_call", 0);
-            inboxStyle = new NotificationCompat.InboxStyle();
-            inboxStyle.setBigContentTitle(mContext.getString(R.string.title_new_notif_general));
-            for (int i = 0; i < contents.size(); i++) {
-                inboxStyle.addLine(contents.get(i));
-            }
-            mBuilder.setContentTitle(mContext.getString(R.string.title_new_notif_general));
-            mBuilder.setContentText(desc);
-            mBuilder.setStyle(inboxStyle);
-            mBuilder.setTicker(ticker);
-        }
-
-        if (!TextUtils.isEmpty(data.getString(ARG_NOTIFICATION_IMAGE))) {
-            ImageHandler.loadImageBitmapNotification(
-                    mContext,
-                    data.getString(ARG_NOTIFICATION_IMAGE), new FCMMessagingService.OnGetFileListener() {
-                        @Override
-                        public void onFileReady(File file) {
-                            NotificationCompat.BigPictureStyle bigStyle =
-                                    new NotificationCompat.BigPictureStyle();
-
-                            bigStyle.bigPicture(
-                                    Bitmap.createScaledBitmap(
-                                            BitmapFactory.decodeFile(file.getAbsolutePath()),
-                                            mContext.getResources().getDimensionPixelSize(R.dimen.notif_width),
-                                            mContext.getResources().getDimensionPixelSize(R.dimen.notif_height),
-                                            true
-                                    )
-                            );
-                            bigStyle.setBigContentTitle(data.getString(ARG_NOTIFICATION_TITLE));
-                            bigStyle.setSummaryText(data.getString(ARG_NOTIFICATION_DESCRIPTION));
-
-                            mBuilder.setStyle(bigStyle);
-                        }
-                    }
-            );
-
-        }
-
-        if (!TextUtils.isEmpty(data.getString(ARG_NOTIFICATION_ICON))) {
-            ImageHandler.loadImageBitmapNotification(
-                    mContext,
-                    data.getString(ARG_NOTIFICATION_ICON), new FCMMessagingService.OnGetFileListener() {
-                        @Override
-                        public void onFileReady(File file) {
-                            mBuilder.setLargeIcon(
-                                    Bitmap.createScaledBitmap(
-                                            BitmapFactory.decodeFile(file.getAbsolutePath()),
-                                            mContext.getResources().getDimensionPixelSize(R.dimen.icon_size),
-                                            mContext.getResources().getDimensionPixelSize(R.dimen.icon_size),
-                                            true
-                                    )
-                            );
-                        }
-                    }
-            );
-        } else {
-            mBuilder.setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), getDrawableLargeIcon()));
-        }
-
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("from_notif", true);
         intent.putExtra("unread", false);
+
+        final NotificationPass notificationPass = new NotificationPass();
+        notificationPass.title = title;
+        notificationPass.ticker = ticker;
+        notificationPass.description = description;
+        notificationPass.componentNameParentStack = componentName;
+        cacheManager.processNotifData(data, title, description, new FCMCacheManager.CacheProcessListener() {
+            @Override
+            public void onDataProcessed(ArrayList<String> content, ArrayList<String> desc, ArrayList<Integer> code) {
+                notificationPass.savedNotificationContents.addAll(content);
+                notificationPass.savedNotificationCodes.addAll(code);
+                if (code.size() == 1) {
+                    notificationPass.isAllowedBigStyle = true;
+                }
+            }
+        });
+
         if (isPromoNotification(data)) {
-            Bundle dataLocalytics = this.mNotificationAnalyticsReceiver.buildAnalyticNotificationData(data);
-            intent.putExtras(dataLocalytics);
+            notificationPass.isAllowedBigStyle = true;
+            intent.putExtras(this.mNotificationAnalyticsReceiver.buildAnalyticNotificationData(data));
         } else {
             intent.putExtras(bundle);
         }
 
-        if (cacheManager.isAllowBell()) {
-            mBuilder.setSound(cacheManager.getSoundUri());
-            if (cacheManager.isVibrate()) {
-                mBuilder.setVibrate(notificationVibratePattern);
-            }
-        }
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(mContext);
-        if (componentName != null) {
-            stackBuilder.addParentStack(componentName);
-        }
-        stackBuilder.addNextIntent(intent);
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
-        mBuilder.setContentIntent(resultPendingIntent);
-        Notification notif = mBuilder.build();
-        if (cacheManager.isVibrate() && cacheManager.isAllowBell())
-            notif.defaults |= Notification.DEFAULT_VIBRATE;
-        mNotificationManager.notify(100, notif);
+        mBuildAndShowNotification.buildAndShowNotification(notificationPass, data, intent);
+
+        Map<Integer, Visitable> dedicatedNotification = new HashMap<>();
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_MESSAGE, new NewMessageNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_TALK, new NewDiscussionNotification(mContext));
+
+        TypeFactory typeFactory = new TypeFactoryForList();
+
+        Visitable visitable = dedicatedNotification.get(
+                Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE))
+        );
+
+        visitable.proccessReceivedNotification(data);
     }
 
     private boolean isPromoNotification(Bundle data) {
@@ -435,177 +320,88 @@ class AppNotificationReceiverUIBackground {
                 || Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE)) == TkpdState.GCMServiceState.GCM_GENERAL;
     }
 
-    private int getDrawableLargeIcon() {
-        if (GlobalConfig.isSellerApp())
-            return R.drawable.qc_launcher2;
-        else
-            return R.drawable.qc_launcher;
+    void prepareAndExecuteUpdateAppNotification(Bundle data) {
+        mBuildAndShowNotification.sendUpdateAppsNotification(data);
     }
 
-    private int getDrawableIcon() {
-        if (GlobalConfig.isSellerApp())
-            return R.drawable.ic_stat_notify2;
-        else
-            return R.drawable.ic_stat_notify;
-    }
-
-    void createNotification(Bundle data, Class<?> intentClass) {
-        if (!cacheManager.checkLocalNotificationAppSettings(Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE)))) {
-            return;
-        }
-        if (data.getString(ARG_NOTIFICATION_IMAGE) != null) {
-            createAndShowImageNotification(data, intentClass);
-        } else {
-            createAndShowTextNotification(data, intentClass);
-        }
-    }
-
-    private void createAndShowTextNotification(Bundle data, Class<?> intentClass) {
-        try {
-            NotificationManager mNotificationManager =
-                    (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-
-            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext)
-                    .setSmallIcon(getDrawableIcon())
-                    .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), getDrawableLargeIcon()))
-                    .setAutoCancel(true);
-            NotificationCompat.BigTextStyle bigStyle;
-            bigStyle = new NotificationCompat.BigTextStyle();
-            mBuilder.setContentTitle(data.getString(ARG_NOTIFICATION_TITLE));
-            mBuilder.setContentText(data.getString(ARG_NOTIFICATION_DESCRIPTION));
-            bigStyle.bigText(data.getString(ARG_NOTIFICATION_DESCRIPTION));
-            mBuilder.setStyle(bigStyle);
-            mBuilder.setTicker(data.getString(ARG_NOTIFICATION_DESCRIPTION));
-
-            if (cacheManager.isAllowBell()) {
-                mBuilder.setSound(cacheManager.getSoundUri());
-                if (cacheManager.isVibrate()) {
-                    mBuilder.setVibrate(notificationVibratePattern);
+    void prepareAndExecutePromoNotification(Bundle data) {
+        Class<?> intentClass = null;
+        switch (GCMUtils.getCode(data)) {
+            case TkpdState.GCMServiceState.GCM_UPDATE_NOTIFICATION:
+                mBuildAndShowNotification.sendUpdateAppsNotification(data);
+                return;
+            case TkpdState.GCMServiceState.GCM_PROMO:
+                intentClass = HomeRouter.getHomeActivityClass();
+                break;
+            case TkpdState.GCMServiceState.GCM_GENERAL:
+                intentClass = HomeRouter.getHomeActivityClass();
+                break;
+            case TkpdState.GCMServiceState.GCM_SHOP:
+                intentClass = ShopInfoActivity.class;
+                break;
+            case TkpdState.GCMServiceState.GCM_DEEPLINK:
+                if (CustomerRouter.getDeeplinkClass() != null) {
+                    intentClass = CustomerRouter.getDeeplinkClass();
+                } else {
+                    return;
                 }
-            }
-
-            Intent intent = createIntent(intentClass, data);
-
-            if (data.getInt("keylogin1", -99) != -99) {
-                intent.putExtra(
-                        com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, data.getInt("keylogin1")
-                );
-                intent.putExtra(SessionView.MOVE_TO_CART_KEY, data.getInt("keylogin2"));
-            }
-
-            TaskStackBuilder stackBuilder = TaskStackBuilder.create(mContext);
-            stackBuilder.addParentStack(intentClass);
-            stackBuilder.addNextIntent(intent);
-            PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
-            mBuilder.setContentIntent(resultPendingIntent);
-            Notification notif = mBuilder.build();
-            if (cacheManager.isVibrate() && cacheManager.isAllowBell())
-                notif.defaults |= Notification.DEFAULT_VIBRATE;
-            mNotificationManager.notify(100, notif);
-        } catch (NullPointerException e) {
-            CommonUtils.dumper("NotifTag : Null Value" + e.toString());
+                break;
+            case TkpdState.GCMServiceState.GCM_CART:
+                if (SessionHandler.isV4Login(mContext)) {
+                    intentClass = Cart.class;
+                } else {
+                    return;
+                }
+                break;
+            case TkpdState.GCMServiceState.GCM_WISHLIST:
+                if (SessionHandler.isV4Login(mContext)) {
+                    intentClass = SimpleHomeRouter.getSimpleHomeActivityClass();
+                } else {
+                    return;
+                }
+                break;
+            case TkpdState.GCMServiceState.GCM_VERIFICATION:
+                if (SessionHandler.isV4Login(mContext)) {
+                    intentClass = ManageGeneral.class;
+                } else {
+                    data.putInt("keylogin1", TkpdState.DrawerPosition.LOGIN);
+                    data.putInt("keylogin2", SessionView.HOME);
+                    intentClass = SessionRouter.getLoginActivityClass();
+                }
+                break;
+            default:
+                return;
         }
-    }
 
-    private void createAndShowImageNotification(final Bundle data, final Class<?> intentClass)
-            throws NullPointerException {
+        Intent intent = createIntent(intentClass, data);
 
-        final NotificationManager mNotificationManager =
-                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        final Notification.Builder mBuilder = new Notification.Builder(mContext)
-                .setSmallIcon(getDrawableIcon())
-                .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), getDrawableLargeIcon()))
-                .setAutoCancel(true);
-
-        if (!TextUtils.isEmpty(data.getString(ARG_NOTIFICATION_ICON))) {
-            ImageHandler.loadImageBitmapNotification(
-                    mContext,
-                    data.getString(ARG_NOTIFICATION_ICON), new FCMMessagingService.OnGetFileListener() {
-                        @Override
-                        public void onFileReady(File file) {
-                            mBuilder.setLargeIcon(
-                                    Bitmap.createScaledBitmap(
-                                            BitmapFactory.decodeFile(file.getAbsolutePath()),
-                                            mContext.getResources().getDimensionPixelSize(R.dimen.icon_size),
-                                            mContext.getResources().getDimensionPixelSize(R.dimen.icon_size),
-                                            true
-                                    )
-                            );
-                        }
-                    }
+        if (data.getInt("keylogin1", -99) != -99) {
+            intent.putExtra(
+                    com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY,
+                    data.getInt("keylogin1")
             );
-        } else {
-            mBuilder.setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), getDrawableIcon()));
+            intent.putExtra(
+                    SessionView.MOVE_TO_CART_KEY,
+                    data.getInt("keylogin2")
+            );
         }
 
-        ImageHandler.loadImageBitmapNotification(
-                mContext,
-                data.getString(ARG_NOTIFICATION_IMAGE),
-                new FCMMessagingService.OnGetFileListener() {
-                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-                    @Override
-                    public void onFileReady(File file) {
-                        Notification.BigPictureStyle bigStyle = new Notification.BigPictureStyle();
-                        bigStyle.bigPicture(
-                                Bitmap.createScaledBitmap(
-                                        BitmapFactory.decodeFile(file.getAbsolutePath()),
-                                        mContext.getResources().getDimensionPixelSize(R.dimen.notif_width),
-                                        mContext.getResources().getDimensionPixelSize(R.dimen.notif_height),
-                                        true)
-                        );
-                        bigStyle.setSummaryText(data.getString(ARG_NOTIFICATION_DESCRIPTION));
+        NotificationPass notificationPass = new NotificationPass();
+        notificationPass.title = data.getString(ARG_NOTIFICATION_TITLE);
+        notificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+        notificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+        notificationPass.componentNameParentStack = null;
+        notificationPass.isAllowedBigStyle = true;
+        notificationPass.classParentStack = intentClass;
 
-                        mBuilder.setContentTitle(data.getString(ARG_NOTIFICATION_TITLE));
-                        mBuilder.setContentText(data.getString(ARG_NOTIFICATION_DESCRIPTION));
-                        mBuilder.setStyle(bigStyle);
-                        mBuilder.setTicker(data.getString(ARG_NOTIFICATION_DESCRIPTION));
-
-                        if (cacheManager.isAllowBell()) {
-                            mBuilder.setSound(cacheManager.getSoundUri());
-                            if (cacheManager.isVibrate()) {
-                                mBuilder.setVibrate(notificationVibratePattern);
-                            }
-                        }
-
-                        Intent intent = createIntent(intentClass, data);
-
-                        if (data.getInt("keylogin1", -99) != -99) {
-                            intent.putExtra(
-                                    com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY,
-                                    data.getInt("keylogin1")
-                            );
-                            intent.putExtra(SessionView.MOVE_TO_CART_KEY, data.getInt("keylogin2"));
-                        }
-
-                        TaskStackBuilder stackBuilder = TaskStackBuilder.create(mContext);
-                        stackBuilder.addParentStack(intentClass);
-                        stackBuilder.addNextIntent(intent);
-                        PendingIntent resultPendingIntent =
-                                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
-                        mBuilder.setContentIntent(resultPendingIntent);
-                        Notification notif = mBuilder.build();
-
-                        if (cacheManager.isVibrate() && cacheManager.isAllowBell())
-                            notif.defaults |= Notification.DEFAULT_VIBRATE;
-                        mNotificationManager.notify(
-                                Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE)),
-                                notif
-                        );
-                    }
-                }
-        );
+        mBuildAndShowNotification.buildAndShowNotification(notificationPass, data, intent);
     }
-
 
     private Intent createIntent(Class<?> intentClass, Bundle data) {
         Intent intent = new Intent(mContext, intentClass);
-
-        try {
-            data.putString("img_uri", data.getString(ARG_NOTIFICATION_IMAGE));
-            data.putString("img_uri_600", data.getString(ARG_NOTIFICATION_IMAGE));
-        } catch (NullPointerException e) {
-            e.printStackTrace();
+        if (TextUtils.isEmpty(data.getString(ARG_NOTIFICATION_IMAGE))) {
+            data.putString("img_uri", data.getString(ARG_NOTIFICATION_IMAGE, ""));
+            data.putString("img_uri_600", data.getString(ARG_NOTIFICATION_IMAGE, ""));
         }
 
         switch (Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE))) {
@@ -647,41 +443,5 @@ class AppNotificationReceiverUIBackground {
         data = this.mNotificationAnalyticsReceiver.buildAnalyticNotificationData(data);
         intent.putExtras(data);
         return intent;
-    }
-
-    void sendUpdateAppsNotification(Bundle data) {
-        if (MainApplication.getCurrentVersion(mContext) < Integer.parseInt(data.getString("app_version", "0"))) {
-            NotificationManager mNotificationManager =
-                    (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-
-            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext)
-                    .setSmallIcon(getDrawableIcon())
-                    .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), getDrawableLargeIcon()))
-                    .setAutoCancel(true);
-            NotificationCompat.BigTextStyle bigStyle = new NotificationCompat.BigTextStyle();
-            mBuilder.setContentTitle(data.getString(ARG_NOTIFICATION_UPDATE_APPS_TITLE));
-            mBuilder.setContentText(mContext.getString(R.string.msg_new_update));
-            mBuilder.setStyle(bigStyle);
-            mBuilder.setTicker(data.getString(ARG_NOTIFICATION_UPDATE_APPS_TITLE));
-
-            if (cacheManager.isAllowBell()) {
-                mBuilder.setSound(cacheManager.getSoundUri());
-                if (cacheManager.isVibrate()) {
-                    mBuilder.setVibrate(notificationVibratePattern);
-                }
-            }
-
-            Intent notificationIntent = new Intent(Intent.ACTION_VIEW);
-            notificationIntent.setData(Uri.parse(EXTRA_PLAYSTORE_URL));
-
-            PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, notificationIntent, 0);
-            mBuilder.setContentIntent(contentIntent);
-            Notification notif = mBuilder.build();
-            if (cacheManager.isVibrate() && cacheManager.isAllowBell())
-                notif.defaults |= Notification.DEFAULT_VIBRATE;
-            mNotificationManager.notify(TkpdState.GCMServiceState.GCM_UPDATE_NOTIFICATION, notif);
-
-            cacheManager.updateUpdateAppStatus(data);
-        }
     }
 }
