@@ -179,8 +179,8 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
         tvTitleAddress.setText(
                 MethodChecker.fromHtml(transactionPassData.getCartDestination().getAddressName())
         );
-        tvDetailAddress.setText(MethodChecker.fromHtml(renderDetailAddressFromTransaction(
-                transactionPassData.getCartDestination()))
+        tvDetailAddress.setText(renderDetailAddressFromTransaction(
+                transactionPassData.getCartDestination())
         );
         spShipment.setOnItemSelectedListener(getShipmentItemSelectionListener());
         spShipmentPackage.setOnItemSelectedListener(getShipmentPackageItemSelectionListener());
@@ -236,10 +236,13 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
     }
 
     private String renderDetailAddressFromTransaction(CartDestination destination) {
-        return String.format("%s\n%s\n%s, %s, %s\n%s\n%s", destination.getReceiverName(),
+        return String.format("%s\n%s\n%s, %s, %s\n%s\n%s",
+                MethodChecker.fromHtml(destination.getReceiverName()),
                 MethodChecker.fromHtml(destination.getAddressName()).toString(),
-                destination.getAddressDistrict(), destination.getAddressCity(),
-                destination.getAddressPostal(), destination.getAddressProvince(),
+                destination.getAddressDistrict(),
+                destination.getAddressCity(),
+                destination.getAddressPostal(),
+                destination.getAddressProvince(),
                 destination.getReceiverPhone()
         );
     }
