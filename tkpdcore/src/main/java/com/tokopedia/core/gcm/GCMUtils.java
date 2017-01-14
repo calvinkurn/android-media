@@ -1,6 +1,5 @@
 package com.tokopedia.core.gcm;
 
-import android.app.Application;
 import android.os.Bundle;
 
 import com.tokopedia.core.util.GlobalConfig;
@@ -12,7 +11,7 @@ import java.util.Map;
  * Created by Herdi_WORK on 13.12.16.
  */
 
-class GCMUtils {
+public class GCMUtils {
 
     private GCMUtils(){
 
@@ -60,7 +59,7 @@ class GCMUtils {
         }
     }
 
-    static boolean isValidForSellerApp(int tkpCode, Application app) {
+    static boolean isValidForSellerApp(int tkpCode) {
         if (GlobalConfig.isSellerApp()
                 && GCMUtils.isExcludeFromSellerApp(tkpCode)){
             return false;
@@ -78,7 +77,7 @@ class GCMUtils {
         return code;
     }
 
-    static Bundle convertMap(Map<String, String> map) {
+    public static Bundle convertMap(Map<String, String> map) {
         Bundle bundle = new Bundle(map != null ? map.size() : 0);
         if (map != null) {
             for (Map.Entry<String, String> entry : map.entrySet()) {

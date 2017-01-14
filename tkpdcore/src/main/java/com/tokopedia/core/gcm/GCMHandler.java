@@ -2,6 +2,7 @@ package com.tokopedia.core.gcm;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -131,7 +132,7 @@ public class GCMHandler {
     private void registerDeviceToFCM() {
         regid = getRegistrationId(context);
         CommonUtils.dumper(TAG + "start FCM get");
-        if (regid.isEmpty()) {
+        if (TextUtils.isEmpty(regid)) {
             final RegisterDeviceInteractor interactor = new RegisterDeviceInteractor();
             interactor.registerDevice(new Subscriber<DeviceRegistrationDataResponse>() {
                 @Override
@@ -141,7 +142,7 @@ public class GCMHandler {
 
                 @Override
                 public void onError(Throwable e) {
-
+                    e.printStackTrace();
                 }
 
                 @Override
