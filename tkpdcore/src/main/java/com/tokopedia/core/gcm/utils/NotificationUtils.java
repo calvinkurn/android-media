@@ -1,4 +1,4 @@
-package com.tokopedia.core.gcm.model.notification;
+package com.tokopedia.core.gcm.utils;
 
 import android.content.Intent;
 
