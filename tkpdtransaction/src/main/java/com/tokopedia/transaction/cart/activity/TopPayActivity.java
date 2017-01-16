@@ -221,10 +221,7 @@ public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> impl
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        presenter.processVerifyPaymentId(
-                                paymentId != null ? paymentId
-                                        : topPayParameterData.getParameter().getTransactionId()
-                        );
+                        presenter.processVerifyPaymentId();
                     }
                 });
     }
@@ -292,6 +289,12 @@ public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> impl
     }
 
     @NonNull
+    @Override
+    public String getPaymentId() {
+        return paymentId != null ? paymentId : topPayParameterData.getParameter().getTransactionId();
+    }
+
+    @NonNull
     private View.OnKeyListener getWebViewOnKeyListener() {
         return new View.OnKeyListener() {
             @Override
@@ -299,11 +302,7 @@ public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> impl
                 if (event.getAction() == KeyEvent.ACTION_DOWN) {
                     switch (keyCode) {
                         case KeyEvent.KEYCODE_BACK:
-                            if (webView.canGoBack()) {
-                                webView.goBack();
-                            } else {
-                                onBackPressed();
-                            }
+                            onBackPressed();
                             return true;
                     }
                 }

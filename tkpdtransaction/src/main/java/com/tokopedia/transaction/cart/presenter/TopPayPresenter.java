@@ -42,7 +42,7 @@ public class TopPayPresenter implements ITopPayPresenter {
         Uri uri = Uri.parse(url);
         String paymentId = uri.getQueryParameter(KEY_QUERY_PAYMENT_ID);
         view.setPaymentId(paymentId);
-        processVerifyPaymentId(paymentId);
+        processVerifyPaymentId();
     }
 
     @Override
@@ -66,7 +66,7 @@ public class TopPayPresenter implements ITopPayPresenter {
         Uri uri = Uri.parse(urlThanks);
         String paymentId = uri.getQueryParameter(KEY_QUERY_PAYMENT_ID);
         view.setPaymentId(paymentId);
-        processVerifyPaymentId(paymentId);
+        processVerifyPaymentId();
     }
 
     @Override
@@ -77,30 +77,17 @@ public class TopPayPresenter implements ITopPayPresenter {
     }
 
     @Override
-    public void processVerifyPaymentId(String paymentId) {
-        if (paymentId == null) {
-            view.showToastMessageWithForceCloseView(
-                    view.getStringFromResource(R.string.label_error_default_top_pay)
-            );
-            return;
-        }
+    public void processVerifyPaymentId() {
         Bundle bundle = new Bundle();
         bundle.putInt(TopPayIntentService.EXTRA_ACTION,
                 TopPayIntentService.SERVICE_ACTION_GET_THANKS_TOP_PAY);
-        bundle.putString(TopPayIntentService.EXTRA_PAYMENT_ID, paymentId);
-
+        bundle.putString(TopPayIntentService.EXTRA_PAYMENT_ID, view.getPaymentId());
         view.executeIntentService(bundle, TopPayIntentService.class);
     }
 
     @Override
     public void processVerifyPaymentIdByCancelTopPay(String paymentId) {
-        if (paymentId == null) {
-            view.showToastMessageWithForceCloseView(
-                    view.getStringFromResource(R.string.message_transaction_toppay_canceled)
-            );
-            return;
-        }
-        processVerifyPaymentId(paymentId);
+        processVerifyPaymentId();
     }
 
     @Override

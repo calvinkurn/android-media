@@ -21,7 +21,7 @@ public interface ITopPayPresenter {
 
     void processRedirectUrlContainsLoginUrl();
 
-    void processVerifyPaymentId(String paymentId);
+    void processVerifyPaymentId();
 
     void processVerifyPaymentIdByCancelTopPay(String paymentId);
 
