@@ -40,7 +40,7 @@ public class RechargeInteractorImpl implements RechargeInteractor {
     private final static String KEY_CATEGORY = "RECHARGE_CATEGORY";
     private final static String KEY_STATUS = "RECHARGE_STATUS";
     private final static String KEY_PRODUCT = "RECHARGE_PRODUCT";
-    private final static String KEY_OPERATOR = "RECHARGE_STATUS";
+    private final static String KEY_OPERATOR = "RECHARGE_OPERATOR";
     private final static String KEY_STATUS_CURRENT = "RECHARGE_STATUS_CURRENT";
     private final static int STATE_CATEGORY_NON_ACTIVE = 2;
     private RechargeService rechargeService;
@@ -682,7 +682,7 @@ public class RechargeInteractorImpl implements RechargeInteractor {
                 .onErrorReturn(new Func1<Throwable, List<Product>>() {
                     @Override
                     public List<Product> call(Throwable throwable) {
-                        return new ArrayList<Product>();
+                        return new ArrayList<>();
                     }
                 });
     }
@@ -769,7 +769,7 @@ public class RechargeInteractorImpl implements RechargeInteractor {
                         GlobalCacheManager manager = new GlobalCacheManager();
                         return CacheUtil.convertStringToModel(
                                 manager.getValueString(KEY_STATUS),
-                                Status.class);
+                                new TypeToken<Status>(){}.getType());
 
                     }
                 })
