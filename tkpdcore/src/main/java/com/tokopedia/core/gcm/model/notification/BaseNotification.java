@@ -14,7 +14,7 @@ import com.tokopedia.core.gcm.model.NotificationPass;
 public abstract class BaseNotification implements Visitable {
     protected final Context mContext;
     protected NotificationPass mNotificationPass;
-    private BuildAndShowNotification mBuildAndShowNotification;
+    protected BuildAndShowNotification mBuildAndShowNotification;
 
     protected BaseNotification(Context context) {
         mContext = context;
@@ -39,5 +39,5 @@ public abstract class BaseNotification implements Visitable {
         mBuildAndShowNotification.buildAndShowNotification(mNotificationPass, inComingBundle);
     }
 
-    protected abstract void configureNotificationData(Bundle incomingMessage);
+    protected abstract void configureNotificationData(Bundle data);
 }
