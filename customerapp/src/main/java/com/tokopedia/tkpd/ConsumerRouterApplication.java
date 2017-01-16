@@ -69,8 +69,8 @@ public class ConsumerRouterApplication extends MainApplication implements TkpdCo
     }
 
     @Override
-    public void resetAddProductCache() {
-        AddProductPresenterImpl.clearEtalaseCache(getApplicationContext());
-        AddProductPresenterImpl.clearDepartementCache(getApplicationContext());
+    public void resetAddProductCache(Context context) {
+        AddProductPresenterImpl.clearEtalaseCache(context);
+        AddProductPresenterImpl.clearDepartementCache(context);
     }
 }

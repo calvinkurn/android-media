@@ -172,7 +172,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
             LocalCacheHandler.clearCache(this, CategoryDatabaseManager.KEY_STORAGE_NAME);
             LocalCacheHandler.clearCache(this, DataManagerImpl.SHIPPING_CITY_DURATION_STORAGE);
             if(getApplication() instanceof TkpdCoreRouter){
-                ((TkpdCoreRouter)getApplication()).resetAddProductCache();
+                ((TkpdCoreRouter)getApplication()).resetAddProductCache(this);
             }
         }
 

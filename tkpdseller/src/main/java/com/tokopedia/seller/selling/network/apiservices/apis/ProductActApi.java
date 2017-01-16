@@ -43,7 +43,7 @@ public interface ProductActApi {
     Observable<ProductValidationModel> addValidation(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
-    @POST("/v4/action/product/add_product_validation.pl")
+    @POST(TkpdBaseURL.Product.PATH_ADD_VALIDATION)
     Observable<AddProductWithoutImageModel> addValidationWithoutImage(
             @FieldMap Map<String, String> params
     );

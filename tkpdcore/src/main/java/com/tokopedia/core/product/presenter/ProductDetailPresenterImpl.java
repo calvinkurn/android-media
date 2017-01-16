@@ -220,8 +220,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         boolean isEdit = bundle.getBoolean("is_edit");
         String productId = bundle.getString("product_id");
         viewListener.moveToEditFragment(isEdit, productId);
-//        Intent intent = ProductActivity.moveToEditFragment(context, isEdit, productId);
-//        viewListener.navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_EDIT_PRODUCT);
     }
 
     @Override

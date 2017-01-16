@@ -4,19 +4,6 @@
     android:layout_height="wrap_content"
     android:padding="2dp" >
 
-    <!--<LinearLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:orientation="vertical"-->
-    <!--android:padding="2dp" >-->
-
-    <!--<RelativeLayout-->
-    <!--android:id="@+id/border_imageview_layout"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_margin="@dimen/new_margin_small"-->
-    <!--&gt;-->
-
     <ImageView
         android:id="@+id/picture_gallery_imageview"
         android:layout_width="150dp"
