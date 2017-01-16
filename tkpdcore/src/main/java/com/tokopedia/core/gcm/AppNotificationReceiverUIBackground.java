@@ -17,6 +17,30 @@ import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.notification.dedicated.NewDiscussionNotification;
 import com.tokopedia.core.gcm.notification.dedicated.NewMessageNotification;
+import com.tokopedia.core.gcm.notification.dedicated.NewOrderNotification;
+import com.tokopedia.core.gcm.notification.dedicated.NewReviewNotification;
+import com.tokopedia.core.gcm.notification.dedicated.PurchaseAcceptedNotification;
+import com.tokopedia.core.gcm.notification.dedicated.PurchaseDeliveredNotification;
+import com.tokopedia.core.gcm.notification.dedicated.PurchaseDisputeNotification;
+import com.tokopedia.core.gcm.notification.dedicated.PurchasePartialProcessedNotification;
+import com.tokopedia.core.gcm.notification.dedicated.PurchaseRejectedNotification;
+import com.tokopedia.core.gcm.notification.dedicated.PurchaseVerifiedNotification;
+import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyEditNotification;
+import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyNotification;
+import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToBuyerEditNotification;
+import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToBuyerNotification;
+import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToSellerEditNotification;
+import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToSellerNotification;
+import com.tokopedia.core.gcm.notification.dedicated.ResCenterAdminBuyerReplyNotification;
+import com.tokopedia.core.gcm.notification.dedicated.ResCenterAdminSellerReplyNotification;
+import com.tokopedia.core.gcm.notification.dedicated.ResCenterBuyerAgreeNotification;
+import com.tokopedia.core.gcm.notification.dedicated.ResCenterBuyerReplyNotification;
+import com.tokopedia.core.gcm.notification.dedicated.ResCenterNewNotification;
+import com.tokopedia.core.gcm.notification.dedicated.ResCenterSellerAgreeNotification;
+import com.tokopedia.core.gcm.notification.dedicated.ResCenterSellerReplyNotification;
+import com.tokopedia.core.gcm.notification.dedicated.ReviewEditedNotification;
+import com.tokopedia.core.gcm.notification.dedicated.ReviewReplyNotification;
+import com.tokopedia.core.gcm.notification.dedicated.TicketResponseNotification;
 import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.router.CustomerRouter;
@@ -65,14 +89,47 @@ public class AppNotificationReceiverUIBackground {
         Map<Integer, Visitable> dedicatedNotification = new HashMap<>();
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_MESSAGE, new NewMessageNotification(mContext));
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_TALK, new NewDiscussionNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REVIEW, new NewReviewNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REVIEW_EDIT, new ReviewEditedNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REVIEW_REPLY, new ReviewReplyNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_TICKET, new TicketResponseNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RES_CENTER, new ResCenterNewNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_NEWORDER, new NewOrderNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY, new ReputationSmileyNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY, new ReputationSmileyEditNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_BUYER, new ReputationSmileyToBuyerNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_BUYER, new ReputationSmileyToBuyerEditNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_SELLER, new ReputationSmileyToSellerNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_SELLER, new ReputationSmileyToSellerEditNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_VERIFIED, new PurchaseVerifiedNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_ACCEPTED, new PurchaseAcceptedNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_PARTIAL_PROCESSED, new PurchasePartialProcessedNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_REJECTED, new PurchaseRejectedNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_DELIVERED, new PurchaseDeliveredNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_DISPUTE, new PurchaseDisputeNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_REPLY, new ResCenterBuyerReplyNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_REPLY, new ResCenterSellerReplyNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_AGREE, new ResCenterSellerAgreeNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_AGREE, new ResCenterBuyerAgreeNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_BUYER_REPLY, new ResCenterAdminBuyerReplyNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_SELLER_REPLY, new ResCenterAdminSellerReplyNotification(mContext));
+
         Visitable visitable = dedicatedNotification.get(
+                Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE))
+        );
+        if (visitable != null) {
+            visitable.proccessReceivedNotification(data);
+        }
+    }
+
+    void prepareAndExecutePromoNotification(Bundle data) {
+        Map<Integer, Visitable> promoNotification = new HashMap<>();
+        Visitable visitable = promoNotification.get(
                 Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE))
         );
 
         visitable.proccessReceivedNotification(data);
-    }
 
-    void prepareAndExecutePromoNotification(Bundle data) {
         Class<?> intentClass = null;
         switch (GCMUtils.getCode(data)) {
             case TkpdState.GCMServiceState.GCM_UPDATE_NOTIFICATION:

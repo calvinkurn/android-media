@@ -15,7 +15,7 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
  */
 
 public class TicketResponseNotification extends BaseNotification {
-    protected TicketResponseNotification(Context context) {
+    public TicketResponseNotification(Context context) {
         super(context);
     }
 

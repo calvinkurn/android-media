@@ -17,7 +17,7 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
  */
 
 public class PurchaseDisputeNotification extends BaseNotification {
-    protected PurchaseDisputeNotification(Context context) {
+    public PurchaseDisputeNotification(Context context) {
         super(context);
     }
 

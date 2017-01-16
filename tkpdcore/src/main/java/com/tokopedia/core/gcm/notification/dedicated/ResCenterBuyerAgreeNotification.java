@@ -17,7 +17,7 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
  */
 
 public class ResCenterBuyerAgreeNotification extends BaseNotification {
-    protected ResCenterBuyerAgreeNotification(Context context) {
+    public ResCenterBuyerAgreeNotification(Context context) {
         super(context);
     }
 

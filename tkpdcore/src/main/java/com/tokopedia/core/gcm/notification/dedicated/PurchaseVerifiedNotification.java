@@ -16,7 +16,7 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
  */
 
 public class PurchaseVerifiedNotification extends BaseNotification {
-    protected PurchaseVerifiedNotification(Context context) {
+    public PurchaseVerifiedNotification(Context context) {
         super(context);
     }
 

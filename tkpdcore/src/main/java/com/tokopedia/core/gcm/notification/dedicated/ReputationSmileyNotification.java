@@ -16,7 +16,7 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
  */
 
 public class ReputationSmileyNotification extends BaseNotification {
-    protected ReputationSmileyNotification(Context context) {
+    public ReputationSmileyNotification(Context context) {
         super(context);
     }
 

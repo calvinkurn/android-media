@@ -14,7 +14,7 @@ import com.tokopedia.core.router.SellerRouter;
  */
 
 public class NewOrderNotification extends BaseNotification {
-    protected NewOrderNotification(Context context) {
+    public NewOrderNotification(Context context) {
         super(context);
     }
 

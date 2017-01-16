@@ -16,7 +16,7 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
  */
 
 public class ReviewReplyNotification extends BaseNotification {
-    protected ReviewReplyNotification(Context context) {
+    public ReviewReplyNotification(Context context) {
         super(context);
     }
 

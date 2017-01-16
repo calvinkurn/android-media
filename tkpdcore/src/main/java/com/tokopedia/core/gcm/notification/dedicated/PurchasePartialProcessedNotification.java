@@ -16,7 +16,7 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
  */
 
 public class PurchasePartialProcessedNotification extends BaseNotification {
-    protected PurchasePartialProcessedNotification(Context context) {
+    public PurchasePartialProcessedNotification(Context context) {
         super(context);
     }
 
