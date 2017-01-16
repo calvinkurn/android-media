@@ -267,7 +267,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void renderTotalPaymentWithoutLoyalty(String grandTotalWithoutLPIDR) {
         this.totalPaymentWithoutLoyaltyIdr = grandTotalWithoutLPIDR;
-        tvTotalPayment.setText(grandTotalWithoutLPIDR);
     }
 
     @Override
@@ -298,6 +297,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     public void renderVisibleLoyaltyBalance(String loyaltyAmountIDR) {
         this.totalLoyaltyBalance = loyaltyAmountIDR;
         tvLoyaltyBalance.setText("(" + loyaltyAmountIDR + ")");
+        holderLoyaltyBalance.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -699,13 +699,13 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                 if (isChecked) {
                     holderUseVoucher.setVisibility(View.VISIBLE);
                     btnCheckVoucher.setOnClickListener(getButtonCheckVoucherClickListener());
-                    renderTotalPaymentWithoutLoyalty(totalPaymentWithoutLoyaltyIdr);
+                    tvTotalPayment.setText(totalPaymentWithoutLoyaltyIdr);
                     renderInvisibleLoyaltyBalance();
                 } else {
                     holderUseVoucher.setVisibility(View.GONE);
                     btnCheckVoucher.setOnClickListener(null);
                     etVoucherCode.setText("");
-                    renderTotalPaymentWithoutLoyalty(totalPaymentWithLoyaltyIdr);
+                    tvTotalPayment.setText(totalPaymentWithLoyaltyIdr);
                     if (totalLoyaltyBalance != null)
                         renderVisibleLoyaltyBalance(totalLoyaltyBalance);
                 }
