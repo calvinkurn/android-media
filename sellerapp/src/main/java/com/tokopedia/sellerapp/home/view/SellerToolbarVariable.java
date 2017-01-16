@@ -10,10 +10,10 @@ import com.tokopedia.core.var.ToolbarVariable;
  * Created by normansyahputa on 9/19/16.
  */
 
-public class FckToolbarVariable extends ToolbarVariable {
+public class SellerToolbarVariable extends ToolbarVariable {
     private Toolbar toolbar;
 
-    public FckToolbarVariable(AppCompatActivity appCompatActivity, Toolbar toolbar) {
+    public SellerToolbarVariable(AppCompatActivity appCompatActivity, Toolbar toolbar) {
         super(appCompatActivity);
         this.toolbar = toolbar;
     }

@@ -1,6 +1,7 @@
 package com.tokopedia.sellerapp.home.boommenu;
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatDrawableManager;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -18,7 +19,7 @@ public class Close extends View {
 
     public Close(Context context, AttributeSet attrs) {
         super(context, attrs);
-        setBackgroundResource(R.drawable.ic_close);
+        setBackgroundDrawable(AppCompatDrawableManager.get().getDrawable(context, R.drawable.ic_close));
     }
 
 
