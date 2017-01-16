@@ -78,7 +78,7 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
     private static final String TAG = "GMStatActivityFragment";
     
     void initView(View rootView){
-        String[] monthNamesAbrev = rootView.getResources().getStringArray(R.array.month_names_abrev);
+        monthNamesAbrev = rootView.getResources().getStringArray(R.array.month_names_abrev);
         grossIncomeGraph2 = (LineChartView) rootView.findViewById(R.id.gross_income_graph2);
         gmStatRecyclerView = (RecyclerView) rootView.findViewById(R.id.gmstat_recyclerview);
         grossIncomeGraph2Loading = (LoaderImageView) rootView.findViewById(R.id.gross_income_graph2_loading);
@@ -88,7 +88,7 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
         marketInsightReal = rootView.findViewById(R.id.market_insight);
         parentFragmentGmStat = (LinearLayout) rootView.findViewById(R.id.parent_fragment_gmstat);
         grossIncomeGraphContainer = (HorizontalScrollView) rootView.findViewById(R.id.gross_income_graph_container);
-        LinearLayout grossIncomeGraphContainer2 = (LinearLayout) rootView.findViewById(R.id.gross_income_graph_container2);
+        grossIncomeGraphContainer2 = (LinearLayout) rootView.findViewById(R.id.gross_income_graph_container2);
         oval2Copy6 = ResourcesCompat.getDrawable(getResources(), R.drawable.oval_2_copy_6, null);;
         
         rootView.findViewById(R.id.header_gmstat).setOnClickListener(
@@ -892,9 +892,9 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
 
         void initView(View itemView){
             grossIncomeHeader = (LoaderTextView) itemView.findViewById(R.id.grossIncomeHeader);
-            LoaderTextView text= (LoaderTextView) itemView.findViewById(R.id.text);
-            LoaderImageView dot= (LoaderImageView) itemView.findViewById(R.id.dot);
-            LoaderTextView textDescription= (LoaderTextView) itemView.findViewById(R.id.textDescription);
+            text= (LoaderTextView) itemView.findViewById(R.id.text);
+            dot= (LoaderImageView) itemView.findViewById(R.id.dot);
+            textDescription= (LoaderTextView) itemView.findViewById(R.id.textDescription);
         }
 
         public LoadingGMGrossIncome(View itemView) {
@@ -1252,7 +1252,7 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
         private final View parentView;
 
         public MarketInsightLoading(View itemView){
-            ButterKnife.bind(this, itemView);
+            initView(itemView);
 
             parentView = itemView.findViewById(R.id.market_insight_loading);
 

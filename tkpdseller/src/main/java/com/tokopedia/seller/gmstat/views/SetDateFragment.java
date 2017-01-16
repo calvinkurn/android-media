@@ -868,7 +868,7 @@ public class SetDateFragment extends Fragment {
             periodHeader = (TextView) rootView.findViewById(R.id.period_header);
 
             periodDate = (TextView) rootView.findViewById(R.id.period_date);
-            String[] monthNamesAbrev = rootView.getResources().getStringArray(R.array.month_names_abrev);
+            monthNamesAbrev = rootView.getResources().getStringArray(R.array.month_names_abrev);
 
         }
 

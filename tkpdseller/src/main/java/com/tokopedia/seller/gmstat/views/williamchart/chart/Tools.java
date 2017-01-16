@@ -90,12 +90,8 @@ public class Tools {
 	 * @return Largest divisor of parameter given
 	 */
 	public static int largestDivisor(int num) {
-
-		if (num > 1){
-			return num/2;
-		}
-//			for (int i = num / 2; i >= 0; i--)
-//				if (num % i == 0) return i;
+			for (int i = num / 2; i >= 0; i--)
+				if (num % i == 0) return i;
 		return 1;
 	}
 
