@@ -1,6 +1,6 @@
 package com.tokopedia.seller.gmstat.views;
 
-import com.db.chart.renderer.StringFormatRenderer;
+import com.tokopedia.seller.gmstat.views.williamchart.chart.renderer.StringFormatRenderer;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
 
 /**

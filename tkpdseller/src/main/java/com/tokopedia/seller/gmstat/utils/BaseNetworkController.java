@@ -1,4 +1,4 @@
-package com.tokopedia.sellerapp.home.utils;
+package com.tokopedia.seller.gmstat.utils;
 
 import android.content.Context;
 

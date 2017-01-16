@@ -1,6 +1,7 @@
 package com.tokopedia.seller.gmstat.views;
 
 import android.content.Intent;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,10 +17,10 @@ import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
 import com.tokopedia.core.myproduct.ProductActivity;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.sellerapp.R;
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.Router;
 import com.tokopedia.seller.gmstat.models.GetKeyword;
 import com.tokopedia.seller.gmstat.models.GetShopCategory;
-import com.tokopedia.sellerapp.gmsubscribe.GMSubscribeActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,58 +38,40 @@ import static com.tokopedia.seller.gmstat.views.DataTransactionViewHelper.dpToPx
 
 public class MarketInsightViewHelper {
 
-    @BindView(R.id.market_insight_header)
     LinearLayout marketInsightHeader;
 
-    @BindView(R.id.market_insight_header_)
     TextView marketInsightHeader_;
 
-    @BindView(R.id.market_insight_recyclerview)
     RecyclerView marketInsightRecyclerView;
 
-    @BindView(R.id.market_insight_footer_)
     TextView marketInsightFooter_;
 
-    @BindView(R.id.market_insight_gold_merchant)
     LinearLayout marketInsightGoldMerchant;
 
-    @BindView(R.id.market_insight_non_gold_merchant)
     LinearLayout marketInsightNonGoldMerchant;
 
-    @BindView(R.id.market_insight_empty_state)
     LinearLayout marketInsightEmptyState;
 
-    @BindView(R.id.market_insight_container_top)
     FrameLayout marketInsightContainerTop;
 
-    @BindColor(R.color.empty_background)
     int emptyColorBackground;
 
-    @BindColor(android.R.color.transparent)
     int transparantColor;
 
-    @BindColor(R.color.breakline_background)
     int breakLineBackground;
 
 //    @BindView(R.id.market_insight_container_upper)
 //    RelativeLayout marketInsightContainerUpper;
 
-    @BindView(R.id.separator_2_market_insight)
     LinearLayout separator2;
 
-    @OnClick(R.id.market_insight_empty_state)
     public void addProductMarketInsight(){
         ProductActivity.moveToAddProduct(view.getContext());
     }
 
-    @OnClick({R.id.move_to_gmsubscribe_market_insight,
-            R.id.market_insight_container_top,
-            R.id.market_insight_non_gold_merchant,
-            R.id.market_insight_gmsubscribe_text
-    })
     public void moveToGMSubscribe(){
         if(!isGoldMerchant)
-            view.getContext().startActivity(new Intent(view.getContext(), GMSubscribeActivity.class));
+            Router.goToGMSubscribe(view.getContext());
     }
 
     private View view;
@@ -98,7 +81,7 @@ public class MarketInsightViewHelper {
     public MarketInsightViewHelper(View view, boolean isGoldMerchant){
         this.view = view;
         this.isGoldMerchant = isGoldMerchant;
-        ButterKnife.bind(this, view);
+        initView(view);
 
         view.findViewById(R.id.move_to_gmsubscribe_market_insight).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,6 +106,77 @@ public class MarketInsightViewHelper {
             separator2.addView(view2);
         }
 
+    }
+
+    private void initView(final View view) {
+
+        marketInsightHeader= (LinearLayout) view.findViewById(R.id.market_insight_header);
+
+        marketInsightHeader_= (TextView) view.findViewById(R.id.market_insight_header_);
+
+        marketInsightRecyclerView= (RecyclerView) view.findViewById(R.id.market_insight_recyclerview);
+
+        marketInsightFooter_= (TextView) view.findViewById(R.id.market_insight_footer_);
+
+        marketInsightGoldMerchant= (LinearLayout) view.findViewById(R.id.market_insight_gold_merchant);
+
+        marketInsightNonGoldMerchant= (LinearLayout) view.findViewById(R.id.market_insight_non_gold_merchant);
+
+        marketInsightEmptyState= (LinearLayout) view.findViewById(R.id.market_insight_empty_state);
+
+        marketInsightContainerTop= (FrameLayout) view.findViewById(R.id.market_insight_container_top);
+
+        emptyColorBackground = ResourcesCompat.getColor(view.getResources(), R.color.empty_background, null);
+
+        transparantColor = ResourcesCompat.getColor(view.getResources(), android.R.color.transparent, null);
+
+        breakLineBackground = ResourcesCompat.getColor(view.getResources(), R.color.breakline_background, null);
+
+        separator2= (LinearLayout) view.findViewById(R.id.separator_2_market_insight);
+
+        view.findViewById(R.id.market_insight_empty_state)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ProductActivity.moveToAddProduct(view.getContext());
+                    }
+                });
+
+        view.findViewById(R.id.move_to_gmsubscribe_market_insight).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        moveToGMSubscribe();
+                    }
+                }
+        );
+
+        view.findViewById(R.id.market_insight_container_top).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        moveToGMSubscribe();
+                    }
+                }
+        );
+
+        view.findViewById(R.id.market_insight_non_gold_merchant).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        moveToGMSubscribe();
+                    }
+                }
+        );
+
+        view.findViewById(R.id.market_insight_gmsubscribe_text).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        moveToGMSubscribe();
+                    }
+                }
+        );
     }
 
     /**
@@ -267,21 +321,28 @@ public class MarketInsightViewHelper {
 
         final String TAG = "MarketInsight";
 
-        @BindView(R.id.market_insight_keyword)
         TextView marketInsightKeyword;
 
-        @BindView(R.id.market_insight_number)
         TextView marketInsightNumber;
 
-        @BindView(R.id.zoom_icon)
         ImageView zoomIcon;
 
-        @BindView(R.id.market_insight_progress)
         RoundCornerProgressBar marketInsightProgress;
+
+        void initView(View itemView){
+
+            marketInsightKeyword= (TextView) itemView.findViewById(R.id.market_insight_keyword);
+
+            marketInsightNumber= (TextView) itemView.findViewById(R.id.market_insight_number);
+
+            zoomIcon= (ImageView) itemView.findViewById(R.id.zoom_icon);
+
+            marketInsightProgress= (RoundCornerProgressBar) itemView.findViewById(R.id.market_insight_progress);
+        }
 
         public MarketInsightViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            initView(itemView);
         }
 
         public void bindData(GetKeyword.SearchKeyword searchKeyword, List<GetKeyword.SearchKeyword> list){

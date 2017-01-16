@@ -108,8 +108,7 @@ dependencies {
 
     //[START] GM Stat Dependency
     compile(group: 'com.akexorcist', name: 'RoundCornerProgressBar', version: '2.0.3', ext: 'aar')
-//    compile(group: 'com.diogobernardino', name: 'williamchart', version: '2.3.0', ext: 'aar')
-//    compile(group: 'com.github.lzyzsd', name: 'circleprogress', version: '1.1.1', ext: 'aar')
+    compile rootProject.ext.miscDependencies.gson
     compile 'com.shootr:KMNumbers:1.0.0'
     //[END] GM Stat Dependency
 }

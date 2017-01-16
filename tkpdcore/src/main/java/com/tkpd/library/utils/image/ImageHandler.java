@@ -1,4 +1,4 @@
-package com.tokopedia.sellerapp.home.utils;
+package com.tkpd.library.utils.image;
 
 import android.content.Context;
 import android.graphics.Bitmap;

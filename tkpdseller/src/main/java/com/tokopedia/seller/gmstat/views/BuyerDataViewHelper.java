@@ -1,15 +1,16 @@
 package com.tokopedia.seller.gmstat.views;
 
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.github.lzyzsd.circleprogress.DonutProgress;
-import com.tokopedia.sellerapp.R;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.models.GetBuyerData;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
+import com.tokopedia.seller.gmstat.views.circleprogress.DonutProgress;
 
 import java.util.Locale;
 
@@ -27,31 +28,22 @@ import static com.tokopedia.seller.gmstat.views.PopularProductViewHelper.getForm
 
 public class BuyerDataViewHelper {
 
-    @BindView(R.id.buyer_data_pie_chart)
     DonutProgress buyerDataPieChart;
 
-    @BindView(R.id.buyer_count)
     TextView buyerCount;
 
-    @BindView(R.id.buyer_count_icon)
     ImageView buyerCountIcon;
 
-    @BindView(R.id.percentage_buyer)
     TextView percentageBuyer;
 
-    @BindView(R.id.female_pie)
     TextView femalePie;
 
-    @BindView(R.id.male_pie)
     TextView malePie;
 
-    @BindColor(R.color.arrow_down)
     int arrowDown;
 
-    @BindColor(R.color.arrow_up)
     int arrowUp;
 
-    @BindColor(R.color.grey_400)
     int gredyColor;
 
 //    @BindDrawable(R.drawable.ic_rectangle_down)
@@ -60,21 +52,46 @@ public class BuyerDataViewHelper {
 //    @BindDrawable(R.drawable.ic_rectangle_up)
     Drawable icRectagleUp;
 
-    @BindArray(R.array.gender)
     String[] gender;
 
-    @BindView(R.id.header_pie_buyer_data)
     TextView headerPieBuyerData;
 
     private static final Locale locale = new Locale("in","ID");
 
     public BuyerDataViewHelper(View itemView){
-        ButterKnife.bind(this, itemView);
+        initView(itemView);
 
         icRectagleDown = AppCompatDrawableManager.get().getDrawable(itemView.getContext(),
                 R.drawable.ic_rectangle_down);
         icRectagleUp = AppCompatDrawableManager.get().getDrawable(itemView.getContext(),
                 R.drawable.ic_rectangle_up);
+    }
+
+    private void initView(View itemView) {
+
+        buyerDataPieChart = (DonutProgress) itemView.findViewById(R.id.buyer_data_pie_chart);
+
+        buyerCount= (TextView) itemView.findViewById(R.id.buyer_count);
+
+        buyerCountIcon= (ImageView) itemView.findViewById(R.id.buyer_count_icon);
+
+        percentageBuyer= (TextView) itemView.findViewById(R.id.percentage_buyer);
+
+        femalePie= (TextView) itemView.findViewById(R.id.female_pie);
+
+        malePie= (TextView) itemView.findViewById(R.id.male_pie);
+
+        arrowDown = ResourcesCompat.getColor(itemView.getResources(), R.color.arrow_down, null);
+
+        arrowUp = ResourcesCompat.getColor(itemView.getResources(), R.color.arrow_up, null);
+
+        gredyColor = ResourcesCompat.getColor(itemView.getResources(), R.color.grey_400, null);
+
+        gender = itemView.getResources().getStringArray(R.array.gender);
+
+        headerPieBuyerData = (TextView) itemView.findViewById(R.id.header_pie_buyer_data);
+
+
     }
 
     public void bindData(GetBuyerData getBuyerData) {

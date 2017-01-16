@@ -69,6 +69,10 @@
             android:value="@string/key_appsflyer" />
 
         <activity android:name=".onboarding.activity.OnboardingSellerActivity"/>
+        <activity android:name=".gmstat.activities.GMStatActivity"
+            android:label="@string/title_activity_gmstat"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3"/>
     </application>
 
 </manifest>

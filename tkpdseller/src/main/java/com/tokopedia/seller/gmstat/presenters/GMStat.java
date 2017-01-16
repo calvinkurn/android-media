@@ -1,7 +1,7 @@
 package com.tokopedia.seller.gmstat.presenters;
 
 import com.tokopedia.seller.gmstat.utils.GMStatNetworkController;
-import com.tokopedia.sellerapp.home.utils.ImageHandler;
+import com.tkpd.library.utils.image.ImageHandler;
 
 /**
  * Created by normansyahputa on 11/2/16.

@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.support.annotation.IntRange;
 import android.support.annotation.LayoutRes;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,12 +23,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.db.chart.renderer.StringFormatRenderer;
-import com.db.chart.renderer.XRenderer;
-import com.db.chart.tooltip.Tooltip;
-import com.db.chart.view.LineChartView;
+import com.tkpd.library.utils.network.MessageErrorException;
+import com.tokopedia.seller.gmstat.views.williamchart.chart.renderer.StringFormatRenderer;
+import com.tokopedia.seller.gmstat.views.williamchart.chart.renderer.XRenderer;
+import com.tokopedia.seller.gmstat.views.williamchart.chart.tooltip.Tooltip;
+import com.tokopedia.seller.gmstat.views.williamchart.chart.view.LineChartView;
 import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
-import com.tokopedia.sellerapp.R;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.library.LoaderImageView;
 import com.tokopedia.seller.gmstat.library.LoaderTextView;
 import com.tokopedia.seller.gmstat.models.GetBuyerData;
@@ -42,7 +44,6 @@ import com.tokopedia.seller.gmstat.presenters.GMStat;
 import com.tokopedia.seller.gmstat.utils.GridDividerItemDecoration;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.gmstat.utils.GrossGraphChartConfig;
-import com.tokopedia.sellerapp.home.utils.ShopNetworkController;
 
 import java.net.UnknownHostException;
 import java.text.DateFormat;
@@ -75,46 +76,57 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
 
     public static final double NoDataAvailable = -2147483600;
     private static final String TAG = "GMStatActivityFragment";
-
-
-    @BindArray(R.array.month_names_abrev)
+    
+    void initView(View rootView){
+        String[] monthNamesAbrev = rootView.getResources().getStringArray(R.array.month_names_abrev);
+        grossIncomeGraph2 = (LineChartView) rootView.findViewById(R.id.gross_income_graph2);
+        gmStatRecyclerView = (RecyclerView) rootView.findViewById(R.id.gmstat_recyclerview);
+        grossIncomeGraph2Loading = (LoaderImageView) rootView.findViewById(R.id.gross_income_graph2_loading);
+        popularProduct = rootView.findViewById(R.id.popular_product);
+        transactionData = rootView.findViewById(R.id.transaction_data);
+        marketInsight = rootView.findViewById(R.id.buyer_data);
+        marketInsightReal = rootView.findViewById(R.id.market_insight);
+        parentFragmentGmStat = (LinearLayout) rootView.findViewById(R.id.parent_fragment_gmstat);
+        grossIncomeGraphContainer = (HorizontalScrollView) rootView.findViewById(R.id.gross_income_graph_container);
+        LinearLayout grossIncomeGraphContainer2 = (LinearLayout) rootView.findViewById(R.id.gross_income_graph_container2);
+        oval2Copy6 = ResourcesCompat.getDrawable(getResources(), R.drawable.oval_2_copy_6, null);;
+        
+        rootView.findViewById(R.id.header_gmstat).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onClickHeaderGMStat();
+                    }
+                }
+        );
+    }
+    
     String[] monthNamesAbrev;
 
 //    @BindArray(R.array.month_names)
 //    String[] monthNames;
 
-    @BindView(R.id.gross_income_graph2)
     LineChartView grossIncomeGraph2;
-
-    @BindView(R.id.gmstat_recyclerview)
+    
     RecyclerView gmStatRecyclerView;
     GMStatWidgetAdapter gmStatWidgetAdapter;
 
-    @BindView(R.id.gross_income_graph2_loading)
     LoaderImageView grossIncomeGraph2Loading;
 
-    @BindView(R.id.popular_product)
     View popularProduct;
 
-    @BindView(R.id.transaction_data)
     View transactionData;
 
-    @BindView(R.id.buyer_data)
     View marketInsight;
 
-    @BindView(R.id.market_insight)
     View marketInsightReal;
 
-    @BindView(R.id.parent_fragment_gmstat)
     LinearLayout parentFragmentGmStat;
 
-    @BindView(R.id.gross_income_graph_container)
     HorizontalScrollView grossIncomeGraphContainer;
 
-    @BindView(R.id.gross_income_graph_container2)
     LinearLayout grossIncomeGraphContainer2;
 
-    @BindDrawable(R.drawable.oval_2_copy_6)
     Drawable oval2Copy6;
 
     private GridLayoutManager gridLayoutManager;
@@ -127,8 +139,7 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
     private View rootView;
 
     private GMFragmentPresenterImpl gmFragmentPresenter;
-
-    @OnClick(R.id.header_gmstat)
+    
     public void onClickHeaderGMStat(){
         if(gmstatHeaderViewHelper!=null){
             gmstatHeaderViewHelper.onClick(this);
@@ -352,6 +363,7 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
         gmFragmentPresenter.setFirstTime(false);
         rootView = inflater.inflate(R.layout.fragment_gmstat, container, false);
         this.unbind = ButterKnife.bind(this, rootView);
+        initView(rootView);
         initNumberFormatter();
         initEmptyAdapter();
         initChartLoading();
@@ -631,7 +643,7 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
         final StringBuilder textMessage = new StringBuilder("");
         if(e instanceof UnknownHostException){
             textMessage.append("Tidak ada koneksi. \nSilahkan coba kembali");
-        }else if(e instanceof ShopNetworkController.MessageErrorException){
+        }else if(e instanceof MessageErrorException){
             textMessage.append("Terjadi kesalahan koneksi. \nSilahkan coba kembali");
         }else{
             textMessage.append("Kesalahan tidak diketahui");
@@ -760,25 +772,28 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
 
     public static class CommonGMVH extends RecyclerView.ViewHolder{
 
-        @BindView(R.id.text)
+        void initView(View itemView){
+            text = (TextView) itemView.findViewById(R.id.text);
+            textDescription = (TextView) itemView.findViewById(R.id.textDescription);
+            percentage = (TextView) itemView.findViewById(R.id.percentage);
+            arrowIcon = (ImageView) itemView.findViewById(R.id.arrow_icon);
+            arrowDown = ResourcesCompat.getColor(itemView.getResources(), R.color.arrow_down, null);
+            arrowUp = ResourcesCompat.getColor(itemView.getResources(), R.color.arrow_up, null);;
+            gredyColor = ResourcesCompat.getColor(itemView.getResources(), R.color.grey_400, null);;
+        }
+
         TextView text;
 
-        @BindView(R.id.textDescription)
         TextView textDescription;
 
-        @BindView(R.id.percentage)
         TextView percentage;
 
-        @BindView(R.id.arrow_icon)
         ImageView arrowIcon;
 
-        @BindColor(R.color.arrow_down)
         int arrowDown;
 
-        @BindColor(R.color.arrow_up)
         int arrowUp;
 
-        @BindColor(R.color.grey_400)
         int gredyColor;
 
 //        @BindDrawable(R.drawable.ic_rectangle_down)
@@ -791,7 +806,7 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
 
         public CommonGMVH(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            initView(itemView);
 
             icRectagleDown = AppCompatDrawableManager.get().getDrawable(itemView.getContext(),
                     R.drawable.ic_rectangle_down);
@@ -846,18 +861,21 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
 
     public static class GrossEarnVH extends RecyclerView.ViewHolder{
 
-        @BindView(R.id.text)
+        void initView(View itemView){
+            text= (TextView) itemView.findViewById(R.id.text);
+            textDescription = (TextView) itemView.findViewById(R.id.textDescription);
+            dot= (ImageView) itemView.findViewById(R.id.dot);
+        }
+
         TextView text;
 
-        @BindView(R.id.textDescription)
         TextView textDescription;
 
-        @BindView(R.id.dot)
         ImageView dot;
 
         public GrossEarnVH(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            initView(itemView);
         }
 
         public void bind(GrossIncome grossIncome){
@@ -867,18 +885,21 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
     }
 
     public static class LoadingGMGrossIncome extends RecyclerView.ViewHolder{
-        @BindView(R.id.grossIncomeHeader)
         LoaderTextView grossIncomeHeader;
-        @BindView(R.id.text)
         LoaderTextView text;
-        @BindView(R.id.dot)
         LoaderImageView dot;
-        @BindView(R.id.textDescription)
         LoaderTextView textDescription;
+
+        void initView(View itemView){
+            grossIncomeHeader = (LoaderTextView) itemView.findViewById(R.id.grossIncomeHeader);
+            LoaderTextView text= (LoaderTextView) itemView.findViewById(R.id.text);
+            LoaderImageView dot= (LoaderImageView) itemView.findViewById(R.id.dot);
+            LoaderTextView textDescription= (LoaderTextView) itemView.findViewById(R.id.textDescription);
+        }
 
         public LoadingGMGrossIncome(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            initView(itemView);
 
             grossIncomeHeader.resetLoader();
             text.resetLoader();
@@ -889,18 +910,21 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
 
     public static class LoadingGM extends RecyclerView.ViewHolder{
 
-        @BindView(R.id.textDescription)
         LoaderTextView textDescription;
 
-        @BindView(R.id.text)
         LoaderTextView text;
 
-        @BindView(R.id.no_data_text)
         LoaderTextView noDataText;
+
+        void initView(View itemView){
+            textDescription = (LoaderTextView) itemView.findViewById(R.id.textDescription);
+            text = (LoaderTextView) itemView.findViewById(R.id.text);
+            noDataText = (LoaderTextView) itemView.findViewById(R.id.no_data_text);
+        }
 
         public LoadingGM(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            initView(itemView);
 
             textDescription.resetLoader();
             text.resetLoader();
@@ -1062,26 +1086,28 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
     }
 
     public static class PopularProductLoading {
-
-        @BindView(R.id.popular_product_description_loading)
         LoaderTextView popularProductDescription;
 
-        @BindView(R.id.text_popular_product_loading)
         LoaderTextView textPopularProduct;
 
-        @BindView(R.id.image_popular_product_loading)
         LoaderImageView imagePopularProduct;
 
-        @BindView(R.id.data_product_title_loading)
         LoaderTextView dataProductTitle;
 
-        @BindView(R.id.data_product_icon_loading)
         LoaderImageView dataProductIcon;
 
         View parentView;
 
+        void initView(View itemView){
+            popularProductDescription = (LoaderTextView) itemView.findViewById(R.id.popular_product_description_loading);
+            textPopularProduct = (LoaderTextView) itemView.findViewById(R.id.text_popular_product_loading);
+            imagePopularProduct = (LoaderImageView) itemView.findViewById(R.id.image_popular_product_loading);
+            dataProductTitle = (LoaderTextView) itemView.findViewById(R.id.data_product_title_loading);
+            dataProductIcon = (LoaderImageView) itemView.findViewById(R.id.data_product_icon_loading);
+        }
+
         public PopularProductLoading(View itemView){
-            ButterKnife.bind(this, itemView);
+            initView(itemView);
 
             parentView = itemView.findViewById(R.id.popular_product_loading);
 
@@ -1104,27 +1130,34 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
     public static class TransactionDataLoading{
         private final View parentView;
 
-        @BindView(R.id.data_transaction_header_loading_ic)
         LoaderImageView dataTransactionHeaderLoadingIc;
 
-        @BindView(R.id.data_transaction_header_loading_text)
         LoaderTextView dataTransactionHeaderLoadingText;
 
-        @BindView(R.id.buyer_number_header_loading)
         LoaderTextView buyerNumberHeaderLoading;
 
-        @BindView(R.id.transaction_count_loading)
         LoaderTextView transactionCountLoading;
 
-        @BindView(R.id.transaction_count_icon_loading)
         LoaderImageView transactionCountIconLoading;
 
-        @BindView(R.id.transaction_chart_loading)
         LoaderImageView trasactionChartLoading;
 
-        public TransactionDataLoading(View itemView){
-            ButterKnife.bind(this, itemView);
+        void initView(View itemView){
+            dataTransactionHeaderLoadingIc= (LoaderImageView) itemView.findViewById(R.id.data_transaction_header_loading_ic);
 
+            dataTransactionHeaderLoadingText= (LoaderTextView) itemView.findViewById(R.id.data_transaction_header_loading_text);
+
+            buyerNumberHeaderLoading= (LoaderTextView) itemView.findViewById(R.id.buyer_number_header_loading);
+
+            transactionCountLoading= (LoaderTextView) itemView.findViewById(R.id.transaction_count_loading);
+
+            transactionCountIconLoading= (LoaderImageView) itemView.findViewById(R.id.transaction_count_icon_loading);
+
+            trasactionChartLoading= (LoaderImageView) itemView.findViewById(R.id.transaction_chart_loading);
+        }
+
+        public TransactionDataLoading(View itemView){
+            initView(itemView);
             parentView = itemView.findViewById(R.id.transaction_data_loading);
 
             dataTransactionHeaderLoadingIc.resetLoader();
@@ -1147,27 +1180,36 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
     public static class BuyerDataLoading {
         private final View parentView;
 
-        @BindView(R.id.buyer_data_header_ic)
         LoaderImageView buyerdataHeaderIc;
 
-        @BindView(R.id.buyer_data_header_text)
         LoaderTextView buyerDataHeaderText;
 
-        @BindView(R.id.buyer_number_header_loading)
         LoaderTextView buyerNumberHeaderLoading;
 
-        @BindView(R.id.buyer_count_loading)
         LoaderTextView buyerCountLoading;
 
-        @BindView(R.id.buyer_count_icon_loading)
         LoaderImageView buyerCountIconLoading;
 
-        @BindView(R.id.data_buyer_loading)
         LoaderImageView dataBuyerLoading;
+
+        void initView(View itemView){
+
+            buyerdataHeaderIc= (LoaderImageView) itemView.findViewById(R.id.buyer_data_header_ic);
+
+            buyerDataHeaderText= (LoaderTextView) itemView.findViewById(R.id.buyer_data_header_text);
+
+            buyerNumberHeaderLoading= (LoaderTextView) itemView.findViewById(R.id.buyer_number_header_loading);
+
+            buyerCountLoading= (LoaderTextView) itemView.findViewById(R.id.buyer_count_loading);
+
+            buyerCountIconLoading= (LoaderImageView) itemView.findViewById(R.id.buyer_count_icon_loading);
+
+            dataBuyerLoading= (LoaderImageView) itemView.findViewById(R.id.data_buyer_loading);
+        }
 
 
         public BuyerDataLoading(View itemView){
-            ButterKnife.bind(this, itemView);
+            initView(itemView);
 
             parentView = itemView.findViewById(R.id.buyer_data_loading);
 
@@ -1189,17 +1231,23 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
     }
 
     public static class MarketInsightLoading {
-        @BindView(R.id.market_insight_header_ic)
         LoaderImageView marketInsightHeaderIc;
 
-        @BindView(R.id.market_insight_header_text)
         LoaderTextView marketInsightHeaderText;
 
-        @BindView(R.id.market_insight_header_loading)
         LoaderTextView marketInsightHeaderLoading;
 
-        @BindView(R.id.market_insight_loading_recyclerview)
         RecyclerView marketInsightLoadingRec;
+
+        void initView(View itemView){
+            marketInsightHeaderIc= (LoaderImageView) itemView.findViewById(R.id.market_insight_header_ic);
+
+            marketInsightHeaderText= (LoaderTextView) itemView.findViewById(R.id.market_insight_header_text);
+
+            marketInsightHeaderLoading= (LoaderTextView) itemView.findViewById(R.id.market_insight_header_loading);
+
+            marketInsightLoadingRec= (RecyclerView) itemView.findViewById(R.id.market_insight_loading_recyclerview);
+        }
 
         private final View parentView;
 
@@ -1248,16 +1296,19 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
         }
 
         class ViewHolder3 extends RecyclerView.ViewHolder{
-
-            @BindView(R.id.market_insight_keyword_loading)
             LoaderTextView marketInsightKeywordLoading;
 
-            @BindView(R.id.market_insight_number_loading)
             LoaderTextView marketInsightNumberLoading;
+
+            void initView(View itemView){
+                marketInsightKeywordLoading= (LoaderTextView) itemView.findViewById(R.id.market_insight_keyword_loading);
+
+                marketInsightNumberLoading= (LoaderTextView) itemView.findViewById(R.id.market_insight_number_loading);
+            }
 
             public ViewHolder3(View itemView) {
                 super(itemView);
-                ButterKnife.bind(this, itemView);
+                initView(itemView);
 
                 marketInsightKeywordLoading.resetLoader();
                 marketInsightNumberLoading.resetLoader();

@@ -5,9 +5,10 @@ import android.content.res.AssetManager;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.tkpd.library.utils.network.CommonListener;
 import com.tokopedia.core.discovery.dynamicfilter.facade.HadesNetwork;
 import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
-import com.tokopedia.sellerapp.BuildConfig;
+import com.tokopedia.seller.BuildConfig;
 import com.tokopedia.seller.gmstat.apis.GMStatApi;
 import com.tokopedia.seller.gmstat.models.GetBuyerData;
 import com.tokopedia.seller.gmstat.models.GetKeyword;
@@ -15,8 +16,6 @@ import com.tokopedia.seller.gmstat.models.GetPopularProduct;
 import com.tokopedia.seller.gmstat.models.GetProductGraph;
 import com.tokopedia.seller.gmstat.models.GetShopCategory;
 import com.tokopedia.seller.gmstat.models.GetTransactionGraph;
-import com.tokopedia.sellerapp.home.utils.BaseNetworkController;
-import com.tokopedia.sellerapp.home.utils.ShopNetworkController;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -43,8 +42,8 @@ import rx.functions.Func3;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.tkpd.library.utils.network.BaseNetworkController.onResponseError;
 import static com.tokopedia.seller.gmstat.views.SetDateFragment.StartOrEndPeriodModel.YESTERDAY;
-import static com.tokopedia.sellerapp.home.utils.ShopNetworkController.onResponseError;
 
 /**
  * Created by normansyahputa on 11/2/16.
@@ -734,7 +733,7 @@ public class GMStatNetworkController extends BaseNetworkController {
         );
     }
 
-    public interface GetGMStat extends ShopNetworkController.CommonListener{
+    public interface GetGMStat extends CommonListener {
         void onSuccessGetShopCategory(GetShopCategory getShopCategory);
         void onSuccessTransactionGraph(GetTransactionGraph getTransactionGraph);
         void onSuccessProductnGraph(GetProductGraph getTransactionGraph);

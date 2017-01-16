@@ -8,7 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.tokopedia.sellerapp.R;
+import com.tokopedia.seller.R;
 
 /**
  * Created by zulfikarrahman on 12/17/16.

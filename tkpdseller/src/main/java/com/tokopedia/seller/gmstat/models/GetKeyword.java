@@ -10,9 +10,6 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Generated;
-
-@Generated("org.jsonschema2pojo")
 public class GetKeyword {
 
     @SerializedName("SearchKeyword")
@@ -37,7 +34,6 @@ public class GetKeyword {
         this.searchKeyword = searchKeyword;
     }
 
-    @Generated("org.jsonschema2pojo")
     public static class SearchKeyword {
 
         @SerializedName("Keyword")

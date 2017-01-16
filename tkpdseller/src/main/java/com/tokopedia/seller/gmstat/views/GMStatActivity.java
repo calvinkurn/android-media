@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -11,20 +12,16 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.WelcomeActivity;
-import com.tokopedia.sellerapp.R;
-import com.tokopedia.sellerapp.SellerMainApplication;
-import com.tokopedia.sellerapp.drawer.DrawerVariableSeller;
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.gmstat.utils.DaggerInjectorListener;
 import com.tokopedia.seller.gmstat.presenters.GMStat;
 import com.tokopedia.seller.gmstat.utils.GMStatNetworkController;
-import com.tokopedia.sellerapp.home.utils.ImageHandler;
-import com.tokopedia.sellerapp.home.view.SellerToolbarVariable;
-
-import javax.inject.Inject;
 
 import butterknife.BindColor;
 import butterknife.BindString;
@@ -38,37 +35,27 @@ import static com.tokopedia.seller.gmstat.views.SetDateActivity.SELECTION_TYPE;
 import static com.tokopedia.seller.gmstat.views.SetDateFragment.END_DATE;
 import static com.tokopedia.seller.gmstat.views.SetDateFragment.START_DATE;
 
-public class GMStatActivity extends AppCompatActivity implements GMStat, SessionHandler.onLogoutListener {
+public abstract class GMStatActivity extends AppCompatActivity implements GMStat, SessionHandler.onLogoutListener, DaggerInjectorListener {
 
-    @Inject
-    GMStatNetworkController gmStatNetworkController;
+    protected GMStatNetworkController gmStatNetworkController;
 
-    @Inject
-    ImageHandler imageHandler;
+    protected ImageHandler imageHandler;
 
-    @BindView(R.id.drawer_layout_nav)
     DrawerLayout drawerLayout;
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
+    protected Toolbar toolbar;
 
-    @BindString(R.string.title_activity_gmstat)
     String titleActivityGMStat;
 
-    @BindColor(R.color.green_600)
     int green600;
 
-    @BindColor(R.color.tkpd_main_green)
     int tkpdMainGreenColor;
-
-    SellerToolbarVariable sellerToolbarVariable;
 
     public static final String IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT";
     public static final String SHOP_ID = "SHOP_ID";
     boolean isAfterRotate = false;
     private boolean isGoldMerchant;
     private String shopId;
-    private DrawerVariableSeller drawer;
 
     private final long shop_id_staging = 560900;
 //    private final long shop_id_staging = 67726;
@@ -79,9 +66,9 @@ public class GMStatActivity extends AppCompatActivity implements GMStat, Session
         if(!isAfterRotate){
             fetchIntent(getIntent().getExtras());
         }
-        SellerMainApplication.get(this).getComponent().inject(this);
+        inject();
         setContentView(R.layout.activity_gmstat);
-        ButterKnife.bind(this);
+        initView();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             getWindow().setStatusBarColor(green600);
@@ -94,23 +81,19 @@ public class GMStatActivity extends AppCompatActivity implements GMStat, Session
         isAfterRotate = savedInstanceState != null;
     }
 
-    private void initDrawer() {
-        drawer = new DrawerVariableSeller(this);
-        sellerToolbarVariable = new SellerToolbarVariable(this, toolbar);
-        sellerToolbarVariable.createToolbarWithDrawer();
-        drawer.setToolbar(sellerToolbarVariable);
-        drawer.createDrawer();
-        drawer.setEnabled(true);
-        drawer.setDrawerPosition(TkpdState.DrawerPosition.SELLER_GM_STAT);
+    private void initView() {
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_nav);
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d("NIS", "CLICK");
-                drawer.openDrawer();
-            }
-        });
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        titleActivityGMStat = getString(R.string.title_activity_gmstat);
+
+        green600 = ResourcesCompat.getColor(getResources(), R.color.green_600, null);
+
+        tkpdMainGreenColor = ResourcesCompat.getColor(getResources(), R.color.tkpd_main_green, null);
     }
+
+    protected abstract void initDrawer();
 
     private void fetchIntent(Bundle extras) {
         if(extras != null){

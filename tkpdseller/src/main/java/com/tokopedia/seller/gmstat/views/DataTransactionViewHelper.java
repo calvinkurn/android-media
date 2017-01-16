@@ -3,6 +3,7 @@ package com.tokopedia.seller.gmstat.views;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -12,13 +13,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.db.chart.view.LineChartView;
-import com.tokopedia.sellerapp.R;
+
+import com.tkpd.library.utils.image.ImageHandler;
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.Router;
 import com.tokopedia.seller.gmstat.models.GetTransactionGraph;
 import com.tokopedia.seller.gmstat.utils.DataTransactionChartConfig;
-import com.tokopedia.sellerapp.gmsubscribe.GMSubscribeActivity;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
-import com.tokopedia.sellerapp.home.utils.ImageHandler;
+import com.tokopedia.seller.gmstat.views.williamchart.chart.view.LineChartView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,37 +41,27 @@ import static com.tokopedia.seller.gmstat.views.PopularProductViewHelper.getForm
 public class DataTransactionViewHelper {
     private DataTransactionChartConfig williamChartUtils;
 
-    @BindArray(R.array.month_names_abrev)
     String[] monthNamesAbrev;
 
-    @BindView(R.id.transaction_chart)
     LineChartView transactionChart;
 
-    @BindView(R.id.percentage)
     TextView percentage;
 
-    @BindView(R.id.transaction_count_icon)
     ImageView transactionCountIcon;
 
-    @BindView(R.id.transaction_count)
     TextView transactionCount;
 
-    @BindColor(R.color.arrow_down)
     int arrowDown;
 
-    @BindColor(R.color.arrow_up)
     int arrowUp;
 
-    @BindView(R.id.transaction_data_container_gold_merchant)
     LinearLayout transactionDataContainerGoldMerchant;
 
-    @BindView(R.id.transaction_data_container_non_gold_merchant)
     LinearLayout transactionDataContainerNonGoldMerchant;
 
-//    @BindView(R.id.transaction_data_container_upper)
+//    @BindView(R2.id.transaction_data_container_upper)
 //    RelativeLayout transactionDataContainerUpper;
 
-    @BindColor(R.color.grey_400)
     int gredyColor;
 
 //    @BindDrawable(R.drawable.ic_rectangle_down)
@@ -85,24 +77,21 @@ public class DataTransactionViewHelper {
     private String[] mLabels = new String[10];
     ImageHandler imageHandler;
 
-    @BindView(R.id.separator_2_transaction_data)
     LinearLayout separator2;
 
-    @BindColor(R.color.breakline_background)
     int breakLineBackground;
 
-    @BindColor(android.R.color.transparent)
     int transparantColor;
 
-    @OnClick(R.id.move_to_gmsubscribe)
     public void moveToGMSubscribe(){
-        itemView.getContext().startActivity(new Intent(itemView.getContext(), GMSubscribeActivity.class));
+        Router.goToGMSubscribe(itemView.getContext());
     }
 
     public DataTransactionViewHelper(View itemView, ImageHandler imageHandler, boolean isGoldMerchant){
         this.itemView = itemView;
         this.isGoldMerchant = isGoldMerchant;
         ButterKnife.bind(this, itemView);
+        initView(itemView);
 
         icRectagleDown = AppCompatDrawableManager.get().getDrawable(itemView.getContext(),
                 R.drawable.ic_rectangle_down);
@@ -118,6 +107,42 @@ public class DataTransactionViewHelper {
             transactionDataContainerGoldMerchant.setVisibility(View.VISIBLE);
             transactionDataContainerNonGoldMerchant.setVisibility(View.GONE);
         }
+    }
+
+    private void initView(View itemView) {
+        monthNamesAbrev = itemView.getResources().getStringArray(R.array.month_names_abrev);
+
+        transactionChart = (LineChartView) itemView.findViewById(R.id.transaction_chart);
+
+        percentage= (TextView) itemView.findViewById(R.id.percentage);
+
+        transactionCountIcon= (ImageView) itemView.findViewById(R.id.transaction_count_icon);
+
+        transactionCount= (TextView) itemView.findViewById(R.id.transaction_count);
+
+        arrowDown = ResourcesCompat.getColor(itemView.getResources(), R.color.arrow_down, null);
+
+        arrowUp = ResourcesCompat.getColor(itemView.getResources(), R.color.arrow_up, null);
+
+        transactionDataContainerGoldMerchant= (LinearLayout) itemView.findViewById(R.id.transaction_data_container_gold_merchant);
+
+        transactionDataContainerNonGoldMerchant= (LinearLayout) itemView.findViewById(R.id.transaction_data_container_non_gold_merchant);
+
+        gredyColor = ResourcesCompat.getColor(itemView.getResources(), R.color.grey_400, null);
+
+        separator2= (LinearLayout) itemView.findViewById(R.id.separator_2_transaction_data);
+
+        breakLineBackground = ResourcesCompat.getColor(itemView.getResources(), R.color.breakline_background, null);
+
+        transparantColor = ResourcesCompat.getColor(itemView.getResources(), android.R.color.transparent, null);;
+
+        itemView.findViewById(R.id.move_to_gmsubscribe)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        moveToGMSubscribe();
+                    }
+                });
     }
 
     public void bindData(GetTransactionGraph getTransactionGraph){

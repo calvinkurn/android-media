@@ -18,13 +18,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.DatePickerUtil;
-import com.tokopedia.sellerapp.R;
+import com.tokopedia.seller.R;
 
 import org.parceler.Parcel;
 
@@ -76,10 +77,8 @@ public class SetDateFragment extends Fragment {
         }
     }
 
-    @BindView(R.id.sliding_tabs)
     TabLayout slidingTabs;
 
-    @BindView(R.id.set_date_viewpager)
     ViewPager setDateViewPager;
     SetDatePagerAdapter setDatePagerAdapter;
 
@@ -92,7 +91,7 @@ public class SetDateFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.set_date_layout, container, false);
-        bind = ButterKnife.bind(this, rootView);
+        initView(rootView);
         setDatePagerAdapter = new SetDatePagerAdapter(getActivity().getSupportFragmentManager(),
                 getActivity(), setDate.isGMStat(), setDate.selectionPeriod(),
                 setDate.sDate(), setDate.eDate());
@@ -108,6 +107,11 @@ public class SetDateFragment extends Fragment {
                 break;
         }
         return rootView;
+    }
+
+    public void initView(View rootView){
+        slidingTabs = (TabLayout) rootView.findViewById(R.id.sliding_tabs);
+        setDateViewPager = (ViewPager) rootView.findViewById(R.id.set_date_viewpager);
     }
 
     @Override
@@ -162,21 +166,29 @@ public class SetDateFragment extends Fragment {
     }
 
     public static class CustomFragment extends Fragment {
-        @BindView(R.id.period_recyclerview)
         RecyclerView periodRecyclerView;
         private Unbinder unbinder;
         private PeriodAdapter periodAdapter;
-        @BindView(R.id.period_linlay)
         LinearLayout periodLinLay;
         private long sDate, eDate;
 
-        @OnClick(R.id.save_date)
         public void saveDate(){
             if(getActivity() != null && getActivity() instanceof SetDate){
                 long sDate = periodAdapter.datePickerRules.sDate;
                 long eDate = periodAdapter.datePickerRules.eDate;
                 ((SetDate)getActivity()).returnStartAndEndDate(sDate, eDate, -1, CUSTOM_TYPE);
             }
+        }
+
+        void initView(View rootView){
+            periodLinLay = (LinearLayout) rootView.findViewById(R.id.period_linlay);
+            periodRecyclerView = (RecyclerView) rootView.findViewById(R.id.period_recyclerview);
+            rootView.findViewById(R.id.save_date).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    saveDate();
+                }
+            });
         }
 
         @Nullable
@@ -188,6 +200,7 @@ public class SetDateFragment extends Fragment {
                 eDate = bundle.getLong(CUSTOM_END_DATE, -1);
             }
             View rootView = inflater.inflate(R.layout.period_layout, container, false);
+            initView(rootView);
             unbinder = ButterKnife.bind(this, rootView);
 
             periodLinLay.setVisibility(View.GONE);
@@ -240,15 +253,27 @@ public class SetDateFragment extends Fragment {
             this.itemView = itemView;
             this.position = position;
             ButterKnife.bind(this, itemView);
+            initView(itemView);
         }
 
-        @BindView(R.id.checkbox_period)
+
+        void initView(View itemView){
+            checkBoxPeriod = (CheckBox) itemView.findViewById(R.id.checkbox_period);
+            periodHeader = (TextView) itemView.findViewById(R.id.period_header);
+            periodDate = (TextView) itemView.findViewById(R.id.period_date);
+            itemView.findViewById(R.id.overlay_set_date).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onCheckForOther();
+                }
+            });
+            monthNamesAbrev = itemView.getResources().getStringArray(R.array.month_names_abrev);
+        }
+
         CheckBox checkBoxPeriod;
 
-        @BindView(R.id.period_header)
         TextView periodHeader;
 
-        @BindView(R.id.period_date)
         TextView periodDate;
         private PeriodRangeModel periodRangeModel;
         PeriodListener periodListener;
@@ -256,14 +281,12 @@ public class SetDateFragment extends Fragment {
 //        @BindArray(R.array.month_names)
 //        String[] monthNames;
 
-        @BindArray(R.array.month_names_abrev)
         String[] monthNamesAbrev;
 
         public void setPeriodListener(PeriodListener periodListener) {
             this.periodListener = periodListener;
         }
 
-        @OnClick(R.id.overlay_set_date)
         public void onCheckForOther(){
             if(periodListener.isAllNone(!checkBoxPeriod.isChecked(), position)){
                 return;
@@ -326,19 +349,29 @@ public class SetDateFragment extends Fragment {
     }
 
     public static class PeriodFragment extends Fragment {
-        @BindView(R.id.period_recyclerview)
+
         RecyclerView periodRecyclerView;
         private Unbinder unbinder;
         private PeriodAdapter periodAdapter;
 
-        @BindView(R.id.save_date)
+        public void initView(View rootView){
+            periodRecyclerView = (RecyclerView) rootView.findViewById(R.id.period_recyclerview);
+            saveDate = (Button) rootView.findViewById(R.id.save_date);
+            periodLinLay = (LinearLayout) rootView.findViewById(R.id.period_linlay);
+
+            rootView.findViewById(R.id.save_date).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    saveDate();
+                }
+            });
+        }
+
         Button saveDate;
 
-        @BindView(R.id.period_linlay)
         LinearLayout periodLinLay;
         List<PeriodChooseViewHelper> periodChooseViewHelpers;
 
-        @OnClick(R.id.save_date)
         public void saveDate(){
             if(getActivity() != null && getActivity() instanceof SetDate){
                 for(int i=0;i<basePeriodModels.size();i++){
@@ -420,6 +453,8 @@ public class SetDateFragment extends Fragment {
             }
 
             unbinder = ButterKnife.bind(this, rootView);
+            initView(rootView);
+
             //[START] old code
             periodAdapter = new PeriodAdapter();
 
@@ -679,19 +714,38 @@ public class SetDateFragment extends Fragment {
 //        @BindArray(R.array.month_names)
 //        String[] monthNames;
 
-        @BindArray(R.array.month_names_abrev)
         String[] monthNamesAbrev;
 
-        @BindView(R.id.custom_header)
         TextView customHeader;
 
-        @BindView(R.id.custom_date)
         TextView customDate;
 
-        @BindView(R.id.custom_drop_down)
         ImageView customDropDown;
 
 //        DateValidationListener dateValidationListener;
+
+        void initView(View rootView){
+            monthNamesAbrev = rootView.getResources().getStringArray(R.array.month_names_abrev);
+            customHeader = (TextView) rootView.findViewById(R.id.custom_header);
+            customDate = (TextView) rootView.findViewById(R.id.custom_date);
+            customDropDown = (ImageView) rootView.findViewById(R.id.custom_drop_down);
+            rootView.findViewById(R.id.custom_date).setOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            onChooseDate();
+                        }
+                    }
+            );
+            rootView.findViewById(R.id.custom_drop_down).setOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            onChooseDate();
+                        }
+                    }
+            );
+        }
 
         DatePickerRules datePickerRules;
         private Calendar cal;
@@ -706,7 +760,6 @@ public class SetDateFragment extends Fragment {
 
         private StartOrEndPeriodModel startOrEndPeriodModel;
 
-        @OnClick({R.id.custom_date,R.id.custom_drop_down})
         public void onChooseDate(){
             if(startOrEndPeriodModel == null || !(this.itemView.getContext() instanceof Activity))
                 return;
@@ -763,6 +816,7 @@ public class SetDateFragment extends Fragment {
         public CustomViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            initView(itemView);
         }
 
         public void bindData(StartOrEndPeriodModel startOrEndPeriodModel){
@@ -801,13 +855,27 @@ public class SetDateFragment extends Fragment {
 
     @Deprecated
     public static class BasePeriodViewHolder extends RecyclerView.ViewHolder{
-        @BindView(R.id.checkbox_period)
+
+        void initView(View rootView){
+            checkBoxPeriod = (CheckBox) rootView.findViewById(R.id.checkbox_period);
+            checkBoxPeriod.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    onCheckBoxPeriod(isChecked);
+                }
+            });
+
+            periodHeader = (TextView) rootView.findViewById(R.id.period_header);
+
+            periodDate = (TextView) rootView.findViewById(R.id.period_date);
+            String[] monthNamesAbrev = rootView.getResources().getStringArray(R.array.month_names_abrev);
+
+        }
+
         CheckBox checkBoxPeriod;
 
-        @BindView(R.id.period_header)
         TextView periodHeader;
 
-        @BindView(R.id.period_date)
         TextView periodDate;
         private PeriodRangeModel periodRangeModel;
         PeriodListener periodListener;
@@ -815,14 +883,12 @@ public class SetDateFragment extends Fragment {
 //        @BindArray(R.array.month_names)
 //        String[] monthNames;
 
-        @BindArray(R.array.month_names_abrev)
         String[] monthNamesAbrev;
 
         public void setPeriodListener(PeriodListener periodListener) {
             this.periodListener = periodListener;
         }
 
-        @OnCheckedChanged(R.id.checkbox_period)
         public void onCheckBoxPeriod(boolean checked){
             periodRangeModel.isChecked = checked;
             if(periodListener != null){
@@ -833,6 +899,7 @@ public class SetDateFragment extends Fragment {
         public BasePeriodViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            initView(itemView);
         }
 
         public void bindData(PeriodRangeModel periodRangeModel){

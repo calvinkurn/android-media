@@ -2,11 +2,12 @@ package com.tokopedia.seller.gmstat.views;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.util.Log;
 import android.view.View;
 
-import com.tokopedia.sellerapp.R;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.library.LoaderImageView;
 import com.tokopedia.seller.gmstat.library.LoaderTextView;
 
@@ -36,25 +37,19 @@ import static com.tokopedia.seller.gmstat.views.SetDateActivity.SELECTION_TYPE;
 
 public class GMStatHeaderViewHelper {
 
-    @BindArray(R.array.month_names_abrev)
     String[] monthNamesAbrev;
 
 //    @BindArray(R.array.month_names)
 //    String[] monthNames;
 
-    @BindView(R.id.calendar_range)
     LoaderTextView calendarRange;
 
-    @BindView(R.id.calendar_arrow_icon)
     LoaderImageView calendarArrowIcon;
 
-    @BindView(R.id.calendar_icon)
     LoaderImageView calendarIcon;
 
-    @BindColor(R.color.grey_400)
     int gredyColor;
 
-    @BindColor(R.color.arrow_up)
     int greenColor;
 
     private static final Locale locale = new Locale("in","ID");
@@ -72,9 +67,23 @@ public class GMStatHeaderViewHelper {
     public GMStatHeaderViewHelper(View itemView, boolean isGmStat){
         this.itemView = itemView;
         this.isGmStat = isGmStat;
-        ButterKnife.bind(this, itemView);
+        initView(itemView);
 
         resetToLoading();
+    }
+
+    private void initView(View itemView) {
+        monthNamesAbrev = itemView.getResources().getStringArray(R.array.month_names_abrev);
+
+        calendarRange = (LoaderTextView) itemView.findViewById(R.id.calendar_range);
+
+        calendarArrowIcon = (LoaderImageView) itemView.findViewById(R.id.calendar_arrow_icon);
+
+        calendarIcon = (LoaderImageView) itemView.findViewById(R.id.calendar_icon);
+
+        gredyColor = ResourcesCompat.getColor(itemView.getResources(), R.color.grey_400, null);
+
+        greenColor = ResourcesCompat.getColor(itemView.getResources(), R.color.arrow_up, null);
     }
 
     public void resetToLoading(){

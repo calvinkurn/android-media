@@ -28,7 +28,7 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-import com.tokopedia.sellerapp.R;
+import com.tokopedia.seller.R;
 
 public class LoaderImageView extends ImageView implements LoaderView {
 

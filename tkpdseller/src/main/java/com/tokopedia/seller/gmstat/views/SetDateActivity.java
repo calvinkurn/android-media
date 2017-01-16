@@ -3,13 +3,14 @@ package com.tokopedia.seller.gmstat.views;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
-import com.tokopedia.sellerapp.R;
+import com.tokopedia.seller.R;
 
 import butterknife.BindColor;
 import butterknife.ButterKnife;
@@ -33,10 +34,8 @@ public class SetDateActivity extends AppCompatActivity implements SetDateFragmen
     private boolean isGoldMerchant;
     private boolean isAfterRotate;
 
-    @BindColor(R.color.green_600)
     int green600;
 
-    @BindColor(R.color.tkpd_main_green)
     int tkpdMainGreenColor;
     private int selectionPeriod;
     private int selectionType;
@@ -49,7 +48,7 @@ public class SetDateActivity extends AppCompatActivity implements SetDateFragmen
             fetchIntent(getIntent().getExtras());
         }
         setContentView(R.layout.activity_set_date);
-        ButterKnife.bind(this);
+        initView();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             getWindow().setStatusBarColor(green600);
@@ -66,6 +65,12 @@ public class SetDateActivity extends AppCompatActivity implements SetDateFragmen
             supportActionBar.setHomeButtonEnabled(true);
         }
         isAfterRotate = savedInstanceState != null;
+    }
+
+    private void initView() {
+        green600 = ResourcesCompat.getColor(getResources(), R.color.green_600, null);
+
+        tkpdMainGreenColor = ResourcesCompat.getColor(getResources(), R.color.tkpd_main_green, null);
     }
 
     private void fetchIntent(Bundle extras) {
