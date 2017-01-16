@@ -155,6 +155,7 @@ public class DataTransactionViewHelper {
         }
 
         /* non empty state */
+        transactionCountIcon.setVisibility(View.VISIBLE);
         transactionCount.setText(getFormattedString(getTransactionGraph.getFinishedTrans()));
 
         // percentage is missing and icon is missing too

@@ -64,7 +64,8 @@ public class WholesaleAdapterImpl extends RecyclerView.Adapter<WholesaleViewHold
         checkError();
         if(!checkIfErrorExist()){
             data.add(new WholesaleModel());
-            notifyDataSetChanged();
+            notifyItemInserted(getItemCount() - 1);
+            return true;
         }
         return false;
     }

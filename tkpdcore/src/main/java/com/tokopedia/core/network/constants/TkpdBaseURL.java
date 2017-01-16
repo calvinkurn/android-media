@@ -3,7 +3,8 @@ package com.tokopedia.core.network.constants;
 /**
  * Created by Angga.Prasetiyo on 07/12/2015.
  */
-public interface  TkpdBaseURL {
+public interface TkpdBaseURL {
+
     String LIVE_DOMAIN = "https://ws.tokopedia.com/";
     String STAGE_DOMAIN = "https://ws-staging.tokopedia.com/";
     String ALPHA_DOMAIN = "https://ws-alpha.tokopedia.com/";
@@ -24,12 +25,14 @@ public interface  TkpdBaseURL {
     String INBOX_DOMAIN = "https://inbox.tokopedia.com";
     String JS_DOMAIN = "https://js.tokopedia.com/";
     String JS_STAGING_DOMAIN = "https://js-staging.tokopedia.com/";
-    String JS_ALPHA_DOMAIN = "https://js-alpha.tokopedia.com/";
+    String JS_ALPHA_DOMAIN = "https://ajax-alpha.tokopedia.com/js/";
     String KERO_DOMAIN = "https://kero.tokopedia.com/";
     String JAHE_DOMAIN = "https://jahe.tokopedia.com";
     String PULSA_WEB_DOMAIN = "https://pulsa.tokopedia.com";
     String PULSA_WEB_STAGING_DOMAIN = "https://pulsa-staging.tokopedia.com";
     String GOLD_MERCHANT_DOMAIN = "https://goldmerchant.tokopedia.com";
+    String WEB_DOMAIN = "https://www.tokopedia.com/";
+    String MOBILE_DOMAIN = "https://m.tokopedia.com/";
 
     interface Product {
         String URL_PRODUCT = BASE_DOMAIN + "v4/product/";
@@ -187,7 +190,7 @@ public interface  TkpdBaseURL {
         String PATH_UNDO_DELETE_MESSAGES = "undo_delete_messages.pl";
         String PATH_MOVE_TO_INBOX = "move_to_inbox.pl";
         String PATH_UNDO_MOVE_TO_INBOX = "undo_move_to_inbox.pl";
-        String PATH_DELETE_MESSAGES_FOREVER= "delete_forever_messages.pl";
+        String PATH_DELETE_MESSAGES_FOREVER = "delete_forever_messages.pl";
 
         String PATH_ARCHIVE_MESSAGE_DETAIL = "archive_messages_detail.pl";
         String PATH_DELETE_FOREVER_MESSAGE_DETAIL = "delete_forever_messages_detail.pl";
@@ -266,6 +269,7 @@ public interface  TkpdBaseURL {
         String PATH_REMOVE_WISHLIST_PRODUCT = "remove_wishlist_product.pl";
 
         String PATH_IS_ALREADY_WISHLIST_PRODUCT = "is_already_wishlist_product.pl";
+        String PATH_OTP_WITH_CALL = "otp/request";
     }
 
     interface Shop {
@@ -362,8 +366,6 @@ public interface  TkpdBaseURL {
 
     interface Etc {
         String URL_ADDRESS = BASE_DOMAIN + "v4/address/";
-        String URL_CONTACT_US = BASE_DOMAIN + "v4/contact-us/";
-        String URL_CONTACT_US_ACTION = BASE_DOMAIN + "v4/action/contact-us/";
         String URL_DEPARTMENT = BASE_DOMAIN + "v4/department/";
         String URL_HOME = BASE_DOMAIN + "v4/home/";
         String URL_TICKER = BASE_DOMAIN + "v4/ticker/";
@@ -372,12 +374,6 @@ public interface  TkpdBaseURL {
         String PATH_GET_DISTRICT = "get_district.pl";
         String PATH_GET_PROVINCE = "get_province.pl";
         String PATH_GET_SHIPPING_CITY = "get_shipping_city.pl";
-
-        String PATH_GET_FORM_MODEL_CONTACT_US = "get_form_model_contact_us.pl";
-        String PATH_GET_TREE_TICKET_CATEGORY = "get_tree_ticket_category.pl";
-        String PATH_CREATE_TICKET = "create_ticket.pl";
-        String PATH_CREATE_TICKET_VALIDATION = "create_ticket_validation.pl";
-
 
         String PATH_GET_DEPARTMENT_CHILD = "get_department_child.pl";
         String PATH_GET_DEPARTMENT_PARENT = "get_department_parent.pl";
@@ -398,9 +394,11 @@ public interface  TkpdBaseURL {
         String PATH_CANCEL_RESOLUTION = "cancel_resolution.pl";
         String PATH_CREATE_RES_SUBMIT = "create_resolution_submit.pl";
         String PATH_CREATE_RES_VALIDATION = "create_resolution_validation_new.pl";
-        String PATH_EDIT_RESI_RESOLUTION = "edit_resi_resolution.pl";
+        String PATH_EDIT_RESI_RESOLUTION_VALIDATION = "edit_resi_resolution_validation.pl";
+        String PATH_EDIT_RESI_RESOLUTION_SUBMIT = "edit_resi_resolution_submit.pl";
         String PATH_FINISH_RES_RETURN = "finish_resolution_retur.pl";
-        String PATH_INPUT_RESI_RESOLUTION = "input_resi_resolution.pl";
+        String PATH_INPUT_RESI_RESOLUTION_VALIDATION = "input_resi_resolution_validation.pl";
+        String PATH_INPUT_RESI_RESOLUTION_SUBMIT = "input_resi_resolution_submit.pl";
         String PATH_INPUT_ADDRESS_RESOLUTION = "input_address_resolution.pl";
         String PATH_EDIT_ADDRESS_RESOLUTION = "edit_address_resolution.pl";
         String PATH_REJECT_ADMIN_RES_SUBMIT = "reject_admin_resolution_submit.pl";
@@ -545,6 +543,7 @@ public interface  TkpdBaseURL {
         String PATH_OTHER_PRODUCT = "v1/product";
         String PATH_FAV_SHOP_FEED = "catalog/product";
         String PATH_CATALOG = "v1/catalog";
+        String PATH_TOP_PICKS = "/hoth/toppicks/widget";
 
     }
 
@@ -569,7 +568,6 @@ public interface  TkpdBaseURL {
     }
 
 
-
     interface Recharge {
         String VERSION = "v1.1";
         String RECHARGE = "recharge";
@@ -578,7 +576,7 @@ public interface  TkpdBaseURL {
         String PATH_CATEGORY = VERSION + "/category/list";
         String PATH_OPERATOR = VERSION + "/operator/list";
         String PATH_PRODUCT = VERSION + "/product/list";
-        String PATH_RECENT_NUMBER =  VERSION + "/recent-number";
+        String PATH_RECENT_NUMBER = VERSION + "/recent-number";
         String PATH_LAST_ORDER = VERSION + "/last-order";
         String PATH_SALDO = "/saldo/";
     }
@@ -601,17 +599,18 @@ public interface  TkpdBaseURL {
         String GET_COMMENT_TALK = "/v2/talk/comment";
         String GET_INBOX_TALK_DETAIL = "/v2/talk/inbox/detail";
 
-        String ADD_PRODUCT_TALK    = "/v2/talk/create";
+        String ADD_PRODUCT_TALK = "/v2/talk/create";
         String FOLLOW_PRODUCT_TALK = "/v2/talk/follow";
         String DELETE_PRODUCT_TALK = "/v2/talk/delete";
         String REPORT_PRODUCT_TALK = "/v2/talk/report";
 
-        String ADD_COMMENT_TALK    = "/v2/talk/comment/create";
+        String ADD_COMMENT_TALK = "/v2/talk/comment/create";
         String DELETE_COMMENT_TALK = "/v2/talk/comment/delete";
         String REPORT_COMMENT_TALK = "/v2/talk/comment/report";
 
     }
-    interface Accounts{
+
+    interface Accounts {
         String PATH_GET_TOKEN = "token";
         String PATH_GET_INFO = "info";
         String PATH_GET_PROFILE = "profile/json/{id}";
@@ -621,9 +620,10 @@ public interface  TkpdBaseURL {
         String RESET_PASSWORD = "api/reset";
         String VALIDATE_EMAIL = "/api/register/validate-email";
         String RESENT_ACTIVATION = "/api/resend";
+        String GENERATE_HOST = "/api/upload-host";
     }
 
-    interface Home{
+    interface Home {
         String PATH_API_V1_ANNOUNCEMENT_TICKER = "/api/v1/tickers";
     }
 
@@ -633,5 +633,15 @@ public interface  TkpdBaseURL {
 
     interface FCM{
         String UPDATE_FCM = "/api/gcm/update";
+    }
+
+    interface ContactUs {
+        String URL_CONTACT_US = WEB_DOMAIN + "contact-us";
+
+        String PATH_GET_SOLUTION = URL_CONTACT_US + "/ajax/solution/{id}";
+        String PATH_CREATE_STEP_1 = URL_CONTACT_US + "/ajax/create/step/1";
+        String PATH_CREATE_STEP_2 = URL_CONTACT_US + "/ajax/create/step/2";
+        String URL_HELP = MOBILE_DOMAIN + "bantuan/";
+        String URL_CHANGE_NUMBER = "https://www.tokopedia.com/contact-us?solution_id=54";
     }
 }

@@ -17,7 +17,6 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.database.model.AttachmentResCenterDB;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.inbox.rescenter.detail.dialog.InputShippingRefNumDialog;
 import com.tokopedia.inbox.rescenter.detail.dialog.UploadImageDialog;
 import com.tokopedia.inbox.rescenter.detail.facade.NetworkParam;
 import com.tokopedia.inbox.rescenter.detail.fragment.DetailResCenterFragment;
@@ -26,11 +25,11 @@ import com.tokopedia.inbox.rescenter.detail.interactor.RetrofitInteractorImpl;
 import com.tokopedia.inbox.rescenter.detail.listener.DetailResCenterView;
 import com.tokopedia.inbox.rescenter.detail.listener.ResCenterView;
 import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.DetailResCenterData;
-import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.ResCenterKurir;
 import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.ResCenterTrackShipping;
 import com.tokopedia.inbox.rescenter.detail.model.passdata.ActivityParamenterPassData;
 import com.tokopedia.inbox.rescenter.detail.service.DetailResCenterService;
 import com.tokopedia.inbox.rescenter.detail.service.DetailResCenterServiceConstant;
+import com.tokopedia.inbox.rescenter.shipping.activity.InputShippingActivity;
 import com.tokopedia.inbox.rescenter.utils.LocalCacheManager;
 
 import java.util.List;
@@ -41,8 +40,9 @@ import java.util.List;
 public class DetailResCenterImpl implements DetailResCenterPresenter {
 
     private static final String TAG = DetailResCenterImpl.class.getSimpleName();
-    private static final int REQUEST_CODE_SCAN_BARCODE = 4;
     private static final int REQUEST_APPEAL_RESOLUTION = 5;
+    private static final int REQUEST_INPUT_SHIPPING = 6;
+    private static final int REQUEST_EDIT_SHIPPING = 7;
     private static final String CURRENT_DATA = "CURRENT_DATA";
     private static final String CURRENT_DATA_PASS = "CURRENT_DATA_PASS";
 
@@ -53,7 +53,6 @@ public class DetailResCenterImpl implements DetailResCenterPresenter {
     private ResCenterView mListener;
     private GlobalCacheManager globalCacheManager;
     private LocalCacheManager.MessageConversation cache;
-    private boolean isEditShippingRefNum;
 
     public DetailResCenterImpl(DetailResCenterFragment fragment) {
         this.view = fragment;
@@ -91,62 +90,45 @@ public class DetailResCenterImpl implements DetailResCenterPresenter {
     }
 
     @Override
-    public void showScanBarcode(Context context) {
-        Intent intent = new Intent("com.google.zxing.client.android.SCAN");
-        ((Activity) context).startActivityForResult(intent, REQUEST_CODE_SCAN_BARCODE);
-    }
-
-    @Override
-    public void actionEditShippingRefNum() {
-        view.setProgressLoading(true);
-        mListener.actionUpdateShippingRefNum(view.getResolutionID());
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE_SCAN_BARCODE) {
-            if (resultCode == Activity.RESULT_OK && data != null) {
-                LocalCacheManager.ReturnPackage.Builder(view.getResolutionID())
-                        .getCache()
-                        .setShippingRefNum(data.getStringExtra("SCAN_RESULT"))
-                        .save();
-
-                if (isEditShippingRefNum) {
-                    actionEditShippingRefNum();
-                } else {
-                    actionInputShippingRefNum();
-                }
+        onActivityResultUploadImage(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case REQUEST_APPEAL_RESOLUTION:
+                    view.refreshPage();
+                    break;
+                case REQUEST_EDIT_SHIPPING:
+                    view.refreshPage();
+                    break;
+                case REQUEST_INPUT_SHIPPING:
+                    view.refreshPage();
+                    break;
+                default:
+                    break;
             }
-        } else if (requestCode == REQUEST_APPEAL_RESOLUTION) {
-            if (resultCode == Activity.RESULT_OK) {
-                view.refreshPage();
-            }
-        } else {
-            uploadImageDialog.onResult(requestCode, resultCode, data, new UploadImageDialog.UploadImageDialogListener() {
-                @Override
-                public void onSuccess(List<AttachmentResCenterDB> data) {
-                    view.showAttachment(data);
-                    view.setAttachmentArea(true);
-                }
-
-                @Override
-                public void onFailed() {
-
-                }
-            });
         }
+    }
+
+    private void onActivityResultUploadImage(int requestCode, int resultCode, Intent data) {
+        uploadImageDialog.onResult(requestCode, resultCode, data,
+                new UploadImageDialog.UploadImageDialogListener() {
+                    @Override
+                    public void onSuccess(List<AttachmentResCenterDB> data) {
+                        view.showAttachment(data);
+                        view.setAttachmentArea(true);
+                    }
+
+                    @Override
+                    public void onFailed() {
+
+                    }
+                });
     }
 
     @Override
     public void processReply() {
         view.setProgressLoading(true);
         mListener.replyConversation(view.getResolutionID());
-    }
-
-    @Override
-    public void processChangeSolution() {
-        view.setProgressLoading(true);
-        mListener.changeSolution(view.getResolutionID());
     }
 
     @Override
@@ -260,83 +242,24 @@ public class DetailResCenterImpl implements DetailResCenterPresenter {
     }
 
     @Override
-    public void requestCourierList(@NonNull final Context context,
-                                   @NonNull final InputShippingRefNumDialog.Listener listener) {
-        retrofitInteractor.getKurirList(context,
-                new RetrofitInteractor.GetKurirListListener() {
-                    @Override
-                    public void onSuccess(ResCenterKurir resCenterKurirList) {
-                        globalCacheManager.setKey(view.getResolutionID());
-                        globalCacheManager.setValue(
-                                CacheUtil.convertModelToString(resCenterKurirList,
-                                        new TypeToken<ResCenterKurir>() {
-                                        }.getType()));
-                        globalCacheManager.setCacheDuration(1800000); // expired in 30minutes
-                        globalCacheManager.store();
-
-                        view.showInputShippingRefNumDialog(view.getResolutionID(), listener);
-                        Log.d(TAG, CacheUtil.convertModelToString(resCenterKurirList, new TypeToken<ResCenterKurir>() {
-                        }.getType()));
-                    }
-
-                    @Override
-                    public void onTimeOut(String message, NetworkErrorHelper.RetryClickedListener listener) {
-                        view.showTimeOutMessage();
-                    }
-
-                    @Override
-                    public void onFailAuth() {
-                    }
-
-                    @Override
-                    public void onThrowable(Throwable e) {
-                        for (int i = 0; i < e.getStackTrace().length; i++) {
-                            StackTraceElement[] stackTraceElements = e.getStackTrace();
-                            Log.d(TAG + "onThrowable", String.valueOf(stackTraceElements[i]));
-                        }
-                    }
-
-                    @Override
-                    public void onError(String message) {
-                        Log.d(TAG, message);
-                        view.showToastMessage(message);
-                    }
-
-                    @Override
-                    public void onNullData() {
-
-                    }
-                });
+    public void onEditShippingClickListener(@NonNull Context context, @NonNull String url) {
+        String conversationID = Uri.parse(url).getQueryParameter("conv_id");
+        String shippingID = Uri.parse(url).getQueryParameter("ship_id");
+        String shippingRefNum = Uri.parse(url).getQueryParameter("ship_ref");
+        view.startActivityForResult(
+                InputShippingActivity.createEditPageIntent(context,
+                        view.getResolutionID(),
+                        conversationID,
+                        shippingID,
+                        shippingRefNum
+                ),
+                REQUEST_EDIT_SHIPPING
+        );
     }
 
     @Override
-    public void onOverflowShippingRefNumClick(@NonNull Context context,
-                                              @NonNull String url,
-                                              @NonNull InputShippingRefNumDialog.Listener listener) {
-
-        LocalCacheManager.ReturnPackage
-                .Builder(view.getResolutionID())
-                .setConversationID(Uri.parse(url).getQueryParameter("conv_id"))
-                .setShippingID(Uri.parse(url).getQueryParameter("ship_id"))
-                .setShippingRefNum(Uri.parse(url).getQueryParameter("ship_ref"))
-                .save();
-
-        showShippingRefNumDialog(true, context, listener);
-    }
-
-    @Override
-    public void showShippingRefNumDialog(boolean isEditShippingRefNum, Context context, InputShippingRefNumDialog.Listener listener) {
-        try {
-            this.isEditShippingRefNum = isEditShippingRefNum;
-            if (globalCacheManager.getValueString(view.getResolutionID()) != null) {
-                view.showInputShippingRefNumDialog(view.getResolutionID(), listener);
-            } else {
-                requestCourierList(context, listener);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            requestCourierList(context, listener);
-        }
+    public void onNewShippingClickListener(Context context) {
+        view.startActivityForResult(InputShippingActivity.createNewPageIntent(context, view.getResolutionID()), REQUEST_INPUT_SHIPPING);
     }
 
     @Override
@@ -349,12 +272,6 @@ public class DetailResCenterImpl implements DetailResCenterPresenter {
     public void actionAcceptAdminSolution() {
         view.setProgressLoading(true);
         mListener.actionAcceptAdminSolution(view.getResolutionID());
-    }
-
-    @Override
-    public void actionInputShippingRefNum() {
-        view.setProgressLoading(true);
-        mListener.actionInputShippingRefNum(view.getResolutionID());
     }
 
     @Override
@@ -385,12 +302,6 @@ public class DetailResCenterImpl implements DetailResCenterPresenter {
                     break;
                 case DetailResCenterService.ACTION_REPLY_CONVERSATION:
                     UnifyTracking.eventResolutionSendSuccess();
-                    view.refreshPage();
-                    break;
-                case DetailResCenterService.ACTION_INPUT_SHIPPING_REF_NUM:
-                    view.refreshPage();
-                    break;
-                case DetailResCenterService.ACTION_UPDATE_SHIPPING_REF_NUM:
                     view.refreshPage();
                     break;
                 case DetailResCenterService.ACTION_ACCEPT_ADMIN_SOLUTION:
@@ -465,6 +376,40 @@ public class DetailResCenterImpl implements DetailResCenterPresenter {
     public void actionInputAddress(Context context, String addressID) {
         retrofitInteractor.postAddress(context,
                 NetworkParam.getParamInputAddress(addressID, view.getResolutionID()),
+                new RetrofitInteractor.OnPostAddressListener() {
+                    @Override
+                    public void onStart() {
+                        view.setProgressLoading(true);
+                    }
+
+                    @Override
+                    public void onSuccess() {
+                        view.refreshPage();
+                    }
+
+                    @Override
+                    public void onTimeOut(NetworkErrorHelper.RetryClickedListener listener) {
+                        view.setProgressLoading(false);
+                        view.showTimeOutMessage();
+                    }
+
+                    @Override
+                    public void onFailAuth() {
+                        view.setProgressLoading(false);
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        view.setProgressLoading(false);
+                        view.showToastMessage(message);
+                    }
+                });
+    }
+
+    @Override
+    public void actionInputAddressMigrateVersion(Context context, String addressID) {
+        retrofitInteractor.postAddress(context,
+                NetworkParam.getParamInputAddressMigrateVersion(addressID, view.getResolutionID()),
                 new RetrofitInteractor.OnPostAddressListener() {
                     @Override
                     public void onStart() {

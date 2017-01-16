@@ -1,6 +1,9 @@
 package com.tokopedia.tkpd.home.fragment;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
@@ -31,6 +34,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.adapter.DataFeedAdapter;
 import com.tokopedia.tkpd.home.presenter.ProductFeed;
@@ -46,6 +50,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
+import static com.tokopedia.tkpd.home.presenter.ProductFeed.TAG;
 import static com.tokopedia.tkpd.home.presenter.ProductFeed.messageTag;
 
 
@@ -78,6 +83,19 @@ public class FragmentProductFeed extends TkpdBaseV4Fragment
     private GridLayoutManager gridLayoutManager;
     private DataFeedAdapter adapter;
     private Unbinder unbinder;
+    public static final String ACTION = BuildConfig.APPLICATION_ID+".REFRESH_FEED";
+    private BroadcastReceiver refreshReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(TAG, "onReceive refresh on add favorite shop");
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    refreshData();
+                }
+            });
+        }
+    };
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -192,18 +210,20 @@ public class FragmentProductFeed extends TkpdBaseV4Fragment
         if(shopID ==null||shopID.equals("0")|| shopID.length()==0){
             fabAddProduct.setVisibility(View.GONE);
         }
-        //[END] AN-1173
+        refreshData();
+        getActivity().registerReceiver(refreshReceiver, new IntentFilter(ACTION));
+    }
 
-//        if(productFeedPresenter.isAfterRotation()){
-//            productFeedPresenter.setData();
-//        }else{
-//        productFeedPresenter.getRecentProductFromCache();
-//        }
+    public void refreshData(){
+        if(productFeedPresenter!=null && productFeedPresenter.isAfterRotation()){
+            productFeedPresenter.refreshData();
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        getActivity().unregisterReceiver(refreshReceiver);
     }
 
     @Override
@@ -246,7 +266,6 @@ public class FragmentProductFeed extends TkpdBaseV4Fragment
             productFeedPresenter.setLocalyticFlow(AppScreen.SCREEN_HOME_FEED);
             productFeedPresenter.sendAppsFlyerData();
         }
-
         super.setUserVisibleHint(isVisibleToUser);
     }
 

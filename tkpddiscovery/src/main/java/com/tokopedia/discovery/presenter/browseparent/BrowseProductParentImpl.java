@@ -78,7 +78,7 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
     public void initData(@NonNull Context context) {
         Log.d(TAG, "isAfterRotate " + isAfterRotate + " init Data network params " + p.toString());
         ((DiscoveryInteractorImpl) discoveryInteractor).setCompositeSubscription(compositeSubscription);
-        if (!isAfterRotate) {
+        if (!isAfterRotate || browseProductModel == null) {
             fetchFromNetwork(context);
         }
     }

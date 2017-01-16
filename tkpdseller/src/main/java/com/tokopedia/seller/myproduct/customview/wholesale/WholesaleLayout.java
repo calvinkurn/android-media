@@ -23,6 +23,8 @@ import java.util.List;
 
 public class WholesaleLayout extends RelativeLayout implements WholesaleAdapterImpl.WholesaleAdapterListener {
     private WholesaleAdapterImpl adapter;
+    private LinearLayoutManager layoutManager;
+    private RecyclerView recyclerView;
 
     public WholesaleLayout(Context context) {
         super(context);
@@ -81,7 +83,7 @@ public class WholesaleLayout extends RelativeLayout implements WholesaleAdapterI
     @NonNull
     private RecyclerView getRecyclerView() {
 //        RecyclerView recyclerView = new RecyclerView(getContext());
-        RecyclerView recyclerView = (RecyclerView) LayoutInflater.from(getContext()).inflate(R.layout.recyclerview_wholesale, this, false);
+        recyclerView = (RecyclerView) LayoutInflater.from(getContext()).inflate(R.layout.recyclerview_wholesale, this, false);
         LayoutParams layoutParams = new LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -91,7 +93,8 @@ public class WholesaleLayout extends RelativeLayout implements WholesaleAdapterI
         recyclerView.setLayoutParams(layoutParams);
         adapter = new WholesaleAdapterImpl(this, 0, PriceUtils.CURRENCY_RUPIAH, getContext());
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
         return recyclerView;
     }
 
@@ -111,6 +114,7 @@ public class WholesaleLayout extends RelativeLayout implements WholesaleAdapterI
             @Override
             public void onClick(View view) {
                 adapter.addItem();
+                recyclerView.scrollToPosition(adapter.getItemCount() - 1);
             }
         });
         return button;
@@ -120,7 +124,6 @@ public class WholesaleLayout extends RelativeLayout implements WholesaleAdapterI
     public void throwShomething(String error) {
         Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
     }
-
 
     public List<WholesaleModel> getDatas() {
         return adapter.getDatas();

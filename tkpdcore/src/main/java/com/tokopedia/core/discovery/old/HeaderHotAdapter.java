@@ -61,12 +61,12 @@ public class HeaderHotAdapter extends PagerAdapter {
 	    	desc.setBackgroundColor(0x00000000);
 	    	desc.setText(null);
 	    } else if (position == 1) {
-	    	desc.setBackgroundColor(0xB3000000);
-			if(descText!=null) {
+	    	if(descText!=null) {
+				desc.setBackgroundColor(0xB3000000);
 				desc.setText(MethodChecker.fromHtml(descText));
+				int dp = (int) context.getResources().getDimension(R.dimen.padding_small);
+				desc.setPadding(dp, dp, dp, dp);
 			}
-	    	int dp = (int) context.getResources().getDimension(R.dimen.padding_small);
-	    	desc.setPadding(dp, dp, dp, dp);
 	    }
 	    ((ViewPager) container).addView(layout,0);
 		return layout;

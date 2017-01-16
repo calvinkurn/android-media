@@ -125,9 +125,9 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         return AppScreen.SCREEN_BROWSE_PRODUCT_FROM_SEARCH;
     }
 
-    public void sendHotlist(String selected) {
+    public void sendHotlist(String selected, String keyword) {
         fetchHotListHeader(selected);
-        browseProductActivityModel.setQ("");
+        browseProductActivityModel.setQ(keyword);
         browseProductActivityModel.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT);
         browseProductActivityModel.alias = selected;
     }
@@ -377,6 +377,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         }
         if (browseProductActivityModel.isSearchDeeplink()) {
             searchView.setQuery(browseProductActivityModel.getQ(), false);
+            CommonUtils.hideKeyboard(this, getCurrentFocus());
             browseProductActivityModel.setSearchDeeplink(false);
         }
         if (CommonUtils.isFinishActivitiesOptionEnabled(this)) {
