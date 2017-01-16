@@ -27,7 +27,6 @@ public class NetworkParam {
     private static final String PARAM_MESSENGER = "messenger";
     private static final String PARAM_MSISDN = "msisdn";
     private static final String PARAM_VERIFIED = "msisdn_verified";
-    private static final String PARAM_USER_PASSWORD = "user_password";
     private static final String PARAM_FILE_UPLOADED = "file_uploaded";
 
     public static Map<String, String> getProfile(Context context) {
@@ -54,7 +53,6 @@ public class NetworkParam {
         param.put(PARAM_MESSENGER, mPass.getMessenger());
         param.put(PARAM_MSISDN, mPass.getMsisdn());
         param.put(PARAM_VERIFIED, mPass.getVerifiedPhone());
-        param.put(PARAM_USER_PASSWORD, mPass.getPassword());
         return param;
     }
 
