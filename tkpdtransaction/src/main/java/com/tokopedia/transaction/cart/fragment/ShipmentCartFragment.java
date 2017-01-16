@@ -53,6 +53,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity.RESULT_NOT_SELECTED_DESTINATION;
+
 /**
  * @author anggaprasetiyo on 11/2/16.
  *         modified by alvarisi
@@ -238,7 +240,7 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
     private String renderDetailAddressFromTransaction(CartDestination destination) {
         return String.format("%s\n%s\n%s, %s, %s\n%s\n%s",
                 MethodChecker.fromHtml(destination.getReceiverName()),
-                MethodChecker.fromHtml(destination.getAddressName()).toString(),
+                MethodChecker.fromHtml(destination.getAddressStreet()).toString(),
                 destination.getAddressDistrict(),
                 destination.getAddressCity(),
                 destination.getAddressPostal(),
@@ -550,6 +552,9 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
                     renderResultChooseLocation(data.getExtras());
                     break;
             }
+        }
+        if (resultCode == RESULT_NOT_SELECTED_DESTINATION && data != null){
+            renderResultChangeAddress(data.getExtras());
         }
     }
 

@@ -75,6 +75,8 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity.RESULT_NOT_SELECTED_DESTINATION;
+
 /**
  * @author Angga.Prasetiyo on 11/03/2016.
  */
@@ -635,6 +637,19 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                     }
                     break;
             }
+        } else if (resultCode == RESULT_NOT_SELECTED_DESTINATION){
+            renderFormAddress(
+                    Destination.convertFromBundle(
+                            data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS)
+                    )
+            );
+            this.orderData.setAddress(
+                    Destination.convertFromBundle(
+                            data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS)
+                    )
+            );
+            startCalculateCartLoading();
+            presenter.calculateKeroAddressShipping(this, orderData);
         }
     }
 

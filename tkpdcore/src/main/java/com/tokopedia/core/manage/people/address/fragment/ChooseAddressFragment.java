@@ -16,10 +16,14 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.manage.people.address.adapter.ChooseAddressAdapter;
 import com.tokopedia.core.manage.people.address.listener.ChooseAddressFragmentView;
+import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.manage.people.address.presenter.ChooseAddressFragmentPresenter;
 import com.tokopedia.core.manage.people.address.presenter.ChooseAddressFragmentPresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity.OnChooseAddressViewListener;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 
@@ -27,7 +31,8 @@ import butterknife.BindView;
  * Created by Alifa on 10/11/2016.
  */
 
-public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFragmentPresenter> implements ChooseAddressFragmentView {
+public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFragmentPresenter> implements ChooseAddressFragmentView,
+        OnChooseAddressViewListener{
 
     @BindView(R2.id.main_view)
     View mainView;
@@ -274,5 +279,10 @@ public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFr
     public void onDestroyView() {
         super.onDestroyView();
         presenter.onDestroyView();
+    }
+
+    @Override
+    public ArrayList<Destination> onActivityBackPressed() {
+        return getAdapter().getList();
     }
 }
