@@ -82,8 +82,6 @@ public class SetDateFragment extends Fragment {
     ViewPager setDateViewPager;
     SetDatePagerAdapter setDatePagerAdapter;
 
-    Unbinder bind;
-
     public static final String START_DATE = "START_DATE";
     public static final String END_DATE = "END_DATE";
 
@@ -112,12 +110,6 @@ public class SetDateFragment extends Fragment {
     public void initView(View rootView){
         slidingTabs = (TabLayout) rootView.findViewById(R.id.sliding_tabs);
         setDateViewPager = (ViewPager) rootView.findViewById(R.id.set_date_viewpager);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        bind.unbind();
     }
 
     public static class SetDatePagerAdapter extends FragmentPagerAdapter {
