@@ -112,6 +112,16 @@ public class InboxRouter {
         return RouterUtils.getActivityComponentName(context, INBOX_RESCENTER_ACTIVITY);
     }
 
+    public static Class<?> getInboxResCenterActivityClass() {
+        Class<?> parentIndexHomeClass = null;
+        try {
+            parentIndexHomeClass = RouterUtils.getActivityClass(INBOX_RESCENTER_ACTIVITY);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return parentIndexHomeClass;
+    }
+
     public static Intent getFreeReturnOnBoardingActivityIntent(Context context, String orderID) {
         Intent intent = new Intent(context, FreeReturnOnboardingActivity.class);
         Bundle bundle = new Bundle();
