@@ -1,9 +1,9 @@
 package com.tokopedia.core.gcm;
 
 import com.tokopedia.core.gcm.model.NotificationPass;
-import com.tokopedia.core.gcm.model.notification.NewDiscussionNotification;
-import com.tokopedia.core.gcm.model.notification.NewMessageNotification;
-import com.tokopedia.core.gcm.model.notification.NewReviewNotification;
+import com.tokopedia.core.gcm.notification.dedicated.NewDiscussionNotification;
+import com.tokopedia.core.gcm.notification.dedicated.NewMessageNotification;
+import com.tokopedia.core.gcm.notification.dedicated.NewReviewNotification;
 
 /**
  * @author by alvarisi on 1/12/17.

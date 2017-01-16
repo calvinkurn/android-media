@@ -1,4 +1,4 @@
-package com.tokopedia.core.gcm.model.promotions;
+package com.tokopedia.core.gcm.notification.promotions;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,7 +7,6 @@ import android.os.Bundle;
 
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.router.CustomerRouter;
-import com.tokopedia.core.router.home.HomeRouter;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_TITLE;

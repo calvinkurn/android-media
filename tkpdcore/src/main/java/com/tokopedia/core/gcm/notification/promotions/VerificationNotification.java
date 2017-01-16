@@ -1,4 +1,4 @@
-package com.tokopedia.core.gcm.model.promotions;
+package com.tokopedia.core.gcm.notification.promotions;
 
 import android.content.Context;
 import android.content.Intent;

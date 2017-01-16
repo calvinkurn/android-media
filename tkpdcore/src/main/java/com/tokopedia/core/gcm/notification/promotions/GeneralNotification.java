@@ -1,46 +1,36 @@
-package com.tokopedia.core.gcm.model.promotions;
+package com.tokopedia.core.gcm.notification.promotions;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
-import com.tokopedia.core.Cart;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
-import com.tokopedia.core.router.CustomerRouter;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.router.home.HomeRouter;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_TITLE;
-import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_URL;
 
 /**
  * Created by alvarisi on 1/16/17.
  */
 
-public class CartNotification extends BasePromoNotification {
-    protected CartNotification(Context context) {
+public class GeneralNotification extends BasePromoNotification {
+    protected GeneralNotification(Context context) {
         super(context);
     }
 
     @Override
     protected void configureNotificationData(Bundle data) {
         mNotificationPass.mIntent = NotificationUtils.configurePromoIntent(
-                new Intent(mContext, Cart.class),
+                new Intent(mContext, HomeRouter.getHomeActivityClass()),
                 data
         );
-        mNotificationPass.classParentStack = Cart.class;
+        mNotificationPass.classParentStack = HomeRouter.getHomeActivityClass();
         mNotificationPass.title = data.getString(ARG_NOTIFICATION_TITLE, "");
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION, "");
         mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION, "");
         mNotificationPass.isAllowedBigStyle = true;
-        mNotificationPass.mIntent.putExtras(data);
-    }
 
-    @Override
-    protected void showNotification(Bundle inComingBundle) {
-        if (SessionHandler.isV4Login(mContext)) {
-            super.showNotification(inComingBundle);
-        }
+        mNotificationPass.mIntent.putExtras(data);
     }
 }
