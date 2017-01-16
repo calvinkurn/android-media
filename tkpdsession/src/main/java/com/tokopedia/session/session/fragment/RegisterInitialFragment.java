@@ -23,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookAuthorizationException;
 import com.facebook.FacebookCallback;
@@ -324,7 +325,9 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
     }
 
     private void onFacebookClick() {
-        LoginManager.getInstance().logOut();
+        if(AccessToken.getCurrentAccessToken() != null) {
+            LoginManager.getInstance().logOut();
+        }
         processFacebookLogin();
         CommonUtils.dumper("LocalTag : TYPE : FACEBOOK");
         storeCacheGTM(AppEventTracking.GTMCacheKey.REGISTER_TYPE,
@@ -394,8 +397,10 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
     @Override
     public void onMessageError(int type, Object... data) {
         showProgress(false);
-        snackbar = SnackbarManager.make(getActivity(), (String) data[0], Snackbar.LENGTH_LONG);
-        snackbar.show();
+        if(data!=null) {
+            snackbar = SnackbarManager.make(getActivity(), (String) data[0], Snackbar.LENGTH_LONG);
+            snackbar.show();
+        }
     }
 
     @Override

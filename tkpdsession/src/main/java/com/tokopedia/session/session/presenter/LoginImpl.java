@@ -33,6 +33,7 @@ import com.tokopedia.core.session.model.LoginViewModel;
 import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.FacebookContainer;
 import com.tokopedia.session.R;
 import com.tokopedia.session.session.fragment.LoginFragment;
 import com.tokopedia.session.session.interactor.LoginInteractor;
@@ -178,8 +179,7 @@ public class LoginImpl implements Login {
 
     @Override
     public void doFacebookLogin(final LoginFragment fragment, final CallbackManager callbackManager) {
-        List<String> readPermissions = Arrays.asList("public_profile", "email", "user_birthday");
-        LoginManager.getInstance().logInWithReadPermissions(fragment, readPermissions);
+        LoginManager.getInstance().logInWithReadPermissions(fragment, FacebookContainer.readPermissions);
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(final LoginResult loginResult) {

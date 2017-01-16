@@ -38,6 +38,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
@@ -365,9 +366,10 @@ public class LoginFragment extends Fragment implements LoginView {
     }
 
     public void onFacebookClick() {
-        LoginManager.getInstance().logOut();
+        if(AccessToken.getCurrentAccessToken() != null) {
+            LoginManager.getInstance().logOut();
+        }
         processFacebookLogin();
-
     }
 
     private void processFacebookLogin() {

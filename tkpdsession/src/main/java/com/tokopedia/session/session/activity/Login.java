@@ -379,12 +379,6 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        try {
-//            simplefacebook.onActivityResult(requestCode, resultCode, data);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-            CommonUtils.UniversalToast(MainApplication.getAppContext(), MainApplication.getAppContext().getString(R.string.try_again));
-        }
     }
 
     @Override
