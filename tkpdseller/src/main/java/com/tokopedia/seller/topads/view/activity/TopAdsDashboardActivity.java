@@ -19,6 +19,7 @@ import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.view.adapter.TopAdsDashboardPagerAdapter;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardProductFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardShopFragment;
@@ -41,6 +42,8 @@ public class TopAdsDashboardActivity extends BasePresenterActivity {
     @BindView(R2.id.fab_speed_dial)
     FabSpeedDial fabSpeedDial;
 
+    private TopAdsDatePickerPresenterImpl datePickerPresenter;
+
     @Override
     public String getScreenName() {
         return null;
@@ -58,7 +61,7 @@ public class TopAdsDashboardActivity extends BasePresenterActivity {
 
     @Override
     protected void initialPresenter() {
-
+        datePickerPresenter = new TopAdsDatePickerPresenterImpl(this);
     }
 
     @Override
@@ -68,6 +71,7 @@ public class TopAdsDashboardActivity extends BasePresenterActivity {
 
     @Override
     protected void initView() {
+        datePickerPresenter.resetDate();
         viewPager.setAdapter(getViewPagerAdapter());
         viewPager.setOffscreenPageLimit(TopAdsConstant.OFFSCREEN_PAGE_LIMIT);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator));

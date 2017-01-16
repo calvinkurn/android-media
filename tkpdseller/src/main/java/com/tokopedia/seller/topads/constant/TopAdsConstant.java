@@ -21,4 +21,6 @@ public class TopAdsConstant {
     public static final int STATUS_AD_ACTIVE = 1;
     public static final int STATUS_AD_NOT_ACTIVE = 3;
     public static final int STATUS_AD_NOT_SENT = 2;
+
+    public static final int MAX_DATE_RANGE = 364;
 }

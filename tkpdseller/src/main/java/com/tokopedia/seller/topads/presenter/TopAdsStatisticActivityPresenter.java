@@ -8,6 +8,4 @@ import com.tokopedia.seller.topads.model.request.StatisticRequest;
 public interface TopAdsStatisticActivityPresenter extends TopAdsDatePickerPresenter {
 
     void getStatisticFromNet(int typeRequest, String shopId);
-
-    boolean isDateUpdated();
 }

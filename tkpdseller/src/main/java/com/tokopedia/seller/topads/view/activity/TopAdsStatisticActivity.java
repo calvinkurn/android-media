@@ -8,29 +8,27 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
-import com.tokopedia.core.network.TkpdNetworkURLHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.datasource.TopAdsCacheDataSourceImpl;
 import com.tokopedia.seller.topads.datasource.TopAdsDbDataSourceImpl;
 import com.tokopedia.seller.topads.interactor.TopAdsProductAdInteractorImpl;
+import com.tokopedia.seller.topads.lib.datepicker.SetDateActivity;
+import com.tokopedia.seller.topads.lib.datepicker.SetDateFragment;
 import com.tokopedia.seller.topads.model.data.Cell;
-import com.tokopedia.seller.topads.model.request.StatisticRequest;
 import com.tokopedia.seller.topads.network.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.topads.presenter.TopAdsStatisticActivityPresenter;
 import com.tokopedia.seller.topads.presenter.TopAdsStatisticActivityPresenterImpl;
 import com.tokopedia.seller.topads.view.adapter.TopAdsStatisticPagerAdapter;
+import com.tokopedia.seller.topads.view.fragment.TopAdsDatePickerFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsStatisticAvgFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsStatisticConversionFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsStatisticCtrFragment;
@@ -41,6 +39,7 @@ import com.tokopedia.seller.topads.view.listener.TopAdsStatisticActivityViewList
 import com.tokopedia.seller.topads.view.listener.TopAdsStatisticViewListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -57,6 +56,8 @@ public abstract class TopAdsStatisticActivity extends BasePresenterActivity<TopA
     private List<Cell> cells;
     int currentPositonPager;
     ProgressDialog progressDialog;
+    private Date startDate;
+    private Date endDate;
 
     @Override
     protected void setupURIPass(Uri uri) {
@@ -117,7 +118,9 @@ public abstract class TopAdsStatisticActivity extends BasePresenterActivity<TopA
     @Override
     protected void onResume() {
         super.onResume();
-        if (presenter.isDateUpdated()) {
+        if (presenter.isDateUpdated(startDate, endDate)) {
+            startDate = presenter.getStartDate();
+            endDate = presenter.getEndDate();
             loadData();
         }
     }
@@ -133,7 +136,7 @@ public abstract class TopAdsStatisticActivity extends BasePresenterActivity<TopA
 
     @Override
     protected void setActionVar() {
-        loadData();
+
     }
 
     @Override
@@ -196,26 +199,48 @@ public abstract class TopAdsStatisticActivity extends BasePresenterActivity<TopA
         int itemId = item.getItemId();
 
         if(itemId == R.id.menu_date){
-            Intent moveToSetDate = new Intent(this, SetDateActivity.class);
-            moveToSetDate.putExtra(SetDateActivity.IS_GOLD_MERCHANT, true);
-            moveToSetDate.putExtra(SetDateActivity.CUSTOM_START_DATE, presenter.getStartDate().getTime());
-            moveToSetDate.putExtra(SetDateActivity.CUSTOM_END_DATE, presenter.getEndDate().getTime());
-            startActivityForResult(moveToSetDate, REQUEST_CODE_DATE);
+            openDatePicker();
         }
         return super.onOptionsItemSelected(item);
     }
 
+    private void openDatePicker() {
+        Intent intent = new Intent(this, SetDateActivity.class);
+        intent.putExtra(SetDateActivity.IS_GOLD_MERCHANT, true);
+        Calendar todayCalendar = Calendar.getInstance();
+        Calendar lastYearCalendar = Calendar.getInstance();
+        lastYearCalendar.add(Calendar.YEAR, -1);
+
+        intent.putExtra(SetDateActivity.CUSTOM_START_DATE, startDate.getTime());
+        intent.putExtra(SetDateActivity.CUSTOM_END_DATE, endDate.getTime());
+
+        todayCalendar.set(Calendar.HOUR_OF_DAY, 23);
+        todayCalendar.set(Calendar.MINUTE, 59);
+        todayCalendar.set(Calendar.SECOND, 59);
+
+        lastYearCalendar.set(Calendar.HOUR_OF_DAY, 0);
+        lastYearCalendar.set(Calendar.MINUTE, 0);
+        lastYearCalendar.set(Calendar.SECOND, 0);
+
+        intent.putExtra(SetDateActivity.MIN_START_DATE, lastYearCalendar.getTimeInMillis());
+        intent.putExtra(SetDateActivity.MAX_END_DATE, todayCalendar.getTimeInMillis());
+        intent.putExtra(SetDateActivity.MAX_DATE_RANGE, TopAdsConstant.MAX_DATE_RANGE);
+
+        intent.putExtra(SetDateActivity.DATE_PERIOD_LIST, TopAdsDatePickerFragment.getPeriodRangeList(this));
+        intent.putExtra(SetDateActivity.SELECTION_PERIOD, 2);
+//        moveToSetDate.putExtra(SetDateActivity.SELECTION_TYPE, selectionType);
+
+        startActivityForResult(intent, REQUEST_CODE_DATE);
+    }
+
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == SetDateActivity.MOVE_TO_SET_DATE){
-            if (requestCode == REQUEST_CODE_DATE && data != null) {
-                long startDateTime = data.getLongExtra(SetDateFragment.START_DATE, -1);
-                long endDateTime = data.getLongExtra(SetDateFragment.END_DATE, -1);
-                if (startDateTime > 0 && endDateTime > 0) {
-                    presenter.saveDate(new Date(startDateTime), new Date(endDateTime));
-                    loadData();
-                }
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (requestCode == REQUEST_CODE_DATE && intent != null) {
+            long startDateTime = intent.getLongExtra(SetDateFragment.START_DATE, -1);
+            long endDateTime = intent.getLongExtra(SetDateFragment.END_DATE, -1);
+            if (startDateTime > 0 && endDateTime > 0) {
+                presenter.saveDate(new Date(startDateTime), new Date(endDateTime));
             }
         }
     }

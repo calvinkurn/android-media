@@ -51,9 +51,4 @@ public class TopAdsStatisticActivityPresenterImpl extends TopAdsDatePickerPresen
             }
         });
     }
-
-    @Override
-    public boolean isDateUpdated() {
-        return isDateUpdated(statisticRequest.getStartDate(), statisticRequest.getEndDate());
-    }
 }

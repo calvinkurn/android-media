@@ -21,6 +21,7 @@ import butterknife.ButterKnife;
  */
 public class NoResultDataBinder extends DataBinder<NoResultDataBinder.ViewHolder> {
 
+    protected boolean isFullScreen = false;
 
     public NoResultDataBinder(DataBindAdapter dataBindAdapter) {
         super(dataBindAdapter);
@@ -39,12 +40,11 @@ public class NoResultDataBinder extends DataBinder<NoResultDataBinder.ViewHolder
 
     @Override
     public NoResultDataBinder.ViewHolder newViewHolder(ViewGroup parent) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.view_no_result, null);
-        if (parent.getMeasuredHeight() < parent.getMeasuredWidth()) {
-            view.setLayoutParams(new AbsListView.LayoutParams(-1, parent.getMeasuredWidth()));
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_no_result, null);
+        if (isFullScreen) {
+            view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         } else {
-            view.setLayoutParams(new AbsListView.LayoutParams(-1, parent.getMeasuredHeight()));
+            view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         }
         return new ViewHolder(view);
     }
@@ -58,5 +58,10 @@ public class NoResultDataBinder extends DataBinder<NoResultDataBinder.ViewHolder
     @Override
     public int getItemCount() {
         return 1;
+    }
+
+    public void setIsFullScreen(boolean isFullScreen) {
+        this.isFullScreen = isFullScreen;
+        notifyDataSetChanged();
     }
 }
