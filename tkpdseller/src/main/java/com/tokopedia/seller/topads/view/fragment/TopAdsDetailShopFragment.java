@@ -2,7 +2,10 @@ package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.view.View;
 
+import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
@@ -43,6 +46,20 @@ public class TopAdsDetailShopFragment extends TopAdsDetailFragment<TopAdsDetailP
         presenter = new TopAdsDetailShopPresenterImpl(getActivity(), this,
                 new TopAdsProductAdInteractorImpl(new TopAdsManagementService(), new TopAdsDbDataSourceImpl(), new TopAdsCacheDataSourceImpl(getActivity())),
                 new TopAdsShopAdInteractorImpl(getActivity()));
+    }
+
+    @Override
+    protected void initView(View view) {
+        super.initView(view);
+        name.setContentClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DeepLinkChecker.openShop(ad.getShopUri(), getActivity());
+            }
+        });
+        name.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.green_200));
+        name.setTitle(getString(R.string.title_label_shop_topads));
+        favorite.setTitle(getString(R.string.title_label_favorit_topads));
     }
 
     @Override

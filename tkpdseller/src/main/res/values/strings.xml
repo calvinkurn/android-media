@@ -3,8 +3,8 @@
 
     <string name="title_topads_list">Produk</string>
     <string name="title_topads_dashboard">TopAds</string>
-    <string name="title_topads_promo_product">Promo Produk</string>
-    <string name="title_topads_promo_group">Promo Group</string>
+    <string name="title_topads_promo_product">Produk</string>
+    <string name="title_topads_promo_group">Grup</string>
     <string name="title_topads_store">Toko</string>
     <string name="title_top_ads_dashboard">TopAds</string>
     <string name="title_top_ads_product">Produk</string>
@@ -15,11 +15,11 @@
     <string name="label_top_ads_impression">Tampil</string>
     <string name="label_top_ads_click">Klik</string>
     <string name="label_top_ads_ctr">CTR</string>
-    <string name="label_top_ads_conversion">Conversion</string>
+    <string name="label_top_ads_conversion">Konversi</string>
     <string name="label_top_ads_average">Rata - Rata</string>
     <string name="label_top_ads_cost">Terpakai</string>
-    <string name="label_top_ads_groups">Groups</string>
-    <string name="label_top_ads_items">Items</string>
+    <string name="label_top_ads_groups">Grup</string>
+    <string name="label_top_ads_items">Produk</string>
     <string name="label_top_ads_choose_credit">Pilih</string>
     <string name="label_top_ads_deposit_desc">Kredit TopAds: %1$s</string>
     <string name="label_top_ads_next">Selanjutnya</string>
@@ -34,12 +34,12 @@
     <string name="title_action_on">On</string>
     <string name="title_action_off">Off</string>
     <string name="action_filter_date">Filter Tanggal</string>
-    <string name="title_group_list">Group</string>
-    <string name="title_product_ad_detail">Detail Item Detail</string>
-    <string name="title_group_ad_detail">Detail Group Detail</string>
+    <string name="title_group_list">Grup</string>
+    <string name="title_product_ad_detail">Detil Item Detil</string>
+    <string name="title_group_ad_detail">Detil grup Detil</string>
 
     <!-- Top Ads ad list -->
-    <string name="label_top_ads_daily_spend">Biaya Harian</string>
+    <string name="label_top_ads_daily_spend">Anggaran Harian</string>
     <string name="top_ads_bid_format_text">%1$s - %2$s</string>
     <string name="top_ads_used_format_text">Terpakai %1$s</string>
     <string name="top_ads_spent_format_text">%1$s / %2$s</string>
@@ -49,8 +49,8 @@
     <string name="top_ads_empty_group_promo_content_item_no_text">Lihat %1$s Promo Produk</string>
 
     <!-- Top Ads New Promo -->
-    <string name="label_top_ads_group_name">Nama Group</string>
-    <string name="label_top_ads_choose_group">Pilih Group</string>
+    <string name="label_top_ads_group_name">Nama Grup</string>
+    <string name="label_top_ads_choose_group">Pilih Grup</string>
     <string name="label_top_ads_create_promo_new_group">Buat promo grup baru</string>
     <string name="label_top_ads_create_promo_from_exist_group">Promo grup yang ada</string>
     <string name="label_top_ads_create_promo_not_in_group">Tidak masuk ke promo grup</string>
@@ -83,7 +83,7 @@
     <!-- Top Ads Detail product-->
     <string name="label_non_active_topads">Tidak Aktif</string>
     <string name="label_active_topads">Aktif</string>
-    <string name="label_title_name_topads">Name</string>
+    <string name="label_title_name_topads">Produk</string>
     <string name="label_title_status_topads">Status</string>
     <string name="label_title_max_bid_topads">Max Bid</string>
     <string name="label_title_avg_cost_topads">Avg Cost</string>
@@ -94,7 +94,7 @@
     <string name="label_title_impr_topads">Impr</string>
     <string name="label_title_click_topads">Click</string>
     <string name="label_title_ctr_topads">CTR</string>
-    <string name="label_title_favorite_topads">Favorite</string>
+    <string name="label_title_favorite_topads">Terjual</string>
     <string name="label_title_items_topads">Items</string>
     <string name="label_top_ads_promo_group">Promo Group</string>
 
@@ -147,5 +147,10 @@
     <string name="title_graph_ctr_statistic_topads">Perbandingan orang yang melihat promo anda dengan jumlah klik pada promo tersebut.</string>
     <string name="title_graph_klik_statistic_topads">Jumlah klik pada promo anda.</string>
     <string name="title_graph_spent_statistic_topads">Jumlah anggaran yang telah terpakai untuk promosi ini.</string>
-    <string name="title_activity_statistic">Overview</string>
+    <string name="title_activity_statistic">Statistik</string>
+
+
+    <string name="title_label_empty_group_topads">Tanpa Grup</string>
+    <string name="title_label_shop_topads">Toko</string>
+    <string name="title_label_favorit_topads">Favorit</string>
 </resources>

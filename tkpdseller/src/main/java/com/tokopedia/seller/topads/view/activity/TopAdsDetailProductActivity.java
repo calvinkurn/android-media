@@ -4,11 +4,12 @@ import android.os.Bundle;
 
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.model.data.ProductAd;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDetailProductFragment;
 
-public class TopAdsDetailProductActivity extends TActivity {
+public class TopAdsDetailProductActivity extends TActivity implements TopAdsDetailProductFragment.TopAdsDetailProductFragmentListener {
     ProductAd productAd;
 
     @Override
@@ -28,5 +29,12 @@ public class TopAdsDetailProductActivity extends TActivity {
     @Override
     public String getScreenName() {
         return null;
+    }
+
+    @Override
+    public void goToProductActivity(String productUrl) {
+        if(getApplication() instanceof SellerModuleRouter){
+            ((SellerModuleRouter)getApplication()).goToProductDetail(this, productUrl);
+        }
     }
 }

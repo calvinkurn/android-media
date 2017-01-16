@@ -8,4 +8,7 @@ import android.content.Context;
 
 public interface SellerModuleRouter {
     void goToHome(Context context);
+
+    void goToProductDetail(Context context, String productUrl);
+
 }
