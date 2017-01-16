@@ -15,6 +15,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
@@ -39,6 +40,8 @@ public class PeriodFragment extends Fragment {
     LinearLayout periodLinLay;
     List<PeriodChooseViewHelper> periodChooseViewHelpers;
 
+    private long maxEndDate;
+
     @OnClick(R2.id.save_date)
     public void saveDate() {
         if (getActivity() != null && getActivity() instanceof SetDateFragment.SetDate) {
@@ -54,10 +57,11 @@ public class PeriodFragment extends Fragment {
         }
     }
 
-    public static Fragment newInstance(int lastSelectionPeriod) {
+    public static Fragment newInstance(int lastSelectionPeriod, long endDate) {
         Fragment fragment = new PeriodFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(SetDateActivity.SELECTION_PERIOD, lastSelectionPeriod);
+        bundle.putLong(SetDateActivity.MAX_END_DATE, endDate);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -118,6 +122,7 @@ public class PeriodFragment extends Fragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             lastSelection = bundle.getInt(SetDateActivity.SELECTION_PERIOD, 1);
+            maxEndDate = bundle.getLong(SetDateActivity.MAX_END_DATE, Calendar.getInstance().getTimeInMillis());
         }
 
         unbinder = ButterKnife.bind(this, rootView);
@@ -125,14 +130,11 @@ public class PeriodFragment extends Fragment {
         periodAdapter = new PeriodAdapter();
 
         basePeriodModels = new ArrayList<>();
-        PeriodRangeModel e = new PeriodRangeModel(false, 1);
-        e.headerText = "Kemarin";
+        PeriodRangeModel e = new PeriodRangeModel(false, 1, getString(R.string.yesterday), maxEndDate);
         basePeriodModels.add(e);
-        e = new PeriodRangeModel(true, 7);
-        e.headerText = "7 hari terakhir";
+        e = new PeriodRangeModel(true, 7, getString(R.string.seven_days_ago), maxEndDate);
         basePeriodModels.add(e);
-        e = new PeriodRangeModel(true, 31);
-        e.headerText = "30 hari terakhir";
+        e = new PeriodRangeModel(true, 31, getString(R.string.thirty_days_ago), maxEndDate);
         basePeriodModels.add(e);
 
         //[START] set last selection

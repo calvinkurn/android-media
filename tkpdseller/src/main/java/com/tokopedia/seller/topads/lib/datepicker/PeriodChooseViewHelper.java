@@ -73,17 +73,7 @@ public class PeriodChooseViewHelper {
             checkBoxPeriod.setChecked(false);
         }
 
-        if (periodRangeModel.range == 1 && !periodRangeModel.isRange) {
-            periodHeader.setText(R.string.yesterday);
-        } else if (periodRangeModel.isRange) {
-            if (periodRangeModel.range == 7) {
-                periodHeader.setText(R.string.seven_days_ago);
-            } else if (periodRangeModel.range == 31) {
-                periodHeader.setText(R.string.thirty_days_ago);
-            }
-        }
-//            periodHeader.setText(periodRangeModel.headerText);
-
+        periodHeader.setText(periodRangeModel.label);
         String description = periodRangeModel.getDescription();
         Log.d("MNORMANSYAH", "description : " + description);
         String[] range = description.split("-");

@@ -20,30 +20,34 @@ public class PeriodRangeModel extends SetDateFragment.BasePeriodModel {
     String formatText = "%s - %s";
     boolean isRange;
     int range;
+    String label;
     long startDate = -1, endDate = -1;
+    int dayAgo;
 
     public PeriodRangeModel() {
         super(TYPE);
     }
 
-    public PeriodRangeModel(boolean isRange, int range) {
+    public PeriodRangeModel(boolean isRange, int range, String label, long endDate) {
         this();
         this.isRange = isRange;
         this.range = range;
+        this.label = label;
+        this.endDate = endDate;
     }
 
     public String getDescription() {
         DateFormat dateFormat = new SimpleDateFormat("dd MM yyyy", locale);
         if (isRange) {
-            Calendar sDate = calculateCalendar(StartOrEndPeriodModel.YESTERDAY);
-            endDate = sDate.getTimeInMillis();
-            String yesterday = dateFormat.format(sDate.getTime());
+            Calendar startCalendar = calculateCalendar(-range);
+            startDate = startCalendar.getTimeInMillis();
+            String startDateText = dateFormat.format(startCalendar.getTime());
 
-            Calendar eDate = calculateCalendar(-range);
-            startDate = eDate.getTimeInMillis();
-            String startDate = dateFormat.format(eDate.getTime());
+            Calendar endCalendar = Calendar.getInstance();
+            endCalendar.setTimeInMillis(endDate);
+            String endDateText = dateFormat.format(endCalendar.getTime());
 
-            return headerText = String.format(formatText, startDate, yesterday);
+            return headerText = String.format(formatText, startDateText, endDateText);
         } else {
             Calendar sDate = calculateCalendar(-range);
             startDate = sDate.getTimeInMillis();
