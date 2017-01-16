@@ -9,8 +9,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.R2;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.myproduct.model.ImageModel;
 import com.tokopedia.core.myproduct.model.constant.ImageModelType;
