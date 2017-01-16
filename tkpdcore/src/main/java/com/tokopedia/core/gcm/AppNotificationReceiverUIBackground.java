@@ -57,6 +57,7 @@ import com.tokopedia.core.util.RouterUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -117,6 +118,7 @@ public class AppNotificationReceiverUIBackground {
         Visitable visitable = dedicatedNotification.get(
                 Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE))
         );
+
         if (visitable != null) {
             visitable.proccessReceivedNotification(data);
         }
