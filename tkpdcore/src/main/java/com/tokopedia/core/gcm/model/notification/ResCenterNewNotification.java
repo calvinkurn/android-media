@@ -14,8 +14,8 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
  * Created by alvarisi on 1/13/17.
  */
 
-public class InboxResCenterNotification extends BaseNotification {
-    protected InboxResCenterNotification(Context context) {
+public class ResCenterNewNotification extends BaseNotification {
+    protected ResCenterNewNotification(Context context) {
         super(context);
     }
 
