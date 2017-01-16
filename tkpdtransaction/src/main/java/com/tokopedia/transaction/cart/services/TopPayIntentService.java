@@ -118,7 +118,7 @@ public class TopPayIntentService extends IntentService {
                             );
                             intent.putExtra(
                                     TopPayBroadcastReceiver.EXTRA_MESSAGE_TOP_PAY_ACTION,
-                                    "Pemayaran Berhasil"
+                                    "Pembayaran berhasil"
                             );
                             sendBroadcast(intent);
                         } else {
