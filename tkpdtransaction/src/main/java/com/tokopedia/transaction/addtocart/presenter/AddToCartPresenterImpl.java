@@ -86,7 +86,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                         viewListener.hideInitLoading();
                         if (isAllowKeroAccess(data)) {
                             calculateKeroRates(context, data);
-                        }else{
+                        } else {
                             viewListener.hideProgressLoading();
                         }
                     }
@@ -117,7 +117,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                         viewListener.hideInitLoading();
                         if (isAllowKeroAccess(data)) {
                             calculateKeroRates(context, data);
-                        }else{
+                        } else {
                             viewListener.hideProgressLoading();
                         }
                     }
@@ -373,15 +373,17 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
             viewListener.showErrorMessage(context.getString(R.string.error_no_address));
             return false;
         }
-        if (orderData.getShipment().equals(TkpdState.SHIPPING_ID.GOJEK)
-                && orderData.getShipmentPackage().equals("0")
-                && viewListener.getGoogleMapLocation().isEmpty()) {
-            viewListener.showErrorMessage(context.getString(R.string.error_google_map_not_chosen));
-            return false;
-        }
-        if (orderData.getShipment().equals("0") || orderData.getShipmentPackage().equals("0")) {
-            viewListener.showErrorMessage(context.getString(R.string.title_select_agency_error));
-            return false;
+        if (orderData.getShipment() != null && orderData.getShipmentPackage() != null) {
+            if (orderData.getShipment().equals(TkpdState.SHIPPING_ID.GOJEK)
+                    && orderData.getShipmentPackage().equals("0")
+                    && viewListener.getGoogleMapLocation().isEmpty()) {
+                viewListener.showErrorMessage(context.getString(R.string.error_google_map_not_chosen));
+                return false;
+            }
+            if (orderData.getShipment().equals("0") || orderData.getShipmentPackage().equals("0")) {
+                viewListener.showErrorMessage(context.getString(R.string.title_select_agency_error));
+                return false;
+            }
         }
         return true;
     }

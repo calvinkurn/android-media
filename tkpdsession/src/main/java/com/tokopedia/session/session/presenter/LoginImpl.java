@@ -157,6 +157,7 @@ public class LoginImpl implements Login {
                         AppEventTracking.Action.REGISTER,
                         AppEventTracking.EventLabel.REGISTER);
     }
+
     @Override
     public void sendCTAAction() {
         Nishikino.init(mContext).startAnalytics()
@@ -166,6 +167,7 @@ public class LoginImpl implements Login {
                         AppEventTracking.Action.CLICK,
                         AppEventTracking.EventLabel.CTA);
     }
+
     @Override
     public void sendGTMLoginError(String label) {
         Nishikino.init(mContext).startAnalytics()
@@ -175,8 +177,8 @@ public class LoginImpl implements Login {
                         AppEventTracking.Action.LOGIN_ERROR,
                         label);
     }
-    
-    
+
+
     public void downloadProviderLogin() {
         facade.downloadProvider(loginView.getActivity(), new LoginInteractor.DiscoverLoginListener() {
             @Override
@@ -246,7 +248,7 @@ public class LoginImpl implements Login {
         Bundle bundle;
         switch (action) {
             case LoginModel.EmailType:
-                getToken(action,(LoginViewModel)data[0]);
+                getToken(action, (LoginViewModel) data[0]);
                 break;
             case LoginModel.GoogleType:
                 LoginGoogleModel loginGoogleModel = (LoginGoogleModel) data[0];
@@ -418,6 +420,9 @@ public class LoginImpl implements Login {
                         loginFacebookViewModel.setFullName(response.getFirstName());// 10
                         loginFacebookViewModel.setGender(response.getGender());// 7
                         setBirthday(loginFacebookViewModel, response.getBirthday());// 2
+                        if (simpleFacebook != null
+                                && simpleFacebook.getAccessToken() != null
+                                && simpleFacebook.getAccessToken().getToken() != null)
                         loginFacebookViewModel.setFbToken(simpleFacebook.getAccessToken().getToken());// 6
                         loginFacebookViewModel.setFbId(response.getId());// 8
                         loginFacebookViewModel.setEmail(response.getEmail());// 5

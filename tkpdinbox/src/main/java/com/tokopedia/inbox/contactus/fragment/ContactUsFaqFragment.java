@@ -177,7 +177,8 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
                 mainView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        mainView.smoothScrollTo(0, 0);
+                        if (mainView != null)
+                            mainView.smoothScrollTo(0, 0);
                     }
                 }, 300);
         }

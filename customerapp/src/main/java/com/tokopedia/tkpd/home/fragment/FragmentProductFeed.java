@@ -83,7 +83,7 @@ public class FragmentProductFeed extends TkpdBaseV4Fragment
     private GridLayoutManager gridLayoutManager;
     private DataFeedAdapter adapter;
     private Unbinder unbinder;
-    public static final String ACTION = BuildConfig.APPLICATION_ID+".REFRESH_FEED";
+    public static final String ACTION = BuildConfig.APPLICATION_ID + ".REFRESH_FEED";
     private BroadcastReceiver refreshReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -196,7 +196,7 @@ public class FragmentProductFeed extends TkpdBaseV4Fragment
     }
 
     @OnClick(R.id.fab_speed_dial)
-    public void onFabClick(){
+    public void onFabClick() {
         productFeedPresenter.moveToAddProduct(getActivity());
     }
 
@@ -207,15 +207,15 @@ public class FragmentProductFeed extends TkpdBaseV4Fragment
         //[START] AN-1173
         // [Product Feed v2] Add product button still shown when user don't have shop
         String shopID = SessionHandler.getShopID(getActivity());
-        if(shopID ==null||shopID.equals("0")|| shopID.length()==0){
+        if (shopID == null || shopID.equals("0") || shopID.length() == 0) {
             fabAddProduct.setVisibility(View.GONE);
         }
         refreshData();
         getActivity().registerReceiver(refreshReceiver, new IntentFilter(ACTION));
     }
 
-    public void refreshData(){
-        if(productFeedPresenter!=null && productFeedPresenter.isAfterRotation()){
+    public void refreshData() {
+        if (productFeedPresenter != null && productFeedPresenter.isAfterRotation()) {
             productFeedPresenter.refreshData();
         }
     }
@@ -236,7 +236,7 @@ public class FragmentProductFeed extends TkpdBaseV4Fragment
 
     @Override
     public void displayMainContent(boolean isMain) {
-        if(isMain)
+        if (isMain)
             mainContent.setVisibility(View.VISIBLE);
         else
             mainContent.setVisibility(View.GONE);
@@ -260,8 +260,7 @@ public class FragmentProductFeed extends TkpdBaseV4Fragment
         // this is called when user view Fragment inside ViewPager
         // if visible to User then send data localytic
 
-        if(getActivity()!=null)
-        {
+        if (getActivity() != null) {
             ScreenTracking.screen(getScreenName());
             productFeedPresenter.setLocalyticFlow(AppScreen.SCREEN_HOME_FEED);
             productFeedPresenter.sendAppsFlyerData();
@@ -331,14 +330,14 @@ public class FragmentProductFeed extends TkpdBaseV4Fragment
 
     @Override
     public void addNextPage(List<RecyclerViewItem> items) {
-        Log.i(TAG, messageTag+ " addNextPage : "+items.size());
+        Log.i(TAG, messageTag + " addNextPage : " + items.size());
         adapter.addNextPage(items);
         adapter.notifyDataSetChanged();
     }
 
     @Override
     public boolean isAfterRotate() {
-        return adapter!=null&&adapter.getData()!=null&&adapter.getData().size()>0;
+        return adapter != null && adapter.getData() != null && adapter.getData().size() > 0;
     }
 
     @Override
@@ -403,12 +402,12 @@ public class FragmentProductFeed extends TkpdBaseV4Fragment
 
     @Override
     public boolean isLoading() {
-        return adapter.getItemViewType(gridLayoutManager.findLastCompletelyVisibleItemPosition())== TkpdState.RecyclerView.VIEW_LOADING;
+        return adapter.getItemViewType(gridLayoutManager.findLastCompletelyVisibleItemPosition()) == TkpdState.RecyclerView.VIEW_LOADING;
     }
 
     @Override
     public void displayLoading(boolean isLoading) {
-        if(isLoading)
+        if (isLoading)
             progressBar.setVisibility(View.VISIBLE);
         else
             progressBar.setVisibility(View.GONE);
@@ -420,8 +419,10 @@ public class FragmentProductFeed extends TkpdBaseV4Fragment
         displayLoading(false);
         displayMainContent(true);
         //[END] hide loading and show main content
-        swipeRefreshLayout.setRefreshing(false);
-        swipeRefreshLayout.setEnabled(true);
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setRefreshing(false);
+            swipeRefreshLayout.setEnabled(true);
+        }
     }
 
     @Override
@@ -438,7 +439,7 @@ public class FragmentProductFeed extends TkpdBaseV4Fragment
     @Override
     public void loadDataChange() {
         getAdapter().notifyDataSetChanged();
-        if(getAdapter().getHistoryAdapter()!=null) {
+        if (getAdapter().getHistoryAdapter() != null) {
             getAdapter().getHistoryAdapter().notifyDataSetChanged();
         }
     }
@@ -458,7 +459,8 @@ public class FragmentProductFeed extends TkpdBaseV4Fragment
     @Override
     public void displayPull(boolean isShow) {
         Log.d(TAG, FragmentProductFeed.class.getSimpleName() + (isShow ? " tampilkan" : " hilangkan ") + " pull to refresh");
-        swipeRefreshLayout.setRefreshing(isShow);
+        if (swipeRefreshLayout != null)
+            swipeRefreshLayout.setRefreshing(isShow);
     }
 
     @Override
