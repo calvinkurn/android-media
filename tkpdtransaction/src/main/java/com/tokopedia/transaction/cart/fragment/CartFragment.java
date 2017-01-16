@@ -454,7 +454,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         NetworkErrorHelper.showEmptyState(
                 getActivity(), getView(),
                 getString(R.string.label_title_error_no_connection_initial_cart_data),
-                messageError,
+                getString(R.string.label_transaction_error_message_try_again),
                 getString(R.string.label_title_button_retry), 0,
                 getRetryErrorInitialCartInfoClickListener()
         );
