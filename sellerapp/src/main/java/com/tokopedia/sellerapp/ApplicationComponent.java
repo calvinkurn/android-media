@@ -3,7 +3,7 @@ package com.tokopedia.sellerapp;
 import com.tokopedia.sellerapp.daggerModules.AppModule;
 import com.tokopedia.sellerapp.daggerModules.NetworkModules;
 import com.tokopedia.sellerapp.daggerModules.UtilModules;
-import com.tokopedia.sellerapp.gmstat.modules.GMStatModules;
+import com.tokopedia.seller.gmstat.modules.GMStatModules;
 
 import javax.inject.Singleton;
 

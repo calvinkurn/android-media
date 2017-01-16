@@ -52,7 +52,7 @@ import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.var.ToolbarVariable;
 import com.tokopedia.sellerapp.R;
-import com.tokopedia.sellerapp.gmstat.views.GMStatActivity;
+import com.tokopedia.seller.gmstat.views.GMStatActivity;
 import com.tokopedia.sellerapp.gmsubscribe.GMSubscribeActivity;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 

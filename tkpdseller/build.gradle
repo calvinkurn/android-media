@@ -41,8 +41,8 @@ artifactory {
         repository {
             repoKey = 'libs-release-local'
 
-            username = artifactory_username
-            password = artifactory_password
+            username = 'apps'
+            password = 'tokopedia789'
         }
         defaults {
             publications('aar')
@@ -54,6 +54,11 @@ artifactory {
     }
 }
 
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -84,7 +89,8 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    compile getTkpdCore()
+//    compile getTkpdCore()
+    compile project(':tkpdcore')
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
@@ -99,4 +105,11 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+
+    //[START] GM Stat Dependency
+    compile(group: 'com.akexorcist', name: 'RoundCornerProgressBar', version: '2.0.3', ext: 'aar')
+//    compile(group: 'com.diogobernardino', name: 'williamchart', version: '2.3.0', ext: 'aar')
+//    compile(group: 'com.github.lzyzsd', name: 'circleprogress', version: '1.1.1', ext: 'aar')
+    compile 'com.shootr:KMNumbers:1.0.0'
+    //[END] GM Stat Dependency
 }
