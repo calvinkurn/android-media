@@ -24,4 +24,13 @@ public class SessionRouter {
         Intent intent = RouterUtils.getActivityIntent(context, LOGIN_ACTIVITY);
         return intent;
     }
+    public static Class<?> getLoginActivityClass() {
+        Class<?> parentIndexHomeClass = null;
+        try {
+            parentIndexHomeClass = RouterUtils.getActivityClass(LOGIN_ACTIVITY);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return parentIndexHomeClass;
+    }
 }

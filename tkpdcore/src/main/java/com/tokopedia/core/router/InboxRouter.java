@@ -47,6 +47,17 @@ public class InboxRouter {
         return intent;
     }
 
+    /////////// Class
+    public static Class<?> getInboxticketActivityClass() {
+        Class<?> parentIndexHomeClass = null;
+        try {
+            parentIndexHomeClass = RouterUtils.getActivityClass(INBOX_TICKET_ACTIVITY);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return parentIndexHomeClass;
+    }
+
     /////////// COMPONENT NAME
 
     public static ComponentName getInboxticketActivityComponentName(Context context) {
@@ -63,6 +74,10 @@ public class InboxRouter {
     public static Intent getInboxResCenterActivityIntent(Context context) {
         Intent intent = RouterUtils.getActivityIntent(context, INBOX_RESCENTER_ACTIVITY);
         return intent;
+    }
+
+    public static ComponentName getActivityInboxResCenterName(Context context) {
+        return RouterUtils.getActivityComponentName(context, INBOX_RESCENTER_ACTIVITY);
     }
 
     public static Intent getCreateResCenterActivityIntent(Context context, String orderID) {

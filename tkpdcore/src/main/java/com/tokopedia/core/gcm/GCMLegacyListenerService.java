@@ -12,9 +12,9 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.text.TextUtils;
 
 import com.google.android.gms.gcm.GcmListenerService;
 import com.tkpd.library.utils.CommonUtils;
@@ -93,7 +93,7 @@ public class GCMLegacyListenerService extends GcmListenerService{
         switch (GCMUtils.getCode(data)) {
             case TkpdState.GCMServiceState.GCM_HOT_LIST:
                 // TODO Handle with latest code
-//                createNotification(data, BrowseHotDetail.class);
+//                prepareAndExecuteDedicationNotification(data, BrowseHotDetail.class);
                 break;
             case TkpdState.GCMServiceState.GCM_UPDATE_NOTIFICATION:
                 sendUpdateNotification(data);
@@ -106,7 +106,7 @@ public class GCMLegacyListenerService extends GcmListenerService{
                 break;
             case TkpdState.GCMServiceState.GCM_CATEGORY:
                 // TODO Handle with latest code
-//                createNotification(data, BrowseCategory.class);
+//                prepareAndExecuteDedicationNotification(data, BrowseCategory.class);
                 break;
             case TkpdState.GCMServiceState.GCM_SHOP:
                 createNotification(data, ShopInfoActivity.class);
@@ -121,7 +121,7 @@ public class GCMLegacyListenerService extends GcmListenerService{
                 break;
             case TkpdState.GCMServiceState.GCM_WISHLIST:
                 if (SessionHandler.isV4Login(this))
-//                    createNotification(data, SimpleHomeActivity.class);
+//                    prepareAndExecuteDedicationNotification(data, SimpleHomeActivity.class);
                     createNotification(data, SimpleHomeRouter.getSimpleHomeActivityClass());
                 break;
             case TkpdState.GCMServiceState.GCM_VERIFICATION:
@@ -165,7 +165,7 @@ public class GCMLegacyListenerService extends GcmListenerService{
          * Use this code to exclude deprecated code which still sent from server
          * if (!CheckSettings(tkpCode) && isValidForSellerApp(tkpCode) && !isDeprecated(tkpCode)) {
          */
-        if (!gcmCache.checkSettings(tkpCode) && GCMUtils.isValidForSellerApp(tkpCode,getApplication())) {
+        if (!gcmCache.checkSettings(tkpCode) && GCMUtils.isValidForSellerApp(tkpCode)) {
             return;
         }
 

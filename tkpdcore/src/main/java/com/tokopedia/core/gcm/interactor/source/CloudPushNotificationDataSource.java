@@ -1,5 +1,6 @@
 package com.tokopedia.core.gcm.interactor.source;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.tokopedia.core.gcm.interactor.entity.FCMTokenUpdateEntity;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
 import com.tokopedia.core.network.apiservices.notification.PushNotificationService;
@@ -71,6 +72,16 @@ public class CloudPushNotificationDataSource {
                         } else {
                             throw new RuntimeException("error");
                         }
+                    }
+                });
+    }
+
+    public Observable<String> deviceRegistration(){
+        return Observable.just(true)
+                .map(new Func1<Boolean, String>() {
+                    @Override
+                    public String call(Boolean aBoolean) {
+                        return FirebaseInstanceId.getInstance().getToken();
                     }
                 });
     }

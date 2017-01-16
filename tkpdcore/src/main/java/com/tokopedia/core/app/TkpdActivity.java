@@ -7,14 +7,14 @@ import android.view.MenuItem;
 
 import com.localytics.android.Localytics;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.gcm.FCMMessagingService.NotificationListener;
+import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 
 /**
  * Created by Nisie on 31/08/15.
  */
-public abstract class TkpdActivity extends TActivity implements NotificationListener {
+public abstract class TkpdActivity extends TActivity implements NotificationReceivedListener {
 
     private Boolean isLogin;
 
