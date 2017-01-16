@@ -1,8 +1,10 @@
 package com.tokopedia.tkpd.home.fragment;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,6 +22,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -62,9 +65,11 @@ import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
+import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.HomeCatMenuView;
 import com.tokopedia.tkpd.home.TopPicksView;
+import com.tokopedia.tkpd.home.adapter.BannerPagerAdapter;
 import com.tokopedia.tkpd.home.adapter.RecyclerViewCategoryMenuAdapter;
 import com.tokopedia.tkpd.home.adapter.SectionListCategoryAdapter;
 import com.tokopedia.tkpd.home.adapter.TickerAnnouncementAdapter;
@@ -102,27 +107,29 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         SectionListCategoryAdapter.OnGimmicClickedListener, HomeCatMenuView, TopPicksView,
         TopPicksItemAdapter.OnTitleClickedListener, TopPicksItemAdapter.OnItemClickedListener, TopPicksAdapter.OnClickViewAll{
 
-    private static final long SLIDE_DELAY = 8000;
+    private static final long SLIDE_DELAY = 5000;
     public static final String TAG = FragmentIndexCategory.class.getSimpleName();
-    private static final String BASE_URL = "www.tokopedia.com";
-    private static final String BASE_MOBILE_URL = "m.tokopedia.com";
     private static final String TOP_PICKS_URL = "https://www.tokopedia.com/toppicks/";
 
     private ViewHolder holder;
     private Model model;
-    private PromoImagePagerAdapter pagerAdapter;
+    private BannerPagerAdapter pagerAdapter;
     private Runnable incrementPage;
     private Handler mHandler;
     Category category;
     private RechargeCategoryPresenter rechargeCategoryPresenter;
     TickerAnnouncementAdapter tickerAdapter;
-
+    public static final String BANNER_RECEIVER_INTENT = BuildConfig.APPLICATION_ID+".BANNER_RECEIVER_INTENT";
     private HomeCatMenuPresenter homeCatMenuPresenter;
     private TopPicksPresenter topPicksPresenter;
     private RecyclerViewCategoryMenuAdapter recyclerViewCategoryMenuAdapter;
     private TopPicksAdapter topPicksAdapter;
-    private GetShopInfoRetrofit getShopInfoRetrofit;
-
+    private BroadcastReceiver stopBannerReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            stopSlide();
+        }
+    };
     private class ViewHolder {
         private View MainView;
         private View banner;
@@ -236,14 +243,14 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             holder.bannerIndicator = (CirclePageIndicator) holder.banner.findViewById(R.id.indicator);
             holder.promoLink = (TextView) holder.banner.findViewById(R.id.promo_link);
             holder.bannerViewPager.setAdapter(pagerAdapter);
-            holder.bannerViewPager.addOnPageChangeListener(onPromoChanged());
-            holder.bannerIndicator.setFillColor(ContextCompat.getColor(getContext(), R.color.green_400));
-            holder.bannerIndicator.setStrokeColor(ContextCompat.getColor(getContext(), R.color.green_500));
+            holder.bannerViewPager.setPageMargin(getResources().getDimensionPixelOffset(R.dimen.viewpager_margin));
+            holder.bannerViewPager.setOffscreenPageLimit(2);
+            holder.bannerIndicator.setSnap(true);
             holder.bannerIndicator.setViewPager(holder.bannerViewPager);
             holder.promoLink.setOnClickListener(onPromoLinkClicked());
             model.listBanner.clear();
             model.listBanner.addAll(promoList);
-            pagerAdapter.notifyDataSetChanged();
+            pagerAdapter.setPromoList(promoList);
 
             RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams) holder.bannerViewPager.getLayoutParams();
             DisplayMetrics metrics = new DisplayMetrics();
@@ -257,21 +264,13 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         }
     }
 
-    private ViewPager.OnPageChangeListener onPromoChanged() {
-        return new ViewPager.OnPageChangeListener() {
+    private View.OnClickListener onPromoLinkClicked(){
+        return new View.OnClickListener(){
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                stopSlide();
-                startSlide();
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), BannerWebView.class);
+                intent.putExtra("url", "https://www.tokopedia.com/promo/?flag_app=1");
+                startActivity(intent);
             }
         };
     }
@@ -288,7 +287,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         category = new CategoryImpl(this);
         holder = new ViewHolder();
         model = new Model();
-        pagerAdapter = new PromoImagePagerAdapter(model.listBanner);
+        pagerAdapter = new BannerPagerAdapter(getFragmentManager());
         incrementPage = runnableIncrement();
         mHandler = new Handler();
         tickerAdapter = TickerAnnouncementAdapter.createInstance(getActivity());
@@ -339,8 +338,14 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             rechargeCategoryPresenter.fetchLastOrder();
         }
         super.onResume();
+        getActivity().registerReceiver(stopBannerReceiver, new IntentFilter(BANNER_RECEIVER_INTENT));
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().unregisterReceiver(stopBannerReceiver);
+    }
 
     @Override
     public void onStop() {
@@ -387,103 +392,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                         false)
         );
         holder.categoriesRecylerview.setAdapter(recyclerViewCategoryMenuAdapter);
-    }
-
-    private boolean isShop(List<String> linkSegment) {
-        return (linkSegment.size() == 1
-                && !linkSegment.get(0).equals("pulsa")
-                && !linkSegment.get(0).equals("iklan")
-                && !linkSegment.get(0).equals("newemail.pl")
-                && !linkSegment.get(0).equals("search")
-                && !linkSegment.get(0).equals("hot")
-                && !linkSegment.get(0).equals("about")
-                && !linkSegment.get(0).equals("reset.pl")
-                && !linkSegment.get(0).equals("activation.pl")
-                && !linkSegment.get(0).equals("privacy.pl")
-                && !linkSegment.get(0).equals("terms.pl")
-                && !linkSegment.get(0).startsWith("invoice.pl"));
-    }
-
-    public void getShopInfo(final String url, final String shopDomain) {
-        getShopInfoRetrofit = new GetShopInfoRetrofit(getActivity(), "", shopDomain);
-        getShopInfoRetrofit.setGetShopInfoListener(new GetShopInfoRetrofit.OnGetShopInfoListener() {
-            @Override
-            public void onSuccess(String result) {
-                try {
-                    ShopModel shopModel = new Gson().fromJson(result,
-                            com.tokopedia.core.shopinfo.models.shopmodel.ShopModel.class);
-                    if (shopModel.info != null) {
-                        JSONObject shop = new JSONObject(result);
-                        JSONObject shopInfo = new JSONObject(shop.getString("info"));
-                        Bundle bundle = ShopInfoActivity.createBundle(
-                                shopInfo.getString("shop_id"),shopInfo.getString("shop_domain"));
-                        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
-                        intent.putExtras(bundle);
-                        startActivity(intent);
-                    } else {
-                        openWebViewURL(url);
-                    }
-                } catch (Exception e) {
-                    openWebViewURL(url);
-                }
-            }
-
-            @Override
-            public void onError(String message) {
-                openWebViewURL(url);
-            }
-
-            @Override
-            public void onFailure() {
-                openWebViewURL(url);
-            }
-        });
-        getShopInfoRetrofit.getShopInfo();
-    }
-
-    public void openWebViewURL(String url) {
-        if (url!="") {
-            Intent intent = new Intent(getActivity(), BannerWebView.class);
-            intent.putExtra("url", url);
-            startActivity(intent);
-        }
-    }
-
-    private boolean isBaseHost(String host) {
-        return (host.contains(BASE_URL) || host.contains(BASE_MOBILE_URL));
-    }
-
-    private View.OnClickListener onPromoClicked(final String url) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    Uri uri = Uri.parse(url);
-                    String host = uri.getHost();
-                    List<String> linkSegment = uri.getPathSegments();
-                    if (isBaseHost(host) && isShop(linkSegment)) {
-                        String shopDomain = linkSegment.get(0);
-                        getShopInfo(url,shopDomain);
-                    } else {
-                       openWebViewURL(url);
-                    }
-
-                } catch (Exception e) {
-                    openWebViewURL(url);
-                }
-            }
-        };
-    }
-
-    private View.OnClickListener onPromoLinkClicked(){
-        return new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), BannerWebView.class);
-                intent.putExtra("url", "https://www.tokopedia.com/promo/?flag_app=1");
-                startActivity(intent);
-            }
-        };
     }
 
     @Override
@@ -808,54 +716,8 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         }
     }
 
-    protected class PromoImagePagerAdapter extends PagerAdapter {
-
-        List<FacadePromo.PromoItem> promoList = new ArrayList<>();
-
-        PromoImagePagerAdapter(List<FacadePromo.PromoItem> promoList) {
-            this.promoList = promoList;
-        }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-            View view = inflater.inflate(R.layout.image_slider, container, false);
-
-            ImageView promoImage = (ImageView) view.findViewById(R.id.image);
-            promoImage.setOnClickListener(onPromoClicked(promoList.get(position).promoUrl));
-            loadImageTemp(promoImage, promoList.get(position).imgUrl);
-            container.addView(view);
-            return view;
-        }
-
-        @Override
-        public int getCount() {
-            return promoList.size();
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object object) {
-            return view == object;
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView((View) object);
-        }
-
-
-    }
-
     public void scrollUntilBottomBanner() {
         holder.wrapperScrollview.smoothScrollTo(0, holder.banner != null ? holder.banner.getBottom() : 0);
-    }
-
-    private void loadImageTemp(ImageView imageview, String url) {
-        ImageHandler.LoadImage(
-                imageview,
-                url
-        );
-
     }
 
     private int getHomeMenuWidth() {
