@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.view.activity;
+package com.tokopedia.seller.topads.lib.datepicker;
 
 import android.content.Intent;
 import android.os.Build;
@@ -27,6 +27,10 @@ public class SetDateActivity extends AppCompatActivity implements SetDateFragmen
     public static final String SELECTION_PERIOD = "SELECTION_PERIOD";
     public static final String CUSTOM_START_DATE = "CUSTOM_START_DATE";
     public static final String CUSTOM_END_DATE = "CUSTOM_END_DATE";
+    public static final String MIN_START_DATE = "MIN_START_DATE";
+    public static final String MAX_END_DATE = "MAX_END_DATE";
+    public static final String MAX_DATE_RANGE = "MAX_DATE_RANGE";
+
     public static final int PERIOD_TYPE = 0;
     public static final int CUSTOM_TYPE = 1;
 
@@ -39,6 +43,9 @@ public class SetDateActivity extends AppCompatActivity implements SetDateFragmen
     private int selectionPeriod;
     private int selectionType;
     private long sDate = -1, eDate = -1;
+    private long minStartDate;
+    private long maxStartDate;
+    private int maxDateRange;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +82,9 @@ public class SetDateActivity extends AppCompatActivity implements SetDateFragmen
             selectionType = extras.getInt(SELECTION_TYPE, PERIOD_TYPE);
             sDate = extras.getLong(CUSTOM_START_DATE, -1);
             eDate = extras.getLong(CUSTOM_END_DATE, -1);
+            minStartDate = extras.getLong(MIN_START_DATE, -1);
+            maxStartDate = extras.getLong(MAX_END_DATE, -1);
+            maxDateRange = extras.getInt(MAX_DATE_RANGE, -1);
         }
     }
 
@@ -127,5 +137,17 @@ public class SetDateActivity extends AppCompatActivity implements SetDateFragmen
     @Override
     public long eDate() {
         return eDate;
+    }
+
+    public long getMinStartDate() {
+        return minStartDate;
+    }
+
+    public long getMaxStartDate() {
+        return maxStartDate;
+    }
+
+    public int getMaxDateRange() {
+        return maxDateRange;
     }
 }

@@ -25,7 +25,7 @@
 
     <fragment
         android:id="@+id/fragment"
-        android:name="com.tokopedia.seller.topads.view.activity.SetDateFragment"
+        android:name="com.tokopedia.seller.topads.lib.datepicker.SetDateFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
