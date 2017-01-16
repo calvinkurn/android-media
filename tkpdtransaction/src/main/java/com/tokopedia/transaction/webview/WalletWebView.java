@@ -24,7 +24,6 @@ public class WalletWebView extends TActivity implements FragmentGeneralWebView.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Url = getIntent().getExtras().getString("url");
-        toolbar.setTitle(R.string.toko_cash_info);
         inflateView(R.layout.wallet_webview);
         showFragmentWebView();
     }
