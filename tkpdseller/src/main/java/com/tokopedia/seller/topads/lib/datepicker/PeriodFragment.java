@@ -39,6 +39,7 @@ public class PeriodFragment extends Fragment {
     @BindView(R2.id.period_linlay)
     LinearLayout periodLinLay;
     List<PeriodChooseViewHelper> periodChooseViewHelpers;
+    ArrayList<PeriodRangeModel> periodRangeModelList;
 
     private long maxEndDate;
 
@@ -57,11 +58,11 @@ public class PeriodFragment extends Fragment {
         }
     }
 
-    public static Fragment newInstance(int lastSelectionPeriod, long endDate) {
+    public static Fragment newInstance(int selectionPeriod, ArrayList<PeriodRangeModel> periodRangeModelList) {
         Fragment fragment = new PeriodFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(SetDateActivity.SELECTION_PERIOD, lastSelectionPeriod);
-        bundle.putLong(SetDateActivity.MAX_END_DATE, endDate);
+        bundle.putInt(SetDateActivity.SELECTION_PERIOD, selectionPeriod);
+        bundle.putParcelableArrayList(SetDateActivity.DATE_PERIOD_LIST, periodRangeModelList);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -123,6 +124,7 @@ public class PeriodFragment extends Fragment {
         if (bundle != null) {
             lastSelection = bundle.getInt(SetDateActivity.SELECTION_PERIOD, 1);
             maxEndDate = bundle.getLong(SetDateActivity.MAX_END_DATE, Calendar.getInstance().getTimeInMillis());
+            periodRangeModelList = bundle.getParcelableArrayList(SetDateActivity.DATE_PERIOD_LIST);
         }
 
         unbinder = ButterKnife.bind(this, rootView);
@@ -130,18 +132,16 @@ public class PeriodFragment extends Fragment {
         periodAdapter = new PeriodAdapter();
 
         basePeriodModels = new ArrayList<>();
-        PeriodRangeModel e = new PeriodRangeModel(false, 1, getString(R.string.yesterday), maxEndDate);
-        basePeriodModels.add(e);
-        e = new PeriodRangeModel(true, 7, getString(R.string.seven_days_ago), maxEndDate);
-        basePeriodModels.add(e);
-        e = new PeriodRangeModel(true, 31, getString(R.string.thirty_days_ago), maxEndDate);
-        basePeriodModels.add(e);
+        for (PeriodRangeModel periodRangeModel: periodRangeModelList) {
+            basePeriodModels.add(periodRangeModel);
+        }
 
-        //[START] set last selection
-        PeriodRangeModel periodRangeModel = (PeriodRangeModel) basePeriodModels.get(lastSelection);
-        periodRangeModel.isChecked = true;
-        basePeriodModels.set(lastSelection, periodRangeModel);
-        //[END] set last selection
+        if (lastSelection < basePeriodModels.size()) {
+            //[START] set last selection
+            PeriodRangeModel periodRangeModel = (PeriodRangeModel) basePeriodModels.get(lastSelection);
+            periodRangeModel.isChecked = true;
+            basePeriodModels.set(lastSelection, periodRangeModel);
+        }
 
         periodAdapter.setBasePeriodModels(basePeriodModels);
 

@@ -28,6 +28,7 @@ import com.tokopedia.seller.topads.network.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.topads.presenter.TopAdsStatisticActivityPresenter;
 import com.tokopedia.seller.topads.presenter.TopAdsStatisticActivityPresenterImpl;
 import com.tokopedia.seller.topads.view.adapter.TopAdsStatisticPagerAdapter;
+import com.tokopedia.seller.topads.view.fragment.TopAdsDatePickerFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsStatisticAvgFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsStatisticConversionFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsStatisticCtrFragment;
@@ -213,11 +214,20 @@ public abstract class TopAdsStatisticActivity extends BasePresenterActivity<TopA
         intent.putExtra(SetDateActivity.CUSTOM_START_DATE, startDate.getTime());
         intent.putExtra(SetDateActivity.CUSTOM_END_DATE, endDate.getTime());
 
+        todayCalendar.set(Calendar.HOUR_OF_DAY, 23);
+        todayCalendar.set(Calendar.MINUTE, 59);
+        todayCalendar.set(Calendar.SECOND, 59);
+
+        lastYearCalendar.set(Calendar.HOUR_OF_DAY, 0);
+        lastYearCalendar.set(Calendar.MINUTE, 0);
+        lastYearCalendar.set(Calendar.SECOND, 0);
+
         intent.putExtra(SetDateActivity.MIN_START_DATE, lastYearCalendar.getTimeInMillis());
         intent.putExtra(SetDateActivity.MAX_END_DATE, todayCalendar.getTimeInMillis());
         intent.putExtra(SetDateActivity.MAX_DATE_RANGE, TopAdsConstant.MAX_DATE_RANGE);
 
-//        moveToSetDate.putExtra(SetDateActivity.SELECTION_PERIOD, lastSelection);
+        intent.putExtra(SetDateActivity.DATE_PERIOD_LIST, TopAdsDatePickerFragment.getPeriodRangeList(this));
+        intent.putExtra(SetDateActivity.SELECTION_PERIOD, 2);
 //        moveToSetDate.putExtra(SetDateActivity.SELECTION_TYPE, selectionType);
 
         startActivityForResult(intent, REQUEST_CODE_DATE);

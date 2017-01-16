@@ -57,6 +57,8 @@ public class SetDateFragment extends Fragment {
         long getMaxStartDate();
 
         int getMaxDateRange();
+
+        ArrayList<PeriodRangeModel> getPeriodRangeModelList();
     }
 
     @Override
@@ -86,7 +88,7 @@ public class SetDateFragment extends Fragment {
         bind = ButterKnife.bind(this, rootView);
         setDatePagerAdapter = new SetDatePagerAdapter(getActivity().getSupportFragmentManager(),
                 getActivity(), setDate.isGMStat(), setDate.selectionPeriod(),
-                setDate.sDate(), setDate.eDate(), setDate.getMinStartDate(), setDate.getMaxStartDate(), setDate.getMaxDateRange());
+                setDate.sDate(), setDate.eDate(), setDate.getMinStartDate(), setDate.getMaxStartDate(), setDate.getMaxDateRange(), setDate.getPeriodRangeModelList());
         setDateViewPager.setAdapter(setDatePagerAdapter);
         slidingTabs.setupWithViewPager(setDateViewPager);
 
@@ -118,10 +120,11 @@ public class SetDateFragment extends Fragment {
         private long minStartDate;
         private long maxEndDate;
         private int maxDateRange;
+        private ArrayList<PeriodRangeModel> periodRangeModelList;
 
         public SetDatePagerAdapter(FragmentManager fm, Context context, boolean isGM,
                                    int lastSelectionPeriod, long sDate, long eDate,
-                                   long minStartDate, long maxEndDate, int maxDateRange) {
+                                   long minStartDate, long maxEndDate, int maxDateRange, ArrayList<PeriodRangeModel> periodRangeModelList) {
             super(fm);
             this.context = context;
             this.isGM = isGM;
@@ -131,6 +134,7 @@ public class SetDateFragment extends Fragment {
             this.minStartDate = minStartDate;
             this.maxEndDate = maxEndDate;
             this.maxDateRange = maxDateRange;
+            this.periodRangeModelList = periodRangeModelList;
             Log.d("MNORMANSYAH", "sDate " + getDateFormat(sDate) + " eDate " + getDateFormat(eDate));
         }
 
@@ -145,7 +149,7 @@ public class SetDateFragment extends Fragment {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return PeriodFragment.newInstance(lastSelectionPeriod, maxEndDate);
+                    return PeriodFragment.newInstance(lastSelectionPeriod, periodRangeModelList);
                 case 1:
                 default:
                     return CustomFragment.newInstance(sDate, eDate, minStartDate, maxEndDate, maxDateRange);
@@ -178,6 +182,10 @@ public class SetDateFragment extends Fragment {
 
         public BasePeriodModel(int type) {
             this.type = type;
+        }
+
+        public BasePeriodModel() {
+
         }
     }
 

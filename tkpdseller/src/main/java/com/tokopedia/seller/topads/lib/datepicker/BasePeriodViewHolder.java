@@ -58,7 +58,7 @@ public class BasePeriodViewHolder extends RecyclerView.ViewHolder {
             checkBoxPeriod.setChecked(false);
         }
 
-        periodHeader.setText(periodRangeModel.label);
+        periodHeader.setText(periodRangeModel.getLabel());
 
         String description = periodRangeModel.getDescription();
         Log.d("MNORMANSYAH", "description : " + description);

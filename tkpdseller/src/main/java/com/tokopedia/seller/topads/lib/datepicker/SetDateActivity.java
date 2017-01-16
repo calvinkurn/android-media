@@ -12,6 +12,9 @@ import android.view.WindowManager;
 
 import com.tokopedia.seller.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.ButterKnife;
 
 /**
@@ -30,6 +33,7 @@ public class SetDateActivity extends AppCompatActivity implements SetDateFragmen
     public static final String MIN_START_DATE = "MIN_START_DATE";
     public static final String MAX_END_DATE = "MAX_END_DATE";
     public static final String MAX_DATE_RANGE = "MAX_DATE_RANGE";
+    public static final String DATE_PERIOD_LIST = "DATE_PERIOD_LIST";
 
     public static final int PERIOD_TYPE = 0;
     public static final int CUSTOM_TYPE = 1;
@@ -46,6 +50,7 @@ public class SetDateActivity extends AppCompatActivity implements SetDateFragmen
     private long minStartDate;
     private long maxStartDate;
     private int maxDateRange;
+    private ArrayList<PeriodRangeModel> periodRangeModelList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +90,7 @@ public class SetDateActivity extends AppCompatActivity implements SetDateFragmen
             minStartDate = extras.getLong(MIN_START_DATE, -1);
             maxStartDate = extras.getLong(MAX_END_DATE, -1);
             maxDateRange = extras.getInt(MAX_DATE_RANGE, -1);
+            periodRangeModelList = extras.getParcelableArrayList(DATE_PERIOD_LIST);
         }
     }
 
@@ -139,15 +145,23 @@ public class SetDateActivity extends AppCompatActivity implements SetDateFragmen
         return eDate;
     }
 
+    @Override
     public long getMinStartDate() {
         return minStartDate;
     }
 
+    @Override
     public long getMaxStartDate() {
         return maxStartDate;
     }
 
+    @Override
     public int getMaxDateRange() {
         return maxDateRange;
+    }
+
+    @Override
+    public ArrayList<PeriodRangeModel> getPeriodRangeModelList() {
+        return periodRangeModelList;
     }
 }

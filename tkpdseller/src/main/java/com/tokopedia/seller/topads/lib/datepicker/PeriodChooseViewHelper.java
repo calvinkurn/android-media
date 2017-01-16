@@ -73,7 +73,7 @@ public class PeriodChooseViewHelper {
             checkBoxPeriod.setChecked(false);
         }
 
-        periodHeader.setText(periodRangeModel.label);
+        periodHeader.setText(periodRangeModel.getLabel());
         String description = periodRangeModel.getDescription();
         Log.d("MNORMANSYAH", "description : " + description);
         String[] range = description.split("-");
