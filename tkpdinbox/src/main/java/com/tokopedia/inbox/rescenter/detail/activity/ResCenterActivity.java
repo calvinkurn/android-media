@@ -101,23 +101,8 @@ public class ResCenterActivity extends BasePresenterActivity<ResCenterPresenter>
     }
 
     @Override
-    public void changeSolution(String resolutionID) {
-        presenter.changeSolution(this, resolutionID, mReceiver);
-    }
-
-    @Override
     public void replyConversation(String resolutionID) {
         presenter.replyConversation(this, resolutionID, mReceiver);
-    }
-
-    @Override
-    public void actionInputShippingRefNum(String resolutionID) {
-        presenter.actionInputShippingRefNum(this, resolutionID, mReceiver);
-    }
-
-    @Override
-    public void actionUpdateShippingRefNum(String resolutionID) {
-        presenter.actionUpdateShippingRefNum(this, resolutionID, mReceiver);
     }
 
     @Override

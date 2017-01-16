@@ -12,7 +12,7 @@ import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.DetailResCenterData;
-import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.ResCenterKurir;
+import com.tokopedia.inbox.rescenter.shipping.model.ResCenterKurir;
 import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.ResCenterTrackShipping;
 
 import java.io.IOException;
@@ -182,93 +182,6 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                                 @Override
                                 public void onRetryClicked() {
                                     trackShipping(context, params, listener);
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void onServerError() {
-                            listener.onError("Terjadi Kesalahan, " +
-                                    "Mohon ulangi beberapa saat lagi");
-                        }
-
-                        @Override
-                        public void onBadRequest() {
-                            listener.onError("Terjadi Kesalahan, " +
-                                    "Mohon ulangi beberapa saat lagi");
-                        }
-
-                        @Override
-                        public void onForbidden() {
-                            listener.onError("Terjadi Kesalahan, " +
-                                    "Mohon ulangi beberapa saat lagi");
-                            listener.onFailAuth();
-                        }
-                    }, response.code());
-                }
-            }
-        };
-
-        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(subscriber)
-        );
-    }
-
-    @Override
-    public void getKurirList(@NonNull final Context context,
-                             @NonNull final GetKurirListListener listener) {
-        Observable<Response<TkpdResponse>> observable = inboxResCenterService.getApi()
-                .getCourierList(AuthUtil.generateParams(context, new HashMap<String, String>()));
-
-        Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.e(TAG, e.toString());
-                if (e instanceof IOException) {
-                    listener.onTimeOut("Timeout connection," +
-                            " Mohon ulangi beberapa saat lagi", new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            getKurirList(context, listener);
-                        }
-                    });
-                } else {
-                    listener.onError("Terjadi Kesalahan, " +
-                            "Mohon ulangi beberapa saat lagi");
-                }
-            }
-
-            @Override
-            public void onNext(Response<TkpdResponse> response) {
-                if (response.isSuccessful()) {
-                    if (!response.body().isError()) {
-                        listener.onSuccess(response.body().convertDataObj(ResCenterKurir.class));
-                    } else {
-                        if (response.body().isNullData()) listener.onNullData();
-                        else listener.onError(response.body().getErrorMessages().get(0));
-                    }
-                } else {
-                    new ErrorHandler(new ErrorListener() {
-                        @Override
-                        public void onUnknown() {
-                            listener.onError("Terjadi Kesalahan, " +
-                                    "Mohon ulangi beberapa saat lagi");
-                        }
-
-                        @Override
-                        public void onTimeout() {
-                            listener.onTimeOut("Timeout connection," +
-                                    " Mohon ulangi beberapa saat lagi", new NetworkErrorHelper.RetryClickedListener() {
-                                @Override
-                                public void onRetryClicked() {
-                                    getKurirList(context, listener);
                                 }
                             });
                         }

@@ -92,26 +92,9 @@ public class NetworkParam {
         return params;
     }
 
-    public static Map<String, String> updateShippingRefNum(ActionParameterPassData actionParameterPassData) {
-        Map<String, String> params = new HashMap<>();
-        params.put(PARAM_CONVERSATION_ID, actionParameterPassData.getConversationID());
-        params.put(PARAM_RESOLUTION_ID, actionParameterPassData.getResolutionID());
-        params.put(PARAM_SHIPMENT_ID, actionParameterPassData.getShipmentID());
-        params.put(PARAM_SHIPPING_REF, actionParameterPassData.getShippingRefNum());
-        return params;
-    }
-
     public static Map<String, String> acceptAdminSolution(ActionParameterPassData actionParameterPassData) {
         Map<String, String> params = new HashMap<>();
         params.put(PARAM_RESOLUTION_ID, actionParameterPassData.getResolutionID());
-        return params;
-    }
-
-    public static Map<String, String> inputShippingRefNum(ActionParameterPassData actionParameterPassData) {
-        Map<String, String> params = new HashMap<>();
-        params.put(PARAM_RESOLUTION_ID, actionParameterPassData.getResolutionID());
-        params.put(PARAM_SHIPMENT_ID, actionParameterPassData.getShipmentID());
-        params.put(PARAM_SHIPPING_REF, actionParameterPassData.getShippingRefNum());
         return params;
     }
 

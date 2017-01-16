@@ -8,7 +8,9 @@ import java.util.Map;
 import retrofit2.Response;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.QueryMap;
 import rx.Observable;
 
 /**
@@ -37,16 +39,24 @@ public interface ResCenterActApi {
     Observable<Response<TkpdResponse>> createResolutionValidation(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.ResCenter.PATH_EDIT_RESI_RESOLUTION)
-    Observable<Response<TkpdResponse>> editResiResolution(@FieldMap Map<String, String> params);
+    @POST(TkpdBaseURL.ResCenter.PATH_EDIT_RESI_RESOLUTION_VALIDATION)
+    Observable<Response<TkpdResponse>> editResiResolutionValidation(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_EDIT_RESI_RESOLUTION_SUBMIT)
+    Observable<Response<TkpdResponse>> editResiResolutionSubmit(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.ResCenter.PATH_FINISH_RES_RETURN)
     Observable<Response<TkpdResponse>> finishResolutionReturn(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.ResCenter.PATH_INPUT_RESI_RESOLUTION)
-    Observable<Response<TkpdResponse>> inputResiResolution(@FieldMap Map<String, String> params);
+    @POST(TkpdBaseURL.ResCenter.PATH_INPUT_RESI_RESOLUTION_VALIDATION)
+    Observable<Response<TkpdResponse>> inputResiResolutionValidation(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_INPUT_RESI_RESOLUTION_SUBMIT)
+    Observable<Response<TkpdResponse>> inputResiResolutionSubmit(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.ResCenter.PATH_REJECT_ADMIN_RES_SUBMIT)

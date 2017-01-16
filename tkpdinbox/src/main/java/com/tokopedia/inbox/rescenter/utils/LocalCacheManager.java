@@ -7,8 +7,6 @@ import com.tokopedia.core.database.model.InboxResCenterFilterDB;
 import com.tokopedia.core.database.model.InboxResCenterFilterDB_Table;
 import com.tokopedia.core.database.model.ReplyConversationDB;
 import com.tokopedia.core.database.model.ReplyConversationDB_Table;
-import com.tokopedia.core.database.model.ReturnPackageDB;
-import com.tokopedia.core.database.model.ReturnPackageDB_Table;
 import com.tokopedia.core.database.model.StateResCenterDetailDB;
 import com.tokopedia.core.database.model.StateResCenterDetailDB_Table;
 
@@ -181,75 +179,6 @@ public class LocalCacheManager {
 
         public void clear() {
             SQLite.delete().from(StateResCenterDetailDB.class).where(StateResCenterDetailDB_Table.resolutionID.is(resolutionID)).execute();
-        }
-    }
-
-    public static class ReturnPackage {
-        private String resolutionID;
-        private String conversationID;
-        private String shippingID;
-        private String shippingRefNum;
-
-        public ReturnPackage() {
-        }
-
-        public static ReturnPackage Builder(String resolutionID) {
-            ReturnPackage foo = new ReturnPackage();
-            foo.resolutionID = resolutionID;
-            return foo;
-        }
-
-        public ReturnPackage setConversationID(String conversationID) {
-            this.conversationID = conversationID;
-            return this;
-        }
-
-        public ReturnPackage setShippingID(String shippingID) {
-            this.shippingID = shippingID;
-            return this;
-        }
-
-        public ReturnPackage setShippingRefNum(String shippingRefNum) {
-            if (shippingRefNum != null) {
-                this.shippingRefNum = shippingRefNum;
-            }
-            return this;
-        }
-
-        public String getConversationID() {
-            return conversationID;
-        }
-
-        public String getShippingID() {
-            return shippingID;
-        }
-
-        public String getShippingRefNum() {
-            return shippingRefNum;
-        }
-
-        public void save() {
-            ReturnPackageDB db = new ReturnPackageDB();
-            db.resolutionID = resolutionID;
-            db.conversationID = conversationID;
-            db.shippingID = shippingID;
-            db.shippingRefNum = shippingRefNum;
-            db.save();
-        }
-
-        public ReturnPackage getCache() {
-            ReturnPackageDB cache = SQLite.select().from(ReturnPackageDB.class).where(ReturnPackageDB_Table.resolutionID.is(resolutionID)).querySingle();
-            if (cache == null) {
-                return this;
-            }
-            setShippingID(cache.shippingID);
-            setShippingRefNum(cache.shippingRefNum);
-            setConversationID(cache.conversationID);
-            return this;
-        }
-
-        public void clear() {
-            SQLite.delete().from(ReturnPackageDB.class).where(ReturnPackageDB_Table.resolutionID.is(resolutionID)).execute();
         }
     }
 
@@ -485,6 +414,83 @@ public class LocalCacheManager {
             SQLite.delete().from(AttachmentResCenterDB.class)
                     .where(AttachmentResCenterDB_Table.resolutionID.is(resolutionId))
                     .and(AttachmentResCenterDB_Table.modulName.is(AttachmentResCenterDB.MODULE_EDIT_RESCENTER))
+                    .and(AttachmentResCenterDB_Table.id.is(attachmentReplyResCenterDB.getId()))
+                    .execute();
+        }
+    }
+
+    public static class AttachmentShippingResCenter {
+
+        private String resolutionId;
+        private String imageLocalPath;
+        private String imageUrl;
+        private String imageUUID;
+
+
+        public AttachmentShippingResCenter() {
+        }
+
+        public static AttachmentShippingResCenter Builder(String resolutionID) {
+            AttachmentShippingResCenter foo = new AttachmentShippingResCenter();
+            foo.resolutionId = resolutionID;
+            return foo;
+        }
+
+        public String getImageLocalPath() {
+            return imageLocalPath;
+        }
+
+        public AttachmentShippingResCenter setImageLocalPath(String imageLocalPath) {
+            this.imageLocalPath = imageLocalPath;
+            return this;
+        }
+
+        public String getImageUrl() {
+            return imageUrl;
+        }
+
+        public AttachmentShippingResCenter setImageUrl(String imageUrl) {
+            this.imageUrl = imageUrl;
+            return this;
+        }
+
+        public String getImageUUID() {
+            return imageUUID;
+        }
+
+        public AttachmentShippingResCenter setImageUUID(String imageUUID) {
+            this.imageUUID = imageUUID;
+            return this;
+        }
+
+        public void save() {
+            AttachmentResCenterDB db = new AttachmentResCenterDB();
+            db.resolutionID = resolutionId;
+            db.imagePath = getImageLocalPath();
+            db.imageUrl = getImageUrl();
+            db.imageUUID = getImageUUID();
+            db.modulName = AttachmentResCenterDB.MODULE_SHIPPING_RESCENTER;
+            db.save();
+        }
+
+        public List<AttachmentResCenterDB> getCache() {
+            List<AttachmentResCenterDB> mList = SQLite.select().from(AttachmentResCenterDB.class)
+                    .where(AttachmentResCenterDB_Table.resolutionID.is(resolutionId))
+                    .and(AttachmentResCenterDB_Table.modulName.is(AttachmentResCenterDB.MODULE_SHIPPING_RESCENTER))
+                    .queryList();
+            return mList;
+        }
+
+        public void clearAll() {
+            for (AttachmentResCenterDB data : getCache()) {
+                data.delete();
+            }
+        }
+
+        public void remove(AttachmentResCenterDB attachmentReplyResCenterDB) {
+            SQLite.delete().from(AttachmentResCenterDB.class)
+                    .where(AttachmentResCenterDB_Table.resolutionID.is(resolutionId))
+                    .and(AttachmentResCenterDB_Table.modulName.is(AttachmentResCenterDB.MODULE_SHIPPING_RESCENTER))
                     .and(AttachmentResCenterDB_Table.id.is(attachmentReplyResCenterDB.getId()))
                     .execute();
         }

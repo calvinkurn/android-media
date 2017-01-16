@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.rescenter.detail.customadapter;
+package com.tokopedia.inbox.rescenter.shipping.customadapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,7 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.tokopedia.core.R;
-import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.ResCenterKurir;
+import com.tokopedia.inbox.rescenter.shipping.model.ResCenterKurir;
 
 import java.util.List;
 

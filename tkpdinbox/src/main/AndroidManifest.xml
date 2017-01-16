@@ -44,6 +44,10 @@
             android:label="@string/title_activity_edit_resolution"
             android:screenOrientation="portrait" />
         <activity
+            android:name="com.tokopedia.inbox.rescenter.shipping.activity.InputShippingActivity"
+            android:label="@string/title_activity_input_shipping"
+            android:screenOrientation="portrait" />
+        <activity
             android:name="com.tokopedia.inbox.inboxmessage.activity.SendMessageActivity"
             android:label="@string/title_activity_send_message"
             android:screenOrientation="portrait"

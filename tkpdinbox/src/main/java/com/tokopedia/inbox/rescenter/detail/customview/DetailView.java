@@ -21,8 +21,8 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.inbox.rescenter.create.customview.BaseView;
 import com.tokopedia.inbox.rescenter.detail.dialog.ConfirmationDialog;
 import com.tokopedia.inbox.rescenter.detail.listener.DetailResCenterView;
-import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.DetailResCenterData.Detail;
 import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.DetailResCenterData;
+import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.DetailResCenterData.Detail;
 
 import butterknife.BindView;
 
@@ -66,6 +66,20 @@ public class DetailView extends BaseView<Detail, DetailResCenterView> {
 
     }
 
+//    @Override
+//    public void renderData(@NonNull DetailResCenterData.Detail data) {
+//        WebSettings webSettings = webView.getSettings();
+//        webSettings.setBuiltInZoomControls(false);
+//        webView.setWebViewClient(new MyWebClient());
+//        webView.loadUrl(getUrl(data.getResolutionLinkEncode()),
+//                AuthUtil.generateHeaders(
+//                        getPath(data.getResolutionLinkEncode()),
+//                        getQuery(data.getResolutionLinkEncode()),
+//                        "GET",
+//                        "web_service_v4")
+//        );
+//    }
+
     @Override
     public void renderData(@NonNull DetailResCenterData.Detail data) {
         this.resolutionDetailModel = data;
@@ -76,8 +90,18 @@ public class DetailView extends BaseView<Detail, DetailResCenterView> {
     }
 
     private String getUrl(String data) {
-        Log.d(TAG, "getImageUrl: " + URLGenerator.generateURLSessionLogin(data, getContext()));
-        return URLGenerator.generateURLSessionLogin(data, getContext());
+        Log.d(TAG, "getUrl: " + URLGenerator.generateURLSessionLoginV4(data, getContext()));
+        return URLGenerator.generateURLSessionLoginV4(data, getContext());
+    }
+
+    public String getPath(String resolutionLinkEncode) {
+        Log.d(TAG, "getPath: " + Uri.parse(getUrl(resolutionLinkEncode)).getPath());
+        return Uri.parse(getUrl(resolutionLinkEncode)).getPath();
+    }
+
+    public String getQuery(String resolutionLinkEncode) {
+        Log.d(TAG, "getQuery: " + Uri.parse(getUrl(resolutionLinkEncode)).getQuery());
+        return Uri.parse(getUrl(resolutionLinkEncode)).getQuery();
     }
 
     private class MyWebClient extends WebViewClient {
@@ -196,7 +220,7 @@ public class DetailView extends BaseView<Detail, DetailResCenterView> {
                 });
                 return true;
             case "input_ship_ref":
-                listener.openInputShippingRef(paramID);
+                listener.openInputShippingRef();
                 return true;
             case "track_ship_ref":
                 listener.openTrackShippingRef(url);
