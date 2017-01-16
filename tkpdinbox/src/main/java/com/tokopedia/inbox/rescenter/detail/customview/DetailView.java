@@ -188,7 +188,7 @@ public class DetailView extends BaseView<Detail, DetailResCenterView> {
                     @Override
                     public void onSubmitButtonClick() {
                         if (resolutionDetailModel.getResolutionLast().getLastShowAcceptAdminReturButton() == 1) {
-                            listener.openInputAddress();
+                            listener.openInputAddressForAcceptAdmin();
                         } else {
                             listener.actionAcceptAdmin(paramID);
                         }
