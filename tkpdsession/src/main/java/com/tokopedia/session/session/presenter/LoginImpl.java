@@ -48,6 +48,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by m.normansyah on 04/11/2015.
@@ -183,7 +184,8 @@ public class LoginImpl implements Login {
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(final LoginResult loginResult) {
-                if(loginResult.getAccessToken().getDeclinedPermissions().size()>0){
+                Set<String> declinedPermissions = loginResult.getAccessToken().getDeclinedPermissions();
+                if(declinedPermissions.size()>0 && FacebookContainer.readPermissions.containsAll(declinedPermissions)){
                     doFacebookLogin(fragment,callbackManager);
                 }else {
                     GraphRequest request = GraphRequest.newMeRequest(
