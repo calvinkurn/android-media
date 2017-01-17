@@ -1,7 +1,6 @@
 package com.tokopedia.core.gcm;
 
 import android.app.Application;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -11,7 +10,6 @@ import android.text.TextUtils;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.Cart;
 import com.tokopedia.core.ManageGeneral;
-import com.tokopedia.core.R;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.gcm.model.NotificationPass;
@@ -41,24 +39,17 @@ import com.tokopedia.core.gcm.notification.dedicated.ResCenterSellerReplyNotific
 import com.tokopedia.core.gcm.notification.dedicated.ReviewEditedNotification;
 import com.tokopedia.core.gcm.notification.dedicated.ReviewReplyNotification;
 import com.tokopedia.core.gcm.notification.dedicated.TicketResponseNotification;
-import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
-import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.router.CustomerRouter;
-import com.tokopedia.core.router.InboxRouter;
-import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
-import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity;
-import com.tokopedia.core.util.RouterUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -121,6 +112,70 @@ public class AppNotificationReceiverUIBackground {
 
         if (visitable != null) {
             visitable.proccessReceivedNotification(data);
+        }
+
+        Class<?> clazz = NewMessageNotification.class;
+        suchADangerousReflectionFunction(data, clazz);
+    }
+
+    void prepareDeathOrLiveFunction(Bundle data){
+        Map<Integer, Class> dedicatedNotification = new HashMap<>();
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_MESSAGE,  NewMessageNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_TALK,  NewDiscussionNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REVIEW,  NewReviewNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REVIEW_EDIT,  ReviewEditedNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REVIEW_REPLY,  ReviewReplyNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_TICKET,  TicketResponseNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RES_CENTER,  ResCenterNewNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_NEWORDER,  NewOrderNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY,  ReputationSmileyNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY,  ReputationSmileyEditNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_BUYER,  ReputationSmileyToBuyerNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_BUYER,  ReputationSmileyToBuyerEditNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_SELLER,  ReputationSmileyToSellerNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_SELLER,  ReputationSmileyToSellerEditNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_VERIFIED,  PurchaseVerifiedNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_ACCEPTED,  PurchaseAcceptedNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_PARTIAL_PROCESSED,  PurchasePartialProcessedNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_REJECTED,  PurchaseRejectedNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_DELIVERED,  PurchaseDeliveredNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_DISPUTE,  PurchaseDisputeNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_REPLY,  ResCenterBuyerReplyNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_REPLY,  ResCenterSellerReplyNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_AGREE,  ResCenterSellerAgreeNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_AGREE,  ResCenterBuyerAgreeNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_BUYER_REPLY,  ResCenterAdminBuyerReplyNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_SELLER_REPLY,  ResCenterAdminSellerReplyNotification.class);
+        Class<?> clazz = dedicatedNotification.get(GCMUtils.getCode(data));
+        if (clazz != null) {
+            suchADangerousReflectionFunction(data, clazz);
+        }
+    }
+
+    private void suchADangerousReflectionFunction(Bundle data, Class<?> clazz) {
+        Constructor<?> ctor = null;
+        try {
+            ctor = clazz.getConstructor(Context.class);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+            return;
+        }
+        Object object = null;
+        try {
+            object = ctor.newInstance(mContext);
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+            return;
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            return;
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        if(object != null && object instanceof Visitable){
+            ((Visitable) object).proccessReceivedNotification(data);
         }
     }
 
