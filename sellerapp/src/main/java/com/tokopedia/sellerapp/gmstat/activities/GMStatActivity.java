@@ -16,7 +16,7 @@ import javax.inject.Inject;
  * Created by normansyahputa on 1/16/17.
  */
 
-public class GMStatActivity extends com.tokopedia.seller.gmstat.views.GMStatActivity {
+public class GMStatActivity extends com.tokopedia.seller.gmstat.views.BaseGMStatActivity {
     SellerToolbarVariable sellerToolbarVariable;
     private DrawerVariableSeller drawer;
 

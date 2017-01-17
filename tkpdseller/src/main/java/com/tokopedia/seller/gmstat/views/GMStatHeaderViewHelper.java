@@ -23,7 +23,7 @@ import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.tokopedia.seller.gmstat.views.GMStatActivity.IS_GOLD_MERCHANT;
+import static com.tokopedia.seller.gmstat.views.BaseGMStatActivity.IS_GOLD_MERCHANT;
 import static com.tokopedia.seller.gmstat.views.GMStatActivityFragment.getDateWithYear;
 import static com.tokopedia.seller.gmstat.views.SetDateActivity.CUSTOM_END_DATE;
 import static com.tokopedia.seller.gmstat.views.SetDateActivity.CUSTOM_START_DATE;

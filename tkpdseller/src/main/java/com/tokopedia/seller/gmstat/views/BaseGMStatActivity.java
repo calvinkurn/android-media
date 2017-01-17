@@ -35,7 +35,7 @@ import static com.tokopedia.seller.gmstat.views.SetDateActivity.SELECTION_TYPE;
 import static com.tokopedia.seller.gmstat.views.SetDateFragment.END_DATE;
 import static com.tokopedia.seller.gmstat.views.SetDateFragment.START_DATE;
 
-public abstract class GMStatActivity extends AppCompatActivity implements GMStat, SessionHandler.onLogoutListener, DaggerInjectorListener {
+public abstract class BaseGMStatActivity extends AppCompatActivity implements GMStat, SessionHandler.onLogoutListener, DaggerInjectorListener {
 
     protected GMStatNetworkController gmStatNetworkController;
 
