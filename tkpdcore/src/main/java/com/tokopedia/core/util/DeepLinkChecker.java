@@ -213,9 +213,7 @@ public class DeepLinkChecker {
     public static void openHomepage(Context context) {
         Intent intent = new Intent(context, HomeRouter.getHomeActivityClass());
         intent.putExtra("EXTRA_INIT_FRAGMENT",4);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
         context.startActivity(intent);
     }
 

@@ -121,9 +121,6 @@ public class FragmentTopPicksWebView extends Fragment {
                     case DeepLinkChecker.PRODUCT:
                         DeepLinkChecker.openProduct(url, getActivity());
                         return true;
-                    case DeepLinkChecker.SHOP:
-                        ((BannerWebView) getActivity()).openShop(url);
-                        return true;
                     default:
                         return false;
                 }
