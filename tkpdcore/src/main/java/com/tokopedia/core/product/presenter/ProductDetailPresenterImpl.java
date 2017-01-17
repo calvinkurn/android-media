@@ -234,7 +234,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 )));
         attributes.put("Wishlist", successResult.getInfo().getProductAlreadyWishlist() == 1 ? "Yes" : "No");
         attributes.put("Favorite Seller", successResult.getShopInfo().getShopAlreadyFavorited() == 1 ? "Yes" : "No");
-        ScreenTracking.sendLocaProductDetailEvent(successResult, attributes);
+        UnifyTracking.sendLocaProductDetailEvent(successResult, attributes);
     }
 
     @Override

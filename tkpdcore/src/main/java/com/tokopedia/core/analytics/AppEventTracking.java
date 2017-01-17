@@ -22,12 +22,14 @@ public interface AppEventTracking {
         String REGISTER_TYPE = "REGISTER_TYPE";
         String LOGIN_TYPE = "LOGIN_TYPE";
         String SESSION_STATE = "SESSION_STATE";
+        String MEDIUM = "MEDIUM";
     }
 
     interface GTMCacheValue {
         String EMAIL = "Email";
         String FACEBOOK = "Facebook";
         String GMAIL = "Gmail";
+        String WEBVIEW = "Webview";
         String REGISTER = "Register";
         String LOGIN = "Login";
     }
