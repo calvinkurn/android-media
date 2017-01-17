@@ -268,6 +268,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
     @Override
     public void onRechargeTextChanged(CharSequence s, int start, int before, int count) {
+        if (isDeleteChar(before, count)) isAlreadyHavePhonePrefixInView = false;
         String temp = s.toString();
         temp = validateTextPrefix(temp);
         phoneNumber = s.toString();
@@ -303,6 +304,10 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             setPhoneBookVisibility();
             hideFormAndImageOperator();
         }
+    }
+
+    private Boolean isDeleteChar(int before, int count) {
+        return before == 1 && count == 0;
     }
 
     @Override
