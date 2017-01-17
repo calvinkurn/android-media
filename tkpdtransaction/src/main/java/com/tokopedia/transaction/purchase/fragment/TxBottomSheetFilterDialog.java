@@ -2,11 +2,9 @@ package com.tokopedia.transaction.purchase.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.support.design.widget.BottomSheetDialog;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -14,6 +12,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.DatePickerUtil;
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.model.AllTxFilter;
@@ -85,7 +84,7 @@ class TxBottomSheetFilterDialog implements AdapterView.OnItemSelectedListener,
         spnFilter.setAdapter(adapter);
         setStateFilterSelection(allTxFilter.getFilter());
         searchField.clearFocus();
-        hideKeyboard(activity.getCurrentFocus());
+        KeyboardHandler.DropKeyboard(activity, activity.getCurrentFocus());
     }
 
     @OnClick(R2.id.start_date)
@@ -146,7 +145,7 @@ class TxBottomSheetFilterDialog implements AdapterView.OnItemSelectedListener,
     @Override
     public void onDismiss(DialogInterface dialog) {
         View view = activity.getCurrentFocus();
-        hideKeyboard(view);
+        KeyboardHandler.DropKeyboard(activity, view);
     }
 
 
@@ -155,19 +154,7 @@ class TxBottomSheetFilterDialog implements AdapterView.OnItemSelectedListener,
         setStateFilterSelection(allTxFilter.getFilter());
         spnFilter.clearFocus();
         View view = activity.getCurrentFocus();
-        hideKeyboard(view);
-    }
-
-
-    private void hideKeyboard(View view) {
-        if (view != null) {
-            InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(
-                    Context.INPUT_METHOD_SERVICE
-            );
-            inputManager.hideSoftInputFromWindow(
-                    view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS
-            );
-        }
+        KeyboardHandler.DropKeyboard(activity, view);
     }
 
     public void show() {
