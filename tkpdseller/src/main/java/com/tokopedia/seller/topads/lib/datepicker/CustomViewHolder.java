@@ -62,7 +62,7 @@ public class CustomViewHolder extends RecyclerView.ViewHolder {
                         cal.get(Calendar.YEAR)
                 );
 
-        datePicker.setMinDate(datePickerRules.maxSDate);
+        datePicker.setMinDate(datePickerRules.minSDate);
         datePicker.setMaxDate(datePickerRules.maxEDate);
 
         if (startOrEndPeriodModel.isEndDate) {

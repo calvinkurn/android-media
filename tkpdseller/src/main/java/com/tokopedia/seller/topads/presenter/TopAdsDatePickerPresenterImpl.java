@@ -115,6 +115,7 @@ public class TopAdsDatePickerPresenterImpl implements TopAdsDatePickerPresenter 
         lastYearCalendar.set(Calendar.HOUR_OF_DAY, 0);
         lastYearCalendar.set(Calendar.MINUTE, 0);
         lastYearCalendar.set(Calendar.SECOND, 0);
+        lastYearCalendar.set(Calendar.MILLISECOND, 0);
 
         intent.putExtra(SetDateActivity.MIN_START_DATE, lastYearCalendar.getTimeInMillis());
         intent.putExtra(SetDateActivity.MAX_END_DATE, todayCalendar.getTimeInMillis());
