@@ -13,6 +13,7 @@ import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 
 import java.util.List;
@@ -29,6 +30,7 @@ public class DeepLinkChecker {
     public static final int PRODUCT = 3;
     public static final int SHOP = 4;
     public static final int TOPPICKS = 5;
+    public static final int HOT_LIST = 6;
 
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
 
@@ -40,6 +42,8 @@ public class DeepLinkChecker {
                 return BROWSE;
             else if (isHot(linkSegment))
                 return HOT;
+            else if (isHotList(linkSegment))
+                return HOT_LIST;
             else if (isCatalog(linkSegment))
                 return CATALOG;
             else if (isProduct(linkSegment))
@@ -70,7 +74,11 @@ public class DeepLinkChecker {
     }
 
     private static boolean isHot(List<String> linkSegment) {
-        return (linkSegment.get(0).equals("hot"));
+        return (linkSegment.get(0).equals("hot") && linkSegment.size()>1);
+    }
+
+    private static boolean isHotList(List<String> linkSegment) {
+        return (linkSegment.get(0).equals("hot") && linkSegment.size()== 1);
     }
 
     private static boolean isTopPicks(List<String> linkSegment) {
@@ -199,6 +207,15 @@ public class DeepLinkChecker {
         Bundle bundle = ShopInfoActivity.createBundle("", getLinkSegment(url).get(0));
         Intent intent = new Intent(context, ShopInfoActivity.class);
         intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
+
+    public static void openHomepage(Context context) {
+        Intent intent = new Intent(context, HomeRouter.getHomeActivityClass());
+        intent.putExtra("EXTRA_INIT_FRAGMENT",4);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 
