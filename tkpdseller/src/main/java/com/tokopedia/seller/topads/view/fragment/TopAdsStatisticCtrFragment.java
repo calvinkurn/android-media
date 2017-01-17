@@ -25,4 +25,9 @@ public class TopAdsStatisticCtrFragment extends TopAdsStatisticFragment {
     protected String getTitleGraph() {
         return getString(R.string.title_graph_ctr_statistic_topads);
     }
+
+    @Override
+    protected String getValueDisplay(Cell cell) {
+        return cell.getCtrPercentageFmt();
+    }
 }

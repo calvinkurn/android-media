@@ -136,7 +136,6 @@ public class Tooltip extends RelativeLayout {
 		mValueFormat = new DecimalFormat();
 	}
 
-
 	/**
 	 * Method called by ChartView before displaying the
 	 * tooltip in order to set its layout parameters.
@@ -145,7 +144,7 @@ public class Tooltip extends RelativeLayout {
 	 * clicked {@link com.tokopedia.seller.topads.view.library.williamchart.model.ChartEntry}.
 	 * @param value Value of the entry.
 	 */
-	public void prepare(Rect rect, float value) {
+	public void prepare(Rect rect, String value) {
 
 		// If no previous dimensions defined, the size of the area of the entry will be used.
 		int width = (mWidth == -1) ? rect.width() : mWidth;

@@ -5,10 +5,12 @@
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:padding="3dp"
     android:gravity="center"
     android:background="@drawable/tooltip">
 
     <TextView
+        android:maxLines="1"
         android:id="@+id/gm_stat_tooltip_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

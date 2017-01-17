@@ -148,7 +148,7 @@ public class GrossGraphChartConfig {
 //                Typeface.createFromAsset(chart.getContext().getAssets(), "OpenSans-Semibold.ttf"));
 
         mTip.setVerticalAlignment(Tooltip.Alignment.BOTTOM_TOP);
-        mTip.setDimensions((int) Tools.fromDpToPx(58), (int) Tools.fromDpToPx(25));
+        mTip.setDimensions((int) Tools.fromDpToPx(80), (int) Tools.fromDpToPx(30));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 
