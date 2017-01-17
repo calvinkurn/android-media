@@ -22,13 +22,13 @@ allprojects {
         maven { url "https://www.jitpack.io" }
         maven { url 'https://maven.fabric.io/public' }
         maven { url 'http://maven.localytics.com/public' }
-//        maven {
-//            url "${artifactory_url}"+"/libs-release-local";
-//            credentials {
-//                username = "${artifactory_username}"
-//                password = "${artifactory_password}"
-//            }
-//        }
+        maven {
+            url "${artifactory_url}" + "/libs-release-local";
+            credentials {
+                username = "${artifactory_username}"
+                password = "${artifactory_password}"
+            }
+        }
     }
 }
 
@@ -39,10 +39,10 @@ task clean(type: Delete) {
 task wrapper(type: Wrapper) {
     gradleVersion = '2.14.1'
 }
-//
-//ext {
-//     artifactoryUrl = "${artifactory_url}"
-//}
+
+ext {
+    artifactoryUrl = "${artifactory_url}"
+}
 
 afterEvaluate {
     tasks.withType(PublishToMavenRepository).all { publishTask ->

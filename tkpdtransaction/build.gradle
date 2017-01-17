@@ -23,48 +23,48 @@ def getTkpdCore() {
             rootProject.ext.tkpdDependencies.core : project(':tkpdcore');
 }
 
-//publishing {
-//    publications {
-//        aar(MavenPublication) {
-//            groupId 'com.tokopedia.transaction'
-//            artifactId 'transaction'
-//            version getArtifactVersionCode()
-//            artifact("$buildDir/outputs/aar/tkpdtransaction-release.aar")
-//            pom.withXml {
-//                def dependenciesNode = asNode().appendNode('dependencies')
-//
-//                configurations.compile.allDependencies.each {
-//                    if (it.group != null && it.name != null) {
-//                        def dependencyNode = dependenciesNode.appendNode('dependency')
-//                        dependencyNode.appendNode('groupId', it.group)
-//                        dependencyNode.appendNode('artifactId', it.name)
-//                        dependencyNode.appendNode('version', it.version)
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
-//
-//artifactory {
-//    contextUrl = rootProject.ext.artifactoryUrl
-//    publish {
-//        repository {
-//            repoKey = 'libs-release-local'
-//
-//            username = artifactory_username
-//            password = artifactory_password
-//        }
-//        defaults {
-//            publications('aar')
-//            publishArtifacts = true
-//
-//            properties = ['qa.level': 'basic', 'q.os': 'android', 'dev.team': 'core']
-//            publishPom = true
-//        }
-//    }
-//}
-//
+publishing {
+    publications {
+        aar(MavenPublication) {
+            groupId 'com.tokopedia.transaction'
+            artifactId 'transaction'
+            version getArtifactVersionCode()
+            artifact("$buildDir/outputs/aar/tkpdtransaction-release.aar")
+            pom.withXml {
+                def dependenciesNode = asNode().appendNode('dependencies')
+
+                configurations.compile.allDependencies.each {
+                    if (it.group != null && it.name != null) {
+                        def dependencyNode = dependenciesNode.appendNode('dependency')
+                        dependencyNode.appendNode('groupId', it.group)
+                        dependencyNode.appendNode('artifactId', it.name)
+                        dependencyNode.appendNode('version', it.version)
+                    }
+                }
+            }
+        }
+    }
+}
+
+artifactory {
+    contextUrl = rootProject.ext.artifactoryUrl
+    publish {
+        repository {
+            repoKey = 'libs-release-local'
+
+            username = artifactory_username
+            password = artifactory_password
+        }
+        defaults {
+            publications('aar')
+            publishArtifacts = true
+
+            properties = ['qa.level': 'basic', 'q.os': 'android', 'dev.team': 'core']
+            publishPom = true
+        }
+    }
+}
+
 
 android {
     compileSdkVersion 25
