@@ -15,6 +15,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.apiservices.shop.MyShopActService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -499,6 +500,7 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
                 }
                 break;
             case ShopEditService.STATUS_FINISHED:
+                UnifyTracking.eventCreateShopSuccess();
                 switch (type) {
                     case ShopEditService.CREATE_SHOP:
                         view.showProgress(false);
