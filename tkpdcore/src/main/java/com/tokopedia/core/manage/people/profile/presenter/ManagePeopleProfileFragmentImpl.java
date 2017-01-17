@@ -93,7 +93,7 @@ public class ManagePeopleProfileFragmentImpl implements ManagePeopleProfileFragm
         param.setMessenger(view.getMessanger());
         param.setMsisdn(view.getVerifiedPhone());
         param.setVerifiedPhone(view.getPhone());
-        param.setPassword(view.getPassword());
+
         param.setImagePath(view.getImagePath());
         return param;
     }
@@ -121,11 +121,6 @@ public class ManagePeopleProfileFragmentImpl implements ManagePeopleProfileFragm
 
     private boolean isValid(Context context) {
         boolean validation = true;
-
-        if (view.getPassword().isEmpty()) {
-            view.setPasswordError(context.getString(R.string.error_field_required));
-            validation = false;
-        }
 
         if (view.getPhone().isEmpty()) {
             view.setPhoneError(context.getString(R.string.error_field_required));

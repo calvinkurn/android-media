@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.rescenter.detail.model.detailresponsedata;
+package com.tokopedia.inbox.rescenter.shipping.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

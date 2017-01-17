@@ -14,17 +14,11 @@ public interface ResCenterView {
      */
     void inflateFragment(Fragment fragment, String tag);
 
-    void changeSolution(String resolutionID);
-
     void replyConversation(String resolutionID);
-
-    void actionUpdateShippingRefNum(String resolutionID);
 
     void actionAcceptSolution(String resolutionID);
 
     void actionAcceptAdminSolution(String resolutionID);
-
-    void actionInputShippingRefNum(String resolutionID);
 
     void actionFinishReturSolution(String resolutionID);
 

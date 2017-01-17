@@ -239,7 +239,6 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
         detailSection.birthDate.setError(null);
         detailSection.hobby.setError(null);
         contactSection.email.setError(null);
-        contactSection.password.setError(null);
         contactSection.phone.setError(null);
     }
 
@@ -333,17 +332,6 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
         } else {
             NetworkErrorHelper.showSnackbar(getActivity(), message);
         }
-    }
-
-    @Override
-    public String getPassword() {
-        return String.valueOf(contactSection.password.getText());
-    }
-
-    @Override
-    public void setPasswordError(String errorMessage) {
-        contactSection.password.setError(errorMessage);
-        contactSection.password.requestFocus();
     }
 
     @Override
