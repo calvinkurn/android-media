@@ -446,58 +446,6 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginBottom="@dimen/new_margin_med">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/table_policy_option"
-                        android:textColor="@color/label_color"
-                        android:textSize="@dimen/new_text_size_small"
-                        />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:weightSum="1">
-
-                        <Spinner
-                            android:id="@+id/add_product_returnable_spinner"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.5"
-                            >
-                            <!-- android:entries="@array/return_policy" -->
-                        </Spinner>
-
-                        <LinearLayout
-                            android:id="@+id/add_product_policy_layout"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:gravity="end"
-                            android:orientation="horizontal"
-                            android:visibility="gone"
-                            android:layout_weight="0.5">
-
-                            <TextView
-                                android:id="@+id/add_product_shop_policy"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="end"
-                                android:singleLine="true"
-                                android:text="@string/title_return_policy_condition"
-                                android:textColor="@color/green_500"
-                                android:textStyle="bold"
-                                android:textSize="@dimen/new_text_size_input"/>
-                        </LinearLayout>
-                    </LinearLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
                     <TextView
