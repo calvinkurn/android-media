@@ -231,8 +231,10 @@ public class CatalogDetailListFragment extends BasePresenterFragment<ICatalogDet
     @Override
     public void hideProgressLoading() {
         isLoading = false;
-        mLoading.setVisibility(View.GONE);
-        mContainer.setVisibility(View.VISIBLE);
+        if (mLoading != null)
+            mLoading.setVisibility(View.GONE);
+        if (mContainer != null)
+            mContainer.setVisibility(View.VISIBLE);
     }
 
     @Override
