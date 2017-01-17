@@ -22,14 +22,10 @@ import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.adapter.ChooseAddressAdapter;
 import com.tokopedia.core.manage.people.address.listener.ChooseAddressFragmentView;
-import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.manage.people.address.presenter.ChooseAddressFragmentPresenter;
 import com.tokopedia.core.manage.people.address.presenter.ChooseAddressFragmentPresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RefreshHandler;
-import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity.OnChooseAddressViewListener;
-
-import java.util.ArrayList;
 
 import butterknife.BindView;
 
@@ -37,8 +33,7 @@ import butterknife.BindView;
  * Created by Alifa on 10/11/2016.
  */
 
-public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFragmentPresenter> implements ChooseAddressFragmentView,
-        OnChooseAddressViewListener{
+public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFragmentPresenter> implements ChooseAddressFragmentView {
 
     @BindView(R2.id.main_view)
     View mainView;
