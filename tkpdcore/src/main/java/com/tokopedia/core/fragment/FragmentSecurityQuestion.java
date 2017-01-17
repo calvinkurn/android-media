@@ -1,11 +1,14 @@
 package com.tokopedia.core.fragment;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
@@ -176,6 +179,14 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
             securityQuestion.initDataAfterRotate();
         smsReceiver.registerSmsReceiver(getActivity());
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            showCheckSMSPermission();
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @TargetApi(Build.VERSION_CODES.M)
+    private void showCheckSMSPermission() {
         if (ContextCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.READ_SMS) == PackageManager.PERMISSION_DENIED
                 && !getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
