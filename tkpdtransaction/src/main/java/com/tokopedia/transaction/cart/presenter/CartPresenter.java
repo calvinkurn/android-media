@@ -58,20 +58,7 @@ public class CartPresenter implements ICartPresenter {
 
             @Override
             public void onError(Throwable e) {
-                if (e instanceof SocketTimeoutException) {
-                    view.renderErrorTimeoutInitialCartInfo(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
-                } else if (e instanceof UnknownHostException) {
-                    view.renderErrorNoConnectionInitialCartInfo(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION
-                    );
-                } else if (e.getCause() instanceof ResponseErrorException) {
-                    view.renderErrorResponseInitialCartInfo(e.getCause().getMessage());
-                } else if (e.getCause() instanceof HttpErrorException) {
-                    view.renderErrorDefaultInitialCartInfo(e.getCause().getMessage());
-                } else {
-                    view.renderErrorDefaultInitialCartInfo(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                }
-                view.hideProgressLoading();
+                handleThrowableCartInfo(e);
             }
 
             @Override
@@ -101,19 +88,7 @@ public class CartPresenter implements ICartPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        e.printStackTrace();
-                        if (e instanceof SocketTimeoutException) {
-                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
-                        } else if (e instanceof UnknownHostException) {
-                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
-                        } else if (e.getCause() instanceof ResponseErrorException) {
-                            view.showToastMessage(e.getCause().getMessage());
-                        } else if (e.getCause() instanceof HttpErrorException) {
-                            view.showToastMessage(e.getCause().getMessage());
-                        } else {
-                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                        }
-                        view.hideProgressLoading();
+                        handleThrowableGeneral(e);
                     }
 
                     @Override
@@ -152,19 +127,7 @@ public class CartPresenter implements ICartPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        e.printStackTrace();
-                        if (e instanceof SocketTimeoutException) {
-                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
-                        } else if (e instanceof UnknownHostException) {
-                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
-                        } else if (e.getCause() instanceof ResponseErrorException) {
-                            view.showToastMessage(e.getCause().getMessage());
-                        } else if (e.getCause() instanceof HttpErrorException) {
-                            view.showToastMessage(e.getCause().getMessage());
-                        } else {
-                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                        }
-                        view.hideProgressLoading();
+                        handleThrowableGeneral(e);
                     }
 
                     @Override
@@ -205,19 +168,7 @@ public class CartPresenter implements ICartPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        e.printStackTrace();
-                        if (e instanceof SocketTimeoutException) {
-                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
-                        } else if (e instanceof UnknownHostException) {
-                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
-                        } else if (e.getCause() instanceof ResponseErrorException) {
-                            view.showToastMessage(e.getCause().getMessage());
-                        } else if (e.getCause() instanceof HttpErrorException) {
-                            view.showToastMessage(e.getCause().getMessage());
-                        } else {
-                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                        }
-                        view.hideProgressLoading();
+                        handleThrowableGeneral(e);
                     }
 
                     @Override
@@ -255,19 +206,7 @@ public class CartPresenter implements ICartPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        e.printStackTrace();
-                        if (e instanceof SocketTimeoutException) {
-                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
-                        } else if (e instanceof UnknownHostException) {
-                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
-                        } else if (e.getCause() instanceof ResponseErrorException) {
-                            view.showToastMessage(e.getCause().getMessage());
-                        } else if (e.getCause() instanceof HttpErrorException) {
-                            view.showToastMessage(e.getCause().getMessage());
-                        } else {
-                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                        }
-                        view.hideProgressLoading();
+                        handleThrowableGeneral(e);
                     }
 
                     @Override
@@ -300,18 +239,7 @@ public class CartPresenter implements ICartPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        if (e instanceof SocketTimeoutException) {
-                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
-                        } else if (e instanceof UnknownHostException) {
-                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
-                        } else if (e.getCause() instanceof ResponseErrorException) {
-                            view.renderErrorCheckVoucher(e.getCause().getMessage());
-                        } else if (e.getCause() instanceof HttpErrorException) {
-                            view.showToastMessage(e.getCause().getMessage());
-                        } else {
-                            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                        }
-                        view.hideProgressLoading();
+                        handleThrowableVoucherCode(e);
                     }
 
                     @Override
@@ -327,6 +255,7 @@ public class CartPresenter implements ICartPresenter {
                     }
                 });
     }
+
 
     @Override
     public void processGetTickerGTM() {
@@ -469,6 +398,54 @@ public class CartPresenter implements ICartPresenter {
         bundle.putInt(TopPayIntentService.EXTRA_ACTION,
                 TopPayIntentService.SERVICE_ACTION_GET_PARAMETER_DATA);
         view.executeIntentService(bundle, TopPayIntentService.class);
+    }
+
+    private void handleThrowableGeneral(Throwable e) {
+        e.printStackTrace();
+        if (e instanceof SocketTimeoutException) {
+            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+        } else if (e instanceof UnknownHostException) {
+            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
+        } else if (e.getCause() instanceof ResponseErrorException) {
+            view.showToastMessage(e.getCause().getMessage());
+        } else if (e.getCause() instanceof HttpErrorException) {
+            view.showToastMessage(e.getCause().getMessage());
+        } else {
+            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+        }
+        view.hideProgressLoading();
+    }
+
+    private void handleThrowableVoucherCode(Throwable e) {
+        if (e instanceof SocketTimeoutException) {
+            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+        } else if (e instanceof UnknownHostException) {
+            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
+        } else if (e.getCause() instanceof ResponseErrorException) {
+            view.renderErrorCheckVoucher(e.getCause().getMessage());
+        } else if (e.getCause() instanceof HttpErrorException) {
+            view.showToastMessage(e.getCause().getMessage());
+        } else {
+            view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+        }
+        view.hideProgressLoading();
+    }
+
+    private void handleThrowableCartInfo(Throwable e) {
+        if (e instanceof SocketTimeoutException) {
+            view.renderErrorTimeoutInitialCartInfo(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+        } else if (e instanceof UnknownHostException) {
+            view.renderErrorNoConnectionInitialCartInfo(
+                    ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION
+            );
+        } else if (e.getCause() instanceof ResponseErrorException) {
+            view.renderErrorResponseInitialCartInfo(e.getCause().getMessage());
+        } else if (e.getCause() instanceof HttpErrorException) {
+            view.renderErrorDefaultInitialCartInfo(e.getCause().getMessage());
+        } else {
+            view.renderErrorDefaultInitialCartInfo(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+        }
+        view.hideProgressLoading();
     }
 
     private void processRenderViewCartData(CartData data) {
