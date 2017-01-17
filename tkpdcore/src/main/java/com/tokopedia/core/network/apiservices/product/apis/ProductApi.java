@@ -42,17 +42,14 @@ public interface ProductApi {
     @POST(TkpdBaseURL.Product.PATH_GET_PICTURE_PRODUCT)
     Observable<Response<TkpdResponse>> getPictures(@FieldMap Map<String, String> params);
 
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.Product.PATH_GET_REVIEW)
-    Observable<Response<TkpdResponse>> getReview(@FieldMap Map<String, String> params);
+    @GET(TkpdBaseURL.Product.PATH_GET_REVIEW)
+    Observable<Response<TkpdResponse>> getReview(@QueryMap Map<String, String> params);
 
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.Product.PATH_GET_HELPFUL_REVIEW)
-    Observable<Response<TkpdResponse>> getHelpfulReview(@FieldMap Map<String, String> params);
+    @GET(TkpdBaseURL.Product.PATH_GET_HELPFUL_REVIEW)
+    Observable<Response<TkpdResponse>> getHelpfulReview(@QueryMap Map<String, String> params);
 
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.Product.PATH_GET_TALK)
-    Observable<Response<TkpdResponse>> getTalk(@FieldMap Map<String, String> params);
+    @GET(TkpdBaseURL.Product.PATH_GET_TALK)
+    Observable<Response<TkpdResponse>> getTalk(@QueryMap Map<String, String> params);
 
     @GET(TkpdBaseURL.Product.PATH_MANAGE_PRODUCT)
     Observable<Response<TkpdResponse>> manage(@QueryMap Map<String, String> params);
