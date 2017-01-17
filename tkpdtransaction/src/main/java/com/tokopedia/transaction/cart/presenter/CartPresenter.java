@@ -259,7 +259,7 @@ public class CartPresenter implements ICartPresenter {
 
     @Override
     public void processGetTickerGTM() {
-        if (TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_CART).equalsIgnoreCase("false")) {
+        if (TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_CART).equalsIgnoreCase("true")) {
             String message = TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_CART_TEXT);
             view.renderVisibleTickerGTM(message);
         } else {
