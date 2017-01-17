@@ -640,7 +640,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
     <string name="title_payment_method">Metode Pembayaran</string>
     <string name="title_total_payment">Total Pembayaran</string>
     <string name="title_total_payment_left">Total Yang Harus Dibayar</string>
-    <string name="tittle_checkout">Checkout</string>
+    <string name="tittle_checkout">Pilih Metode Pembayaran</string>
     <string name="title_tokopedia_balance">Saldo Tokopedia</string>
     <string name="title_use_tokopedia_balance">Ingin gunakan saldo Tokopedia-mu ?</string>
     <string name="title_use_promo_code">Gunakan Kode Voucher Tokopedia</string>
