@@ -145,6 +145,12 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     @Override
     public void onLoadAdError() {
         progressDialog.dismiss();
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                refreshAd();
+            }
+        }).showRetrySnackbar();
     }
 
     @Override
