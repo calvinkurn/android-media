@@ -18,6 +18,7 @@ import android.webkit.WebViewClient;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.inbox.rescenter.create.customview.BaseView;
 import com.tokopedia.inbox.rescenter.detail.dialog.ConfirmationDialog;
 import com.tokopedia.inbox.rescenter.detail.listener.DetailResCenterView;
@@ -34,7 +35,7 @@ public class DetailView extends BaseView<Detail, DetailResCenterView> {
     public static final String TAG = DetailView.class.getSimpleName();
 
     @BindView(R2.id.webview)
-    WebView webView;
+    TkpdWebView webView;
 
     private Detail resolutionDetailModel;
 
@@ -86,7 +87,7 @@ public class DetailView extends BaseView<Detail, DetailResCenterView> {
         WebSettings webSettings = webView.getSettings();
         webSettings.setBuiltInZoomControls(false);
         webView.setWebViewClient(new MyWebClient());
-        webView.loadUrl(getUrl(data.getResolutionLinkEncode()));
+        webView.loadAuthUrl(getUrl(data.getResolutionLinkEncode()));
     }
 
     private String getUrl(String data) {

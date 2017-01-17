@@ -23,8 +23,9 @@ public class URLGenerator {
         Uri uri = Uri.parse(url);
         String path = uri.getLastPathSegment();
         String queryStart = uri.getQuery();
-        String urlFinal = getBaseUrl() + "wvlogin?token="
-                + PasswordGenerator.getAppId(context)
+        String urlFinal = getBaseUrl() + "seamless?token="
+                + GCMHandler.getRegistrationId(context)
+                + "&os_type=1"
                 + "&uid=" + SessionHandler.getLoginID(context)
                 + "&url=" + url;
         Log.i("Loyalty System", url);
@@ -35,8 +36,9 @@ public class URLGenerator {
         Uri uri = Uri.parse(url);
         String path = uri.getLastPathSegment();
         String queryStart = uri.getQuery();
-        String urlFinal = getBaseUrl() + "wvlogin?token="
-                + PasswordGenerator.getAppId(context)
+        String urlFinal = getBaseUrl() + "seamless?token="
+                + GCMHandler.getRegistrationId(context)
+                + "&os_type=1"
                 + "&uid=" + SessionHandler.getLoginID(context)
                 + "&url=" + url;
         return urlFinal;
@@ -48,6 +50,7 @@ public class URLGenerator {
         String queryStart = uri.getQuery();
         String urlFinal = getBaseUrl() + "wvlogin?token="
                 + GCMHandler.getRegistrationId(context)
+                + "&os_type=1"
                 + "&uid=" + SessionHandler.getLoginID(context)
                 + "&url=" + url;
         return urlFinal;

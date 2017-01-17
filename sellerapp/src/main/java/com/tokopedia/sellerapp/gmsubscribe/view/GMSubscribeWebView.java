@@ -16,13 +16,14 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.util.TkpdWebView;
 
 
 /**
  * Created by sebastianuskh on 11/11/16.
  */
 
-public class GMSubscribeWebView extends WebView {
+public class GMSubscribeWebView extends TkpdWebView {
 
     private static final String GOLD_TOKOPEDIA_COM = "http://gold.tokopedia.com";
     private static final String M_TOKOPEDIA_COM = "m.tokopedia.com";
@@ -60,7 +61,8 @@ public class GMSubscribeWebView extends WebView {
     }
 
     public void goToGoldTokopedia(Context context) {
-        postUrl(URLGenerator.generateURLSessionLogin(GOLD_TOKOPEDIA_COM, context), null);
+
+        loadAuthUrl(URLGenerator.generateURLSessionLogin(GOLD_TOKOPEDIA_COM, context), null);
     }
 
 
