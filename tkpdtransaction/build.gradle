@@ -67,12 +67,12 @@ artifactory {
 
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion "25.0.0"
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 25
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
 
@@ -112,16 +112,3 @@ dependencies {
 
 }
 
-/* Untuk upload ke local maven*/
-def localRepoURL = 'file://' + new File(System.getProperty('user.home')).getAbsolutePath() + '/.m2/repository'
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: localRepoURL)
-            pom.version = '1.0-DEVELOPMENT-LOCALMVN'
-            pom.groupId = 'com.tokopedia.transaction'
-            pom.artifactId = 'tkpdtransaction'
-        }
-    }
-}
