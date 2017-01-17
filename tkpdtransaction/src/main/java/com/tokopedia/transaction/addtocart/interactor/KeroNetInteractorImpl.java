@@ -84,7 +84,7 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
                     Rates rates = new Gson().fromJson(response.body(), Rates.class);
                     listener.onSuccess(rates.getData().getAttributes());
                 } else {
-                    calculateKeroCartAddressShipping(context, param, listener);
+                    listener.onFailure();
                 }
             }
         };
