@@ -1,6 +1,7 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
 import android.content.Intent;
+import android.util.Log;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.exception.SessionExpiredException;
@@ -9,6 +10,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+
+import okhttp3.Interceptor;
 import okhttp3.Response;
 import rx.Observable;
 
@@ -16,7 +19,9 @@ import rx.Observable;
  * Created by kris on 1/11/17. Tokopedia
  */
 
-public class StandardizedInterceptor extends TkpdBaseInterceptor{
+public class StandardizedInterceptor implements Interceptor{
+
+    private static final String TAG = StandardizedInterceptor.class.getSimpleName();
 
     @Override
     public Response intercept(Chain chain) throws IOException {
@@ -31,7 +36,13 @@ public class StandardizedInterceptor extends TkpdBaseInterceptor{
             e.printStackTrace();
         }
 
-        return super.intercept(chain);
+        int count = 0;
+        while (!response.isSuccessful() && count < 3) {
+            Log.d(TAG, "Request is not successful - " + count + " Error code : " + response.code());
+            count++;
+            response = chain.proceed(chain.request());
+        }
+        return response;
     }
 
     private void handleError(String errorMessage) throws SessionExpiredException{
