@@ -75,7 +75,7 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                calculateKeroCartAddressShipping(context, param, listener);
+                listener.onFailure();
             }
 
             @Override

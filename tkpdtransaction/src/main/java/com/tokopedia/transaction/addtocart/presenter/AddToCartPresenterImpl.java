@@ -270,6 +270,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                         @Override
                         public void onFailure() {
                             viewListener.enableBuyButton();
+                            viewListener.showCalculateShippingErrorMessage();
                         }
                     });
         }

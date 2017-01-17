@@ -702,7 +702,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             showErrorMessage(getString(R.string.error_no_address));
         } else {
             CommonUtils.dumper("rates/v1 kerorates called aftertextchanged");
-            orderData.setWeight(CommonUtils.round((Double.parseDouble(orderData.getInitWeight()) * Double.parseDouble(s.toString())), 2) + "");
+            orderData.setWeight(CommonUtils.round((Double.parseDouble(orderData.getInitWeight()) * Double.parseDouble(s.toString())), 4) + "");
             tilAmount.setError(null);
             tilAmount.setErrorEnabled(false);
             presenter.calculateAllPrices(AddToCartActivity.this, orderData);
