@@ -259,12 +259,13 @@ public class DynamicPaymentFragment extends BasePresenterFragment
                         e.printStackTrace();
                     }
                     if (timeout) {
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                showError(view, WebViewClient.ERROR_TIMEOUT);
-                            }
-                        });
+                        if (getActivity() != null)
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    showError(view, WebViewClient.ERROR_TIMEOUT);
+                                }
+                            });
                     }
                 }
             }).start();
