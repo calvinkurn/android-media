@@ -19,4 +19,10 @@ public interface TopAdsCacheDataSource {
     void updateLastInsertStatistic();
 
     boolean isStatisticDataExpired();
+
+    void saveSelectionDatePicker(int selectionDatePickerType, int selectionDatePeriodIndex);
+
+    int getLastSelectionDatePickerType();
+
+    int getLastSelectionDatePickerIndex();
 }

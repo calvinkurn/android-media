@@ -36,7 +36,7 @@
     <string name="action_filter_date">Filter Tanggal</string>
     <string name="title_group_list">Grup</string>
     <string name="title_product_ad_detail">Detil Promo Produk</string>
-    <string name="title_group_ad_detail">Detil Promo Grup</string>
+    <string name="title_group_ad_detail">Detil Grup</string>
 
     <!-- Top Ads ad list -->
     <string name="label_top_ads_daily_spend">Anggaran Harian</string>
@@ -83,7 +83,7 @@
     <!-- Top Ads Detail product-->
     <string name="label_non_active_topads">Tidak Aktif</string>
     <string name="label_active_topads">Aktif</string>
-    <string name="label_title_name_topads">Produk</string>
+    <string name="label_title_name_topads">Name</string>
     <string name="label_title_status_topads">Status</string>
     <string name="label_title_max_bid_topads">Biaya Maks</string>
     <string name="label_title_avg_cost_topads">Rata-rata</string>
@@ -95,7 +95,7 @@
     <string name="label_title_click_topads">Klik</string>
     <string name="label_title_ctr_topads">CTR</string>
     <string name="label_title_favorite_topads">Terjual</string>
-    <string name="label_title_items_topads">Items</string>
+    <string name="label_title_items_topads">@string/title_top_ads_product</string>
     <string name="label_top_ads_promo_group">Promo Group</string>
 
     <string name="label_today">Hari Ini</string>

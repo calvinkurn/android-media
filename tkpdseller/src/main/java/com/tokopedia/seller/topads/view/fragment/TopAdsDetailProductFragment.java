@@ -58,6 +58,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
     @Override
     protected void initView(View view) {
         super.initView(view);
+        name.setTitle(getString(R.string.title_top_ads_product));
         name.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.green_200));
         name.setContentClickListener(new View.OnClickListener() {
             @Override
