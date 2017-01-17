@@ -6,6 +6,7 @@ import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
+import com.tokopedia.core.util.GlobalConfig;
 
 import java.io.IOException;
 
@@ -26,6 +27,9 @@ public abstract class BearerService<T> {
     protected T mApi;
     protected String mToken;
 
+    private static final String HEADER_X_APP_VERSION = "X-APP-VERSION";
+
+
     public BearerService() {
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
         httpClientBuilder.addInterceptor(new Interceptor() {
@@ -36,6 +40,7 @@ public abstract class BearerService<T> {
                 Request.Builder requestBuilder = original.newBuilder()
                         .header("Authorization", getOauthAuthorization())
                         .header("Content-Type", "application/x-www-form-urlencoded")
+                        .header(HEADER_X_APP_VERSION, "android-" + String.valueOf(GlobalConfig.VERSION_NAME))
                         .method(original.method(), original.body());
                 Request request = requestBuilder.build();
                 return chain.proceed(request);

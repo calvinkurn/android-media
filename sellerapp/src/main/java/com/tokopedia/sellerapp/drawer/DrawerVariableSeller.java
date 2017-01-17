@@ -37,7 +37,6 @@ import com.tokopedia.core.drawer.model.DrawerSeparator;
 import com.tokopedia.core.drawer.model.LoyaltyItem.LoyaltyItem;
 import com.tokopedia.core.drawer.var.NotificationItem;
 import com.tokopedia.core.drawer.var.UserType;
-import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.myproduct.ManageProduct;
@@ -46,7 +45,7 @@ import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity;
+import com.tokopedia.inbox.inboxtalk.activity.InboxTalkActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
@@ -381,7 +380,8 @@ public class DrawerVariableSeller extends DrawerVariable {
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_DISPLAY);
                 break;
             case TkpdState.DrawerPosition.INBOX_MESSAGE:
-                startIntent(InboxMessageActivity.class);
+                intent = InboxRouter.getInboxMessageActivityIntent(context);
+                context.startActivity(intent);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.MESSAGE);
                 break;
             case TkpdState.DrawerPosition.INBOX_TALK:

@@ -1,7 +1,6 @@
 package com.tokopedia.core.talk.talkproduct.interactor;
 
 import com.tokopedia.core.network.apiservices.kunyit.KunyitService;
-import com.tokopedia.core.network.apiservices.product.TalkActService;
 import com.tokopedia.core.talk.talkproduct.presenter.TalkAddNewPresenter;
 import com.tokopedia.core.talk.talkproduct.presenter.TalkAddNewPresenterImpl;
 
@@ -14,7 +13,6 @@ public class TalkAddNewRetrofitInteractorImpl implements TalkAddNewRetrofitInter
 
 
     CompositeSubscription compositeSubscription;
-    TalkActService talkActService;
     KunyitService kunyitService;
     TalkAddNewPresenter presenter;
 
@@ -22,7 +20,6 @@ public class TalkAddNewRetrofitInteractorImpl implements TalkAddNewRetrofitInter
     public static TalkAddNewRetrofitInteractor createInstance(TalkAddNewPresenterImpl talkAddNewPresenter) {
         TalkAddNewRetrofitInteractorImpl facade = new TalkAddNewRetrofitInteractorImpl();
         facade.presenter = talkAddNewPresenter;
-        facade.talkActService = new TalkActService();
         facade.kunyitService = new KunyitService();
         facade.compositeSubscription = new CompositeSubscription();
         return facade;

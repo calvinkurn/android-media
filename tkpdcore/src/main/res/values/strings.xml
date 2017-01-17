@@ -1660,6 +1660,7 @@ di Tokopedia Sekarang!</string>
     <string name="error_minimum_price_wholesale">Harga satuan sudah harga terendah</string>
     <string name="error_empty_product_name">Nama produk harus diisi</string>
     <string name="error_empty_price">Harga harus diisi</string>
+
     <string name="error_empty_weight">Berat harus diisi</string>
     <string name="error_empty_preorder">Pre order harus diisi</string>
 
@@ -1749,13 +1750,13 @@ di Tokopedia Sekarang!</string>
     <string name="title_home">Home</string>
     <string name="try_again">Terjadi kesalahan. Mohon coba kembali.</string>
 
-    <string name="need_permission_camera">Aplikasi ini membutuhkan izin untuk mengakses Kamera. Perbolehkan Android meminta izin?</string>
-    <string name="need_permission_storage">Aplikasi ini membutuhkan izin untuk mengakses Media Penyimpanan. Perbolehkan Android meminta izin?</string>
-    <string name="need_permission_multi">Aplikasi ini membutuhkan beberapa izin. Perbolehkan Android meminta izin?</string>
-    <string name="need_permission_contacts">Aplikasi ini membutuhkan izin untuk mengakses Kontak. Perbolehkan Android meminta izin?</string>
-    <string name="need_permission_location">Aplikasi ini membutuhkan izin untuk mengakses Lokasi. Perbolehkan Android meminta izin?</string>
-    <string name="need_permission_get_accounts">Aplikasi ini membutuhkan izin untuk mengakses akun. Perbolehkan Android meminta izin?</string>
-    <string name="need_permission_SMS">Aplikasi ini membutuhkan izin untuk membaca SMS OTP untuk mempermudah verifikasi. Perbolehkan Android meminta izin?</string>
+    <string name="need_permission_camera">Aplikasi ini membutuhkan izin untuk mengakses Kamera. Perbolehkan?</string>
+    <string name="need_permission_storage">Aplikasi ini membutuhkan izin untuk mengakses Media Penyimpanan. Perbolehkan?</string>
+    <string name="need_permission_multi">Aplikasi ini membutuhkan beberapa izin. Perbolehkan?</string>
+    <string name="need_permission_contacts">Aplikasi ini membutuhkan izin untuk mengakses Kontak. Perbolehkan?</string>
+    <string name="need_permission_location">Aplikasi ini membutuhkan izin untuk mengakses Lokasi. Perbolehkan?</string>
+    <string name="need_permission_get_accounts">Aplikasi ini membutuhkan izin untuk mengakses akun. Perbolehkan?</string>
+    <string name="need_permission_SMS">Aplikasi ini membutuhkan izin membaca SMS OTP untuk mempermudah verifikasi. Perbolehkan?</string>
 
     <string name="permission_camera_denied">Anda tidak memberikan izin akses untuk Kamera.</string>
     <string name="permission_storage_denied">Anda tidak memberikan izin akses untuk Media Penyimpanan.</string>
@@ -1854,4 +1855,7 @@ di Tokopedia Sekarang!</string>
     <string name="action_send_otp_with_call">Atau kirim OTP melalui telepon</string>
     <string name="content_change_number">Jika nomor Anda sudah tidak aktif, silahkan Klik disini</string>
     <string name="title_resend_otp">Kirim ulang OTP</string>
+
+    <string name="mark_as_read">Tandai sudah dibaca</string>
+    <string name="mark_as_unread">Tandai belum dibaca</string>
 </resources>
