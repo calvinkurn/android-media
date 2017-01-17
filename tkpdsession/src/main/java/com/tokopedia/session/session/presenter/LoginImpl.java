@@ -19,6 +19,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.service.DownloadService;
@@ -143,42 +144,6 @@ public class LoginImpl implements Login {
         facade.unSubscribe();
     }
 
-    @Override
-    public void sendGTMScreen(Context context) {
-        Nishikino.init(context).startAnalytics().sendScreen(AppScreen.SCREEN_LOGIN);
-    }
-
-    @Override
-    public void sendGTMRegisterThrougLogin() {
-        Nishikino.init(mContext).startAnalytics()
-                .sendButtonClick(
-                        AppEventTracking.Event.REGISTER_LOGIN,
-                        AppEventTracking.Category.LOGIN,
-                        AppEventTracking.Action.REGISTER,
-                        AppEventTracking.EventLabel.REGISTER);
-    }
-
-    @Override
-    public void sendCTAAction() {
-        Nishikino.init(mContext).startAnalytics()
-                .sendButtonClick(
-                        AppEventTracking.Event.LOGIN_CLICK,
-                        AppEventTracking.Category.LOGIN,
-                        AppEventTracking.Action.CLICK,
-                        AppEventTracking.EventLabel.CTA);
-    }
-
-    @Override
-    public void sendGTMLoginError(String label) {
-        Nishikino.init(mContext).startAnalytics()
-                .sendButtonClick(
-                        AppEventTracking.Event.LOGIN_ERROR,
-                        AppEventTracking.Category.LOGIN,
-                        AppEventTracking.Action.LOGIN_ERROR,
-                        label);
-    }
-
-
     public void downloadProviderLogin() {
         facade.downloadProvider(loginView.getActivity(), new LoginInteractor.DiscoverLoginListener() {
             @Override
@@ -248,9 +213,11 @@ public class LoginImpl implements Login {
         Bundle bundle;
         switch (action) {
             case LoginModel.EmailType:
-                getToken(action, (LoginViewModel) data[0]);
+                getToken(action,(LoginViewModel)data[0]);
+                UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.EMAIL);
                 break;
             case LoginModel.GoogleType:
+                UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.GMAIL);
                 LoginGoogleModel loginGoogleModel = (LoginGoogleModel) data[0];
                 loginGoogleModel.setUuid(getUUID());
 
@@ -261,6 +228,7 @@ public class LoginImpl implements Login {
                 ((SessionView) mContext).sendDataFromInternet(DownloadService.LOGIN_GOOGLE, bundle);
                 break;
             case LoginModel.FacebookType:
+                UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.FACEBOOK);
                 LoginFacebookViewModel loginFacebookViewModel = (LoginFacebookViewModel) data[0];
                 loginFacebookViewModel.setUuid(getUUID());
                 bundle = new Bundle();

@@ -8,7 +8,6 @@ import android.os.ResultReceiver;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.network.apiservices.kunyit.KunyitService;
-import com.tokopedia.core.network.apiservices.product.TalkActService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -37,8 +36,6 @@ public class TalkDetailIntentService extends IntentService {
     public static final String EXTRA_RESULT = "EXTRA_RESULT";
     public static final String POSITION = "position";
 
-
-    TalkActService talkActService;
     KunyitService kunyitService;
     ResultReceiver receiver;
 
@@ -74,7 +71,6 @@ public class TalkDetailIntentService extends IntentService {
         if (intent != null) {
             int action = intent.getIntExtra(EXTRA_TYPE, 0);
             Bundle bundle = intent.getBundleExtra(EXTRA_BUNDLE);
-            talkActService = new TalkActService();
             kunyitService = new KunyitService();
             receiver = intent.getParcelableExtra(EXTRA_RECEIVER);
 
@@ -96,7 +92,7 @@ public class TalkDetailIntentService extends IntentService {
         final Bundle resultData = new Bundle();
         resultData.putParcelable(PARAM_DELETE, param);
         int position = param.getPosition();
-        talkActService.getApi().deleteCommentTalk(AuthUtil.
+        kunyitService.getApi().deleteCommentTalk(AuthUtil.
                 generateParams(getBaseContext(), param.getParamDeleteComment()))
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
@@ -108,7 +104,7 @@ public class TalkDetailIntentService extends IntentService {
         TalkPass param = (TalkPass) bundle.get(PARAM_REPORT);
         final Bundle resultData = new Bundle();
         resultData.putParcelable(PARAM_REPORT, param);
-        talkActService.getApi().reportCommentTalk(AuthUtil.
+        kunyitService.getApi().reportCommentTalk(AuthUtil.
                 generateParams(getBaseContext(), param.getParamReportComment()))
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())

@@ -22,7 +22,6 @@ public class PeopleProfilePass implements Parcelable {
     private String msisdn;
     private String verifiedPhone;
     private String userID;
-    private String password;
     private String filePath;
     private boolean success;
     private String fileUploaded;
@@ -120,14 +119,6 @@ public class PeopleProfilePass implements Parcelable {
         this.userID = userID;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getServerID() {
         return serverID;
     }
@@ -205,7 +196,6 @@ public class PeopleProfilePass implements Parcelable {
         dest.writeString(this.msisdn);
         dest.writeString(this.verifiedPhone);
         dest.writeString(this.userID);
-        dest.writeString(this.password);
         dest.writeString(this.filePath);
         dest.writeByte(this.success ? (byte) 1 : (byte) 0);
         dest.writeString(this.fileUploaded);
@@ -227,7 +217,6 @@ public class PeopleProfilePass implements Parcelable {
         this.msisdn = in.readString();
         this.verifiedPhone = in.readString();
         this.userID = in.readString();
-        this.password = in.readString();
         this.filePath = in.readString();
         this.success = in.readByte() != 0;
         this.fileUploaded = in.readString();

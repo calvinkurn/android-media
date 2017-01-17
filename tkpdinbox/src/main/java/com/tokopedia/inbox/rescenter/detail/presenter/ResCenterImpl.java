@@ -56,16 +56,6 @@ public class ResCenterImpl implements ResCenterPresenter {
     }
 
     @Override
-    public void actionUpdateShippingRefNum(Context context, String resolutionID, DetailResCenterReceiver mReceiver) {
-        DetailResCenterService.startActionUpdateShippingRefNum(context, resolutionID, mReceiver);
-    }
-
-    @Override
-    public void actionInputShippingRefNum(Context context, String resolutionID, DetailResCenterReceiver mReceiver) {
-        DetailResCenterService.startActionInputShippingRefNum(context, resolutionID, mReceiver);
-    }
-
-    @Override
     public void actionFinishReturSolution(Context context, String resolutionID, DetailResCenterReceiver mReceiver) {
         DetailResCenterService.startActionFinishReturSolution(context, resolutionID, mReceiver);
     }
